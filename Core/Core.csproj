@@ -1,0 +1,590 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Remotion</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\Remotion.xml</DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>1591;0419</NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.DynamicProxy, Version=2.0.0.1, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\prereq\Assemblies\Castle.DynamicProxy.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <Name>log4net</Name>
+      <HintPath>..\prereq\Assemblies\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CallContextSingleton.cs" />
+    <Compile Include="Collections\IDataStore.cs" />
+    <Compile Include="Collections\InterlockedDataStore.cs" />
+    <Compile Include="Collections\NullDataStore.cs" />
+    <Compile Include="Collections\SimpleDataStore.cs" />
+    <Compile Include="Reflection\CodeGeneration\CustomClassEmitter.cs" />
+    <Compile Include="Reflection\CodeGeneration\CustomEventEmitter.cs" />
+    <Compile Include="Reflection\CodeGeneration\CustomMethodEmitter.cs" />
+    <Compile Include="Reflection\CodeGeneration\CustomPropertyEmitter.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\AssemblySaver.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\AttributeReplicator.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\ClassEmitterSupportingOpenGenericBaseType.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\ConditionExpression.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\AutomaticMethodInvocationExpression.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\CustomAttributeExpression.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\ExpressionReference.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\FieldInfoReference.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\IfStatement.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\ILStatement.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\InitObjectExpression.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\LoadCalculatedArrayElementExpression.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\PopStatement.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\PropertyReference.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\SameConditionExpression.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\TryFinallyStatement.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\TypedMethodInvocationExpression.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\TypeReferenceWrapper.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\VirtualMethodInvocationExpression.cs" />
+    <Compile Include="Reflection\CodeGeneration\IAttributableEmitter.cs" />
+    <Compile Include="Reflection\CodeGeneration\SerializationEventRaiser.cs" />
+    <Compile Include="Reflection\CodeGeneration\SerializationImplementer.cs" />
+    <Compile Include="Collections\AutoInitDictionary.cs" />
+    <Compile Include="Collections\MultiDictionary.cs" />
+    <Compile Include="Collections\InterlockedCache.cs" />
+    <Compile Include="Collections\Set.cs" />
+    <Compile Include="Collections\Tuple.cs" />
+    <Compile Include="Configuration\ConfigurationElementCollection.cs" />
+    <Compile Include="Configuration\ConfigurationWrapper.cs" />
+    <Compile Include="Configuration\ConfigurationWrapperFromConfigurationObject.cs" />
+    <Compile Include="Configuration\ConfigurationWrapperFromConfigurationManager.cs" />
+    <Compile Include="Configuration\ExtendedConfigurationSection.cs" />
+    <Compile Include="Configuration\ExtendedProviderBase.cs" />
+    <Compile Include="Configuration\ProviderDefinitionCollection.cs" />
+    <Compile Include="Configuration\ProviderHelperBase.cs" />
+    <Compile Include="Design\DesignModeHelperBase.cs" />
+    <Compile Include="Design\EnvDteDesignModeHelper.cs" />
+    <Compile Include="Design\IDesignModeHelper.cs" />
+    <Compile Include="DoubleCheckedLockingContainer.cs" />
+    <Compile Include="Globalization\IResourceManagerResolverUtility.cs" />
+    <Compile Include="Globalization\IResourcesAttribute.cs" />
+    <Compile Include="Globalization\MultiLingualResources.cs" />
+    <Compile Include="Globalization\ResourceManagerResolver.cs" />
+    <Compile Include="Globalization\ResourceManagerResolverUtility.cs" />
+    <Compile Include="INullObject.cs" />
+    <Compile Include="Collections\ArrayComparer.cs" />
+    <Compile Include="Collections\LazyInterlockedCache.cs" />
+    <Compile Include="Logging\ILog.cs" />
+    <Compile Include="Logging\ILogManager.cs" />
+    <Compile Include="Logging\Log4NetLog.cs" />
+    <Compile Include="Logging\Log4NetLogManager.cs" />
+    <Compile Include="Logging\Log4NetTraceListener.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Logging\LogManager.cs" />
+    <Compile Include="Mixins\CodeGeneration\ConcreteMixedTypeAttribute.cs" />
+    <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeAttribute.cs" />
+    <Compile Include="Mixins\CodeGeneration\ConcreteTypeBuilder.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\BaseCallMethodGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\BaseCallProxyGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\BaseCallProxyInitializer.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\GeneratedClassInstanceInitializer.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinInstanceInitializer.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinSerializationHelper.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinTypeGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\ModuleManager.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\SerializationHelper.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\ExtensionFieldAttribute.cs" />
+    <Compile Include="Mixins\CodeGeneration\GuidNameProvider.cs" />
+    <Compile Include="Mixins\CodeGeneration\IGeneratedBaseCallProxyType.cs" />
+    <Compile Include="Mixins\CodeGeneration\IGeneratedMixinType.cs" />
+    <Compile Include="Mixins\CodeGeneration\IMixinTypeGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\IModuleManager.cs" />
+    <Compile Include="Mixins\CodeGeneration\INameProvider.cs" />
+    <Compile Include="Mixins\CodeGeneration\ITypeGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\NamespaceChangingNameProvider.cs" />
+    <Compile Include="Mixins\BridgeImplementations\TypeFactoryImplementation.cs" />
+    <Compile Include="Mixins\ConfigurationException.cs" />
+    <Compile Include="Mixins\Context\ClassContext.cs" />
+    <Compile Include="Mixins\Context\ClassContextCollection.cs" />
+    <Compile Include="Mixins\Context\ClassContextCollector.cs" />
+    <Compile Include="Mixins\Context\ClassContextDeriver.cs" />
+    <Compile Include="Mixins\Context\ClassContextEventArgs.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\CompleteInterfaceAnalyzer.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\DeclarativeConfigurationAnalyzer.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\ExtendsAnalyzer.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\IgnoresAnalyzer.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\MixAnalyzer.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\RelationAnalyzerBase.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\UsesAnalyzer.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder.cs" />
+    <Compile Include="Mixins\Context\FluentBuilders\ClassContextBuilder.cs" />
+    <Compile Include="Mixins\Context\FluentBuilders\InheritanceAwareMixinConfigurationBuilder.cs" />
+    <Compile Include="Mixins\Context\FluentBuilders\MixinConfigurationBuilder.cs" />
+    <Compile Include="Mixins\Context\FluentBuilders\MixinContextBuilder.cs" />
+    <Compile Include="Mixins\Context\InheritedClassContextRetrievalAlgorithm.cs" />
+    <Compile Include="Mixins\Context\MixinContext.cs" />
+    <Compile Include="Mixins\Context\MixinContextCollection.cs" />
+    <Compile Include="Mixins\Context\ReadOnlyContextCollection.cs" />
+    <Compile Include="Mixins\Context\SynchronizedReadOnlyContextCollection.cs" />
+    <Compile Include="Mixins\Definitions\AttributeDefinition.cs" />
+    <Compile Include="Mixins\Definitions\AttributeIntroductionDefinition.cs" />
+    <Compile Include="Mixins\Definitions\BaseDependencyDefinition.cs" />
+    <Compile Include="Mixins\Definitions\Building\AttributeDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\AttributeIntroductionDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\BaseDependencyDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\DependencyDefinitionBuilderBase.cs" />
+    <Compile Include="Mixins\Definitions\Building\DependencySorting\DependentMixinGrouper.cs" />
+    <Compile Include="Mixins\Definitions\Building\DependencySorting\MixinDependencyAnalyzer.cs" />
+    <Compile Include="Mixins\Definitions\Building\InterfaceIntroductionDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\MemberChain.cs" />
+    <Compile Include="Mixins\Definitions\Building\MemberDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\MemberImplementationFinder.cs" />
+    <Compile Include="Mixins\Definitions\Building\MixinDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\MixinDependencyDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\OverridesAnalyzer.cs" />
+    <Compile Include="Mixins\Definitions\Building\RequiredMethodDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\RequirementsAnalyzer.cs" />
+    <Compile Include="Mixins\Definitions\Building\TargetClassDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\Building\ThisDependencyDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Definitions\ClassDefinitionBase.cs" />
+    <Compile Include="Mixins\Definitions\CovariantDefinitionCollectionWrapper.cs" />
+    <Compile Include="Mixins\Definitions\DefinitionCollectionBase.cs" />
+    <Compile Include="Mixins\Definitions\DependencyDefinitionBase.cs" />
+    <Compile Include="Mixins\Definitions\EventDefinition.cs" />
+    <Compile Include="Mixins\Definitions\EventIntroductionDefinition.cs" />
+    <Compile Include="Mixins\Definitions\IAttributableDefinition.cs" />
+    <Compile Include="Mixins\Definitions\IAttributeIntroductionTargetDefinition.cs" />
+    <Compile Include="Mixins\Definitions\IDefinitionCollection.cs" />
+    <Compile Include="Mixins\Definitions\IDefinitionVisitor.cs" />
+    <Compile Include="Mixins\Definitions\InterfaceIntroductionDefinition.cs" />
+    <Compile Include="Mixins\Definitions\IVisitableDefinition.cs" />
+    <Compile Include="Mixins\Definitions\MemberDefinition.cs" />
+    <Compile Include="Mixins\Definitions\MemberIntroductionDefinition.cs" />
+    <Compile Include="Mixins\Definitions\MethodDefinition.cs" />
+    <Compile Include="Mixins\Definitions\MethodIntroductionDefinition.cs" />
+    <Compile Include="Mixins\Definitions\MixinDefinition.cs" />
+    <Compile Include="Mixins\Definitions\MixinDependencyDefinition.cs" />
+    <Compile Include="Mixins\Definitions\MultiDefinitionCollection.cs" />
+    <Compile Include="Mixins\Definitions\PropertyDefinition.cs" />
+    <Compile Include="Mixins\Definitions\PropertyIntroductionDefinition.cs" />
+    <Compile Include="Mixins\Definitions\RequiredBaseCallTypeDefinition.cs" />
+    <Compile Include="Mixins\Definitions\RequiredFaceTypeDefinition.cs" />
+    <Compile Include="Mixins\Definitions\RequiredMethodDefinition.cs" />
+    <Compile Include="Mixins\Definitions\RequiredMixinTypeDefinition.cs" />
+    <Compile Include="Mixins\Definitions\RequirementDefinitionBase.cs" />
+    <Compile Include="Mixins\Definitions\SuppressedInterfaceIntroductionDefinition.cs" />
+    <Compile Include="Mixins\Definitions\TargetClassDefinition.cs" />
+    <Compile Include="Mixins\Definitions\TargetClassDefinitionCache.cs" />
+    <Compile Include="Mixins\Definitions\ThisDependencyDefinition.cs" />
+    <Compile Include="Mixins\Definitions\UniqueDefinitionCollection.cs" />
+    <Compile Include="Mixins\Globalization\MixedMultiLingualResources.cs" />
+    <Compile Include="Mixins\Globalization\MixedResourceManagerResolver.cs" />
+    <Compile Include="Mixins\IMixinTarget.cs" />
+    <Compile Include="Mixins\BridgeImplementations\TypeUtilityImplementation.cs" />
+    <Compile Include="Mixins\TargetClassDefinitionUtility.cs" />
+    <Compile Include="Mixins\TypeUtility.cs" />
+    <Compile Include="Mixins\Utilities\MixedObjectInstantiationScope.cs" />
+    <Compile Include="Mixins\MixerTool\Mixer.cs" />
+    <Compile Include="Mixins\MixerTool\MixerParameters.cs" />
+    <Compile Include="Mixins\MixerTool\MixerRunner.cs" />
+    <Compile Include="Mixins\MixinConfiguration.ActiveConfiguration.cs" />
+    <Compile Include="Mixins\MixinConfiguration.Build.cs" />
+    <Compile Include="Mixins\MixinConfiguration.cs" />
+    <Compile Include="Mixins\MixinConfiguration.MasterConfiguration.cs" />
+    <Compile Include="Mixins\MixinConfigurationScope.cs" />
+    <Compile Include="Mixins\MixinTargetMockUtility.cs" />
+    <Compile Include="Mixins\Utilities\DependencySort\CircularDependenciesException.cs" />
+    <Compile Include="Mixins\Utilities\DependencySort\DependencyKind.cs" />
+    <Compile Include="Mixins\Utilities\DependencySort\DependentObjectSorter.cs" />
+    <Compile Include="Mixins\Utilities\DependencySort\DependentObjectSorterAlgorithm.cs" />
+    <Compile Include="Mixins\Utilities\DependencySort\IDependencyAnalyzer.cs" />
+    <Compile Include="Mixins\Utilities\EventNameAndSignatureEqualityComparer.cs" />
+    <Compile Include="Mixins\Utilities\EventSignatureEqualityComparaer.cs" />
+    <Compile Include="Mixins\Utilities\GenericTypeInstantiator.cs" />
+    <Compile Include="Mixins\Utilities\MethodNameAndSignatureEqualityComparer.cs" />
+    <Compile Include="Mixins\Utilities\MethodSignatureEqualityComparer.cs" />
+    <Compile Include="Mixins\BridgeImplementations\MixedObjectInstantiator.cs" />
+    <Compile Include="Mixins\Utilities\MixedTypeConstructorLookupInfo.cs" />
+    <Compile Include="Mixins\BridgeImplementations\MixinImplementation.cs" />
+    <Compile Include="Mixins\Utilities\MixinReflector.cs" />
+    <Compile Include="Mixins\Utilities\MixinTypeInstantiator.cs" />
+    <Compile Include="Mixins\Utilities\MultiSet.cs" />
+    <Compile Include="Mixins\Utilities\PropertyNameAndSignatureEqualityComparer.cs" />
+    <Compile Include="Mixins\Utilities\PropertySignatureEqualityComparer.cs" />
+    <Compile Include="Mixins\Utilities\ReflectionUtility.cs" />
+    <Compile Include="Mixins\Utilities\Serialization\ReflectionObjectSerializer.cs" />
+    <Compile Include="Mixins\Utilities\SignatureChecker.cs" />
+    <Compile Include="Mixins\Utilities\Singleton\CallContextSingletonBase.cs" />
+    <Compile Include="Mixins\Utilities\Singleton\DefaultInstanceCreator.cs" />
+    <Compile Include="Mixins\Utilities\Singleton\IInstanceCreator.cs" />
+    <Compile Include="Mixins\Utilities\Singleton\ThreadSafeSingleton.cs" />
+    <Compile Include="Mixins\Utilities\Singleton\ThreadSafeSingletonBase.cs" />
+    <Compile Include="Mixins\Utilities\UncastableEnumerableWrapper.cs" />
+    <Compile Include="Mixins\Validation\ConsoleDumper.cs" />
+    <Compile Include="Mixins\Validation\DefaultValidationLog.cs" />
+    <Compile Include="Mixins\Validation\DelegateRuleDescriptionAttribute.cs" />
+    <Compile Include="Mixins\Validation\DelegateValidationRule.cs" />
+    <Compile Include="Mixins\Validation\IValidationLog.cs" />
+    <Compile Include="Mixins\Validation\IValidationResultItem.cs" />
+    <Compile Include="Mixins\Validation\IValidationRule.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultAttributeIntroductionRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultAttributeRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultBaseDependencyRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultEventIntroductionRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultEventRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultInterfaceIntroductionRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultMethodIntroductionRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultMethodRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultMixinDependencyRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultMixinRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultPropertyIntroductionRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultPropertyRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultRequiredBaseCallTypeRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultRequiredFaceTypeRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultRequiredMethodRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultRequiredMixinTypeRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultSuppressedInterfaceIntroductionRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultTargetClassRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultThisDependencyRules.cs" />
+    <Compile Include="Mixins\Validation\Rules\IRuleSet.cs" />
+    <Compile Include="Mixins\Validation\Rules\RuleSetBase.cs" />
+    <Compile Include="Mixins\Validation\ValidatingVisitor.cs" />
+    <Compile Include="Mixins\Validation\ValidationException.cs" />
+    <Compile Include="Mixins\Validation\ValidationExceptionResultItem.cs" />
+    <Compile Include="Mixins\Validation\ValidationResult.cs" />
+    <Compile Include="Mixins\Validation\ValidationResultItem.cs" />
+    <Compile Include="Mixins\Validation\Validator.cs" />
+    <Compile Include="ObjectBinding\BusinessObjectProvider.cs" />
+    <Compile Include="ObjectBinding\BusinessObjectStringFormatterService.cs" />
+    <Compile Include="ObjectBinding\EnumerationValueInfo.cs" />
+    <Compile Include="ObjectBinding\IBusinessObjectBooleanProperty.cs" />
+    <Compile Include="ObjectBinding\IBusinessObjectClassService.cs" />
+    <Compile Include="ObjectBinding\IBusinessObjectClassWithIdentity.cs" />
+    <Compile Include="ObjectBinding\IBusinessObjectDateTimeProperty.cs" />
+    <Compile Include="ObjectBinding\IBusinessObjectEnumerationProperty.cs" />
+    <Compile Include="ObjectBinding\IBusinessObjectNumericProperty.cs" />
+    <Compile Include="ObjectBinding\IBusinessObjectReferenceProperty.cs" />
+    <Compile Include="ObjectBinding\IBusinessObjectStringFormatterService.cs" />
+    <Compile Include="ObjectBinding\IBusinessObjectStringProperty.cs" />
+    <Compile Include="ObjectBinding\IBusinessObjectWithIdentity.cs" />
+    <Compile Include="ObjectBinding\IEnumerationValueInfo.cs" />
+    <Compile Include="ObjectBinding\IListInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Collections\Cache.cs" />
+    <Compile Include="Collections\AutoInitHashtable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Collections\ICache.cs" />
+    <Compile Include="Collections\NullCache.cs" />
+    <Compile Include="Collections\NameObjectCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Collections\TupleAb.cs" />
+    <Compile Include="Collections\TupleAbc.cs" />
+    <Compile Include="Collections\TupleAbcd.cs" />
+    <Compile Include="Configuration\TypeElement.cs" />
+    <Compile Include="Context\ISafeContextProvider.cs" />
+    <Compile Include="Context\SafeContext.cs" />
+    <Compile Include="DisposableBase.cs" />
+    <Compile Include="Globalization\IObjectWithResources.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Globalization\IResourceManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Globalization\MultiLingualResourcesAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Globalization\NullResourceManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Globalization\ResourceException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Globalization\ResourceIdentifiersAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Globalization\ResourceManagerSet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Globalization\ResourceManagerWrapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectBinding\BusinessObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectBinding\BusinessObjectPropertyPath.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectBinding\IBusinessObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectBinding\IBusinessObjectClass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectBinding\IBusinessObjectProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectBinding\IBusinessObjectProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectBinding\IBusinessObjectService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PermanentGuidAttribute.cs" />
+    <Compile Include="Reflection\AssemblyFinder.cs" />
+    <Compile Include="Reflection\AssemblyFinderTypeDiscoveryService.cs" />
+    <Compile Include="Reflection\AttributeAssemblyFinderFilter.cs" />
+    <Compile Include="Reflection\ConstructorWrapper.cs" />
+    <Compile Include="Reflection\ContextAwareTypeDiscoveryService.cs" />
+    <Compile Include="Reflection\FuncInvoker.generated.cs" />
+    <Compile Include="Reflection\FuncInvoker.template.cs" />
+    <Compile Include="Reflection\IAssemblyFinderFilter.cs" />
+    <Compile Include="Reflection\NonApplicationAssemblyAttribute.cs" />
+    <Compile Include="Reflection\ProcInvoker.generated.cs" />
+    <Compile Include="Reflection\ProcInvoker.template.cs" />
+    <Compile Include="Reflection\RegexAssemblyFinderFilter.cs" />
+    <Compile Include="Reflection\ApplicationAssemblyFinderFilter.cs" />
+    <Compile Include="Reflection\DelegateCreator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Reflection\InvokerUtility.cs" />
+    <Compile Include="Reflection\EmitUtility.cs" />
+    <Compile Include="Reflection\MethodCaller.cs" />
+    <Compile Include="Reflection\InheritanceHierarchyFilter.cs" />
+    <Compile Include="Reflection\TypesafeActivator.cs" />
+    <Compile Include="Security\AbstractRoleAttribute.cs" />
+    <Compile Include="Security\AccessType.cs" />
+    <Compile Include="Security\AccessTypeAttribute.cs" />
+    <Compile Include="Security\EnumWrapper.cs" />
+    <Compile Include="Security\IFunctionalSecurityStrategy.cs" />
+    <Compile Include="Security\IGlobalAccessTypeCacheProvider.cs" />
+    <Compile Include="Security\IObjectSecurityAdapter.cs" />
+    <Compile Include="Security\IObjectSecurityStrategy.cs" />
+    <Compile Include="Security\ISecurableObject.cs" />
+    <Compile Include="Security\ISecurityAdapter.cs" />
+    <Compile Include="Security\ISecurityContextFactory.cs" />
+    <Compile Include="Security\ISecurityProvider.cs" />
+    <Compile Include="Security\ISecurityStrategy.cs" />
+    <Compile Include="Security\IUserProvider.cs" />
+    <Compile Include="Security\PermissionDeniedException.cs" />
+    <Compile Include="Security\SecurityContext.cs" />
+    <Compile Include="Security\SecurityAdapterRegistry.cs" />
+    <Compile Include="Security\SecurityStateAttribute.cs" />
+    <Compile Include="StandardDelegates.cs" />
+    <Compile Include="Text\CommandLine\CommandLineArgument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\CommandLine\CommandLineArgumentCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\CommandLine\CommandLineAttributes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\CommandLine\CommandLineClassParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\CommandLine\CommandLineEnumArgument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\CommandLine\CommandLineFlagArgument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\CommandLine\CommandLineModeArgument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\CommandLine\CommandLineParser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\CommandLine\CommandLineValueArgument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\CommandLine\Exceptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\IdentifierGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\MonospaceTextFormat.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\SeparatedStringBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\AppDomainAssemblyResolver.cs" />
+    <Compile Include="Utilities\AppDomainRunnerBase.cs" />
+    <Compile Include="Utilities\AttributeUtility.cs" />
+    <Compile Include="Utilities\Assertion.cs" />
+    <Compile Include="Utilities\ConsoleUtility.cs" />
+    <Compile Include="Utilities\DefaultConsoleManager.cs" />
+    <Compile Include="Utilities\DesignerUtility.cs" />
+    <Compile Include="Utilities\EnumerableUtility.cs" />
+    <Compile Include="Utilities\EqualityUtility.cs" />
+    <Compile Include="Utilities\FileUtility.cs" />
+    <Compile Include="Utilities\IConsoleManager.cs" />
+    <Compile Include="Utilities\NullableTypeUtility.cs" />
+    <Compile Include="Utilities\ReflectionEmitUtility.cs" />
+    <Compile Include="Utilities\TypeConverterResult.cs" />
+    <Compile Include="Utilities\TypeConverterType.cs" />
+    <Compile Include="Utilities\TypeNameConverter.cs" />
+    <Compile Include="Utilities\AdvancedEnumConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\ArgumentUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\ArrayUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\BidirectionalStringConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\EnumDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\EnumUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\ListUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\NameValueCollectionUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\ReflectionUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\StringUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\TypeConversionProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\TypeUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\WorkContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xml\SchemaLoaderBase.cs" />
+    <Compile Include="Xml\XmlSchemaValidationErrorInfo.cs" />
+    <Compile Include="Xml\XmlSchemaValidationHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xml\XmlSerializationUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <None Include="Mixins\Context\Context.cd" />
+    <None Include="Mixins\Definitions\Definitions.cd" />
+    <None Include="Mixins\Validation\Validation.cd" />
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <Content Include="Core.build" />
+    <Content Include="doc\Building Remotion.txt" />
+    <Content Include="doc\include\GettingStartedTemplate.html" />
+    <Content Include="doc\include\Globalization\MultiLingualResourcesAttribute.xml" />
+    <Content Include="doc\include\Globalization\ResourceManagerWrapper.xml" />
+    <Content Include="doc\include\Logging\ILog.xml" />
+    <Content Include="doc\include\Logging\Log4NetTraceListener.xml" />
+    <Content Include="doc\include\MSDN.css" />
+    <Content Include="doc\include\NamespaceDoc.xml" />
+    <Content Include="doc\include\Reflection\TypesafeInvoker.xml" />
+    <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
+    <Content Include="doc\include\Utilities\EqualityUtility.xml" />
+    <Content Include="doc\include\Utilities\WorkContext.xml" />
+    <Content Include="doc\WhatsNew_Remotion.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Interfaces\Core.Interfaces.csproj">
+      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
+      <Name>Core.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>..\..\..\prereq\FuncGen\FuncGen.exe $(ProjectDir)*.template.cs *.generated.cs /rec</PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

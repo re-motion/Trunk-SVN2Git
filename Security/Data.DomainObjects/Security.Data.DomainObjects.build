@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
+<project xmlns="nant-schema" name="Remotion.Security.Data.DomainObjects">
+
+  <target name="build" description="perform a build">
+
+    <csc  target="library" 
+          output="${build.outputdir}/${project.output}.${project.extension}" 
+          doc="${project.doc}" 
+          debug="${build.debug}"
+          define="${build.csc.define}">
+      <nowarn>
+        <!-- missing XML comment -->
+        <warning number="1591" />
+      </nowarn>
+      <sources failonempty="true">
+        <include name="*.cs" />
+        <include name="Properties/**/*.cs" />
+        <exclude name="Properties/AssemblyInfoTemplate.cs" />
+      </sources>
+      <references failonempty="true">
+        <include name="${build.outputdir}/Remotion.dll" />
+        <include name="${build.outputdir}/Remotion.Interfaces.dll"/>
+        <include name="${build.outputdir}/Remotion.Security.dll" />
+        <include name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
+        <include name="${build.outputdir}/Remotion.Data.DomainObjects.dll" />
+        <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Configuration.dll"/>
+      </references>
+    </csc>
+
+  </target>
+
+</project>

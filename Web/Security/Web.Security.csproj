@@ -1,0 +1,88 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9B6F6D1A-A7EA-4EE8-B36E-E31CF7E518E3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion.Web.Security</RootNamespace>
+    <AssemblyName>Remotion.Web.Security</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ExecutionEngine\WxeDemandCreatePermissionAttribute.cs" />
+    <Compile Include="ExecutionEngine\WxeDemandMethodPermissionAttributeHelper.cs" />
+    <Compile Include="ExecutionEngine\WxeDemandTargetMethodPermissionAttribute.cs" />
+    <Compile Include="ExecutionEngine\WxeDemandTargetPermissionAttribute.cs" />
+    <Compile Include="ExecutionEngine\WxeDemandTargetStaticMethodPermissionAttribute.cs" />
+    <Compile Include="ExecutionEngine\WxeSecurityAdapter.cs" />
+    <Compile Include="HttpContextUserProvider.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\DemandTargetMethodPermissionAttribute.cs" />
+    <Compile Include="UI\DemandTargetPermissionAttribute.cs" />
+    <Compile Include="UI\DemandTargetWxeFunctionPermissionAttribute.cs" />
+    <Compile Include="UI\WebSecurityAdapter.cs" />
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <None Include="Web.Security.build" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core.Interfaces\Core.Interfaces.csproj">
+      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
+      <Name>Core.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Core.csproj">
+      <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
+      <Name>Core %28Core\Core%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Web\Core\Web.csproj">
+      <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
+      <Name>Web %28Web\Web%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Security\Core\Security.csproj">
+      <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
+      <Name>Security %28Security\Security%29</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

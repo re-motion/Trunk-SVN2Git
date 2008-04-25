@@ -1,0 +1,48 @@
+<%@ Control Language="c#" AutoEventWireup="false" Codebehind="TestTabbedPersonJobsUserControl.ascx.cs" Inherits="OBWTest.TestTabbedPersonJobsUserControl" TargetSchema="http://schemas.microsoft.com/intellisense/ie5" %>
+
+
+
+
+
+<table id="FormGrid" runat="server">
+  <tr>
+    <td></td>
+    <td><remotion:bocmultilinetextvalue id="MultilineTextField" runat="server" propertyidentifier="CV" datasourcecontrol="CurrentObject"></remotion:bocmultilinetextvalue></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="2"><remotion:boclist id="ListField" runat="server" propertyidentifier="Jobs" datasourcecontrol="CurrentObject" showsortingorder="True" enableselection="True" alwaysshowpageinfo="True" selection="Multiple" >
+<fixedcolumns>
+<remotion:BocRowEditModeColumnDefinition SaveText="Save" CancelText="Cancel" EditText="Edit"></remotion:BocRowEditModeColumnDefinition>
+<remotion:BocCommandColumnDefinition Text="Event">
+<persistedcommand>
+<remotion:BocListItemCommand Type="Event"></remotion:BocListItemCommand>
+</PersistedCommand>
+</remotion:BocCommandColumnDefinition>
+<remotion:BocCommandColumnDefinition ItemID="Href" Text="Href">
+<persistedcommand>
+<remotion:BocListItemCommand Type="Href" HrefCommand-Href="Start.aspx"></remotion:BocListItemCommand>
+</PersistedCommand>
+</remotion:BocCommandColumnDefinition>
+<remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Title">
+<persistedcommand>
+<remotion:BocListItemCommand Type="None"></remotion:BocListItemCommand>
+</PersistedCommand>
+</remotion:BocSimpleColumnDefinition>
+<remotion:BocSimpleColumnDefinition PropertyPathIdentifier="StartDate">
+<persistedcommand>
+<remotion:BocListItemCommand Type="None"></remotion:BocListItemCommand>
+</PersistedCommand>
+</remotion:BocSimpleColumnDefinition>
+<remotion:BocSimpleColumnDefinition PropertyPathIdentifier="EndDate">
+<persistedcommand>
+<remotion:BocListItemCommand Type="None"></remotion:BocListItemCommand>
+</PersistedCommand>
+</remotion:BocSimpleColumnDefinition>
+</FixedColumns></remotion:boclist></td>
+</tr>
+</table>
+<p><remotion:formgridmanager id="FormGridManager" runat="server" visible="true"></remotion:formgridmanager><remotion:BindableObjectDataSourceControl id="CurrentObject" runat="server" Type="Remotion.ObjectBinding.Sample::Person"></remotion:BindableObjectDataSourceControl></p>

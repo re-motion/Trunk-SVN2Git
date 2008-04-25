@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
+<project xmlns="nant-schema" name="Remotion.UnitTests">  
+
+  <target name="build" description="perform a build">
+
+    <csc  target="library" 
+          output="${build.test.outputdir}/${project.output}.${project.extension}" 
+          unsafe="true" 
+          debug="${build.debug}"
+          define="${build.csc.define}">
+      <nowarn>
+        <!--  unused member warning  -->
+        <warning number="0067" />
+      </nowarn> 
+      <sources failonempty="true">
+        <include name="**/*.cs" />
+        <exclude name="bin/**" />
+        <exclude name="Properties/AssemblyInfoTemplate.cs" />
+        <exclude name="Reflection/TestAssemblies/**/*.cs" />
+      </sources>
+      <references failonempty="true">
+        <include name="${build.test.outputdir}/Castle.Core.dll" />
+        <include name="${build.test.outputdir}/Castle.DynamicProxy.dll" />
+        <include name="${build.test.outputdir}/log4net.dll" />
+        <include name="${build.test.outputdir}/Rhino.Mocks.dll" />
+        <include name="${build.test.outputdir}/Remotion.dll" />
+        <include name="${build.test.outputdir}/Remotion.Interfaces.dll" />
+        <include name="${build.test.outputdir}/Remotion.Development.dll" />
+        <include name="${build.test.outputdir}/Remotion.Mixins.Samples.dll"/>
+        <include name="${build.test.outputdir}/nunit.framework.dll" />
+        <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Configuration.dll"/>
+        <include asis="true" name="System.Data.dll"/>
+      </references>
+      <resources failonempty="true" dynamicprefix="true" prefix="Remotion.UnitTests">
+        <include name="Resources/*.resx" />
+        <include name="**/*.xsd" />
+      </resources>
+    </csc>
+
+    <copy todir="${build.test.outputdir}" overwrite="true">
+      <fileset>
+        <include name="Reflection/TestAssemblies/**/*.cs" />
+      </fileset>
+    </copy>
+
+    <copy todir="${build.test.outputdir}" overwrite="true">
+      <fileset>
+        <include name="Mixins/MixerTool/SampleAssembly/*.cs" />
+      </fileset>
+    </copy>
+  </target>
+
+</project>

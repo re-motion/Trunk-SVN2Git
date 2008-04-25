@@ -1,0 +1,21 @@
+Vorarbeiten:
+------------
+
+- build nummer in AssemblyInfo.cs eintragen
+- alles einchecken
+- get latest version auf Rubicon solution
+
+Build:
+------
+- Rebuild solution (DEBUG)
+- Label mit aktueller Version auf Rubicon.Web.UI in VSSDB
+- Build erstellen:
+  * In C:\Development\Libraries\Rubicon\Web.UI\bin\debug wechseln und prüfen, 
+    ob Rubicon.Web.UI.xml vorhanden (ev. vorhanden ohne .xml)
+  * Gesamten Inhalt von C:\Development\Libraries\Rubicon\Web.UI\bin\debug in die
+    Datei "Build_<major-version>.<minor-version>.<build-num>.<rev-num>.zip" packen
+  * ZIP-Datei in den Buildordner C:\Development\Libraries\Rubicon\Web.UI\build kopieren
+  * ZIP-Datei in VSS einchecken
+  * Visual Studio: close solution
+  * Gesamten Source Code auf 
+    \\at-vie-dc-02\buildsources$\Libraries\Rubicon\Web.UI\<major-version>-<minor-version>-<build-num>-<rev-num> kopieren

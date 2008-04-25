@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Log4NetTraceListener>
+  <Class>
+  </Class>
+  <Constructor>
+    <param name="name">
+      The name of the <see cref="Log4NetTraceListener"/>.
+    </param>
+  </Constructor>
+  <Convert>
+    <param name="eventType">The <see cref="TraceEventType"/> to be converted.</param>
+  </Convert>
+  <Trace>
+    <param name="eventCache">A <see cref="TraceEventCache"/> object that contains the current process ID, thread ID, and stack trace information.</param>
+    <param name="source">A name used to identify the output, typically the name of the application that generated the trace event.</param>
+    <param name="eventType">One of the <see cref="TraceEventType"/> values specifying the type of event that has caused the trace.</param>
+    <param name="id">A numeric identifier for the event.</param>
+    <param name="message">A message to write.</param>
+    <remarks>The <paramref name="eventCache"/> parameter is not logged, since <b>log4net</b> features can provide the same information.
+      As such <see cref="TraceListener.TraceOutputOptions"/> is not relevant, too. 
+      When using a <see cref="TraceFilter"/>, <paramref name="eventCache"/> can be used the normal way. 
+    </remarks>
+  </Trace>
+  <TraceEvent>
+    <param name="format">A format string that contains zero or more format items, which correspond to objects in the args array.</param>
+    <param name="args">An object array containing zero or more objects to format.</param>
+  </TraceEvent>
+  <TraceData_Object>
+    <param name="data">The trace data to emit.</param>
+  </TraceData_Object>
+  <TraceData_Array>
+    <param name="data">An array of objects to emit as data.</param>
+  </TraceData_Array>
+  <TraceTransfer>
+    <param name="relatedActivityId">A <see cref="Guid"/> object identifying a related activity.</param>
+  </TraceTransfer>
+
+</Log4NetTraceListener>
+  

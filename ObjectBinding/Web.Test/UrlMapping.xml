@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlMapping
+    application="WxeTest"
+    xmlns="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
+		<add id="TestTabbedForm" type="OBWTest::TestTabbedFormWxeFunction" resource="TestTabbedForm.wxe"/>
+		<add id="ViewPersonDetails" type="OBWTest::ViewPersonDetailsWxeFunction" resource="ViewPersonDetails.wxe"/>
+		<add id="ViewPersons" type="OBWTest::ViewPersonsWxeFunction" resource="ViewPersons.wxe"/>
+		<add id="IndividualControlTest" type="OBWTest::IndividualControlTests.TestFunction" resource="IndividualControlTest.wxe"/>
+		
+</urlMapping>

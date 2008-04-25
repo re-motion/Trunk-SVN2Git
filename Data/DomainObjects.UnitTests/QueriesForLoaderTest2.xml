@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<queries 
+    application="UnitTests" 
+    xmlns="http://www.re-motion.org/Data/DomainObjects/Queries/1.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Queries/1.0 ..\DomainObjects\Schemas\Queries.xsd">
+
+  <query id="OrderQueryWithCustomCollectionType2" type="collection">
+    <storageProviderID>TestDomain</storageProviderID>
+    <statement>select [Order].* from [Order] inner join [Company] where [Company].[ID] = @customerID order by [OrderNo] asc;</statement>
+    <collectionType>Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderCollection, Remotion.Data.DomainObjects.UnitTests</collectionType>
+  </query>
+
+  <query id="OrderQueryWithObjectListOfOrder2" type="collection">
+    <storageProviderID>TestDomain</storageProviderID>
+    <statement>select [Order].* from [Order] inner join [Company] where [Company].[ID] = @customerID order by [OrderNo] asc;</statement>
+    <collectionType>Remotion.Data.DomainObjects.ObjectList`1[[Remotion.Data.DomainObjects.UnitTests.TestDomain.Order, Remotion.Data.DomainObjects.UnitTests]], Remotion.Data.DomainObjects</collectionType>
+  </query>
+
+  <query id="CustomerTypeQuery2" type="collection">
+    <storageProviderID>TestDomain</storageProviderID>
+    <statement>select [Company].* from [Company] where [CustomerType] = @customerType order by [Name] asc;</statement>
+  </query>
+
+  <query id="OrderSumQuery2" type="scalar">
+    <storageProviderID>TestDomain</storageProviderID>
+    <statement>select sum(quantity) from [Order] where [CustomerID] = @customerID;</statement>
+  </query>
+
+</queries>

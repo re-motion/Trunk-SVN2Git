@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<BocTreeView>
+  <Class>
+    <remarks>
+    
+      <para>
+        Override <see cref="GetPropertyNodes"/> to set the properties for which to display business object child nodes.
+        Otherwise <see cref="Property"/> is used for every level in the tree.
+      </para><para>
+        Call <see cref="InvalidateTreeNodes"/> to force a refresh of the tree view in case the cached nodes
+        no longer represent he current object model.
+      </para>
+      
+      <h4 class="dtH4">Standards Conformance</h4>
+      <list type="table">
+        <listheader>
+          <term>Standard</term>
+          <description>Conformance Information</description>
+        </listheader>
+        <item>
+          <term>HTML 4.01</term>
+          <description>valid</description>
+        </item>
+        <item>
+          <term>XHTML 1.0</term>
+          <description>valid</description>
+        </item>
+        <item>
+          <term>WAI WCAG 1.0</term>
+          <description>not conform</description>
+        </item>        
+      </list>
+      
+      <h4 class="dtH4">General Usage Notes</h4>     
+      <para>
+        The <see cref="InvalidOperationException"/> will be thrown during the encapsulated <see cref="WebTreeView"/>'s 
+        call to the <c>EvaluateWebTreeNode</c> delegate, if <see cref="EnableTreeNodeCaching"/> is 
+        <see langword="true"/> and a tree node's <see cref="IBusinessObjectWithIdentity"/> or 
+        <see cref="IBusinessObjectReferenceProperty"/> could not be restored from the underlying object model.
+      </para> 
+    </remarks>
+  </Class>
+  <LoadValue>
+    <param name="interim"> Not used. </param>
+    <remarks>
+      <para>
+        The <see cref="BocTreeView"/> uses the <see cref="BusinessObjectBoundWebControl.DataSource"/>'s 
+        <see cref="BusinessObjectDataSourceControl.BusinessObject"/> as the root node.
+      </para><para>
+        Requires a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
+        a <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
+        If a <see cref="Property"/> is provided, only the business objects accessed through this proeprty will 
+        be shown in the tree.
+      </para>
+    </remarks>
+    <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>
+  </LoadValue>
+  <LoadUnboundValue>
+    <param name="interim"> Not used. </param>
+    <remarks>
+      <para>
+        The objects in <paramref name="value"/> will be used as the root nodes for the <see cref="BocTreeView"/>.
+      </para>
+    </remarks>
+    <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>
+  </LoadUnboundValue>
+</BocTreeView>
+

@@ -1,0 +1,43 @@
+Version 3.1.0.0
+===============
+
+- Moved von Rubicon nach Commons
+
+- Klasse ResourceManagerPool ist nun obsolete.
+  * Funktionalität ist nach MultiLingualResourcesAttribute verlagert worden.
+  * Verwendung: MultiLingualResourceAttribute statt ResourceManagerPool
+  * Abwärtskompatibilität ist gewährt (vorbehaltlich Bugs)
+  
+- Klasse MultiLingualResourcesAttribute
+  * Abwärtskompatibilität ist gewährt (vorbehaltlich Bugs)
+  übernommen aus ResourceManagerPool:
+  * Neue public static Methoden GetResourceManager(...) + overloads
+  * Neue private static Methode GetResourceNameAndType(...)
+  * Neue private static GetResourceAttributes()
+  MultiLingualResourcesAttribute unterestützt nun:
+  * Die Einbindung der Resource Container der Basisklassen
+  * Die Angabe mehrerer Resource Container durch mehrere Attribute
+
+- Interface IResourceManager erstellt
+  * Generisches Interface um beliebige Resource Container einheitlich anzusprechen
+    (Resource Files, Fabasoft)
+  * Zugriff über IResourceManager resManObj;
+      resManObj.GetString(...) bzw resManObj.GetAllStrings(...)
+
+- Klasse ResourceManagerWrapper:
+  * Implementierung von IResourceManager für eine Gruppe von 1 oder mehr FCL ResourceManagern.
+  * Interface Methoden returnieren stehts die Resourcen von allem FCL ResourceManagern im Wrapper.
+  * Doppelt vorhandene Resourcen: Last Wins.
+  * Inkludiert auch die Resourcen der less-specific Cultures
+  
+  
+Verson 3.0.0.1
+==============
+
+- Label in VSS
+
+
+Verson 3.0.0.0
+==============
+
+- Erste Version

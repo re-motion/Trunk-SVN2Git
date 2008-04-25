@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
+<project xmlns="nant-schema" name="Remotion.Security.UnitTests">  
+
+  <target name="build" description="perform a build">
+
+    <csc  target="library" 
+          output="${build.test.outputdir}/${project.output}.${project.extension}" 
+          unsafe="true" 
+          debug="${build.debug}"
+          define="${build.csc.define}">
+      <nowarn>
+      </nowarn> 
+      <sources failonempty="true">
+        <include name="**/*.cs"/>
+        <exclude name="bin/**" />
+        <exclude name="obj/**" />
+        <exclude name="Properties/AssemblyInfoTemplate.cs" />
+      </sources>
+      <references failonempty="true">
+        <include name="${build.test.outputdir}/Remotion.dll" />
+        <include name="${build.test.outputdir}/Remotion.Interfaces.dll" />
+        <include name="${build.test.outputdir}/Remotion.Data.Interfaces.dll"/>
+        <include name="${build.test.outputdir}/Remotion.Data.DomainObjects.dll" />
+        <include name="${build.test.outputdir}/Remotion.Development.dll" />
+        <include name="${build.test.outputdir}/Remotion.Security.dll" />
+        <include name="${build.test.outputdir}/Remotion.Security.Data.DomainObjects.dll" />
+        <include name="${build.test.outputdir}/Remotion.Security.UnitTests.TestDomain.dll" />
+        <include name="${build.test.outputdir}/nunit.framework.dll" />
+        <include name="${build.test.outputdir}/Rhino.Mocks.dll" />
+        <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Configuration.dll"/>
+        <include asis="true" name="System.Xml.dll"/>
+        <include asis="true" name="System.Web.dll"/>
+      </references>
+    </csc>
+    
+    <copy todir="${build.test.outputdir}" flatten="false" overwrite="true">
+      <fileset failonempty="true">
+        <include name="Core/Metadata/LocalizationFiles/*.xml" />
+      </fileset>
+    </copy>
+    
+    <copy todir="${build.test.outputdir}" flatten="true" overwrite="true">
+      <fileset failonempty="true">
+        <include name="Data.DomainObjects/Remotion.Security.UnitTests.Data.DomainObjects.*.xml" />
+      </fileset>
+    </copy>
+
+  </target>
+
+</project>

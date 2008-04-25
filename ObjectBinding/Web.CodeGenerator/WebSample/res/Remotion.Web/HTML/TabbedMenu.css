@@ -1,0 +1,226 @@
+@import url("TabStrip.css");
+
+/* Opera Bugfix*/
+table
+{
+}
+
+table.tabbedMenu
+{
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+td.tabbedMainMenuCell
+{
+  padding: 0;
+}
+
+td.tabbedSubMenuCell
+{
+  background-color: #02537c;
+  padding: 0.3em;
+}
+
+td.tabbedMenuStatusCell
+{
+  background-color: #02537c;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  padding-left: 0.3em;
+  padding-right: 0.8em;
+  color: White;
+  text-align:right;
+  white-space: nowrap;
+}
+
+/* Main Menu Tabstrip */
+div.tabbedMainMenu span.tabStripTabWrapper
+{
+  padding-top: 0.3em;
+  padding-right: 0.1em;
+}
+
+div.tabbedMainMenu span.tabStripTabSeparator
+{
+  display: none; /* magin-left must be set to 0 in the Non-IE browsers section for tabStripTab and tabStripTabSelected. */
+}
+
+div.tabbedMainMenu span.tabStripTab a
+{  
+  border: none;
+  background-color: #e1ecfc;
+  color: Blue;
+  font-size: 120%;
+  font-weight: bold;
+}
+
+div.tabbedMainMenu span.tabStripTab a:hover
+{
+	background-color: #fee197;	
+  color: Blue;
+  cursor: pointer;
+	cursor: hand;
+}
+
+div.tabbedMainMenu span.tabStripTabSelected a
+{
+  border: none;
+  background-color: #02537c;
+  color: White;
+  font-size: 120%;
+  font-weight: bold;
+}
+
+div.tabbedMainMenu span.tabStripTabSelected a:hover
+{
+  color: #fee197;
+  text-decoration: underline;
+  cursor: pointer;
+	cursor: hand;
+}
+
+div.tabbedMainMenu span.tabStripTab.disabled a,
+div.tabbedMainMenu span.tabStripTab.disabled a:hover
+{
+  color: Gray;
+  background-color: #E8E8E8;
+  cursor: default;
+}
+
+/* Top Left tab corner */
+div.tabbedMainMenu span.tabStripTab a span.topLeft,
+div.tabbedMainMenu span.tabStripTabSelected a span.topLeft
+{
+  background-image: url(../Image/TabbedMainMenuTabTopLeftCorner.gif);
+  background-repeat: no-repeat;
+  background-position: left top;
+}
+
+/* Top Right tab corner */
+div.tabbedMainMenu span.tabStripTab a span.topRight,
+div.tabbedMainMenu span.tabStripTabSelected a span.topRight
+{
+  background-image: url(../Image/TabbedMainMenuTabTopRightCorner.gif);
+  background-repeat: no-repeat;
+  background-position: right top;
+}
+
+/* Content area of the tab */
+div.tabbedMainMenu span.tabStripTab a span.content,
+div.tabbedMainMenu span.tabStripTabSelected a span.content
+{
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  padding-left: 0.6em;
+  padding-right: 0.6em;
+}
+
+/* Non-IE Browsers hack \*/
+html>body div.tabbedMainMenu span.tabStripTabWrapper
+{
+  margin-bottom: -1px; /* Removes an offset between the main menu and the sub menu */
+}
+
+html>body div.tabbedMainMenu span.tabStripTab,
+html>body div.tabbedMainMenu span.tabStripTabSelected
+{
+  margin-left: 0; /* No separator, no margin required. */
+}
+/* End Non-IE Browsers hack\*/
+
+
+/* Sub Menu Tabstrip */
+div.tabbedSubMenu div.tabStripTabsPane
+{
+}
+
+div.tabbedSubMenu div.tabStripTabsPane.empty
+{
+  padding-top: 0.4em; /* padding from tabStripTabWrapper, tabStripTab and content */
+}
+
+div.tabbedSubMenu div.tabStripTabsPane span.tabStripTabWrapper
+{
+  padding-top: 0.1em;
+}
+
+div.tabbedSubMenu span.tabStripTabSeparator
+{
+  display: none;	/* magin-left must be set to 0 in the Non-IE browsers section for tabStripTab and tabStripTabSelected. */
+}
+
+div.tabbedSubMenu span.tabStripTab,
+div.tabbedSubMenu span.tabStripTabSelected
+{  
+  border-right: solid 1px White;
+
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+}
+
+div.tabbedSubMenu span.tabStripTab a
+{  
+  border: none;
+  background-color: #02537c;
+  color: White;
+}
+
+div.tabbedSubMenu span.tabStripTab a:hover,
+div.tabbedSubMenu span.tabStripTabSelected a:hover
+{
+	background-color: #fee197;	
+  color: Blue;
+  cursor: pointer;
+	cursor: hand;
+}
+
+div.tabbedSubMenu span.tabStripTabSelected a
+{
+  border: none;
+  background-color: #02537c;
+  color: White;
+  text-decoration: underline;
+}
+
+div.tabbedSubMenu span.tabStripTab.disabled a,
+div.tabbedSubMenu span.tabStripTab.disabled a:hover
+{
+  color: White;
+  background-color: Transparent;
+  cursor: default;
+}
+
+div.tabbedSubMenu span.tabStripTab.disabled img
+{
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=1),
+          progid:DXImageTransform.Microsoft.BasicImage(grayscale=0);
+  -moz-opacity: 1;
+}
+
+/* Content area of the tab */
+div.tabbedSubMenu span.tabStripTab a span.content,
+div.tabbedSubMenu span.tabStripTabSelected a span.content
+{
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+}
+
+/* Non-IE Browsers hack \*/
+html>body div.tabbedSubMenu div.tabStripTabsPane.empty
+{
+  padding-top: 1.8em;
+}
+
+html>body div.tabbedSubMenu span.tabStripTab,
+html>body div.tabbedSubMenu span.tabStripTabSelected
+{
+  margin-left: 0; /* No separator, no margin required. */
+}
+
+/* End Non-IE Browsers hack\*/

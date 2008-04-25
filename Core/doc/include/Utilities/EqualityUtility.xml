@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<EqualityUtility>
+  <GetRotatedHashCode>
+    <summary>
+      Gets the hash code of the individual arguments, XOR'd with bits rotated.
+    </summary>
+    <remarks>
+      <para>
+        This method XOR's the hash codes of all individual arguments in order to create a compound hash code
+        for the entire set of arguments. Between XOR's, the compound hash code is rotated by 11 bits in order
+        to better distribute hash codes of types that aggregate their hash results toward the least-significant
+        side of the result (small numbers, booleans).
+      </para>
+      <para>
+        Overloads with type arguments are identical to the object-array version, they only reduce the amount
+        of boxing going on (better performance).
+      </para>
+    </remarks>
+  </GetRotatedHashCode>
+</EqualityUtility>

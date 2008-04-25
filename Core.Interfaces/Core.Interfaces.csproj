@@ -1,0 +1,88 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BD061F4A-A9E6-461E-A804-7999623A0060}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion</RootNamespace>
+    <AssemblyName>Remotion.Interfaces</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Implementation\ConcreteImplementationAttribute.cs" />
+    <Compile Include="Implementation\FrameworkVersion.cs" />
+    <Compile Include="Implementation\FrameworkVersionRetriever.cs" />
+    <Compile Include="Implementation\VersionDependentImplementationBridge.cs" />
+    <Compile Include="Mixins\AcceptsAlphabeticOrderingAttribute.cs" />
+    <Compile Include="Mixins\BridgeInterfaces\IMixedObjectInstantiator.cs" />
+    <Compile Include="Mixins\CompleteInterfaceAttribute.cs" />
+    <Compile Include="Mixins\CopyCustomAttributesAttribute.cs" />
+    <Compile Include="Mixins\ExtendsAttribute.cs" />
+    <Compile Include="Mixins\GenerationPolicy.cs" />
+    <Compile Include="Mixins\IgnoreForMixinConfigurationAttribute.cs" />
+    <Compile Include="Mixins\IgnoresClassAttribute.cs" />
+    <Compile Include="Mixins\IgnoresMixinAttribute.cs" />
+    <Compile Include="Mixins\BridgeInterfaces\IMixinImplementation.cs" />
+    <Compile Include="Mixins\BridgeInterfaces\ITypeFactoryImplementation.cs" />
+    <Compile Include="Mixins\BridgeInterfaces\ITypeUtilityImplementation.cs" />
+    <Compile Include="Mixins\IOverrideAttribute.cs" />
+    <Compile Include="Mixins\MixAttribute.cs" />
+    <Compile Include="Mixins\Mixin.cs" />
+    <Compile Include="Mixins\MixinParameterAttributes.cs" />
+    <Compile Include="Mixins\MixinRelationshipAttribute.cs" />
+    <Compile Include="Mixins\NonIntroducedAttribute.cs" />
+    <Compile Include="Mixins\ObjectFactory.cs" />
+    <Compile Include="Mixins\OverrideMixinAttribute.cs" />
+    <Compile Include="Mixins\OverrideTargetAttribute.cs" />
+    <Compile Include="Mixins\TypeFactory.cs" />
+    <Compile Include="Mixins\UsesAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\FuncInvoker.generated.cs" />
+    <Compile Include="Reflection\FuncInvoker.template.cs" />
+    <Compile Include="Reflection\ProcInvoker.generated.cs" />
+    <Compile Include="Reflection\ProcInvoker.template.cs" />
+    <Compile Include="StandardDelegates.cs" />
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Core.Interfaces.build" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>..\..\..\prereq\FuncGen\FuncGen.exe $(ProjectDir)*.template.cs *.generated.cs /rec</PreBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" />
+                            <xsd:attribute name="type" type="xsd:string" />
+                            <xsd:attribute name="mimetype" type="xsd:string" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="ResMimeType">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="Version">
+        <value>1.0.0.0</value>
+    </resheader>
+    <resheader name="Reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="Writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.PageInfo">
+        <value>Page {0} of {1}</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.OptionsTitle">
+        <value>Options</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.AvailableViewsListTitle">
+        <value>View</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeErrorMessage">
+        <value>Errors have been found in the row currently being edited.</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RequiredFieldTitle">
+        <value>Input required in the row currently being edited</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RequiredFieldAlternateText">
+        <value>*</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.ValidationErrorInfoAlternateText">
+        <value>!</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.EmptyListMessage">
+        <value>No data available.</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.SortAscendingAlternateText">
+        <value>Sorted Ascending</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.SortDescendingAlternateText">
+        <value>Sorted Descending</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeEditAlternateText">
+        <value>Edit Row</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeSaveAlternateText">
+        <value>Save Changes to Row</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeCancelAlternateText">
+        <value>Discard Changes to Row</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.GoToFirstAlternateText">
+        <value>Go to First Page.</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.GoToLastAlternateText">
+        <value>Go to Last Page.</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.GoToNextAlternateText">
+        <value>Go to Next Page.</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.GoToPreviousAlternateText">
+        <value>Go To Previous Page.</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.SelectRowAlternateText">
+        <value>Select this row.</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.SelectAllRowsAlternateText">
+        <value>Select all rows.</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.IndexColumnTitle">
+        <value>No.</value>
+    </data>
+    <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowMenuTitle">
+        <value>Options</value>
+    </data>
+</root>

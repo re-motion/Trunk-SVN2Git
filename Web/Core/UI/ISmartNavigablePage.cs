@@ -1,0 +1,87 @@
+using System;
+using System.Collections.Specialized;
+using Remotion.Web.UI.Controls;
+
+namespace Remotion.Web.UI
+{
+
+/// <summary>
+///   This interface declares methods and properties used to control and enhance the client side user experience
+///   for navigating the page and to simplify application development towards this goal.
+/// </summary>
+/// <remarks>
+///   The features specified by the <see cref="ISmartNavigablePage"/> interface include smart scrolling 
+///   (i.e. the restoration of the scroll position after a postback), smart focusing (i.e. restoring the focus after a
+///   postback or explicitly setting it), and the use of controls implementing <see cref="INavigationControl"/>.
+/// </remarks>
+public interface ISmartNavigablePage: IPage
+{
+  /// <summary> Gets or sets the flag that determines whether smart scrolling is enabled on this page.  </summary>
+  /// <value> <see langword="true"/> to enable smart scrolling. </value>
+  bool IsSmartScrollingEnabled { get; }
+
+  /// <summary> Gets or sets the flag that determines whether smart naviagtion is enabled on this page.  </summary>
+  /// <value> <see langword="true"/> to enable smart focusing. </value>
+  bool IsSmartFocusingEnabled { get; }
+
+  /// <summary> Clears scrolling and focus information on the page. </summary>
+  void DiscardSmartNavigationData ();
+
+  /// <summary> Sets the focus to the passed control. </summary>
+  /// <param name="control"> 
+  ///   The <see cref="IFocusableControl"/> to assign the focus to.
+  /// </param>
+  /// <remarks> 
+  ///   In dotNet 2.0, the focus can be set even if smart focusing is disabled. 
+  ///   <note type="inotes">
+  ///     If <see langword="null"/> is passed for <paramref name="control"/>, an <see cref="ArgumentNullException"/>
+  ///     should be thrown.
+  ///   </note>
+  /// </remarks>
+  void SetFocus (IFocusableControl control);
+
+  /// <summary> Sets the focus to the passed control ID. </summary>
+  /// <param name="id">
+  ///   The client side ID of the control to assign the focus to.  Must no be <see langword="null"/> or empty. 
+  /// </param>
+  /// <remarks> Must be called before PreRendering of the page it self (the last control in the PreRender Phase). </remarks>
+  void SetFocus (string id);
+
+  /// <summary> Registers a <see cref="INavigationControl"/> with the <see cref="ISmartNavigablePage"/>. </summary>
+  /// <param name="control"> The <see cref="INavigationControl"/> to register. </param>
+  /// <remarks> 
+  ///   <note type="inotes">
+  ///     If <see langword="null"/> is passed for <paramref name="control"/>, an <see cref="ArgumentNullException"/>
+  ///     should be thrown.
+  ///   </note>
+  /// </remarks>
+  void RegisterNavigationControl (INavigationControl control);
+
+  /// <summary> 
+  ///   Appends the URL parameters returned by <see cref="GetNavigationUrlParameters"/> to the <paramref name="url"/>.
+  /// </summary>
+  /// <param name="url"> A URL or a query string. </param>
+  /// <returns> 
+  ///   The <paramref name="url"/> appended with the URL parameters returned by 
+  ///   <see cref="GetNavigationUrlParameters"/>. 
+  /// </returns>
+  /// <remarks> 
+  ///   <note type="inotes">
+  ///     If <see langword="null"/> is passed for <paramref name="url"/>, an <see cref="ArgumentNullException"/>
+  ///     should be thrown.
+  ///   </note>
+  /// </remarks>
+  string AppendNavigationUrlParameters (string url);
+  
+  /// <summary> 
+  ///   Evaluates the <see cref="INavigationControl.GetNavigationUrlParameters"/> methods of all controls registered
+  ///   using <see cref="RegisterNavigationControl"/>.
+  /// </summary>
+  /// <returns>
+  ///   A <see cref="NameValueCollection"/> containing the URL parameters required by this 
+  ///   <see cref="ISmartNavigablePage"/> to restore its navigation state when using hyperlinks.
+  /// </returns>
+  NameValueCollection GetNavigationUrlParameters();
+}
+
+}

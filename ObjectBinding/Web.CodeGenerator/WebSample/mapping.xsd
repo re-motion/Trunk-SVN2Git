@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:m="http://www.re-motion.org/Data/DomainObjects/Mapping/1.0" 
+    xmlns:t="http://www.re-motion.org/Data/DomainObjects/Types" 
+    elementFormDefault="qualified" 
+    attributeFormDefault="unqualified" 
+    targetNamespace="http://www.re-motion.org/Data/DomainObjects/Mapping/1.0" 
+    xml:lang="en">
+
+  <xs:import namespace="http://www.re-motion.org/Data/DomainObjects/Types" schemaLocation="types.xsd" />
+
+  <xs:element name="mapping">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="classes" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="class" type="m:classType" maxOccurs="unbounded">
+
+                <xs:key name="propertyKey">
+                  <xs:selector xpath="m:properties/m:property | m:properties/m:relationProperty" />
+                  <xs:field xpath="@name" />
+                </xs:key>
+
+                <xs:unique name="columnUnique">
+                  <xs:selector xpath="m:properties/m:property | m:properties/m:relationProperty" />
+                  <xs:field xpath="m:column" />
+                </xs:unique>
+
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="application" type="t:requiredStringType" use="required" />
+    </xs:complexType>
+
+    <xs:key name="classKey">
+      <xs:selector xpath="m:classes/m:class" />
+      <xs:field xpath="@id" />
+    </xs:key>
+
+  </xs:element>
+
+  <xs:complexType name="classType">
+    <xs:sequence>
+      <xs:element name="type" type="t:dotNetType" />
+      <xs:element name="entity">
+        <xs:complexType>
+          <xs:attribute name="name" type="t:requiredStringType" use="required" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="storageProviderID" type="t:requiredStringType" />
+      <xs:element name="properties">
+        <xs:complexType>
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="property" type="m:propertyType" />
+            <xs:element name="relationProperty" type="m:relationPropertyType">
+              <xs:keyref name="oppositeClassToClass" refer="m:classKey">
+					 		<xs:selector xpath="." />
+							<xs:field xpath="m:oppositeClass" />
+ 					 </xs:keyref>
+            </xs:element>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="id" type="t:requiredStringType" use="required" />
+    <xs:attribute name="baseClass" type="t:requiredStringType" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="propertyType">
+    <xs:sequence>
+      <xs:element name="type" type="m:simpleTypeOrDotNetType" />
+      <xs:element name="column" type="t:requiredStringType" />
+      <xs:element name="nullable" type="xs:boolean" minOccurs="0" />
+      <xs:element name="maxLength" type="m:positiveIntType" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="name" type="t:requiredStringType" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="relationPropertyType">
+    <xs:choice minOccurs="0">
+    	 <xs:sequence>
+	    	 <xs:element name="column" type="t:requiredStringType" />
+	    	 <xs:element name="oppositeClass" type="t:requiredStringType" minOccurs="0" />
+    	 </xs:sequence>	
+      <xs:sequence>
+        <xs:element name="collectionType" type="t:dotNetType" minOccurs="0" />
+        <xs:element name="sortExpression" type="t:requiredStringType" minOccurs="0" />
+      </xs:sequence>
+    </xs:choice>
+    <xs:attribute name="name" type="t:requiredStringType" use="required" />
+    <xs:attribute name="relationID" type="t:requiredStringType" use="required" />
+    <xs:attribute name="isMandatory" type="xs:boolean" use="required" />
+    <xs:attribute name="cardinality" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="one" />
+          <xs:enumeration value="many" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:simpleType name="positiveIntType">
+    <xs:restriction base="xs:int">
+      <xs:minInclusive value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="simpleTypeOrDotNetType">
+    <xs:union memberTypes="m:simpleType t:dotNetType" />
+  </xs:simpleType>
+
+  <xs:simpleType name="simpleType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="boolean" />
+      <xs:enumeration value="byte" />
+      <xs:enumeration value="date" />
+      <xs:enumeration value="dateTime" />
+      <xs:enumeration value="decimal" />
+      <xs:enumeration value="double" />
+      <xs:enumeration value="guid" />
+      <xs:enumeration value="int16" />
+      <xs:enumeration value="int32" />
+      <xs:enumeration value="int64" />
+      <xs:enumeration value="single" />
+      <xs:enumeration value="string" />
+      <xs:enumeration value="binary" />
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

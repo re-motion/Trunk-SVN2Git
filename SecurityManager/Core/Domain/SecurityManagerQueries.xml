@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<queries 
+    application="Remotion.SecurityManager" 
+    xmlns="http://www.re-motion.org/Data/DomainObjects/Queries/1.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Queries/1.0 ..\..\..\Data\DomainObjects\Schemas\queries.xsd">
+
+  <query id="Remotion.SecurityManager.Domain.Revision.GetRevision" type="scalar">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT TOP 1 Value FROM [Revision];
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.Revision.IncrementRevision" type="scalar">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      Update [Revision] SET [Value] = [Value] + 1;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition.FindByName" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [SecurableClassDefinitionView] WHERE Name = @name;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition.FindAll" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [SecurableClassDefinitionView] ORDER BY [Index] ASC;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition.FindAllBaseClasses" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [SecurableClassDefinitionView] WHERE BaseSecurableClassID IS NULL ORDER BY [Index] ASC;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.Metadata.MetadataObject.Find" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [MetadataObjectView] WHERE MetadataItemID = @metadataItemID;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.Metadata.MetadataObject.Find.StateDefinition" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM StateDefinitionView
+      INNER JOIN StatePropertyDefinitionView ON StateDefinitionView.StatePropertyID = StatePropertyDefinitionView.ID
+      WHERE StatePropertyDefinitionView.MetadataItemID = @metadataItemID
+      AND StateDefinitionView.Value = @stateValue;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.Metadata.AbstractRoleDefinition.FindAll" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [AbstractRoleDefinitionView] ORDER BY [Index] ASC;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.Tenant.FindAll" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [TenantView] ORDER BY [Name] ASC;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.Tenant.FindByUnqiueIdentifier" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [TenantView] WHERE [UniqueIdentifier] = @uniqueIdentifier;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.User.FindByUserName" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [UserView] WHERE UserName = @userName;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.User.FindByTenantID" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [UserView] WHERE TenantID = @tenantID ORDER BY LastName ASC, FirstName ASC;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.Group.FindByUnqiueIdentifier" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [GroupView] WHERE [UniqueIdentifier] = @uniqueIdentifier;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.Group.FindByTenantID" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [GroupView] WHERE TenantID = @tenantID ORDER BY ShortName ASC, Name ASC;
+    </statement>
+  </query>
+  
+  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.GroupType.FindAll" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [GroupTypeView] ORDER BY Name ASC;
+    </statement>
+  </query>
+  
+  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.Position.FindAll" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [PositionView] ORDER BY Name ASC;
+    </statement>
+  </query>
+
+  <query id="Remotion.SecurityManager.Domain.Metadata.Culture.Find" type="collection">
+    <storageProviderID>SecurityManager</storageProviderID>
+    <statement>
+      SELECT * FROM [CultureView] WHERE CultureName = @cultureName;
+    </statement>
+  </query>
+</queries>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<BocDropDownMenu>
+  <Class>
+  </Class>
+  <LoadValue>
+    <param name="interim"> Not used. </param>
+    <remarks>
+      <para>
+        Loads the <see cref="Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/> . 
+      </para><para>
+        Requires a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
+        a <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
+        If no <see cref="Property"/> is provided, the datasource's bound business object itself is used as the value.
+      </para>
+    </remarks>
+    <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>
+  </LoadValue>
+  <LoadUnboundValue>
+    <param name="interim"> Not used. </param>
+  </LoadUnboundValue>
+</BocDropDownMenu>

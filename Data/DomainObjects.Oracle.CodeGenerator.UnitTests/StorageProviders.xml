@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<storageProviders 
+		application="UnitTests" 
+		xmlns="http://www.re-motion.org/Data/DomainObjects/Persistence/1.0" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Persistence/1.0 ..\DomainObjects\Schemas\StorageProviders.xsd">
+		
+	<storageProvider id="FirstStorageProvider">
+		<type>Remotion.Data.DomainObjects.Persistence.Rdbms.SqlProvider, Remotion.Data.DomainObjects</type>
+		<configuration type="Remotion.Data.DomainObjects.Persistence.Rdbms.RdbmsProviderDefinition, Remotion.Data.DomainObjects">
+			<connectionString xmlns="http://www.re-motion.org/Data/DomainObjects/Persistence/Rdbms">Integrated Security=SSPI;Initial Catalog=CodeGeneratorUnitTests1;Data Source=localhost</connectionString>		
+		</configuration>
+	</storageProvider>
+	<storageProvider id="SecondStorageProvider">
+    <type>Remotion.Data.DomainObjects.Persistence.Rdbms.SqlProvider, Remotion.Data.DomainObjects</type>
+    <configuration type="Remotion.Data.DomainObjects.Persistence.Rdbms.RdbmsProviderDefinition, Remotion.Data.DomainObjects">
+      <connectionString xmlns="http://www.re-motion.org/Data/DomainObjects/Persistence/Rdbms">Integrated Security=SSPI;Initial Catalog=CodeGeneratorUnitTests2;Data Source=localhost</connectionString>
+    </configuration>
+  </storageProvider>
+
+</storageProviders>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<urlMapping
+    xmlns="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
+
+  <add type="Remotion.SecurityManager.Clients.Web::WxeFunctions.OrganizationalStructure.EditTenantFormFunction" resource="EditTenant.wxe" />
+  <add type="Remotion.SecurityManager.Clients.Web::WxeFunctions.OrganizationalStructure.EditGroupFormFunction" resource="EditGroup.wxe" />
+  <add type="Remotion.SecurityManager.Clients.Web::WxeFunctions.OrganizationalStructure.EditUserFormFunction" resource="EditUser.wxe" />
+  <add type="Remotion.SecurityManager.Clients.Web::WxeFunctions.OrganizationalStructure.EditGroupTypeFormFunction" resource="EditGroupType.wxe" />
+  <add type="Remotion.SecurityManager.Clients.Web::WxeFunctions.OrganizationalStructure.EditPositionFormFunction" resource="EditPosition.wxe" />
+
+  <add type="Remotion.SecurityManager.Clients.Web::WxeFunctions.OrganizationalStructure.TenantListFormFunction" resource="TenantList.wxe" id="TenantList"/>
+  <add type="Remotion.SecurityManager.Clients.Web::WxeFunctions.OrganizationalStructure.GroupListFormFunction" resource="GroupList.wxe" id="GroupList"/>
+  <add type="Remotion.SecurityManager.Clients.Web::WxeFunctions.OrganizationalStructure.UserListFormFunction" resource="UserList.wxe" id="UserList" />
+  <add type="Remotion.SecurityManager.Clients.Web::WxeFunctions.OrganizationalStructure.GroupTypeListFormFunction" resource="GroupTypeList.wxe" id="GroupTypeList"/>
+  <add type="Remotion.SecurityManager.Clients.Web::WxeFunctions.OrganizationalStructure.PositionListFormFunction" resource="PositionList.wxe" id="PositionList"/>
+
+  <add type="Remotion.SecurityManager.Clients.Web::WxeFunctions.AccessControl.SecurableClassDefinitionListFormFunction" resource="SecurableClassDefinitionList.wxe" id="SecurableClassDefinitionList"/>
+</urlMapping>
+

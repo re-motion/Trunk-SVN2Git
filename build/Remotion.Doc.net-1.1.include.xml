@@ -1,0 +1,148 @@
+<?xml version="1.0" ?>
+<project name="Remotion-Documentation" xmlns="nant-schema">
+  
+  <target name="preparedoc">
+    <property name="doc.core" value="${solution.basedir}/Core/Doc" />
+
+    <copy file="${doc.core}/include/GettingStartedTemplate.html"  
+          tofile="${doc.core}/include/GettingStarted.html" 
+          overwrite="true" />
+    <attrib readonly="false" file="${doc.core}/include/GettingStarted.html"/>
+    <replace>
+      <filterset>
+        <filter token="companyurl" value="${text.companyurl}" />
+        <filter token="copyright" value="${text.copyright}" />
+        <filter token="versionnumber" value="${build.version}" />
+      </filterset>
+      <fileset>
+        <include name="${doc.core}/include/GettingStarted.html" />
+      </fileset>
+    </replace>
+    <attrib readonly="true" file="${doc.core}/include/GettingStarted.html"/>
+
+    <fileset id="doc.assemblies" basedir="${build.outputdir}" failonempty="true">
+      <include name="Remotion.Core.dll" />
+      <include name="Remotion.Development.dll" />
+      <include name="Remotion.Development.CodeDom.dll" />
+      <include name="Remotion.Data.DomainObjects.dll" />
+      <include name="Remotion.Data.DomainObjects.ObjectBinding.dll" />
+      <include name="Remotion.Data.DomainObjects.ObjectBinding.Web.dll" />
+      <include name="Remotion.Data.DomainObjects.CodeGenerator.dll" />
+      <include name="Remotion.Data.DomainObjects.Web.dll" />
+      <include name="Remotion.Web.dll" />
+      <include name="Remotion.Web.Legacy.dll" />
+      <include name="Remotion.ObjectBinding.dll" />
+      <include name="Remotion.ObjectBinding.Web.dll" />
+      <include name="Remotion.ObjectBinding.Reflection.dll" />
+    </fileset>
+
+    <fileset id="doc.summaries" basedir="${solution.basedir}" failonempty="true">
+      <include name="Core/Doc/include/NamespaceDoc.xml"/>
+      <include name="Web/Core/Doc/include/NamespaceDoc.xml"/>
+      <include name="Web/Legacy/Doc/include/NamespaceDoc.xml"/>
+      <include name="ObjectBinding/Core/Doc/include/NamespaceDoc.xml"/>
+      <include name="ObjectBinding/Web/Doc/include/NamespaceDoc.xml"/>
+      <include name="Data/DomainObjects/Doc/include/NamespaceDoc.xml"/>
+    </fileset>
+  </target>
+
+  <target name="doc-public" depends="set-documentation, all">
+    <property name="doc.suffix" value="" />
+
+    <property name="doc.filebase" value="${text.productshortname}${doc.suffix}" />
+    <property name="doc.tempdir" value="${build.temp.outputdir}/doc${doc.suffix}" />
+    <mkdir dir="${doc.tempdir}"/>
+    <mkdir dir="${doc.targetdir}"/>
+
+    <call target="preparedoc" />
+
+    <ndoc>
+      <assemblies refid="doc.assemblies" />
+      <summaries refid="doc.summaries" />
+      <documenters>
+        <documenter name="MSDN">
+          <!-- Global -->
+          <!-- Documentation Main Settings -->
+          <property name="CopyrightHref" value="${text.companyurl}" />
+          <property name="CopyrightText" value="${text.copyright}" />
+          <property name="HtmlHelpName" value="${doc.filebase}" />
+          <property name="OutputDirectory" value="${doc.tempdir}" />
+          <property name="SdkDocVersion" value="${doc.sdkdocversion}" />
+          <property name="ShowVisualBasic" value="True" />
+          <property name="Title" value="${text.productname}" />
+          <!-- Extensibility -->
+          <!-- HTML Help Options -->
+          <property name="FooterHtml" value="&lt;p&gt;&lt;a href=&quot;${text.companyurl}&quot;&gt;${text.copyright}&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Version: ${build.version}&lt;/p&gt;"/>
+          <property name="RootPageFileName" value="${solution.basedir}/Core/Doc/include/GettingStarted.html" />
+          <property name="RootPageTOCName" value="Getting Started" />
+          <!-- Show Attributes -->
+          <!-- Show Missing Documentation -->
+          <property name="ShowMissingParams" value="False" />
+          <property name="ShowMissingRemarks" value="False" />
+          <property name="ShowMissingReturns" value="False" />
+          <property name="ShowMissingSummaries" value="False" />
+          <property name="ShowMissingValues" value="False" />
+          <!-- Thread Safety -->
+          <property name="IncludeDefaultThreadSafety" value="False" />
+          <!-- Visibility -->
+          <property name="DocumentEmptyNamespaces" value="False" />
+          <property name="DocumentExplicitInterfaceImplementations" value="False" />
+          <property name="DocumentInternals" value="False" />
+          <property name="DocumentPrivates" value="False" />
+          <property name="DocumentSealedProtected" value="False" />
+        </documenter>
+      </documenters>
+    </ndoc>
+    <copy file="${doc.tempdir}/${doc.filebase}.chm" todir="${doc.targetdir}" />
+  </target>
+
+  <target name="doc-internal" depends="set-documentation, all">
+    <property name="doc.suffix" value="Internal" />
+
+    <property name="doc.filebase" value="${text.productshortname}${doc.suffix}" />
+    <property name="doc.tempdir" value="${build.temp.outputdir}/doc${doc.suffix}" />
+    <mkdir dir="${doc.tempdir}"/>
+    <mkdir dir="${doc.targetdir}"/>
+    
+    <call target="preparedoc" />
+
+    <ndoc>
+      <assemblies refid="doc.assemblies" />
+      <summaries refid="doc.summaries" />
+      <documenters>
+        <documenter name="MSDN">
+          <!-- Global -->
+          <!-- Documentation Main Settings -->
+          <property name="CopyrightHref" value="${text.companyurl}" />
+          <property name="CopyrightText" value="${text.copyright}" />
+          <property name="HtmlHelpName" value="${doc.filebase}" />
+          <property name="OutputDirectory" value="${doc.tempdir}" />
+          <property name="SdkDocVersion" value="${doc.sdkdocversion}" />
+          <property name="Title" value="${text.productname} Internal" />
+          <!-- Extensibility -->
+          <!-- HTML Help Options -->
+          <property name="FooterHtml" value="&lt;p&gt;&lt;a href=&quot;${text.companyurl}&quot;&gt;${text.copyright}&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Version: ${build.version}&lt;/p&gt;"/>
+          <property name="RootPageFileName" value="${solution.basedir}/Core/Doc/include/GettingStarted.html" />
+          <property name="RootPageTOCName" value="Getting Started" />
+          <!-- Show Attributes -->
+          <!-- Show Missing Documentation -->
+          <property name="ShowMissingParams" value="True" />
+          <property name="ShowMissingRemarks" value="True" />
+          <property name="ShowMissingReturns" value="True" />
+          <property name="ShowMissingSummaries" value="True" />
+          <property name="ShowMissingValues" value="True" />
+          <!-- Thread Safety -->
+          <property name="IncludeDefaultThreadSafety" value="False" />
+          <!-- Visibility -->
+          <property name="DocumentEmptyNamespaces" value="True" />
+          <property name="DocumentExplicitInterfaceImplementations" value="True" />
+          <property name="DocumentInternals" value="True" />
+          <property name="DocumentPrivates" value="True" />
+          <property name="DocumentSealedProtected" value="True" />
+        </documenter>
+      </documenters>
+    </ndoc>
+    <copy file="${doc.tempdir}/${doc.filebase}.chm" todir="${doc.targetdir}" />
+  </target>
+
+</project>

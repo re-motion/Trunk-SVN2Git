@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
+<project xmlns="nant-schema" name="Remotion.SecurityManager.Clients.Web">
+
+  <target name="build" description="perform a build">
+
+    <csc  target="library" 
+          output="${build.outputdir}/${project.output}.${project.extension}" 
+          doc="${project.doc}" 
+          debug="${build.debug}"
+          define="${build.csc.define}">
+      <nowarn>
+        <!-- missing XML comment -->
+        <warning number="1591" />
+      </nowarn>
+      <sources failonempty="true">
+        <include name="*.cs" />
+        <include name="Classes/**/*.cs" />
+        <include name="Globalization/**/*.cs" />
+        <include name="Properties/**/*.cs" />
+        <include name="UI/**/*.cs" />
+        <include name="WxeFunctions/**/*.cs" />
+        <exclude name="Properties/AssemblyInfoTemplate.cs" />
+      </sources>
+      <references failonempty="true">
+        <include name="${build.outputdir}/Remotion.dll" />
+        <include name="${build.outputdir}/Remotion.Interfaces.dll" />
+        <include name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
+        <include name="${build.outputdir}/Remotion.Data.DomainObjects.dll" />
+        <include name="${build.outputdir}/Remotion.Data.DomainObjects.ObjectBinding.dll" />
+        <include name="${build.outputdir}/Remotion.Data.DomainObjects.Web.dll" />
+        <include name="${build.outputdir}/Remotion.ObjectBinding.dll" />
+        <include name="${build.outputdir}/Remotion.ObjectBinding.Web.dll" />
+        <include name="${build.outputdir}/Remotion.Security.dll" />
+        <include name="${build.outputdir}/Remotion.Security.Data.DomainObjects.dll" />
+        <include name="${build.outputdir}/Remotion.SecurityManager.dll" />
+        <include name="${build.outputdir}/Remotion.Web.dll" />
+        <include name="${build.outputdir}/Remotion.Web.Security.dll" />
+        <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Configuration.dll"/>
+        <include asis="true" name="System.Data.dll"/>
+        <include asis="true" name="System.Drawing.dll"/>
+        <include asis="true" name="System.Web.dll"/>
+        <include asis="true" name="System.Xml.dll"/>
+      </references>
+
+      <resources failonempty="true" dynamicprefix="true" prefix="Remotion.SecurityManager.Clients.Web">
+        <include name="Globalization/**/*.resx" />
+      </resources>
+    </csc>
+
+    <copy todir="${build.outputdir}" flatten="true" overwrite="true">
+      <fileset>
+        <include name="SecurityManager*.xml" />
+      </fileset>
+    </copy>
+
+  </target>
+
+</project>

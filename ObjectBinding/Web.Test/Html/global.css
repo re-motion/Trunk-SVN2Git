@@ -1,0 +1,13 @@
+.bocBooleanValue.readOnly,
+.bocCheckboxValue.readOnly,
+.bocDateTimeValue.readOnly,
+.bocEnumValue.readOnly,
+.bocMultilineTextValue.readOnly,
+.bocReferenceValue.readOnly,
+.bocTextValue.readOnly
+{
+}
+
+td.formGridControlsCell
+{
+}

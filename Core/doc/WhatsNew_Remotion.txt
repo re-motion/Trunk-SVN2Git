@@ -1,0 +1,207 @@
+1.7.46
+======
+- Diverse Refacotrings in the BusinessObject Interfaces.
+  * IBusinessObjectIntegerProperty und IBusinessObjectDoubleProperty sind auf IBusinessObjectNumericProperty zusammen geführt.
+  * IBusinessObjectDateProperty und IBusinessObjectDateTimeProperty sind auf IBusinessObjectDateTimeProperty zusammen geführt.
+  * IBusinessObjectWithIdentity.DisplayName und DisplayNameSafe sind auf IBusinessObject verschoben worden.
+  * Der Property Value von IBusinessObjectNumericProperty und IBusinessObjectDateTimeProperty muss IFormattable unterstützen.
+
+1.7.43
+======
+- Neue Klasse Rubicon.Reflection.InheritanceHierarchyFilter 
+  GetLeafTypes(): Liefert von einer Liste von übergegenen Klassen all jene Klassen zurück, von denen keine weitere Klasse mehr ableitet.
+- Bugfix: TypeConversionProvider hat String-Array zu String Konversion nicht korrekt durchgeführt. Aufgetreten mit 1.7.42.
+
+1.7.42
+======
+- InterlockedCache umbenannt auf LazyInterlockedCache, bis auf weiteres auf [Obsolete] gesetzt da Stabilität und Performance-Vorteil fraglich sind.
+- Neue Klasse InterlockedCache, die simples locking benutzt und an Stelle des alten InterlockedCache treten soll.
+- Neuer Namespace Rubicon.Reflection mit einer Reihe neuer Klassen.
+- Neue Klasse Rubicon.Utilities.EnumerableUtility nimmt einige der Methoden von System.Linq.Enumerable vorweg.
+- Rubicon.Collections.ICache und implementierende Klassen: Signatur des factory-delegates geändert, damit für key keine closures notwendig sind.
+- Neue Klasse Rubicon.Collections.ArrayComparer
+- Upgrade auf NUnit 2.4
+- Upgrade auf Rhino-Mocks 3.0.1
+- ArgumentUtility bietet nun bei den Check-Methoden den ActualValue als Rückgabewert an.
+- Interface INullableObject zu INullObject umbenannt
+- Neues Interface Rubicon.Design.IDesignModeHelper: Facade für Design-Mode Eigenschaften.
+- TypeConversionServices zu TypeConversionProvider umbenannt.
+- AdvancedEnumConverter: Verarbeitet nun auch nullable Enums
+- ISecurableObject: Neue Methode GetSecurableType. Wird verwendet um den für die Security-Infrastruktur relevanten Typ eines Objektes zu erhalten.
+  Im Fall von normalen Objekten liefert diese Methode das Ergbebnis von GetType() zurück, bei generierten Klassen (Mix-Ins, etc) muss hier der 
+  Bassityp aus dem Domain-Layer zurück geliefert werden.
+
+1.7.41
+======
+- INullableObject: Interface um das Null-Object-Pattern umzusetzen.
+- Security:
+  IObjectSecurityProvider zu IObjectSecurityAdapter umbenannt.
+  ISecurityService zu ISecurityProvider umbenannt.
+- DoubleCheckedLockingContainer: Klasse, welche das Double-Checked-Locking-Patter kapselt.
+- XmlSerializationUtility
+  * Obsolete Overload DeserializeUsingSchema (XmlTextReader reader, string context, Type type, string defaultNamespace, XmlSchemaCollection schemas)
+    entfernt. Stattdessen: DeserializeUsingSchema (XmlTextReader, String, Type, String, XmlSchemaSet)
+  * Obsolete Overload DeserializeUsingSchema (XmlReader reader, string context, Type type, string defaultNamespace, XmlSchemaCollection schemas)
+    entfernt. Stattdessen: DeserializeUsingSchema (XmlReader, String, Type, String, XmlSchemaSet)
+  * Obsolete Overload DeserializeUsingSchema (XmlReader reader, string context, Type type, XmlSchemaCollection schemas)
+    entfernt. Stattdessen: DeserializeUsingSchema (XmlReader, String, Type, XmlSchemaSet)
+
+1.7.40
+======
+- Neuer Namespace Rubicon.Logging, Klassen und Interfaces um Event-IDs in Log-Messages mit zu senden,
+  log4net hinter einem generischen Logging Adapter zu kapseln,
+  sowie einen TraceListener der Traces nach log4net umleitet.
+  * LogManager.GetLogger (...): Implementierung analog zu log4net.LogManager.GetLogger (...).
+  * ILog: orientiert sich an log4net.ILog und stellt zusätzliche Methoden bereit um Event-IDs zu loggen und Enums als Log-Message zu verwenden.
+    Enums können mit dem EnumDescriptionAttribute bzw dem EnumDescriptionResourceAttribute dekoriert werden, um (mehrsprachige) Log-Messages zu 
+    definieren. Der numerische Wert des Enums wird als Event-ID verwendet.
+  * Log4NetTraceListener: Implementierung eines TraceListeners um .NET Traces nach log4net umzuleiten.
+
+1.7.30
+======
+- Neue Klasse Rubicon.Collections.InterlockedCache
+- Rubicon.Utilities.TypeUtility: Kann jetzt auch mit Generics umgehen. zB: MyAsm::MyNs.MyCollection'1[MyAsm::MyNs.MyType] 
+
+1.7.29
+======
+- Rubicon.Proc: Generic Delegates mit 0-10 Parametern und void Return Type.
+- Rubicon.Func: Gerschiedene generic Delegates mit 0-10 Parametern und generic Return Type.
+- Rubicon.Data.PermanentGuidAttribute: Verschoben von Rubicon.Data nach Rubicon.
+- Rubicon.Collections.Tupel<TA, TB>: Umbenannt zu Tuple<TA, TB>
+- Rubicon.Collections.Tupel<TA, TB, TC>:  Umbenannt zu Tuple<TA, TB, TC>
+- Rubicon.Collections.Tupel<TA, TB, TC, TD>:  Umbenannt zu Tuple<TA, TB, TC, TD>
+
+1.7.28
+======
+- Rubicon.ObjectBinding.IBusinessObjectWithIdentity
+  Neue Property DisplayNameSafe. Liefert den DisplayName zurück bzw Fehlerinformation wenn der Zugriff fehlschlägt.
+ 
+1.7.27
+======
+- Rubicon.ObjectBinding.IBusinessObjectProvider
+  Neue Methode GetNotAccessiblePropertyStringPlaceHolder. Liefert den String der angezeigt werden soll wenn die Property IsAccessible = false liefert.
+  
+1.7.13
+======
+- Rubicon.Collections.Tupel<TA, TB>: 2-wertige Tupel Klasse, z.B.: für Keys im Dictionary
+- Rubicon.Collections.Tupel<TA, TB, TC>: 3-wertige Tupel Klasse, z.B.: für Keys im Dictionary
+- Rubicon.Collections.Tupel<TA, TB, TC, TD>: 4-wertige Tupel Klasse, z.B.: für Keys im Dictionary
+- Rubicon.Collections.ICache<TKey, TValue>: Generic Cache 
+- Rubicon.Collections.Cache<TKey, TValue>: default Implementierung von ICache<TKey, TValue>
+- Rubicon.Collections.NullCache<TKey, TValue>: NullObject Implentierung von ICache<TKey, TValue>
+
+1.7.12
+======
+- Rubicon.Utilities.ArgumentUtility.CheckType und .CheckNotNullAndType: Sind jetzt generische Methoden, Typ ist jetzt ein Typ-Argument. 
+  Verwendung: statt
+		MyControl myControl = (MyControl) ArgumentUtility.CheckType ("control", control, typeof (MyControl));
+	neu:
+		MyControl myControl = ArgumentUtility.CheckType<MyControl> ("control", control);
+
+1.7.6
+=====
+
+- Neuer Overload für Rubicon.Utilities.ArgumentUtility.CheckValidEnumValue mit Parameter-Reihenfolge analog zu allen anderen Check*-Methoden.
+
+1.7.1
+=====
+- Rubicon.Utilities.TypeNameConverter: Neuer TypeConverter um .net Typnamen bzw die abgekürzte Form ("::") in Typen zu konvertieren.
+
+1.7.0
+=====
+- Upgrade auf NUnit 2.2.8 .net 2.0
+- Upgrade auf log4net 1.2.10 .net 2.0
+  Release Notes: http://logging.apache.org/log4net/release/release-notes.html
+  vorherige Version 1.2.0 Beta 8
+  Breaking Changes (gekürzt)
+  * Renamed config classes and attributes
+    In the log4net.Config namespace the DOMConfigurator and DOMConfiguratorAttribute have been marked as obsolete. The XmlConfigurator and 
+    XmlConfiguratorAttribute types replace DOMConfigurator and DOMConfiguratorAttribute.
+  * Fixed pascal casing of type names
+    Renamed AdoNetAppender, AspNetTraceAppender, SmtpAppender, Iso8601DateFormatter, MdcFilter, and NdcFilter. Note that the config file type 
+    resolver is case insensitive so this is only a breaking change for code that programmatically creates a type that has been renamed.
+  * C style string escapes no longer supported by config parser
+    The XML config parser no longer supports decoding C style escape sequences in strings. Previously sequences like \n and \\ where decoded. 
+    Instead use the appropriate XML encodings as required.
+
+1.4.56
+======
+- Rubicon.Utilities.SeparatedStringBuilder nach Rubicon.Text verschoben.
+- Rubicon.Text.SimpleParser entfernt. (Hatte keine Funktionalität).
+
+1.4.54
+======
+- Upgrade auf NUnit 2.2.7
+
+1.4.23
+======
+- Rubicon.Utilitis.NameValueCollectionUtility
+  * Stellt Marge, Append und Clone für NameValueCollections bereit.
+  
+1.4.8
+=====
+- Rubicon.Utilities.ArrayUtility: Stellt neue Methode Contains zur Verfügung.
+
+1.3.21
+======
+- Rubicon.ObjectBinding.IBusinessObjectInstanceEnumerationProperty
+  * Neues Interface. Verwendet um eingeschränkte Wertebereiche eines beliebigen Typs als Eum darzustellen.
+  
+1.3.19
+======
+- Rubicon.NullableValuteTypes.NaDouble:    
+  * Parse akzeptiert nun 1000der-Trennzeichen, analog zu NaSingle.Parse und NaDecimal.Parse.
+  
+- Rubicon.Utilities.TypeConversionServices
+  * Bietet eine CanConevert und eine Convert Methode um beliebige Typen zu konvertieren. 
+  * Es können TypeConverter explizit für einen TYp registriert werden (AddTypeConverter), zB um einen Typ nachträglich
+    mit einem TypeConverter auszustatten oder den vorhanden TypeConverter für die TypeConversionServices zu ersetzen.
+  * Unterstützte Typeconversions:
+    Von und zu Strings mittels passendem TypeConverter bzw einer statischen Parse Methode für den Typ.
+    Alle weiteren TypeConversions welche der TypeConverter ermöglicht.
+  * Current Property um eine allgemein verwendbare TypeConvsersionServices zu erhalten.
+  * Create Methode um TypeConvsersionServices für einen speziellen Anwendungsfall zu erhalten. ZB um spezielle,
+    nur für einen eingeschränkten Anwendungsbereich taugliche TypeConverter registrieren.
+  
+- Type Conversion
+  * TypeConverter wandeln nun einheitlich null auf string.Empty bei der Konversion zu Strings.
+  
+1.3.18
+======
+- Rubicon.NullableValuteTypes.NaGuid:    
+  * Parse hält sich nun an die Nullable Value types Convention, dass String.Empty Null entspricht, statt Guid.Empty.
+
+1.3.16
+======
+- Rubicon.Xml.XmlSerializationUtility
+  * DeserializeUsingSchema (XmlTextReader, string, Type, string schemaUri, XmlReader schemaReader) und
+    DeserializeUsingSchema (XmlReader, string, Type, string schemaUri, XmlReader schemaReader) 
+    erwarten den Namespace für Type nun im XmlRootAttribute oder im XmlTypeAttribute anstatt dass der Parameter 
+    schemaUri verwendet wird.
+
+- Rubicon.NullableValuteTypes.NaDouble:
+    Bugfix: Parsing hat NumberStyle.Integer verwendet.
+
+- Rubicon.NullableValuteTypes.NaGuid:    
+  * Neue Konstruktor Overload mit string-Parameter.
+  * Neue statische Methode Parse.
+  
+1.3.10
+======
+- Rubicon.Xml.XmlSerializationUtility
+  * Errormessages überarbeitet.
+  
+- Rubicon.Xml.XmlSchemaValidationHandler
+  * Errormessages überarbeitet.
+
+1.3.2
+=====
+- Rubicon.Data.ITransaction
+  * Neues Interface für Transaktionen.
+
+1.2.63
+======
+- NullableValueTypes
+  * Serialisierung nun via Attribut. Serialisierung via ISerializable brachte keinen messbaren Performancegewinn.
+  * NaDouble:
+    Bugfix: Wurde als Int32 deserialisiert.

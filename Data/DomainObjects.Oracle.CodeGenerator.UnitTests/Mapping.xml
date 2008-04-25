@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping application="CodeGeneratorUnitTests" 
+         xmlns="http://www.re-motion.org/Data/DomainObjects/Mapping/1.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Mapping/1.0 ..\DomainObjects\Schemas\Mapping.xsd">
+	<classes>
+		<class id="Company">
+			<type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.Company, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+			<storageProviderID>FirstStorageProvider</storageProviderID>
+			<properties>
+				<property name="Name">
+					<type>string</type>
+					<column>Name</column>
+					<maxLength>100</maxLength>
+				</property>
+        <property name="PhoneNumber">
+          <type>string</type>
+          <column>PhoneNumber</column>
+          <nullable>true</nullable>
+          <maxLength>100</maxLength>
+        </property>
+        <relationProperty name="Ceo" relationID="CompanyClassIDToCeo" cardinality="one" isMandatory="true"/>
+        <relationProperty relationID="AddressToCompany" name="Address" cardinality="one" isMandatory="false">
+          <column>AddressID</column>
+        </relationProperty>
+      </properties>
+		</class>
+    
+		<class id="Customer" baseClass="Company">
+			<type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.Customer, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+			<entity name="Customer"/>
+			<storageProviderID>FirstStorageProvider</storageProviderID>
+			<properties>
+				<property name="Type">
+					<type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.Customer+CustomerType, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+					<column>CustomerType</column>
+				</property>
+        <property name="PropertyWithIdenticalNameInDifferentInheritanceBranches">
+          <type>string</type>
+          <column>CustomerPropertyWithIdenticalNameInDifferentInheritanceBranches</column>
+          <maxLength>100</maxLength>
+        </property>
+				<relationProperty name="Orders" relationID="CustomerToOrder" cardinality="many" isMandatory="false">
+					<collectionType>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.OrderCollection, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</collectionType>
+					<sortExpression>Number ASC</sortExpression>
+				</relationProperty>
+        <relationProperty name="PrimaryOfficial" relationID="OfficialToCustomer" cardinality="one" isMandatory="true">
+          <column>PrimaryOfficialID</column>
+          <oppositeClass>Official</oppositeClass>
+        </relationProperty>
+			</properties>
+		</class>
+
+    <class id="Partner" baseClass="Company">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.Partner, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="Description">
+          <type>string</type>
+          <column>Description</column>
+          <maxLength>255</maxLength>
+        </property>
+        <property name="PropertyWithIdenticalNameInDifferentInheritanceBranches">
+          <type>string</type>
+          <column>PartnerPropertyWithIdenticalNameInDifferentInheritanceBranches</column>
+          <maxLength>100</maxLength>
+        </property>
+      </properties>
+    </class>
+
+    <class id="DevelopmentPartner" baseClass="Partner">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.DevelopmentPartner, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="DevelopmentPartner"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="Competences">
+          <type>string</type>
+          <column>Competences</column>
+          <maxLength>255</maxLength>
+        </property>
+      </properties>
+    </class>
+
+    <class id="AbstractWithoutConcreteClass" baseClass="Company">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.AbstractWithoutConcreteClass, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties/>
+    </class>
+    
+    <class id="Address">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.Address, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="Address"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="Street">
+          <type>string</type>
+          <column>Street</column>
+          <maxLength>100</maxLength>
+        </property>
+        <property name="Zip">
+          <type>string</type>
+          <column>Zip</column>
+          <maxLength>100</maxLength>
+        </property>
+        <property name="City">
+          <type>string</type>
+          <column>City</column>
+          <maxLength>100</maxLength>
+        </property>
+        <relationProperty relationID="AddressToCompany" name="Company" cardinality="one" isMandatory="true" />
+      </properties>
+    </class>
+    
+    <class id="Order">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.Order, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="Order"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="Number">
+          <type>int32</type>
+          <column>Number</column>
+        </property>
+        <property name="Priority">
+          <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.OrderPriority, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+          <column>Priority</column>
+        </property>
+        <relationProperty name="Customer" relationID="CustomerToOrder" cardinality="one" isMandatory="true">
+          <column>CustomerID</column>
+        </relationProperty>
+        <relationProperty name="Official" relationID="OfficialToOrder" cardinality="one" isMandatory="false">
+          <column>OfficialID</column>
+        </relationProperty>
+        <relationProperty name="OrderItems" relationID="OrderToOrderItem" cardinality="many" isMandatory="true"/>
+      </properties>
+    </class>
+
+    <class id="OrderItem">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.OrderItem, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="OrderItem"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="Position">
+          <type>int32</type>
+          <column>Position</column>
+        </property>
+        <property name="Product">
+          <type>string</type>
+          <column>Product</column>
+          <maxLength>100</maxLength>
+        </property>
+        <relationProperty name="Order" relationID="OrderToOrderItem" cardinality="one" isMandatory="true">
+          <column>OrderID</column>
+        </relationProperty>
+      </properties>
+    </class>
+
+    <class id="Official">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.Official, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="Official"/>
+      <storageProviderID>SecondStorageProvider</storageProviderID>
+      <properties>
+        <property name="Name">
+          <type>string</type>
+          <column>Name</column>
+          <maxLength>100</maxLength>
+        </property>
+        <property name="ResponsibleForOrderPriority">
+          <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.OrderPriority, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+          <column>ResponsibleForOrderPriority</column>
+        </property>
+        <property name="ResponsibleForCustomerType">
+          <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.Customer+CustomerType, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+          <column>ResponsibleForCustomerType</column>
+        </property>
+
+        <relationProperty name="Orders" relationID="OfficialToOrder" cardinality="many" isMandatory="false">
+          <collectionType>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.OrderCollection, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</collectionType>
+        </relationProperty>
+      </properties>
+    </class>
+
+    <class id="SpecialOfficial" baseClass="Official">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.Official, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <storageProviderID>SecondStorageProvider</storageProviderID>
+      <properties>
+        <property name="Speciality">
+          <type>string</type>
+          <column>Speciality</column>
+          <maxLength>255</maxLength>
+        </property>
+      </properties>
+    </class>
+    
+    <class id="Ceo">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.Ceo, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="Ceo"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="Name">
+          <type>string</type>
+          <column>Name</column>
+          <maxLength>100</maxLength>
+        </property>
+        <relationProperty name="Company" relationID="CompanyClassIDToCeo" cardinality="one" isMandatory="true">
+          <column>CompanyID</column>
+        </relationProperty>
+      </properties>
+    </class>
+
+    <class id="ClassWithBoolean">
+      <type>Remotion.Data.DomainObjects.CodeGenerator.UnitTests.IntegrationTests.TestDomain.ClassWithBoolean, Remotion.Data.DomainObjects.CodeGenerator.UnitTests</type>
+      <entity name="ClassWithBoolean"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="BooleanProperty">
+          <type>boolean</type>
+          <column>Boolean</column>
+        </property>
+      </properties>
+    </class>
+
+    <class id="ClassWithAllDataTypes">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.ClassWithAllDataTypes, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="TableWithAllDataTypes"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="BooleanProperty">
+          <type>boolean</type>
+          <column>Boolean</column>
+        </property>
+        <property name="ByteProperty">
+          <type>byte</type>
+          <column>Byte</column>
+        </property>
+        <property name="DateProperty">
+          <type>date</type>
+          <column>Date</column>
+        </property>
+        <property name="DateTimeProperty">
+          <type>dateTime</type>
+          <column>DateTime</column>
+        </property>
+        <!--<property name="DecimalProperty">
+          <type>decimal</type>
+          <column>Decimal</column>
+        </property>-->
+        <property name="DoubleProperty">
+          <type>double</type>
+          <column>Double</column>
+        </property>
+        <property name="EnumProperty">
+          <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.ClassWithAllDataTypes+EnumType, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+          <column>Enum</column>
+        </property>
+        <property name="GuidProperty">
+          <type>guid</type>
+          <column>Guid</column>
+        </property>
+        <property name="Int16Property">
+          <type>int16</type>
+          <column>Int16</column>
+        </property>
+        <property name="Int32Property">
+          <type>int32</type>
+          <column>Int32</column>
+        </property>
+        <property name="Int64Property">
+          <type>int64</type>
+          <column>Int64</column>
+        </property>
+        <property name="SingleProperty">
+          <type>single</type>
+          <column>Single</column>
+        </property>
+        <property name="StringProperty">
+          <type>string</type>
+          <column>String</column>
+          <maxLength>100</maxLength>
+        </property>
+        <!--<property name="BinaryProperty">
+          <type>binary</type>
+          <column>Binary</column>
+        </property>-->
+        <property name="NaBooleanProperty">
+          <type>boolean</type>
+          <column>NaBoolean</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaByteProperty">
+          <type>byte</type>
+          <column>NaByte</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaDateProperty">
+          <type>date</type>
+          <column>NaDate</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaDateTimeProperty">
+          <type>dateTime</type>
+          <column>NaDateTime</column>
+          <nullable>true</nullable>
+        </property>
+        <!--<property name="NaDecimalProperty">
+          <type>decimal</type>
+          <column>NaDecimal</column>
+          <nullable>true</nullable>
+        </property>-->
+        <property name="NaDoubleProperty">
+          <type>double</type>
+          <column>NaDouble</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaGuidProperty">
+          <type>guid</type>
+          <column>NaGuid</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaInt16Property">
+          <type>int16</type>
+          <column>NaInt16</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaInt32Property">
+          <type>int32</type>
+          <column>NaInt32</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaInt64Property">
+          <type>int64</type>
+          <column>NaInt64</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaSingleProperty">
+          <type>single</type>
+          <column>NaSingle</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="StringWithNullValueProperty">
+          <type>string</type>
+          <column>StringWithNullValue</column>
+          <nullable>true</nullable>
+          <maxLength>100</maxLength>
+        </property>
+        <property name="NaBooleanWithNullValueProperty">
+          <type>boolean</type>
+          <column>NaBooleanWithNullValue</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaByteWithNullValueProperty">
+          <type>byte</type>
+          <column>NaByteWithNullValue</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaDateWithNullValueProperty">
+          <type>date</type>
+          <column>NaDateWithNullValue</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaDateTimeWithNullValueProperty">
+          <type>dateTime</type>
+          <column>NaDateTimeWithNullValue</column>
+          <nullable>true</nullable>
+        </property>
+        <!--<property name="NaDecimalWithNullValueProperty">
+          <type>decimal</type>
+          <column>NaDecimalWithNullValue</column>
+          <nullable>true</nullable>
+        </property>-->
+        <property name="NaDoubleWithNullValueProperty">
+          <type>double</type>
+          <column>NaDoubleWithNullValue</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaGuidWithNullValueProperty">
+          <type>guid</type>
+          <column>NaGuidWithNullValue</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaInt16WithNullValueProperty">
+          <type>int16</type>
+          <column>NaInt16WithNullValue</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaInt32WithNullValueProperty">
+          <type>int32</type>
+          <column>NaInt32WithNullValue</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaInt64WithNullValueProperty">
+          <type>int64</type>
+          <column>NaInt64WithNullValue</column>
+          <nullable>true</nullable>
+        </property>
+        <property name="NaSingleWithNullValueProperty">
+          <type>single</type>
+          <column>NaSingleWithNullValue</column>
+          <nullable>true</nullable>
+        </property>
+        <!--<property name="NullableBinaryProperty">
+          <type>binary</type>
+          <column>NullableBinary</column>
+          <nullable>true</nullable>
+          <maxLength>1000000</maxLength>
+        </property>-->
+      </properties>
+    </class>
+
+    <class id="Employee">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.Employee, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="Employee"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="Name">
+          <type>string</type>
+          <column>Name</column>
+          <maxLength>100</maxLength>
+        </property>
+
+        <relationProperty relationID="EmployeeToEmployee" name="Supervisor" cardinality="one" isMandatory="false">
+          <column>SupervisorID</column>
+        </relationProperty>
+        <relationProperty relationID="EmployeeToEmployee" name="Subordinates" cardinality="many" isMandatory="false"/>
+      </properties>
+    </class>
+
+    <class id="ClassWithRelations">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.ClassWithRelations, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="ClassWithRelations"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <relationProperty relationID="DerivedClassToClassWithRelations" name="DerivedClass" isMandatory="false" cardinality="one">
+          <column>DerivedClassID</column>
+          <oppositeClass>DerivedClass</oppositeClass>
+        </relationProperty>
+      </properties>
+    </class>
+    
+    <class id="ConcreteClass">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.ConcreteClass, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="ConcreteClass"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="PropertyInConcreteClass">
+          <type>string</type>
+          <column>PropertyInConcreteClass</column>
+          <maxLength>100</maxLength>
+        </property>
+      </properties>
+    </class>
+
+    <class id="DerivedClass" baseClass="ConcreteClass">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.DerivedClass, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="PropertyInDerivedClass">
+          <type>string</type>
+          <column>PropertyInDerivedClass</column>
+          <maxLength>100</maxLength>
+        </property>
+      </properties>
+    </class>
+
+    <class id="SecondDerivedClass" baseClass="ConcreteClass">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.SecondDerivedClass, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="ConcreteClass"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="PropertyInSecondDerivedClass">
+          <type>string</type>
+          <column>PropertyInSecondDerivedClass</column>
+          <maxLength>100</maxLength>
+        </property>
+        <relationProperty relationID="ClassWithRelationsToSecondDerivedClass" name="ClassWithRelationsInSecondDerivedClass" cardinality="one" isMandatory="false">
+          <column>ClassWithRelationsInSecondDerivedClassID</column>
+          <oppositeClass>ClassWithRelations</oppositeClass>
+        </relationProperty>
+      </properties>
+    </class>
+
+    <class id="DerivedOfDerivedClass" baseClass="DerivedClass">
+      <type>Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests.TestDomain.DerivedOfDerivedClass, Remotion.Data.DomainObjects.Oracle.CodeGenerator.UnitTests</type>
+      <entity name="ConcreteClass"/>
+      <storageProviderID>FirstStorageProvider</storageProviderID>
+      <properties>
+        <property name="PropertyInDerivedOfDerivedClass">
+          <type>string</type>
+          <column>PropertyInDerivedOfDerivedClass</column>
+          <maxLength>100</maxLength>
+        </property>
+        <relationProperty relationID="ClassWithRelationsToDerivedOfDerivedClass" name="ClassWithRelationsInDerivedOfDerivedClass" cardinality="one" isMandatory="false">
+          <column>ClassWithRelationsInDerivedOfDerivedClassID</column>
+          <oppositeClass>ClassWithRelations</oppositeClass>
+        </relationProperty>
+      </properties>
+    </class>
+  </classes>
+</mapping>

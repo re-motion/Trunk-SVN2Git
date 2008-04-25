@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<CommandLineParser>
+  <SharedParameters>
+    <param name="includeFirstArgument">
+      If <see langword="true"/>, the first argument (which is usually the file name of
+      the program) is included, otherwise only the arguments after the first one are included.
+    </param>
+  </SharedParameters>
+  <SplitCommandLine>
+    <param name="commandLine">The command line (as available from <see cref="System.Environment.CommandLine"/>.)</param>
+    <returns>An array of command line arguments.</returns>
+    <remarks>
+      The following rules apply:
+      <list type="bullet">
+        <item>Use spaces to separate arguments.</item>
+        <item>Embed arguments within double quotation marks to treat them as a single argument even if they contain 
+        spaces.</item>
+        <item>Within double quotation marks, use two double quotation marks if you need one double quotation mark in the 
+        argument.</item>
+      </list>
+      This resembles the logic that is applied to the arguments of the C# Main method. However, the parameters passed to
+      the Main method are parsed a little bit differently in special situations, according to an unknown and undocumented 
+      algorithm.
+    </remarks>
+    <example>
+      <list type="table">
+        <listheader>
+          <term>Command Line</term>
+          <description>Parsing Result</description>
+        </listheader>
+        <item>
+          <term>
+            Hello world!
+          </term>
+          <description>
+            <para>
+              Hello
+            </para><para>
+              world!
+            </para>
+          </description>
+        </item>
+        <item>
+          <term>
+            Hello "new world!"
+          </term>
+          <description>
+            <para>
+              Hello
+            </para><para>
+              new world!
+            </para>
+          </description>
+        </item>
+        <item>
+          <term>
+            Hello """new"" world!"
+          </term>
+          <description>
+            <para>
+              Hello
+            </para><para>
+              "new" world!
+            </para>
+          </description>
+        </item>
+      </list>
+    </example>    
+  </SplitCommandLine>
+</CommandLineParser>

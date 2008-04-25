@@ -1,0 +1,62 @@
+using System;
+using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.Mixins;
+
+namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
+{
+  public interface IVeryGenericMixin
+  {
+    string GetMessage<T>(T t);
+  }
+
+  public interface IVeryGenericMixin<T1, T2>
+  {
+    string GenericIfcMethod<T3> (T1 t1, T2 t2, T3 t3);
+  }
+
+  public class VeryGenericMixin<TThis, TBase> : Mixin<TThis, TBase>, IVeryGenericMixin<TThis, TBase>, IVeryGenericMixin
+    where TThis : class
+    where TBase : class
+  {
+    public string GenericIfcMethod<T3> (TThis t1, TBase t2, T3 t3)
+    {
+      return "IVeryGenericMixin.GenericIfcMethod-" + t3;
+    }
+
+    public string GetMessage<T> (T t)
+    {
+      return GenericIfcMethod (This, Base, t);
+    }
+  }
+
+  public interface IUltraGenericMixin
+  {
+    string GetMessage<T> (T t);
+  }
+
+  public interface IADUGMThisDependencies : IBaseType31, IBaseType32, IBT3Mixin4 {}
+  public interface IADUGMBaseDependencies : IBaseType31, IBaseType32, IBT3Mixin4 {}
+
+  public abstract class AbstractDerivedUltraGenericMixin<TThis, TBase> : VeryGenericMixin<TThis, TBase>, IUltraGenericMixin
+    where TThis : class, IADUGMThisDependencies
+    where TBase : class, IADUGMBaseDependencies
+  {
+    protected abstract string AbstractGenericMethod<T>();
+
+    public new string GetMessage<T> (T t)
+    {
+      return AbstractGenericMethod<T>() + "-" + base.GenericIfcMethod (This, Base, t);
+    }
+  }
+
+  [Uses (typeof (AbstractDerivedUltraGenericMixin<,>), AdditionalDependencies = new Type[] { typeof (IBT3Mixin6) })]
+  [Uses (typeof (BT3Mixin4))]
+  public class ClassOverridingUltraGenericStuff : BaseType3
+  {
+    [OverrideMixin]
+    public string AbstractGenericMethod<T> ()
+    {
+      return typeof (T).Name;
+    }
+  }
+}

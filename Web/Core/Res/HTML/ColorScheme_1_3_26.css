@@ -1,0 +1,103 @@
+td.bocReferenceValueContent a:hover
+{
+	border-color: #2254b1;
+}
+
+th.bocListTitleCell a:hover
+{
+ 	border-color: #2254b1;
+}
+
+td.bocListDataCellOdd a:hover,
+td.bocListDataCellEven a:hover,
+td.bocListDataCellOddSelected a:hover,
+td.bocListDataCellEvenSelected a:hover
+{
+ 	border-color: #2254b1;
+}
+
+span.contentMenuItem a:hover
+{
+ 	border-color: #2254b1;
+}
+
+div.dropDownMenuHead,
+div.dropDownMenuHeadFocus
+{
+  border-color: #2254b1;
+}
+
+div.dropDownMenuPopUp
+{
+  border-color: #2254b1;
+}
+
+div.dropDownMenuItemFocus
+{
+	border-color: #2254b1;
+}
+
+td.tabbedMultiViewActiveView
+{
+	border-left: solid 1px #2254b1;	
+	border-right: solid 1px #2254b1;	
+	border-bottom: solid 1px #2254b1;
+}
+
+html>body td.tabbedMultiViewActiveView
+{
+	border-top: solid 1px #2254b1;	
+}
+
+div.tabbedMultiViewTabStrip div.tabStripTabsPane
+{
+  border-bottom: solid 1px #2254b1;
+}
+
+div.tabbedMultiViewTabStrip span.tabStripTabSeparator
+{
+  border-bottom: solid 1px #2254b1;	
+}
+
+div.tabbedMultiViewTabStrip span.tabStripTab a span.top,
+div.tabbedMultiViewTabStrip span.tabStripTabSelected a span.top
+{  
+  border-top: solid 1px #2254b1;	
+}
+
+div.tabbedMultiViewTabStrip span.tabStripTab a span.bottom
+{  
+  border-bottom: solid 1px #2254b1;	
+}
+
+div.tabbedMultiViewTabStrip span.tabStripTab a span.left,
+div.tabbedMultiViewTabStrip span.tabStripTabSelected a span.left
+{
+  border-left: solid 1px #2254b1;
+}
+
+div.tabbedMultiViewTabStrip span.tabStripTab a span.right,
+div.tabbedMultiViewTabStrip span.tabStripTabSelected a span.right
+{
+  border-right: solid 1px #2254b1;
+}
+
+span.tabStripTab a
+{
+  border: solid 1px #2254b1;	
+}
+
+span.tabStripTabSelected a
+{
+  border: solid 1px #2254b1;	
+}
+
+span.treeViewNodeHead a:hover
+{
+	border-color: #2254b1;
+}
+
+span.treeViewNodeHeadSelected a:hover
+{
+	border-color: #2254b1;
+}

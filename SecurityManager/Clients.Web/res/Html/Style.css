@@ -1,0 +1,91 @@
+﻿div#ErrorContainer
+{
+  color: Red;
+  font-size: 1.1em;
+  font-weight: bold;
+  height: 1.1em;
+}
+
+div.accessControlListContainer
+{
+  width: 100%;
+  margin-top: 1em;
+}
+
+td.accessControlListTitleCell,
+td.accessControlEntryTitleCell
+{
+  border-bottom: solid 2px black;
+}
+
+td.accessControlListTitleCell h2,
+td.accessControlEntryTitleCell h3
+{
+  font-size: 125%;
+  float: left;
+}
+
+div.accessControlListButtons,
+div.accessControlEntryButtons
+{
+  text-align: right;
+}
+
+div.accessControlListButtons button,
+div.accessControlEntryButtons button
+{
+  margin-left: 1em;  
+}
+
+table.accessControlList
+{
+  width: 100%;
+  height: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+td.stateCombinationsContainer
+{
+  border-right: solid 1px #005588;
+}
+
+div.stateCombinationsContainer
+{
+}
+
+div.stateCombinationContainer
+{
+}
+
+td.accessControlEntriesContainer
+{
+  height: auto;
+  border-left: solid 1px #005588;
+}
+
+div.accessControlEntriesContainer
+{
+  overflow: auto;
+  height: auto;
+  width: 100%;
+}
+
+div.accessControlEntryContainer
+{
+  margin-top: 1em;
+}
+
+ul.permissionsList
+{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li.permissionsList
+{
+  float: left;
+  white-space: nowrap;
+  margin-right: 2em;
+}

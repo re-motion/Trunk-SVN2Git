@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:c="http://www.re-motion.org/Security/Configuration"
+    targetNamespace="http://www.re-motion.org/Security/Configuration"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+  <xs:element name="remotion.security">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="securityProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
+        <xs:element name="globalAccessTypeCacheProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
+        <xs:element name="permissionProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
+        <xs:element name="userProviders" type="c:ProviderCollection" minOccurs="0" maxOccurs="1" />
+        <xs:element name="functionalSecurityStrategy" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attribute name="type" type="c:DotNetType" default="None" />
+          </xs:complexType>
+        </xs:element>
+      </xs:all>
+      <xs:attribute name="defaultSecurityProvider" type="c:SecurityProviderSelection" default="None" />
+      <xs:attribute name="defaultUserProvider" type="c:UserProviderSelection" default="Thread" />
+      <xs:attribute name="defaultPermissionProvider" type="c:PermissionProviderSelection" default="Reflection" />
+      <xs:attribute name="defaultGlobalAccessTypeCacheProvider" type="c:GlobalAccessTypeCacheProviderSelection" default="None" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="SecurityProviderSelection">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="None" />
+          <xs:enumeration value="SecurityManager" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="c:RequiredStringType" />
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <xs:simpleType name="UserProviderSelection">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Thread" />
+          <xs:enumeration value="HttpContext" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="c:RequiredStringType" />
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <xs:simpleType name="PermissionProviderSelection">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Reflection" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="c:RequiredStringType" />
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <xs:simpleType name="GlobalAccessTypeCacheProviderSelection">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="None" />
+          <xs:enumeration value="RevisionBased" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="c:RequiredStringType" />
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <xs:complexType name="ProviderCollection">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="add">
+        <xs:complexType>
+          <xs:attribute name="name" type="xs:string" use="required" />
+          <xs:attribute name="type" type="c:DotNetType" use="required" />
+          <xs:anyAttribute processContents="skip" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="remove">
+        <xs:complexType>
+          <xs:attribute name="name" type="xs:string" use="required" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="clear">
+        <xs:complexType>
+          <!--tag is empty-->
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:simpleType name="RequiredStringType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:whiteSpace value="collapse" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="DotNetType">
+    <xs:restriction base="c:RequiredStringType">
+      <!--  Class, Assembly; Namespace.Class, Assembly; Namespace.Namespace.Class, Assembly; 
+            Class+Class, Assembly; Namespace.Class+Class, Assembly; Namespace.Namespace.Class+Class, Assembly
+            Class,Assembly; Namespace.Class,Assembly; Namespace.Namespace.Class,Assembly; 
+            Class+Class,Assembly; Namespace.Class+Class,Assembly; Namespace.Namespace.Class+Class,Assembly -->
+      <xs:pattern value="(\p{L}[\p{L}\d]*\.)*(\p{L}[\p{L}\d]*\+)*(\p{L}[\p{L}\d]*),\s?([\p{L}\d]+\.)*([\p{L}\d]+)" />
+
+      <!--  Class; Namespace.Class; Namespace.Namespace.Class; 
+            Class+Class; Namespace.Class+Class; Namespace.Namespace.Class+Class -->
+      <xs:pattern value="(\p{L}[\p{L}\d]*\.)*(\p{L}[\p{L}\d]*\+)*(\p{L}[\p{L}\d]*)" />
+
+      <!--  Namespace::Class; Namespace.Namespace::Class; 
+            Namespace::Class+Class; Namespace::Namespace.Class+Class -->
+      <xs:pattern value="(\p{L}[\p{L}\d]*\.)*(\p{L}[\p{L}\d]*::)(\p{L}[\p{L}\d]*\.)*(\p{L}[\p{L}\d]*\+)*(\p{L}[\p{L}\d]*)" />
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

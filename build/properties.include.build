@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="nant-schema">
+  <property name="text.copyright" value="(c) 2003 - 2008 rubicon informationstechnologie gmbh, www.rubicon-it.com" />
+  <property name="text.companyname" value="rubicon informationstechnologie gmbh" />
+  <property name="text.companyurl" value="http://www.rubicon-it.com" />
+  <property name="text.productname" value="Remotion" />
+  <property name="text.productshortname" value="Remotion" />
+</project>

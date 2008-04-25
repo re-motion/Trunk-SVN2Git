@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<BocLiteral>
+  <Class>
+    <remarks>
+      
+      <h4 class="dtH4">Supported Data Types</h4>
+      <para>
+        The control's <see cref="Value"/> can be assigned strings or <see langword="null"/>. 
+      </para><para>
+        The control's <see cref="BusinessObjectBoundWebControl.Property"/> supports objects of type <see cref="IBusinessObjectStringProperty"/>.
+      </para>
+
+      <h4 class="dtH4">Standards Conformance</h4>
+      <list type="table">
+        <listheader>
+          <term>Standard</term>
+          <description>Conformance Information</description>
+        </listheader>
+        <item>
+          <term>HTML 4.01</term>
+          <description>valid</description>
+        </item>
+        <item>
+          <term>XHTML 1.0</term>
+          <description>valid</description>
+        </item>
+        <item>
+          <term>WAI WCAG 1.0</term>
+          <description>
+            <para>level Triple-A conform</para>
+          </description>
+        </item>        
+      </list>
+
+      <h4 class="dtH4">Usage Notes</h4>      
+      <para>
+        If <see cref="IBusinessObjectBoundControl.DataSource"/> and <see cref="IBusinessObjectBoundControl.PropertyIdentifier"/> 
+        properties are not set, the control is unbound. In that case, the <see cref="Value"/> property must be accessed programmatically to display 
+        the current value.
+      </para><para>
+        Use the <see cref="Mode"/> property specify whether to encode the text before it is displayed.
+      </para>
+
+      <h4 class="dtH4">Inner Workings</h4>
+      <para>
+        The control renders only the assigned text without any wrapping HTML tags or formatting.
+      </para><para>
+        The control does not cache the value between postbacks. If the control is unbound, it's value must be set during each postback.
+      </para>
+      
+    </remarks>
+  </Class>
+  <LoadValue>
+    <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
+    <remarks>
+      <para>
+        Loads the <see cref="Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/>.
+      </para><para>
+        Requires a <see cref="BusinessObjectBoundWebControl.Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
+        a <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
+      </para>
+    </remarks>
+    <seealso cref="IBusinessObjectBoundControl.LoadValue">IBusinessObjectBoundControl.LoadValue</seealso>
+  </LoadValue>
+  <LoadUnboundValue>
+    <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
+    <remarks>
+      <para>
+        Loads the <see cref="Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/>. 
+      </para>
+    </remarks>
+  </LoadUnboundValue>
+</BocLiteral>

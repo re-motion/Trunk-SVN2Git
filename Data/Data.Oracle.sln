@@ -1,0 +1,123 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects", "DomainObjects\Data.DomainObjects.csproj", "{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\Core\Core.csproj", "{2AA369EC-A4E7-4D75-9101-EFA90E902625}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.CodeGenerator", "DomainObjects.CodeGenerator\Data.DomainObjects.CodeGenerator.csproj", "{49FE5865-4141-4BB0-AD13-CB42546C87ED}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.CodeGenerator.Console", "DomainObjects.CodeGenerator.Console\Data.DomainObjects.CodeGenerator.Console.csproj", "{CC8F1779-C744-4EB0-A3B6-AF6AC73ADF91}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D6EE53F7-7F63-46D0-9057-0FA0001EF46A}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.CodeGenerator.UnitTests", "DomainObjects.CodeGenerator.UnitTests\Data.DomainObjects.CodeGenerator.UnitTests.csproj", "{02C4509B-5FCA-44ED-8F03-A8F2DD1F84DF}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.Oracle.CodeGenerator", "DomainObjects.Oracle.CodeGenerator\Data.DomainObjects.Oracle.CodeGenerator.csproj", "{9721D3BE-8894-47D1-8AD7-7AEC0EB1E2D4}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.Oracle.CodeGenerator.UnitTests", "DomainObjects.Oracle.CodeGenerator.UnitTests\Data.DomainObjects.Oracle.CodeGenerator.UnitTests.csproj", "{8E53828D-5223-4D16-AF9D-617F3EC4C045}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.DomainObjects.Oracle.ExecSql", "DomainObjects.Oracle.ExecSql\Data.DomainObjects.Oracle.ExecSql.csproj", "{B0C0A447-36AE-4A1E-B450-520D2FFA2A1C}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "prereqs", "prereqs", "{4023C885-FD65-4338-B4F4-B4881ABD173B}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assemblies", "Assemblies", "{2BC6C726-C11F-4AB1-B8F9-09DB0F2FC3FA}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		..\prereq\Assemblies\log4net.dll = ..\prereq\Assemblies\log4net.dll
+		..\prereq\Assemblies\log4net.xml = ..\prereq\Assemblies\log4net.xml
+		..\prereq\Assemblies\nunit.framework.dll = ..\prereq\Assemblies\nunit.framework.dll
+		..\prereq\Assemblies\nunit.framework.xml = ..\prereq\Assemblies\nunit.framework.xml
+		..\prereq\Assemblies\Rhino.Mocks.dll = ..\prereq\Assemblies\Rhino.Mocks.dll
+		..\prereq\Assemblies\Rhino.Mocks.xml = ..\prereq\Assemblies\Rhino.Mocks.xml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AA369EC-A4E7-4D75-9101-EFA90E902625}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AA369EC-A4E7-4D75-9101-EFA90E902625}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AA369EC-A4E7-4D75-9101-EFA90E902625}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AA369EC-A4E7-4D75-9101-EFA90E902625}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49FE5865-4141-4BB0-AD13-CB42546C87ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49FE5865-4141-4BB0-AD13-CB42546C87ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49FE5865-4141-4BB0-AD13-CB42546C87ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49FE5865-4141-4BB0-AD13-CB42546C87ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC8F1779-C744-4EB0-A3B6-AF6AC73ADF91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC8F1779-C744-4EB0-A3B6-AF6AC73ADF91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC8F1779-C744-4EB0-A3B6-AF6AC73ADF91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC8F1779-C744-4EB0-A3B6-AF6AC73ADF91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02C4509B-5FCA-44ED-8F03-A8F2DD1F84DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02C4509B-5FCA-44ED-8F03-A8F2DD1F84DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02C4509B-5FCA-44ED-8F03-A8F2DD1F84DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02C4509B-5FCA-44ED-8F03-A8F2DD1F84DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9721D3BE-8894-47D1-8AD7-7AEC0EB1E2D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9721D3BE-8894-47D1-8AD7-7AEC0EB1E2D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9721D3BE-8894-47D1-8AD7-7AEC0EB1E2D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9721D3BE-8894-47D1-8AD7-7AEC0EB1E2D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E53828D-5223-4D16-AF9D-617F3EC4C045}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E53828D-5223-4D16-AF9D-617F3EC4C045}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E53828D-5223-4D16-AF9D-617F3EC4C045}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E53828D-5223-4D16-AF9D-617F3EC4C045}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0C0A447-36AE-4A1E-B450-520D2FFA2A1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0C0A447-36AE-4A1E-B450-520D2FFA2A1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0C0A447-36AE-4A1E-B450-520D2FFA2A1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0C0A447-36AE-4A1E-B450-520D2FFA2A1C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4023C885-FD65-4338-B4F4-B4881ABD173B} = {D6EE53F7-7F63-46D0-9057-0FA0001EF46A}
+		{2BC6C726-C11F-4AB1-B8F9-09DB0F2FC3FA} = {4023C885-FD65-4338-B4F4-B4881ABD173B}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlMapping 
+    application="Remotion.Web.UnitTests"
+    xmlns="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
+		<add 
+		    type="Remotion.Web.UnitTests.ExecutionEngine.UrlMapping.FirstMappedFunction"
+		    resource="First.wxe"/>
+</urlMapping>

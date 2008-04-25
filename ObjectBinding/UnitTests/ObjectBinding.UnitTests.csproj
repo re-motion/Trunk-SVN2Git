@@ -1,0 +1,296 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5C1EB605-33ED-4A19-91B0-D060638191FB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion.ObjectBinding.UnitTests</RootNamespace>
+    <AssemblyName>Remotion.ObjectBinding.UnitTests</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\prereq\Assemblies\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.0.1.526, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\prereq\Assemblies\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\BindableObject\BindableObjectClassTest.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectClassWithIdentityTest.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectDataSourceTests\DesignTime.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectDataSourceTests\RunTime.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectGlobalizationServiceTest.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectMixinTests\Common.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectMixinTests\DefaultValueTest.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectMixinTests\GetDisplayName.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectMixinTests\GetBusinessObjectClass.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectMixinTests\SetProperty.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectMixinTests\GetProperty.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectMixinTests\GetPropertyString.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectWithIdentityMixinTest.cs" />
+    <Compile Include="Core\BindableObject\BooleanPropertyTest.cs" />
+    <Compile Include="Core\BindableObject\ConstantEnumerationValueFilterTest.cs" />
+    <Compile Include="Core\BindableObject\DefaultMetadataFactoryTest.cs" />
+    <Compile Include="Core\Design\BindableObject\SearchFieldControllerTest.cs" />
+    <Compile Include="Core\Design\BindableObject\TypeTreeViewControllerTest.cs" />
+    <Compile Include="Core\BindableObject\GuidPropertyTest.cs" />
+    <Compile Include="Core\BindableObject\DisableEnumValuesAttributeTest.cs" />
+    <Compile Include="Core\BindableObject\EnumerationPropertyTests\ConvertFromNativePropertyType.cs" />
+    <Compile Include="Core\BindableObject\EnumerationPropertyTests\ConvertToNativePropertyType.cs" />
+    <Compile Include="Core\BindableObject\EnumerationPropertyTests\Common.cs" />
+    <Compile Include="Core\BindableObject\EnumerationPropertyTests\GetEnabledValues.cs" />
+    <Compile Include="Core\BindableObject\EnumerationPropertyTests\GetAllValues.cs" />
+    <Compile Include="Core\BindableObject\EnumerationPropertyTests\GetValueInfoByIdentifier.cs" />
+    <Compile Include="Core\BindableObject\EnumerationPropertyTests\GetValueInfoByValue.cs" />
+    <Compile Include="Core\BindableObject\EnumerationTestBase.cs" />
+    <Compile Include="Core\BindableObject\PropertyInfoAdapterTest.cs" />
+    <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTest.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithIdentityAndGetObjectServiceAttribute.cs" />
+    <Compile Include="Core\BindableObject\PropertyBaseTests\SecurityTest.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\SearchAvailableObjects.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\GetReferenceClass.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\SupportsSearchAvailableObjects.cs" />
+    <Compile Include="Core\BindableObject\ReferencePropertyTests\Common.cs" />
+    <Compile Include="Core\BindableObject\DateTimePropertyTest.cs" />
+    <Compile Include="Core\BindableObject\NumericPropertyTest.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithIdentity.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithBusinessObjectProperties.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithMixedProperty.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithOverriddenDisplayName.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithResources.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithSearchServiceTypeAttribute.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithUndefinedEnumValue.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithDisabledEnumValue.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithManualIdentity.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithSpecialFactory.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithMixedPropertyOfSameName.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithIdentityAndDisplayName.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithMixedPropertyAndResources.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\DerivedBusinessObjectClassWithoutAttribute.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\DerivedBusinessObjectClass.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\BaseBusinessObjectClass.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ICustomGetObjectService.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\IInterfaceWithReferenceType.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ManualBusinessObject.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\MixinAddingProperty.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\MixinAddingResources.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\SecurableClassWithOverriddenDisplayName.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ISearchServiceOnProperty.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\EnumWithUndefinedValueFromOtherType.cs" />
+    <Compile Include="Core\BindableObject\PropertyReflectorTests\ListProperties.cs" />
+    <Compile Include="Core\BindableObject\PropertyReflectorTests\ReferenceType.cs" />
+    <Compile Include="Core\BindableObject\PropertyReflectorTests\ValueType.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithValueType.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithReferenceType.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithListProperties.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\EnumWithDescription.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\EnumWithResoruces.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\EnumWithUndefinedValue.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ISearchServiceOnType.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithOtherBusinessObjectImplementation.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\SecurableClassWithReferenceType.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\SpecialMetadataFactory.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\StubBusinessObjectClassService.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\TestEnum.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\SimpleReferenceType.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\SimpleValueType.cs" />
+    <Compile Include="Core\BindableObject\UndefinedEnumValueAttributeTest.cs" />
+    <Compile Include="Core\BusinessObjectDataSourceTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPathTests\BusinessObjectPropertyPathTestHelper.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPathTests\CascadedListPropertyPathTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPathTests\CascadedPropertyPathTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPathTests\SingleValuePropertyPathTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPathTests\StubBusinessObjectProvider.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPathTests\TestBusinessObjectPropertyPath.cs" />
+    <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithList.cs" />
+    <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithNotSupportedProperty.cs" />
+    <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithStringProperty.cs" />
+    <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithDateTimeProperty.cs" />
+    <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithNumericProperty.cs" />
+    <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithReferenceProperty.cs" />
+    <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithBooleanProperty.cs" />
+    <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithEnumerationProperty.cs" />
+    <Compile Include="Core\Design\BindableObject\BindableObjectTypeFinderTest.cs" />
+    <Compile Include="Core\Design\DropDownEditorBaseTest.cs">
+    </Compile>
+    <Compile Include="Core\Design\MockDropDownEditorBase.cs" />
+    <Compile Include="Core\Globalization\ClassWithResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ClassWithResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Globalization\ClassWithMixedPropertyAndResources.Designer.cs">
+      <DependentUpon>ClassWithMixedPropertyAndResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Core\Globalization\MixinAddingResources.Designer.cs">
+      <DependentUpon>MixinAddingResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Core\Globalization\EnumWithResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EnumWithResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\ListInfoTest.cs" />
+    <Compile Include="Core\BindableObject\PropertyReflectorTests\Common.cs" />
+    <Compile Include="Core\BindableObject\PropertyBaseTests\Common.cs" />
+    <Compile Include="Core\BindableObject\StubPropertyBase.cs" />
+    <Compile Include="Core\BindableObject\TestBase.cs" />
+    <Compile Include="Core\BindableObject\ClassReflectorTest.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\SimpleBusinessObjectClass.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectProviderTest.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\ClassWithAllDataTypes.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\StubBusinessObjectDataSource.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Web\Domain\TypeWithAllDataTypes.cs" />
+    <Compile Include="Web\Domain\TypeWithBoolean.cs" />
+    <Compile Include="Web\Domain\TypeWithDateTime.cs" />
+    <Compile Include="Web\Domain\TypeWithEnum.cs" />
+    <Compile Include="Web\Domain\TypeWithNumber.cs" />
+    <Compile Include="Web\Domain\TypeWithReference.cs" />
+    <Compile Include="Web\Domain\TypeWithString.cs" />
+    <Compile Include="Web\UI\Controls\BaseBocListRowTest.cs" />
+    <Compile Include="Web\UI\Controls\BocBooleanValueMock.cs" />
+    <Compile Include="Web\UI\Controls\BocBooleanValueTest.cs" />
+    <Compile Include="Web\UI\Controls\BocCheckBoxMock.cs" />
+    <Compile Include="Web\UI\Controls\BocCheckBoxTest.cs" />
+    <Compile Include="Web\UI\Controls\BocDateTimeValueMock.cs" />
+    <Compile Include="Web\UI\Controls\BocDateTimeValueTest.cs" />
+    <Compile Include="Web\UI\Controls\BocDropDownMenuMock.cs" />
+    <Compile Include="Web\UI\Controls\BocDropDownMenuTest.cs" />
+    <Compile Include="Web\UI\Controls\BocEnumValueMock.cs" />
+    <Compile Include="Web\UI\Controls\BocEnumValueTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListManageRowsInListEditModeTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListManageRowsInUnboundListTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListMock.cs" />
+    <Compile Include="Web\UI\Controls\BocListRowCompareReferenceValuesTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListRowsCompareStringValuesTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListSortingOrderEntryConverterTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListSortingOrderEntryMock.cs" />
+    <Compile Include="Web\UI\Controls\BocListSortingOrderProviderMock.cs" />
+    <Compile Include="Web\UI\Controls\BocListTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListWcagTest.cs" />
+    <Compile Include="Web\UI\Controls\BocMultilineTextBoxValueMock.cs" />
+    <Compile Include="Web\UI\Controls\BocMultilineTextValueTest.cs" />
+    <Compile Include="Web\UI\Controls\BocReferenceValueMock.cs" />
+    <Compile Include="Web\UI\Controls\BocReferenceValueTest.cs" />
+    <Compile Include="Web\UI\Controls\BocTest.cs" />
+    <Compile Include="Web\UI\Controls\BocTextBoxValueMock.cs" />
+    <Compile Include="Web\UI\Controls\BocTextValueTests\AllDataTypes.cs" />
+    <Compile Include="Web\UI\Controls\BocTextValueTests\Common.cs" />
+    <Compile Include="Web\UI\Controls\BocTreeViewMock.cs" />
+    <Compile Include="Web\UI\Controls\BocTreeViewTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditableRowControlFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditableRowDataSourceFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditableRowIDProviderTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditableRowTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerInListEditModeTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerInRowEditModeTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerTestBase.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerWithoutEditModeTest.cs" />
+    <None Include="ObjectBinding.UnitTests.build" />
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core.Interfaces\Core.Interfaces.csproj">
+      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
+      <Name>Core.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Core.csproj">
+      <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
+      <Name>Core %28Core\Core%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
+      <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
+      <Name>Development.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Web\Core\Web.csproj">
+      <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
+      <Name>Web %28Web\Web%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Web\UnitTests\Web.UnitTests.csproj">
+      <Project>{F3EE8E9C-5230-4D1A-B655-CA65E2D52F21}</Project>
+      <Name>Web.UnitTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\ObjectBinding.csproj">
+      <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
+      <Name>ObjectBinding %28ObjectBinding\ObjectBinding%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Web\ObjectBinding.Web.csproj">
+      <Project>{390FBB93-A757-47A7-B769-A64A7465FF84}</Project>
+      <Name>ObjectBinding.Web</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Core\Globalization\ClassWithResources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ClassWithResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Globalization\ClassWithMixedPropertyAndResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ClassWithMixedPropertyAndResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Globalization\MixinAddingResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MixinAddingResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Globalization\EnumWithResources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EnumWithResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

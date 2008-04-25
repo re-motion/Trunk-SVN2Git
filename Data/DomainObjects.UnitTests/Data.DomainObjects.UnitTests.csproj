@@ -1,0 +1,1094 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6DEF9C11-1D5A-4B14-A4EB-F4C7E7CC3E7B}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Remotion.Data.DomainObjects.UnitTests</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion.Data.DomainObjects.UnitTests</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\prereq\Assemblies\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <Name>nunit.framework</Name>
+      <HintPath>..\..\prereq\Assemblies\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks, Version=2.8.7.11026, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\prereq\Assemblies\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <ProjectReference Include="..\..\Core.Interfaces\Core.Interfaces.csproj">
+      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
+      <Name>Core.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Core.csproj">
+      <Name>Core %28Core\Core%29</Name>
+      <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
+      <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
+      <Name>Development.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.csproj">
+      <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
+      <Name>ObjectBinding %28ObjectBinding\ObjectBinding%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Web\Core\Web.csproj">
+      <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
+      <Name>Web %28Web\Web%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Web\UnitTests\Web.UnitTests.csproj">
+      <Project>{F3EE8E9C-5230-4D1A-B655-CA65E2D52F21}</Project>
+      <Name>Web.UnitTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DomainObjects.ObjectBinding\Data.DomainObjects.ObjectBinding.csproj">
+      <Project>{B915A0FD-92E5-42C5-BEB9-EB4D382563D7}</Project>
+      <Name>Data.DomainObjects.ObjectBinding</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DomainObjects.Web\Data.DomainObjects.Web.csproj">
+      <Project>{9A8C29F9-8D50-457A-9730-57EB33C1D7CC}</Project>
+      <Name>Data.DomainObjects.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DomainObjects\Data.DomainObjects.csproj">
+      <Name>Data.DomainObjects</Name>
+      <Project>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Data.Interfaces.csproj">
+      <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
+      <Name>Data.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\ClassWithInvalidUnidirectionalRelation.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\MixinNotOnBase.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\DerivedMixinNotOnBase.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\TargetClassC.cs" />
+    <Compile Include="Configuration\Mapping\RelationReflectorWithMixinsTest.cs" />
+    <Compile Include="Configuration\Mapping\PersistentMixinFinderTest.cs" />
+    <Compile Include="Configuration\Mapping\ClassReflectorTests\GetRelationDefinitionsForClosedGeneric.cs" />
+    <Compile Include="Configuration\Mapping\ClassReflectorTests\GetClassDefinitionForHierarchyWithoutStorageGroup.cs" />
+    <Compile Include="Configuration\Mapping\ClassReflectorTests\TestBaseForHierarchyWithoutStorageGroup.cs" />
+    <Compile Include="Configuration\Mapping\PropertyFinderTests\PropertyFinderBaseMixinsTest.cs" />
+    <Compile Include="Configuration\Mapping\PropertyFinderTests\PropertyFinderBaseTest.cs" />
+    <Compile Include="Configuration\Mapping\PropertyFinderTests\PropertyFinderBaseTestBase.cs" />
+    <Compile Include="Configuration\Mapping\PropertyFinderTests\StubPropertyFinderBase.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\MixinBase.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\NonDomainObjectMixin.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\TargetClassBase.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\MixinE.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\MixinC.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\MixinD.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\MixinB.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\MixinA.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\TargetClassB.cs" />
+    <Compile Include="Configuration\Mapping\MixinTestDomain\TargetClassA.cs" />
+    <Compile Include="Configuration\Mapping\ReflectionBasedPropertyDefinitionFactory.cs" />
+    <Compile Include="Configuration\Mapping\ReflectionBasedVirtualRelationEndPointDefinitionFactory.cs" />
+    <Compile Include="Configuration\Mapping\ReflectionBasedVirtualRelationEndPointDefinitionTest.cs" />
+    <Compile Include="Configuration\Mapping\RelationEndPointReflectorTests\BaseManySideRelationProperty.cs" />
+    <Compile Include="Configuration\Mapping\RelationEndPointReflectorTests\BaseOneSideRelationProperty.cs" />
+    <Compile Include="Configuration\Mapping\RelationEndPointReflectorTests\GenericManySideRelationProperty.cs" />
+    <Compile Include="Configuration\Mapping\PropertyFinderTests\RelationPropertyFinderTest.cs" />
+    <Compile Include="Configuration\Mapping\PropertyFinderTests\PropertyFinderTest.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\ClassWithInvalidBidirectionalRelationRightSide.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\OtherClassWithInvalidBidirectionalRelationLeftSide.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\Derived2ClassWithStorageGroupAttribute.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\BaseClassWithStorageGroupAttribute.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\Derived1ClassWithStorageGroupAttribute.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\ClassWithLegacyLoadConstructor.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\GenericClass.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\ClassWithInvalidBidirectionalRelationLeftSideNotInMapping.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\ClassWithInvalidProperties.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\ClassWithSameClassID.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
+    <Compile Include="Configuration\StorageProviders\RdbmsProviderDefinitionTest.cs" />
+    <Compile Include="Configuration\StorageProviders\TypeProviderTest.cs" />
+    <TestDomain Include="Design\DelaySignAssembly\DelaySignClass.cs" />
+    <Compile Include="DataManagement\CollectionEndPointModificationTest.cs" />
+    <Compile Include="DataManagement\NullEndPointModificationTest.cs" />
+    <Compile Include="DataManagement\ObjectEndPointModificationTest.cs" />
+    <Compile Include="DomainObjects\RepositoryAccessorTest.cs" />
+    <Compile Include="DomainObjects\DomainObjectGraphTraverserTest.cs" />
+    <Compile Include="DomainObjects\MultiTransactionTest.cs" />
+    <Compile Include="DomainObjects\ObjectListIListTest.cs" />
+    <Compile Include="DomainObjects\PropertyAccessorTest.cs" />
+    <Compile Include="DomainObjects\PropertyIndexerTest.cs" />
+    <Compile Include="DomainObjects\RelationChangeBaseTest.cs" />
+    <Compile Include="DomainObjects\SimpleDomainObjectTest.cs" />
+    <Compile Include="DomainObjects\TransactionalAccessorTest.cs" />
+    <Compile Include="DomainObjects\TransactionBoundObjectTest.cs" />
+    <Compile Include="Factories\ConfigurationFactory.cs" />
+    <Compile Include="Configuration\FakeDomainObjectsConfigurationTest.cs" />
+    <Compile Include="Configuration\DomainObjectsConfigurationTest.cs" />
+    <Compile Include="Configuration\Mapping\ClassReflectorTests\GetClassDefinition.cs" />
+    <Compile Include="Configuration\Mapping\ClassReflectorTests\TestBase.cs" />
+    <Compile Include="Configuration\Mapping\ClassReflectorTests\GetRelationDefinitions.cs" />
+    <Compile Include="Configuration\Mapping\ClassReflectorTests\GetClassDefinitionForRdbmsClassReflector.cs" />
+    <Compile Include="Configuration\Mapping\LengthConstrainedPropertyAttributeTest.cs" />
+    <Compile Include="Configuration\Mapping\PropertyReflectorTests\BaseTest.cs" />
+    <Compile Include="Configuration\Mapping\PropertyReflectorTests\BinaryProperty.cs" />
+    <Compile Include="Configuration\Mapping\PropertyReflectorTests\StorageSpecificName.cs" />
+    <Compile Include="Configuration\Mapping\PropertyReflectorTests\PropertyWithStorageClass.cs" />
+    <Compile Include="Configuration\Mapping\PropertyReflectorTests\Common.cs" />
+    <Compile Include="Configuration\Mapping\PropertyReflectorTests\RelationProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\PropertyReflectorTests\StringProperty.cs" />
+    <Compile Include="Configuration\Mapping\PropertyReflectorTests\ValueTypes.cs" />
+    <Compile Include="Configuration\Mapping\FakeDomainObjectFactory.cs" />
+    <Compile Include="Configuration\Mapping\FakeMappingLoader.cs" />
+    <Compile Include="Configuration\Mapping\MappingLoaderConfigurationTest.cs" />
+    <Compile Include="Configuration\Mapping\MappingReflectorTest.cs" />
+    <Compile Include="Configuration\Mapping\NullablePropertyAttributeTest.cs" />
+    <Compile Include="Configuration\Mapping\RelationEndPointReflectorTests\Common.cs" />
+    <Compile Include="Configuration\Mapping\RelationReflectorTest.cs" />
+    <Compile Include="Configuration\Mapping\RelationEndPointReflectorTests\OneSideRelationProperty.cs" />
+    <Compile Include="Configuration\Mapping\RelationEndPointReflectorTests\ManySideRelationProperty.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\BaseClass.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\DerivedClassHavingAnOverriddenPropertyWithMappingAttribute.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Simple\ClassWithPropertyTypeInOtherAssembly.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\AssemblyInfo.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Simple\AssemblyInfo.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\ClassWithInvalidBidirectionalRelationLeftSide.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Empty\AssemblyInfo.cs" />
+    <Compile Include="Configuration\StorageProviders\StubStorageGroup2Attribute.cs" />
+    <Compile Include="Configuration\StorageProviders\PersistenceConfigurationTest.cs" />
+    <Compile Include="Configuration\StorageProviders\StubStorageGroup1Attribute.cs" />
+    <Compile Include="Design\DesignModeMappingLoaderAttributeTest.cs" />
+    <Compile Include="Design\DesignModeMappingReflectorTest.cs" />
+    <Compile Include="Design\DomainObjectsDesignModeHelperTest.cs" />
+    <Compile Include="Design\FakeDesignModeMappingLoader.cs" />
+    <Compile Include="DomainObjects\ConstructionTest.cs" />
+    <Compile Include="IntegrationTests\MixedDomainTest.cs" />
+    <Compile Include="IntegrationTests\QueryTest.cs" />
+    <Compile Include="Interception\SampleTypes\ClassWithExplicitInterfaceProperty.cs" />
+    <Compile Include="Interception\SampleTypes\ClassWithWrongConstructor.cs" />
+    <Compile Include="Interception\SampleTypes\DOOverridingVirtualStorageClassNoneProperties.cs" />
+    <Compile Include="Interception\SampleTypes\DOWithVirtualStorageClassNoneProperties.cs" />
+    <Compile Include="Interception\SampleTypes\DOImplementingAbstractStorageClassNoneProperties.cs" />
+    <Compile Include="Interception\SampleTypes\DOWithAbstractStorageClassNoneProperties.cs" />
+    <Compile Include="Interception\SampleTypes\DerivedDO.cs" />
+    <Compile Include="Interception\SampleTypes\DOImplementingAbstractPropertyAccessors.cs" />
+    <Compile Include="Interception\SampleTypes\DOWithIndirectlySealedPropertyAccessors.cs" />
+    <Compile Include="Interception\SampleTypes\NonInstantiableAbstractClassWithoutAttribute.cs" />
+    <Compile Include="Interception\SampleTypes\DOHidingVirtualProperties.cs" />
+    <Compile Include="Interception\SampleTypes\DOWithRealRelationEndPoint.cs" />
+    <Compile Include="Interception\SampleTypes\DOWithUnidirectionalRelationEndPoint.cs" />
+    <Compile Include="Interception\SampleTypes\DOWithVirtualRelationEndPoint.cs" />
+    <Compile Include="Interception\SampleTypes\IPropertyInterface.cs" />
+    <Compile Include="Interception\SampleTypes\NonInstantiableAbstractClass.cs" />
+    <Compile Include="Interception\SampleTypes\NonInstantiableAbstractClassWithProps.cs" />
+    <Compile Include="Interception\SampleTypes\NonInstantiableClassWithAutomaticRelatedCollectionSetter.cs" />
+    <Compile Include="Interception\SampleTypes\NonInstantiableNonDomainClass.cs" />
+    <Compile Include="Interception\SampleTypes\NonInstantiableSealedClass.cs" />
+    <Compile Include="Interception\SampleTypes\DOImplementingISerializable.cs" />
+    <Compile Include="Interception\SampleTypes\DOWithAbstractProperties.cs" />
+    <Compile Include="Interception\SampleTypes\DOWithConstructors.cs" />
+    <Compile Include="Interception\SampleTypes\DOWithVirtualProperties.cs" />
+    <Compile Include="Interception\SampleTypes\NonSerializableDO.cs" />
+    <Compile Include="Interception\SerializationHelperTest.cs" />
+    <Compile Include="Interception\SampleTypes\Throws.cs" />
+    <Compile Include="Interception\TypeGeneratorTest.cs" />
+    <Compile Include="Interception\InterceptedDomainObjectFactoryTest.cs" />
+    <Compile Include="Factories\BaseConfiguration.cs" />
+    <Compile Include="MixedDomains\BehavioralMixinTest.cs" />
+    <Compile Include="MixedDomains\DomainObjectMixinBaseClassTest.cs" />
+    <Compile Include="MixedDomains\DomainObjectMixinHookTest.cs" />
+    <Compile Include="MixedDomains\PersistentMixinTest.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\TargetClass2ForMixinAddingBidirectionalRelationTwice.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\MixinAddingBidirectionalRelationTwice.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\RelationTargetForMixinAddingBidirectionalRelationTwice.cs" />
+    <Compile Include="MixedDomains\SampleTypes\DerivedMixinAddingPersistentProperties.cs" />
+    <Compile Include="MixedDomains\SampleTypes\StubStoragePersistentMixin.cs" />
+    <Compile Include="MixedDomains\SampleTypes\StubStorageTargetClassForPersistentMixin.cs" />
+    <TestDomain Include="Configuration\Mapping\TestDomain\Errors\TargetClass1ForMixinAddingBidirectionalRelationTwice.cs" />
+    <Compile Include="MixedDomains\SampleTypes\TargetClassForDerivedPersistentMixin.cs" />
+    <Compile Include="MixedDomains\SampleTypes\TargetClassWithUnidirectionalMixin1.cs" />
+    <Compile Include="MixedDomains\SampleTypes\MixinAddingUnidirectionalRelation2.cs" />
+    <Compile Include="MixedDomains\SampleTypes\DOWithVirtualPropertiesAndMethods.cs" />
+    <Compile Include="MixedDomains\SampleTypes\HookedDomainObjectMixin.cs" />
+    <Compile Include="MixedDomains\SampleTypes\IInterfaceAddedByMixin.cs" />
+    <Compile Include="MixedDomains\SampleTypes\IMixinAddingPeristentProperties.cs" />
+    <Compile Include="MixedDomains\SampleTypes\MixinAddingPersistentProperties.cs" />
+    <Compile Include="MixedDomains\SampleTypes\MixinAddingUnidirectionalRelation1.cs" />
+    <Compile Include="MixedDomains\SampleTypes\MixinWithAccessToDomainObjectProperties.cs" />
+    <Compile Include="MixedDomains\SampleTypes\MixinAddingInterface.cs" />
+    <Compile Include="MixedDomains\SampleTypes\MixinOverridingPropertiesAndMethods.cs" />
+    <Compile Include="MixedDomains\SampleTypes\MixinWithState.cs" />
+    <Compile Include="MixedDomains\SampleTypes\NullMixin.cs" />
+    <Compile Include="MixedDomains\SampleTypes\RelationTargetForPersistentMixin.cs" />
+    <Compile Include="MixedDomains\SampleTypes\TargetClassForPersistentMixin.cs" />
+    <Compile Include="MixedDomains\SampleTypes\TargetClassWithTwoUnidirectionalMixins.cs" />
+    <Compile Include="MixedDomains\SampleTypes\TargetClassWithUnidirectionalMixin2.cs" />
+    <Compile Include="MixedDomains\SerializationCallbackTest.cs" />
+    <Compile Include="MixedDomains\SerializationTest.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectMixinTests\CommonTest.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectMixinTests\DefaultValueTest.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectMixinTests\DomainObjectSpecificsTest.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectMixinTests\GetBusinessObjectClassTest.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectMixinTests\GetDisplayNameTest.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectMixinTests\IdentityTest.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectMixinTests\PropertyIntegrationTest.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectMixinTests\SearchTest.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectTest.cs" />
+    <Compile Include="ObjectBinding\ObjectBindingBaseTest.cs" />
+    <Compile Include="ObjectBinding\TestDomain\BindableBaseDomainObject.cs" />
+    <Compile Include="ObjectBinding\TestDomain\BindableDomainObjectWithProperties.cs" />
+    <Compile Include="ObjectBinding\TestDomain\BindableSampleDomainObject.cs" />
+    <Compile Include="ObjectBinding\TestDomain\BindableDomainObjectWithOverriddenDisplayName.cs" />
+    <Compile Include="ObjectBinding\TestDomain\OppositeBidirectionalBindableDomainObject.cs" />
+    <Compile Include="ObjectBinding\TestDomain\OppositeAnonymousBindableDomainObject.cs" />
+    <Compile Include="ObjectBinding\TestDomain\SecurableBindableDomainObjectWithOverriddenDisplayName.cs" />
+    <Compile Include="Persistence\MixedStorageProviderTest.cs" />
+    <Compile Include="Persistence\Rdbms\DataContainerFactoryTest.cs" />
+    <Compile Include="Persistence\Rdbms\SqlProviderLoadDataContainersTest.cs" />
+    <Compile Include="Persistence\Rdbms\DataContainerLoaderTest.cs" />
+    <Compile Include="Persistence\Rdbms\ObjectIDLoaderTest.cs" />
+    <Compile Include="Persistence\Rdbms\WhereClauseBuilderMixin.cs" />
+    <Compile Include="Persistence\StorageProviderWithFixedGuidMixin.cs" />
+    <Compile Include="Persistence\Rdbms\UpdateCommandBuilderTest.cs" />
+    <Compile Include="Persistence\Rdbms\InsertCommandBuilderTest.cs" />
+    <Compile Include="Persistence\Rdbms\QueryCommandBuilderTest.cs" />
+    <Compile Include="DataManagement\RelationEndPointModificationCollectionTest.cs" />
+    <Compile Include="RhinoMocksRepositoryAdapter.cs" />
+    <Compile Include="Serialization\CollectionEndPointTest.cs" />
+    <Compile Include="Serialization\DomainObjectCollectionTest.cs" />
+    <Compile Include="Serialization\DomainObjectTest.cs" />
+    <Compile Include="Serialization\FlattenedSerializationReaderTest.cs" />
+    <Compile Include="Serialization\FlattenedSerializationWriterTest.cs" />
+    <Compile Include="Serialization\RelationEndPointIDTest.cs" />
+    <Compile Include="Serialization\RelationEndPointStub.cs" />
+    <Compile Include="Serialization\RelationEndPointTest.cs" />
+    <Compile Include="Serialization\ObjectEndPointTest.cs" />
+    <Compile Include="Serialization\DataContainerMapTest.cs" />
+    <Compile Include="Serialization\DataContainerTest.cs" />
+    <Compile Include="Serialization\DataManagerTest.cs" />
+    <Compile Include="Serialization\FlattenedSerializationInfoTest.cs" />
+    <Compile Include="Serialization\FlattenedSerializer.cs" />
+    <Compile Include="Serialization\FlattenedSerializableStub.cs" />
+    <Compile Include="Serialization\ObjectIDTest.cs" />
+    <Compile Include="Serialization\RelationEndPointMapTest.cs" />
+    <Compile Include="TableInheritance\OppositeClassDefinitionRetrieverTest.cs" />
+    <Compile Include="TableInheritance\TestDomain\SpecificFolder.cs" />
+    <Compile Include="TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
+    <Compile Include="TestDomain\ClassWithoutProperties.cs" />
+    <Compile Include="TestDomain\ClassWithSerializationCallbacks.cs" />
+    <Compile Include="Serialization\SerializationCallbackTest.cs" />
+    <Compile Include="StandardMappingTest.cs" />
+    <Compile Include="Interception\InterceptedPropertyIntegrationTest.cs" />
+    <Compile Include="Factories\TestDomainFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClientTransactionBaseTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClientTransactionMock.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CommonCollectionMock.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CommonCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\LoaderUtilityTest.cs" />
+    <Compile Include="Configuration\Mapping\ClassDefinitionChecker.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\ClassDefinitionCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\ClassDefinitionFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\ReflectionBasedClassDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\ClassDefinitionWithNullEndPointTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\ConstructionOfRelationDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\ConstructionOfRelationEndPointDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\ConstructionOfVirtualRelationEndPointDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\MappingConfigurationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\AnonymousRelationEndPointDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\PropertyDefinitionCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\PropertyDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\RelationDefinitionChecker.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\RelationDefinitionCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\RelationDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\RelationDefinitionWithAnonymousRelationEndPointTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\RelationEndPointDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Mapping\VirtualRelationEndPointDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Queries\QueryConfigurationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Queries\QueryDefinitionChecker.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Queries\QueryDefinitionCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\Queries\QueryDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DatabaseTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Database\StandardMappingTestDataLoader.cs" />
+    <Compile Include="DataManagement\AnonymousEndPointTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\CollectionEndPointTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\DataContainerCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\DataContainerMapTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\DataContainerTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\DataManagerTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\NullAnonymousEndPointTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\ObjectDeletedExceptionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\ObjectEndPointTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\PropertyValueCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\PropertyValueTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\RegisterInRelationEndPointMapTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\RelationEndPointBaseTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\RelationEndPointCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\RelationEndPointIDTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataManagement\RelationEndPointMapTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\AddToOneToManyRelationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\AddToOneToManyRelationWithLazyLoadTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\ChangeUnidirectionalRelationWithNullTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\CommitDomainObjectTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\DeleteDomainObjectTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\DeleteDomainObjectWithLazyLoadTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\DeleteDomainObjectWithManyToOneRelationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\DeleteDomainObjectWithOneToManyRelationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\DeleteDomainObjectWithOneToOneRelationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\DeleteNewDomainObjectTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\DomainObjectCollectionsWithDifferentClientTransactionsTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\DomainObjectCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\DomainObjectTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\DomainObjectWithHierarchyTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\NewDomainObjectTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\OneToManyRelationChangeTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\OneToOneRelationChangeTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\OneToOneRelationChangeWithNullTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\RemoveFromOneToManyRelationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\ReplaceInOneToManyRelationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\RollbackDomainObjectTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DomainObjects\UnidirectionalRelationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\ChangeState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\ClientTransactionEventReceiver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\ClientTransactionMockEventReceiver.cs" />
+    <Compile Include="EventReceiver\CollectionChangeState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\DomainObjectCollectionMockEventReceiver.cs" />
+    <Compile Include="EventReceiver\DomainObjectCollectionEventReceiver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\DomainObjectEventReceiver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\DomainObjectRelationCheckEventReceiver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\EventReceiverBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\EventReceiverCancelException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\ObjectDeletionState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\PropertyChangeState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\PropertyDefinitionCollectionEventReceiver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\PropertyValueContainerEventReceiver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\RelationChangeState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\SequenceEventReceiver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\DomainObjectIDs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\QueryFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\StorageProviderDefinitionFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\TestDataContainerFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\TestMappingConfiguration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IntegrationTests\DomainObjectTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IntegrationTests\RelationsTest.cs" />
+    <Compile Include="IntegrationTests\SerializationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MockConstraints\ContainsConstraint.cs" />
+    <Compile Include="ObjectIDs\ObjectIDTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\DataContainerChecker.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\PersistenceManagerTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\PropertyValueChecker.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\DeleteCommandBuilderTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\RdbmsProviderDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\SelectCommandBuilderTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\SqlProviderBaseTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\SqlProviderCreateNewDataContainerTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\SqlProviderDeleteTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\SqlProviderExecuteCollectionQueryTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\SqlProviderExecuteScalarQueryTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\SqlProviderLoadDataContainersByRelatedID.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\SqlProviderLoadDataContainerTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\SqlProviderSaveExistingTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\SqlProviderSaveNewTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\SqlProviderTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\Rdbms\ValueConverterTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\StorageProviderCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\StorageProviderManagerTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\StubValueConverterBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\ValueConverterBaseTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Queries\QueryManagerTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Queries\QueryParameterCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Queries\QueryParameterTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Queries\QueryTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ReflectionUtilityTest.cs" />
+    <Compile Include="Resources\ResourceManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Schemas\TypesSchemaLoaderTest.cs" />
+    <Compile Include="Schemas\SchemaLoaderTest.cs" />
+    <Compile Include="SerializationBaseTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Serialization\ClientTransactionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Serialization\MappingTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Serialization\QueriesTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SetupFixture.cs" />
+    <Compile Include="Factories\StandardConfiguration.cs" />
+    <Compile Include="TableInheritance\ClassDefinitionCollectionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\ReflectionBasedClassDefinitionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\ConcreteTableInheritanceRelationLoaderTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\DataContainerFactoryTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\DomainObjectIDs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\DomainObjectTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\IntegrationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\MappingConfigurationTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\ObjectIDTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\SelectCommandBuilderTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TableInheritanceSetupFixture.cs" />
+    <Compile Include="TableInheritance\SqlProviderBaseTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\SqlProviderTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TableInheritanceConfiguration.cs" />
+    <Compile Include="TableInheritance\TableInheritanceMappingTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\AbstractBaseClassWithHierarchy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\AbstractClassWithoutDerivations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\Address.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\BaseClassWithInvalidRelationClassIDColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\Client.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\ClassWithUnidirectionalRelation.cs" />
+    <Compile Include="TableInheritance\TestDomain\Customer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\DerivedClassWithEntityFromBaseClassWithHierarchy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\DerivedClassWithEntityWithHierarchy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\DerivedClassWithInvalidRelationClassIDColumns.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\DomainBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\File.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\FileSystemItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\Folder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\HistoryEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\Order.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\OrganizationalUnit.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\Person.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\Region.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\TestDomain\TableInheritanceTestDomainAttribute.cs" />
+    <Compile Include="TableInheritance\UnidirectionalRelationTest.cs" />
+    <Compile Include="TableInheritance\UnionSelectCommandBuilderTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TableInheritance\ValueConverterTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\AbstractClass.cs" />
+    <Compile Include="TestDomain\Ceo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ClassNotDerivedFromDomainObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ClassNotInMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ClassWithAllDataTypes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ClassWithGuidKey.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ClassWithInvalidRelation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ClassWithKeyOfInvalidType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ClassWithoutClassIDColumn.cs" />
+    <Compile Include="TestDomain\ClassWithoutIDColumn.cs" />
+    <Compile Include="TestDomain\ClassWithoutRelatedClassIDColumn.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ClassWithoutRelatedClassIDColumnAndDerivation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ClassWithoutTimestampColumn.cs" />
+    <Compile Include="TestDomain\ClassWithRelatedClassIDColumnAndNoInheritance.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ClassWithValidRelations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Client.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Company.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Computer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ClassWithOptionalOneToOneRelationAndOppositeDerivedClass.cs" />
+    <Compile Include="TestDomain\OrderWithNewPropertyAccessBase.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithBothEndPointsOnSameClass.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithoutStorageGroupWithMixedProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\BaseClassWithoutStorageSpecificIdentifierAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClosedGenericClass.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithInterface.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithManySideRelationPropertiesNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithOneSideRelationPropertiesNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClosedGenericClassWithManySideRelationProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\GenericClassWithManySideRelationPropertiesNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClosedGenericClassWithOneSideRelationProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\GenericClassWithOneSideRelationPropertiesNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\GenericClassNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\DerivedClassWithStorageSpecificIdentifierAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\DerivedClassWithoutStorageGroupWithMixedProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\IInterfaceWithProperties.cs" />
+    <Compile Include="TestDomain\SpecificOrderCollection.cs" />
+    <Compile Include="TestDomain\StorageProviderStubAttribute.cs" />
+    <Compile Include="TestDomain\StorageProviderStubDomainBase.cs" />
+    <Compile Include="TestDomain\OrderItemWithNewPropertyAccess.cs" />
+    <Compile Include="TestDomain\OrderWithNewPropertyAccess.cs" />
+    <Compile Include="TestDomain\Customer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Distributor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Employee.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\File.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\FileSystemItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Folder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\IndustrialSector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Location.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Official.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Order.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\OrderCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\OrderItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\OrderTicket.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Partner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Person.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithBinaryProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithManySideRelationProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithMixedPropertiesNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithOneSideRelationProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithStringProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithPropertiesHavingStorageClassAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassHavingStorageSpecificIdentifierAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithMixedProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassHavingClassIDAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\DerivedClassWithMixedProperties.cs" />
+    <Compile Include="TestDomain\SpecialOfficial.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\Supplier.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestDomain\TestDomainAttribute.cs" />
+    <Compile Include="TestDomain\TestDomainBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Transaction\BindingClientTransactionTest.cs" />
+    <Compile Include="Transaction\ClientTransactionAsITransactionTest.cs" />
+    <Compile Include="Transaction\ClientTransactionExtensionCollectionTest.cs" />
+    <Compile Include="Transaction\ClientTransactionExtensionRelationChangesTest.cs" />
+    <Compile Include="Transaction\ClientTransactionExtensionTest.cs" />
+    <Compile Include="Transaction\ClientTransactionExtensionWithQueryFiltering.cs" />
+    <Compile Include="Transaction\ClientTransactionListenerTest.cs" />
+    <Compile Include="Transaction\ClientTransactionWithIDMixin.cs" />
+    <Compile Include="Transaction\InvertingClientTransactionMixin.cs" />
+    <Compile Include="Transaction\ClientTransactionMixinTest.cs" />
+    <Compile Include="Transaction\ClientTransactionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Transaction\CommitEventsTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventReceiver\DataContainerMockEventReceiver.cs" />
+    <Compile Include="EventReceiver\DomainObjectMockEventReceiver.cs" />
+    <Compile Include="EventReceiver\PropertyValueCollectionMockEventReceiver.cs" />
+    <Compile Include="Transaction\ClientTransactionScopeTest.cs" />
+    <Compile Include="Transaction\CompoundClientTransactionListenerTest.cs" />
+    <Compile Include="Transaction\ClientTransactionStateTransitionBaseTest.cs" />
+    <Compile Include="Transaction\SubTransactionExtensionTest.cs" />
+    <Compile Include="Transaction\SubTransactionCommitDataTest.cs" />
+    <Compile Include="Transaction\SubTransactionCommitStateTransitionTest.cs" />
+    <Compile Include="Transaction\InvalidatedTransactionListenerTest.cs" />
+    <Compile Include="Transaction\ReadOnlyClientTransactionTest.cs" />
+    <Compile Include="Transaction\RollbackEventsWithExistingObjectTest.cs" />
+    <Compile Include="Transaction\RollbackEventsWithNewObjectTest.cs" />
+    <Compile Include="Transaction\SubTransactionCommitRollbackTest.cs" />
+    <Compile Include="Transaction\SubTransactionCreationStateTransitionTest.cs" />
+    <Compile Include="Transaction\SubTransactionQueryTest.cs" />
+    <Compile Include="Transaction\SubTransactionRollbackDataTest.cs" />
+    <Compile Include="Transaction\SubTransactionTest.cs" />
+    <Compile Include="Transport\BinaryExportStrategyTest.cs" />
+    <Compile Include="Transport\BinaryImportStrategyTest.cs" />
+    <Compile Include="Transport\XmlSerializationStrings.cs" />
+    <Compile Include="Transport\XmlTransportItemTest.cs" />
+    <Compile Include="Transport\XmlExportStrategyTest.cs" />
+    <Compile Include="Transport\DomainObjectImporterTest.cs" />
+    <Compile Include="Transport\DomainObjectTransporterTest.cs" />
+    <Compile Include="Transport\FollowAllProcessNoneStrategy.cs" />
+    <Compile Include="Transport\FollowOnlyOneLevelStrategy.cs" />
+    <Compile Include="Transport\OnlyProcessComputersStrategy.cs" />
+    <Compile Include="Transport\TransportedDomainObjectsTest.cs" />
+    <Compile Include="Transport\TransportTransactionListenerTest.cs" />
+    <Compile Include="Transport\TransportItemTest.cs" />
+    <Compile Include="Transport\XmlImportStrategyTest.cs" />
+    <Compile Include="UnitTestStorageProviderStub.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UnitTestStorageProviderStubDefinition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Web\WxeFunctionBaseTest.cs" />
+    <Compile Include="Web\WxeFunctions\ResetTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\ThreadAbortTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\SerializationTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\DomainObjectParameterInvalidOutTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\DomainObjectParameterWithChildInvalidOutTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\DomainObjectParameterWithChildInvalidInTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\CreateRootWithChildTestTransactedFunctionBase.cs" />
+    <Compile Include="Web\WxeFunctions\DomainObjectParameterTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\DomainObjectParameterWithChildTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeTransactedFunctionTest.cs" />
+    <Compile Include="Web\WxeFunctions\AutoCommitTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\CreateChildIfParentTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\CreateNoneTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\CreateRootTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\CreateRootWithChildTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\NoAutoCommitTestTransactedFunction.cs" />
+    <Compile Include="Web\WxeFunctions\RemoveCurrentTransactionScopeFunction.cs" />
+    <None Include="Properties\AssemblyInfoTemplate.cs">
+      <SubType>Code</SubType>
+    </None>
+    <None Include="Data.DomainObjects.UnitTests.build" />
+    <EmbeddedResource Include="Resources\DomainObjectsConfigurationWithFakeMappingLoader.xml" />
+    <EmbeddedResource Include="Resources\DomainObjectsConfigurationWithMinimumSettings.xml" />
+    <EmbeddedResource Include="Resources\DomainObjectsConfigurationWithCustomSectionGroupName.xml" />
+    <Content Include="QueriesForLoaderTest2.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="QueriesForLoaderTestDuplicate.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Database\DataDomainObjects_CreateTableInheritanceTestData.sql" />
+    <Content Include="Database\DataDomainObjects_CreateDB.sql" />
+    <Content Include="Database\DataDomainObjects_CreateTestData.sql">
+    </Content>
+    <Content Include="Database\DataDomainObjects_SetupDB.sql" />
+    <Content Include="Queries.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="QueriesForLoaderTest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="QueriesWithInvalidNamespace.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ScalarQueryWithCollectionType.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Resources\Image1.png" />
+    <EmbeddedResource Include="Resources\Image2.png" />
+    <EmbeddedResource Include="Resources\ImageLarger1MB.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)Database\*.sql" "$(TargetDir)"
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  -->
+  <Target Name="AfterBuild">
+    <Delete Files="@(TestDomain->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Directory)')" />
+    <Copy SourceFiles="@(TestDomain->'%(Fullpath)')" DestinationFiles="@(TestDomain->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Identity)')" />
+  </Target>
+</Project>

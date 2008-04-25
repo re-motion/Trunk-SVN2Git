@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<queries 
+    application="PhoneBook" 
+    xmlns="http://www.re-motion.org/Data/DomainObjects/Queries/1.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Queries/1.0 queries.xsd">
+
+  <query id="AllPersons" type="collection">
+    <storageProviderID>PhoneBookDB</storageProviderID>
+    <statement>
+      select [Person].*
+      from [Person]
+      order by FirstName
+    </statement>
+    <collectionType>DomainSample.PersonCollection, DomainSample</collectionType>
+  </query>
+
+	<query id="AllLocations" type="collection">
+		<storageProviderID>PhoneBookDB</storageProviderID>
+		<statement>
+			select [Location].*
+			from [Location]
+		</statement>
+		<collectionType>DomainSample.LocationCollection, DomainSample</collectionType>
+	</query>
+
+</queries>

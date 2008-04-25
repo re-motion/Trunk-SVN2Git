@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<ResourceConfiguration>
+  <Class>
+    <remarks> 
+      See the <see cref="WebConfiguration"/> for details on registering the <c>remotion.web</c> configuration section.
+    </remarks>
+    <seealso cref="WebConfiguration"/>
+    <seealso cref="Remotion.Web.ResourceUrlResolver"/>
+    <example>
+      Setting the <c>resources</c> entry's values in the <c>remotion.web</c> configuration section.
+      <code>
+<![CDATA[
+<remotion.web xmlns="http://www.re-motion.org/web/configuration"> 
+  <resources 
+      root="res" 
+      rootPath="AbsoluteWithApplicationRoot" 
+  />
+  <!-- Other configuration section entries. -->
+</remotion.web>
+]]></code>
+    </example>
+  </Class>
+  <Root>
+    <value> 
+      A string specifying a path relative to the application root. Defaults to <c>res</c>.
+    </value>
+    <remarks> 
+      Leading and trailing slashes are removed. 
+    </remarks>
+    <seealso cref="Remotion.Web.ResourceUrlResolver"/>
+  </Root>
+</ResourceConfiguration>

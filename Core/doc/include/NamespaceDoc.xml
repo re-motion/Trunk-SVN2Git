@@ -1,0 +1,10 @@
+<namespaces>
+  <namespace name="Remotion.Data">
+    The <B>Remotion.Data</B> namespace contains an interface for transaction handling in the Remotion libraries.
+  </namespace>  
+<!--
+  <namespace name="Remotion.Globalization">
+summary
+  </namespace>
+-->  
+</namespaces>

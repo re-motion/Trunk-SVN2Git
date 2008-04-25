@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<documentation>
+  <allEvents>
+    <remarks>
+      If instances of this class need to support serialization, all delegates that are 
+      registered for this event need to refer to public methods. Otherwise the object cannot 
+      be deserialized by the .NET Framework, due to security reasons. 
+      See MSDN documentation for further details.
+    </remarks>
+  </allEvents>
+</documentation>

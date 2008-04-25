@@ -1,0 +1,388 @@
+<?xml version="1.0" ?>
+<project name="Remotion-Helper" xmlns="nant-schema">
+
+  <!--======================= VERSION =======================-->
+
+  <target name="start-new-version" >
+    <call target="increment-version" />
+    <call target="checkzip" cascade="false" />
+    <call target="commit-version" cascade="false" />
+    <call target="update-version" cascade="false" />
+  </target>
+
+  <target name="increment-version">
+    <buildversion versionfile="${solution.basedir}/build/buildversion.xml" increment="true" />
+    <echo message="new version is ${build.version.noconfig}"/>
+  </target>
+
+  <target name="set-version">
+    <if test="${string::index-of (branch, '.') != string::last-index-of (branch, '.')}" >
+      <fail message="Invalid branch version. Branch must be of the format major.minor." />
+    </if>
+    <property name="local.new-version" value="${version::parse (branch + '.0.0')}" />
+
+    <xmlpoke
+        file="${solution.basedir}/build/buildversion.xml"
+        xpath="/bv:buildversion/bv:major"
+        value="${version::get-major (version::parse (local.new-version))}" >
+      <namespaces>
+        <namespace prefix="bv" uri="urn:rubicon-it:nant:buildversion" />
+      </namespaces>
+    </xmlpoke>
+
+    <xmlpoke
+        file="${solution.basedir}/build/buildversion.xml"
+        xpath="/bv:buildversion/bv:minor"
+        value="${version::get-minor (version::parse (local.new-version))}" >
+      <namespaces>
+        <namespace prefix="bv" uri="urn:rubicon-it:nant:buildversion" />
+      </namespaces>
+    </xmlpoke>
+
+    <xmlpoke
+        file="${solution.basedir}/build/buildversion.xml"
+        xpath="/bv:buildversion/bv:build/bv:increment/@currentValue"
+        value="0" >
+      <namespaces>
+        <namespace prefix="bv" uri="urn:rubicon-it:nant:buildversion" />
+      </namespaces>
+    </xmlpoke>
+
+    <buildversion versionfile="${solution.basedir}/build/buildversion.xml" increment="false" />
+    <echo message="new version is ${build.version.noconfig}"/>
+
+  </target>
+  <!--==================Subversion Targets =================-->
+
+  <target name="get-sourcefiles">
+    <delete dir="${project.basedir}" includeemptydirs="true" />
+    <mkdir dir="${project.basedir}" />
+    <exec program="${svn.exe}">
+      <arg line="export" />
+      <arg line="${repository}/${project.dir}" />
+      <arg line="${project.basedir}" />
+      <arg line="--revision ${revision}" />
+      <arg line="--force" />
+    </exec>
+  </target>
+
+  <target name="create-tag" depends="init-build-version" description="Creates a Tag with the current version number.">
+    <exec program="${svn.exe}">
+      <arg line="copy" />
+      <arg line="${repository}" />
+      <arg line="https://at-vie-svn/svn/libraries/Remotion/tags/${build.version.noconfig}" />
+      <arg line="--revision ${revision}" />
+      <arg line="--message &quot;Tagging build version ${build.version.noconfig}&quot;" />
+    </exec>
+  </target>
+
+  <target name="delete-tag" depends="init-build-version" description="Deletes an existing Tag with the current version number.">
+    <exec program="${svn.exe}" failonerror="false">
+      <arg line="remove" />
+      <arg line="https://at-vie-svn/svn/libraries/Remotion/tags/${build.version.noconfig}" />
+      <arg line="--message &quot;Removing tag for build version ${build.version.noconfig}&quot;" />
+    </exec>
+  </target>
+
+  <target name="create-branch" depends="init-build-version" description="Creates a Branch with the current major and minor version number.">
+    <exec program="${svn.exe}">
+      <arg line="copy" />
+      <arg line="${repository}" />
+      <arg line="https://at-vie-svn/svn/libraries/Remotion/branches/${build.version.major}.${build.version.minor}" />
+      <arg line="--revision ${revision}" />
+      <arg line="--message &quot;Branching version ${build.version.major}.${build.version.minor}&quot;" />
+    </exec>
+  </target>
+
+  <target name="commit-version" depends="init-build-version" description="Commits the build version file.">
+    <exec program="${svn.exe}">
+      <arg line="commit" />
+      <arg line="${solution.build-version-file}" />
+      <arg line="--message &quot;Commit after incrementing build version to ${build.version.noconfig}&quot;" />
+    </exec>
+  </target>
+
+  <target name="update-version" depends="init-build-version" description="Updates the build version file's directory.">
+    <exec program="${svn.exe}">
+      <arg line="update" />
+      <arg line="${directory::get-parent-directory (solution.build-version-file)}" />
+    </exec>
+  </target>
+
+  <!--======================= BUILD =======================-->
+
+  <target name="execute-buildstep" depends="check-project-config">
+    <call target="get-sourcefiles" if="${build.step.get-sourcefiles}" />
+    <call target="copy-resources" if="${build.step.copy-resources}" />
+    <call target="compile-binaries" if="${build.step.compile-binaries}" />
+  </target>
+
+  <target name="copy-resources">
+    <copy todir="${build.basedir}/res/${project.output}" includeemptydirs="true" >
+      <fileset basedir="${project.basedir}/res">
+        <include name="**/*" />
+        <exclude name="${project.output}/**" />
+      </fileset>
+    </copy>
+    <copy todir="${build.basedir}/res/${project.output}" >
+      <fileset basedir="${project.basedir}">
+        <include name="**/*.ascx" />
+        <include name="**/*.aspx" />
+        <include name="**/*.master" />
+        <exclude name="**/res/**" />
+      </fileset>
+    </copy>
+    <copy todir="${build.basedir}" flatten="true">
+      <fileset basedir="${project.basedir}/Doc">
+        <include name="WhatsNew*" />
+        <include name="Readme*" />
+      </fileset>
+    </copy>
+    <copy todir="${build.basedir}/schema/${project.output}" flatten="true">
+      <fileset basedir="${project.basedir}/">
+        <include name="**/*.xsd" />
+        <exclude name="**/obj/**" />
+        <exclude name="**/bin/**" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="compile-binaries">
+    <echo message="building ${project.output}.${project.extension} ${build.version}"/>
+
+    <property name="project.doc" value="${build.outputdir}/${project.output}.xml" if="${build.step.create-doc}" />
+    <property name="project.doc" value="${build.temp.outputdir}/${project.output}.complete.xml" unless="${build.step.create-doc}" />
+
+    <mkdir dir="${build.outputdir}"/>
+    <mkdir dir="${build.temp.outputdir}"/>
+    <call target="prepareassemblyinfo" />
+
+    <copy todir="${build.outputdir}" overwrite="true" flatten="true">
+      <fileset basedir="${prereq.assemblies}">
+        <include name="log4net.*"/>
+        <include name="Castle.Core.*"/>
+        <include name="Castle.DynamicProxy.*"/>
+        <include name="System.Web.Extensions.dll"/>
+        <include name="AjaxControlToolkit.dll" />
+        <include name="Microsoft.Web.Preview.dll" />
+      </fileset>
+    </copy>
+
+    <nant buildfile="${project.dir}/${project.name}.build" target="build" />
+
+    <if test="${not build.step.create-doc}">
+      <advancedStyle style="${solution.intellisense-xslt-file}" in="${project.doc}" out="${build.outputdir}/${project.output}.xml" />
+    </if>
+
+    <delete file="${build.outputdir}/System.Web.Extensions.dll"  />
+  </target>
+
+  <target name="buildtest" depends="check-project-config">
+    <call target="get-sourcefiles" if="${build.step.get-sourcefiles}" />
+
+    <if test="${build.step.compile-binaries}">
+
+      <echo message="building unit tests ${project.output}.${project.extension} ${build.version}"/>
+
+      <property name="project.doc" value="" />
+
+      <mkdir dir="${build.test.outputdir}"/>
+
+      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/nunit.framework.dll" overwrite="true"/>
+      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Castle.Core.dll" overwrite="true"/>
+      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Castle.DynamicProxy.dll" overwrite="true"/>
+      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Rhino.Mocks.dll" overwrite="true"/>
+      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/System.Web.Extensions.dll" overwrite="true"/>
+      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/AjaxControlToolkit.dll" overwrite="true" />
+      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Microsoft.Web.Preview.dll" overwrite="true" />
+      <copy todir="${build.test.outputdir}">
+        <fileset basedir="${build.outputdir}">
+          <include name="*.exe" />
+          <include name="*.dll" />
+          <include name="*.pdb" />
+        </fileset>
+      </copy>
+
+      <call target="prepareassemblyinfo" />
+
+      <nant buildfile="${project.dir}/${project.name}.build" target="build" />
+
+      <echo message="Running unit tests..." />
+      <nunit2>
+        <formatter type="Plain" />
+        <test assemblyname="${build.test.outputdir}/${project.output}.${project.extension}" />
+      </nunit2>
+      
+    </if>
+  </target>
+
+  <target name="check-project-config">
+    <!-- make sure that one of the set...-targets was called -->
+    <if test="${not property::exists('project.config')}">
+      <fail message="Specify a set-&lt;configuration&gt; target first. (set-debug, set-release or set-documentation)" />
+    </if>
+    <!-- make shure, only .net-2.0 builds will be made -->
+    <if test="${nant.settings.currentframework != 'net-2.0'}">
+      <fail message="Only .net-2.0 builds are supported."/>
+    </if>
+  </target>
+
+  <target name="prepareassemblyinfo" if="${build.update.assembly-info}" >
+    <copy file="${project.basedir}/Properties/AssemblyInfoTemplate.cs"  tofile="${project.basedir}/Properties/AssemblyInfo.cs" overwrite="true" />
+    <!--
+    <attrib readonly="false" file="${project.basedir}/Properties/AssemblyInfo.cs"/>
+    -->
+    <replace>
+      <filterset>
+        <filter token="keyfile" value="${solution.key-file}" />
+        <filter token="versionnumber" value="${build.version}" />
+        <filter token="buildinfo" value=".NET Framework: ${nant.settings.currentframework}, build type: ${project.config}" />
+        <filter token="company" value="${text.companyname}" />
+        <filter token="copyright" value="${text.copyright}" />
+        <filter token="productname" value="${text.productname}" />
+      </filterset>
+      <fileset>
+        <include name="${project.basedir}/Properties/AssemblyInfo.cs" />
+      </fileset>
+    </replace>
+    <!--
+    <attrib readonly="true" file="${project.basedir}/AssemblyInfo.cs"/>
+    -->
+  </target>
+  <!--======================= CLEANING =======================-->
+
+  <target name="cleantemp" depends="init-build-version">
+    <delete dir="${build.temp.basedir}" includeemptydirs="true" />
+  </target>
+
+  <target name="clean" depends="init-build-version">
+    <delete dir="${build.basedir}" includeemptydirs="true" />
+  </target>
+
+  <!--======================= Zip Targets =======================-->
+  <target name="checkzip" depends="zipfilename">
+    <property name="ToDir" value="\\at-vie-dc-02\Development\build\libraries\Remotion\build\"/>
+    <fail message="ZipFile existiert bereits" 
+          if="${   file::exists(ToDir + zipfile.filename) 
+                or file::exists(ToDir + sourcezipfile.filename)}" />
+  </target>
+
+  <target name="addzip" depends="checkzip">
+    <copy file="${zipfile.name}" todir="${ToDir}" />
+    <copy file="${sourcezipfile.name}" todir="${ToDir}" />
+  </target>
+
+  <target name="zipfilename" depends="init-build-version">
+    <property name="zipfile.filename" value="Remotion_${build.version.noconfig}.zip" />
+    <property name="zipfile.name" value="${build.basedir}/${zipfile.filename}" />
+    <property name="sourcezipfile.filename" value="Remotion_SourceCode_${build.version.noconfig}.zip" />
+    <property name="sourcezipfile.name" value="${build.basedir}/${sourcezipfile.filename}" />
+    <echo message="Zipfile is ${zipfile.name}"/>
+    <echo message="SourceZipfile is ${sourcezipfile.name}"/>
+  </target>
+
+  <target name="zip" depends="zipfilename">
+    <delete file="${zipfile.name}" />
+    <zip zipfile="${zipfile.name}">
+      <fileset basedir="${build.basedir}">
+        <include name="**/*" />
+        <exclude name="*.zip" />
+        <exclude name="*/bin/documentation/**/*" />
+        <exclude name="${build.temp.basedir}" />
+       
+        <exclude name="**/Remotion.SecurityManager*/**" />
+        <exclude name="*/bin/**/SecurityManager*.*" />
+        <exclude name="*/bin/**/System.Web.Extensions.dll" />
+        <exclude name="*/bin/**/Microsoft.Web.Preview.dll" />
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="sourcezip" depends="zipfilename">
+    <delete file="${sourcezipfile.name}" />
+    <zip zipfile="${sourcezipfile.name}">
+      <fileset basedir="${solution.basedir}">
+        <include name="Core/**" />
+        <include name="Core.Interfaces/**" />
+        <include name="Core.Test/**" />
+        <include name="Development/**" />
+        <include name="Data/**" />
+        <include name="Mixins/**" />
+        <include name="ObjectBinding/**" />
+        <include name="Security/**" />
+        <include name="Web/**" />
+        <include name="build/*.xml" />
+        <exclude name="**/obj/**" />
+        <exclude name="**/bin/**" />
+        <exclude name="**/*.zip" />
+        <exclude name="**/*.dll" />
+        <exclude name="**/*.exe" />
+        <exclude name="**/*.pdb" />
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="securityManager-checkzip" depends="securityManager-zipfilename">
+    <property name="securityManager-ToDir" value="\\at-vie-dc-02\Development\build\libraries\Remotion\SecurityManager\build\"/>
+    <fail message="ZipFile existiert bereits" 
+          if="${   file::exists(securityManager-ToDir + securityManager-zipfile.filename) 
+                or file::exists(securityManager-ToDir + securityManager-sourcezipfile.filename)}" />
+  </target>
+
+  <target name="securityManager-addzip" depends="securityManager-checkzip">
+    <copy file="${securityManager-zipfile.name}" todir="${securityManager-ToDir}" />
+    <copy file="${securityManager-sourcezipfile.name}" todir="${securityManager-ToDir}" />
+  </target>
+
+  <target name="securityManager-zipfilename" depends="init-build-version">
+    <property name="securityManager-zipfile.filename" value="RemotionSecurityManager_${build.version.noconfig}.zip" />
+    <property name="securityManager-zipfile.name" value="${build.basedir}/${securityManager-zipfile.filename}" />
+    <property name="securityManager-sourcezipfile.filename" value="RemotionSecurityManager_SourceCode_${build.version.noconfig}.zip" />
+    <property name="securityManager-sourcezipfile.name" value="${build.basedir}/${securityManager-sourcezipfile.filename}" />
+    <echo message="Zipfile is ${securityManager-zipfile.name}"/>
+    <echo message="SourceZipfile is ${securityManager-sourcezipfile.name}"/>
+  </target>
+
+  <target name="securityManager-zip" depends="securityManager-zipfilename">
+    <delete file="${securityManager-zipfile.name}" />
+    <echo message="${build.basedir}"/>
+    <zip zipfile="${securityManager-zipfile.name}">
+      <fileset basedir="${build.basedir}">
+        <include name="**/*" />
+        <exclude name="*.zip" />
+        <exclude name="*/bin/documentation/**" />
+        <exclude name="${build.temp.basedir}" />
+        <exclude name="*/bin/**/System.Web.Extensions.dll" />
+        <exclude name="*/bin/**/Microsoft.Web.Preview.dll" />
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="securityManager-sourcezip" depends="securityManager-zipfilename">
+    <delete file="${securityManager-sourcezipfile.name}"/>
+    <zip zipfile="${securityManager-sourcezipfile.name}">
+      <fileset basedir="${solution.basedir}">
+        <include name="SecurityManager/**" />
+        <exclude name="**/obj/**" />
+        <exclude name="**/bin/**" />
+        <exclude name="**/*.zip" />
+        <exclude name="**/*.dll" />
+        <exclude name="**/*.exe" />
+        <exclude name="**/*.pdb" />
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="getcurrent" depends="init-build-version">
+    <property name="local.currentdir" value="${solution.basedir}/build/Current" />
+
+    <delete dir="${local.currentdir}" includeemptydirs="true" />
+
+    <copy todir="${local.currentdir}" overwrite="true">
+      <fileset basedir="${build.basedir}">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+  </target>
+
+</project>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<queries 
+    application="PhoneBook" 
+    xmlns="http://www.re-motion.org/Data/DomainObjects/Queries/1.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Queries/1.0 queries.xsd">
+
+  <query id="PersonByName" type="collection">
+    <storageProviderID>PhoneBookDB</storageProviderID>
+    <statement>
+      select [Person].* 
+      from [Person] 
+      where (@LastName is null or [Person].[LastName] like @LastName)
+        and (@FirstName is null or [Person].[FirstName] like @FirstName)
+      order by LastName, FirstName;
+    </statement>
+  </query>
+
+  <query id="AllLocations" type="collection">
+    <storageProviderID>PhoneBookDB</storageProviderID>
+    <statement>
+      select [Location].* 
+      from [Location] 
+      order by Name; 
+    </statement>
+    <collectionType>DomainSample.LocationCollection, DomainSample</collectionType>
+  </query>
+
+</queries>

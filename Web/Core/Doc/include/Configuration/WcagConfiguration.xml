@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<WcagConfiguration>
+  <Class>
+    <remarks> 
+      See the <see cref="WebConfiguration"/> for details on registering the <c>remotion.web</c> configuration section.
+    </remarks>
+    <seealso cref="WebConfiguration"/>
+    <example>
+      Setting the <c>wcag</c> entry's values in the <c>remotion.web</c> configuration section.
+      <code>
+&lt;remotion.web xmlns="http://www.re-motion.org/web/configuration"&gt; 
+  &lt;wcag
+      <see cref="WaiConformanceLevel">conformanceLevel</see>="Undefined" 
+      <see cref="WcagDebugMode">debugging</see>="Disabled" 
+  /&gt;
+  &lt;!-- Other configuration section entries. --&gt;
+&lt;/remotion.web&gt;
+      </code>
+    </example>
+  </Class>
+  <Debugging>
+    <value>
+      A value of the <see cref="WcagDebugMode"/> enumeration. Defaults to <see cref="WcagDebugMode.Disabled"/>
+    </value>
+    <remarks> 
+      If the <see cref="WcagDebugMode"/> of <see cref="WcagDebugMode.Exception"/> is used,
+      controls in violation of the required WAI level will throw a <see cref="Remotion.Web.UI.WcagException"/>.
+    </remarks>
+  </Debugging>
+</WcagConfiguration>

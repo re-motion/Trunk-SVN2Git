@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlMapping
+    application="WxeTest"
+    xmlns="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
+		<add type="Remotion.Web.Test::ExecutionEngine.SessionWxeFunction" resource="session.wxe"/>	
+		<add type="Remotion.Web.Test::ExecutionEngine.ProfilingWxeFunction" resource="prof.wxe"/>
+		<add type="Remotion.Web.Test::ExecutionEngine.RedirectedWxeFunction" resource="redirected.wxe"/>
+    <add type="Remotion.Web.Test::UpdatePanelTests.SutFunction" resource="UpdatePanelTests/Sut.wxe"/>
+
+  <!--
+		<add type="Remotion.Web.Test.SampleWxeFunction,Remotion.Web.Test" resource="sample.wxe"/>
+		<add type="Remotion.Web.Test.SampleWxeFunction,Remotion.Web.Test" resource="sample_old.wxe"/>
+-->
+
+<!--
+		<add type="S8essionWxeFunction" resource="session.wxe1"/>
+		<add type="SessionWxeFunction+C8lass" resource="session.wxe2"/>
+		<add type="R8ubicon.PageTransition.S8essionWxeFunction+C8lass" resource="session.wxe3"/>
+		<add type="Remotion.Web.Test.MultiplePostbackCatcherWxeFunction,Remotion.Web.Test" resource="mpc.wxe1"/>
+		<add type="Remotion.Web.Test.MultiplePostbackCatcherWxeFunction+Class, Remotion.Web.Test" resource="mpc.wxe2"/>
+		<add type="MultiplePostbackCatcherWxeFunction, Remotion.Web.Test" resource="mpc.wxe3"/>
+		<add type="P8ageTransition::P8rofilingWxeFunction" resource="prof.wxe1"/>
+		<add type="R8ubicon.PageTransition::P8rofilingWxeFunction" resource="prof.wxe2"/>
+		<add type="R8ubicon.PageTransition::P8rofilingWxeFunction+C8lass" resource="prof.wxe3"/>
+-->
+</urlMapping>

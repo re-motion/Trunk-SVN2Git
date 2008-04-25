@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<IWxePage>
+  <Class>
+    <remarks>
+      <h4 class="dtH4">Using an IWxePage</h4>
+      <para>
+        A <see cref="Page"/> that implements <see cref="IWxePage"/> can be called by a <see cref="WxePageStep"/>. 
+        Please refer to the documentation of the <see cref="WxePageStep"/> for details on the execution life 
+        cycle outside the <see cref="IWxePage"/>'s scope.
+      </para><para>
+        To the application developer an <see cref="IWxePage"/> has the same look and feel as a normal ASP.NET Page. 
+        You can use controls on the page and use the <see cref="Page.IsPostBack"/> flag as you would on any other 
+        ASP.NET page.
+      </para><para>
+        In case you do not rely on the controls to handle form input, there is one exception to the afore mentioned 
+        rule. The post back data provided by the <see cref="Page.Request"/> object of the <see cref="Page"/> is not 
+        guaranteed contain the correct data. The execution engine does provide the relevant post back data via the 
+        <see cref="ISmartPage.GetPostBackCollection"/> method. 
+      </para>
+      <h4 class="dtH4">Using Flow Control</h4>
+      <para>
+        The execution engine extends the basic functionality of a <see cref="Page"/> by connecting individual pages 
+        through flow control syntax.
+      </para> 
+      <list type="bullet">
+        <item>
+          The <see cref="ExecuteNextStep"/> method can be invoked to end the execution of the current page step. 
+          The execution engine will then resume with the next step or end the function, if it was the last step. 
+          <see cref="ExecuteNextStep"/> is usually called in the click-event handler of a button, e.g. the save 
+          button of a data entry form.
+        </item>
+        <item>
+          <para>
+            To cancel the execution of the current step and function, it is possible to throw a 
+            <see cref="WxeUserCancelException"/>. This is usually done in the click-event handler of a cancel button.
+            Do not invoke <see cref="ExecuteNextStep"/> when canceling the step.
+          </para><para>
+            To prevent the <see cref="WxeUserCancelException"/> from being passed to the root function, e.g.
+            if you intend to continue with the execution in the parent function, use the 
+            <see cref="WxeFunction.SetCatchExceptionTypes">WxeFunction.SetCatchExceptionTypes</see> method or
+            use a <see cref="WxeTryCatch"/> step. For details on working with exceptions, please refer to the 
+            <see cref="WxeFunction"/>'s documentation.
+          </para>            
+        </item>
+        <item>
+          <para>
+            The execution engine also offers the option of navigating to a sub-function, e.g. a details form, by 
+            calling the <see cref="ExecuteFunction"/> or <see cref="ExecuteFunctionNoRepost"/> methods. It is also
+            possible to execute the function outside the current function's context (i.e. asynchron) by calling the
+            <see cref="ExecuteFunctionExternal"/> method. The function can then be displayed in the current 
+            window or inside a new window. For details, please refer to the documentation of the afore mentioned 
+            execute methods.
+          </para><para>
+            After the sub-function has completed its execution, the execution engine returns control 
+            to the calling page, optionally even to the same event handler. Evaluate the 
+            <see cref="IsReturningPostBack"/> property to determine if the sub-function has returned. Use the 
+            <see cref="ReturningFunction"/> property to access to the completed sub-function and its properties.         
+          </para>
+        </item>
+      </list>
+      <h4 class="dtH4">General Usage Notes</h4>
+      <para>
+        If possible, use the <see cref="WxePage"/> default implementation of the <b>IWxePage</b> interface
+        as base page in your project.
+      </para>
+      <note type="inotes">
+        If you cannot derive your pages from the default implementation (e.g., because you need to derive from 
+        another class), override your page's <see cref="Page.DeterminePostBackMode"/> and 
+        <see cref="Control.Dispose"/> methods to include the initialization and clean-up logic. Override the 
+        <see cref="Control.OnPreRender"/> method to include the pre-render logic. Override the
+        <see cref="Page.SavePageStateToPersistenceMedium"/> and <see cref="Page.LoadPageStateFromPersistenceMedium"/> 
+        methods to save and restore the page's viewstate. Use <see cref="WxePageInfo"/> to implement all methods and 
+        properties.
+      </note>
+    </remarks>
+    <seealso cref="ISmartPage"/>
+    <seealso cref="WxePage"/>
+    <seealso cref="WxePageInfo"/>
+    <seealso cref="WxePageStep"/>
+    <example>
+      Sample implementation of the <b>Constructor</b>.
+      <code escaped="true" lang="C#">
+private WxePageInfo m_wxePageInfo;
+
+public void MyWxePage()
+{
+  this.m_wxePageInfo = new WxePageInfo;
+}
+      </code>    
+    </example>
+    <example>
+      Sample implementation of <see cref="Page.DeterminePostBackMode"/>.
+      <code escaped="true" lang="C#">
+protected override NameValueCollection DeterminePostBackMode()
+{
+  NameValueCollection result = this.m_wxePageInfo.EnsurePostBackModeDetermined (Context);
+  this.m_wxePageInfo.Initialize (Context);
+  return result;
+}
+      </code>    
+    </example>
+    <example>
+      Sample implementation of <see cref="Control.Dispose"/>.
+      <code escaped="true" lang="C#">
+public override void Dispose()
+{
+  base.Dispose ();
+  this.m_wxePageInfo.Dispose();
+}
+      </code>    
+    </example>
+    <example>
+      Sample implementation of <see cref="Control.OnPreRender"/>. 
+      <code escaped="true" lang="C#">
+protected override void OnPreRender (EventArgs e)
+{
+  this.m_wxePageInfo.PreRender();
+  base.OnPreRender (e);
+}
+      </code>    
+    </example>
+    <example>
+      Sample implementation of <see cref="Page.SavePageStateToPersistenceMedium"/>.
+      <code escaped="true" lang="C#">
+public override void SavePageStateToPersistenceMedium (object viewState)
+{
+  this.m_wxePageInfo.SavePageStateToPersistenceMedium (viewState);
+}
+      </code>    
+    </example>
+    <example>
+      Sample implementation of <see cref="Page.LoadPageStateFromPersistenceMedium"/>.
+      <code escaped="true" lang="C#">
+public override void LoadPageStateFromPersistenceMedium()
+{
+  this.m_wxePageInfo.LoadPageStateFromPersistenceMedium();
+}
+      </code>
+    </example>
+  </Class>
+  <ExecuteFunction>
+    <param name="function"> The WXE function to be executed. Must not be <see langword="null"/>. </param>  
+    <param name="createPermaUrl"> 
+      <see langword="true"/> to redirect the client to a URL that can be used as a perma-URL. 
+      Defaults to <see langword="false"/>.
+    </param>
+    <param name="useParentPermaUrl">
+      <see langword="true"/> to add the parent function's perma-URL. 
+      Defaults to <see langword="false"/>.
+    </param>
+    <param name="permaUrlParameters">
+      Provides the list of arguments for the perma-URL's query string. Defaults to <see langword="null"/>, 
+      which indicates that the <paramref name="function"/>'s current parameters should be used for the query string.
+    </param>
+  </ExecuteFunction>
+  <ExecuteFunctionNoRepost>
+    <param name="function"> The WXE function to be executed. Must not be <see langword="null"/>. </param>  
+    <param name="sender"> 
+      For calls from event handlers, the control that caused the event (i.e. the <b>sender</b> argument of the 
+      event handler). Otherwise, the sender may be <see landword="null"/>.
+      Valid senders implement either <see cref="IPostBackEventHandler"/> or <see cref="IPostBackDataHandler"/>.
+    </param>
+    <param name="usesEventTarget"> <see langword="true"/> to  use the <b>__EVENTTARGET</b> field. </param>
+    <param name="createPermaUrl"> 
+      <see langword="true"/> to redirect the client to a URL that can be used as a perma-URL. 
+      Defaults to <see langword="false"/>.
+    </param>
+    <param name="useParentPermaUrl">
+      <see langword="true"/> to add the parent function's perma-URL. 
+      Defaults to <see langword="false"/>.
+    </param>
+    <param name="permaUrlParameters">
+      Provides the list of arguments for the perma-URL's query string. Defaults to <see langword="null"/>, 
+      which indicates that the <paramref name="function"/>'s current parameters should be used for the query string.
+    </param>
+  </ExecuteFunctionNoRepost>
+  <ExecuteFunctionExternal>
+    <param name="function"> The WXE function to be executed. Must not be <see langword="null"/>. </param>  
+    <param name="target">
+      The HTML frame/window name that will be used to execute the function. Must not be <see langword="null"/> or empty.
+    </param>
+    <param name="features"> The features argument that is passed to the javascript function <b>window.open()</b>. </param>
+    <param name="sender"> 
+      For calls from event handlers, the control that caused the event (i.e. the <b>sender</b> argument of the 
+      event handler). Otherwise, the sender may be <see landword="null"/>.
+      Valid senders implement either <see cref="IPostBackEventHandler"/> or <see cref="IPostBackDataHandler"/>
+    </param>
+    <param name="returningPostback"> <see langword="true"/> if the call should be returned to the current window. </param>
+    <param name="createPermaUrl"> 
+      <see langword="true"/> to redirect the client to a URL that can be used as a perma-URL. 
+      Defaults to <see langword="false"/>.
+    </param>
+    <param name="useParentPermaUrl">
+      <see langword="true"/> to add the executing function's perma-URL. 
+      Defaults to <see langword="false"/>.
+    </param>
+    <param name="urlParameters">
+      Provides the list of arguments for the URL's query string. Defaults to <see langword="null"/>, 
+      which indicates that the <paramref name="function"/>'s current parameters should be used for the query string.
+    </param>
+    <param name="returnToCaller">
+      <see langword="true"/> to return to the executing function.
+      Defaults to <see langword="true"/>.
+    </param>
+    <param name="callerUrlParameters">
+      Provides the list of arguments for the return URL's query string. Defaults to <see langword="null"/>, 
+      which indicates that the executing page's current parameters should be used for the query string.
+      Provide an emtpy <see cref="NameValueCollection"/> if your function does not support perma-urls.
+    </param>
+  </ExecuteFunctionExternal>
+  <GetPermanentUrl>
+    <param name="functionType"> 
+      The type of the <see cref="WxeFunction"/> for which to create the permanent URL. 
+      Must be derived from <see cref="WxeFunction"/>. 
+    </param>
+    <param name="queryString">
+      The <see cref="StringDictionary"/> containing the query string arguments. Must not be <see langword="null"/>. 
+    </param>
+  </GetPermanentUrl>
+</IWxePage>

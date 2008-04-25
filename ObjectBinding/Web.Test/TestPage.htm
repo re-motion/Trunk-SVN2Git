@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+  <title></title>
+  <link type="text/css" rel="stylesheet" href="Html/WebButton.css" />
+  <script type="text/javascript" src="/dev/libraries/Commons/trunk/Web/Test/res/Remotion.Web/Html/WebButton.js"></script>
+  <script type="text/javascript">
+function GetFrame (frameName)
+{
+  if (window.parent == null)
+    return null;
+  else
+    return window.parent[frameName];
+}
+function Test()
+{
+  var frame = GetFrame('left');
+  if (frame != null)
+    frame.__doPostBack('PersonTreeView_Boc_TreeView','Expand=00000000-0000-0000-0000-000000000001\tChildren');
+}
+
+function CreateBorderSpans (element)
+{
+  var elementBody = element.firstChild;
+  
+  CreateAndAppendBorderSpan (elementBody, 'top');  
+  CreateAndAppendBorderSpan (elementBody, 'left');
+  CreateAndAppendBorderSpan (elementBody, 'bottom');
+  CreateAndAppendBorderSpan (elementBody, 'right');
+  CreateAndAppendBorderSpan (elementBody, 'topLeft');
+  
+  var topRight = CreateAndAppendBorderSpan (elementBody, 'topRight');
+  topRight.style.left = topRight.offsetParent.clientLeft + topRight.offsetParent.clientWidth - topRight.offsetWidth  + 'px';
+
+  var bottomLeft = CreateAndAppendBorderSpan (elementBody, 'bottomLeft');
+  bottomLeft.style.top = bottomLeft.offsetParent.clientTop + bottomLeft.offsetParent.clientHeight - bottomLeft.offsetHeight  + 'px';
+
+  var bottomRight = CreateAndAppendBorderSpan (elementBody, 'bottomRight');
+  bottomRight.style.top = bottomRight.offsetParent.clientTop + bottomRight.offsetParent.clientHeight - bottomRight.offsetHeight  + 'px';
+  bottomRight.style.left = bottomRight.offsetParent.clientLeft + bottomRight.offsetParent.clientWidth - bottomRight.offsetWidth  + 'px';
+}
+
+function CreateAndAppendBorderSpan (elementBody, className)
+{
+  var borderSpan = document.createElement ('SPAN');
+  borderSpan.className = className;
+  elementBody.appendChild (borderSpan);
+  
+  return borderSpan
+}
+  </script>
+
+</head>
+<body>
+  <button onclick="Test()">
+    Test</button>
+    <p>
+  <button id="Button1" class="webButton" onmousedown="WebButton_MouseDown (this, 'mouseDown');" onmouseup="WebButton_MouseUp (this, 'mouseDown');" onmouseout="WebButton_MouseOut (this, 'mouseDown');"><span class="buttonBody">Partner Set New Item</span></button>
+  .
+  <button id="Button2" class="webButton" onmousedown="WebButton_MouseDown (this, 'mouseDown');" onmouseup="WebButton_MouseUp (this, 'mouseDown');" onmouseout="WebButton_MouseOut (this, 'mouseDown');"><span class="buttonBody">Read Only Partner Set Null</span></button>
+  .
+  <button id="Button3" class="webButton" onmousedown="WebButton_MouseDown (this, 'mouseDown');" onmouseup="WebButton_MouseUp (this, 'mouseDown');" onmouseout="WebButton_MouseOut (this, 'mouseDown');"><span class="buttonBody">Read Only Partner Set New Item</span></button>
+  .
+  <button id="TheButton" class="webButton" onmousedown="WebButton_MouseDown (this, 'mouseDown');" onmouseup="WebButton_MouseUp (this, 'mouseDown');" onmouseout="WebButton_MouseOut (this, 'mouseDown');"><span class="buttonBody">The Button 0</span></button>
+
+<div id="Header_StatusBlock" class="status">
+  <div class="bar">
+    <span id="Header_StatusLabel" class="content"><br /></span>
+  </div>
+
+</div>
+  <script type="text/javascript">
+    CreateBorderSpans (document.getElementById ('TheButton'));
+    CreateBorderSpans (document.getElementById ('Button1'));
+    CreateBorderSpans (document.getElementById ('Button2'));
+    CreateBorderSpans (document.getElementById ('Button3'));
+    CreateBorderSpans (document.getElementById ('Header_StatusBlock'));
+ </script>
+</p>
+</body>
+</html>

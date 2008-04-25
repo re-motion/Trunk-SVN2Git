@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
+<project xmlns="nant-schema" name="Remotion.Web">  
+
+  <target name="build" description="perform a build">
+  
+    <csc  target="library" 
+          output="${build.outputdir}/${project.output}.${project.extension}" 
+          doc="${project.doc}" 
+          debug="${build.debug}"
+          define="${build.csc.define}">
+      <nowarn>
+        <!-- missing XML comment -->
+        <warning number="1591" />
+        <!-- only some parameters miss xml comment -->
+        <warning number="1573" />
+        <!-- Ambiguous reference in cref attribute -->
+        <warning number="0419" />
+      </nowarn> 
+      <sources failonempty="true">
+        <include name="*.cs" />
+        <include name="Configuration/**/*.cs" />
+        <include name="Compilation/**/*.cs" />
+        <include name="ExecutionEngine/**/*.cs" />
+        <include name="Properties/**/*.cs" />
+        <include name="UI/**/*.cs" />
+        <include name="Utilities/**/*.cs" />
+        <exclude name="Properties/AssemblyInfoTemplate.cs" />
+      </sources>
+      <references failonempty="true">
+        <include name="${build.outputdir}/Remotion.dll" />
+        <include name="${build.outputdir}/Remotion.Interfaces.dll"/>
+        <include name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
+        <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Configuration.dll"/>
+        <include asis="true" name="System.Design.dll"/>
+        <include asis="true" name="System.Drawing.dll"/>
+        <include asis="true" name="System.Web.dll"/>
+        <include name="${build.outputdir}/System.Web.Extensions.dll"/>
+        <include asis="true" name="System.Windows.Forms.dll"/>
+        <include asis="true" name="System.Xml.dll"/>
+      </references>
+      <resources failonempty="true" dynamicprefix="true" prefix="Remotion.Web">
+        <include name="Globalization/*.resx" />
+        <include name="Configuration/WebConfiguration.xsd" />
+        <include name="ExecutionEngine/UrlMapping/UrlMapping.xsd" />
+      </resources>
+    </csc>
+        
+  </target>
+
+</project>

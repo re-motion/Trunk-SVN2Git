@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<localizedNames xmlns="http:=//www.re-motion.org/Security/Metadata/Localization/1.0" culture="de">
+  <localizedName ref="b8621bc9-9ab3-4524-b1e4-582657d6b420" comment="Clerk|Remotion.Security.UnitTests.TestDomain.DomainAbstractRole, Remotion.Security.UnitTests.TestDomain">
+    Beamter
+  </localizedName>
+  <localizedName ref="93969f13-65d7-49f4-a456-a1686a4de3de" comment="Confidentiality">
+    Vertraulichkeit
+  </localizedName>
+  <localizedName ref="93969f13-65d7-49f4-a456-a1686a4de3de|0" comment="Confidentiality|Public">
+    Öffentlich
+  </localizedName>
+</localizedNames>

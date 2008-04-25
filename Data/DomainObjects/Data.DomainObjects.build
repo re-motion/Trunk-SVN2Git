@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
+<project xmlns="nant-schema" name="Remotion.Data.DomainObjects">
+
+  <target name="build" description="perform a build">
+    <csc  target="library"
+          output="${build.outputdir}/${project.output}.${project.extension}"
+          doc="${project.doc}"
+          debug="${build.debug}"
+          define="${build.csc.define}">
+      <nowarn>
+        <!-- missing XML comment -->
+        <warning number="1591" />
+        <!-- Ambiguous reference in cref attribute -->
+        <warning number="0419" />
+        <!-- obsolete warning -->
+        <warning number="0618" />
+      </nowarn>
+      <sources failonempty="true">
+        <include name="*.cs"/>
+        <include name="Configuration/**/*.cs"/>
+        <include name="ConfigurationLoader/**/*.cs"/>
+        <include name="Design/**/*.cs"/>
+        <include name="Development/**/*.cs"/>
+        <include name="Infrastructure/**/*.cs"/>
+        <include name="Mapping/**/*.cs"/>
+        <include name="DataManagement/**/*.cs"/>
+        <include name="Persistence/**/*.cs"/>
+        <include name="Properties/**/*.cs" />
+        <include name="Queries/**/*.cs"/>
+        <include name="Schemas/**/*.cs"/>
+        <include name="Transport/**/*.cs"/>
+        <exclude name="Properties/AssemblyInfoTemplate.cs" />
+      </sources>
+      <references failonempty="true">
+        <include asis="true" name="${build.outputdir}/Castle.Core.dll"/>
+        <include asis="true" name="${build.outputdir}/Castle.DynamicProxy.dll"/>
+        <include asis="true" name="${build.outputdir}/Remotion.dll"/>
+        <include asis="true" name="${build.outputdir}/Remotion.Interfaces.dll"/>
+        <include asis="true" name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
+        <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Data.dll"/>
+        <include asis="true" name="System.Xml.dll"/>
+        <include asis="true" name="System.Configuration.dll"/>
+      </references>
+      <resources failonempty="true" dynamicprefix="true" prefix="Remotion.Data.DomainObjects">
+        <include name="Schemas/*.xsd" />
+      </resources>
+    </csc>
+  </target>
+
+</project>

@@ -1,0 +1,32 @@
+1. Prerequisites
+  * Installation NAnt Version 0.85-20051213: <\\at-vie-dc-02\Install\NAnt\nant-bin-0.85-20051213.zip>
+		zB nach c:\program files\nant
+		bin verzeichnis in PATH aufnehmen
+  * Remotion.Nant.Tasks.dll von SourceSafe rubicon\tools\NantTasks\NantTasks\bin in das lokale 
+	  NAnt-bin Verzeichnis (C:\Program Files\NAnt\bin) kopieren.
+  * NAnt.exe.config im NAnt-bin Verzeichnis: 
+    default .net Framework auf 1.1 setzen
+      Zeile 21: <platform name="win32" default="net-1.1">
+    Startup-Framework auf net-1.1 einstellen.
+      Zeile 1660: <startup>... <supportedFramework version=1.1..."/> als ersten Eintrag hinterlegen.
+      Für .net 2.0 Build: <supportedFramework version=2.0..."/> als ersten Eintrag hinterlegen.
+  * files aus SourceSafe rubicon\global holen
+  * Installierte SQL Server 2000 Instanz "Build"
+    und die Datei C:\Program Files\Microsoft SQL Server\80\Tools\Binn\osql.exe
+  * Installation von NUnit 2.2.8 .net 2.0
+  
+2. Build-Prozess
+  1.	Überprüfen dass die lokale Kopie der Solution kompiliert.
+  2.	Einchecken was noch nicht eingecheckt ist.
+  3.	Get Latest Version auf die Solution durchführen.
+  4.	Überprüfen dass die Solution immer noch fehlerfrei kompiliert.
+  5.	.net Kommandozeile öffnen, aktuelles Verzeichnis auf C:\Development\libraries\Commons setzen
+  6.	buildversion.xml auschecken
+  7.	.net Kommandozeile: nant incversion
+  8.	buildversion.xml einchecken
+  9.	Solution schließen
+  10.	.net Kommandozeile: buildall [nodoc]
+  11.   Einchecken von: C:\Development\libraries\Commons\build\<VERSION>
+  12.   Remotion_VERSION.zip und Remotion_SourceCode_<VERSION>.zip
+        nach SourceSafe rubicon\libraries\Commons\build.
+  13.   Source Safe Label mit der Versionsnummer vergeben (angenäherter Stand).

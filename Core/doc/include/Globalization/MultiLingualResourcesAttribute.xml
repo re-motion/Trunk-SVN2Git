@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<MultiLingualResourcesAttribute>
+  <GetResourceManager>
+    <Common>
+      <remarks>
+        ResourceManagerWrappers are cached after their first initalization.
+      </remarks>
+      <returns>
+        The <c>ResourceManagerWrapper</c> containing the type's resource containers.
+      </returns>
+    </Common>
+    <param name="objectType">
+      The type for which the resource manager is wanted.
+    </param>
+    <param name="includeHierarchy">
+      Include the resource managers for the base types.
+    </param>
+    <param name="definingType">
+      The base type where the <c>MultiLingualResourcesAttribute</c> was defined.
+    </param>
+  </GetResourceManager>
+  <GetResourceManagers>
+    <remarks>
+      ResourceManagers are cached after their first initalization.
+    </remarks>
+    <param name="assembly">
+      The assembly containing the resources.
+    </param>
+    <param name="resourceAttributes">
+      The <see cref="MultiLingualResourcesAttribute"/> instances specifying the the resource managers.
+    </param>
+    <returns>
+      A <b>ResourceManager</b> Array containing the type's resource containers.
+    </returns>
+  </GetResourceManagers>
+  <FindFirstResourceDefinitions>
+    <param name="concreteType">The type to be analyzed</param>
+    <param name="noUndefinedException">
+      If true, don't throw an exception when MultiLingualResourcesAttribute is not defined.
+      Required for hierarchical search.
+    </param>
+    <param name="definingType">
+      The base type where the <b>MultiLingualResourcesAttribute</b> was defined.
+    </param>
+    <param name="resourceAttributes">
+      The <b>MultiLingualResourcesAttribute</b> instances associated with <paramref name="concreteType"/>.
+    </param>
+  </FindFirstResourceDefinitions>
+</MultiLingualResourcesAttribute>

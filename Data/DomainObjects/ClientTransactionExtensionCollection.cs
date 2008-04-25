@@ -1,0 +1,329 @@
+using System;
+using System.ComponentModel;
+using Remotion.Data.DomainObjects.Queries;
+using Remotion.Utilities;
+
+namespace Remotion.Data.DomainObjects
+{
+  /// <summary>
+  /// A collection of <see cref="IClientTransactionExtension"/>s.
+  /// </summary>
+  [Serializable]
+  public class ClientTransactionExtensionCollection : CommonCollection, IClientTransactionExtension
+  {
+    // types
+
+    // static members and constants
+
+    // member fields
+
+    // construction and disposing
+
+    /// <summary>
+    /// Creates a new object.
+    /// </summary>
+    public ClientTransactionExtensionCollection ()
+    {
+    }
+
+    // methods and properties
+
+    /// <summary>
+    /// Gets an <see cref="IClientTransactionExtension"/> by the extension name.
+    /// </summary>
+    /// <param name="extensionName">The name of the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
+    /// <returns>The <see cref="IClientTransactionExtension"/> of the given <paramref name="extensionName"/> or <see langword="null"/> if the name was not found.</returns>
+    public IClientTransactionExtension this[string extensionName]
+    {
+      get 
+      {
+        ArgumentUtility.CheckNotNullOrEmpty ("extensionName", extensionName);
+
+        return (IClientTransactionExtension) BaseGetObject (extensionName); 
+      }
+    }
+
+    /// <summary>
+    /// Gets the <see cref="IClientTransactionExtension"/> of a given <paramref name="index"/>.
+    /// </summary>
+    /// <param name="index">The index of the extension to be retrieved.</param>
+    /// <returns>The <see cref="IClientTransactionExtension"/> of the given <paramref name="index"/>.</returns>
+    public IClientTransactionExtension this[int index]
+    {
+      get { return (IClientTransactionExtension) BaseGetObject (index); }
+    }
+
+    /// <summary>
+    /// Adds an <see cref="IClientTransactionExtension"/> to the collection.
+    /// </summary>
+    /// <param name="extensionName">A name for the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
+    /// <param name="clientTransactionExtension">The extension to add. Must not be <see langword="null"/>.</param>
+    /// <exception cref="System.ArgumentException">An extension with the given <paramref name="extensionName"/> is already part of the collection.</exception>
+    /// <remarks>The order of the extensions in the collection is the order in which they are notified.</remarks>
+    public void Add (string extensionName, IClientTransactionExtension clientTransactionExtension)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("extensionName", extensionName);
+      ArgumentUtility.CheckNotNull ("clientTransactionExtension", clientTransactionExtension);
+      if (BaseContainsKey (extensionName)) 
+        throw CreateArgumentException ("extensionName", "An extension with name '{0}' is already part of the collection.", extensionName);
+      
+      BaseAdd (extensionName, clientTransactionExtension);
+    }
+
+    /// <summary>
+    /// Removes an <see cref="IClientTransactionExtension"/> from the collection.
+    /// </summary>
+    /// <param name="extensionName">The name of the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
+    public void Remove (string extensionName)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("extensionName", extensionName);
+
+      BaseRemove (extensionName);
+    }
+
+    /// <summary>
+    /// Gets the index of an <see cref="IClientTransactionExtension"/> with a given <paramref name="extensionName"/>.
+    /// </summary>
+    /// <param name="extensionName">The name of the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
+    /// <returns>The index of the extension, or -1 if <paramref name="extensionName"/> is not found.</returns>
+    public int IndexOf (string extensionName)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("extensionName", extensionName);
+
+      return BaseIndexOfKey (extensionName);
+    }
+
+    /// <summary>
+    /// Inserts an <see cref="IClientTransactionExtension"/> intto the collection at a specified index.
+    /// </summary>
+    /// <param name="extensionName">A name for the extension. Must not be <see langword="null"/> or <see cref="System.String.Empty"/>.</param>
+    /// <param name="clientTransactionExtension">The extension to insert. Must not be <see langword="null"/>.</param>
+    /// <param name="index">The index where the extension should be inserted.</param>
+    /// <exception cref="System.ArgumentException">An extension with the given <paramref name="extensionName"/> is already part of the collection.</exception>
+    /// <remarks>The order of the extensions in the collection is the order in which they are notified.</remarks>
+    public void Insert (int index, string extensionName, IClientTransactionExtension clientTransactionExtension)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("extensionName", extensionName);
+      ArgumentUtility.CheckNotNull ("clientTransactionExtension", clientTransactionExtension);
+      if (BaseContainsKey (extensionName))
+        throw CreateArgumentException ("extensionName", "An extension with name '{0}' is already part of the collection.", extensionName);
+
+      BaseInsert (index, extensionName, clientTransactionExtension);
+    }
+
+    private ArgumentException CreateArgumentException (string parameterName, string message, params object[] args)
+    {
+      return new ArgumentException (string.Format (message, args), parameterName);
+    }
+
+    #region Notification methods
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void SubTransactionCreating (ClientTransaction parentClientTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("parentClientTransaction", parentClientTransaction);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.SubTransactionCreating (parentClientTransaction);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("parentClientTransaction", parentClientTransaction);
+      ArgumentUtility.CheckNotNull ("subTransaction", subTransaction);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.SubTransactionCreated (parentClientTransaction, subTransaction);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.NewObjectCreating (clientTransaction, type);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void ObjectLoading (ClientTransaction clientTransaction, ObjectID id)
+    {
+      ArgumentUtility.CheckNotNull ("id", id);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.ObjectLoading (clientTransaction, id);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void ObjectsLoaded (ClientTransaction clientTransaction, DomainObjectCollection loadedDomainObjects)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("loadedDomainObjects", loadedDomainObjects);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.ObjectsLoaded (clientTransaction, loadedDomainObjects);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.ObjectDeleting (clientTransaction, domainObject);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.ObjectDeleted (clientTransaction, domainObject);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
+      ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.PropertyValueReading (clientTransaction, dataContainer, propertyValue, valueAccess);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
+      ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.PropertyValueRead (clientTransaction, dataContainer, propertyValue, value, valueAccess);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.PropertyValueChanging (clientTransaction, dataContainer, propertyValue, oldValue, newValue);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.PropertyValueChanged (clientTransaction, dataContainer, propertyValue, oldValue, newValue);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+      ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.RelationReading (clientTransaction, domainObject, propertyName, valueAccess);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+      ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.RelationRead (clientTransaction, domainObject, propertyName, relatedObject, valueAccess);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObjectCollection relatedObjects, ValueAccess valueAccess)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+      ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
+      ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.RelationRead (clientTransaction, domainObject, propertyName, relatedObjects, valueAccess);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.RelationChanging (clientTransaction, domainObject, propertyName, oldRelatedObject, newRelatedObject);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.RelationChanged (clientTransaction, domainObject, propertyName);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void FilterQueryResult (ClientTransaction clientTransaction, DomainObjectCollection queryResult, IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("queryResult", query);
+      ArgumentUtility.CheckNotNull ("queryResult", query);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.FilterQueryResult (clientTransaction, queryResult, query);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void Committing (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.Committing (clientTransaction, changedDomainObjects);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void Committed (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.Committed (clientTransaction, changedDomainObjects);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void RollingBack (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.RollingBack (clientTransaction, changedDomainObjects);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void RolledBack (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);
+
+      foreach (IClientTransactionExtension extension in this)
+        extension.RolledBack (clientTransaction, changedDomainObjects);
+    }
+
+    #endregion
+  }
+}

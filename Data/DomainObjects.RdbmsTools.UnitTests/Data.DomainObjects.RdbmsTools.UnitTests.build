@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
+<project xmlns="nant-schema" name="Remotion.Data.DomainObjects.RdbmsTools.UnitTests">
+  
+  <target name="build" description="perform a build">
+    <csc  target="library"
+          output="${build.test.outputdir}/${project.output}.${project.extension}"
+          debug="${build.debug}"
+          define="${build.csc.define}">
+      <nowarn>
+      </nowarn> 
+      <sources failonempty="true">
+        <include name="**/*.cs"/>
+        <include name="Properties/**/*.cs" />
+        <exclude name="Properties/AssemblyInfoTemplate.cs" />
+      </sources>
+      <references failonempty="true">
+        <include asis="true" name="${build.test.outputdir}/Remotion.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.Interfaces.dll"/>
+        <include asis="true" name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.RdbmsTools.dll"/>
+        <include asis="true" name="${build.test.outputdir}/nunit.framework.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Rhino.Mocks.dll"/>
+        <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Configuration.dll"/>
+      </references>
+      <resources failonempty="true" dynamicprefix="true" prefix="Remotion.Data.DomainObjects.RdbmsTools.UnitTests">
+        <include name="SchemaGeneration/SqlServer/TestData/*.sql" />
+      </resources>
+    </csc>
+  </target>
+  
+</project>

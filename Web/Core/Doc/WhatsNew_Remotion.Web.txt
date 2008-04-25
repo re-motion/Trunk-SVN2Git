@@ -1,0 +1,1671 @@
+1.7.61
+======
+- Rubicon.Web.UI.Controls.SmartLabel
+  Property Text unterstützt nun das selbstständige Auslesen von Reosurcen über das $res-Prefix.
+
+- Rubicon.Web.UI.Controls.FormGridLabel
+  Property Text unterstützt nun das selbstständige Auslesen von Reosurcen über das $res-Prefix.
+
+- Rubicon.Web.UI.Controls.SmartLabel
+  Property NoticeText unterstützt nun das selbstständige Auslesen von Reosurcen über das $res-Prefix.
+ 
+1.7.59
+======
+- Das Framework generiert die Border-Elemente nun via Javascript: ScriptUtility.RegisterElementForBorderSpans (page, elementID).
+  Der Entwickler muss ein Element mit ID sowie ein SubElement bereit stellen, in dem der Content steht. Die Border-Elemente werden 
+  am Ende des Contents eingefügt.
+  
+  * Für Elemente ohne Scrolling
+  <element id="elementID">
+    <elementBody>
+      eigener content      
+      <!-- Border-Elemente werden hier generiert -->
+    <elementBody>
+  </element>
+
+  * Für Elemente mit Scrolling
+  <element id="elementID">
+    <elementBody>
+      <scrollableElement>
+        eigener content      
+      </scrollableElement>
+      <!-- Border-Elemente werden hier generiert  -->
+    <elementBody>
+  </element>
+
+1.7.58
+======
+- Das Framework generiert nur noch absolute URLs ohne Servernamen für Commands und Navigationcontrols.
+- UrlUtility.GetAbsolutePath (...): Der DefaultValue für inlcudeServer ist nun false anstatt true. Damit wird der Servername nicht mehr
+  automatisch inkludiert.
+- UrlUtility.ResolveUrl (...): Der Servername wird nicht mehr inkludiert.
+
+1.7.48
+======
+- ASP.NET 2.0 AJAX Extensions 1.0 müssen installiert sein.
+  Download: http://go.microsoft.com/fwlink/?LinkID=77296
+  Übersichtsseite: http://asp.net/ajax/
+
+1.7.47
+======
+- Rubicon.Web.UI.Controls.WebTreeView
+  Layout wird nun durch Listen-Elemente anstatt durch DIV-Elemente erzeugt.
+  Anpassungen im CSS:
+    neue Klasse: ul.treeViewRoot
+    div.treeViewTopLevelNodeChildren -> ul.treeViewTopLevelNodeChildren
+    div.treeViewNodeChildren  -> ul.treeViewNodeChildren
+    div.treeViewNodeChildrenNoLines -> ul.treeViewNodeChildrenNoLines
+  
+1.7.46
+======
+- Rubicon.Web.UI.Controls.LengthValidator
+  * MinimumLength und MaximumLength verwenden nun nullable Int32 anstatt NaInt32.
+
+- Rubicon.Web.UI.Controls.NumericValidator
+  * AllowNegative verwendet nun Boolean anstatt NaBoolean.
+
+- Rubicon.Web.UI.Controls.WebButton  
+  * UseLegacyButton nun Boolean anstatt NaBooleanEnum.
+
+- Rubicon.Web.UI.SmartPage
+  * EnableStatusIsSubmittingMessage, EnableSmartScrolling, EnableSmartFocusing verwenden nun nullable Boolean anstatt von NaBooleanEnum.
+
+- Rubicon.Web.ExecutionEngine.WxePage
+  * EnableOutOfSequencePostBacks, EnableAbort, EnableStatusMessages verwenden nun nullable Boolean anstatt von NaBooleanEnum.
+
+1.7.42
+======
+- Rubicon.Web.UI.Design
+  WebDesignModeHelper: Implementierung von IDesignModeHelper für Web-Projekte.
+
+1.7.41
+======
+- Security:
+  IWebSecurityProvider zu IWebSecurityAdapter umbenannt.
+  IWxeSecurityProvider zu IWxeSecurityAdapter umbenannt.
+
+1.7.37
+======
+- ExecutionEngine
+  * Bugfix: Wenn eine PermanentURL einer neuer Funktion die Maximallänge überschritt, konnte man die Ausführung der neuen Funktion nicht mehr beenden.
+    Neues Verhalten: die neu ausgeführte Funktion wird abgebrochen.
+
+1.7.32
+======
+- Rubicon.Web.UI.Smartpage
+  * Bugfix: Smartpage konnte nicht mit verschachtelten MasterPages umgehen.
+  
+1.7.30
+======
+
+- Rubicon.Web.UI.SmartPage
+  * Bugfix: In bestimmten Situationen (kein HTML-Element aktiv) konnte es beim weg-navigieren von der Seite zu einen Javascript Fehler kommen.
+  * Neues Feautre: function RenderThisHtml (string) um beliegigen HTML Text an der aufrufenden Stelle in die Seite zu rendern.
+    (Benötigt, wenn für ActiveX das Javascript iin einer separaten Datei liegen muss.)
+
+1.7.29
+======
+- Rubicon.Web.Utilities
+  * Bugfix: RegisterClientScriptBlock hat Scripte als StartupScript (d.h. am Ende der Seite) registriert, 
+    anstatt als ClientScript (d.h. zu Beginn der Seite). Aufgetreten mit 1.7.0
+  
+1.7.21
+======
+- FormGridManager:
+  * Bugfix: Wurde ein Validator verwendet, der keinem Control zugeordnet ist, aber trotzdem einen Validierungsfehler hat, gab es eine
+    ArgumentNullException.
+  
+1.7.18
+======
+- WxeTransactionBase und WxeTransactedFunctionBase sind nun Generic Types. Innerhalb einer Parent-Child Hierarchy müssen alle WxeTransactionBase's
+  den gleichen Typ für die ITransaction verwenden.
+
+- WxeTransactionBase:
+  * Neue Events TransactionCreating und TransactionCreated und dazugehörige OnTransactionCreating bzw OnTransactionCreated Methoden.
+
+- WxeTransactedFunctionBase:
+  * Neue Events TransactionCreating und TransactionCreated und dazugehörige OnTransactionCreating bzw OnTransactionCreated Methoden.
+
+1.7.16
+======
+- Execution Engine URL Mapping akzeptiert nun Pfade relativ zum Application Root (Prefix: "~/") und Pfade relativ zum bin-Verzeichnis.
+
+1.7.11
+======
+- WxePage
+  * Bugfix: Out-of-sequence-post-backs wurden nicht erkannt wenn das Form in einem NamingContainer != der Page war (z.B.: MasterPage).
+
+- FormGridManager  
+  * Spacer-Image hat unter .net 2.0 keinen leeren Alternate Text gerendert.
+  
+1.7.10
+======
+- WebTab
+  * Methode EvaluateDisabled zu EvaluateEnabled umgebaut und Semantik invertiert.
+
+- WxeUserControl
+  * Bugfix: Geerbte Property "Page" vom Typ "System.Web.UI.Page" wurde von neu-definierten Property "Page" 
+    vom Typ "Rubicon.Web.ExecutionEngine.IWxePage" überschrieben. Diese Property wurde nun zu "WxePage" umbenannt. 
+    Unter .net 2.0 hat dies zu Casting-Problemen im generierten Code geführt.
+
+- WxeFunction
+  * Exception Logik geändert. Nicht abgefangene Exceptions werden nun in einer WxeUnhandledException gekapselt, damit ASP.NET in der Lage ist,
+    bessere Fehlermeldungen anzuzeigen. Bis jetzt wurde immer nur ein Fehler auf der ausführenden Seite angezeigt, nicht aber die eigentliche 
+    Ursache des Problems.
+    
+1.7.3
+=====
+- WxeFunction
+  * Obsolete Methode GetParamaterDeclarations entfernt. Statt dessen ist GetParameterDeclarations vorgesehen. (Siehe auch 1.4.7)
+
+1.5.55
+======
+- TabbedMultiView 
+  * Bugfix: Visibility in ASP.NET 2.0 unterschied sich von ASP.NET 1.1 -> FormGridManager und Validation haben nicht korrekt funktioniert.
+  
+1.4.54
+======
+- TabbedMultiView
+  * Unterstützt LazyLoading unter ASP.NET 2.0
+  
+1.4.53
+======
+- TabbedMultiView
+  * Bugfix: TabbedMultiView hat nicht korrekt funktioniert, wenn LazyLoading abgeschaltet war.
+  
+1.4.51
+======
+- TabbedMultiView 
+  * unterstützt LazyLoading (Aktiviert via EnableLazyLoading)
+    Derzeit nur .net 1.1
+  * Bei aktivem LazyLoading müssen Controls programmatisch in den TabView eingehängt werden, 
+    bevor der TabView in den TabbedMultiView hinzugefügt wird, da sosnt eine Exception geworfen wird.
+  * Aktiviert mittels Property EnableLazyLoading
+  * Bevor validiert wird, müssen die Tabs Ensured werden:
+    MultiView.EnsureAllLazyLoadedViews();
+    Zusätzlich muss entweder auf die FormGridManager oder auf die IDataEditControls die PrepareValidation() Methode aufgerufen werden.
+
+1.4.48
+======
+- WxePage, SmartPage
+  * Bugfix: Auf Seiten ohne BusinessObjectControls, Rubicon WebButtons, etc kam es zu einem Javascriptfehler (__doPostBack not found).
+  * Bugfix: Auf Seiten die Refreshed, etc wurden, ohne dass ein Element zuvor den Fokus bekommen hatte, gab es einen Javascriptfehler.
+    (Trag nur auf Seiten ohne Input-Controls auf).
+    
+1.4.37
+======
+- DropDownMenu
+  * Commands vom Typ Href haben Target nicht ausgewertet.
+  
+1.3.36
+======
+- Rubicon.Web.ExecutionEngine.WxePageStep
+  * Bugfix: Enthielt der QueryString Doppelpunkte, so gab es eine Invalid-Path Exception.
+
+1.3.35
+======
+- Rubicon.Web.UI.Controls.FormGridManager
+  * BugFix: Required-Icon AlternateText in Deutsch wurde nicht korrekt HTML-encoded 
+    -> Umlaute wurden 2x encoded gerendert. Aufgetreten mit 1.4.23.
+
+1.4.24
+======
+- Bugfix in den Styles: IE hatte beim Ändern der Schriftgröße Probleme:
+  Schriftgröße in Input-Elementen hat nicht mit-sklaliert.
+
+1.4.23
+======
+- Rubicon.Web.ExecutionEngine.WxeContext
+  * Property QueryString von Typ String auf Typ NameValueCollection geändert.
+    Mit der Methode Rubicon.Web.Utilities.FormatQueryString(...) kann die NameValueCollection in einen String 
+    konvertiert werden.
+
+- Rubicon.Web.ExecutionEngine.WxePage
+  * Neue Overloads für ExecuteFunctionExternal für externe FunctionCalls im selben Fenster via Redirect.
+    void ExecuteFunctionExternal (
+        WxeFunction function, bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters);
+    void ExecuteFunctionExternal (
+        WxeFunction function, bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters,
+        bool returnToCaller, NameValueCollection callerUrlParameters);
+
+- Rubicon.Web.ExecutionEngine.WxePageStep
+  * Es werden auch die URL Paramter an die aufgerufene Seite mitübergeben.
+  
+1.4.21
+======
+- Rubicon.Web.UI.Controls.WebTabStrip
+  * Rahmen von Tabelle auf DIV umgestellt. In im Projekt überschriebenen CSS-Klassen muss folgender Identifier 
+    geändert werden: 
+    table.tabStrip -> div.tabStrip
+
+- Rubicon.Web.UI.Controls.TabbedMultiView
+  * Rahmen des Tabstrips von Tabelle auf DIV umgestellt. In im Projekt überschriebenen CSS-Klassen muss folgender 
+    Identifier geändert werden:
+    table.tabbedMultiViewTabStrip -> div.tabbedMultiViewTabStrip
+  * Sämtliche Table-Formatierung in das CSS-File ausgelagert. Falls eine andere Klasse als die Standardklasse verwendet
+    wird, müssen die Formatierungen dort nachgetragen werden.  
+  
+- Rubicon.Web.UI.Controls.TabbedMenu
+  * Rahmen der Tabstrips von Tabelle auf DIV umgestellt. In im Projekt überschriebenen CSS-Klassen muss folgender 
+    Identifier geändert werden:
+    table.tabbedMainMenu -> div.tabbedMainMenu
+    table.tabbedSubMenu -> div.tabbedSubMenu
+  * Sämtliche Table-Formatierung in das CSS-File ausgelagert. Falls eine andere Klasse als die Standardklasse verwendet
+    wird, müssen die Formatierungen dort nachgetragen werden.  
+
+1.4.17
+======
+- Rubicon.Web.ExecutionEngine.WxeContext
+  * Set-Accessor für IsPostBack auf Set-Methode (SetIsPostBack) umgestellt.
+  * Set-Accessor für IsReturningPostBack auf Set-Methode (SetIsReturningPostBack) umgestellt.
+  
+- Rubicon.Web.ExecutionEngine.WxePage
+  * Unterstützung für Out-Of-Sequence Postbacks (d.h. Postbacks von bereits submittenen Seiten aus dem Browsercache):
+    Aktiviert wenn sowohl EnableOutOfSequencePostBacks = True als auch EnableAbort = False gesetzt ist.
+    IsOutOfSequencePostBack sollte in Postback-Eventhandlern, etc abgefragt werden, wenn eine Page Out-Of-Sequence 
+        Postback Unterstützung bietet.
+  
+1.4.16
+======
+- Rubicon.Web.UI.Controls.Command, Rubicon.Web.UI.Controls.Command.WebMenuItem
+  * Optimierungen für VS 2005 Designer
+
+1.4.14
+======
+- Namespace korrigiert: IControl, ITemplateControl, ISmartControl, IUserControl, IValidatableControl, ISupportsPostLoadControl
+  waren anders als in Version 1.4.1 beschrieben noch nicht im Namespace Rubicon.Web.UI.Controls zu finden.
+
+1.4.13
+======
+- SmartHyperLink
+  * Neues Control. Inkludiert die Navigation URL Parameter beim Rendering.
+
+- ISmartNavigablePage
+  * GetNavigationUrlParameters, AppendNavigationUrlParameters: Neue Methoden um die  Navigation URL Parameter 
+    abzufragen bzw an eine URL anzuhängen.
+  
+1.4.12
+======
+- WxeParameterAttribute
+  * Required: Bisher default = false. Neu: default = true für value type parameter, false für reference type parameter.
+  * Property Number heißt jetzt Index
+
+- UrlMapping
+  * Jedes Mapping kann mit einer optionalen ID versehen werden. 
+    Diese ID kann anschließend bei den Commands (TabbedMenu, BocList, etc) verwendet werden, um die Function anzugeben.
+
+- TabbedMenu
+  * WxeFunctionCommand.MappingID: Neue Property um statt des FunctionTypes lediglich die ID im UrlMapping angeben zu 
+    können. Werden sowohl MappingID und TypeName angeben, müssen diese die gleiche Function angeben.
+    
+1.4.10
+======
+- ExecutionEngine
+  * WxeFunctions können nun auch in einem ASP.NET 2.0 Web Projekt definiert werden (App_Code Assembly).
+    In diesem Fall ist kein Assemblyname anzugeben.
+  
+- Rubicon.Web.ExecutionEngine.WxeHandler
+  * WxeReturnToSelf: Neuer WXE Url Parameter, wenn er "True" ist, wird die Request-URl als Return URL verwendet.
+    Eine explizit angegebene ReturnUrl überschreibt diesen URL Parameter.  
+    
+- Rubicon.Web.UI.Controls.TabbedMenu
+  * WxeFunctionCommand:
+    Die WxeFunction wird neu gestartet, sobald sie zu Ende ist. (siehe Wxe Parameter: WxeReturnToSelf)
+    Bei HrefCommands muss der URL Parameter manuell angegeben werden.
+
+- Rubicon.Web.Utilities
+  * WebTypeUtility: Neue Klasse um Typen in WebProjekten aufzulösen. Berücksichtigt die Besonderheiten von ASP.NET 2.0,
+    Stichwort: App_Code Assembly.   
+          
+1.4.7
+=====
+- Rubicon.Web.ExecutionEngine.WxeFunction
+  * GetParameterDeclarations(): Tippfehler gefixed: GetParam_a_terDeclarations
+
+1.4.6
+=====
+- Rubicon.Web.UI.Globalization.WebMultiLingualResourcesAttribute
+  * Spezialisierung des Rubicon.Globalization.MultiLingualResourcesAttribute, welche auf die Besonderheiten von
+    .net 2.0 eingeht. Seihe Dokumentation von WebMultiLingualResourcesAttribute für (Migrations-) Details.
+  
+1.4.1
+=====
+- Rubicon.Web.UI.SmartPage
+  * Bietet Dirty-State Handling.
+  * EnableAbortConfirmation: Umgestellt zu ShowAbortConfirmation mit den Werten "Never", "Always", und "OnlyIfDirty".
+    Defaultwert: "OnlyIfDirty". Bisher: "Undefined", was "Never" entsprochen hat.
+    Werden unbound BOCs verwendet, so sollte das Setzen von Value mittels LoadUnboundValue() durchgeführt werden.
+      Alternativ kann IsDirty manuell rückgesetzt werden. Andernfalls ist die Page zu Beginn bereits dirty und die 
+      AbortConfirmation Message wird angezeigt. zB: Suchseiten.
+      Als 3. Option kann ShowAbortConfirmation auf "Never" gesetzt werden.
+    Für WXE Pages: benötigt man die AbortConfirmation als Schutz vor History-Back, so muss "Always" verwendet werden.
+      Benötigt man ledigleich eine Sicherheitsabfrage für die Navigation mittels Links (Stichwort: NavigationTabs),
+      oder beim Schließen des Fensters, so wird "OnlyIfDirty" empfohlen.
+
+- Namespace geändert:
+  Rubicon.Web.UI.IControl -> Rubicon.Web.UI.Controls.IControl
+  Rubicon.Web.UI.ITemplateControl -> Rubicon.Web.UI.Controls.ITemplateControl
+  Rubicon.Web.UI.ISmartControl -> Rubicon.Web.UI.Controls.ISmartControl
+  Rubicon.Web.UI.IUserControl -> Rubicon.Web.UI.Controls.IUserControl
+  Rubicon.Web.UI.IValidatableControl -> Rubicon.Web.UI.Controls.IValidatableControl
+  Rubicon.Web.UI.ISupportsPostLoadControl -> Rubicon.Web.UI.Controls.ISupportsPostLoadControl
+
+- Klassen in der Rubicon.Web.Legacy.dll:
+  Rubicon.Web.UI.INavigablePage
+  
+  Rubicon.Web.UI.MultiLingualPage
+  Rubicon.Web.UI.MultiLingualUserControl
+  Rubicon.Web.UI.NavigablePage
+  Rubicon.Web.UI.StandardPage
+  Rubicon.Web.UI.StandardUserControl
+  
+  Rubicon.Web.UI.Controls.CommandHandler
+  Rubicon.Web.UI.Controls.CurrencyTextBox
+  Rubicon.Web.UI.Controls.DataDropDownList
+  Rubicon.Web.UI.Controls.DateRangeValidator
+  Rubicon.Web.UI.Controls.DefaultTextControl
+  Rubicon.Web.UI.Controls.EntryFormGrid (und Anhang)
+  Rubicon.Web.UI.Controls.ExtendedDropDownList
+  Rubicon.Web.UI.Controls.Form
+  Rubicon.Web.UI.Controls.PostBackHandler
+  Rubicon.Web.UI.Controls.StandardButton
+  Rubicon.Web.UI.Controls.TabControl (und Anhang)
+  Rubicon.Web.UI.Controls.TableControl
+  Rubicon.Web.UI.Controls.ViewControl
+  Rubicon.Web.UI.Controls.WebControls
+     
+  Rubicon.Web.Utilities.ImageUtility
+   
+- Rubicon.Utilities.PageUtility
+  * Die folgenden Methoden sind in das Rubicon.Web.StandardPageUtility verschoben worden:
+    AddActiveTabParameter
+    AddCleanupToken
+    AddPageToken  
+    AddParentToken   
+    CallPage   
+    ClearSession   
+    ClearSessionValue   
+    CloseBrowserWindow   
+    DeleteOutdatedSessions   
+    GetCallParameters   
+    GetParentToken   
+    GetPhysicalHttpPageUrl   
+    GetPhysicalPageUrl
+    GetSessionValue   
+    GetToken  
+    GetUniqueKey  
+    GetUniqueToken   
+    GetWindowOpenJavascript   
+    NavigateTo   
+    RegisterOpenReportScript   
+    RegisterWindowOpenJavascript   
+    RemoveHttps   
+    SetSessionValue 
+
+  * Die folgenden Methoden sind in das Rubicon.Web.UrlUtility verschoben worden:
+    AddUrlParameter   
+    DeleteUrlParameter   
+    GetUrlParameter   
+
+  * Die folgenden Methoden sind in das Rubicon.Web.ScriptUtility verschoben worden:
+    EscapeClientScript 
+    RegisterClientScriptBlock   
+    RegisterStartupScriptBlock  
+
+  * Die folgenden Methode ist durch Rubicon.Web.UI.HtmlHeadAppender.RegisterJavascriptInclude ersetzt worden:
+    RegisterClientScriptInclude   
+
+1.3.28
+======
+- Rubicon.Web.TabbedMultiView
+  * TabStyle und TabSelectedStyle:  
+    TabSelectedStyle umbenannt zu SelectedTabStyle.
+    Properties BorderColor, BorderStyle, BorderWidth, Width und Height wurden entfernt.
+  * TabStripStyle, SeparatorStyle und TabsPaneStyle entfernt.
+  * HTML und CSS wurde komplett überarbeitet um den Browsersupport zu verbessern.
+    In der Applikation überschriebene CSS Klassen müssen daher angepasst werden.
+      "div.tabbedMultiViewTabStrip" -> "table.tabbedMultiViewTabStrip"
+      "div.tabStripTabsPane" -> "table.tabbedMultiViewTabStrip div.tabStripTabsPane"
+        "border-bottom" kann beibehalten werden.
+      "div.tabStripTabsPane table"
+        "margin-top" muss nach "table.tabbedMultiViewTabStrip div.tabStripTabsPane ul li" übernommen werden.
+        "margin-bottom" muss nach "table.tabbedMultiViewTabStrip div.tabStripTabsPane ul" übernommen werden.
+      "td.tabStripTab"
+        "border-top" muss nach "table.tabbedMultiViewTabStrip span.tabStripTab a span.top" übernommen werden.
+        "border-bottom" muss nach "table.tabbedMultiViewTabStrip span.tabStripTab a span.bottom" übernommen werden.
+        "background-color" muss nach "table.tabbedMultiViewTabStrip span.tabStripTab a" übernommen werden.
+        "cursor" muss nach "table.tabbedMultiViewTabStrip span.tabStripTab a" übernommen werden.
+        "padding" muss nach "table.tabbedMultiViewTabStrip span.tabStripTab a span.content" übernommen werden.
+      "td.tabStripTabSelected"
+        "border-top" muss nach "table.tabbedMultiViewTabStrip span.tabStripTabSelected a span.top" übernommen werden.
+        "border-bottom" muss nach "table.tabbedMultiViewTabStrip span.tabStripTabSelected a span.bottom" übernommen 
+          werden.
+        "background-color" muss nach "table.tabbedMultiViewTabStrip span.tabStripTabSelected a" übernommen werden.
+        "cursor" muss nach "table.tabbedMultiViewTabStrip span.tabStripTabSelected a" übernommen werden.
+        "padding" muss nach "table.tabbedMultiViewTabStrip span.tabStripTabSelected a span.content" übernommen werden.
+      "td.tabStripTabLeftBorder" -> "table.tabbedMultiViewTabStrip span.tabStripTab a span.left,
+        Statt "width" und "background-color" ist nun "border-left" zu verwenden.
+        "cursor" wird nicht mehr benötigt.
+      "td.tabStripTabLeftBorderSelected" -> "table.tabbedMultiViewTabStrip span.tabStripTabSelected a span.left"
+        Statt "width" und "background-color" ist nun "border-left" zu verwenden.
+        "cursor" wird nicht mehr benötigt.
+      "td.tabStripTabRightBorder" -> "table.tabbedMultiViewTabStrip span.tabStripTab a span.right",
+        Statt "width" und "background-color" ist nun "border-right" zu verwenden.
+        "cursor" wird nicht mehr benötigt.
+      "td.tabStripTabRightBorderSelected" -> "table.tabbedMultiViewTabStrip span.tabStripTabSelected a span.right"
+        Statt "width" und "background-color" ist nun "border-right" zu verwenden.
+        "cursor" wird nicht mehr benötigt.
+      "td.tabStripSeparator" -> "table.tabbedMultiViewTabStrip span.tabStripTabSeparator"
+        "width" und "border-bottom" können beibehalten werden.
+        "cursor" wird nicht mehr benötigt.
+    
+- Rubicon.Web.UI.Controls.IconInfo
+  * IconInfo ist nicht mehr serialisierbar. Serilisierbarkeit wurde nur für ViewState benötigt und ist nun über 
+    TypeConverter gelöst.
+
+- Rubicon.Web.UI.Controls.WebTab
+  * Obsolete Property TabID entfernt.
+
+- Rubicon.Web.UI.Controls.Command
+  * Click Event:
+    Typ von EventHander auf CommandClickEventHandler geändert. Die EventArgs auf CommandClickEventArgs.
+    Als Sender wird nun das OwnerControl übergeben anstelle des Commands. 
+    Auf das Command kann über die Args abgefragt werden.
+  
+- Rubicon.Web.Configuration.ExecutionEngineConfiguration
+  * Attribut ViewStateInSession entfernt. ViewState ist nun imm in der Session.
+
+- Rubicon.Web.ExecutionEngine.UrlMapping.UrlMapping
+  * Umbenannt zu Rubicon.Web.ExecutionEngine.UrlMapping.UrlMappingEntry.
+
+- Rubicon.Web.ExecutionEngine.WxeTemplateControlInfo
+  * OnInit Methode entfernt. Initialize is stattdessen vorgesehen.
+
+- Rubicon.Web.ExecutionEngine.WxeHandler
+  * CurrentFunction Property entfernt. RootFunction ist stattdessen vorgesehen.
+  
+- Rubicon.Web.ExecutionEngine.WxePageEvents
+  Umbenannt zu SmartPageEvents im Namespace Rubicon.Web.UI.
+  
+- Rubicon.Web.ExecutionEngine.WxePage
+  * Leitet von Rubicon.Web.UI.SmartPage ab.
+  * CSS-Class #WxeStatusIsSubmittingMessage umbenannt zu #SmartPageStatusIsSubmittingMessage
+  * Obsolete Methoden void ExecuteFunction (WxeFunction, string, Control, bool)
+    und void ExecuteFunction (WxeFunction, string, string, Control, bool) entfernt.
+    Funktionalität wird durch void ExecuteFunctionExternal (WxeFunction, string, Control, bool)
+    bzw void ExecuteFunctionExternal (WxeFunction, string, Control, bool) bereitgestellt.  
+  * Obsolete Methode void OnBeforeInit() entfernt. Funktionalität wird nun void OnPreInit() bereitgestellt
+  * Resourcen:
+    "Rubicon.Web.ExecutionEngine.WxePageInfo.AbortMessage" umbenannt zu 
+      "Rubicon.Web.UI.SmartPageInfo.AbortMessage"
+    "Rubicon.Web.ExecutionEngine.WxePageInfo.StatusIsSubmittingMessage" umbenannt zu 
+      "Rubicon.Web.UI.SmartPageInfo.StatusIsSubmittingMessage"
+    
+- Rubicon.Web.Configuration.ExecutionEngineConfiguration
+  * FunctionTimeout muss größer als 0 und kleiner gleich dem SessionTimeout sein.
+  * RefreshIntervall muss größer gleich 0 und kleiner dem FunctionTimeout sein.
+  
+- Rubicon.Web.UI.SmartPage
+  * Neue Klasse. Bietet SmartNaviation ohne WXE-Funktionalität.
+  
+1.3.25
+======
+- Rubicon.Web.ExecutionEngine.WxePage
+  * Bugfix: Tippfehler in IsSubmittingMessage: Im Text stand "new" statt "neu".
+  * Die WxePage kann nun mit Javascript im Href Attribut des Anchor Tags umgehen wenn dieses Img-Tags umschließt.
+
+1.3.23
+======
+- Rubicon.Web.ExecutionEngine.WxePage
+  * Die WxePage kann nun mit Javascript im Href Attribut des Anchor Tags umgehen:
+    Javascript im Href Attribut wird unterdrückt wenn bereits ein Postback läuft.
+    Javascript im OnClick wird weiterhin abgearbeitet.
+    Postbacks in Javascript werden generell unterdrückt wenn bereits ein Postback läuft.
+  
+1.3.22
+======
+- ASP.NET SmartNavigation ist auf WxePages nicht mehr supported, da sie Nebeneffekte auf ClientScripts haben kann.
+  Statt dessen sei auf die rubicon SmartNavigation verwiesen.
+- Rubicon.Web.ExecutionEngine.WxePage
+  * Bugifx: Der Function Refresh hat zu einem Javascript-Fehler geführt. Resultat: kein Refreshing. 
+    Aufgetreten mit 1.3.21.
+  
+1.3.21
+======
+- Rubicon.Web.ExecutionEngine.WxePage
+  * Die Anzeige der Seite aus dem Cache wird nun detektiert und eine Statusmeldung angezeigt.
+    Der Text lässt sich mittels Resource überschreiben.
+      Rubicon.Web.ExecutionEngine.WxePageInfo.StatusIsCachedMessage
+    Es ist empfohlen, einen eigenen Statustext inkl Hyperlink anzubieten, über den der Benutzer wieder auf 
+    die Startseite (oder eine andere gütige Seite) navigieren kann.
+  * Die Namen der Resourcen 
+      Rubicon.Web.ExecutionEngine.WxePageInfo.IsAbortingMessage
+      Rubicon.Web.ExecutionEngine.WxePageInfo.IsSubmittingMessage
+    haben sich geängert:
+      Rubicon.Web.ExecutionEngine.WxePageInfo.StatusIsAbortingMessage
+      Rubicon.Web.ExecutionEngine.WxePageInfo.StatusIsSubmittingMessage
+   * Sämtliche Meldungen (AbortMessage, StatusIsXXXMessage) lassen sich nun auch via Property setzen.
+  * RegisterClientSideEventHandler: Neue clientseitige Eventshandler werden unterstüzt:  
+    OnScroll, OnResize, OnBeforeUnload, OnUnload
+- Rubicon.Web.ExecutionEngine.WxePage
+  * ExecuteFunctionXXX wertet nun den Parameter useParentPpermanentUrl aus.
+- Rubicon.Web.ExecutionEngine.WxeContext
+  * GetPermanentUrl: wertet nun den Parameter useParentPpermanentUrl aus.
+- Rubicon.Web.UI.Controls.DatePicker  
+  * Bugfix: Unter Umständen ist beim Öffnen des DatePickers der Internet Explorer abgestürtzt.
+    Vermutlich ein Bug im DOM-Tree.
+- Rubicon.Web.Configuration.ExecutionEngineConfiguration
+  * MaximumUrlLength: Gibt die maximale URL Länge für generierte Urls an.
+  
+1.3.20
+======
+- Rubicon.Web.UI.Controls.TabControl (NavigationTabs)
+  * Neues Verhalten auf WxePages:
+    Befindet sich das TabControl auf einer IWxePage und werden die die Tab-Links als PostBackLinks gerendert
+    (zB wenn die Seite zusätzlich INavigablePage implementiert), so wird nun das javascript im OnClick Attribut
+    gerendert und im Href Attribut eine '#'. Grund: Kompatibilität mit dem Multiple Postback Catching der WXE.
+    
+    Mittels der virtual Property IsWxeCompatibilityEnabled lässt sich das steuern.
+    Für Legacy Applikationen ohne WXE ändert sich nichts.
+
+- Rubicon.Web.ExecutionEngine.WxePage
+  * Unterdrückt nun mehrfache Postbacks.
+    mehrfache Submits -> Unterdrückt + Nachricht
+    mehrfache Aborts -> Unterdrückt + Nachricht
+    Submit after Abort -> Unterdrückt + Nachricht
+    Abort after Submit -> nicht Unterdrückt, keine Nachricht
+  * Zeigt nun eine Nachricht an, wenn der User versucht einen 2. Postback abzusenden.
+    Die Nachricht kann mittels der EnableStatusMessage Proprty deaktiviert werden.
+    Der Text lässt sich mittels Resource überschreiben.
+      Rubicon.Web.ExecutionEngine.WxePageInfo.IsAbortingMessage
+      Rubicon.Web.ExecutionEngine.WxePageInfo.IsSubmittingMessage
+
+1.3.19
+======
+- ExecutionEngine
+  * PermaUrls können nun unabhängig vom Mapping erzeugt werden. Existiert kein Mapping, so wird der FunctionType
+    als QueryString Parameter mitgegeben.
+
+1.3.18
+======
+- Rubicon.Web.ExecutionEngine.WxeContext
+  * static GetResumePath sind nun Instance Methoden. HttpRequest und HttpResponse sind aus der Signatur entfernt.
+  * GetPermanentUrl: Neue Methode um eine Perma-Link taugliche URL zu bekommen.
+  
+- Rubicon.Web.ExecutionEngine.WxePage
+  * GetPermanentUrl: Neue Methode um eine Perma-Link taugliche URL zu bekommen.
+
+1.3.17
+======
+- Rubicon.Web.ExecutionEngine.UrlMapping.UrlMappingConfiguration
+  Schema neu:  
+  1. Angabe des UrlMapping-Files in der Web.Confg:
+    <rubicon.web xmlns="http://www.rubicon-it.com/commons/web/configuration">
+      <executionEngine urlMappingFile="<PhysicalApplicationDir>\UrlMapping.xml"/>
+    </rubicon.web>
+  
+  2. UrlMapping-File:
+    <?xml version="1.0" encoding="UTF-8"?>
+    <urlMapping
+        xmlns="http://www.rubicon-it.com/Commons/Web/ExecutionEngine/UrlMapping/1.0" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.rubicon-it.com/Commons/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
+		  <add type="MyNamespace.MyFirstFunction,MyAssembly" resource="first.wxe"/>
+		  <add type="MyNamespace.MySecondFunction,MyAssembly" resource="second.wxe"/>
+		  ...
+    </urlMapping>
+    Nur das "resource" Attribut muss im Mapping eindeutig sein.
+
+- Rubicon.Web.ExecutionEngine.WxePage
+  * ExecuteFunctionExternal: erstetzt ExecuteFunction (WxeFunction, String, Control)
+    Gibt es ein Mapping für die übergebene WxeFunction, so wird grundsätzlich die Friendly URL angezeigt.
+  * Die Funktionalität von ExecuteFunctionWithMappedPath witd nun durch Overloads bereit gestellt.
+  
+1.3.16
+======
+- Rubicon.Web.Configuration.ResourceConfiguration
+  * Property RootMode aus der Config Section entfernt.
+  
+- Rubicon.Web.ExecutionEngine.WxeContext
+  * GetPath und GetResumePath haben keinen "absolute" Parameter mehr. Der Pfad ist immer absolut.
+  
+- Rubicon.Web.ExecutionEngine.WxeHandler
+  * Die WXE lässt sich nicht mehr mit extern definierten einem FunctionToken initialisieren.
+  
+- Rubicon.Web.ExecutionEngine.Mapping.MappingConfiguration
+  Wxe Function können nun auch via Pfad-Mapping (Friendly URL) identifiziert werden, statt wie bisher nur über den 
+  QueryParameter "WxeFunctionType".
+  
+  1. Angabe des UrlMapping-Files in der Web.Confg:
+    <rubicon.web xmlns="http://www.rubicon-it.com/commons/web/configuration">
+      <executionEngine mappingFile="<PhysicalApplicationDir>\UrlMapping.xml"/>
+    </rubicon.web>
+  
+  2. UrlMapping-File:
+    <?xml version="1.0" encoding="UTF-8"?>
+    <mapping
+        application="MyApplication"
+        xmlns="http://www.rubicon-it.com/Commons/Web/ExecutionEngine/Mapping/1.0" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.rubicon-it.com/Commons/Web/ExecutionEngine/Mapping/1.0 WxeMapping.xsd">
+	    <rules>
+		    <mapping functionType="MyNamespace.MyFirstFunction,MyAssembly" path="first.wxe"/>
+		    <mapping functionType="MyNamespace.MySecondFunction,MyAssembly" path="second.wxe"/>
+		    ...
+	    </rules>
+    </mapping>
+    Sowohl der Type als auch der Pfad müssen für sich eindeutig im gesamten Rule-Set sein.
+  
+  3. Falls nicht ashx als Extension verwendet wird:
+    Application Extension im IIS registrieren
+      aspnet_isapi.dll
+      All Verbs oder zumindest GET,HEAD,POST,DEBUG
+      Don't verify that file exists
+    HTTP Handler für die verwendete Extension in der Web.Config eintragen  
+      <system.web>
+        <httpHandlers>
+          <add verb="*" path="*.wxe" type="Rubicon.Web.ExecutionEngine.WxeHandler, Rubicon.Web" />
+        </httpHandlers>
+      </system.web>
+    
+- Rubicon.Web.ExecutionEngine.WxePage
+  Wird UrlMapping verwendet so kann mittels ExecuteFunctionWithMappedPath bzw ExecuteFunctionNoRepostWithMappedPath
+  die URL für die WxeFunction ausgetauscht werden. Damit wird erreicht, dass der Benutzer immer die zur aktuellen 
+  Function passende Firendly URL sieht und bookmarken kann. Ist die Session abgelaufen, so kann er die zur 
+  Friendly URL passende Function neu starten.
+  Die bei der initialisierung verwendeten Parameter müssen sich dafür von und nach Strings konvertieren lassen.
+  
+1.3.11
+======
+- Rubicon.Web.Configuration.WcagConfiguration
+  * Property Debug abgeändert zu Debugging vom Typ WcagDebugMode.
+
+- Rubicon.Web.Utilities.WcagUtility zu Rubicon.Web.UI.WcagHelper umgebaut.
+
+- Rubicon.Web.ExecutionEngine.WxePage
+  * Bugfix: AbortConfirmationMessage konnte nicht im Projekt überschrieben werden.
+  
+1.3.8
+=====
+- WxeTransactedFunctionBase
+  * Neue Klasse, Method Template für eine WxeFunction mit WxeTransactionBase
+  * Bietet Events und virtuelle Methoden für vor und nach Commit und RollBack
+  
+1.3.7
+=====
+- Execution Engine
+  * Bugfix: Function Abort hat im IE utner Umständen nicht korrekt funktioniert:
+    Concurrency Issues beim Reuqest absetzen
+    Neue Implementierung benötigt aktiviertes ActiveX im IE, ansonsten Fallback auf vorherige Lösung:
+    "Script ActiveX controls marked safe for scripting" und "Run ActiveX controls and plug-ins".
+- Rubicon.Web.ExecutionEngine.WxeTransactionBase
+  * Bugfix: Beim Aborting außerhalb des Execution-Cycles (dh durch einen Abort Request) steht nun die korrekte
+    CurrentTransaction bereit.
+    
+1.3.6
+=====
+- Rubicon.Web.ExecutionEngine.WxeTransactionBase
+  * Neue Events für vor und nach Commit und RollBack
+
+1.3.5
+=====
+- Rubicon.Web.UI.Controls.WebButton hatte einen Bug im WCAG Debugging Modus.
+- Web Configuration Doku überarbeitet.
+
+1.3.3
+=====
+- ResourceDispatching:
+  * Globale Resourcen verwenden nun das Prefix "$res:" statt "#res:" um Verwechslungen mit der ASP.net DataBinding
+    Syntax zu vermeiden.
+
+1.3.2
+=====
+- Rubicon.Web.ExecutionEngine.WxePage
+  * RegisterClientSideEventHandler: Neue Methode mit der man clientseitige Eventshandler registrieren kann.
+    Derzeit vorhanden für OnLoad, OnPostBack und OnAbort.
+
+- Rubicon.Web.UI.Controls.DropDownMenu      
+  * CSS-Klassen dropDownMenuHeadTitle und dropDownMenuHeadButton sind explizit für td definiert.
+  * Das DropDownMenu verwendet explizit Weiß als Hintergrundfarbe.
+  
+1.3.1
+=====
+- Rubicon.Web.UI.Controls.EmailAddressValidator
+  * Validator Control für Email-Adressen
+
+- Rubicon.Web.ExecutionEngine.WxeContext
+  * FunctionToken: Set-Accessor entfernt. Nur noch via Konstruktor setzbar.
+
+- Rubicon.Web.ExecutionEngine.WxeHandler
+  * CurrentFunction zu RootFunction umbenannt.
+  
+- Rubicon.Web.ExecutionEngine.WxePageStep
+  * Bugfix: Die gerade executed Function wurde nicht aborted, wenn der Step aborted wurde.
+
+- Rubicon.Web.ExecutionEngine.WxePage
+  * ExecuteFunction und ExecuteFunctionNoRepost testen nun, dass der Sender IPostBackDataHandler oder 
+    IPostBackDataHandler implementieren. Damit wird verhindert dass Pages oder UserControls (bzw andere 
+    inkompatible Controls) irrtümlich als Sender verwendet werden.
+    Dieses Verhalten gilt nur, wenn ExecuteFunction bzw ExecuteFunctionNoRepost von einem Event Handler aus 
+    aufgerufen werden.
+    
+- Rubicon.Web.ExecutionEngine.WxeStep
+  * ParentStep Set-Accessor in SetParentStep-Methode umgeschrieben.
+
+- Rubicon.Web.ExecutionEngine.WxeStepList bzw WxeFunction
+  * Static Fields sind nicht mehr erlaubt für Steps.
+  
+- Execution Engine Steps allegemein:
+  * Field und Method Steps sind nun auf Non-Public, Instance und Declared-Only beschränkt.
+  * Class Steps sind auf Non-Public und Declared-Only beschränkt.
+  
+- Rubicon.Web.UI.Controls.WebButton
+  * Bugfix: In Zusammenarbeit  mit WxePage.ExecuteFunctionNoRepost wurden trotzdem Events ausgelöst, 
+    unter Umständen auch beim falschen WebButton.
+  * Wird der WebButton im normalen Modeus betrieben (dh UserLegacyButton=false bzw nicht WAI konform),
+    so ist für das korrekte Verhalten zwingend aktiviertes Javascript erforderlich. Andernfalls gäbe es 
+    Inkompatibilitäten mit der WXE.
+
+- Resources Configuration Section
+  * RelativeToApplicationRoot ersetzt durch Enum RootMode. 
+    Defaultverhalten bleibt identisch
+
+- WAI Configuration Section
+  * Bugfix: Die Config-Section hatte einen Bug, wodurch das Conformance-Level nicht ausgewertet wurde.
+ 
+1.2.71
+======
+- WxeHandler
+  * Bugfix: Wurde die Refresh bzw Abort WxeAction nicht via QueryString übergeben, wurde sie nicht ausgewertet.
+    Auswirkungen in der Praxis: keine
+
+1.2.68
+======
+- ResourceDispatching
+  * Bugfix: gab es in der Seite keine Resourcen so warf der WebButton und der WebTreeView eine ArgumentNullException.
+    Aufgetreten mit 1.2.67.
+    
+- Execution Engine
+  * Der Function Token wird nun nicht mehr als Query String übergeben bei einem PostBack sondern mittels HiddenField. 
+  
+- WxePage
+  * Neue Property EnableSmartFocusing/IsSmartFocusingEnabled um seitenspezifisch das wiederherstellen des Focus   
+    zu deaktivieren (Default: true)
+  * Neue Property EnableSmartScrollinging/IsSmartScrollingEnabled um seitenspezifisch das wiederherstellen der
+    ScrollPosition zu deaktivieren (Default: true)
+  * Neue Methode SetFocus zum setzen des zu fokusierenden Controls.
+
+- Smart Navigation
+  * Stellt die ScrollPostionen und den Focus wieder her.
+  * Neuer Bereich in der Rubicon.Web Config: SmartNavigation
+  * Standardmäßig aktivert.
+
+1.2.67
+======
+- ResourceDispatching aus 1.2.66 überarbeitet.
+  * Globale Resourcen verwenden nun das Prefix "#res:" bei der Angabe in der Property.
+    Im Resource-File werden sie ohne Prefix eingetragen.
+  * "auto:" Resourcen wie gehabt.
+
+1.2.66
+======
+- Rubicon.Web.UI.Globalization.ResourceDispatcher
+  * Neues Feautere: Resourcen können nun global definiert werden
+    "global:ResourceID" definiert eine resource ID.
+    Die resource ID inkl. "global:" kann in String Properties von Controls eingetragen werden und während dem 
+      Dispatching werden die entsprechenden globalen Resourcen zugewiesen. 
+    Globale Resouren werden vor den automatischen (auto:) Resourcen zugewiesen und können von diesen überschrieben
+      werden.
+    Verwendung für identische Resource-Strings auf mehreren Seiten oder bei mehreren Controls auf einer Seite,
+      zB für Validator-Meldungen.
+
+1.2.65
+======
+- Execution Engine
+  * Function States werden nun automatisch aborted wenn sie zu Ende sind:
+    (Root-)Functions welche über FunctionType initialisiert wurden, werden am Ende des Execute-Cycles aborted.
+    Root-Functions welche durch WxePageInfo.Execute (ReturningPostback=true) gestartet wurden, 
+      werden im Page_Unload aborted, d.h. nachdem sie den Returning Postback Zweig durchlaufen haben.
+    Root-Functions welche durch WxePageInfo.Execute (ReturningPostback=false) gestartet wurden, 
+      werden am Ende des Execute-Cycles aborted.
+        
+1.2.64
+======
+- Execution Engine
+  * Unterstützt nun Session Management: 
+    automatisches Session-Refresh solange das Browser-Fenster offen ist.
+    Session-Abort (Mit Sicherheitsabfrage) wenn das Browser-Fenster geschlossen wird oder der User wegnavigiert.  
+
+- Rubicon.Web.ExecutionEngine.WxeHandler
+  * WxeAction Argument 'cancel' zu 'Abort' umbenannt.
+  * Neues WxeAction Argument 'Refresh'.
+
+- WxePage
+  * Neue Property EnableAbort/IsAbortEnabled um seitenspezifisch den Sessionabbruch einzustellen (Default: true)
+  * Neue Property EnableAbortConfirmation/IsAbortConfirmationEnabled um seitenspezifisch den Abbruchdialog zu 
+    aktivieren (Default: false)
+  * Benötigt nun Resourcen und den HtmlHeadContents
+  
+- Execution Engine Configuration
+  * Neue Optionen: EnableSessionManagement und RefreshInterval
+
+- WebTreeView
+  * Neue Property: EnableLookAheadEvaluation
+    Ist das Flag gesetzt, so wertet der Tree auch die ChildNodes aus -> Node-Expander (+) werden korrekt angezeigt
+      
+1.2.62
+======
+- Rubicon.Web.UI.Globalization.ResourceManagerUtility.GetResoureManager
+  * Resource Manager werden nun gecached.
+  
+1.2.61
+======
+- Rubicon.Web.ExecutionEngine.WxeLauncher
+  * Neue Klasse
+  * Ermöglicht einen redirected Aufruf des WxeHandlers. Das ist notwendig, wenn der Link auf eine WxeFunction
+    zB aus MS Word aufgerufen wird. Ms Word schluckt die Sessioninformationen, wodurch nachfolgende Postbacks 
+    keine Sessioninformationen mehr haben, und somit ins Leere gehen.
+  * \Res\UI\WxeLauncher.ashx muss in das Application Root Direcotry kopiert werden.
+
+1.2.60
+======
+- Wai Configuration
+  * WAI zu WCAG korrigiert
+  * Property Level umbenannt zu ConformanceLevel.
+  * Enum WaiLevel umbenannt zu WaiConformanceLevel.
+
+- DatePicker
+  * Positionierung umgestellt: DatePicker erkennt nun, wenn zu wenig Platz ist und rendert sich vor statt 
+    nach dem Button
+
+1.2.57
+======
+- Wai Configuration
+  * Neuer Eintrag in der Rubicon.Web.Configuration.WebConfiguration Section: wai
+  * WaiConfiguration.Level definiert das gewüschte WAI-Level.
+  * WaiConfiguration.Debug aktiviert Exceptions (WaiException) wenn eine Einstellung auf der Seite 
+    nicht WAI-konform ist. Nur non-legacy Controls bieten diese Option.
+
+- Resources Configuration
+  * Neuer Eintrag in der Rubicon.Web.Configuration.WebConfiguration Section: resources
+  * ResourcesConfiguration.Root definiert den Root-Folder für alle durch den ResourceUrlResolver aufgelösten Resourcen.
+  * ResourcesConfiguration.RelativeToApplicationRoot spezifiziert ob die Resource-Root mit dem App-Dir geprefixed wird.
+  
+- WebButton
+  * Default Class für den Web-Button von Button auf webButton geändert.
+  * Ist WAI-Level A definiert, rendert der WebButton ein "input" Element vom Typ "button" 
+    anstelle des "button" Elements. Icons und HTML-Tags innerhalb des Buttons sind dann deaktiviert.
+  
+- Styles
+  * Die Standardschriftgröße wurde auf die Basisgröße 80% des Browser-Defaults abgeändert.
+    Diese Änderung wird von allen Projekten welche Style.css einbindnen automatisch übernommen.
+    Wird 100% gewünscht, so kann die 1. Zeile von Style.css (@import url("fontSize080Quirks.css");) entfernt werden.
+    Alternativ kann fontSize100Quirks.css im anschluss an Style.css eingebunden werden.
+  
+- ResourceUrlResolver
+  * Bugfix: Es konnten keine Resource-Pfade aufgelöst werden für Applikationen die direkt im Rootverzeichnis der
+    WebSite deployed sind.
+  
+1.2.55
+======
+- WebTab
+  * Obsolete TabID entfernt. Muss durch Search auf die ASPX-Files manuell herausgelöscht werden.
+      ACHTUNG: Kein Kompilerfehler. Probleme nur im VS Designer bzw als Exception auf der gerenderten Seite sichtbar.
+
+- WebTreeNode
+  * Obsolete NodeID entfernt. Muss durch Search auf die ASPX-Files manuell herausgelöscht werden.
+      ACHTUNG: Kein Kompilerfehler. Probleme nur im VS Designer bzw als Exception auf der gerenderten Seite sichtbar.
+
+- HtmlHeadAppender
+  * Bugfix: Die Sortierung der Einträge war nicht garantiert. Vielmehr sind nur durch Zufall die durch die
+      Page hinzigefügten Elemente am Ende der Liste gerendert worden. Für Stylesheets ist dieses Verhalten kritisch,
+      da diese in der Reihenfolge ihres auftretens auf der Seite ausgewertet werden.
+    Neuer Parameter für die RegisterXXX Methoden: Priority mit den Werten Library, UserControl und Page.
+    Wird kein Wert angegeben, so wird Page als Default genommen. Damit ist das korrekte Verhalten für bestehenden 
+      Lösungen sichergestellt, welche HeadElemente in der Page hinzufügen. 
+      Konkreter Fall: Das Überschreiben von StyleSheetwerten der Control-Libraries
+    
+1.2.54
+======
+- FormGridManager
+  * Bugfix: Wird der FormGridManager in eine htmlTable eingebettet die er selbst managed, geht der ViewState verloren.
+    Diese Konstellation wirft nun eine Exception.
+  
+1.2.53
+======
+- NumericValidator
+  * Neue Klasse. Validator für Integer, Double und Decimal Werte. Verwendet im Gegensatz zu CompareValidator
+    die Parse Methode um die Gültigkeit zu testen.
+    
+1.2.52
+======
+- IControlItem
+  * ID zu ItemID umbenannt.
+  
+- WebTab
+  * TabID zu ItemID umbennant (Designer-Property).
+    Durch Obsolete abgefangene Änderung, alte Version wird in einigen Wochen entfernt.
+
+- WebTreeNode
+  * NodeID zu ItemID umbennant (Designer-Property).
+    Durch Obsolete abgefangene Änderung, alte Version wird in einigen Wochen entfernt.
+  
+- WebMenuItem
+  * Explizite Interfaceimplentierung IControlItem.ID entfernt.  
+    
+- TabbedMultiView
+  * Bugfix: Wurde die Seite mittels WXE-Aufruf verlassen, so war bei der Rückkehr stets der erste Tab ausgewählt, 
+    während die korrekte Seite angezeigt wurde.
+    
+1.2.50
+======
+- TabbedMultiView
+  * Tabs können nun mittels TabbedMultiView.Views.Remove (...) bzw TabbedMultiView.Viws.RemoveAt (...) entfernt werden.
+
+- WebButton
+  * Button wird disabled sobald geklickt und eventuelle client-seitige Validierung erfolgreich.
+    
+1.2.49
+======
+- Fix: Fehlende Resource WebConfiguration.xsd in Assembly hinzugefügt (build script fehler)
+
+1.2.48
+======
+- Fix: ViewState wird nun auch vor ExecuteFunction() korrekt gespeichert.
+- Neu: Config-Eintrag um ViewState in Session abzuschalten (s. config-Schema)
+
+1.2.47
+======
+- Der ViewState von WxePage wird in der Session abgelegt (genauer gesagt im WxePageStep).
+  Angenehmer Nebeneffekt: Änderungen des ViewState im gleichen Request wie ExecuteFunction
+  werden nicht mehr (wie bisher) verworfen.
+  
+1.2.45
+======
+- neu: IWxePage.ExecuteFunction hat optionalen Parameter "features" (siehe javascript window.open, 
+    zB "location=no,toolbar=no")
+
+1.2.41
+======
+- TabbedMultiView
+  * Bugfix: Unter folgender Bedingung wurde der falsche Tabreiter aber der richtge View angezeigt:
+    Programmatisches Setzen des Views ohne das vorher der noch selektierte Tab abgefragt wurde.
+
+1.2.39
+======
+- TabbedMultiView
+  * Bugfix: Horizontales Scrollen wurde durch die Seite statt durch den MultiView durchgeführt.
+  
+1.2.33
+======
+- FormGridManager
+  * Designerdarstellung nach Art .net2.0 für non-visual Controls
+
+- Konfiguration des Function Timeouts im .config File: 
+
+  <configSections>
+    <section name="rubicon.web" type="Rubicon.Web.Configuration.WebConfiguration, Rubicon.Web" />
+  </configSections>
+  
+  <rubicon.web xmlns="http://www.rubicon-it.com/commons/web/configuration">
+    <executionEngine functionTimeout="30" />
+  </rubicon.web>
+
+1.2.25
+======
+
+Exception Handling in WxeFunctions (neu)
+----------------------------------
+
+  Exceptions können abgefangen werden.
+  Grund: try/catch funktioniert nicht, wenn man WxeFunctions aus ASP.NET Event Handlern startet
+
+  Beispiel: (funkt nicht)
+
+  void Button1_Click (...)
+  {
+    try
+    {
+      if (! IsReturningPostBack)
+      {
+        MyFunction f = new MyFunction (...);
+        ExecuteFunction (f);
+      }
+      else
+      {
+        MyFunction f = ReturningFunction;
+        ...
+      }
+    }
+    catch (Exception e)
+    {
+      // catch code
+      ... 
+    }
+  }
+
+  (Grund: MyFunction wird großteils nicht im Kontext von Button1_Click ausgeführt, d.h. Button1_Click ist nicht am Call Stack)
+
+  Folgendes funktioniert ab sofort:
+
+  void Button1_Click (...)
+  {
+    if (! IsReturningPostBack)
+    {
+      MyFunction f = new MyFunction (...);
+      f.CatchExceptions = true; 
+		  // Alternative für bestimmte Exception-Types: 
+		  // f.SetCatchExceptionTypes (typeof (ArgumentException), ...);
+      ExecuteFunction (f);
+    }
+    else
+    {
+      MyFunction f = ReturningFunction;
+      if (f.Exception != null)
+      {
+        // catch code
+        ...
+
+        // beispiel: rethrow 
+        throw f.Exception;
+        // beispiel: neue exception
+        throw new InvalidOperationException ("So gehts nicht!", f.Exception);
+      }
+    }
+  }
+
+
+Konstruktoren für WxeFunctions (Konvention)
+------------------------------
+
+  Jede WXE Function benötigt folgende Konstruktoren:
+
+  Default Konstruktor - wird z.B. verwendet, um eine Funktion via URL oder aus einer BocList zu starten:
+
+    public MyFunction ()
+    {
+    }
+
+  Untypisierter Konstruktor - wird verwendet, um eine Funktion via "new MyFunction(...)" zu starten
+
+    public MyFunction(params object[] args)
+      : base (args)
+    {
+    }
+
+  Typisierter Konstruktor - ist nur für IntelliSense notwendig. 
+  Konvention: Die Parameter im Konstruktor heissen GENAU SO wie die [WxeParameter] Properties. (inkl. Groß/Kleinschreibung)
+
+  Hier sind 2 Fälle zu unterscheiden:
+  a) Nur In-Parameter: Dieser Konstruktor wird tatsächlich aufgerufen, wenn keine varref() Argumente verwendet werden.
+
+    public MyFunction (CnObject Object, CnObject Action, CnObject AttributeDefinition)
+      : base (Object, Action, AttributeDefinition)
+    {
+    }
+
+  b) Mindestens ein Out- oder InOut-Parameter: Wenn dieser Konstruktor aufgerufen wird, dann hat jemand einen Fehler gemacht. 
+    Also wirklich NUR für IntelliSense.
+
+    public MyFunction (CnObject Object, CnObject Action, out CnObject Form)
+    {
+      throw new WxeOutParameterNotSupportedException();
+    }
+
+
+1.2.19.0
+========
+
+- LengthValidator
+  * Überarbeitet. Altes Verhalten (-1 für nicht validieren) beibehalten.
+  * Check für nur TextBox entfernt.
+  
+1.2.13.0
+========
+
+- FormGridManager
+  * BugFix für Version 1.2.12.0: Das Table-Tag für die FormGrids wurde doppelt gerendert.
+  
+- TabbedMultiView
+  * Neue Klasse
+  * Bietet eine Verschmelzung von WebTabStrip und MultiPage
+  
+- WebTabStrip
+  * Neue Klasse
+  * Bietet einen mehrzeiligen TabStrip
+  
+1.2.12.0
+========
+
+- FormGridManager
+  * ASP.net 2.0 kompatibel
+  
+1.2.11.0
+========
+
+- Rubicon.Web.Utilities.ControlHelper
+  * LoadViewStateRecursive: neue Methode, ruft Control.LoadViewStateRecursive auf.
+  * SaveViewStateRecursive: neue Methode, ruft Control.SaveViewStateRecursive auf.
+  * ViewState, EventTarget, EventArgument: Properties welche die .net IDs für die HiddenFields enthalten.
+  
+- WxePage, WxepageStep
+  * Verwenden nun die Properties ControlHelper.ViewState, ControlHelper.EventTarget und ControlHelper.EventArgument
+    statt hertcodierter Strings.
+
+1.2.10.0
+========
+
+- Rubicon.Web.UI.Controls.WebButton
+  * Erweitert: WebButton unterstützt nun mehrere unabhängige WebButtons auf einer Seite, 
+    mit getrennten OnClick Event-Handlern.
+    .net 1.1 kann reguläre System.Web.UI.WebControl.Buttons nicht mit getrennten OnClick-Events fahren. 
+    Es wird immer das OnClick Event für den letzten Button in der Collection ausgelöst, 
+    da Buttons auch PostData enthalten.
+
+- FormGridManager, ValidationStateViewer
+  * Lokaliserung der Resourcen für Deutsch.
+    
+1.2.7.0
+=======
+
+- Rubicon.Web.UI.Controls.WebButton
+  * Erweitert: WebButton zeigt den Accesskey unterstrichen an.
+  * Erweitert: WebButton bietet zusästzlich zum Text ein Icon an.
+  Im Config-File ergänzen:
+  <configuration>
+    <system.web>
+      <pages validateRequest="false" />
+    </system.web>
+  </configuration>
+  
+- TabControl:
+  * 2 neue Properties "SelectedTab" und "SelectedMenu"
+
+1.2.6.0
+=======
+
+- Rubicon.Web.UI.Controls.WebLinkButton
+  * Neue Klasse
+  * Bietet einen AccessKey-Aware LinkButton an.
+    Der AccessKey kann direkt in den Text codiert werden mittels des Prefixes '&'.
+   
+- Rubicon.Web.UI.Controls.FormGridManager
+  * Die Erkennung der verschiedenen Row-Typen wurde rubuster gestaltet. 
+  * Es werden die folgenden Typen erkannt:
+    TitleRow: 
+	    Genau 1 Zelle in der ersten Zeile.
+    SubTitleRow (neu): 
+	    Genau 1 Zelle in einer Zeile.
+    Einzeilige DataRow: 
+	    Befüllte Controls-Collection in der durch ControlsColumn identifizierten Zelle.
+    Zweizeilige DataRow: 
+	    Leere Controls-Collection in der per ControlsColumn identifizierten Zelle
+	    und daran anschließend noch eine Zeile mit zumindest einer Zelle in der LabelsColumn
+    UnknownRow:
+	    Alles was sich nicht identifizieren lässt.
+	    Einzige Formattierung durch den FormGridManager: der Colspan wird angepasst wenn in den anderen Rows
+	    durch den FormGridManager Spalten eingefügt werden (Marker-Spalte, Validator-Message-Spalte).
+ 
+1.2.5.0
+=======
+
+- Rubicon.Web.UI.Controls.WebButton
+  * Neue Klasse
+  * Bietet einen AccessKey-Aware Button an.
+    Der AccessKey kann direkt in den Text codiert werden mittels des Prefixes '&'.
+    
+1.1.46.0
+========
+
+- Rubicon.Web.UI.Controls.WebTreeView
+  * Neue Klasse
+  * Bietet einen TreeView (kein ClientSide Script).
+  * Nodes können On-Demand befüllt werden.
+
+1.1.45.0
+========
+
+- Rubicon.Web.UI.Controls.MenuItem
+  * Umbenannt zu WebMenuItem
+
+- Rubicon.Web.UI.Controls.MenuItemClickEventHandler
+  * Umbenannt zu WebMenuItemClickEventHandler
+
+- Rubicon.Web.UI.Controls.MenuItemClickEventArgs
+  * Umbenannt zu WebMenuItemClickEventArgs
+
+1.1.40.0
+========
+
+- ValidationStateViewer
+  * BugFix: ValidationStateViewer konnte nicht mit verschachtelten Controls umgehen.
+  * Neue Property: SkipNamingContainers
+  * Neue Property: ShowLabels
+  
+- FormGridManager
+  * Neue Property: SkipNamingContainers
+
+1.1.36.0
+========
+
+- Rubicon.Web.UI.Controls.DropDownMenu
+  * Neue Klasse
+  * Bietet ein Menu ähnlich einer DropDownBox an.
+  
+1.1.32.0
+========
+
+- BugFix Rubicon.Web.UI.Controls.FormGridManager
+  * Gefixed: 
+    Wenn der FormGridManager eine HtmlTable managed, welche auf einem nicht angewählten Tab liegt,
+    dann gab es beim Wechsel auf einen bisher nicht angezeigten Tab eine ViewStateException.
+
+- BugFix Rubicon.Web.UI.Controls.SmartLabel
+  * Gefixed:
+    Exception wenn ForControl nicht gesetzt wurde. Neues Verhalten: Default Text.
+    
+1.1.30.0
+========
+
+- Rubicon.Web.UI.IFormGridRowProvider
+  * Methoden GetHiddenRows (string) und GetAdditionalRows (string)
+    Der erwartete Parameter ist jetzt der jeweiligen Table, nicht die ID.
+  
+1.1.26.0
+========
+
+- BugFix Form.cs:
+  * Gewünschtes Verhalten: Wenn die action-Url bei einem rubicon:Form auf eine andere Seite zeigt, 
+      soll der Viewstate nicht gerendert werden!!
+  * Jetzt werden die Url-Parameter der action-Url beim Vergleich der aktuellen Seite und der action-Url 
+    gefiltert, somit wird der ViewState bei Postbacks auf die eigene Seite gerendert. 
+    (Bisher ergab der Vergleich immer false, da die Url-Parameter nur auf einer Seite berücksichtigt wurden)
+    
+- Rubicon.Web.UI.HtmlHeadAppender
+  * Neue Klasse
+  * Bietet die Möglichkeit, Elemente in den HTML Head einzuhängen.
+  * Registrieren: HtmlHeadAppender.Current.Register...(key, ...)
+  * Die registierten Elemente werden mit Hilfe des Controls HtmlHeadContents gerendert.
+  * Sämtliche Elemente müssen vor Begin der Render-Phase registriert werden.
+
+- Rubicon.Web.UI.Controls.HtmlHeadContents
+  * Neue Klasse
+  * Rendered die Elemente, welche über den HtmlHeadAppender registriert wurden.
+  * Verwendung: HtmlHeadContents wird als Servercontrol in den HTML Head der ASPX-Seite eingefügt:
+    <{0}:HtmlHeadContents runat="server" id="HtmlHeadContents"></{0}:HtmlHeadContents>
+    
+1.1.24.0
+========
+
+- PageUtility
+  * Neue Methode RegisterClientScriptInclude
+  * Neue Methode RegisterStartupScriptBlock
+  
+- Methode GetResourceUrl der Klasse ResourceUrlResolver: Signatur geändert.
+
+- UI.Controls.DatePickerPage
+  * Neue Klasse
+  * Bietet zusammen mit Res\UI\DatePickerForm.aspx und Res\Html\DatePicker.js einen Kalender
+    als IFrame an.
+  * Aufruf über die Funktion ShowDatePicker in DatePicker.js.
+  
+- UI.Controls.FormGridRowPrototype
+  * Umbenannt zu FormGridRowInfo
+
+- UI.Controls.FormGridRowPrototypeCollection
+  * Umbenannt zu FormGridRowInfoCollection
+ 
+- Utitilies.AccessKeyUtility
+  * FormatAccessKey (...) Methoden nach UI.Controls.SmartLabel verschoben.
+  
+- UI.Controls.FormGridRowProvider
+  * gelöscht
+  * Rubicon.Collections.AutoInitHashtable um die Funktionalität der 
+    Get...(string) Methoden nachzubauen
+ 
+1.1.21.0
+========
+
+- UIUtility:
+  * "internal sealed class UIUtility" in "public class ImageUtility" umbenannt
+  * Neue Methode "GetErrorImageUrl"
+
+- EntryFormGrid.cs:
+  * Neues property "EntryFormGrid" bei Klasse "EntryTitle"
+  * Methode "Render" bei Klasse "EntryField":
+    Ab Version 3.1.7.0 wurde die Table-Column mit dem Label nur gerendert wenn LabelColumnWidth ungleich 0;
+    Ab der aktuellen Version wird die Table-Column mit dem Label nur gerendert 
+      wenn LabelColumnWidth ungleich 0 oder der Text des Labels ungleich Leerstring; 
+    Einschränkung: Wenn in einem EntryFormGrid mit LabelColumnWidth = 0 oder nicht gesetzt EntryFields nicht alle keinen Text 
+      oder alle einen Text haben, dann werden die EntryFields versetzt ausgegeben!!
+  
+- ViewControl.cs:
+  * Neue Methoden "GetWhitespaceImage" und "GetImagePath" bei Klasse "ViewControl"
+
+1.1.18.0
+========
+
+- NavigablePage
+  * ClearGlobalSessionValue -> Funktioniert jetzt analog zu Set- und GetGlobalSessionValue 
+      ohne UniqueKey (PageToken) 
+- Utilities.HtmlUtility
+  * HtmlEncode überladen: HtmlEncode (string,HttpWriter)
+      schreibt encoded string direkt auf den HttpWriter
+- Form
+  * Page_RenderPostBackScript -> Die ControlID für das Eventtarget wird jetzt 
+      mit ':' als Separator für Control-Hierarchien statt '_' gesetzt 
+      (Events in UserControls funktionieren wieder)
+
+1.1.14.0
+========
+- Neues Interface: IResourceUrlResolver
+    Löst IImageUrlResolver und IHelpUrlResolver ab.
+    
+- Klasse ResourceUrlResolver
+    Methoden GetImageUrl und GetHelpUrl durch GetResourceUrl ersetzt.
+    
+3.2.0.0
+=======
+
+- Moved von Rubicon nach Commons.
+    
+- Controls - Form-Grid:
+  * Neue Implementierung des EntryFormGrid-Funktionalität
+    Form-Grids können nun im Designer via Drag'n'Drop erstellt werden.
+  * Siehe Doku: FormGridManager.doc
+  * Besteht aus:
+    FormGridManager:
+      Zuständig für die Formatierung einer oder mehrerer HTML-Tables als Form-Grids.
+      Zuständig für das automatische Hinzufügen fehlender Komponeneten
+      Zuständig für eine Form-Grid-weite Validierung
+      Enthällt dieSub-Klassen
+        FormGrid, FormGridRow, FormGridRowCollection und ReadOnlyHtmlTableRowCollection.
+    IFormGridRowProvider:
+      Kann in einem Parent-Control des FormGridManager implementiert werden.
+      Stellt dem FormGridManager neue Zeilen bzw zu entfernende Zeilen zur Verfügung.
+    FormGridRowProvider:
+      Implementierungshilfe
+      Kapselt die Funktionalität des IFormGridRowProvider Interfaces
+    FormGridRowPrototype, FormGridRowPrototypeCollection:
+      Wrapper-Klasse und zugehörige Liste um zur Laufzeit erstellte Zeilen in das Form-Grid
+      einzufügen.
+    ValidationError:
+      Wrapper-Klasse für einen Validierungsfehler
+   
+- Controls.IImageUrlResolver, Controls.IHelpUrlResolver:
+  * Wird implementiert falls das jeweilige Control einem Child-Control 
+    (ins besondere dem FormGridManager) den Pfad zu Bildern oder Hilfe-Texten zur Verfügung stellen
+    soll.
+
+- Controls.ISmartControl:
+  * Definiert die Bereitstellung sämlticher Informationen die benötigt werden, damit ein Control
+    durch simples Drag'n'Drop in das Form-Grid integriert werden kann.
+  * Definiert die Bereitstellung von: 
+      Validatoren, Label, Hilfe, Input-Required Flag
+  
+- Controls.ValidationStateViewer:
+  * Zubau für den FormGridManager
+  * Liest sämtliche FormGridManager der Page aus und
+      ermöglicht deren Validierung.
+      die gruppierte Anzeige der Validierungsfehler.
+  
+- Globalization.ResourceDispatcher:
+  * Überarbeitet um das unter Rubicon.Globalization implementierte IResourceManager Interface
+    zu unterstützen.
+  * Methoden, die noch direkt den FCL ResourceManager unterstützen, sind als obsolete
+    gekennzeichnet.
+  * Ergänzt um verschiedene public Methoden,
+    um Teilfunktionialität nach außen zur Verfügung zu stellen.
+  * Fehlerhafte Resourcenangaben werden mit Hilfe von log4net geloggt.
+  * Abwärtskompatibilität ist gewährt (vorbehaltlich Bugs)
+
+- Utilities.AccessKeyUtility:
+  * Hinzugefügt
+  * AccesskeyUtility.FormatLabelText (...)
+    Methode zum Parsen von Strings mit AccessKey-Syntax (&), highlighten des Keys und Rückgabe des 
+    Chars der als Key verwendet wird.
+  * AccesskeyUtility.RemoveAccessKey (...)
+    Methode um die AccessKey-Syntax aus einem String zu entfernen.
+    
+- Utilities.UrlResolverUtility
+  * Sucht die Control-Hierarchie nach implementierungen von Controls.IImageUrlResolver, bzw
+    Controls.IHelpUrlResolver ab und kapselt die Abfrage der jeweiligen Interface-Methode.
+    
+- log4net
+  * Die Binary für log4net 1.2beta wurde in the References aufgenommen.
+
+3.1.8.0
+=======
+
+- PageUtility.RegisterWindowOpenJavascript (): Javascript-Methode "Refresh ()" ist nur unter speziellen Umständen
+  vorhanden => Wenn keine "Refresh ()" Methode vorhanden ist, dann wird das erste Form auf der Seite submitted =>
+  Achtung: In diesem Fall sollte die Page.Validate () Methode überschrieben werden, da bei einem Submit ohne
+  Quellcontrol die Page im Normalfall automatisch validiert!
+- Neue Methode StandardUserControl.ClearSessionValue () zum Entfernen von Session-Einträgen => 
+  Nun auch für Controls verfügbar. 
+    
+    
+3.1.7.1
+=======
+
+- Bugfix in StandardButton: OnClick Event MUSS im OnPreRender überschrieben und nicht 
+  aneinandergehängt werden, da ansonsten gesamtes OnClick immer wieder wiederholt wird 
+  => Das daraus resultierende Verhalten im IE führt dazu, dass die Postbacks nicht
+  mehr korrekt funktionieren => Rubicon.Web.UI Build 3.1.7.0 NICHT verwenden.
+  
+
+3.1.7.0
+=======
+
+- EntryFieldBreak und EntryTitle können jetzt auch in einem ViewControl platziert werden =>
+  Property EntryFormGrid in beiden entfernt. Dafür private property ImagePath eingeführt.
+- Methoden für das Handling von Images von EntryFormGrid in UIUtility ausgelagert.
+- Neue Methode UrlUtility.Combine (...): Fügt 2 Webpfade zusammen. 
+- Neues Servercontrol "CurrencyTextBox":
+  * Rendert ein Währungssymbol und eine Textbox für den Betrag
+  * Währungssymbol definierbar; default "€"
+  * Position des Währungssymbols definierbar ("BeforeTextbox", "AfterTextbox"); default "BeforeTextbox"
+  * Validiert wird der Datentyp des eingegebenen Betrags, nicht aber ob leer oder nicht 
+    -> im Entryfield mit RequiredFieldValidator prüfen
+- Klasse "EntryField" Methode "Render": Wenn LabelColumnWidth = 0, dann werden links neben den 
+    requiredfield- und invalidstate-images keine Whitespaceimages angezeigt
+- Kernfunktionalität von Standardpage.CloseBrowserWindow (...) in neue Methode PageUtility.CloseBrowserWindow (...) 
+  verlagert.
+- Bugfix in StandardButton: Page.GetPostBackClientEvent(...) fügt nicht von selbst abschließenden ";" 
+  für Javascript ein => Wird durch StandardButton erledigt.
+
+   
+3.1.6.1
+=======
+
+- Neue static Methode EntryFormGrid.GetParentEntryFormGrid (...): Gibt von einem control dessen
+  EntryFormGrid auch über mehrere Hierarchieebenen zurück.
+
+- EntryFieldBreak, EntryTitle, EntryField: Property EntryFormGrid retoruniert jetzt auch EntryFormGrid
+  über mehrere Hierarchieebenen.
+ 
+
+3.1.6.0
+=======
+
+- EntryFormGrid: Folgende statics zu instance members gemacht: 
+  * ImagePath
+  * GetImagePath (...)
+  * GetWhitespaceImage (...) + Overload
+  
+- EntryFieldBreak: 
+  * Neue property EntryFormGrid
+  * Zugriff auf ehemalige statics in EntryFormGrid passiert jetzt über instance members
+  * EntryFieldBreak darf nur mehr in EntryFormGrid platziert werden
+  
+- EntryTitle: 
+  * Neue property EntryFormGrid
+  * Zugriff auf ehemalige statics in EntryFormGrid passiert jetzt über instance members
+  * EntryTitle darf nur mehr in EntryFormGrid platziert werden
+  
+- EntryField: 
+  * Neue property EntryFormGrid
+  * Protected property ParentGrid entfernt
+  * Implementierung von Render (...) geändert => Statt cast und Abfrage auf null beim Zugriff auf EntryFormGrid
+    neue property EntryFormGrid verwendet => EntryField darf nur mehr in einem EntryFormGrid platziert werden.
+  * Zugriff auf ehemalige statics in EntryFormGrid passiert jetzt über instance members
+
+  
+3.1.5.0
+=======
+
+- EntryFormGrid: Neue static property "ImagePath". Wird default auf ApplicationPath + "/images" gesetzt.
+  Kann jedoch von einer Applikation überschrieben werden, wenn sich die EntryFormGrid images wo anders befinden.
+
+
+3.1.4.0
+=======
+
+- EntryFormGrid: GetImagePath () liefert jetzt immer das Verzeichnis "Images" im Root der Application
+
+- Form: Neue Methode "GetPageUrlWithoutPath": Liefert Url auf aktuelle Seite ohne Pfad aber mit QueryString
+    (wird hauptsächlich verwendet für das Setzen der Action-Url)
+
+- TabControl.GetCompleteUrl (...): Statt private => protected virtual
+
+
+3.1.3.0
+=======
+
+- Klasse Form: HTML 4.0 erlaubt kein name-Attribut beim Form-Tag -> name-Attribut wird nicht gerendert.
+
+- Neue Methoden in StandardControl: 
+  * CloseBrowserWindow: Overload Methode die ein Parent Refresh unterstützt
+- Neue Methoden in PageUtility: 
+  * RegisterClientScriptBlock: Umhüllt die JavaScript Methode mit den script Tag und
+    registriert diese als eGovernment Gütesiegel konformes Skript.
+
+3.1.2.0
+=======
+
+- StandardControl: 
+  * Von StandardControl auf StandardUserControl umbenannt
+  * Stellt Protected property "StandardPage" zur Verfügung.
+  * Kann Session Variablen unter dem pageToken der Page speichern.
+  * RegisterEventHandlers () von MultiLingualControl nach StandardUserControl verschoben.
+- Neues Control StandardButton
+  * Stellt Referenz auf StandardPage zur Verfügung.
+  * Wird nach dem Drücken client-seitig disabled, um visuelles Feedback zu geben und zu 
+    verhindern, dass Button mehrmals gedrückt wird.
+
+
+3.1.1.0
+=======
+
+- Neue Methoden in PageUtility: 
+  * RegisterWindowOpenJavascript: Registriert eine Javascript Methode zum Öffnen von URLs 
+    in neuem Fenster optimiert für Anzeigen >= 1024x768.
+  * GetWindowOpenJavascript: Gibt den Javascript Methodenaufruf zum Öffnen von URLs in 
+    neuem Fenster zurück.
+- Neue Methoden in StandardPage:
+  * GetWindowOpenJavascriptWithRegistration: Registriert Javascript Methode zum Öffnen
+    von URLs in neuem Fenster und liefert den Javascript Methodenaufruf zurück.        
+  * CloseBrowserWindow: Räumt Session Variablen auf und schließt Browser Fenster. In diesem 
+    Fall wird der ViewState nicht mehr in die Session geschrieben, damit kein Memory Leak
+    entsteht.    
+- Neues Control "StandardControl" eingeführt:
+  Unterstützt aktuell den Zugriff auf Session Variablen der NavigablePage (pageToken-Handling)
+- Form.cs - Methode "Page_RenderPostBackScript": Änderung der Ermittlung des Forms eines Elements,
+    da z.B. Anchor-Tags kein Form-Property haben.
+
+
+3.1.0.0
+=======
+
+- Rubicon.Data.TableModules unterstützt ab Version 3.1.0.0 auch Guids als ID-Spalten.
+  * ExtendedDropDownList unterstützt nun ebenfalls Guids als eindeutigen Identifier =>
+    Folgende Änderungen:
+      SelectedValue: Datentyp ist statt "int" jetzt "string" (wie Basisklasse DropDownList)
+      SelectedInt32Value: Für Listen mit Datentyp "int" als eindeutigen Identifier
+      SelectedGuidValue: Für Listen mit Datentyp "Guid" als eindeutigen Identifier
+      Add (...): Nimmt für Parameter "value" jetzt statt "int" ein "object"
+      GetListItemByValue (...): Nimmt für Parameter "value" jetzt statt "int" ein "object"
+  * In DataDropDownList wurde folgendes geändert:
+      Property EmptyValue entfernt
+      SelectedValue, SelectedInt32Value, SelectedGuidValue wie ExtendedDropDownList nur 
+      zusätzliches Handling für Leerzeile. Bei Leerzeilen werden folgende Werte retourniert:
+        SelectedValue: string.Empty
+        SelectedInt32Value: -1
+        SelectedGuidValue: Guid.Empty 
+      Interne Implementierungen geändert.
+  * Durch diese Änderungen müssen alle Referenzen auf "DataDropDownList.SelectedValue" 
+    berichtigt werden. Weiters müssen alle CompareValidators auf RequiredFieldValidators 
+    umgestellt werden, da SelectedValue bei leerem Eintrag nicht mehr "-1", sondern string.Empty
+    zurückliefert!
+- Neue Methoden in "StandardPage":
+  * GetIconImage (...): Liefert ein Icon Image (zB Info- oder Fehler-Image) zurück    
+  * GetErrorImage (...): Error-Image
+  * GetRequiredFieldImage (...): "*" für Pflichtfeld
+  => Verwendet intern neue Klasse "UIUtility" => Wird in EntryFormGrid verwendet.
+        
+        
+3.0.5.1
+=======
+
+- Bei Klassen Form, NavigablePage, Standardpage u. PageUtility: Bei allen Script-tags type="text/javascript" angeben ->
+    HTML 4.0 Konformität für eGovernment Gütesiegel
+    
+
+3.0.5.0
+=======
+
+- ResourceDispatcher.Dispatch (...) - Änderung der Implementierung:
+    Alt: Bei Setzen von Eigenschaften von HtmlControls wurde immer die Attributes-Collection verwendet.
+    Neu: Auch bei HtmlControls wird vorher geprüft ob es ein Property gibt, ansonsten wird die 
+         Attributes-Collection verwendet
+  Grund: Bei serverseitigen HTML-Labels muss das Property "InnerText" gesetzt werden und nicht 
+         über die Attributes-Collection
+
+3.0.4.0
+=======
+
+- EntryFormGrid: Images müssen lt. HTML 4.0 einen Alt-Text definieren -> Whitespace-Images um leeren
+    alt-text erweitert (Für eGovernment Gütesiegel)
+- EntryField: For-Attribute der Labels werden nur gerendert, wenn diese auch beim EntryField 
+    spezifiziert sind -> keine Defaultwerte
+- StandardPage schreibt jetzt immer ResponseHeader, die Caching (im Browser, Proxyserver) verhindern.
+- Bugfix in PageUtility.CallPage (...): Abfrage von ShowNavigationBar.Show und ShowNavigationBar.Hide 
+  waren vertauscht => Bei Hide wurde ShowNavigationBar angezeigt und umgekehrt. 
+  Da sich bestehende Projekte auf dieses Fehlverhalten verlassen, wurde der Enum von 
+  ShowNavigationBar auf NavigationBar umbenannt. Deshalb sind bei der Einbindung einer neuen Version
+  von Rubicon.Web.UI alle Rereferenzen von ShowNavigationBar zu korrigieren (Compile Errors).
+- TabControl: Neue Methode GetCompleteUrl (...). Unterschied zu GetCurrentUrl (...) ist, dass der
+  Tab der Ziel URL ausgewählt wird und nicht erhalten bleibt wie bei GetCurrentUrl.
+
+
+3.0.3.0
+=======
+
+- Neues Control Form: Ist von ASP.NET Htmlform abgeleitet und bietet folgende Zusatzfeatures:
+  * Action Attribut von server-seitiger Form setzen. Damit sind Posts auf andere Seiten möglich.
+  * Es können mehrere server-seitige Forms auf einer ASP.NET Page platziert werden.
+    Startup-Scripts, registrierte Script-Blöcke, registrierte Javascript-Arrays, 
+    Viewstate, Postback-Function, etc. werden richtig gehandelt.
+
+
+3.0.2.0
+=======
+
+- TableControl: AddRow (...), AddRowWithStyle (...), AddHorizontalRow (...) liefern jetzt die erzeugte Row zurück.
+
+
+3.0.1.0
+=======
+
+- BugFix TabControl.cs:
+  * CheckActiveMenu + GetCurrentUrl werten activeMenu nur aus wenn min. 1 TabMenu in Tab.Controls
+    vorhanden.
+  * GetCurrentUrl liefert HRef von Tag wenn TabMenu nicht vorhanden
+- Neue Klassen NavigablePage und StandardPage.
+- CommandHandler unterstützt jetzt auch " und ' bei Text in Benutzerrückfragen (Confirmation Methoden).
+
+
+3.0.0.0
+=======
+
+- Erste Version

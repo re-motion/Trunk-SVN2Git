@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
+<project xmlns="nant-schema" name="Remotion.ObjectBinding.Web.Preview">  
+
+  <target name="build" description="perform a build">
+
+    <csc  target="library" 
+          output="${build.outputdir}/${project.output}.${project.extension}" 
+          doc="${project.doc}" 
+          debug="${build.debug}"
+          define="${build.csc.define}">
+      <nowarn>
+        <!-- missing XML comment -->
+        <warning number="1591" />
+        <!-- Ambiguous reference in cref attribute -->
+        <warning number="0419" />
+        <!-- obsolete -->
+        <warning number="0618" />
+      </nowarn> 
+      <sources failonempty="true">
+        <include name="*.cs" />
+        <include name="Properties/**/*.cs" />
+        <include name="UI/**/*.cs" />
+        <exclude name="Properties/AssemblyInfoTemplate.cs" />
+      </sources>
+      <references failonempty="true">
+        <include name="${build.outputdir}/Remotion.dll" />
+        <include name="${build.outputdir}/Remotion.Interfaces.dll" />
+        <include name="${build.outputdir}/Remotion.ObjectBinding.dll" />
+        <include name="${build.outputdir}/Remotion.ObjectBinding.Web.dll" />
+        <include name="${build.outputdir}/Remotion.Web.dll" />
+        <include name="${build.outputdir}/log4net.dll" />
+        <include name="${build.outputdir}/AjaxControlToolkit.dll" />
+        <include name="${build.outputdir}/Microsoft.Web.Preview.dll" />
+        <include name="${build.outputdir}/System.Web.Extensions.dll" />
+        <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Data.dll"/>
+        <include asis="true" name="System.Design.dll"/>
+        <include asis="true" name="System.Drawing.dll"/>
+        <include asis="true" name="System.Web.dll"/>
+        <include asis="true" name="System.Xml.dll"/>
+      </references>
+      <resources failonempty="true" dynamicprefix="true" prefix="Remotion.ObjectBinding.Web">
+        <include name="UI/**/*.js" />
+        <include name="Globalization/*.resx" />
+      </resources>
+    </csc>
+        
+  </target>
+
+</project>

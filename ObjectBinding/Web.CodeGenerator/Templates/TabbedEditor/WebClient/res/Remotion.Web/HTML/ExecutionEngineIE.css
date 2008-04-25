@@ -1,0 +1,19 @@
+@media screen 
+{
+  html, body
+  {
+    height: 100%; 
+    overflow-y: hidden;
+  }
+    
+  #wxeContentArea 
+  {
+    height: 100%; 
+    width: 100%; 
+    overflow: auto;
+  }
+  #Inhalt 
+  {
+    position: static;
+  }
+}

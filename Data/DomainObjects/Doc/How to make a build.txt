@@ -1,0 +1,25 @@
+1. Voraussetzungen
+  * Installation NAnt Version 0.84: \\at-vie-dc-02\Install\NAnt
+		zB nach c:\program files\nant
+		bin verzeichnis in PATH aufnehmen
+  * Remotion.Nant.Tasks.dll von SourceSafe rubicon\tools\NantTasks\NantTasks\bin in das lokale 
+	  NAnt-bin Verzeichnis (C:\Program Files\NAnt\bin) kopieren.
+  * NAnt.exe.config im NAnt-bin Verzeichnis: default .net Framework auf 1.1 setzen
+    Zeile 21: <platform name="win32" default="net-1.1">
+  * files aus SourceSafe rubicon\global holen
+  
+2. Build-Prozess
+   1.	Überprüfen dass die lokale Kopie der Solution kompiliert.
+   2.	Unit-Tests ausführen (müssen alle erfolgreich durchlaufen).
+   3.	Einchecken was noch nicht eingecheckt ist.
+   4.	Get Latest Version auf die Solution durchführen.
+   5.	Überprüfen dass die Solution immer noch fehlerfrei kompiliert.
+   6.	Unit-Tests nochmal ausführen (müssen wieder alle erfolgreich durchlaufen).
+   7.	.net Kommandozeile öffnen, aktuelles Verzeichnis auf C:\Development\libraries\Commons\Data\trunk setzen
+   8.	Solution schließen
+   9.	.net Kommandozeile: nant clean
+  10.	.net Kommandozeile: nant -D:version=<VERSION> package
+  11.   Source Safe Label mit der Versionsnummer vergeben.
+  12.	C:\Development\libraries\Commons\trunk\Data\build\bin\DomainObjects_debug_<VERSION>.zip und
+		C:\Development\libraries\Commons\trunk\Data\build\bin\DomainObjects_release_<VERSION>.zip
+		nach \\At-vie-dc-02\Install\Remotion.Data.DomainObjects kopieren

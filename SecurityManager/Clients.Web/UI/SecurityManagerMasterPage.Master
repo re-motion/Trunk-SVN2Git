@@ -1,0 +1,43 @@
+<%@ Master Language="C#" AutoEventWireup="true" Codebehind="SecurityManagerMasterPage.Master.cs" Inherits="Remotion.SecurityManager.Clients.Web.UI.SecurityManagerMasterPage" %>
+<%@ Register TagPrefix="securityManager" Src="SecurityManagerNavigationTabs.ascx" TagName="NavigationTabs" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head id="Head" runat="server">
+</head>
+<body>
+  <form id="ThisForm" runat="server">
+    <table class="contentView">
+      <tr>
+        <td class="contentViewHeaderControls">
+          <div class="contentViewHeaderControls">
+            <asp:ContentPlaceHolder ID="HeaderControlsPlaceHolder" runat="server">
+            <securityManager:NavigationTabs ID="SecurityManagerNavigationTabs" runat="server" />
+            </asp:ContentPlaceHolder>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="contentViewTopControls">
+          <div class="contentViewTopControls">
+            <asp:ContentPlaceHolder ID="TopControlsPlaceHolder" runat="server" />
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="contentViewActiveView">
+          <div id="contentViewActiveView" class="contentViewActiveView">
+            <asp:ContentPlaceHolder ID="MainContentPlaceHolder" runat="server" />
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="contentViewBottomControls">
+          <div class="contentViewBottomControls">
+            <asp:ContentPlaceHolder ID="BottomControlsPlaceHolder" runat="server" />
+          </div>
+        </td>
+      </tr>
+    </table>
+  </form>
+</body>
+</html>

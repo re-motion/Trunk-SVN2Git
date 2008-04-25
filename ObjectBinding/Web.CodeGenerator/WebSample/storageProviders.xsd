@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:sp="http://www.re-motion.org/Data/DomainObjects/Persistence/1.0" 
+    xmlns:t="http://www.re-motion.org/Data/DomainObjects/Types" 
+    elementFormDefault="qualified" 
+    attributeFormDefault="unqualified"
+    targetNamespace="http://www.re-motion.org/Data/DomainObjects/Persistence/1.0"
+    xml:lang="en">
+
+  <xs:import namespace="http://www.re-motion.org/Data/DomainObjects/Types" schemaLocation="types.xsd" />
+
+  <xs:element name="storageProviders">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="storageProvider" type="sp:storageProviderType" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="application" type="t:requiredStringType" use="required" />
+    </xs:complexType>
+
+    <xs:key name="storageProviderKey">
+      <xs:selector xpath="sp:storageProvider" />
+      <xs:field xpath="@id" />
+    </xs:key>
+  </xs:element>
+
+  <xs:complexType name="storageProviderType">
+    <xs:sequence>
+      <xs:element name="type" type="t:dotNetType" />
+      <xs:element name="configuration">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax" namespace="##other" />
+          </xs:sequence>
+          <xs:attribute name="type" type="t:dotNetType" use="required" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="id" type="t:requiredStringType" use="required" />
+  </xs:complexType>
+
+</xs:schema>

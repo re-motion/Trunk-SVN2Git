@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<WebConfiguration>
+  <Class>
+    <remarks> 
+      <para>
+        Use this class's <see cref="Current"/> property to read the configuration settings from your code. 
+      </para><para>
+        Place a copy of the <c>WebConfiguration.xsd</c> schema file into Visual Studio's xml schema directory
+        (<c>%ProgramFiles%\Microsoft Visual Studio .NET 2003\Common7\Packages\schemas\xml</c> for Visual Studio 2003 and 
+        (<c>%ProgramFiles%\Microsoft Visual Studio 8\XML\Schemas</c> for Visual Studio 2005 respectivly) to provide IntelliSense for the 
+        <c>web.config</c>.
+      </para>
+    </remarks>
+    <seealso cref="IConfigurationSectionHandler"/>
+    <seealso cref="ExecutionEngineConfiguration"/>
+    <seealso cref="ResourceConfiguration"/>
+    <seealso cref="SmartNavigationConfiguration"/>
+    <seealso cref="WcagConfiguration"/>
+    <example>
+      Register the configuration section in the configuration file within the <c>configSections</c> element
+      and create the configuration section for <c>remotion.web</c>. The <c>configSections</c> element must 
+      precede all configuration sections.
+      <code>
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;configuration&gt;
+
+  &lt;configSections&gt;
+    &lt;section name="remotion.web" type="Remotion.Web.Configuration.WebConfiguration, Remotion.Web" /&gt;
+    &lt;!-- Other configuration section registrations. --&gt;
+  &lt;/configSections&gt;
+  
+  &lt;remotion.web xmlns="http://www.re-motion.org/web/configuration"&gt; 
+    &lt;!-- The configuration section entries. --&gt;
+    &lt;<see cref="ExecutionEngineConfiguration">executionEngine</see> 
+        defaultWxeHandler="~/WxeHandler.ashx"
+        enableSessionManagement="true" 
+        functionTimeout="20" 
+        refreshInterval="10" 
+        urlMappingFile="C:\ProjectDirectory\UrlMapping.xml"
+    /&gt;
+    &lt;<see cref="ResourceConfiguration">resources</see> 
+        root="res" 
+    /&gt;
+    &lt;<see cref="SmartNavigationConfiguration">smartNavigation</see> 
+        enableScrolling="true" 
+        enableFocusing="true" 
+    /&gt;
+    &lt;<see cref="WcagConfiguration">wcag</see> 
+        <see cref="WaiConformanceLevel">conformanceLevel</see>="Undefined" 
+        <see cref="WcagDebugMode">debugging</see>="Disabled" 
+    /&gt;
+  &lt;/remotion.web&gt;
+
+  &lt;!-- Other configuration sections. --&gt;
+&lt;/configuration&gt;
+      </code>
+    </example>
+  </Class>
+</WebConfiguration>
