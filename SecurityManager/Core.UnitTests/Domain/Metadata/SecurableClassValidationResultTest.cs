@@ -1,8 +1,10 @@
 using System;
 using NUnit.Framework;
+using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
+using Remotion.SecurityManager.UnitTests.TestDomain;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 {
@@ -69,7 +71,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
         StatePropertyDefinition paymentProperty = testHelper.CreatePaymentStateProperty (orderClass);
         StateCombination statelessCombination = testHelper.CreateStateCombination (orderClass);
-        StateCombination paidStateCombination = testHelper.CreateStateCombination (orderClass, paymentProperty["Paid"]);
+        StateCombination paidStateCombination = testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
 
         SecurableClassValidationResult result = new SecurableClassValidationResult();
 

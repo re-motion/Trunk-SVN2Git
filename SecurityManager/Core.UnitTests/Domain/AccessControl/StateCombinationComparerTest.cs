@@ -1,7 +1,9 @@
 using System;
 using NUnit.Framework;
+using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.UnitTests.TestDomain;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 {
@@ -35,7 +37,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition ();
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
       StateCombination combination1 = _testHelper.CreateStateCombination (orderClass);
-      StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, paymentProperty["Paid"]);
+      StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
 
       StateCombinationComparer comparer = new StateCombinationComparer ();
 
@@ -47,8 +49,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition ();
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
-      StateCombination combination1 = _testHelper.CreateStateCombination (orderClass, paymentProperty["None"]);
-      StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, paymentProperty["Paid"]);
+      StateCombination combination1 = _testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper(PaymentState.None).Name]);
+      StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
 
       StateCombinationComparer comparer = new StateCombinationComparer ();
 
@@ -73,7 +75,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition ();
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
       StateCombination combination1 = _testHelper.CreateStateCombination (orderClass);
-      StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, paymentProperty["Paid"]);
+      StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
 
       StateCombinationComparer comparer = new StateCombinationComparer ();
 
@@ -85,8 +87,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition ();
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
-      StateCombination combination1 = _testHelper.CreateStateCombination (orderClass, paymentProperty["None"]);
-      StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, paymentProperty["Paid"]);
+      StateCombination combination1 = _testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper(PaymentState.None).Name]);
+      StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
 
       StateCombinationComparer comparer = new StateCombinationComparer ();
 

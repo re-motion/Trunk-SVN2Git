@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
+using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.UnitTests.TestDomain;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 {
@@ -139,8 +141,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
-      StateDefinition paidState = paymentProperty["Paid"];
-      StateDefinition notPaidState = paymentProperty["None"];
+      StateDefinition paidState = paymentProperty[new EnumWrapper (PaymentState.Paid).Name];
+      StateDefinition notPaidState = paymentProperty[new EnumWrapper(PaymentState.None).Name];
       StateCombination combination1 = _testHelper.CreateStateCombination (orderClass, paidState);
       StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, notPaidState);
       StateCombination combination3 = _testHelper.CreateStateCombination (orderClass);

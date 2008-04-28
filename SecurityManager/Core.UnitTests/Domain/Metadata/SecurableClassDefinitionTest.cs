@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
+using Remotion.SecurityManager.UnitTests.TestDomain;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 {
@@ -470,7 +472,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         List<StateCombination> stateCombinations = testHelper.CreateOrderStateAndPaymentStateCombinations (orderClass);
         StatePropertyDefinition orderStateProperty = stateCombinations[0].StateUsages[0].StateDefinition.StateProperty;
         StatePropertyDefinition paymentProperty = stateCombinations[0].StateUsages[1].StateDefinition.StateProperty;
-        testHelper.CreateStateCombination (orderClass, orderStateProperty["Received"], paymentProperty["Paid"]);
+        testHelper.CreateStateCombination (orderClass, orderStateProperty[new EnumWrapper (OrderState.Received).Name], paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
 
         SecurableClassValidationResult result = orderClass.Validate ();
 
@@ -520,9 +522,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       {
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
         StatePropertyDefinition paymentProperty = testHelper.CreatePaymentStateProperty (orderClass);
-        StateCombination paidCombination1 = testHelper.CreateStateCombination (orderClass, paymentProperty["Paid"]);
-        StateCombination paidCombination2 = testHelper.CreateStateCombination (orderClass, paymentProperty["Paid"]);
-        testHelper.CreateStateCombination (orderClass, paymentProperty["None"]);
+        StateCombination paidCombination1 = testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
+        StateCombination paidCombination2 = testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
+        testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper(PaymentState.None).Name]);
 
         SecurableClassValidationResult result = new SecurableClassValidationResult ();
         orderClass.ValidateUniqueStateCombinations (result);
@@ -546,9 +548,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       {
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
         StatePropertyDefinition paymentProperty = testHelper.CreatePaymentStateProperty (orderClass);
-        testHelper.CreateStateCombination (orderClass, paymentProperty["Paid"]);
-        testHelper.CreateStateCombination (orderClass, paymentProperty["Paid"]);
-        testHelper.CreateStateCombination (orderClass, paymentProperty["None"]);
+        testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
+        testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
+        testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper(PaymentState.None).Name]);
 
         testHelper.Transaction.Commit ();
       }
@@ -567,7 +569,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
-          testHelper.CreateStateCombination (orderClass, ClientTransaction.Current, orderStateProperty["Received"], paymentProperty["Paid"]);
+          testHelper.CreateStateCombination (orderClass, ClientTransaction.Current, orderStateProperty[new EnumWrapper (OrderState.Received).Name], paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
           Assert.IsNotEmpty (orderClass.StateCombinations);
           orderClass.Delete ();
 

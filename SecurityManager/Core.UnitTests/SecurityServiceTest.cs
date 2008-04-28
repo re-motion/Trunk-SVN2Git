@@ -124,7 +124,7 @@ namespace Remotion.SecurityManager.UnitTests
 
       _mocks.VerifyAll ();
       Assert.AreEqual (1, accessTypes.Length);
-      Assert.Contains (AccessType.Get (EnumWrapper.Parse ("Read|MyTypeName")), accessTypes);
+      Assert.Contains (AccessType.Get (new EnumWrapper ("Read|MyTypeName")), accessTypes);
     }
 
     [Test]
@@ -150,7 +150,7 @@ namespace Remotion.SecurityManager.UnitTests
 
       _mocks.VerifyAll ();
       Assert.AreEqual (1, accessTypes.Length);
-      Assert.Contains (AccessType.Get (EnumWrapper.Parse ("Read|MyTypeName")), accessTypes);
+      Assert.Contains (AccessType.Get (new EnumWrapper ("Read|MyTypeName")), accessTypes);
     }
 
     [Test]

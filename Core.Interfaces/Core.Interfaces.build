@@ -12,9 +12,13 @@
           define="${build.csc.define}">
       <sources failonempty="true">
         <include name="*.cs" />
+        <include name="Collections/**/*.cs" />
         <include name="Implementation/**/*.cs" />
+        <include name="Logging/**/*.cs" />
         <include name="Mixins/**/*.cs" />
         <include name="Reflection/**/*.cs" />
+        <include name="Utilities/**/*.cs" />
+
         <include name="Properties/**/*.cs" />
         <exclude name="Properties/AssemblyInfoTemplate.cs" />
       </sources>

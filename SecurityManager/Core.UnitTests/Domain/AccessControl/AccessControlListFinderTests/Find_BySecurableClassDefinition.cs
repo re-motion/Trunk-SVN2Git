@@ -74,7 +74,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
 
     [Test]
     [ExpectedException (typeof (AccessControlException),
-        ExpectedMessage = "The state 'None' is not defined for the property 'State' of the securable class 'Remotion.SecurityManager.UnitTests.TestDomain.Order, Remotion.SecurityManager.UnitTests' or its base classes.")]
+        ExpectedMessage = "The state 'None|Remotion.SecurityManager.UnitTests.TestDomain.PaymentState, Remotion.SecurityManager.UnitTests' is not defined for the property 'State' of the securable class 'Remotion.SecurityManager.UnitTests.TestDomain.Order, Remotion.SecurityManager.UnitTests' or its base classes.")]
     public void Fail_WithSecurityContextContainsStateWithInvalidValue ()
     {
       SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition ();

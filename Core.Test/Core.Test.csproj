@@ -578,6 +578,7 @@
     <TestAssembly Include="Reflection\TestAssemblies\NonApplicationMarkedAssembly\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\NonApplicationMarkedAssembly\SampleType.cs" />
     <Compile Include="Reflection\TypesafeActivatorTest.cs" />
+    <Compile Include="Security\EnumWrapperTest.cs" />
     <Compile Include="Text\CommandLine\CommandLineClassParserTest.cs">
       <SubType>Code</SubType>
     </Compile>

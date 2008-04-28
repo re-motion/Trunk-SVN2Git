@@ -71,7 +71,6 @@
     <Compile Include="Core\NullGlobalAccessTypeCacheProviderTest.cs" />
     <Compile Include="Core\FunctionalSecurityStrategyTest.cs" />
     <Compile Include="Core\DemandMethodPermissionAttributeTest.cs" />
-    <Compile Include="Core\EnumWrapperTest.cs" />
     <Compile Include="Core\Metadata\AccessTypes.cs" />
     <Compile Include="Core\Metadata\AssemblyReflectorTest.cs" />
     <Compile Include="Core\Metadata\ClassReflectorTest.cs" />

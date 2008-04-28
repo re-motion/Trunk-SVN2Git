@@ -8,7 +8,7 @@ namespace Remotion.Security
 {
   public class FunctionalSecurityStrategy : IFunctionalSecurityStrategy
   {
-    private ISecurityStrategy _securityStrategy;
+    private readonly ISecurityStrategy _securityStrategy;
 
     public FunctionalSecurityStrategy (ISecurityStrategy securityStrategy)
     {
