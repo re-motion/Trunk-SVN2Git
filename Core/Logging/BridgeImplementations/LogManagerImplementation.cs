@@ -1,7 +1,7 @@
 using System;
 using Remotion.Logging.BridgeInterfaces;
 
-namespace Remotion.Logging.LogManagerImplementation
+namespace Remotion.Logging.BridgeImplementations
 {
   public class LogManagerImplementation : ILogManagerImplementation
   {
