@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Remotion.Collections
 {
-  // TODO FS: Move to Remotion.Interfaces
   /// <summary>
   /// Provides a comnmon interface for caches, which provide efficient storage and retrieval for values that are costly to calculate.
   /// </summary>

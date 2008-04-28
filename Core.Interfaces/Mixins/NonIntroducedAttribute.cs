@@ -1,4 +1,5 @@
 using System;
+using Remotion.Implementation;
 
 namespace Remotion.Mixins
 {
@@ -14,9 +15,7 @@ namespace Remotion.Mixins
 
     public NonIntroducedAttribute (Type suppressedInterface)
     {
-      if (suppressedInterface == null)
-        throw new ArgumentNullException ("suppressedInterface");
-      _suppressedInterface = suppressedInterface;
+      _suppressedInterface = ArgumentUtility.CheckNotNull ("suppressedInterface", suppressedInterface);
     }
 
     public Type SuppressedInterface

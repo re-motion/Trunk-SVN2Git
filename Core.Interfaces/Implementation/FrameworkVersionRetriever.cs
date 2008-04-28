@@ -13,9 +13,7 @@ namespace Remotion.Implementation
 
     public FrameworkVersionRetriever (IEnumerable<_Assembly> loadedAssemblies)
     {
-      if (loadedAssemblies == null)
-        throw new ArgumentNullException ("loadedAssemblies");
-      _loadedAssemblies = loadedAssemblies;
+      _loadedAssemblies = ArgumentUtility.CheckNotNull ("loadedAssemblies", loadedAssemblies);
     }
 
     public Version RetrieveVersion()

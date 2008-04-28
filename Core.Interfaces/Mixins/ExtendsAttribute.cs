@@ -1,4 +1,5 @@
 using System;
+using Remotion.Implementation;
 
 namespace Remotion.Mixins
 {
@@ -33,9 +34,7 @@ namespace Remotion.Mixins
     /// <param name="targetType">The target type extended by this mixin.</param>
     public ExtendsAttribute (Type targetType)
     {
-      if (targetType == null)
-        throw new ArgumentNullException ("targetType");
-      _targetType = targetType;
+      _targetType = ArgumentUtility.CheckNotNull ("targetType", targetType);
     }
 
     /// <summary>
@@ -60,9 +59,7 @@ namespace Remotion.Mixins
       get { return _mixinTypeArguments; }
       set
       {
-        if (value == null)
-          throw new ArgumentNullException ("value");
-        _mixinTypeArguments = value;
+        _mixinTypeArguments = ArgumentUtility.CheckNotNull ("value", value);
       }
     }
   }

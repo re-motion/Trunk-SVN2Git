@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Remotion.Collections
 {
-  // TODO FS: Move to Remotion.Interfaces
   /// <summary>
   /// Provides a common interface for data structures used for storing and retrieving key/value pairs.
   /// </summary>

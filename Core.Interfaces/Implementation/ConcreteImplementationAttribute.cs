@@ -9,9 +9,7 @@ namespace Remotion.Implementation
 
     public ConcreteImplementationAttribute (string partialTypeNameTemplate)
     {
-      if (partialTypeNameTemplate == null)
-        throw new ArgumentNullException ("partialTypeNameTemplate");
-      _partialTypeNameTemplate = partialTypeNameTemplate;
+      _partialTypeNameTemplate = ArgumentUtility.CheckNotNull ("partialTypeNameTemplate", partialTypeNameTemplate);
     }
 
     public string PartialTypeNameTemplate

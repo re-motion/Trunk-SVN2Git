@@ -95,10 +95,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CallContextSingleton.cs" />
-    <Compile Include="Collections\IDataStore.cs" />
     <Compile Include="Collections\InterlockedDataStore.cs" />
     <Compile Include="Collections\NullDataStore.cs" />
     <Compile Include="Collections\SimpleDataStore.cs" />
+    <Compile Include="Logging\LogManagerImplementation\LogManagerImplementation.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomClassEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomEventEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomMethodEmitter.cs" />
@@ -147,16 +147,11 @@
     <Compile Include="Globalization\MultiLingualResources.cs" />
     <Compile Include="Globalization\ResourceManagerResolver.cs" />
     <Compile Include="Globalization\ResourceManagerResolverUtility.cs" />
-    <Compile Include="INullObject.cs" />
     <Compile Include="Collections\ArrayComparer.cs" />
     <Compile Include="Collections\LazyInterlockedCache.cs" />
-    <Compile Include="Logging\ILog.cs" />
-    <Compile Include="Logging\ILogManager.cs" />
     <Compile Include="Logging\Log4NetLog.cs" />
     <Compile Include="Logging\Log4NetLogManager.cs" />
     <Compile Include="Logging\Log4NetTraceListener.cs" />
-    <Compile Include="Logging\LogLevel.cs" />
-    <Compile Include="Logging\LogManager.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixedTypeAttribute.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeAttribute.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteTypeBuilder.cs" />
@@ -353,7 +348,6 @@
     <Compile Include="Collections\AutoInitHashtable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Collections\ICache.cs" />
     <Compile Include="Collections\NullCache.cs" />
     <Compile Include="Collections\NameObjectCollection.cs">
       <SubType>Code</SubType>
@@ -410,7 +404,6 @@
     <Compile Include="ObjectBinding\IBusinessObjectService.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PermanentGuidAttribute.cs" />
     <Compile Include="Reflection\AssemblyFinder.cs" />
     <Compile Include="Reflection\AssemblyFinderTypeDiscoveryService.cs" />
     <Compile Include="Reflection\AttributeAssemblyFinderFilter.cs" />

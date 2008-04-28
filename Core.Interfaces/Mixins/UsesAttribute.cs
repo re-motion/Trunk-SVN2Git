@@ -1,4 +1,5 @@
 using System;
+using Remotion.Implementation;
 
 namespace Remotion.Mixins
 {
@@ -31,9 +32,7 @@ namespace Remotion.Mixins
     /// <param name="mixinType">The mixin type the class depends on.</param>
     public UsesAttribute (Type mixinType)
     {
-      if (mixinType == null)
-        throw new ArgumentNullException ("mixinType");
-      _mixinType = mixinType;
+      _mixinType = ArgumentUtility.CheckNotNull ("mixinType", mixinType);
     }
 
     /// <summary>

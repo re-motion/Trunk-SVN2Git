@@ -1,4 +1,5 @@
 using System;
+using Remotion.Implementation;
 
 namespace Remotion.Mixins
 {
@@ -62,10 +63,7 @@ namespace Remotion.Mixins
     /// <param name="targetType">Target type for which this interface constitutes a complete interface.</param>
     public CompleteInterfaceAttribute (Type targetType)
     {
-      if (targetType == null)
-        throw new ArgumentNullException ("targetType");
-
-      _targetType = targetType;
+      _targetType = ArgumentUtility.CheckNotNull ("targetType", targetType);
     }
 
     /// <summary>

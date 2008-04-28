@@ -24,8 +24,7 @@ namespace Remotion.Implementation
       {
         lock (s_valueLock)
         {
-          if (value == null)
-            throw new ArgumentNullException ("value");
+          ArgumentUtility.CheckNotNull ("value", value);
           if (s_value != null)
             throw new InvalidOperationException (
                 string.Format ("The framework version has already been set to {0}. It can only be set once.", s_value));

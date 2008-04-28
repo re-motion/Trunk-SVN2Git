@@ -1,4 +1,5 @@
 using System;
+using Remotion.Implementation;
 
 namespace Remotion.Mixins
 {
@@ -28,13 +29,8 @@ namespace Remotion.Mixins
     /// <param name="mixinType">The mixin type to be mixed with the target type.</param>
     public MixAttribute (Type targetType, Type mixinType)
     {
-      if (targetType == null)
-        throw new ArgumentNullException ("targetType");
-      if (mixinType == null)
-        throw new ArgumentNullException ("mixinType");
-
-      _targetType = targetType;
-      _mixinType = mixinType;
+      _targetType = ArgumentUtility.CheckNotNull ("targetType", targetType);
+      _mixinType = ArgumentUtility.CheckNotNull ("mixinType", mixinType);
     }
 
     /// <summary>

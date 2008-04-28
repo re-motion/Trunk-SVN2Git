@@ -1,4 +1,5 @@
 using System;
+using Remotion.Implementation;
 
 namespace Remotion.Mixins
 {
@@ -18,9 +19,7 @@ namespace Remotion.Mixins
       get { return _additionalDependencies; }
       set
       {
-        if (value == null)
-          throw new ArgumentNullException ("value");
-        _additionalDependencies = value;
+        _additionalDependencies = ArgumentUtility.CheckNotNull ("value", value);
       }
     }
 
@@ -36,9 +35,7 @@ namespace Remotion.Mixins
       get { return _suppressedMixins; }
       set
       {
-        if (value == null)
-          throw new ArgumentNullException ("value");
-        _suppressedMixins = value;
+        _suppressedMixins = ArgumentUtility.CheckNotNull ("value", value);
       }
     }
   }

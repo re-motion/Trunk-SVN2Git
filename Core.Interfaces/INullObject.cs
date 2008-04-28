@@ -2,7 +2,6 @@ using System;
 
 namespace Remotion
 {
-  // TODO FS: Move to Remotion.Interfaces
   /// <summary>
   /// Represents a nullable object according to the "Null Object Pattern".
   /// </summary>

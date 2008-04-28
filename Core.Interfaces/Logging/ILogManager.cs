@@ -2,7 +2,6 @@ using System;
 
 namespace Remotion.Logging
 {
-  // TODO FS: Move to Remotion.Interfaces
   /// <summary>
   /// The <see cref="ILogManager"/> interface declares the methods available for retrieving a logger that implements
   /// <see cref="ILog"/> and initializing the respective logging framework.

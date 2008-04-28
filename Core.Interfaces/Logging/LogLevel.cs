@@ -1,6 +1,5 @@
 namespace Remotion.Logging
 {
-  // TODO FS: Move to Remotion.Interfaces
   /// <summary>
   /// Defines the log levels available when logging through the <see cref="ILog"/> interface.
   /// </summary>

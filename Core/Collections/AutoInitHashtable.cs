@@ -5,15 +5,13 @@ using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
-#pragma warning disable 612,618 // obsolete method
   /// <summary>
   ///   A hashtable that automatically creates new value objects when queried for a specific key.
   /// </summary>
   /// <remarks>
-  ///		This collection cannot be modified using <see cref="Add"/> and setting values through the indexer. Getting values through the indexer
+  ///		This collection cannot be modified using <see cref="Hashtable.Add"/> and setting values through the indexer. Getting values through the indexer
   ///		will assign a new object to the specified key if none exists.
   /// </remarks>
-#pragma warning restore 612,618
   [DebuggerDisplay ("Count={Count}")]
   public class AutoInitHashtable : Hashtable
   {
