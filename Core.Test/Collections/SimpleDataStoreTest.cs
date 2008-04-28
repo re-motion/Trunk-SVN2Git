@@ -56,8 +56,8 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), "The store already contains an element with key 'd'. (Old value: '1', new value: '2')\r\n" 
-        + "Parameter name: key")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The store already contains an element with key 'd'. " 
+        + "(Old value: '1', new value: '2')\r\nParameter name: key")]
     public void Add_Twice ()
     {
       _store.Add ("d", 1);
