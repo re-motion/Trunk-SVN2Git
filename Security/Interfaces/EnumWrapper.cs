@@ -1,9 +1,7 @@
 using System;
-using Remotion.Utilities;
 
 namespace Remotion.Security
 {
-  //TODO FS: Move to SecurityInterfaces
   /// <summary>Represents an access type enum value.</summary>
   /// <remarks>
   /// Use the static <see cref="O:Remotion.Security.AccessType.Get"/> methods to convert an enum to an access type.
@@ -14,8 +12,6 @@ namespace Remotion.Security
   [Serializable]
   public struct EnumWrapper : IEquatable<EnumWrapper>
   {
-    //TODO FS: Use fullname of enum in current format "value|PartialAssemblyQualifiedName"
-    //TODO FS: StateEnumValues must be migrated (SecurityManager!!!)
     private readonly string _name;
 
     /// <summary>
@@ -23,7 +19,7 @@ namespace Remotion.Security
     /// </summary>
     /// <param name="enumValue">The enum value.</param>
     public EnumWrapper (Enum enumValue)
-        : this (ArgumentUtility.CheckNotNull ("enumValue", enumValue).ToString(), TypeUtility.GetPartialAssemblyQualifiedName (enumValue.GetType()))
+        : this (ArgumentUtility.CheckNotNull ("enumValue", enumValue).ToString(), GetPartialAssemblyQualifiedName (enumValue.GetType()))
     {
       Type type = enumValue.GetType ();
       if (Attribute.IsDefined (type, typeof (FlagsAttribute), false))
@@ -34,6 +30,11 @@ namespace Remotion.Security
                 typeof (FlagsAttribute).FullName),
             "enumValue");
       }
+    }
+
+    private static string GetPartialAssemblyQualifiedName (Type type)
+    {
+      return type.FullName + ", " + type.Assembly.GetName ().Name;
     }
 
     /// <summary>

@@ -29,7 +29,6 @@
         <include name="ObjectBinding/**/*.cs" />
         <include name="Properties/**/*.cs" />
         <include name="Reflection/**/*.cs" />
-        <include name="Security/**/*.cs" />
         <include name="Text/**/*.cs" />
         <include name="Utilities/**/*.cs" />
         <include name="Xml/**/*.cs" />

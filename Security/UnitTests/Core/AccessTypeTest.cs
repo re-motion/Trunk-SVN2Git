@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Security.UnitTests.Core.SampleDomain;
 
@@ -68,7 +69,7 @@ namespace Remotion.Security.UnitTests.Core
 
     private void ClearAccessTypeCache ()
     {
-      PrivateInvoke.SetNonPublicStaticField (typeof (AccessType), "s_cache", new Dictionary<EnumWrapper, AccessType> ());
+      PrivateInvoke.SetNonPublicStaticField (typeof (AccessType), "s_cache", new InterlockedCache<EnumWrapper, AccessType> ());
     }
   }
 

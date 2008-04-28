@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 
 namespace Remotion.Security
 {
-  //TODO FS: Move to SecurityInterfaces
   /// <summary>Exception thrown by the <see cref="T:Remotion.Security.SecurityClient"/> if access is denied.</summary>
   [Serializable]
   public class PermissionDeniedException : Exception

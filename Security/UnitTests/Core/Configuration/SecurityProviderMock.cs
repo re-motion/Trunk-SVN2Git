@@ -22,7 +22,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration
     
      // methods and properties
 
-    public AccessType[] GetAccess (SecurityContext context, System.Security.Principal.IPrincipal user)
+    public AccessType[] GetAccess (ISecurityContext context, System.Security.Principal.IPrincipal user)
     {
       return new AccessType[0];
     }

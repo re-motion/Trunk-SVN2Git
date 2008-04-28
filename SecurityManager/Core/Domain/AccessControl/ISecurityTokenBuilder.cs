@@ -7,6 +7,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 {
   public interface ISecurityTokenBuilder
   {
-    SecurityToken CreateToken (ClientTransaction transaction, IPrincipal user, SecurityContext context);
+    SecurityToken CreateToken (ClientTransaction transaction, IPrincipal user, ISecurityContext context);
   }
 }

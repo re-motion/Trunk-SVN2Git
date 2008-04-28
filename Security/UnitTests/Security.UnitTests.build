@@ -24,6 +24,7 @@
         <include name="${build.test.outputdir}/Remotion.Data.DomainObjects.dll" />
         <include name="${build.test.outputdir}/Remotion.Development.dll" />
         <include name="${build.test.outputdir}/Remotion.Security.dll" />
+        <include name="${build.test.outputdir}/Remotion.Security.Interfaces.dll" />
         <include name="${build.test.outputdir}/Remotion.Security.Data.DomainObjects.dll" />
         <include name="${build.test.outputdir}/Remotion.Security.UnitTests.TestDomain.dll" />
         <include name="${build.test.outputdir}/nunit.framework.dll" />

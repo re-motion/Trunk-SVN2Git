@@ -578,7 +578,6 @@
     <TestAssembly Include="Reflection\TestAssemblies\NonApplicationMarkedAssembly\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\NonApplicationMarkedAssembly\SampleType.cs" />
     <Compile Include="Reflection\TypesafeActivatorTest.cs" />
-    <Compile Include="Security\EnumWrapperTest.cs" />
     <Compile Include="Text\CommandLine\CommandLineClassParserTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -711,6 +710,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Security\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

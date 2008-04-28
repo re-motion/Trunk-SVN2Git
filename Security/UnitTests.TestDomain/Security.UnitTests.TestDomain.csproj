@@ -64,6 +64,10 @@
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security %28Security\Security%29</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Security.Interfaces.csproj">
+      <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
+      <Name>Security.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

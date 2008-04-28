@@ -96,6 +96,10 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
+    <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
+      <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
+      <Name>Security.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Interfaces\ObjectBinding.Interfaces.csproj">
       <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
       <Name>ObjectBinding.Interfaces</Name>

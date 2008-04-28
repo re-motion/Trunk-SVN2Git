@@ -71,6 +71,10 @@
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security %28Security\Security%29</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
+      <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
+      <Name>Security.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\SecurityManager.Core.csproj">
       <Project>{990B8638-A08F-4A94-B01A-E7DAEF089F27}</Project>
       <Name>SecurityManager.Core</Name>

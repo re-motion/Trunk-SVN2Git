@@ -66,19 +66,19 @@ namespace Remotion.Security
 
     private AccessType[] GetAccessFromGlobalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, IPrincipal user)
     {
-      ICache<Tuple<SecurityContext, string>, AccessType[]> globalAccessTypeCache = _globalCacheProvider.GetCache ();
+      ICache<Tuple<ISecurityContext, string>, AccessType[]> globalAccessTypeCache = _globalCacheProvider.GetCache ();
       if (globalAccessTypeCache == null)
         throw new InvalidOperationException ("IGlobalAccesTypeCacheProvider.GetAccessTypeCache() evaluated and returned null.");
 
-      SecurityContext context = factory.CreateSecurityContext ();
+      ISecurityContext context = factory.CreateSecurityContext ();
       if (context == null)
         throw new InvalidOperationException ("ISecurityContextFactory.CreateSecurityContext() evaluated and returned null.");
 
-      Tuple<SecurityContext, string> key = new Tuple<SecurityContext, string> (context, user.Identity.Name);
+      Tuple<ISecurityContext, string> key = new Tuple<ISecurityContext, string> (context, user.Identity.Name);
       return globalAccessTypeCache.GetOrCreateValue (key, delegate { return GetAccessFromSecurityProvider (securityProvider, context, user); });
     }
 
-    private AccessType[] GetAccessFromSecurityProvider (ISecurityProvider securityProvider, SecurityContext context, IPrincipal user)
+    private AccessType[] GetAccessFromSecurityProvider (ISecurityProvider securityProvider, ISecurityContext context, IPrincipal user)
     {
       AccessType[] actualAccessTypes = securityProvider.GetAccess (context, user);
       if (actualAccessTypes == null)

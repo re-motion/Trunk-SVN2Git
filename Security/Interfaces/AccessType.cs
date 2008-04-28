@@ -1,11 +1,11 @@
 using System;
-using System.Collections.Generic;
-using Remotion.Utilities;
 using System.Runtime.Serialization;
+using Remotion.Collections;
+using Remotion.Implementation;
+using Remotion.Security.BridgeInterfaces;
 
 namespace Remotion.Security
 {
-  //TODO FS: Move to SecurityInterfaces
    /// <summary>Represents an access type enum value.</summary>
   /// <remarks>
   /// Use the static <see cref="O:Remotion.Security.AccessType.Get"/> methods to convert an enum to an access type.
@@ -18,7 +18,8 @@ namespace Remotion.Security
 
     // static members and constants
 
-    private static readonly Dictionary<EnumWrapper, AccessType> s_cache = new Dictionary<EnumWrapper, AccessType> ();
+    private static readonly ICache<EnumWrapper, AccessType> s_cache = 
+        VersionDependentImplementationBridge<IAccessTypeCacheImplementation>.Implementation.CreateCache();
 
     public static AccessType Get (Enum accessType)
     {
@@ -26,23 +27,10 @@ namespace Remotion.Security
       return Get (new EnumWrapper (accessType));
     }
 
-    //TODO FS: Move cache implementation into CacheProvider, move to Securiy Assembly 
     public static AccessType Get (EnumWrapper accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
-
-      if (s_cache.ContainsKey (accessType))
-        return s_cache[accessType];
-
-      lock (s_cache)
-      {
-        if (s_cache.ContainsKey (accessType))
-          return s_cache[accessType];
-
-        AccessType temp = new AccessType (accessType);
-        s_cache.Add (accessType, temp);
-        return temp;
-      }
+      return s_cache.GetOrCreateValue (accessType, delegate (EnumWrapper key) { return new AccessType (key); });
     }
 
     // member fields
@@ -53,14 +41,6 @@ namespace Remotion.Security
 
     private AccessType (EnumWrapper accessType)
     {
-      //Type type = TypeUtility.GetType (accessType.TypeName);
-      //if (!Attribute.IsDefined (type, typeof (AccessTypeAttribute), false))
-      //{
-      //  throw new ArgumentException (string.Format ("Enumerated type '{0}' cannot be used as an access type. Valid access types must have the {1} applied.",
-      //          type.FullName, typeof (AccessTypeAttribute).FullName),
-      //      "accessType");
-      //}
-
       _value = accessType;
     }
 

@@ -11,6 +11,7 @@
           define="${build.csc.define}">
       <sources failonempty="true">
         <include name="*.cs" />
+        <include name="BridgeInterfaces/**/*.cs" />
         <include name="Properties/**/*.cs" />
         <exclude name="Properties/AssemblyInfoTemplate.cs" />
       </sources>
@@ -18,6 +19,7 @@
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Configuration.dll"/>
         <include asis="true" name="System.Xml.dll"/>
+        <include name="${build.outputdir}/Remotion.Interfaces.dll"/>
       </references>
     </csc>
   </target>

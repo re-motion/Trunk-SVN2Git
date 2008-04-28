@@ -22,7 +22,7 @@ namespace Remotion.Security
     
     // methods and properties
 
-    public SecurityContext CreateSecurityContext ()
+    public ISecurityContext CreateSecurityContext ()
     {
       return _context;
     }

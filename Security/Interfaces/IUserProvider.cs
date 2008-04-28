@@ -3,7 +3,6 @@ using System.Security.Principal;
 
 namespace Remotion.Security
 {
-  //TODO FS: Move to SecurityInterfaces
   /// <summary>Defines an interface for retrieving the current user.</summary>
   public interface IUserProvider : INullObject
   {

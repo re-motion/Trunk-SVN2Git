@@ -210,7 +210,7 @@ namespace Remotion.Security.UnitTests.Data.DomainObjects
       public bool IsNew { get { return false; } }
       public bool IsDeleted { get { return false; } }
 
-      public SecurityContext CreateSecurityContext ()
+      public ISecurityContext CreateSecurityContext ()
       {
         throw new NotImplementedException ();
       }

@@ -46,12 +46,12 @@ namespace Remotion.SecurityManager
       _securityTokenBuilder = securityTokenBuilder;
     }
 
-    public AccessType[] GetAccess (SecurityContext context, IPrincipal user)
+    public AccessType[] GetAccess (ISecurityContext context, IPrincipal user)
     {
       return GetAccess (ClientTransaction.NewRootTransaction(), context, user);
     }
 
-    public AccessType[] GetAccess (ClientTransaction transaction, SecurityContext context, IPrincipal user)
+    public AccessType[] GetAccess (ClientTransaction transaction, ISecurityContext context, IPrincipal user)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("context", context);

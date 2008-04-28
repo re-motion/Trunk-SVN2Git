@@ -60,7 +60,7 @@ namespace Remotion.Security.UnitTests.Data.DomainObjects.TestDomain
     [DBBidirectionalRelation ("OtherParent")]
     public abstract ObjectList<SecurableObject> OtherChildren { get; }
 
-    SecurityContext ISecurityContextFactory.CreateSecurityContext ()
+    ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
       return new SecurityContext (GetPublicDomainObjectType());
     }

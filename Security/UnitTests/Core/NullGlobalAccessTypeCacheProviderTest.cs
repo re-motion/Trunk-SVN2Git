@@ -34,7 +34,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void GetAccessTypeCache ()
     {
-      Assert.IsInstanceOfType (typeof (NullCache<Tuple<SecurityContext, string>, AccessType[]>), _provider.GetCache());
+      Assert.IsInstanceOfType (typeof (NullCache<Tuple<ISecurityContext, string>, AccessType[]>), _provider.GetCache());
     }
 
     [Test]
@@ -54,7 +54,7 @@ namespace Remotion.Security.UnitTests.Core
 
       Assert.AreEqual ("MyProvider", deserializedProvider.Name);
       Assert.AreEqual ("The Description", deserializedProvider.Description);
-      Assert.IsInstanceOfType (typeof (NullCache<Tuple<SecurityContext, string>, AccessType[]>), deserializedProvider.GetCache ());
+      Assert.IsInstanceOfType (typeof (NullCache<Tuple<ISecurityContext, string>, AccessType[]>), deserializedProvider.GetCache ());
       Assert.IsTrue (((IGlobalAccessTypeCacheProvider) deserializedProvider).IsNull);
     }
 

@@ -16,7 +16,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     ///   <paramref name="context"/> is not state-less and a <see cref="StatePropertyDefinition"/> is missing.<br/>- or -<br/>
     ///   <paramref name="context"/> is not state-less and contains an invalid state for a <see cref="StatePropertyDefinition"/>.
     /// </exception>
-    public AccessControlList Find (ClientTransaction transaction, SecurityContext context)
+    public AccessControlList Find (ClientTransaction transaction, ISecurityContext context)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     ///   <paramref name="context"/> is not state-less and a <see cref="StatePropertyDefinition"/> is missing.<br/>- or -<br/>
     ///   <paramref name="context"/> is not state-less and contains an invalid state for a <see cref="StatePropertyDefinition"/>.
     /// </exception>
-    public AccessControlList Find (ClientTransaction transaction, SecurableClassDefinition classDefinition, SecurityContext context)
+    public AccessControlList Find (ClientTransaction transaction, SecurableClassDefinition classDefinition, ISecurityContext context)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
-    private StateCombination FindStateCombination (SecurableClassDefinition classDefinition, SecurityContext context)
+    private StateCombination FindStateCombination (SecurableClassDefinition classDefinition, ISecurityContext context)
     {
       List<StateDefinition> states = GetStates (classDefinition.StateProperties, context);
       if (states == null)
@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return classDefinition.FindStateCombination (states);
     }
 
-    private List<StateDefinition> GetStates (IList stateProperties, SecurityContext context)
+    private List<StateDefinition> GetStates (IList stateProperties, ISecurityContext context)
     {
       List<StateDefinition> states = new List<StateDefinition> ();
 

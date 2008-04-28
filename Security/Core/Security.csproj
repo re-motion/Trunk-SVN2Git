@@ -45,8 +45,12 @@
     </EmbeddedResource>
     <None Include="Security.build" />
     <Compile Include="BaseDemandPermissionAttribute.cs" />
+    <Compile Include="BridgeImplementations\AccessTypeCacheImplementation.cs" />
+    <Compile Include="BridgeImplementations\SecurityAdapterRegistryImplementation.cs" />
     <Compile Include="Configuration\SecurityProviderHelper.cs" />
     <Compile Include="GlobalAccessTypeCacheProviderObjectReference.cs" />
+    <Compile Include="IFunctionalSecurityStrategy.cs" />
+    <Compile Include="IGlobalAccessTypeCacheProvider.cs" />
     <Compile Include="NullIdentity.cs" />
     <Compile Include="NullPrincipal.cs" />
     <Compile Include="NullSecurityClient.cs" />
@@ -96,6 +100,7 @@
     <Compile Include="RevisionBasedAccessTypeCacheProvider.cs" />
     <Compile Include="SecurityClient.cs" />
     <Compile Include="SecurityConfigurationException.cs" />
+    <Compile Include="SecurityContext.cs" />
     <Compile Include="SecurityException.cs" />
     <Compile Include="ObjectSecurityAdapter.cs" />
     <Compile Include="ObjectSecurityStrategy.cs" />

@@ -15,6 +15,7 @@
       </nowarn>
       <sources failonempty="true">
         <include name="*.cs" />
+        <include name="BridgeImplementations/**/*.cs" />
         <include name="Configuration/**/*.cs" />
         <include name="Metadata/**/*.cs" />
         <include name="Properties/**/*.cs" />

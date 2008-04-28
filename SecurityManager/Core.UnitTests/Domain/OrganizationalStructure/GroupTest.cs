@@ -120,7 +120,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       Group group = CreateGroup ();
 
-      SecurityContext securityContext = ((ISecurityContextFactory) group).CreateSecurityContext ();
+      ISecurityContext securityContext = ((ISecurityContextFactory) group).CreateSecurityContext ();
       Assert.AreEqual (group.GetPublicDomainObjectType (), Type.GetType (securityContext.Class));
       Assert.IsEmpty (securityContext.Owner);
       Assert.AreEqual (group.UniqueIdentifier, securityContext.OwnerGroup);
@@ -135,7 +135,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Group group = CreateGroup ();
       group.Tenant = null;
 
-      SecurityContext securityContext = ((ISecurityContextFactory) group).CreateSecurityContext ();
+      ISecurityContext securityContext = ((ISecurityContextFactory) group).CreateSecurityContext ();
       Assert.AreEqual (group.GetPublicDomainObjectType (), Type.GetType (securityContext.Class));
       Assert.IsEmpty (securityContext.Owner);
       Assert.AreEqual (group.UniqueIdentifier, securityContext.OwnerGroup);

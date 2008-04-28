@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test.Domain
       return GetPublicDomainObjectType ();
     }
 
-    public SecurityContext CreateSecurityContext ()
+    public ISecurityContext CreateSecurityContext ()
     {
       return new SecurityContext (
           GetPublicDomainObjectType(), GetOwnerName(), GetOwnerGroupName(), GetOwnerTenantName(), GetStates(), GetAbstractRoles());

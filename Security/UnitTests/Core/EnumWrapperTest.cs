@@ -4,7 +4,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
 
-namespace Remotion.UnitTests.Security
+namespace Remotion.Security.UnitTests.Core
 {
   [TestFixture]
   public class EnumWrapperTest
@@ -17,11 +17,11 @@ namespace Remotion.UnitTests.Security
     public void Initialization_FromEnumValue ()
     {
       EnumWrapper wrapper = new EnumWrapper(TestEnum.One);
-      Assert.That (wrapper.Name, Is.EqualTo ("One|Remotion.UnitTests.Security.EnumWrapperTest+TestEnum, Remotion.UnitTests"));
+      Assert.That (wrapper.Name, Is.EqualTo ("One|Remotion.Security.UnitTests.Core.EnumWrapperTest+TestEnum, Remotion.Security.UnitTests"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Enumerated type 'Remotion.UnitTests.Security.EnumWrapperTest+TestFlags' "
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Enumerated type 'Remotion.Security.UnitTests.Core.EnumWrapperTest+TestFlags' "
         + "cannot be wrapped. Only enumerated types without the System.FlagsAttribute can be wrapped.\r\nParameter name: enumValue")]
     public void Initialization_FromFlags_Fails ()
     {

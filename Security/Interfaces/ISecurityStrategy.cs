@@ -3,7 +3,6 @@ using System.Security.Principal;
 
 namespace Remotion.Security
 {
-  //TODO FS: Move to SecurityInterfaces
   /// <summary>Encapsulates the security checks.</summary>
   /// <remarks><note type="implementnotes">Implementations are free to decide whether they provide caching.</note></remarks>
   public interface ISecurityStrategy
@@ -17,13 +16,13 @@ namespace Remotion.Security
     /// <remarks>
     /// <note type="implementnotes">
     /// When caching is provided by the implementation, <see cref="ISecurityContextFactory.CreateSecurityContext"/> of the <paramref name="factory"/>
-    /// shall only be called when the local cache does not already have a reference to a <see cref="SecurityContext"/>.
+    /// shall only be called when the local cache does not already have a reference to a <see cref="ISecurityContext"/>.
     /// </note>
     /// </remarks>
     bool HasAccess (ISecurityContextFactory factory, ISecurityProvider securityProvider, IPrincipal user, params AccessType[] requiredAccessTypes);
     
     /// <summary>Clears the cached access types of the <see cref="ISecurableObject"/> associated with this <see cref="ISecurityStrategy"/>.</summary>
-    /// <remarks>Called by application code when <see cref="ISecurableObject"/> properties that are relevant for the <see cref="SecurityContext"/> change.</remarks>
+    /// <remarks>Called by application code when <see cref="ISecurableObject"/> properties that are relevant for the <see cref="ISecurityContext"/> change.</remarks>
     void InvalidateLocalCache ();
   }
 }

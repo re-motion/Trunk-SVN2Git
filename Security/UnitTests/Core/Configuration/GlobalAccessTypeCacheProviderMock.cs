@@ -22,7 +22,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration
     
      // methods and properties
 
-    public ICache<Tuple<SecurityContext, string>, AccessType[]> GetCache ()
+    public ICache<Tuple<ISecurityContext, string>, AccessType[]> GetCache ()
     {
       throw new NotImplementedException();
     }

@@ -17,10 +17,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     /// <exception cref="AccessControlException">
     ///   A matching <see cref="User"/> is not found for the <paramref name="principal"/>.<br/>- or -<br/>
-    ///   A matching <see cref="Group"/> is not found for the <paramref name="context"/>'s <see cref="SecurityContext.OwnerGroup"/>.<br/>- or -<br/>
+    ///   A matching <see cref="Group"/> is not found for the <paramref name="context"/>'s <see cref="ISecurityContext.OwnerGroup"/>.<br/>- or -<br/>
     ///   A matching <see cref="AbstractRoleDefinition"/> is not found for all entries in the <paramref name="context"/>'s <see cref="SecurityContext.AbstractRoles"/> collection.
     /// </exception>
-    public SecurityToken CreateToken (ClientTransaction transaction, IPrincipal principal, SecurityContext context)
+    public SecurityToken CreateToken (ClientTransaction transaction, IPrincipal principal, ISecurityContext context)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("principal", principal);

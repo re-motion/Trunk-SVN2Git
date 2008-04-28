@@ -425,24 +425,6 @@
     <Compile Include="Reflection\MethodCaller.cs" />
     <Compile Include="Reflection\InheritanceHierarchyFilter.cs" />
     <Compile Include="Reflection\TypesafeActivator.cs" />
-    <Compile Include="Security\AbstractRoleAttribute.cs" />
-    <Compile Include="Security\AccessType.cs" />
-    <Compile Include="Security\AccessTypeAttribute.cs" />
-    <Compile Include="Security\EnumWrapper.cs" />
-    <Compile Include="Security\IFunctionalSecurityStrategy.cs" />
-    <Compile Include="Security\IGlobalAccessTypeCacheProvider.cs" />
-    <Compile Include="Security\IObjectSecurityAdapter.cs" />
-    <Compile Include="Security\IObjectSecurityStrategy.cs" />
-    <Compile Include="Security\ISecurableObject.cs" />
-    <Compile Include="Security\ISecurityAdapter.cs" />
-    <Compile Include="Security\ISecurityContextFactory.cs" />
-    <Compile Include="Security\ISecurityProvider.cs" />
-    <Compile Include="Security\ISecurityStrategy.cs" />
-    <Compile Include="Security\IUserProvider.cs" />
-    <Compile Include="Security\PermissionDeniedException.cs" />
-    <Compile Include="Security\SecurityContext.cs" />
-    <Compile Include="Security\SecurityAdapterRegistry.cs" />
-    <Compile Include="Security\SecurityStateAttribute.cs" />
     <Compile Include="StandardDelegates.cs" />
     <Compile Include="Text\CommandLine\CommandLineArgument.cs">
       <SubType>Code</SubType>
@@ -573,6 +555,9 @@
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Security\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

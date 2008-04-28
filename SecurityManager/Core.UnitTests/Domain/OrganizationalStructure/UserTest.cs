@@ -193,7 +193,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       User user = CreateUser ();
 
-      SecurityContext securityContext = ((ISecurityContextFactory) user).CreateSecurityContext ();
+      ISecurityContext securityContext = ((ISecurityContextFactory) user).CreateSecurityContext ();
       Assert.AreEqual (user.GetPublicDomainObjectType (), Type.GetType (securityContext.Class));
       Assert.AreEqual (user.UserName, securityContext.Owner);
       Assert.AreEqual (user.OwningGroup.UniqueIdentifier, securityContext.OwnerGroup);
@@ -208,7 +208,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       User user = CreateUser ();
       user.OwningGroup = null;
 
-      SecurityContext securityContext = ((ISecurityContextFactory) user).CreateSecurityContext ();
+      ISecurityContext securityContext = ((ISecurityContextFactory) user).CreateSecurityContext ();
       Assert.AreEqual (user.GetPublicDomainObjectType (), Type.GetType (securityContext.Class));
       Assert.AreEqual (user.UserName, securityContext.Owner);
       Assert.IsEmpty (securityContext.OwnerGroup);
@@ -223,7 +223,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       User user = CreateUser ();
       user.Tenant = null;
 
-      SecurityContext securityContext = ((ISecurityContextFactory) user).CreateSecurityContext ();
+      ISecurityContext securityContext = ((ISecurityContextFactory) user).CreateSecurityContext ();
       Assert.AreEqual (user.GetPublicDomainObjectType (), Type.GetType (securityContext.Class));
       Assert.AreEqual (user.UserName, securityContext.Owner);
       Assert.AreEqual (user.OwningGroup.UniqueIdentifier, securityContext.OwnerGroup);

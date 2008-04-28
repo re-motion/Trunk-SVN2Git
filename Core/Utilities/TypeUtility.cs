@@ -157,7 +157,6 @@ namespace Remotion.Utilities
     public static string GetPartialAssemblyQualifiedName (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-
       return type.FullName + ", " + type.Assembly.GetName().Name;
     }
 

@@ -61,6 +61,7 @@
     <Compile Include="Core\Configuration\SecurityConfigurationTests\DeserializeSecurityConfigurationForPermissionProviderTest.cs" />
     <Compile Include="Core\Configuration\UserProviderMock.cs" />
     <Compile Include="Core\Configuration\SecurityProviderMock.cs" />
+    <Compile Include="Core\EnumWrapperTest.cs" />
     <Compile Include="Core\FunctionalSecurityContextFactoryTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredMethodPermissionsTest.cs" />
     <Compile Include="Core\Metadata\PermissionReflectorTests\GetRequiredPropertyReadPermissionsTest.cs" />
@@ -204,6 +205,10 @@
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Security.Interfaces.csproj">
+      <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
+      <Name>Security.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\UnitTests.TestDomain\Security.UnitTests.TestDomain.csproj">
       <Project>{AC34B1D8-A295-44A4-AE9D-8167B3C3ED44}</Project>

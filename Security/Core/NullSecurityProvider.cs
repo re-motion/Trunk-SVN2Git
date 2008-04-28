@@ -26,7 +26,7 @@ namespace Remotion.Security
     /// The "Null Object" implementation always returns an empty array.
     /// </summary>
     /// <returns>Always returns an empty array.</returns>
-    public AccessType[] GetAccess (SecurityContext context, IPrincipal user)
+    public AccessType[] GetAccess (ISecurityContext context, IPrincipal user)
     {
       return new AccessType[0];
     }

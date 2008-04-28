@@ -24,7 +24,7 @@ namespace Remotion.Security.UnitTests.Core.MockConstraints
       }
       FunctionalSecurityContextFactory factory = (FunctionalSecurityContextFactory) obj;
 
-      SecurityContext context = factory.CreateSecurityContext ();
+      ISecurityContext context = factory.CreateSecurityContext ();
       if (context == null)
       {
         _message = "The FunctionalSecurityContextFactory.GetSecurityContext() evaluated and returned null.";

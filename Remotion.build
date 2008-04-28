@@ -272,7 +272,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="Web" depends="Core, Data.Interfaces">
+  <target name="Web" depends="Core, Data.Interfaces, Security.Interfaces">
     <property name="project.name" value="Web" />
     <property name="project.dir" value="Web/Core" />
     <property name="project.output" value="Remotion.Web" />
@@ -296,7 +296,7 @@
     <call target="execute-buildstep" />
   </target>
   
-  <target name="ObjectBinding" depends="Core, ObjectBinding.Interfaces">
+  <target name="ObjectBinding" depends="Core, ObjectBinding.Interfaces, Security.Interfaces">
     <property name="project.name" value="ObjectBinding" />
     <property name="project.dir" value="ObjectBinding/Core" />
     <property name="project.output" value="Remotion.ObjectBinding" />
@@ -304,7 +304,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="ObjectBinding.Web" depends="Core, Web, ObjectBinding">
+  <target name="ObjectBinding.Web" depends="Core, Web, ObjectBinding, Security.Interfaces">
     <property name="project.name" value="ObjectBinding.Web" />
     <property name="project.dir" value="ObjectBinding/Web" />
     <property name="project.output" value="Remotion.ObjectBinding.Web" />
@@ -343,7 +343,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="Security.Interfaces" depends="Core">
+  <target name="Security.Interfaces" depends="Core, Core.Interfaces">
     <property name="project.name" value="Security.Interfaces" />
     <property name="project.dir" value="Security/Interfaces" />
     <property name="project.output" value="Remotion.Security.Interfaces" />
@@ -474,6 +474,7 @@
     <call target="Core" cascade="false"/>
     <call target="Data.DomainObjects" cascade="false"/>
     <call target="Development.Core" cascade="false"/>
+    <call target="Security.Interfaces" cascade="false"/>
 
     <property name="project.name" value="Data.DomainObjects.UnitTests" />
     <property name="project.dir" value="Data/DomainObjects.UnitTests" />

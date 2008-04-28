@@ -41,7 +41,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return new List<Enum>();
     }
 
-    SecurityContext ISecurityContextFactory.CreateSecurityContext ()
+    ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
       using (new SecurityFreeSection())
       {

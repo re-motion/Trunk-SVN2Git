@@ -155,7 +155,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         Position position = testHelper.CreatePosition ("PositionName");
         position.Delegation = Delegation.Enabled;
 
-        SecurityContext securityContext = ((ISecurityContextFactory) position).CreateSecurityContext();
+        ISecurityContext securityContext = ((ISecurityContextFactory) position).CreateSecurityContext();
         Assert.AreEqual (position.GetPublicDomainObjectType(), Type.GetType (securityContext.Class));
         Assert.IsEmpty (securityContext.Owner);
         Assert.IsEmpty (securityContext.OwnerGroup);

@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using Remotion.Security.BridgeImplementations;
 using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core
@@ -7,7 +8,7 @@ namespace Remotion.Security.UnitTests.Core
   [TestFixture]
   public class SecurityAdapterRegistryTest
   {
-    private SecurityAdapterRegistry _securityAdapterRegistry;
+    private SecurityAdapterRegistryImplementation _securityAdapterRegistry;
     private MockRepository _mocks;
 
     [SetUp]

@@ -3,7 +3,6 @@ using System.Security.Principal;
 
 namespace Remotion.Security
 {
-  //TODO FS: Move to SecurityAssembly
   /// <summary>Encapsulates the security checks for static access to the business object.</summary>
   /// <remarks><note type="implementnotes">Implementations are free to decide whether they provide object-independent caching.</note></remarks>
   public interface IFunctionalSecurityStrategy

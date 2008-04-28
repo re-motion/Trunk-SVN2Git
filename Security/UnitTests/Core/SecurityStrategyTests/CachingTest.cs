@@ -13,7 +13,7 @@ using Mocks_Property = Rhino.Mocks.Constraints.Property;
 
 namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
 {
-  using GlobalCacheKey = Tuple<SecurityContext, string>;
+  using GlobalCacheKey = Tuple<ISecurityContext, string>;
 
   [TestFixture]
   public class CachingTest

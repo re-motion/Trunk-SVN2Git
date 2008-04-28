@@ -181,7 +181,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       Tenant tenant = _testHelper.CreateTenant ("Tenant", "UID: Tenant");
 
-      SecurityContext securityContext = ((ISecurityContextFactory) tenant).CreateSecurityContext ();
+      ISecurityContext securityContext = ((ISecurityContextFactory) tenant).CreateSecurityContext ();
       Assert.AreEqual (tenant.GetPublicDomainObjectType (), Type.GetType (securityContext.Class));
       Assert.IsEmpty (securityContext.Owner);
       Assert.IsEmpty (securityContext.OwnerGroup);

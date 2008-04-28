@@ -8,14 +8,14 @@ namespace Remotion.Security
   //TODO FS: Introduce ISecurityContext and move to interfaces-assembly/securityassembly
   /// <summary>Collects all security-specific information for an instance or type, and is passed as parameter during the permission check.</summary>
   [Serializable]
-  public sealed class SecurityContext : IEquatable<SecurityContext>
+  public sealed class SecurityContext : ISecurityContext
   {
     private readonly string _class;
     private readonly string _owner;
     private readonly string _ownerGroup;
     private readonly string _ownerTenant;
-    private IDictionary<string, EnumWrapper> _states;
-    private EnumWrapper[] _abstractRoles;
+    private readonly IDictionary<string, EnumWrapper> _states;
+    private readonly EnumWrapper[] _abstractRoles;
 
     public SecurityContext (Type classType)
       : this (classType, null, null, null, null, null)
@@ -104,6 +104,12 @@ namespace Remotion.Security
       if (other == null)
         return false;
       return Equals (other);
+    }
+
+    public bool Equals (ISecurityContext other)
+    {
+      SecurityContext otherContext = other as SecurityContext;
+      return otherContext != null && Equals (otherContext);
     }
 
     public bool Equals (SecurityContext other)
