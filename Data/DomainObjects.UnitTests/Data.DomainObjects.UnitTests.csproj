@@ -120,6 +120,10 @@
       <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
       <Name>ObjectBinding.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Security\Core\Security.csproj">
+      <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
+      <Name>Security %28Security\Security%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
       <Name>Security.Interfaces</Name>
@@ -198,6 +202,22 @@
     <Compile Include="Configuration\StorageProviders\RdbmsProviderDefinitionTest.cs" />
     <Compile Include="Configuration\StorageProviders\TypeProviderTest.cs" />
     <TestDomain Include="Design\DelaySignAssembly\DelaySignClass.cs" />
+    <Compile Include="Security\DomainObjectSecurityStrategyTest.cs" />
+    <Compile Include="Security\SecurityClientTransactionExtensionTests\FilterQueryResultTest.cs" />
+    <Compile Include="Security\SecurityClientTransactionExtensionTests\InterfaceTest.cs" />
+    <Compile Include="Security\SecurityClientTransactionExtensionTests\NewObjectCreatingTest.cs" />
+    <Compile Include="Security\SecurityClientTransactionExtensionTests\ObjectDeletingTest.cs" />
+    <Compile Include="Security\SecurityClientTransactionExtensionTests\PropertyValueChangingTest.cs" />
+    <Compile Include="Security\SecurityClientTransactionExtensionTests\PropertyValueReadingTest.cs" />
+    <Compile Include="Security\SecurityClientTransactionExtensionTests\RelationChangingTest.cs" />
+    <Compile Include="Security\SecurityClientTransactionExtensionTests\RelationReadingTest.cs" />
+    <Compile Include="Security\SecurityClientTransactionExtensionTests\SecurityClientTransactionExtensionTestHelper.cs" />
+    <Compile Include="Security\SecurityClientTransactionExtensionTests\SerializatiionTest.cs" />
+    <Compile Include="Security\SetupFixture.cs" />
+    <Compile Include="Security\TestDomain\NonSecurableObject.cs" />
+    <Compile Include="Security\TestDomain\SecurableObject.cs" />
+    <Compile Include="Security\TestDomain\StubStorageProvider.cs" />
+    <Compile Include="Security\TestDomain\TestAccessTypes.cs" />
     <Compile Include="DataManagement\CollectionEndPointModificationTest.cs" />
     <Compile Include="DataManagement\NullEndPointModificationTest.cs" />
     <Compile Include="DataManagement\ObjectEndPointModificationTest.cs" />
@@ -1053,6 +1073,9 @@
     <EmbeddedResource Include="Resources\DomainObjectsConfigurationWithFakeMappingLoader.xml" />
     <EmbeddedResource Include="Resources\DomainObjectsConfigurationWithMinimumSettings.xml" />
     <EmbeddedResource Include="Resources\DomainObjectsConfigurationWithCustomSectionGroupName.xml" />
+    <None Include="Security\Remotion.Data.DomainObjects.UnitTests.Security.Queries.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="QueriesForLoaderTest2.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

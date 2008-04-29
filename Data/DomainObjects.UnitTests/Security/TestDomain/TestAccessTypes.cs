@@ -1,6 +1,7 @@
 using System;
+using Remotion.Security;
 
-namespace Remotion.Security.UnitTests.Data.DomainObjects.TestDomain
+namespace Remotion.Data.DomainObjects.UnitTests.Security.TestDomain
 {
 
   [AccessType]

@@ -8,7 +8,7 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Security;
-using Remotion.Security.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using System.Collections.Generic;
 

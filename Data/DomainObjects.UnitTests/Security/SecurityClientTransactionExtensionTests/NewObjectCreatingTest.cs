@@ -2,10 +2,12 @@ using System;
 using System.Security.Principal;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Security.Data.DomainObjects;
-using Remotion.Security.UnitTests.Data.DomainObjects.TestDomain;
+using Remotion.Data.DomainObjects.Security;
+using Remotion.Data.DomainObjects.UnitTests.Security.TestDomain;
+using Remotion.Security;
+using Remotion.Data.DomainObjects.UnitTests.Security.TestDomain;
 
-namespace Remotion.Security.UnitTests.Data.DomainObjects.SecurityClientTransactionExtensionTests
+namespace Remotion.Data.DomainObjects.UnitTests.Security.SecurityClientTransactionExtensionTests
 {
   [TestFixture]
   public class NewObjectCreatingTest

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Remotion.Security;
 using Remotion.Utilities;
 
-namespace Remotion.Security.Data.DomainObjects
+namespace Remotion.Data.DomainObjects.Security
 {
   public interface IDomainObjectSecurityContextFactory : ISecurityContextFactory
   {

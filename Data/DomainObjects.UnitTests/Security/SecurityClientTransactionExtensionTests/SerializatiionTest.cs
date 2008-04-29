@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using Remotion.Security.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Security.UnitTests.Data.DomainObjects.SecurityClientTransactionExtensionTests
+namespace Remotion.Data.DomainObjects.UnitTests.Security.SecurityClientTransactionExtensionTests
 {
   [TestFixture]
   public class SerializatiionTest

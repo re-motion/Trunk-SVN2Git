@@ -8,7 +8,7 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
-namespace Remotion.Security.UnitTests.Data.DomainObjects.TestDomain
+namespace Remotion.Data.DomainObjects.UnitTests.Security.TestDomain
 {
   public class StubStorageProvider : StorageProvider
   {

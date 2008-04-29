@@ -1,8 +1,9 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
+using Remotion.Security;
 
-namespace Remotion.Security.UnitTests.Data.DomainObjects.TestDomain
+namespace Remotion.Data.DomainObjects.UnitTests.Security.TestDomain
 {
   [Instantiable]
   [DBTable]

@@ -10,7 +10,7 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
-using Remotion.Security.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure

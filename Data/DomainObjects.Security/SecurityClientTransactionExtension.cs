@@ -1,9 +1,10 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Security;
 using Remotion.Utilities;
 
-namespace Remotion.Security.Data.DomainObjects
+namespace Remotion.Data.DomainObjects.Security
 {
   [Serializable]
   public class SecurityClientTransactionExtension : IClientTransactionExtension

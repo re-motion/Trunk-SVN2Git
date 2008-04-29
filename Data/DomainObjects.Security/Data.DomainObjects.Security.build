@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
-<project xmlns="nant-schema" name="Remotion.Security.Data.DomainObjects">
+<project xmlns="nant-schema" name="Remotion.Data.DomainObjects.Security">
 
   <target name="build" description="perform a build">
 

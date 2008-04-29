@@ -2,7 +2,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Web.ExecutionEngine;
 using Remotion.Security.Configuration;
-using Remotion.Security.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;

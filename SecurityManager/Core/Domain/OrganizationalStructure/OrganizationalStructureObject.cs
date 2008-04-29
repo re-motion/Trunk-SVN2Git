@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
-using Remotion.Security.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {

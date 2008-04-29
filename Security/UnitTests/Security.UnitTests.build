@@ -20,12 +20,9 @@
       <references failonempty="true">
         <include name="${build.test.outputdir}/Remotion.dll" />
         <include name="${build.test.outputdir}/Remotion.Interfaces.dll" />
-        <include name="${build.test.outputdir}/Remotion.Data.Interfaces.dll"/>
-        <include name="${build.test.outputdir}/Remotion.Data.DomainObjects.dll" />
         <include name="${build.test.outputdir}/Remotion.Development.dll" />
         <include name="${build.test.outputdir}/Remotion.Security.dll" />
         <include name="${build.test.outputdir}/Remotion.Security.Interfaces.dll" />
-        <include name="${build.test.outputdir}/Remotion.Security.Data.DomainObjects.dll" />
         <include name="${build.test.outputdir}/Remotion.Security.UnitTests.TestDomain.dll" />
         <include name="${build.test.outputdir}/nunit.framework.dll" />
         <include name="${build.test.outputdir}/Rhino.Mocks.dll" />
@@ -41,13 +38,6 @@
         <include name="Core/Metadata/LocalizationFiles/*.xml" />
       </fileset>
     </copy>
-    
-    <copy todir="${build.test.outputdir}" flatten="true" overwrite="true">
-      <fileset failonempty="true">
-        <include name="Data.DomainObjects/Remotion.Security.UnitTests.Data.DomainObjects.*.xml" />
-      </fileset>
-    </copy>
-
   </target>
 
 </project>

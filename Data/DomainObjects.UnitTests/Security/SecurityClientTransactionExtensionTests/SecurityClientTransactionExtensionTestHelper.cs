@@ -1,15 +1,17 @@
 using System;
 using System.Security.Principal;
+using Remotion.Data.DomainObjects.UnitTests.Security.TestDomain;
+using Remotion.Security;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.Security.Configuration;
-using Remotion.Security.Data.DomainObjects;
-using Remotion.Security.UnitTests.Data.DomainObjects.TestDomain;
+using Remotion.Data.DomainObjects.Security;
+using Remotion.Data.DomainObjects.UnitTests.Security.TestDomain;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
 
-namespace Remotion.Security.UnitTests.Data.DomainObjects.SecurityClientTransactionExtensionTests
+namespace Remotion.Data.DomainObjects.UnitTests.Security.SecurityClientTransactionExtensionTests
 {
   public delegate bool HasAccessDelegate (ISecurityProvider securityProvider, IPrincipal user, params AccessType[] requiredAccessTypes);
   public delegate bool HasStatelessAccessDelegate (Type type, ISecurityProvider securityProvider, IPrincipal user, params AccessType[] requiredAccessTypes);

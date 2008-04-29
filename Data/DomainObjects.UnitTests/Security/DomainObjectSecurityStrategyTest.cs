@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Remotion.Security.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
+using Remotion.Security;
 using Remotion.Utilities;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -10,7 +11,7 @@ using Remotion.Security.Configuration;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Security.UnitTests.Data.DomainObjects
+namespace Remotion.Data.DomainObjects.UnitTests.Security
 {
   [TestFixture]
   public class DomainObjectSecurityStrategyTest

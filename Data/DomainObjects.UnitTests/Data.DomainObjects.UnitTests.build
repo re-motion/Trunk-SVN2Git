@@ -28,9 +28,11 @@
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.ObjectBinding.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.Security.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.Web.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.ObjectBinding.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.ObjectBinding.Interfaces.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.Security.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Security.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Web.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Web.UnitTests.dll"/>
@@ -60,7 +62,14 @@
         <include name="Design/DelaySignAssembly/**/*.cs" />
       </fileset>
     </copy>
-    
+
+    <copy todir="${build.test.outputdir}/Security" flatten="true" overwrite="true">
+      <fileset failonempty="true">
+        <include name="Security/Remotion.Data.DomainObjects.UnitTests.Security.*.xml" />
+      </fileset>
+    </copy>
+
+
   </target>
   
 </project>
