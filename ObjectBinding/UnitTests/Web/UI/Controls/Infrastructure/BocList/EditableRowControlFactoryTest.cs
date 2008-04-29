@@ -11,7 +11,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
   public class EditableRowControlFactoryTest
   {
     private BindableObjectClass _stringValueClass;
-    private BusinessObjectPropertyPath _stringValuePropertyPath;
+    private IBusinessObjectPropertyPath _stringValuePropertyPath;
     private BocSimpleColumnDefinition _stringValueColumn;
 
     private EditableRowControlFactory _factory;

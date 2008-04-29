@@ -3,7 +3,6 @@ using System.Xml.Serialization;
 
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.dll
   /// <summary> The <see langword="abstract"/> default implementation of the <see cref="IBusinessObject"/> interface. </summary>
   [Serializable]
   public abstract class BusinessObject : IBusinessObject

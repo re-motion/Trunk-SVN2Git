@@ -2,13 +2,12 @@ using System;
 
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.Interfaces
   /// <summary>
   ///   The <b>IEnumerationValueInfo"</b> interface provides fucntionality for encapsulating a native enumeration value 
   ///   for use with an <see cref="IBusinessObjectEnumerationProperty"/>.
   /// </summary>
   /// <remarks> 
-  ///   For enumerations of the <see cref="Enum"/> type, the generic <see cref="EnumerationValueInfo"/> class can be 
+  ///   For enumerations of the <see cref="Enum"/> type, the generic <c>EnumerationValueInfo</c> class in Remotion.ObjectBinding.dll can be 
   ///   used.
   ///  </remarks>
   public interface IEnumerationValueInfo

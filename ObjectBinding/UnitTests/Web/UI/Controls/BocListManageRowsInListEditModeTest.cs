@@ -16,8 +16,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
     private BindableObjectClass _typeWithStringClass;
 
-    private BusinessObjectPropertyPath _typeWithStringFirstValuePath;
-    private BusinessObjectPropertyPath _typeWithStringSecondValuePath;
+    private IBusinessObjectPropertyPath _typeWithStringFirstValuePath;
+    private IBusinessObjectPropertyPath _typeWithStringSecondValuePath;
 
     private BocSimpleColumnDefinition _typeWithStringFirstValueSimpleColumn;
     private BocSimpleColumnDefinition _typeWithStringSecondValueSimpleColumn;

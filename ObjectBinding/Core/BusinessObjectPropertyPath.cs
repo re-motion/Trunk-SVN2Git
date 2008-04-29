@@ -5,7 +5,6 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Extract interface (OB.Interfaces), move rest to OB.dll
   /// <summary> A collection of business object properties that result in each other. </summary>
   /// <remarks>
   ///   <para>
@@ -18,15 +17,15 @@ namespace Remotion.ObjectBinding
   ///     <see cref="IBusinessObjectProvider"/>.
   ///   </para>
   /// </remarks>
-  public class BusinessObjectPropertyPath
+  public class BusinessObjectPropertyPath : IBusinessObjectPropertyPath
   {
     /// <summary> Property path formatters can be passed to <see cref="String.Format"/> for full <see cref="IFormattable"/> support. </summary>
     public class Formatter : IFormattable
     {
       private IBusinessObject _object;
-      private BusinessObjectPropertyPath _path;
+      private IBusinessObjectPropertyPath _path;
 
-      public Formatter (IBusinessObject obj, BusinessObjectPropertyPath path)
+      public Formatter (IBusinessObject obj, IBusinessObjectPropertyPath path)
       {
         _object = obj;
         _path = path;
@@ -49,7 +48,7 @@ namespace Remotion.ObjectBinding
     /// <param name="objectClass"> The <see cref="IBusinessObjectClass"/> containing the first property in the path. Must no be <see langword="null"/>. </param>
     /// <param name="propertyPathIdentifier"> A string with a valid property path syntax. Must no be <see langword="null"/> or empty. </param>
     /// <returns> A <see cref="BusinessObjectPropertyPath"/>. </returns>
-    public static BusinessObjectPropertyPath Parse (IBusinessObjectClass objectClass, string propertyPathIdentifier)
+    public static IBusinessObjectPropertyPath Parse (IBusinessObjectClass objectClass, string propertyPathIdentifier)
     {
       ArgumentUtility.CheckNotNull ("objectClass", objectClass);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyPathIdentifier", propertyPathIdentifier);

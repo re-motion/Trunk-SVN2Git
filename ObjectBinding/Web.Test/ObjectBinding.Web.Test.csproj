@@ -116,6 +116,10 @@
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
       <Name>ObjectBinding %28ObjectBinding\ObjectBinding%29</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Interfaces\ObjectBinding.Interfaces.csproj">
+      <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
+      <Name>ObjectBinding.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sample\ObjectBinding.Sample.csproj">
       <Project>{5F1B88F7-FAFB-45C2-A357-333245870A6B}</Project>
       <Name>ObjectBinding.Sample</Name>

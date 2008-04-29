@@ -23,8 +23,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
     private BindableObjectClass _class;
 
-    private BusinessObjectPropertyPath _stringValuePath;
-    private BusinessObjectPropertyPath _int32ValuePath;
+    private IBusinessObjectPropertyPath _stringValuePath;
+    private IBusinessObjectPropertyPath _int32ValuePath;
 
     private BocColumnDefinition[] _columns;
 

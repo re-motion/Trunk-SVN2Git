@@ -30,6 +30,7 @@
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.ObjectBinding.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.Web.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.ObjectBinding.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.ObjectBinding.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Security.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Web.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Web.UnitTests.dll"/>

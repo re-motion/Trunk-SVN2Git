@@ -2622,7 +2622,7 @@ public class BocList:
           RenderDataCellIcon (writer, businessObject);
         if (simpleColumn != null && simpleColumn.EnableIcon)
         {
-          BusinessObjectPropertyPath propertyPath;
+          IBusinessObjectPropertyPath propertyPath;
           if (simpleColumn.IsDynamic)
             propertyPath = simpleColumn.GetDynamicPropertyPath (businessObject.BusinessObjectClass);
           else
@@ -4662,7 +4662,7 @@ public class BocList:
     if (Value == null)
       throw new InvalidOperationException (string.Format ("The BocList '{0}' does not have a Value.", ID));
 
-    SetSelectedRows (ListUtility.IndicesOf (Value, selectedObjects, false));
+    SetSelectedRows (Remotion.Utilities.ListUtility.IndicesOf (Value, selectedObjects, false));
   }
 
   

@@ -2,7 +2,6 @@ using System;
 
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.Interfaces
   /// <summary>
   ///   The <b>IBusinessObjectClassWithIdentity</b> interface provides functionality for defining the <b>Class</b> of an 
   ///   <see cref="IBusinessObject"/>. 

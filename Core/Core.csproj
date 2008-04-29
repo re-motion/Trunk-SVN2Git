@@ -326,21 +326,6 @@
     <Compile Include="Mixins\Validation\ValidationResult.cs" />
     <Compile Include="Mixins\Validation\ValidationResultItem.cs" />
     <Compile Include="Mixins\Validation\Validator.cs" />
-    <Compile Include="ObjectBinding\BusinessObjectProvider.cs" />
-    <Compile Include="ObjectBinding\BusinessObjectStringFormatterService.cs" />
-    <Compile Include="ObjectBinding\EnumerationValueInfo.cs" />
-    <Compile Include="ObjectBinding\IBusinessObjectBooleanProperty.cs" />
-    <Compile Include="ObjectBinding\IBusinessObjectClassService.cs" />
-    <Compile Include="ObjectBinding\IBusinessObjectClassWithIdentity.cs" />
-    <Compile Include="ObjectBinding\IBusinessObjectDateTimeProperty.cs" />
-    <Compile Include="ObjectBinding\IBusinessObjectEnumerationProperty.cs" />
-    <Compile Include="ObjectBinding\IBusinessObjectNumericProperty.cs" />
-    <Compile Include="ObjectBinding\IBusinessObjectReferenceProperty.cs" />
-    <Compile Include="ObjectBinding\IBusinessObjectStringFormatterService.cs" />
-    <Compile Include="ObjectBinding\IBusinessObjectStringProperty.cs" />
-    <Compile Include="ObjectBinding\IBusinessObjectWithIdentity.cs" />
-    <Compile Include="ObjectBinding\IEnumerationValueInfo.cs" />
-    <Compile Include="ObjectBinding\IListInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -381,27 +366,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Globalization\ResourceManagerWrapper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ObjectBinding\BusinessObject.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ObjectBinding\BusinessObjectPropertyPath.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ObjectBinding\IBusinessObject.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ObjectBinding\IBusinessObjectClass.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ObjectBinding\IBusinessObjectProperty.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ObjectBinding\IBusinessObjectProvider.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ObjectBinding\IBusinessObjectService.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Reflection\AssemblyFinder.cs" />
@@ -555,9 +519,6 @@
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Security\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

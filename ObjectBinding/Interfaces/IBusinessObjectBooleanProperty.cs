@@ -1,6 +1,5 @@
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.Interfaces
   /// <summary> The <b>IBusinessObjectBooleanProperty</b> interface is used for accessing <see cref="bool"/> values. </summary>
   public interface IBusinessObjectBooleanProperty: IBusinessObjectProperty
   {

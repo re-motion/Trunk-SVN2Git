@@ -2,7 +2,6 @@ using System;
 
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.Interfaces
   /// <summary> 
   ///   The <see cref="IBusinessObject"/> interface provides functionality to get and set the state of a business object.
   /// </summary>

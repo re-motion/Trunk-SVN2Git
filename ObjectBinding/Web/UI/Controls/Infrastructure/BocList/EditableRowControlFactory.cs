@@ -20,7 +20,7 @@ public class EditableRowControlFactory
 
     if (control == null)
     {
-      BusinessObjectPropertyPath propertyPath = column.GetPropertyPath ();
+      IBusinessObjectPropertyPath propertyPath = column.GetPropertyPath ();
       control = (IBusinessObjectBoundEditableWebControl) ControlFactory.CreateControl (propertyPath.LastProperty, ControlFactory.EditMode.InlineEdit);
     }
 

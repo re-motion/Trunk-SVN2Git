@@ -388,7 +388,7 @@ public class EditModeController : PlaceHolder
       }
       else if (IsListEditModeActive)
       {
-        int[] indices = ListUtility.IndicesOf (_ownerControl.Value, businessObjects, false);
+        int[] indices = Remotion.Utilities.ListUtility.IndicesOf (_ownerControl.Value, businessObjects, false);
         ArrayList rows = new ArrayList (indices.Length);
         foreach (int index in indices)
         {
@@ -419,7 +419,7 @@ public class EditModeController : PlaceHolder
       }  
       else if (IsListEditModeActive)
       {
-        int index = ListUtility.IndexOf (_ownerControl.Value, businessObject);
+        int index = Remotion.Utilities.ListUtility.IndexOf (_ownerControl.Value, businessObject);
         if (index != -1)
         {
           EditableRow row = _rows[index];

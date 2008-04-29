@@ -9,20 +9,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   /// <summary>
   ///   A <see cref="PropertyPathBinding"/> encapsulates the creation of a 
-  ///   <see cref="BusinessObjectPropertyPath"/> from its string representation and an
+  ///   <see cref="IBusinessObjectPropertyPath"/> from its string representation and an
   ///   <see cref="IBusinessObjectDataSource"/>
   /// </summary>
   public class PropertyPathBinding : BusinessObjectControlItem, IBusinessObjectClassSource
   {
-    /// <summary> <see langword="true"/> once the <see cref="PropertyPath"/> has been set. </summary>
+    /// <summary> <see langword="true"/> once the <see cref="IBusinessObjectPropertyPath"/> has been set. </summary>
     private bool _isPropertyPathEvaluated;
     /// <summary> 
-    ///   The <see cref="BusinessObjectPropertyPath"/> mananged by this 
+    ///   The <see cref="IBusinessObjectPropertyPath"/> mananged by this 
     ///   <see cref="PropertyPathBinding"/>.
     /// </summary>
-    private BusinessObjectPropertyPath _propertyPath;
+    private IBusinessObjectPropertyPath _propertyPath;
     /// <summary> 
-    ///   The <see cref="string"/> representing the <see cref="BusinessObjectPropertyPath"/> mananged 
+    ///   The <see cref="string"/> representing the <see cref="IBusinessObjectPropertyPath"/> mananged 
     ///   by this <see cref="PropertyPathBinding"/>.
     /// </summary>
     private string _propertyPathIdentifier;
@@ -31,13 +31,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> 
     ///   Initializes a new instance of the <see cref="PropertyPathBinding"/> class with the
-    ///   <see cref="BusinessObjectPropertyPath"/> managed by this instance.
+    ///   <see cref="IBusinessObjectPropertyPath"/> managed by this instance.
     ///  </summary>
     /// <param name="propertyPath">
-    ///   The <see cref="BusinessObjectPropertyPath"/> mananged by this 
+    ///   The <see cref="IBusinessObjectPropertyPath"/> mananged by this 
     ///   <see cref="PropertyPathBinding"/>.
     /// </param>
-    public PropertyPathBinding (BusinessObjectPropertyPath propertyPath)
+    public PropertyPathBinding (IBusinessObjectPropertyPath propertyPath)
     {
       ArgumentUtility.CheckNotNull ("propertyPath", propertyPath);
 
@@ -83,9 +83,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // TODO: merge with GetDynamicPropertyPath
     // TODO: UnitTests
     /// <summary> 
-    ///   Gets the <see cref="BusinessObjectPropertyPath"/> mananged by this <see cref="PropertyPathBinding"/>.
+    ///   Gets the <see cref="IBusinessObjectPropertyPath"/> mananged by this <see cref="PropertyPathBinding"/>.
     /// </summary>
-    public BusinessObjectPropertyPath GetPropertyPath ()
+    public IBusinessObjectPropertyPath GetPropertyPath ()
     {
       if (_isPropertyPathEvaluated)
         return _propertyPath;
@@ -121,11 +121,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // TODO: merge with GetPropertyPath
     // TODO: UnitTests
-    public BusinessObjectPropertyPath GetDynamicPropertyPath (IBusinessObjectClass businessObjectClass)
+    public IBusinessObjectPropertyPath GetDynamicPropertyPath (IBusinessObjectClass businessObjectClass)
     {
       ArgumentUtility.CheckNotNull ("businessObjectClass", businessObjectClass);
 
-      BusinessObjectPropertyPath propertyPath = null;
+      IBusinessObjectPropertyPath propertyPath = null;
 
       if (!StringUtility.IsNullOrEmpty (_propertyPathIdentifier))
         propertyPath = BusinessObjectPropertyPath.Parse (businessObjectClass, _propertyPathIdentifier);
@@ -137,9 +137,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> 
-    ///   Sets the <see cref="BusinessObjectPropertyPath"/> mananged by this <see cref="PropertyPathBinding"/>.
+    ///   Sets the <see cref="IBusinessObjectPropertyPath"/> mananged by this <see cref="PropertyPathBinding"/>.
     /// </summary>
-    public void SetPropertyPath (BusinessObjectPropertyPath propertyPath)
+    public void SetPropertyPath (IBusinessObjectPropertyPath propertyPath)
     {
       _propertyPath = propertyPath;
       _propertyPathIdentifier = (propertyPath == null) ? string.Empty : propertyPath.Identifier;
@@ -157,7 +157,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> 
     ///   Gets or sets the <see cref="string"/> representing the 
-    ///   <see cref="BusinessObjectPropertyPath"/> mananged by this <see cref="PropertyPathBinding"/>.
+    ///   <see cref="IBusinessObjectPropertyPath"/> mananged by this <see cref="PropertyPathBinding"/>.
     /// </summary>
     /// <value> 
     ///   A <see cref="string"/> formatted as a valid property path. 

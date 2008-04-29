@@ -4,7 +4,6 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.dll
   /// <summary>The <see langword="abstract"/> default implementation of the <see cref="IBusinessObjectProvider"/> interface.</summary>
   public abstract class BusinessObjectProvider : IBusinessObjectProvider
   {
@@ -58,7 +57,7 @@ namespace Remotion.ObjectBinding
     /// <summary> 
     ///   Creates a <see cref="BusinessObjectPropertyPath"/> from the passed <see cref="IBusinessObjectProperty"/> list.
     /// </summary>
-    public virtual BusinessObjectPropertyPath CreatePropertyPath (IBusinessObjectProperty[] properties)
+    public virtual IBusinessObjectPropertyPath CreatePropertyPath (IBusinessObjectProperty[] properties)
     {
       return new BusinessObjectPropertyPath (properties);
     }

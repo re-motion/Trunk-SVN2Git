@@ -139,8 +139,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       BocSimpleColumnDefinition simpleColumn = (BocSimpleColumnDefinition) entry.Column;
 
-      BusinessObjectPropertyPath propertyPathThis;
-      BusinessObjectPropertyPath propertyPathRow;
+      IBusinessObjectPropertyPath propertyPathThis;
+      IBusinessObjectPropertyPath propertyPathRow;
 
       if (simpleColumn.IsDynamic)
       {
@@ -174,8 +174,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       BocCustomColumnDefinition customColumn = (BocCustomColumnDefinition) entry.Column;
 
-      BusinessObjectPropertyPath propertyPathThis;
-      BusinessObjectPropertyPath propertyPathRow;
+      IBusinessObjectPropertyPath propertyPathThis;
+      IBusinessObjectPropertyPath propertyPathRow;
 
       if (customColumn.IsDynamic)
       {
@@ -213,8 +213,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       for (int idxBindings = 0; idxBindings < compoundColumn.PropertyPathBindings.Count; idxBindings++)
       {
         PropertyPathBinding propertyPathBinding = compoundColumn.PropertyPathBindings[idxBindings];
-        BusinessObjectPropertyPath propertyPathThis;
-        BusinessObjectPropertyPath propertyPathRow;
+        IBusinessObjectPropertyPath propertyPathThis;
+        IBusinessObjectPropertyPath propertyPathRow;
 
         if (propertyPathBinding.IsDynamic)
         {
@@ -245,9 +245,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     private int ComparePropertyPathValues (
-        BusinessObjectPropertyPath propertyPathA,
+        IBusinessObjectPropertyPath propertyPathA,
         BocListRow rowA,
-        BusinessObjectPropertyPath propertyPathB,
+        IBusinessObjectPropertyPath propertyPathB,
         BocListRow rowB)
     {
       object valueA = rowA.GetPropertyPathValue (propertyPathA);
@@ -284,7 +284,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       //return Comparer.Default.Compare (valueA.ToString(), valueB.ToString());
     }
 
-    private object GetPropertyPathValue (BusinessObjectPropertyPath propertyPath)
+    private object GetPropertyPathValue (IBusinessObjectPropertyPath propertyPath)
     {
       if (propertyPath == null)
         return null;
@@ -335,7 +335,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         try
         {
           //TODO: Support DynamicPropertyPaths
-          BusinessObjectPropertyPath propertyPath = column.GetPropertyPath();
+          IBusinessObjectPropertyPath propertyPath = column.GetPropertyPath ();
           value = propertyPath.GetString (BusinessObject, string.Empty);
         }
         catch (Exception e)

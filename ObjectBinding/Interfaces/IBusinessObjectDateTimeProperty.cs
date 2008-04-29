@@ -2,12 +2,11 @@ using System;
 
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.Interfaces
   /// <summary> The <b>IBusinessObjectDateTimeProperty</b> interface is used for accessing <see cref="DateTime"/> values. </summary>
   /// <remarks>
   /// <note type="inotes">
   /// The objects returned for this property must implement the <see cref="IFormattable"/> interface in order to be displayed by the 
-  /// <see cref="IBusinessObject.GetPropertyString"/> methods.
+  /// <see cref="IBusinessObject.GetPropertyString(IBusinessObjectProperty,string)"/> methods.
   /// </note>
   /// </remarks>
   public interface IBusinessObjectDateTimeProperty : IBusinessObjectProperty

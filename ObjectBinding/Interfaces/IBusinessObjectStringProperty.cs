@@ -1,6 +1,5 @@
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.Interfaces
   /// <summary> 
   ///   The <b>IBusinessObjectStringProperty</b> provides additional meta data for <see cref="string"/> values.
   /// </summary>

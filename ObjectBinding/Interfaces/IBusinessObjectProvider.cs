@@ -2,7 +2,6 @@ using System;
 
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.Interfaces
   /// <summary> Provides functionality for business object providers. </summary>
   /// <remarks>
   ///   A business object provider is able to retrieve services (e.g. the
@@ -36,10 +35,10 @@ namespace Remotion.ObjectBinding
     /// <returns> A <see cref="Char"/> that is not used by the property's identifier. </returns>
     char GetPropertyPathSeparator ();
 
-    /// <summary>Creates a <see cref="BusinessObjectPropertyPath"/> from the passed <see cref="IBusinessObjectProperty"/> list.</summary>
+    /// <summary>Creates a <see cref="IBusinessObjectPropertyPath"/> from the passed <see cref="IBusinessObjectProperty"/> list.</summary>
     /// <param name="properties"> An array of <see cref="IBusinessObjectProperty"/> instances. </param>
-    /// <returns> A new instance of the <see cref="BusinessObjectPropertyPath"/> type. </returns>
-    BusinessObjectPropertyPath CreatePropertyPath (IBusinessObjectProperty[] properties);
+    /// <returns> A new instance of the <see cref="IBusinessObjectPropertyPath"/> type. </returns>
+    IBusinessObjectPropertyPath CreatePropertyPath (IBusinessObjectProperty[] properties);
 
     /// <summary> Returns a <see cref="String"/> to be used instead of the actual value if the property is not accessible. </summary>
     /// <returns> A <see cref="String"/> that can be easily distinguished from typical property values. </returns>

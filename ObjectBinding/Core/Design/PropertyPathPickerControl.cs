@@ -296,7 +296,7 @@ namespace Remotion.ObjectBinding.Design
           if (_classSource.BusinessObjectClass == null)
             throw new InvalidOperationException ("Cannot set value because edited object has no object class set.");
 
-          BusinessObjectPropertyPath propertyPath = null;
+          IBusinessObjectPropertyPath propertyPath = null;
           try
           {
             propertyPath = BusinessObjectPropertyPath.Parse (_classSource.BusinessObjectClass, (string)value);

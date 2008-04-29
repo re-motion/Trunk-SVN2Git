@@ -2,7 +2,6 @@ using System;
 
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.Interfaces
   /// <summary> 
   ///   The <b>IBusinessObjectReferenceProperty</b> interface is used for accessing references to other 
   ///   <see cref="IBusinessObject"/> instances.

@@ -2,7 +2,6 @@ using System;
 
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.Interfaces
   /// <summary> 
   ///   The <b>IBusinessObjectEnumerationProperty</b> interface is used for accessing the values of an enumeration. 
   /// </summary>

@@ -33,6 +33,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IBusinessObject.cs" />
+    <Compile Include="IBusinessObjectBooleanProperty.cs" />
+    <Compile Include="IBusinessObjectClass.cs" />
+    <Compile Include="IBusinessObjectClassService.cs" />
+    <Compile Include="IBusinessObjectClassWithIdentity.cs" />
+    <Compile Include="IBusinessObjectDateTimeProperty.cs" />
+    <Compile Include="IBusinessObjectEnumerationProperty.cs" />
+    <Compile Include="IBusinessObjectNumericProperty.cs" />
+    <Compile Include="IBusinessObjectProperty.cs" />
+    <Compile Include="IBusinessObjectPropertyPath.cs" />
+    <Compile Include="IBusinessObjectProvider.cs" />
+    <Compile Include="IBusinessObjectReferenceProperty.cs" />
+    <Compile Include="IBusinessObjectService.cs" />
+    <Compile Include="IBusinessObjectStringFormatterService.cs" />
+    <Compile Include="IBusinessObjectStringProperty.cs" />
+    <Compile Include="IBusinessObjectWithIdentity.cs" />
+    <Compile Include="IEnumerationValueInfo.cs" />
+    <Compile Include="IListInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="ObjectBinding.Interfaces.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />

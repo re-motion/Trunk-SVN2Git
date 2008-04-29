@@ -390,7 +390,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("obj", obj);
 
-      BusinessObjectPropertyPath propertyPath = null;
+      IBusinessObjectPropertyPath propertyPath = null;
       if (!_propertyPathBinding.IsDynamic)
         propertyPath = _propertyPathBinding.GetPropertyPath ();
       else
@@ -440,17 +440,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _formatString = StringUtility.NullToEmpty (value); }
     }
 
-    public BusinessObjectPropertyPath GetPropertyPath ()
+    public IBusinessObjectPropertyPath GetPropertyPath ()
     {
       return _propertyPathBinding.GetPropertyPath ();
     }
 
-    public BusinessObjectPropertyPath GetDynamicPropertyPath (IBusinessObjectClass businessObjectClass)
+    public IBusinessObjectPropertyPath GetDynamicPropertyPath (IBusinessObjectClass businessObjectClass)
     {
       return _propertyPathBinding.GetDynamicPropertyPath (businessObjectClass);
     }
 
-    public void SetPropertyPath (BusinessObjectPropertyPath propertyPath)
+    public void SetPropertyPath (IBusinessObjectPropertyPath propertyPath)
     {
       _propertyPathBinding.SetPropertyPath (propertyPath);
     }
@@ -551,7 +551,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (!isTitleEmpty)
           return ColumnTitle;
 
-        BusinessObjectPropertyPath propertyPath = null;
+        IBusinessObjectPropertyPath propertyPath = null;
         if (!_propertyPathBinding.IsDynamic)
         {
           try

@@ -20,8 +20,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
     private BindableObjectClass _typeWithAllDataTypesClass;
 
-    private BusinessObjectPropertyPath _typeWithAllDataTypesStringValuePath;
-    private BusinessObjectPropertyPath _typeWithAllDataTypesInt32ValuePath;
+    private IBusinessObjectPropertyPath _typeWithAllDataTypesStringValuePath;
+    private IBusinessObjectPropertyPath _typeWithAllDataTypesInt32ValuePath;
 
     private BocSimpleColumnDefinition _typeWithAllDataTypesStringValueSimpleColumn;
     private BocSimpleColumnDefinition _typeWithAllDataTypesStringValueSimpleColumnAsDynamic;

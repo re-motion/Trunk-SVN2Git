@@ -86,17 +86,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _customCellArgument = StringUtility.NullToEmpty (value); }
     }
 
-    public BusinessObjectPropertyPath GetPropertyPath ()
+    public IBusinessObjectPropertyPath GetPropertyPath ()
     {
       return _propertyPathBinding.GetPropertyPath();
     }
 
-    public BusinessObjectPropertyPath GetDynamicPropertyPath (IBusinessObjectClass businessObjectClass)
+    public IBusinessObjectPropertyPath GetDynamicPropertyPath (IBusinessObjectClass businessObjectClass)
     {
       return _propertyPathBinding.GetDynamicPropertyPath (businessObjectClass);
     }
 
-    public void SetPropertyPath (BusinessObjectPropertyPath propertyPath)
+    public void SetPropertyPath (IBusinessObjectPropertyPath propertyPath)
     {
       _propertyPathBinding.SetPropertyPath (propertyPath);
     }
@@ -110,10 +110,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Gets or sets the string representation of the <see cref="PropertyPath"/>. 
+    ///   Gets or sets the string representation of the <see cref="IBusinessObjectPropertyPath"/>. 
     ///   Must not be <see langword="null"/> or emtpy.
     /// </summary>
-    /// <value> A <see cref="string"/> representing the <see cref="PropertyPath"/>. </value>
+    /// <value> A <see cref="string"/> representing the <see cref="IBusinessObjectPropertyPath"/>. </value>
     [Editor (typeof (PropertyPathPickerEditor), typeof (UITypeEditor))]
     [PersistenceMode (PersistenceMode.Attribute)]
     [Category ("Data")]
@@ -168,7 +168,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (! isTitleEmpty)
           return ColumnTitle;
 
-        BusinessObjectPropertyPath propertyPath = null;
+        IBusinessObjectPropertyPath propertyPath = null;
         if (!_propertyPathBinding.IsDynamic)
         {
           try

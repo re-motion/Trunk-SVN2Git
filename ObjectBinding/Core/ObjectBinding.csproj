@@ -146,10 +146,14 @@
     <Compile Include="BindableObject\Properties\EnumerationProperty.cs" />
     <Compile Include="BindableObject\Properties\Int32Property.cs" />
     <Compile Include="BindableObject\Properties\NumericPropertyBase.cs" />
+    <Compile Include="BusinessObject.cs" />
+    <Compile Include="BusinessObjectPropertyPath.cs" />
+    <Compile Include="BusinessObjectProvider.cs" />
     <Compile Include="BusinessObjectReferenceDataSourceBase.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BindableObjectWithIdentityAttribute.cs" />
+    <Compile Include="BusinessObjectStringFormatterService.cs" />
     <Compile Include="DataSourceMode.cs" />
     <Compile Include="Design\BindableObject\BindableObjectTypeFinder.cs" />
     <Compile Include="Design\BindableObject\BindableObjectTypePickerControl.cs">
@@ -173,6 +177,7 @@
     <Compile Include="Design\EditorControlBaseClassProvider.cs" />
     <Compile Include="DisableEnumValuesAttribute.cs" />
     <Compile Include="DatePropertyAttribute.cs" />
+    <Compile Include="EnumerationValueInfo.cs" />
     <Compile Include="Globalization\BindableObjectGlobalizationService.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -182,6 +187,7 @@
     <Compile Include="IBusinessObjectBoundEditableControl.cs" />
     <Compile Include="IBusinessObjectDataSource.cs" />
     <Compile Include="IBusinessObjectReferenceDataSource.cs" />
+    <Compile Include="ListUtility.cs" />
     <Compile Include="ObjectBindingAttribute.cs" />
     <Compile Include="ItemTypeAttribute.cs" />
     <Compile Include="ListInfo.cs" />

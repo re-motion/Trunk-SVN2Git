@@ -2,7 +2,6 @@ using System;
 
 namespace Remotion.ObjectBinding
 {
-  // TODO FS: Move to OB.Interfaces
   /// <summary> 
   //TODO: doc
   public interface IBusinessObjectStringFormatterService : IBusinessObjectService
