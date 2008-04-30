@@ -6,7 +6,6 @@ using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
-using TypeUtility=Remotion.Utilities.TypeUtility;
 
 namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
 {
@@ -48,14 +47,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
     [Test]
     public void BindableDomainObjectAddsMixin ()
     {
-      Assert.IsTrue (Mixins.TypeUtility.HasMixin (typeof (SampleBindableDomainObject), typeof (BindableDomainObjectMixin)));
+      Assert.IsTrue (TypeUtility.HasMixin (typeof (SampleBindableDomainObject), typeof (BindableDomainObjectMixin)));
     }
 
     [Test]
     public void DefaultDisplayName ()
     {
       IBusinessObject businessObject = (IBusinessObject) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObject)).With();
-      Assert.AreEqual (TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObject)), businessObject.DisplayName);
+      Assert.AreEqual (Utilities.TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObject)), businessObject.DisplayName);
     }
 
     [Test]
@@ -63,7 +62,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
     {
       IBusinessObject businessObject = (IBusinessObject) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)).With();
       Assert.AreNotEqual (
-          TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)),
+          Utilities.TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)),
           businessObject.DisplayName);
       Assert.AreEqual ("CustomName", businessObject.DisplayName);
     }

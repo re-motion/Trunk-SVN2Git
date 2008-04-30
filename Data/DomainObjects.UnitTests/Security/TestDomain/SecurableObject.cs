@@ -1,5 +1,4 @@
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
 
@@ -13,7 +12,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Security.TestDomain
     {
       using (clientTransaction.EnterNonDiscardingScope())
       {
-        return DomainObject.NewObject<SecurableObject>().With (securityStrategy);
+        return NewObject<SecurableObject>().With (securityStrategy);
       }
     }
 

@@ -1,13 +1,11 @@
 using System;
 using System.Security.Principal;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.DomainObjects.UnitTests.Security.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
-using Remotion.Data.DomainObjects.UnitTests.Security.TestDomain;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Security.SecurityClientTransactionExtensionTests
 {
@@ -16,6 +14,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Security.SecurityClientTransacti
   {
     private SecurityClientTransactionExtensionTestHelper _testHelper;
     private IClientTransactionExtension _extension;
+    private IDisposable _transactionScope;
 
     [SetUp]
     public void SetUp ()
@@ -24,13 +23,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.Security.SecurityClientTransacti
       _extension = new SecurityClientTransactionExtension ();
 
       _testHelper.SetupSecurityConfiguration ();
-      _testHelper.Transaction.EnterDiscardingScope ();
+      _transactionScope = _testHelper.Transaction.EnterDiscardingScope ();
     }
 
     [TearDown]
     public void TearDown ()
     {
       _testHelper.TearDownSecurityConfiguration ();
+      _transactionScope.Dispose ();
     }
 
     [Test]

@@ -13,7 +13,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.UnitTests.Security.TestDomain;
 using Remotion.Reflection;
-using Remotion.Data.DomainObjects.UnitTests.Security.TestDomain;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Security
 {

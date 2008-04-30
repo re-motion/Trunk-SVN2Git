@@ -1,6 +1,5 @@
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Security.SecurityClientTransactionExtensionTests

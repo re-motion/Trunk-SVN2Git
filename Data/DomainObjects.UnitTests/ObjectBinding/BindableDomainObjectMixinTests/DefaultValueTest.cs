@@ -1,10 +1,10 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Mixins;
-using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 
 namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObjectMixinTests

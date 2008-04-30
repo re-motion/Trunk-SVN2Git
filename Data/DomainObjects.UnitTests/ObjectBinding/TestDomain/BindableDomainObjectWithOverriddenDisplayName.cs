@@ -9,12 +9,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain
   {
     public new static BindableDomainObjectWithOverriddenDisplayName NewObject ()
     {
-      return DomainObject.NewObject<BindableDomainObjectWithOverriddenDisplayName> ().With ();
+      return NewObject<BindableDomainObjectWithOverriddenDisplayName> ().With ();
     }
 
     public static new BindableDomainObjectWithOverriddenDisplayName GetObject (ObjectID id)
     {
-      return DomainObject.GetObject<BindableDomainObjectWithOverriddenDisplayName> (id);
+      return GetObject<BindableDomainObjectWithOverriddenDisplayName> (id);
     }
 
     [OverrideMixin]

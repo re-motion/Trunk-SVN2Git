@@ -19,6 +19,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Web
   [CLSCompliant (false)]
   public class WxeTransactedFunctionTest : WxeFunctionBaseTest
   {
+    //public override void SetUp ()
+    //{
+    //  base.SetUp ();
+    //  ClientTransactionScope.ResetActiveScope ();
+    //}
+
     [Test]
     public void WxeTransactedFunctionCreateRoot ()
     {

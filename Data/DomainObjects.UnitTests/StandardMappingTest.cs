@@ -12,7 +12,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
     public const string CreateTestDataFileName = "DataDomainObjects_CreateTestData.sql";
 
     protected StandardMappingTest()
-      : base (new StandardMappingDatabaseAgent (TestDomainConnectionString), CreateTestDataFileName)
+        : base (new StandardMappingDatabaseAgent (TestDomainConnectionString), CreateTestDataFileName)
     {
     }
 

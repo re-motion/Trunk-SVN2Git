@@ -1,5 +1,4 @@
 using System;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 

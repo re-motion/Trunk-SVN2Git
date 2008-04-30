@@ -1,15 +1,13 @@
 using System;
 using System.Security.Principal;
-using Remotion.Data.DomainObjects.UnitTests.Security.TestDomain;
-using Remotion.Security;
-using Rhino.Mocks;
-using Remotion.Data.DomainObjects;
-using Remotion.Development.UnitTesting;
-using Remotion.Security.Configuration;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.DomainObjects.UnitTests.Security.TestDomain;
+using Remotion.Development.UnitTesting;
+using Remotion.Security;
+using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Security.SecurityClientTransactionExtensionTests
 {

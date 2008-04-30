@@ -1,6 +1,5 @@
 using System;
 using Remotion.Data.DomainObjects.ObjectBinding;
-using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 
 namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain
 {
@@ -12,12 +11,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain
   {
     public static BindableSampleDomainObject NewObject ()
     {
-      return DomainObject.NewObject<BindableSampleDomainObject> ().With ();
+      return NewObject<BindableSampleDomainObject> ().With ();
     }
 
     public static BindableSampleDomainObject GetObject (ObjectID id)
     {
-      return DomainObject.GetObject<BindableSampleDomainObject> (id);
+      return GetObject<BindableSampleDomainObject> (id);
     }
 
     public abstract string Name { get; set; }

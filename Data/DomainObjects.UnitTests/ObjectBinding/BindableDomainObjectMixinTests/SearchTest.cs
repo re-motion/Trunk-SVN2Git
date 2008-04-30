@@ -1,13 +1,12 @@
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.ObjectBinding;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Mixins;
-using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding;
-using Remotion.Data.DomainObjects.ObjectBinding;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.Queries;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObjectMixinTests

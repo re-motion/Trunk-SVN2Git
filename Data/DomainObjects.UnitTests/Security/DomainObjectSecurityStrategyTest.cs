@@ -1,15 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Remotion.Data.DomainObjects.Security;
-using Remotion.Security;
-using Remotion.Utilities;
-using NUnit.Framework;
-using Rhino.Mocks;
 using System.Security.Principal;
-using Remotion.Security.Configuration;
+using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
+using Remotion.Security;
+using Remotion.Security.Configuration;
+using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Security
 {

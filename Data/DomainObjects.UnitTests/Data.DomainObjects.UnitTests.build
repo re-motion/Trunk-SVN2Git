@@ -14,8 +14,8 @@
       <sources failonempty="true">
         <include name="**/*.cs"/>
         <exclude name="bin/**" />
-        <exclude name="Configuration/Mapping/TestDomain/**" />
-        <exclude name="Design/DelaySignAssembly/**" />
+        <exclude name="Core/Configuration/Mapping/TestDomain/**" />
+        <exclude name="Core/Design/DelaySignAssembly/**" />
         <exclude name="Properties/AssemblyInfoTemplate.cs" />   
       </sources>
       <references failonempty="true">
@@ -42,24 +42,30 @@
         <include asis="true" name="System.Xml.dll"/>
       </references>
       <resources failonempty="true" dynamicprefix="true" prefix="Remotion.Data.DomainObjects.UnitTests">
-        <include name="Resources/*.*" />
-        <exclude name="Resources/*.cs" />
+        <include name="Core/Resources/*.*" />
+        <exclude name="Core/Resources/*.cs" />
       </resources>
     </csc>
     
     <copy todir="${build.test.outputdir}" flatten="true" overwrite="true">
       <fileset>
         <include name="Database/*.sql" />
+      </fileset>
+    </copy>
+
+    <copy todir="${build.test.outputdir}" overwrite="true">
+      <fileset>
         <include name="**/*.xml" />
         <exclude name="bin/**/*.xml" />
         <exclude name="obj/**/*.xml" />
       </fileset>
     </copy>
 
+
     <copy todir="${build.test.outputdir}" overwrite="true">
       <fileset>
-        <include name="Configuration/Mapping/TestDomain/**/*.cs" />
-        <include name="Design/DelaySignAssembly/**/*.cs" />
+        <include name="Core/Configuration/Mapping/TestDomain/**/*.cs" />
+        <include name="Core/Design/DelaySignAssembly/**/*.cs" />
       </fileset>
     </copy>
 

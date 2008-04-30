@@ -1,6 +1,4 @@
 using System;
-using Remotion.Data.DomainObjects.ObjectBinding;
-using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Security;
 
 namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain
@@ -11,12 +9,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain
   {
     public static SecurableBindableDomainObjectWithOverriddenDisplayName NewObject (IObjectSecurityStrategy objectSecurityStrategy)
     {
-      return DomainObject.NewObject<SecurableBindableDomainObjectWithOverriddenDisplayName> ().With (objectSecurityStrategy);
+      return NewObject<SecurableBindableDomainObjectWithOverriddenDisplayName> ().With (objectSecurityStrategy);
     }
 
     public static new SecurableBindableDomainObjectWithOverriddenDisplayName GetObject (ObjectID id)
     {
-      return DomainObject.GetObject<SecurableBindableDomainObjectWithOverriddenDisplayName> (id);
+      return GetObject<SecurableBindableDomainObjectWithOverriddenDisplayName> (id);
     }
 
     private readonly IObjectSecurityStrategy _objectSecurityStrategy;

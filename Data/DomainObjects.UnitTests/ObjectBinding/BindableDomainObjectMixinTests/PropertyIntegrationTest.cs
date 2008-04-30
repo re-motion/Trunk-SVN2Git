@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObjectMixinTests
 {

@@ -16,8 +16,8 @@ namespace Remotion.Data.DomainObjects.UnitTests
     public const string c_testDomainProviderID = "TestDomain";
     public const string c_unitTestStorageProviderStubID = "UnitTestStorageProviderStub";
 
-    private DatabaseAgent _databaseAgent;
-    private string _createTestDataFileName;
+    private readonly DatabaseAgent _databaseAgent;
+    private readonly string _createTestDataFileName;
     private bool _isDatabaseModifyable;
 
     protected DatabaseTest (DatabaseAgent databaseAgent, string createTestDataFileName)
