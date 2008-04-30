@@ -235,7 +235,7 @@
     <Compile Include="Core\DomainObjects\RelationChangeBaseTest.cs" />
     <Compile Include="Core\DomainObjects\TransactionalAccessorTest.cs" />
     <Compile Include="Core\DomainObjects\TransactionBoundObjectTest.cs" />
-    <Compile Include="_Factories\ConfigurationFactory.cs" />
+    <Compile Include="Factories\ConfigurationFactory.cs" />
     <Compile Include="Core\Configuration\FakeDomainObjectsConfigurationTest.cs" />
     <Compile Include="Core\Configuration\DomainObjectsConfigurationTest.cs" />
     <Compile Include="Core\Configuration\Mapping\ClassReflectorTests\GetClassDefinition.cs" />
@@ -308,7 +308,7 @@
     <Compile Include="Core\Interception\SampleTypes\Throws.cs" />
     <Compile Include="Core\Interception\TypeGeneratorTest.cs" />
     <Compile Include="Core\Interception\InterceptedDomainObjectFactoryTest.cs" />
-    <Compile Include="_Factories\BaseConfiguration.cs" />
+    <Compile Include="Factories\BaseConfiguration.cs" />
     <Compile Include="Core\MixedDomains\BehavioralMixinTest.cs" />
     <Compile Include="Core\MixedDomains\DomainObjectMixinBaseClassTest.cs" />
     <Compile Include="Core\MixedDomains\DomainObjectMixinHookTest.cs" />
@@ -388,9 +388,9 @@
     <Compile Include="Core\Serialization\RelationEndPointMapTest.cs" />
     <Compile Include="Core\TableInheritance\OppositeClassDefinitionRetrieverTest.cs" />
     <Compile Include="Core\TableInheritance\TestDomain\SpecificFolder.cs" />
-    <Compile Include="_TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
-    <Compile Include="_TestDomain\ClassWithoutProperties.cs" />
-    <Compile Include="_TestDomain\ClassWithSerializationCallbacks.cs" />
+    <Compile Include="TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
+    <Compile Include="TestDomain\ClassWithoutProperties.cs" />
+    <Compile Include="TestDomain\ClassWithSerializationCallbacks.cs" />
     <Compile Include="Core\Serialization\SerializationCallbackTest.cs" />
     <Compile Include="StandardMappingTest.cs" />
     <Compile Include="Core\Interception\InterceptedPropertyIntegrationTest.cs" />
@@ -639,19 +639,19 @@
     <Compile Include="Core\EventReceiver\SequenceEventReceiver.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_Factories\DomainObjectIDs.cs">
+    <Compile Include="Factories\DomainObjectIDs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_Factories\QueryFactory.cs">
+    <Compile Include="Factories\QueryFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_Factories\StorageProviderDefinitionFactory.cs">
+    <Compile Include="Factories\StorageProviderDefinitionFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_Factories\TestDataContainerFactory.cs">
+    <Compile Include="Factories\TestDataContainerFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_Factories\TestMappingConfiguration.cs">
+    <Compile Include="Factories\TestMappingConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IntegrationTests\DomainObjectTest.cs">
@@ -759,7 +759,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SetupFixture.cs" />
-    <Compile Include="_Factories\StandardConfiguration.cs" />
+    <Compile Include="Factories\StandardConfiguration.cs" />
     <Compile Include="Core\TableInheritance\ClassDefinitionCollectionTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -864,138 +864,138 @@
     <Compile Include="Core\TableInheritance\ValueConverterTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\AbstractClass.cs" />
-    <Compile Include="_TestDomain\Ceo.cs">
+    <Compile Include="TestDomain\AbstractClass.cs" />
+    <Compile Include="TestDomain\Ceo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ClassNotDerivedFromDomainObject.cs">
+    <Compile Include="TestDomain\ClassNotDerivedFromDomainObject.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ClassNotInMapping.cs">
+    <Compile Include="TestDomain\ClassNotInMapping.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ClassWithAllDataTypes.cs">
+    <Compile Include="TestDomain\ClassWithAllDataTypes.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ClassWithGuidKey.cs">
+    <Compile Include="TestDomain\ClassWithGuidKey.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ClassWithInvalidRelation.cs">
+    <Compile Include="TestDomain\ClassWithInvalidRelation.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ClassWithKeyOfInvalidType.cs">
+    <Compile Include="TestDomain\ClassWithKeyOfInvalidType.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ClassWithoutClassIDColumn.cs" />
-    <Compile Include="_TestDomain\ClassWithoutIDColumn.cs" />
-    <Compile Include="_TestDomain\ClassWithoutRelatedClassIDColumn.cs">
+    <Compile Include="TestDomain\ClassWithoutClassIDColumn.cs" />
+    <Compile Include="TestDomain\ClassWithoutIDColumn.cs" />
+    <Compile Include="TestDomain\ClassWithoutRelatedClassIDColumn.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ClassWithoutRelatedClassIDColumnAndDerivation.cs">
+    <Compile Include="TestDomain\ClassWithoutRelatedClassIDColumnAndDerivation.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ClassWithoutTimestampColumn.cs" />
-    <Compile Include="_TestDomain\ClassWithRelatedClassIDColumnAndNoInheritance.cs">
+    <Compile Include="TestDomain\ClassWithoutTimestampColumn.cs" />
+    <Compile Include="TestDomain\ClassWithRelatedClassIDColumnAndNoInheritance.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ClassWithValidRelations.cs">
+    <Compile Include="TestDomain\ClassWithValidRelations.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Client.cs">
+    <Compile Include="TestDomain\Client.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Company.cs">
+    <Compile Include="TestDomain\Company.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Computer.cs">
+    <Compile Include="TestDomain\Computer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ClassWithOptionalOneToOneRelationAndOppositeDerivedClass.cs" />
-    <Compile Include="_TestDomain\OrderWithNewPropertyAccessBase.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithBothEndPointsOnSameClass.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithoutStorageGroupWithMixedProperties.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\BaseClassWithoutStorageSpecificIdentifierAttribute.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClosedGenericClass.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithInterface.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithManySideRelationPropertiesNotInMapping.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithOneSideRelationPropertiesNotInMapping.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClosedGenericClassWithManySideRelationProperties.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\GenericClassWithManySideRelationPropertiesNotInMapping.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClosedGenericClassWithOneSideRelationProperties.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\GenericClassWithOneSideRelationPropertiesNotInMapping.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\GenericClassNotInMapping.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\DerivedClassWithStorageSpecificIdentifierAttribute.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\DerivedClassWithoutStorageGroupWithMixedProperties.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\IInterfaceWithProperties.cs" />
-    <Compile Include="_TestDomain\SpecificOrderCollection.cs" />
-    <Compile Include="_TestDomain\StorageProviderStubAttribute.cs" />
-    <Compile Include="_TestDomain\StorageProviderStubDomainBase.cs" />
-    <Compile Include="_TestDomain\OrderItemWithNewPropertyAccess.cs" />
-    <Compile Include="_TestDomain\OrderWithNewPropertyAccess.cs" />
-    <Compile Include="_TestDomain\Customer.cs">
+    <Compile Include="TestDomain\ClassWithOptionalOneToOneRelationAndOppositeDerivedClass.cs" />
+    <Compile Include="TestDomain\OrderWithNewPropertyAccessBase.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithBothEndPointsOnSameClass.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithoutStorageGroupWithMixedProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\BaseClassWithoutStorageSpecificIdentifierAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClosedGenericClass.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithInterface.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithManySideRelationPropertiesNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithOneSideRelationPropertiesNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClosedGenericClassWithManySideRelationProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\GenericClassWithManySideRelationPropertiesNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClosedGenericClassWithOneSideRelationProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\GenericClassWithOneSideRelationPropertiesNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\GenericClassNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\DerivedClassWithStorageSpecificIdentifierAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\DerivedClassWithoutStorageGroupWithMixedProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\IInterfaceWithProperties.cs" />
+    <Compile Include="TestDomain\SpecificOrderCollection.cs" />
+    <Compile Include="TestDomain\StorageProviderStubAttribute.cs" />
+    <Compile Include="TestDomain\StorageProviderStubDomainBase.cs" />
+    <Compile Include="TestDomain\OrderItemWithNewPropertyAccess.cs" />
+    <Compile Include="TestDomain\OrderWithNewPropertyAccess.cs" />
+    <Compile Include="TestDomain\Customer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Distributor.cs">
+    <Compile Include="TestDomain\Distributor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Employee.cs">
+    <Compile Include="TestDomain\Employee.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\File.cs">
+    <Compile Include="TestDomain\File.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\FileSystemItem.cs">
+    <Compile Include="TestDomain\FileSystemItem.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Folder.cs">
+    <Compile Include="TestDomain\Folder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\IndustrialSector.cs">
+    <Compile Include="TestDomain\IndustrialSector.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Location.cs">
+    <Compile Include="TestDomain\Location.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Official.cs">
+    <Compile Include="TestDomain\Official.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Order.cs">
+    <Compile Include="TestDomain\Order.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\OrderCollection.cs">
+    <Compile Include="TestDomain\OrderCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\OrderItem.cs">
+    <Compile Include="TestDomain\OrderItem.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\OrderTicket.cs">
+    <Compile Include="TestDomain\OrderTicket.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Partner.cs">
+    <Compile Include="TestDomain\Partner.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Person.cs">
+    <Compile Include="TestDomain\Person.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithBinaryProperties.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithManySideRelationProperties.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithMixedPropertiesNotInMapping.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithOneSideRelationProperties.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithStringProperties.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithPropertiesHavingStorageClassAttribute.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassHavingStorageSpecificIdentifierAttribute.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassWithMixedProperties.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassHavingClassIDAttribute.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute.cs" />
-    <Compile Include="_TestDomain\ReflectionBasedMappingSample\DerivedClassWithMixedProperties.cs" />
-    <Compile Include="_TestDomain\SpecialOfficial.cs">
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithBinaryProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithManySideRelationProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithMixedPropertiesNotInMapping.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithOneSideRelationProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithStringProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithPropertiesHavingStorageClassAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassHavingStorageSpecificIdentifierAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassWithMixedProperties.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassHavingClassIDAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute.cs" />
+    <Compile Include="TestDomain\ReflectionBasedMappingSample\DerivedClassWithMixedProperties.cs" />
+    <Compile Include="TestDomain\SpecialOfficial.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\Supplier.cs">
+    <Compile Include="TestDomain\Supplier.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_TestDomain\TestDomainAttribute.cs" />
-    <Compile Include="_TestDomain\TestDomainBase.cs">
+    <Compile Include="TestDomain\TestDomainAttribute.cs" />
+    <Compile Include="TestDomain\TestDomainBase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Transaction\BindingClientTransactionTest.cs" />
