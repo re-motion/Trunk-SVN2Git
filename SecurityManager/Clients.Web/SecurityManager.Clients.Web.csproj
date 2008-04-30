@@ -553,9 +553,9 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core %28Core\Core%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Data\DomainObjects.ObjectBinding\Data.DomainObjects.ObjectBinding.csproj">
-      <Project>{B915A0FD-92E5-42C5-BEB9-EB4D382563D7}</Project>
-      <Name>Data.DomainObjects.ObjectBinding</Name>
+    <ProjectReference Include="..\..\Data\DomainObjects.Security\Data.DomainObjects.Security.csproj">
+      <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>
+      <Name>Data.DomainObjects.Security</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Data\DomainObjects.Web\Data.DomainObjects.Web.csproj">
       <Project>{9A8C29F9-8D50-457A-9730-57EB33C1D7CC}</Project>

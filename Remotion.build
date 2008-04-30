@@ -154,7 +154,7 @@
 
   <target name="all" depends="prereq, Core.Interfaces, Core, Core.Mixins.MixerTool.Console, Development.Core, Development.CodeDom, Web, Web.Security, 
       ObjectBinding.Interfaces, ObjectBinding, ObjectBinding.Web, ObjectBinding.Web.Preview, ObjectBinding.Web.CodeGenerator, ObjectBinding.Web.CodeGenerator.Templates, 
-      Data.Interfaces, Data.DomainObjects, Data.DomainObjects.ObjectBinding, Data.DomainObjects.Security, Data.DomainObjects.Web, 
+      Data.Interfaces, Data.DomainObjects, Data.DomainObjects.Security, Data.DomainObjects.Web, 
       Data.DomainObjects.RdbmsTools, Data.DomainObjects.RdbmsTools.Console, 
       Security.Interfaces, Security, Security.Metadata.Extractor, Security.MSBuild.Tasks, 
       SecurityManager.Core, SecurityManager.Metadata.Importer, SecurityManager.Clients.Web">
@@ -232,7 +232,7 @@
     <call target="execute-buildstep" />
   </target>
   
-  <target name="Data.DomainObjects" depends="Core, Data.Interfaces">
+  <target name="Data.DomainObjects" depends="Core, Data.Interfaces, ObjectBinding">
     <property name="project.name" value="Data.DomainObjects" />
     <property name="project.dir" value="Data/DomainObjects" />
     <property name="project.output" value="Remotion.Data.DomainObjects" />
@@ -253,14 +253,6 @@
     <property name="project.dir" value="Data/DomainObjects.RdbmsTools.Console" />
     <property name="project.output" value="dbschema" />
     <property name="project.extension" value="exe" />
-    <call target="execute-buildstep" />
-  </target>
-
-  <target name="Data.DomainObjects.ObjectBinding" depends="Core, Data.DomainObjects, ObjectBinding">
-    <property name="project.name" value="Data.DomainObjects.ObjectBinding" />
-    <property name="project.dir" value="Data/DomainObjects.ObjectBinding" />
-    <property name="project.output" value="Remotion.Data.DomainObjects.ObjectBinding" />
-    <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
   </target>
 
@@ -321,7 +313,7 @@
   </target>
 
   <target name="ObjectBinding.Web.CodeGenerator" 
-      depends="Core, Web, ObjectBinding, ObjectBinding.Web, Data.DomainObjects, Data.DomainObjects.ObjectBinding">
+      depends="Core, Web, ObjectBinding, ObjectBinding.Web, Data.DomainObjects">
     <property name="project.name" value="ObjectBinding.Web.CodeGenerator" />
     <property name="project.dir" value="ObjectBinding/Web.CodeGenerator/Core" />
     <property name="project.output" value="UIGen" />
@@ -383,7 +375,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="SecurityManager.Core" depends="Core, ObjectBinding, Data.DomainObjects, Data.DomainObjects.ObjectBinding">
+  <target name="SecurityManager.Core" depends="Core, ObjectBinding, Data.DomainObjects">
     <property name="project.name" value="SecurityManager.Core" />
     <property name="project.dir" value="SecurityManager/Core" />
     <property name="project.output" value="Remotion.SecurityManager" />
@@ -391,7 +383,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="SecurityManager.Metadata.Importer" depends="Core, Data.DomainObjects, Data.DomainObjects.ObjectBinding, SecurityManager.Core">
+  <target name="SecurityManager.Metadata.Importer" depends="Core, Data.DomainObjects, SecurityManager.Core">
     <property name="project.name" value="SecurityManager.Metadata.Importer" />
     <property name="project.dir" value="SecurityManager/Metadata.Importer" />
     <property name="project.output" value="Remotion.SecurityManager.Metadata.Importer" />
@@ -400,7 +392,7 @@
   </target>
 
   <target name="SecurityManager.Clients.Web" depends="Core, ObjectBinding, ObjectBinding.Web, Web, 
-          Data.DomainObjects, Data.DomainObjects.Web, Data.DomainObjects.ObjectBinding, SecurityManager.Core">
+          Data.DomainObjects, Data.DomainObjects.Web, SecurityManager.Core">
     <property name="project.name" value="SecurityManager.Clients.Web" />
     <property name="project.dir" value="SecurityManager/Clients.Web" />
     <property name="project.output" value="Remotion.SecurityManager.Clients.Web" />
@@ -522,7 +514,6 @@
   <target name="SecurityManager.Core.UnitTests">
     <call target="Core" cascade="false"/>
     <call target="Data.DomainObjects" cascade="false"/>
-    <call target="Data.DomainObjects.ObjectBinding" cascade="false"/>
     <call target="Data.DomainObjects.Security" cascade="false"/>
     <call target="Development.Core" cascade="false"/>
     <call target="ObjectBinding" cascade="false"/>

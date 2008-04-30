@@ -114,10 +114,6 @@
       <Project>{390FBB93-A757-47A7-B769-A64A7465FF84}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
-    <ProjectReference Include="..\DomainObjects.ObjectBinding\Data.DomainObjects.ObjectBinding.csproj">
-      <Project>{B915A0FD-92E5-42C5-BEB9-EB4D382563D7}</Project>
-      <Name>Data.DomainObjects.ObjectBinding</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DomainObjects\Data.DomainObjects.csproj">
       <Name>Data.DomainObjects</Name>
       <Project>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</Project>

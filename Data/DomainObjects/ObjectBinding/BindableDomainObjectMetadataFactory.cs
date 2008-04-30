@@ -1,8 +1,6 @@
 using System;
-using System.Reflection;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.ObjectBinding.BindableObject.Properties;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding

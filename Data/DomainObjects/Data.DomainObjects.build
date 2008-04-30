@@ -25,6 +25,7 @@
         <include name="Infrastructure/**/*.cs"/>
         <include name="Mapping/**/*.cs"/>
         <include name="DataManagement/**/*.cs"/>
+        <include name="ObjectBinding/**/*.cs"/>
         <include name="Persistence/**/*.cs"/>
         <include name="Properties/**/*.cs" />
         <include name="Queries/**/*.cs"/>
@@ -38,6 +39,8 @@
         <include asis="true" name="${build.outputdir}/Remotion.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Interfaces.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
+        <include asis="true" name="${build.outputdir}/Remotion.ObjectBinding.dll"/>
+        <include asis="true" name="${build.outputdir}/Remotion.ObjectBinding.Interfaces.dll"/>
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Data.dll"/>
         <include asis="true" name="System.Xml.dll"/>

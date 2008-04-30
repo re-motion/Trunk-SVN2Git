@@ -136,10 +136,6 @@
       <Project>{F3EE8E9C-5230-4D1A-B655-CA65E2D52F21}</Project>
       <Name>Web.UnitTests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DomainObjects.ObjectBinding\Data.DomainObjects.ObjectBinding.csproj">
-      <Project>{B915A0FD-92E5-42C5-BEB9-EB4D382563D7}</Project>
-      <Name>Data.DomainObjects.ObjectBinding</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DomainObjects.Security\Data.DomainObjects.Security.csproj">
       <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>
       <Name>Data.DomainObjects.Security</Name>
