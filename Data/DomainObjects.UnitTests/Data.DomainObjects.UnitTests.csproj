@@ -206,7 +206,7 @@
     <Compile Include="Core\Configuration\StorageProviders\RdbmsProviderDefinitionTest.cs" />
     <Compile Include="Core\Configuration\StorageProviders\TypeProviderTest.cs" />
     <TestDomain Include="Core\Design\DelaySignAssembly\DelaySignClass.cs" />
-    <Compile Include="Core\DomainObjects\SimpledomainObjectTest.cs" />
+    <Compile Include="Core\DomainObjects\_SimpledomainObjectTest.cs" />
     <Compile Include="Security\DomainObjectSecurityStrategyTest.cs" />
     <Compile Include="Security\SecurityClientTransactionExtensionTests\FilterQueryResultTest.cs" />
     <Compile Include="Security\SecurityClientTransactionExtensionTests\InterfaceTest.cs" />
