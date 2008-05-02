@@ -114,6 +114,10 @@
       <Project>{390FBB93-A757-47A7-B769-A64A7465FF84}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
+    <ProjectReference Include="..\..\Security\Core\Security.csproj">
+      <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
+      <Name>Security %28Security\Security%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DomainObjects\Data.DomainObjects.csproj">
       <Name>Data.DomainObjects</Name>
       <Project>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</Project>

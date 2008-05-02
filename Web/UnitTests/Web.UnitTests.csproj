@@ -151,7 +151,10 @@
     <Compile Include="ExecutionEngine\RollbackException.cs" />
     <Compile Include="ExecutionEngine\SetCurrentException.cs" />
     <Compile Include="ExecutionEngine\SetPreviousCurrentException.cs" />
+    <Compile Include="ExecutionEngine\TestableWxeScopedTransaction.cs" />
     <Compile Include="ExecutionEngine\TestTransactedFunctionWithResetFailingMyTransactionValidation.cs" />
+    <Compile Include="ExecutionEngine\TestTransactionScope.cs" />
+    <Compile Include="ExecutionEngine\TestTransactionScopeManager.cs" />
     <Compile Include="ExecutionEngine\TestWxeTransactionFailingResetValidation.cs" />
     <Compile Include="ExecutionEngine\TestTransactedFunctionWithResetFailingSubclassValidation.cs" />
     <Compile Include="ExecutionEngine\TestTransactedFunctionWithReset.cs" />
@@ -160,6 +163,7 @@
     <Compile Include="ExecutionEngine\TestTransactedFunctionWithThreadAbort.cs" />
     <Compile Include="ExecutionEngine\TestWxeTransaction.cs" />
     <Compile Include="ExecutionEngine\WxeFunctionStateManagerTest.cs" />
+    <Compile Include="ExecutionEngine\WxeScopedTransactionTest.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionBaseExecuteTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

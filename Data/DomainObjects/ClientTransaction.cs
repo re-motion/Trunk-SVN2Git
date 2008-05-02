@@ -1467,44 +1467,34 @@ public abstract class ClientTransaction : ITransaction
 
   #region ITransaction Members
 
-  /// <summary>
-  /// Delegates to <see cref="CreateSubTransaction"/>:
-  /// </summary>
   ITransaction ITransaction.CreateChild ()
   {
     return CreateSubTransaction ();
   }
 
-  /// <summary>
-  /// Returns true if this transaction has a non-null <see cref="ParentTransaction"/>; returns false otherwise.
-  /// </summary>
   bool ITransaction.IsChild
   {
     get { return ParentTransaction != null; }
   }
 
-  /// <summary>
-  /// Always returns true.
-  /// </summary>
   bool ITransaction.CanCreateChild
   {
     get { return true; }
   }
 
-  /// <summary>
-  /// No action is performed by this method.
-  /// </summary>
   void ITransaction.Release ()
   {
     Discard ();
   }
 
-  /// <summary>
-  /// Returns the <see cref="ParentTransaction"/>.
-  /// </summary>
   ITransaction ITransaction.Parent
   {
     get { return ParentTransaction; }
+  }
+
+  bool ITransaction.HasUncommittedChanges
+  {
+    get { return HasChanged(); }
   }
 
   #endregion

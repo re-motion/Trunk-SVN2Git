@@ -38,8 +38,16 @@ namespace Remotion.Data
     /// </value>
     ITransaction Parent { get; }
 
-    /// <summary> Gets a flag that describes whether the transaction is a child transaction. </summary>
+    /// <summary>Gets a flag describing whether the transaction is a child transaction.</summary>
     /// <value> <see langword="true"/> if the transaction is a child transaction. </value>
     bool IsChild { get; }
+
+    /// <summary>Gets a flag describing whether the transaction has been changed since the last commit or rollback.</summary>
+    /// <value> <see langword="true"/> if the transaction has uncommitted changes. </value>
+    bool HasUncommittedChanges { get; }
+
+    /// <summary>Gets a flag describing whether the transaction is in a read-only state.</summary>
+    /// <value> <see langword="true"/> if the transaction cannot be modified. </value>
+    bool IsReadOnly { get; }
   }
 }

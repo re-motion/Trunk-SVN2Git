@@ -109,14 +109,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExecutionEngine\InconsistentClientTransactionScopeException.cs" />
+    <Compile Include="ExecutionEngine\WxeTransaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxeTransactedFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExecutionEngine\WxeTransaction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxeTransactionMode.cs">

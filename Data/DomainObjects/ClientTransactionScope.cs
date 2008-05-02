@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects
   /// will become a memory leak unless <see cref="ResetActiveScope"/> is used.
   /// </para>
   /// </remarks>
-  public class ClientTransactionScope : IDisposable
+  public class ClientTransactionScope : IDisposable, ITransactionScope<ClientTransaction>
   {
     /// <summary>
     /// Gets a value indicating if a <see cref="ClientTransaction"/> is currently set as <see cref="CurrentTransaction"/>. 

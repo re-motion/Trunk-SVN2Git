@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Remotion.Data.DomainObjects.Web.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine
 {
   /// <summary>
-  /// Thrown when a <see cref="WxeTransaction"/> cannot perform correct <see cref="ClientTransaction"/> handling, because one of its execution
-  /// steps left an incorrect <see cref="ClientTransactionScope"/> state.
+  /// Thrown when an execution step of a <see cref="WxeScopedTransaction{TTransaction,TScope,TScopeManager}"/> leaves an incorrect transaction scope.
   /// </summary>
   public class InconsistentClientTransactionScopeException : Exception
   {

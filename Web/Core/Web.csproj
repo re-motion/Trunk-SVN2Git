@@ -101,9 +101,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
+    <Compile Include="ExecutionEngine\InconsistentClientTransactionScopeException.cs" />
     <Compile Include="ExecutionEngine\IWxePage.cs" />
     <Compile Include="ExecutionEngine\WxeFunctionStateManager.cs" />
     <Compile Include="ExecutionEngine\WxeNonRecoverableTransactionException.cs" />
+    <Compile Include="ExecutionEngine\WxeScopedTransaction.cs" />
     <Compile Include="ExecutionEngine\WxeVariableReference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

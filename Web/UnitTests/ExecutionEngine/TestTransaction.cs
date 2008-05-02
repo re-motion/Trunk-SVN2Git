@@ -26,6 +26,8 @@ public class TestTransaction: ITransaction
   private bool _throwOnCommit;
   private bool _throwOnRollback;
   private bool _throwOnRelease;
+  private bool _isReadOnly;
+  private bool _hasUncommittedChanges;
 
   public event EventHandler Committed;
   public event EventHandler RolledBack;
@@ -67,6 +69,18 @@ public class TestTransaction: ITransaction
   public bool IsChild
   {
     get { return _isChild; }
+  }
+
+  public bool HasUncommittedChanges
+  {
+    get { return _hasUncommittedChanges; }
+    set { _hasUncommittedChanges = value; }
+  }
+
+  public bool IsReadOnly
+  {
+    get { return _isReadOnly; }
+    set { _isReadOnly = value; }
   }
 
   public bool CanCreateChild
