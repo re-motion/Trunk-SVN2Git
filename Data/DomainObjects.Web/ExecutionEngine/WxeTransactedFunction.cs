@@ -52,21 +52,6 @@ namespace Remotion.Data.DomainObjects.Web.ExecutionEngine
       _transactionMode = transactionMode;
     }
 
-    /// <summary> Gets the underlying <see cref="ClientTransaction"/> owned by this 
-    /// <see cref="WxeTransactedFunctionBase{TTransaction}"/>.</summary>
-    public new ClientTransaction MyTransaction
-    {
-      get { return base.MyTransaction; }
-    }
-
-    /// <summary> Gets the underlying <see cref="ClientTransaction"/> used when this <see cref="WxeTransactedFunctionBase{TTransaction}"/>
-    /// is executed. This is either <see cref="MyTransaction"/> or, when this function does not have an own transaction, the
-    /// <see cref="Transaction"/> of this function's parent function.</summary>
-    public new ClientTransaction Transaction
-    {
-      get { return base.Transaction; }
-    }
-
     /// <summary>
     /// Gets or sets the <see cref="WxeTransactionMode"/> of the <see cref="WxeTransactedFunction"/>.
     /// </summary>
@@ -87,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Web.ExecutionEngine
     }
 
     /// <summary>
-    /// Creates a new <see cref="WxeTransaction"/> depending on the value of <see cref="WxeTransactionMode"/>. 
+    /// Creates a new <see cref="WxeScopedTransaction{TTransaction,TScope,TScopeManager}"/> depending on the value of <see cref="WxeTransactionMode"/>. 
     /// </summary>
     /// <returns>A new WxeTransaction, if <see cref="WxeTransactionMode"/> has a value of <b>CreateRoot</b>; otherwise <see langword="null"/>.</returns>
     protected override sealed WxeTransactionBase<ClientTransaction> CreateWxeTransaction ()
@@ -114,14 +99,17 @@ namespace Remotion.Data.DomainObjects.Web.ExecutionEngine
     }
 
     /// <summary>
-    /// Creates a new <see cref="WxeTransaction"/>. Derived classes should override this method to use their own <see cref="WxeTransaction"/>.
+    /// Creates a new <see cref="WxeScopedTransaction{TTransaction,TScope,TScopeManager}"/>. Derived classes should override this method to use their 
+    /// own <see cref="WxeScopedTransaction{TTransaction,TScope,TScopeManager}"/>.
     /// </summary>
-    /// <param name="autoCommit"><b>autoCommit</b> is forwarded to <see cref="WxeTransaction"/>'s constructor. For further information see <see cref="WxeTransaction"/>.</param>
-    /// <param name="forceRoot"><b>forceRoot</b> is forwarded to <see cref="WxeTransaction"/>'s constructor. For further information see <see cref="WxeTransaction"/>.</param>
+    /// <param name="autoCommit"><b>autoCommit</b> is forwarded to <see cref="WxeScopedTransaction{TTransaction,TScope,TScopeManager}"/>'s 
+    /// constructor. For further information see <see cref="WxeScopedTransaction{TTransaction,TScope,TScopeManager}"/>.</param>
+    /// <param name="forceRoot"><b>forceRoot</b> is forwarded to <see cref="WxeScopedTransaction{TTransaction,TScope,TScopeManager}"/>'s 
+    /// constructor. For further information see <see cref="WxeScopedTransaction{TTransaction,TScope,TScopeManager}"/>.</param>
     /// <returns>A new WxeTransaction.</returns>
-    protected virtual WxeTransaction CreateWxeTransaction (bool autoCommit, bool forceRoot)
+    protected virtual WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> CreateWxeTransaction (bool autoCommit, bool forceRoot)
     {
-      return new WxeTransaction (autoCommit, forceRoot);
+      return new WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> (autoCommit, forceRoot);
     }
 
     /// <summary>
@@ -156,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Web.ExecutionEngine
     }
 
     /// <summary>
-    /// Discards of the <see cref="MyTransaction"/> instance managed by this <see cref="WxeTransactedFunctionBase{TTransaction}"/> and replaces
+    /// Discards of the <see cref="WxeTransactedFunctionBase{TTransaction}.MyTransaction"/> instance managed by this <see cref="WxeTransactedFunctionBase{TTransaction}"/> and replaces
     /// it by a newly created instance of <see cref="ClientTransaction"/>, optionally copying event handlers. This method can only be called from
     /// within <see cref="Execute"/>, when the current transaction has no open subtransaction, and when it holds no new or changed objects.
     /// </summary>
@@ -166,7 +154,8 @@ namespace Remotion.Data.DomainObjects.Web.ExecutionEngine
     /// replaced. Note that setting this parameter to true causes all the objects from the old transaction to be reloaded in the new one (if they
     /// still exist); if you specify false, they will only be loaded on first access.</param>
     /// <exception cref="InvalidOperationException">Execution of this <see cref="WxeTransactedFunctionBase{TTransaction}"/> hasn't started yet or
-    /// has already finished, or this function does not have its own <see cref="MyTransaction"/>, or <see cref="MyTransaction"/> is not the
+    /// has already finished, or this function does not have its own <see cref="WxeTransactedFunctionBase{TTransaction}.MyTransaction"/>, or 
+    /// <see cref="WxeTransactedFunctionBase{TTransaction}.MyTransaction"/> is not the 
     /// <see cref="WxeTransactionBase{TTransaction}.CurrentTransaction"/>.</exception>
     /// <remarks>
     /// <para>
@@ -194,12 +183,14 @@ namespace Remotion.Data.DomainObjects.Web.ExecutionEngine
     }
 
     /// <summary>
-    /// Discards of the <see cref="MyTransaction"/> instance managed by this <see cref="WxeTransactedFunctionBase{TTransaction}"/> and replaces
+    /// Discards of the <see cref="WxeTransactedFunctionBase{TTransaction}.MyTransaction"/> instance managed by this 
+    /// <see cref="WxeTransactedFunctionBase{TTransaction}"/> and replaces
     /// it by a newly created instance of <see cref="ClientTransaction"/>. This method can only be called from within <see cref="Execute"/>, when
     /// the current transaction has no open subtransaction, and when it holds no new or changed objects.
     /// </summary>
     /// <exception cref="InvalidOperationException">Execution of this <see cref="WxeTransactedFunctionBase{TTransaction}"/> hasn't started yet or
-    /// has already finished, or this function does not have its own <see cref="MyTransaction"/>, or <see cref="MyTransaction"/> is not the
+    /// has already finished, or this function does not have its own <see cref="WxeTransactedFunctionBase{TTransaction}.MyTransaction"/>, or 
+    /// <see cref="WxeTransactedFunctionBase{TTransaction}.MyTransaction"/> is not the
     /// <see cref="WxeTransactionBase{TTransaction}.CurrentTransaction"/>.</exception>
     /// <remarks>
     /// <para>

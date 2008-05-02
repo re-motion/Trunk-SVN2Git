@@ -43,7 +43,7 @@ namespace Remotion.Web.ExecutionEngine
     protected internal abstract TTransaction CreateRootTransaction ();
 
     /// <summary> Gets the underlying <typeparamref name="TTransaction"/> owned by this <see cref="WxeTransactedFunctionBase{TTransaction}"/>.</summary>
-    protected TTransaction MyTransaction
+    public TTransaction MyTransaction
     {
       get
       {
@@ -57,7 +57,7 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> Gets the underlying <typeparamref name="TTransaction"/> used when this <see cref="WxeTransactedFunctionBase{TTransaction}"/>
     /// is executed. This is either <see cref="MyTransaction"/> or, when this function does not have an own transaction, the
     /// <see cref="Transaction"/> of this function's parent function.</summary>
-    protected TTransaction Transaction
+    public TTransaction Transaction
     {
       get
       {

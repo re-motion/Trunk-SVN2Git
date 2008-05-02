@@ -1,20 +1,17 @@
 using System;
-using System.Collections.Specialized;
 using System.Threading;
-using System.Web;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.Web.WxeFunctions;
 using Remotion.Data.DomainObjects.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UnitTests.AspNetFramework;
-using Remotion.Web.UnitTests.ExecutionEngine;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Web
 {
+  using WxeTransaction = WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
+
   [TestFixture]
   [CLSCompliant (false)]
   public class WxeTransactedFunctionTest : WxeFunctionBaseTest
