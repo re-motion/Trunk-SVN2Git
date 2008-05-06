@@ -1,12 +1,12 @@
 using System;
-using Remotion.Data.DomainObjects.UnitTests.TestDomain;
-using Remotion.Data.DomainObjects.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Development.UnitTesting;
 using NUnit.Framework;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Web.WxeFunctions
 {
+  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
+
   [Serializable]
   public class SerializationTestTransactedFunction: WxeTransactedFunction
   {

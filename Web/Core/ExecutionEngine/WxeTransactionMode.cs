@@ -1,9 +1,9 @@
 using System;
 
-namespace Remotion.Data.DomainObjects.Web.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine
 {
 /// <summary>
-/// Indicates the behavior of a <see cref="WxeTransactedFunction"/>.
+/// Indicates the behavior of a <see cref="WxeTransactedFunction{TTransaction,TTransactionScope,TTransactionScopeManager}"/>.
 /// </summary>
 public enum WxeTransactionMode
 {

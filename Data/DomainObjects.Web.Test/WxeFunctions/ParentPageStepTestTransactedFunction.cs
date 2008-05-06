@@ -1,8 +1,9 @@
 using System;
-using Remotion.Data.DomainObjects.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 {
+  using WxeTransactedFunction = Remotion.Web.ExecutionEngine.WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
+
   public class ParentPageStepTestTransactedFunction : WxeTransactedFunction
   {
     private ClientTransaction _transactionInStep1;

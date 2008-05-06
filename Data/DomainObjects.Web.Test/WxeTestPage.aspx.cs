@@ -1,9 +1,7 @@
 using System;
 using System.Web.UI.WebControls;
-using Remotion.Data.DomainObjects.Web.ExecutionEngine;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
 using Remotion.Data.DomainObjects.Web.Test.WxeFunctions;
-using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
 

@@ -558,19 +558,31 @@ public abstract class ClientTransaction : ITransaction
 
     if (copyCollectionEventHandlers)
     {
-      foreach (DomainObject domainObject in enlistedObjects)
-        try
+      // temporarily re-enable the source transaction if necessary, we need to access its relations
+#warning TODO
+
+      try
+      {
+        foreach (DomainObject domainObject in enlistedObjects)
         {
-          CopyCollectionEventHandlers (domainObject, sourceTransaction);
+          try
+          {
+            CopyCollectionEventHandlers (domainObject, sourceTransaction);
+          }
+          catch (ObjectNotFoundException)
+          {
+            // ignore
+          }
+          catch (ObjectDiscardedException)
+          {
+            // ignore
+          }
         }
-        catch (ObjectNotFoundException)
-        {
-          // ignore
-        }
-        catch (ObjectDiscardedException)
-        {
-          // ignore
-        }
+      }
+      finally
+      {
+        
+      }
     }
   }
 
@@ -633,8 +645,15 @@ public abstract class ClientTransaction : ITransaction
     {
       if (property.Kind == PropertyKind.RelatedObjectCollection)
       {
-        ((DomainObjectCollection) property.GetValueWithoutTypeCheck ()).CopyEventHandlersFrom (
-            (DomainObjectCollection) property.GetValueWithoutTypeCheckTx (sourceTransaction));
+        // access source property via RelationEndPointMap, we don't want to load any objects and we don't want to raise any events
+        RelationEndPointID endPointID = new RelationEndPointID(domainObject.ID, property.RelationEndPointDefinition);
+        CollectionEndPoint sourceEndPoint = (CollectionEndPoint) sourceTransaction.DataManager.RelationEndPointMap[endPointID];
+        if (sourceEndPoint != null)
+        {
+          DomainObjectCollection sourceRelatedObjectCollection = sourceEndPoint.OppositeDomainObjects;
+          DomainObjectCollection destinationRelatedObjectCollection = DataManager.RelationEndPointMap.GetRelatedObjects (endPointID);
+          destinationRelatedObjectCollection.CopyEventHandlersFrom (sourceRelatedObjectCollection);
+        }
       }
     }
   }

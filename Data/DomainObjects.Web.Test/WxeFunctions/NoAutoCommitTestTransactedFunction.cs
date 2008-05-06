@@ -1,12 +1,13 @@
 using System;
-using Remotion.Data.DomainObjects.Web.ExecutionEngine;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 {
+  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
+
   [Serializable]
-  public class NoAutoCommitTestTransactedFunction: WxeTransactedFunction
+  public class NoAutoCommitTestTransactedFunction : WxeTransactedFunction
   {
     // types
 
@@ -37,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
       set { Variables["ObjectWithAllDataTypes"] = value; }
     }
 
-    private void Step1()
+    private void Step1 ()
     {
       ClassWithAllDataTypes objectWithAllDataTypes = ClassWithAllDataTypes.GetObject (ObjectWithAllDataTypes);
 

@@ -16,6 +16,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     private Stack<TestTransaction> _previousTransactions = new Stack<TestTransaction> ();
     private bool _throwOnSetCurrent = false;
     private bool _throwOnSetPrevious;
+    private bool _throwOnGetRootTransaction;
 
     public WxeTransactionMock (WxeStepList steps, bool autoCommit, bool forceRoot)
       : base (steps, autoCommit, forceRoot)
@@ -24,6 +25,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 
     protected override TestTransaction GetRootTransactionFromFunction ()
     {
+      if (_throwOnGetRootTransaction)
+        throw new InvalidOperationException ("Get root");
+
       _hasCreatedRootTransaction = true;
       return new TestTransaction ();
     }
@@ -36,6 +40,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     protected override void CheckCurrentTransactionResettable ()
     {
       // always succeeds
+    }
+
+    public void InternalReset ()
+    {
+      base.Reset ();
     }
 
     protected override void SetCurrentTransaction (TestTransaction transaction)
@@ -136,6 +145,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     {
       get { return _throwOnSetPrevious; }
       set { _throwOnSetPrevious = value; }
+    }
+
+    public bool ThrowOnGetRootTransaction
+    {
+      get { return _throwOnGetRootTransaction; }
+      set { _throwOnGetRootTransaction = value; }
     }
 
     public new void OnTransactionCommitting ()

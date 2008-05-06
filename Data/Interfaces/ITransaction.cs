@@ -48,6 +48,7 @@ namespace Remotion.Data
 
     /// <summary>Gets a flag describing whether the transaction is in a read-only state.</summary>
     /// <value> <see langword="true"/> if the transaction cannot be modified. </value>
+    /// <remarks>Implementations that do not support read-only transactions should always return false.</remarks>
     bool IsReadOnly { get; }
   }
 }

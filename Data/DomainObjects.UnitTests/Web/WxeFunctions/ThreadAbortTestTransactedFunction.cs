@@ -1,15 +1,14 @@
 using System;
 using System.Threading;
-using Remotion.Data.DomainObjects.UnitTests.TestDomain;
-using Remotion.Data.DomainObjects.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Development.UnitTesting;
 using NUnit.Framework;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Web.WxeFunctions
 {
+  using WxeTransactedFunction =
+      Remotion.Web.ExecutionEngine.WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
+
   [Serializable]
-  public class ThreadAbortTestTransactedFunction: WxeTransactedFunction
+  public class ThreadAbortTestTransactedFunction : WxeTransactedFunction
   {
     // types
 
@@ -20,7 +19,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Web.WxeFunctions
     // construction and disposing
 
     public ThreadAbortTestTransactedFunction ()
-        : base ()
+        : base()
     {
     }
 
@@ -34,7 +33,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Web.WxeFunctions
 
     // methods and properties
 
-    private void Step1()
+    private void Step1 ()
     {
       Assert.IsFalse (FirstStepExecuted);
       Assert.IsFalse (SecondStepExecuted);

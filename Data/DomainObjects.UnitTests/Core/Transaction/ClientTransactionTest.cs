@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.UnitTests.Core.EventReceiver;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Core.Transaction
 {
@@ -927,6 +929,92 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Transaction
         Assert.IsTrue (HasEventHandler (order.OrderItems, "Removed", removedEventHandler));
         Assert.IsTrue (HasEventHandler (order.OrderItems, "Removing", removingEventHandler));
       }
+    }
+
+    [Test]
+    public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInOriginalTransaction ()
+    {
+      MockRepository mockRepository = new MockRepository ();
+      IClientTransactionListener listenerMock = mockRepository.CreateMock<IClientTransactionListener> ();
+      // no calls are expected
+      mockRepository.ReplayAll ();
+
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      int loadedObjectsBefore = ClientTransactionMock.DataManager.DataContainerMap.Count;
+      ClientTransactionMock.AddListener (listenerMock);
+
+      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      {
+        ClientTransaction.Current.EnlistDomainObject (order);
+        ClientTransaction.Current.CopyCollectionEventHandlers (order, ClientTransactionMock);
+      }
+
+      int loadedObjectsAfter = ClientTransactionMock.DataManager.DataContainerMap.Count;
+      Assert.That (loadedObjectsAfter, Is.EqualTo (loadedObjectsBefore));
+
+      mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    [Ignore ("TODO: Optimize CopyCollectionEventHandlers")]
+    public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInDestinationTransaction_IfNotRequiredTo ()
+    {
+      MockRepository mockRepository = new MockRepository ();
+      IClientTransactionListener listenerMock = mockRepository.CreateMock<IClientTransactionListener> ();
+      // no calls are expected
+      mockRepository.ReplayAll ();
+
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Dev.Null = order.OrderItems; // load relation in source transaction, but do not attach event handlers
+
+      ClientTransactionMock innerTransaction = new ClientTransactionMock();
+      using (innerTransaction.EnterDiscardingScope ())
+      {
+        innerTransaction.EnlistDomainObject (order);
+        innerTransaction.AddListener (listenerMock);
+        int loadedObjectsBefore = innerTransaction.DataManager.DataContainerMap.Count;
+        innerTransaction.CopyCollectionEventHandlers (order, ClientTransactionMock);
+        int loadedObjectsAfter = innerTransaction.DataManager.DataContainerMap.Count;
+        Assert.That (loadedObjectsAfter, Is.EqualTo (loadedObjectsBefore));
+      }
+
+      mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void CopyCollectionEventHandlers_DoesLoadRelatedObjectsInDestinationTransaction_IfRequiredTo ()
+    {
+      MockRepository mockRepository = new MockRepository ();
+      IClientTransactionListener listenerMock = mockRepository.CreateMock<IClientTransactionListener> ();
+
+      listenerMock.ObjectLoading (DomainObjectIDs.OrderItem1);
+      listenerMock.ObjectLoading (DomainObjectIDs.OrderItem2);
+      listenerMock.DataContainerMapRegistering (null);
+      LastCall.IgnoreArguments ().Repeat.Any();
+      listenerMock.RelationEndPointMapRegistering (null);
+      LastCall.IgnoreArguments ().Repeat.Any ();
+      listenerMock.ObjectsLoaded (null);
+      LastCall.IgnoreArguments ();
+      listenerMock.ObjectInitializedFromDataContainer (null, null);
+      LastCall.IgnoreArguments ().Repeat.Any();
+
+      mockRepository.ReplayAll ();
+
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      order.OrderItems.Added += delegate { };
+
+      ClientTransactionMock innerTransaction = new ClientTransactionMock ();
+      using (innerTransaction.EnterDiscardingScope ())
+      {
+        innerTransaction.EnlistDomainObject (order);
+        innerTransaction.AddListener (listenerMock);
+        int loadedObjectsBefore = innerTransaction.DataManager.DataContainerMap.Count;
+        innerTransaction.CopyCollectionEventHandlers (order, ClientTransactionMock);
+        int loadedObjectsAfter = innerTransaction.DataManager.DataContainerMap.Count;
+        Assert.That (loadedObjectsAfter, Is.Not.EqualTo (loadedObjectsBefore));
+      }
+
+      mockRepository.VerifyAll ();
     }
 
     [Test]

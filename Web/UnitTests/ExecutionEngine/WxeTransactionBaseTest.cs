@@ -505,5 +505,44 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
         Assert.AreEqual ("WxeTransactionMock.SetPreviousCurrentTransaction threw an exception. See InnerException property.", ex.Message);
       }
     }
+
+    [Test]
+    public void ExceptionThrownWithinResetCleansUpTransactionStack ()
+    {
+      TestTransaction before = new TestTransaction ();
+      TestTransaction.Current = before;
+      _rootWxeTransaction.ThrowOnGetRootTransaction = true;
+      _rootWxeTransaction.Add (new WxeDelegateStep (delegate { _rootWxeTransaction.InternalReset(); }));
+      try
+      {
+        _rootWxeTransaction.Execute (CurrentWxeContext);
+        Assert.Fail ("Expected InvalidOperationException");
+      }
+      catch (InvalidOperationException)
+      {
+        // expected
+      }
+      Assert.AreSame (before, TestTransaction.Current);
+    }
+
+    [Test]
+    public void ExceptionThrownInRollbackAfterExceptionCleansUpTransactionStack ()
+    {
+      TestTransaction before = new TestTransaction ();
+      TestTransaction.Current = before;
+      _rootWxeTransaction.ThrowOnGetRootTransaction = true;
+      _rootWxeTransaction.Transaction.ThrowOnRollback = true;
+      _rootWxeTransaction.Add (new WxeDelegateStep (delegate { throw new Exception (); }));
+      try
+      {
+        _rootWxeTransaction.Execute (CurrentWxeContext);
+        Assert.Fail ("Expected WxeNonRecoverableTransactionException");
+      }
+      catch (WxeNonRecoverableTransactionException)
+      {
+        // expected
+      }
+      Assert.AreSame (before, TestTransaction.Current);
+    }
   }
 }

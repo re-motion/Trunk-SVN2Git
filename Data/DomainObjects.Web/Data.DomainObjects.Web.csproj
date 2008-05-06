@@ -112,17 +112,14 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\WxeTransactedFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExecutionEngine\WxeTransactionMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Data.DomainObjects.Web.build" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ExecutionEngine\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

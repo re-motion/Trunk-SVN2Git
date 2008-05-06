@@ -1,5 +1,4 @@
 using System;
-using Remotion.Data.DomainObjects.Web.ExecutionEngine;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
 using Remotion.Security.Configuration;
@@ -8,6 +7,7 @@ using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStruct
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure

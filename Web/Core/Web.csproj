@@ -106,6 +106,9 @@
     <Compile Include="ExecutionEngine\WxeFunctionStateManager.cs" />
     <Compile Include="ExecutionEngine\WxeNonRecoverableTransactionException.cs" />
     <Compile Include="ExecutionEngine\WxeScopedTransaction.cs" />
+    <Compile Include="ExecutionEngine\WxeScopedTransactedFunction.cs" />
+    <Compile Include="ExecutionEngine\WxeTransactedFunctionParameterEnlister.cs" />
+    <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
     <Compile Include="ExecutionEngine\WxeVariableReference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

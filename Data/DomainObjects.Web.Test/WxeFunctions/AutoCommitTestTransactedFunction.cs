@@ -1,10 +1,11 @@
 using System;
-using Remotion.Data.DomainObjects.Web.ExecutionEngine;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 {
+  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
+
   [Serializable]
   public class AutoCommitTestTransactedFunction: WxeTransactedFunction
   {

@@ -455,6 +455,27 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DomainObjects
     }
 
     [Test]
+    public void EnlistSameDomainObjects_WithDiscardedSource ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      OrderItem orderItem = order.OrderItems[0];
+
+      Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionMock));
+      Assert.IsTrue (orderItem.CanBeUsedInTransaction (ClientTransactionMock));
+
+      ClientTransactionMock.Discard ();
+      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+
+      Assert.IsFalse (order.CanBeUsedInTransaction (newTransaction));
+      Assert.IsFalse (orderItem.CanBeUsedInTransaction (newTransaction));
+
+      newTransaction.EnlistSameDomainObjects (ClientTransactionMock, false);
+
+      Assert.IsTrue (order.CanBeUsedInTransaction (newTransaction));
+      Assert.IsTrue (orderItem.CanBeUsedInTransaction (newTransaction));
+    }
+
+    [Test]
     public void EnlistSameDomainObjectsInSubTransaction ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
@@ -611,6 +632,28 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DomainObjects
       Assert.IsFalse (orderItemAdded);
       order.OrderItems.Add (OrderItem.NewObject ());
       Assert.IsTrue (orderItemAdded);
+
+      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      {
+        ClientTransaction.Current.EnlistSameDomainObjects (ClientTransactionMock, true);
+        orderItemAdded = false;
+        Assert.IsFalse (orderItemAdded);
+        order.OrderItems.Add (OrderItem.NewObject ());
+        Assert.IsTrue (orderItemAdded);
+      }
+    }
+
+    [Test]
+    public void EnlistSameWithCopyEventHandlers_WithDiscardedSource ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      bool orderItemAdded = false;
+      order.OrderItems.Added += delegate { orderItemAdded = true; };
+      Assert.IsFalse (orderItemAdded);
+      order.OrderItems.Add (OrderItem.NewObject ());
+      Assert.IsTrue (orderItemAdded);
+
+      ClientTransactionMock.Discard ();
 
       using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
       {

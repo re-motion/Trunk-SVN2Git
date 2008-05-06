@@ -1,6 +1,5 @@
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Web.ExecutionEngine;
 using Remotion.Security.Configuration;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -9,6 +8,8 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 {
+  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
+
   [Serializable]
   public abstract class BaseTransactedFunction : WxeTransactedFunction
   {

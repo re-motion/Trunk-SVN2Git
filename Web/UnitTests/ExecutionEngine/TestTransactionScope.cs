@@ -5,7 +5,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 {
   public class TestTransactionScope : ITransactionScope<TestTransaction>
   {
-    public static TestTransactionScope CurrentScope;
+    private static TestTransactionScope _currentScope;
 
     private readonly TestTransaction _scopedTransaction;
     private readonly TestTransactionScope _previousScope;
@@ -14,7 +14,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     public TestTransactionScope (TestTransaction scopedTransaction)
     {
       _scopedTransaction = scopedTransaction;
-      _previousScope = CurrentScope;
+      _previousScope = _currentScope;
       CurrentScope = this;
     }
 
@@ -23,11 +23,21 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       get { return _scopedTransaction; }
     }
 
+    public static TestTransactionScope CurrentScope
+    {
+      get { return _currentScope; }
+      set
+      {
+        _currentScope = value;
+        TestTransaction.Current = value != null ? value.ScopedTransaction : null;
+      }
+    }
+
     public void Leave ()
     {
       if (_left)
         throw new InvalidOperationException ("Has already been left.");
-      CurrentScope = _previousScope;
+      _currentScope = _previousScope;
       _left = true;
     }
   }

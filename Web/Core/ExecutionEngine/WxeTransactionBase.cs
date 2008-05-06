@@ -259,7 +259,7 @@ namespace Remotion.Web.ExecutionEngine
       CheckCurrentTransactionResettable ();
 
       CheckAndRestorePreviousCurrentTransaction ();
-      // TODO !! Release transaction !!
+      _transaction.Release ();
       _transaction = null;
       InitializeTransaction ();
     }
@@ -295,20 +295,9 @@ namespace Remotion.Web.ExecutionEngine
           throw;
         }
 
-        try
-        {
-          RollbackAndReleaseTransaction ();
-          CheckAndRestorePreviousCurrentTransaction ();
-          s_log.Debug ("Aborted execution of " + this.GetType ().Name + " because of exception: \"" + e.Message + "\" (" + e.GetType ().FullName + ").");
-        }
-        catch (Exception transactionException)
-        {
-          s_log.Debug ("Non-recoverable transaction exception " + transactionException.GetType ().FullName + " hiding original exception "
-              + e.GetType().FullName + ". Original message: \"" + e.Message + "\" Transaction exception message:\"" + transactionException.Message
-              + "\"");
-          throw new WxeNonRecoverableTransactionException (e, transactionException);
-        }
+        s_log.Debug ("Aborting execution of " + this.GetType ().Name + " because of exception: \"" + e.Message + "\" (" + e.GetType ().FullName + ").");
 
+        RollbackAndRestoreTransactionForException(e);
         throw;
       }
 
@@ -319,6 +308,44 @@ namespace Remotion.Web.ExecutionEngine
       CheckAndRestorePreviousCurrentTransaction ();
 
       s_log.Debug ("Ending execution of " + this.GetType ().Name);
+    }
+
+    private void RollbackAndRestoreTransactionForException (Exception e)
+    {
+      try
+      {
+        RollbackAndReleaseTransaction ();
+      }
+      catch (Exception transactionException)
+      {
+        s_log.Debug (
+            "Non-recoverable transaction exception in rollback " + transactionException.GetType ().FullName + " hiding original exception "
+                + e.GetType ().FullName + ". Original message: \"" + e.Message + "\" Transaction exception message:\""
+                    + transactionException.Message
+                        + "\"");
+        throw new WxeNonRecoverableTransactionException (e, transactionException);
+      }
+      finally
+      {
+        RestorePreviousCurrentTransactionForException(e);
+      }
+    }
+
+    private void RestorePreviousCurrentTransactionForException (Exception e)
+    {
+      try
+      {
+        CheckAndRestorePreviousCurrentTransaction ();
+      }
+      catch (Exception rollbackException)
+      {
+        s_log.Debug (
+            "Non-recoverable transaction exception in restore" + rollbackException.GetType ().FullName + " hiding original exception "
+                + e.GetType ().FullName + ". Original message: \"" + e.Message + "\" Transaction exception message:\""
+                    + rollbackException.Message
+                        + "\"");
+        throw new WxeNonRecoverableTransactionException (e, rollbackException);
+      }
     }
 
     private void InitializeTransaction ()

@@ -1,14 +1,27 @@
 using System;
-using Remotion.Data.DomainObjects.Web.ExecutionEngine;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using NUnit.Framework;
+using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Web.WxeFunctions
 {
+  using WxeTransactedFunction = Remotion.Web.ExecutionEngine.WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
+
   public class ResetTestTransactedFunction : WxeTransactedFunction
   {
     public bool CopyEventHandlers = false;
+
+
+    public ResetTestTransactedFunction (WxeTransactionMode transactionMode, params object[] actualParameters)
+        : base (transactionMode, actualParameters)
+    {
+    }
+
+    public ResetTestTransactedFunction (params object[] actualParameters)
+        : base (actualParameters)
+    {
+    }
 
     protected override bool AutoCommit
     {
@@ -18,9 +31,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Web.WxeFunctions
     private void Step1 ()
     {
       ClientTransaction transactionBefore = ClientTransactionScope.CurrentTransaction;
-      Order order = Order.GetObject (new DomainObjectIDs ().Order1);
+      Order order = Order.GetObject (new DomainObjectIDs().Order1);
       order.OrderNumber = 7;
-      transactionBefore.Rollback ();
+      transactionBefore.Rollback();
 
       bool addedCalled = false;
       order.OrderItems.Added += delegate { addedCalled = true; };
@@ -41,7 +54,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Web.WxeFunctions
 
       loadedCalled = false;
 
-      Order.GetObject (new DomainObjectIDs ().Order2);
+      Order.GetObject (new DomainObjectIDs().Order2);
 
       Assert.AreEqual (CopyEventHandlers, loadedCalled);
     }

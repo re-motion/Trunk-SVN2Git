@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.Web.WxeFunctions;
-using Remotion.Data.DomainObjects.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Development.UnitTesting;
 
@@ -551,6 +550,17 @@ namespace Remotion.Data.DomainObjects.UnitTests.Web
       ResetTestTransactedFunction function = new ResetTestTransactedFunction ();
       function.Execute (Context);
       Assert.IsFalse (ClientTransactionScope.HasCurrentTransaction);
+    }
+
+    [Test]
+    public void ResetWithChildTransaction ()
+    {
+      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      {
+        ResetTestTransactedFunction function = new ResetTestTransactedFunction (WxeTransactionMode.CreateChildIfParent);
+        CreateRootWithChildTestTransactedFunction rootFunction = new CreateRootWithChildTestTransactedFunction (ClientTransaction.Current, function);
+        rootFunction.Execute (Context);
+      }
     }
 
     [Test]
