@@ -108,6 +108,25 @@ namespace Remotion.UnitTests.Mixins.Globalization.MixedMultiLingualResourcesTest
     }
 
     [Test]
+    [Ignore ("TODO: COMMONS-648")]
+    public void AttributesFromMultipleMixins_InheritedFalse ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass<ClassWithoutMultiLingualResourcesAttributes> ()
+          .AddMixin<MixinAddingMultiLingualResourcesAttributes1> ()
+          .AddMixin<MixinAddingMultiLingualResourcesAttributes2> ()
+          .EnterScope ())
+      {
+        ResourceManagerSet resourceManager =
+            (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes), false);
+
+        Assert.AreEqual (2, resourceManager.Count);
+        Assert.AreEqual ("OnMixin1", resourceManager[0].Name);
+        Assert.AreEqual ("OnMixin2", resourceManager[1].Name);
+      }
+    }
+
+    [Test]
     public void AttributesFromMixinsAndBaseAndClass_InheritedFalse ()
     {
       using (MixinConfiguration.BuildNew ()

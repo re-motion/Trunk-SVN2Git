@@ -140,30 +140,30 @@ namespace Remotion.Globalization
     /// </summary>
     /// <include file='doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/FindFirstResourceDefinitions/*' />
     public virtual void FindFirstResourceDefinitions (
-        Type concreteType,
+        Type typeToSearch,
         bool noUndefinedException,
         out Type definingType,
         out TAttribute[] resourceAttributes)
     {
-      ArgumentUtility.CheckNotNull ("concreteType", concreteType);
+      ArgumentUtility.CheckNotNull ("typeToSearch", typeToSearch);
       ArgumentUtility.CheckNotNull ("noUndefinedException", noUndefinedException);
 
-      resourceAttributes = GetResourceAttributes (concreteType);
+      resourceAttributes = GetResourceAttributes (typeToSearch);
 
       if (resourceAttributes.Length != 0)
-          definingType = concreteType;
+          definingType = typeToSearch;
       else
-          resourceAttributes = FindFirstResourceDefinitionsInBaseTypes (concreteType, out definingType);
+          resourceAttributes = FindFirstResourceDefinitionsInBaseTypes (typeToSearch, out definingType);
 
       if (resourceAttributes.Length == 0 && !noUndefinedException)
-          throw new ResourceException ("Type " + concreteType.FullName + " and its base classes do not define the attribute " + typeof (TAttribute).Name + ".");
+          throw new ResourceException ("Type " + typeToSearch.FullName + " and its base classes do not define the attribute " + typeof (TAttribute).Name + ".");
     }
 
-    protected virtual TAttribute[] FindFirstResourceDefinitionsInBaseTypes (Type concreteType, out Type definingType)
+    protected virtual TAttribute[] FindFirstResourceDefinitionsInBaseTypes (Type derivedType, out Type definingType)
     {
-      ArgumentUtility.CheckNotNull ("concreteType", concreteType);
+      ArgumentUtility.CheckNotNull ("concreteType", derivedType);
 
-      definingType = concreteType.BaseType;
+      definingType = derivedType.BaseType;
       while (definingType != null)
       {
         TAttribute[] resourceAttributes = GetResourceAttributes (definingType);

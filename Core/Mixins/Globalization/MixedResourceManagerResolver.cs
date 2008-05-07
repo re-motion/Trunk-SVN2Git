@@ -25,22 +25,27 @@ namespace Remotion.Mixins.Globalization
           TargetClassDefinitionUtility.GetContext (definingType, MixinConfiguration.ActiveConfiguration, GenerationPolicy.GenerateOnlyIfConfigured));
     }
 
-    protected override TAttribute[] FindFirstResourceDefinitionsInBaseTypes (Type concreteType, out Type definingType)
+    protected override TAttribute[] FindFirstResourceDefinitionsInBaseTypes (Type derivedType, out Type definingType)
     {
-      ArgumentUtility.CheckNotNull ("concreteType", concreteType);
+      ArgumentUtility.CheckNotNull ("derivedType", derivedType);
 
-      TargetClassDefinition mixinConfiguration = TargetClassDefinitionUtility.GetActiveConfiguration (concreteType);
+      TargetClassDefinition mixinConfiguration = TargetClassDefinitionUtility.GetActiveConfiguration (derivedType);
       if (mixinConfiguration != null)
       {
         foreach (MixinDefinition mixinDefinition in mixinConfiguration.Mixins)
         {
           TAttribute[] attributes;
-          FindFirstResourceDefinitions (mixinDefinition.Type, true, out definingType, out attributes);
+          
+          Type mixinDefiningType;
+          FindFirstResourceDefinitions (mixinDefinition.Type, true, out mixinDefiningType, out attributes);
           if (attributes.Length != 0)
+          {
+            definingType = mixinDefiningType;
             return attributes;
+          }
         }
       }
-      return base.FindFirstResourceDefinitionsInBaseTypes (concreteType, out definingType);
+      return base.FindFirstResourceDefinitionsInBaseTypes (derivedType, out definingType);
     }
 
     protected override void WalkHierarchyAndPrependResourceManagers (System.Collections.ArrayList resourceManagers, Type definingType)
