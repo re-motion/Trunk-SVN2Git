@@ -140,10 +140,6 @@
       <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>
       <Name>Data.DomainObjects.Security</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DomainObjects.Web\Data.DomainObjects.Web.csproj">
-      <Project>{9A8C29F9-8D50-457A-9730-57EB33C1D7CC}</Project>
-      <Name>Data.DomainObjects.Web</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DomainObjects\Data.DomainObjects.csproj">
       <Name>Data.DomainObjects</Name>
       <Project>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</Project>

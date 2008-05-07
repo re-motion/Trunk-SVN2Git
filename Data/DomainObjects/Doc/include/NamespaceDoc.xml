@@ -100,11 +100,6 @@
       The <B>Remotion.Data.DomainObjects.Queries.Configuration</B> namespace contains classes to describe the pre-defined queries from the configuration file.
     </para>
   </namespace>  
-  <namespace name="Remotion.Data.DomainObjects.Web.ExecutionEngine">
-    <para>
-      The <B>Remotion.Data.DomainObjects.Web.ExecutionEngine</B> namespace contains classes to be used for working with domain objects in web applications based on the web execution engine.
-    </para>
-  </namespace>
   <namespace name="Remotion.Data.DomainObjects">
     <para>
       The <B>Remotion.Data.DomainObjects</B> namespace and its sub namespaces contain interfaces and classes to be used 
@@ -180,12 +175,6 @@
           <td><see cref="N:Remotion.Data.DomainObjects.ObjectBinding.Web"/></td>
           <td>
             An implementation of <see href="Remotion.ObjectBinding.Web.html"/> classes for the DomainObjects framework.
-          </td>
-        </tr>
-        <tr>
-          <td><see cref="N:Remotion.Data.DomainObjects.Web.ExecutionEngine"/></td>
-          <td>
-            Classes supporting the use of <see href="Remotion.Web.ExecutionEngine.html"/> with the DomainObjects framework.
           </td>
         </tr>
       </tbody>
