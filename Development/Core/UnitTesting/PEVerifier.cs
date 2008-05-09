@@ -2,18 +2,48 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using Microsoft.Win32;
 using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting
 {
   public static class PEVerifier
   {
-    public const string DefaultPEVerifyPath = @"C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\Bin\PEVerify.exe";
-    private static string s_peVerifyPath = DefaultPEVerifyPath;
+    public const string c_sdkRegistryKey = @"SOFTWARE\Microsoft\.NETFramework";
+    public const string c_sdkRegistryValue = "sdkInstallRootv2.0";
+    private static string s_peVerifyPath = null;
+
+    public static string DefaultPEVerifyPath
+    {
+      get { return Path.Combine (FrameworkSDKPath, @"bin\PEVerify.exe"); }
+    }
+
+    public static string FrameworkSDKPath
+    {
+      get
+      {
+        try
+        {
+          return (string) Registry.LocalMachine.OpenSubKey (c_sdkRegistryKey, false).GetValue (c_sdkRegistryValue);
+        }
+        catch (Exception ex)
+        {
+          string message = string.Format ("Cannot retrieve framework SDK location from {0}\\{1}: {2}", 
+              c_sdkRegistryKey, c_sdkRegistryValue, ex.Message);
+          throw new InvalidOperationException (message, ex);
+        }
+      }
+    }
 
     public static string PEVerifyPath
     {
-      get { return s_peVerifyPath; }
+      get 
+      { 
+        if (s_peVerifyPath == null)
+          s_peVerifyPath = DefaultPEVerifyPath;
+
+        return s_peVerifyPath; 
+      }
       set
       {
         ArgumentUtility.CheckNotNullOrEmpty ("value", value);

@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using System.IO;
 
 namespace Remotion.Development.UnitTests.UnitTesting
 {
@@ -17,6 +18,12 @@ namespace Remotion.Development.UnitTests.UnitTesting
     public void TearDown ()
     {
       PEVerifier.PEVerifyPath = PEVerifier.DefaultPEVerifyPath;
+    }
+
+    [Test]
+    public void PEVerifyPath ()
+    {
+      Assert.That (File.Exists (PEVerifier.PEVerifyPath));
     }
 
     [Test]
