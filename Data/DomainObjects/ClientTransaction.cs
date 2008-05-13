@@ -558,9 +558,6 @@ public abstract class ClientTransaction : ITransaction
 
     if (copyCollectionEventHandlers)
     {
-      // temporarily re-enable the source transaction if necessary, we need to access its relations
-#warning TODO
-
       try
       {
         foreach (DomainObject domainObject in enlistedObjects)

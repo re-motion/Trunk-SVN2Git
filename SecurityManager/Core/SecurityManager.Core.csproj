@@ -41,7 +41,8 @@
   <ItemGroup>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <EmbeddedResource Include="Configuration\SecurityManagerConfiguration.xsd">
-      <SubType>Designer</SubType>
+      <SubType>
+      </SubType>
     </EmbeddedResource>
     <None Include="Database\SecurityManagerCreateDB.sql">
     </None>
