@@ -191,13 +191,13 @@ namespace Remotion.Reflection.CodeGeneration
     public CustomMethodEmitter CreatePrivateMethodOverride (MethodInfo baseMethod)
     {
       ArgumentUtility.CheckNotNull ("baseMethod", baseMethod);
-      return CreateMethodOverrideOrInterfaceImplementation (baseMethod, false, MethodAttributes.NewSlot | MethodAttributes.Private);
+      return CreateMethodOverrideOrInterfaceImplementation (baseMethod, false, MethodAttributes.NewSlot | MethodAttributes.Private | MethodAttributes.Final);
     }
 
     public CustomMethodEmitter CreateInterfaceMethodImplementation (MethodInfo interfaceMethod)
     {
       ArgumentUtility.CheckNotNull ("interfaceMethod", interfaceMethod);
-      return CreateMethodOverrideOrInterfaceImplementation (interfaceMethod, false, MethodAttributes.NewSlot | MethodAttributes.Private);
+      return CreateMethodOverrideOrInterfaceImplementation (interfaceMethod, false, MethodAttributes.NewSlot | MethodAttributes.Private | MethodAttributes.Final);
     }
 
     /// <summary>

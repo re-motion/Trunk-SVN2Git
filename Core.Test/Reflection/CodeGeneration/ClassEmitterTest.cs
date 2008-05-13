@@ -188,6 +188,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
       Assert.IsNotNull (method);
       Assert.IsTrue (method.IsPrivate);
+      Assert.IsTrue (method.IsVirtual);
+      Assert.IsTrue (method.IsFinal);
       object instance = Activator.CreateInstance (builtType);
       Assert.AreEqual ("P0wned!", instance.ToString ());
     }
@@ -212,6 +214,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       MethodInfo overriddenToString = builtType.GetMethod ("ToString", _declaredInstanceBindingFlags);
       Assert.AreEqual ("ToString", overriddenToString.Name);
       Assert.IsTrue (overriddenToString.IsPublic);
+      Assert.IsFalse (overriddenToString.IsFinal);
       Assert.IsFalse (overriddenToString.IsStatic);
       Assert.IsFalse (overriddenToString.IsSpecialName);
       Assert.AreEqual (MethodAttributes.ReuseSlot, overriddenToString.Attributes & MethodAttributes.ReuseSlot);
@@ -262,6 +265,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Assert.AreEqual ("System.ICloneable.Clone", implementedMethod.Name);
       Assert.IsFalse (implementedMethod.IsPublic);
       Assert.IsTrue (implementedMethod.IsPrivate);
+      Assert.IsTrue (implementedMethod.IsFinal);
       Assert.IsFalse (implementedMethod.IsStatic);
       Assert.IsFalse (implementedMethod.IsSpecialName);
       Assert.AreEqual (MethodAttributes.NewSlot, implementedMethod.Attributes & MethodAttributes.NewSlot);
@@ -296,6 +300,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       MethodInfo implementedMethod = builtType.GetMethod ("Clone", _declaredInstanceBindingFlags);
       Assert.AreEqual ("Clone", implementedMethod.Name);
       Assert.IsTrue (implementedMethod.IsPublic);
+      Assert.IsFalse (implementedMethod.IsFinal);
       Assert.AreEqual (MethodAttributes.NewSlot, implementedMethod.Attributes & MethodAttributes.NewSlot);
     }
 

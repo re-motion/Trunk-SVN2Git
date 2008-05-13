@@ -5,6 +5,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain
   public interface IMixinAddingProperty
   {
     string MixedProperty { get; set; }
+    string MixedReadOnlyProperty { get; }
   }
 
   public class MixinAddingProperty : IMixinAddingProperty
@@ -15,6 +16,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain
     {
       get { return _mixedProperty; }
       set { _mixedProperty = value; }
+    }
+
+    public string MixedReadOnlyProperty
+    {
+      get { return _mixedProperty; }
     }
   }
 }
