@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Mixins.Globalization;

@@ -1,5 +1,4 @@
 using System;
-using Remotion.Mixins;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using Remotion.Collections;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
 
