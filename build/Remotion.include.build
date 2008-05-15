@@ -261,7 +261,7 @@
 
   <!--======================= Zip Targets =======================-->
   <target name="checkzip" depends="zipfilename">
-    <property name="ToDir" value="\\at-vie-dc-02\Development\build\libraries\Remotion\Framework\build\"/>
+    <property name="ToDir" value="\\at-vie-dc-02\Development\build\Remotion\Framework\build\"/>
     <fail message="ZipFile existiert bereits" 
           if="${   file::exists(ToDir + zipfile.filename) 
                 or file::exists(ToDir + sourcezipfile.filename)}" />
@@ -323,7 +323,7 @@
   </target>
 
   <target name="securityManager-checkzip" depends="securityManager-zipfilename">
-    <property name="securityManager-ToDir" value="\\at-vie-dc-02\Development\build\libraries\Remotion\SecurityManager\build\"/>
+    <property name="securityManager-ToDir" value="\\at-vie-dc-02\Development\build\Remotion\SecurityManager\build\"/>
     <fail message="ZipFile existiert bereits" 
           if="${   file::exists(securityManager-ToDir + securityManager-zipfile.filename) 
                 or file::exists(securityManager-ToDir + securityManager-sourcezipfile.filename)}" />
