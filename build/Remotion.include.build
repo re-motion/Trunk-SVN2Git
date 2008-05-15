@@ -70,7 +70,7 @@
     <exec program="${svn.exe}">
       <arg line="copy" />
       <arg line="${repository}" />
-      <arg line="https://at-vie-svn/svn/libraries/Remotion/tags/${build.version.noconfig}" />
+      <arg line="https://at-vie-remotion/svn/Remotion/tags/${build.version.noconfig}" />
       <arg line="--revision ${revision}" />
       <arg line="--message &quot;Tagging build version ${build.version.noconfig}&quot;" />
     </exec>
@@ -79,7 +79,7 @@
   <target name="delete-tag" depends="init-build-version" description="Deletes an existing Tag with the current version number.">
     <exec program="${svn.exe}" failonerror="false">
       <arg line="remove" />
-      <arg line="https://at-vie-svn/svn/libraries/Remotion/tags/${build.version.noconfig}" />
+      <arg line="https://at-vie-remotion/svn/Remotion/tags/${build.version.noconfig}" />
       <arg line="--message &quot;Removing tag for build version ${build.version.noconfig}&quot;" />
     </exec>
   </target>
@@ -88,7 +88,7 @@
     <exec program="${svn.exe}">
       <arg line="copy" />
       <arg line="${repository}" />
-      <arg line="https://at-vie-svn/svn/libraries/Remotion/branches/${build.version.major}.${build.version.minor}" />
+      <arg line="https://at-vie-remotion/svn/Remotion/branches/${build.version.major}.${build.version.minor}" />
       <arg line="--revision ${revision}" />
       <arg line="--message &quot;Branching version ${build.version.major}.${build.version.minor}&quot;" />
     </exec>
