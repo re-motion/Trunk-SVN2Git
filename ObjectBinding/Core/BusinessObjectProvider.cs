@@ -7,11 +7,11 @@ namespace Remotion.ObjectBinding
   /// <summary>The <see langword="abstract"/> default implementation of the <see cref="IBusinessObjectProvider"/> interface.</summary>
   public abstract class BusinessObjectProvider : IBusinessObjectProvider
   {
-    /// <summary> Gets the <see cref="ICache{TKey,TValue}"/> used to store the references to the registered servies. </summary>
-    /// <value>An object implementing <see cref="ICache{TKey,TValue}"/>. Must not retun <see langword="null" />.</value>
+    /// <summary> Gets the <see cref="IDataStore{TKey,TValue}"/> used to store the references to the registered servies. </summary>
+    /// <value>An object implementing <see cref="IDataStore{TKey,TValue}"/>. Must not retun <see langword="null" />.</value>
     /// <remarks>
     ///   <note type="inotes">
-    ///    If your object model does not support services, this property should return an instance of type <see cref="NullCache{TKey,TValue}"/>.
+    ///    If your object model does not support services, this property should return an instance of type <see cref="NullDataStore{TKey,TValue}"/>.
     ///   </note>
     /// </remarks>
     protected abstract IDataStore<Type, IBusinessObjectService> ServiceStore { get; }
