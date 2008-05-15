@@ -261,7 +261,7 @@
 
   <!--======================= Zip Targets =======================-->
   <target name="checkzip" depends="zipfilename">
-    <property name="ToDir" value="\\at-vie-dc-02\Development\build\libraries\Remotion\build\"/>
+    <property name="ToDir" value="\\at-vie-dc-02\Development\build\libraries\Remotion\Framework\build\"/>
     <fail message="ZipFile existiert bereits" 
           if="${   file::exists(ToDir + zipfile.filename) 
                 or file::exists(ToDir + sourcezipfile.filename)}" />
