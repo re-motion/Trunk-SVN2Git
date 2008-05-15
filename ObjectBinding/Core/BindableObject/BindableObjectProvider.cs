@@ -30,7 +30,7 @@ namespace Remotion.ObjectBinding.BindableObject
       return provider;
     }
 
-    private readonly InterlockedCache<Type, BindableObjectClass> _businessObjectClassCache = new InterlockedCache<Type, BindableObjectClass>();
+    private readonly InterlockedDataStore<Type, BindableObjectClass> _businessObjectClassStore = new InterlockedDataStore<Type, BindableObjectClass>();
     private readonly InterlockedDataStore<Type, IBusinessObjectService> _serviceStore = new InterlockedDataStore<Type, IBusinessObjectService>();
 
     public BindableObjectProvider ()
@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      return _businessObjectClassCache.GetOrCreateValue (type, delegate (Type classType) { return CreateBindableObjectClass (classType); });
+      return _businessObjectClassStore.GetOrCreateValue (type, delegate (Type classType) { return CreateBindableObjectClass (classType); });
     }
 
     private BindableObjectClass CreateBindableObjectClass (Type type)
