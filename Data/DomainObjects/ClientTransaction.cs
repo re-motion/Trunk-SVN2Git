@@ -906,12 +906,15 @@ public abstract class ClientTransaction : ITransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainer newDataContainer = DataContainer.CreateNew (id);
-
-      SetClientTransaction (newDataContainer);
-      _dataManager.RegisterNewDataContainer (newDataContainer);
-
+      RegisterNewDataContainer(newDataContainer);
       return newDataContainer;
     }
+  }
+
+  protected internal void RegisterNewDataContainer (DataContainer newDataContainer)
+  {
+    SetClientTransaction (newDataContainer);
+    _dataManager.RegisterNewDataContainer (newDataContainer);
   }
 
   /// <summary>

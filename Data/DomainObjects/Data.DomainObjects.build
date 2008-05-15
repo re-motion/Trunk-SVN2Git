@@ -18,6 +18,7 @@
       </nowarn>
       <sources failonempty="true">
         <include name="*.cs"/>
+        <include name="Cloning/**/*.cs"/>
         <include name="Configuration/**/*.cs"/>
         <include name="ConfigurationLoader/**/*.cs"/>
         <include name="Design/**/*.cs"/>

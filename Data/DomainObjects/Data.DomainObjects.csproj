@@ -116,6 +116,7 @@
     <Compile Include="AutoRollbackBehavior.cs" />
     <Compile Include="ClassIDAttribute.cs" />
     <Compile Include="ClientTransactionScopeManager.cs" />
+    <Compile Include="Cloning\DomainObjectCloner.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\RelationPropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\MappingReflectorBase.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinder.cs" />

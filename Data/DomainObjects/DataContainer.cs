@@ -589,6 +589,11 @@ namespace Remotion.Data.DomainObjects
           "State should only be copied between DataContainers referring to the same DomainObjects");
       _domainObject = sourceContainer._domainObject;
 
+      AssumeSamePropertyValues(sourceContainer);
+    }
+
+    internal void AssumeSamePropertyValues (DataContainer sourceContainer)
+    {
       _relationEndPointIDs = null; // reinitialize on next use
 
       for (int i = 0; i < _propertyValues.Count; ++i)
