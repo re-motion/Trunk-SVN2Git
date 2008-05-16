@@ -21,6 +21,7 @@ namespace Remotion.Mixins
   {
     private readonly Type _targetType;
     private readonly Type _mixinType;
+    private MixinKind _mixinKind;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MixAttribute"/> class.
@@ -32,6 +33,17 @@ namespace Remotion.Mixins
       _targetType = ArgumentUtility.CheckNotNull ("targetType", targetType);
       _mixinType = ArgumentUtility.CheckNotNull ("mixinType", mixinType);
     }
+
+    /// <summary>
+    /// Gets or sets the kind of relationship between the mixin and its target class. For more information see <see cref="Mixins.MixinKind"/>.
+    /// </summary>
+    /// <value>The mixin kind.</value>
+    public MixinKind MixinKind
+    {
+      get { return _mixinKind; }
+      set { _mixinKind = value; }
+    }
+
 
     /// <summary>
     /// Gets the target type to be mixed.

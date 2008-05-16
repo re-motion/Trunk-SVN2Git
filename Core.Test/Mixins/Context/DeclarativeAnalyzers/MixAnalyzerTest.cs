@@ -31,7 +31,23 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
       attribute.AdditionalDependencies = new Type[] { typeof (string) };
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (typeof (object), typeof (float), attribute.AdditionalDependencies,
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (float), attribute.AdditionalDependencies,
+          attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeMixAttribute (attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeMixAttribute_WithUsedKind ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.MixinKind = MixinKind.Used;
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, typeof (object), typeof (float), attribute.AdditionalDependencies,
           attribute.SuppressedMixins))
           .Return (null);
 
@@ -50,8 +66,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
 
       Expect
           .Call (
-          _configurationBuilderMock.AddMixinToClass (
-              typeof (object),
+          _configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object),
               typeof (float),
               attribute.AdditionalDependencies,
               attribute.SuppressedMixins))

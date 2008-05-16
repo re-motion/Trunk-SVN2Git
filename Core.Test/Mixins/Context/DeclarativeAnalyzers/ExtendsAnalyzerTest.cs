@@ -34,7 +34,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
       attribute.AdditionalDependencies = new Type[] { typeof (string) };
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (typeof (object), _extenderType, attribute.AdditionalDependencies, 
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), _extenderType, attribute.AdditionalDependencies, 
           attribute.SuppressedMixins))
           .Return (null);
 
@@ -52,7 +52,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
       attribute.MixinTypeArguments = new Type[] { typeof (double) };
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (typeof (object), typeof (List<double>), attribute.AdditionalDependencies,
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (List<double>), attribute.AdditionalDependencies,
           attribute.SuppressedMixins))
           .Return (null);
 
@@ -79,7 +79,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
       ExtendsAttribute attribute = new ExtendsAttribute (typeof (object));
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (null, null, null, null))
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, null, null, null, null))
           .IgnoreArguments()
           .Throw (new InvalidOperationException ("Foofa."));
 

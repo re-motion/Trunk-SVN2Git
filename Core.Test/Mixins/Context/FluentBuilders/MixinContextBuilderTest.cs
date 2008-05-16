@@ -31,9 +31,21 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       Assert.AreSame (typeof (BT2Mixin1), _mixinBuilder.MixinType);
       Assert.AreSame (_parentBuilderMock, _mixinBuilder.Parent);
       Assert.That (_mixinBuilder.Dependencies, Is.Empty);
+      Assert.That (_mixinBuilder.MixinKind, Is.EqualTo (MixinKind.Extending));
+    }
 
-      MixinContext mixinContext = _mixinBuilder.BuildMixinContext ();
-      Assert.AreEqual (0, mixinContext.ExplicitDependencies.Count);
+    [Test]
+    public void OfKind_Used ()
+    {
+      Assert.That (_mixinBuilder.OfKind (MixinKind.Used), Is.SameAs (_mixinBuilder));
+      Assert.That (_mixinBuilder.MixinKind, Is.EqualTo (MixinKind.Used));
+    }
+
+    [Test]
+    public void OfKind_Extending ()
+    {
+      Assert.That (_mixinBuilder.OfKind (MixinKind.Extending), Is.SameAs (_mixinBuilder));
+      Assert.That (_mixinBuilder.MixinKind, Is.EqualTo (MixinKind.Extending));
     }
 
     [Test]
@@ -80,12 +92,33 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     }
 
     [Test]
-    public void BuildContext ()
+    public void BuildContext_NoDependencies ()
+    {
+      MixinContext mixinContext = _mixinBuilder.BuildMixinContext ();
+      Assert.That(mixinContext.ExplicitDependencies, Is.Empty);
+    }
+
+    [Test]
+    public void BuildContext_ExplicitKind ()
+    {
+      MixinContext mixinContext = _mixinBuilder.BuildMixinContext ();
+      Assert.That (mixinContext.MixinKind, Is.EqualTo (MixinKind.Extending));
+    }
+
+    [Test]
+    public void BuildContext_UsedKind ()
+    {
+      _mixinBuilder.OfKind (MixinKind.Used);
+      MixinContext mixinContext = _mixinBuilder.BuildMixinContext ();
+      Assert.That (mixinContext.MixinKind, Is.EqualTo (MixinKind.Used));
+    }
+
+    [Test]
+    public void BuildContext_WithDependency ()
     {
       _mixinBuilder.WithDependency<IBT3Mixin4>();
       MixinContext context = _mixinBuilder.BuildMixinContext ();
-      Assert.AreSame (typeof (BT2Mixin1), context.MixinType);
-      Assert.IsTrue (context.ExplicitDependencies.ContainsKey (typeof (IBT3Mixin4)));
+      Assert.That (context.ExplicitDependencies, Is.EqualTo (new Type[] {typeof (IBT3Mixin4)}));
     }
 
     [Test]

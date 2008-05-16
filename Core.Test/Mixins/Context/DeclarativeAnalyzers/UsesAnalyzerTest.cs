@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
       attribute.SuppressedMixins = new Type[] { typeof (double) };
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (_userType, typeof (string), attribute.AdditionalDependencies, attribute.SuppressedMixins))
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), attribute.AdditionalDependencies, attribute.SuppressedMixins))
           .Return (null);
 
       _mockRepository.ReplayAll();
@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     {
       UsesAttribute attribute = new UsesAttribute (typeof (string));
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (null, null, null, null))
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, null, null, null, null))
           .IgnoreArguments()
           .Throw (new InvalidOperationException ("Text"));
 

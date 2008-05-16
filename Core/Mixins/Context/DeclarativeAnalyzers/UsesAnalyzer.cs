@@ -17,7 +17,7 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 
     public virtual void AnalyzeUsesAttribute (Type targetType, UsesAttribute usesAttribute)
     {
-      AddMixinAndAdjustException (targetType, usesAttribute.MixinType, usesAttribute.AdditionalDependencies, usesAttribute.SuppressedMixins);
+      AddMixinAndAdjustException (MixinKind.Used, targetType, usesAttribute.MixinType, usesAttribute.AdditionalDependencies, usesAttribute.SuppressedMixins);
     }
   }
 }

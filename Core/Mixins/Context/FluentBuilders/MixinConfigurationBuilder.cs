@@ -68,17 +68,18 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// method for calling <see cref="ForClass"/>, <see cref="ClassContextBuilder.AddMixin"/>, <see cref="MixinContextBuilder.WithDependencies"/>,
     /// and <see cref="MixinContextBuilder.SuppressMixins"/> in a row.
     /// </summary>
+    /// <param name="mixinKind">The kind of relationship the mixin has with its target class.</param>
     /// <param name="targetType">The target type to add a mixin for.</param>
     /// <param name="mixinType">The mixin type to add.</param>
     /// <param name="explicitDependencies">The explicit dependencies of the mixin in the context of the target type.</param>
     /// <param name="suppressedMixins">The mixins suppressed by this mixin in the context of the target type.</param>
-    public virtual MixinConfigurationBuilder AddMixinToClass (Type targetType, Type mixinType, IEnumerable<Type> explicitDependencies, 
-        IEnumerable<Type> suppressedMixins)
+    public virtual MixinConfigurationBuilder AddMixinToClass (MixinKind mixinKind, Type targetType, Type mixinType, IEnumerable<Type> explicitDependencies, IEnumerable<Type> suppressedMixins)
     {
       MixinContextBuilder mixinContextBuilder = AddMixinToClass (targetType, mixinType);
       CheckForSelfSuppressor (targetType, mixinType, suppressedMixins);
 
       mixinContextBuilder
+          .OfKind (mixinKind)
           .WithDependencies (EnumerableUtility.ToArray (explicitDependencies))
           .SuppressMixins (EnumerableUtility.ToArray (suppressedMixins));
 

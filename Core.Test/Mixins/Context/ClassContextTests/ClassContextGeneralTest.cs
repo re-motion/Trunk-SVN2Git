@@ -192,8 +192,8 @@ namespace Remotion.UnitTests.Mixins.Context.ClassContextTests
     public void CloneForSpecificType ()
     {
       MixinContext[] mixins = new MixinContext[] {
-          new MixinContext (typeof (BT1Mixin1), new Type[] { typeof (IBT1Mixin1) }),
-          new MixinContext (typeof (BT1Mixin2))
+          new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), new Type[] { typeof (IBT1Mixin1) }),
+          new MixinContext (MixinKind.Extending, typeof (BT1Mixin2))
       };
       Type[] interfaces = new Type[] { typeof (ICBT6Mixin1), typeof (ICBT6Mixin2)};
       ClassContext source = new ClassContext (typeof (BaseType1), mixins, interfaces);
@@ -211,22 +211,22 @@ namespace Remotion.UnitTests.Mixins.Context.ClassContextTests
       ClassContext c1 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] {new MixinContext (typeof (BT1Mixin1)), new MixinContext (typeof (BT1Mixin2))},
+              new MixinContext[] {new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2))},
               new Type[] {typeof (IBT5MixinC1), typeof (IBT5MixinC2)});
       ClassContext c2 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] { new MixinContext (typeof (BT1Mixin1)), new MixinContext (typeof (BT1Mixin2)) },
+              new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2)) },
               new Type[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       ClassContext c3 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] { new MixinContext (typeof (BT1Mixin2)), new MixinContext (typeof (BT1Mixin1)) },
+              new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin2)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)) },
               new Type[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       ClassContext c4 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] {new MixinContext (typeof (BT1Mixin1)), new MixinContext (typeof (BT1Mixin2))},
+              new MixinContext[] {new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2))},
               new Type[] { typeof (IBT5MixinC2), typeof (IBT5MixinC1) });
 
       Assert.AreEqual (c1, c2);
@@ -244,27 +244,27 @@ namespace Remotion.UnitTests.Mixins.Context.ClassContextTests
       ClassContext c1 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] { new MixinContext (typeof (BT1Mixin1)), new MixinContext (typeof (BT1Mixin2)) },
+              new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2)) },
               new Type[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       ClassContext c2 =
           new ClassContext (
               typeof (BaseType2),
-              new MixinContext[] { new MixinContext (typeof (BT1Mixin1)), new MixinContext (typeof (BT1Mixin2)) },
+              new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2)) },
               new Type[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       ClassContext c3 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] { new MixinContext (typeof (BT1Mixin2)), new MixinContext (typeof (BT1Mixin1)) },
+              new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin2)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)) },
               new Type[] { typeof (IBT5MixinC1) });
       ClassContext c4 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] { new MixinContext (typeof (BT1Mixin1)) },
+              new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)) },
               new Type[] { typeof (IBT5MixinC2), typeof (IBT5MixinC1) });
       ClassContext c5 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] { new MixinContext (typeof (BT1Mixin1), typeof (BT1Mixin2)), new MixinContext (typeof (BT1Mixin2)) },
+              new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), typeof (BT1Mixin2)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2)) },
               new Type[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
 
       Assert.AreNotEqual (c1, c2);
@@ -279,22 +279,22 @@ namespace Remotion.UnitTests.Mixins.Context.ClassContextTests
       ClassContext c1 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] { new MixinContext (typeof (BT1Mixin1)), new MixinContext (typeof (BT1Mixin2)) },
+              new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2)) },
               new Type[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       ClassContext c2 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] { new MixinContext (typeof (BT1Mixin1)), new MixinContext (typeof (BT1Mixin2)) },
+              new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2)) },
               new Type[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       ClassContext c3 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] { new MixinContext (typeof (BT1Mixin2)), new MixinContext (typeof (BT1Mixin1)) },
+              new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin2)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)) },
               new Type[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       ClassContext c4 =
           new ClassContext (
               typeof (BaseType1),
-              new MixinContext[] { new MixinContext (typeof (BT1Mixin1)), new MixinContext (typeof (BT1Mixin2)) },
+              new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1)), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2)) },
               new Type[] { typeof (IBT5MixinC2), typeof (IBT5MixinC1) });
 
       Assert.AreEqual (c1.GetHashCode (), c2.GetHashCode ());

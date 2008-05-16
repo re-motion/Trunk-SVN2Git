@@ -48,7 +48,7 @@ namespace Remotion.Mixins.Definitions.Building
     {
       Type mixinType = TargetClass.MixinTypeInstantiator.GetClosedMixinType (mixinContext.MixinType);
       bool acceptsAlphabeticOrdering = AcceptsAlphabeticOrdering (mixinType);
-      MixinDefinition mixin = new MixinDefinition (mixinType, TargetClass, acceptsAlphabeticOrdering);
+      MixinDefinition mixin = new MixinDefinition (mixinContext.MixinKind, mixinType, TargetClass, acceptsAlphabeticOrdering);
       TargetClass.Mixins.Add (mixin);
       return mixin;
     }

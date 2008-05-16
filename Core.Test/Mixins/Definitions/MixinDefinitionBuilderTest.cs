@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
@@ -213,6 +214,28 @@ namespace Remotion.UnitTests.Mixins.Definitions
         MixinDefinition accepter = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget))
             .Mixins[typeof (NullMixin)];
         Assert.IsFalse (accepter.AcceptsAlphabeticOrdering);
+      }
+    }
+
+    [Test]
+    public void MixinKind_Extending ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<NullMixin> ().OfKind (MixinKind.Extending).EnterScope ())
+      {
+        MixinDefinition mixin = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget))
+            .Mixins[typeof (NullMixin)];
+        Assert.That (mixin.MixinKind, Is.EqualTo (MixinKind.Extending));
+      }
+    }
+
+    [Test]
+    public void MixinKind_Used ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<NullMixin> ().OfKind (MixinKind.Used).EnterScope ())
+      {
+        MixinDefinition mixin = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget))
+            .Mixins[typeof (NullMixin)];
+        Assert.That (mixin.MixinKind, Is.EqualTo (MixinKind.Used));
       }
     }
   }

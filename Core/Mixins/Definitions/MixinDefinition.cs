@@ -24,11 +24,13 @@ namespace Remotion.Mixins.Definitions
     private readonly bool _acceptsAlphabeticOrdering;
 
     private int _mixinIndex;
-    
-    public MixinDefinition (Type type, TargetClassDefinition targetClass, bool acceptsAlphabeticOrdering)
+    private readonly MixinKind _mixinKind;
+
+    public MixinDefinition (MixinKind mixinKind, Type type, TargetClassDefinition targetClass, bool acceptsAlphabeticOrdering)
         : base (type)
     {
       ArgumentUtility.CheckNotNull ("targetClass", targetClass);
+      _mixinKind = mixinKind;
       _targetClass = targetClass;
       _acceptsAlphabeticOrdering = acceptsAlphabeticOrdering;
     }
@@ -56,6 +58,11 @@ namespace Remotion.Mixins.Definitions
     {
       get { return _mixinIndex; }
       internal set { _mixinIndex = value; }
+    }
+
+    public MixinKind MixinKind
+    {
+      get { return _mixinKind; }
     }
 
     public bool AcceptsAlphabeticOrdering

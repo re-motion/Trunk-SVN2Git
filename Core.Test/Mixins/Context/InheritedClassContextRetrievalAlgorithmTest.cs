@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Mixins;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Mixins.Context;
 using Remotion.Utilities;
@@ -23,10 +24,10 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       _contexts = new Dictionary<Type, ClassContext>();
       _algorithm = new InheritedClassContextRetrievalAlgorithm (GetExact, GetWithInheritance);
-      _ccObject = new ClassContext (typeof (object), new MixinContext[] {new MixinContext (typeof (NullMixin))}, new Type[] {typeof (NullMixin)});
-      _ccString = new ClassContext (typeof (string), new MixinContext[] { new MixinContext (typeof (NullMixin2)) }, new Type[] { typeof (NullMixin2) });
-      _ccList = new ClassContext (typeof (List<>), new MixinContext[] { new MixinContext (typeof (NullMixin3)) }, new Type[] { typeof (NullMixin3) });
-      _ccListInt = new ClassContext (typeof (List<int>), new MixinContext[] { new MixinContext (typeof (NullMixin4)) }, new Type[] { typeof (NullMixin4) });
+      _ccObject = new ClassContext (typeof (object), new MixinContext[] {new MixinContext (MixinKind.Extending, typeof (NullMixin))}, new Type[] {typeof (NullMixin)});
+      _ccString = new ClassContext (typeof (string), new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (NullMixin2)) }, new Type[] { typeof (NullMixin2) });
+      _ccList = new ClassContext (typeof (List<>), new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (NullMixin3)) }, new Type[] { typeof (NullMixin3) });
+      _ccListInt = new ClassContext (typeof (List<int>), new MixinContext[] { new MixinContext (MixinKind.Extending, typeof (NullMixin4)) }, new Type[] { typeof (NullMixin4) });
     }
 
     private ClassContext GetExact (Type type)

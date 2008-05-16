@@ -18,7 +18,7 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
     public virtual void AnalyzeExtendsAttribute (Type extender, ExtendsAttribute mixinAttribute)
     {
       Type mixinType = ApplyMixinTypeArguments (mixinAttribute.TargetType, extender, mixinAttribute.MixinTypeArguments);
-      AddMixinAndAdjustException (mixinAttribute.TargetType, mixinType, mixinAttribute.AdditionalDependencies, mixinAttribute.SuppressedMixins);
+      AddMixinAndAdjustException (MixinKind.Extending, mixinAttribute.TargetType, mixinType, mixinAttribute.AdditionalDependencies, mixinAttribute.SuppressedMixins);
     }
 
     private Type ApplyMixinTypeArguments (Type targetType, Type mixinType, Type[] typeArguments)

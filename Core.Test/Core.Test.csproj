@@ -129,6 +129,9 @@
     <Compile Include="Collections\InterlockedDataStoreTest.cs" />
     <Compile Include="Collections\MonitorCheckingInterceptor.cs" />
     <Compile Include="Collections\SimpleDataStoreTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicMethodCodeBuilder.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicMethodEmitter.cs" />
+    <Compile Include="Mixins\Context\MixinContextSerializerTest.cs" />
     <Compile Include="Reflection\CodeGeneration\AssemblySaverTest.cs" />
     <Compile Include="Reflection\CodeGeneration\AttributeReplicatorTest.cs" />
     <Compile Include="Reflection\CodeGeneration\PopStatementTest.cs" />

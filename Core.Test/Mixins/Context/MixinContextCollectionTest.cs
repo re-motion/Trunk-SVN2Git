@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.Mixins;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Mixins.Context;
 
@@ -18,10 +19,10 @@ namespace Remotion.UnitTests.Mixins.Context
     [SetUp]
     public void SetUp ()
     {
-      _mcObject = new MixinContext (typeof (object));
-      _mcString = new MixinContext (typeof (string));
-      _mcList = new MixinContext (typeof (List<int>));
-      _mcDerived = new MixinContext (typeof (DerivedNullMixin));
+      _mcObject = new MixinContext (MixinKind.Extending, typeof (object));
+      _mcString = new MixinContext (MixinKind.Extending, typeof (string));
+      _mcList = new MixinContext (MixinKind.Extending, typeof (List<int>));
+      _mcDerived = new MixinContext (MixinKind.Extending, typeof (DerivedNullMixin));
       _collection = new MixinContextCollection (new MixinContext[] { _mcObject, _mcString, _mcList, _mcDerived});
     }
 

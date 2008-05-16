@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Remotion.Mixins.Utilities;
-using Remotion.Mixins.Utilities.Serialization;
 using Remotion.Utilities;
-using Remotion.Collections;
 
 namespace Remotion.Mixins.Context
 {
@@ -17,40 +13,35 @@ namespace Remotion.Mixins.Context
   /// </remarks>
   public class MixinContext
   {
-    internal static MixinContext DeserializeFromFlatStructure (string key, SerializationInfo info)
-    {
-      ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("info", info);
-
-      Type mixinType = ReflectionObjectSerializer.DeserializeType (key + ".MixinType", info);
-
-      int dependencyCount = info.GetInt32 (key + ".ExplicitDependencyCount");
-      List<Type> explicitDependencies = new List<Type>();
-      for (int i = 0; i < dependencyCount; ++i)
-        explicitDependencies.Add (ReflectionObjectSerializer.DeserializeType (key + ".ExplicitDependencies[" + i + "]", info));
-
-      MixinContext newContext = new MixinContext (mixinType, explicitDependencies);
-      return newContext;
-    }
-
+    /// <summary>
+    /// The mixin type represented by the <see cref="MixinContext"/>.
+    /// </summary>
     public readonly Type MixinType;
+    /// <summary>
+    /// The kind of relationship the configured mixin has with its target class.
+    /// </summary>
+    public readonly MixinKind MixinKind;
+
     private readonly ReadOnlyContextCollection<Type, Type> _explicitDependencies;
     private readonly int _cachedHashCode;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MixinContext"/> class.
     /// </summary>
+    /// <param name="mixinKind">The kind of relationship the configured mixin has with its target class.</param>
     /// <param name="mixinType">The mixin type represented by this <see cref="MixinContext"/>.</param>
     /// <param name="explicitDependencies">The explicit dependencies of the mixin.</param>
-    public MixinContext (Type mixinType, IEnumerable<Type> explicitDependencies)
+    public MixinContext (MixinKind mixinKind, Type mixinType, IEnumerable<Type> explicitDependencies)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
       ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
 
       MixinType = mixinType;
+      MixinKind = mixinKind;
+
       _explicitDependencies = new ReadOnlyContextCollection<Type, Type> (delegate (Type t) { return t; }, explicitDependencies);
 
-      _cachedHashCode = MixinType.GetHashCode () ^ EqualityUtility.GetXorHashCode (ExplicitDependencies);
+      _cachedHashCode = MixinKind.GetHashCode() ^ MixinType.GetHashCode () ^ EqualityUtility.GetXorHashCode (ExplicitDependencies);
     }
 
     /// <summary>
@@ -58,21 +49,9 @@ namespace Remotion.Mixins.Context
     /// </summary>
     /// <param name="mixinType">The mixin type represented by this <see cref="MixinContext"/>.</param>
     /// <param name="explicitDependencies">The explicit dependencies of the mixin.</param>
-    public MixinContext (Type mixinType, params Type[] explicitDependencies)
-        : this (mixinType, (IEnumerable<Type>) explicitDependencies)
+    public MixinContext (MixinKind mixinKind, Type mixinType, params Type[] explicitDependencies)
+        : this (mixinKind, mixinType, (IEnumerable<Type>) explicitDependencies)
     {
-    }
-
-    internal void SerializeIntoFlatStructure (string key, SerializationInfo info)
-    {
-      ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("info", info);
-
-      ReflectionObjectSerializer.SerializeType (MixinType, key + ".MixinType", info);
-      info.AddValue (key + ".ExplicitDependencyCount", ExplicitDependencies.Count);
-      IEnumerator<Type> dependencyEnumerator = ExplicitDependencies.GetEnumerator();
-      for (int i = 0; dependencyEnumerator.MoveNext(); ++i)
-        ReflectionObjectSerializer.SerializeType (dependencyEnumerator.Current, key + ".ExplicitDependencies[" + i + "]", info);
     }
 
     /// <summary>
@@ -89,7 +68,7 @@ namespace Remotion.Mixins.Context
       if (other == null)
         return false;
       
-      if (!other.MixinType.Equals (MixinType) || other.ExplicitDependencies.Count != this.ExplicitDependencies.Count)
+      if (other.MixinKind != MixinKind || !other.MixinType.Equals (MixinType) || other.ExplicitDependencies.Count != ExplicitDependencies.Count)
         return false;
 
       foreach (Type explicitDependency in ExplicitDependencies)

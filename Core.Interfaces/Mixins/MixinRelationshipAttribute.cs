@@ -3,7 +3,7 @@ using Remotion.Implementation;
 
 namespace Remotion.Mixins
 {
-  public class MixinRelationshipAttribute : Attribute
+  public abstract class MixinRelationshipAttribute : Attribute
   {
     private Type[] _additionalDependencies = Type.EmptyTypes;
     private Type[] _suppressedMixins = Type.EmptyTypes;

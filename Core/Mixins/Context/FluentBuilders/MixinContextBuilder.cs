@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Collections;
+using Remotion.Mixins;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.FluentBuilders
@@ -12,7 +13,9 @@ namespace Remotion.Mixins.Context.FluentBuilders
   {
     private readonly ClassContextBuilder _parent;
     private readonly Type _mixinType;
-    private readonly Set<Type> _dependencies = new Set<Type>();
+    private readonly Set<Type> _dependencies = new Set<Type> ();
+
+    private MixinKind _mixinKind;
 
     public MixinContextBuilder (ClassContextBuilder parent, Type mixinType)
     {
@@ -21,6 +24,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
 
       _parent = parent;
       _mixinType = mixinType;
+      _mixinKind = MixinKind.Extending;
     }
 
     /// <summary>
@@ -30,6 +34,15 @@ namespace Remotion.Mixins.Context.FluentBuilders
     public ClassContextBuilder Parent
     {
       get { return _parent; }
+    }
+
+    /// <summary>
+    /// Gets the kind of relationship the configured mixin has with its target class.
+    /// </summary>
+    /// <value>The mixin kind.</value>
+    public MixinKind MixinKind
+    {
+      get { return _mixinKind; }
     }
 
     /// <summary>
@@ -51,12 +64,25 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
+    /// Defines the relationship the mixin has with its target class, which influences whether the mixin overrides attributes and interfaces
+    /// of the target class, or the other way around. For more information see <see cref="Mixins.MixinKind"/>. The default value
+    /// is <see cref="Mixins.MixinKind.Extending"/>.
+    /// </summary>
+    /// <param name="kind">The mixin kind.</param>
+    /// <returns>This object for further configuration of the mixin.</returns>
+    public virtual MixinContextBuilder OfKind (MixinKind kind)
+    {
+      _mixinKind = kind;
+      return this;
+    }
+
+    /// <summary>
     /// Collects a dependency for the configured <see cref="MixinType"/>. A dependency causes a base call ordering to be defined between two mixins:
     /// if mixin A depends on mixin B and both override the same methods, A's overrides will be called before B's overrides when an overridden member
     /// is invoked.
     /// </summary>
     /// <param name="requiredMixin">The mixin required by the configured <see cref="MixinType"/>.</param>
-    /// <returns>This object for further configuration of <see cref="MixinType"/>.</returns>
+    /// <returns>This object for further configuration of the mixin.</returns>
     public virtual MixinContextBuilder WithDependency (Type requiredMixin)
     {
       ArgumentUtility.CheckNotNull ("requiredMixin", requiredMixin);
@@ -75,7 +101,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// is invoked.
     /// </summary>
     /// <typeparam name="TRequiredMixin">The mixin (or an interface) required by the configured <see cref="MixinType"/>.</typeparam>
-    /// <returns>This object for further configuration of <see cref="MixinType"/>.</returns>
+    /// <returns>This object for further configuration of the mixin.</returns>
     public virtual MixinContextBuilder WithDependency<TRequiredMixin> ()
     {
       return WithDependency (typeof (TRequiredMixin));
@@ -88,7 +114,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// is invoked.
     /// </summary>
     /// <param name="requiredMixins">The mixins (or interfaces) required by the configured <see cref="MixinType"/>.</param>
-    /// <returns>This object for further configuration of <see cref="MixinType"/>.</returns>
+    /// <returns>This object for further configuration of the mixin.</returns>
     public virtual MixinContextBuilder WithDependencies (params Type[] requiredMixins)
     {
       ArgumentUtility.CheckNotNull ("requiredMixins", requiredMixins);
@@ -105,7 +131,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// </summary>
     /// <typeparam name="TMixin1">The first mixin (or interface) required by the configured <see cref="MixinType"/>.</typeparam>
     /// <typeparam name="TMixin2">The second mixin (or interface) required by the configured <see cref="MixinType"/>.</typeparam>
-    /// <returns>This object for further configuration of <see cref="MixinType"/>.</returns>
+    /// <returns>This object for further configuration of the mixin.</returns>
     public virtual MixinContextBuilder WithDependencies<TMixin1, TMixin2> ()
     {
       return WithDependencies (typeof (TMixin1), typeof (TMixin2));
@@ -120,7 +146,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <typeparam name="TMixin1">The first mixin (or interface) required by the configured <see cref="MixinType"/>.</typeparam>
     /// <typeparam name="TMixin2">The second mixin (or interface) required by the configured <see cref="MixinType"/>.</typeparam>
     /// <typeparam name="TMixin3">The third mixin (or interface) required by the configured <see cref="MixinType"/>.</typeparam>
-    /// <returns>This object for further configuration of <see cref="MixinType"/>.</returns>
+    /// <returns>This object for further configuration of the mixin.</returns>
     public virtual MixinContextBuilder WithDependencies<TMixin1, TMixin2, TMixin3> ()
     {
       return WithDependencies (typeof (TMixin1), typeof (TMixin2), typeof (TMixin3));
@@ -129,10 +155,10 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <summary>
     /// Builds a mixin context with the data collected so far for the <see cref="MixinType"/>.
     /// </summary>
-    /// <returns>A <see cref="MixinContext"/> for the <see cref="MixinType"/> holding all mixin configuration data collected so far.</returns>
+    /// <returns>A <see cref="MixinContext"/> holding all mixin configuration data collected so far.</returns>
     public virtual MixinContext BuildMixinContext ()
     {
-      MixinContext mixinContext = new MixinContext (_mixinType, _dependencies);
+      MixinContext mixinContext = new MixinContext (_mixinKind, _mixinType, _dependencies);
       return mixinContext;
     }
 

@@ -28,7 +28,7 @@ namespace Remotion.Mixins.Context
       {
         if (!mixins.ContainsKey (mixinType))
         {
-          MixinContext context = new MixinContext (mixinType, new Type[0]);
+          MixinContext context = new MixinContext (MixinKind.Extending, mixinType, new Type[0]);
           mixins.Add (context.MixinType, context);
         }
         else
@@ -288,7 +288,7 @@ namespace Remotion.Mixins.Context
       List<MixinContext> mixinContexts = new List<MixinContext> (mixinCount);
       for (int i = 0; i < mixinCount; ++i)
       {
-        MixinContext mixinContext = MixinContext.DeserializeFromFlatStructure ("_mixins[" + i + "]", info);
+        MixinContext mixinContext = MixinContextSerializer.DeserializeFromFlatStructure ("_mixins[" + i + "]", info);
         mixinContexts.Add (mixinContext);
       }
       return mixinContexts;
@@ -309,7 +309,7 @@ namespace Remotion.Mixins.Context
       info.AddValue ("_mixins.Count", _mixins.Count);
       IEnumerator<MixinContext> mixinEnumerator = _mixins.GetEnumerator ();
       for (int i = 0; mixinEnumerator.MoveNext (); ++i)
-        mixinEnumerator.Current.SerializeIntoFlatStructure ("_mixins[" + i + "]", info);
+        MixinContextSerializer.SerializeIntoFlatStructure (mixinEnumerator.Current, "_mixins[" + i + "]", info);
 
       IEnumerator<Type> interfaceEnumerator = _completeInterfaces.GetEnumerator ();
       info.AddValue ("_completeInterfaces.Count", _completeInterfaces.Count);

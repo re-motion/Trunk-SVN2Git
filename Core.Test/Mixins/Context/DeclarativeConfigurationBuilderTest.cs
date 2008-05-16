@@ -143,7 +143,7 @@ namespace Remotion.UnitTests.Mixins.Context
       _builder.AddType (typeof (ICompleteInterface));
 
       MixinConfiguration configuration = _builder.BuildConfiguration();
-      ClassContext c1 = new ClassContext (typeof (User), typeof (NullMixin));
+      ClassContext c1 = new ClassContextBuilder (typeof (User)).AddMixin (typeof (NullMixin)).OfKind (MixinKind.Used).BuildClassContext();
       ClassContext c2 = new ClassContextBuilder(typeof (NullTarget))
           .AddMixin (typeof (Extender)).AddCompleteInterface (typeof (ICompleteInterface)).BuildClassContext ();
       Assert.That (configuration.ClassContexts, Is.EquivalentTo (new object[] { c1, c2, _globalClassContext }));
@@ -157,7 +157,7 @@ namespace Remotion.UnitTests.Mixins.Context
       builder.AddType (typeof (User));
 
       MixinConfiguration configuration = builder.BuildConfiguration ();
-      ClassContext c1 = new ClassContext (typeof (User), typeof (NullMixin));
+      ClassContext c1 = new ClassContextBuilder (typeof (User)).AddMixin (typeof (NullMixin)).OfKind (MixinKind.Used).BuildClassContext ();
       Assert.That (configuration.ClassContexts,
           Is.EquivalentTo (new object[] { c1, parentConfiguration.ClassContexts.GetExact (typeof (int)), _globalClassContext }));
     }
