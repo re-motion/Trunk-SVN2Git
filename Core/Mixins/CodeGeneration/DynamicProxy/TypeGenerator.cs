@@ -437,10 +437,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void AddDebuggerAttributes ()
     {
-      string debuggerString = "Mix of " + _configuration.Type.FullName + " + "
-                              + SeparatedStringBuilder.Build (" + ", _configuration.Mixins, delegate (MixinDefinition m) { return m.FullName; });
-      CustomAttributeBuilder debuggerAttribute = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor, new object[] { debuggerString });
-      Emitter.AddCustomAttribute (debuggerAttribute);
+      if (!Configuration.IntroducedAttributes.ContainsKey (typeof (DebuggerDisplayAttribute)))
+      {
+        string debuggerString = "Mix of " + _configuration.Type.FullName + " + "
+            + SeparatedStringBuilder.Build (" + ", _configuration.Mixins, delegate (MixinDefinition m) { return m.FullName; });
+        CustomAttributeBuilder debuggerAttribute = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor, new object[] {debuggerString});
+        Emitter.AddCustomAttribute (debuggerAttribute);
+      }
     }
 
     private void AddMixedTypeAttribute ()

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
@@ -103,6 +104,25 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 
       ConcreteMixedTypeAttribute[] attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
       Assert.AreEqual (1, attributes.Length);
+    }
+
+    [Test]
+    public void GeneratedTypeHasDebuggerDisplayAttribute ()
+    {
+      Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
+      Assert.IsTrue (generatedType.IsDefined (typeof (DebuggerDisplayAttribute), false));
+
+      DebuggerDisplayAttribute[] attributes = (DebuggerDisplayAttribute[]) generatedType.GetCustomAttributes (typeof (DebuggerDisplayAttribute), false);
+      Assert.AreEqual (1, attributes.Length);
+    }
+
+    [Test]
+    public void DebuggerDisplayAttribute_NotAddedIfExistsViaMixin ()
+    {
+      Type generatedType = CreateMixedType (typeof (NullTarget), typeof (MixinAddingDebuggerDisplay));
+      DebuggerDisplayAttribute[] attributes = (DebuggerDisplayAttribute[]) generatedType.GetCustomAttributes (typeof (DebuggerDisplayAttribute), false);
+      Assert.AreEqual (1, attributes.Length);
+      Assert.AreEqual ("Y", attributes[0].Value);
     }
 
     [Test]
