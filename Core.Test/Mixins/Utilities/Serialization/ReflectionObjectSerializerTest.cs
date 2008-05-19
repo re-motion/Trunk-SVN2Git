@@ -10,7 +10,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Mixins.Utilities.Serialization
 {
   [TestFixture]
-  public class SafeReflectionSerializationTest
+  public class ReflectionObjectSerializerTest
   {
     [Serializable]
     class SerializationTester<T> : ISerializable
@@ -74,10 +74,10 @@ namespace Remotion.UnitTests.Mixins.Utilities.Serialization
     {
       TestMethodSerialization (typeof (object).GetMethod ("Equals", BindingFlags.Public | BindingFlags.Instance));
       TestMethodSerialization (typeof (Console).GetMethod ("WriteLine", new Type[] { typeof (string), typeof (object[]) }));
-      TestMethodSerialization (typeof (SafeReflectionSerializationTest).GetMethod ("PerformSerialization", BindingFlags.NonPublic | BindingFlags.Static));
+      TestMethodSerialization (typeof (ReflectionObjectSerializerTest).GetMethod ("PerformSerialization", BindingFlags.NonPublic | BindingFlags.Static));
 
       MethodInfo[] methods =
-        Array.FindAll (typeof (SafeReflectionSerializationTest).GetMethods (), delegate (MethodInfo m) { return m.Name == "SameName"; });
+        Array.FindAll (typeof (ReflectionObjectSerializerTest).GetMethods (), delegate (MethodInfo m) { return m.Name == "SameName"; });
       Assert.AreEqual (2, methods.Length);
 
       TestMethodSerialization (methods[0]);
@@ -85,19 +85,19 @@ namespace Remotion.UnitTests.Mixins.Utilities.Serialization
 
       TestMethodSerialization (typeof (GenericType<>).GetMethod ("NonGenericMethod"));
       TestMethodSerialization (typeof (GenericType<>).GetMethod ("GenericMethod"));
-      TestMethodSerialization (typeof (GenericType<>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (SafeReflectionSerializationTest)));
+      TestMethodSerialization (typeof (GenericType<>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (ReflectionObjectSerializerTest)));
       TestMethodSerialization (typeof (GenericType<>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (int)));
       TestMethodSerialization (typeof (GenericType<>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (DateTime)));
 
       TestMethodSerialization (typeof (GenericType<object>).GetMethod ("NonGenericMethod"));
       TestMethodSerialization (typeof (GenericType<object>).GetMethod ("GenericMethod"));
-      TestMethodSerialization (typeof (GenericType<object>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (SafeReflectionSerializationTest)));
+      TestMethodSerialization (typeof (GenericType<object>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (ReflectionObjectSerializerTest)));
       TestMethodSerialization (typeof (GenericType<object>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (int)));
       TestMethodSerialization (typeof (GenericType<object>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (DateTime)));
 
       TestMethodSerialization (typeof (GenericType<int>).GetMethod ("NonGenericMethod"));
       TestMethodSerialization (typeof (GenericType<int>).GetMethod ("GenericMethod"));
-      TestMethodSerialization (typeof (GenericType<int>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (SafeReflectionSerializationTest)));
+      TestMethodSerialization (typeof (GenericType<int>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (ReflectionObjectSerializerTest)));
       TestMethodSerialization (typeof (GenericType<int>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (int)));
       TestMethodSerialization (typeof (GenericType<int>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (DateTime)));
     }

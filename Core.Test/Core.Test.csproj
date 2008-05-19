@@ -505,7 +505,7 @@
     <Compile Include="Mixins\Utilities\NameAndSignatureEqualityComparerTest.cs" />
     <Compile Include="Mixins\Utilities\ReflectionUtilityTest.cs" />
     <Compile Include="Mixins\Utilities\Serialization\GenericType.cs" />
-    <Compile Include="Mixins\Utilities\Serialization\SafeReflectionSerializationTest.cs" />
+    <Compile Include="Mixins\Utilities\Serialization\ReflectionObjectSerializerTest.cs" />
     <Compile Include="Mixins\Utilities\SignatureCheckerTest.cs" />
     <Compile Include="Mixins\Utilities\SignatureEqualityComparerTest.cs" />
     <Compile Include="Mixins\ValidationTests\DelegateRuleDescriptionTest.cs" />

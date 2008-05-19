@@ -5,14 +5,14 @@ using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
-  internal class ValueTypeAssignArrayStatement : Statement
+  internal class GeneralTypeAssignArrayStatement : Statement
   {
     private readonly Type _elementType;
     private readonly Reference _arrayReference;
     private readonly int _elementIndex;
     private readonly Expression _elementValue;
 
-    public ValueTypeAssignArrayStatement (Type elementType, Reference arrayReference, int elementIndex, Expression elementValue)
+    public GeneralTypeAssignArrayStatement (Type elementType, Reference arrayReference, int elementIndex, Expression elementValue)
     {
       _elementType = elementType;
       _arrayReference = arrayReference;

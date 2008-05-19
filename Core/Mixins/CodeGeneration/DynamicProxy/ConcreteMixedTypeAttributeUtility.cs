@@ -56,7 +56,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       LocalReference arrayLocal = codeBuilder.DeclareLocal (typeof (T[]));
       codeBuilder.AddStatement (new AssignStatement (arrayLocal, new NewArrayExpression (types.Length, typeof (T))));
       for (int i = 0; i < types.Length; ++i)
-        codeBuilder.AddStatement (new ValueTypeAssignArrayStatement (typeof (T), arrayLocal, i, elementExpressor(types[i])));
+        codeBuilder.AddStatement (new GeneralTypeAssignArrayStatement (typeof (T), arrayLocal, i, elementExpressor(types[i])));
       return arrayLocal;
     }
   }
