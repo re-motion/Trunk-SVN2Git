@@ -99,6 +99,9 @@
     <Compile Include="Collections\NullDataStore.cs" />
     <Compile Include="Collections\SimpleDataStore.cs" />
     <Compile Include="Logging\BridgeImplementations\LogManagerImplementation.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixedTypeAttributeUtility.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixinTypeAttributeUtility.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\ValueTypeAssignArrayStatement.cs" />
     <Compile Include="Mixins\Context\MixinContextSerializer.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomClassEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomEventEmitter.cs" />

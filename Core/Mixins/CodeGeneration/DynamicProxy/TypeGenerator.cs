@@ -185,7 +185,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ConstructorEmitter emitter = _emitter.CreateTypeConstructor ();
 
       Expression attributeExpression =
-          ConcreteMixedTypeAttribute.NewAttributeExpressionFromClassContext (Configuration.ConfigurationContext, emitter.CodeBuilder);
+          ConcreteMixedTypeAttributeUtility.CreateNewAttributeExpression (Configuration.ConfigurationContext, emitter.CodeBuilder);
       LocalReference attributeLocal = emitter.CodeBuilder.DeclareLocal (typeof (ConcreteMixedTypeAttribute));
       emitter.CodeBuilder.AddStatement (new AssignStatement (attributeLocal, attributeExpression));
       
@@ -445,7 +445,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void AddMixedTypeAttribute ()
     {
-      CustomAttributeBuilder attributeBuilder = ConcreteMixedTypeAttribute.BuilderFromClassContext (Configuration.ConfigurationContext);
+      CustomAttributeBuilder attributeBuilder = ConcreteMixedTypeAttributeUtility.CreateAttributeBuilder (Configuration.ConfigurationContext);
       Emitter.AddCustomAttribute (attributeBuilder);
     }
 

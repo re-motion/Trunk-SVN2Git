@@ -1,23 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-using Castle.DynamicProxy;
-using Castle.DynamicProxy.Generators.Emitters;
-using Castle.DynamicProxy.Generators.Emitters.CodeBuilders;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Mixins.Definitions;
-using Remotion.Utilities;
-using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
@@ -169,50 +159,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       TargetClassDefinition definition = attribute.GetTargetClassDefinition ();
       Assert.AreEqual (typeof (List<int>), definition.Type);
-    }
-
-    [Test]
-    public void BuilderFromClassContext ()
-    {
-      ClassContext context = new ClassContextBuilder (typeof (int))
-          .AddCompleteInterface (typeof (uint))
-          .AddMixin (typeof (double)).OfKind (MixinKind.Used)
-          .AddMixin (typeof (string)).WithDependency (typeof (bool)).OfKind (MixinKind.Extending)
-          .BuildClassContext ();
-
-      CustomAttributeBuilder builder = ConcreteMixedTypeAttribute.BuilderFromClassContext (context);
-      TypeBuilder typeBuilder = ((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope.ObtainDynamicModuleWithWeakName().DefineType ("Test_ConcreteMixedTypeAttribute");
-      typeBuilder.SetCustomAttribute (builder);
-      Type type = typeBuilder.CreateType ();
-      ConcreteMixedTypeAttribute attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (type, false);
-      Assert.That (attribute.GetClassContext (), Is.EqualTo (context));
-    }
-
-    [Test]
-    public void NewAttributeExpressionFromClassContext ()
-    {
-      ClassContext context = new ClassContextBuilder (typeof (int))
-          .AddCompleteInterface (typeof (uint))
-          .AddMixin (typeof (double)).OfKind (MixinKind.Used)
-          .AddMixin (typeof (string)).WithDependency (typeof (bool)).OfKind (MixinKind.Extending)
-          .BuildClassContext ();
-
-      DynamicMethod method =
-          new DynamicMethod ("Test_NewAttributeExpressionFromClassContext", typeof (ConcreteMixedTypeAttribute), new Type[] {typeof (ClassContext)});
-      ILGenerator ilGenerator = method.GetILGenerator();
-      DynamicMethodCodeBuilder codeBuilder = new DynamicMethodCodeBuilder (ilGenerator);
-      DynamicMethodEmitter emitter = new DynamicMethodEmitter (method);
-
-      Expression expression = ConcreteMixedTypeAttribute.NewAttributeExpressionFromClassContext (context, codeBuilder);
-      codeBuilder.AddStatement (new ReturnStatement (expression));
-
-      PrivateInvoke.InvokeNonPublicMethod (codeBuilder, "Generate", emitter, ilGenerator);
-
-      Func<ClassContext, ConcreteMixedTypeAttribute> compiledMethod = 
-          (Func<ClassContext, ConcreteMixedTypeAttribute>) method.CreateDelegate (typeof (Func<ClassContext, ConcreteMixedTypeAttribute>));
-      ConcreteMixedTypeAttribute generatedAttribute = compiledMethod (context);
-      ClassContext generatedContext = generatedAttribute.GetClassContext();
-      Assert.That (generatedContext, Is.EqualTo (context));
     }
   }
 }

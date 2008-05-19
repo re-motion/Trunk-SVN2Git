@@ -67,7 +67,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ConstructorEmitter emitter = _emitter.CreateTypeConstructor ();
 
       Expression attributeExpression =
-          ConcreteMixinTypeAttribute.NewAttributeExpressionFromClassContext (Configuration.MixinIndex, Configuration.TargetClass.ConfigurationContext,
+          ConcreteMixinTypeAttributeUtility.CreateNewAttributeExpression (Configuration.MixinIndex, Configuration.TargetClass.ConfigurationContext,
           emitter.CodeBuilder);
       LocalReference attributeLocal = emitter.CodeBuilder.DeclareLocal (typeof (ConcreteMixinTypeAttribute));
       emitter.CodeBuilder.AddStatement (new AssignStatement (attributeLocal, attributeExpression));
@@ -83,7 +83,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void AddMixinTypeAttribute ()
     {
-      CustomAttributeBuilder attributeBuilder = ConcreteMixinTypeAttribute.BuilderFromClassContext (Configuration.MixinIndex,
+      CustomAttributeBuilder attributeBuilder = ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (Configuration.MixinIndex,
           Configuration.TargetClass.ConfigurationContext);
       Emitter.AddCustomAttribute (attributeBuilder);
     }

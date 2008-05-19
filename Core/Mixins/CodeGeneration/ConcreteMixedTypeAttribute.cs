@@ -1,13 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-using Castle.DynamicProxy.Generators.Emitters;
-using Castle.DynamicProxy.Generators.Emitters.CodeBuilders;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Mixins.Context.FluentBuilders;
 
 namespace Remotion.Mixins.CodeGeneration
@@ -16,33 +11,6 @@ namespace Remotion.Mixins.CodeGeneration
   [AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
   public class ConcreteMixedTypeAttribute : Attribute
   {
-    internal class GenericAssignArrayStatement : Statement
-    {
-      private readonly Type _elementType;
-      private readonly Reference _arrayReference;
-      private readonly int _elementIndex;
-      private readonly Expression _elementValue;
-
-      public GenericAssignArrayStatement (Type elementType, Reference arrayReference, int elementIndex, Expression elementValue)
-      {
-        _elementType = elementType;
-        _arrayReference = arrayReference;
-        _elementIndex = elementIndex;
-        _elementValue = elementValue;
-      }
-
-      public override void Emit (Castle.DynamicProxy.Generators.Emitters.IMemberEmitter member, ILGenerator il)
-      {
-        ArgumentsUtil.EmitLoadOwnerAndReference (_arrayReference, il);
-        il.Emit (OpCodes.Ldc_I4, _elementIndex);
-        _elementValue.Emit (member, il);
-        il.Emit (OpCodes.Stelem, _elementType);
-      }
-    }
-
-    private static readonly ConstructorInfo s_attributeCtor = typeof (ConcreteMixedTypeAttribute).GetConstructor (
-        new Type[] {typeof (Type), typeof (MixinKind[]), typeof (Type[]), typeof (Type[]), typeof (Type[])});
-
     public static ConcreteMixedTypeAttribute FromClassContext (ClassContext context)
     {
       Type baseType = context.Type;
@@ -68,52 +36,6 @@ namespace Remotion.Mixins.CodeGeneration
       }
 
       return new ConcreteMixedTypeAttribute (baseType, mixinKinds.ToArray(), mixinTypes.ToArray(), completeInterfaces.ToArray(), explicitDependencyList.ToArray ());
-    }
-
-    public static CustomAttributeBuilder BuilderFromClassContext (ClassContext context)
-    {
-      Assertion.IsNotNull (s_attributeCtor);
-
-      ConcreteMixedTypeAttribute attribute = FromClassContext (context);
-      CustomAttributeBuilder builder = new CustomAttributeBuilder (s_attributeCtor,
-          new object[] { attribute.TargetType, attribute.MixinKinds, attribute.MixinTypes, attribute.CompleteInterfaces, attribute.ExplicitDependenciesPerMixin });
-      return builder;
-    }
-
-    public static Expression NewAttributeExpressionFromClassContext (ClassContext context, AbstractCodeBuilder codeBuilder)
-    {
-      Assertion.IsNotNull (s_attributeCtor);
-
-      ConcreteMixedTypeAttribute attribute = FromClassContext (context);
-
-      Dictionary<MixinKind, LocalReference> mixinKinds = new Dictionary<MixinKind, LocalReference> ();
-      foreach (MixinKind value in Enum.GetValues (typeof (MixinKind)))
-      {
-        LocalReference valueReference = codeBuilder.DeclareLocal (typeof (MixinKind));
-        codeBuilder.AddStatement (new AssignStatement (valueReference, new ConstReference ((int) value).ToExpression()));
-        mixinKinds.Add (value, valueReference);
-      }
-
-      LocalReference mixinKindsArray = CreateArrayLocal (codeBuilder, attribute.MixinKinds, delegate (MixinKind k) { return mixinKinds[k].ToExpression(); });
-      LocalReference mixinTypesArray = CreateArrayLocal (codeBuilder, attribute.MixinTypes, delegate (Type t) { return new TypeTokenExpression (t); });
-      LocalReference completeInterfacesArray = CreateArrayLocal (codeBuilder, attribute.CompleteInterfaces, delegate (Type t) { return new TypeTokenExpression (t); });
-      LocalReference explicitDependenciesPerMixinArray = CreateArrayLocal (codeBuilder, attribute.ExplicitDependenciesPerMixin, delegate (Type t) { return new TypeTokenExpression (t); });
-
-      return new NewInstanceExpression (s_attributeCtor,
-          new TypeTokenExpression (attribute.TargetType),
-          mixinKindsArray.ToExpression(),
-          mixinTypesArray.ToExpression (),
-          completeInterfacesArray.ToExpression (),
-          explicitDependenciesPerMixinArray.ToExpression ());
-    }
-
-    private static LocalReference CreateArrayLocal<T> (AbstractCodeBuilder codeBuilder, T[] types, Func<T, Expression> elementExpressor)
-    {
-      LocalReference arrayLocal = codeBuilder.DeclareLocal (typeof (T[]));
-      codeBuilder.AddStatement (new AssignStatement (arrayLocal, new NewArrayExpression (types.Length, typeof (T))));
-      for (int i = 0; i < types.Length; ++i)
-        codeBuilder.AddStatement (new GenericAssignArrayStatement (typeof (T), arrayLocal, i, elementExpressor(types[i])));
-      return arrayLocal;
     }
 
     private readonly Type _targetType;
