@@ -8,11 +8,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   internal static class MixinInstanceInitializer
   {
-    public static void InitializeMixinInstance (MixinDefinition mixinDefinition, object mixinInstance, IMixinTarget mixinTargetInstance,
+    public static void InitializeMixinInstance (MixinDefinition mixinDefinition, object mixinInstance, IInitializableMixinTarget mixinTargetInstance,
         MixinReflector.InitializationMode mode)
     {
-      Type baseCallProxyType = MixinReflector.GetBaseCallProxyType (mixinTargetInstance);
-      object baseCallProxyInstance = BaseCallProxyInitializer.InstantiateBaseCallProxy (baseCallProxyType, mixinTargetInstance, mixinDefinition.MixinIndex + 1);
+      object baseCallProxyInstance = mixinTargetInstance.CreateBaseCallProxy (mixinDefinition.MixinIndex + 1);
       InvokeMixinInitializationMethod (mixinInstance, mixinTargetInstance, baseCallProxyInstance, mode);
     }
 

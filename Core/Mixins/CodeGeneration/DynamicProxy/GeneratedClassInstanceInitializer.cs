@@ -7,32 +7,26 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public static class GeneratedClassInstanceInitializer
   {
-    public static void InitializeMixinTarget (IMixinTarget mixinTarget)
+    public static void InitializeMixinTarget (IInitializableMixinTarget mixinTarget, MixinReflector.InitializationMode initializationMode)
     {
       ArgumentUtility.CheckNotNull ("mixinTarget", mixinTarget);
 
       object[] mixinInstances = MixedObjectInstantiationScope.Current.SuppliedMixinInstances;
       TargetClassDefinition configuration = mixinTarget.Configuration;
 
-      BaseCallProxyInitializer.InitializeFirstProxy (mixinTarget);
-
+      InitializeFirstProxy (mixinTarget);
+        
       object[] extensions = PrepareExtensionsWithGivenMixinInstances (configuration, mixinInstances);
       FillUpExtensionsWithNewMixinInstances (extensions, configuration);
 
       SetExtensionsField (mixinTarget, extensions);
-      InitializeMixinInstances (extensions, configuration, mixinTarget, MixinReflector.InitializationMode.Construction);
+      InitializeMixinInstances (extensions, configuration, mixinTarget, initializationMode);
     }
 
-    public static void InitializeDeserializedMixinTarget (IMixinTarget mixinTarget, object[] mixinInstances)
+    private static void InitializeFirstProxy (IInitializableMixinTarget mixinTarget)
     {
-      ArgumentUtility.CheckNotNull ("mixinTarget", mixinTarget);
-      ArgumentUtility.CheckNotNull ("mixinInstances", mixinInstances);
-
-      TargetClassDefinition configuration = mixinTarget.Configuration;
-
-      BaseCallProxyInitializer.InitializeFirstProxy (mixinTarget);
-      SetExtensionsField (mixinTarget, mixinInstances);
-      InitializeMixinInstances (mixinInstances, configuration, mixinTarget, MixinReflector.InitializationMode.Deserialization);
+      object baseCallProxy = mixinTarget.CreateBaseCallProxy (0);
+      mixinTarget.SetFirstBaseCallProxy (baseCallProxy);
     }
 
     private static object[] PrepareExtensionsWithGivenMixinInstances (TargetClassDefinition configuration, object[] mixinInstances)
@@ -123,7 +117,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       type.GetField ("__extensions").SetValue (mixinTarget, extensions);
     }
 
-    private static void InitializeMixinInstances (object[] mixins, TargetClassDefinition configuration, IMixinTarget mixinTargetInstance,
+    private static void InitializeMixinInstances (object[] mixins, TargetClassDefinition configuration, IInitializableMixinTarget mixinTargetInstance,
         MixinReflector.InitializationMode mode)
     {
       Assertion.IsTrue (mixins.Length == configuration.Mixins.Count);

@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using Castle.DynamicProxy;
+using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection;
@@ -148,7 +149,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       ArgumentUtility.CheckNotNull ("target", target);
 
-      GeneratedClassInstanceInitializer.InitializeMixinTarget (target);
+      GeneratedClassInstanceInitializer.InitializeMixinTarget ((IInitializableMixinTarget) target, MixinReflector.InitializationMode.Construction);
     }
 
     public void InitializeDeserializedMixinTarget (IMixinTarget instance, object[] mixinInstances)
@@ -156,7 +157,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ArgumentUtility.CheckNotNull ("instance", instance);
       ArgumentUtility.CheckNotNull ("mixinInstances", mixinInstances);
 
-      GeneratedClassInstanceInitializer.InitializeDeserializedMixinTarget (instance, mixinInstances);
+      using (new MixedObjectInstantiationScope (mixinInstances))
+      {
+        GeneratedClassInstanceInitializer.InitializeMixinTarget ((IInitializableMixinTarget) instance, MixinReflector.InitializationMode.Deserialization);
+      }
     }
 
     public IObjectReference BeginDeserialization (Func<Type, Type> typeTransformer, SerializationInfo info, StreamingContext context)

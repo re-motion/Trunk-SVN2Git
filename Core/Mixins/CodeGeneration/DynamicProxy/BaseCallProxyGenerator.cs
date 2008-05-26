@@ -16,6 +16,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly TypeGenerator _surroundingType;
     private readonly MixinTypeGenerator[] _mixinTypeGenerators;
     private readonly CustomClassEmitter _emitter;
+    private readonly ConstructorEmitter _ctor;
     private readonly TargetClassDefinition _targetClassConfiguration;
     private readonly FieldReference _depthField;
     private readonly FieldReference _thisField;
@@ -47,7 +48,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _thisField = _emitter.CreateField ("__this", _surroundingType.TypeBuilder);
       _depthField = _emitter.CreateField ("__depth", typeof (int));
 
-      ImplementConstructor();
+      _ctor = ImplementConstructor();
       ImplementBaseCallsForOverriddenMethodsOnTarget();
       ImplementBaseCallsForRequirements();
     }
@@ -72,6 +73,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       get { return _surroundingType; }
     }
 
+    public ConstructorInfo Ctor
+    {
+      get { return _ctor.ConstructorBuilder; }
+    }
+
     public MethodInfo GetProxyMethodForOverriddenMethod (MethodDefinition method)
     {
       Assertion.IsTrue (_overriddenMethodToImplementationMap.ContainsKey (method), 
@@ -79,15 +85,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return _overriddenMethodToImplementationMap[method];
     }
 
-    private void ImplementConstructor ()
+    private ConstructorEmitter ImplementConstructor ()
     {
       ArgumentReference arg1 = new ArgumentReference (_surroundingType.TypeBuilder);
       ArgumentReference arg2 = new ArgumentReference (typeof (int));
       ConstructorEmitter ctor = _emitter.CreateConstructor (new ArgumentReference[] { arg1, arg2 });
+
       ctor.CodeBuilder.InvokeBaseConstructor();
       ctor.CodeBuilder.AddStatement (new AssignStatement (_thisField, arg1.ToExpression()));
       ctor.CodeBuilder.AddStatement (new AssignStatement (_depthField, arg2.ToExpression()));
       ctor.CodeBuilder.AddStatement (new ReturnStatement());
+      return ctor;
     }
 
     private void ImplementBaseCallsForOverriddenMethodsOnTarget ()

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
+using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Mixins.Definitions;
 using Remotion.Collections;
@@ -20,7 +21,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   internal class TypeGenerator : ITypeGenerator
   {
     private static readonly MethodInfo s_concreteTypeInitializationMethod =
-        typeof (GeneratedClassInstanceInitializer).GetMethod ("InitializeMixinTarget", new Type[] { typeof (IMixinTarget) });
+        typeof (GeneratedClassInstanceInitializer).GetMethod ("InitializeMixinTarget",
+        new Type[] { typeof (IInitializableMixinTarget), typeof (MixinReflector.InitializationMode) });
     private static readonly ConstructorInfo s_debuggerBrowsableAttributeConstructor =
         typeof (DebuggerBrowsableAttribute).GetConstructor (new Type[] { typeof (DebuggerBrowsableState) });
     private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor =
@@ -71,7 +73,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       HideFieldFromDebugger (_firstField);
 
       Statement initializationStatement = new ExpressionStatement (new MethodInvocationExpression (null, s_concreteTypeInitializationMethod,
-          new ConvertExpression (typeof (IMixinTarget), SelfReference.Self.ToExpression ())));
+          new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression ()), 
+          new ConstReference ((int) MixinReflector.InitializationMode.Construction).ToExpression ()));
 
       _emitter.ReplicateBaseTypeConstructors (initializationStatement);
 
@@ -79,7 +82,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       ImplementISerializable();
 
-      ImplementIMixinTarget();
+      ImplementIMixinTarget ();
+      ImplementIInitializableMixinTarget ();
       ImplementIntroducedInterfaces ();
       ImplementRequiredDuckMethods ();
       ImplementAttributes (configuration, _emitter);
@@ -125,6 +129,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       List<Type> interfaces = new List<Type>();
       interfaces.Add (typeof (IMixinTarget));
+      interfaces.Add (typeof (IInitializableMixinTarget));
 
       foreach (InterfaceIntroductionDefinition introduction in _configuration.IntroducedInterfaces)
         interfaces.Add (introduction.Type);
@@ -249,6 +254,20 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           Emitter.CreateInterfaceMethodImplementation (typeof (IMixinTarget).GetMethod ("get_FirstBaseCallProxy"));
       firstProperty.ImplementWithBackingField (_firstField);
       AddDebuggerDisplayAttribute (firstProperty, "Generated proxy", "FirstBaseCallProxy");
+    }
+
+    private void ImplementIInitializableMixinTarget ()
+    {
+      CustomMethodEmitter createProxyMethod =
+          Emitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("CreateBaseCallProxy"));
+      createProxyMethod.ImplementByReturning (new NewInstanceExpression(_baseCallGenerator.Ctor,
+          SelfReference.Self.ToExpression(), createProxyMethod.ArgumentReferences[0].ToExpression()));
+
+      CustomMethodEmitter setProxyMethod =
+          Emitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("SetFirstBaseCallProxy"));
+      setProxyMethod.AddStatement (new AssignStatement (_firstField, 
+          new ConvertExpression(_baseCallGenerator.TypeBuilder, setProxyMethod.ArgumentReferences[0].ToExpression ())));
+      setProxyMethod.ImplementByReturningVoid ();
     }
 
     private void AddDebuggerDisplayAttribute (IAttributableEmitter property, string displayString, string nameString)

@@ -102,6 +102,7 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixedTypeAttributeUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixinTypeAttributeUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\GeneralTypeAssignArrayStatement.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\IInitializableMixinTarget.cs" />
     <Compile Include="Mixins\Context\MixinContextSerializer.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomClassEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomEventEmitter.cs" />
@@ -161,7 +162,6 @@
     <Compile Include="Mixins\CodeGeneration\ConcreteTypeBuilder.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\BaseCallMethodGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\BaseCallProxyGenerator.cs" />
-    <Compile Include="Mixins\CodeGeneration\DynamicProxy\BaseCallProxyInitializer.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\GeneratedClassInstanceInitializer.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinInstanceInitializer.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinSerializationHelper.cs" />
