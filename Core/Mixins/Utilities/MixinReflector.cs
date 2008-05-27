@@ -69,21 +69,6 @@ namespace Remotion.Mixins.Utilities
         return mixinBaseType.GetProperty ("Base", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
-    public static MethodInfo GetInitializationMethod (Type concreteMixinType, InitializationMode initializationMode)
-    {
-      ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
-
-      Type mixinBaseType = GetMixinBaseType (concreteMixinType);
-      if (mixinBaseType == null)
-        return null;
-      else
-      {
-        string methodName = initializationMode == InitializationMode.Construction ? "Initialize" : "Deserialize";
-        MethodInfo method = mixinBaseType.GetMethod (methodName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-        return method;
-      }
-    }
-
     public static Type GetBaseCallProxyType (object mixinTargetInstance)
     {
       ArgumentUtility.CheckNotNull ("mixinTargetInstance", mixinTargetInstance);

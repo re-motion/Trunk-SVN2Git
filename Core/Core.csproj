@@ -163,7 +163,6 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\BaseCallMethodGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\BaseCallProxyGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\GeneratedClassInstanceInitializer.cs" />
-    <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinInstanceInitializer.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinSerializationHelper.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinTypeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ModuleManager.cs" />

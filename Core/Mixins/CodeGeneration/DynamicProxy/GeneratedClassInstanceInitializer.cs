@@ -7,7 +7,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public static class GeneratedClassInstanceInitializer
   {
-    public static void InitializeMixinTarget (IInitializableMixinTarget mixinTarget, MixinReflector.InitializationMode initializationMode)
+    public static void InitializeMixinTarget (IInitializableMixinTarget mixinTarget, bool deserialization)
     {
       ArgumentUtility.CheckNotNull ("mixinTarget", mixinTarget);
 
@@ -20,7 +20,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       FillUpExtensionsWithNewMixinInstances (extensions, configuration);
 
       mixinTarget.SetExtensions (extensions);
-      InitializeMixinInstances (extensions, configuration, mixinTarget, initializationMode);
+      InitializeMixinInstances (extensions, mixinTarget, deserialization);
     }
 
     private static void InitializeFirstProxy (IInitializableMixinTarget mixinTarget)
@@ -111,12 +111,15 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return mixinInstance;
     }
 
-    private static void InitializeMixinInstances (object[] mixins, TargetClassDefinition configuration, IInitializableMixinTarget mixinTargetInstance,
-        MixinReflector.InitializationMode mode)
+    private static void InitializeMixinInstances (object[] mixins, IInitializableMixinTarget mixinTargetInstance, bool deserialization)
     {
-      Assertion.IsTrue (mixins.Length == configuration.Mixins.Count);
       for (int i = 0; i < mixins.Length; ++i)
-        MixinInstanceInitializer.InitializeMixinInstance (configuration.Mixins[i], mixins[i], mixinTargetInstance, mode);
+      {
+        object baseCallProxyInstance = mixinTargetInstance.CreateBaseCallProxy (i + 1);
+        IInitializableMixin initializableMixin = mixins[i] as IInitializableMixin;
+        if (initializableMixin != null)
+          initializableMixin.Initialize (mixinTargetInstance, baseCallProxyInstance, deserialization);
+      }
     }
   }
 }

@@ -13,7 +13,7 @@ namespace Remotion.Mixins.Definitions.Building
     public InterfaceIntroductionDefinitionBuilder (MixinDefinition mixin)
     {
       _mixin = mixin;
-      _suppressedInterfaces = new Set<Type> (typeof (ISerializable), typeof (IDeserializationCallback));
+      _suppressedInterfaces = new Set<Type> (typeof (ISerializable), typeof (IDeserializationCallback), typeof (IInitializableMixin));
       AnalyzeSuppressedInterfaces ();
     }
 

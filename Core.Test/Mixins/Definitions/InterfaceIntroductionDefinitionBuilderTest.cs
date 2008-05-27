@@ -252,6 +252,14 @@ namespace Remotion.UnitTests.Mixins.Definitions
     }
 
     [Test]
+    public void IInitializableMixinIsNotIntroduced ()
+    {
+      Assert.IsNull (
+          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)]
+              .InterfaceIntroductions[typeof (IInitializableMixin)]);
+    }
+
+    [Test]
     public void IntroducesGetMethod ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinImplementingFullPropertiesWithPartialIntroduction)).EnterScope())

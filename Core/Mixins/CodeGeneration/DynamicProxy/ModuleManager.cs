@@ -149,7 +149,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       ArgumentUtility.CheckNotNull ("target", target);
 
-      GeneratedClassInstanceInitializer.InitializeMixinTarget ((IInitializableMixinTarget) target, MixinReflector.InitializationMode.Construction);
+      GeneratedClassInstanceInitializer.InitializeMixinTarget ((IInitializableMixinTarget) target, false);
     }
 
     public void InitializeDeserializedMixinTarget (IMixinTarget instance, object[] mixinInstances)
@@ -159,7 +159,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       using (new MixedObjectInstantiationScope (mixinInstances))
       {
-        GeneratedClassInstanceInitializer.InitializeMixinTarget ((IInitializableMixinTarget) instance, MixinReflector.InitializationMode.Deserialization);
+        GeneratedClassInstanceInitializer.InitializeMixinTarget ((IInitializableMixinTarget) instance, true);
       }
     }
 

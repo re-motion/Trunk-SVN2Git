@@ -34,7 +34,7 @@ namespace Remotion.Mixins
       ArgumentUtility.CheckNotNull ("thisMock", thisMock);
       ArgumentUtility.CheckNotNull ("baseMock", baseMock);
 
-      MixinInstanceInitializer.InvokeMixinInitializationMethod (mixin, thisMock, baseMock, MixinReflector.InitializationMode.Construction);
+      ((IInitializableMixin)mixin).Initialize (thisMock, baseMock, false);
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ namespace Remotion.Mixins
       ArgumentUtility.CheckNotNull ("mixin", mixin);
       ArgumentUtility.CheckNotNull ("thisMock", thisMock);
 
-      MixinInstanceInitializer.InvokeMixinInitializationMethod (mixin, thisMock, null, MixinReflector.InitializationMode.Construction);
+      ((IInitializableMixin) mixin).Initialize (thisMock, null, false);
     }
 
     /// <summary>

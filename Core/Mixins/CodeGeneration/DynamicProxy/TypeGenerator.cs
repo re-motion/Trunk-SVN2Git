@@ -21,8 +21,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   internal class TypeGenerator : ITypeGenerator
   {
     private static readonly MethodInfo s_concreteTypeInitializationMethod =
-        typeof (GeneratedClassInstanceInitializer).GetMethod ("InitializeMixinTarget",
-        new Type[] { typeof (IInitializableMixinTarget), typeof (MixinReflector.InitializationMode) });
+        typeof (GeneratedClassInstanceInitializer).GetMethod ("InitializeMixinTarget", new Type[] { typeof (IInitializableMixinTarget), typeof (bool) });
     private static readonly ConstructorInfo s_debuggerBrowsableAttributeConstructor =
         typeof (DebuggerBrowsableAttribute).GetConstructor (new Type[] { typeof (DebuggerBrowsableState) });
     private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor =
@@ -74,7 +73,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       Statement initializationStatement = new ExpressionStatement (new MethodInvocationExpression (null, s_concreteTypeInitializationMethod,
           new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression ()), 
-          new ConstReference ((int) MixinReflector.InitializationMode.Construction).ToExpression ()));
+          new ConstReference (false).ToExpression ()));
 
       _emitter.ReplicateBaseTypeConstructors (initializationStatement);
 

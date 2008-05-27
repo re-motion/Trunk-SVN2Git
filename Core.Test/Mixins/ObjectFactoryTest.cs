@@ -295,8 +295,8 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    [ExpectedException (typeof (TargetInvocationException))]
-    public void TargetInvocationExceptionWhenMixinOnInitializedThrows ()
+    [ExpectedException (typeof (NotSupportedException))]
+    public void ExceptionPropagated_WhenMixinOnInitializedThrows ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinThrowingInOnInitialized)).EnterScope())
       {

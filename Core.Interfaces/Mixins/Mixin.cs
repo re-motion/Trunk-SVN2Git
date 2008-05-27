@@ -105,7 +105,7 @@ namespace Remotion.Mixins
   /// </list>
   /// </remarks>
   [Serializable]
-  public class Mixin<[This]TThis, [Base]TBase> : Mixin<TThis>
+  public class Mixin<[This]TThis, [Base]TBase> : Mixin<TThis>, IInitializableMixin
       where TThis: class
       where TBase: class
   {
@@ -131,16 +131,14 @@ namespace Remotion.Mixins
       }
     }
 
-    internal void Initialize ([This] TThis @this, [Base] TBase @base)
+    void IInitializableMixin.Initialize (object @this, object @base, bool deserialization)
     {
-      _base = @base;
-      base.Initialize (@this);
-    }
-
-    internal void Deserialize ([This] TThis @this, [Base] TBase @base)
-    {
-      _base = @base;
-      base.Deserialize (@this);
+      _this = (TThis) @this;
+      _base = (TBase) @base;
+      if (deserialization)
+        OnDeserialized ();
+      else
+        OnInitialized ();
     }
   }
 
@@ -190,11 +188,11 @@ namespace Remotion.Mixins
   /// </list>
   /// </remarks>
   [Serializable]
-  public class Mixin<[This]TThis>
+  public class Mixin<[This]TThis> : IInitializableMixin
       where TThis: class
   {
     [NonSerialized]
-    private TThis _this;
+    internal TThis _this;
 
     /// <summary>
     /// Gets a reference to the mixin's target object.
@@ -215,12 +213,6 @@ namespace Remotion.Mixins
       }
     }
 
-    internal void Initialize ([This] TThis @this)
-    {
-      _this = @this;
-      OnInitialized();
-    }
-
     /// <summary>
     /// Called when the mixin has been initialized and its properties can be safely accessed.
     /// </summary>
@@ -229,18 +221,21 @@ namespace Remotion.Mixins
       // nothing
     }
 
-    internal void Deserialize ([This] TThis @this)
-    {
-      _this = @this;
-      OnDeserialized ();
-    }
-
     /// <summary>
     /// Called when the mixin has been deserialized and its properties can be safely accessed.
     /// </summary>
     protected virtual void OnDeserialized ()
     {
       // nothing
+    }
+
+    void IInitializableMixin.Initialize (object @this, object @base, bool deserialization)
+    {
+      _this = (TThis) @this;
+      if (deserialization)
+        OnDeserialized();
+      else
+        OnInitialized();
     }
   }
 }
