@@ -4,5 +4,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   {
     object CreateBaseCallProxy (int depth);
     void SetFirstBaseCallProxy (object baseCallProxy);
+    void SetExtensions (object[] extensions);
   }
 }

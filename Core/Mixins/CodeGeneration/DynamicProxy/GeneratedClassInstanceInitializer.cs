@@ -15,11 +15,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       TargetClassDefinition configuration = mixinTarget.Configuration;
 
       InitializeFirstProxy (mixinTarget);
-        
+
       object[] extensions = PrepareExtensionsWithGivenMixinInstances (configuration, mixinInstances);
       FillUpExtensionsWithNewMixinInstances (extensions, configuration);
 
-      SetExtensionsField (mixinTarget, extensions);
+      mixinTarget.SetExtensions (extensions);
       InitializeMixinInstances (extensions, configuration, mixinTarget, initializationMode);
     }
 
@@ -109,12 +109,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       }
 
       return mixinInstance;
-    }
-
-    private static void SetExtensionsField (IMixinTarget mixinTarget, object[] extensions)
-    {
-      Type type = mixinTarget.GetType ();
-      type.GetField ("__extensions").SetValue (mixinTarget, extensions);
     }
 
     private static void InitializeMixinInstances (object[] mixins, TargetClassDefinition configuration, IInitializableMixinTarget mixinTargetInstance,

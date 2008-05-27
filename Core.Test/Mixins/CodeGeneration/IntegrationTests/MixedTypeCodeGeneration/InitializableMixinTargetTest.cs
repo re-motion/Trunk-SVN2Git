@@ -49,5 +49,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       instance.SetFirstBaseCallProxy (baseCallProxy);
       Assert.That (instance.FirstBaseCallProxy, Is.SameAs (baseCallProxy));
     }
+
+    [Test]
+    public void SetExtensions ()
+    {
+      IInitializableMixinTarget instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin)).With ();
+      object[] extensions = new object[1];
+
+      Assert.That (instance.Mixins, Is.Not.SameAs (extensions));
+      instance.SetExtensions (extensions);
+      Assert.That (instance.Mixins, Is.SameAs (extensions));
+    }
   }
 }

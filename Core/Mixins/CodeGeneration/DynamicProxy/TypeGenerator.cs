@@ -268,6 +268,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       setProxyMethod.AddStatement (new AssignStatement (_firstField, 
           new ConvertExpression(_baseCallGenerator.TypeBuilder, setProxyMethod.ArgumentReferences[0].ToExpression ())));
       setProxyMethod.ImplementByReturningVoid ();
+
+      CustomMethodEmitter setExtensionsMethod =
+          Emitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("SetExtensions"));
+      setExtensionsMethod.AddStatement (new AssignStatement (_extensionsField, setExtensionsMethod.ArgumentReferences[0].ToExpression ()));
+      setExtensionsMethod.ImplementByReturningVoid ();
     }
 
     private void AddDebuggerDisplayAttribute (IAttributableEmitter property, string displayString, string nameString)
