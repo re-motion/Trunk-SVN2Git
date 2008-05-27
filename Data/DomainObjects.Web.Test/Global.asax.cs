@@ -12,6 +12,7 @@ using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
+using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.Data.DomainObjects.Web.Test
@@ -34,8 +35,8 @@ namespace Remotion.Data.DomainObjects.Web.Test
     protected void Application_Start (Object sender, EventArgs e)
     {
       MappingConfiguration mappingConfiguration = MappingConfiguration.Current;
-      BindableObjectProvider.Current.AddService (typeof (BindableDomainObjectSearchService), new BindableDomainObjectSearchService ());
-      BindableObjectProvider.Current.AddService (typeof (BindableDomainObjectGetObjectService), new BindableDomainObjectGetObjectService ());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (BindableDomainObjectSearchService), new BindableDomainObjectSearchService ());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (BindableDomainObjectGetObjectService), new BindableDomainObjectGetObjectService ());
     }
 
     protected void Session_Start (Object sender, EventArgs e)

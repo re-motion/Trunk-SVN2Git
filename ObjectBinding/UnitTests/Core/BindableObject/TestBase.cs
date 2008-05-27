@@ -14,13 +14,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public virtual void SetUp ()
     {
       SecurityAdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
-      BindableObjectProvider.SetCurrent (null);
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), null);
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectWithIdentityProviderAttribute), null);
     }
 
     [TearDown]
     public virtual void TearDown ()
     {
-      BindableObjectProvider.SetCurrent (null);      
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), null);
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectWithIdentityProviderAttribute), null);
     }
 
     protected IPropertyInformation GetPropertyInfo (Type type, string propertyName)

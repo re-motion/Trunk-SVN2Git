@@ -4,6 +4,7 @@ using System.Configuration.Provider;
 using System.Security.Principal;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
@@ -198,8 +199,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       SecurityConfiguration.Current.SecurityProvider = new NullSecurityProvider ();
       SecurityConfiguration.Current.UserProvider = new ThreadUserProvider ();
-      BindableObjectProvider.Current.AddService (typeof (RolePropertiesSearchService), new RolePropertiesSearchService ());
-      IBusinessObjectClass roleClass = BindableObjectProvider.Current.GetBindableObjectClass (typeof (Role));
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (RolePropertiesSearchService), new RolePropertiesSearchService ());
+      IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (Role));
       IBusinessObjectReferenceProperty groupProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("Group");
       Assert.That (groupProperty, Is.Not.Null);
 
@@ -221,8 +222,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       SecurityConfiguration.Current.SecurityProvider = new NullSecurityProvider ();
       SecurityConfiguration.Current.UserProvider = new ThreadUserProvider ();
-      BindableObjectProvider.Current.AddService (typeof (RolePropertiesSearchService), new RolePropertiesSearchService ());
-      IBusinessObjectClass roleClass = BindableObjectProvider.Current.GetBindableObjectClass (typeof (Role));
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (RolePropertiesSearchService), new RolePropertiesSearchService ());
+      IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (Role));
       IBusinessObjectReferenceProperty userProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("User");
       Assert.That (userProperty, Is.Not.Null);
 

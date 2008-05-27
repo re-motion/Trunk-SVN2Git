@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
       _mockStringFormatterService = _mockRepository.CreateMock<IBusinessObjectStringFormatterService>();
       BindableObjectProvider provider = new BindableObjectProvider();
       provider.AddService (typeof (IBusinessObjectStringFormatterService), _mockStringFormatterService);
-      BindableObjectProvider.SetCurrent (provider);
+      BusinessObjectProvider.SetProvider(typeof (BindableObjectProviderAttribute), provider);
       
       _businessObject = (IBusinessObject) ObjectFactory.Create<SimpleBusinessObjectClass> ().With();
 
@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
       Assert.That (
           _property, Is.Not.Null, "Property 'String' was not found on BusinessObjectClass '{0}'", _businessObject.BusinessObjectClass.Identifier);
 
-      BindableObjectProvider.SetCurrent (new BindableObjectProvider());
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), new BindableObjectProvider ());
     }
 
     [Test]

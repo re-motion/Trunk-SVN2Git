@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
     [Test]
     public void GetPropertyDefinitions ()
     {
-      BindableObjectClass bindableObjectClass = BindableObjectProvider.Current.GetBindableObjectClass (typeof (BindableSampleDomainObject));
+      BindableObjectClass bindableObjectClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (BindableSampleDomainObject));
       IBusinessObjectProperty[] properties = bindableObjectClass.GetPropertyDefinitions ();
       string[] propertiesByName =
           Array.ConvertAll<IBusinessObjectProperty, string> (properties, delegate (IBusinessObjectProperty property) { return property.Identifier; });

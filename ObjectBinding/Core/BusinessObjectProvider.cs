@@ -1,5 +1,6 @@
 using System;
 using Remotion.Collections;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
@@ -7,6 +8,105 @@ namespace Remotion.ObjectBinding
   /// <summary>The <see langword="abstract"/> default implementation of the <see cref="IBusinessObjectProvider"/> interface.</summary>
   public abstract class BusinessObjectProvider : IBusinessObjectProvider
   {
+    private static readonly InterlockedDataStore<Type, IBusinessObjectProvider> s_businessObjectProviderStore =
+        new InterlockedDataStore<Type, IBusinessObjectProvider>();
+
+    /// <summary>
+    /// Gets the <see cref="IBusinessObjectProvider"/> associated with the <see cref="BusinessObjectProviderAttribute"/> type specified.
+    /// </summary>
+    /// <param name="businessObjectProviderAttributeType">
+    /// A <see cref="Type"/> derived from <see cref="BusinessObjectProviderAttribute"/>. Must not be <see langword="null" />.
+    /// </param>
+    public static IBusinessObjectProvider GetProvider (Type businessObjectProviderAttributeType)
+    {
+      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom (
+          "businessObjectProviderAttributeType", businessObjectProviderAttributeType, typeof (BusinessObjectProviderAttribute));
+
+      IBusinessObjectProvider provider;
+      if (s_businessObjectProviderStore.TryGetValue (businessObjectProviderAttributeType, out provider))
+        return provider;
+
+      return s_businessObjectProviderStore.GetOrCreateValue (
+          businessObjectProviderAttributeType, delegate (Type key) { return CreateBusinessObjectProviderFromAttribute (key); });
+    }
+
+    /// <summary>
+    /// Gets the <see cref="IBusinessObjectProvider"/> associated with the <see cref="BusinessObjectProviderAttribute"/> type specified.
+    /// </summary>
+    /// <typeParam name="TBusinessObjectProviderAttributeType">
+    /// A <see cref="Type"/> derived from <see cref="BusinessObjectProviderAttribute"/>. Must not be <see langword="null" />.
+    /// </typeParam>
+    public static IBusinessObjectProvider GetProvider<TBusinessObjectProviderAttribute> ()
+        where TBusinessObjectProviderAttribute: BusinessObjectProviderAttribute
+    {
+      return GetProvider (typeof (TBusinessObjectProviderAttribute));
+    }
+
+    /// <summary>
+    /// Sets the <see cref="IBusinessObjectProvider"/> to be associated with the <see cref="BusinessObjectProviderAttribute"/> type specified.
+    /// </summary>
+    /// <param name="businessObjectProviderAttributeType">
+    /// A <see cref="Type"/> derived from <see cref="BusinessObjectProviderAttribute"/>. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="provider">
+    /// The <see cref="IBusinessObjectProvider"/> instance to be associated with the <paramref name="businessObjectProviderAttributeType"/>. 
+    /// Pass <see langword="null"/> to remove the association.
+    /// </param>
+    public static void SetProvider (Type businessObjectProviderAttributeType, IBusinessObjectProvider provider)
+    {
+      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom (
+          "businessObjectProviderAttributeType", businessObjectProviderAttributeType, typeof (BusinessObjectProviderAttribute));
+
+      if (provider != null)
+      {
+        BusinessObjectProviderAttribute attribute = CreateBusinessObjectProviderAttribute (businessObjectProviderAttributeType);
+        if (!ReflectionUtility.CanAscribe (provider.GetType(), attribute.BusinessObjectProviderType))
+        {
+          throw new ArgumentException (
+              "The provider is not compatible with the provider-type required by the businessObjectProviderAttributeType's instantiation.", "provider");
+        }
+      }
+
+      s_businessObjectProviderStore.Remove (businessObjectProviderAttributeType);
+      if (provider != null)
+        s_businessObjectProviderStore.Add (businessObjectProviderAttributeType, provider);
+    }
+
+    /// <summary>
+    /// Sets the <see cref="IBusinessObjectProvider"/> to be associated with the <see cref="BusinessObjectProviderAttribute"/> type specified.
+    /// </summary>
+    /// <typeParam name="TBusinessObjectProviderAttributeType">
+    /// A <see cref="Type"/> derived from <see cref="BusinessObjectProviderAttribute"/>. Must not be <see langword="null" />.
+    /// </typeParam>
+    /// <param name="provider">
+    /// The <see cref="IBusinessObjectProvider"/> instance to be associated with the <typeParamref name="TBusinessObjectProviderAttributeType"/>. 
+    /// Pass <see langword="null"/> to remove the association.
+    /// </param>
+    public static void SetProvider<TBusinessObjectProviderAttribute> (IBusinessObjectProvider provider)
+        where TBusinessObjectProviderAttribute: BusinessObjectProviderAttribute
+    {
+      SetProvider (typeof (TBusinessObjectProviderAttribute), provider);
+    }
+
+    private static IBusinessObjectProvider CreateBusinessObjectProviderFromAttribute (Type businessObjectProviderAttributeType)
+    {
+      BusinessObjectProviderAttribute businessObjectProviderAttribute = CreateBusinessObjectProviderAttribute (businessObjectProviderAttributeType);
+      return CreateBusinessObjectProvider (businessObjectProviderAttribute.BusinessObjectProviderType);
+    }
+
+    private static BusinessObjectProviderAttribute CreateBusinessObjectProviderAttribute (Type businessObjectProviderAttributeType)
+    {
+      return (BusinessObjectProviderAttribute) TypesafeActivator.CreateInstance (businessObjectProviderAttributeType).With();
+    }
+
+    private static IBusinessObjectProvider CreateBusinessObjectProvider (Type businessObjectProviderType)
+    {
+      IBusinessObjectProvider provider = (IBusinessObjectProvider) TypesafeActivator.CreateInstance (businessObjectProviderType).With();
+      provider.InitializeDefaultServices();
+
+      return provider;
+    }
+
     /// <summary> Gets the <see cref="IDataStore{TKey,TValue}"/> used to store the references to the registered servies. </summary>
     /// <value>An object implementing <see cref="IDataStore{TKey,TValue}"/>. Must not retun <see langword="null" />.</value>
     /// <remarks>
@@ -23,10 +123,8 @@ namespace Remotion.ObjectBinding
 
       IDataStore<Type, IBusinessObjectService> serviceStore = ServiceStore;
       Assertion.IsNotNull (serviceStore, "The ServiceStore evaluated and returned null. It should return a null object instead.");
-      IBusinessObjectService service;
-      if (serviceStore.TryGetValue (serviceType, out service))
-        return service;
-      return null;
+
+      return serviceStore.GetValueOrDefault (serviceType);
     }
 
     /// <summary> Retrieves the requested <see cref="IBusinessObjectService"/>. </summary>
@@ -45,6 +143,7 @@ namespace Remotion.ObjectBinding
 
       IDataStore<Type, IBusinessObjectService> serviceStore = ServiceStore;
       Assertion.IsNotNull (serviceStore, "The ServiceStore evaluated and returned null. It should return a non-null object instead.");
+      
       serviceStore[serviceType] = service;
     }
 
@@ -67,6 +166,23 @@ namespace Remotion.ObjectBinding
     public virtual string GetNotAccessiblePropertyStringPlaceHolder ()
     {
       return "×";
+    }
+
+    void IBusinessObjectProvider.InitializeDefaultServices ()
+    {
+      InitializeDefaultServices();
+    }
+
+    /// <summary>
+    /// Initializes the provider's default serivces.
+    /// </summary>
+    ///  <remarks>
+    ///    <note type="inotes">
+    ///     Override this template method to initialize any services typicially required by your object model.
+    ///    </note>
+    ///  </remarks>
+    protected virtual void InitializeDefaultServices ()
+    {
     }
   }
 }

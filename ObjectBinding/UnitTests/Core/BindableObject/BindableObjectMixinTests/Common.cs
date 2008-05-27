@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     {
       SimpleBusinessObjectClass value = ObjectFactory.Create<SimpleBusinessObjectClass> ().With ();
       byte[] serialized = Serializer.Serialize (value);
-      BindableObjectProvider.SetCurrent (null);
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), null);
       SimpleBusinessObjectClass deserialized = (SimpleBusinessObjectClass) Serializer.Deserialize (serialized);
 
       Assert.That (((IBusinessObject) deserialized).BusinessObjectClass, Is.Not.SameAs (((IBusinessObject) value).BusinessObjectClass));

@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       _testHelper.Transaction.EnterNonDiscardingScope();
 
       _searchService = new RolePropertiesSearchService();
-      IBusinessObjectClass roleClass = BindableObjectProvider.Current.GetBindableObjectClass (typeof (Role));
+      IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClassFromProvider(typeof (Role));
       _userProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("User");
       Assert.That (_userProperty, Is.Not.Null);
 

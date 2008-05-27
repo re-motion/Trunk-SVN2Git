@@ -200,6 +200,7 @@
     <TestDomain Include="Core\Design\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Core\Cloning\CloneTest.cs" />
     <Compile Include="Core\DomainObjects\SimpleDomainObjectTest.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />
     <Compile Include="Security\DomainObjectSecurityStrategyTest.cs" />
     <Compile Include="Security\SecurityClientTransactionExtensionTests\FilterQueryResultTest.cs" />
     <Compile Include="Security\SecurityClientTransactionExtensionTests\InterfaceTest.cs" />

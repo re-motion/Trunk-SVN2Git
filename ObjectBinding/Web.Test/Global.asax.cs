@@ -4,6 +4,7 @@ using System.IO;
 using System.Web;
 using log4net;
 using log4net.Config;
+using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web;
@@ -47,9 +48,9 @@ namespace OBWTest
 
       XmlReflectionBusinessObjectStorageProvider provider = new XmlReflectionBusinessObjectStorageProvider (objectPath);
       XmlReflectionBusinessObjectStorageProvider.SetCurrent (provider);
-      BindableObjectProvider.Current.AddService (typeof (XmlReflectionBusinessObjectStorageProvider), provider);
-      BindableObjectProvider.Current.AddService (typeof (BindableXmlObjectSearchService), new BindableXmlObjectSearchService());
-      BindableObjectProvider.Current.AddService (typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService ());
+      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (XmlReflectionBusinessObjectStorageProvider), provider);
+      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (BindableXmlObjectSearchService), new BindableXmlObjectSearchService ());
+      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService ());
     }
 
     protected void Session_Start (Object sender, EventArgs e)

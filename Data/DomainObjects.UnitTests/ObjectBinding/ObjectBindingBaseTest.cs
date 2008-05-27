@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.ObjectBinding;
+using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
 
@@ -12,12 +14,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
     {
       base.SetUp ();
       SecurityAdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
-      BindableObjectProvider.SetCurrent (null);
+      BusinessObjectProvider.SetProvider (typeof(BindableDomainObjectProviderAttribute), null);
     }
 
     public override void TearDown ()
     {
-      BindableObjectProvider.SetCurrent (null);
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
       base.TearDown ();
     }
 

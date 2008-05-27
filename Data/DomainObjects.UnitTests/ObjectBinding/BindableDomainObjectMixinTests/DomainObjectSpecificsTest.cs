@@ -17,8 +17,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
     public override void SetUp ()
     {
       base.SetUp ();
-      _businessObjectClassWithProperties = BindableObjectProvider.Current.GetBindableObjectClass (typeof (BindableDomainObjectWithProperties));
-      _businessObjectSampleClass = BindableObjectProvider.Current.GetBindableObjectClass (typeof (BindableSampleDomainObject));
+      _businessObjectClassWithProperties = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (BindableDomainObjectWithProperties));
+      _businessObjectSampleClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (BindableSampleDomainObject));
     }
 
     [Test]
@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
     public void UsesBindableDomainObjectMetadataFactory ()
     {
       Assert.AreSame (BindableDomainObjectMetadataFactory.Instance,
-          BindableObjectProvider.Current.GetMetadataFactoryForType (typeof (BindableSampleDomainObject)));
+          BindableObjectProvider.GetProviderForBindableObjectType(typeof (BindableSampleDomainObject)).GetMetadataFactoryForType (typeof (BindableSampleDomainObject)));
     }
 
     [Test]

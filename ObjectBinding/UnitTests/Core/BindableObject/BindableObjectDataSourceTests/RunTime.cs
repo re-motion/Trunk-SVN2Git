@@ -25,7 +25,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
       _dataSource = new BindableObjectDataSource();
 
       _provider = new BindableObjectProvider();
-      BindableObjectProvider.SetCurrent (_provider);
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), _provider);
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectWithIdentityProviderAttribute), _provider);
     }
 
     [Test]
@@ -68,9 +69,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "Type 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleReferenceType' does not implement the "
-        + "'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding.BindableObject.BindableObjectMixinBase`1'.\r\n"
-        + "Parameter name: concreteType")]
+        "The type 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleReferenceType' does not have the "
+        + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
     public void GetBusinessObjectClass_WithTypeNotUsingBindableObjectMixin ()
     {
       _dataSource.Type = typeof (SimpleReferenceType);

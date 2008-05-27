@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void CreatePropertyReflector ()
     {
       IPropertyInformation property = new PropertyInfoAdapter (typeof (TestClass).GetProperty ("Property"));
-      PropertyReflector propertyReflector = DefaultMetadataFactory.Instance.CreatePropertyReflector (typeof (TestClass), property, BindableObjectProvider.Current);
+      PropertyReflector propertyReflector = DefaultMetadataFactory.Instance.CreatePropertyReflector (typeof (TestClass), property, new BindableObjectProvider());
       Assert.AreSame (typeof (PropertyReflector), propertyReflector.GetType ());
       Assert.AreSame (property, propertyReflector.PropertyInfo);
     }

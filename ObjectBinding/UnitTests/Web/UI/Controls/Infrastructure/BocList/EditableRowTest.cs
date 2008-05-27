@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       _value01 = (IBusinessObject) TypeWithAllDataTypes.Create ("A", 1);
 
-      _typeWithAllDataTypesClass = BindableObjectProvider.Current.GetBindableObjectClass (typeof (TypeWithAllDataTypes));
+      _typeWithAllDataTypesClass = BindableObjectProvider.GetBindableObjectClassFromProvider(typeof (TypeWithAllDataTypes));
 
       _typeWithAllDataTypesStringValuePath = BusinessObjectPropertyPath.Parse (_typeWithAllDataTypesClass, "String");
       _typeWithAllDataTypesInt32ValuePath = BusinessObjectPropertyPath.Parse (_typeWithAllDataTypesClass, "Int32");

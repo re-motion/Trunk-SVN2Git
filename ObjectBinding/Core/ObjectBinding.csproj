@@ -116,8 +116,10 @@
     <Compile Include="BindableObject\BindableObjectMixin.cs" />
     <Compile Include="BindableObject\BindableObjectMixinBase.cs" />
     <Compile Include="BindableObject\BindableObjectProvider.cs" />
+    <Compile Include="BindableObject\BindableObjectProviderAttribute.cs" />
     <Compile Include="BindableObject\BindableObjectWithIdentityMixin.cs" />
     <Compile Include="BindableObject\ConstantEnumerationValueFilter.cs" />
+    <Compile Include="BindableObject\BindableObjectWithIdentityProviderAttribute.cs" />
     <Compile Include="BindableObject\DefaultMetadataFactory.cs" />
     <Compile Include="BindableObject\Properties\IPropertyInformation.cs" />
     <Compile Include="BindableObject\Properties\PropertyInfoAdapter.cs" />
@@ -149,6 +151,9 @@
     <Compile Include="BusinessObject.cs" />
     <Compile Include="BusinessObjectPropertyPath.cs" />
     <Compile Include="BusinessObjectProvider.cs" />
+    <Compile Include="BusinessObjectProviderAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="BusinessObjectReferenceDataSourceBase.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain
 
     public IBusinessObjectClass BusinessObjectClass
     {
-      get { return BindableObjectProvider.Current.GetBindableObjectClass (typeof (ManualBusinessObject)); }
+      get { return BindableObjectProvider.GetBindableObjectClassFromProvider(typeof (ManualBusinessObject)); }
     }
   }
 }

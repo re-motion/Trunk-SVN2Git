@@ -34,10 +34,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
     [Test]
     public void GetFromUniqueIdentifier ()
     {
-      BindableObjectProvider.Current.AddService (typeof (BindableDomainObjectGetObjectService), new BindableDomainObjectGetObjectService());
+      BusinessObjectProvider.GetProvider (typeof (BindableDomainObjectProviderAttribute)).AddService (typeof (BindableDomainObjectGetObjectService), new BindableDomainObjectGetObjectService());
       BindableSampleDomainObject original = BindableSampleDomainObject.NewObject ();
       BindableObjectClassWithIdentity boClass =
-          (BindableObjectClassWithIdentity) BindableObjectProvider.Current.GetBindableObjectClass (typeof (BindableSampleDomainObject));
+          (BindableObjectClassWithIdentity) BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (BindableSampleDomainObject));
       Assert.AreSame (original, boClass.GetObject (original.ID.ToString ()));
     }
   }

@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
     public override void SetUp ()
     {
       base.SetUp ();
-      BindableObjectProvider.Current.AddService (typeof (BindableDomainObjectSearchService), new BindableDomainObjectSearchService ());
+      BusinessObjectProvider.GetProvider (typeof (BindableDomainObjectProviderAttribute)).AddService (typeof (BindableDomainObjectSearchService), new BindableDomainObjectSearchService ());
 
       _mixinConfiguration = MixinConfiguration.BuildFromActive ()
           .ForClass<Order> ().Clear ().AddMixin<BindableDomainObjectMixin> ()

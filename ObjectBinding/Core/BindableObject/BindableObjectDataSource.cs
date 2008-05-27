@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.BindableObject
       if (Type == null)
         return null;
 
-      return BindableObjectProvider.Current.GetBindableObjectClass (Type);
+      return BindableObjectProvider.GetBindableObjectClassFromProvider (Type);
     }
 
     private bool IsDesignMode

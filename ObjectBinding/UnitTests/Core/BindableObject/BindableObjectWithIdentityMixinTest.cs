@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       ClassWithIdentity value = ObjectFactory.Create<ClassWithIdentity> ().With ();
       byte[] serialized = Serializer.Serialize (value);
-      BindableObjectProvider.SetCurrent (null);
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectWithIdentityProviderAttribute), null);
       ClassWithIdentity deserialized = (ClassWithIdentity) Serializer.Deserialize (serialized);
 
       Assert.That (((IBusinessObject) deserialized).BusinessObjectClass, Is.Not.SameAs (((IBusinessObject) value).BusinessObjectClass));

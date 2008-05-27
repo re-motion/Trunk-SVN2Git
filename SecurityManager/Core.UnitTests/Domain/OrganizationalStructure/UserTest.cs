@@ -268,8 +268,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     [Test]
     public void SearchOwningGroups ()
     {
-      BindableObjectProvider.Current.AddService (typeof (UserPropertiesSearchService), new UserPropertiesSearchService ());
-      IBusinessObjectClass userClass = BindableObjectProvider.Current.GetBindableObjectClass (typeof (User));
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (UserPropertiesSearchService), new UserPropertiesSearchService ());
+      IBusinessObjectClass userClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (User));
       IBusinessObjectReferenceProperty owningGroupProperty = (IBusinessObjectReferenceProperty) userClass.GetPropertyDefinition ("OwningGroup");
       Assert.That (owningGroupProperty, Is.Not.Null);
 

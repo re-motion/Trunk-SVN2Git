@@ -1,11 +1,13 @@
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
 {
@@ -94,6 +96,16 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
           (SampleBindableDomainObjectWithOverriddenDisplayName) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)).With();
 
       Serializer.SerializeAndDeserialize (domainObject);
+    }
+
+    [Test]
+    public void GetProviderForBindableObjectType ()
+    {
+      BindableObjectProvider provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (BindableDomainObject));
+
+      Assert.That (provider, Is.Not.Null);
+      Assert.That (provider, Is.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableDomainObjectProviderAttribute))));
+      Assert.That (provider, Is.Not.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute))));
     }
   }
 }

@@ -7,6 +7,7 @@ namespace Remotion.Utilities
   {
     public delegate bool CompareValues (object propertyOrFieldValue, object compareToValue);
 
+    [Obsolete ("Replace with AttributeUtilities.GetCustomAttriubte")]
     public static object GetSingleAttribute (MemberInfo member, Type attributeType, bool inherit, bool throwExceptionIfNotPresent)
     {
       object[] attributes = member.GetCustomAttributes (attributeType, inherit);

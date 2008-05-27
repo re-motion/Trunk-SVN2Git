@@ -1,6 +1,5 @@
 using System;
 using System.Globalization;
-using System.Reflection;
 using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -90,7 +89,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetPropertyDisplayName_WithMixin ()
     {
-      using (MixinConfiguration.BuildFromActive ().ForClass<SimpleBusinessObjectClass> ().AddMixin<MixinAddingResources> ().EnterScope ())
+      using (MixinConfiguration.BuildFromActive().ForClass<SimpleBusinessObjectClass>().AddMixin<MixinAddingResources>().EnterScope())
       {
         IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
         Assert.That (_globalizationService.GetPropertyDisplayName (IPropertyInformation), Is.EqualTo ("Resource from mixin"));
@@ -100,7 +99,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetPropertyDisplayName_WithPropertyAddedByMixin ()
     {
-      BindableObjectClass bindableClass = BindableObjectProvider.Current.GetBindableObjectClass (typeof (ClassWithMixedPropertyAndResources));
+      BindableObjectClass bindableClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (ClassWithMixedPropertyAndResources));
       PropertyBase property = (PropertyBase) bindableClass.GetPropertyDefinition ("MixedProperty");
 
       Assert.That (_globalizationService.GetPropertyDisplayName (property.PropertyInfo), Is.EqualTo ("Resourced!"));

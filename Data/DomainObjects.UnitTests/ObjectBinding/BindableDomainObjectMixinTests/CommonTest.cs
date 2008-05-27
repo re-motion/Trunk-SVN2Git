@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
@@ -38,7 +39,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
     {
       BindableSampleDomainObject value = BindableSampleDomainObject.NewObject ();
       byte[] serialized = Serializer.Serialize (Tuple.NewTuple (ClientTransactionMock, value));
-      BindableObjectProvider.SetCurrent (null);
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
       Tuple<ClientTransactionMock, BindableSampleDomainObject> deserialized = (Tuple<ClientTransactionMock, BindableSampleDomainObject>) Serializer.Deserialize (serialized);
 
       using (deserialized.A.EnterDiscardingScope ())

@@ -11,6 +11,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   [GetObjectServiceType (typeof (BindableDomainObjectGetObjectService))]
   [SearchAvailableObjectsServiceType (typeof (BindableDomainObjectSearchService))]
   [UseBindableDomainObjectMetadataFactory]
+  [BindableDomainObjectProvider]
   public class BindableDomainObjectMixin : BindableObjectMixinBase<BindableDomainObjectMixin.IDomainObject>, IBusinessObjectWithIdentity
   {
     public interface IDomainObject
@@ -23,7 +24,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     protected override BindableObjectClass InitializeBindableObjectClass ()
     {
-      return BindableObjectProvider.Current.GetBindableObjectClass (This.GetPublicDomainObjectType());
+      return BindableObjectProvider.GetBindableObjectClassFromProvider (This.GetPublicDomainObjectType());
     }
 
     public string UniqueIdentifier

@@ -1,6 +1,8 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ObjectBinding;
+using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.SecurityManager.UnitTests
@@ -25,7 +27,7 @@ namespace Remotion.SecurityManager.UnitTests
     public virtual void TearDown()
     {
       ClientTransactionScope.ResetActiveScope();
-      BindableObjectProvider.SetCurrent (null);
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
   }
 }

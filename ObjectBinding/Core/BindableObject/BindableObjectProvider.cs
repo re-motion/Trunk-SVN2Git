@@ -1,33 +1,75 @@
 using System;
 using System.Collections;
 using Remotion.Collections;
+using Remotion.ObjectBinding;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
-  //TODO: doc
+  /// <summary>
+  /// The implementation for the <see cref="IBusinessObjectProvider"/> interface for the reflection based business object layer.
+  /// </summary>
   public class BindableObjectProvider : BusinessObjectProvider
   {
-    private static readonly DoubleCheckedLockingContainer<BindableObjectProvider> s_current =
-        new DoubleCheckedLockingContainer<BindableObjectProvider> (CreateBindableObjectProvider);
-
+    [Obsolete ("Use BusinessObjectProvider.GetProvider instead. (Version 1.9.1.0)", true)]
     public static BindableObjectProvider Current
     {
-      get { return s_current.Value; }
+      get { throw new NotImplementedException ("Obsolete. Use BusinessObjectProvider.GetProvider instead. (Version 1.9.1.0)"); }
     }
 
+    [Obsolete ("Use BusinessObjectProvider.SetProvider instead. (Version 1.9.1.0)", true)]
     public static void SetCurrent (BindableObjectProvider provider)
     {
-      s_current.Value = provider;
+      throw new NotImplementedException ("Obsolete. Use BusinessObjectProvider.GetProvider instead. (Version 1.9.1.0)");
     }
 
-    private static BindableObjectProvider CreateBindableObjectProvider ()
+    /// <summary>
+    /// Use this method as a shortcut to retrieve the <see cref="BindableObjectProvider"/> for a <see cref="Type"/> 
+    /// that has the <see cref="BindableObjectMixinBase{T}"/> applied without first retrieving the matching provider.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to retrieve the <see cref="BindableObjectProvider"/> for.</param>
+    /// <returns>Returns the <see cref="BindableObjectProvider"/> for the <paramref name="type"/>.</returns>
+    public static BindableObjectProvider GetProviderForBindableObjectType (Type type)
     {
-      BindableObjectProvider provider = new BindableObjectProvider();
-      provider.AddService (typeof (IBindableObjectGlobalizationService), new BindableObjectGlobalizationService());
-      provider.AddService (typeof (IBusinessObjectStringFormatterService), new BusinessObjectStringFormatterService());
+      ArgumentUtility.CheckNotNull ("type", type);
 
-      return provider;
+      Type concreteType = Mixins.TypeUtility.GetConcreteMixedType (type);
+      BusinessObjectProviderAttribute attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
+
+      if (attribute == null)
+      {
+        throw new ArgumentException (
+            string.Format ("The type '{0}' does not have the '{1}' applied.", type.FullName, typeof (BusinessObjectProviderAttribute).FullName),
+            "type");
+      }
+
+      if (!ReflectionUtility.CanAscribe (attribute.BusinessObjectProviderType, typeof (BindableObjectProvider)))
+      {
+        throw new ArgumentException (
+            string.Format (
+                "The business object provider associated with the type '{0}' is not of type '{1}'.",
+                type.FullName,
+                typeof (BindableObjectProvider).FullName),
+            "type");
+      }
+
+      return (BindableObjectProvider) BusinessObjectProvider.GetProvider (attribute.GetType());
+    }
+
+    /// <summary>
+    /// Use this method as a shortcut to retrieve the <see cref="BindableObjectClass"/> for a <see cref="Type"/> 
+    /// that has the <see cref="BindableObjectMixinBase{T}"/> applied without first retrieving the matching provider.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to retrieve the <see cref="BindableObjectClass"/> for.</param>
+    /// <returns>Returns the <see cref="BindableObjectClass"/> for the <paramref name="type"/>.</returns>
+    public static BindableObjectClass GetBindableObjectClassFromProvider (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      BindableObjectProvider provider = BindableObjectProvider.GetProviderForBindableObjectType (type);
+      Assertion.IsNotNull (provider, "No BindableObjectProvider associated with type '{0}'.", type.FullName);
+
+      return provider.GetBindableObjectClass (type);
     }
 
     private readonly InterlockedDataStore<Type, BindableObjectClass> _businessObjectClassStore = new InterlockedDataStore<Type, BindableObjectClass>();
@@ -51,12 +93,6 @@ namespace Remotion.ObjectBinding.BindableObject
       return _businessObjectClassStore.GetOrCreateValue (type, delegate (Type classType) { return CreateBindableObjectClass (classType); });
     }
 
-    private BindableObjectClass CreateBindableObjectClass (Type type)
-    {
-      ClassReflector classReflector = new ClassReflector (type, this, GetMetadataFactoryForType (type));
-      return classReflector.GetMetadata ();
-    }
-
     /// <summary>
     /// Gets the <see cref="IMetadataFactory"/> for the specified <paramref name="type"/>.
     /// </summary>
@@ -68,10 +104,9 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("type", type);
       Type concreteType = Mixins.TypeUtility.GetConcreteMixedType (type);
-      UseCustomMetadataFactoryAttribute attribute =
-          (UseCustomMetadataFactoryAttribute) AttributeUtility.GetCustomAttribute (concreteType, typeof (UseCustomMetadataFactoryAttribute), true);
+      UseCustomMetadataFactoryAttribute attribute = AttributeUtility.GetCustomAttribute<UseCustomMetadataFactoryAttribute> (concreteType, true);
       if (attribute != null)
-        return attribute.GetFactoryInstance ();
+        return attribute.GetFactoryInstance();
       else
         return DefaultMetadataFactory.Instance;
     }
@@ -80,6 +115,21 @@ namespace Remotion.ObjectBinding.BindableObject
     protected override IDataStore<Type, IBusinessObjectService> ServiceStore
     {
       get { return _serviceStore; }
+    }
+
+    /// <summary>
+    /// Initializes services for the <see cref="IBindableObjectGlobalizationService"/> and <see cref="IBusinessObjectStringFormatterService"/>.
+    /// </summary>
+    protected override void InitializeDefaultServices ()
+    {
+      AddService (typeof (IBindableObjectGlobalizationService), new BindableObjectGlobalizationService());
+      AddService (typeof (IBusinessObjectStringFormatterService), new BusinessObjectStringFormatterService());
+    }
+
+    private BindableObjectClass CreateBindableObjectClass (Type type)
+    {
+      ClassReflector classReflector = new ClassReflector (type, this, GetMetadataFactoryForType (type));
+      return classReflector.GetMetadata();
     }
   }
 }
