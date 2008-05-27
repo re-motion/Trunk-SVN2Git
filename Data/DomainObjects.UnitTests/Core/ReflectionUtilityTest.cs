@@ -142,7 +142,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core
     [Test]
     public void GetDomainObjectAssemblyDirectory ()
     {
-      Assert.AreEqual (Path.GetDirectoryName (typeof (DomainObject).Assembly.Location), ReflectionUtility.GetConfigFileDirectory());
+      Assert.AreEqual (Path.GetDirectoryName (new Uri (typeof (DomainObject).Assembly.EscapedCodeBase).AbsolutePath),
+          ReflectionUtility.GetConfigFileDirectory());
     }
   }
 }
