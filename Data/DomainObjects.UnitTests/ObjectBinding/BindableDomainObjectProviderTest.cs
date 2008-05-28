@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ObjectBinding;
+using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Rhino.Mocks;
 
@@ -15,14 +16,18 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
     {
       BindableDomainObjectProvider provider = new BindableDomainObjectProvider();
       Assert.AreSame (BindableDomainObjectMetadataFactory.Instance, provider.MetadataFactory);
+      Assert.IsInstanceOfType (typeof (BindableDomainObjectServiceFactory), provider.ServiceFactory);
     }
 
     [Test]
     public void Instantiate_WithCustomValues ()
     {
       IMetadataFactory metadataFactoryStub = MockRepository.GenerateStub<IMetadataFactory>();
-      BindableDomainObjectProvider provider = new BindableDomainObjectProvider (metadataFactoryStub);
+      IBusinessObjectServiceFactory serviceFactoryStub = MockRepository.GenerateStub<IBusinessObjectServiceFactory>();
+      BindableDomainObjectProvider provider = new BindableDomainObjectProvider (metadataFactoryStub, serviceFactoryStub);
+      
       Assert.AreSame (metadataFactoryStub, provider.MetadataFactory);
+      Assert.AreSame (serviceFactoryStub, provider.ServiceFactory);
     }
   }
 }

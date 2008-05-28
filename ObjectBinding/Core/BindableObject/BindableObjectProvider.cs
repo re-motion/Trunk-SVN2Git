@@ -76,13 +76,15 @@ namespace Remotion.ObjectBinding.BindableObject
     private readonly IMetadataFactory _metadataFactory;
 
     public BindableObjectProvider ()
-        : this (DefaultMetadataFactory.Instance)
+        : this (DefaultMetadataFactory.Instance, new BusinessObjectServiceFactory())
     {
     }
 
-    public BindableObjectProvider (IMetadataFactory metadataFactory)
+    public BindableObjectProvider (IMetadataFactory metadataFactory, IBusinessObjectServiceFactory serviceFactory)
+      : base (serviceFactory)
     {
       ArgumentUtility.CheckNotNull ("metadataFactory", metadataFactory);
+      ArgumentUtility.CheckNotNull ("serviceFactory", serviceFactory);
 
       _metadataFactory = metadataFactory;
     }
@@ -111,15 +113,6 @@ namespace Remotion.ObjectBinding.BindableObject
     protected override IDataStore<Type, IBusinessObjectService> ServiceStore
     {
       get { return _serviceStore; }
-    }
-
-    /// <summary>
-    /// Initializes services for the <see cref="IBindableObjectGlobalizationService"/> and <see cref="IBusinessObjectStringFormatterService"/>.
-    /// </summary>
-    protected override void InitializeDefaultServices ()
-    {
-      AddService (typeof (IBindableObjectGlobalizationService), new BindableObjectGlobalizationService());
-      AddService (typeof (IBusinessObjectStringFormatterService), new BusinessObjectStringFormatterService());
     }
 
     private BindableObjectClass CreateBindableObjectClass (Type type)

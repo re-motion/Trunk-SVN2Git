@@ -41,16 +41,6 @@ namespace Remotion.ObjectBinding
     ///  </remarks>
     void AddService (Type serviceType, IBusinessObjectService service);
 
-    /// <summary>
-    /// Initializes the provider's default serivces.
-    /// </summary>
-    ///  <remarks>
-    ///    <note type="inotes">
-    ///     If your object model does not support services, this method sould be implemented as executing no operation.
-    ///    </note>
-    ///  </remarks>
-    void InitializeDefaultServices ();
-
     /// <summary>Returns the <see cref="Char"/> to be used as a serparator when formatting the property path's identifier.</summary>
     /// <returns> A <see cref="Char"/> that is not used by the property's identifier. </returns>
     char GetPropertyPathSeparator ();

@@ -1,28 +1,27 @@
 using System;
 using Remotion.Collections;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain
 {
-  public class StubBusinessObjectProvider:BusinessObjectProvider
+  public class StubBusinessObjectProvider : BusinessObjectProvider
   {
-    public class StringFormatterService : IBusinessObjectStringFormatterService
+    private readonly InterlockedDataStore<Type, IBusinessObjectService> _serviceStore = new InterlockedDataStore<Type, IBusinessObjectService>();
+
+
+    public StubBusinessObjectProvider ()
+        : this (MockRepository.GenerateStub<IBusinessObjectServiceFactory>())
     {
-      public string GetPropertyString (IBusinessObject businessObject, IBusinessObjectProperty property, string format)
-      {
-        throw new NotImplementedException ();
-      }
     }
 
-    private readonly InterlockedDataStore<Type, IBusinessObjectService> _serviceStore = new InterlockedDataStore<Type, IBusinessObjectService> ();
+    public StubBusinessObjectProvider (IBusinessObjectServiceFactory serviceFactory)
+        : base (serviceFactory)
+    {
+    }
 
     protected override IDataStore<Type, IBusinessObjectService> ServiceStore
     {
       get { return _serviceStore; }
-    }
-
-    protected override void InitializeDefaultServices ()
-    {
-      _serviceStore.Add (typeof (IBusinessObjectStringFormatterService), new StringFormatterService ());
     }
   }
 }

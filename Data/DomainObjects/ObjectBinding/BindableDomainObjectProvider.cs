@@ -11,13 +11,13 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   /// </remarks>
   public class BindableDomainObjectProvider : BindableObjectProvider
   {
-    public BindableDomainObjectProvider (IMetadataFactory metadataFactory)
-        : base (metadataFactory)
+    public BindableDomainObjectProvider (IMetadataFactory metadataFactory, IBusinessObjectServiceFactory serviceFactory)
+        : base (metadataFactory, serviceFactory)
     {
     }
 
     public BindableDomainObjectProvider ()
-        : base (BindableDomainObjectMetadataFactory.Instance)
+        : base (BindableDomainObjectMetadataFactory.Instance, new BindableDomainObjectServiceFactory())
     {
     }
   }

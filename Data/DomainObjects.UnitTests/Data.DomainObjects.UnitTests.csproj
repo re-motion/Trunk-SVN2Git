@@ -202,6 +202,7 @@
     <Compile Include="Core\DomainObjects\SimpleDomainObjectTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderTest.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectServiceFactoryTest.cs" />
     <Compile Include="Security\DomainObjectSecurityStrategyTest.cs" />
     <Compile Include="Security\SecurityClientTransactionExtensionTests\FilterQueryResultTest.cs" />
     <Compile Include="Security\SecurityClientTransactionExtensionTests\InterfaceTest.cs" />

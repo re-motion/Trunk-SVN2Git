@@ -1,5 +1,6 @@
 using System;
 using Remotion.Collections;
+using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -96,10 +97,16 @@ namespace Remotion.ObjectBinding
 
     private static IBusinessObjectProvider CreateBusinessObjectProvider (Type businessObjectProviderType)
     {
-      IBusinessObjectProvider provider = (IBusinessObjectProvider) TypesafeActivator.CreateInstance (businessObjectProviderType).With();
-      provider.InitializeDefaultServices();
+      return (IBusinessObjectProvider) ObjectFactory.Create (businessObjectProviderType).With();
+    }
 
-      return provider;
+    private readonly IBusinessObjectServiceFactory _serviceFactory;
+
+    protected BusinessObjectProvider (IBusinessObjectServiceFactory serviceFactory)
+    {
+      ArgumentUtility.CheckNotNull ("serviceFactory", serviceFactory);
+
+      _serviceFactory = serviceFactory;
     }
 
     /// <summary> Gets the <see cref="IDataStore{TKey,TValue}"/> used to store the references to the registered servies. </summary>
@@ -111,6 +118,12 @@ namespace Remotion.ObjectBinding
     /// </remarks>
     protected abstract IDataStore<Type, IBusinessObjectService> ServiceStore { get; }
 
+    /// <summary>Gets the <see cref="IBusinessObjectServiceFactory"/> passed during construction.</summary>
+    public IBusinessObjectServiceFactory ServiceFactory
+    {
+      get { return _serviceFactory; }
+    }
+
     /// <summary> Retrieves the requested <see cref="IBusinessObjectService"/>. Must not be <see langword="null" />.</summary>
     public IBusinessObjectService GetService (Type serviceType)
     {
@@ -119,7 +132,7 @@ namespace Remotion.ObjectBinding
       IDataStore<Type, IBusinessObjectService> serviceStore = ServiceStore;
       Assertion.IsNotNull (serviceStore, "The ServiceStore evaluated and returned null. It should return a null object instead.");
 
-      return serviceStore.GetValueOrDefault (serviceType);
+      return serviceStore.GetOrCreateValue (serviceType, _serviceFactory.CreateService);
     }
 
     /// <summary> Retrieves the requested <see cref="IBusinessObjectService"/>. </summary>
@@ -138,7 +151,7 @@ namespace Remotion.ObjectBinding
 
       IDataStore<Type, IBusinessObjectService> serviceStore = ServiceStore;
       Assertion.IsNotNull (serviceStore, "The ServiceStore evaluated and returned null. It should return a non-null object instead.");
-      
+
       serviceStore[serviceType] = service;
     }
 
@@ -148,9 +161,7 @@ namespace Remotion.ObjectBinding
       return '.';
     }
 
-    /// <summary> 
-    ///   Creates a <see cref="BusinessObjectPropertyPath"/> from the passed <see cref="IBusinessObjectProperty"/> list.
-    /// </summary>
+    /// <summary>Creates a <see cref="BusinessObjectPropertyPath"/> from the passed <see cref="IBusinessObjectProperty"/> list.</summary>
     public virtual IBusinessObjectPropertyPath CreatePropertyPath (IBusinessObjectProperty[] properties)
     {
       return new BusinessObjectPropertyPath (properties);
@@ -161,23 +172,6 @@ namespace Remotion.ObjectBinding
     public virtual string GetNotAccessiblePropertyStringPlaceHolder ()
     {
       return "×";
-    }
-
-    void IBusinessObjectProvider.InitializeDefaultServices ()
-    {
-      InitializeDefaultServices();
-    }
-
-    /// <summary>
-    /// Initializes the provider's default serivces.
-    /// </summary>
-    ///  <remarks>
-    ///    <note type="inotes">
-    ///     Override this template method to initialize any services typicially required by your object model.
-    ///    </note>
-    ///  </remarks>
-    protected virtual void InitializeDefaultServices ()
-    {
     }
   }
 }

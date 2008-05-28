@@ -13,13 +13,21 @@ namespace Remotion.ObjectBinding.UnitTests.Core
   {
     private IBusinessObjectProvider _provider;
     private MockRepository _mockRepository;
+    private IBusinessObjectServiceFactory _serviceFactoryStub;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _provider = new StubBusinessObjectProvider ();
+      _serviceFactoryStub = MockRepository.GenerateStub<IBusinessObjectServiceFactory>();
+      _provider = new StubBusinessObjectProvider (_serviceFactoryStub);
       _mockRepository = new MockRepository ();
+    }
+
+    [Test]
+    public void Instantiate ()
+    {
+      Assert.That (((BusinessObjectProvider)_provider).ServiceFactory, Is.SameAs (_serviceFactoryStub));
     }
 
     [Test]
@@ -27,9 +35,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     {
       IBusinessObjectProvider provider = BusinessObjectProvider.GetProvider (typeof (StubBusinessObjectProviderAttribute));
       Assert.That (provider, Is.TypeOf (typeof (StubBusinessObjectProvider)));
-
-      Assert.That (provider.GetService (typeof (IBindableObjectGlobalizationService)), Is.Null);
-      Assert.That (provider.GetService (typeof (IBusinessObjectStringFormatterService)), Is.TypeOf (typeof (StubBusinessObjectProvider.StringFormatterService)));
     }
 
     [Test]
@@ -74,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     [Test]
     public void SetProvider_Twice ()
     {
-      BusinessObjectProvider.SetProvider (typeof (StubBusinessObjectProviderAttribute), new StubBusinessObjectProvider ());
+      BusinessObjectProvider.SetProvider (typeof (StubBusinessObjectProviderAttribute), new StubBusinessObjectProvider (_serviceFactoryStub));
       BusinessObjectProvider.SetProvider (typeof (StubBusinessObjectProviderAttribute), _provider);
       Assert.That (BusinessObjectProvider.GetProvider (typeof (StubBusinessObjectProviderAttribute)), Is.SameAs (_provider));
     }
@@ -108,6 +113,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     }
 
     [Test]
+    public void AddService_Twice ()
+    {
+      IBusinessObjectService expectedService = _mockRepository.Stub<IBusinessObjectService> ();
+      Assert.That (_provider.GetService (expectedService.GetType ()), Is.Null);
+
+      ((BusinessObjectProvider) _provider).AddService (expectedService.GetType (), _mockRepository.Stub<IBusinessObjectService> ());
+      ((BusinessObjectProvider) _provider).AddService (expectedService.GetType (), expectedService);
+
+      Assert.That (_provider.GetService (expectedService.GetType ()), Is.SameAs (expectedService));
+    }
+
+    [Test]
     public void GetServiceFromGeneric ()
     {
       ((BusinessObjectProvider) _provider).AddService (typeof (IBusinessObjectService), _mockRepository.Stub<IBusinessObjectService> ());
@@ -115,6 +132,48 @@ namespace Remotion.ObjectBinding.UnitTests.Core
       Assert.That (
         ((BusinessObjectProvider) _provider).GetService<IBusinessObjectService> (), 
         Is.SameAs (_provider.GetService (typeof (IBusinessObjectService))));
+    }
+
+    [Test]
+    public void GetService_FromServiceFactory ()
+    {
+      MockRepository mockRepository = new MockRepository ();
+      IBusinessObjectServiceFactory serviceFactoryMock = mockRepository.CreateMock<IBusinessObjectServiceFactory> ();
+      IBusinessObjectStringFormatterService serviceStub = MockRepository.GenerateStub<IBusinessObjectStringFormatterService> ();
+      BusinessObjectProvider provider = new StubBusinessObjectProvider (serviceFactoryMock);
+
+      Expect.Call (serviceFactoryMock.CreateService (typeof (IBusinessObjectStringFormatterService))).Return (serviceStub);
+
+      mockRepository.ReplayAll ();
+
+      IBusinessObjectService actual = provider.GetService (typeof (IBusinessObjectStringFormatterService));
+      IBusinessObjectService actual2 = provider.GetService (typeof (IBusinessObjectStringFormatterService));
+
+      mockRepository.VerifyAll ();
+
+      Assert.That (actual, Is.SameAs (serviceStub));
+      Assert.That (actual, Is.SameAs (actual2));
+    }
+
+    [Test]
+    public void GetService_FromExplictValue()
+    {
+      MockRepository mockRepository = new MockRepository ();
+      IBusinessObjectServiceFactory serviceFactoryMock = mockRepository.CreateMock<IBusinessObjectServiceFactory> ();
+      IBusinessObjectStringFormatterService serviceStub = MockRepository.GenerateStub<IBusinessObjectStringFormatterService> ();
+      BusinessObjectProvider provider = new StubBusinessObjectProvider (serviceFactoryMock);
+
+      provider.AddService (typeof (IBusinessObjectStringFormatterService), serviceStub);
+
+      mockRepository.ReplayAll ();
+
+      IBusinessObjectService actual = provider.GetService (typeof (IBusinessObjectStringFormatterService));
+      IBusinessObjectService actual2 = provider.GetService (typeof (IBusinessObjectStringFormatterService));
+
+      mockRepository.VerifyAll ();
+
+      Assert.That (actual, Is.SameAs (serviceStub));
+      Assert.That (actual, Is.SameAs (actual2));
     }
   }
 }

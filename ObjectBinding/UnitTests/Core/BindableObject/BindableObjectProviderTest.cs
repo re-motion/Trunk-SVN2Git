@@ -2,10 +2,8 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
 using Rhino.Mocks;
-using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -13,12 +11,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
   public class BindableObjectProviderTest : TestBase
   {
     private BindableObjectProvider _provider;
+    private IMetadataFactory _metadataFactoryStub;
+    private IBusinessObjectServiceFactory _serviceFactoryStub;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _provider = new BindableObjectProvider();
+      _metadataFactoryStub = MockRepository.GenerateStub<IMetadataFactory>();
+      _serviceFactoryStub = MockRepository.GenerateStub<IBusinessObjectServiceFactory>();
     }
 
     [Test]
@@ -67,27 +69,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    public void GetDefaultServices ()
-    {
-      Assert.That (_provider.GetService (typeof (IBusinessObjectStringFormatterService)), Is.Null);
-      Assert.That (_provider.GetService (typeof (IBindableObjectGlobalizationService)), Is.Null);
-
-      ((IBusinessObjectProvider) _provider).InitializeDefaultServices();
-
-      Assert.That (
-          _provider.GetService (typeof (IBusinessObjectStringFormatterService)), Is.InstanceOfType (typeof (BusinessObjectStringFormatterService)));
-      Assert.That (
-          _provider.GetService (typeof (IBindableObjectGlobalizationService)), Is.InstanceOfType (typeof (BindableObjectGlobalizationService)));
-    }
-
-    [Test]
     public void GetBindableObjectClass ()
     {
       MockRepository mockRepository = new MockRepository();
       IMetadataFactory metadataFactoryMock = mockRepository.CreateMock<IMetadataFactory>();
       IClassReflector classReflectorMock = mockRepository.CreateMock<IClassReflector>();
 
-      BindableObjectProvider provider = new BindableObjectProvider (metadataFactoryMock);
+      BindableObjectProvider provider = new BindableObjectProvider (metadataFactoryMock, _serviceFactoryStub);
       Type targetType = typeof (SimpleBusinessObjectClass);
       Type concreteType = Mixins.TypeUtility.GetConcreteMixedType (targetType);
       BindableObjectClass expectedBindableObjectClass = new BindableObjectClass (concreteType, provider);
@@ -146,8 +134,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetMetadataFactoryForType_WithCustomMetadataFactory ()
     {
-      IMetadataFactory metadataFactoryStub = MockRepository.GenerateStub<IMetadataFactory>();
-      Assert.AreSame (metadataFactoryStub, new BindableObjectProvider (metadataFactoryStub).MetadataFactory);
+      BindableObjectProvider provider = new BindableObjectProvider (_metadataFactoryStub, _serviceFactoryStub);
+      Assert.AreSame (_metadataFactoryStub, provider.MetadataFactory);
     }
   }
 }
