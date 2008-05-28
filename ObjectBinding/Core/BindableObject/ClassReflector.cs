@@ -5,7 +5,10 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
-  public class ClassReflector
+  /// <summary>
+  /// The <see cref="ClassReflector"/> is used to create an instance of type <see cref="BindableObjectClass"/> for a <see cref="Type"/>.
+  /// </summary>
+  public class ClassReflector : IClassReflector
   {
     private readonly Type _targetType;
     private readonly Type _concreteType;
@@ -56,14 +59,16 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       IPropertyFinder propertyFinder = _metadataFactory.CreatePropertyFinder (_concreteType);
 
-      Dictionary<string, PropertyBase> propertiesByName = new Dictionary<string, PropertyBase> ();
-      foreach (IPropertyInformation propertyInfo in propertyFinder.GetPropertyInfos ())
+      Dictionary<string, PropertyBase> propertiesByName = new Dictionary<string, PropertyBase>();
+      foreach (IPropertyInformation propertyInfo in propertyFinder.GetPropertyInfos())
       {
         PropertyReflector propertyReflector = _metadataFactory.CreatePropertyReflector (_concreteType, propertyInfo, _businessObjectProvider);
-        PropertyBase property = propertyReflector.GetMetadata ();
+        PropertyBase property = propertyReflector.GetMetadata();
         if (propertiesByName.ContainsKey (property.Identifier))
         {
-          string message = string.Format ("Type '{0}' has two properties called '{1}', this is currently not supported.", TargetType.FullName,
+          string message = string.Format (
+              "Type '{0}' has two properties called '{1}', this is currently not supported.",
+              TargetType.FullName,
               property.Identifier);
           throw new NotSupportedException (message);
         }

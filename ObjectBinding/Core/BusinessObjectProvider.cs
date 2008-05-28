@@ -22,12 +22,7 @@ namespace Remotion.ObjectBinding
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom (
           "businessObjectProviderAttributeType", businessObjectProviderAttributeType, typeof (BusinessObjectProviderAttribute));
 
-      IBusinessObjectProvider provider;
-      if (s_businessObjectProviderStore.TryGetValue (businessObjectProviderAttributeType, out provider))
-        return provider;
-
-      return s_businessObjectProviderStore.GetOrCreateValue (
-          businessObjectProviderAttributeType, delegate (Type key) { return CreateBusinessObjectProviderFromAttribute (key); });
+      return s_businessObjectProviderStore.GetOrCreateValue (businessObjectProviderAttributeType, CreateBusinessObjectProviderFromAttribute);
     }
 
     /// <summary>

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 
@@ -13,6 +13,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public class TestClass
     {
       public int Property { get { return 0; } }
+    }
+
+    [Test]
+    public void CreateClassReflector ()
+    {
+      BindableObjectProvider provider = new BindableObjectProvider();
+      IClassReflector classReflector = DefaultMetadataFactory.Instance.CreateClassReflector (typeof (TestClass), provider);
+      Assert.That (classReflector.TargetType, Is.SameAs (typeof (TestClass)));
+      Assert.That (classReflector.BusinessObjectProvider, Is.SameAs (provider));
     }
 
     [Test]

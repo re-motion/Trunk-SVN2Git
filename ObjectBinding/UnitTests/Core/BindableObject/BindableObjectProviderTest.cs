@@ -2,8 +2,10 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
 using Rhino.Mocks;
+using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -81,11 +83,25 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetBindableObjectClass ()
     {
-      BindableObjectClass actual = _provider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
+      MockRepository mockRepository = new MockRepository();
+      IMetadataFactory metadataFactoryMock = mockRepository.CreateMock<IMetadataFactory>();
+      IClassReflector classReflectorMock = mockRepository.CreateMock<IClassReflector>();
 
-      Assert.That (actual, Is.Not.Null);
-      Assert.That (actual.TargetType, Is.SameAs (typeof (SimpleBusinessObjectClass)));
-      Assert.That (actual.BusinessObjectProvider, Is.SameAs (_provider));
+      BindableObjectProvider provider = new BindableObjectProvider (metadataFactoryMock);
+      Type targetType = typeof (SimpleBusinessObjectClass);
+      Type concreteType = Mixins.TypeUtility.GetConcreteMixedType (targetType);
+      BindableObjectClass expectedBindableObjectClass = new BindableObjectClass (concreteType, provider);
+
+      Expect.Call (metadataFactoryMock.CreateClassReflector (targetType, provider)).Return (classReflectorMock);
+      Expect.Call (classReflectorMock.GetMetadata()).Return (expectedBindableObjectClass);
+
+      mockRepository.ReplayAll();
+
+      BindableObjectClass actual = provider.GetBindableObjectClass (targetType);
+
+      mockRepository.VerifyAll();
+
+      Assert.That (actual, Is.SameAs (expectedBindableObjectClass));
     }
 
     [Test]

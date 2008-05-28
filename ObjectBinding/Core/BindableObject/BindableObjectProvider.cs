@@ -94,11 +94,11 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <see cref="BindableObjectMixinBase{TBindableObject}"/> configured, and it is recommended to specify the simple target type rather then the
     /// generated mixed type.</param>
     /// <returns>A <see cref="BindableObjectClass"/> for the given <paramref name="type"/>.</returns>
-    public virtual BindableObjectClass GetBindableObjectClass (Type type)
+    public BindableObjectClass GetBindableObjectClass (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      return _businessObjectClassStore.GetOrCreateValue (type, delegate (Type classType) { return CreateBindableObjectClass (classType); });
+      return _businessObjectClassStore.GetOrCreateValue (type, CreateBindableObjectClass);
     }
 
     /// <summary>Gets the MetadataFactory for this <see cref="BindableObjectProvider"/></summary>
@@ -124,7 +124,9 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private BindableObjectClass CreateBindableObjectClass (Type type)
     {
-      ClassReflector classReflector = new ClassReflector (type, this, _metadataFactory);
+      IClassReflector classReflector = _metadataFactory.CreateClassReflector (type, this);
+      Assertion.IsNotNull (classReflector, "The IMetadataFactory.CreateClassReflector method evaluated and returned null.");
+
       return classReflector.GetMetadata();
     }
   }

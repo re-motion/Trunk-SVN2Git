@@ -5,7 +5,6 @@ using Rhino.Mocks;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
-using System.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -14,7 +13,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
   {
     private BindableObjectProvider _businessObjectProvider;
     private Type _type;
-    private ClassReflector _classReflector;
+    private IClassReflector _classReflector;
 
     public override void SetUp ()
     {
@@ -29,8 +28,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void Initialize ()
     {
       Assert.That (_classReflector.TargetType, Is.SameAs (_type));
-      Assert.That (_classReflector.ConcreteType, Is.Not.SameAs (_type));
-      Assert.That (_classReflector.ConcreteType, Is.SameAs (Mixins.TypeUtility.GetConcreteMixedType (_type)));
+      Assert.That (((ClassReflector) _classReflector).ConcreteType, Is.Not.SameAs (_type));
+      Assert.That (((ClassReflector) _classReflector).ConcreteType, Is.SameAs (Mixins.TypeUtility.GetConcreteMixedType (_type)));
       Assert.That (_classReflector.BusinessObjectProvider, Is.SameAs (_businessObjectProvider));
     }
 

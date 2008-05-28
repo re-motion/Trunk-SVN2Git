@@ -16,6 +16,14 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     {
     }
 
+    public IClassReflector CreateClassReflector (Type targetType, BindableObjectProvider businessObjectProvider)
+    {
+      ArgumentUtility.CheckNotNull ("targetType", targetType);
+      ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
+
+      return new ClassReflector (targetType, businessObjectProvider, this);
+    }
+
     public IPropertyFinder CreatePropertyFinder (Type concreteType)
     {
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
