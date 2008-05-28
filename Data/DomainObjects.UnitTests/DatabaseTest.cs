@@ -58,6 +58,11 @@ namespace Remotion.Data.DomainObjects.UnitTests
       }
     }
 
+    protected DatabaseAgent DatabaseAgent
+    {
+      get { return _databaseAgent; }
+    }
+
     protected void SetDatabaseModifyable ()
     {
       if (!_isDatabaseModifyable)
