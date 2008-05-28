@@ -3,6 +3,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -38,7 +39,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    [Ignore ("TODO: Implement once AttrubuteUtility has been extended.")]
+    [Ignore ("TODO: Implement once AttributeUtility has been extended.")]
     public void GetProviderForBindableObjectType_WithAttributeFromTypeOverridingAttributeFromMixin ()
     {
     }
@@ -121,17 +122,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    public void GetMetadataFactoryForType_DefaultMetadataFactoryByDefault ()
+    public void GetMetadataFactory_WithDefaultFactory ()
     {
-      Assert.AreSame (DefaultMetadataFactory.Instance, _provider.GetMetadataFactoryForType (typeof (SimpleBusinessObjectClass)));
+      Assert.AreSame (DefaultMetadataFactory.Instance, _provider.MetadataFactory);
     }
 
     [Test]
-    public void GetMetadataFactoryForType_SpecialMetadataFactoryViaAttribute ()
+    public void GetMetadataFactoryForType_WithCustomMetadataFactory ()
     {
-      Assert.AreNotSame (DefaultMetadataFactory.Instance, _provider.GetMetadataFactoryForType (typeof (ClassWithSpecialFactory)));
-      Assert.AreSame (SpecialMetadataFactory.Instance, _provider.GetMetadataFactoryForType (typeof (ClassWithSpecialFactory)));
-      Assert.IsTrue (_provider.GetBindableObjectClass (typeof (ClassWithSpecialFactory)).HasPropertyDefinition ("PrivateString"));
+      IMetadataFactory metadataFactoryStub = MockRepository.GenerateStub<IMetadataFactory>();
+      Assert.AreSame (metadataFactoryStub, new BindableObjectProvider (metadataFactoryStub).MetadataFactory);
     }
   }
 }

@@ -104,7 +104,6 @@
     <Compile Include="Core\BindableObject\TestDomain\ClassWithUndefinedEnumValue.cs" />
     <Compile Include="Core\BindableObject\TestDomain\ClassWithDisabledEnumValue.cs" />
     <Compile Include="Core\BindableObject\TestDomain\ClassWithManualIdentity.cs" />
-    <Compile Include="Core\BindableObject\TestDomain\ClassWithSpecialFactory.cs" />
     <Compile Include="Core\BindableObject\TestDomain\ClassWithMixedPropertyOfSameName.cs" />
     <Compile Include="Core\BindableObject\TestDomain\ClassWithIdentityAndDisplayName.cs" />
     <Compile Include="Core\BindableObject\TestDomain\ClassWithMixedPropertyAndResources.cs" />
@@ -131,7 +130,6 @@
     <Compile Include="Core\BindableObject\TestDomain\ISearchServiceOnType.cs" />
     <Compile Include="Core\BindableObject\TestDomain\ClassWithOtherBusinessObjectImplementation.cs" />
     <Compile Include="Core\BindableObject\TestDomain\SecurableClassWithReferenceType.cs" />
-    <Compile Include="Core\BindableObject\TestDomain\SpecialMetadataFactory.cs" />
     <Compile Include="Core\BindableObject\TestDomain\StubBusinessObjectClassService.cs" />
     <Compile Include="Core\BindableObject\TestDomain\TestEnum.cs" />
     <Compile Include="Core\BindableObject\TestDomain\SimpleReferenceType.cs" />

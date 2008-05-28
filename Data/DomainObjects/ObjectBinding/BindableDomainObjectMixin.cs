@@ -7,8 +7,16 @@ using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
+  /// <summary>
+  /// The <see cref="BindableDomainObjectMixin"/> applies the <see cref="IBusinessObjectWithIdentity"/> implementation for bindable types derived 
+  /// from <see cref="DomainObject"/>.
+  /// </summary>
+  /// <remarks>
+  /// If you do not wish to cast to <see cref="IBusinessObject"/> and <see cref="IBusinessObjectWithIdentity"/>, you can use the default 
+  /// implementation provided by <see cref="BindableDomainObject"/> type. This type exposes the aforementioned interfaces and delegates their 
+  /// implementation to the mixin.
+  /// </remarks>
   [Serializable]
-  [UseBindableDomainObjectMetadataFactory]
   [BindableDomainObjectProvider]
   public class BindableDomainObjectMixin : BindableObjectMixinBase<BindableDomainObjectMixin.IDomainObject>, IBusinessObjectWithIdentity
   {

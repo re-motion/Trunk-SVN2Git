@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using Remotion.Collections;
-using Remotion.ObjectBinding;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
@@ -74,9 +73,18 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private readonly InterlockedDataStore<Type, BindableObjectClass> _businessObjectClassStore = new InterlockedDataStore<Type, BindableObjectClass>();
     private readonly InterlockedDataStore<Type, IBusinessObjectService> _serviceStore = new InterlockedDataStore<Type, IBusinessObjectService>();
+    private readonly IMetadataFactory _metadataFactory;
 
     public BindableObjectProvider ()
+        : this (DefaultMetadataFactory.Instance)
     {
+    }
+
+    public BindableObjectProvider (IMetadataFactory metadataFactory)
+    {
+      ArgumentUtility.CheckNotNull ("metadataFactory", metadataFactory);
+
+      _metadataFactory = metadataFactory;
     }
 
     /// <summary>
@@ -93,22 +101,10 @@ namespace Remotion.ObjectBinding.BindableObject
       return _businessObjectClassStore.GetOrCreateValue (type, delegate (Type classType) { return CreateBindableObjectClass (classType); });
     }
 
-    /// <summary>
-    /// Gets the <see cref="IMetadataFactory"/> for the specified <paramref name="type"/>.
-    /// </summary>
-    /// <param name="type">The type for which an <see cref="IMetadataFactory"/> is needed..</param>
-    /// <returns><see cref="DefaultMetadataFactory.Instance"/> by default, unless the <paramref name="type"/> is configured to use a specific
-    /// <see cref="IMetadataFactory"/> implementation (via a subclass of <see cref="UseCustomMetadataFactoryAttribute"/>), in which case an instance of
-    /// that implementation is returned.</returns>
-    public virtual IMetadataFactory GetMetadataFactoryForType (Type type)
+    /// <summary>Gets the MetadataFactory for this <see cref="BindableObjectProvider"/></summary>
+    public IMetadataFactory MetadataFactory
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-      Type concreteType = Mixins.TypeUtility.GetConcreteMixedType (type);
-      UseCustomMetadataFactoryAttribute attribute = AttributeUtility.GetCustomAttribute<UseCustomMetadataFactoryAttribute> (concreteType, true);
-      if (attribute != null)
-        return attribute.GetFactoryInstance();
-      else
-        return DefaultMetadataFactory.Instance;
+      get { return _metadataFactory; }
     }
 
     /// <summary> The <see cref="IDictionary"/> used to store the references to the registered servies. </summary>
@@ -128,7 +124,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private BindableObjectClass CreateBindableObjectClass (Type type)
     {
-      ClassReflector classReflector = new ClassReflector (type, this, GetMetadataFactoryForType (type));
+      ClassReflector classReflector = new ClassReflector (type, this, _metadataFactory);
       return classReflector.GetMetadata();
     }
   }

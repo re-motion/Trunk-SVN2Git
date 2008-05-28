@@ -1,6 +1,5 @@
 ﻿using System;
 using Remotion.ObjectBinding;
-using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
@@ -13,7 +12,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   public class BindableDomainObjectProviderAttribute : BusinessObjectProviderAttribute
   {
     public BindableDomainObjectProviderAttribute ()
-        : base (typeof (BindableObjectProvider))
+        : base (typeof (BindableDomainObjectProvider))
     {
     }
   }

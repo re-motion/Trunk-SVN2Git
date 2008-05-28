@@ -3,7 +3,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
-using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
 {
@@ -15,7 +14,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
     {
       BusinessObjectProviderAttribute attribute = new BindableDomainObjectProviderAttribute ();
 
-      Assert.That (attribute.BusinessObjectProviderType, Is.EqualTo (typeof (BindableObjectProvider)));
+      Assert.That (attribute.BusinessObjectProviderType, Is.EqualTo (typeof (BindableDomainObjectProvider)));
     }
   }
 }

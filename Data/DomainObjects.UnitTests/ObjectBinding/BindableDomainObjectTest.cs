@@ -104,6 +104,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
       BindableObjectProvider provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (BindableDomainObject));
 
       Assert.That (provider, Is.Not.Null);
+      Assert.That (provider, Is.InstanceOfType (typeof (BindableDomainObjectProvider)));
       Assert.That (provider, Is.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableDomainObjectProviderAttribute))));
       Assert.That (provider, Is.Not.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute))));
     }

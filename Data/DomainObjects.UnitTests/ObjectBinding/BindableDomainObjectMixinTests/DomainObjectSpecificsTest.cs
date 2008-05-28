@@ -30,8 +30,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
     [Test]
     public void UsesBindableDomainObjectMetadataFactory ()
     {
-      Assert.AreSame (BindableDomainObjectMetadataFactory.Instance,
-          BindableObjectProvider.GetProviderForBindableObjectType(typeof (BindableSampleDomainObject)).GetMetadataFactoryForType (typeof (BindableSampleDomainObject)));
+      Assert.AreSame (BindableDomainObjectMetadataFactory.Instance, 
+          BindableObjectProvider.GetProviderForBindableObjectType(typeof (BindableSampleDomainObject)).MetadataFactory);
     }
 
     [Test]

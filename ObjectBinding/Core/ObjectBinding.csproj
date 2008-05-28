@@ -123,7 +123,6 @@
     <Compile Include="BindableObject\DefaultMetadataFactory.cs" />
     <Compile Include="BindableObject\Properties\IPropertyInformation.cs" />
     <Compile Include="BindableObject\Properties\PropertyInfoAdapter.cs" />
-    <Compile Include="BindableObject\UseCustomMetadataFactoryAttribute.cs" />
     <Compile Include="BindableObject\IMetadataFactory.cs" />
     <Compile Include="BindableObject\IPropertyFinder.cs" />
     <Compile Include="BindableObject\PropertyInfoCollection.cs" />

@@ -5,6 +5,9 @@ using Remotion.ObjectBinding.BindableObject.Properties;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
+  /// <summary>
+  /// The <see cref="BindableDomainObjectMetadataFactory"/> implements the <see cref="IMetadataFactory"/> interface for domain objects.
+  /// </summary>
   public class BindableDomainObjectMetadataFactory : IMetadataFactory
   {
     public static readonly BindableDomainObjectMetadataFactory Instance = new BindableDomainObjectMetadataFactory ();
