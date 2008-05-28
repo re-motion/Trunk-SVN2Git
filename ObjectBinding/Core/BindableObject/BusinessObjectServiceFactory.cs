@@ -1,13 +1,29 @@
 using System;
-using Remotion.ObjectBinding;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
   /// <summary>
-  /// Use the <see cref="BusinessObjectServiceFactory"/> is the default implementation of the <see cref="IBusinessObjectServiceFactory"/>
+  /// The <see cref="BusinessObjectServiceFactory"/> is the default implementation of the <see cref="IBusinessObjectServiceFactory"/>
   /// and provides service instances common for all bindable object implementations.
   /// </summary>
+  /// <remarks>
+  /// The following <see cref="IBusinessObjectService"/> interfaces are supported.
+  /// <list type="bullet">
+  ///   <listheader>
+  ///     <term>Service Interface</term>
+  ///     <description>Service creates instance of type</description>
+  ///   </listheader>
+  ///   <item>
+  ///     <term><see cref="IBindableObjectGlobalizationService"/></term>
+  ///     <description><see cref="BindableObjectGlobalizationService"/></description>
+  ///   </item>
+  ///   <item>
+  ///     <term><see cref="IBusinessObjectStringFormatterService"/></term>
+  ///     <description><see cref="BusinessObjectStringFormatterService"/></description>
+  ///   </item>
+  /// </list>
+  /// </remarks>
   public class BusinessObjectServiceFactory : IBusinessObjectServiceFactory
   {
     public virtual IBusinessObjectService CreateService (Type serviceType)
