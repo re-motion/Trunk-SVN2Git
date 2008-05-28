@@ -1,10 +1,6 @@
 USE TestDomain
 GO
 
-EXEC sp_fulltext_database 'enable';
-CREATE FULLTEXT CATALOG TestDomain_FT AS DEFAULT;
-GO
-
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixedDomains_Target')
 BEGIN
   ALTER TABLE [MixedDomains_Target] DROP CONSTRAINT [FK_MixedDomains_Target_RelationProperty]
@@ -368,9 +364,6 @@ CREATE TABLE [Ceo] (
   CONSTRAINT [PK_Ceo] PRIMARY KEY CLUSTERED ([ID]),
   CONSTRAINT [FK_Ceo_Company] FOREIGN KEY ([CompanyID]) REFERENCES [Company] ([ID])
 ) 
-GO
-
-CREATE FULLTEXT INDEX ON [Ceo]([Name]) KEY INDEX PK_Ceo;
 GO
 
 CREATE TABLE [Client] (
