@@ -7,8 +7,6 @@ namespace Remotion.ObjectBinding.Sample
 {
   [Serializable]
   [BindableObjectWithIdentity]
-  [GetObjectServiceType (typeof (XmlReflectionBusinessObjectStorageProvider))]
-  [SearchAvailableObjectsServiceType (typeof (BindableXmlObjectSearchService))]
   public class BindableXmlObject
   {
     protected static T GetObject<T> (Guid id)

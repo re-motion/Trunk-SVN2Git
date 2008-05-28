@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
         ExpectedMessage =
         "The 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.ClassWithOtherBusinessObjectImplementation' type does not use the "
         + "'Remotion.ObjectBinding.BindableObject' implementation of 'Remotion.ObjectBinding.IBusinessObject' and there is no "
-        + "'Remotion.ObjectBinding.IBusinessObjectClassService' registered with the 'Remotion.ObjectBinding.BindableObject.BindableObjectProvider'.")]
+        + "'Remotion.ObjectBinding.IBusinessObjectClassService' registered with the 'Remotion.ObjectBinding.BusinessObjectProvider' associated with this type.")]
     public void UseBusinessObjectClassService_WithoutService ()
     {
       IBusinessObjectReferenceProperty property = CreateProperty ("Scalar", typeof (ClassWithOtherBusinessObjectImplementation));

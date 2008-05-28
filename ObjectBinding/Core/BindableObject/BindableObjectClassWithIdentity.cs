@@ -27,10 +27,10 @@ namespace Remotion.ObjectBinding.BindableObject
       {
         throw new InvalidOperationException (
             string.Format (
-                "The '{0}' required for loading objectes of type '{1}' is not registered with the '{2}'.",
+                "The '{0}' required for loading objectes of type '{1}' is not registered with the '{2}' associated with this type.",
                 _getObjectServiceType.FullName,
                 TargetType.FullName,
-                BusinessObjectProvider.GetType().FullName));
+                typeof (BusinessObjectProvider).FullName));
       }
       return service;
     }

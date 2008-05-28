@@ -6,7 +6,6 @@ using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
-using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObjectMixinTests
 {

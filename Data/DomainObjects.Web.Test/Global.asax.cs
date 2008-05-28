@@ -35,8 +35,8 @@ namespace Remotion.Data.DomainObjects.Web.Test
     protected void Application_Start (Object sender, EventArgs e)
     {
       MappingConfiguration mappingConfiguration = MappingConfiguration.Current;
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (BindableDomainObjectSearchService), new BindableDomainObjectSearchService ());
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (BindableDomainObjectGetObjectService), new BindableDomainObjectGetObjectService ());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (ISearchAvailableObjectsService), new BindableDomainObjectSearchService ());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (IGetObjectService), new BindableDomainObjectGetObjectService ());
     }
 
     protected void Session_Start (Object sender, EventArgs e)

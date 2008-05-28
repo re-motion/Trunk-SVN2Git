@@ -8,8 +8,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
   [Serializable]
-  [GetObjectServiceType (typeof (BindableDomainObjectGetObjectService))]
-  [SearchAvailableObjectsServiceType (typeof (BindableDomainObjectSearchService))]
   [UseBindableDomainObjectMetadataFactory]
   [BindableDomainObjectProvider]
   public class BindableDomainObjectMixin : BindableObjectMixinBase<BindableDomainObjectMixin.IDomainObject>, IBusinessObjectWithIdentity

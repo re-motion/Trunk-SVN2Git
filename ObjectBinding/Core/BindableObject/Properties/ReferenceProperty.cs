@@ -150,12 +150,12 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       {
         throw new InvalidOperationException (
             string.Format (
-                "The '{0}' type does not use the '{1}' implementation of '{2}' and there is no '{3}' registered with the '{4}'.",
+                "The '{0}' type does not use the '{1}' implementation of '{2}' and there is no '{3}' registered with the '{4}' associated with this type.",
                 UnderlyingType.FullName,
                 typeof (BindableObjectMixin).Namespace,
                 typeof (IBusinessObject).FullName,
                 typeof (IBusinessObjectClassService).FullName,
-                BusinessObjectProvider.GetType().FullName));
+                typeof (BusinessObjectProvider).FullName));
       }
       return service;
     }

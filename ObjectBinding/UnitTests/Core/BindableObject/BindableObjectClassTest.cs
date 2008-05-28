@@ -36,6 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
           Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"));
       Assert.That (bindableObjectClass.RequiresWriteBack, Is.False);
       Assert.That (bindableObjectClass.BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
+      Assert.That (bindableObjectClass.BusinessObjectProviderAttribute, Is.InstanceOfType (typeof (BindableObjectProviderAttribute)));
     }
 
     [Test]

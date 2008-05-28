@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
     public override void SetUp ()
     {
       base.SetUp ();
-      BusinessObjectProvider.GetProvider (typeof (BindableDomainObjectProviderAttribute)).AddService (typeof (BindableDomainObjectSearchService), new BindableDomainObjectSearchService ());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (ISearchAvailableObjectsService), new BindableDomainObjectSearchService ());
 
       _mixinConfiguration = MixinConfiguration.BuildFromActive ()
           .ForClass<Order> ().Clear ().AddMixin<BindableDomainObjectMixin> ()
@@ -37,14 +37,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
     {
       _mixinConfiguration.Dispose ();
       base.TearDown ();
-    }
-
-    [Test]
-    public void SearchServiceAttribute ()
-    {
-      Assert.IsTrue (_orderItem.GetType ().IsDefined (typeof (SearchAvailableObjectsServiceTypeAttribute), true));
-      Assert.AreEqual (typeof (BindableDomainObjectSearchService),
-          AttributeUtility.GetCustomAttribute<SearchAvailableObjectsServiceTypeAttribute> (_orderItem.GetType (), true).Type);
     }
 
     [Test]

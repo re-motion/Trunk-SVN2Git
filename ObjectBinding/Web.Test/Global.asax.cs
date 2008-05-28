@@ -48,8 +48,8 @@ namespace OBWTest
 
       XmlReflectionBusinessObjectStorageProvider provider = new XmlReflectionBusinessObjectStorageProvider (objectPath);
       XmlReflectionBusinessObjectStorageProvider.SetCurrent (provider);
-      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (XmlReflectionBusinessObjectStorageProvider), provider);
-      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (BindableXmlObjectSearchService), new BindableXmlObjectSearchService ());
+      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (IGetObjectService), provider);
+      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (ISearchAvailableObjectsService), new BindableXmlObjectSearchService ());
       BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService ());
     }
 

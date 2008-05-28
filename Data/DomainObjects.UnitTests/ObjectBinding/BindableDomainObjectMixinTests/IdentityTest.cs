@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
     [Test]
     public void GetFromUniqueIdentifier ()
     {
-      BusinessObjectProvider.GetProvider (typeof (BindableDomainObjectProviderAttribute)).AddService (typeof (BindableDomainObjectGetObjectService), new BindableDomainObjectGetObjectService());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (IGetObjectService), new BindableDomainObjectGetObjectService());
       BindableSampleDomainObject original = BindableSampleDomainObject.NewObject ();
       BindableObjectClassWithIdentity boClass =
           (BindableObjectClassWithIdentity) BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (BindableSampleDomainObject));

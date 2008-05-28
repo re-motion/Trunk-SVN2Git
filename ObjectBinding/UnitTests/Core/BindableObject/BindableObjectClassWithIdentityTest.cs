@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         ExpectedMessage =
         "The 'Remotion.ObjectBinding.BindableObject.IGetObjectService' required for loading objectes of type "
         + "'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.ClassWithIdentity' is not registered with the "
-        + "'Remotion.ObjectBinding.BindableObject.BindableObjectProvider'.")]
+        + "'Remotion.ObjectBinding.BusinessObjectProvider' associated with this type.")]
     public void GetObject_WithoutService ()
     {
       BindableObjectClassWithIdentity bindableObjectClass =

@@ -8,9 +8,11 @@ namespace Remotion.ObjectBinding.BindableObject
   //TODO: doc
   public class BindableObjectClass : IBusinessObjectClass
   {
+    private readonly Type _targetType;
     private readonly Type _concreteType;
     private readonly BindableObjectProvider _businessObjectProvider;
     private readonly PropertyCollection _properties = new PropertyCollection();
+    private readonly BusinessObjectProviderAttribute _businessObjectProviderAttribute;
 
     public BindableObjectClass (Type concreteType, BindableObjectProvider businessObjectProvider)
     {
@@ -19,9 +21,15 @@ namespace Remotion.ObjectBinding.BindableObject
       Assertion.IsFalse (concreteType.IsValueType, "mixed types cannot be value types");
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
 
+      
+      _targetType = Mixins.TypeUtility.GetUnderlyingTargetType (concreteType);
       _concreteType = concreteType;
       _businessObjectProvider = businessObjectProvider;
+      
+      BusinessObjectProviderAttribute attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
+      _businessObjectProviderAttribute = attribute;
     }
+      
 
     /// <summary> Returns the <see cref="IBusinessObjectProperty"/> for the passed <paramref name="propertyIdentifier"/>. </summary>
     /// <param name="propertyIdentifier"> 
@@ -96,17 +104,22 @@ namespace Remotion.ObjectBinding.BindableObject
     /// </value>
     public string Identifier
     {
-      get { return TypeUtility.GetPartialAssemblyQualifiedName (TargetType); }
+      get { return TypeUtility.GetPartialAssemblyQualifiedName (_targetType); }
     }
 
     public Type TargetType
     {
-      get { return Mixins.TypeUtility.GetUnderlyingTargetType (ConcreteType); }
+      get { return _targetType; }
     }
 
     public Type ConcreteType
     {
       get { return _concreteType; }
+    }
+
+    public BusinessObjectProviderAttribute BusinessObjectProviderAttribute
+    {
+      get { return _businessObjectProviderAttribute; }
     }
 
     internal void SetProperties (IEnumerable<PropertyBase> properties)
