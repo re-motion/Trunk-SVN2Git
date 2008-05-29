@@ -211,9 +211,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       List<Group> expectedGroups = role.GetPossibleGroups (user.Tenant.ID);
       Assert.That (expectedGroups, Is.Not.Empty);
 
-      Assert.That (groupProperty.SupportsSearchAvailableObjects (true), Is.True);
+      Assert.That (groupProperty.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actualGroups = groupProperty.SearchAvailableObjects (role, true, null);
+      IBusinessObject[] actualGroups = groupProperty.SearchAvailableObjects (role, null);
       Assert.That (actualGroups, Is.EquivalentTo (expectedGroups));
     }
 
@@ -234,9 +234,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       DomainObjectCollection expectedGroups = User.FindByTenantID (group.Tenant.ID);
       Assert.That (expectedGroups, Is.Not.Empty);
 
-      Assert.That (userProperty.SupportsSearchAvailableObjects (true), Is.True);
+      Assert.That (userProperty.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actualUsers = userProperty.SearchAvailableObjects (role, true, null);
+      IBusinessObject[] actualUsers = userProperty.SearchAvailableObjects (role, null);
       Assert.That (actualUsers, Is.EquivalentTo (expectedGroups));
     }
 

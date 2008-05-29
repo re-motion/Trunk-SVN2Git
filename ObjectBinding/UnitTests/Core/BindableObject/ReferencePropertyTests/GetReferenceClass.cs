@@ -58,12 +58,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage =
-        "The 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithOtherBusinessObjectImplementation' type does not use the "
+        "The 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassFromOtherBusinessObjectImplementation' type does not use the "
         + "'Remotion.ObjectBinding.BindableObject' implementation of 'Remotion.ObjectBinding.IBusinessObject' and there is no "
         + "'Remotion.ObjectBinding.IBusinessObjectClassService' registered with the 'Remotion.ObjectBinding.BusinessObjectProvider' associated with this type.")]
     public void UseBusinessObjectClassService_WithoutService ()
     {
-      IBusinessObjectReferenceProperty property = CreateProperty ("Scalar", typeof (ClassWithOtherBusinessObjectImplementation));
+      IBusinessObjectReferenceProperty property = CreateProperty ("Scalar", typeof (ClassFromOtherBusinessObjectImplementation));
 
       Dev.Null = property.ReferenceClass;
     }
@@ -73,10 +73,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
         ExpectedMessage =
         "The GetBusinessObjectClass method of 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.StubBusinessObjectClassService', registered "
         + "with the 'Remotion.ObjectBinding.BindableObject.BindableObjectProvider', failed to return an 'Remotion.ObjectBinding.IBusinessObjectClass' "
-        + "for type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithOtherBusinessObjectImplementation'.")]
+        + "for type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassFromOtherBusinessObjectImplementation'.")]
     public void UseBusinessObjectClassService_WithServiceReturningNull ()
     {
-      IBusinessObjectReferenceProperty property = CreateProperty ("Scalar", typeof (ClassWithOtherBusinessObjectImplementation));
+      IBusinessObjectReferenceProperty property = CreateProperty ("Scalar", typeof (ClassFromOtherBusinessObjectImplementation));
 
       _businessObjectProvider.AddService (typeof (IBusinessObjectClassService), new StubBusinessObjectClassService());
       Dev.Null = property.ReferenceClass;

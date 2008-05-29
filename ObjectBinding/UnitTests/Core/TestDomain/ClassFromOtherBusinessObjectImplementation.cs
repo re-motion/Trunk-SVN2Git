@@ -2,7 +2,7 @@ using System;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
-  public abstract class ClassWithOtherBusinessObjectImplementation : IBusinessObject
+  public abstract class ClassFromOtherBusinessObjectImplementation : IBusinessObject
   {
     public abstract object GetProperty (IBusinessObjectProperty property);
 

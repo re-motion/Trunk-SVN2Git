@@ -8,7 +8,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
   {
     private ClassWithSearchServiceTypeAttribute _searchServiceOnType;
     private ClassWithSearchServiceTypeAttribute _searchServiceOnProperty;
-    private ClassWithOtherBusinessObjectImplementation _noSearchService;
+    private ClassWithIdentity _searchServiceFromPropertyWithIdentity;
+    private ClassFromOtherBusinessObjectImplementation _noSearchService;
+    private ClassWithIdentityFromOtherBusinessObjectImplementation _noSearchServiceWithIdentity;
 
     public ClassWithBusinessObjectProperties ()
     {
@@ -21,16 +23,29 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     }
 
     [SearchAvailableObjectsServiceType (typeof (ISearchServiceOnProperty))]
+    public ClassWithIdentity SearchServiceFromPropertyWithIdentity
+    {
+      get { return _searchServiceFromPropertyWithIdentity; }
+      set { _searchServiceFromPropertyWithIdentity = value; }
+    }
+
+    [SearchAvailableObjectsServiceType (typeof (ISearchServiceOnProperty))]
     public ClassWithSearchServiceTypeAttribute SearchServiceFromProperty
     {
       get { return _searchServiceOnProperty; }
       set { _searchServiceOnProperty = value; }
     }
 
-    public ClassWithOtherBusinessObjectImplementation NoSearchService
+    public ClassFromOtherBusinessObjectImplementation NoSearchService
     {
       get { return _noSearchService; }
       set { _noSearchService = value; }
+    }
+
+    public ClassWithIdentityFromOtherBusinessObjectImplementation NoSearchServiceWithIdentity
+    {
+      get { return _noSearchServiceWithIdentity; }
+      set { _noSearchServiceWithIdentity = value; }
     }
   }
 }

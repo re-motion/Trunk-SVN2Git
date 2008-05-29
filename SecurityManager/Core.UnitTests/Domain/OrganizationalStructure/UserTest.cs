@@ -278,9 +278,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       DomainObjectCollection expectedOwningGroups = Group.FindByTenantID (user.Tenant.ID);
       Assert.That (expectedOwningGroups, Is.Not.Empty);
 
-      Assert.That (owningGroupProperty.SupportsSearchAvailableObjects (true), Is.True);
+      Assert.That (owningGroupProperty.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actualOwningGroups = owningGroupProperty.SearchAvailableObjects(user, true, null);
+      IBusinessObject[] actualOwningGroups = owningGroupProperty.SearchAvailableObjects(user, null);
       Assert.That (actualOwningGroups, Is.EquivalentTo (expectedOwningGroups));
 
     }

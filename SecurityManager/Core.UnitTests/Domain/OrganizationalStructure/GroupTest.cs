@@ -268,9 +268,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       List<Group> expectedParentGroups = group.GetPossibleParentGroups (group.Tenant.ID);
       Assert.That (expectedParentGroups, Is.Not.Empty);
 
-      Assert.That (parentGroupProperty.SupportsSearchAvailableObjects (true), Is.True);
+      Assert.That (parentGroupProperty.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actualParentGroups = parentGroupProperty.SearchAvailableObjects (group, true, null);
+      IBusinessObject[] actualParentGroups = parentGroupProperty.SearchAvailableObjects (group, null);
       Assert.That (actualParentGroups, Is.EquivalentTo (expectedParentGroups));
     }
 

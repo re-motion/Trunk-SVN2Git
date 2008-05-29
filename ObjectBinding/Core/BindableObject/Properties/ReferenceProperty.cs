@@ -1,6 +1,8 @@
 using System;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
+using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject.Properties
@@ -29,51 +31,43 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       get { return _referenceClass.Value; }
     }
 
-    /// <summary> 
-    ///   Gets a flag indicating whether it is possible to get a list of the objects that can be assigned to this property.
-    /// </summary>
-    /// <param name="supportsIdentity">
-    /// A flag that if <see langword="true"/> determines that the objects returned by <see cref="SearchAvailableObjects"/> will implement 
-    /// <see cref="IBusinessObjectWithIdentity"/>.
-    /// </param>
+    /// <summary>Gets a flag indicating whether it is possible to get a list of the objects that can be assigned to this property.</summary>
     /// <returns> <see langword="true"/> if it is possible to get the available objects from the object model. </returns>
-    /// <remarks> 
-    ///   Use the <see cref="SearchAvailableObjects"/> method to get the list of objects.
+    /// <remarks>
+    /// <para>Use the <see cref="SearchAvailableObjects"/> method to get the list of objects.</para>
+    /// <para>If the <see cref="ReferenceClass"/> implements <see cref="IBusinessObjectClassWithIdentity"/>, 
+    /// the <see cref="ISearchAvailableObjectsService.SupportsIdentity"/> method of the <see cref="ISearchAvailableObjectsService"/> interface 
+    /// is evaluated in order to determine the return value of this property.
+    /// </para>
     /// </remarks>
-    public bool SupportsSearchAvailableObjects (bool supportsIdentity)
+    public bool SupportsSearchAvailableObjects
     {
-      ISearchAvailableObjectsService searchAvailableObjectsService = (ISearchAvailableObjectsService) BusinessObjectProvider.GetService (_searchServiceType);
-      if (searchAvailableObjectsService == null)
-        return false;
+      get
+      {
+        ISearchAvailableObjectsService searchAvailableObjectsService = 
+            (ISearchAvailableObjectsService) BusinessObjectProvider.GetService (_searchServiceType);
+        if (searchAvailableObjectsService == null)
+          return false;
 
-      if (supportsIdentity)
-        return searchAvailableObjectsService.SupportsIdentity (this);
+        if (ReferenceClass is IBusinessObjectClassWithIdentity)
+          return searchAvailableObjectsService.SupportsIdentity (this);
 
-      return true;
+        return true;
+      }
     }
 
-    /// <summary> 
-    ///   Searches the object model for the <see cref="IBusinessObject"/> instances that can be assigned to this property.
-    /// </summary>
+    /// <summary>Searches the object model for the <see cref="IBusinessObject"/> instances that can be assigned to this property.</summary>
     /// <param name="referencingObject"> The business object for which to search for the possible objects to be referenced. </param>
-    /// <param name="requiresIdentity">
-    /// A flag that if <see langword="true"/> determines that the return value muss consist only of objects implenting 
-    /// <see cref="IBusinessObjectWithIdentity"/>.
-    /// </param>
-    /// <param name="searchStatement"> 
-    ///   A <see cref="string"/> containing a search statement. Can be <see langword="null"/>.
-    /// </param>
-    /// <returns> 
-    ///   A list of the <see cref="IBusinessObject"/> instances available. Must not return <see langword="null"/>.
-    /// </returns>
+    /// <param name="searchStatement">A <see cref="string"/> containing a search statement. Can be <see langword="null"/>.</param>
+    /// <returns>A list of the <see cref="IBusinessObject"/> instances available. Must not return <see langword="null"/>.</returns>
     /// <exception cref="NotSupportedException">
     ///   Thrown if <see cref="SupportsSearchAvailableObjects"/> evaluated <see langword="false"/> but this method has been called anyways.
     /// </exception>
-    public IBusinessObject[] SearchAvailableObjects (IBusinessObject referencingObject, bool requiresIdentity, string searchStatement)
+    public IBusinessObject[] SearchAvailableObjects (IBusinessObject referencingObject, string searchStatement)
     {
       ArgumentUtility.CheckNotNull ("referencingObject", referencingObject);
 
-      if (!SupportsSearchAvailableObjects (requiresIdentity))
+      if (!SupportsSearchAvailableObjects)
       {
         throw new NotSupportedException (
             string.Format (
