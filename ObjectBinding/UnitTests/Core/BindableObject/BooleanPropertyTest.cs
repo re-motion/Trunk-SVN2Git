@@ -22,7 +22,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       base.SetUp();
 
       _businessObjectProvider = new BindableObjectProvider();
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithValueType<bool>), _businessObjectProvider, DefaultMetadataFactory.Instance);
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithValueType<bool>), _businessObjectProvider, BindableObjectMetadataFactory.Create());
       _businessObjectClass = classReflector.GetMetadata();
 
       _mockRepository = new MockRepository();
@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       IBusinessObjectBooleanProperty property = CreateProperty (
           "Scalar",
-          new BindableObjectProvider (DefaultMetadataFactory.Instance, MockRepository.GenerateStub<IBusinessObjectServiceFactory>()));
+          new BindableObjectProvider (BindableObjectMetadataFactory.Create(), MockRepository.GenerateStub<IBusinessObjectServiceFactory>()));
 
       Assert.That (property.GetDisplayName (true), Is.EqualTo ("True"));
       Assert.That (property.GetDisplayName (false), Is.EqualTo ("False"));

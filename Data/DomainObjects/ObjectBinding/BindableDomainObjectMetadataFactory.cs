@@ -1,4 +1,5 @@
 using System;
+using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -10,7 +11,10 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   /// </summary>
   public class BindableDomainObjectMetadataFactory : IMetadataFactory
   {
-    public static readonly BindableDomainObjectMetadataFactory Instance = new BindableDomainObjectMetadataFactory ();
+    public static BindableDomainObjectMetadataFactory Create ()
+    {
+      return ObjectFactory.Create<BindableDomainObjectMetadataFactory> (true).With();
+    }
 
     protected BindableDomainObjectMetadataFactory ()
     {

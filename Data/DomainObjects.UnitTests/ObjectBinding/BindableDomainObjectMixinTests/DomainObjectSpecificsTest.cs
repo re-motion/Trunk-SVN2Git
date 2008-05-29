@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain;
 using Remotion.ObjectBinding;
@@ -30,8 +31,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
     [Test]
     public void UsesBindableDomainObjectMetadataFactory ()
     {
-      Assert.AreSame (BindableDomainObjectMetadataFactory.Instance, 
-          BindableObjectProvider.GetProviderForBindableObjectType(typeof (BindableSampleDomainObject)).MetadataFactory);
+      Assert.That (
+        BindableObjectProvider.GetProviderForBindableObjectType(typeof (BindableSampleDomainObject)).MetadataFactory,
+        Is.InstanceOfType (typeof (BindableDomainObjectMetadataFactory)));
     }
 
     [Test]

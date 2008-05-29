@@ -129,7 +129,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetMetadataFactory_WithDefaultFactory ()
     {
-      Assert.AreSame (DefaultMetadataFactory.Instance, _provider.MetadataFactory);
+      Assert.IsInstanceOfType (typeof (BindableObjectMetadataFactory), _provider.MetadataFactory);
     }
 
     [Test]

@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.BindableObject
     private readonly IMetadataFactory _metadataFactory;
 
     public BindableObjectProvider ()
-      : this (DefaultMetadataFactory.Instance, BindableObjectServiceFactory.Create ())
+      : this (BindableObjectMetadataFactory.Create(), BindableObjectServiceFactory.Create ())
     {
     }
 

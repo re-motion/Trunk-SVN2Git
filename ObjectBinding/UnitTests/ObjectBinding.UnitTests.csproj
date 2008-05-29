@@ -70,7 +70,7 @@
     <Compile Include="Core\TestDomain\StubBusinessObjectClass.cs" />
     <Compile Include="Core\BusinessObjectProviderTest.cs" />
     <Compile Include="Core\BindableObject\ConstantEnumerationValueFilterTest.cs" />
-    <Compile Include="Core\BindableObject\DefaultMetadataFactoryTest.cs" />
+    <Compile Include="Core\BindableObject\BindableObjectMetadataFactoryTest.cs" />
     <Compile Include="Core\TestDomain\StubBusinessObjectProvider.cs" />
     <Compile Include="Core\TestDomain\StubBusinessObjectProviderAttribute.cs" />
     <Compile Include="Core\BusinessObjectProviderAttributeTest.cs" />

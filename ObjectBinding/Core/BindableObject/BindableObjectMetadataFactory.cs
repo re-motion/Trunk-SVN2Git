@@ -1,22 +1,26 @@
 using System;
+using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
   /// <summary>
-  /// The <see cref="DefaultMetadataFactory"/> implements the <see cref="IMetadataFactory"/> interface for the plain reflection based 
+  /// The <see cref="BindableObjectMetadataFactory"/> implements the <see cref="IMetadataFactory"/> interface for the plain reflection based 
   /// bindable object implementation.
   /// </summary>
-  public class DefaultMetadataFactory : IMetadataFactory
+  public class BindableObjectMetadataFactory : IMetadataFactory
   {
-    public static readonly DefaultMetadataFactory Instance = new DefaultMetadataFactory ();
+    public static BindableObjectMetadataFactory Create()
+    {
+      return ObjectFactory.Create<BindableObjectMetadataFactory>().With();
+    }
 
-    protected DefaultMetadataFactory ()
+    protected BindableObjectMetadataFactory ()
     {
     }
 
-    public IClassReflector CreateClassReflector (Type targetType, BindableObjectProvider businessObjectProvider)
+    public virtual IClassReflector CreateClassReflector (Type targetType, BindableObjectProvider businessObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("targetType", targetType); 
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);

@@ -21,7 +21,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _type = typeof (DerivedBusinessObjectClass);
       _businessObjectProvider = new BindableObjectProvider();
-      _classReflector = new ClassReflector (_type, _businessObjectProvider, DefaultMetadataFactory.Instance);
+      _classReflector = new ClassReflector (_type, _businessObjectProvider, BindableObjectMetadataFactory.Create());
     }
 
     [Test]
@@ -49,7 +49,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetMetadata_ForBindableObjectWithIdentity ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithIdentity), _businessObjectProvider, DefaultMetadataFactory.Instance);
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithIdentity), _businessObjectProvider, BindableObjectMetadataFactory.Create());
       BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
       Assert.That (bindableObjectClass, Is.InstanceOfType (typeof (IBusinessObjectClassWithIdentity)));
@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         + "BindableObject.BindableObjectMixinBase`1'.\r\nParameter name: concreteType")]
     public void GetMetadata_ForBindableObjectWithManualIdentity ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithManualIdentity), _businessObjectProvider, DefaultMetadataFactory.Instance);
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithManualIdentity), _businessObjectProvider, BindableObjectMetadataFactory.Create());
       classReflector.GetMetadata ();
     }
 
@@ -109,7 +109,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetMetadata_ForMixedPropertyWithSameName ()
     {
       ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedPropertyOfSameName), _businessObjectProvider,
-          DefaultMetadataFactory.Instance);
+          BindableObjectMetadataFactory.Create());
       classReflector.GetMetadata ();
     }
 

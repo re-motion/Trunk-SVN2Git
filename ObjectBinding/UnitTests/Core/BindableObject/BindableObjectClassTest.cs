@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Utilities;
 using TypeUtility=Remotion.Mixins.TypeUtility;
-using Remotion.Mixins;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -18,15 +18,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _bindableObjectProvider = new BindableObjectProvider ();
+      _bindableObjectProvider = new BindableObjectProvider();
     }
 
     [Test]
     public void Initialize ()
     {
-      BindableObjectClass bindableObjectClass = new BindableObjectClass (TypeUtility.GetConcreteMixedType (typeof (SimpleBusinessObjectClass)), _bindableObjectProvider);
+      BindableObjectClass bindableObjectClass =
+          new BindableObjectClass (TypeUtility.GetConcreteMixedType (typeof (SimpleBusinessObjectClass)), _bindableObjectProvider);
 
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (SimpleBusinessObjectClass)));
       Assert.That (bindableObjectClass.ConcreteType, Is.Not.SameAs (typeof (SimpleBusinessObjectClass)));
@@ -78,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         + "Parameter name: concreteType")]
     public void Initialize_WithMixedTypeManuallyImplementingBindableObjectMixin ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (ManualBusinessObject)).AddMixins ( typeof (object)).EnterScope())
+      using (MixinConfiguration.BuildFromActive().ForClass (typeof (ManualBusinessObject)).AddMixins (typeof (object)).EnterScope())
       {
         new BindableObjectClass (TypeUtility.GetConcreteMixedType (typeof (ManualBusinessObject)), _bindableObjectProvider);
       }
@@ -89,22 +90,26 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       PropertyReflector propertyReflector =
           new PropertyReflector (GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"), _bindableObjectProvider);
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithAllDataTypes), _bindableObjectProvider, DefaultMetadataFactory.Instance);
-      BindableObjectClass bindableObjectClass = classReflector.GetMetadata ();
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create());
+      BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
-      CheckPropertyBase (propertyReflector.GetMetadata (), bindableObjectClass.GetPropertyDefinition ("String"));
+      CheckPropertyBase (propertyReflector.GetMetadata(), bindableObjectClass.GetPropertyDefinition ("String"));
     }
 
     [Test]
     public void GetPropertyDefinition_ForMixedProperty ()
     {
       PropertyReflector propertyReflector =
-          new PropertyReflector (GetPropertyInfo (TypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
-          typeof (IMixinAddingProperty).FullName + ".MixedProperty"), _bindableObjectProvider);
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperty), _bindableObjectProvider, DefaultMetadataFactory.Instance);
-      BindableObjectClass bindableObjectClass = classReflector.GetMetadata ();
+          new PropertyReflector (
+              GetPropertyInfo (
+                  TypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
+                  typeof (IMixinAddingProperty).FullName + ".MixedProperty"),
+              _bindableObjectProvider);
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperty), _bindableObjectProvider, BindableObjectMetadataFactory.Create())
+      ;
+      BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
-      CheckPropertyBase (propertyReflector.GetMetadata (), bindableObjectClass.GetPropertyDefinition ("MixedProperty"));
+      CheckPropertyBase (propertyReflector.GetMetadata(), bindableObjectClass.GetPropertyDefinition ("MixedProperty"));
     }
 
     [Test]
@@ -114,8 +119,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithAllDataTypes, Remotion.ObjectBinding.UnitTests'.")]
     public void GetPropertyDefinition_WithInvalidPropertyName ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithAllDataTypes), _bindableObjectProvider, DefaultMetadataFactory.Instance);
-      BindableObjectClass bindableObjectClass = classReflector.GetMetadata ();
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create());
+      BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
       bindableObjectClass.GetPropertyDefinition ("Invalid");
     }
@@ -123,8 +128,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void HasPropertyDefinition ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithAllDataTypes), _bindableObjectProvider, DefaultMetadataFactory.Instance);
-      BindableObjectClass bindableObjectClass = classReflector.GetMetadata ();
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create());
+      BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
       Assert.That (bindableObjectClass.HasPropertyDefinition ("String"), Is.True);
       Assert.That (bindableObjectClass.HasPropertyDefinition ("Invalid"), Is.False);
@@ -133,8 +138,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void HasPropertyDefinition_ForMixedProperty ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperty), _bindableObjectProvider, DefaultMetadataFactory.Instance);
-      BindableObjectClass bindableObjectClass = classReflector.GetMetadata ();
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperty), _bindableObjectProvider, BindableObjectMetadataFactory.Create());
+      BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
       Assert.That (bindableObjectClass.HasPropertyDefinition ("MixedProperty"), Is.True);
     }
@@ -154,9 +159,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               CreateProperty (type, "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar")
           };
 
-      ClassReflector classReflector = new ClassReflector (type, _bindableObjectProvider, DefaultMetadataFactory.Instance);
-      BindableObjectClass bindableObjectClass = classReflector.GetMetadata ();
-      IBusinessObjectProperty[] actualProperties = bindableObjectClass.GetPropertyDefinitions ();
+      ClassReflector classReflector = new ClassReflector (type, _bindableObjectProvider, BindableObjectMetadataFactory.Create ());
+      BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
+      IBusinessObjectProperty[] actualProperties = bindableObjectClass.GetPropertyDefinitions();
 
       Assert.That (actualProperties.Length, Is.EqualTo (expectedProperties.Length));
       foreach (PropertyBase expectedProperty in expectedProperties)
@@ -166,7 +171,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         {
           if (actualProperty.Identifier == expectedProperty.Identifier)
           {
-            Assert.That (isFound, Is.False, "Multiple properties '{0}' found", expectedProperty.Identifier, DefaultMetadataFactory.Instance);
+            Assert.That (isFound, Is.False, "Multiple properties '{0}' found", expectedProperty.Identifier, BindableObjectMetadataFactory.Create ());
             CheckPropertyBase (expectedProperty, actualProperty);
             isFound = true;
           }
@@ -180,14 +185,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       ArgumentUtility.CheckNotNull ("expectedProperty", expectedProperty);
 
       Assert.That (actualProperty, Is.Not.Null);
-      Assert.That (actualProperty.GetType (), Is.SameAs (expectedProperty.GetType ()), "BusinessObjectPropertyType");
+      Assert.That (actualProperty.GetType(), Is.SameAs (expectedProperty.GetType()), "BusinessObjectPropertyType");
       Assert.That (expectedProperty.PropertyType, Is.EqualTo (actualProperty.PropertyType), "PropertyType");
       Assert.That (expectedProperty.IsList, Is.EqualTo (actualProperty.IsList), "IsList");
       if (expectedProperty.IsList)
         Assert.That (expectedProperty.ListInfo.ItemType, Is.EqualTo (actualProperty.ListInfo.ItemType), "ListInfo.ItemType");
       Assert.That (expectedProperty.IsRequired, Is.EqualTo (actualProperty.IsRequired), "IsRequired");
 
-      if (typeof (IBusinessObjectStringProperty).IsAssignableFrom (actualProperty.GetType ()))
+      if (typeof (IBusinessObjectStringProperty).IsAssignableFrom (actualProperty.GetType()))
         CheckStringProperty ((IBusinessObjectStringProperty) actualProperty, expectedProperty);
     }
 
@@ -202,7 +207,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     private PropertyBase CreateProperty (Type type, string propertyName)
     {
       PropertyReflector propertyReflector = new PropertyReflector (GetPropertyInfo (type, propertyName), _bindableObjectProvider);
-      return propertyReflector.GetMetadata ();
+      return propertyReflector.GetMetadata();
     }
   }
 }
