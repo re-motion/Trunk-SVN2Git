@@ -150,7 +150,21 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     }
 
     [Test]
-    public void GetServiceFromGeneric ()
+    public void AddService_WithGeneric ()
+    {
+      StubBusinessObjectService expectedService = new StubBusinessObjectService();
+      Assert.That (_provider.GetService (expectedService.GetType ()), Is.Null);
+
+      ((BusinessObjectProvider) _provider).AddService<IBusinessObjectService> (new StubBusinessObjectService());
+      ((BusinessObjectProvider) _provider).AddService (expectedService);
+
+      Assert.That (_provider.GetService (typeof (IBusinessObjectService)), Is.InstanceOfType (typeof (StubBusinessObjectService)));
+      Assert.That (_provider.GetService (expectedService.GetType ()), Is.SameAs (expectedService));
+      Assert.That (_provider.GetService (expectedService.GetType ()), Is.Not.SameAs (_provider.GetService (typeof (IBusinessObjectService))));
+    }
+
+    [Test]
+    public void GetService_FromGeneric ()
     {
       ((BusinessObjectProvider) _provider).AddService (typeof (IBusinessObjectService), _mockRepository.Stub<IBusinessObjectService>());
 

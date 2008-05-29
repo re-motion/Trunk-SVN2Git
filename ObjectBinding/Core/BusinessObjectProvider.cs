@@ -18,6 +18,7 @@ namespace Remotion.ObjectBinding
     /// <param name="businessObjectProviderAttributeType">
     /// A <see cref="Type"/> derived from <see cref="BusinessObjectProviderAttribute"/>. Must not be <see langword="null" />.
     /// </param>
+    /// <remarks>If no provider has been registered, a default isntance will be created using the <see cref="ObjectFactory"/>.</remarks>
     public static IBusinessObjectProvider GetProvider (Type businessObjectProviderAttributeType)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom (
@@ -32,6 +33,7 @@ namespace Remotion.ObjectBinding
     /// <typeParam name="TBusinessObjectProviderAttributeType">
     /// A <see cref="Type"/> derived from <see cref="BusinessObjectProviderAttribute"/>. Must not be <see langword="null" />.
     /// </typeParam>
+    /// <remarks>If no provider has been registered, a default isntance will be created using the <see cref="ObjectFactory"/>.</remarks>
     public static IBusinessObjectProvider GetProvider<TBusinessObjectProviderAttribute> ()
         where TBusinessObjectProviderAttribute: BusinessObjectProviderAttribute
     {
@@ -142,7 +144,7 @@ namespace Remotion.ObjectBinding
     }
 
     /// <summary> Registers a new <see cref="IBusinessObjectService"/> with this <see cref="BusinessObjectProvider"/>. </summary>
-    /// <param name="serviceType"> The type of the service to be registered. Must not be <see langword="null" />.</param>
+    /// <param name="serviceType"> The <see cref="Type"/> of the <paramref name="service"/> to be registered. Must not be <see langword="null" />.</param>
     /// <param name="service"> The <see cref="IBusinessObjectService"/> to register. Must not be <see langword="null" />.</param>
     public void AddService (Type serviceType, IBusinessObjectService service)
     {
@@ -153,6 +155,16 @@ namespace Remotion.ObjectBinding
       Assertion.IsNotNull (serviceStore, "The ServiceStore evaluated and returned null. It should return a non-null object instead.");
 
       serviceStore[serviceType] = service;
+    }
+
+    /// <summary> Registers a new <see cref="IBusinessObjectService"/> with this <see cref="BusinessObjectProvider"/>. </summary>
+    /// <param name="service"> The <see cref="IBusinessObjectService"/> to register. Must not be <see langword="null" />.</param>
+    /// <typeparam name="T">The <see cref="Type"/> of the <paramref name="service"/> to be registered.</typeparam>
+    public void AddService<T> (T service) where T : IBusinessObjectService
+    {
+      ArgumentUtility.CheckNotNull ("service", service);
+
+      AddService (typeof (T), service);
     }
 
     /// <summary>Returns the <see cref="Char"/> to be used as a serparator when formatting the property path's identifier.</summary>

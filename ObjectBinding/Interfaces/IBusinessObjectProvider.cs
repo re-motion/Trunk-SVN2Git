@@ -31,15 +31,28 @@ namespace Remotion.ObjectBinding
     ///  </remarks>
     IBusinessObjectService GetService (Type serviceType);
 
+    /// <summary> Retrieves the requested <see cref="IBusinessObjectService"/>. </summary>
+    T GetService<T> () where T: IBusinessObjectService;
+
     /// <summary> Adds the requested <see cref="IBusinessObjectService"/>. </summary>
-    /// <param name="serviceType">The type of <see cref="IBusinessObjectService"/> to get from the object model. Must not be <see langword="null" />.</param>
+    /// <param name="serviceType">The <see cref="Type"/> of <see cref="IBusinessObjectService"/> to get from the object model. Must not be <see langword="null" />.</param>
     /// <param name="service">An instance of the <see cref="IBusinessObjectService"/> specified by <paramref name="serviceType"/>. Must not be <see langword="null" />.</param>
-    ///  <remarks>
-    ///    <note type="inotes">
+    /// <remarks>
+    ///   <note type="inotes">
     ///     If your object model does not support services, this method should throw a <see cref="NotSupportedException"/>.
-    ///    </note>
-    ///  </remarks>
+    ///   </note>
+    /// </remarks>
     void AddService (Type serviceType, IBusinessObjectService service);
+
+    /// <summary> Registers a new <see cref="IBusinessObjectService"/> with this <see cref="IBusinessObjectProvider"/>. </summary>
+    /// <param name="service"> The <see cref="IBusinessObjectService"/> to register. Must not be <see langword="null" />.</param>
+    /// <typeparam name="T">The <see cref="Type"/> of the <paramref name="service"/> to be registered.</typeparam>
+    /// <remarks>
+    ///   <note type="inotes">
+    ///     If your object model does not support services, this method should throw a <see cref="NotSupportedException"/>.
+    ///   </note>
+    /// </remarks>
+    void AddService<T> (T service) where T : IBusinessObjectService;
 
     /// <summary>Returns the <see cref="Char"/> to be used as a serparator when formatting the property path's identifier.</summary>
     /// <returns> A <see cref="Char"/> that is not used by the property's identifier. </returns>

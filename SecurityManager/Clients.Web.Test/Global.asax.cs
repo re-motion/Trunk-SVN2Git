@@ -20,9 +20,9 @@ namespace Remotion.SecurityManager.Clients.Web.Test
       SecurityAdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
       SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), new WebSecurityAdapter());
       SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), new WxeSecurityAdapter());
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (GroupPropertiesSearchService), new GroupPropertiesSearchService ());
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (UserPropertiesSearchService), new UserPropertiesSearchService ());
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (RolePropertiesSearchService), new RolePropertiesSearchService ());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (new GroupPropertiesSearchService ());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (new UserPropertiesSearchService ());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (new RolePropertiesSearchService ());
     }
 
     protected void Application_End (object sender, EventArgs e)

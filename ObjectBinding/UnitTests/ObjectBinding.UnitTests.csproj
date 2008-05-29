@@ -132,6 +132,7 @@
     <Compile Include="Core\TestDomain\ClassWithOtherBusinessObjectImplementation.cs" />
     <Compile Include="Core\TestDomain\SecurableClassWithReferenceType.cs" />
     <Compile Include="Core\TestDomain\StubBusinessObjectClassService.cs" />
+    <Compile Include="Core\TestDomain\StubBusinessObjectService.cs" />
     <Compile Include="Core\TestDomain\TestEnum.cs" />
     <Compile Include="Core\TestDomain\SimpleReferenceType.cs" />
     <Compile Include="Core\TestDomain\SimpleValueType.cs" />
