@@ -70,10 +70,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     [ExpectedException (typeof (NotSupportedException),
         ExpectedMessage =
         "Searching is not supported for reference property 'SearchServiceFromPropertyWithIdentity' of business object class "
-        + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithIdentity, Remotion.ObjectBinding.UnitTests'.")]
+        + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithBusinessObjectProperties, Remotion.ObjectBinding.UnitTests'.")]
     public void Search_WithSearchNotSupported ()
     {
-      IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithIdentity> ().With ();
+      IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithBusinessObjectProperties> ().With ();
       ISearchServiceOnProperty mockService = _mockRepository.CreateMock<ISearchServiceOnProperty> ();
       IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromPropertyWithIdentity");
 
@@ -95,7 +95,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     {
       PropertyBase.Parameters propertyParameters = 
           GetPropertyParameters (GetPropertyInfo (typeof (ClassWithBusinessObjectProperties), propertyName), _businessObjectProvider);
-      return new ReferenceProperty (propertyParameters,  TypeFactory.GetConcreteType (propertyParameters.UnderlyingType));
+      ReferenceProperty property = new ReferenceProperty (propertyParameters,  TypeFactory.GetConcreteType (propertyParameters.UnderlyingType));
+      property.SetDeclaringBusinessObjectClass (_businessObjectProvider.GetBindableObjectClass (typeof (ClassWithBusinessObjectProperties)));
+
+      return property;
     }
   }
 }
