@@ -4,7 +4,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Security;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMixinTests
@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
 
       Assert.That (
           ((IBusinessObject) bindableObjectMixin).DisplayName,
-          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"));
+          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"));
     }
 
     [Test]
@@ -93,7 +93,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
       _mockRepository.VerifyAll ();
       Assert.That (
           actual,
-          NUnit.Framework.SyntaxHelpers.Text.StartsWith ("Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SecurableClassWithReferenceType"));
+          NUnit.Framework.SyntaxHelpers.Text.StartsWith ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.SecurableClassWithReferenceType"));
     }
   }
 }

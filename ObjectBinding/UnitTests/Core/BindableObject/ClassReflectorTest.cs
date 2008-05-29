@@ -4,7 +4,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Type 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain."
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain."
         + "ClassWithManualIdentity' does not implement the 'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding."
         + "BindableObject.BindableObjectMixinBase`1'.\r\nParameter name: concreteType")]
     public void GetMetadata_ForBindableObjectWithManualIdentity ()

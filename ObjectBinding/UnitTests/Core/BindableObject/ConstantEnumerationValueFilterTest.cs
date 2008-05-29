@@ -3,7 +3,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject

@@ -2,7 +2,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "The type 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.ManualBusinessObject' does not have the "
+        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not have the "
         + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
     public void GetProviderForBindableObjectType_WithMissingAttributeType ()
     {
@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "The business object provider associated with the type 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.StubBusinessObject' "
+        "The business object provider associated with the type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.StubBusinessObject' "
         + "is not of type 'Remotion.ObjectBinding.BindableObject.BindableObjectProvider'.\r\nParameter name: type")]
     public void GetProviderForBindableObjectType_WithInvalidProviderType ()
     {
@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "Type 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleReferenceType' does not implement the "
+        "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleReferenceType' does not implement the "
         + "'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding.BindableObject.BindableObjectMixinBase`1'.\r\n"
         + "Parameter name: concreteType")]
     public void GetBindableObjectClass_WithTypeNotUsingBindableObjectMixin ()

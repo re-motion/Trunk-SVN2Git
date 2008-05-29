@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Utilities;
 
@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       _adapter = new PropertyInfoAdapter (_property);
       _explicitInterfaceAdapter = new PropertyInfoAdapter (
           typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
-              "Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
               BindingFlags.NonPublic | BindingFlags.Instance));
     }
 
@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       PropertyInfoAdapter readOnlyExplicitAdapter =
           new PropertyInfoAdapter (
               typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
-                  "Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar", BindingFlags.NonPublic | BindingFlags.Instance));
+                  "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar", BindingFlags.NonPublic | BindingFlags.Instance));
       Assert.IsFalse (readOnlyExplicitAdapter.CanBeSetFromOutside);
     }
 

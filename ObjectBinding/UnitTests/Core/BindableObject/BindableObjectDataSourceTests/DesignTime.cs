@@ -5,7 +5,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDataSourceTests
@@ -42,7 +42,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
     {
       Expect.Call (
           _mockDesignerHost.GetType (
-              "Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"))
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"))
           .Return (typeof (SimpleBusinessObjectClass));
       _mockRepository.ReplayAll();
 
@@ -69,7 +69,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
     {
       Expect.Call (
           _mockDesignerHost.GetType (
-              "Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"))
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"))
           .Return (typeof (SimpleBusinessObjectClass))
           .Repeat.AtLeastOnce();
       _mockRepository.ReplayAll();
@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
     {
       SetupResult.For (
           _mockDesignerHost.GetType (
-              "Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"))
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"))
           .Return (typeof (SimpleBusinessObjectClass));
       _mockRepository.ReplayAll();
 
@@ -104,13 +104,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "The type 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleReferenceType' does not have the "
+        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleReferenceType' does not have the "
         + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
     public void GetBusinessObjectClass_WithTypeNotUsingBindableObjectMixin ()
     {
       Expect.Call (
           _mockDesignerHost.GetType (
-              "Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleReferenceType, Remotion.ObjectBinding.UnitTests"))
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleReferenceType, Remotion.ObjectBinding.UnitTests"))
           .Return (typeof (SimpleReferenceType))
           .Repeat.AtLeastOnce();
       _mockRepository.ReplayAll();

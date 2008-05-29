@@ -5,7 +5,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflectorTests
 {
@@ -122,7 +122,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     public void GetMetadata_WithReadWriteExplicitInterfaceScalar ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
-          "Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar");
+          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar");
       PropertyReflector propertyReflector = new PropertyReflector (propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
@@ -142,7 +142,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     public void GetMetadata_WithReadOnlyExplicitInterfaceScalar ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
-          "Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar");
+          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar");
       PropertyReflector propertyReflector = new PropertyReflector (propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));

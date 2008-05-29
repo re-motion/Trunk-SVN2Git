@@ -4,7 +4,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (ClassWithIdentity)));
       Assert.That (
           bindableObjectClass.Identifier,
-          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.ClassWithIdentity, Remotion.ObjectBinding.UnitTests"));
+          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithIdentity, Remotion.ObjectBinding.UnitTests"));
       Assert.That (bindableObjectClass.RequiresWriteBack, Is.False);
       Assert.That (bindableObjectClass.BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
     }
@@ -76,7 +76,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage =
         "The 'Remotion.ObjectBinding.BindableObject.IGetObjectService' required for loading objectes of type "
-        + "'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.ClassWithIdentity' is not registered with the "
+        + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithIdentity' is not registered with the "
         + "'Remotion.ObjectBinding.BusinessObjectProvider' associated with this type.")]
     public void GetObject_WithoutService ()
     {

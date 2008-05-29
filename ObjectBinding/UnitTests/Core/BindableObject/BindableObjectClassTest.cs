@@ -4,7 +4,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Utilities;
 using TypeUtility=Remotion.Mixins.TypeUtility;
 using Remotion.Mixins;
@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (bindableObjectClass.ConcreteType, Is.SameAs (Mixins.TypeUtility.GetConcreteMixedType (typeof (SimpleBusinessObjectClass))));
       Assert.That (
           bindableObjectClass.Identifier,
-          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"));
+          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"));
       Assert.That (bindableObjectClass.RequiresWriteBack, Is.False);
       Assert.That (bindableObjectClass.BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
       Assert.That (bindableObjectClass.BusinessObjectProviderAttribute, Is.InstanceOfType (typeof (BindableObjectProviderAttribute)));
@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "Type 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.SimpleReferenceType' does not implement the "
+        "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleReferenceType' does not implement the "
         + "'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding.BindableObject.BindableObjectMixinBase`1'.\r\n"
         + "Parameter name: concreteType")]
     public void Initialize_WithTypeNotUsingBindableObjectMixin ()
@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "Type 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.ManualBusinessObject' does not implement the "
+        "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not implement the "
         + "'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding.BindableObject.BindableObjectMixinBase`1'.\r\n"
         + "Parameter name: concreteType")]
     public void Initialize_WithUnmixedType ()
@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "Type 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.ManualBusinessObject' does not implement the "
+        "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not implement the "
         + "'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding.BindableObject.BindableObjectMixinBase`1'.\r\n"
         + "Parameter name: concreteType")]
     public void Initialize_WithMixedTypeManuallyImplementingBindableObjectMixin ()
@@ -111,7 +111,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [ExpectedException (typeof (KeyNotFoundException),
         ExpectedMessage =
         "The property 'Invalid' was not found on business object class "
-        + "'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.ClassWithAllDataTypes, Remotion.ObjectBinding.UnitTests'.")]
+        + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithAllDataTypes, Remotion.ObjectBinding.UnitTests'.")]
     public void GetPropertyDefinition_WithInvalidPropertyName ()
     {
       ClassReflector classReflector = new ClassReflector (typeof (ClassWithAllDataTypes), _bindableObjectProvider, DefaultMetadataFactory.Instance);
@@ -150,8 +150,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               CreateProperty (type, "ReadOnlyAttributeScalar"),
               CreateProperty (type, "ReadOnlyNonPublicSetterScalar"),
               CreateProperty (type, "Array"),
-              CreateProperty (type, "Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"),
-              CreateProperty (type, "Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar")
+              CreateProperty (type, "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"),
+              CreateProperty (type, "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar")
           };
 
       ClassReflector classReflector = new ClassReflector (type, _bindableObjectProvider, DefaultMetadataFactory.Instance);

@@ -1,11 +1,11 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Rhino.Mocks;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -93,7 +93,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetDisplayName_WithoutGlobalizationSerivce ()
     {
-      IBusinessObjectBooleanProperty property = CreateProperty ("Scalar");
+      IBusinessObjectBooleanProperty property = CreateProperty (
+          "Scalar",
+          new BindableObjectProvider (DefaultMetadataFactory.Instance, MockRepository.GenerateStub<IBusinessObjectServiceFactory>()));
 
       Assert.That (property.GetDisplayName (true), Is.EqualTo ("True"));
       Assert.That (property.GetDisplayName (false), Is.EqualTo ("False"));
@@ -193,7 +195,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
     private BooleanProperty CreateProperty (string propertyName)
     {
-      return new BooleanProperty (GetPropertyParameters (GetPropertyInfo (typeof (ClassWithValueType<bool>), propertyName), _businessObjectProvider));
+      return CreateProperty (propertyName, _businessObjectProvider);
+    }
+
+    private BooleanProperty CreateProperty (string propertyName, BindableObjectProvider provider)
+    {
+      return new BooleanProperty (GetPropertyParameters (GetPropertyInfo (typeof (ClassWithValueType<bool>), propertyName), provider));
     }
 
     private void CheckEnumerationValueInfos (BooleanEnumerationValueInfo[] expected, IEnumerationValueInfo[] actual)

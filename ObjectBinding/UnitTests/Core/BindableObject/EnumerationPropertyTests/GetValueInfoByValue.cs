@@ -7,7 +7,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain;
+using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationPropertyTests
@@ -82,8 +82,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "Object must be the same type as the enum. The type passed in was 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.EnumWithUndefinedValue'; "
-        + "the enum type was 'Remotion.ObjectBinding.UnitTests.Core.BindableObject.TestDomain.TestEnum'.")]
+        "Object must be the same type as the enum. The type passed in was 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.EnumWithUndefinedValue'; "
+        + "the enum type was 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.TestEnum'.")]
     public void EnumValueFromOtherType ()
     {
       IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithValueType<TestEnum>), "Scalar");
