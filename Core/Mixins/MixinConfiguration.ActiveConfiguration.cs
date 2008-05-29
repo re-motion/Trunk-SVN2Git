@@ -6,8 +6,8 @@ namespace Remotion.Mixins
 {
   public partial class MixinConfiguration
   {
-    private static readonly CallContextSingleton<MixinConfiguration> _activeConfiguration =
-        new CallContextSingleton<MixinConfiguration> ("Remotion.Mixins.MixinConfiguration._activeConfiguration",
+    private static readonly CallContextSingleton<MixinConfiguration> s_activeConfiguration =
+        new CallContextSingleton<MixinConfiguration> ("Remotion.Mixins.MixinConfiguration.s_activeConfiguration",
         delegate { return CopyMasterConfiguration (); });
 
     /// <summary>
@@ -23,7 +23,7 @@ namespace Remotion.Mixins
     /// </remarks>
     public static bool HasActiveConfiguration
     {
-      get { return _activeConfiguration.HasCurrent; }
+      get { return s_activeConfiguration.HasCurrent; }
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ namespace Remotion.Mixins
     /// </remarks>
     public static MixinConfiguration ActiveConfiguration
     {
-      get { return _activeConfiguration.Current; }
+      get { return s_activeConfiguration.Current; }
     }
 
     private static MixinConfiguration PeekActiveConfiguration
@@ -51,7 +51,7 @@ namespace Remotion.Mixins
     /// <param name="configuration">The configuration to be set, can be <see langword="null"/>.</param>
     public static void SetActiveConfiguration (MixinConfiguration configuration)
     {
-      _activeConfiguration.SetCurrent (configuration);
+      s_activeConfiguration.SetCurrent (configuration);
     }
   }
 }

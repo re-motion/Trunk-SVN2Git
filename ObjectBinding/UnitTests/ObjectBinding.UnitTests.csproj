@@ -183,6 +183,7 @@
     <Compile Include="Core\BindableObject\TestDomain\SimpleBusinessObjectClass.cs" />
     <Compile Include="Core\BindableObject\BindableObjectProviderTest.cs" />
     <Compile Include="Core\BindableObject\TestDomain\ClassWithAllDataTypes.cs" />
+    <Compile Include="Core\BindableObject\TestDomain\MixinStub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\StubBusinessObjectDataSource.cs">
       <SubType>Component</SubType>
