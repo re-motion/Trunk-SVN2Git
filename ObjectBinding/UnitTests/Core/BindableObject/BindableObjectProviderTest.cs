@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
@@ -136,6 +137,30 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       BindableObjectProvider provider = new BindableObjectProvider (_metadataFactoryStub, _serviceFactoryStub);
       Assert.AreSame (_metadataFactoryStub, provider.MetadataFactory);
+    }
+
+    [Test]
+    public void GetServiceFactory_WithDefaultFactory ()
+    {
+      Assert.That (_provider.ServiceFactory, Is.InstanceOfType (typeof (BindableObjectServiceFactory)));
+    }
+
+    [Test]
+    public void GetServiceFactory_WithMixin ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (BindableObjectServiceFactory)).AddMixin<MixinStub> ().EnterScope ())
+      {
+        BindableObjectProvider provider = new BindableObjectProvider ();
+        Assert.That (provider.ServiceFactory, Is.InstanceOfType (typeof (BindableObjectServiceFactory)));
+        Assert.That (provider.ServiceFactory, Is.InstanceOfType (typeof (IMixinTarget)));
+      }
+    }
+
+    [Test]
+    public void GetServiceFactoryForType_WithCustomServiceFactory ()
+    {
+      BindableObjectProvider provider = new BindableObjectProvider (_metadataFactoryStub, _serviceFactoryStub);
+      Assert.AreSame (_serviceFactoryStub, provider.ServiceFactory);
     }
   }
 }

@@ -1,19 +1,21 @@
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
   [TestFixture]
-  public class BusinessObjectServiceFactoryTest
+  public class BindableObjectServiceFactoryTest
   {
     private IBusinessObjectServiceFactory _serviceFactory;
 
     [SetUp]
     public void SetUp ()
     {
-      _serviceFactory = new BusinessObjectServiceFactory ();
+      _serviceFactory = BindableObjectServiceFactory.Create();
     }
 
     [Test]

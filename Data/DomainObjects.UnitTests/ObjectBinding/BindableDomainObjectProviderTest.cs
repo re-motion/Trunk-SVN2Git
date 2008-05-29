@@ -16,7 +16,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
     {
       BindableDomainObjectProvider provider = new BindableDomainObjectProvider();
       Assert.AreSame (BindableDomainObjectMetadataFactory.Instance, provider.MetadataFactory);
-      Assert.IsInstanceOfType (typeof (BindableDomainObjectServiceFactory), provider.ServiceFactory);
+      Assert.IsInstanceOfType (typeof (BindableObjectServiceFactory), provider.ServiceFactory);
     }
 
     [Test]

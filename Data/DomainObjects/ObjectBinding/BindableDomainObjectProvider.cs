@@ -17,7 +17,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     }
 
     public BindableDomainObjectProvider ()
-        : base (BindableDomainObjectMetadataFactory.Instance, new BindableDomainObjectServiceFactory())
+        : base (BindableDomainObjectMetadataFactory.Instance)
     {
     }
   }

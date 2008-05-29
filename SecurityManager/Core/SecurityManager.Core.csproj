@@ -72,6 +72,7 @@
     <Compile Include="Domain\AccessControl\StateUsage.cs" />
     <Compile Include="Domain\AccessControl\UserSelection.cs" />
     <Compile Include="Domain\BaseSecurityManagerObject.cs" />
+    <Compile Include="Domain\SecurityManagerObjectServiceFactoryMixin.cs" />
     <Compile Include="Domain\ConstraintViolationException.cs" />
     <Compile Include="Domain\Metadata\AbstractRoleDefinition.cs" />
     <Compile Include="Domain\Metadata\AccessTypeDefinition.cs" />

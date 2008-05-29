@@ -1,4 +1,5 @@
 ﻿using System;
+using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
@@ -6,8 +7,8 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
   /// <summary>
-  /// The <see cref="BindableDomainObjectServiceFactory"/> is the implementation of the <see cref="IBusinessObjectServiceFactory"/> interface for
-  /// the <see cref="BindableDomainObjectProvider"/> and provides default service instances bindable domain object implementations.
+  /// The <see cref="BindableDomainObjectServiceFactoryMixin"/> is an extension of the <see cref="BindableObjectServiceFactory"/> used by
+  /// the <see cref="BindableObjectProvider"/> and provides default service instances for bindable domain object implementations.
   /// </summary>
   /// <remarks>
   /// The following <see cref="IBusinessObjectService"/> interfaces are supported.
@@ -16,14 +17,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   ///     <term>Service Interface</term>
   ///     <description>Service creates instance of type</description>
   ///   </listheader>
-  ///   <item>
-  ///     <term><see cref="IBindableObjectGlobalizationService"/></term>
-  ///     <description><see cref="BindableObjectGlobalizationService"/></description>
-  ///   </item>
-  ///   <item>
-  ///     <term><see cref="IBusinessObjectStringFormatterService"/></term>
-  ///     <description><see cref="BusinessObjectStringFormatterService"/></description>
-  ///   </item>
   ///   <item>
   ///     <term><see cref="IGetObjectService"/></term>
   ///     <description><see cref="BindableDomainObjectGetObjectService"/></description>
@@ -34,9 +27,16 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   ///   </item>
   /// </list>
   /// </remarks>
-  public class BindableDomainObjectServiceFactory : BusinessObjectServiceFactory
+  [Extends (typeof (BindableObjectServiceFactory))]
+  public class BindableDomainObjectServiceFactoryMixin
+      : Mixin<BindableObjectServiceFactory, IBusinessObjectServiceFactory>, IBusinessObjectServiceFactory
   {
-    public override Remotion.ObjectBinding.IBusinessObjectService CreateService (Type serviceType)
+    public BindableDomainObjectServiceFactoryMixin ()
+    {
+    }
+
+    [OverrideTarget]
+    public virtual IBusinessObjectService CreateService (Type serviceType)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("serviceType", serviceType, typeof (IBusinessObjectService));
 
@@ -46,8 +46,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       if (serviceType == typeof (ISearchAvailableObjectsService))
         return new BindableDomainObjectSearchService();
 
-      return base.CreateService (serviceType);
+      return Base.CreateService (serviceType);
     }
-
   }
 }

@@ -1,10 +1,11 @@
 using System;
+using Remotion.Mixins;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
   /// <summary>
-  /// The <see cref="BusinessObjectServiceFactory"/> is the default implementation of the <see cref="IBusinessObjectServiceFactory"/>
+  /// The <see cref="BindableObjectServiceFactory"/> is the default implementation of the <see cref="IBusinessObjectServiceFactory"/>
   /// and provides service instances common for all bindable object implementations.
   /// </summary>
   /// <remarks>
@@ -24,8 +25,17 @@ namespace Remotion.ObjectBinding.BindableObject
   ///   </item>
   /// </list>
   /// </remarks>
-  public class BusinessObjectServiceFactory : IBusinessObjectServiceFactory
+  public class BindableObjectServiceFactory : IBusinessObjectServiceFactory
   {
+    public static BindableObjectServiceFactory Create ()
+    {
+      return ObjectFactory.Create<BindableObjectServiceFactory> (true).With();
+    }
+
+    protected BindableObjectServiceFactory ()
+    {
+    }
+
     public virtual IBusinessObjectService CreateService (Type serviceType)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("serviceType", serviceType, typeof (IBusinessObjectService));

@@ -2,23 +2,33 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ObjectBinding;
+using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
 {
   [TestFixture]
-  public class BindableDomainObjectServiceFactoryTest
+  public class BindableDomainObjectServiceFactoryMixinTest
   {
     private interface IStubService : IBusinessObjectService
     {}
 
     private IBusinessObjectServiceFactory _serviceFactory;
+    private BindableDomainObjectServiceFactoryMixin _serviceMixin;
 
     [SetUp]
     public void SetUp ()
     {
-      _serviceFactory = new BindableDomainObjectServiceFactory();
+      _serviceFactory = BindableObjectServiceFactory.Create();
+      _serviceMixin = Mixin.Get<BindableDomainObjectServiceFactoryMixin>(_serviceFactory);
+    }
+
+    [Test]
+    public void Initialize ()
+    {
+      Assert.That (_serviceMixin, Is.Not.Null);
+      Assert.That (_serviceMixin, Is.InstanceOfType (typeof (IBusinessObjectServiceFactory)));
     }
 
     [Test]

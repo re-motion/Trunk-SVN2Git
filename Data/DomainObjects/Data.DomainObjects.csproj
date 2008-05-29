@@ -155,7 +155,7 @@
     <Compile Include="ObjectBinding\BindableDomainObjectProvider.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderAttribute.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectSearchService.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectServiceFactory.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectServiceFactoryMixin.cs" />
     <Compile Include="Persistence\BulkLoadException.cs" />
     <Compile Include="Persistence\Rdbms\DataContainerLoader.cs" />
     <Compile Include="Persistence\Rdbms\DataContainerLoaderHelper.cs" />

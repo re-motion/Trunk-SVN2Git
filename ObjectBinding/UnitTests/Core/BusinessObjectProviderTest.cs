@@ -38,7 +38,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     }
 
     [Test]
-    public void Instantiate ()
+    public void Initialize ()
     {
       Assert.That (((BusinessObjectProvider) _provider).ServiceFactory, Is.SameAs (_serviceFactoryStub));
     }

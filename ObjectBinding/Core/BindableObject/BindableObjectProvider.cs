@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Remotion.Collections;
+using Remotion.Mixins;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
@@ -76,7 +77,12 @@ namespace Remotion.ObjectBinding.BindableObject
     private readonly IMetadataFactory _metadataFactory;
 
     public BindableObjectProvider ()
-        : this (DefaultMetadataFactory.Instance, new BusinessObjectServiceFactory())
+      : this (DefaultMetadataFactory.Instance, BindableObjectServiceFactory.Create ())
+    {
+    }
+
+    protected BindableObjectProvider (IMetadataFactory metadataFactory)
+      : this (metadataFactory, BindableObjectServiceFactory.Create())
     {
     }
 
