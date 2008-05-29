@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Collections\ICache.cs" />
     <Compile Include="Collections\IDataStore.cs" />
+    <Compile Include="IAdapter.cs" />
     <Compile Include="Implementation\ArgumentUtility.cs" />
     <Compile Include="Implementation\ConcreteImplementationAttribute.cs" />
     <Compile Include="Implementation\FrameworkVersion.cs" />

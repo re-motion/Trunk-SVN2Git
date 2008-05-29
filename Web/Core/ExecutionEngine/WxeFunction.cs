@@ -192,7 +192,7 @@ namespace Remotion.Web.ExecutionEngine
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("functionType", functionType, typeof (WxeFunction));
 
-      IWxeSecurityAdapter wxeSecurityAdapter = SecurityAdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
+      IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
       if (wxeSecurityAdapter == null)
         return true;
 
@@ -556,7 +556,7 @@ namespace Remotion.Web.ExecutionEngine
 
     protected virtual void CheckPermissions (WxeContext context)
     {
-      IWxeSecurityAdapter wxeSecurityAdapter = SecurityAdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
+      IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
       if (wxeSecurityAdapter == null)
         return;
 

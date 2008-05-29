@@ -887,7 +887,7 @@ namespace Remotion.Web.UI.Controls
 
     private bool HasAccessForEventCommand (ISecurableObject securableObject)
     {
-      IWebSecurityAdapter webSecurityAdapter = SecurityAdapterRegistry.Instance.GetAdapter<IWebSecurityAdapter> ();
+      IWebSecurityAdapter webSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWebSecurityAdapter> ();
       if (webSecurityAdapter == null)
         return true;
       return webSecurityAdapter.HasAccess (securableObject, Click);
@@ -895,7 +895,7 @@ namespace Remotion.Web.UI.Controls
 
     private bool HasAccessForWxeFunctionCommand ()
     {
-      IWxeSecurityAdapter wxeSecurityAdapter = SecurityAdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
+      IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
       if (wxeSecurityAdapter == null)
         return true;
       return wxeSecurityAdapter.HasStatelessAccess (WxeFunctionCommand.ResolveFunctionType ());

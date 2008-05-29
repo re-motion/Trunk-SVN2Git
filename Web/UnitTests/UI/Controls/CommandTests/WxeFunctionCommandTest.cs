@@ -36,8 +36,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
     [Test]
     public void HasAccess_WithAccessGranted ()
     {
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _testHelper.WebSecurityAdapter);
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _testHelper.WxeSecurityAdapter);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _testHelper.WebSecurityAdapter);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _testHelper.WxeSecurityAdapter);
       Command command = _testHelper.CreateWxeFunctionCommand ();
       _testHelper.ExpectWxeSecurityProviderHasStatelessAccess (typeof (ExecutionEngine.TestFunction), true);
       _testHelper.ReplayAll ();
@@ -51,8 +51,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
     [Test]
     public void HasAccess_WithAccessDenied ()
     {
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _testHelper.WebSecurityAdapter);
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _testHelper.WxeSecurityAdapter);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _testHelper.WebSecurityAdapter);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _testHelper.WxeSecurityAdapter);
       Command command = _testHelper.CreateWxeFunctionCommand ();
       _testHelper.ExpectWxeSecurityProviderHasStatelessAccess (typeof (ExecutionEngine.TestFunction), false);
       _testHelper.ReplayAll ();

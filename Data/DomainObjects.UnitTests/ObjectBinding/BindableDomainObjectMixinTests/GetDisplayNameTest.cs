@@ -22,13 +22,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding.BindableDomainObje
 
       _mockRepository = new MockRepository();
       _mockObjectSecurityAdapter = _mockRepository.CreateMock<IObjectSecurityAdapter>();
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), _mockObjectSecurityAdapter);
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), _mockObjectSecurityAdapter);
     }
 
     public override void TearDown ()
     {
       base.TearDown();
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
     }
 
     [Test]

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{EF86BF16-81EF-4F51-B2B1-DB3C7C1E4CDE}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -152,8 +152,8 @@
     <Compile Include="Core\SecurityContextTest.cs" />
     <Compile Include="Core\ObjectSecurityAdapterTest.cs" />
     <Compile Include="Core\SecurityFreeSectionTest.cs" />
-    <Compile Include="Core\SecurityAdapterRegistryMock.cs" />
-    <Compile Include="Core\SecurityAdapterRegistryTest.cs" />
+    <Compile Include="Core\AdapterRegistryMock.cs" />
+    <Compile Include="Core\AdapterRegistryTest.cs" />
     <Compile Include="Core\SecurityStrategyTests\CachingTest.cs" />
     <Compile Include="Core\SecurityStrategyTests\Test.cs" />
     <Compile Include="Core\ThreadUserProviderTest.cs" />

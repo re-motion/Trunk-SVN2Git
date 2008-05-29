@@ -16,8 +16,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
       HttpContextHelper.SetCurrent (null);
       WebConfigurationMock.Current = null;
       Remotion.Web.ExecutionEngine.UrlMapping.UrlMappingConfiguration.SetCurrent (null);
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
     }
   }
 }

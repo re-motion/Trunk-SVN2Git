@@ -20,13 +20,13 @@ namespace Remotion.Web.UnitTests.Security.UI.WebSecurityAdapterTests
       _securityAdapter = new WebSecurityAdapter ();
 
       _testHelper = new WebPermissionProviderTestHelper ();
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _testHelper.WxeSecurityAdapter);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _testHelper.WxeSecurityAdapter);
     }
 
     [TearDown]
     public void TearDown ()
     {
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
     }
 
     [Test]

@@ -23,7 +23,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.MenuTabTests
       _mockSecurableObject = _mocks.CreateMock<ISecurableObject> ();
       _mockNavigationCommand = _mocks.CreateMock<NavigationCommand> ();
 
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _mockWebSecurityAdapter);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _mockWebSecurityAdapter);
     }
 
     [Test]

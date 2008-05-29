@@ -138,7 +138,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (securableObject == null)
         return true;
 
-      IObjectSecurityAdapter objectSecurityAdapter = SecurityAdapterRegistry.Instance.GetAdapter<IObjectSecurityAdapter>();
+      IObjectSecurityAdapter objectSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IObjectSecurityAdapter>();
       if (objectSecurityAdapter == null)
         return true;
 
@@ -158,7 +158,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (securableObject == null)
         return false;
 
-      IObjectSecurityAdapter objectSecurityAdapter = SecurityAdapterRegistry.Instance.GetAdapter<IObjectSecurityAdapter>();
+      IObjectSecurityAdapter objectSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IObjectSecurityAdapter>();
       if (objectSecurityAdapter == null)
         return false;
 

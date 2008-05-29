@@ -30,7 +30,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       _businessObjectProvider = new BindableObjectProvider();
       _mockObjectSecurityAdapter = _mocks.CreateMock<IObjectSecurityAdapter>();
 
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), _mockObjectSecurityAdapter);
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), _mockObjectSecurityAdapter);
 
       _securableObject = (IBusinessObject) ObjectFactory.Create<SecurableClassWithReferenceType<SimpleReferenceType>>()
                                                .With (_mocks.CreateMock<IObjectSecurityStrategy>());
@@ -62,13 +62,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public override void TearDown ()
     {
       base.TearDown();
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
     }
 
     [Test]
     public void IsAccessibleWithoutObjectSecurityProvider ()
     {
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
       _mocks.ReplayAll();
 
       bool isAccessible = _securableProperty.IsAccessible (_securableObject.BusinessObjectClass, _securableObject);
@@ -130,7 +130,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     [Test]
     public void IsNotReadOnlyWithoutObjectSecurityProvider ()
     {
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
       _mocks.ReplayAll();
 
       bool isReadOnly = _securableProperty.IsReadOnly (_securableObject);

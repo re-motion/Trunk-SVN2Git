@@ -5,13 +5,13 @@ using Remotion.Security.BridgeInterfaces;
 namespace Remotion.Security
 {
   //TODO: Move to core and rename to non-security-specific registry
-  /// <summary>Used to register <see cref="ISecurityAdapter"/> instances.</summary>
+  /// <summary>Used to register <see cref="IAdapter"/> instances.</summary>
   /// <remarks>Used by those modules of the framework that do not have binary depedencies to the security module to access security information.</remarks>
-  public static class SecurityAdapterRegistry
+  public static class AdapterRegistry
   {
-    public static ISecurityAdapterRegistryImplementation Instance
+    public static IAdapterRegistryImplementation Instance
     {
-      get { return VersionDependentImplementationBridge<ISecurityAdapterRegistryImplementation>.Implementation; }
+      get { return VersionDependentImplementationBridge<IAdapterRegistryImplementation>.Implementation; }
     }
   }
 }

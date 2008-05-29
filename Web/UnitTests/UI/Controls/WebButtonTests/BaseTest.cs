@@ -15,8 +15,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.WebButtonTests
       base.TearDown ();
 
       WebConfigurationMock.Current = null;
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
     }
   }
 }

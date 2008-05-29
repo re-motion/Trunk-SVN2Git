@@ -12,7 +12,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
     public override void SetUp ()
     {
       base.SetUp ();
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), null);
       BusinessObjectProvider.SetProvider (typeof(BindableDomainObjectProviderAttribute), null);
     }
 

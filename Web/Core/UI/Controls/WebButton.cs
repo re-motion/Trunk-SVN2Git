@@ -370,7 +370,7 @@ namespace Remotion.Web.UI.Controls
 
     protected bool HasAccess ()
     {
-      IWebSecurityAdapter securityAdapter = SecurityAdapterRegistry.Instance.GetAdapter<IWebSecurityAdapter>();
+      IWebSecurityAdapter securityAdapter = AdapterRegistry.Instance.GetAdapter<IWebSecurityAdapter>();
       if (securityAdapter == null)
         return true;
 

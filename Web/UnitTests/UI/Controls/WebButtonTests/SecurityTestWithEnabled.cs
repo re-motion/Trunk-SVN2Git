@@ -21,7 +21,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.WebButtonTests
       _mockWebSecurityAdapter = _mocks.CreateMock<IWebSecurityAdapter> ();
       _mockSecurableObject = _mocks.CreateMock<ISecurableObject> ();
 
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _mockWebSecurityAdapter);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _mockWebSecurityAdapter);
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.WebButtonTests
     [Test]
     public void EvaluateTrue_FromTrueAndWithoutWebSeucrityProvider ()
     {
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
       WebButton button = CreateButtonWithClickEventHandler ();
       button.Enabled = true;
       _mocks.ReplayAll ();
@@ -69,7 +69,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.WebButtonTests
     [Test]
     public void EvaluateFalse_FromFalseAndWithoutWebSeucrityProvider ()
     {
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), null);
       WebButton button = CreateButtonWithClickEventHandler ();
       button.Enabled = false;
       _mocks.ReplayAll ();

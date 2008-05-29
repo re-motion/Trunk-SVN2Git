@@ -21,7 +21,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       _mocks = new MockRepository ();
       _mockWxeSecurityAdapter = _mocks.CreateMock<IWxeSecurityAdapter> ();
 
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _mockWxeSecurityAdapter);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _mockWxeSecurityAdapter);
     }
 
     [Test]
@@ -61,7 +61,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void ExecuteFunctionWithoutWxeSecurityProvider ()
     {
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
 
       TestFunction function = new TestFunction ();
       _mocks.ReplayAll ();
@@ -98,7 +98,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void HasStatelessAccessGrantedWithoutWxeSecurityProvider ()
     {
-      SecurityAdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
+      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
       _mocks.ReplayAll ();
 
       bool hasAccess = WxeFunction.HasAccess (typeof (TestFunction));

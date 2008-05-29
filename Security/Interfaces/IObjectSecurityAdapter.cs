@@ -3,7 +3,7 @@ namespace Remotion.Security
 {
   /// <summary>Defines an adapter between the security layer and the business object implementation.</summary>
   /// <remarks>
-  /// It is registered in the <see cref="SecurityAdapterRegistry"/> and is used for security checks 
+  /// It is registered in the <see cref="AdapterRegistry"/> and is used for security checks 
   /// in implementations of <see cref="I:Remotion.ObjectBinding.IBusinessObjectProperty"/>.
   /// <note type="implementnotes">
   /// A typical implementation uses a <see cref="T:Remotion.Security.SecurityClient"/> that further dispatches to an 
