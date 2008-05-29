@@ -20,7 +20,6 @@ namespace Remotion.ObjectBinding.BindableObject
       CheckTypeForMixin (concreteType);
       Assertion.IsFalse (concreteType.IsValueType, "mixed types cannot be value types");
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
-
       
       _targetType = Mixins.TypeUtility.GetUnderlyingTargetType (concreteType);
       _concreteType = concreteType;
@@ -122,12 +121,15 @@ namespace Remotion.ObjectBinding.BindableObject
       get { return _businessObjectProviderAttribute; }
     }
 
-    internal void SetProperties (IEnumerable<PropertyBase> properties)
+    public void SetPropertyDefinitions (IEnumerable<PropertyBase> properties)
     {
       ArgumentUtility.CheckNotNull ("properties", properties);
 
       foreach (PropertyBase property in properties)
+      {
+        property.SetDeclaringBusinessObjectClass (this);
         _properties.Add (property);
+      }
     }
 
     protected void CheckTypeForMixin (Type concreteType)

@@ -180,6 +180,25 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       }
     }
 
+    [Test]
+    public void SetPropertyDefinitions ()
+    {
+      Type type = typeof (ClassWithReferenceType<SimpleReferenceType>);
+      PropertyBase[] expectedProperties = new PropertyBase[]
+          {
+              CreateProperty (type, "Scalar"),
+              CreateProperty (type, "ReadOnlyScalar"),
+          };
+
+      BindableObjectClass bindableObjectClass = new BindableObjectClass (TypeUtility.GetConcreteMixedType (type), _bindableObjectProvider);
+      bindableObjectClass.SetPropertyDefinitions (expectedProperties);
+      IBusinessObjectProperty[] actualProperties = bindableObjectClass.GetPropertyDefinitions();
+
+      Assert.That (actualProperties, Is.EqualTo (expectedProperties));
+      foreach (IBusinessObjectProperty actualProperty in actualProperties)
+        Assert.That (((PropertyBase) actualProperty).BusinessObjectClass, Is.SameAs (bindableObjectClass));
+    }
+
     private void CheckPropertyBase (IBusinessObjectProperty expectedProperty, IBusinessObjectProperty actualProperty)
     {
       ArgumentUtility.CheckNotNull ("expectedProperty", expectedProperty);
@@ -191,6 +210,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       if (expectedProperty.IsList)
         Assert.That (expectedProperty.ListInfo.ItemType, Is.EqualTo (actualProperty.ListInfo.ItemType), "ListInfo.ItemType");
       Assert.That (expectedProperty.IsRequired, Is.EqualTo (actualProperty.IsRequired), "IsRequired");
+      Assert.That (((PropertyBase) actualProperty).BusinessObjectClass, Is.Not.Null);
 
       if (typeof (IBusinessObjectStringProperty).IsAssignableFrom (actualProperty.GetType()))
         CheckStringProperty ((IBusinessObjectStringProperty) actualProperty, expectedProperty);

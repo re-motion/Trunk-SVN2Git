@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Reflection;
-using Remotion.ObjectBinding;
 using Remotion.Security;
 using Remotion.Utilities;
 
@@ -18,8 +16,13 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       public readonly bool IsRequired;
       public readonly bool IsReadOnly;
 
-      public Parameters (BindableObjectProvider businessObjectProvider, IPropertyInformation propertyInfo, Type underlyingType, IListInfo listInfo,
-          bool isRequired, bool isReadOnly)
+      public Parameters (
+          BindableObjectProvider businessObjectProvider,
+          IPropertyInformation propertyInfo,
+          Type underlyingType,
+          IListInfo listInfo,
+          bool isRequired,
+          bool isReadOnly)
       {
         ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
         ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
@@ -40,6 +43,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly Type _underlyingType;
     private readonly bool _isReadOnly;
     private readonly bool _isNullable;
+    private BindableObjectClass _businessObjectClass;
 
     protected PropertyBase (Parameters parameters)
     {
@@ -49,7 +53,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _listInfo = parameters.ListInfo;
       _isRequired = parameters.IsRequired;
       _isReadOnly = parameters.IsReadOnly;
-      _isNullable = GetNullability ();
+      _isNullable = GetNullability();
     }
 
     /// <summary> Gets a flag indicating whether this property contains multiple values. </summary>
@@ -108,7 +112,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       get
       {
-        IBindableObjectGlobalizationService globalizationService = BusinessObjectProvider.GetService<IBindableObjectGlobalizationService> ();
+        IBindableObjectGlobalizationService globalizationService = BusinessObjectProvider.GetService<IBindableObjectGlobalizationService>();
         if (globalizationService == null)
           return Identifier;
         return globalizationService.GetPropertyDisplayName (_propertyInfo);
@@ -175,6 +179,22 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       get { return BusinessObjectProvider; }
     }
 
+    public BindableObjectClass BusinessObjectClass
+    {
+      get
+      {
+        if (_businessObjectClass == null)
+        {
+          throw new InvalidOperationException (
+              string.Format (
+                  "Accessing the BusinessObjectClass of a property is invalid until the property has been associated with a class.\r\nProperty '{0}'",
+                  Identifier));
+        }
+
+        return _businessObjectClass;
+      }
+    }
+
     public IPropertyInformation PropertyInfo
     {
       get { return _propertyInfo; }
@@ -188,6 +208,31 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     public virtual object ConvertToNativePropertyType (object publicValue)
     {
       return publicValue;
+    }
+
+    public void SetDeclaringBusinessObjectClass (BindableObjectClass businessObjectClass)
+    {
+      ArgumentUtility.CheckNotNull ("businessObjectClass", businessObjectClass);
+      if (BusinessObjectProvider != businessObjectClass.BusinessObjectProvider)
+      {
+        throw new ArgumentException (
+            string.Format (
+                "The BusinessObjectProvider of property '{0}' does not match the BusinessObjectProvider of class '{1}'.",
+                Identifier,
+                businessObjectClass.Identifier),
+            "businessObjectClass");
+      }
+
+      if (_businessObjectClass != null)
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "The BusinessObjectClass of a property cannot be changed after it was assigned.\r\nClass '{0}'\r\nProperty '{1}'",
+                _businessObjectClass.Identifier,
+                Identifier));
+      }
+
+      _businessObjectClass = businessObjectClass;
     }
 
     protected Type UnderlyingType

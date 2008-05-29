@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.BindableObject
       else
         bindableObjectClass = new BindableObjectClass (_concreteType, _businessObjectProvider);
 
-      bindableObjectClass.SetProperties (GetProperties());
+      bindableObjectClass.SetPropertyDefinitions (GetProperties());
 
       return bindableObjectClass;
     }
