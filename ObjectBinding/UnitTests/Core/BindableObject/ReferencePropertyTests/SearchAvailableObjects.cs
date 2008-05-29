@@ -46,6 +46,27 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
+    public void Search_WithSearchSupportedAndReferencingObjectNull ()
+    {
+      ISearchServiceOnProperty mockService = _mockRepository.CreateMock<ISearchServiceOnProperty> ();
+      IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromPropertyWithIdentity");
+      IBusinessObject[] expected = new IBusinessObject[0];
+
+      using (_mockRepository.Ordered ())
+      {
+        Expect.Call (mockService.SupportsIdentity (property)).Return (true);
+        Expect.Call (mockService.Search (null, property, "*")).Return (expected);
+      }
+      _mockRepository.ReplayAll ();
+
+      _businessObjectProvider.AddService (mockService);
+      IBusinessObject[] actual = property.SearchAvailableObjects (null, "*");
+
+      _mockRepository.VerifyAll ();
+      Assert.That (actual, Is.SameAs (expected));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException),
         ExpectedMessage =
         "Searching is not supported for reference property 'SearchServiceFromPropertyWithIdentity' of business object class "

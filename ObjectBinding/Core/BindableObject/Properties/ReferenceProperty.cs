@@ -1,8 +1,4 @@
 using System;
-using Remotion.Mixins;
-using Remotion.Mixins.CodeGeneration;
-using Remotion.ObjectBinding;
-using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject.Properties
@@ -44,13 +40,12 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       get
       {
-        ISearchAvailableObjectsService searchAvailableObjectsService = 
-            (ISearchAvailableObjectsService) BusinessObjectProvider.GetService (_searchServiceType);
-        if (searchAvailableObjectsService == null)
+        ISearchAvailableObjectsService searchService = (ISearchAvailableObjectsService) BusinessObjectProvider.GetService (_searchServiceType);
+        if (searchService == null)
           return false;
 
         if (ReferenceClass is IBusinessObjectClassWithIdentity)
-          return searchAvailableObjectsService.SupportsIdentity (this);
+          return searchService.SupportsIdentity (this);
 
         return true;
       }
@@ -65,21 +60,19 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// </exception>
     public IBusinessObject[] SearchAvailableObjects (IBusinessObject referencingObject, string searchStatement)
     {
-      ArgumentUtility.CheckNotNull ("referencingObject", referencingObject);
-
       if (!SupportsSearchAvailableObjects)
       {
         throw new NotSupportedException (
             string.Format (
                 "Searching is not supported for reference property '{0}' of business object class '{1}'.",
                 Identifier,
-                referencingObject.BusinessObjectClass.Identifier));
+                BusinessObjectClass.Identifier));
       }
 
-      ISearchAvailableObjectsService searchAvailableObjectsService = (ISearchAvailableObjectsService) BusinessObjectProvider.GetService (_searchServiceType);
-      Assertion.IsNotNull (searchAvailableObjectsService, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceType.FullName);
+      ISearchAvailableObjectsService searchService = (ISearchAvailableObjectsService) BusinessObjectProvider.GetService (_searchServiceType);
+      Assertion.IsNotNull (searchService, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceType.FullName);
 
-      return searchAvailableObjectsService.Search (referencingObject, this, searchStatement);
+      return searchService.Search (referencingObject, this, searchStatement);
     }
 
     /// <summary>
