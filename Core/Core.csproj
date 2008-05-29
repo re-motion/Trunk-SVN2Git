@@ -94,6 +94,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
     <Compile Include="CallContextSingleton.cs" />
     <Compile Include="Collections\InterlockedDataStore.cs" />
     <Compile Include="Collections\NullDataStore.cs" />

@@ -43,7 +43,6 @@
     <Compile Include="AccessTypeAttribute.cs" />
     <Compile Include="ArgumentUtility.cs" />
     <Compile Include="BridgeInterfaces\IAccessTypeCacheImplementation.cs" />
-    <Compile Include="BridgeInterfaces\IAdapterRegistryImplementation.cs" />
     <Compile Include="EnumWrapper.cs" />
     <Compile Include="IObjectSecurityAdapter.cs" />
     <Compile Include="IObjectSecurityStrategy.cs" />
@@ -56,7 +55,6 @@
     <Compile Include="IUserProvider.cs" />
     <Compile Include="PermissionDeniedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AdapterRegistry.cs" />
     <Compile Include="SecurityStateAttribute.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Security.Interfaces.build" />

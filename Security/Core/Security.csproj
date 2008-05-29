@@ -47,7 +47,6 @@
     <None Include="Security.build" />
     <Compile Include="BaseDemandPermissionAttribute.cs" />
     <Compile Include="BridgeImplementations\AccessTypeCacheImplementation.cs" />
-    <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
     <Compile Include="Configuration\SecurityProviderHelper.cs" />
     <Compile Include="GlobalAccessTypeCacheProviderObjectReference.cs" />
     <Compile Include="IFunctionalSecurityStrategy.cs" />

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Utilities;
-using Remotion.Security.BridgeInterfaces;
+using Remotion.BridgeInterfaces;
 
-namespace Remotion.Security.BridgeImplementations
+namespace Remotion.BridgeImplementations
 {
   public class AdapterRegistryImplementation : IAdapterRegistryImplementation
   {

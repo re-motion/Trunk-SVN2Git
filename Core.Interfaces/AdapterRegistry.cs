@@ -1,12 +1,12 @@
 using System;
 using Remotion.Implementation;
-using Remotion.Security.BridgeInterfaces;
+using Remotion.BridgeInterfaces;
 
-namespace Remotion.Security
+namespace Remotion
 {
-  //TODO: Move to core and rename to non-security-specific registry
   /// <summary>Used to register <see cref="IAdapter"/> instances.</summary>
-  /// <remarks>Used by those modules of the framework that do not have binary depedencies to the security module to access security information.</remarks>
+  /// <remarks>Used by those modules of the framework that do not have binary depedencies to another module to access information from this module.</remarks>
+  /// <seealso cref="T:Remotion.Security.ISecurityAdapter"/>
   public static class AdapterRegistry
   {
     public static IAdapterRegistryImplementation Instance

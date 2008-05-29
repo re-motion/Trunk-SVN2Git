@@ -38,6 +38,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdapterRegistry.cs" />
+    <Compile Include="BridgeInterfaces\IAdapterRegistryImplementation.cs" />
     <Compile Include="Collections\ICache.cs" />
     <Compile Include="Collections\IDataStore.cs" />
     <Compile Include="IAdapter.cs" />

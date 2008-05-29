@@ -125,6 +125,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdapterRegistryMock.cs" />
+    <Compile Include="AdapterRegistryTest.cs" />
     <Compile Include="CallContextSingletonTest.cs" />
     <Compile Include="Collections\InterlockedDataStoreTest.cs" />
     <Compile Include="Collections\MonitorCheckingInterceptor.cs" />

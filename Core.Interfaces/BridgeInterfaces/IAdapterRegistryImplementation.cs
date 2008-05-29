@@ -1,9 +1,9 @@
 using System;
 using Remotion.Implementation;
 
-namespace Remotion.Security.BridgeInterfaces
+namespace Remotion.BridgeInterfaces
 {
-  [ConcreteImplementation ("Remotion.Security.BridgeImplementations.AdapterRegistryImplementation, Remotion.Security, Version = <version>")]
+  [ConcreteImplementation ("Remotion.BridgeImplementations.AdapterRegistryImplementation, Remotion, Version = <version>")]
   public interface IAdapterRegistryImplementation
   {
     void SetAdapter (Type adapterType, IAdapter value);

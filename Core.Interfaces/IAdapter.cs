@@ -1,3 +1,5 @@
+using Remotion.BridgeInterfaces;
+
 namespace Remotion
 {
   /// <summary>

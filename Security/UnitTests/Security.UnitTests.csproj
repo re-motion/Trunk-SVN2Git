@@ -152,8 +152,6 @@
     <Compile Include="Core\SecurityContextTest.cs" />
     <Compile Include="Core\ObjectSecurityAdapterTest.cs" />
     <Compile Include="Core\SecurityFreeSectionTest.cs" />
-    <Compile Include="Core\AdapterRegistryMock.cs" />
-    <Compile Include="Core\AdapterRegistryTest.cs" />
     <Compile Include="Core\SecurityStrategyTests\CachingTest.cs" />
     <Compile Include="Core\SecurityStrategyTests\Test.cs" />
     <Compile Include="Core\ThreadUserProviderTest.cs" />

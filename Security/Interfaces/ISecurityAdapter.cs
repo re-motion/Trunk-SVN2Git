@@ -1,5 +1,5 @@
 ﻿using System;
-using Remotion.Security.BridgeInterfaces;
+using Remotion.BridgeInterfaces;
 
 namespace Remotion.Security
 {

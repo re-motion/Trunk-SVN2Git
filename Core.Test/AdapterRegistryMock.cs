@@ -1,7 +1,7 @@
 using System;
-using Remotion.Security.BridgeImplementations;
+using Remotion.BridgeImplementations;
 
-namespace Remotion.Security.UnitTests.Core
+namespace Remotion.UnitTests
 {
   public class AdapterRegistryMock : AdapterRegistryImplementation
   {

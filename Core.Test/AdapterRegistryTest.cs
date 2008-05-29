@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using Remotion.Security.BridgeImplementations;
+using Remotion.BridgeImplementations;
 using Rhino.Mocks;
 
-namespace Remotion.Security.UnitTests.Core
+namespace Remotion.UnitTests
 {
   [TestFixture]
   public class AdapterRegistryTest
