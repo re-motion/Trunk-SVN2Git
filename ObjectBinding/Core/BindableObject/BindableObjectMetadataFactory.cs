@@ -13,7 +13,7 @@ namespace Remotion.ObjectBinding.BindableObject
   {
     public static BindableObjectMetadataFactory Create()
     {
-      return ObjectFactory.Create<BindableObjectMetadataFactory>().With();
+      return ObjectFactory.Create<BindableObjectMetadataFactory> (true).With();
     }
 
     protected BindableObjectMetadataFactory ()
