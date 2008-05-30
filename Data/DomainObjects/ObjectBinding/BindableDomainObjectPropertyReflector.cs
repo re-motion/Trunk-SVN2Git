@@ -17,7 +17,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   {
     public static BindableDomainObjectPropertyReflector Create (Type concreteType, IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
     {
-      return ObjectFactory.Create <BindableDomainObjectPropertyReflector>().With (concreteType, propertyInfo, businessObjectProvider);
+      return ObjectFactory.Create <BindableDomainObjectPropertyReflector> (true).With (concreteType, propertyInfo, businessObjectProvider);
     }
 
     private PropertyDefinition _propertyDefinition;
