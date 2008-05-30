@@ -19,14 +19,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain
 
     private IBusinessObjectServiceFactory _serviceFactory;
     private SecurityManagerObjectServiceFactoryMixin _serviceMixin;
-    private IBusinessObjectProviderWithIdentity _provider;
+    private IBusinessObjectProviderWithIdentity _bindableDomainObjectProvider;
+    private IBusinessObjectProviderWithIdentity _bindableObjectProvider;
+    private MockRepository _mockRepository;
 
     [SetUp]
     public void SetUp ()
     {
       _serviceFactory = BindableObjectServiceFactory.Create();
       _serviceMixin = Mixin.Get<SecurityManagerObjectServiceFactoryMixin> (_serviceFactory);
-      _provider = MockRepository.GenerateStub<IBusinessObjectProviderWithIdentity>();
+      _mockRepository = new MockRepository ();
+      _bindableDomainObjectProvider = _mockRepository.Stub<IBusinessObjectProviderWithIdentity> ();
+      _bindableObjectProvider = _mockRepository.Stub<IBusinessObjectProviderWithIdentity> ();
+      SetupResult.For (_bindableDomainObjectProvider.ProviderAttribute).Return (new BindableDomainObjectProviderAttribute ());
+      SetupResult.For (_bindableObjectProvider.ProviderAttribute).Return (new BindableObjectProviderAttribute ());
+      _mockRepository.ReplayAll ();
     }
 
     [Test]
@@ -41,7 +48,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public void GetService_FromUserPropertiesSearchService ()
     {
       Assert.That (
-          _serviceFactory.CreateService (_provider, typeof (UserPropertiesSearchService)),
+          _serviceFactory.CreateService (_bindableObjectProvider, typeof (UserPropertiesSearchService)),
           Is.InstanceOfType (typeof (UserPropertiesSearchService)));
     }
 
@@ -49,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public void GetService_FromGroupPropertiesSearchService ()
     {
       Assert.That (
-          _serviceFactory.CreateService (_provider, typeof (GroupPropertiesSearchService)),
+          _serviceFactory.CreateService (_bindableObjectProvider, typeof (GroupPropertiesSearchService)),
           Is.InstanceOfType (typeof (GroupPropertiesSearchService)));
     }
 
@@ -57,7 +64,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public void GetService_FromRolePropertiesSearchService ()
     {
       Assert.That (
-          _serviceFactory.CreateService (_provider, typeof (RolePropertiesSearchService)),
+          _serviceFactory.CreateService (_bindableObjectProvider, typeof (RolePropertiesSearchService)),
           Is.InstanceOfType (typeof (RolePropertiesSearchService)));
     }
 
@@ -65,7 +72,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public void GetService_FromIBindableObjectGlobalizationService ()
     {
       Assert.That (
-          _serviceFactory.CreateService (_provider, typeof (IBindableObjectGlobalizationService)),
+          _serviceFactory.CreateService (_bindableObjectProvider, typeof (IBindableObjectGlobalizationService)),
           Is.InstanceOfType (typeof (BindableObjectGlobalizationService)));
     }
 
@@ -73,7 +80,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public void GetService_FromIGetObjectService ()
     {
       Assert.That (
-          _serviceFactory.CreateService (_provider, typeof (IGetObjectService)),
+          _serviceFactory.CreateService (_bindableDomainObjectProvider, typeof (IGetObjectService)),
           Is.InstanceOfType (typeof (BindableDomainObjectGetObjectService)));
     }
 
@@ -81,7 +88,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public void GetService_FromUnknownService ()
     {
       Assert.That (
-          _serviceFactory.CreateService (_provider, typeof (IStubService)),
+          _serviceFactory.CreateService (_bindableObjectProvider, typeof (IStubService)),
           Is.Null);
     }
   }
