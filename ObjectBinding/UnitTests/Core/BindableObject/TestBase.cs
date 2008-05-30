@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
     protected PropertyBase.Parameters GetPropertyParameters (IPropertyInformation property, BindableObjectProvider provider)
     {
-      PropertyReflector reflector = new PropertyReflector (property, provider);
+      PropertyReflector reflector = PropertyReflector.Create(property, provider);
       return (PropertyBase.Parameters) PrivateInvoke.InvokeNonPublicMethod (reflector, "CreateParameters", GetUnderlyingType (reflector));
     }
   }

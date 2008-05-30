@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     public void GetMetadata_WithScalar ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
-      PropertyReflector propertyReflector = new PropertyReflector (propertyInfo, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
 
@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     public void GetMetadata_WithReadOnlyScalar ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "ReadOnlyScalar");
-      PropertyReflector propertyReflector = new PropertyReflector (propertyInfo, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
 
@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     public void GetMetadata_WithReadOnlyAttributeScalar ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "ReadOnlyAttributeScalar");
-      PropertyReflector propertyReflector = new PropertyReflector (propertyInfo, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
 
@@ -82,7 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     public void GetMetadata_WithReadOnlyNonPublicSetterScalar ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "ReadOnlyNonPublicSetterScalar");
-      PropertyReflector propertyReflector = new PropertyReflector (propertyInfo, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
 
@@ -101,7 +101,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     public void GetMetadata_WithArray ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Array");
-      PropertyReflector propertyReflector = new PropertyReflector (propertyInfo, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
 
@@ -123,7 +123,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
           "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar");
-      PropertyReflector propertyReflector = new PropertyReflector (propertyInfo, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
 
@@ -143,7 +143,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
           "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar");
-      PropertyReflector propertyReflector = new PropertyReflector (propertyInfo, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
 
@@ -163,7 +163,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (TypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
           typeof (IMixinAddingProperty).FullName + ".MixedProperty");
-      PropertyReflector propertyReflector = new PropertyReflector (propertyInfo, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (string), GetUnderlyingType (propertyReflector));
 
@@ -183,7 +183,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (TypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
           typeof (IMixinAddingProperty).FullName + ".MixedReadOnlyProperty");
-      PropertyReflector propertyReflector = new PropertyReflector (propertyInfo, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (string), GetUnderlyingType (propertyReflector));
 

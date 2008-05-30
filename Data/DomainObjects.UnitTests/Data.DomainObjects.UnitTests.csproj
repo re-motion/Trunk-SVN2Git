@@ -203,6 +203,7 @@
     <Compile Include="ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectServiceFactoryMixinTest.cs" />
+    <Compile Include="ObjectBinding\TestDomain\MixinStub.cs" />
     <Compile Include="Security\DomainObjectSecurityStrategyTest.cs" />
     <Compile Include="Security\SecurityClientTransactionExtensionTests\FilterQueryResultTest.cs" />
     <Compile Include="Security\SecurityClientTransactionExtensionTests\InterfaceTest.cs" />

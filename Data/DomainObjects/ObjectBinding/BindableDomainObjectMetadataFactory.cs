@@ -20,7 +20,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     {
     }
 
-    public IClassReflector CreateClassReflector (Type targetType, BindableObjectProvider businessObjectProvider)
+    public virtual IClassReflector CreateClassReflector (Type targetType, BindableObjectProvider businessObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("targetType", targetType);
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
@@ -28,19 +28,19 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       return new ClassReflector (targetType, businessObjectProvider, this);
     }
 
-    public IPropertyFinder CreatePropertyFinder (Type concreteType)
+    public virtual IPropertyFinder CreatePropertyFinder (Type concreteType)
     {
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
       return new BindableDomainObjectPropertyFinder (concreteType);
     }
 
-    public PropertyReflector CreatePropertyReflector (Type concreteType, IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
+    public virtual PropertyReflector CreatePropertyReflector (Type concreteType, IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
 
-      return new BindableDomainObjectPropertyReflector (concreteType, propertyInfo, businessObjectProvider);
+      return BindableDomainObjectPropertyReflector.Create (concreteType, propertyInfo, businessObjectProvider);
     }
   }
 }

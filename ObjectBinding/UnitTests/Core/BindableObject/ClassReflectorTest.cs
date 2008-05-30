@@ -76,8 +76,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       IPropertyInformation dummyProperty1 = GetPropertyInfo (typeof (DateTime), "Now");
       IPropertyInformation dummyProperty2 = GetPropertyInfo (typeof (Environment), "TickCount");
 
-      PropertyReflector dummyReflector1 = new PropertyReflector (GetPropertyInfo (typeof (DateTime), "Ticks"), _businessObjectProvider);
-      PropertyReflector dummyReflector2 = new PropertyReflector (GetPropertyInfo (typeof (Environment), "NewLine"), _businessObjectProvider);
+      PropertyReflector dummyReflector1 = PropertyReflector.Create(GetPropertyInfo (typeof (DateTime), "Ticks"), _businessObjectProvider);
+      PropertyReflector dummyReflector2 = PropertyReflector.Create(GetPropertyInfo (typeof (Environment), "NewLine"), _businessObjectProvider);
 
       IPropertyFinder propertyFinderMock = mockRepository.CreateMock<IPropertyFinder> ();
 

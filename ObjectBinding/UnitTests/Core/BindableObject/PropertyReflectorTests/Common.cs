@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -25,10 +26,25 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     {
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithAllDataTypes), "String");
 
-      PropertyReflector propertyReflector = new PropertyReflector (IPropertyInformation, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
 
       Assert.That (propertyReflector.PropertyInfo, Is.SameAs (IPropertyInformation));
       Assert.That (propertyReflector.BusinessObjectProvider, Is.SameAs (_businessObjectProvider));
+    }
+
+    [Test]
+    public void Initialize_WithMixin ()
+    {
+      IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithAllDataTypes), "String");
+
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (PropertyReflector)).AddMixin<MixinStub> ().EnterScope ())
+      {
+        PropertyReflector propertyReflector = PropertyReflector.Create (IPropertyInformation, _businessObjectProvider);
+
+        Assert.That (propertyReflector.PropertyInfo, Is.SameAs (IPropertyInformation));
+        Assert.That (propertyReflector.BusinessObjectProvider, Is.SameAs (_businessObjectProvider));
+        Assert.That (propertyReflector, Is.InstanceOfType (typeof (IMixinTarget)));
+      }
     }
 
     [Test]
@@ -107,7 +123,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     public void GetMetadata_WithEnumBase ()
     {
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithReferenceType<Enum>), "Scalar");
-      PropertyReflector propertyReflector = new PropertyReflector (IPropertyInformation, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
 
       IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
 
@@ -184,7 +200,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     private IBusinessObjectProperty GetMetadataFromPropertyReflector (string propertyName)
     {
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithAllDataTypes), propertyName);
-      PropertyReflector propertyReflector = new PropertyReflector (IPropertyInformation, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
 
       return propertyReflector.GetMetadata ();
     }

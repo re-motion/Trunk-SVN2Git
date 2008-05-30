@@ -89,7 +89,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetPropertyDefinition ()
     {
       PropertyReflector propertyReflector =
-          new PropertyReflector (GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"), _bindableObjectProvider);
+          PropertyReflector.Create(GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"), _bindableObjectProvider);
       ClassReflector classReflector = new ClassReflector (typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create());
       BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
@@ -100,11 +100,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetPropertyDefinition_ForMixedProperty ()
     {
       PropertyReflector propertyReflector =
-          new PropertyReflector (
-              GetPropertyInfo (
-                  TypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
-                  typeof (IMixinAddingProperty).FullName + ".MixedProperty"),
-              _bindableObjectProvider);
+          PropertyReflector.Create(GetPropertyInfo (
+                     TypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
+                     typeof (IMixinAddingProperty).FullName + ".MixedProperty"), _bindableObjectProvider);
       ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperty), _bindableObjectProvider, BindableObjectMetadataFactory.Create())
       ;
       BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
@@ -226,7 +224,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
     private PropertyBase CreateProperty (Type type, string propertyName)
     {
-      PropertyReflector propertyReflector = new PropertyReflector (GetPropertyInfo (type, propertyName), _bindableObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(GetPropertyInfo (type, propertyName), _bindableObjectProvider);
       return propertyReflector.GetMetadata();
     }
   }

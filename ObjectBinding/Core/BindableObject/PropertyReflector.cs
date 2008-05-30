@@ -2,19 +2,28 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reflection;
 using Remotion.Mixins;
+using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
+  /// <summary>
+  /// Use the <see cref="PropertyReflector"/> to create <see cref="IBusinessObjectProperty"/> implementations for the bindable object implementation
+  /// of the business object interfaces.
+  /// </summary>
   public class PropertyReflector
   {
+    public static PropertyReflector Create (IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
+    {
+      return ObjectFactory.Create<PropertyReflector> (true).With (propertyInfo, businessObjectProvider);
+    }
+
     private readonly IPropertyInformation _propertyInfo;
     private readonly BindableObjectProvider _businessObjectProvider;
 
-    public PropertyReflector (IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
+    protected PropertyReflector (IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
@@ -26,17 +35,17 @@ namespace Remotion.ObjectBinding.BindableObject
     public IPropertyInformation PropertyInfo
     {
       get { return _propertyInfo; }
-    } 
+    }
 
     public BindableObjectProvider BusinessObjectProvider
     {
       get { return _businessObjectProvider; }
-    } 
+    }
 
     public PropertyBase GetMetadata ()
     {
       Type underlyingType = GetUnderlyingType();
-      PropertyBase.Parameters parameters = CreateParameters(underlyingType);
+      PropertyBase.Parameters parameters = CreateParameters (underlyingType);
 
       if (underlyingType == typeof (Boolean))
         return new BooleanProperty (parameters);
@@ -60,25 +69,29 @@ namespace Remotion.ObjectBinding.BindableObject
         return new Int32Property (parameters);
       else if (underlyingType == typeof (Int64))
         return new Int64Property (parameters);
-      else if (typeof (IBusinessObject).IsAssignableFrom (GetConcreteType(underlyingType)))
+      else if (typeof (IBusinessObject).IsAssignableFrom (GetConcreteType (underlyingType)))
         return new ReferenceProperty (parameters, GetConcreteType (underlyingType));
       else if (underlyingType == typeof (Single))
         return new SingleProperty (parameters);
       else if (underlyingType == typeof (String))
-        return new StringProperty (parameters, GetMaxLength ());
+        return new StringProperty (parameters, GetMaxLength());
       else
-        return new NotSupportedProperty (parameters);
+        return GetMetdadata (parameters);
     }
 
-    private PropertyBase.Parameters CreateParameters (Type underlyingType)
+    protected virtual PropertyBase GetMetdadata (PropertyBase.Parameters parameters)
     {
-      return new PropertyBase.Parameters (_businessObjectProvider, _propertyInfo, underlyingType, GetListInfo (), GetIsRequired (), GetIsReadOnly());
+      ArgumentUtility.CheckNotNull ("parameters", parameters);
+
+      return new NotSupportedProperty (parameters);
     }
 
     protected virtual Type GetConcreteType (Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
       if (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (type))
-        return TypeFactory.GetConcreteType(type);
+        return TypeFactory.GetConcreteType (type);
       return type;
     }
 
@@ -101,19 +114,10 @@ namespace Remotion.ObjectBinding.BindableObject
       return _propertyInfo.PropertyType;
     }
 
-    private Type GetItemTypeFromAttribute ()
-    {
-      ItemTypeAttribute itemTypeAttribute = _propertyInfo.GetCustomAttribute<ItemTypeAttribute> (true);
-      if (itemTypeAttribute == null)
-        throw new Exception ("ItemTypeAttribute is required for properties of type IList.");
-
-      return itemTypeAttribute.ItemType;
-    }
-
     protected virtual ListInfo GetListInfo ()
     {
-      if (IsListProperty ())
-        return new ListInfo (_propertyInfo.PropertyType, GetItemType ());
+      if (IsListProperty())
+        return new ListInfo (_propertyInfo.PropertyType, GetItemType());
 
       return null;
     }
@@ -152,7 +156,21 @@ namespace Remotion.ObjectBinding.BindableObject
 
     protected virtual bool IsListProperty ()
     {
-      return typeof(IList).IsAssignableFrom (_propertyInfo.PropertyType);
+      return typeof (IList).IsAssignableFrom (_propertyInfo.PropertyType);
+    }
+
+    private PropertyBase.Parameters CreateParameters (Type underlyingType)
+    {
+      return new PropertyBase.Parameters (_businessObjectProvider, _propertyInfo, underlyingType, GetListInfo(), GetIsRequired(), GetIsReadOnly());
+    }
+
+    private Type GetItemTypeFromAttribute ()
+    {
+      ItemTypeAttribute itemTypeAttribute = _propertyInfo.GetCustomAttribute<ItemTypeAttribute> (true);
+      if (itemTypeAttribute == null)
+        throw new Exception ("ItemTypeAttribute is required for properties of type IList.");
+
+      return itemTypeAttribute.ItemType;
     }
   }
 }

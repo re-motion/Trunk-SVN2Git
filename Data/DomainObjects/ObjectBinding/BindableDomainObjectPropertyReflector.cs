@@ -1,20 +1,29 @@
 using System;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Design;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Mixins;
+using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
-using Remotion.Mixins;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
+  /// <summary>
+  /// Use the <see cref="BindableDomainObjectPropertyReflector"/> to create <see cref="IBusinessObjectProperty"/> implementations for the 
+  /// bindable domain object extension of the business object interfaces.
+  /// </summary>
   public class BindableDomainObjectPropertyReflector : PropertyReflector
   {
+    public static BindableDomainObjectPropertyReflector Create (Type concreteType, IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
+    {
+      return ObjectFactory.Create <BindableDomainObjectPropertyReflector>().With (concreteType, propertyInfo, businessObjectProvider);
+    }
+
     private PropertyDefinition _propertyDefinition;
     private IRelationEndPointDefinition _relationEndPointDefinition;
 
-    public BindableDomainObjectPropertyReflector (Type concreteType, IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
+    protected BindableDomainObjectPropertyReflector (Type concreteType, IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
         : base (propertyInfo, businessObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
@@ -50,7 +59,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       else if (_propertyDefinition != null)
         return !_propertyDefinition.IsNullable;
       else
-        return base.GetIsRequired ();
+        return base.GetIsRequired();
     }
 
     protected override int? GetMaxLength ()
@@ -58,7 +67,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       if (_propertyDefinition != null)
         return _propertyDefinition.MaxLength;
       else
-        return base.GetMaxLength ();
+        return base.GetMaxLength();
     }
   }
 }

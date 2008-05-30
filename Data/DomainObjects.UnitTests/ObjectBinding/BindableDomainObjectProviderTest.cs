@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ObjectBinding;
+using Remotion.Data.DomainObjects.UnitTests.ObjectBinding.TestDomain;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -12,9 +13,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.ObjectBinding
   [TestFixture]
   public class BindableDomainObjectProviderTest
   {
-    public class MixinStub
-    { }
-
     [Test]
     public void Instantiate_WithDefaultValues ()
     {
