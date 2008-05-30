@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
             string.Format (
                 "Searching is not supported for reference property '{0}' of business object class '{1}'.",
                 Identifier,
-                BusinessObjectClass.Identifier));
+                ReflectedClass.Identifier));
       }
 
       ISearchAvailableObjectsService searchService = (ISearchAvailableObjectsService) BusinessObjectProvider.GetService (_searchServiceType);

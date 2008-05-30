@@ -194,7 +194,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       Assert.That (actualProperties, Is.EqualTo (expectedProperties));
       foreach (IBusinessObjectProperty actualProperty in actualProperties)
-        Assert.That (((PropertyBase) actualProperty).BusinessObjectClass, Is.SameAs (bindableObjectClass));
+        Assert.That (((PropertyBase) actualProperty).ReflectedClass, Is.SameAs (bindableObjectClass));
     }
 
     private void CheckPropertyBase (IBusinessObjectProperty expectedProperty, IBusinessObjectProperty actualProperty)
@@ -208,7 +208,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       if (expectedProperty.IsList)
         Assert.That (expectedProperty.ListInfo.ItemType, Is.EqualTo (actualProperty.ListInfo.ItemType), "ListInfo.ItemType");
       Assert.That (expectedProperty.IsRequired, Is.EqualTo (actualProperty.IsRequired), "IsRequired");
-      Assert.That (((PropertyBase) actualProperty).BusinessObjectClass, Is.Not.Null);
+      Assert.That (((PropertyBase) actualProperty).ReflectedClass, Is.Not.Null);
 
       if (typeof (IBusinessObjectStringProperty).IsAssignableFrom (actualProperty.GetType()))
         CheckStringProperty ((IBusinessObjectStringProperty) actualProperty, expectedProperty);

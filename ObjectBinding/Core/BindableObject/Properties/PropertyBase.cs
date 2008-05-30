@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly Type _underlyingType;
     private readonly bool _isReadOnly;
     private readonly bool _isNullable;
-    private BindableObjectClass _businessObjectClass;
+    private BindableObjectClass _reflectedClass;
 
     protected PropertyBase (Parameters parameters)
     {
@@ -179,19 +179,28 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       get { return BusinessObjectProvider; }
     }
 
-    public BindableObjectClass BusinessObjectClass
+    /// <summary>Gets the <see cref="IBusinessObjectClass"/> that was used to retrieve this property.</summary>
+    /// <value>An instance of the <see cref="IBusinessObjectClass"/> type.</value>
+    IBusinessObjectClass IBusinessObjectProperty.ReflectedClass
+    {
+      get { return ReflectedClass; }
+    }
+
+    /// <summary>Gets the <see cref="IBusinessObjectClass"/> that was used to retrieve this property.</summary>
+    /// <value>An instance of the <see cref="BindableObjectClass"/> type.</value>
+    public BindableObjectClass ReflectedClass
     {
       get
       {
-        if (_businessObjectClass == null)
+        if (_reflectedClass == null)
         {
           throw new InvalidOperationException (
               string.Format (
-                  "Accessing the BusinessObjectClass of a property is invalid until the property has been associated with a class.\r\nProperty '{0}'",
+                  "Accessing the ReflectedClass of a property is invalid until the property has been associated with a class.\r\nProperty '{0}'",
                   Identifier));
         }
 
-        return _businessObjectClass;
+        return _reflectedClass;
       }
     }
 
@@ -210,29 +219,29 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return publicValue;
     }
 
-    public void SetDeclaringBusinessObjectClass (BindableObjectClass businessObjectClass)
+    public void SetReflectedClass (BindableObjectClass reflectedClass)
     {
-      ArgumentUtility.CheckNotNull ("businessObjectClass", businessObjectClass);
-      if (BusinessObjectProvider != businessObjectClass.BusinessObjectProvider)
+      ArgumentUtility.CheckNotNull ("reflectedClass", reflectedClass);
+      if (BusinessObjectProvider != reflectedClass.BusinessObjectProvider)
       {
         throw new ArgumentException (
             string.Format (
                 "The BusinessObjectProvider of property '{0}' does not match the BusinessObjectProvider of class '{1}'.",
                 Identifier,
-                businessObjectClass.Identifier),
-            "businessObjectClass");
+                reflectedClass.Identifier),
+            "reflectedClass");
       }
 
-      if (_businessObjectClass != null)
+      if (_reflectedClass != null)
       {
         throw new InvalidOperationException (
             string.Format (
-                "The BusinessObjectClass of a property cannot be changed after it was assigned.\r\nClass '{0}'\r\nProperty '{1}'",
-                _businessObjectClass.Identifier,
+                "The ReflectedClass of a property cannot be changed after it was assigned.\r\nClass '{0}'\r\nProperty '{1}'",
+                _reflectedClass.Identifier,
                 Identifier));
       }
 
-      _businessObjectClass = businessObjectClass;
+      _reflectedClass = reflectedClass;
     }
 
     protected Type UnderlyingType

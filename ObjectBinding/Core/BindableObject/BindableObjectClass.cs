@@ -127,7 +127,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
       foreach (PropertyBase property in properties)
       {
-        property.SetDeclaringBusinessObjectClass (this);
+        property.SetReflectedClass (this);
         _properties.Add (property);
       }
     }

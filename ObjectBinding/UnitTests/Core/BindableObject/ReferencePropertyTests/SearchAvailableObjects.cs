@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       PropertyBase.Parameters propertyParameters = 
           GetPropertyParameters (GetPropertyInfo (typeof (ClassWithBusinessObjectProperties), propertyName), _businessObjectProvider);
       ReferenceProperty property = new ReferenceProperty (propertyParameters,  TypeFactory.GetConcreteType (propertyParameters.UnderlyingType));
-      property.SetDeclaringBusinessObjectClass (_businessObjectProvider.GetBindableObjectClass (typeof (ClassWithBusinessObjectProperties)));
+      property.SetReflectedClass (_businessObjectProvider.GetBindableObjectClass (typeof (ClassWithBusinessObjectProperties)));
 
       return property;
     }

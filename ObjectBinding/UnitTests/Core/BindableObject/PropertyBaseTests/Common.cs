@@ -147,7 +147,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     }
 
     [Test]
-    public void SetDeclaringBusinessObjectClass ()
+    public void SetAndGetReflectedClass ()
     {
       BindableObjectClass bindableObjectClass = _bindableObjectProvider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
       PropertyBase property = new StubPropertyBase (
@@ -159,9 +159,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               false,
               false));
 
-      property.SetDeclaringBusinessObjectClass (bindableObjectClass);
+      property.SetReflectedClass (bindableObjectClass);
 
-      Assert.That (property.BusinessObjectClass, Is.SameAs (bindableObjectClass));
+      Assert.That (property.ReflectedClass, Is.SameAs (bindableObjectClass));
+      Assert.That (((IBusinessObjectProperty)property).ReflectedClass, Is.SameAs (bindableObjectClass));
     }
 
     [Test]
@@ -169,8 +170,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
         ExpectedMessage =
         "The BusinessObjectProvider of property 'String' does not match the BusinessObjectProvider of class "
         + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests'."
-        + "\r\nParameter name: businessObjectClass")]
-    public void SetDeclaringBusinessObjectClass_FromDifferentProviders ()
+        + "\r\nParameter name: reflectedClass")]
+    public void SetReflectedClass_FromDifferentProviders ()
     {
       BindableObjectProvider provider = new BindableObjectProvider();
       BindableObjectClass bindableObjectClass = provider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
@@ -184,18 +185,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               false,
               false));
 
-      property.SetDeclaringBusinessObjectClass (bindableObjectClass);
+      property.SetReflectedClass (bindableObjectClass);
 
-      Assert.That (property.BusinessObjectClass, Is.SameAs (bindableObjectClass));
+      Assert.That (property.ReflectedClass, Is.SameAs (bindableObjectClass));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage =
-        "The BusinessObjectClass of a property cannot be changed after it was assigned."
+        "The ReflectedClass of a property cannot be changed after it was assigned."
         + "\r\nClass 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests'"
         + "\r\nProperty 'String'")]
-    public void SetDeclaringBusinessObjectClass_Twice ()
+    public void SetReflectedClass_Twice ()
     {
       BindableObjectClass bindableObjectClass = _bindableObjectProvider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
 
@@ -208,15 +209,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               false,
               false));
 
-      property.SetDeclaringBusinessObjectClass (bindableObjectClass);
-      property.SetDeclaringBusinessObjectClass (_bindableObjectProvider.GetBindableObjectClass (typeof (ClassWithIdentity)));
+      property.SetReflectedClass (bindableObjectClass);
+      property.SetReflectedClass (_bindableObjectProvider.GetBindableObjectClass (typeof (ClassWithIdentity)));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage =
-        "Accessing the BusinessObjectClass of a property is invalid until the property has been associated with a class.\r\nProperty 'String'")]
-    public void GetBusinessObjectClass_WithoutBusinessObjectClass ()
+        "Accessing the ReflectedClass of a property is invalid until the property has been associated with a class.\r\nProperty 'String'")]
+    public void GetReflectedClass_WithoutBusinessObjectClass ()
     {
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
@@ -227,7 +228,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               false,
               false));
 
-      Dev.Null = property.BusinessObjectClass;
+      Dev.Null = property.ReflectedClass;
     }
   }
 }

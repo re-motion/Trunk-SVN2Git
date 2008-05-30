@@ -63,6 +63,15 @@ namespace Remotion.ObjectBinding
     /// <remarks> The result may depend on the user's authorization and/or the object. </remarks>
     bool IsReadOnly (IBusinessObject obj);
 
+    /// <summary>Gets the <see cref="IBusinessObjectClass"/> that was used to retrieve this property.</summary>
+    /// <value>An instance of the <see cref="IBusinessObjectClass"/> type.</value>
+    /// <remarks>
+    ///   <note type="inotes">
+    ///     Must not return <see langword="null"/> if the property is part of a <see cref="IBusinessObjectClass"/>.
+    ///   </note>
+    /// </remarks>
+    IBusinessObjectClass ReflectedClass { get; }
+
     /// <summary> Gets the <see cref="IBusinessObjectProvider"/> for this property. </summary>
     /// <value> An instance of the <see cref="IBusinessObjectProvider"/> type. </value>
     /// <remarks>
