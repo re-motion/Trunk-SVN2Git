@@ -1,9 +1,8 @@
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.Reflection;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -11,18 +10,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
   public class BindableObjectServiceFactoryTest
   {
     private IBusinessObjectServiceFactory _serviceFactory;
+    private IBusinessObjectProviderWithIdentity _provider;
 
     [SetUp]
     public void SetUp ()
     {
       _serviceFactory = BindableObjectServiceFactory.Create();
+      _provider = MockRepository.GenerateStub<IBusinessObjectProviderWithIdentity>();
     }
 
     [Test]
     public void GetService_FromIBindableObjectGlobalizationService ()
     {
       Assert.That (
-          _serviceFactory.CreateService (typeof (IBindableObjectGlobalizationService)), 
+          _serviceFactory.CreateService (_provider, typeof (IBindableObjectGlobalizationService)),
           Is.InstanceOfType (typeof (BindableObjectGlobalizationService)));
     }
 
@@ -30,20 +31,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetService_FromIBusinessObjectStringFormatterService ()
     {
       Assert.That (
-          _serviceFactory.CreateService (typeof (IBusinessObjectStringFormatterService)),
+          _serviceFactory.CreateService (_provider, typeof (IBusinessObjectStringFormatterService)),
           Is.InstanceOfType (typeof (BusinessObjectStringFormatterService)));
     }
 
     [Test]
     public void GetService_FromIGetObjectService ()
     {
-      Assert.That (_serviceFactory.CreateService (typeof (IGetObjectService)), Is.Null);
+      Assert.That (_serviceFactory.CreateService (_provider, typeof (IGetObjectService)), Is.Null);
     }
 
     [Test]
     public void GetService_FromISearchAvailableObjectsService ()
     {
-      Assert.That (_serviceFactory.CreateService (typeof (ISearchAvailableObjectsService)), Is.Null);
+      Assert.That (_serviceFactory.CreateService (_provider, typeof (ISearchAvailableObjectsService)), Is.Null);
     }
   }
 }

@@ -66,7 +66,9 @@
     <Compile Include="Core\BindableObject\BooleanPropertyTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectServiceFactoryTest.cs" />
     <Compile Include="Core\TestDomain\ClassWithIdentityFromOtherBusinessObjectImplementation.cs" />
+    <Compile Include="Core\TestDomain\OtherBusinessObjectImplementationProvider.cs" />
     <Compile Include="Core\TestDomain\DerivedStubBusinessObjectProviderAttribute.cs" />
+    <Compile Include="Core\TestDomain\OtherBusinessObjectImplementationProviderAttribute.cs" />
     <Compile Include="Core\TestDomain\Stub2BusinessObjectProviderAttribute.cs" />
     <Compile Include="Core\TestDomain\StubBusinessObjectClass.cs" />
     <Compile Include="Core\BusinessObjectProviderTest.cs" />

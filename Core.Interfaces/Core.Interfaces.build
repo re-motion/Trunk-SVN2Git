@@ -12,6 +12,7 @@
           define="${build.csc.define}">
       <sources failonempty="true">
         <include name="*.cs" />
+        <include name="BridgeInterfaces/**/*.cs" />
         <include name="Collections/**/*.cs" />
         <include name="Implementation/**/*.cs" />
         <include name="Logging/**/*.cs" />

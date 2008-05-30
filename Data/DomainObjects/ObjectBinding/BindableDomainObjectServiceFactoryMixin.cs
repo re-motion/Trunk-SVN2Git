@@ -36,17 +36,21 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     }
 
     [OverrideTarget]
-    public virtual IBusinessObjectService CreateService (Type serviceType)
+    public virtual IBusinessObjectService CreateService (IBusinessObjectProviderWithIdentity provider, Type serviceType)
     {
+      ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("serviceType", serviceType, typeof (IBusinessObjectService));
 
-      if (serviceType == typeof (IGetObjectService))
-        return new BindableDomainObjectGetObjectService();
+      if (provider.ProviderAttribute is BindableDomainObjectProviderAttribute)
+      {
+        if (serviceType == typeof (IGetObjectService))
+          return new BindableDomainObjectGetObjectService();
 
-      if (serviceType == typeof (ISearchAvailableObjectsService))
-        return new BindableDomainObjectSearchService();
+        if (serviceType == typeof (ISearchAvailableObjectsService))
+          return new BindableDomainObjectSearchService();
+      }
 
-      return Base.CreateService (serviceType);
+      return Base.CreateService (provider, serviceType);
     }
   }
 }

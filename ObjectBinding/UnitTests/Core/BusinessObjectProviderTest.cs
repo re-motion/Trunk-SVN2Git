@@ -5,7 +5,6 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
-using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core
@@ -48,6 +47,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     {
       IBusinessObjectProvider provider = BusinessObjectProvider.GetProvider (typeof (StubBusinessObjectProviderAttribute));
       Assert.That (provider, Is.TypeOf (typeof (StubBusinessObjectProvider)));
+      Assert.That (((BusinessObjectProvider)provider).ProviderAttribute, Is.TypeOf (typeof (StubBusinessObjectProviderAttribute)));
     }
 
     [Test]
@@ -67,6 +67,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core
       Assert.That (provider, Is.TypeOf (typeof (StubBusinessObjectProvider)));
       Assert.That (provider, Is.Not.SameAs (BusinessObjectProvider.GetProvider (typeof (Stub2BusinessObjectProviderAttribute))));
       Assert.That (provider, Is.Not.SameAs (BusinessObjectProvider.GetProvider (typeof (DerivedStubBusinessObjectProviderAttribute))));
+    }
+
+    [Test]
+    public void GetProvider_FromOtherBusinessObjectImplementation ()
+    {
+      IBusinessObjectProvider provider = BusinessObjectProvider.GetProvider (typeof (OtherBusinessObjectImplementationProviderAttribute));
+      Assert.That (provider, Is.TypeOf (typeof (OtherBusinessObjectImplementationProvider)));
     }
 
     [Test]
@@ -90,6 +97,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     {
       BusinessObjectProvider.SetProvider (typeof (StubBusinessObjectProviderAttribute), _provider);
       Assert.That (BusinessObjectProvider.GetProvider (typeof (StubBusinessObjectProviderAttribute)), Is.SameAs (_provider));
+      Assert.That (((BusinessObjectProvider) _provider).ProviderAttribute, Is.TypeOf (typeof (StubBusinessObjectProviderAttribute)));
+    }
+
+    [Test]
+    public void SetProvider_FromOtherBusinessObjectImplementation ()
+    {
+      OtherBusinessObjectImplementationProvider provider = new OtherBusinessObjectImplementationProvider();
+      BusinessObjectProvider.SetProvider (typeof (OtherBusinessObjectImplementationProviderAttribute), provider);
+      Assert.That (BusinessObjectProvider.GetProvider (typeof (OtherBusinessObjectImplementationProviderAttribute)), Is.SameAs (provider));
     }
 
     [Test]
@@ -181,7 +197,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core
       IBusinessObjectStringFormatterService serviceStub = MockRepository.GenerateStub<IBusinessObjectStringFormatterService>();
       BusinessObjectProvider provider = new StubBusinessObjectProvider (serviceFactoryMock);
 
-      Expect.Call (serviceFactoryMock.CreateService (typeof (IBusinessObjectStringFormatterService))).Return (serviceStub);
+      Expect.Call (serviceFactoryMock.CreateService (provider, typeof (IBusinessObjectStringFormatterService))).Return (serviceStub);
 
       mockRepository.ReplayAll();
 

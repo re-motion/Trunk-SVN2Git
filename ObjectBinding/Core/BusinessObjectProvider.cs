@@ -7,7 +7,7 @@ using Remotion.Utilities;
 namespace Remotion.ObjectBinding
 {
   /// <summary>The <see langword="abstract"/> default implementation of the <see cref="IBusinessObjectProvider"/> interface.</summary>
-  public abstract class BusinessObjectProvider : IBusinessObjectProvider
+  public abstract class BusinessObjectProvider : IBusinessObjectProviderWithIdentity
   {
     private static readonly InterlockedDataStore<Type, IBusinessObjectProvider> s_businessObjectProviderStore =
         new InterlockedDataStore<Type, IBusinessObjectProvider>();
@@ -63,6 +63,9 @@ namespace Remotion.ObjectBinding
           throw new ArgumentException (
               "The provider is not compatible with the provider-type required by the businessObjectProviderAttributeType's instantiation.", "provider");
         }
+
+        if (provider is BusinessObjectProvider)
+          ((BusinessObjectProvider) provider)._providerAttribute = attribute;
       }
 
       s_businessObjectProviderStore.Remove (businessObjectProviderAttributeType);
@@ -88,8 +91,13 @@ namespace Remotion.ObjectBinding
 
     private static IBusinessObjectProvider CreateBusinessObjectProviderFromAttribute (Type businessObjectProviderAttributeType)
     {
-      BusinessObjectProviderAttribute businessObjectProviderAttribute = CreateBusinessObjectProviderAttribute (businessObjectProviderAttributeType);
-      return CreateBusinessObjectProvider (businessObjectProviderAttribute.BusinessObjectProviderType);
+      BusinessObjectProviderAttribute attribute = CreateBusinessObjectProviderAttribute (businessObjectProviderAttributeType);
+      IBusinessObjectProvider provider = CreateBusinessObjectProvider (attribute.BusinessObjectProviderType);
+      
+      if (provider is BusinessObjectProvider)
+        ((BusinessObjectProvider) provider)._providerAttribute = attribute;
+  
+      return provider;
     }
 
     private static BusinessObjectProviderAttribute CreateBusinessObjectProviderAttribute (Type businessObjectProviderAttributeType)
@@ -103,6 +111,7 @@ namespace Remotion.ObjectBinding
     }
 
     private readonly IBusinessObjectServiceFactory _serviceFactory;
+    private BusinessObjectProviderAttribute _providerAttribute;
 
     protected BusinessObjectProvider (IBusinessObjectServiceFactory serviceFactory)
     {
@@ -126,6 +135,11 @@ namespace Remotion.ObjectBinding
       get { return _serviceFactory; }
     }
 
+    public BusinessObjectProviderAttribute ProviderAttribute
+    {
+      get { return _providerAttribute; }
+    }
+
     /// <summary> Retrieves the requested <see cref="IBusinessObjectService"/>. Must not be <see langword="null" />.</summary>
     public IBusinessObjectService GetService (Type serviceType)
     {
@@ -134,7 +148,7 @@ namespace Remotion.ObjectBinding
       IDataStore<Type, IBusinessObjectService> serviceStore = ServiceStore;
       Assertion.IsNotNull (serviceStore, "The ServiceStore evaluated and returned null. It should return a null object instead.");
 
-      return serviceStore.GetOrCreateValue (serviceType, _serviceFactory.CreateService);
+      return serviceStore.GetOrCreateValue (serviceType, delegate (Type type) { return _serviceFactory.CreateService (this, type); });
     }
 
     /// <summary> Retrieves the requested <see cref="IBusinessObjectService"/>. </summary>
