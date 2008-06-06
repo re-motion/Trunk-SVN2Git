@@ -32,8 +32,8 @@ namespace Remotion.Text.CommandLine
       {
         if (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property)
         {
-          CommandLineArgumentAttribute argumentAttribute = (CommandLineArgumentAttribute) ReflectionUtility.GetSingleAttribute (
-              member, typeof (CommandLineArgumentAttribute), false, false);
+          CommandLineArgumentAttribute argumentAttribute = (CommandLineArgumentAttribute) AttributeUtility.GetCustomAttribute (
+              member, typeof (CommandLineArgumentAttribute), false);
           if (argumentAttribute != null)
           {
             argumentAttribute.SetMember (member);

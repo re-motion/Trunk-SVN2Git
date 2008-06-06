@@ -90,7 +90,7 @@ namespace Remotion.Collections
     }
 
     /// <summary>
-    /// Gets or sets the <see cref="TValue"/> with the specified key.
+    /// Gets or sets the <typeparamref name="TValue"/> with the specified key.
     /// </summary>
     /// <value></value>
     public TValue this[TKey key]

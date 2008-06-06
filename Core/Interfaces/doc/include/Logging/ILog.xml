@@ -39,7 +39,7 @@
   <LogFormatWithEnum>
     <remarks>
       The underlying <see cref="Int32"/> value of the <paramref name="messageEnum"/> is used as event id. 
-      Use <see cref="Remotion.Utilities.EnumDescriptionAttribute" /> or <see cref="Remotion.Utilities.EnumDescriptionResourceAttribute"/> 
+      Use <see cref="T:Remotion.Utilities.EnumDescriptionAttribute" /> or <see cref="T:Remotion.Utilities.EnumDescriptionResourceAttribute"/> 
       to associate messages with the enum values.
     </remarks>
   </LogFormatWithEnum>

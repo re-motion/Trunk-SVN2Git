@@ -45,7 +45,7 @@ namespace Remotion.Mixins
     /// <see cref="IFuncInvoker{TResult}.With()"/> methods to actually create the mixed instance.</returns>
     /// <exception cref="Exception"><para>The current mixin configuration for the <typeparamref name="T"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible. </exception>
+    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible.</para></exception>
     /// <exception cref="ArgumentException">
     /// <para>
     /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class
@@ -89,7 +89,7 @@ namespace Remotion.Mixins
     /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
     /// <exception cref="Exception"><para>The current mixin configuration for the <typeparamref name="T"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible. </exception>
+    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
     /// <exception cref="ArgumentException">
     /// <para>
     /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class
@@ -131,7 +131,7 @@ namespace Remotion.Mixins
     /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
     /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetType"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible. </exception>
+    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
     /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
@@ -179,7 +179,7 @@ namespace Remotion.Mixins
     /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
     /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetType"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible. </exception>
+    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
     /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
@@ -232,7 +232,7 @@ namespace Remotion.Mixins
     /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
     /// <exception cref="Exception"><para>The current mixin configuration for the <typeparamref name="T"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible. </exception>
+    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
     /// <exception cref="ArgumentException">
     /// <para>
     /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class
@@ -278,7 +278,7 @@ namespace Remotion.Mixins
     /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
     /// <exception cref="Exception"><para>The current mixin configuration for the <typeparamref name="T"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible. </exception>
+    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
     /// <exception cref="ArgumentException">
     /// <para>
     /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class
@@ -323,7 +323,7 @@ namespace Remotion.Mixins
     /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
     /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetType"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible. </exception>
+    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
     /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
@@ -373,7 +373,7 @@ namespace Remotion.Mixins
     /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
     /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetType"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible. </exception>
+    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
     /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>

@@ -197,7 +197,7 @@ namespace Remotion.Text.CommandLine
   {
     public static CommandLineModeAttribute GetAttribute (FieldInfo field)
     {
-      return (CommandLineModeAttribute) ReflectionUtility.GetSingleAttribute (field, typeof (CommandLineModeAttribute), false, false);
+      return (CommandLineModeAttribute) AttributeUtility.GetCustomAttribute (field, typeof (CommandLineModeAttribute), false);
     }
 
     private string _name;

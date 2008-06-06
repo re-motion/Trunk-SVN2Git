@@ -65,8 +65,8 @@ namespace Remotion.Utilities
 		}
 
 		/// <summary>
-		/// Temporarily sets the foreground and background of the default console to the given <see cref="foregroundColor"/> and
-		/// <see cref="backgroundColor"/>. The previous colors are restored when the returned object's <see cref="IDisposable.Dispose"/> method is 
+		/// Temporarily sets the foreground and background of the default console to the given <paramref name="foregroundColor"/> and
+		/// <paramref name="backgroundColor"/>. The previous colors are restored when the returned object's <see cref="IDisposable.Dispose"/> method is 
 		/// called, eg. in a <c>using</c> statement.
 		/// </summary>
 		/// <param name="foregroundColor">The color to temporarily assign as the console's foreground color. Pass <see langword="null"/> to leave the 

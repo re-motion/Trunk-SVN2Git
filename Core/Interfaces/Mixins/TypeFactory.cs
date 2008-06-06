@@ -44,7 +44,7 @@ namespace Remotion.Mixins
     /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetType"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible. </exception>
+    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
     /// <remarks>
     /// <para>
     /// The type returned by this method is guaranteed to be derived from <paramref name="targetType"/>, but will usually not be the same as
@@ -81,7 +81,7 @@ namespace Remotion.Mixins
     /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetType"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible. </exception>
+    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
     /// <remarks>
     /// <para>
     /// The type returned by this method is guaranteed to be derived from <paramref name="targetType"/>, but will usually not be the same as

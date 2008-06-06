@@ -45,7 +45,7 @@ namespace Remotion.Configuration
     /// </summary>
     /// <param name="configurationSection">
     /// The <see cref="System.Configuration.ConfigurationSection"/> holding the <see cref="ProviderSettings"/> 
-    /// loaded from the security configuration section for <see cref="Remotion.Security"/>
+    /// loaded from the configuration section in the xml file
     /// </param>
     protected ProviderHelperBase (ExtendedConfigurationSection configurationSection)
     {

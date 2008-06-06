@@ -44,7 +44,7 @@
     </returns>
   </GetResourceManagers>
   <FindFirstResourceDefinitions>
-    <param name="concreteType">The type to be analyzed</param>
+    <param name="typeToSearch">The type to be analyzed</param>
     <param name="noUndefinedException">
       If true, don't throw an exception when MultiLingualResourcesAttribute is not defined.
       Required for hierarchical search.
