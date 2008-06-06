@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using Remotion.Mixins.Definitions;
 using Remotion.Collections;
 using Remotion.Utilities;
 

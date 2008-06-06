@@ -9,10 +9,7 @@
  */
 
 using System;
-using System.Runtime.Serialization;
 using Remotion.Mixins;
-using Remotion.Mixins.Context;
-using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
 

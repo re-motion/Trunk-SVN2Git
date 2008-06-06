@@ -9,18 +9,17 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using Remotion.Collections;
-using Remotion.Mixins.Definitions;
+using Remotion.Logging;
+using Remotion.Mixins.CodeGeneration;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Validation;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.Mixins.CodeGeneration;
-using Remotion.Logging;
-using Remotion.Mixins.Context;
-using System.Collections;
 
 namespace Remotion.Mixins.MixerTool
 {

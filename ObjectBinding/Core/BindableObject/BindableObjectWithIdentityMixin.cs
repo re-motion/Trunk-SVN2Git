@@ -11,7 +11,6 @@
 using System;
 using System.Diagnostics;
 using Remotion.Mixins;
-using Remotion.ObjectBinding;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -20,7 +19,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// </summary>
   [Serializable]
   [BindableObjectWithIdentityProvider]
-  [CopyCustomAttributes (typeof (BindableObjectWithIdentityMixin.DebuggerDisplay))]
+  [CopyCustomAttributes (typeof (DebuggerDisplay))]
   public abstract class BindableObjectWithIdentityMixin : BindableObjectMixin, IBusinessObjectWithIdentity
   {
     [DebuggerDisplay ("{UniqueIdentifier} ({((Remotion.Mixins.IMixinTarget)this).Configuration.Type.FullName})")]

@@ -22,7 +22,7 @@ public class CommandLineEnumArgument: CommandLineValueArgument
 
   private Type _enumType;
   private bool _hasValue = false;
-  private System.Enum _value;
+  private Enum _value;
   private bool _isCaseSensitive = false;
 
   // construction and disposal
@@ -65,7 +65,7 @@ public class CommandLineEnumArgument: CommandLineValueArgument
         {
           foundExact = true;
           _hasValue = true;
-          _value = (System.Enum) enumValue.GetValue (null);
+          _value = (Enum) enumValue.GetValue (null);
           break;
         }
         else if (enumName.Length > value.Length 
@@ -79,7 +79,7 @@ public class CommandLineEnumArgument: CommandLineValueArgument
           {
             foundIncremental = true;
             _hasValue = true;
-            _value = (System.Enum) enumValue.GetValue (null);
+            _value = (Enum) enumValue.GetValue (null);
           }
         }
       }
@@ -156,7 +156,7 @@ public class CommandLineEnumArgument: CommandLineValueArgument
     }
   }
 
-  public System.Enum Value
+  public Enum Value
   {
     get 
     { 

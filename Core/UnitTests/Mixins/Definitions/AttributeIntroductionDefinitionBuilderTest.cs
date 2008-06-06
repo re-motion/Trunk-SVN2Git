@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
+using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.Definitions
 {

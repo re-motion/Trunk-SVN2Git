@@ -9,7 +9,6 @@
  */
 
 using System;
-using Remotion.Collections;
 using Remotion.Mixins.BridgeInterfaces;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Utilities;

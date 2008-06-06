@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context

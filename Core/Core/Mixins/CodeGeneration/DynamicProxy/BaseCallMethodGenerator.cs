@@ -11,9 +11,9 @@
 using System;
 using System.Reflection;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
-using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy

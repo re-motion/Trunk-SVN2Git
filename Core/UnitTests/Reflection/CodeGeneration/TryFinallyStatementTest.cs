@@ -11,9 +11,9 @@
 using System;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {

@@ -20,7 +20,7 @@ namespace Remotion.Mixins.CodeGeneration
   {
     public static ConcreteMixinTypeAttribute FromClassContext (int mixinIndex, ClassContext targetClassContext)
     {
-      ConcreteMixedTypeAttribute baseAttribute = ConcreteMixedTypeAttribute.FromClassContext (targetClassContext);
+      ConcreteMixedTypeAttribute baseAttribute = FromClassContext (targetClassContext);
       return new ConcreteMixinTypeAttribute (mixinIndex, baseAttribute.TargetType, baseAttribute.MixinKinds, baseAttribute.MixinTypes, 
           baseAttribute.CompleteInterfaces, baseAttribute.ExplicitDependenciesPerMixin);
     }

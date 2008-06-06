@@ -109,7 +109,7 @@ public class SetupDB
         {
           string setupDBPostTestDataScriptFilePath = Path.Combine(databaseSetupFilesPath, "SetupDB_PostTestData.sql");
 
-          if (System.IO.File.Exists(setupDBPostTestDataScriptFilePath))
+          if (File.Exists(setupDBPostTestDataScriptFilePath))
           {
             Console.WriteLine("SetupDB Post TestData...");
             DBUtility.ExecuteSqlFile(setupDBPostTestDataScriptFilePath, connection, _databaseName);

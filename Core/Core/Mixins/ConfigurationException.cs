@@ -9,8 +9,8 @@
  */
 
 using System;
-using Remotion.Mixins.Validation;
 using System.Runtime.Serialization;
+using Remotion.Mixins.Validation;
 
 namespace Remotion.Mixins
 {

@@ -10,7 +10,6 @@
 
 using System;
 using Remotion.Globalization;
-using Remotion.Mixins;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Globalization

@@ -12,8 +12,8 @@ using System;
 using System.IO;
 using Castle.DynamicProxy;
 using NUnit.Framework;
-using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration

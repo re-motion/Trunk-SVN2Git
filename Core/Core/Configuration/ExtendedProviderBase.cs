@@ -13,9 +13,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Configuration;
 using System.Configuration.Provider;
-using Remotion.Collections;
-using Remotion.Utilities;
 using System.Runtime.Serialization;
+using Remotion.Utilities;
 
 namespace Remotion.Configuration
 {

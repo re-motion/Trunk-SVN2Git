@@ -11,11 +11,11 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.UnitTests.Mixins.ValidationTests.ValidationSampleTypes;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
+using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.ValidationTests.ValidationSampleTypes;
 
 namespace Remotion.UnitTests.Mixins.ValidationTests
 {

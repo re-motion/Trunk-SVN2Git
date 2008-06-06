@@ -13,7 +13,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Mixins;
-using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
 

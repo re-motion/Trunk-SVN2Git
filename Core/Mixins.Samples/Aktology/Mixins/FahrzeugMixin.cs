@@ -9,8 +9,6 @@
  */
 
 using System;
-using Remotion.Mixins;
-using Remotion.Mixins.Samples.Aktology.Akten;
 
 namespace Remotion.Mixins.Samples.Aktology.Mixins
 {

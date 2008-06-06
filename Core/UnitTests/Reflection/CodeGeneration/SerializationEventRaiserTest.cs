@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
-using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 

@@ -19,17 +19,17 @@ namespace Remotion.Utilities
   /// </summary>
   public static class ArrayUtility
   {
-    public static bool Contains (System.Array array, object value)
+    public static bool Contains (Array array, object value)
     {
       return Array.IndexOf (array, value) >= 0;
     }
 
-    public static bool IsNullOrEmpty (System.Array array)
+    public static bool IsNullOrEmpty (Array array)
     {
       return (array == null) || (array.Length == 0);
     }
 
-    public static bool IsNullOrEmpty (System.Collections.ICollection collection)
+    public static bool IsNullOrEmpty (ICollection collection)
     {
       return (collection == null) || (collection.Count == 0);
     }

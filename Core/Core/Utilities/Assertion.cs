@@ -9,10 +9,8 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.Serialization;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace Remotion.Utilities
 {

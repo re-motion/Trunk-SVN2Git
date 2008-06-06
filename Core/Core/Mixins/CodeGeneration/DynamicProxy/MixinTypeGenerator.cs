@@ -11,16 +11,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.Serialization;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
-using Remotion.Reflection.CodeGeneration;
-using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
+using Remotion.Reflection.CodeGeneration;
+using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
-using System.Runtime.Serialization;
-using System.Reflection;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
@@ -188,7 +188,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementGetObjectData ()
     {
-      Remotion.Reflection.CodeGeneration.SerializationImplementer.ImplementGetObjectDataByDelegation (Emitter, delegate (CustomMethodEmitter newMethod, bool baseIsISerializable)
+      SerializationImplementer.ImplementGetObjectDataByDelegation (Emitter, delegate (CustomMethodEmitter newMethod, bool baseIsISerializable)
           {
             return new MethodInvocationExpression (
                 null,

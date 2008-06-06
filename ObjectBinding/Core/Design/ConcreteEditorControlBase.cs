@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.ComponentModel;
 
 namespace Remotion.ObjectBinding.Design
 {

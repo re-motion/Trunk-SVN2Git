@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 using Remotion.Implementation;
+using Remotion.Mixins.BridgeImplementations;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Interfaces.Implementation
@@ -31,7 +32,7 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     [Test]
     public void Retrieve_FromRootAssembly ()
     {
-      FrameworkVersionRetriever retriever = new FrameworkVersionRetriever (new Assembly[] {typeof (Remotion.Mixins.BridgeImplementations.MixedObjectInstantiator).Assembly});
+      FrameworkVersionRetriever retriever = new FrameworkVersionRetriever (new Assembly[] {typeof (MixedObjectInstantiator).Assembly});
       Assert.AreEqual (typeof (INullObject).Assembly.GetName().Version, retriever.RetrieveVersion());
     }
 

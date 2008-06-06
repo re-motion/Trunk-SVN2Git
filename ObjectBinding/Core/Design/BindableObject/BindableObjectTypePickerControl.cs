@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.Design.BindableObject
       PopulateTypeTreeView ();
     }
 
-    private void IncludeGacCheckBox_CheckedChanged (object sender, System.EventArgs e)
+    private void IncludeGacCheckBox_CheckedChanged (object sender, EventArgs e)
     {
       s_isGacIncluded = IncludeGacCheckBox.Checked;
       PopulateTypeTreeView ();

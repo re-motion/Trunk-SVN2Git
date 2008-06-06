@@ -10,6 +10,7 @@
 
 using System;
 using System.Configuration;
+using TypeNameConverter=Remotion.Utilities.TypeNameConverter;
 
 namespace Remotion.Configuration
 {
@@ -23,7 +24,7 @@ namespace Remotion.Configuration
           "type",
           typeof (Type),
           defaultValue,
-          new Remotion.Utilities.TypeNameConverter (),
+          new TypeNameConverter (),
           new SubclassTypeValidator (typeof (TBase)),
           ConfigurationPropertyOptions.IsRequired);
     }

@@ -12,12 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Remotion.Mixins;
-using Remotion.Mixins.Utilities.Singleton;
-using Remotion.Mixins.Definitions;
 using Remotion.Collections;
+using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Utilities.Singleton;
 using Remotion.Utilities;
-using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.CodeGeneration
 {
@@ -62,7 +61,7 @@ namespace Remotion.Mixins.CodeGeneration
         lock (_scopeLockObject)
         {
           if (_scope == null)
-            _scope = new DynamicProxy.ModuleManager();
+            _scope = new ModuleManager();
           return _scope;
         }
       }

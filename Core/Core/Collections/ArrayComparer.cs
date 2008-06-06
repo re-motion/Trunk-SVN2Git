@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Remotion.Collections
 {
@@ -52,12 +51,12 @@ namespace Remotion.Collections
 
       public bool Equals (Wrapper other)
       {
-        return ArrayComparer<T>.GetComparer().Equals (this._array, other._array);
+        return GetComparer().Equals (this._array, other._array);
       }
 
       public override int GetHashCode ()
       {
-        return ArrayComparer<T>.GetComparer().GetHashCode (_array);
+        return GetComparer().GetHashCode (_array);
       }
     }
 

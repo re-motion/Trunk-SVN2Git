@@ -10,7 +10,6 @@
 
 using System;
 using Remotion.Mixins.Definitions;
-using Remotion.Mixins.Validation;
 
 namespace Remotion.Mixins.Validation.Rules
 {

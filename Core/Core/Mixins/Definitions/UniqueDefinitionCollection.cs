@@ -11,7 +11,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions

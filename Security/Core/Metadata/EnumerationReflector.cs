@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Utilities;
@@ -39,7 +40,7 @@ namespace Remotion.Security.Metadata
         throw new ArgumentException (string.Format ("The type '{0}' is not an enumerated type.", type.FullName), "type");
       ArgumentUtility.CheckNotNull ("cache", cache);
 
-      System.Collections.IList values = Enum.GetValues (type);
+      IList values = Enum.GetValues (type);
 
       Dictionary<Enum, EnumValueInfo> enumValueInfos = new Dictionary<Enum, EnumValueInfo> ();
       for (int i = 0; i < values.Count; i++)

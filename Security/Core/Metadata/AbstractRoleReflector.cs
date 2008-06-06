@@ -16,7 +16,7 @@ using Remotion.Utilities;
 namespace Remotion.Security.Metadata
 {
 
-  public class AbstractRoleReflector : Remotion.Security.Metadata.IAbstractRoleReflector
+  public class AbstractRoleReflector : IAbstractRoleReflector
   {
     // types
 

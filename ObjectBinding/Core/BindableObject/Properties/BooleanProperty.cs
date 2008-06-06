@@ -9,7 +9,6 @@
  */
 
 using System;
-using Remotion.Globalization;
 
 namespace Remotion.ObjectBinding.BindableObject.Properties
 {

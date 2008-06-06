@@ -82,14 +82,14 @@ namespace Remotion.Utilities
 
     public static object GetFieldOrPropertyValue (object obj, string fieldOrPropertyName)
     {
-      return ReflectionUtility.GetFieldOrPropertyValue (obj, fieldOrPropertyName, BindingFlags.Public);
+      return GetFieldOrPropertyValue (obj, fieldOrPropertyName, BindingFlags.Public);
     }
 
     public static object GetFieldOrPropertyValue (object obj, string fieldOrPropertyName, BindingFlags bindingFlags)
     {
       ArgumentUtility.CheckNotNull ("obj", obj);
-      MemberInfo fieldOrProperty = ReflectionUtility.GetFieldOrProperty (obj.GetType (), fieldOrPropertyName, bindingFlags, true);
-      return ReflectionUtility.GetFieldOrPropertyValue (obj, fieldOrProperty);
+      MemberInfo fieldOrProperty = GetFieldOrProperty (obj.GetType (), fieldOrPropertyName, bindingFlags, true);
+      return GetFieldOrPropertyValue (obj, fieldOrProperty);
     }
 
     public static object GetFieldOrPropertyValue (object obj, MemberInfo fieldOrProperty)
@@ -110,14 +110,14 @@ namespace Remotion.Utilities
 
     public static void SetFieldOrPropertyValue (object obj, string fieldOrPropertyName, object value)
     {
-      ReflectionUtility.SetFieldOrPropertyValue (obj, fieldOrPropertyName, BindingFlags.Public, value);
+      SetFieldOrPropertyValue (obj, fieldOrPropertyName, BindingFlags.Public, value);
     }
 
     public static void SetFieldOrPropertyValue (object obj, string fieldOrPropertyName, BindingFlags bindingFlags, object value)
     {
       ArgumentUtility.CheckNotNull ("obj", obj);
-      MemberInfo fieldOrProperty = ReflectionUtility.GetFieldOrProperty (obj.GetType (), fieldOrPropertyName, bindingFlags, true);
-      ReflectionUtility.SetFieldOrPropertyValue (obj, fieldOrProperty, value);
+      MemberInfo fieldOrProperty = GetFieldOrProperty (obj.GetType (), fieldOrPropertyName, bindingFlags, true);
+      SetFieldOrPropertyValue (obj, fieldOrProperty, value);
     }
 
     public static void SetFieldOrPropertyValue (object obj, MemberInfo fieldOrProperty, object value)

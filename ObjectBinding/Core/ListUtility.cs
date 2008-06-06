@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections;
-using Remotion.ObjectBinding;
 
 namespace Remotion.ObjectBinding
 {
@@ -61,7 +60,7 @@ namespace Remotion.ObjectBinding
         ArrayList arrayList = new ArrayList (list);
         arrayList.Add (obj);
         IList newList = CreateList (createListMethod, list, arrayList.Count);
-        Remotion.Utilities.ListUtility.CopyTo (arrayList, newList);
+        Utilities.ListUtility.CopyTo (arrayList, newList);
         return newList;
       }
       else
@@ -95,7 +94,7 @@ namespace Remotion.ObjectBinding
           throw new ArgumentNullException ("list");
         
         list = CreateList (createListMethod, list, objects.Count);
-        Remotion.Utilities.ListUtility.CopyTo (objects, list);
+        Utilities.ListUtility.CopyTo (objects, list);
         return list;
       }
       
@@ -105,7 +104,7 @@ namespace Remotion.ObjectBinding
         ArrayList arrayList = new ArrayList (list);
         arrayList.AddRange (objects);
         IList newList = CreateList (createListMethod, list, arrayList.Count);
-        Remotion.Utilities.ListUtility.CopyTo (arrayList, newList);
+        Utilities.ListUtility.CopyTo (arrayList, newList);
         return newList;
       }
       else
@@ -155,7 +154,7 @@ namespace Remotion.ObjectBinding
           arrayList.Remove (obj);
 
         IList newList = CreateList (createListMethod, list, arrayList.Count);
-        Remotion.Utilities.ListUtility.CopyTo (arrayList, newList);
+        Utilities.ListUtility.CopyTo (arrayList, newList);
         return newList;
       }
       else

@@ -12,10 +12,10 @@ using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.MixerTool;
+using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.MixerTool
 {

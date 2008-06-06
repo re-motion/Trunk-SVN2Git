@@ -10,10 +10,10 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
+using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
 {

@@ -10,7 +10,6 @@
 
 using System;
 using Remotion.Mixins;
-using Remotion.Mixins.Definitions;
 
 namespace Remotion.UnitTests.Mixins.SampleTypes
 {

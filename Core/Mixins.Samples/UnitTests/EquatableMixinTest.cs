@@ -10,9 +10,6 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Mixins;
-using Remotion.Mixins.CodeGeneration;
-using System.Reflection;
 
 namespace Remotion.Mixins.Samples.UnitTests
 {

@@ -10,10 +10,10 @@
 
 using System;
 using System.Collections;
+using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
-using Remotion.Collections;
 
 namespace Remotion.Mixins.Globalization
 {
@@ -22,8 +22,8 @@ namespace Remotion.Mixins.Globalization
   {
     public override IResourceManager GetResourceManager (Type objectType, bool includeHierarchy, out Type definingType)
     {
-      if (Mixins.TypeUtility.IsGeneratedConcreteMixedType (objectType))
-        objectType = Mixins.TypeUtility.GetUnderlyingTargetType (objectType);
+      if (TypeUtility.IsGeneratedConcreteMixedType (objectType))
+        objectType = TypeUtility.GetUnderlyingTargetType (objectType);
 
       return base.GetResourceManager (objectType, includeHierarchy, out definingType);
     }
@@ -58,7 +58,7 @@ namespace Remotion.Mixins.Globalization
       return base.FindFirstResourceDefinitionsInBaseTypes (derivedType, out definingType);
     }
 
-    protected override void WalkHierarchyAndPrependResourceManagers (System.Collections.ArrayList resourceManagers, Type definingType)
+    protected override void WalkHierarchyAndPrependResourceManagers (ArrayList resourceManagers, Type definingType)
     {
       ArgumentUtility.CheckNotNull ("resourceManagers", resourceManagers);
       ArgumentUtility.CheckNotNull ("definingType", definingType);

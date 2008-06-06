@@ -9,12 +9,12 @@
  */
 
 using System;
+using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Mixins.Context;
 using Remotion.Mixins;
+using Remotion.Mixins.Context;
 using Remotion.UnitTests.Mixins.SampleTypes;
-using System.Runtime.Serialization;
 
 namespace Remotion.UnitTests.Mixins.Context
 {

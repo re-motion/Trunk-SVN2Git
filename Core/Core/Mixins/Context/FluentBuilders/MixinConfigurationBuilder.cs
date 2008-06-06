@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using Remotion.Mixins;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.FluentBuilders
@@ -100,7 +99,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     {
       foreach (Type suppressedMixinType in suppressedMixins)
       {
-        if (Remotion.Utilities.ReflectionUtility.CanAscribe (mixinType, suppressedMixinType))
+        if (ReflectionUtility.CanAscribe (mixinType, suppressedMixinType))
         {
           string message = string.Format ("Mixin type {0} applied to target class {1} suppresses itself.", mixinType.FullName,
               targetType.FullName);

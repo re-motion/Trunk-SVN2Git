@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
 
@@ -101,7 +102,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       return accessorDeclaration.DeclaringType.Assembly == typeof (IBusinessObject).Assembly
           || accessorDeclaration.DeclaringType.Assembly == typeof (BindableObjectClass).Assembly
-          || accessorDeclaration.DeclaringType.Assembly == typeof (Mixins.IMixinTarget).Assembly;
+          || accessorDeclaration.DeclaringType.Assembly == typeof (IMixinTarget).Assembly;
     }
   }
 }

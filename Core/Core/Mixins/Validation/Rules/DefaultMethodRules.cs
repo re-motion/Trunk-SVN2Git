@@ -10,10 +10,7 @@
 
 using System;
 using Remotion.Mixins.Definitions;
-using System.Reflection;
 using Remotion.Mixins.Utilities;
-using Remotion.Mixins.Validation;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Validation.Rules

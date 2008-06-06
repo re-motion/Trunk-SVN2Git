@@ -13,8 +13,8 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
-using Remotion.Utilities;
 using Remotion.Reflection.CodeGeneration;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {

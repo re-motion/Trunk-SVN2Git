@@ -11,9 +11,9 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
-using Remotion.Mixins.Context.FluentBuilders;
 
 namespace Remotion.Mixins.CodeGeneration
 {

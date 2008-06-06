@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections;
-using System.Runtime.Serialization;
 
 namespace Remotion.Utilities
 {
@@ -98,7 +97,7 @@ namespace Remotion.Utilities
       return collection;
     }
 
-    public static void ThrowEnumArgumentOutOfRangeException (string argumentName, System.Enum actualValue)
+    public static void ThrowEnumArgumentOutOfRangeException (string argumentName, Enum actualValue)
     {
       string message = string.Format ("The value of argument {0} is not a valid value of the type {1}. Actual value was {2}.",
           argumentName, actualValue.GetType (), actualValue);
@@ -202,7 +201,7 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentTypeException">The <paramref name="actualType"/> cannot be assigned to <paramref name="expectedType"/>.</exception>
     public static Type CheckTypeIsAssignableFrom (string argumentName, Type actualType, Type expectedType)
     {
-      ArgumentUtility.CheckNotNull ("expectedType", expectedType);
+      CheckNotNull ("expectedType", expectedType);
       if (actualType != null)
       {
         if (!expectedType.IsAssignableFrom (actualType))

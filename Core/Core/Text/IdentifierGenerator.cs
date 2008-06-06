@@ -169,7 +169,7 @@ public class IdentifierGenerator: ICloneable
   public void AddSpecificReplaceString (char characterToReplace, string stringToReplaceWith)
   {
     if (_specificReplaceStrings == null)
-      _specificReplaceStrings = new System.Collections.Hashtable ();
+      _specificReplaceStrings = new Hashtable ();
     _specificReplaceStrings.Add (characterToReplace, stringToReplaceWith);
   }
 

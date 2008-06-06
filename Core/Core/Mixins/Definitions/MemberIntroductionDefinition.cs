@@ -10,8 +10,8 @@
 
 using System;
 using System.Diagnostics;
-using Remotion.Utilities;
 using System.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {

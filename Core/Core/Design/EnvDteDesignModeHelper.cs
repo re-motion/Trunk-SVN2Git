@@ -10,12 +10,10 @@
 
 using System;
 using System.Collections;
-using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
-using Remotion.Design;
 using Remotion.Utilities;
 
 namespace Remotion.Design

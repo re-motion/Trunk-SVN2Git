@@ -11,8 +11,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Collections;
-using Remotion.Mixins;
-using Remotion.Mixins.Context;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.FluentBuilders

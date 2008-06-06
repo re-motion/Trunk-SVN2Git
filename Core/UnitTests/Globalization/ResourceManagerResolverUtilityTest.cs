@@ -10,8 +10,8 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.UnitTests.Globalization.SampleTypes;
 using Remotion.Globalization;
+using Remotion.UnitTests.Globalization.SampleTypes;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Globalization

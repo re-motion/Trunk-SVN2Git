@@ -13,10 +13,10 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using Castle.DynamicProxy;
-using Remotion.Mixins.Utilities;
-using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
+using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy

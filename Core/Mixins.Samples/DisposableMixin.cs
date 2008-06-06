@@ -9,9 +9,6 @@
  */
 
 using System;
-using Remotion.Mixins;
-using System.Reflection;
-using Remotion.Utilities;
 
 namespace Remotion.Mixins.Samples
 {

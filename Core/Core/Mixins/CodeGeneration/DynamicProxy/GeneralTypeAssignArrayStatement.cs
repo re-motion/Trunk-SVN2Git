@@ -30,7 +30,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _elementValue = elementValue;
     }
 
-    public override void Emit (Castle.DynamicProxy.Generators.Emitters.IMemberEmitter member, ILGenerator il)
+    public override void Emit (IMemberEmitter member, ILGenerator il)
     {
       ArgumentsUtil.EmitLoadOwnerAndReference (_arrayReference, il);
       il.Emit (OpCodes.Ldc_I4, _elementIndex);

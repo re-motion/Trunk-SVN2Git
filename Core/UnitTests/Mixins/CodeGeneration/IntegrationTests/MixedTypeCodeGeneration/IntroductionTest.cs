@@ -14,9 +14,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Mixins;
 using Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes;
 using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {

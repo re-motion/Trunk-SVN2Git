@@ -8,7 +8,6 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System.ComponentModel;
 using System.ComponentModel.Design;
 
 namespace Remotion.Design

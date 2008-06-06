@@ -11,10 +11,10 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
+using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins
 {

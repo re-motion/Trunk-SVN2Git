@@ -10,8 +10,8 @@
 
 using System;
 using System.Collections.Generic;
-using Remotion.Utilities;
 using Remotion.BridgeInterfaces;
+using Remotion.Utilities;
 
 namespace Remotion.BridgeImplementations
 {

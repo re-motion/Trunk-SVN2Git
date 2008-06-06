@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
+using TypeUtility=Remotion.Mixins.TypeUtility;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -32,7 +33,7 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNull ("metadataFactory", metadataFactory);
 
       _targetType = targetType;
-      _concreteType = Mixins.TypeUtility.GetConcreteMixedType (_targetType);
+      _concreteType = TypeUtility.GetConcreteMixedType (_targetType);
       _businessObjectProvider = businessObjectProvider;
       _metadataFactory = metadataFactory;
     }

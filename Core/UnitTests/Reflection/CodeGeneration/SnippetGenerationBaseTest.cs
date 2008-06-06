@@ -11,8 +11,8 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Reflection.CodeGeneration;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection.CodeGeneration;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {

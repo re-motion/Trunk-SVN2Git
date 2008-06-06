@@ -9,8 +9,8 @@
  */
 
 using System;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Mixins;
+using Remotion.UnitTests.Mixins.SampleTypes;
 
 [assembly: Mix (typeof (TargetClassForGlobalMix), typeof (MixinForGlobalMix),
     AdditionalDependencies = new Type[] {typeof (AdditionalDependencyForGlobalMix)},

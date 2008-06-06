@@ -11,8 +11,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Utilities;
 using Remotion.Collections;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Utilities
 {
@@ -170,7 +170,7 @@ namespace Remotion.Mixins.Utilities
 
       foreach (Type genericArgument in genericTypeDefinition.GetGenericArguments ())
       {
-        if (genericArgument.IsGenericParameter && ReflectionUtility.IsGenericParameterAssociatedWithAttribute (genericArgument, attributeType))
+        if (genericArgument.IsGenericParameter && IsGenericParameterAssociatedWithAttribute (genericArgument, attributeType))
           yield return genericArgument;
       }
     }

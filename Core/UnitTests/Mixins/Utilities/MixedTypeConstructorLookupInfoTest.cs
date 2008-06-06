@@ -11,9 +11,9 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.Utilities;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.UnitTests.Mixins.Utilities
 {

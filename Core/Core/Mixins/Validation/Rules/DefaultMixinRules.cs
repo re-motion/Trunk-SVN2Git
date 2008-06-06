@@ -12,7 +12,6 @@ using System;
 using System.Reflection;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
-using Remotion.Mixins.Validation;
 
 namespace Remotion.Mixins.Validation.Rules
 {

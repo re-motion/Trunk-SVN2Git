@@ -11,7 +11,6 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection.CodeGeneration.DPExtensions

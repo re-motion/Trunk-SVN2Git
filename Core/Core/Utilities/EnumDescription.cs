@@ -148,12 +148,12 @@ namespace Remotion.Utilities
       return rm;
     }
 
-    public static string GetDescription (System.Enum value)
+    public static string GetDescription (Enum value)
     {
       return GetDescription (value, null);
     }
 
-    public static string GetDescription (System.Enum value, CultureInfo culture)
+    public static string GetDescription (Enum value, CultureInfo culture)
     {
       Type enumType = value.GetType();
       EnumDescriptionResourceAttribute resourceAttribute = AttributeUtility.GetCustomAttribute<EnumDescriptionResourceAttribute>(enumType, false);
@@ -201,7 +201,7 @@ namespace Remotion.Utilities
         EnumDescriptionAttribute descriptionAttribute = AttributeUtility.GetCustomAttribute<EnumDescriptionAttribute> (field, false);
         if (descriptionAttribute != null)
         {
-          System.Enum value = (System.Enum) field.GetValue (null);
+          Enum value = (Enum) field.GetValue (null);
           dictionary.Add (value, descriptionAttribute.Description);
         }
       }

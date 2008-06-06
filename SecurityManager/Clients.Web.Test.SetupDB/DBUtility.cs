@@ -13,6 +13,7 @@ using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -330,17 +331,17 @@ public class DBUtility
         else if (columnType == typeof (DateTime))
         {
           parameter = command.Parameters.Add (parameterName, SqlDbType.DateTime);
-          parameter.Value = isNull ? DBNull.Value : (object) DateTime.Parse (columnValue.Trim(), new System.Globalization.CultureInfo ("en-US"));
+          parameter.Value = isNull ? DBNull.Value : (object) DateTime.Parse (columnValue.Trim(), new CultureInfo ("en-US"));
         }
         else if (columnType == typeof (Decimal))
         {
           parameter = command.Parameters.Add (parameterName, SqlDbType.Decimal);
-          parameter.Value = isNull ? DBNull.Value : (object) Decimal.Parse (columnValue, System.Globalization.CultureInfo.InvariantCulture);
+          parameter.Value = isNull ? DBNull.Value : (object) Decimal.Parse (columnValue, CultureInfo.InvariantCulture);
         }
         else if (columnType == typeof (Double))
         {
           parameter = command.Parameters.Add (parameterName, SqlDbType.Float);
-          parameter.Value = isNull ? DBNull.Value : (object) Double.Parse (columnValue, System.Globalization.CultureInfo.InvariantCulture);
+          parameter.Value = isNull ? DBNull.Value : (object) Double.Parse (columnValue, CultureInfo.InvariantCulture);
         }
         else if (columnType == typeof (Guid))
         {

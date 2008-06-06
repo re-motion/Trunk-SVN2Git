@@ -9,9 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Remotion.Mixins;
 
 namespace Remotion.Mixins.Samples.PhotoStuff.Variant3
 {

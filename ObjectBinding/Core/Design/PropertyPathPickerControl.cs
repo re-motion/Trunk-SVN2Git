@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using Remotion.Utilities;
@@ -23,13 +24,13 @@ namespace Remotion.ObjectBinding.Design
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.Container components = null;
+    private Container components = null;
 
-    private System.Windows.Forms.TextBox FilterField;
-    private System.Windows.Forms.Label FilterLabel;
-    private System.Windows.Forms.Button SelectButton;
-    private System.Windows.Forms.CheckBox ClassFilterCheck;
-    private System.Windows.Forms.TreeView PathTree;
+    private TextBox FilterField;
+    private Label FilterLabel;
+    private Button SelectButton;
+    private CheckBox ClassFilterCheck;
+    private TreeView PathTree;
 
     public PropertyPathPickerControl (IBusinessObjectClassSource classSource, IServiceProvider provider, IWindowsFormsEditorService editorService)
       : base (provider, editorService)
@@ -255,7 +256,7 @@ namespace Remotion.ObjectBinding.Design
 
     #endregion
 
-    private void PathTree_BeforeExpand (object sender, System.Windows.Forms.TreeViewCancelEventArgs e)
+    private void PathTree_BeforeExpand (object sender, TreeViewCancelEventArgs e)
     {
       Cursor oldCursor = Cursor.Current;
       Cursor.Current = Cursors.WaitCursor;
@@ -271,7 +272,7 @@ namespace Remotion.ObjectBinding.Design
     {
     }
 
-    private void SelectButton_Click (object sender, System.EventArgs e)
+    private void SelectButton_Click (object sender, EventArgs e)
     {
       if (PathTree.SelectedNode != null)
       {
@@ -281,7 +282,7 @@ namespace Remotion.ObjectBinding.Design
       }
     }
 
-    private void FilterField_TextChanged (object sender, System.EventArgs e)
+    private void FilterField_TextChanged (object sender, EventArgs e)
     {
       FillTree();
     }

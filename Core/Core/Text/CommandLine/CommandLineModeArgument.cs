@@ -92,7 +92,7 @@ public class CommandLineModeArgument: CommandLineGroupArgument
           name = attribute.Name;
 
         CommandLineFlagArgument argument = new CommandLineModeFlagArgument (
-            this, name, (System.Enum) field.GetValue (null));
+            this, name, (Enum) field.GetValue (null));
 
         if (attribute != null)
           argument.Description = attribute.Description;
@@ -146,11 +146,11 @@ public class CommandLineModeArgument: CommandLineGroupArgument
 /// </summary>
 public class CommandLineModeFlagArgument: CommandLineFlagArgument, ICommandLinePartArgument
 {
-  private System.Enum _enumValue;
+  private Enum _enumValue;
 
   private CommandLineModeArgument _modeFlagGroup;
 
-  public CommandLineModeFlagArgument (CommandLineModeArgument modeFlagGroup, string name, System.Enum enumValue)
+  public CommandLineModeFlagArgument (CommandLineModeArgument modeFlagGroup, string name, Enum enumValue)
     : base (name, false)
   {
     _enumValue = enumValue;
@@ -167,7 +167,7 @@ public class CommandLineModeFlagArgument: CommandLineFlagArgument, ICommandLineP
     _modeFlagGroup.SetValue (this);
   }
 
-  public System.Enum EnumValue
+  public Enum EnumValue
   {
     get { return _enumValue; }
   }

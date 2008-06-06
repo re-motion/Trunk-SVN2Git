@@ -9,9 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using Remotion.Mixins.Definitions;
-using Remotion.Mixins.Validation;
 
 namespace Remotion.Mixins.Validation.Rules
 {

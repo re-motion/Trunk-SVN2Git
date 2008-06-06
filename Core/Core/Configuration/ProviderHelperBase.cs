@@ -14,7 +14,6 @@ using System.Configuration;
 using System.Configuration.Provider;
 using System.IO;
 using System.Reflection;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Utilities;
 
 namespace Remotion.Configuration

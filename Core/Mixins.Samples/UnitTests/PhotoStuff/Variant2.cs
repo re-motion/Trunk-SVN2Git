@@ -9,11 +9,10 @@
  */
 
 using System;
-using Remotion.Mixins;
+using System.Reflection;
+using NUnit.Framework;
 using Remotion.Mixins.Samples.PhotoStuff;
 using Remotion.Mixins.Samples.PhotoStuff.Variant2;
-using NUnit.Framework;
-using System.Reflection;
 
 namespace Remotion.Mixins.Samples.UnitTests.PhotoStuff
 {

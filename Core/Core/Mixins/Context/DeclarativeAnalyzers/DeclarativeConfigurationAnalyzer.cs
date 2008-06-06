@@ -10,10 +10,9 @@
 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
-using Remotion.Mixins.Context.FluentBuilders;
-using Remotion.Utilities;
 using System.Reflection;
+using Remotion.Collections;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {

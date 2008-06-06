@@ -9,8 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Remotion.Text.CommandLine;
 
 namespace Remotion.Mixins.MixerTool

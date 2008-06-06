@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Mixins.Definitions;
-using Remotion.Mixins.Validation;
 using Remotion.Mixins.Validation.Rules;
 using Remotion.Utilities;
 

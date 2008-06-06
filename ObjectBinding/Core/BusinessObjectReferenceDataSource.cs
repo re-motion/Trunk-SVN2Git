@@ -12,7 +12,6 @@ using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 using Remotion.ObjectBinding.Design;
-using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
 {

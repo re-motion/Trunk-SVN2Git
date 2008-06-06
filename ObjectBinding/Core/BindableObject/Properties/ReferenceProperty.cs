@@ -10,6 +10,7 @@
 
 using System;
 using Remotion.Utilities;
+using TypeUtility=Remotion.Mixins.TypeUtility;
 
 namespace Remotion.ObjectBinding.BindableObject.Properties
 {
@@ -119,7 +120,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private bool IsBindableObjectImplementation ()
     {
-      return Mixins.TypeUtility.HasAscribableMixin (_concreteType, typeof (BindableObjectMixinBase<>));
+      return TypeUtility.HasAscribableMixin (_concreteType, typeof (BindableObjectMixinBase<>));
     }
 
     private IBusinessObjectClass GetReferenceClassFromService ()

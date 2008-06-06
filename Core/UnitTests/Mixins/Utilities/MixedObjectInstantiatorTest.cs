@@ -10,9 +10,9 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.BridgeImplementations;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.Utilities

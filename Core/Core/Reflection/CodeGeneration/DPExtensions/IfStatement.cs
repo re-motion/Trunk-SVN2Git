@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;

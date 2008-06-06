@@ -9,8 +9,8 @@
  */
 
 using System;
-using Remotion.Implementation;
 using Remotion.BridgeInterfaces;
+using Remotion.Implementation;
 
 namespace Remotion
 {

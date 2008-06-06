@@ -9,17 +9,12 @@
  */
 
 using System;
-using System.IO;
-using System.Runtime.Serialization;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
-using Remotion.Reflection.CodeGeneration;
-using Remotion.Mixins;
-using Remotion.Mixins.Definitions;
-using Remotion.Mixins.Definitions.Building;
-using Remotion.Mixins.Utilities;
-using Remotion.Utilities;
+using System.Runtime.Serialization;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Definitions;
+using Remotion.Reflection.CodeGeneration;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {

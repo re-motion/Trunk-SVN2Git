@@ -9,8 +9,8 @@
  */
 
 using System;
-using System.Reflection;
 using System.Collections;
+using System.Reflection;
 using Remotion.Implementation;
 
 namespace Remotion.Mixins

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
+using TypeUtility=Remotion.Mixins.TypeUtility;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -31,7 +32,7 @@ namespace Remotion.ObjectBinding.BindableObject
       Assertion.IsFalse (concreteType.IsValueType, "mixed types cannot be value types");
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
       
-      _targetType = Mixins.TypeUtility.GetUnderlyingTargetType (concreteType);
+      _targetType = TypeUtility.GetUnderlyingTargetType (concreteType);
       _concreteType = concreteType;
       _businessObjectProvider = businessObjectProvider;
       
@@ -113,7 +114,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// </value>
     public string Identifier
     {
-      get { return TypeUtility.GetPartialAssemblyQualifiedName (_targetType); }
+      get { return Utilities.TypeUtility.GetPartialAssemblyQualifiedName (_targetType); }
     }
 
     public Type TargetType
@@ -144,8 +145,8 @@ namespace Remotion.ObjectBinding.BindableObject
 
     protected void CheckTypeForMixin (Type concreteType)
     {
-      Type underlyingTargetType = Mixins.TypeUtility.GetUnderlyingTargetType (concreteType);
-      if (underlyingTargetType == concreteType || !Mixins.TypeUtility.HasAscribableMixin (concreteType, typeof (BindableObjectMixinBase<>)))
+      Type underlyingTargetType = TypeUtility.GetUnderlyingTargetType (concreteType);
+      if (underlyingTargetType == concreteType || !TypeUtility.HasAscribableMixin (concreteType, typeof (BindableObjectMixinBase<>)))
       {
         throw new ArgumentException (
             string.Format (

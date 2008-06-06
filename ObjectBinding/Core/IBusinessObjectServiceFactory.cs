@@ -9,7 +9,6 @@
  */
 
 using System;
-using Remotion.ObjectBinding;
 
 namespace Remotion.ObjectBinding
 {

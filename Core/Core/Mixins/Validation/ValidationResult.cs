@@ -10,10 +10,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Remotion.Mixins.Definitions;
-using Remotion.Utilities;
 using Remotion.Text;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Validation
 {

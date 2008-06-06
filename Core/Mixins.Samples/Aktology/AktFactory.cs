@@ -11,8 +11,6 @@
 using System;
 using Remotion.Mixins.Samples.Aktology.Akten;
 using Remotion.Mixins.Samples.Aktology.Mixins;
-using Remotion.Mixins;
-using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.Samples.Aktology
 {

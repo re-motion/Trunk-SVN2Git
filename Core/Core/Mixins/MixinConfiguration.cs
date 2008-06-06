@@ -13,8 +13,8 @@ using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
-using Remotion.Utilities;
 using Remotion.Mixins.Validation;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins
 {
@@ -128,7 +128,7 @@ namespace Remotion.Mixins
       List<Type> interfacesToBeRemoved = new List<Type>();
       foreach (KeyValuePair<Type, ClassContext> item in _registeredInterfaces)
       {
-        if (object.ReferenceEquals (item.Value, e.ClassContext))
+        if (ReferenceEquals (item.Value, e.ClassContext))
           interfacesToBeRemoved.Add (item.Key);
       }
       foreach (Type type in interfacesToBeRemoved)
@@ -230,7 +230,7 @@ namespace Remotion.Mixins
         throw new ArgumentException ("The argument is not an interface.", "interfaceType");
 
       if (!_classContexts.ContainsExact (associatedClassContext.Type)
-          || !object.ReferenceEquals (_classContexts.GetExact (associatedClassContext.Type), associatedClassContext))
+          || !ReferenceEquals (_classContexts.GetExact (associatedClassContext.Type), associatedClassContext))
         throw new ArgumentException ("The class context hasn't been added to this configuration.", "associatedClassContext");
 
       if (_registeredInterfaces.ContainsKey (interfaceType))

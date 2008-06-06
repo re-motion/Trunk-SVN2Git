@@ -9,11 +9,9 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Reflection.Emit;
-using System.Text;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using System.Reflection;
+using System.Reflection.Emit;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 
 namespace Remotion.Reflection.CodeGeneration.DPExtensions
 {

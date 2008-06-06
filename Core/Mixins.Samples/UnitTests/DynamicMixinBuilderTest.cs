@@ -14,10 +14,12 @@ using System.IO;
 using System.Reflection;
 using Castle.DynamicProxy;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
-using NUnit.Framework.SyntaxHelpers;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Samples.DynamicMixinBuilding;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Samples.UnitTests
 {
@@ -51,7 +53,7 @@ namespace Remotion.Mixins.Samples.UnitTests
       DynamicMixinBuilder.Scope = new ModuleScope (true, "DynamicMixinBuilder.Signed", Path.Combine (directory, "DynamicMixinBuilder.Signed.dll"),
         "DynamicMixinBuilder.Unsigned", Path.Combine (directory, "DynamicMixinBuilder.Unsigned.dll"));
 
-      Mixins.CodeGeneration.ConcreteTypeBuilder.SetCurrent (null);
+      ConcreteTypeBuilder.SetCurrent (null);
 
       _invocationHandler = delegate (object instance, MethodInfo method, object[] args, BaseMethodInvoker baseMethod)
       {
@@ -109,7 +111,7 @@ namespace Remotion.Mixins.Samples.UnitTests
     public void BuildMixinType_CreatesTypeDerivedFromMixin ()
     {
       Type t = new DynamicMixinBuilder (typeof (object)).BuildMixinType (_invocationHandler);
-      Assert.IsTrue (Remotion.Utilities.ReflectionUtility.CanAscribe (t, typeof (Mixin<,>)));
+      Assert.IsTrue (ReflectionUtility.CanAscribe (t, typeof (Mixin<,>)));
     }
 
     [Test]

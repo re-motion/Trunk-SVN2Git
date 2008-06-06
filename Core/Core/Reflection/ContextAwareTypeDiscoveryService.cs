@@ -10,7 +10,6 @@
 
 using System;
 using System.ComponentModel.Design;
-using System.Runtime.Remoting.Messaging;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection

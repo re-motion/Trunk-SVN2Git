@@ -24,7 +24,7 @@ namespace Remotion.Utilities
   {
     public static IEnumerable<TResult> Select<TSource, TResult> (IEnumerable<TSource> source, Func<TSource, TResult> selector)
     {
-      Remotion.Utilities.ArgumentUtility.CheckNotNull ("source", source);
+      ArgumentUtility.CheckNotNull ("source", source);
 
       foreach (TSource item in source)
         yield return selector (item);

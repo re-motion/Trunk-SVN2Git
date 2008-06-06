@@ -177,9 +177,9 @@ namespace Remotion.Utilities
 
       IDesignerHost designerHost = (IDesignerHost) site.GetService (typeof (IDesignerHost));
       Assertion.IsNotNull (designerHost, "No IDesignerHost found.");
-      Type type = designerHost.GetType (TypeUtility.ParseAbbreviatedTypeName (abbreviatedTypeName));
+      Type type = designerHost.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName));
       if (type == null && throwOnError)
-        throw new TypeLoadException (string.Format ("Could not load type '{0}'.", TypeUtility.ParseAbbreviatedTypeName (abbreviatedTypeName)));
+        throw new TypeLoadException (string.Format ("Could not load type '{0}'.", ParseAbbreviatedTypeName (abbreviatedTypeName)));
       return type;
     }
 

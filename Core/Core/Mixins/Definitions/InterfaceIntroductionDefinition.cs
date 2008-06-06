@@ -9,9 +9,9 @@
  */
 
 using System;
-using Remotion.Utilities;
-using System.Reflection;
 using System.Diagnostics;
+using System.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {

@@ -10,10 +10,9 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Configuration.Provider;
+using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Configuration;
-using System.Runtime.Serialization;
 using Remotion.Security.Configuration;
 
 namespace Remotion.Security

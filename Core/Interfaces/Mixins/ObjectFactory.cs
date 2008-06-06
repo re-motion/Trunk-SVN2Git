@@ -42,7 +42,7 @@ namespace Remotion.Mixins
     /// of the mixins currently configured with <typeparamref name="T"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
     /// <returns>An object which can be used to instantiate a mixed type derived from <typeparamref name="T"/> and initialize the instance. Use the object's
-    /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
+    /// <see cref="IFuncInvoker{TResult}.With()"/> methods to actually create the mixed instance.</returns>
     /// <exception cref="Exception"><para>The current mixin configuration for the <typeparamref name="T"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
     /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible. </exception>

@@ -11,8 +11,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Mixins.Utilities;
 using Remotion.Collections;
+using Remotion.Mixins.Utilities;
 using Remotion.Utilities;
 using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 

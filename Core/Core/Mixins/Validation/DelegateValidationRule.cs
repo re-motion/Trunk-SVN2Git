@@ -9,10 +9,10 @@
  */
 
 using System;
+using System.Reflection;
 using System.Text;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
-using System.Reflection;
 
 namespace Remotion.Mixins.Validation
 {

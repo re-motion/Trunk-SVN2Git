@@ -10,8 +10,8 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Implementation;
 using Remotion.Development.UnitTesting;
+using Remotion.Implementation;
 
 namespace Remotion.UnitTests.Interfaces.Implementation
 {

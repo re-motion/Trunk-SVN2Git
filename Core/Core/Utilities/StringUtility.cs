@@ -262,7 +262,7 @@ namespace Remotion.Utilities
 		  {
 			  if (i > 0)
 				  sb.Append (separator);
-  		  sb.Append (StringUtility.FormatScalarValue (list[i], formatProvider));
+  		  sb.Append (FormatScalarValue (list[i], formatProvider));
 		  }
 		  return sb.ToString();
 	  }
@@ -298,9 +298,9 @@ namespace Remotion.Utilities
       if (value == null)
         return string.Empty;
       else if (value.GetType().IsArray)
-        return StringUtility.FormatArrayValue (value, formatProvider);
+        return FormatArrayValue (value, formatProvider);
       else
-        return StringUtility.FormatScalarValue (value, formatProvider);
+        return FormatScalarValue (value, formatProvider);
     }
 
     public static string Format (object value)
@@ -314,7 +314,7 @@ namespace Remotion.Utilities
       string format = null;
       if (elementType == typeof (float) || elementType == typeof (double))
         format = "R";
-      return StringUtility.ConcatWithSeparator ((IList) value, ",", format, formatProvider);
+      return ConcatWithSeparator ((IList) value, ",", format, formatProvider);
     }
 
     private static string FormatScalarValue (object value, IFormatProvider formatProvider)
@@ -354,7 +354,7 @@ namespace Remotion.Utilities
       if (underlyingType == typeof (string))
         return value;
       if (underlyingType.IsArray)
-        return StringUtility.ParseArrayValue (type, value, formatProvider);
+        return ParseArrayValue (type, value, formatProvider);
       if (underlyingType == typeof (DBNull))
         return DBNull.Value;
       if (isNullableType && string.IsNullOrEmpty (value))
@@ -364,7 +364,7 @@ namespace Remotion.Utilities
       if (underlyingType == typeof (Guid))
         return new Guid (value);
       else
-        return StringUtility.ParseScalarValue (underlyingType, value, formatProvider);
+        return ParseScalarValue (underlyingType, value, formatProvider);
     }
 
     private static object ParseArrayValue (Type type, string value, IFormatProvider formatProvider)
@@ -372,13 +372,13 @@ namespace Remotion.Utilities
       Type elementType = type.GetElementType();
       if (elementType.IsArray)
         throw new ParseException ("Cannot parse an array of arrays.");
-      ParsedItem[] items = StringUtility.ParseSeparatedList (value, ',');
+      ParsedItem[] items = ParseSeparatedList (value, ',');
       Array results = Array.CreateInstance (elementType, items.Length);
       for (int i = 0; i < items.Length; ++i)
       {
         try
         {
-          results.SetValue (StringUtility.Parse (elementType, items[i].Value, formatProvider), i);
+          results.SetValue (Parse (elementType, items[i].Value, formatProvider), i);
         }
         catch (ParseException e)
         {
@@ -390,7 +390,7 @@ namespace Remotion.Utilities
 
     private static object ParseScalarValue (Type type, string value, IFormatProvider formatProvider)
     {
-      MethodInfo parseMethod = StringUtility.GetParseMethod (type, true);
+      MethodInfo parseMethod = GetParseMethod (type, true);
 
       object[] args;
       if (parseMethod.GetParameters().Length == 2)
@@ -439,21 +439,21 @@ namespace Remotion.Utilities
         Type elementType = type.GetElementType();
         if (elementType.IsArray)
           return false;
-        return StringUtility.CanParse (elementType);
+        return CanParse (elementType);
       }
-      MethodInfo parseMethod = StringUtility.GetParseMethod (type, false);
+      MethodInfo parseMethod = GetParseMethod (type, false);
       return parseMethod != null;
     }
 
     private static MethodInfo GetParseMethod  (Type type, bool throwIfNotFound)
     {
-      MethodInfo parseMethod = StringUtility.GetParseMethodFromCache (type);
-      if (parseMethod == null && ! StringUtility.HasTypeInCache (type))
+      MethodInfo parseMethod = GetParseMethodFromCache (type);
+      if (parseMethod == null && ! HasTypeInCache (type))
       {
-        parseMethod = StringUtility.GetParseMethodWithFormatProviderFromType (type);
+        parseMethod = GetParseMethodWithFormatProviderFromType (type);
         if (parseMethod == null)
-          parseMethod = StringUtility.GetParseMethodFromType (type);
-        StringUtility.AddParseMethodToCache (type, parseMethod);
+          parseMethod = GetParseMethodFromType (type);
+        AddParseMethodToCache (type, parseMethod);
       }
       if (throwIfNotFound && parseMethod == null)
         throw new ParseException (string.Format ("Type does not have method 'public static {0} Parse (string s)'.", type.Name));

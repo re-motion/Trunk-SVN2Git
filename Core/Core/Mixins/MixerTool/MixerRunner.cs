@@ -10,12 +10,12 @@
 
 using System;
 using System.IO;
+using Remotion.Logging;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
-using Remotion.Utilities;
-using Remotion.Logging;
 using Remotion.Mixins.Validation;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.MixerTool
 {

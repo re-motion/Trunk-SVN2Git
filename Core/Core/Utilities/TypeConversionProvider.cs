@@ -65,7 +65,7 @@ namespace Remotion.Utilities
           lock (typeof (TypeConversionProvider))
           {
             if (s_current == null)
-              s_current = TypeConversionProvider.Create();
+              s_current = Create();
           }
         }
         return s_current;

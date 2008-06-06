@@ -9,7 +9,6 @@
  */
 
 using System;
-using Remotion.Mixins;
 using System.Reflection;
 using Remotion.Utilities;
 
@@ -35,7 +34,7 @@ namespace Remotion.Mixins.Samples
       {
         object thisFieldValue = field.GetValue (This);
         object otherFieldValue = field.GetValue (other);
-        if (!object.Equals (thisFieldValue, otherFieldValue))
+        if (!Equals (thisFieldValue, otherFieldValue))
           return false;
       }
       return true;

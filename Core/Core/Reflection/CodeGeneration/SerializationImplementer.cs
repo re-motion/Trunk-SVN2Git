@@ -109,7 +109,7 @@ namespace Remotion.Reflection.CodeGeneration
           serializationConstructorSignature,
           null);
       if (baseConstructor == null)
-        return SerializationImplementer.ImplementDeserializationConstructorByThrowing (classEmitter);
+        return ImplementDeserializationConstructorByThrowing (classEmitter);
       else
         return null;
     }

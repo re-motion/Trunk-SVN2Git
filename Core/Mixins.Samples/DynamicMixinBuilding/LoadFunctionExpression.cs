@@ -10,6 +10,7 @@
 
 using System.Reflection;
 using System.Reflection.Emit;
+using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 
 namespace Remotion.Mixins.Samples.DynamicMixinBuilding
@@ -23,7 +24,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding
       _function = function;
     }
 
-    public override void Emit (Castle.DynamicProxy.Generators.Emitters.IMemberEmitter member, ILGenerator gen)
+    public override void Emit (IMemberEmitter member, ILGenerator gen)
     {
       gen.Emit (OpCodes.Ldftn, _function);
     }

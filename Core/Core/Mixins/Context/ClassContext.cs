@@ -10,14 +10,10 @@
 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
-using Remotion.Mixins;
-using Remotion.Mixins.Utilities;
-using Remotion.Mixins.Utilities.Serialization;
-using Remotion.Utilities;
 using System.Runtime.Serialization;
 using System.Text;
-using ReflectionUtility=Remotion.Utilities.ReflectionUtility;
+using Remotion.Mixins.Utilities.Serialization;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context
 {
@@ -279,7 +275,7 @@ namespace Remotion.Mixins.Context
       {
         foreach (MixinContext mixin in Mixins)
         {
-          if (Remotion.Utilities.ReflectionUtility.CanAscribe (mixin.MixinType, suppressedType))
+          if (ReflectionUtility.CanAscribe (mixin.MixinType, suppressedType))
             mixinsAfterSuppression.Remove (mixin.MixinType);
         }
       }

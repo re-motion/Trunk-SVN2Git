@@ -12,10 +12,10 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
-using Remotion.UnitTests.Mixins.Globalization.SampleTypes;
 using Remotion.Globalization;
 using Remotion.Mixins;
 using Remotion.Mixins.Globalization;
+using Remotion.UnitTests.Mixins.Globalization.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.Globalization.MixedMultiLingualResourcesTests
 {

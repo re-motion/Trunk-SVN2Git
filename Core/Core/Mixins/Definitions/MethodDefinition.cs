@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Mixins.Utilities;
 using Remotion.Utilities;

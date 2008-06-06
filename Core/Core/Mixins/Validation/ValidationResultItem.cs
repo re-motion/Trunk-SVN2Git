@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Validation

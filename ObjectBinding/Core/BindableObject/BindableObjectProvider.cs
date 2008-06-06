@@ -11,8 +11,8 @@
 using System;
 using System.Collections;
 using Remotion.Collections;
-using Remotion.Mixins;
 using Remotion.Utilities;
+using TypeUtility=Remotion.Mixins.TypeUtility;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      Type concreteType = Mixins.TypeUtility.GetConcreteMixedType (type);
+      Type concreteType = TypeUtility.GetConcreteMixedType (type);
       BusinessObjectProviderAttribute attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
 
       if (attribute == null)
@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.BindableObject
             "type");
       }
 
-      return (BindableObjectProvider) BusinessObjectProvider.GetProvider (attribute.GetType());
+      return (BindableObjectProvider) GetProvider (attribute.GetType());
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      BindableObjectProvider provider = BindableObjectProvider.GetProviderForBindableObjectType (type);
+      BindableObjectProvider provider = GetProviderForBindableObjectType (type);
       Assertion.IsNotNull (provider, "No BindableObjectProvider associated with type '{0}'.", type.FullName);
 
       return provider.GetBindableObjectClass (type);

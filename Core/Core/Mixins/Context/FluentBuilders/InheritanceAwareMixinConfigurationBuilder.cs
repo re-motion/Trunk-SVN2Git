@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.FluentBuilders

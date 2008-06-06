@@ -10,10 +10,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Remotion.Collections;
-using Remotion.Mixins.Utilities;
 using System.Reflection;
+using Remotion.Mixins.Utilities;
 using Remotion.Text;
 using Remotion.Utilities;
 

@@ -14,7 +14,6 @@ using System.Configuration;
 using System.Configuration.Provider;
 using System.Reflection;
 using Remotion.Configuration;
-using Remotion.Security;
 using Remotion.Utilities;
 
 namespace Remotion.Security.Configuration

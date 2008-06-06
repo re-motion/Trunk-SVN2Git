@@ -9,10 +9,10 @@
  */
 
 using System;
+using System.Threading;
 using Castle.Core.Interceptor;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using System.Threading;
 using Assertion=Remotion.Utilities.Assertion;
 
 namespace Remotion.UnitTests.Collections

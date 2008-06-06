@@ -11,10 +11,10 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
+using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 

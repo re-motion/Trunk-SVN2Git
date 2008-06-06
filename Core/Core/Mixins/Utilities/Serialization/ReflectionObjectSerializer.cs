@@ -10,8 +10,8 @@
 
 using System;
 using System.Reflection;
-using Remotion.Utilities;
 using System.Runtime.Serialization;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Utilities.Serialization
 {

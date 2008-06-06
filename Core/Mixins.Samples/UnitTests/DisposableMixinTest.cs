@@ -10,7 +10,6 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Mixins;
 
 namespace Remotion.Mixins.Samples.UnitTests
 {
@@ -44,7 +43,7 @@ namespace Remotion.Mixins.Samples.UnitTests
     [Test]
     public void DisposeCallsAllCleanupMethods()
     {
-      DisposableMixinTest.C c = ObjectFactory.Create<C>().With();
+      C c = ObjectFactory.Create<C>().With();
       Data data = c.Data;
 
       Assert.IsFalse (data.ManagedCalled);
@@ -63,7 +62,7 @@ namespace Remotion.Mixins.Samples.UnitTests
     [Test]
     public void GCCallsAllUnmanagedCleanup ()
     {
-      DisposableMixinTest.C c = ObjectFactory.Create<C> ().With ();
+      C c = ObjectFactory.Create<C> ().With ();
       Data data = c.Data;
 
       Assert.IsFalse (data.ManagedCalled);

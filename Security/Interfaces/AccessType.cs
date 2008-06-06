@@ -68,7 +68,7 @@ namespace Remotion.Security
 
     object IObjectReference.GetRealObject (StreamingContext context)
     {
-      return AccessType.Get (_value);
+      return Get (_value);
     }
   }
 }

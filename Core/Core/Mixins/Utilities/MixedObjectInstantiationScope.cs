@@ -86,17 +86,17 @@ namespace Remotion.Mixins.Utilities
 
     private void StorePreviousAndSetCurrent ()
     {
-      if (MixedObjectInstantiationScope.HasCurrent)
-        _previous = MixedObjectInstantiationScope.Current;
+      if (HasCurrent)
+        _previous = Current;
       else
         _previous = null;
 
-      MixedObjectInstantiationScope.SetCurrent (this);
+      SetCurrent (this);
     }
 
     private void RestorePrevious ()
     {
-      MixedObjectInstantiationScope.SetCurrent (_previous);
+      SetCurrent (_previous);
     }
   }
 }

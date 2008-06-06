@@ -9,7 +9,6 @@
  */
 
 using System;
-using Remotion.Mixins.MixerTool;
 using Remotion.Text.CommandLine;
 using Remotion.Utilities;
 

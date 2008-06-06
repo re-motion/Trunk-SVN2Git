@@ -9,13 +9,12 @@
  */
 
 using System;
-using System.Reflection;
 using NUnit.Framework;
-using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.UnitTests.Mixins.ValidationTests.ValidationSampleTypes;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
+using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.UnitTests.Mixins.ValidationTests.ValidationSampleTypes;
 
 namespace Remotion.UnitTests.Mixins
 {

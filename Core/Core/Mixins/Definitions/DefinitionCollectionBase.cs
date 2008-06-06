@@ -9,9 +9,8 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Collections;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
@@ -38,7 +37,7 @@ namespace Remotion.Mixins.Definitions
       return _orderedItems.GetEnumerator ();
     }
 
-    IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+    IEnumerator IEnumerable.GetEnumerator ()
     {
       return GetEnumerator ();
     }

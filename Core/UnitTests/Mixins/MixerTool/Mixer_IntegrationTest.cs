@@ -11,13 +11,13 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Mixins.Utilities;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.MixerTool;
+using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
+using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.MixerTool
 {

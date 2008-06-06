@@ -13,7 +13,6 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Collections;
-using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.MixerTool;

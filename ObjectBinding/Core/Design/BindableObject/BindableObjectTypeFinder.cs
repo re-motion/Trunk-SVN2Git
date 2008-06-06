@@ -9,13 +9,14 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
-using System.Collections;
+using TypeUtility=Remotion.Mixins.TypeUtility;
 
 namespace Remotion.ObjectBinding.Design.BindableObject
 {
@@ -44,8 +45,8 @@ namespace Remotion.ObjectBinding.Design.BindableObject
       {
         foreach (Type type in types)
         {
-          if (!Mixins.TypeUtility.IsGeneratedByMixinEngine (type)
-              && Mixins.TypeUtility.HasAscribableMixin (type, typeof (BindableObjectMixinBase<>)))
+          if (!TypeUtility.IsGeneratedByMixinEngine (type)
+              && TypeUtility.HasAscribableMixin (type, typeof (BindableObjectMixinBase<>)))
             bindableTypes.Add (type);
         }
       }

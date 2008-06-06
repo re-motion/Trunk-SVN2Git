@@ -10,15 +10,13 @@
 
 using System;
 using System.Reflection;
-using System.Reflection.Emit;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Implementation;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
-using Remotion.Development.UnitTesting;
-using Remotion.Implementation;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Interfaces.Implementation

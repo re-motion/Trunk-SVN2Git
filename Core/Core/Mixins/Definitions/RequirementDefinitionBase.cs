@@ -11,10 +11,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Remotion.Mixins.Utilities;
+using System.Reflection;
 using Remotion.Collections;
 using Remotion.Utilities;
-using System.Reflection;
 
 namespace Remotion.Mixins.Definitions
 {

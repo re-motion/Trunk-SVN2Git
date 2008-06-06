@@ -9,10 +9,10 @@
  */
 
 using System;
-using Remotion.Mixins.Definitions.Building;
-using Remotion.Mixins.Utilities.Singleton;
 using Remotion.Collections;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Definitions.Building;
+using Remotion.Mixins.Utilities.Singleton;
 using Remotion.Mixins.Validation;
 
 namespace Remotion.Mixins.Definitions

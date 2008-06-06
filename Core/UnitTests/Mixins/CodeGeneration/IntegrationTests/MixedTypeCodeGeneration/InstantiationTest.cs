@@ -12,9 +12,9 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using NUnit.Framework;
+using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {

@@ -21,7 +21,7 @@ namespace Remotion.Security
   public interface IGlobalAccessTypeCacheProvider : INullObject
   {
     /// <summary>
-    /// Gets the <see cref="ICache{T, S}"/> for the <see cref="SecurityContext"/> and user name (<see cref="string"/>) key pair.
+    /// Gets the <see cref="ICache{TKey,TValue}"/> for the <see cref="SecurityContext"/> and user name (<see cref="string"/>) key pair.
     /// </summary>
     /// <returns>The <see cref="ICache{T, S}"/> in use.</returns>
     ICache<Tuple<ISecurityContext, string>, AccessType[]> GetCache ();
