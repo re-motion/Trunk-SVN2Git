@@ -48,7 +48,6 @@
         <include name="${build.outputdir}/log4net.dll" />
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Configuration.dll"/>
-        <include asis="true" name="System.Data.dll"/>
         <include asis="true" name="System.Xml.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Interfaces.dll"/>
         <include asis="true" name="${build.outputdir}/Castle.DynamicProxy.dll"/>

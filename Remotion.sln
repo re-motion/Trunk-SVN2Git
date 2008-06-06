@@ -51,9 +51,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 		{B4F97281-0DBD-4835-9ED8-7DFB966E87FF} = {B4F97281-0DBD-4835-9ED8-7DFB966E87FF}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{2AA369EC-A4E7-4D75-9101-EFA90E902625}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Core", "Core\Core\Core.Core.csproj", "{2AA369EC-A4E7-4D75-9101-EFA90E902625}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Test", "Core.Test\Core.Test.csproj", "{C216DEC9-8820-4298-B10F-FB4131466B69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.UnitTests", "Core\UnitTests\Core.UnitTests.csproj", "{C216DEC9-8820-4298-B10F-FB4131466B69}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding", "ObjectBinding\Core\ObjectBinding.csproj", "{FDCCDB1E-0962-41DA-99A1-2DB390C48748}"
 EndProject
@@ -120,11 +120,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.UnitTests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Preview", "ObjectBinding\Web.Preview\ObjectBinding.Web.Preview.csproj", "{6D58BB53-8709-48F9-8EF9-0D65B11A162C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Interfaces", "Core.Interfaces\Core.Interfaces.csproj", "{BD061F4A-A9E6-461E-A804-7999623A0060}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Interfaces", "Core\Interfaces\Core.Interfaces.csproj", "{BD061F4A-A9E6-461E-A804-7999623A0060}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Mixins.MixerTool.Console", "Core.Mixins.MixerTool.Console\Core.Mixins.MixerTool.Console.csproj", "{152DAF45-13C9-4A73-90D0-DF774ED12528}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Mixins.MixerTool.Console", "Core\Mixins.MixerTool.Console\Core.Mixins.MixerTool.Console.csproj", "{152DAF45-13C9-4A73-90D0-DF774ED12528}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Mixins.Samples", "Core.Mixins.Samples\Core.Mixins.Samples.csproj", "{9731FCDD-0F9F-41C5-B691-8AA9101CE249}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Mixins.Samples", "Core\Mixins.Samples\Core.Mixins.Samples.csproj", "{9731FCDD-0F9F-41C5-B691-8AA9101CE249}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.CodeGenerator", "ObjectBinding\Web.CodeGenerator\Core\ObjectBinding.Web.CodeGenerator.csproj", "{E8822EE5-E678-4ECF-AAEC-9476696F90B3}"
 EndProject

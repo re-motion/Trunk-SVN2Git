@@ -122,13 +122,13 @@
     <None Include="SecurityManager.Core.UnitTests.build" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core.Interfaces\Core.Interfaces.csproj">
+    <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Core.csproj">
+    <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
-      <Name>Core %28Core\Core%29</Name>
+      <Name>Core.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Data\DomainObjects.Security\Data.DomainObjects.Security.csproj">
       <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>

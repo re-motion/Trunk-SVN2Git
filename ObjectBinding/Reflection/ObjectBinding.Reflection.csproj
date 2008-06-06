@@ -85,7 +85,7 @@
     <Reference Include="System.Xml">
       <Name>system.xml</Name>
     </Reference>
-    <ProjectReference Include="..\..\Core\Core.csproj">
+    <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Name>Core</Name>
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>

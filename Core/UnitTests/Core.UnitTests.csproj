@@ -78,23 +78,23 @@
   <ItemGroup>
     <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\prereq\Assemblies\Castle.Core.dll</HintPath>
+      <HintPath>..\..\prereq\Assemblies\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.DynamicProxy, Version=2.0.0.1, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\prereq\Assemblies\Castle.DynamicProxy.dll</HintPath>
+      <HintPath>..\..\prereq\Assemblies\Castle.DynamicProxy.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\prereq\Assemblies\log4net.dll</HintPath>
+      <HintPath>..\..\prereq\Assemblies\log4net.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <Name>nunit.framework</Name>
-      <HintPath>..\prereq\Assemblies\nunit.framework.dll</HintPath>
+      <HintPath>..\..\prereq\Assemblies\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks, Version=3.0.1.526, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\prereq\Assemblies\Rhino.Mocks.dll</HintPath>
+      <HintPath>..\..\prereq\Assemblies\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -106,20 +106,20 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\Core.Interfaces\Core.Interfaces.csproj">
+    <ProjectReference Include="..\Interfaces\Core.Interfaces.csproj">
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Core.Mixins.Samples\Core.Mixins.Samples.csproj">
+    <ProjectReference Include="..\Mixins.Samples\Core.Mixins.Samples.csproj">
       <Project>{9731FCDD-0F9F-41C5-B691-8AA9101CE249}</Project>
       <Name>Core.Mixins.Samples</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Core\Core.csproj">
-      <Name>Core %28Core\Core%29</Name>
+    <ProjectReference Include="..\Core\Core.Core.csproj">
+      <Name>Core.Core</Name>
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
-    <ProjectReference Include="..\Development\Core\Development.Core.csproj">
+    <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
     </ProjectReference>
@@ -692,7 +692,7 @@
     <Compile Include="Xml\XmlSerializationUtilityTests\DeserializeUsingSchema.cs" />
     <Compile Include="Xml\XmlSerializationUtilityTests\GetNamespaceTest.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="Core.Test.build" />
+    <None Include="Core.UnitTests.build" />
     <None Include="Xml\SampleClass.xsx">
       <DependentUpon>SampleClass.xsd</DependentUpon>
     </None>
