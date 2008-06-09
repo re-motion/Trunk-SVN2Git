@@ -192,7 +192,7 @@ namespace Remotion.Web.ExecutionEngine
 
     /// <summary>
     /// Discards of the <see cref="WxeTransactedFunctionBase{TTransaction}.MyTransaction"/> instance managed by this <see cref="WxeTransactedFunctionBase{TTransaction}"/> and replaces
-    /// it by a newly created instance of <see cref="TTransaction"/>, optionally copying event handlers. This method can only be called from
+    /// it by a newly created instance of <typeparamref name="TTransaction"/>, optionally copying event handlers. This method can only be called from
     /// within <see cref="Execute"/>, when the current transaction has no open subtransaction, and when it holds no new or changed objects.
     /// </summary>
     /// <param name="copyEventHandlers">If true, the method will copy all event handlers registered on the old transaction to the new transaction.

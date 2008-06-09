@@ -250,8 +250,8 @@
           a <see cref="CompareValidator"/> is generated.
         </item>
         <item>
-          If the <see cref="ActualValueType"/> is set to <see cref="BocTextValueType.Integer"/> or
-          <see cref="BocTextValueType.Double"/> a <see cref="NumericValidator"/> is generated.
+          If the <see cref="ActualValueType"/> is set to one of the numeric types (such as <see cref="BocTextValueType.Int32"/> or
+          <see cref="BocTextValueType.Double"/>) a <see cref="NumericValidator"/> is generated.
         </item>
       </list>
     </remarks>

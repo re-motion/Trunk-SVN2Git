@@ -474,10 +474,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Gets or sets the string representation of the <see cref="PropertyPath"/>. 
+    ///   Gets or sets the string representation of the <see cref="GetPropertyPath"/>. 
     ///   Must not be <see langword="null"/> or emtpy.
     /// </summary>
-    /// <value> A <see cref="string"/> representing the <see cref="PropertyPath"/>. </value>
+    /// <value> A <see cref="string"/> representing the <see cref="GetPropertyPath"/>. </value>
     [Editor (typeof (PropertyPathPickerEditor), typeof (UITypeEditor))]
     [PersistenceMode (PersistenceMode.Attribute)]
     [Category ("Data")]

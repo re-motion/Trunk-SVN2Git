@@ -22,7 +22,7 @@ namespace Remotion.Web.ExecutionEngine
   /// </summary>
   /// <remarks>Derived classes can provide specific implementations of <typeparamref name="TTransaction"/> by overriding
   /// <see cref="WxeTransactionBase{TTransaction}.GetRootTransactionFromFunction"/>. In many cases it will however be more convenient to override 
-  /// <see cref="WxeTransactedFunction.CreateRootTransaction"/>.</remarks>
+  /// <see cref="WxeTransactedFunctionBase{TTransaction}.CreateRootTransaction"/>.</remarks>
   [Serializable]
   public class WxeScopedTransaction<TTransaction, TScope, TScopeManager> : WxeTransactionBase<TTransaction>
     where TTransaction : class, ITransaction
@@ -76,7 +76,7 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     /// <summary>
-    /// Gets the current <typeparam name="TTransaction"/> or <see langword="null"/> if none is set.
+    /// Gets the current <typeparamref name="TTransaction"/> or <see langword="null"/> if none is set.
     /// </summary>
     protected override TTransaction CurrentTransaction
     {
@@ -133,7 +133,7 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     /// <summary>
-    /// Resets the current <see cref="TTransaction"/> to the transaction previously replaced via <see cref="SetCurrentTransaction"/>.
+    /// Resets the current <typeparamref name="TTransaction"/> to the transaction previously replaced via <see cref="SetCurrentTransaction"/>.
     /// </summary>
     /// <param name="previousTransaction">The transaction previously replaced by <see cref="SetCurrentTransaction"/>.</param>
     protected override void SetPreviousCurrentTransaction (TTransaction previousTransaction)

@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Reflection;
 using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
@@ -107,11 +108,12 @@ public sealed class ResourceUrlResolver
 
   /// <summary> Returns the root folder for all resources belonging to the <paramref name="assembly"/>. </summary>
   /// <param name="isDesignMode"> <see langword="true"/> if the application is in design mode. </param>
+  /// <param name="assembly">The <paramref name="assembly"/> for which a ressource is being resolved.</param>
   /// <returns> 
   ///   The folder where the resources are expected to be for the <paramref name="assembly"/>. 
   ///   Always ends on a slash.
   /// </returns>
-  public static string GetAssemblyRoot (bool isDesignMode, System.Reflection.Assembly assembly)
+  public static string GetAssemblyRoot (bool isDesignMode, Assembly assembly)
   {
     ArgumentUtility.CheckNotNull ("assembly", assembly);
     

@@ -741,7 +741,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
       set { _visible = value; }
     }
 
-    /// <summary> Gets or sets a value indicating whether this row has been generated from a <see cref="IFormGridRowProvider"/>. </summary>
+    /// <summary> Gets a value indicating whether this row has been generated from a <see cref="IFormGridRowProvider"/>. </summary>
     public bool IsGenerated
     {
       get { return _isGenerated; }

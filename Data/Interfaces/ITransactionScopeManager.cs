@@ -10,6 +10,12 @@
 
 namespace Remotion.Data
 {
+  /// <summary>
+  /// The <see cref="ITransactionScopeManager{TTransaction,TScope}"/> interface defines methods required to manage transaction scopes within a
+  /// user interface applicatio such as a web application using the Execution Engine flow control infrastructure.
+  /// </summary>
+  /// <typeparam name="TTransaction"></typeparam>
+  /// <typeparam name="TScope"></typeparam>
   public interface ITransactionScopeManager<TTransaction, TScope>
     where TTransaction : class, ITransaction
     where TScope : class, ITransactionScope<TTransaction>
@@ -43,7 +49,7 @@ namespace Remotion.Data
     bool TryEnlistObject (TTransaction transaction, object objectToBeEnlisted);
 
     /// <summary>
-    /// Enlists the objects from <paramref name="sourceTransaction"/> in <param name="destinationTransaction"/>, copying collection event 
+    /// Enlists the objects from <paramref name="sourceTransaction"/> in <paramref name="destinationTransaction"/>, copying collection event 
     /// handlers if necessary.
     /// </summary>
     /// <param name="sourceTransaction">The transaction whose enlisted objects should be copied.</param>

@@ -50,7 +50,8 @@ public class ValidationError
   /// <overload> Overloaded. </overload>
   /// <param name="validatedControl"> The control with an invalid state. </param>
   /// <param name="validator"> The validator used to validate the <paramref name="validatedControl"/>.  Must not be <see langword="null"/>. </param>
-	public ValidationError (Control validatedControl, IValidator validator, ControlCollection labels)
+  /// <param name="labels">The labels containing the control's headings.</param>
+  public ValidationError (Control validatedControl, IValidator validator, ControlCollection labels)
 	{
     ArgumentUtility.CheckNotNull ("validator", validator);
 
@@ -72,6 +73,7 @@ public class ValidationError
   /// <overload> Overloaded. </overload>
   /// <param name="validatedControl"> The control with an invalid state. </param>
   /// <param name="validationMessage"> The message to be displayed to the user. Must not be <see langword="null"/> or empty. </param>
+  /// <param name="labels">The labels containing the control's headings.</param>
   public ValidationError (Control validatedControl, string validationMessage, ControlCollection labels)
 	{
     ArgumentUtility.CheckNotNullOrEmpty ("validationMessage", validationMessage);

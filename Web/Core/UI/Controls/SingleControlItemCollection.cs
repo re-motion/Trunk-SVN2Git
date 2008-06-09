@@ -23,6 +23,7 @@ public class SingleControlItemCollection
   private IControlItem _controlItem;
 
   /// <summary> Creates a new instance. </summary>
+  /// <param name="controlItem">The <see cref="IControlItem"/> to be stored in this instance.</param>
   /// <param name="supportedTypes"> Supported types must implement <see cref="IControlItem"/>. </param>
   public SingleControlItemCollection (IControlItem controlItem, Type[] supportedTypes)
   {

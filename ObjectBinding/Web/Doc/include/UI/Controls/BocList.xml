@@ -422,7 +422,7 @@
           <description>
             <para> &lt;BocList Resource ID&gt;:FixedColumns:&lt;Column ID&gt;:CancelText </para>
             <para> e.g. auto:MyBocList:FixedColumns:MyItem:CancelText </para>
-            <para> Applies to columns of type <see cref="BocEditDetailsColumnDefinition"/>. </para>
+            <para> Applies to columns of type <see cref="BocRowEditModeColumnDefinition"/>. </para>
           </description>
         </item>
         <item>
@@ -430,7 +430,7 @@
           <description>
             <para> &lt;BocList Resource ID&gt;:FixedColumns:&lt;Column ID&gt;:EditText </para>
             <para> e.g. auto:MyBocList:FixedColumns:MyItem:EditText </para>
-            <para> Applies to columns of type <see cref="BocEditDetailsColumnDefinition"/>. </para>
+            <para> Applies to columns of type <see cref="BocRowEditModeColumnDefinition"/>. </para>
           </description>
         </item>
         <item>
@@ -438,7 +438,7 @@
           <description>
             <para> &lt;BocList Resource ID&gt;:FixedColumns:&lt;Column ID&gt;:SaveText </para>
             <para> e.g. auto:MyBocList:FixedColumns:MyItem:SaveText </para>
-            <para> Applies to columns of type <see cref="BocEditDetailsColumnDefinition"/>. </para>
+            <para> Applies to columns of type <see cref="BocRowEditModeColumnDefinition"/>. </para>
           </description>
         </item>
         <item>

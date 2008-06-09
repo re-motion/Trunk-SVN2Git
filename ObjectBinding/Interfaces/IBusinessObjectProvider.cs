@@ -22,7 +22,7 @@ namespace Remotion.ObjectBinding
   ///     <para>
   ///       If this interface is implemented using singletons, the singleton must be thread save.
   ///     </para><para>
-  ///       You can use the <see langword="abstract"/> default implemtation (<see cref="BusinessObjectProvider"/>) as a 
+  ///       You can use the <see langword="abstract"/> default implemtation (<see cref="T:Remotion.ObjectBinding.BusinessObjectProvider"/>) as a 
   ///       base for implementing the business object provider for your object model.
   ///     </para>
   ///   </note>

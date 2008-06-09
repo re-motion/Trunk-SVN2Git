@@ -11,7 +11,6 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;

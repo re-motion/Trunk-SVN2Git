@@ -12,7 +12,6 @@ using System;
 
 namespace Remotion.ObjectBinding
 {
-  /// <summary> 
   //TODO: doc
   public interface IBusinessObjectStringFormatterService : IBusinessObjectService
   {

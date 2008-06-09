@@ -13,7 +13,7 @@ using System;
 namespace Remotion.Web.ExecutionEngine
 {
 /// <summary>
-/// Indicates the behavior of a <see cref="WxeTransactedFunction{TTransaction,TTransactionScope,TTransactionScopeManager}"/>.
+/// Indicates the behavior of a <see cref="WxeScopedTransactedFunction{TTransaction,TScope,TTransactionScopeManager}"/>.
 /// </summary>
 public enum WxeTransactionMode
 {

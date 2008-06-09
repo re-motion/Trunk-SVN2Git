@@ -10,7 +10,6 @@
 
 namespace Remotion.ObjectBinding
 {
-  /// <summary> 
   /// <summary>
   ///   The <see cref="IBusinessObjectWithIdentity"/> interface provides functionality to uniquely identify a business object 
   ///   within its business object domain.

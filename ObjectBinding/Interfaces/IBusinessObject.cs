@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding
   ///   </para>
   ///   <note type="inotes">
   ///     Unless you must extend an existing class with the business object functionality, you can use the 
-  ///     <see cref="BusinessObject"/> class as a base implementation.
+  ///     <see cref="T:Remotion.ObjectBinding.BusinessObject"/> class as a base implementation.
   ///   </note>
   /// </remarks>
   public interface IBusinessObject
