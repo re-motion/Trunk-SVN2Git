@@ -12,7 +12,7 @@
 <project name="Remotion-Documentation" xmlns="nant-schema">
 
   <target name="preparedoc">
-    <property name="doc.core" value="${solution.basedir}/Core/Doc" />
+    <property name="doc.core" value="${solution.basedir}/Core/Core/Doc" />
 
     <copy file="${doc.core}/include/GettingStartedTemplate.html"  
           tofile="${doc.core}/include/GettingStarted.html" 
@@ -52,7 +52,7 @@
     </fileset>
 
     <fileset id="doc.summaries" basedir="${solution.basedir}" failonempty="true">
-      <include name="Core/Doc/include/NamespaceDoc.xml"/>
+      <include name="Core/Core/Doc/include/NamespaceDoc.xml"/>
       <include name="Web/Core/Doc/include/NamespaceDoc.xml"/>
       <include name="ObjectBinding/Core/Doc/include/NamespaceDoc.xml"/>
       <include name="ObjectBinding/Web/Doc/include/NamespaceDoc.xml"/>
@@ -87,7 +87,7 @@
           <!-- Extensibility -->
           <!-- HTML Help Options -->
           <property name="FooterHtml" value="&lt;p&gt;&lt;a href=&quot;${text.companyurl}&quot;&gt;${text.copyright}&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Version: ${build.version}&lt;/p&gt;"/>
-          <property name="RootPageFileName" value="${solution.basedir}/Core/Doc/include/GettingStarted.html" />
+          <property name="RootPageFileName" value="${doc.core}/include/GettingStarted.html" />
           <property name="RootPageTOCName" value="Getting Started" />
           <!-- Show Attributes -->
           <!-- Show Missing Documentation -->
@@ -139,7 +139,7 @@
           <!-- Extensibility -->
           <!-- HTML Help Options -->
           <property name="FooterHtml" value="&lt;p&gt;&lt;a href=&quot;${text.companyurl}&quot;&gt;${text.copyright}&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Version: ${build.version}&lt;/p&gt;"/>
-          <property name="RootPageFileName" value="${solution.basedir}/Core/Doc/include/GettingStarted.html" />
+          <property name="RootPageFileName" value="${doc.core}/include/GettingStarted.html" />
           <property name="RootPageTOCName" value="Getting Started" />
           <property name="SdkLinksOnWeb" value="False" />          
           <!-- Show Attributes -->
