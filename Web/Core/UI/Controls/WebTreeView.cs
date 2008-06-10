@@ -555,8 +555,6 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Renders the <paramref name="node"/> onto the <paremref name="writer"/>. </summary>
-    /// <param name="isFirstNode"> <see langword="true"/> if the node is the first node in the collection. </param>
-    /// <param name="isLastNode"> <see langword="true"/> if the node is the last node in the collection. </param>
     private void RenderNode (
         HtmlTextWriter writer,
         WebTreeNode node,
@@ -606,8 +604,6 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Renders the <paramref name="node"/>'s expander (i.e. +/-) onto the <paremref name="writer"/>. </summary>
-    /// <param name="isFirstNode"> <see langword="true"/> if the node is the first node in the collection. </param>
-    /// <param name="isLastNode"> <see langword="true"/> if the node is the last node in the collection. </param>
     private void RenderNodeExpander (
         HtmlTextWriter writer,
         WebTreeNode node,
@@ -673,7 +669,6 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Renders the <paramref name="node"/>'s children onto the <paremref name="writer"/>. </summary>
-    /// <param name="isLastNode"> <see langword="true"/> if the node is the last node in the collection. </param>
     private void RenderNodeChildren (HtmlTextWriter writer, WebTreeNode node, bool isLastNode, bool hasExpander)
     {
       if (!hasExpander)
@@ -742,9 +737,6 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Returns the URL of the node icon for the <paramref name="node"/>. </summary>
-    /// <param name="isFirstNode"> <see langword="true"/> if the node is the first node in the collection. </param>
-    /// <param name="isLastNode"> <see langword="true"/> if the node is the last node in the collection. </param>
-    /// <returns> An image URL. </returns>
     private IconInfo GetNodeIcon (WebTreeNode node, bool isFirstNode, bool isLastNode)
     {
       bool hasChildren = node.Children.Count > 0;
