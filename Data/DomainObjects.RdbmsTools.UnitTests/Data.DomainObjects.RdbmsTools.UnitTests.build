@@ -16,7 +16,8 @@
     <csc  target="library"
           output="${build.test.outputdir}/${project.output}.${project.extension}"
           debug="${build.debug}"
-          define="${build.csc.define}">
+          define="${build.csc.define}"
+          keyfile="${solution.key-file}">
       <nowarn>
       </nowarn> 
       <sources failonempty="true">

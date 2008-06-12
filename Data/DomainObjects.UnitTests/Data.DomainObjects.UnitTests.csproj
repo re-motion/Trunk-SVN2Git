@@ -27,7 +27,7 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -1074,6 +1074,7 @@
     <EmbeddedResource Include="Core\Resources\DomainObjectsConfigurationWithFakeMappingLoader.xml" />
     <EmbeddedResource Include="Core\Resources\DomainObjectsConfigurationWithMinimumSettings.xml" />
     <EmbeddedResource Include="Core\Resources\DomainObjectsConfigurationWithCustomSectionGroupName.xml" />
+    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
     <None Include="Security\Remotion.Data.DomainObjects.UnitTests.Security.Queries.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

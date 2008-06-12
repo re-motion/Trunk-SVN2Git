@@ -11,7 +11,7 @@
     <AssemblyName>Remotion.Data.DomainObjects.RdbmsTools.UnitTests</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -55,6 +55,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Data.DomainObjects.RdbmsTools.UnitTests.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
     <Compile Include="SchemaGeneration\TableBuilderBaseTest.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="TestDomain\Address.cs" />

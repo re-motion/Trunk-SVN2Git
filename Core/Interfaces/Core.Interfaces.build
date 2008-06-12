@@ -10,7 +10,7 @@
 -->
 
 <!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
-<project xmlns="nant-schema" name="Remotion.Interfaces.dll">  
+<project xmlns="nant-schema" name="Remotion.Interfaces">  
 
   <target name="build" description="perform a build">
 
@@ -19,7 +19,8 @@
           unsafe="true" 
           doc="${project.doc}" 
           debug="${build.debug}"
-          define="${build.csc.define}">
+          define="${build.csc.define}"
+          keyfile="${solution.key-file}">
       <nowarn>
         <!-- missing XML comment -->
         <warning number="1591" />

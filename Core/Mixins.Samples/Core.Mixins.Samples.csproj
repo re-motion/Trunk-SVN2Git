@@ -11,7 +11,7 @@
     <AssemblyName>Remotion.Mixins.Samples</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -74,6 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Core.Mixins.Samples.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
     <Compile Include="UnitTests\Aktology\AktenTest.cs" />
     <Compile Include="UnitTests\DisposableMixinTest.cs" />
     <Compile Include="UnitTests\DynamicMixinBuilderTest.cs" />

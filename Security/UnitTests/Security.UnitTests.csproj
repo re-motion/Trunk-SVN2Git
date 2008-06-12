@@ -11,7 +11,7 @@
     <AssemblyName>Remotion.Security.UnitTests</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -165,6 +165,7 @@
     <Compile Include="Core\XmlAsserter\XmlElementAsserter.cs" />
     <Compile Include="Core\XmlAsserter\XmlnsAttributeFilter.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
     <None Include="Security.UnitTests.build" />
   </ItemGroup>
   <ItemGroup>

@@ -16,10 +16,9 @@
 
     <csc  target="library" 
           output="${build.test.outputdir}/${project.output}.${project.extension}" 
-          unsafe="true" 
           debug="${build.debug}"
-          define="${build.csc.define}">
-    
+          define="${build.csc.define}"
+          keyfile="${solution.key-file}">
       <nowarn>
       </nowarn> 
     

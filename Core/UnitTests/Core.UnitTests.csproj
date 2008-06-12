@@ -28,6 +28,8 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -693,6 +695,7 @@
     <Compile Include="Xml\XmlSerializationUtilityTests\GetNamespaceTest.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Core.UnitTests.build" />
+    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
     <None Include="Xml\SampleClass.xsx">
       <DependentUpon>SampleClass.xsd</DependentUpon>
     </None>

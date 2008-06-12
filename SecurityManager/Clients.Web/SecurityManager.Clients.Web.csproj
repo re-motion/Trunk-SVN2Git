@@ -12,7 +12,7 @@
     <AssemblyName>Remotion.SecurityManager.Clients.Web</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
     <None Include="SecurityManager.Clients.Web.build" />
     <Content Include="Global.asax" />
     <Content Include="UI\AccessControl\EditPermissionControl.ascx" />

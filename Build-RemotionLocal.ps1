@@ -1,7 +1,7 @@
 set-alias nant "C:\Program Files\NAnt\bin.net-2.0\nant.exe";
 
 nant "-f:Remotion.build" "-D:solution.global-dir=\Development\global" "-D:build.temp.root=\Temp\RemotionLocal" "-t:net-2.0" "-l:Build.log" "-nologo" `
-    "-D:build.update.assembly-info=true" `
+    "-D:build.update.assembly-info=false" `
     cleantemp `
     resources debug;
 

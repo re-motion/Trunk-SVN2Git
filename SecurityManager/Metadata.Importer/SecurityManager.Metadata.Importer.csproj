@@ -11,7 +11,7 @@
     <AssemblyName>Remotion.SecurityManager.Metadata.Importer</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -42,6 +42,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
     <None Include="SecurityManager.Metadata.Importer.build" />
     <Compile Include="CommandLineArguments.cs" />
     <Compile Include="OperationMode.cs" />
