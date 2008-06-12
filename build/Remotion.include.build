@@ -313,8 +313,6 @@
     <zip zipfile="${sourcezipfile.name}">
       <fileset basedir="${solution.basedir}">
         <include name="Core/**" />
-        <include name="Core.Interfaces/**" />
-        <include name="Core.Test/**" />
         <include name="Development/**" />
         <include name="Data/**" />
         <include name="Mixins/**" />

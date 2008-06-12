@@ -19,12 +19,12 @@ using System.Reflection;
 [assembly: AssemblyTitle ("Remotion Core Interfaces Library")]
 [assembly: AssemblyDescription ("Stable interfaces for the Remotion Core library.")]
 [assembly: AssemblyConfiguration (".NET Framework: net-2.0, build type: debug")]
-[assembly: AssemblyCompany ("rubicon informationstechnologie gmbh")]
-[assembly: AssemblyProduct ("Remotion")]
-[assembly: AssemblyCopyright ("(c) 2003 - 2008 rubicon informationstechnologie gmbh, www.rubicon-it.com")]
-[assembly: AssemblyTrademark ("")]
-[assembly: AssemblyCulture ("")]
-[assembly: CLSCompliant (true)]
+[assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
+[assembly: AssemblyProduct("Remotion")]
+[assembly: AssemblyCopyright("(c) 2005 - 2008 rubicon informationstechnologie gmbh, www.rubicon.eu")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]		
+[assembly: CLSCompliant(true)]
 //
 // Version information for an assembly consists of the following four values:
 //
@@ -36,7 +36,7 @@ using System.Reflection;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion ("1.7.65.202")]
+[assembly: AssemblyVersion("1.9.0.202")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
@@ -64,7 +64,7 @@ using System.Reflection;
 //       documentation for more information on this.
 //
 #pragma warning disable 1699
-[assembly: AssemblyDelaySign (false)]
-[assembly: AssemblyKeyFile (@"\Development\global/remotion.snk")]
-[assembly: AssemblyKeyName ("")]
+[assembly: AssemblyDelaySign(false)]
+[assembly: AssemblyKeyFile(@"\Development\global/remotion.snk")]
+[assembly: AssemblyKeyName("")]
 #pragma warning restore 1699

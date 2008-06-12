@@ -20,7 +20,7 @@ using Remotion.Mixins;
 [assembly: AssemblyConfiguration(".NET Framework: net-2.0, build type: debug")]
 [assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
 [assembly: AssemblyProduct("Remotion")]
-[assembly: AssemblyCopyright("(c) 2003 - 2007 rubicon informationstechnologie gmbh, www.rubicon-it.com")]
+[assembly: AssemblyCopyright("(c) 2005 - 2008 rubicon informationstechnologie gmbh, www.rubicon.eu")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
@@ -35,7 +35,7 @@ using Remotion.Mixins;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.7.65.202")]
+[assembly: AssemblyVersion("1.9.0.202")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
