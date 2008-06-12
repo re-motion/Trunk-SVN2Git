@@ -53,7 +53,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
           .BuildClassContext ();
 
       DynamicMethod method =
-          new DynamicMethod ("Test_NewAttributeExpressionFromClassContext", typeof (ConcreteMixedTypeAttribute), new Type[] { typeof (ClassContext) }, false);
+          new DynamicMethod ("Test_NewAttributeExpressionFromClassContext", typeof (ConcreteMixedTypeAttribute), new Type[] { typeof (ClassContext) }, typeof (ConcreteMixedTypeAttribute));
       ILGenerator ilGenerator = method.GetILGenerator ();
       DynamicMethodCodeBuilder codeBuilder = new DynamicMethodCodeBuilder (ilGenerator);
       DynamicMethodEmitter emitter = new DynamicMethodEmitter (method);
