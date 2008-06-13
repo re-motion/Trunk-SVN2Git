@@ -1,3 +1,10 @@
+1.9.1
+=====
+- BusinessObjectProvider erzeugt nun automatisch Standardimplementierungen typischer BusinessObjectServices. Man kann weiterhin
+  Services selbst registrieren.
+  Für DomainObjects zB: BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().GetService<ISearchAvailableObjectService> (...)
+  Für BindableObjects zB: BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>().GetService<ISearchAvailableObjectService> (...)
+
 1.9.0
 =====
 - Umstellung auf re:motion
