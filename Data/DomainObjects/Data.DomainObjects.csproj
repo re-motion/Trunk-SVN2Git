@@ -27,7 +27,9 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -116,7 +118,9 @@
     <Compile Include="AutoRollbackBehavior.cs" />
     <Compile Include="ClassIDAttribute.cs" />
     <Compile Include="ClientTransactionScopeManager.cs" />
+    <Compile Include="Cloning\CloneContext.cs" />
     <Compile Include="Cloning\DomainObjectCloner.cs" />
+    <Compile Include="Cloning\ICloneStrategy.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\RelationPropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\MappingReflectorBase.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinder.cs" />
@@ -561,7 +565,9 @@
       <SubType>Code</SubType>
     </None>
     <None Include="Data.DomainObjects.build" />
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="\Development\global\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
     <EmbeddedResource Include="ObjectBinding\Globalization\BooleanProperty.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
