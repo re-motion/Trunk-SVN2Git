@@ -23,10 +23,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Database
     {
     }
 
-    protected override void ExecuteBatch (SqlConnection connection, SqlTransaction transaction, string sqlFileName)
+    protected override int ExecuteBatch (SqlConnection connection, SqlTransaction transaction, string sqlFileName)
     {
-      base.ExecuteBatch (connection, transaction, sqlFileName);
+      int batch =  base.ExecuteBatch (connection, transaction, sqlFileName);
       LoadBlobs (connection, transaction);
+      return batch;
     }
 
     private void LoadBlobs (SqlConnection connection, SqlTransaction transaction)
