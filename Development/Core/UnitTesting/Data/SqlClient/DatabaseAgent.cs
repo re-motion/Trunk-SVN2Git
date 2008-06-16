@@ -40,10 +40,11 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       ExecuteCommand (string.Format ("ALTER DATABASE [{0}] SET READ_ONLY WITH ROLLBACK IMMEDIATE", database));
     }
 
-    public void ExecuteBatch (string sqlFileName, bool useTransaction)
+    public int ExecuteBatch (string sqlFileName, bool useTransaction)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
 
+      int count = 0;
       using (SqlConnection connection = new SqlConnection (_connectionString))
       {
         connection.Open();
@@ -51,42 +52,46 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
         {
           using (SqlTransaction transaction = connection.BeginTransaction ())
           {
-            ExecuteBatch (connection, transaction, sqlFileName);
+            count = ExecuteBatch (connection, transaction, sqlFileName);
             transaction.Commit ();
           }
         }
         else
         {
-          ExecuteBatch (connection, null, sqlFileName);
+          count = ExecuteBatch (connection, null, sqlFileName);
         }
       }
+
+      return count;
     }
 
-    public void ExecuteCommand (string commandText)
+    public int ExecuteCommand (string commandText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
 
       using (SqlConnection connection = new SqlConnection (_connectionString))
       {
         connection.Open();
-        ExecuteCommand (connection, null, commandText);
+        return ExecuteCommand (connection, null, commandText);
       }
     }
 
-    protected virtual void ExecuteBatch (SqlConnection connection, SqlTransaction transaction, string sqlFileName)
+    protected virtual int ExecuteBatch (SqlConnection connection, SqlTransaction transaction, string sqlFileName)
     {
       ArgumentUtility.CheckNotNull ("connection", connection);
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
 
+      int count = 0;
       foreach (string commandText in GetCommandTextBatchesFromFile (sqlFileName))
-        ExecuteCommand (connection, transaction, commandText);
+        count += ExecuteCommand (connection, transaction, commandText);
+      return count;
     }
 
-    private void ExecuteCommand (SqlConnection connection, SqlTransaction transaction, string commandText)
+    private int ExecuteCommand (SqlConnection connection, SqlTransaction transaction, string commandText)
     {
       using (SqlCommand command = new SqlCommand (commandText, connection, transaction))
       {
-        command.ExecuteNonQuery();
+        return command.ExecuteNonQuery();
       }
     }
 
