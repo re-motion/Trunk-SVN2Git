@@ -27,7 +27,9 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -112,6 +114,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UnitTesting\AppDomainRunnerTest.cs" />
+    <Compile Include="UnitTesting\Data\SqlClient\DatabaseAgentTest.cs" />
+    <Compile Include="UnitTesting\Data\SqlClient\TestableDatabaseAgent.cs" />
     <Compile Include="UnitTesting\DevNullTest.cs" />
     <Compile Include="UnitTesting\IO\TempFileTest.cs" />
     <Compile Include="UnitTesting\PEVerifierTest.cs" />
@@ -132,7 +136,9 @@
     </Compile>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Development.Core.Test.build" />
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="\Development\global\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

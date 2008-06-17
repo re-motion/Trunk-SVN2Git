@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
@@ -19,7 +20,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
   /// <summary>Use the <see cref="DatabaseAgent"/> for setting up the database during unit testing.</summary>
   public class DatabaseAgent
   {
-    private string _connectionString;
+    private readonly string _connectionString;
 
     public DatabaseAgent (string connectionString)
     {
@@ -45,53 +46,86 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
 
       int count = 0;
-      using (SqlConnection connection = new SqlConnection (_connectionString))
+      using (IDbConnection connection = CreateConnection())
       {
         connection.Open();
         if (useTransaction)
         {
-          using (SqlTransaction transaction = connection.BeginTransaction ())
+          using (IDbTransaction transaction = connection.BeginTransaction ())
           {
-            count = ExecuteBatch (connection, transaction, sqlFileName);
+            count = ExecuteBatch (connection, sqlFileName, transaction);
             transaction.Commit ();
           }
         }
         else
         {
-          count = ExecuteBatch (connection, null, sqlFileName);
+          count = ExecuteBatch (connection, sqlFileName, null);
         }
       }
 
       return count;
+    }
+
+    protected virtual IDbConnection CreateConnection ()
+    {
+      return new SqlConnection (_connectionString);
+    }
+
+    protected virtual IDbCommand CreateCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
+    {
+      IDbCommand command = connection.CreateCommand ();
+      command.CommandType = CommandType.Text;
+      command.CommandText = commandText;
+      command.Transaction = transaction;
+      return command;
     }
 
     public int ExecuteCommand (string commandText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
 
-      using (SqlConnection connection = new SqlConnection (_connectionString))
+      using (IDbConnection connection = CreateConnection())
       {
         connection.Open();
-        return ExecuteCommand (connection, null, commandText);
+        return ExecuteCommand (connection, commandText, null);
       }
     }
 
-    protected virtual int ExecuteBatch (SqlConnection connection, SqlTransaction transaction, string sqlFileName)
+    public object ExecuteScalarCommand (string commandText)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("commandText", commandText);
+
+      using (IDbConnection connection = CreateConnection())
+      {
+        connection.Open ();
+        return ExecuteScalarCommand(connection, commandText, null);
+      }
+    }
+
+    protected virtual int ExecuteBatch (IDbConnection connection, string sqlFileName, IDbTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("connection", connection);
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
 
       int count = 0;
       foreach (string commandText in GetCommandTextBatchesFromFile (sqlFileName))
-        count += ExecuteCommand (connection, transaction, commandText);
+        count += ExecuteCommand (connection, commandText, transaction);
       return count;
     }
 
-    private int ExecuteCommand (SqlConnection connection, SqlTransaction transaction, string commandText)
+    protected virtual int ExecuteCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
     {
-      using (SqlCommand command = new SqlCommand (commandText, connection, transaction))
+      using (IDbCommand command = CreateCommand (connection, commandText, transaction))
       {
         return command.ExecuteNonQuery();
+      }
+    }
+
+    protected virtual object ExecuteScalarCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
+    {
+      using (IDbCommand command = CreateCommand (connection, commandText, transaction))
+      {
+        return command.ExecuteScalar ();
       }
     }
 

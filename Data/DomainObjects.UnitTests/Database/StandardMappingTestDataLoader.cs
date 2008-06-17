@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.UnitTests.Core.Resources;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
@@ -23,24 +24,24 @@ namespace Remotion.Data.DomainObjects.UnitTests.Database
     {
     }
 
-    protected override int ExecuteBatch (SqlConnection connection, SqlTransaction transaction, string sqlFileName)
+    protected override int ExecuteBatch (IDbConnection connection, string sqlFileName, IDbTransaction transaction)
     {
-      int batch =  base.ExecuteBatch (connection, transaction, sqlFileName);
+      int batch =  base.ExecuteBatch (connection, sqlFileName, transaction);
       LoadBlobs (connection, transaction);
       return batch;
     }
 
-    private void LoadBlobs (SqlConnection connection, SqlTransaction transaction)
+    private void LoadBlobs (IDbConnection connection, IDbTransaction transaction)
     {
       DomainObjectIDs domainObjectIDs = StandardConfiguration.Instance.GetDomainObjectIDs();
       UpdateClassWithAllDataTypes (connection, transaction, domainObjectIDs.ClassWithAllDataTypes1, ResourceManager.GetImage1 ());
       UpdateClassWithAllDataTypes (connection, transaction, domainObjectIDs.ClassWithAllDataTypes2, ResourceManager.GetImage2 ());
     }
 
-    private void UpdateClassWithAllDataTypes (SqlConnection connection, SqlTransaction transaction, ObjectID id, byte[] binary)
+    private void UpdateClassWithAllDataTypes (IDbConnection connection, IDbTransaction transaction, ObjectID id, byte[] binary)
     {
       string updateText = "Update [TableWithAllDataTypes] set [Binary] = @binary where [ID] = @id";
-      using (SqlCommand command = new SqlCommand (updateText, connection, transaction))
+      using (SqlCommand command = (SqlCommand) CreateCommand (connection, updateText, transaction))
       {
         command.Parameters.AddWithValue ("@binary", binary);
         command.Parameters.AddWithValue ("@id", id.Value);
