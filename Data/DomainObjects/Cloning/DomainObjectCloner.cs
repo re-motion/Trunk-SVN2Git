@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
@@ -22,6 +23,18 @@ namespace Remotion.Data.DomainObjects.Cloning
   /// </summary>
   public class DomainObjectCloner
   {
+    private ClientTransaction _cloneTransaction;
+
+    /// <summary>
+    /// Gets or sets the transaction to be used for the clone. If this is set to <see langword="null"/>, the current transaction is used.
+    /// </summary>
+    /// <value>The clone transaction.</value>
+    public ClientTransaction CloneTransaction
+    {
+      get { return _cloneTransaction ?? ClientTransactionScope.CurrentTransaction; }
+      set { _cloneTransaction = value; }
+    }
+
     /// <summary>
     /// Creates a new <see cref="DomainObject"/> instance of the same type and with the same property values as the given <paramref name="source"/>.
     /// Relations are not cloned, foreign key properties default to null.
@@ -38,10 +51,9 @@ namespace Remotion.Data.DomainObjects.Cloning
     {
       ArgumentUtility.CheckNotNull ("source", source);
       ObjectID sourceID = source.ID;
-      ClientTransaction cloneTransaction = ClientTransactionScope.CurrentTransaction;
 
       // Use NewObjectFromDataContainer in order to avoid calling a ctor
-      DataContainer cloneDataContainer = cloneTransaction.CreateNewDataContainer (sourceID.ClassDefinition.ClassType);
+      DataContainer cloneDataContainer = CloneTransaction.CreateNewDataContainer (sourceID.ClassDefinition.ClassType);
       T clone = (T) RepositoryAccessor.NewObjectFromDataContainer (cloneDataContainer);
 
       CopyProperties (source, clone, null, null);
@@ -90,7 +102,11 @@ namespace Remotion.Data.DomainObjects.Cloning
       ArgumentUtility.CheckNotNull ("context", context);
 
       T clone = context.GetCloneFor (source);
-      CopyProperties (source, clone, strategy, context);
+      while (context.ShallowClones.Count > 0)
+      {
+        Tuple<DomainObject, DomainObject> shallowClone = context.ShallowClones.Dequeue ();
+        CopyProperties (shallowClone.A, shallowClone.B, strategy, context);
+      }
       return clone;
     }
 
@@ -98,9 +114,7 @@ namespace Remotion.Data.DomainObjects.Cloning
         where T : DomainObject
     {
       ClientTransaction sourceTransaction = source.GetNonNullClientTransaction ();
-      ClientTransaction cloneTransaction = ClientTransactionScope.CurrentTransaction;
-
-      CopyProperties (source.Properties, sourceTransaction, clone.Properties, cloneTransaction, strategy, context);
+      CopyProperties (source.Properties, sourceTransaction, clone.Properties, CloneTransaction, strategy, context);
     }
 
     private void CopyProperties (PropertyIndexer sourceProperties, ClientTransaction sourceTransaction, IEnumerable<PropertyAccessor> cloneProperties, ClientTransaction cloneTransaction, ICloneStrategy strategy, CloneContext context)

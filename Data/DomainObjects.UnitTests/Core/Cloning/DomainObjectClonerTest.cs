@@ -9,8 +9,10 @@
  */
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Cloning;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
@@ -46,12 +48,44 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
     }
 
     [Test]
+    public void CloneTransaction_CurrentByDefault ()
+    {
+      Assert.That (_cloner.CloneTransaction, Is.SameAs (ClientTransactionMock));
+    }
+
+    [Test]
+    public void CloneTransaction_ManualSet ()
+    {
+      ClientTransaction cloneTransaction = ClientTransaction.NewBindingTransaction ();
+      _cloner.CloneTransaction = cloneTransaction;
+      Assert.That (_cloner.CloneTransaction, Is.SameAs (cloneTransaction));
+    }
+
+    [Test]
+    public void CloneTransaction_Reset ()
+    {
+      ClientTransaction cloneTransaction = ClientTransaction.NewBindingTransaction ();
+      _cloner.CloneTransaction = cloneTransaction;
+      _cloner.CloneTransaction = null;
+      Assert.That (_cloner.CloneTransaction, Is.SameAs (ClientTransactionMock));
+    }
+
+    [Test]
     public void CreateValueClone_CreatesNewObject ()
     {
       DomainObject clone = _cloner.CreateValueClone (_classWithAllDataTypes);
       Assert.That (clone, Is.Not.SameAs (_classWithAllDataTypes));
       Assert.That (clone.ID, Is.Not.EqualTo (_classWithAllDataTypes));
       Assert.That (clone.State, Is.EqualTo (StateType.New));
+    }
+
+    [Test]
+    public void CreateValueClone_CreatesNewObjectInCorrectTransaction ()
+    {
+      ClientTransaction cloneTransaction = ClientTransaction.NewBindingTransaction ();
+      _cloner.CloneTransaction = cloneTransaction;
+      DomainObject clone = _cloner.CreateValueClone (_classWithAllDataTypes);
+      Assert.That (clone.ClientTransaction, Is.SameAs (cloneTransaction));
     }
 
     [Test]
@@ -128,19 +162,23 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
     }
 
     [Test]
-    public void CloneTransaction_IsCurrent ()
-    {
-      ClassWithAllDataTypes unboundClone = _cloner.CreateValueClone (_boundSource);
-      Assert.That (unboundClone.ClientTransaction, Is.SameAs (ClientTransactionMock));
-    }
-
-    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
-    public void NullCurrentTransaction ()
+    public void NullTransaction_ForCloneTransaction ()
     {
       using (ClientTransactionScope.EnterNullScope ())
       {
         _cloner.CreateValueClone (_boundSource);
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread or this object.")]
+    public void NullTransaction_ForSourceTransaction ()
+    {
+      _cloner.CloneTransaction = ClientTransactionMock;
+      using (ClientTransactionScope.EnterNullScope ())
+      {
+        _cloner.CreateValueClone (_computer1);
       }
     }
 
@@ -161,14 +199,18 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
       ICloneStrategy strategyMock = _mockRepository.CreateMock<ICloneStrategy>();
       CloneContext contextMock = _mockRepository.Stub<CloneContext>(_cloner);
       Order clone = Order.NewObject();
+      Queue<Tuple<DomainObject, DomainObject>> shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
 
       SetupResult.For (contextMock.GetCloneFor (_order1)).Return (clone);
+      shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1, clone));
+      SetupResult.For (contextMock.ShallowClones).Return (shallowClonesFake);
+
       using (_mockRepository.Unordered ())
       {
-        ExpectHandleReference (strategyMock, clone, "OrderItems", ClientTransaction.Current, ClientTransaction.Current);
-        ExpectHandleReference (strategyMock, clone, "OrderTicket", ClientTransaction.Current, ClientTransaction.Current);
-        ExpectHandleReference (strategyMock, clone, "Official", ClientTransaction.Current, ClientTransaction.Current);
-        ExpectHandleReference (strategyMock, clone, "Customer", ClientTransaction.Current, ClientTransaction.Current);
+        ExpectHandleReference (strategyMock, _order1, clone, "OrderItems", ClientTransaction.Current, ClientTransaction.Current);
+        ExpectHandleReference (strategyMock, _order1, clone, "OrderTicket", ClientTransaction.Current, ClientTransaction.Current);
+        ExpectHandleReference (strategyMock, _order1, clone, "Official", ClientTransaction.Current, ClientTransaction.Current);
+        ExpectHandleReference (strategyMock, _order1, clone, "Customer", ClientTransaction.Current, ClientTransaction.Current);
       }
       _mockRepository.ReplayAll ();
 
@@ -177,20 +219,79 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
     }
 
     [Test]
-    [Ignore ("TODO: FS")]
-    public void CreateClone_CallsStrategyForReferences_OnReferenedObjectsToo ()
+    public void CreateClone_CallsStrategyForReferences_OnReferencedObjectsToo ()
     {
-      Assert.Fail ();
+      ICloneStrategy strategyMock = _mockRepository.CreateMock<ICloneStrategy> ();
+      CloneContext contextMock = _mockRepository.Stub<CloneContext> (_cloner);
+      Order clone = Order.NewObject ();
+      OrderItem clone2 = OrderItem.NewObject ();
+      Queue<Tuple<DomainObject, DomainObject>> shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
+
+      SetupResult.For (contextMock.GetCloneFor (_order1)).Return (clone);
+      shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1, clone));
+      shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1.OrderItems[0], clone2));
+      SetupResult.For (contextMock.ShallowClones).Return (shallowClonesFake);
+
+      using (_mockRepository.Unordered ())
+      {
+        ExpectHandleReference (strategyMock, _order1, clone, "OrderItems", ClientTransaction.Current, ClientTransaction.Current);
+        ExpectHandleReference (strategyMock, _order1, clone, "OrderTicket", ClientTransaction.Current, ClientTransaction.Current);
+        ExpectHandleReference (strategyMock, _order1, clone, "Official", ClientTransaction.Current, ClientTransaction.Current);
+        ExpectHandleReference (strategyMock, _order1, clone, "Customer", ClientTransaction.Current, ClientTransaction.Current);
+
+        ExpectHandleReference (strategyMock, _order1.OrderItems[0], clone2, "Order", ClientTransaction.Current, ClientTransaction.Current);
+      }
+      _mockRepository.ReplayAll ();
+
+      _cloner.CreateClone (_order1, strategyMock, contextMock);
+      _mockRepository.VerifyAll ();
     }
 
-    private void ExpectHandleReference (ICloneStrategy strategyMock, Order clone, string propertyName, ClientTransaction sourceTransaction,
-        ClientTransaction cloneTransaction)
+    [Test]
+    public void CreateClone_CallsStrategy_WithCorrectTransactions ()
+    {
+      ClientTransaction sourceTransaction = ClientTransaction.NewBindingTransaction ();
+      ClientTransaction cloneTransaction = ClientTransaction.NewRootTransaction ();
+
+      _cloner.CloneTransaction = cloneTransaction;
+
+      ICloneStrategy strategyMock = _mockRepository.CreateMock<ICloneStrategy> ();
+      CloneContext contextMock = _mockRepository.Stub<CloneContext> (_cloner);
+      
+      Order source;
+      using (sourceTransaction.EnterNonDiscardingScope ())
+        source = Order.NewObject ();
+      Order clone;
+      using (cloneTransaction.EnterNonDiscardingScope ())
+        clone = Order.NewObject ();
+
+      Queue<Tuple<DomainObject, DomainObject>> shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
+
+      SetupResult.For (contextMock.GetCloneFor (source)).Return (clone);
+      shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (source, clone));
+      SetupResult.For (contextMock.ShallowClones).Return (shallowClonesFake);
+
+      using (_mockRepository.Unordered ())
+      {
+        ExpectHandleReference (strategyMock, source, clone, "OrderItems", sourceTransaction, cloneTransaction);
+        ExpectHandleReference (strategyMock, source, clone, "OrderTicket", sourceTransaction, cloneTransaction);
+        ExpectHandleReference (strategyMock, source, clone, "Official", sourceTransaction, cloneTransaction);
+        ExpectHandleReference (strategyMock, source, clone, "Customer", sourceTransaction, cloneTransaction);
+      }
+      _mockRepository.ReplayAll ();
+
+      _cloner.CreateClone (source, strategyMock, contextMock);
+      _mockRepository.VerifyAll ();
+    }
+
+    private void ExpectHandleReference (ICloneStrategy strategyMock, TestDomainBase original, TestDomainBase clone, string propertyName,
+        ClientTransaction sourceTransaction, ClientTransaction cloneTransaction)
     {
       strategyMock.HandleReference (new PropertyAccessor(), null, new PropertyAccessor(), null, null);
       LastCall.Constraints (
-          Mocks_Is.Equal (_order1.Properties[typeof (Order), propertyName]),
+          Mocks_Is.Equal (original.Properties[original.GetPublicDomainObjectType (), propertyName]),
           Mocks_Is.Same (sourceTransaction),
-          Mocks_Is.Equal (clone.Properties[typeof (Order), propertyName]),
+          Mocks_Is.Equal (clone.Properties[clone.GetPublicDomainObjectType (), propertyName]),
           Mocks_Is.Same (cloneTransaction),
           Mocks_Is.Anything ());
     }

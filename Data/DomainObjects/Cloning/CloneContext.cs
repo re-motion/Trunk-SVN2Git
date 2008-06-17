@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Cloning
       _cloner = cloner;
     }
 
-    public Queue<Tuple<DomainObject, DomainObject>> ShallowClones
+    public virtual Queue<Tuple<DomainObject, DomainObject>> ShallowClones
     {
       get { return _shallowClones; }
     }
