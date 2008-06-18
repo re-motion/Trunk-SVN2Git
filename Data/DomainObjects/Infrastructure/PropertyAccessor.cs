@@ -266,9 +266,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        CheckTransactionalStatus (DefaultTransaction);
-        return _strategy.HasChanged (this, DefaultTransaction);
+        return HasChangedTx (DefaultTransaction);
       }
+    }
+
+    /// <summary>
+    /// Indicates whether the property's value has been changed in the given transaction.
+    /// </summary>
+    /// <param name="transaction">The transaction to be used when checking the property's status.</param>
+    /// <value>True if the property's value has changed; false otherwise.</value>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
+    public bool HasChangedTx (ClientTransaction transaction)
+    {
+      ArgumentUtility.CheckNotNull ("transaction", transaction);
+      CheckTransactionalStatus (transaction);
+      return _strategy.HasChanged (this, transaction);
     }
 
     /// <summary>
@@ -285,10 +298,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        CheckTransactionalStatus (DefaultTransaction);
-        return _strategy.HasBeenTouched (this, DefaultTransaction);
+        return HasBeenTouchedTx(DefaultTransaction);
       }
     }
+
+    /// <summary>
+    /// Indicates whether  the property's value (for simple and related object properties) or one of its elements (for related object collection
+    /// properties) has been assigned since instantiation, loading, commit or rollback, regardless of whether the current value differs from the
+    /// original value. The check is performed in the given transaction.
+    /// </summary>
+    /// <param name="transaction">The transaction to be used when checking the property's status.</param>
+    /// <remarks>This property differs from <see cref="HasChanged"/> in that for <see cref="HasChanged"/> to be true, the property's value (or its
+    /// elements) actually must have changed in an assignment operation. <see cref="HasBeenTouched"/> is true also if a property gets assigned the
+    /// same value it originally had. This can be useful to determine whether the property has been written once since the last load, commit, or
+    /// rollback operation.
+    /// </remarks>
+    public bool HasBeenTouchedTx (ClientTransaction transaction)
+    {
+      ArgumentUtility.CheckNotNull ("transaction", transaction);
+      CheckTransactionalStatus (transaction);
+      return _strategy.HasBeenTouched (this, transaction);
+    }
+
 
     /// <summary>
     /// Gets a value indicating whether the property's value is <see langword="null"/>.

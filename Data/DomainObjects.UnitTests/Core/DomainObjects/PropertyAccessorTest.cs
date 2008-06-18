@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -351,6 +352,60 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DomainObjects
       Assert.AreSame (MappingConfiguration.Current.ClassDefinitions[typeof (Computer)]
           .GetRelationEndPointDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.Employee"),
           accessor.RelationEndPointDefinition);
+    }
+
+    [Test]
+    public void HasChangedTx ()
+    {
+      IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction ();
+      using (clientTransaction.EnterNonDiscardingScope ())
+      {
+        Assert.That (sector.Properties[typeof (IndustrialSector), "Name"].HasChangedTx (ClientTransactionMock), Is.False);
+      }
+      sector.Name = "Foo";
+      using (clientTransaction.EnterNonDiscardingScope ())
+      {
+        Assert.That (sector.Properties[typeof (IndustrialSector), "Name"].HasChangedTx (ClientTransactionMock), Is.True);
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException),
+        ExpectedMessage = "Domain object 'IndustrialSector|3bb7bee9-2af9-4a85-998e-618bebbe5a6b|System.Guid' cannot be used in the current " 
+        + "transaction as it was loaded or created in another transaction. Use a ClientTransactionScope to set the right transaction, or call EnlistInTransaction to enlist the object in the current transaction.")]
+    public void HasChangedTx_InvalidTransaction ()
+    {
+      IndustrialSector sector = IndustrialSector.GetObject(DomainObjectIDs.IndustrialSector1);
+      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction ();
+      sector.Properties[typeof (IndustrialSector), "Name"].HasChangedTx (clientTransaction);
+    }
+
+    [Test]
+    public void HasBeenTouchedTx ()
+    {
+      IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction ();
+      using (clientTransaction.EnterNonDiscardingScope ())
+      {
+        Assert.That (sector.Properties[typeof (IndustrialSector), "Name"].HasBeenTouchedTx (ClientTransactionMock), Is.False);
+      }
+      sector.Name = sector.Name;
+      using (clientTransaction.EnterNonDiscardingScope ())
+      {
+        Assert.That (sector.Properties[typeof (IndustrialSector), "Name"].HasBeenTouchedTx (ClientTransactionMock), Is.True);
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException),
+        ExpectedMessage = "Domain object 'IndustrialSector|3bb7bee9-2af9-4a85-998e-618bebbe5a6b|System.Guid' cannot be used in the current "
+        + "transaction as it was loaded or created in another transaction. Use a ClientTransactionScope to set the right transaction, or call EnlistInTransaction to enlist the object in the current transaction.")]
+    public void HasBeenTouchedTx_InvalidTransaction ()
+    {
+      IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction ();
+      sector.Properties[typeof (IndustrialSector), "Name"].HasBeenTouchedTx (clientTransaction);
     }
 
     [Test]
