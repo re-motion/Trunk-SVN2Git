@@ -130,12 +130,28 @@ namespace Remotion.Reflection.CodeGeneration
       return InnerEmitter.CreateField (name, fieldType);
     }
 
+    public FieldReference CreateField (string name, Type fieldType, FieldAttributes attributes)
+    {
+      ArgumentUtility.CheckNotNull ("name", name);
+      ArgumentUtility.CheckNotNull ("fieldType", fieldType);
+
+      return InnerEmitter.CreateField (name, fieldType, attributes);
+    }
+
     public FieldReference CreateStaticField (string name, Type fieldType)
     {
       ArgumentUtility.CheckNotNull ("name", name);
       ArgumentUtility.CheckNotNull ("fieldType", fieldType);
 
       return InnerEmitter.CreateStaticField (name, fieldType);
+    }
+
+    public FieldReference CreateStaticField (string name, Type fieldType, FieldAttributes attributes)
+    {
+      ArgumentUtility.CheckNotNull ("name", name);
+      ArgumentUtility.CheckNotNull ("fieldType", fieldType);
+
+      return InnerEmitter.CreateStaticField (name, fieldType, attributes);
     }
 
     public CustomMethodEmitter CreateMethod (string name, MethodAttributes attributes)

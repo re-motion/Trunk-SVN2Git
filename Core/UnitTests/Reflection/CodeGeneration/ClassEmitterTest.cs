@@ -97,6 +97,26 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
+    public void CreateField_WithAttributes ()
+    {
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateField_WithAttributes", typeof (object));
+      classEmitter.CreateField ("_test", typeof (string), FieldAttributes.Private);
+
+      Type t = classEmitter.BuildType ();
+      Assert.AreEqual (FieldAttributes.Private, t.GetField ("_test", BindingFlags.NonPublic | BindingFlags.Instance).Attributes);
+    }
+
+    [Test]
+    public void CreateStaticField_WithAttributes ()
+    {
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateStaticField_WithAttributes", typeof (object));
+      classEmitter.CreateStaticField ("_test", typeof (string), FieldAttributes.Private);
+
+      Type t = classEmitter.BuildType ();
+      Assert.AreEqual (FieldAttributes.Static | FieldAttributes.Private, t.GetField ("_test", BindingFlags.NonPublic | BindingFlags.Static).Attributes);
+    }
+
+    [Test]
     public void CreateDefaultConstructor ()
     {
       CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateDefaultConstructor", typeof (object));
