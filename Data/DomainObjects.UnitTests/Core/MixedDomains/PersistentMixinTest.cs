@@ -180,7 +180,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.MixedDomains
     {
       using (MixinConfiguration.BuildNew().EnterScope())
       {
-        StubStorageTargetClassForPersistentMixin.GetObject (new ObjectID (typeof (StubStorageTargetClassForPersistentMixin), Guid.NewGuid ()));
+        StubStorageTargetClassForPersistentMixin.GetObject (new ObjectID (typeof (StubStorageTargetClassForPersistentMixin), 13));
       }
     }
 
@@ -190,7 +190,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.MixedDomains
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (StubStorageTargetClassForPersistentMixin)).Clear ().AddMixin (typeof (StubStoragePersistentMixin)).EnterScope ()) // no NullMixin
       {
         StubStorageTargetClassForPersistentMixin.NewObject ();
-        StubStorageTargetClassForPersistentMixin.GetObject (new ObjectID (typeof (StubStorageTargetClassForPersistentMixin), Guid.NewGuid ()));
+        StubStorageTargetClassForPersistentMixin.GetObject (new ObjectID (typeof (StubStorageTargetClassForPersistentMixin), 12));
       }
     }
 
