@@ -27,7 +27,7 @@ namespace Remotion.Development.UnitTests.UnitTesting.Data.SqlClient
     [Test]
     public void ExecuteScalarCommand ()
     {
-      SetupCommandExpectations ("my command", null, () => Expect.Call (_commandMock.ExecuteScalar()).Return ("foo"));
+      SetupCommandExpectations ("my command", null, delegate { Expect.Call (_commandMock.ExecuteScalar ()).Return ("foo"); });
 
       _mockRepository.ReplayAll();
 
@@ -41,7 +41,7 @@ namespace Remotion.Development.UnitTests.UnitTesting.Data.SqlClient
     [Test]
     public void ExecuteCommand_ReturnsCount ()
     {
-      SetupCommandExpectations ("my command", null, () => Expect.Call (_commandMock.ExecuteNonQuery()).Return (15));
+      SetupCommandExpectations ("my command", null, delegate { Expect.Call (_commandMock.ExecuteNonQuery()).Return (15); });
 
       _mockRepository.ReplayAll ();
 
