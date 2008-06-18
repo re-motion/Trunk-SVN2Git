@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core
 
     // member fields
 
-    private static int _lastID = 0;
+    private static int s_nextID = 0;
 
     // construction and disposing
 
@@ -56,6 +56,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core
           container.PropertyValues.Add (propertyValue);
         }
 
+        int idAsInt = (int) id.Value;
+        if (s_nextID <= idAsInt)
+          s_nextID = idAsInt + 1;
         return container;
       }
     }
@@ -127,7 +130,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core
       if (InnerProvider != null)
         return InnerProvider.CreateNewObjectID (classDefinition);
       else
-        return new ObjectID (classDefinition, _lastID++);
+        return new ObjectID (classDefinition, s_nextID++);
     }
 
     public new object GetFieldValue (DataContainer dataContainer, string propertyName, ValueAccess valueAccess)
