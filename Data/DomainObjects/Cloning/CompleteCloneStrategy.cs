@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Cloning
       if (sourceReference.Kind == PropertyKind.RelatedObject)
       {
         DomainObject originalRelated = (DomainObject) sourceReference.GetValueWithoutTypeCheckTx (sourceTransaction);
-        DomainObject cloneRelated = context.GetCloneFor (originalRelated);
+        DomainObject cloneRelated = originalRelated != null ? context.GetCloneFor (originalRelated) : null;
         cloneReference.SetValueWithoutTypeCheckTx (cloneTransaction, cloneRelated);
       }
       else

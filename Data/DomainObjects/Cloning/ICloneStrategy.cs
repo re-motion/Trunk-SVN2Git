@@ -19,17 +19,25 @@ namespace Remotion.Data.DomainObjects.Cloning
   public interface ICloneStrategy
   {
     /// <summary>
-    /// Called when <see cref="DomainObjectCloner"/> encounters a reference that might to be cloned.
+    /// Called when <see cref="DomainObjectCloner"/> encounters a reference that might need to be cloned.
     /// </summary>
     /// <param name="sourceReference">The reference on the source object.</param>
     /// <param name="sourceTransaction">The source transaction used for cloning.</param>
     /// <param name="cloneReference">The reference on the cloned object.</param>
     /// <param name="cloneTransaction">The transaction used for the cloned object.</param>
     /// <param name="context">A <see cref="CloneContext"/> that should be used to obtain clones of objects held by <see cref="sourceReference"/>.</param>
-    /// <remarks>Implementers can check the <paramref name="sourceReference"/> and set the <paramref name="cloneReference"/> to clones,
+    /// <remarks>
+    /// <para>
+    /// Implementers can check the <paramref name="sourceReference"/> and set the <paramref name="cloneReference"/> to clones,
     /// original, or empty as needed. In order to get the right clone for a referenced object, the <paramref name="context"/> can be used.
-    /// Note that for bidirectional references, <see cref="HandleReference"/> will be called for both sides of the relation if both sides
-    /// are cloned. When the  <paramref name="context"/> is used to obtain the clones, no object will be cloned twice.
+    /// </para>
+    /// <para>
+    /// Note that <see cref="HandleReference"/> is only called for references yet untouched. Therefore, for bidirectional references, it will 
+    /// only be called for one side of the relation even if both  sides are cloned.
+    /// </para>
+    /// <para>
+    /// When the  <paramref name="context"/> is used to obtain the clones, no object will be cloned twice.
+    /// </para>
     /// </remarks>
     void HandleReference (PropertyAccessor sourceReference, ClientTransaction sourceTransaction, 
         PropertyAccessor cloneReference, ClientTransaction cloneTransaction,

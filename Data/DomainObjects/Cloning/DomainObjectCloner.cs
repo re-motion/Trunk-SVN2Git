@@ -127,7 +127,7 @@ namespace Remotion.Data.DomainObjects.Cloning
           object sourceValue = sourceProperty.GetValueWithoutTypeCheckTx (sourceTransaction);
           cloneProperty.SetValueWithoutTypeCheckTx (cloneTransaction, sourceValue);
         }
-        else if (strategy != null)
+        else if (strategy != null && !cloneProperty.HasBeenTouchedTx (cloneTransaction))
           strategy.HandleReference (sourceProperty, sourceTransaction, cloneProperty, cloneTransaction, context);
       }
     }

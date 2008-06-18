@@ -248,6 +248,39 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
     }
 
     [Test]
+    public void CreateClone_CallsStrategyForReferences_OnlyWhenNotTouched ()
+    {
+      ICloneStrategy strategyMock = _mockRepository.CreateMock<ICloneStrategy> ();
+      CloneContext contextMock = _mockRepository.Stub<CloneContext> (_cloner);
+      Order clone = Order.NewObject ();
+      OrderItem clone2 = OrderItem.NewObject ();
+      Queue<Tuple<DomainObject, DomainObject>> shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
+
+      clone.OrderTicket = clone.OrderTicket;
+      clone.Official = clone.Official;
+      clone.Customer = clone.Customer;
+      clone.OrderItems.Add (clone2);
+
+      SetupResult.For (contextMock.GetCloneFor (_order1)).Return (clone);
+      shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1, clone));
+      shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1.OrderItems[0], clone2));
+      SetupResult.For (contextMock.ShallowClones).Return (shallowClonesFake);
+
+      using (_mockRepository.Unordered ())
+      {
+        // not called: ExpectHandleReference (strategyMock, _order1, clone, "OrderItems", ClientTransaction.Current, ClientTransaction.Current);
+        // not called: ExpectHandleReference (strategyMock, _order1, clone, "OrderTicket", ClientTransaction.Current, ClientTransaction.Current);
+        // not called: ExpectHandleReference (strategyMock, _order1, clone, "Official", ClientTransaction.Current, ClientTransaction.Current);
+        // not called: ExpectHandleReference (strategyMock, _order1, clone, "Customer", ClientTransaction.Current, ClientTransaction.Current);
+        // not called: ExpectHandleReference (strategyMock, _order1.OrderItems[0], clone2, "Order", ClientTransaction.Current, ClientTransaction.Current);
+      }
+      _mockRepository.ReplayAll ();
+
+      _cloner.CreateClone (_order1, strategyMock, contextMock);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
     public void CreateClone_CallsStrategy_WithCorrectTransactions ()
     {
       ClientTransaction sourceTransaction = ClientTransaction.NewBindingTransaction ();
