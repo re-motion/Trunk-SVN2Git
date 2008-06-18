@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.BaseCallProx
     public void SubclassProxyHasBaseCallProxyField ()
     {
       Type t = CreateMixedType (typeof (BaseType3), typeof (BT3Mixin3<,>));
-      FieldInfo firstField = t.GetField ("__first");
+      FieldInfo firstField = t.GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance);
       Assert.IsNotNull (firstField);
       Assert.AreEqual (t.GetNestedType ("BaseCallProxy"), firstField.FieldType);
     }

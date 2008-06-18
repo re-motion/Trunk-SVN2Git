@@ -70,13 +70,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _configurationField = _emitter.CreateStaticField ("__configuration", typeof (TargetClassDefinition));
       HideFieldFromDebugger (_configurationField);
-      _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]));
+      _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]), FieldAttributes.Private);
       HideFieldFromDebugger (_extensionsField);
 
       _mixinTypeGenerators = CreateMixinTypeGenerators (mixinNameProvider);
       _baseCallGenerator = new BaseCallProxyGenerator (this, classEmitter, _mixinTypeGenerators);
 
-      _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder);
+      _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder, FieldAttributes.Private);
       HideFieldFromDebugger (_firstField);
 
       Statement initializationStatement = new ExpressionStatement (new MethodInvocationExpression (null, s_concreteTypeInitializationMethod,

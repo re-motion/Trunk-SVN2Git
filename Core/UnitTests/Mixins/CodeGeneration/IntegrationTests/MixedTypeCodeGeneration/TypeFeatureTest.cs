@@ -235,5 +235,19 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       CreateMixedType (typeof (BaseType1), typeof (ValueTypeMixin));
     }
+
+    [Test]
+    public void ExtensionsFieldIsPrivate ()
+    {
+      Type concreteType = CreateMixedType (typeof (BaseType1), typeof (BT1Mixin1));
+      Assert.That (concreteType.GetField ("__extensions", BindingFlags.NonPublic | BindingFlags.Instance).Attributes, Is.EqualTo (FieldAttributes.Private));
+    }
+
+    [Test]
+    public void FirstFieldIsPrivate ()
+    {
+      Type concreteType = CreateMixedType (typeof (BaseType1), typeof (BT1Mixin1));
+      Assert.That (concreteType.GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).Attributes, Is.EqualTo (FieldAttributes.Private));
+    }
   }
 }

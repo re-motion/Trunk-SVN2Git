@@ -38,7 +38,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Assert.IsNotNull (baseProperty);
 
       Assert.IsNotNull (baseProperty.GetValue (mixin, null));
-      Assert.AreSame (bt3.GetType ().GetField ("__first").FieldType, baseProperty.GetValue (mixin, null).GetType ());
+      Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, baseProperty.GetValue (mixin, null).GetType ());
       Assert.AreEqual (typeof (IBaseType33), baseProperty.PropertyType);
     }
 

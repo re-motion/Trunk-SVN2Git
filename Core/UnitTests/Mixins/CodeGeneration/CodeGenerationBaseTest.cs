@@ -17,7 +17,7 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection;
 
-namespace Remotion.UnitTests.Mixins
+namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
   public abstract class CodeGenerationBaseTest
   {

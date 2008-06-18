@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -47,22 +48,22 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin1), typeof (BT3Mixin1B)).With ();
       BT3Mixin1 mixin = Mixin.Get<BT3Mixin1> (bt3);
       Assert.IsNotNull (mixin.Base);
-      Assert.AreSame (bt3.GetType ().GetField ("__first").FieldType, mixin.Base.GetType ());
+      Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin.Base.GetType ());
 
       BT3Mixin1B mixin2 = Mixin.Get<BT3Mixin1B> (bt3);
       Assert.IsNotNull (mixin2.Base);
-      Assert.AreSame (bt3.GetType ().GetField ("__first").FieldType, mixin2.Base.GetType ());
+      Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin2.Base.GetType ());
 
       BaseType3 bt3A = Serializer.SerializeAndDeserialize (bt3);
       BT3Mixin1 mixinA = Mixin.Get<BT3Mixin1> (bt3A);
       Assert.AreNotSame (mixin, mixinA);
       Assert.IsNotNull (mixinA.Base);
-      Assert.AreSame (bt3A.GetType ().GetField ("__first").FieldType, mixinA.Base.GetType ());
+      Assert.AreSame (bt3A.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixinA.Base.GetType ());
 
       BT3Mixin1B mixin2A = Mixin.Get<BT3Mixin1B> (bt3A);
       Assert.AreNotSame (mixin2, mixin2A);
       Assert.IsNotNull (mixin2A.Base);
-      Assert.AreSame (bt3A.GetType ().GetField ("__first").FieldType, mixin2A.Base.GetType ());
+      Assert.AreSame (bt3A.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin2A.Base.GetType ());
     }
 
     [Test]
