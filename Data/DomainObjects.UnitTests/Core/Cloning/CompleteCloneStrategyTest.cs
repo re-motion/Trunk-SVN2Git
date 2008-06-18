@@ -31,46 +31,46 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
 
     protected override void HandleReference_OneOne_RealSide_Checks (Employee sourceRelated, PropertyAccessor sourceReference, Employee cloneRelated, PropertyAccessor cloneReference)
     {
-      Expect.Call (_contextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
+      Expect.Call (ContextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
 
-      _mockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, _sourceTransaction, cloneReference, _cloneTransaction, _contextMock);
-      _mockRepository.VerifyAll ();
+      MockRepository.ReplayAll ();
+      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      MockRepository.VerifyAll ();
 
-      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (_cloneTransaction), Is.SameAs (cloneRelated));
+      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction), Is.SameAs (cloneRelated));
     }
 
     protected override void HandleReference_OneOne_VirtualSide_Checks (Computer sourceRelated, PropertyAccessor sourceReference, Computer cloneRelated, PropertyAccessor cloneReference)
     {
-      Expect.Call (_contextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
+      Expect.Call (ContextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
 
-      _mockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, _sourceTransaction, cloneReference, _cloneTransaction, _contextMock);
-      _mockRepository.VerifyAll ();
+      MockRepository.ReplayAll ();
+      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      MockRepository.VerifyAll ();
 
-      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (_cloneTransaction), Is.SameAs (cloneRelated));
+      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction), Is.SameAs (cloneRelated));
     }
 
     protected override void HandleReference_OneMany_RealSide_Checks (Order sourceRelated, PropertyAccessor sourceReference, Order cloneRelated, PropertyAccessor cloneReference)
     {
-      Expect.Call (_contextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
+      Expect.Call (ContextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
 
-      _mockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, _sourceTransaction, cloneReference, _cloneTransaction, _contextMock);
-      _mockRepository.VerifyAll ();
+      MockRepository.ReplayAll ();
+      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      MockRepository.VerifyAll ();
 
-      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (_cloneTransaction), Is.SameAs (cloneRelated));
+      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction), Is.SameAs (cloneRelated));
     }
 
     protected override void HandleReference_OneMany_VirtualSide_Checks (OrderItem sourceRelated, PropertyAccessor sourceReference, OrderItem cloneRelated, PropertyAccessor cloneReference)
     {
-      Expect.Call (_contextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
+      Expect.Call (ContextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
 
-      _mockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, _sourceTransaction, cloneReference, _cloneTransaction, _contextMock);
-      _mockRepository.VerifyAll ();
+      MockRepository.ReplayAll ();
+      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      MockRepository.VerifyAll ();
 
-      Assert.That (((DomainObjectCollection)cloneReference.GetValueWithoutTypeCheckTx (_cloneTransaction))[0], Is.SameAs (cloneRelated));
+      Assert.That (((DomainObjectCollection)cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction))[0], Is.SameAs (cloneRelated));
     }
   }
 }
