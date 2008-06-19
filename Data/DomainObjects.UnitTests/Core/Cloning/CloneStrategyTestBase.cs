@@ -47,6 +47,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
     protected ClientTransaction CloneTransaction
     {
       get { return _cloneTransaction; }
+      set { _cloneTransaction = value; }
     }
 
     [Test]
@@ -122,7 +123,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
     protected abstract void HandleReference_OneOne_VirtualSide_Checks_Null (Computer sourceRelated, PropertyAccessor sourceReference, Computer cloneRelated, PropertyAccessor cloneReference);
 
     [Test]
-    public void HandleReference_OneMany_RealSide ()
+    public virtual void HandleReference_OneMany_RealSide ()
     {
       OrderItem source = NewBoundObject<OrderItem> (SourceTransaction);
       OrderItem clone = NewBoundObject<OrderItem> (CloneTransaction);

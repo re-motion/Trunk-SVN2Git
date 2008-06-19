@@ -11,6 +11,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Cloning
@@ -18,7 +19,7 @@ namespace Remotion.Data.DomainObjects.Cloning
   /// <summary>
   /// Assists <see cref="DomainObjectCloner"/> by cloning all objects referenced by a cloned source object.
   /// </summary>
-  public class CompleteCloneStrategy : ICloneStrategy
+  public class SmartCloneStrategy : ICloneStrategy
   {
     /// <summary>
     /// Sets the <paramref name="cloneReference"/> to hold clones of the objects referenced by <paramref name="sourceReference"/>.
@@ -37,9 +38,18 @@ namespace Remotion.Data.DomainObjects.Cloning
     {
       if (sourceReference.Kind == PropertyKind.RelatedObject)
       {
-        DomainObject originalRelated = (DomainObject) sourceReference.GetValueWithoutTypeCheckTx (sourceTransaction);
-        DomainObject cloneRelated = originalRelated != null ? context.GetCloneFor (originalRelated) : null;
-        cloneReference.SetValueWithoutTypeCheckTx (cloneTransaction, cloneRelated);
+        if (sourceReference.RelationEndPointDefinition.RelationDefinition.RelationKind == RelationKindType.OneToMany)
+        {
+          // do not clone referenced object, but insert object into original collection
+          DomainObject originalRelated = (DomainObject) sourceReference.GetValueWithoutTypeCheckTx (sourceTransaction);
+          cloneReference.SetValueWithoutTypeCheckTx (cloneTransaction, originalRelated);
+        }
+        else
+        {
+          DomainObject originalRelated = (DomainObject) sourceReference.GetValueWithoutTypeCheckTx (sourceTransaction);
+          DomainObject cloneRelated = originalRelated != null ? context.GetCloneFor (originalRelated) : null;
+          cloneReference.SetValueWithoutTypeCheckTx (cloneTransaction, cloneRelated);
+        }
       }
       else
       {

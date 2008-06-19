@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Cloning
     /// <param name="sourceTransaction">The source transaction used for cloning.</param>
     /// <param name="cloneReference">The reference on the cloned object.</param>
     /// <param name="cloneTransaction">The transaction used for the cloned object.</param>
-    /// <param name="context">A <see cref="CloneContext"/> that should be used to obtain clones of objects held by <see cref="sourceReference"/>.</param>
+    /// <param name="context">A <see cref="CloneContext"/> that should be used to obtain clones of objects held by <paramref name="sourceReference"/>.</param>
     /// <remarks>
     /// <para>
     /// Implementers can check the <paramref name="sourceReference"/> and set the <paramref name="cloneReference"/> to clones,
