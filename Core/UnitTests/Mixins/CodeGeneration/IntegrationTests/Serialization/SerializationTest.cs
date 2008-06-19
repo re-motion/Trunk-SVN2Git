@@ -59,7 +59,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     {
       Type t = TypeFactory.GetConcreteType (typeof (BaseType1));
       Assert.IsNotNull (t.GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static));
-      Assert.IsTrue (t.GetField ("__configuration").IsStatic);
+      Assert.IsTrue (t.GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static).IsStatic);
     }
 
     [Test]
@@ -68,7 +68,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       BaseType1 bt1 = ObjectFactory.Create<BaseType1> ().With ();
 
       Assert.IsNotNull (bt1.GetType ().GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static));
-      Assert.AreSame (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)), bt1.GetType ().GetField ("__configuration").GetValue (bt1));
+      Assert.AreSame (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)), bt1.GetType ().GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static).GetValue (bt1));
     }
 
     [Test]
