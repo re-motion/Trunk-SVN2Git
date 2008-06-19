@@ -120,7 +120,6 @@
     <Compile Include="ClientTransactionScopeManager.cs" />
     <Compile Include="Cloning\CloneContext.cs" />
     <Compile Include="Cloning\CompleteCloneStrategy.cs" />
-    <Compile Include="Cloning\SmartCloneStrategy.cs" />
     <Compile Include="Cloning\DomainObjectCloner.cs" />
     <Compile Include="Cloning\ICloneStrategy.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\RelationPropertyFinder.cs" />
