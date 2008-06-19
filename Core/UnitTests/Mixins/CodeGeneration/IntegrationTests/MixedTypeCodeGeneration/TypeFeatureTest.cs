@@ -249,5 +249,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Type concreteType = CreateMixedType (typeof (BaseType1), typeof (BT1Mixin1));
       Assert.That (concreteType.GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).Attributes, Is.EqualTo (FieldAttributes.Private));
     }
+
+    [Test]
+    public void ConfigurationFieldIsPrivate ()
+    {
+      Type concreteType = CreateMixedType (typeof (BaseType1), typeof (BT1Mixin1));
+      Assert.That (concreteType.GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static).Attributes, Is.EqualTo (FieldAttributes.Private | FieldAttributes.Static));
+    }
   }
 }

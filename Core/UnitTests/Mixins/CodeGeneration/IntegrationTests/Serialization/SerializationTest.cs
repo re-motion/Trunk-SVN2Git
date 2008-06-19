@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -57,7 +58,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     public void GeneratedTypeHasConfigurationField ()
     {
       Type t = TypeFactory.GetConcreteType (typeof (BaseType1));
-      Assert.IsNotNull (t.GetField ("__configuration"));
+      Assert.IsNotNull (t.GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static));
       Assert.IsTrue (t.GetField ("__configuration").IsStatic);
     }
 
@@ -66,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     {
       BaseType1 bt1 = ObjectFactory.Create<BaseType1> ().With ();
 
-      Assert.IsNotNull (bt1.GetType ().GetField ("__configuration"));
+      Assert.IsNotNull (bt1.GetType ().GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static));
       Assert.AreSame (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)), bt1.GetType ().GetField ("__configuration").GetValue (bt1));
     }
 

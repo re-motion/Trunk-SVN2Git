@@ -68,7 +68,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ClassEmitter classEmitter = new ClassEmitter (_module.Scope, typeName, configuration.Type, interfaces.ToArray(), flags, forceUnsigned);
       _emitter = new CustomClassEmitter (classEmitter);
 
-      _configurationField = _emitter.CreateStaticField ("__configuration", typeof (TargetClassDefinition));
+      _configurationField = _emitter.CreateStaticField ("__configuration", typeof (TargetClassDefinition), FieldAttributes.Private);
       HideFieldFromDebugger (_configurationField);
       _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]), FieldAttributes.Private);
       HideFieldFromDebugger (_extensionsField);
