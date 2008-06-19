@@ -43,21 +43,36 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       CheckPersistentMixins (targetType, typeof (MixinB), typeof (MixinE));
     }
 
-    public class GenericMixin<T> : DomainObjectMixin<T>
+    public class PersistedGenericMixin<T> : DomainObjectMixin<T>
+        where T : DomainObject
+    {
+    }
+
+    public class NonPersistedGenericMixin<T> : Mixin<T>
         where T : DomainObject
     {
     }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "The persistence-relevant mixin "
-        + "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.PersistentMixinFinderTest+GenericMixin`1 applied to class "
+        + "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.PersistentMixinFinderTest+PersistedGenericMixin`1 applied to class "
         + "Remotion.Data.DomainObjects.UnitTests.TestDomain.Order has open generic type parameters. All type parameters of the mixin must be "
         + "specified when it is applied to a DomainObject.")]
-    public void ForInvalidOpenGenericMixin ()
+    public void PersistenceRelevant_OpenGenericMixin ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (GenericMixin<>)).EnterScope())
+      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (PersistedGenericMixin<>)).EnterScope ())
       {
         PersistentMixinFinder.GetPersistentMixins (typeof (Order));
+      }
+    }
+
+    [Test]
+    public void PersistenceIrrelevant_OpenGenericMixin ()
+    {
+      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (NonPersistedGenericMixin<>)).EnterScope ())
+      {
+        List<Type> persistentMixins = PersistentMixinFinder.GetPersistentMixins (typeof (Order));
+        Assert.That (persistentMixins, Is.Empty);
       }
     }
 

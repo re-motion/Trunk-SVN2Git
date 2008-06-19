@@ -34,19 +34,34 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         foreach (MixinContext mixin in mixinConfiguration.Mixins)
         {
-          if (mixin.MixinType.ContainsGenericParameters)
+          if (IsPersistenceRelevant(mixin) && IsNotInParentContext(parentClassContext, mixin))
           {
-            string message = string.Format ("The persistence-relevant mixin {0} applied to class {1} has open generic type parameters. All type "
-                + "parameters of the mixin must be specified when it is applied to a DomainObject.", mixin.MixinType.FullName, type.FullName);
-            throw new MappingException (message);
-          }
-
-          if (Utilities.ReflectionUtility.CanAscribe (mixin.MixinType, typeof (DomainObjectMixin<,>))
-              && (parentClassContext == null || !parentClassContext.Mixins.ContainsAssignableMixin (mixin.MixinType)))
+            CheckNotOpenGenericMixin (mixin, type);
             persistentMixins.Add (mixin.MixinType);
+          }
         }
       }
       return persistentMixins;
+    }
+
+    private static bool IsNotInParentContext (ClassContext parentClassContext, MixinContext mixin)
+    {
+      return (parentClassContext == null || !parentClassContext.Mixins.ContainsAssignableMixin (mixin.MixinType));
+    }
+
+    private static bool IsPersistenceRelevant (MixinContext mixin)
+    {
+      return Utilities.ReflectionUtility.CanAscribe (mixin.MixinType, typeof (DomainObjectMixin<,>));
+    }
+
+    private static void CheckNotOpenGenericMixin (MixinContext mixin, Type targetType)
+    {
+      if (mixin.MixinType.ContainsGenericParameters)
+      {
+        string message = string.Format ("The persistence-relevant mixin {0} applied to class {1} has open generic type parameters. All type "
+            + "parameters of the mixin must be specified when it is applied to a DomainObject.", mixin.MixinType.FullName, targetType.FullName);
+        throw new MappingException (message);
+      }
     }
   }
 }
