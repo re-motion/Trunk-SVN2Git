@@ -106,6 +106,21 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _id; }
     }
 
+    public RelationKindType RelationKind
+    {
+      get 
+      {
+        foreach (IRelationEndPointDefinition endPointDefinition in _endPointDefinitions)
+        {
+          if (endPointDefinition is AnonymousRelationEndPointDefinition)
+            return RelationKindType.Unidirectional;
+          else if (endPointDefinition.Cardinality == CardinalityType.Many)
+            return RelationKindType.OneToMany;
+        }
+        return RelationKindType.OneToOne; 
+      }
+    }
+
     public IRelationEndPointDefinition[] EndPointDefinitions
     {
       get { return _endPointDefinitions; }

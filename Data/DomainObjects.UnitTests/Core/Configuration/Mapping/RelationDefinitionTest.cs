@@ -135,5 +135,26 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       Assert.IsTrue (relationDefinition.Contains (MappingConfiguration.Current.RelationDefinitions["Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderItem.Order"].EndPointDefinitions[0]));
       Assert.IsTrue (relationDefinition.Contains (MappingConfiguration.Current.RelationDefinitions["Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderItem.Order"].EndPointDefinitions[1]));
     }
+
+    [Test]
+    public void RelationType_OneToOne ()
+    {
+      RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions["Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.Employee"];
+      Assert.That (relationDefinition.RelationKind, Is.EqualTo (RelationKindType.OneToOne));
+    }
+
+    [Test]
+    public void RelationType_OneMany ()
+    {
+      RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions["Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderItem.Order"];
+      Assert.That (relationDefinition.RelationKind, Is.EqualTo (RelationKindType.OneToMany));
+    }
+
+    [Test]
+    public void RelationType_Unidirectional ()
+    {
+      RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions["Remotion.Data.DomainObjects.UnitTests.TestDomain.Location.Client"];
+      Assert.That (relationDefinition.RelationKind, Is.EqualTo (RelationKindType.Unidirectional));
+    }
   }
 }

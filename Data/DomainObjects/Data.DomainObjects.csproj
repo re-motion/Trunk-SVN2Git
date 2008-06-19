@@ -120,6 +120,7 @@
     <Compile Include="ClientTransactionScopeManager.cs" />
     <Compile Include="Cloning\CloneContext.cs" />
     <Compile Include="Cloning\CompleteCloneStrategy.cs" />
+    <Compile Include="Cloning\SmartCloneStrategy.cs" />
     <Compile Include="Cloning\DomainObjectCloner.cs" />
     <Compile Include="Cloning\ICloneStrategy.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\RelationPropertyFinder.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="Infrastructure\IFlattenedSerializable.cs" />
     <Compile Include="Infrastructure\RepositoryAccessor.cs" />
     <Compile Include="IGraphTraversalStrategy.cs" />
+    <Compile Include="Mapping\RelationKindType.cs" />
     <Compile Include="Mapping\SerializableMappingObject.cs" />
     <Compile Include="ObjectBinding\BindableDomainObject.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectAttribute.cs" />
