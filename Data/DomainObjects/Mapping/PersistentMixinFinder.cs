@@ -19,6 +19,12 @@ namespace Remotion.Data.DomainObjects.Mapping
   {
     public static List<Type> GetPersistentMixins (Type type)
     {
+      // Generic parameter substitution is disallowed on purpose: the reflection-based mapping considers mixins applied to a base class to be
+      // part of the base class definition. Therefore, the mixin applied to the derived class must be exactly the same as that on the base class,
+      // otherwise the mapping might be inconsistent with the actual property types. With generic parameter substitution, an inherited mixin
+      // might change with the derived class, so we can't allow it.
+      // (The need to specify all generic arguments is also consistent with the mapping rule disallowing generic domain object types in the mapping;
+      // and Extends and Uses both provide a means to specify generic type arguments as a workaround for when substitution doesn't work.)
       ClassContext mixinConfiguration = TargetClassDefinitionUtility.GetContext (type, MixinConfiguration.ActiveConfiguration, GenerationPolicy.GenerateOnlyIfConfigured);
       List<Type> persistentMixins = new List<Type> ();
       if (mixinConfiguration != null)
