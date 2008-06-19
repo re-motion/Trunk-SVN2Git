@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 using NUnit.Framework;
@@ -59,6 +60,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 
     protected override void SetCurrentTransaction (TestTransaction transaction)
     {
+      Assert.That (transaction, Is.Not.Null);
+
       if (ThrowOnSetCurrent)
         throw new SetCurrentException ();
 

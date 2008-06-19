@@ -13,6 +13,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Authentication;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
@@ -341,7 +342,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       TestTransaction.Current = previousCurrentTransaction;
       _wxeTransaction.PublicSetPreviousTransaction (previousCurrentTransaction);
       _wxeTransaction.IsPreviousCurrentTransactionRestored = false;
-      _wxeTransaction.PublicCheckAndSetCurrentTransaction (null);
+      _wxeTransaction.PublicCheckAndSetCurrentTransaction (new TestTransaction());
 
       Assert.AreNotSame (previousCurrentTransaction, TestTransaction.Current);
       
@@ -358,7 +359,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 
       TestTransaction.Current = new TestTransaction ();
       _wxeTransaction.PublicSetPreviousTransaction (TestTransaction.Current);
-      _wxeTransaction.PublicCheckAndSetCurrentTransaction (null);
+      _wxeTransaction.PublicCheckAndSetCurrentTransaction (new TestTransaction());
       _wxeTransaction.PublicCheckAndRestorePreviousCurrentTransaction ();
 
       TestTransaction currentTransaction = new TestTransaction ();
@@ -553,6 +554,17 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
         // expected
       }
       Assert.AreSame (before, TestTransaction.Current);
+    }
+
+    [Test]
+    [ExpectedException (typeof (WxeTransactionAlreadyReleasedException), 
+        ExpectedMessage = "Function cannot be executed again because its transaction has already been released.")]
+    public void ExceptionThrownInExecute_WhenExecuteCalledAfterTransactionWasReleased ()
+    {
+      Assert.That (_rootWxeTransaction.Transaction, Is.Not.Null);
+      _rootWxeTransaction.Execute (CurrentWxeContext);
+      Assert.That (_rootWxeTransaction.Transaction, Is.Null);
+      _rootWxeTransaction.Execute (CurrentWxeContext);
     }
   }
 }

@@ -368,6 +368,9 @@ namespace Remotion.Web.ExecutionEngine
 
     private void MakeTransactionCurrent ()
     {
+      if (_transaction == null)
+        throw new WxeTransactionAlreadyReleasedException ("Function cannot be executed again because its transaction has already been released.");
+
       CheckAndSetCurrentTransaction (_transaction);
       _isPreviousCurrentTransactionRestored = false; // we've just set the current transaction, so we need the old one to be restored later on
     }
@@ -590,5 +593,4 @@ namespace Remotion.Web.ExecutionEngine
     [field: NonSerialized]
     public event EventHandler TransactionRolledBack;
   }
-
 }
