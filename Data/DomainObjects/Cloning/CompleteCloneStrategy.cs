@@ -16,7 +16,8 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Cloning
 {
   /// <summary>
-  /// Assists <see cref="DomainObjectCloner"/> by cloning all objects referenced by a cloned source object.
+  /// Assists <see cref="DomainObjectCloner"/> by cloning all objects referenced by a cloned source object as well. This ensures deep cloning
+  /// of a whole object graph.
   /// </summary>
   public class CompleteCloneStrategy : ICloneStrategy
   {
@@ -27,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Cloning
     /// <param name="sourceTransaction">The source transaction used for cloning.</param>
     /// <param name="cloneReference">The reference on the cloned object.</param>
     /// <param name="cloneTransaction">The transaction used for the cloned object.</param>
-    /// <param name="context">A <see cref="CloneContext"/> that should be used to obtain clones of objects held by <see cref="sourceReference"/>.</param>
+    /// <param name="context">The <see cref="CloneContext"/> that is used to obtain clones of objects held by <see cref="sourceReference"/>.</param>
     public void HandleReference (
         PropertyAccessor sourceReference,
         ClientTransaction sourceTransaction,

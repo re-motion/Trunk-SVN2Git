@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
     public void Initialization ()
     {
       CloneContext context = new CloneContext(_clonerMock);
-      Assert.That (context.ShallowClones.Count, Is.EqualTo (0));
+      Assert.That (context.CloneHulls.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
       Order source = Order.GetObject (DomainObjectIDs.Order1);
       Order clone = Order.NewObject ();
 
-      Expect.Call (_clonerMock.CreateValueClone<DomainObject> (source)).Return (clone);
+      Expect.Call (_clonerMock.CreateCloneHull<DomainObject> (source)).Return (clone);
       _mockRepository.ReplayAll ();
       Assert.That (context.GetCloneFor (source), Is.SameAs (clone));
       _mockRepository.VerifyAll ();
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
       Order source = Order.GetObject (DomainObjectIDs.Order1);
       Order clone = Order.NewObject ();
 
-      Expect.Call (_clonerMock.CreateValueClone<DomainObject> (source)).Return (clone);
+      Expect.Call (_clonerMock.CreateCloneHull<DomainObject> (source)).Return (clone);
       _mockRepository.ReplayAll ();
       Assert.That (context.GetCloneFor (source), Is.SameAs (clone));
       Assert.That (context.GetCloneFor (source), Is.SameAs (clone));
@@ -72,11 +72,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
       Order source = Order.GetObject (DomainObjectIDs.Order1);
       Order clone = Order.NewObject ();
 
-      SetupResult.For (_clonerMock.CreateValueClone<DomainObject> (source)).Return (clone);
+      SetupResult.For (_clonerMock.CreateCloneHull<DomainObject> (source)).Return (clone);
       _mockRepository.ReplayAll ();
 
       context.GetCloneFor (source);
-      Assert.That (context.ShallowClones.Contains (new Tuple<DomainObject, DomainObject> (source, clone)));
+      Assert.That (context.CloneHulls.Contains (new Tuple<DomainObject, DomainObject> (source, clone)));
     }
 
     [Test]
@@ -86,12 +86,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
       Order source = Order.GetObject (DomainObjectIDs.Order1);
       Order clone = Order.NewObject ();
 
-      SetupResult.For (_clonerMock.CreateValueClone<DomainObject> (source)).Return (clone);
+      SetupResult.For (_clonerMock.CreateCloneHull<DomainObject> (source)).Return (clone);
       _mockRepository.ReplayAll ();
 
       context.GetCloneFor (source);
       context.GetCloneFor (source);
-      Assert.That (context.ShallowClones.Count, Is.EqualTo(1));
+      Assert.That (context.CloneHulls.Count, Is.EqualTo(1));
     }
   }
 }

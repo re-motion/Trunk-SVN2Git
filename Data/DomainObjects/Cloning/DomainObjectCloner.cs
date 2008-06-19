@@ -39,37 +39,56 @@ namespace Remotion.Data.DomainObjects.Cloning
     /// Creates a new <see cref="DomainObject"/> instance of the same type and with the same property values as the given <paramref name="source"/>.
     /// Relations are not cloned, foreign key properties default to null.
     /// </summary>
+    /// <returns>A clone of the given <paramref name="source"/> object.</returns>
     /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. Note that the actual (dynamic) type of the cloned object
     /// is the type defined by <paramref name="source"/>'s <see cref="ClassDefinition"/>.</typeparam>
     /// <param name="source">The <see cref="DomainObject"/> to be cloned.</param>
     /// <remarks>
-    /// The clone is created in the current transaction. No constructor is called on the clone object; property or relation get and set events are 
+    /// The clone is created in the <see cref="CloneTransaction"/>. No constructor is called on the clone object; property or relation get and set events are 
     /// raised as needed by the cloner.
     /// </remarks>
     public virtual T CreateValueClone<T> (T source)
         where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("source", source);
-      ObjectID sourceID = source.ID;
-
-      // Use NewObjectFromDataContainer in order to avoid calling a ctor
-      DataContainer cloneDataContainer = CloneTransaction.CreateNewDataContainer (sourceID.ClassDefinition.ClassType);
-      T clone = (T) RepositoryAccessor.NewObjectFromDataContainer (cloneDataContainer);
-
+      
+      T clone = CreateCloneHull(source);
       CopyProperties (source, clone, null, null);
+      
       return clone;
+    }
+
+    /// <summary>
+    /// Creates a clone hull, which is a <see cref="DomainObject"/> of the same type as a given source object, but with no properties or
+    /// relations being set.
+    /// </summary>
+    /// <returns>A clone of the given <paramref name="source"/> object.</returns>
+    /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. Note that the actual (dynamic) type of the cloned object
+    /// is the type defined by <paramref name="source"/>'s <see cref="ClassDefinition"/>.</typeparam>
+    /// <param name="source">The <see cref="DomainObject"/> to be cloned.</param>
+    /// <remarks>
+    /// The clone is created in the <see cref="CloneTransaction"/>. No constructor is called on the clone object.
+    /// </remarks>
+    public virtual T CreateCloneHull<T> (T source)
+        where T : DomainObject
+    {
+      Type classType = source.ID.ClassDefinition.ClassType;
+      // Use NewObjectFromDataContainer in order to avoid calling a ctor
+      DataContainer cloneDataContainer = CloneTransaction.CreateNewDataContainer (classType);
+      return (T) RepositoryAccessor.NewObjectFromDataContainer (cloneDataContainer);
     }
 
     /// <summary>
     /// Creates a new <see cref="DomainObject"/> instance of the same type and with the same property values as the given <paramref name="source"/>.
     /// Referenced objects are cloned according to the given strategy.
     /// </summary>
+    /// <returns>A clone of the given <paramref name="source"/> object.</returns>
     /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. Note that the actual (dynamic) type of the cloned object
     /// is the type defined by <paramref name="source"/>'s <see cref="ClassDefinition"/>.</typeparam>
     /// <param name="source">The <see cref="DomainObject"/> to be cloned.</param>
     /// <param name="strategy">The <see cref="ICloneStrategy"/> to be used when cloning the object's references.</param>
     /// <remarks>
-    /// The clone is created in the current transaction. No constructor is called on the clone object; property or relation get and set events are 
+    /// The clone is created in the c<see cref="CloneTransaction"/>. No constructor is called on the clone object; property or relation get and set events are 
     /// raised as needed by the cloner.
     /// </remarks>
     public T CreateClone<T> (T source, ICloneStrategy strategy)
@@ -85,13 +104,14 @@ namespace Remotion.Data.DomainObjects.Cloning
     /// Creates a new <see cref="DomainObject"/> instance of the same type and with the same property values as the given <paramref name="source"/>.
     /// Referenced objects are cloned according to the given strategy, the given context is used instead of creating a new one.
     /// </summary>
+    /// <returns>A clone of the given <paramref name="source"/> object.</returns>
     /// <typeparam name="T">The static <see cref="DomainObject"/> type to be cloned. Note that the actual (dynamic) type of the cloned object
     /// is the type defined by <paramref name="source"/>'s <see cref="ClassDefinition"/>.</typeparam>
     /// <param name="source">The <see cref="DomainObject"/> to be cloned.</param>
     /// <param name="strategy">The <see cref="ICloneStrategy"/> to be used when cloning the object's references.</param>
     /// <param name="context">The <see cref="CloneContext"/> to be used by the cloner.</param>
     /// <remarks>
-    /// The clone is created in the current transaction. No constructor is called on the clone object; property or relation get and set events are 
+    /// The clone is created in the <see cref="CloneTransaction"/>. No constructor is called on the clone object; property or relation get and set events are 
     /// raised as needed by the cloner.
     /// </remarks>
     public T CreateClone<T> (T source, ICloneStrategy strategy, CloneContext context)
@@ -102,9 +122,9 @@ namespace Remotion.Data.DomainObjects.Cloning
       ArgumentUtility.CheckNotNull ("context", context);
 
       T clone = context.GetCloneFor (source);
-      while (context.ShallowClones.Count > 0)
+      while (context.CloneHulls.Count > 0)
       {
-        Tuple<DomainObject, DomainObject> shallowClone = context.ShallowClones.Dequeue ();
+        Tuple<DomainObject, DomainObject> shallowClone = context.CloneHulls.Dequeue ();
         CopyProperties (shallowClone.A, shallowClone.B, strategy, context);
       }
       return clone;

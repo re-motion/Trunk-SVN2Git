@@ -19,7 +19,7 @@ namespace Remotion.Data.DomainObjects.Cloning
   {
     private readonly DomainObjectCloner _cloner;
     private readonly SimpleDataStore<DomainObject, DomainObject> _clones = new SimpleDataStore<DomainObject, DomainObject> ();
-    private readonly Queue<Tuple<DomainObject, DomainObject>> _shallowClones = new Queue<Tuple<DomainObject, DomainObject>> ();
+    private readonly Queue<Tuple<DomainObject, DomainObject>> _cloneHulls = new Queue<Tuple<DomainObject, DomainObject>> ();
 
     public CloneContext (DomainObjectCloner cloner)
     {
@@ -27,9 +27,9 @@ namespace Remotion.Data.DomainObjects.Cloning
       _cloner = cloner;
     }
 
-    public virtual Queue<Tuple<DomainObject, DomainObject>> ShallowClones
+    public virtual Queue<Tuple<DomainObject, DomainObject>> CloneHulls
     {
-      get { return _shallowClones; }
+      get { return _cloneHulls; }
     }
 
     public virtual T GetCloneFor<T> (T domainObject)
@@ -37,8 +37,8 @@ namespace Remotion.Data.DomainObjects.Cloning
     {
       return (T) _clones.GetOrCreateValue (domainObject, delegate (DomainObject cloneTemplate)
       {
-        DomainObject clone = _cloner.CreateValueClone (cloneTemplate);
-        ShallowClones.Enqueue (Tuple.NewTuple (cloneTemplate, clone));
+        DomainObject clone = _cloner.CreateCloneHull (cloneTemplate);
+        CloneHulls.Enqueue (Tuple.NewTuple (cloneTemplate, clone));
         return clone;
       });
     }

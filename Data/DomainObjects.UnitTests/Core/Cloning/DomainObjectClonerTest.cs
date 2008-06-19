@@ -71,42 +71,50 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
     }
 
     [Test]
-    public void CreateValueClone_CreatesNewObject ()
+    public void CreateCloneHull_CreatesNewObject ()
     {
-      DomainObject clone = _cloner.CreateValueClone (_classWithAllDataTypes);
+      DomainObject clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
       Assert.That (clone, Is.Not.SameAs (_classWithAllDataTypes));
       Assert.That (clone.ID, Is.Not.EqualTo (_classWithAllDataTypes));
       Assert.That (clone.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
-    public void CreateValueClone_CreatesNewObjectInCorrectTransaction ()
+    public void CreateCloneHull_CreatesNewObjectInCorrectTransaction ()
     {
       ClientTransaction cloneTransaction = ClientTransaction.NewBindingTransaction ();
       _cloner.CloneTransaction = cloneTransaction;
-      DomainObject clone = _cloner.CreateValueClone (_classWithAllDataTypes);
+      DomainObject clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
       Assert.That (clone.ClientTransaction, Is.SameAs (cloneTransaction));
     }
 
     [Test]
-    public void CreateValueClone_CreatesObjectOfSameType ()
+    public void CreateCloneHull_CreatesObjectOfSameType ()
     {
-      DomainObject clone = _cloner.CreateValueClone<DomainObject> (_classWithAllDataTypes);
-      Assert.That (clone.GetPublicDomainObjectType(), Is.SameAs (typeof (ClassWithAllDataTypes)));
+      DomainObject clone = _cloner.CreateCloneHull<DomainObject> (_classWithAllDataTypes);
+      Assert.That (clone.GetPublicDomainObjectType (), Is.SameAs (typeof (ClassWithAllDataTypes)));
     }
 
     [Test]
-    public void CreateValueClone_CallsNoCtor ()
+    public void CreateCloneHull_CallsNoCtor ()
     {
-      Order clone = _cloner.CreateValueClone (_order1);
+      Order clone = _cloner.CreateCloneHull (_order1);
       Assert.That (clone.CtorCalled, Is.False);
     }
 
     [Test]
-    public void CreateValueClone_RegistersDataContainer ()
+    public void CreateCloneHull_RegistersDataContainer ()
     {
-      ClassWithAllDataTypes clone = _cloner.CreateValueClone (_classWithAllDataTypes);
+      ClassWithAllDataTypes clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
       Assert.That (clone.InternalDataContainer.ClientTransaction, Is.SameAs (ClientTransactionMock));
+    }
+
+    [Test]
+    public void CreateCloneHull_TouchesNoProperties ()
+    {
+      ClassWithAllDataTypes clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
+      Assert.That (clone.Int32Property, Is.Not.EqualTo (_classWithAllDataTypes.Int32Property));
+      Assert.That (clone.Properties[typeof (ClassWithAllDataTypes), "Int32Property"].HasBeenTouched, Is.False);
     }
 
     [Test]
@@ -203,7 +211,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
 
       SetupResult.For (contextMock.GetCloneFor (_order1)).Return (clone);
       shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1, clone));
-      SetupResult.For (contextMock.ShallowClones).Return (shallowClonesFake);
+      SetupResult.For (contextMock.CloneHulls).Return (shallowClonesFake);
 
       using (_mockRepository.Unordered ())
       {
@@ -230,7 +238,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
       SetupResult.For (contextMock.GetCloneFor (_order1)).Return (clone);
       shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1, clone));
       shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1.OrderItems[0], clone2));
-      SetupResult.For (contextMock.ShallowClones).Return (shallowClonesFake);
+      SetupResult.For (contextMock.CloneHulls).Return (shallowClonesFake);
 
       using (_mockRepository.Unordered ())
       {
@@ -264,7 +272,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
       SetupResult.For (contextMock.GetCloneFor (_order1)).Return (clone);
       shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1, clone));
       shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1.OrderItems[0], clone2));
-      SetupResult.For (contextMock.ShallowClones).Return (shallowClonesFake);
+      SetupResult.For (contextMock.CloneHulls).Return (shallowClonesFake);
 
       using (_mockRepository.Unordered ())
       {
@@ -302,7 +310,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
 
       SetupResult.For (contextMock.GetCloneFor (source)).Return (clone);
       shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (source, clone));
-      SetupResult.For (contextMock.ShallowClones).Return (shallowClonesFake);
+      SetupResult.For (contextMock.CloneHulls).Return (shallowClonesFake);
 
       using (_mockRepository.Unordered ())
       {
