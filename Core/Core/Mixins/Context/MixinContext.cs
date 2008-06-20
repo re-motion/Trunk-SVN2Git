@@ -57,6 +57,7 @@ namespace Remotion.Mixins.Context
     /// <summary>
     /// Initializes a new instance of the <see cref="MixinContext"/> class.
     /// </summary>
+    /// <param name="mixinKind">The kind of mixin represented by this <see cref="MixinContext"/>.</param>
     /// <param name="mixinType">The mixin type represented by this <see cref="MixinContext"/>.</param>
     /// <param name="explicitDependencies">The explicit dependencies of the mixin.</param>
     public MixinContext (MixinKind mixinKind, Type mixinType, params Type[] explicitDependencies)
