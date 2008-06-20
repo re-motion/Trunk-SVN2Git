@@ -80,7 +80,7 @@ namespace Remotion.Mixins.Globalization
       FindFirstResourceDefinitions (mixinType, true, out currentType, out resourceAttributes);
       if (currentType != null)
       {
-        resourceManagers.InsertRange (0, GetResourceManagers (currentType.Assembly, resourceAttributes));
+        resourceManagers.InsertRange (0, ResourceManagerFactory.GetResourceManagers (currentType.Assembly, resourceAttributes));
         WalkHierarchyAndPrependResourceManagers (resourceManagers, currentType);
       }
     }

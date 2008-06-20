@@ -27,7 +27,8 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
-    <SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -94,6 +95,7 @@
     <Compile Include="Collections\InterlockedDataStore.cs" />
     <Compile Include="Collections\NullDataStore.cs" />
     <Compile Include="Collections\SimpleDataStore.cs" />
+    <Compile Include="Globalization\ResourceManagerFactory.cs" />
     <Compile Include="Logging\BridgeImplementations\LogManagerImplementation.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixedTypeAttributeUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixinTypeAttributeUtility.cs" />

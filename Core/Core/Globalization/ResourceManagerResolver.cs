@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections;
-using System.Reflection;
 using System.Resources;
 using Remotion.Collections;
 using Remotion.Utilities;
@@ -24,8 +23,13 @@ namespace Remotion.Globalization
   public class ResourceManagerResolver<TAttribute>
       where TAttribute : Attribute, IResourcesAttribute
   {
-    private readonly InterlockedCache<string, ResourceManager> _resourceManagersCache = new InterlockedCache<string, ResourceManager> ();
     private readonly InterlockedCache<object, ResourceManagerSet> _resourceManagerWrappersCache = new InterlockedCache<object, ResourceManagerSet>();
+    private readonly ResourceManagerFactory _resourceManagerFactory = new ResourceManagerFactory();
+
+    protected ResourceManagerFactory ResourceManagerFactory
+    {
+      get { return _resourceManagerFactory; }
+    }
 
     /// <summary>
     ///   Returns an instance of <c>IResourceManager</c> for the resource container specified
@@ -79,7 +83,7 @@ namespace Remotion.Globalization
         bool includeHierarchy)
     {
       ArrayList resourceManagers = new ArrayList ();
-      resourceManagers.AddRange (GetResourceManagers (definingType.Assembly, resourceAttributes));
+      resourceManagers.AddRange (_resourceManagerFactory.GetResourceManagers (definingType.Assembly, resourceAttributes));
 
       if (includeHierarchy)
         WalkHierarchyAndPrependResourceManagers (resourceManagers, definingType);
@@ -104,45 +108,11 @@ namespace Remotion.Globalization
         if (currentType != null)
         {
           //  Insert the found resources managers at the beginning of the list
-          resourceManagers.InsertRange (0, GetResourceManagers (currentType.Assembly, resourceAttributes));
+          resourceManagers.InsertRange (0, _resourceManagerFactory.GetResourceManagers (currentType.Assembly, resourceAttributes));
 
           currentType = currentType.BaseType;
         }
       }
-    }
-
-    /// <summary>
-    ///   Returns an <b>ResourceManager</b> array for the resource containers specified through the 
-    ///   <paramref name="resourceAttributes"/>.
-    /// </summary>
-    /// <include file='doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManagers/*' />
-    public ResourceManager[] GetResourceManagers (Assembly assembly, TAttribute[] resourceAttributes)
-    {
-      ArgumentUtility.CheckNotNull ("assembly", assembly);
-      ArgumentUtility.CheckNotNull ("resourceAttributes", resourceAttributes);
-
-      ResourceManager[] resourceManagers = new ResourceManager[resourceAttributes.Length];
-
-      //  Load the ResourceManagers for the type's resources
-
-      for (int index = 0; index < resourceAttributes.Length; index++)
-      {
-        Assembly resourceAssembly = resourceAttributes[index].ResourceAssembly;
-        if (resourceAssembly == null)
-          resourceAssembly = assembly;
-        string key = resourceAttributes[index].BaseName + " in " + resourceAssembly.FullName;
-
-        //  Look in cache 
-        resourceManagers[index] = _resourceManagersCache.GetOrCreateValue (
-            key,
-            delegate
-            {
-              string baseName = resourceAttributes[index].BaseName;
-              return new ResourceManager (baseName, resourceAssembly);
-            });
-      }
-
-      return resourceManagers;
     }
 
     /// <summary>

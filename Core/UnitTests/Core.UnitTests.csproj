@@ -133,6 +133,7 @@
     <Compile Include="Collections\InterlockedDataStoreTest.cs" />
     <Compile Include="Collections\MonitorCheckingInterceptor.cs" />
     <Compile Include="Collections\SimpleDataStoreTest.cs" />
+    <Compile Include="Globalization\ResourceManagerFactoryTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicMethodCodeBuilder.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicMethodEmitter.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixedTypeAttributeUtilityTest.cs" />
@@ -695,7 +696,9 @@
     <Compile Include="Xml\XmlSerializationUtilityTests\GetNamespaceTest.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Core.UnitTests.build" />
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="\Development\global\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
     <None Include="Xml\SampleClass.xsx">
       <DependentUpon>SampleClass.xsd</DependentUpon>
     </None>

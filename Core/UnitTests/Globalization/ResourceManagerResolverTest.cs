@@ -32,69 +32,6 @@ namespace Remotion.UnitTests.Globalization
     }
 
     [Test]
-    public void GetResourceManagers()
-    {
-      MultiLingualResourcesAttribute[] attributes = new MultiLingualResourcesAttribute[]
-          {
-            new MultiLingualResourcesAttribute ("One"),
-            new MultiLingualResourcesAttribute ("Two")
-          };
-      ResourceManager[] resourceManagers = _resolver.GetResourceManagers (typeof (object).Assembly, attributes);
-      Assert.AreEqual (2, resourceManagers.Length);
-      Assert.AreEqual ("One", resourceManagers[0].BaseName);
-      Assert.AreEqual ("Two", resourceManagers[1].BaseName);
-    }
-
-    [Test]
-    public void GetResourceManagers_UsesCache ()
-    {
-      MultiLingualResourcesAttribute[] attributes = new MultiLingualResourcesAttribute[]
-          {
-            new MultiLingualResourcesAttribute ("One"),
-            new MultiLingualResourcesAttribute ("Two")
-          };
-      ResourceManager[] resourceManagers1 = _resolver.GetResourceManagers (typeof (object).Assembly, attributes);
-      ResourceManager[] resourceManagers2 = _resolver.GetResourceManagers (typeof (object).Assembly, attributes);
-
-      Assert.AreNotSame (resourceManagers1, resourceManagers2);
-      Assert.AreSame (resourceManagers1[0], resourceManagers2[0]);
-      Assert.AreSame (resourceManagers1[1], resourceManagers2[1]);
-      Assert.AreNotSame (resourceManagers1[0], resourceManagers1[1]);
-      Assert.AreNotSame (resourceManagers2[0], resourceManagers2[1]);
-    }
-
-    [Test]
-    public void GetResourceManagers_NoSpecificAssembly ()
-    {
-      MultiLingualResourcesAttribute[] attributes = new MultiLingualResourcesAttribute[]
-          {
-            new MultiLingualResourcesAttribute ("One"),
-            new MultiLingualResourcesAttribute ("Two")
-          };
-      ResourceManager[] resourceManagers = _resolver.GetResourceManagers (typeof (object).Assembly, attributes);
-      Assert.AreEqual (2, resourceManagers.Length);
-      Assert.AreEqual (typeof (object).Assembly, PrivateInvoke.GetNonPublicField (resourceManagers[0], "MainAssembly"));
-      Assert.AreEqual (typeof (object).Assembly, PrivateInvoke.GetNonPublicField (resourceManagers[1], "MainAssembly"));
-    }
-
-    [Test]
-    public void GetResourceManagers_SpecificAssembly ()
-    {
-      MultiLingualResourcesAttribute[] attributes = new MultiLingualResourcesAttribute[]
-          {
-            new MultiLingualResourcesAttribute ("One"),
-            new MultiLingualResourcesAttribute ("Two")
-          };
-
-      PrivateInvoke.InvokeNonPublicMethod (attributes[0], "SetResourceAssembly", typeof (ResourceManagerResolverTest).Assembly);
-
-      ResourceManager[] resourceManagers = _resolver.GetResourceManagers (typeof (object).Assembly, attributes);
-      Assert.AreEqual (2, resourceManagers.Length);
-      Assert.AreEqual (typeof (ResourceManagerResolverTest).Assembly, PrivateInvoke.GetNonPublicField (resourceManagers[0], "MainAssembly"));
-      Assert.AreEqual (typeof (object).Assembly, PrivateInvoke.GetNonPublicField (resourceManagers[1], "MainAssembly"));
-    }
-
-    [Test]
     public void FindFirstResourceDefinitions_SuccessOnSameType ()
     {
       Type definingType;
