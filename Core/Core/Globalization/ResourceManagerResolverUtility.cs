@@ -95,12 +95,7 @@ namespace Remotion.Globalization
 				where TAttribute: Attribute, IResourcesAttribute
 		{
 			ArgumentUtility.CheckNotNull ("objectTypeToGetResourceFor", objectTypeToGetResourceFor);
-
-			Type definingType;
-			TAttribute[] resourceAttributes;
-
-			resolver.FindFirstResourceDefinitions (objectTypeToGetResourceFor, true, out definingType, out resourceAttributes);
-			return resourceAttributes.Length > 0;
+      return EnumerableUtility.FirstOrDefault (resolver.GetResourceDefinitionStream (objectTypeToGetResourceFor, false)) != null;
 		}
 	}
 }

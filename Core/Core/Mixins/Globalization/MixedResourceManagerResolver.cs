@@ -14,6 +14,7 @@ using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
+using System.Collections.Generic;
 
 namespace Remotion.Mixins.Globalization
 {
@@ -35,54 +36,32 @@ namespace Remotion.Mixins.Globalization
           TargetClassDefinitionUtility.GetContext (definingType, MixinConfiguration.ActiveConfiguration, GenerationPolicy.GenerateOnlyIfConfigured));
     }
 
-    protected override TAttribute[] FindFirstResourceDefinitionsInBaseTypes (Type derivedType, out Type definingType)
+    protected override ResourceDefinition<TAttribute> GetResourceDefinition (Type type, Type currentType)
     {
-      ArgumentUtility.CheckNotNull ("derivedType", derivedType);
+			ResourceDefinition<TAttribute> resourcesOnType = base.GetResourceDefinition (type, currentType);
+			if (type == currentType)
+			{
+				// only on first call, check mixins
+				AddSupplementingAttributesFromMixins (currentType, resourcesOnType);
+			}
+      return resourcesOnType;
+    }
 
-      TargetClassDefinition mixinConfiguration = TargetClassDefinitionUtility.GetActiveConfiguration (derivedType);
+    private void AddSupplementingAttributesFromMixins (Type type, ResourceDefinition<TAttribute> resourcesOnType)
+    {
+      TargetClassDefinition mixinConfiguration = TargetClassDefinitionUtility.GetActiveConfiguration (type);
       if (mixinConfiguration != null)
       {
         foreach (MixinDefinition mixinDefinition in mixinConfiguration.Mixins)
-        {
-          TAttribute[] attributes;
-          
-          Type mixinDefiningType;
-          FindFirstResourceDefinitions (mixinDefinition.Type, true, out mixinDefiningType, out attributes);
-          if (attributes.Length != 0)
-          {
-            definingType = mixinDefiningType;
-            return attributes;
-          }
-        }
+          AddSupplementingAttiributesFromMixin (mixinDefinition, resourcesOnType, true);
       }
-      return base.FindFirstResourceDefinitionsInBaseTypes (derivedType, out definingType);
     }
 
-    protected override void WalkHierarchyAndPrependResourceManagers (ArrayList resourceManagers, Type definingType)
+    private void AddSupplementingAttiributesFromMixin (MixinDefinition mixinDefinition, ResourceDefinition<TAttribute> resourcesOnType, bool isHierarchyIncluded)
     {
-      ArgumentUtility.CheckNotNull ("resourceManagers", resourceManagers);
-      ArgumentUtility.CheckNotNull ("definingType", definingType);
-
-      TargetClassDefinition mixinConfiguration = TargetClassDefinitionUtility.GetActiveConfiguration (definingType);
-      if (mixinConfiguration != null)
-      {
-        foreach (MixinDefinition mixinDefinition in mixinConfiguration.Mixins)
-          PrependMixinResourceManagers (resourceManagers, mixinDefinition.Type);
-      }
-
-      base.WalkHierarchyAndPrependResourceManagers (resourceManagers, definingType);
-    }
-
-    private void PrependMixinResourceManagers (ArrayList resourceManagers, Type mixinType)
-    {
-      Type currentType;
-      TAttribute[] resourceAttributes;
-      FindFirstResourceDefinitions (mixinType, true, out currentType, out resourceAttributes);
-      if (currentType != null)
-      {
-        resourceManagers.InsertRange (0, ResourceManagerFactory.GetResourceManagers (currentType.Assembly, resourceAttributes));
-        WalkHierarchyAndPrependResourceManagers (resourceManagers, currentType);
-      }
+      IEnumerable<ResourceDefinition<TAttribute>> resourcesOnMixin = GetResourceDefinitionStream (mixinDefinition.Type, isHierarchyIncluded);
+      foreach (ResourceDefinition<TAttribute> resourceOnMixin in resourcesOnMixin)
+        resourcesOnType.AddSupplementingAttributes (resourceOnMixin.GetAllAttributePairs());
     }
   }
 }

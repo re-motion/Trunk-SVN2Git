@@ -95,6 +95,7 @@
     <Compile Include="Collections\InterlockedDataStore.cs" />
     <Compile Include="Collections\NullDataStore.cs" />
     <Compile Include="Collections\SimpleDataStore.cs" />
+    <Compile Include="Globalization\ResourceDefinition.cs" />
     <Compile Include="Globalization\ResourceManagerFactory.cs" />
     <Compile Include="Logging\BridgeImplementations\LogManagerImplementation.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixedTypeAttributeUtility.cs" />

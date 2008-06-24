@@ -117,19 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="property:SingleProperty" xml:space="preserve">
+    <value>Gemixter Resourcentext für Single-Eigenschaft</value>
+  </data>
   <data name="property:StringProperty" xml:space="preserve">
-    <value>Ressourcentext für Zeichenketten-Eigenschaft</value>
-  </data>
-  <data name="property:Int32Property" xml:space="preserve">
-    <value>Ressourcentext für Zahlen-Eigenschaft</value>
-  </data>
-  <data name="Remotion.Data.DomainObjects.Web.Test.Domain.ClassWithAllDataTypes+EnumType.Value0" xml:space="preserve">
-    <value>Wert 0</value>
-  </data>
-  <data name="Remotion.Data.DomainObjects.Web.Test.Domain.ClassWithAllDataTypes+EnumType.Value1" xml:space="preserve">
-    <value>Wert 1</value>
-  </data>
-  <data name="Remotion.Data.DomainObjects.Web.Test.Domain.ClassWithAllDataTypes+EnumType.Value2" xml:space="preserve">
-    <value>Wert 2</value>
+    <value>This text should not be visible, because target class attributes are stronger than mixin text</value>
   </data>
 </root>

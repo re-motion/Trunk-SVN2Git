@@ -9,11 +9,9 @@
  */
 
 using System;
-using System.Resources;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
-using Remotion.Development.UnitTesting;
 using Remotion.Globalization;
 using Remotion.UnitTests.Globalization.SampleTypes;
 using Remotion.Utilities;
@@ -32,64 +30,77 @@ namespace Remotion.UnitTests.Globalization
     }
 
     [Test]
-    public void FindFirstResourceDefinitions_SuccessOnSameType ()
+    public void GetResourceDefinitionStream_SuccessOnSameType ()
     {
-      Type definingType;
-      MultiLingualResourcesAttribute[] attributes;
+      ResourceDefinition<MultiLingualResourcesAttribute>[] definitions = 
+          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
 
-      _resolver.FindFirstResourceDefinitions (typeof (ClassWithMultiLingualResourcesAttributes), false, out definingType, out attributes);
-      Assert.AreSame (typeof (ClassWithMultiLingualResourcesAttributes), definingType);
-      Assert.AreEqual (3, attributes.Length);
-      Assert.That (attributes, Is.EquivalentTo (
+      Assert.That (definitions.Length, Is.EqualTo (1));
+      Assert.That (definitions[0].Type, Is.SameAs (typeof (ClassWithMultiLingualResourcesAttributes)));
+      Assert.That (EnumerableUtility.ToArray (definitions[0].SupplementingAttributes), Is.Empty);
+      Assert.That (definitions[0].OwnAttributes, Is.EquivalentTo (
           AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (ClassWithMultiLingualResourcesAttributes), false)));
     }
 
     [Test]
-    public void FindFirstResourceDefinitions_DoesNotInherit ()
+    public void GetResourceDefinitionStream_InheritanceFalse ()
     {
-      Type definingType;
-      MultiLingualResourcesAttribute[] attributes;
+      ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), false));
 
-      _resolver.FindFirstResourceDefinitions (typeof (InheritedClassWithMultiLingualResourcesAttributes), false, out definingType, out attributes);
-      Assert.AreSame (typeof (InheritedClassWithMultiLingualResourcesAttributes), definingType);
-      Assert.AreEqual (2, attributes.Length);
-      Assert.That (attributes, Is.EquivalentTo (
+      Assert.That (definitions.Length, Is.EqualTo (1));
+      Assert.That (definitions[0].Type, Is.SameAs (typeof (InheritedClassWithMultiLingualResourcesAttributes)));
+      Assert.That (EnumerableUtility.ToArray (definitions[0].SupplementingAttributes), Is.Empty);
+      Assert.That (definitions[0].OwnAttributes, Is.EquivalentTo (
           AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (InheritedClassWithMultiLingualResourcesAttributes), false)));
     }
 
     [Test]
-    public void FindFirstResourceDefinitions_SuccessOnBase ()
+    public void GetResourceDefinitionStream_InheritanceTrue ()
     {
-      Type definingType;
-      MultiLingualResourcesAttribute[] attributes;
+      ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), true));
 
-      _resolver.FindFirstResourceDefinitions (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false, out definingType, out attributes);
-      Assert.AreSame (typeof (ClassWithMultiLingualResourcesAttributes), definingType);
-      Assert.AreEqual (3, attributes.Length);
-      Assert.That (attributes, Is.EquivalentTo (
+      Assert.That (definitions.Length, Is.EqualTo (2));
+
+			Assert.That (definitions[0].Type, Is.SameAs (typeof (InheritedClassWithMultiLingualResourcesAttributes)));
+      Assert.That (EnumerableUtility.ToArray (definitions[0].SupplementingAttributes), Is.Empty);
+      Assert.That (definitions[0].OwnAttributes, Is.EquivalentTo (
+          AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (InheritedClassWithMultiLingualResourcesAttributes), false)));
+
+			Assert.That (definitions[1].Type, Is.SameAs (typeof (ClassWithMultiLingualResourcesAttributes)));
+			Assert.That (EnumerableUtility.ToArray (definitions[1].SupplementingAttributes), Is.Empty);
+			Assert.That (definitions[1].OwnAttributes, Is.EquivalentTo (
+					AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (ClassWithMultiLingualResourcesAttributes), false)));
+
+    }
+
+    [Test]
+    public void GetResourceDefinitionStream_SuccessOnBase ()
+    {
+      ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false));
+      Assert.That (definitions.Length, Is.EqualTo (1));
+      Assert.That (definitions[0].Type, Is.SameAs (typeof (ClassWithMultiLingualResourcesAttributes)));
+
+      Assert.That (definitions[0].OwnAttributes, Is.EquivalentTo (
           AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (ClassWithMultiLingualResourcesAttributes), false)));
     }
 
     [Test]
-    public void FindFirstResourceDefinitions_NoSuccessNoException ()
+    public void GetResourceDefinitionStream_NoSuccess ()
     {
-      Type definingType;
-      MultiLingualResourcesAttribute[] attributes;
-
-      _resolver.FindFirstResourceDefinitions (typeof (ClassWithoutMultiLingualResourcesAttributes), true, out definingType, out attributes);
-      Assert.IsNull (definingType);
-      Assert.IsEmpty (attributes);
+      ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false));
+      Assert.IsEmpty (definitions);
     }
 
     [Test]
     [ExpectedException (typeof (ResourceException), ExpectedMessage = "Type Remotion.UnitTests.Globalization.SampleTypes."
         + "ClassWithoutMultiLingualResourcesAttributes and its base classes do not define the attribute MultiLingualResourcesAttribute.")]
-    public void FindFirstResourceDefinitions_NoSuccessException ()
+    public void GetResourceManager_NoAttributes ()
     {
-      Type definingType;
-      MultiLingualResourcesAttribute[] attributes;
-
-      _resolver.FindFirstResourceDefinitions (typeof (ClassWithoutMultiLingualResourcesAttributes), false, out definingType, out attributes);
+      _resolver.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes), false);
     }
 
     [Test]
@@ -157,10 +168,11 @@ namespace Remotion.UnitTests.Globalization
       ResourceManagerSet resourceManagerSet = (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), true, out definingType);
       Assert.AreSame (typeof (InheritedClassWithMultiLingualResourcesAttributes), definingType);
       Assert.AreEqual (5, resourceManagerSet.Count);
-      Set<string> names = new Set<string> (resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name,
-          resourceManagerSet[3].Name, resourceManagerSet[4].Name);
+      string[] names = new string[] {resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name,
+          resourceManagerSet[3].Name, resourceManagerSet[4].Name};
       Assert.That (names, Is.EquivalentTo (new string[] { "One", "Two", "Three", "Four", "Five" }));
-    }
+			Assert.That (Array.IndexOf (names, "One"), Is.LessThan (Array.IndexOf (names, "Four")));
+		}
 
     [Test]
     [ExpectedException (typeof (ResourceException), ExpectedMessage = "Type Remotion.UnitTests.Globalization.SampleTypes."

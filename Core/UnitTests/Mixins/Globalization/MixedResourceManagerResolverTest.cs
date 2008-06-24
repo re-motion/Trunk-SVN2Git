@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Resources;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -26,146 +27,277 @@ namespace Remotion.UnitTests.Mixins.Globalization
   public class MixedResourceManagerResolverTest
   {
     private MixedResourceManagerResolver<MultiLingualResourcesAttribute> _resolver;
+  	private readonly MultiLingualResourcesAttribute[] _noAttributes = new MultiLingualResourcesAttribute[0];
 
-    [SetUp]
+  	[SetUp]
     public void SetUp ()
     {
       _resolver = new MixedResourceManagerResolver<MultiLingualResourcesAttribute> ();
     }
 
     [Test]
-    public void FindFirstResourceDefinitions_SuccessOnSameType ()
+    public void GetResourceDefinitions_NoSuccessOnType_NoSuccessOnMixin ()
     {
-      Type definingType;
-      MultiLingualResourcesAttribute[] attributes;
-
-      _resolver.FindFirstResourceDefinitions (typeof (ClassWithMultiLingualResourcesAttributes), false, out definingType, out attributes);
-      Assert.AreSame (typeof (ClassWithMultiLingualResourcesAttributes), definingType);
-      Assert.AreEqual (1, attributes.Length);
-      Assert.That (attributes, Is.EquivalentTo (
-          AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (ClassWithMultiLingualResourcesAttributes), false)));
-    }
-
-    [Test]
-    public void FindFirstResourceDefinitions_SuccessOnSameType_WithMixins ()
-    {
-      using (MixinConfiguration.BuildNew ()
-          .ForClass<ClassWithMultiLingualResourcesAttributes> ().AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().EnterScope ())
-      {
-        Type definingType;
-        MultiLingualResourcesAttribute[] attributes;
-
-        _resolver.FindFirstResourceDefinitions (typeof (ClassWithMultiLingualResourcesAttributes), false, out definingType, out attributes);
-        Assert.AreSame (typeof (ClassWithMultiLingualResourcesAttributes), definingType);
-        Assert.AreEqual (1, attributes.Length);
-        Assert.That (attributes, Is.EquivalentTo (
-            AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (ClassWithMultiLingualResourcesAttributes), false)));
-      }
-    }
-
-    [Test]
-    public void FindFirstResourceDefinitions_SuccessOnMixinType ()
-    {
-      using (MixinConfiguration.BuildNew ()
-          .ForClass<ClassWithoutMultiLingualResourcesAttributes> ().AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().EnterScope ())
-      {
-        Type definingType;
-        MultiLingualResourcesAttribute[] attributes;
-
-        _resolver.FindFirstResourceDefinitions (typeof (ClassWithoutMultiLingualResourcesAttributes), false, out definingType, out attributes);
-        Assert.AreSame (typeof (MixinAddingMultiLingualResourcesAttributes1), definingType);
-        Assert.AreEqual (1, attributes.Length);
-        Assert.That (attributes, Is.EquivalentTo (
-            AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (MixinAddingMultiLingualResourcesAttributes1), false)));
-      }
-    }
-
-    [Test]
-    public void FindFirstResourceDefinitions_SuccessOnMixinType_NotBase ()
-    {
-      using (MixinConfiguration.BuildNew ()
-          .ForClass<InheritedClassWithoutMultiLingualResourcesAttributes> ().AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().EnterScope ())
-      {
-        Type definingType;
-        MultiLingualResourcesAttribute[] attributes;
-
-        _resolver.FindFirstResourceDefinitions (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false, out definingType, out attributes);
-        Assert.AreSame (typeof (MixinAddingMultiLingualResourcesAttributes1), definingType);
-        Assert.AreEqual (1, attributes.Length);
-        Assert.That (attributes, Is.EquivalentTo (
-            AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (MixinAddingMultiLingualResourcesAttributes1), false)));
-      }
-    }
-
-    [Test]
-    public void FindFirstResourceDefinitions_NoSuccessNoException ()
-    {
-      Type definingType;
-      MultiLingualResourcesAttribute[] attributes;
-
-      _resolver.FindFirstResourceDefinitions (typeof (ClassWithoutMultiLingualResourcesAttributes), true, out definingType, out attributes);
-      Assert.IsNull (definingType);
-      Assert.IsEmpty (attributes);
-    }
-
-    [Test]
-    public void FindFirstResourceDefinitions_NoSuccessNoExceptionButMixins ()
-    {
-      Type definingType;
-      MultiLingualResourcesAttribute[] attributes;
-
       using (MixinConfiguration.BuildNew().ForClass<ClassWithoutMultiLingualResourcesAttributes>().AddMixin<NullMixin>().EnterScope())
-      _resolver.FindFirstResourceDefinitions (typeof (ClassWithoutMultiLingualResourcesAttributes), true, out definingType, out attributes);
-      Assert.IsNull (definingType);
-      Assert.IsEmpty (attributes);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ResourceException), ExpectedMessage = "Type Remotion.UnitTests.Mixins.Globalization.SampleTypes."
-        + "ClassWithoutMultiLingualResourcesAttributes and its base classes do not define the attribute MultiLingualResourcesAttribute.")]
-    public void FindFirstResourceDefinitions_NoSuccessException ()
-    {
-      Type definingType;
-      MultiLingualResourcesAttribute[] attributes;
-
-      _resolver.FindFirstResourceDefinitions (typeof (ClassWithoutMultiLingualResourcesAttributes), false, out definingType, out attributes);
-    }
-
-    [Test]
-    public void GetResourceManager_NoDefiningType_NoHierarchy ()
-    {
-      using (MixinConfiguration.BuildNew ()
-          .ForClass<InheritedClassWithMultiLingualResourcesAttributes> ().AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().EnterScope ())
       {
-        ResourceManagerSet resourceManagerSet =
-            (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
-        Assert.AreEqual (1, resourceManagerSet.Count);
-        Assert.AreEqual ("OnInherited", resourceManagerSet[0].Name);
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+						EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false));
+				Assert.That (definitions.Length, Is.EqualTo (0));
       }
     }
 
     [Test]
-    public void GetResourceManager_NoDefiningType_WithHierarchy ()
+    public void GetResourceDefinitions_NoSuccessOnType_NoMixins ()
+    {
+      ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+          EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false));
+      Assert.That (definitions.Length, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void GetResourceDefinitions_SuccessOnType_NoSuccessOnMixin ()
+    {
+      using (MixinConfiguration.BuildNew().ForClass<ClassWithMultiLingualResourcesAttributes>().AddMixin<NullMixin>().EnterScope())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+        CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes), 
+            AttributesFor<ClassWithMultiLingualResourcesAttributes>());
+      }
+    }
+
+    [Test]
+    public void GetResourceDefinitions_NoSuccessOnType_SuccessOnMixin ()
+    {
+      using (MixinConfiguration.BuildNew().ForClass<ClassWithoutMultiLingualResourcesAttributes>().AddMixin<MixinAddingMultiLingualResourcesAttributes1>().EnterScope())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+						EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+        CheckDefinition (definitions[0], typeof (ClassWithoutMultiLingualResourcesAttributes), 
+            _noAttributes,
+						TupleFor<MixinAddingMultiLingualResourcesAttributes1>());
+      }
+    }
+
+    [Test]
+    public void GetResourceDefinitions_SuccessOnType_SuccessOnMixin ()
+    {
+      using (MixinConfiguration.BuildNew().ForClass<ClassWithMultiLingualResourcesAttributes>().AddMixin<MixinAddingMultiLingualResourcesAttributes1>().EnterScope())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+        CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes), 
+            AttributesFor<ClassWithMultiLingualResourcesAttributes>(),
+            TupleFor<MixinAddingMultiLingualResourcesAttributes1>());
+      }
+    }
+
+    [Test]
+    public void GetResourceDefinitions_SuccessOnType_SuccessOnMultipleMixins ()
+    {
+      using (MixinConfiguration.BuildNew()
+          .ForClass<ClassWithMultiLingualResourcesAttributes>()
+          .AddMixin<MixinAddingMultiLingualResourcesAttributes1>()
+          .AddMixin<MixinAddingMultiLingualResourcesAttributes2>()
+          .EnterScope())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+
+				CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes), 
+            AttributesFor<ClassWithMultiLingualResourcesAttributes>(),
+						TupleFor<MixinAddingMultiLingualResourcesAttributes1>(), 
+						TupleFor<MixinAddingMultiLingualResourcesAttributes2>());
+      }
+    }
+
+    [Test]
+    public void GetResourceDefinitions_SuccessOnBaseType_NoSuccessOnMixin ()
+    {
+      using (MixinConfiguration.BuildNew().ForClass<InheritedClassWithoutMultiLingualResourcesAttributes>().AddMixin<NullMixin>().EnterScope())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+        CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes), 
+            AttributesFor<ClassWithMultiLingualResourcesAttributes>());
+      }
+    }
+
+    [Test]
+    public void GetResourceDefinitions_NoSuccessOnType_SuccessOnInheritingMixin ()
+    {
+      using (MixinConfiguration.BuildNew().ForClass<ClassWithoutMultiLingualResourcesAttributes>().AddMixin<InheritedMixinWithoutMultiLingualResourcesAttributes1>().EnterScope())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithoutMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+        CheckDefinition (definitions[0], typeof (ClassWithoutMultiLingualResourcesAttributes),
+						_noAttributes,
+            TupleFor<MixinAddingMultiLingualResourcesAttributes1>());
+      }
+    }
+
+    [Test]
+    public void GetResourceDefinitions_SuccessOnBaseType_SuccessOnMixin ()
+    {
+      using (MixinConfiguration.BuildNew().ForClass<InheritedClassWithoutMultiLingualResourcesAttributes>().AddMixin<MixinAddingMultiLingualResourcesAttributes1>().EnterScope())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+        CheckDefinition (definitions[0], typeof (InheritedClassWithoutMultiLingualResourcesAttributes),
+						_noAttributes,
+            TupleFor<MixinAddingMultiLingualResourcesAttributes1>());
+      }
+    }
+
+    [Test]
+    public void GetResourceDefinitions_SuccessOnBaseType_SuccessOnInheritingMixin ()
+    {
+      using (MixinConfiguration.BuildNew().ForClass<InheritedClassWithoutMultiLingualResourcesAttributes>().AddMixin<InheritedMixinWithoutMultiLingualResourcesAttributes1>().EnterScope())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+        CheckDefinition (definitions[0], typeof (InheritedClassWithoutMultiLingualResourcesAttributes),
+						_noAttributes,
+            TupleFor<MixinAddingMultiLingualResourcesAttributes1>());
+      }
+    }
+
+    [Test]
+    public void GetResourceDefinitions_SuccessOnType_SuccessOnInheritingMixin ()
+    {
+      using (MixinConfiguration.BuildNew().ForClass<ClassWithMultiLingualResourcesAttributes>().AddMixin<InheritedMixinWithoutMultiLingualResourcesAttributes1>().EnterScope())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+        CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes), 
+            AttributesFor<ClassWithMultiLingualResourcesAttributes>(), TupleFor<MixinAddingMultiLingualResourcesAttributes1>());
+      }
+    }
+
+    [Test]
+    public void GetResourceDefinitions_InheritanceFalse_SuccessOnTypeAndBase_SuccessOnMixinAndBase ()
+    {
+      using (MixinConfiguration.BuildNew().ForClass<InheritedClassWithMultiLingualResourcesAttributes>().AddMixin<InheritedMixinAddingMultiLingualResourcesAttributes2>().EnterScope())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+				CheckDefinition (definitions[0], typeof (InheritedClassWithMultiLingualResourcesAttributes),
+						AttributesFor<InheritedClassWithMultiLingualResourcesAttributes> (),
+						TupleFor<InheritedMixinAddingMultiLingualResourcesAttributes2> (),
+						TupleFor<MixinAddingMultiLingualResourcesAttributes2> ());
+      }
+    }
+
+    [Test]
+    public void GetResourceDefinitions_InheritanceTrue_SuccessOnTypeAndBase_SuccessOnMixinAndBase ()
+    {
+      using (MixinConfiguration.BuildNew()
+					.ForClass<InheritedClassWithMultiLingualResourcesAttributes>()
+					.AddMixin<InheritedMixinAddingMultiLingualResourcesAttributes2>()
+					.EnterScope())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithMultiLingualResourcesAttributes), true));
+        Assert.That (definitions.Length, Is.EqualTo (2));
+        CheckDefinition (definitions[0], typeof (InheritedClassWithMultiLingualResourcesAttributes), 
+            AttributesFor<InheritedClassWithMultiLingualResourcesAttributes>(),
+            TupleFor<InheritedMixinAddingMultiLingualResourcesAttributes2>(),
+						TupleFor<MixinAddingMultiLingualResourcesAttributes2>());
+				CheckDefinition (definitions[1], typeof (ClassWithMultiLingualResourcesAttributes), 
+            AttributesFor<ClassWithMultiLingualResourcesAttributes>());
+      }
+    }
+
+		[Test]
+		public void GetResourceDefinitions_InheritanceFalse_NoSuccessOnType_SuccessOnMixinFromBase ()
+		{
+			using (MixinConfiguration.BuildNew ().ForClass<ClassWithMultiLingualResourcesAttributes> ()
+				.AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().EnterScope ())
+			{
+				ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+						EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), false));
+				Assert.That (definitions.Length, Is.EqualTo (1));
+				CheckDefinition (definitions[0], typeof (InheritedClassWithoutMultiLingualResourcesAttributes),
+						_noAttributes,
+						TupleFor<MixinAddingMultiLingualResourcesAttributes1> ());
+			}
+		}
+
+		[Test]
+		public void GetResourceDefinitions_InheritanceTrue_NoSuccessOnType_SuccessOnMixinFromBase_MixinsAreOnlyCheckedAtTopLevel ()
+		{
+			using (MixinConfiguration.BuildNew ().ForClass<ClassWithMultiLingualResourcesAttributes> ()
+				.AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().EnterScope ())
+			{
+				ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+						EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (InheritedClassWithoutMultiLingualResourcesAttributes), true));
+				Assert.That (definitions.Length, Is.EqualTo (2));
+				CheckDefinition (definitions[0], typeof (InheritedClassWithoutMultiLingualResourcesAttributes),
+						_noAttributes, 
+						TupleFor<MixinAddingMultiLingualResourcesAttributes1> ());
+				CheckDefinition (definitions[1], typeof (ClassWithMultiLingualResourcesAttributes),
+						AttributesFor<ClassWithMultiLingualResourcesAttributes> ());
+			}
+		}
+
+		[Test]
+		public void GetResourceManager_InheritanceFalse_SuccessOnTypeAndBase_SuccessOnMixin ()
+		{
+			using (MixinConfiguration.BuildNew ()
+					.ForClass<InheritedClassWithMultiLingualResourcesAttributes> ().AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().EnterScope ())
+			{
+				ResourceManagerSet resourceManagerSet =
+						(ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
+				Assert.AreEqual (2, resourceManagerSet.Count);
+				Assert.AreEqual ("OnMixin1", resourceManagerSet[0].Name);
+				Assert.AreEqual ("OnInherited", resourceManagerSet[1].Name);
+			}
+		}
+
+
+  	[Test]
+    public void GetResourceManager_InheritanceFalse_SuccessOnTypeAndBase_NoMixin ()
+    {
+      ResourceManagerSet resourceManagerSet =
+          (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
+      Assert.AreEqual (1, resourceManagerSet.Count);
+      Assert.AreEqual ("OnInherited", resourceManagerSet[0].Name);
+    }
+
+    [Test]
+    public void GetResourceManager_InheritanceTrue_SuccessOnTypeAndBase_SuccessOnMixin ()
     {
       using (MixinConfiguration.BuildNew ()
           .ForClass<InheritedClassWithMultiLingualResourcesAttributes> ()
           .AddMixin<MixinAddingMultiLingualResourcesAttributes1> ()
-          .AddMixin<MixinAddingMultiLingualResourcesAttributes2> ()
-          .EnterScope ())
+					.ForClass<ClassWithMultiLingualResourcesAttributes> ()
+					.AddMixin<MixinAddingMultiLingualResourcesAttributes2> ()
+					.EnterScope ())
       {
         ResourceManagerSet resourceManagerSet =
             (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), true);
         Assert.AreEqual (5, resourceManagerSet.Count);
-        Set<string> names = new Set<string> (resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name,
-            resourceManagerSet[3].Name, resourceManagerSet[4].Name);
-        Assert.That (names, Is.EquivalentTo (new string[] { "OnTarget", "OnInherited", "OnMixin1", "OnMixin2a", "OnMixin2b" }));
+				string[] names = new string[] {resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name,
+						resourceManagerSet[3].Name, resourceManagerSet[4].Name};
+				Assert.That (names, Is.EquivalentTo (new string[] { "OnMixin2b", "OnMixin2a", "OnTarget", "OnMixin1", "OnInherited" }));
+				Assert.That (Array.IndexOf (names, "OnTarget"), Is.LessThan (Array.IndexOf (names, "OnInherited")));
       }
     }
 
     [Test]
     [ExpectedException (typeof (ResourceException), ExpectedMessage = "Type Remotion.UnitTests.Mixins.Globalization.SampleTypes."
         + "ClassWithoutMultiLingualResourcesAttributes and its base classes do not define the attribute MultiLingualResourcesAttribute.")]
-    public void GetResourceManager_NoDefiningType_NoSuccess ()
+		public void GetResourceManager_NoSuccess ()
     {
       _resolver.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes), true);
     }
@@ -181,6 +313,33 @@ namespace Remotion.UnitTests.Mixins.Globalization
         IResourceManager resourceManager = _resolver.GetResourceManager (TypeFactory.GetConcreteType (typeof (ClassWithMultiLingualResourcesAttributes)), true);
         resourceManager.GetString ("Foo");
       }
+    }
+
+		private MultiLingualResourcesAttribute[] AttributesFor<T> ()
+		{
+			return AttributeUtility.GetCustomAttributes<MultiLingualResourcesAttribute> (typeof (T), false);
+		}
+
+		private Tuple<Type, MultiLingualResourcesAttribute[]> TupleFor<T> ()
+		{
+			return Tuple.NewTuple (typeof (T), AttributesFor<T> ());
+		}
+
+    private void CheckDefinition (ResourceDefinition<MultiLingualResourcesAttribute> definition, Type expectedDefinitionType, 
+				MultiLingualResourcesAttribute[] expectedOwn, params Tuple<Type, MultiLingualResourcesAttribute[]>[] expectedSupplementing)
+    {
+      Assert.That (definition.Type, Is.SameAs (expectedDefinitionType));
+      Assert.That (definition.OwnAttributes, Is.EquivalentTo (expectedOwn));
+			Dictionary<Type, MultiLingualResourcesAttribute[]> supplementingAttributes = new Dictionary<Type, MultiLingualResourcesAttribute[]>();
+    	foreach (Tuple<Type, MultiLingualResourcesAttribute[]> supplementingAttribute in definition.SupplementingAttributes)
+    		supplementingAttributes.Add (supplementingAttribute.A, supplementingAttribute.B);
+
+			Assert.That (supplementingAttributes.Count, Is.EqualTo (expectedSupplementing.Length));
+    	foreach (Tuple<Type, MultiLingualResourcesAttribute[]> expected in expectedSupplementing)
+    	{
+				Assert.That (supplementingAttributes.ContainsKey (expected.A));
+				Assert.That (supplementingAttributes[expected.A], Is.EqualTo (expected.B));
+    	}
     }
   }
 }

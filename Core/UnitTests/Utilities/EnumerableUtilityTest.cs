@@ -39,5 +39,14 @@ namespace Remotion.UnitTests.Utilities
       int[] combined = EnumerableUtility.CombineToArray (new int[] {1, 2, 3}, new List<int> (new int[] {3, 4, 5}));
       Assert.That (combined, Is.EqualTo (new int[] {1, 2, 3, 3, 4, 5}));
     }
+
+    [Test]
+    public void FirstOrDefault ()
+    {
+      int[] sourceArray = new int[] { 1, 2, 3 };
+      Assert.That (EnumerableUtility.FirstOrDefault (sourceArray), Is.EqualTo (1));
+      Assert.That (EnumerableUtility.FirstOrDefault (new int[0]), Is.EqualTo (0));
+      Assert.That (EnumerableUtility.FirstOrDefault (new object[0]), Is.Null);
+    }
   }
 }

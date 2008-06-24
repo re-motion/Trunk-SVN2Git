@@ -9,7 +9,7 @@
  */
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Resources;
 using Remotion.Collections;
 using Remotion.Utilities;
@@ -54,24 +54,42 @@ namespace Remotion.Globalization
     /// <include file='doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/GetResourceManager/param[@name="objectType" or @name="includeHierarchy" or @name="definingType"]' />
     public virtual IResourceManager GetResourceManager (Type objectType, bool includeHierarchy, out Type definingType)
     {
-      ArgumentUtility.CheckNotNull ("objectType", objectType);
 
-      TAttribute[] resourceAttributes;
-      //  Current hierarchy level, always report missing TAttribute
+      IEnumerable<ResourceDefinition<TAttribute>> resourceDefinitions = GetResourceDefinitionStream (objectType, includeHierarchy);
+      ResourceDefinition<TAttribute> firstResourceDefinition = EnumerableUtility.FirstOrDefault (resourceDefinitions);
+      if (firstResourceDefinition == null)
+      {
+        string message = string.Format ("Type {0} and its base classes do not define the attribute {1}.", objectType.FullName, typeof (TAttribute).Name);
+        throw new ResourceException (message);
+      }
 
-      Type retrievedDefiningType;
-      FindFirstResourceDefinitions (objectType, false, out retrievedDefiningType, out resourceAttributes);
-      definingType = retrievedDefiningType;
-
-      object key = GetResourceManagerSetCacheKey(retrievedDefiningType, includeHierarchy);
+      definingType = firstResourceDefinition.Type;
 
       //  Look in cache and continue with the cached resource manager wrapper, if one is found
-      return _resourceManagerWrappersCache.GetOrCreateValue (
-          key,
-          delegate
-          {
-            return CreateResourceManagerSet (retrievedDefiningType, resourceAttributes, includeHierarchy);
-          });
+      object key = GetResourceManagerSetCacheKey (firstResourceDefinition.Type, includeHierarchy);
+      return _resourceManagerWrappersCache.GetOrCreateValue (key, delegate { return CreateResourceManagerSet (resourceDefinitions); });
+    }
+
+    public IEnumerable<ResourceDefinition<TAttribute>> GetResourceDefinitionStream (Type type, bool includeHierarchy)
+    {
+			Type currentType = type;
+			while (currentType != null)
+      {
+				ResourceDefinition<TAttribute> definition = GetResourceDefinition (type, currentType);
+        if (definition.HasResources)
+        {
+          yield return definition;
+          if (!includeHierarchy)
+            yield break;
+        }
+				currentType = currentType.BaseType;
+      }
+    }
+
+    protected virtual ResourceDefinition<TAttribute> GetResourceDefinition (Type type, Type currentType)
+    {
+			TAttribute[] resourceAttributes = AttributeUtility.GetCustomAttributes<TAttribute> (currentType, false);
+			return new ResourceDefinition<TAttribute> (currentType, resourceAttributes);
     }
 
     protected virtual object GetResourceManagerSetCacheKey (Type definingType, bool includeHierarchy)
@@ -79,90 +97,21 @@ namespace Remotion.Globalization
       return definingType.AssemblyQualifiedName + "/" + includeHierarchy;
     }
 
-    private ResourceManagerSet CreateResourceManagerSet (Type definingType, TAttribute[] resourceAttributes,
-        bool includeHierarchy)
+    private ResourceManagerSet CreateResourceManagerSet (IEnumerable<ResourceDefinition<TAttribute>> resourceDefinitions)
     {
-      ArrayList resourceManagers = new ArrayList ();
-      resourceManagers.AddRange (_resourceManagerFactory.GetResourceManagers (definingType.Assembly, resourceAttributes));
-
-      if (includeHierarchy)
-        WalkHierarchyAndPrependResourceManagers (resourceManagers, definingType);
-
-      //  Create a new resource mananger wrapper set and return it.
-      ResourceManager[] resourceManagerArray = (ResourceManager[]) resourceManagers.ToArray (typeof (ResourceManager));
-      return ResourceManagerWrapper.CreateWrapperSet (resourceManagerArray);
-    }
-
-    protected virtual void WalkHierarchyAndPrependResourceManagers (ArrayList resourceManagers, Type definingType)
-    {
-      ArgumentUtility.CheckNotNull ("resourceManagers", resourceManagers);
-      ArgumentUtility.CheckNotNull ("definingType", definingType);
-
-      Type currentType = definingType.BaseType;
-      while (currentType != null)
+      List<ResourceManager> resourceManagers = new List<ResourceManager> ();
+      foreach (ResourceDefinition<TAttribute> definition in resourceDefinitions)
       {
-        TAttribute[] resourceAttributes;
-        FindFirstResourceDefinitions (currentType, true, out currentType, out resourceAttributes);
-
-        //  No more base types defining the TAttribute
-        if (currentType != null)
+        foreach (Tuple<Type, TAttribute[]> attributePair in definition.GetAllAttributePairs ())
         {
-          //  Insert the found resources managers at the beginning of the list
-          resourceManagers.InsertRange (0, _resourceManagerFactory.GetResourceManagers (currentType.Assembly, resourceAttributes));
-
-          currentType = currentType.BaseType;
+          ResourceManager[] resourceManagersForAttributePair = _resourceManagerFactory.GetResourceManagers (attributePair.A.Assembly, attributePair.B);
+          resourceManagers.InsertRange (0, resourceManagersForAttributePair);
         }
       }
-    }
 
-    /// <summary>
-    /// Walks through the inheritance hierarchy of the given type, searching for a type on which <typeparamref name="TAttribute"/> is defined.
-    /// </summary>
-    /// <include file='doc\include\Globalization\MultiLingualResourcesAttribute.xml' path='/MultiLingualResourcesAttribute/FindFirstResourceDefinitions/*' />
-    public virtual void FindFirstResourceDefinitions (
-        Type typeToSearch,
-        bool noUndefinedException,
-        out Type definingType,
-        out TAttribute[] resourceAttributes)
-    {
-      ArgumentUtility.CheckNotNull ("typeToSearch", typeToSearch);
-      ArgumentUtility.CheckNotNull ("noUndefinedException", noUndefinedException);
-
-      resourceAttributes = GetResourceAttributes (typeToSearch);
-
-      if (resourceAttributes.Length != 0)
-          definingType = typeToSearch;
-      else
-          resourceAttributes = FindFirstResourceDefinitionsInBaseTypes (typeToSearch, out definingType);
-
-      if (resourceAttributes.Length == 0 && !noUndefinedException)
-          throw new ResourceException ("Type " + typeToSearch.FullName + " and its base classes do not define the attribute " + typeof (TAttribute).Name + ".");
-    }
-
-    protected virtual TAttribute[] FindFirstResourceDefinitionsInBaseTypes (Type derivedType, out Type definingType)
-    {
-      ArgumentUtility.CheckNotNull ("concreteType", derivedType);
-
-      definingType = derivedType.BaseType;
-      while (definingType != null)
-      {
-        TAttribute[] resourceAttributes = GetResourceAttributes (definingType);
-        if (resourceAttributes.Length != 0)
-          return resourceAttributes;
-        definingType = definingType.BaseType;
-      }
-      return new TAttribute[0];
-    }
-
-    /// <summary>
-    ///   Returns the <typeparamref name="TAttribute"/> attributes defined for the 
-    ///   <paramref name="type"/>.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to analyze.</param>
-    /// <returns>An array of <typeparamref name="TAttribute"/> attributes.</returns>
-    private TAttribute[] GetResourceAttributes (Type type)
-    {
-      return AttributeUtility.GetCustomAttributes<TAttribute> (type, false);
+      //  Create a new resource mananger wrapper set and return it.
+      ResourceManager[] resourceManagerArray = resourceManagers.ToArray ();
+      return ResourceManagerWrapper.CreateWrapperSet (resourceManagerArray);
     }
   }
 }

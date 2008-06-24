@@ -71,6 +71,11 @@ public class MultiLingualResourcesAttribute: Attribute, IResourcesAttribute
     ArgumentUtility.CheckNotNull ("resourceAssembly", resourceAssembly);
     _resourceAssembly = resourceAssembly;
   }
+
+	public override string ToString ()
+	{
+		return BaseName;
+	}
 }
 
 }

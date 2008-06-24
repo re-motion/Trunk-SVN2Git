@@ -91,5 +91,14 @@ namespace Remotion.Utilities
       foreach (object o in sourceEnumerable)
         yield return (T) o;
     }
+
+    public static T FirstOrDefault<T> (IEnumerable<T> source)
+    {
+      IEnumerator<T> enumerator = source.GetEnumerator ();
+      if (enumerator.MoveNext ())
+        return enumerator.Current;
+      else
+        return default (T);
+    }
   }
 }

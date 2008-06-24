@@ -27,7 +27,9 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
@@ -134,6 +136,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\MixinForClassWithAllDataTypes2.cs" />
+    <Compile Include="Domain\MixinForClassWithAllDataTypes1.cs" />
     <Compile Include="ImmediatelyReturningPage.aspx.cs">
       <DependentUpon>ImmediatelyReturningPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -268,7 +272,9 @@
     <Content Include="WxeTestPage.aspx">
       <SubType>Form</SubType>
     </Content>
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="\Development\global\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
     <None Include="WxeHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
@@ -276,6 +282,14 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\ClassWithAllDataTypes.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\MixinForClassWithAllDataTypes2.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\MixinForClassWithAllDataTypes1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MixinForClassWithAllDataTypes1.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
