@@ -49,5 +49,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Design
     {
       get { return true; }
     }
+
+    public IMappingNameResolver NameResolver
+    {
+      get { return new FakeDesignModeMappingNameResolver(); }
+    }
   }
 }

@@ -161,6 +161,7 @@
     <Compile Include="Core\Configuration\Mapping\MixinTestDomain\MixinNotOnBase.cs" />
     <Compile Include="Core\Configuration\Mapping\MixinTestDomain\DerivedMixinNotOnBase.cs" />
     <Compile Include="Core\Configuration\Mapping\MixinTestDomain\TargetClassC.cs" />
+    <Compile Include="Core\Configuration\Mapping\ReflectionBasedNameResolverTest.cs" />
     <Compile Include="Core\Configuration\Mapping\RelationReflectorWithMixinsTest.cs" />
     <Compile Include="Core\Configuration\Mapping\PersistentMixinFinderTest.cs" />
     <Compile Include="Core\Configuration\Mapping\ClassReflectorTests\GetRelationDefinitionsForClosedGeneric.cs" />
@@ -205,6 +206,7 @@
     <Compile Include="Core\Configuration\StorageProviders\TypeProviderTest.cs" />
     <TestDomain Include="Core\Design\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Core\Cloning\DomainObjectClonerTest.cs" />
+    <Compile Include="Core\Design\FakeDesignModeMappingNameResolver.cs" />
     <Compile Include="Core\DomainObjects\SimpleDomainObjectTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderTest.cs" />

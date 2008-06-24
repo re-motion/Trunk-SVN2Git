@@ -116,46 +116,6 @@ namespace Remotion.Data.DomainObjects
       return result;
     }
 
-    /// <summary>
-    /// Returns the property name for a given property accessor method name, or null if the method name is not the name of a property accessor method.
-    /// </summary>
-    /// <param name="methodName">The name of the presumed property accessor method.</param>
-    /// <returns>The property name for the given method name, or null if it is not the name of a property accessor method.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="methodName"/> parameter is null.</exception>
-    public static string GetPropertyNameForMethodName (string methodName)
-    {
-      ArgumentUtility.CheckNotNull ("methodName", methodName);
-      if (methodName.Length <= 4 || (!methodName.StartsWith ("get_") && !methodName.StartsWith ("set_")))
-        return null;
-      else
-        return methodName.Substring (4);
-    }
-
-    /// <summary>
-    /// Retrieves the <see cref="PropertyInfo"/> object for the given property accessor method, or null if the method is not a property accessor method.
-    /// </summary>
-    /// <param name="method">The presumed accessor method whose property should be retrieved</param>
-    /// <returns>The corresponing <see cref="PropertyInfo"/>, or null if the method is not a property accessor or no corresponding property could be
-    /// found.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="method"/> parameter was null.</exception>
-    public static PropertyInfo GetPropertyForMethod (MethodInfo method)
-    {
-      ArgumentUtility.CheckNotNull ("method", method);
-      string propertyName = GetPropertyNameForMethodName (method.Name);
-      if (propertyName == null || !method.IsSpecialName)
-        return null;
-      else
-      {
-        BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic;
-        if (method.IsStatic)
-          bindingFlags |= BindingFlags.Static;
-        else
-          bindingFlags |= BindingFlags.Instance;
-
-        return method.DeclaringType.GetProperty (propertyName, bindingFlags);
-      }
-    }
-
     public static string GetSignatureForArguments (object[] args)
     {
       Type[] argumentTypes = GetTypesForArgs (args);
@@ -185,7 +145,7 @@ namespace Remotion.Data.DomainObjects
     /// property's name (e.g. MyNamespace.MyType.MyProperty). However, this might change in the future, so this API should be used whenever the
     /// identifier must be retrieved programmatically.
     /// </remarks>
-    // TODO: Move to reflection based mapping
+    [Obsolete ("Use MappingConfiguration.NameResolver.GetPropertyName.")]
     public static string GetPropertyName (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
@@ -198,7 +158,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>Returns the property name scoped for a specific <paramref name="originalDeclaringType"/>.</summary>
-    // TODO: Move to reflection based mapping
+    [Obsolete ("Use MappingConfiguration.NameResolver.GetPropertyName.")]
     public static string GetPropertyName (Type originalDeclaringType, string propertyName)
     {
       ArgumentUtility.CheckNotNull ("type", originalDeclaringType);

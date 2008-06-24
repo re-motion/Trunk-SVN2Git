@@ -22,6 +22,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <remarks>Derived classes must have a cosntructor with a matching the <see cref="PropertyFinderBase"/>'s constructor signature. </remarks>
   public abstract class PropertyFinderBase
   {
+    public const BindingFlags PropertyBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
     private readonly Type _type;
     private readonly bool _includeBaseProperties;
     private readonly Set<MethodInfo> _explicitInterfaceImplementations;
@@ -155,7 +157,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       MemberInfo[] memberInfos = _type.FindMembers (
           MemberTypes.Property,
-          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly,
+          PropertyBindingFlags | BindingFlags.DeclaredOnly,
           FindPropertiesFilter,
           classDefinition);
 

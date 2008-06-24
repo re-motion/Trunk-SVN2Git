@@ -19,6 +19,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 {
   public abstract class MappingReflectorBase: IMappingLoader
   {
+    private readonly IMappingNameResolver _nameResolver = new ReflectionBasedNameResolver();
+
     protected MappingReflectorBase()
     {
     }
@@ -77,6 +79,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     bool IMappingLoader.ResolveTypes
     {
       get { return true; }
+    }
+
+    public IMappingNameResolver NameResolver
+    {
+      get { return _nameResolver; }
     }
   }
 }

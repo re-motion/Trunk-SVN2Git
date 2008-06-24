@@ -79,10 +79,11 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     // member fields
 
-    private ClassDefinitionCollection _classDefinitions;
-    private RelationDefinitionCollection _relationDefinitions;
-    private bool _resolveTypes;
-    
+    private readonly ClassDefinitionCollection _classDefinitions;
+    private readonly RelationDefinitionCollection _relationDefinitions;
+    private readonly bool _resolveTypes;
+    private readonly IMappingNameResolver _nameResolver;
+
     // construction and disposing
 
     public MappingConfiguration (IMappingLoader loader)
@@ -98,6 +99,7 @@ namespace Remotion.Data.DomainObjects.Mapping
         throw new InvalidOperationException (string.Format ("IMappingLoader.GetRelationDefinitions (ClassDefinitionCollection) evaluated and returned null."));
       
       _resolveTypes = loader.ResolveTypes;
+      _nameResolver = loader.NameResolver;
       
       Validate();
     }
@@ -125,6 +127,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     public RelationDefinitionCollection RelationDefinitions
     {
       get { return _relationDefinitions; }
+    }
+
+    public IMappingNameResolver NameResolver
+    {
+      get { return _nameResolver; }
     }
 
     public bool Contains (ClassDefinition classDefinition)

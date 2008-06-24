@@ -37,5 +37,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     {
       get { return false; }
     }
+
+    public IMappingNameResolver NameResolver
+    {
+      get { return new ReflectionBasedNameResolver(); }
+    }
   }
 }
