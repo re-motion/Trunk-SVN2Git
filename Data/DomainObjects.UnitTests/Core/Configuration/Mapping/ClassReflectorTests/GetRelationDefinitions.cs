@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
       expectedDefinitions.Add (CreateBidirectionalOneToOneRelationDefinition());
       expectedDefinitions.Add (CreateBidirectionalOneToManyRelationDefinition());
 
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithManySideRelationProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithManySideRelationProperties), Configuration.NameResolver);
 
       List<RelationDefinition> actualList = classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetRelationDefinitions_ForOneSide ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithOneSideRelationProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithOneSideRelationProperties), Configuration.NameResolver);
 
       List<RelationDefinition> actual = classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
         MatchType = MessageMatch.Contains)]
     public void GetRelationDefinitions_WithMissingClassDefinition ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithManySideRelationProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithManySideRelationProperties), Configuration.NameResolver);
       classReflector.GetRelationDefinitions (new ClassDefinitionCollection(), _relationDefinitions);
     }
 
@@ -93,7 +93,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
         MatchType = MessageMatch.Contains)]
     public void GetRelationDefinitions_WithMissingOppositeClassDefinitionForBidirectionalRelation ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithManySideRelationProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithManySideRelationProperties), Configuration.NameResolver);
       ClassDefinitionCollection classDefinitions = new ClassDefinitionCollection();
       classDefinitions.Add (CreateClassWithManySideRelationPropertiesClassDefinition());
       classReflector.GetRelationDefinitions (classDefinitions, _relationDefinitions);
@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
         MatchType = MessageMatch.Contains)]
     public void GetRelationDefinitions_WithMissingOppositeClassDefinitionForUnidirectionalRelation ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperties), Configuration.NameResolver);
       ClassDefinitionCollection classDefinitions = new ClassDefinitionCollection();
       classDefinitions.Add (CreateClassWithMixedPropertiesClassDefinition());
       classReflector.GetRelationDefinitions (classDefinitions, _relationDefinitions);

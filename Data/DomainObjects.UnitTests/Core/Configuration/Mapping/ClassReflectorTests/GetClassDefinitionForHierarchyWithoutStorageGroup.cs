@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForBaseClass()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithoutStorageGroupWithMixedProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithoutStorageGroupWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateClassWithoutStorageGroupWithMixedPropertiesClassDefinition ();
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForDerivedClass()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithoutStorageGroupWithMixedProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithoutStorageGroupWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithoutStorageGroupWithMixedPropertiesClassDefinition ();
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForDerivedClassWithBaseClassAlreadyInClassDefinitionCollection()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithoutStorageGroupWithMixedProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithoutStorageGroupWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expectedBaseClass = CreateClassWithoutStorageGroupWithMixedPropertiesClassDefinition ();
       _classDefinitions.Add (expectedBaseClass);
 
@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForDerivedClassWithDerivedClassAlreadyInClassDefinitionCollection()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithoutStorageGroupWithMixedProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithoutStorageGroupWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithoutStorageGroupWithMixedPropertiesClassDefinition ();
       ReflectionBasedClassDefinition expectedBaseClass = expected.BaseClass;
       _classDefinitions.Add (expectedBaseClass);

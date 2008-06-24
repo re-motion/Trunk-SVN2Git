@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[targetType];
       if (classDefinition != null)
       {
-        string propertyName = ReflectionUtility.GetPropertyName (propertyInfo.GetOriginalDeclaringType(), propertyInfo.Name);
+        string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo.GetOriginalDeclaringType (), propertyInfo.Name);
         _propertyDefinition = classDefinition.GetPropertyDefinition (propertyName);
         _relationEndPointDefinition = classDefinition.GetRelationEndPointDefinition (propertyName);
       }

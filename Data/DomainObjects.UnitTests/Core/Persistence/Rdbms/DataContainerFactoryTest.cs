@@ -12,6 +12,7 @@ using System;
 using System.Data;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Rhino.Mocks;
@@ -154,8 +155,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Persistence.Rdbms
     {
       Assert.AreEqual (expectedTicketID, dataContainer.ID);
       Assert.AreEqual (expectedTimeStamp, dataContainer.Timestamp);
-      Assert.AreEqual (expectedFileName, dataContainer.PropertyValues[ReflectionUtility.GetPropertyName (typeof (OrderTicket), "FileName")].Value);
-      Assert.AreEqual (expectedRelatedOrderID, dataContainer.PropertyValues[ReflectionUtility.GetPropertyName (typeof (OrderTicket), "Order")].Value);
+      Assert.AreEqual (expectedFileName, dataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderTicket), "FileName")].Value);
+      Assert.AreEqual (expectedRelatedOrderID, dataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderTicket), "Order")].Value);
     }
   }
 }

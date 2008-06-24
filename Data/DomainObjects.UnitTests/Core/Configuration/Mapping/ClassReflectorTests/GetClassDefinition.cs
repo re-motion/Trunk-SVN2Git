@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForBaseClass ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateClassWithMixedPropertiesClassDefinition();
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForDerivedClass ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithMixedPropertiesClassDefinition();
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void InheritanceRoot_SimpleDomainObject ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassDerivedFromSimpleDomainObject));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassDerivedFromSimpleDomainObject), Configuration.NameResolver);
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
 
       Assert.IsNotNull (actual);
@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForDerivedClassWithDerivedClassAlreadyInClassDefinitionCollection ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithMixedPropertiesClassDefinition();
       ReflectionBasedClassDefinition expectedBaseClass = expected.BaseClass;
       _classDefinitions.Add (expectedBaseClass);
@@ -95,7 +95,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForMixedClass ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (TargetClassA));
+      ClassReflector classReflector = new ClassReflector (typeof (TargetClassA), Configuration.NameResolver);
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new Type[] { typeof (MixinA), typeof (MixinC), typeof (MixinD)}));
     }
@@ -103,7 +103,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForDerivedMixedClass ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (TargetClassB));
+      ClassReflector classReflector = new ClassReflector (typeof (TargetClassB), Configuration.NameResolver);
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new Type[] { typeof (MixinB), typeof (MixinE) }));
     }
@@ -111,7 +111,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForClassWithOneSideRelationProperties ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithOneSideRelationProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithOneSideRelationProperties), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateClassWithOneSideRelationPropertiesClassDefinition();
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
@@ -125,7 +125,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForClassHavingClassIDAttribute ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassHavingClassIDAttribute));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassHavingClassIDAttribute), Configuration.NameResolver);
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
 
@@ -137,7 +137,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForClassWithStorageSpecificIdentifierAttribute ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassHavingStorageSpecificIdentifierAttribute));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassHavingStorageSpecificIdentifierAttribute), Configuration.NameResolver);
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
 
@@ -149,7 +149,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForDerivedClassWithStorageSpecificIdentifierAttribute ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithStorageSpecificIdentifierAttribute));
+      ClassReflector classReflector = new ClassReflector (typeof (DerivedClassWithStorageSpecificIdentifierAttribute), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithStorageSpecificIdentifierAttributeClassDefinition();
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
@@ -163,7 +163,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute), Configuration.NameResolver);
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
 
@@ -181,7 +181,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     {
       Type type = GetTypeFromDomainWithErrors ("Derived2ClassWithStorageGroupAttribute");
 
-      ClassReflector classReflector = new ClassReflector (type);
+      ClassReflector classReflector = new ClassReflector (type, Configuration.NameResolver);
 
       classReflector.GetClassDefinition (_classDefinitions);
     }
@@ -195,7 +195,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     {
       Type type = GetTypeFromDomainWithErrors ("ClassWithLegacyLoadConstructor");
 
-      ClassReflector classReflector = new ClassReflector (type);
+      ClassReflector classReflector = new ClassReflector (type, Configuration.NameResolver);
 
       classReflector.GetClassDefinition (_classDefinitions);
     }
@@ -203,7 +203,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForClosedGenericClass ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClosedGenericClass));
+      ClassReflector classReflector = new ClassReflector (typeof (ClosedGenericClass), Configuration.NameResolver);
 
       Assert.IsNotNull (classReflector.GetClassDefinition (_classDefinitions));
     }
@@ -217,7 +217,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
       Type type = GetTypeFromDomainWithErrors ("GenericClass`1");
       Type closedGenericType = type.MakeGenericType (typeof (int));
 
-      ClassReflector classReflector = new ClassReflector (closedGenericType);
+      ClassReflector classReflector = new ClassReflector (closedGenericType, Configuration.NameResolver);
 
       classReflector.GetClassDefinition (_classDefinitions);
     }
@@ -234,8 +234,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
       Type type1 = GetTypeFromDomainWithErrors ("ClassWithSameClassID");
       Type type2 = GetTypeFromDomainWithErrors ("OtherClassWithSameClassID");
 
-      ClassReflector classReflector1 = new ClassReflector (type1);
-      ClassReflector classReflector2 = new ClassReflector (type2);
+      ClassReflector classReflector1 = new ClassReflector (type1, Configuration.NameResolver);
+      ClassReflector classReflector2 = new ClassReflector (type2, Configuration.NameResolver);
 
       classReflector1.GetClassDefinition (_classDefinitions);
       classReflector2.GetClassDefinition (_classDefinitions);

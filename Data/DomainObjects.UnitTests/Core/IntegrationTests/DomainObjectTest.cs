@@ -820,7 +820,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.IntegrationTests
 
       order2.Customer = null;
 
-      CheckMixedEvents (order2.InternalDataContainer.PropertyValues[ReflectionUtility.GetPropertyName (typeof (Order), "Customer")]);
+      CheckMixedEvents (order2.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "Customer")]);
     }
 
     [Test]

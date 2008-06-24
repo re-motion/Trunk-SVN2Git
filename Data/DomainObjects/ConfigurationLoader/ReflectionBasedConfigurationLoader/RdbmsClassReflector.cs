@@ -19,8 +19,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// </summary>
   public class RdbmsClassReflector : ClassReflector
   {
-    public RdbmsClassReflector (Type type)
-        : base (type)
+    public RdbmsClassReflector (Type type, IMappingNameResolver nameResolver)
+        : base (type, nameResolver)
     {
     }
 

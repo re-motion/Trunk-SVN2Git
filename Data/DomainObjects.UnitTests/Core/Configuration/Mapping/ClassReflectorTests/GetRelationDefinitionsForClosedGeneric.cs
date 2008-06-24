@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
       expectedDefinitions.Add (CreateBaseBidirectionalOneToOneRelationDefinition ());
       expectedDefinitions.Add (CreateBaseBidirectionalOneToManyRelationDefinition ());
 
-      ClassReflector classReflector = new ClassReflector (typeof (ClosedGenericClassWithManySideRelationProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (ClosedGenericClassWithManySideRelationProperties), Configuration.NameResolver);
 
       List<RelationDefinition> actualList = classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 
@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetRelationDefinitions_ForOneSide ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClosedGenericClassWithOneSideRelationProperties));
+      ClassReflector classReflector = new ClassReflector (typeof (ClosedGenericClassWithOneSideRelationProperties), Configuration.NameResolver);
 
       List<RelationDefinition> actual = classReflector.GetRelationDefinitions (_classDefinitions, _relationDefinitions);
 

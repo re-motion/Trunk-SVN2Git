@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Transport;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
@@ -85,8 +86,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Transport
     [Test]
     public void NonExistingObjects_ChangedBySource ()
     {
-      byte[] binaryData = GetBinaryDataForChangedObject (DomainObjectIDs.ClassWithAllDataTypes1, 
-          ReflectionUtility.GetPropertyName (typeof (ClassWithAllDataTypes), "Int32Property"), 12);
+      byte[] binaryData = GetBinaryDataForChangedObject (DomainObjectIDs.ClassWithAllDataTypes1,
+          MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (ClassWithAllDataTypes), "Int32Property"), 12);
       ModifyDatabase (delegate { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1).Delete (); });
 
       CheckImport (delegate (List<DomainObject> importedObjects)
@@ -143,7 +144,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Transport
     public void ExistingObjects_ChangedBySource ()
     {
       byte[] binaryData = GetBinaryDataForChangedObject (DomainObjectIDs.ClassWithAllDataTypes1,
-          ReflectionUtility.GetPropertyName (typeof (ClassWithAllDataTypes), "Int32Property"), 12);
+          MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (ClassWithAllDataTypes), "Int32Property"), 12);
 
       CheckImport (delegate (List<DomainObject> importedObjects)
       {
@@ -299,7 +300,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Transport
     [Test]
     public void ChangedBySource_PropertyValue ()
     {
-      byte[] binaryData = GetBinaryDataForChangedObject (DomainObjectIDs.Order1, ReflectionUtility.GetPropertyName (typeof (Order), "OrderNumber"), 2);
+      byte[] binaryData = GetBinaryDataForChangedObject (DomainObjectIDs.Order1, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderNumber"), 2);
       CheckImport (delegate (List<DomainObject> importedObjects)
       {
         Order loadedObject1 = (Order) importedObjects[0];

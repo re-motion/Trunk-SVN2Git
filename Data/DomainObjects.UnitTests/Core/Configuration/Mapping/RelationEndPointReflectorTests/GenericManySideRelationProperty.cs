@@ -107,7 +107,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Relat
       PropertyReflector propertyReflector = CreatePropertyReflector (propertyName);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
       _classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      return new RdbmsRelationEndPointReflector (_classDefinition, propertyReflector.PropertyInfo);
+      return new RdbmsRelationEndPointReflector (_classDefinition, propertyReflector.PropertyInfo, MappingConfiguration.Current.NameResolver);
     }
 
     private PropertyReflector CreatePropertyReflector (string property)
@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Relat
       Type type = typeof (ClosedGenericClassWithManySideRelationProperties);
       PropertyInfo propertyInfo = type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-      return new PropertyReflector (_classDefinition, propertyInfo);
+      return new PropertyReflector (_classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver);
     }
 
     private PropertyDefinition GetPropertyDefinition (string propertyName)

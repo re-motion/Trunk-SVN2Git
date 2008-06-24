@@ -22,8 +22,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     {
     }
 
+    public StubPropertyFinderBase (Type type, bool includeBaseProperties, IEnumerable<Type> persistentMixins, IMappingNameResolver nameResolver)
+      : base (type, includeBaseProperties, persistentMixins, nameResolver)
+    {
+    }
+
     public StubPropertyFinderBase (Type type, bool includeBaseProperties, IEnumerable<Type> persistentMixins)
-      : base (type, includeBaseProperties, persistentMixins)
+      : this (type, includeBaseProperties, persistentMixins, new ReflectionBasedNameResolver ())
     {
     }
   }

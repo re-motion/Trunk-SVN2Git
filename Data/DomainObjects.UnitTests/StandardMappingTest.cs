@@ -47,5 +47,10 @@ namespace Remotion.Data.DomainObjects.UnitTests
     {
       get { return StandardConfiguration.Instance.GetDomainObjectIDs(); }
     }
+
+    protected MappingConfiguration Configuration
+    {
+      get { return MappingConfiguration.Current; }
+    }
   }
 }

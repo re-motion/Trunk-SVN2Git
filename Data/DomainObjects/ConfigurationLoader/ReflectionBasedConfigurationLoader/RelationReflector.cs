@@ -20,21 +20,21 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   public class RelationReflector : RelationReflectorBase
   {
     public static RelationReflector CreateRelationReflector (
-        ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+        ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
     {
-      return new RelationReflector (classDefinition, propertyInfo);
+      return new RelationReflector (classDefinition, propertyInfo, nameResolver);
     }
 
-    public RelationReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
-        : this (classDefinition, propertyInfo, typeof (BidirectionalRelationAttribute))
+    public RelationReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
+        : this (classDefinition, propertyInfo, typeof (BidirectionalRelationAttribute), nameResolver)
     {
     }
 
     protected RelationReflector (
         ReflectionBasedClassDefinition classDefinition,
         PropertyInfo propertyInfo,
-        Type bidirectionalRelationAttributeType)
-        : base (classDefinition, propertyInfo, bidirectionalRelationAttributeType)
+        Type bidirectionalRelationAttributeType, IMappingNameResolver nameResolver)
+        : base (classDefinition, propertyInfo, bidirectionalRelationAttributeType, nameResolver)
     {
     }
 
@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
 
       ValidatePropertyInfo();
-      RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (ClassDefinition, PropertyInfo);
+      RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (ClassDefinition, PropertyInfo, NameResolver);
 
       if (relationEndPointReflector.IsVirtualEndRelationEndpoint())
       {
@@ -118,12 +118,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       if (IsMixedProperty)
       {
-        string propertyName = ReflectionUtility.GetPropertyName (PropertyInfo);
+        string propertyName = NameResolver.GetPropertyName (PropertyInfo);
         return string.Format ("{0}->{1}", ClassDefinition.ClassType.FullName, propertyName);
       }
       else if (ClassDefinition.BaseClass == null && ClassDefinition.ClassType != PropertyInfo.DeclaringType)
-        return ReflectionUtility.GetPropertyName (ClassDefinition.ClassType, PropertyInfo.Name);
-      return ReflectionUtility.GetPropertyName (PropertyInfo);
+        return NameResolver.GetPropertyName (ClassDefinition.ClassType, PropertyInfo.Name);
+      return NameResolver.GetPropertyName (PropertyInfo);
     }
 
     private IRelationEndPointDefinition CreateOppositeEndPointDefinition (ClassDefinitionCollection classDefinitions)
@@ -162,7 +162,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         throw CreateMappingException (null, oppositePropertyInfo, e.Message);
       }
 
-      return RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, oppositePropertyInfo);
+      return RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, oppositePropertyInfo, NameResolver);
     }
 
     private void AddRelationDefinitionToClassDefinitions (RelationDefinition relationDefinition)

@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Core.EventReceiver;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Rhino.Mocks;
@@ -33,7 +34,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DataManagement
       _mockRepository = new MockRepository();
       _id = new RelationEndPointID (
           DomainObjectIDs.Computer1,
-          ReflectionUtility.GetPropertyName (typeof (Computer), "Employee"));
+          MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
 
       _endPointMock = _mockRepository.CreateMock<ObjectEndPoint> (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
       _oldEndPointMock = _mockRepository.CreateMock<IEndPoint>();

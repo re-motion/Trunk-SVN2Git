@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
         classDefinition = new ReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false,
           new List<Type> ());
 
-      return new PropertyReflector (classDefinition, propertyInfo);
+      return new PropertyReflector (classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver);
     }
   }
 }

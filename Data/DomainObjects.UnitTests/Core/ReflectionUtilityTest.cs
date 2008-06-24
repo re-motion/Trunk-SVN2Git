@@ -25,6 +25,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core
   public class ReflectionUtilityTest : StandardMappingTest
   {
     [Test]
+    [Obsolete]
     public void GetPropertyName ()
     {
       PropertyInfo propertyInfo = typeof (DerivedClassWithMixedProperties).GetProperty ("Int32");

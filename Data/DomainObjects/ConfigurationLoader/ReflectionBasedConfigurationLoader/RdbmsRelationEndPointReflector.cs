@@ -18,18 +18,19 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <summary>Used to create the <see cref="IRelationEndPointDefinition"/> from a <see cref="PropertyInfo"/> for types persisted in an <b>RDBMS</b>.</summary>
   public class RdbmsRelationEndPointReflector : RelationEndPointReflector
   {
-    public RdbmsRelationEndPointReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
-        : this (classDefinition, propertyInfo, typeof (DBBidirectionalRelationAttribute))
+    public RdbmsRelationEndPointReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
+        : this (classDefinition, propertyInfo, typeof (DBBidirectionalRelationAttribute), nameResolver)
     {
     }
 
     protected RdbmsRelationEndPointReflector (
-        ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, Type bidirectionalRelationAttributeType)
+        ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, Type bidirectionalRelationAttributeType, IMappingNameResolver nameResolver)
         : base (
             classDefinition,
             propertyInfo,
             ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom (
-                "bidirectionalRelationAttributeType", bidirectionalRelationAttributeType, typeof (DBBidirectionalRelationAttribute)))
+                "bidirectionalRelationAttributeType", bidirectionalRelationAttributeType, typeof (DBBidirectionalRelationAttribute)),
+            nameResolver)
     {
     }
 

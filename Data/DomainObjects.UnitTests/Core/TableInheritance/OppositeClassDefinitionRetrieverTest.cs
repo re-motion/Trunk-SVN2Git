@@ -44,8 +44,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.TableInheritance
       _folderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Folder));
       _specificFolderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (SpecificFolder));
 
-      _parentFolderPropertyDefinition = _fileSystemItemDefinition.GetMandatoryPropertyDefinition (ReflectionUtility.GetPropertyName (typeof (FileSystemItem), "ParentFolder"));
-      _regionPropertyDefinition = _customerDefinition.GetMandatoryPropertyDefinition (ReflectionUtility.GetPropertyName (typeof (Customer), "Region"));
+      _parentFolderPropertyDefinition = _fileSystemItemDefinition.GetMandatoryPropertyDefinition (MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (FileSystemItem), "ParentFolder"));
+      _regionPropertyDefinition = _customerDefinition.GetMandatoryPropertyDefinition (MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Customer), "Region"));
 
       OppositeClassDefinitionRetriever.ResetCache ();
     }

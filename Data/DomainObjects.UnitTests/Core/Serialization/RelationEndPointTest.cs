@@ -12,6 +12,7 @@ using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -26,7 +27,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Serialization
     public override void SetUp ()
     {
       base.SetUp();
-      RelationEndPointID id = new RelationEndPointID (DomainObjectIDs.Computer1, ReflectionUtility.GetPropertyName (typeof (Computer), "Employee"));
+      RelationEndPointID id = new RelationEndPointID (DomainObjectIDs.Computer1, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
       _endPoint = new RelationEndPointStub (ClientTransactionMock, id);
     }
 

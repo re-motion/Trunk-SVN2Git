@@ -24,8 +24,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   {
     private readonly ReflectionBasedClassDefinition _classDefinition;
 
-    public PropertyReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
-        : base (propertyInfo)
+    public PropertyReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
+        : base (propertyInfo, nameResolver)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       _classDefinition = classDefinition;

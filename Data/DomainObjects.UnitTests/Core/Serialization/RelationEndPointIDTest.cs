@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Serialization
     {
       base.SetUp();
 
-      _id = new RelationEndPointID (DomainObjectIDs.Computer1, ReflectionUtility.GetPropertyName (typeof (Computer), "Employee"));
+      _id = new RelationEndPointID (DomainObjectIDs.Computer1, Configuration.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
     }
 
     [Test]

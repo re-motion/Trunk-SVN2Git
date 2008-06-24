@@ -22,8 +22,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// </summary>
   public class PropertyFinder : PropertyFinderBase
   {
-    public PropertyFinder (Type type, bool includeBaseProperties, IEnumerable<Type> persistentMixins)
-        : base (type, includeBaseProperties, persistentMixins)
+    public PropertyFinder (Type type, bool includeBaseProperties, IEnumerable<Type> persistentMixins, IMappingNameResolver nameResolver)
+        : base (type, includeBaseProperties, persistentMixins, nameResolver)
     {
     }
 
@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private bool IsVirtualRelationEndPoint (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
     {
-      RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, propertyInfo);
+      RelationEndPointReflector relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (classDefinition, propertyInfo, NameResolver);
       return relationEndPointReflector.IsVirtualEndRelationEndpoint ();
     }
   }

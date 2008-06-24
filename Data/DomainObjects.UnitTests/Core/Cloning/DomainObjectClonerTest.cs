@@ -15,6 +15,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Cloning;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
@@ -150,7 +151,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
       Computer clone = _cloner.CreateValueClone (_computer1);
       Assert.That (_computer1.Employee, Is.Not.Null);
       Assert.That (clone.Employee, Is.Null);
-      Assert.That (clone.InternalDataContainer.PropertyValues[ReflectionUtility.GetPropertyName (typeof (Computer), "Employee")].Value, Is.Null);
+      Assert.That (clone.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee")].Value, Is.Null);
     }
 
     [Test]
@@ -159,7 +160,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Cloning
       Computer clone = _cloner.CreateValueClone (_computer1);
       Assert.That (_computer1.Employee, Is.Not.Null);
       Assert.That (clone.Properties[typeof (Computer), "Employee"].GetOriginalValue<Employee> (), Is.Null);
-      Assert.That (clone.InternalDataContainer.PropertyValues[ReflectionUtility.GetPropertyName (typeof (Computer), "Employee")].OriginalValue, Is.Null);
+      Assert.That (clone.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee")].OriginalValue, Is.Null);
     }
 
     [Test]

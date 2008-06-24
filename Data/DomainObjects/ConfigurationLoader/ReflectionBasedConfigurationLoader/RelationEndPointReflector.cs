@@ -18,18 +18,18 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <summary>Used to create the <see cref="IRelationEndPointDefinition"/> from a <see cref="PropertyInfo"/>.</summary>
   public class RelationEndPointReflector: RelationReflectorBase
   {
-    public static RelationEndPointReflector CreateRelationEndPointReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    public static RelationEndPointReflector CreateRelationEndPointReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
     {
-      return new RdbmsRelationEndPointReflector (classDefinition, propertyInfo);
+      return new RdbmsRelationEndPointReflector (classDefinition, propertyInfo, nameResolver);
     }
 
-    public RelationEndPointReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
-      : this (classDefinition, propertyInfo, typeof (BidirectionalRelationAttribute))
+    public RelationEndPointReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
+      : this (classDefinition, propertyInfo, typeof (BidirectionalRelationAttribute), nameResolver)
     {
     }
 
-    protected RelationEndPointReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, Type bidirectionalRelationAttributeType)
-      : base (classDefinition, propertyInfo, bidirectionalRelationAttributeType)
+    protected RelationEndPointReflector (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, Type bidirectionalRelationAttributeType, IMappingNameResolver nameResolver)
+      : base (classDefinition, propertyInfo, bidirectionalRelationAttributeType, nameResolver)
     {
     }
 

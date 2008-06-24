@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     [Test]
     public void Initialize ()
     {
-      PropertyFinder propertyFinder = new PropertyFinder (typeof (ClassWithMixedProperties), true, new List<Type> ());
+      PropertyFinder propertyFinder = new PropertyFinder (typeof (ClassWithMixedProperties), true, new List<Type> (), new ReflectionBasedNameResolver());
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (ClassWithMixedProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     [Test]
     public void FindPropertyInfos_ForClassWithMixedProperties ()
     {
-      PropertyFinder propertyFinder = new PropertyFinder (typeof (ClassWithMixedProperties), true, new List<Type> ());
+      PropertyFinder propertyFinder = new PropertyFinder (typeof (ClassWithMixedProperties), true, new List<Type> (), new ReflectionBasedNameResolver ());
 
       Assert.That (
           propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties))),
@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     [Test]
     public void FindPropertyInfos_ForClassWithOneSideRelationProperties ()
     {
-      PropertyFinder propertyFinder = new PropertyFinder (typeof (ClassWithOneSideRelationProperties), true, new List<Type> ());
+      PropertyFinder propertyFinder = new PropertyFinder (typeof (ClassWithOneSideRelationProperties), true, new List<Type> (), new ReflectionBasedNameResolver ());
 
       Assert.That (
           propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties))), 

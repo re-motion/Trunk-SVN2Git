@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Core.EventReceiver;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -35,7 +36,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DataManagement
       _mockRepository = new MockRepository();
       _id = new RelationEndPointID (
           DomainObjectIDs.Order1,
-          ReflectionUtility.GetPropertyName (typeof (Order), "OrderItems"));
+          MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderItems"));
 
       _endPointMock = _mockRepository.CreateMock<CollectionEndPoint> (ClientTransactionMock, _id, new DomainObjectCollection());
       _oldEndPointMock = _mockRepository.Stub<IEndPoint>();

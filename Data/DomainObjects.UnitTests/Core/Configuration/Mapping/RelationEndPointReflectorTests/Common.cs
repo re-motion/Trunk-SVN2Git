@@ -29,15 +29,15 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Relat
       Assert.IsInstanceOfType (
           typeof (RdbmsRelationEndPointReflector), 
           RelationEndPointReflector.CreateRelationEndPointReflector (
-              CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties)), propertyInfo));
+              CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties)), propertyInfo, Configuration.NameResolver));
     }
 
     [Test]
     public void IsVirtualEndRelationEndpoint_WithoutAttribute ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("NoAttribute");
-      RelationEndPointReflector relationEndPointReflector = 
-          new RelationEndPointReflector (CreateReflectionBasedClassDefinition (typeof (ClassWithManySideRelationProperties)), propertyInfo);
+      RelationEndPointReflector relationEndPointReflector =
+          new RelationEndPointReflector (CreateReflectionBasedClassDefinition (typeof (ClassWithManySideRelationProperties)), propertyInfo, Configuration.NameResolver);
 
       Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
     }
@@ -49,8 +49,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Relat
         "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.TestDomain.Errors.ClassWithInvalidUnidirectionalRelation", true, false);
 
       PropertyInfo propertyInfo = type.GetProperty ("LeftSide");
-      RelationEndPointReflector relationEndPointReflector = 
-          new RelationEndPointReflector (CreateReflectionBasedClassDefinition(type), propertyInfo);
+      RelationEndPointReflector relationEndPointReflector =
+          new RelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
 
       Assert.IsFalse (relationEndPointReflector.IsVirtualEndRelationEndpoint ());
     }
@@ -66,8 +66,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Relat
       Type type = GetClassWithInvalidProperties();
 
       PropertyInfo propertyInfo = type.GetProperty ("Int32Property", BindingFlags.Instance | BindingFlags.NonPublic);
-      RdbmsRelationEndPointReflector relationEndPointReflector = 
-          new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo);
+      RdbmsRelationEndPointReflector relationEndPointReflector =
+          new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
 
       relationEndPointReflector.GetMetadata ();
     }
@@ -81,8 +81,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Relat
     {
       Type type = GetClassWithInvalidProperties ();
       PropertyInfo propertyInfo = type.GetProperty ("PropertyWithStringAttribute", BindingFlags.Instance | BindingFlags.NonPublic);
-      RdbmsRelationEndPointReflector relationEndPointReflector = 
-          new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo);
+      RdbmsRelationEndPointReflector relationEndPointReflector =
+          new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
 
       relationEndPointReflector.GetMetadata ();
     }
@@ -96,8 +96,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Relat
     {
       Type type = GetClassWithInvalidProperties ();
       PropertyInfo propertyInfo = type.GetProperty ("PropertyWithBinaryAttribute", BindingFlags.Instance | BindingFlags.NonPublic);
-      RdbmsRelationEndPointReflector relationEndPointReflector = 
-          new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo);
+      RdbmsRelationEndPointReflector relationEndPointReflector =
+          new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (type), propertyInfo, Configuration.NameResolver);
 
       relationEndPointReflector.GetMetadata ();
     }
@@ -117,7 +117,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Relat
           "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.TestDomain.Errors.DerivedClassHavingAnOverriddenPropertyWithMappingAttribute", true, false);
       PropertyInfo propertyInfo = declaringType.GetProperty ("Int32");
 
-      new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (classType), propertyInfo);
+      new RdbmsRelationEndPointReflector (CreateReflectionBasedClassDefinition (classType), propertyInfo, Configuration.NameResolver);
     }
 
     private Type GetClassWithInvalidProperties ()

@@ -28,24 +28,33 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <remarks>Derived classes must have a cosntructor with a matching the <see cref="ClassReflector"/>'s constructor signature. </remarks>
   public class ClassReflector
   {
-    public static ClassReflector CreateClassReflector (Type type)
+    public static ClassReflector CreateClassReflector (Type type, IMappingNameResolver nameResolver)
     {
-      return new RdbmsClassReflector (type);
+      return new RdbmsClassReflector (type, nameResolver);
     }
 
     private readonly Type _type;
+    private readonly IMappingNameResolver _nameResolver;
 
-    public ClassReflector (Type type)
+    public ClassReflector (Type type, IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
+      ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
       _type = type;
+      _nameResolver = nameResolver;
     }
 
     public Type Type
     {
       get { return _type; }
     }
+
+    public IMappingNameResolver NameResolver
+    {
+      get { return _nameResolver; }
+    }
+
 
     public ReflectionBasedClassDefinition GetClassDefinition (ClassDefinitionCollection classDefinitions)
     {
@@ -71,7 +80,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       foreach (PropertyInfo propertyInfo in GetRelationPropertyInfos (classDefinition))
       {
-        RelationReflector relationReflector = RelationReflector.CreateRelationReflector (classDefinition, propertyInfo);
+        RelationReflector relationReflector = RelationReflector.CreateRelationReflector (classDefinition, propertyInfo, NameResolver);
         RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions, relationDefinitions);
         if (relationDefinition != null)
           relations.Add (relationDefinition);
@@ -150,7 +159,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       foreach (PropertyInfo propertyInfo in propertyInfos)
       {
-        PropertyReflector propertyReflector = new PropertyReflector (classDefinition, propertyInfo);
+        PropertyReflector propertyReflector = new PropertyReflector (classDefinition, propertyInfo, NameResolver);
         classDefinition.MyPropertyDefinitions.Add (propertyReflector.GetMetadata());
       }
     }
@@ -212,19 +221,19 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (IsInheritenceRoot())
         return null;
 
-      ClassReflector classReflector = (ClassReflector) TypesafeActivator.CreateInstance (GetType()).With (_type.BaseType);
+      ClassReflector classReflector = (ClassReflector) TypesafeActivator.CreateInstance (GetType()).With (_type.BaseType, NameResolver);
       return classReflector.GetClassDefinition (classDefinitions);
     }
 
     private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
-      PropertyFinder propertyFinder = new PropertyFinder (_type, IsInheritenceRoot (), classDefinition.PersistentMixins);
+      PropertyFinder propertyFinder = new PropertyFinder (_type, IsInheritenceRoot (), classDefinition.PersistentMixins, NameResolver);
       return propertyFinder.FindPropertyInfos (classDefinition);
     }
 
     private PropertyInfo[] GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
-      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (_type, IsInheritenceRoot (), classDefinition.PersistentMixins);
+      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (_type, IsInheritenceRoot (), classDefinition.PersistentMixins, NameResolver);
       return relationPropertyFinder.FindPropertyInfos (classDefinition);
     }
   }

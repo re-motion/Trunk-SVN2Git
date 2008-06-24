@@ -47,16 +47,24 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private Dictionary<Type, AttributeConstraint> _attributeConstraints = null;
     private PropertyInfo _propertyInfo;
+    private readonly IMappingNameResolver _nameResolver;
 
-    protected MemberReflectorBase (PropertyInfo propertyInfo)
+    protected MemberReflectorBase (PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
       _propertyInfo = propertyInfo;
+      _nameResolver = nameResolver;
     }
 
     public PropertyInfo PropertyInfo
     {
       get { return _propertyInfo; }
+    }
+
+    public IMappingNameResolver NameResolver
+    {
+      get { return _nameResolver; }
     }
 
     protected virtual void ValidatePropertyInfo()
@@ -137,7 +145,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     protected virtual string GetPropertyName ()
     {
-      return ReflectionUtility.GetPropertyName (PropertyInfo);
+      return _nameResolver.GetPropertyName (PropertyInfo);
     }
 
     protected bool IsNullableFromAttribute ()

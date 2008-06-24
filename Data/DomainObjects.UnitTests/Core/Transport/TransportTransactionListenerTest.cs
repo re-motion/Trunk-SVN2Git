@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Transport;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -51,7 +52,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Transport
 
       Computer source = (Computer) _transporter.GetTransportedObject(DomainObjectIDs.Computer1);
       _listener.PropertyValueChanging (source.InternalDataContainer,
-          source.InternalDataContainer.PropertyValues[ReflectionUtility.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
+          source.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
     }
 
     [Test]
@@ -64,7 +65,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Transport
       Computer source = _transporter.GetTransportedObject (DomainObjectIDs.Computer2)
           .ClientTransaction.GetObjects<Computer> (DomainObjectIDs.Computer1)[0];
       _listener.PropertyValueChanging (source.InternalDataContainer,
-          source.InternalDataContainer.PropertyValues[ReflectionUtility.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
+          source.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
     }
 
     [Test]

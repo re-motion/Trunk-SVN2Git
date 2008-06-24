@@ -11,6 +11,7 @@
 using System;
 using System.Text;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Transport;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -112,7 +113,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Transport
     {
       byte[] serializedArray = Encoding.UTF8.GetBytes (XmlSerializationStrings.XmlForComputer4);
       XmlTransportItem item = Serializer.XmlDeserialize<XmlTransportItem> (serializedArray);
-      Assert.IsNull (item.TransportItem.Properties[ReflectionUtility.GetPropertyName (typeof (Computer), "Employee")]);
+      Assert.IsNull (item.TransportItem.Properties[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee")]);
     }
 
     [Test]

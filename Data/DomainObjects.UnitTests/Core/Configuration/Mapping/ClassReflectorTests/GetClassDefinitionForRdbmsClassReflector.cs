@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForClassHavingClassIDAttribute()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassHavingClassIDAttribute));
+      ClassReflector classReflector = new ClassReflector (typeof (ClassHavingClassIDAttribute), Configuration.NameResolver);
 
       ClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
 
@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForClassWithStorageSpecificIdentifierAttribute()
     {
-      ClassReflector classReflector = new RdbmsClassReflector (typeof (ClassHavingStorageSpecificIdentifierAttribute));
+      ClassReflector classReflector = new RdbmsClassReflector (typeof (ClassHavingStorageSpecificIdentifierAttribute), Configuration.NameResolver);
 
       ClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
 
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForDerivedClassWithStorageSpecificIdentifierAttribute ()
     {
-      ClassReflector classReflector = new RdbmsClassReflector (typeof (DerivedClassWithStorageSpecificIdentifierAttribute));
+      ClassReflector classReflector = new RdbmsClassReflector (typeof (DerivedClassWithStorageSpecificIdentifierAttribute), Configuration.NameResolver);
       ReflectionBasedClassDefinition expected = CreateDerivedClassWithStorageSpecificIdentifierAttributeClassDefinition ();
 
       ReflectionBasedClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute()
     {
-      ClassReflector classReflector = new RdbmsClassReflector (typeof (ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute));
+      ClassReflector classReflector = new RdbmsClassReflector (typeof (ClassHavingClassIDAttributeAndStorageSpecificIdentifierAttribute), Configuration.NameResolver);
 
       ClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForBaseClass()
     {
-      ClassReflector classReflector = new RdbmsClassReflector (typeof (ClassWithMixedProperties));
+      ClassReflector classReflector = new RdbmsClassReflector (typeof (ClassWithMixedProperties), Configuration.NameResolver);
       ClassDefinition expected = CreateClassWithMixedPropertiesClassDefinition();
 
       ClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForDerivedClass()
     {
-      ClassReflector classReflector = new RdbmsClassReflector (typeof (DerivedClassWithMixedProperties));
+      ClassReflector classReflector = new RdbmsClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
       ClassDefinition expected = CreateDerivedClassWithMixedPropertiesClassDefinition();
 
       ClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForDerivedClassWithBaseClassAlreadyInClassDefinitionCollection()
     {
-      ClassReflector classReflector = new RdbmsClassReflector (typeof (DerivedClassWithMixedProperties));
+      ClassReflector classReflector = new RdbmsClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
       ClassDefinition expectedBaseClass = CreateClassWithMixedPropertiesClassDefinition();
       _classDefinitions.Add (expectedBaseClass);
 
@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForDerivedClassWithDerivedClassAlreadyInClassDefinitionCollection()
     {
-      ClassReflector classReflector = new RdbmsClassReflector (typeof (DerivedClassWithMixedProperties));
+      ClassReflector classReflector = new RdbmsClassReflector (typeof (DerivedClassWithMixedProperties), Configuration.NameResolver);
       ClassDefinition expected = CreateDerivedClassWithMixedPropertiesClassDefinition();
       ClassDefinition expectedBaseClass = expected.BaseClass;
       _classDefinitions.Add (expectedBaseClass);
@@ -147,7 +147,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
     [Test]
     public void GetClassDefinition_ForClassWithOneSideRelationProperties()
     {
-      ClassReflector classReflector = new RdbmsClassReflector (typeof (ClassWithOneSideRelationProperties));
+      ClassReflector classReflector = new RdbmsClassReflector (typeof (ClassWithOneSideRelationProperties), Configuration.NameResolver);
       ClassDefinition expected = CreateClassWithOneSideRelationPropertiesClassDefinition();
 
       ClassDefinition actual = classReflector.GetClassDefinition (_classDefinitions);
@@ -169,7 +169,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Class
           "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.TestDomain.Errors.DerivedClassHavingAnOverriddenPropertyWithMappingAttribute",
           true,
           false);
-      ClassReflector classReflector = new RdbmsClassReflector (derivedClass);
+      ClassReflector classReflector = new RdbmsClassReflector (derivedClass, Configuration.NameResolver);
 
       classReflector.GetClassDefinition (_classDefinitions);
     }

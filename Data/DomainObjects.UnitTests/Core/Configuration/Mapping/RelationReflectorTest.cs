@@ -47,10 +47,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     public void IsMixedProperty_False ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("Unidirectional");
-      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
       _classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      RelationReflector relationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       Assert.IsFalse (relationReflector.IsMixedProperty);
     }
 
@@ -58,10 +58,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     public void DomainObjectTypeDeclaringProperty ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("Unidirectional");
-      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
       _classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      RelationReflector relationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       Assert.AreEqual (typeof (ClassWithManySideRelationProperties), relationReflector.DomainObjectTypeDeclaringProperty);
     }
 
@@ -69,10 +69,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     public void GetMetadata_Unidirectional ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("Unidirectional");
-      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
       _classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      RelationReflector relationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
 
@@ -102,13 +102,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     public void GetMetadata_UnidirectionalAndRelationAlreadyInRelationDefinitionCollection ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("Unidirectional");
-      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
       _classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      RelationReflector expectedRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector expectedRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       RelationDefinition expectedRelationDefinition = expectedRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
 
-      RelationReflector actualRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector actualRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       RelationDefinition actualRelationDefinition = actualRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
 
       Assert.IsNotNull (actualRelationDefinition);
@@ -121,10 +121,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     public void GetMetadata_BidirectionalOneToOne ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("BidirectionalOneToOne");
-      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
       _classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      RelationReflector relationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
 
@@ -158,13 +158,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     public void GetMetadata_BidirectionalOneToOneAndRelationAlreadyInRelationDefinitionCollection ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("BidirectionalOneToOne");
-      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
       _classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      RelationReflector expectedRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector expectedRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       RelationDefinition expectedRelationDefinition = expectedRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
 
-      RelationReflector actualRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector actualRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       RelationDefinition actualRelationDefinition = actualRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
 
       Assert.IsNotNull (actualRelationDefinition);
@@ -177,7 +177,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     public void GetMetadata_BidirectionalOneToOne_VirtualEndPoint ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithOneSideRelationProperties).GetProperty ("BidirectionalOneToOne");
-      RelationReflector relationReflector = new RelationReflector (_classWithOneSideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (_classWithOneSideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
 
       Assert.IsNull (relationReflector.GetMetadata (_classDefinitions, _relationDefinitions));
       Assert.That (_relationDefinitions.Count, Is.EqualTo (0));
@@ -187,10 +187,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     public void GetMetadata_BidirectionalOneToMany ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("BidirectionalOneToMany");
-      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
       _classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      RelationReflector relationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
 
@@ -224,13 +224,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     public void GetMetadata_BidirectionalOneToManyAndRelationAlreadyInRelationDefinitionCollection ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("BidirectionalOneToMany");
-      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
       _classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      RelationReflector expectedRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector expectedRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       RelationDefinition expectedRelationDefinition = expectedRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
 
-      RelationReflector actualRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector actualRelationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
       RelationDefinition actualRelationDefinition = actualRelationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
 
       Assert.IsNotNull (actualRelationDefinition);
@@ -243,7 +243,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     public void GetMetadata_BidirectionalOneToMany_VirtualEndPoint ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithOneSideRelationProperties).GetProperty ("BidirectionalOneToMany");
-      RelationReflector relationReflector = new RelationReflector (_classWithOneSideRelationPropertiesClassDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (_classWithOneSideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
 
       Assert.IsNull (relationReflector.GetMetadata (_classDefinitions, _relationDefinitions));
       Assert.That (_relationDefinitions.Count, Is.EqualTo (0));
@@ -253,10 +253,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     public void GetMetadata_BidirectionalOneToMany_WithBothEndPointsOnSameClass ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithBothEndPointsOnSameClass).GetProperty ("Parent");
-      PropertyReflector propertyReflector = new PropertyReflector (_classWithBothEndPointsOnSameClassClassDefinition, propertyInfo);
+      PropertyReflector propertyReflector = new PropertyReflector (_classWithBothEndPointsOnSameClassClassDefinition, propertyInfo, Configuration.NameResolver);
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata();
       _classWithBothEndPointsOnSameClassClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      RelationReflector relationReflector = new RelationReflector (_classWithBothEndPointsOnSameClassClassDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (_classWithBothEndPointsOnSameClassClassDefinition, propertyInfo, Configuration.NameResolver);
 
       RelationDefinition actualRelationDefinition = relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
 
@@ -298,7 +298,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
           "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.TestDomain.Errors.ClassWithInvalidUnidirectionalRelation", true, false);
       PropertyInfo propertyInfo = type.GetProperty ("LeftSide");
       ReflectionBasedClassDefinition classDefinition = CreateReflectionBasedClassDefinition (type);
-      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
@@ -317,7 +317,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
       PropertyInfo propertyInfo = type.GetProperty ("InvalidOppositePropertyNameLeftSide");
       ReflectionBasedClassDefinition classDefinition = CreateReflectionBasedClassDefinition (type);
-      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
@@ -337,7 +337,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
       PropertyInfo propertyInfo = type.GetProperty ("InvalidPropertyNameInBidirectionalRelationAttributeOnOppositePropertyLeftSide");
       ReflectionBasedClassDefinition classDefinition = CreateReflectionBasedClassDefinition (type);
-      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
@@ -356,7 +356,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
       PropertyInfo propertyInfo = type.GetProperty ("InvalidOppositePropertyTypeLeftSide");
       ReflectionBasedClassDefinition classDefinition = CreateReflectionBasedClassDefinition (type);
-      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide()));
       
@@ -376,10 +376,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       PropertyInfo propertyInfo = mixinType.GetProperty ("RealSide");
       ReflectionBasedClassDefinition classDefinition = CreateReflectionBasedClassDefinition (type, mixinType);
 
-      PropertyReflector propertyReflector = new PropertyReflector (classDefinition, propertyInfo);
+      PropertyReflector propertyReflector = new PropertyReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       classDefinition.MyPropertyDefinitions.Add (propertyReflector.GetMetadata ());
 
-      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetRelationTargetForMixinAddingBidirectionalRelationTwice ()));
 
@@ -399,7 +399,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide ();
       PropertyInfo propertyInfo = type.GetProperty ("BaseInvalidOppositePropertyTypeLeftSide");
       ReflectionBasedClassDefinition classDefinition = CreateReflectionBasedClassDefinition (type);
-      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
@@ -418,7 +418,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
       PropertyInfo propertyInfo = type.GetProperty ("InvalidOppositeCollectionPropertyTypeLeftSide");
       ReflectionBasedClassDefinition classDefinition = CreateReflectionBasedClassDefinition (type);
-      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
@@ -437,7 +437,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide ();
       PropertyInfo propertyInfo = type.GetProperty ("BaseInvalidOppositeCollectionPropertyTypeLeftSide");
       ReflectionBasedClassDefinition classDefinition = CreateReflectionBasedClassDefinition (type);
-      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
@@ -457,7 +457,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
       PropertyInfo propertyInfo = type.GetProperty ("MissingBidirectionalRelationAttributeLeftSide");
       ReflectionBasedClassDefinition classDefinition = CreateReflectionBasedClassDefinition (type);
-      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
@@ -477,7 +477,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
       PropertyInfo propertyInfo = type.GetProperty ("MissingBidirectionalRelationAttributeForCollectionPropertyLeftSide");
       ReflectionBasedClassDefinition classDefinition = CreateReflectionBasedClassDefinition (type);
-      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
@@ -496,7 +496,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
           "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide", true, false);
       PropertyInfo propertyInfo = type.GetProperty ("NoContainsKeyLeftSide");
       ReflectionBasedClassDefinition classDefinition = CreateReflectionBasedClassDefinition (type);
-      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo);
+      RelationReflector relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
       _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
@@ -518,7 +518,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
           "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.TestDomain.Errors.DerivedClassHavingAnOverriddenPropertyWithMappingAttribute", true, false);
       PropertyInfo propertyInfo = declaringType.GetProperty ("Int32");
 
-      new RelationReflector (CreateReflectionBasedClassDefinition (classType), propertyInfo);
+      new RelationReflector (CreateReflectionBasedClassDefinition (classType), propertyInfo, Configuration.NameResolver);
     }
 
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] persistentMixins)

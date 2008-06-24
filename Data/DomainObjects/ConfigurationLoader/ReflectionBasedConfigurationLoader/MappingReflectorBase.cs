@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       List<ClassReflector> classReflectors = new List<ClassReflector>();
       InheritanceHierarchyFilter inheritanceHierarchyFilter = new InheritanceHierarchyFilter (GetDomainObjectTypesSorted());
       foreach (Type domainObjectClass in inheritanceHierarchyFilter.GetLeafTypes())
-        classReflectors.Add (ClassReflector.CreateClassReflector (domainObjectClass));
+        classReflectors.Add (ClassReflector.CreateClassReflector (domainObjectClass, NameResolver));
       
       return classReflectors;
     }
@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       List<ClassReflector> classReflectors = new List<ClassReflector> ();
       foreach (ReflectionBasedClassDefinition classDefinition in classDefinitions)
-        classReflectors.Add (ClassReflector.CreateClassReflector (classDefinition.ClassType));
+        classReflectors.Add (ClassReflector.CreateClassReflector (classDefinition.ClassType, NameResolver));
 
       return classReflectors;
     }

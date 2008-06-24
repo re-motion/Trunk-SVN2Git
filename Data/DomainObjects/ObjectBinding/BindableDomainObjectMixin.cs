@@ -9,6 +9,7 @@
  */
 
 using System;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -61,7 +62,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         return false;
       else
       {
-        string propertyIdentifier = ReflectionUtility.GetPropertyName (property.PropertyInfo.GetOriginalDeclaringType(), property.PropertyInfo.Name);
+        string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property.PropertyInfo.GetOriginalDeclaringType(), property.PropertyInfo.Name);
         if (This.Properties.Contains (propertyIdentifier))
           return !This.Properties[propertyIdentifier].HasBeenTouched;
         else

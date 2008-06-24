@@ -11,6 +11,7 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Core.EventReceiver;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -57,8 +58,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Serialization
       Assert.AreEqual (dataContainer.Timestamp, deserializedDataContainer.Timestamp);
       Assert.AreSame (dataContainer.DomainObject, deserializedDataContainer.DomainObject);
       Assert.AreEqual (StateType.Changed, deserializedDataContainer.State);
-      Assert.AreEqual ("abc", deserializedDataContainer.PropertyValues[ReflectionUtility.GetPropertyName (typeof (Computer), "SerialNumber")].Value);
-      Assert.AreEqual (employee.ID, deserializedDataContainer.PropertyValues[ReflectionUtility.GetPropertyName (typeof (Computer), "Employee")].Value);
+      Assert.AreEqual ("abc", deserializedDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")].Value);
+      Assert.AreEqual (employee.ID, deserializedDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee")].Value);
     }
 
     [Test]
@@ -112,7 +113,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Serialization
 
       Assert.IsNull (eventReceiver.ChangingNewValue);
       Assert.IsNull (eventReceiver.ChangedNewValue);
-      deserializedDataContainer.PropertyValues[ReflectionUtility.GetPropertyName (typeof (Computer), "SerialNumber")].Value = "1234";
+      deserializedDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")].Value = "1234";
       Assert.IsNotNull (eventReceiver.ChangingNewValue);
       Assert.IsNotNull (eventReceiver.ChangedNewValue);
     }
