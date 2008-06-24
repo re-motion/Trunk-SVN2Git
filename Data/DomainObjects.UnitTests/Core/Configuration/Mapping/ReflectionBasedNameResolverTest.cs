@@ -59,6 +59,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     }
 
     [Test]
+    public void GetProperty_ShortName ()
+    {
+      string name = "OrderNumber";
+      PropertyInfo resolvedProperty = _resolver.GetProperty (typeof (Order), name);
+      Assert.That (resolvedProperty, Is.EqualTo (_orderNumberProperty));
+    }
+
+    [Test]
     public void GetProperty_ForOverriddenProperty ()
     {
       string name = typeof (ClassWithMixedProperties).FullName + ".Int32";
@@ -78,6 +86,18 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       Assert.That (resolvedProperty2, Is.EqualTo (_propertyInGenericClass));
     }
 
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "'bla.' is not a valid mapping property name.\r\nParameter name: propertyName")]
+    public void GetProperty_ForMalformedPropertyName_PeriodAtEnd ()
+    {
+      _resolver.GetProperty (typeof (Order), "bla.");
+    }
 
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Type 'Remotion.Data.DomainObjects.UnitTests.TestDomain.Order' does not contain a property named 'Bla'.\r\nParameter name: propertyName")]
+    public void GetProperty_ForNonExistingProperty ()
+    {
+      _resolver.GetProperty (typeof (Order), typeof (Order).FullName + ".Bla");
+    }
   }
 }

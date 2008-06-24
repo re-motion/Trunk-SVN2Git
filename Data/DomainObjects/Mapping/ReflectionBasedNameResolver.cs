@@ -52,7 +52,17 @@ namespace Remotion.Data.DomainObjects.Mapping
       int shortPropertyNameStart = propertyName.LastIndexOf ('.');
       string shortPropertyName = propertyName.Substring (shortPropertyNameStart + 1);
 
-      return concreteType.GetProperty (shortPropertyName, PropertyFinderBase.PropertyBindingFlags);
+      if (shortPropertyName == "")
+        throw new ArgumentException (string.Format ("'{0}' is not a valid mapping property name.", propertyName), "propertyName");
+
+      PropertyInfo property = concreteType.GetProperty (shortPropertyName, PropertyFinderBase.PropertyBindingFlags);
+      if (property == null)
+      {
+        throw new ArgumentException (
+            string.Format ("Type '{0}' does not contain a property named '{1}'.", concreteType.FullName, shortPropertyName),
+            "propertyName");
+      }
+      return property;
     }
   }
 }
