@@ -125,6 +125,15 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       Assert.That (_enlister.EnlistedObjects, List.Contains (new Tuple<WxeParameterDeclaration, object> (_parameter1, _objectToEnlist1b)));
     }
 
+		[Test]
+		public void EnlistParameter_WithNullValue ()
+		{
+			// no calls to scope
+			_mockRepository.ReplayAll ();
+			_enlister.EnlistParameter (_parameter1, null);
+			_mockRepository.VerifyAll ();
+		}
+
     [Test]
     public void EnlistParameter_NotEnlistable ()
     {

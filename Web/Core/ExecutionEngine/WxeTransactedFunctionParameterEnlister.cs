@@ -54,8 +54,11 @@ namespace Remotion.Web.ExecutionEngine
 
     public void EnlistParameter (WxeParameterDeclaration parameterDeclaration, object parameter)
     {
-      if (!TryEnlistAsSingleObject (parameterDeclaration, parameter))
-        TryEnlistAsEnumerable (parameterDeclaration, parameter);
+			if (parameter != null)
+			{
+				if (!TryEnlistAsSingleObject (parameterDeclaration, parameter))
+					TryEnlistAsEnumerable (parameterDeclaration, parameter);
+			}
     }
 
     public bool TryEnlistAsSingleObject (WxeParameterDeclaration parameterDeclaration, object objectToEnlist)
