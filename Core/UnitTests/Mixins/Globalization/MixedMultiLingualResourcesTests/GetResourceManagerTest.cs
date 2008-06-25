@@ -148,8 +148,10 @@ namespace Remotion.UnitTests.Mixins.Globalization.MixedMultiLingualResourcesTest
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
 
-        Assert.AreEqual (1, resourceManager.Count);
-        Assert.AreEqual ("OnInherited", resourceManager[0].Name);
+        Assert.AreEqual (4, resourceManager.Count);
+				Set<string> names = new Set<string> (resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name, resourceManager[3].Name,
+						resourceManager[3].Name);
+				Assert.That (names, Is.EquivalentTo (new string[] { "OnInherited", "OnMixin1", "OnMixin2a", "OnMixin2b" }));
       }
     }
 
