@@ -76,6 +76,38 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       }
     }
 
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Class 'Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping."
+      + "MixinTestDomain.TargetClassA' suppresses mixin 'MixinA' inherited from its base class 'TargetClassBase'. This is not allowed because "
+      + "the mixin adds persistence information to the base class which must also be present in the derived class.")]
+    public void PersistenceRelevant_MixinSuppressingInherited ()
+    {
+      using (MixinConfiguration.BuildNew()
+          .ForClass (typeof (TargetClassBase))
+          .AddMixins (typeof (MixinA))
+          .ForClass (typeof (TargetClassA))
+          .AddMixin (typeof (MixinB)).SuppressMixin (typeof (MixinA))
+          .EnterScope ())
+      {
+        PersistentMixinFinder.GetPersistentMixins (typeof (TargetClassA));
+      }
+    }
+
+    [Test]
+    public void PersistenceIrrelevant_MixinSuppressingInherited ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass (typeof (TargetClassBase))
+          .AddMixins (typeof (NonDomainObjectMixin))
+          .ForClass (typeof (TargetClassA))
+          .AddMixin (typeof (NonPersistedGenericMixin<>)).SuppressMixin (typeof (NonDomainObjectMixin))
+          .EnterScope ())
+      {
+        List<Type> persistentMixins = PersistentMixinFinder.GetPersistentMixins (typeof (TargetClassA));
+        Assert.That (persistentMixins, Is.Empty);
+      }
+    }
+
     private void CheckPersistentMixins (Type targetType, params Type[] expectedTypes)
     {
       List<Type> mixinTypes = PersistentMixinFinder.GetPersistentMixins (targetType);

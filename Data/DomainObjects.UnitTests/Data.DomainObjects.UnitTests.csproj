@@ -158,8 +158,10 @@
     <Compile Include="Core\Cloning\CloneStrategyTestBase.cs" />
     <Compile Include="Core\Cloning\CompleteCloneStrategyTest.cs" />
     <Compile Include="Core\Cloning\IntegrationTest.cs" />
+    <Compile Include="Core\Configuration\Mapping\MixinTestDomain\MixinBeingSuppressed.cs" />
     <Compile Include="Core\Configuration\Mapping\MixinTestDomain\MixinNotOnBase.cs" />
     <Compile Include="Core\Configuration\Mapping\MixinTestDomain\DerivedMixinNotOnBase.cs" />
+    <Compile Include="Core\Configuration\Mapping\MixinTestDomain\MixinSuppressingAnother.cs" />
     <Compile Include="Core\Configuration\Mapping\MixinTestDomain\TargetClassC.cs" />
     <Compile Include="Core\Configuration\Mapping\ReflectionBasedNameResolverTest.cs" />
     <Compile Include="Core\Configuration\Mapping\RelationReflectorWithMixinsTest.cs" />

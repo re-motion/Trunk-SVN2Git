@@ -14,6 +14,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Core.MixedDomains.SampleTypes;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Mixins;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Core.MixedDomains
 {

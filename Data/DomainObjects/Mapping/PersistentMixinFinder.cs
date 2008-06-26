@@ -34,19 +34,38 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         foreach (MixinContext mixin in mixinConfiguration.Mixins)
         {
-          if (IsPersistenceRelevant(mixin) && IsNotInParentContext(parentClassContext, mixin))
+          if (IsPersistenceRelevant(mixin) && !IsInParentContext(parentClassContext, mixin))
           {
             CheckNotOpenGenericMixin (mixin, type);
             persistentMixins.Add (mixin.MixinType);
           }
         }
+
+        CheckForSuppressedMixins(type, mixinConfiguration, parentClassContext);
       }
       return persistentMixins;
     }
 
-    private static bool IsNotInParentContext (ClassContext parentClassContext, MixinContext mixin)
+    private static void CheckForSuppressedMixins (Type type, ClassContext classContext, ClassContext parentClassContext)
     {
-      return (parentClassContext == null || !parentClassContext.Mixins.ContainsAssignableMixin (mixin.MixinType));
+      if (parentClassContext != null)
+      {
+        foreach (MixinContext mixin in parentClassContext.Mixins)
+        {
+          if (IsPersistenceRelevant (mixin) && !classContext.Mixins.ContainsAssignableMixin (mixin.MixinType))
+          {
+            string message = string.Format ("Class '{0}' suppresses mixin '{1}' inherited from its base class '{2}'. This is not allowed because "
+                + "the mixin adds persistence information to the base class which must also be present in the derived class.", type.FullName, 
+                mixin.MixinType.Name, parentClassContext.Type.Name);
+            throw new MappingException (message);
+          }
+        }
+      }
+    }
+
+    private static bool IsInParentContext (ClassContext parentClassContext, MixinContext mixin)
+    {
+      return (parentClassContext != null && parentClassContext.Mixins.ContainsAssignableMixin (mixin.MixinType));
     }
 
     private static bool IsPersistenceRelevant (MixinContext mixin)
