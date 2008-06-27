@@ -23,6 +23,31 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
   public class PersistentMixinFinderTest
   {
     [Test]
+    public void IsInParentContext_WithNullParentContext ()
+    {
+      PersistentMixinFinder finder = new PersistentMixinFinder (typeof (TargetClassBase));
+      Assert.That (finder.ParentClassContext, Is.Null);
+      Assert.That (finder.IsInParentContext (typeof (MixinBase)), Is.False);
+    }
+
+    [Test]
+    public void IsInParentContext_WithParentContext ()
+    {
+      PersistentMixinFinder finder = new PersistentMixinFinder (typeof (TargetClassA));
+      Assert.That (finder.ParentClassContext, Is.Not.Null);
+      Assert.That (finder.IsInParentContext (typeof (MixinBase)), Is.True);
+      Assert.That (finder.IsInParentContext (typeof (MixinA)), Is.False);
+    }
+
+    [Test]
+    public void IsPersistenceRelevant ()
+    {
+      Assert.That (PersistentMixinFinder.IsPersistenceRelevant (typeof (MixinBase)), Is.True);
+      Assert.That (PersistentMixinFinder.IsPersistenceRelevant (typeof (MixinA)), Is.True);
+      Assert.That (PersistentMixinFinder.IsPersistenceRelevant (typeof (NonDomainObjectMixin)), Is.False);
+    }
+
+    [Test]
     public void ForTargetClassBase ()
     {
       Type targetType = typeof (TargetClassBase);
@@ -62,7 +87,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     {
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (PersistedGenericMixin<>)).EnterScope ())
       {
-        PersistentMixinFinder.GetPersistentMixins (typeof (Order));
+        new PersistentMixinFinder (typeof (Order)).GetPersistentMixins ();
       }
     }
 
@@ -71,7 +96,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     {
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (NonPersistedGenericMixin<>)).EnterScope ())
       {
-        List<Type> persistentMixins = PersistentMixinFinder.GetPersistentMixins (typeof (Order));
+        List<Type> persistentMixins = new PersistentMixinFinder (typeof (Order)).GetPersistentMixins ();
         Assert.That (persistentMixins, Is.Empty);
       }
     }
@@ -89,7 +114,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
           .AddMixin (typeof (MixinB)).SuppressMixin (typeof (MixinA))
           .EnterScope ())
       {
-        PersistentMixinFinder.GetPersistentMixins (typeof (TargetClassA));
+        new PersistentMixinFinder (typeof (TargetClassA)).GetPersistentMixins ();
       }
     }
 
@@ -103,14 +128,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
           .AddMixin (typeof (NonPersistedGenericMixin<>)).SuppressMixin (typeof (NonDomainObjectMixin))
           .EnterScope ())
       {
-        List<Type> persistentMixins = PersistentMixinFinder.GetPersistentMixins (typeof (TargetClassA));
+        List<Type> persistentMixins = new PersistentMixinFinder (typeof (TargetClassA)).GetPersistentMixins ();
         Assert.That (persistentMixins, Is.Empty);
       }
     }
 
     private void CheckPersistentMixins (Type targetType, params Type[] expectedTypes)
     {
-      List<Type> mixinTypes = PersistentMixinFinder.GetPersistentMixins (targetType);
+      List<Type> mixinTypes = new PersistentMixinFinder (targetType).GetPersistentMixins ();
       Assert.That (mixinTypes, Is.EquivalentTo (expectedTypes));
     }
   }

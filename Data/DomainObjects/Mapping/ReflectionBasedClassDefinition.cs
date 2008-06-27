@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     public override void ValidateCurrentMixinConfiguration ()
     {
       base.ValidateCurrentMixinConfiguration ();
-      Set<Type> currentMixins = new Set<Type> (PersistentMixinFinder.GetPersistentMixins (ClassType));
+      Set<Type> currentMixins = new Set<Type> (new PersistentMixinFinder (ClassType).GetPersistentMixins ());
       foreach (Type t in _persistentMixins)
       {
         if (!currentMixins.Contains (t))

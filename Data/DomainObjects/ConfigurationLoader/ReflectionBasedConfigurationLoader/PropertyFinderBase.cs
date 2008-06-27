@@ -13,8 +13,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using Remotion.Mixins.Context;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
@@ -66,7 +68,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (_includeBaseProperties && _type.BaseType != typeof (DomainObject))
       {
         PropertyFinderBase propertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (GetType()).With (_type.BaseType, true,
-            (IEnumerable<Type>) PersistentMixinFinder.GetPersistentMixins (_type.BaseType), NameResolver);
+            (IEnumerable<Type>) new PersistentMixinFinder (_type.BaseType).GetPersistentMixins (), NameResolver);
         propertyInfos.AddRange (propertyFinder.FindPropertyInfos (classDefinition));
       }
 
@@ -81,10 +83,25 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       foreach (Type mixin in _persistentMixins)
       {
-        PropertyFinderBase mixinPropertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (GetType())
-            .With (mixin, false, (IEnumerable<Type>) Type.EmptyTypes, NameResolver);
-        propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosInternal (classDefinition));
+        Type current = mixin;
+        // we need to manually walk over the base types because the ordinary ClassDefinition/parent algorithm won't be applied to mixins
+        // and PropertyFinder can only work with properties declared directly on the type
+        while (current != null && !IsMixinBaseClass (current))
+        {
+          PropertyFinderBase mixinPropertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (GetType())
+              .With (current, false, (IEnumerable<Type>) Type.EmptyTypes, NameResolver);
+          propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosInternal (classDefinition));
+          current = null; // current.BaseType;
+        }
       }
+    }
+
+    private bool IsMixinBaseClass (Type type)
+    {
+      if (!type.IsGenericType)
+        return false;
+      Type genericTypeDefinition = type.GetGenericTypeDefinition ();
+      return genericTypeDefinition == typeof (Mixin<>) || genericTypeDefinition == typeof (Mixin<,>);
     }
 
     protected virtual bool FindPropertiesFilter (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)

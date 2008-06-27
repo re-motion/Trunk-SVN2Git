@@ -54,6 +54,7 @@ namespace Remotion.Data.DomainObjects
     /// Gets the <see cref="ObjectID"/> of this mixin's target object.
     /// </summary>
     /// <value>The <see cref="ObjectID"/> of this mixin's target object.</value>
+    [StorageClassNone]
     protected ObjectID ID
     {
       get { return This.ID; }
@@ -72,6 +73,7 @@ namespace Remotion.Data.DomainObjects
     /// Gets the <see cref="StateType"/> returned by this mixin's target object's <see cref="DomainObject.State"/> property.
     /// </summary>
     /// <value>The state of this mixin's target object.</value>
+    [StorageClassNone]
     protected StateType State
     {
       get { return This.State; }
@@ -81,6 +83,7 @@ namespace Remotion.Data.DomainObjects
     /// Gets a value indicating whether this mixin's target object is discarded.
     /// </summary>
     /// <value>true if this mixin's target object is discarded; otherwise, false.</value>
+    [StorageClassNone]
     protected bool IsDiscarded
     {
       get { return This.IsDiscarded; }
@@ -90,6 +93,7 @@ namespace Remotion.Data.DomainObjects
     /// Gets the properties of this mixin's target object, as returned by the <see cref="DomainObject.Properties"/> property.
     /// </summary>
     /// <value>The properties of the mixin's targetr object.</value>
+    [StorageClassNone]
     protected PropertyIndexer Properties
     {
       get { return This.Properties; }

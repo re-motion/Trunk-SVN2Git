@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (oppositePropertyInfo != null)
         return oppositePropertyInfo;
 
-      foreach (Type mixinType in PersistentMixinFinder.GetPersistentMixins (type))
+      foreach (Type mixinType in new PersistentMixinFinder (type).GetPersistentMixins ())
       {
         oppositePropertyInfo = GetOppositePropertyInfo (mixinType);
         if (oppositePropertyInfo != null)

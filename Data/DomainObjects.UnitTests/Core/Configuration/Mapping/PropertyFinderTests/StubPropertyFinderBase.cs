@@ -18,7 +18,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
   public class StubPropertyFinderBase : PropertyFinderBase
   {
     public StubPropertyFinderBase (Type type, bool includeBaseProperties)
-      : this (type, includeBaseProperties, PersistentMixinFinder.GetPersistentMixins (type))
+      : this (type, includeBaseProperties, new PersistentMixinFinder (type).GetPersistentMixins ())
     {
     }
 
