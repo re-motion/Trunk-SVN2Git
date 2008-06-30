@@ -18,7 +18,7 @@ using Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.MixinTest
 namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.PropertyFinderTests
 {
   [TestFixture]
-  public class PropertyFinderBaseMixinsTest : PropertyFinderBaseTestBase
+  public class PropertyFinderBaseMixinsIntegrationTest : PropertyFinderBaseTestBase
   {
     [Test]
     public void FindPropertyInfos_ForInheritanceRoot ()
@@ -72,21 +72,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
                       GetProperty (typeof (TargetClassB), "P4"),
                       GetProperty (typeof (MixinB), "P6"),
                       GetProperty (typeof (MixinE), "P9"),
-                  }));
-    }
-
-    [Test]
-    public void FindPropertyInfos_ForDerivedMixinNotOnBase ()
-    {
-      PropertyFinderBase propertyFinder = new StubPropertyFinderBase (typeof (TargetClassC), false);
-
-      Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (TargetClassC))),
-          Is.EquivalentTo (
-              new PropertyInfo[]
-                  {
-                      GetProperty (typeof (DerivedMixinNotOnBase), "DerivedMixinProperty"),
-                      GetProperty (typeof (MixinNotOnBase), "MixinProperty"),
                   }));
     }
   }
