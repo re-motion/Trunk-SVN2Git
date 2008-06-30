@@ -22,10 +22,19 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
   [TestFixture]
   public class PropertyFinderTest
   {
+    private PersistentMixinFinder _emptyPersistentMixinFinder;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _emptyPersistentMixinFinder = new PersistentMixinFinder (typeof (object));
+    }
+
     [Test]
     public void Initialize ()
     {
-      PropertyFinder propertyFinder = new PropertyFinder (typeof (ClassWithMixedProperties), true, new List<Type> (), new ReflectionBasedNameResolver());
+      PropertyFinder propertyFinder =
+          new PropertyFinder (typeof (ClassWithMixedProperties), true, _emptyPersistentMixinFinder, new ReflectionBasedNameResolver());
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (ClassWithMixedProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
@@ -34,7 +43,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     [Test]
     public void FindPropertyInfos_ForClassWithMixedProperties ()
     {
-      PropertyFinder propertyFinder = new PropertyFinder (typeof (ClassWithMixedProperties), true, new List<Type> (), new ReflectionBasedNameResolver ());
+      PropertyFinder propertyFinder =
+          new PropertyFinder (typeof (ClassWithMixedProperties), true, _emptyPersistentMixinFinder, new ReflectionBasedNameResolver());
 
       Assert.That (
           propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties))),
@@ -54,10 +64,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     [Test]
     public void FindPropertyInfos_ForClassWithOneSideRelationProperties ()
     {
-      PropertyFinder propertyFinder = new PropertyFinder (typeof (ClassWithOneSideRelationProperties), true, new List<Type> (), new ReflectionBasedNameResolver ());
+      PropertyFinder propertyFinder =
+          new PropertyFinder (typeof (ClassWithOneSideRelationProperties), true, _emptyPersistentMixinFinder, new ReflectionBasedNameResolver());
 
       Assert.That (
-          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties))), 
+          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties))),
           Is.Empty);
     }
 

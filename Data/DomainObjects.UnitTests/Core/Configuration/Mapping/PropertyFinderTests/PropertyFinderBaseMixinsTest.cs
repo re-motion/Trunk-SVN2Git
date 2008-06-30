@@ -41,6 +41,24 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     }
 
     [Test]
+    public void FindPropertyInfos_ForNonInheritanceRoot ()
+    {
+      PropertyFinderBase propertyFinder = new StubPropertyFinderBase (typeof (TargetClassA), false);
+
+      Assert.That (
+          propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (TargetClassA))),
+          Is.EquivalentTo (
+              new PropertyInfo[]
+                  {
+                      GetProperty (typeof (TargetClassA), "P1"),
+                      GetProperty (typeof (TargetClassA), "P2"),
+                      GetProperty (typeof (MixinA), "P5"),
+                      GetProperty (typeof (MixinC), "P7"),
+                      GetProperty (typeof (MixinD), "P8"),
+                  }));
+    }
+
+    [Test]
     public void FindPropertyInfos_ForDerived ()
     {
       PropertyFinderBase propertyFinder = new StubPropertyFinderBase (typeof (TargetClassB), false);
@@ -58,7 +76,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     }
 
     [Test]
-    [Ignore ("TODO: FS - Implement derived mixins")]
     public void FindPropertyInfos_ForDerivedMixinNotOnBase ()
     {
       PropertyFinderBase propertyFinder = new StubPropertyFinderBase (typeof (TargetClassC), false);

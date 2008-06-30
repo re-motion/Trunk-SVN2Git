@@ -9,15 +9,16 @@
  */
 
 using System;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Core.MixedDomains.SampleTypes
 {
-  public class DerivedMixinAddingPersistentProperties : MixinAddingSimplePersistentProperties
+  public class MixinAddingSimplePersistentProperties : DomainObjectMixin<DomainObject>
   {
-    public int AdditionalPersistentProperty
+    public int PersistentProperty
     {
-      get { return Properties[typeof (DerivedMixinAddingPersistentProperties), "AdditionalPersistentProperty"].GetValue<int> (); }
-      set { Properties[typeof (DerivedMixinAddingPersistentProperties), "AdditionalPersistentProperty"].SetValue (value); }
+      get { return Properties[typeof (MixinAddingSimplePersistentProperties), "PersistentProperty"].GetValue<int> (); }
+      set { Properties[typeof (MixinAddingSimplePersistentProperties), "PersistentProperty"].SetValue (value); }
     }
   }
 }

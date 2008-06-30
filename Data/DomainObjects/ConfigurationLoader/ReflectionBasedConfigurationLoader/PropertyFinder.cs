@@ -9,10 +9,8 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Mixins.Context;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -22,8 +20,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// </summary>
   public class PropertyFinder : PropertyFinderBase
   {
-    public PropertyFinder (Type type, bool includeBaseProperties, IEnumerable<Type> persistentMixins, IMappingNameResolver nameResolver)
-        : base (type, includeBaseProperties, persistentMixins, nameResolver)
+    public PropertyFinder (Type type, bool includeBaseProperties, PersistentMixinFinder persistentMixinFinder, IMappingNameResolver nameResolver)
+        : base (type, includeBaseProperties, persistentMixinFinder, nameResolver)
     {
     }
 

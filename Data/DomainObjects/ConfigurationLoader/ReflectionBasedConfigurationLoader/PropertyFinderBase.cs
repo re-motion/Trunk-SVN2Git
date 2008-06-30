@@ -16,7 +16,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.Mixins.Context;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
@@ -29,17 +28,16 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly Type _type;
     private readonly bool _includeBaseProperties;
     private readonly Set<MethodInfo> _explicitInterfaceImplementations;
-    private readonly IEnumerable<Type> _persistentMixins;
+    private readonly PersistentMixinFinder _persistentMixinFinder;
     private readonly IMappingNameResolver _nameResolver;
 
-    protected PropertyFinderBase (Type type, bool includeBaseProperties, IEnumerable<Type> persistentMixins, IMappingNameResolver nameResolver)
+    protected PropertyFinderBase (Type type, bool includeBaseProperties, PersistentMixinFinder persistentMixinFinder, IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("persistentMixins", persistentMixins);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
       _type = type;
-      _persistentMixins = persistentMixins;
+      _persistentMixinFinder = persistentMixinFinder;
       _nameResolver = nameResolver;
       _includeBaseProperties = includeBaseProperties;
       _explicitInterfaceImplementations = GetExplicitInterfaceImplementations (type);
@@ -68,7 +66,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       if (_includeBaseProperties && _type.BaseType != typeof (DomainObject))
       {
         PropertyFinderBase propertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (GetType()).With (_type.BaseType, true,
-            (IEnumerable<Type>) new PersistentMixinFinder (_type.BaseType).GetPersistentMixins (), NameResolver);
+            (PersistentMixinFinder) null, // mixins are only checked on the top level, we get all inherited mixins anyway
+            NameResolver);
         propertyInfos.AddRange (propertyFinder.FindPropertyInfos (classDefinition));
       }
 
@@ -81,17 +80,27 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private void FindPropertyInfosOnMixins (ReflectionBasedClassDefinition classDefinition, List<PropertyInfo> propertyInfos)
     {
-      foreach (Type mixin in _persistentMixins)
+      if (_persistentMixinFinder != null)
       {
-        Type current = mixin;
-        // we need to manually walk over the base types because the ordinary ClassDefinition/parent algorithm won't be applied to mixins
-        // and PropertyFinder can only work with properties declared directly on the type
-        while (current != null && !IsMixinBaseClass (current))
+        foreach (Type mixin in _persistentMixinFinder.GetPersistentMixins())
         {
-          PropertyFinderBase mixinPropertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (GetType())
-              .With (current, false, (IEnumerable<Type>) Type.EmptyTypes, NameResolver);
-          propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosInternal (classDefinition));
-          current = null; // current.BaseType;
+          Type current = mixin;
+          // we need to manually walk over the base types because the ordinary ClassDefinition/parent algorithm won't be applied to mixins
+          // and PropertyFinder can only work with properties declared directly on the type
+          while (current != null && !IsMixinBaseClass (current))
+          {
+            if (!_persistentMixinFinder.IsInParentContext (current) || IncludeBaseProperties)
+            {
+              PropertyFinderBase mixinPropertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (GetType())
+                  .With (
+                  current,
+                  false,
+                  (PersistentMixinFinder) null, // mixins on mixins are not checked
+                  NameResolver);
+              propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosInternal (classDefinition));
+            }
+            current = current.BaseType;
+          }
         }
       }
     }

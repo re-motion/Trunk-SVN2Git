@@ -18,17 +18,17 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
   public class StubPropertyFinderBase : PropertyFinderBase
   {
     public StubPropertyFinderBase (Type type, bool includeBaseProperties)
-      : this (type, includeBaseProperties, new PersistentMixinFinder (type).GetPersistentMixins ())
+      : this (type, includeBaseProperties, new PersistentMixinFinder (type))
     {
     }
 
-    public StubPropertyFinderBase (Type type, bool includeBaseProperties, IEnumerable<Type> persistentMixins, IMappingNameResolver nameResolver)
-      : base (type, includeBaseProperties, persistentMixins, nameResolver)
+    public StubPropertyFinderBase (Type type, bool includeBaseProperties, PersistentMixinFinder persistentMixinFinder, IMappingNameResolver nameResolver)
+      : base (type, includeBaseProperties, persistentMixinFinder, nameResolver)
     {
     }
 
-    public StubPropertyFinderBase (Type type, bool includeBaseProperties, IEnumerable<Type> persistentMixins)
-      : this (type, includeBaseProperties, persistentMixins, new ReflectionBasedNameResolver ())
+    public StubPropertyFinderBase (Type type, bool includeBaseProperties, PersistentMixinFinder persistentMixinFinder)
+      : this (type, includeBaseProperties, persistentMixinFinder, new ReflectionBasedNameResolver ())
     {
     }
   }

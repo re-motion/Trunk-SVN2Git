@@ -210,6 +210,7 @@
     <Compile Include="Core\Cloning\DomainObjectClonerTest.cs" />
     <Compile Include="Core\Design\FakeDesignModeMappingNameResolver.cs" />
     <Compile Include="Core\DomainObjects\SimpleDomainObjectTest.cs" />
+    <Compile Include="Core\MixedDomains\SampleTypes\MixinAddingSimplePersistentProperties.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectServiceFactoryMixinTest.cs" />
@@ -319,7 +320,7 @@
     <Compile Include="Core\MixedDomains\BehavioralMixinTest.cs" />
     <Compile Include="Core\MixedDomains\DomainObjectMixinBaseClassTest.cs" />
     <Compile Include="Core\MixedDomains\DomainObjectMixinHookTest.cs" />
-    <Compile Include="Core\MixedDomains\PersistentMixinTest.cs" />
+    <Compile Include="Core\MixedDomains\PersistentMixinIntegrationTest.cs" />
     <TestDomain Include="Core\Configuration\Mapping\TestDomain\Errors\TargetClass2ForMixinAddingBidirectionalRelationTwice.cs" />
     <TestDomain Include="Core\Configuration\Mapping\TestDomain\Errors\MixinAddingBidirectionalRelationTwice.cs" />
     <TestDomain Include="Core\Configuration\Mapping\TestDomain\Errors\RelationTargetForMixinAddingBidirectionalRelationTwice.cs" />

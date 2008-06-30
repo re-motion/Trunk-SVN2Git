@@ -22,10 +22,18 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
   [TestFixture]
   public class RelationPropertyFinderTest
   {
+    private PersistentMixinFinder _emptyPersistentMixinFinder;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _emptyPersistentMixinFinder = new PersistentMixinFinder (typeof (object));
+    }
+
     [Test]
     public void Initialize ()
     {
-      RelationPropertyFinder propertyFinder = new RelationPropertyFinder (typeof (DerivedClassWithMixedProperties), true, new List<Type> (), new ReflectionBasedNameResolver());
+      RelationPropertyFinder propertyFinder = new RelationPropertyFinder (typeof (DerivedClassWithMixedProperties), true, _emptyPersistentMixinFinder, new ReflectionBasedNameResolver());
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (DerivedClassWithMixedProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
@@ -34,7 +42,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     [Test]
     public void FindPropertyInfos_ForClassWithMixedProperties ()
     {
-      RelationPropertyFinder propertyFinder = new RelationPropertyFinder (typeof (ClassWithMixedProperties), true, new List<Type> (), new ReflectionBasedNameResolver ());
+      RelationPropertyFinder propertyFinder = new RelationPropertyFinder (typeof (ClassWithMixedProperties), true, _emptyPersistentMixinFinder, new ReflectionBasedNameResolver ());
 
       Assert.That (
           propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithMixedProperties))),
@@ -50,7 +58,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     [Test]
     public void FindPropertyInfos_ForClassWithOneSideRelationProperties ()
     {
-      RelationPropertyFinder propertyFinder = new RelationPropertyFinder (typeof (ClassWithOneSideRelationProperties), true, new List<Type> (), new ReflectionBasedNameResolver ());
+      RelationPropertyFinder propertyFinder = new RelationPropertyFinder (typeof (ClassWithOneSideRelationProperties), true, _emptyPersistentMixinFinder, new ReflectionBasedNameResolver ());
 
       Assert.That (
           propertyFinder.FindPropertyInfos (CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties))),

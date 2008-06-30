@@ -14,12 +14,11 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Core.MixedDomains.SampleTypes;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Mixins;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Core.MixedDomains
 {
   [TestFixture]
-  public class PersistentMixinTest : ClientTransactionBaseTest
+  public class PersistentMixinIntegrationTest : ClientTransactionBaseTest
   {
     [Test]
     public void ClassDefinitionIncludesPersistentProperties ()
@@ -30,12 +29,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.MixedDomains
     }
 
     [Test]
-    [Ignore ("TODO: FS - Implement derived mixins")]
     public void ClassDefinitionIncludesPersistentPropertiesFromDerivedMixin ()
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (TargetClassForDerivedPersistentMixin));
       Assert.IsNotNull (classDefinition.GetPropertyDefinition (typeof (DerivedMixinAddingPersistentProperties).FullName + ".AdditionalPersistentProperty"));
-      Assert.IsNotNull (classDefinition.GetPropertyDefinition (typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty"));
+      Assert.IsNotNull (classDefinition.GetPropertyDefinition (typeof (MixinAddingSimplePersistentProperties).FullName + ".PersistentProperty"));
     }
 
     [Test]
@@ -259,7 +257,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.MixedDomains
     }
 
     [Test]
-    [Ignore ("TODO: FS - Implement derived mixins")]
     public void DerivedMixin ()
     {
       TargetClassForDerivedPersistentMixin tc = TargetClassForDerivedPersistentMixin.NewObject().With();
