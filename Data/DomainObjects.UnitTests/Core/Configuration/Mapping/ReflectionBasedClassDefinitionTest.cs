@@ -1004,7 +1004,23 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope())
       {
         classDefinition.ValidateCurrentMixinConfiguration ();
-        Assert.Fail ();
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "One or more persistence-related mixins were added to the domain object type "
+        + "Remotion.Data.DomainObjects.UnitTests.TestDomain.Company after the mapping information was built: "
+        + "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.MixinTestDomain.MixinB, "
+        + "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.MixinTestDomain.MixinC.")]
+    public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsChangeOnParentClass ()
+    {
+      ReflectionBasedClassDefinition baseClassDefinition = new ReflectionBasedClassDefinition ("xbase", "xx", "xxx", typeof (Company), false, 
+          new Type[] { typeof (MixinA) });
+      ClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Customer), false, baseClassDefinition,
+          new Type[0]);
+      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Company)).Clear ().AddMixins (typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope ())
+      {
+        classDefinition.ValidateCurrentMixinConfiguration ();
       }
     }
   }
