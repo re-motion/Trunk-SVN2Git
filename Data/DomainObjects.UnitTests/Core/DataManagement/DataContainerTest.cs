@@ -11,12 +11,14 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Core.EventReceiver;
 using Remotion.Data.DomainObjects.UnitTests.Core.Resources;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
+using Remotion.Data.DomainObjects.UnitTests.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
@@ -531,6 +533,41 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DataManagement
     {
       DataContainer dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
       Dev.Null = dc.ClientTransaction;
+    }
+
+    [Test]
+    public void CreateNew_DoesNotIncludesStorageClassNoneProperties ()
+    {
+      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
+      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName("None")), Is.False);
+    }
+
+    [Test]
+    public void CreateNew_IncludesStorageClassPersistentProperties ()
+    {
+      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()));
+      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Persistent")), Is.True);
+    }
+
+    [Test]
+    public void CreateNew_IncludesStorageClassTransactionProperties ()
+    {
+      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()));
+      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Transaction")), Is.True);
+    }
+
+    [Test]
+    public void CreateForExisting_OnlyInitializedStoreageClassTransactionProperties ()
+    {
+      DataContainer dc = DataContainer.CreateForExisting (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()), 1);
+      Assert.That (dc.PropertyValues.Count, Is.EqualTo (2));
+      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Transaction")), Is.True);
+      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("TransactionWithObjectDataType")), Is.True);
+    }
+
+    private string GetStorageClassPropertyName (string shortName)
+    {
+      return Configuration.NameResolver.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);
     }
   }
 }

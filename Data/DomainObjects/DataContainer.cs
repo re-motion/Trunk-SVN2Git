@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
@@ -52,15 +53,9 @@ namespace Remotion.Data.DomainObjects
       DataContainer newDataContainer = new DataContainer (id);
       newDataContainer._state = DataContainerStateType.New;
 
-      InitializePropertyValues(newDataContainer);
+      InitializePropertyValues(newDataContainer, true);
 
       return newDataContainer;
-    }
-
-    private static void InitializePropertyValues (DataContainer newDataContainer)
-    {
-      foreach (PropertyDefinition propertyDefinition in newDataContainer.ClassDefinition.GetPropertyDefinitions())
-        newDataContainer.PropertyValues.Add (new PropertyValue (propertyDefinition));
     }
 
     /// <summary>
@@ -81,8 +76,20 @@ namespace Remotion.Data.DomainObjects
 
       DataContainer dataContainer = new DataContainer (id, timestamp);
       dataContainer._state = DataContainerStateType.Existing;
+
+      InitializePropertyValues (dataContainer, false);
       return dataContainer;
     }
+
+    private static void InitializePropertyValues (DataContainer newDataContainer, bool initializePersistentProperties)
+    {
+      foreach (PropertyDefinition propertyDefinition in newDataContainer.ClassDefinition.GetPropertyDefinitions ())
+      {
+        if (initializePersistentProperties || !propertyDefinition.IsPersistent)
+          newDataContainer.PropertyValues.Add (new PropertyValue (propertyDefinition));
+      }
+    }
+
 
     /// <summary>
     /// Creates a <see cref="DataContainer"/> for the given <paramref name="id"/>, assuming the same state as another <see cref="DataContainer"/>.
@@ -630,7 +637,7 @@ namespace Remotion.Data.DomainObjects
     private DataContainer (FlattenedDeserializationInfo info)
         : this (info.GetValueForHandle<ObjectID> (), info.GetValue<object> (), new PropertyValueCollection())
     {
-      InitializePropertyValues (this);
+      InitializePropertyValues (this, true);
 
       _isDiscarded = info.GetBoolValue ();
       if (!_isDiscarded)
