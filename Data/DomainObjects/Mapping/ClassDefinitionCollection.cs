@@ -200,7 +200,7 @@ public class ClassDefinitionCollection : CommonCollection
   private void ValidateRootClass (ClassDefinition rootClass)
   {
     ValidateEntireInheritanceHierarchyIsPartOfCollection (rootClass);
-    rootClass.ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
+    rootClass.GetValidator().ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
     ValidateConcreteEntityNames (rootClass);
   }
 

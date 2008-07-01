@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
       Assertion.IsTrue (dataContainer.ClassDefinition is ReflectionBasedClassDefinition);
 
-      dataContainer.ClassDefinition.ValidateCurrentMixinConfiguration ();
+      dataContainer.ClassDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
 
       IDomainObjectFactory factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
       Type concreteType = factory.GetConcreteDomainObjectType(dataContainer.DomainObjectType);
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
       
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType);
-      classDefinition.ValidateCurrentMixinConfiguration ();
+      classDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
 
       IDomainObjectFactory factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
       Type concreteType = factory.GetConcreteDomainObjectType(domainObjectType);

@@ -95,6 +95,11 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
+    public override ClassDefinitionValidator GetValidator ()
+    {
+      return new ReflectionBasedClassDefinitionValidator (this);
+    }
+
     private MappingException CreateMappingException (string message, params object[] args)
     {
       return new MappingException (string.Format (message, args));
@@ -103,28 +108,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     protected internal override IDomainObjectCreator GetDomainObjectCreator ()
     {
       return FactoryBasedDomainObjectCreator.Instance;
-    }
-
-    public override void ValidateCurrentMixinConfiguration ()
-    {
-      base.ValidateCurrentMixinConfiguration ();
-      Set<Type> currentMixins = new Set<Type> (new PersistentMixinFinder (ClassType).GetPersistentMixins ());
-      foreach (Type t in _persistentMixins)
-      {
-        if (!currentMixins.Contains (t))
-        {
-          string message = string.Format ("A persistence-related mixin was removed from the domain object type {0} after the mapping "
-            + "information was built: {1}.", ClassType.FullName, t.FullName);
-          throw new MappingException (message);
-        }
-        currentMixins.Remove (t);
-      }
-      if (currentMixins.Count > 0)
-      {
-        string message = string.Format ("One or more persistence-related mixins were added to the domain object type {0} after the mapping "
-            + "information was built: {1}.", ClassType.FullName, SeparatedStringBuilder.Build (", ", currentMixins));
-        throw new MappingException (message);
-      }
     }
   }
 }

@@ -158,6 +158,7 @@
     <Compile Include="Core\Cloning\CloneStrategyTestBase.cs" />
     <Compile Include="Core\Cloning\CompleteCloneStrategyTest.cs" />
     <Compile Include="Core\Cloning\IntegrationTest.cs" />
+    <Compile Include="Core\Configuration\Mapping\ClassDefinitionValidatorTest.cs" />
     <Compile Include="Core\Configuration\Mapping\MixinTestDomain\DiamondRight.cs" />
     <Compile Include="Core\Configuration\Mapping\MixinTestDomain\DiamondBase.cs" />
     <Compile Include="Core\Configuration\Mapping\MixinTestDomain\DiamondLeft.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Core\Configuration\Mapping\MixinTestDomain\MixinSuppressingAnother.cs" />
     <Compile Include="Core\Configuration\Mapping\MixinTestDomain\TargetClassC.cs" />
     <Compile Include="Core\Configuration\Mapping\PropertyFinderTests\MixinPropertyFinderTest.cs" />
+    <Compile Include="Core\Configuration\Mapping\ReflectionBasedClassDefinitionValidatorTest.cs" />
     <Compile Include="Core\Configuration\Mapping\ReflectionBasedNameResolverTest.cs" />
     <Compile Include="Core\Configuration\Mapping\RelationReflectorWithMixinsTest.cs" />
     <Compile Include="Core\Configuration\Mapping\PersistentMixinFinderTest.cs" />
@@ -216,6 +218,7 @@
     <Compile Include="Core\Design\FakeDesignModeMappingNameResolver.cs" />
     <Compile Include="Core\DomainObjects\SimpleDomainObjectTest.cs" />
     <Compile Include="Core\MixedDomains\SampleTypes\MixinAddingSimplePersistentProperties.cs" />
+    <Compile Include="Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectServiceFactoryMixinTest.cs" />

@@ -17,7 +17,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   public class StorageClassAttribute : Attribute, IMappingAttribute
   {
-    private StorageClass _storageClass;
+    private readonly StorageClass _storageClass;
 
     public StorageClassAttribute (StorageClass storageClass)
     {

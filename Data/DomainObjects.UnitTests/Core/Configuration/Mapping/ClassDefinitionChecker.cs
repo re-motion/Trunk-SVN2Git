@@ -182,11 +182,21 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
           expectedDefinition.PropertyName);
 
       Assert.AreEqual (
-          expectedDefinition.StorageSpecificName,
-          actualDefinition.StorageSpecificName,
-          "StorageSpecificName of property definition '{0}' (class definition: '{1}') does not match.",
+          expectedDefinition.IsPersistent,
+          actualDefinition.IsPersistent,
+          "IsPersistent of property definition '{0}' (class definition: '{1}') does not match.",
           expectedDefinition.PropertyName,
           classDefinition.ID);
+
+      if (expectedDefinition.IsPersistent)
+      {
+        Assert.AreEqual (
+            expectedDefinition.StorageSpecificName,
+            actualDefinition.StorageSpecificName,
+            "StorageSpecificName of property definition '{0}' (class definition: '{1}') does not match.",
+            expectedDefinition.PropertyName,
+            classDefinition.ID);
+      }
 
       Assert.AreEqual (
           expectedDefinition.MaxLength,

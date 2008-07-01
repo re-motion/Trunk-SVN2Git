@@ -45,9 +45,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       }
     }
 
+    public const StorageClass DefaultStorageClass = StorageClass.Persistent;
+
     private Dictionary<Type, AttributeConstraint> _attributeConstraints = null;
     private PropertyInfo _propertyInfo;
     private readonly IMappingNameResolver _nameResolver;
+    private StorageClassAttribute _storageClassAttribute;
 
     protected MemberReflectorBase (PropertyInfo propertyInfo, IMappingNameResolver nameResolver)
     {
@@ -55,6 +58,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
       _propertyInfo = propertyInfo;
       _nameResolver = nameResolver;
+      _storageClassAttribute = AttributeUtility.GetCustomAttribute<StorageClassAttribute> (PropertyInfo, true);
     }
 
     public PropertyInfo PropertyInfo
@@ -65,6 +69,16 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public IMappingNameResolver NameResolver
     {
       get { return _nameResolver; }
+    }
+
+    public StorageClassAttribute StorageClassAttribute
+    {
+      get { return _storageClassAttribute; }
+    }
+
+    public StorageClass StorageClass
+    {
+      get { return StorageClassAttribute != null ? StorageClassAttribute.StorageClass : DefaultStorageClass; }
     }
 
     protected virtual void ValidatePropertyInfo()
@@ -118,8 +132,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private void CheckStorageClass()
     {
-      StorageClassAttribute attribute = AttributeUtility.GetCustomAttribute<StorageClassAttribute> (PropertyInfo, true);
-      if (attribute != null && attribute.StorageClass != StorageClass.Persistent)
+      if (_storageClassAttribute != null && _storageClassAttribute.StorageClass != StorageClass.Persistent && _storageClassAttribute.StorageClass != StorageClass.Transaction)
         throw CreateMappingException (null, PropertyInfo, "Only StorageClass.Persistent is supported.");
     }
 

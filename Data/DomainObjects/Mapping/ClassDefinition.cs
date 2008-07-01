@@ -410,80 +410,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       PerformSetBaseClass (baseClass);
     }
 
-    public virtual void ValidateInheritanceHierarchy (Dictionary<string, List<PropertyDefinition>> allPropertyDefinitionsInInheritanceHierarchy)
+    public virtual ClassDefinitionValidator GetValidator ()
     {
-      ArgumentUtility.CheckNotNull ("allPropertyDefinitionsInInheritanceHierarchy", allPropertyDefinitionsInInheritanceHierarchy);
-
-      if (IsClassTypeResolved)
-      {
-        if (GetEntityName() == null && !IsAbstract)
-        {
-          throw CreateMappingException (
-              "Type '{0}' must be abstract, because neither class '{1}' nor its base classes specify an entity name.",
-              ClassType.AssemblyQualifiedName,
-              _id);
-        }
-      }
-
-      if (_baseClass != null && _entityName != null && _baseClass.GetEntityName() != null && _entityName != _baseClass.GetEntityName())
-      {
-        throw CreateMappingException (
-            "Class '{0}' must not specify an entity name '{1}' which is different from inherited entity name '{2}'.",
-            _id,
-            _entityName,
-            _baseClass.GetEntityName());
-      }
-
-      if (BaseClass != null)
-      {
-        PropertyDefinitionCollection basePropertyDefinitions = BaseClass.GetPropertyDefinitions ();
-        foreach (PropertyDefinition propertyDefinition in MyPropertyDefinitions)
-        {
-          if (basePropertyDefinitions.Contains (propertyDefinition.PropertyName))
-          {
-            throw CreateMappingException (
-                "Class '{0}' must not define property '{1}', because base class '{2}' already defines a property with the same name.",
-                ID,
-                propertyDefinition.PropertyName,
-                basePropertyDefinitions[propertyDefinition.PropertyName].ClassDefinition.ID);
-          }
-        }
-      }
-
-      foreach (PropertyDefinition myPropertyDefinition in MyPropertyDefinitions)
-      {
-        List<PropertyDefinition> basePropertyDefinitions;
-        if (allPropertyDefinitionsInInheritanceHierarchy.TryGetValue (myPropertyDefinition.StorageSpecificName, out basePropertyDefinitions)
-            && basePropertyDefinitions != null && basePropertyDefinitions.Count > 0)
-        {
-          PropertyDefinition basePropertyDefinition = basePropertyDefinitions[0];
-
-          throw CreateMappingException (
-              "Property '{0}' of class '{1}' must not define storage specific name '{2}',"
-              + " because class '{3}' in same inheritance hierarchy already defines property '{4}' with the same storage specific name.",
-              myPropertyDefinition.PropertyName,
-              ID,
-              myPropertyDefinition.StorageSpecificName,
-              basePropertyDefinition.ClassDefinition.ID,
-              basePropertyDefinition.PropertyName);
-        }
-
-        allPropertyDefinitionsInInheritanceHierarchy[myPropertyDefinition.StorageSpecificName] =
-            new List<PropertyDefinition> (new PropertyDefinition[] { myPropertyDefinition });
-      }
-
-      foreach (ClassDefinition derivedClassDefinition in DerivedClasses)
-        derivedClassDefinition.ValidateInheritanceHierarchy (allPropertyDefinitionsInInheritanceHierarchy);
-    }
-
-    public virtual void ValidateCurrentMixinConfiguration ()
-    {
-      // do nothing by default, implementations supporting mixins can add validation code checking that the current mixin configuration is compatible
-      // with the mixin information stored in the class definition
-
-      // call parent validation, if parent class exists
-      if (BaseClass != null)
-        BaseClass.ValidateCurrentMixinConfiguration ();
+      return new ClassDefinitionValidator (this);
     }
 
     internal static void SetClassDefinition (ClassDefinition classDefinition, PropertyDefinition propertyDefinition)

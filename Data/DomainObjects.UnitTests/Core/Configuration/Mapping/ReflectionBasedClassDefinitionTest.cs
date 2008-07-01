@@ -338,41 +338,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Class 'Partner' must not define property 'Name', because base class 'Company' already defines a property with the same name.")]
-    public void ValidateMappingWithDuplicatePropertyBaseClass ()
-    {
-      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type>());
-
-      ReflectionBasedClassDefinition partnerClass = new ReflectionBasedClassDefinition (
-          "Partner", "Company", "TestDomain", typeof (Partner), false, companyClass, new List<Type>());
-
-      partnerClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(partnerClass, "Name", "Name", typeof (string), 100));
-      companyClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(companyClass, "Name", "Name", typeof (string), 100));
-
-      companyClass.ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Class 'Supplier' must not define property 'Name', because base class 'Company' already defines a property with the same name.")]
-    public void ValidateMappingWithDuplicatePropertyBaseOfBaseClass ()
-    {
-      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type>());
-
-      ReflectionBasedClassDefinition partnerClass = new ReflectionBasedClassDefinition (
-          "Partner", "Company", "TestDomain", typeof (Partner), false, companyClass, new List<Type>());
-
-      ReflectionBasedClassDefinition supplierClass = new ReflectionBasedClassDefinition (
-          "Supplier", "Company", "TestDomain", typeof (Supplier), false, partnerClass, new List<Type>());
-
-      supplierClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(supplierClass, "Name", "Name", typeof (string), 100));
-      companyClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(companyClass, "Name", "Name", typeof (string), 100));
-
-      companyClass.ValidateInheritanceHierarchy (new Dictionary<string, List<PropertyDefinition>> ());
-    }
-
-    [Test]
     public void ConstructorWithoutBaseClass()
     {
       new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type>());
@@ -960,68 +925,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
       Assert.IsFalse (classDefinition.HasPersistentMixin (typeof (MixinA)));
       Assert.IsFalse (classDefinition.HasPersistentMixin (typeof (MixinB)));
-    }
-
-    [Test]
-    public void ValidateCurrentMixinConfiguration_OkWhenNoPersistentChanges ()
-    {
-      ClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false,
-          new Type[] { typeof (MixinA) });
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (MixinA)).EnterScope())
-      {
-        classDefinition.ValidateCurrentMixinConfiguration (); // ok, no changes
-      }
-
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (NonDomainObjectMixin), typeof (MixinA)).EnterScope())
-      {
-        classDefinition.ValidateCurrentMixinConfiguration (); // ok, no persistence-related changes
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "A persistence-related mixin was removed from the domain object type "
-        + "Remotion.Data.DomainObjects.UnitTests.TestDomain.Order after the mapping information was built: "
-        + "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.MixinTestDomain.MixinA.")]
-    public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixisMissing ()
-    {
-      ClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false,
-          new Type[] { typeof (MixinA) });
-      using (MixinConfiguration.BuildFromActive().ForClass<Order>().Clear().EnterScope())
-      {
-        classDefinition.ValidateCurrentMixinConfiguration ();
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "One or more persistence-related mixins were added to the domain object type "
-        + "Remotion.Data.DomainObjects.UnitTests.TestDomain.Order after the mapping information was built: "
-        + "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.MixinTestDomain.MixinB, "
-        + "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.MixinTestDomain.MixinC.")]
-    public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsAdded ()
-    {
-      ClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false,
-          new Type[] { typeof (MixinA) });
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (Order)).Clear().AddMixins (typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope())
-      {
-        classDefinition.ValidateCurrentMixinConfiguration ();
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "One or more persistence-related mixins were added to the domain object type "
-        + "Remotion.Data.DomainObjects.UnitTests.TestDomain.Company after the mapping information was built: "
-        + "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.MixinTestDomain.MixinB, "
-        + "Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.MixinTestDomain.MixinC.")]
-    public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsChangeOnParentClass ()
-    {
-      ReflectionBasedClassDefinition baseClassDefinition = new ReflectionBasedClassDefinition ("xbase", "xx", "xxx", typeof (Company), false, 
-          new Type[] { typeof (MixinA) });
-      ClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Customer), false, baseClassDefinition,
-          new Type[0]);
-      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Company)).Clear ().AddMixins (typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope ())
-      {
-        classDefinition.ValidateCurrentMixinConfiguration ();
-      }
     }
   }
 }

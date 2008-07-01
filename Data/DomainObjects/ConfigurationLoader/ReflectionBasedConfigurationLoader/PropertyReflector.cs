@@ -42,15 +42,18 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           IsRelationProperty() ? typeof (ObjectID) : PropertyInfo.PropertyType,
           IsNullable(),
           GetMaxLength(),
-          true);
+          StorageClass == StorageClass.Persistent);
     }
 
     private void CheckValidPropertyType()
     {
-      Type nativePropertyType = GetNativePropertyType();
+      if (StorageClass == StorageClass.Persistent)
+      {
+        Type nativePropertyType = GetNativePropertyType();
 
-      if (!IsTypeSupportedByStorageProvider (nativePropertyType))
-        throw CreateMappingException (null, PropertyInfo, "The property type {0} is not supported.", nativePropertyType);
+        if (!IsTypeSupportedByStorageProvider (nativePropertyType))
+          throw CreateMappingException (null, PropertyInfo, "The property type {0} is not supported.", nativePropertyType);
+      }
     }
 
     private Type GetNativePropertyType()

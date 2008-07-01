@@ -27,8 +27,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.TestDomain.ReflectionBasedMappin
     [StorageClass (StorageClass.Persistent)]
     public abstract int Persistent { get; set; }
 
-    //[StorageClassTransaction]
-    //public abstract object Transaction { get; set; }
+    [StorageClassTransaction]
+    public abstract int Transaction { get; set; }
+
+    [StorageClassTransaction]
+    public abstract object TransactionWithObjectDataType { get; set; }
 
     [StorageClassNone]
     public object None 

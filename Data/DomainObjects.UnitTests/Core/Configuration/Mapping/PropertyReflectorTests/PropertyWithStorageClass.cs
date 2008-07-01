@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain.ReflectionBasedMappingSample;
@@ -19,6 +20,34 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
   [TestFixture]
   public class PropertyWithStorageClass : BaseTest
   {
+    [Test]
+    public void StorageClass_WithNoAttribute ()
+    {
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("NoAttribute");
+      Assert.That (propertyReflector.StorageClass, Is.EqualTo (StorageClass.Persistent));
+    }
+
+    [Test]
+    public void StorageClass_WithPersistentAttribute ()
+    {
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("Persistent");
+      Assert.That (propertyReflector.StorageClass, Is.EqualTo (StorageClass.Persistent));
+    }
+
+    [Test]
+    public void StorageClass_WithTransactionAttribute ()
+    {
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("Transaction");
+      Assert.That (propertyReflector.StorageClass, Is.EqualTo (StorageClass.Transaction));
+    }
+
+    [Test]
+    public void StorageClass_WithNoneAttribute ()
+    {
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("None");
+      Assert.That (propertyReflector.StorageClass, Is.EqualTo (StorageClass.None));
+    }
+
     [Test]
     public void GetMetadata_WithNoAttribute ()
     {
@@ -48,15 +77,27 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException),
-        ExpectedMessage = "Only StorageClass.Persistent is supported.\r\n"
-        + "Declaring type: Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.PropertyReflectorTests.PropertyWithStorageClass, "
-        + "property: Transaction")]
-    public void GetMetadata_WithStorageClassTransaction ()
+    public void GetMetadata_WithStorageClassTransaction_DoesntThrow ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<PropertyWithStorageClass> ("Transaction");
-
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("Transaction");
       propertyReflector.GetMetadata ();
+    }
+
+    [Test]
+    public void GetMetadata_WithStorageClassTransaction_SetsIsPersistent_False ()
+    {
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("Transaction");
+      PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
+      Assert.That (propertyDefinition.IsPersistent, Is.False);
+    }
+
+    [Test]
+    public void GetMetadata_WithStorageClassTransaction_NonPersistableDataType ()
+    {
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("TransactionWithObjectDataType");
+      PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
+      Assert.That (propertyDefinition.IsPersistent, Is.False);
+      Assert.That (propertyDefinition.PropertyType, Is.EqualTo (typeof (object)));
     }
 
     [Test]
@@ -69,13 +110,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("None");
 
       propertyReflector.GetMetadata ();
-    }
-
-    [StorageClass (StorageClass.Transaction)]
-    public object Transaction
-    {
-      get { return null; }
-      set { }
     }
   }
 }
