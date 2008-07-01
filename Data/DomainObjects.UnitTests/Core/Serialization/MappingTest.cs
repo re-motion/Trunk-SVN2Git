@@ -377,7 +377,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Serialization
       Assert.AreEqual (expected.MaxLength, actual.MaxLength);
       Assert.AreEqual (expected.PropertyName, actual.PropertyName);
       Assert.AreEqual (expected.PropertyType, actual.PropertyType);
-      Assert.AreEqual (expected.IsPersistent, actual.IsPersistent);
+      Assert.AreEqual (expected.StorageClass, actual.StorageClass);
     }
   }
 }

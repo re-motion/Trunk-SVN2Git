@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -36,6 +37,9 @@ namespace Remotion.Data.DomainObjects
 
     // static members and constants
 
+    private static readonly Set<StorageClass> s_storageClassesInitializedForNew = new Set<StorageClass> (StorageClass.Persistent, StorageClass.Transaction);
+    private static readonly Set<StorageClass> s_storageClassesInitializedForExisting = new Set<StorageClass> (StorageClass.Transaction);
+
     /// <summary>
     /// Creates an empty <see cref="DataContainer"/> for a new <see cref="Remotion.Data.DomainObjects.DomainObject"/>. The <see cref="DataContainer"/>
     /// contains a new <see cref="PropertyValue"/> object for every <see cref="PropertyDefinition"/> in the respective <see cref="ClassDefinition"/>.
@@ -53,8 +57,7 @@ namespace Remotion.Data.DomainObjects
       DataContainer newDataContainer = new DataContainer (id);
       newDataContainer._state = DataContainerStateType.New;
 
-      InitializePropertyValues(newDataContainer, true);
-
+      InitializePropertyValues (newDataContainer, s_storageClassesInitializedForNew);
       return newDataContainer;
     }
 
@@ -77,15 +80,15 @@ namespace Remotion.Data.DomainObjects
       DataContainer dataContainer = new DataContainer (id, timestamp);
       dataContainer._state = DataContainerStateType.Existing;
 
-      InitializePropertyValues (dataContainer, false);
+      InitializePropertyValues (dataContainer, s_storageClassesInitializedForExisting);
       return dataContainer;
     }
 
-    private static void InitializePropertyValues (DataContainer newDataContainer, bool initializePersistentProperties)
+    private static void InitializePropertyValues (DataContainer newDataContainer, Set<StorageClass> initializedStorageClasses)
     {
       foreach (PropertyDefinition propertyDefinition in newDataContainer.ClassDefinition.GetPropertyDefinitions ())
       {
-        if (initializePersistentProperties || !propertyDefinition.IsPersistent)
+        if (initializedStorageClasses.Contains (propertyDefinition.StorageClass))
           newDataContainer.PropertyValues.Add (new PropertyValue (propertyDefinition));
       }
     }
@@ -151,7 +154,7 @@ namespace Remotion.Data.DomainObjects
     private RelationEndPointID[] _relationEndPointIDs = null;
     private bool _isDiscarded = false;
     private bool _hasBeenMarkedChanged = false;
-    
+
     // construction and disposing
 
     private DataContainer (ObjectID id)
@@ -637,7 +640,7 @@ namespace Remotion.Data.DomainObjects
     private DataContainer (FlattenedDeserializationInfo info)
         : this (info.GetValueForHandle<ObjectID> (), info.GetValue<object> (), new PropertyValueCollection())
     {
-      InitializePropertyValues (this, true);
+      InitializePropertyValues (this, s_storageClassesInitializedForNew);
 
       _isDiscarded = info.GetBoolValue ();
       if (!_isDiscarded)

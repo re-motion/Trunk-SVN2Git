@@ -692,7 +692,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DataManagement
     {
       int? maxLength = (propertyType == typeof (string)) ? (int?) 100 : null;
 
-      return ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, name, name, propertyType, isNullable, maxLength, true);
+      return ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (_classDefinition, name, name, propertyType, isNullable, maxLength, StorageClass.Persistent);
     }
 
     private PropertyValue CreatePropertyValue (string name, Type propertyType, bool? isNullable, object value)

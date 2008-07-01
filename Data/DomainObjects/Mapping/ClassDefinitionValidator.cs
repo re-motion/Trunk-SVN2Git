@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       foreach (PropertyDefinition myPropertyDefinition in _classDefinition.MyPropertyDefinitions)
       {
-        if (myPropertyDefinition.IsPersistent)
+        if (myPropertyDefinition.StorageClass == StorageClass.Persistent)
         {
           List<PropertyDefinition> basePropertyDefinitions;
           if (persistentPropertyDefinitionsInInheritanceHierarchy.TryGetValue (myPropertyDefinition.StorageSpecificName, out basePropertyDefinitions)

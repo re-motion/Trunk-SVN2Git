@@ -24,50 +24,34 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
   {
     public static ReflectionBasedPropertyDefinition CreateReflectionBasedPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType)
     {
-      return CreateReflectionBasedPropertyDefinition(classDefinition, propertyName, columnName, propertyType, null, null, true);
+      return CreateReflectionBasedPropertyDefinition (classDefinition, propertyName, columnName, propertyType, null, null, StorageClass.Persistent);
     }
 
     public static ReflectionBasedPropertyDefinition CreateReflectionBasedPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, bool isNullable)
     {
-      return CreateReflectionBasedPropertyDefinition(classDefinition, propertyName, columnName, propertyType, isNullable, null, true);
+      return CreateReflectionBasedPropertyDefinition (classDefinition, propertyName, columnName, propertyType, isNullable, null, StorageClass.Persistent);
     }
 
     public static ReflectionBasedPropertyDefinition CreateReflectionBasedPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, int maxLength)
     {
-      return CreateReflectionBasedPropertyDefinition(classDefinition, propertyName, columnName, propertyType, null, maxLength, true);
+      return CreateReflectionBasedPropertyDefinition (classDefinition, propertyName, columnName, propertyType, null, maxLength, StorageClass.Persistent);
     }
 
     public static ReflectionBasedPropertyDefinition CreateReflectionBasedPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, bool isNullable, int maxLength)
     {
-      return CreateReflectionBasedPropertyDefinition(classDefinition, propertyName, columnName, propertyType, isNullable, maxLength, true);
+      return CreateReflectionBasedPropertyDefinition(classDefinition, propertyName, columnName, propertyType, isNullable, maxLength, StorageClass.Persistent);
     }
 
-    public static ReflectionBasedPropertyDefinition CreateReflectionBasedPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, bool? isNullable, int? maxLength, bool isPersistent)
+    public static ReflectionBasedPropertyDefinition CreateReflectionBasedPropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName, Type propertyType, bool? isNullable, int? maxLength, StorageClass storageClass)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyName", propertyName);
       ArgumentUtility.CheckNotNull ("columnName", columnName);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
-      //int lastDot = propertyName.LastIndexOf ('.');
-      //if (lastDot == -1)
-      //  throw new ArgumentException (string.Format ("Property name {0} is not a well-formed long property name.", propertyName), "propertyName");
-
-      //string declaringTypeName = propertyName.Substring (0, lastDot);
-      //string shortPropertyName = propertyName.Substring (lastDot + 1);
-      
-      //Type declaringType = Type.GetType (declaringTypeName, true);
-      //PropertyInfo propertyInfo = declaringType.GetProperty (shortPropertyName,
-      //    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance);
-
-      //if (propertyInfo == null)
-      //  throw new ArgumentException (string.Format ("Property name {0} does not denote a property {1} declared on type {2} .", propertyName,
-      //      shortPropertyName, declaringTypeName), "propertyName");
-
       PropertyInfo propertyInfo = typeof (Order).GetProperty ("OrderNumber");
-
       return new ReflectionBasedPropertyDefinition(classDefinition, propertyInfo, propertyName, columnName, propertyType, isNullable, maxLength,
-          isPersistent);
+          storageClass);
     }
   }
 }

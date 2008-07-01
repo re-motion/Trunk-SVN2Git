@@ -161,7 +161,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DataManagement
 
       ReflectionBasedClassDefinition classDefinition =
           new ReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false, new List<Type> ());
-      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, name, name, propertyType, isNullable, maxLength, true);
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, name, name, propertyType, isNullable, maxLength, StorageClass.Persistent);
       return new PropertyValue (definition, value);
     }
   }

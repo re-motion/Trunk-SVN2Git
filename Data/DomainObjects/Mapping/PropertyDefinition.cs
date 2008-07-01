@@ -39,11 +39,11 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly int? _maxLength;
     [NonSerialized]
-    private readonly bool _isPersistent;
+    private readonly StorageClass _storageClass;
 
     // construction and disposing
 
-    protected PropertyDefinition (ClassDefinition classDefinition, string propertyName, string columnName, int? maxLength, bool isPersistent)
+    protected PropertyDefinition (ClassDefinition classDefinition, string propertyName, string columnName, int? maxLength, StorageClass storageClass)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyName = propertyName;
       _storageSpecificName = columnName;
       _maxLength = maxLength;
-      _isPersistent = isPersistent;
+      _storageClass = storageClass;
     }
 
     // methods and properties
@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       get
       {
-        if (!_isPersistent)
+        if (StorageClass != StorageClass.Persistent)
           throw new InvalidOperationException ("Cannot access property 'StorageSpecificName' for non-persistent property definitions.");
         return _storageSpecificName;
       }
@@ -98,9 +98,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _maxLength; }
     }
 
-    public bool IsPersistent
+    public StorageClass StorageClass
     {
-      get { return _isPersistent; }
+      get { return _storageClass; }
     }
 
     public override string ToString ()

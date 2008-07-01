@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
       Assert.AreEqual (
           "Remotion.Data.DomainObjects.UnitTests.TestDomain.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.NoAttribute",
           actual.PropertyName);
-      Assert.IsTrue (actual.IsPersistent);
+      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.AreEqual ("NoAttribute", actual.StorageSpecificName);
     }
 
@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
       Assert.AreEqual (
           "Remotion.Data.DomainObjects.UnitTests.TestDomain.ReflectionBasedMappingSample.ClassWithPropertiesHavingStorageClassAttribute.Persistent",
           actual.PropertyName);
-      Assert.IsTrue (actual.IsPersistent);
+      Assert.AreEqual (StorageClass.Persistent, actual.StorageClass);
       Assert.AreEqual ("Persistent", actual.StorageSpecificName);
     }
 
@@ -84,11 +84,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     }
 
     [Test]
-    public void GetMetadata_WithStorageClassTransaction_SetsIsPersistent_False ()
+    public void GetMetadata_WithStorageClassTransaction_SetsStorageClass ()
     {
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("Transaction");
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
-      Assert.That (propertyDefinition.IsPersistent, Is.False);
+      Assert.That (propertyDefinition.StorageClass, Is.EqualTo (StorageClass.Transaction));
     }
 
     [Test]
@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping.Prope
     {
       PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("TransactionWithObjectDataType");
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
-      Assert.That (propertyDefinition.IsPersistent, Is.False);
+      Assert.That (propertyDefinition.StorageClass, Is.EqualTo (StorageClass.Transaction));
       Assert.That (propertyDefinition.PropertyType, Is.EqualTo (typeof (object)));
     }
 

@@ -223,7 +223,7 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\NullablePropertyAttribute.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyReflector.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\MappingReflector.cs" />
-    <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\StorageClass.cs" />
+    <Compile Include="Mapping\StorageClass.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\StorageClassAttribute.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IStorageSpecificIdentifierAttribute.cs" />
     <Compile Include="MandatoryAttribute.cs" />

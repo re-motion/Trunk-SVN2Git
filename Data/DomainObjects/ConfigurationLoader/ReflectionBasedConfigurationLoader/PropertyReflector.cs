@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           IsRelationProperty() ? typeof (ObjectID) : PropertyInfo.PropertyType,
           IsNullable(),
           GetMaxLength(),
-          StorageClass == StorageClass.Persistent);
+          StorageClass);
     }
 
     private void CheckValidPropertyType()

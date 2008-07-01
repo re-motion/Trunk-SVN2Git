@@ -9,6 +9,7 @@
  */
 
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Core.MixedDomains.SampleTypes
 {
