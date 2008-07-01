@@ -16,226 +16,51 @@ using System.CodeDom.Compiler;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using System.Collections.Generic;
 using Remotion.Text.CommandLine;
 using Remotion.Web.ExecutionEngine;
-using WxeFunctionGenerator.Schema;
+using Remotion.Utilities;
+using Remotion.Text;
+using Remotion.Web.ExecutionEngine.CodeGenerator.Schema;
 
-// for DeserializeUsingSchema only
-using Remotion.Xml;
-using XmlSchemaValidationException=System.Xml.Schema.XmlSchemaValidationException;
-using System.Collections.Generic;
-
-namespace WxeFunctionGenerator
+namespace Remotion.Web.ExecutionEngine.CodeGenerator
 {
-  public enum Language
-  {
-    CSharp, VB
-  }
-
-  public class Arguments
-  {
-		[CommandLineStringArgument (false,
-				Description = "File name or file mask for the input file(s)",
-				Placeholder = "filemask")]
-		public string FileMask;
-
-    [CommandLineStringArgument (false,
-        Description = "Output file",
-        Placeholder = "outputfile")]
-    public string OutputFile;
-
-		[CommandLineFlagArgument ("recursive", false,
-				Description = "Resolve file mask recursively (default is off)")]
-		public bool Recursive;
-
-    [CommandLineEnumArgument ("language", true, 
-        Description = "Language (default is CSharp)",
-        Placeholder = "{CSharp|VB}")]
-    public Language Language = Language.CSharp;
-
-		[CommandLineStringArgument ("lineprefix", true,
-				Description = "Line prefix for WxePageFunction elements (default is // for C#, ' for VB.NET")]
-		public string LinePrefix = null;
-
-    [CommandLineFlagArgument ("verbose", false,
-        Description = "Verbose error information (default is off)")]
-    public bool Verbose;
-
-    [CommandLineStringArgument ("prjfile", true,
-        Description = "Visual Studio project file (csprj). If specified, the output file is only generated if any of the input files OR the project file is newer than the output file.")]
-    public string ProjectFile;
-  }
-
   class Program
   {
+    private Arguments _arguments;
+    private LanguageProvider _inputProvider;
+
     static int Main (string[] args)
     {
       // parse arguments / show usage info
-      Arguments arguments;
-      CommandLineClassParser parser = new CommandLineClassParser (typeof (Arguments));
+      CommandLineClassParser<Arguments> parser = new CommandLineClassParser<Arguments> ();
+      Arguments arguments = null;
       try
       {
-        arguments = (Arguments) parser.Parse (args);
+        arguments = parser.Parse (args);
+        new Program (arguments).Process ();
       }
       catch (CommandLineArgumentException e)
       {
         string appName = System.IO.Path.GetFileName (System.Environment.GetCommandLineArgs ()[0]);
-        Console.Error.WriteLine ("remotion WXE function generator");
+        Console.Error.WriteLine ("re:call function generator");
         Console.Error.Write (e.Message);
         Console.Error.WriteLine ("Usage: " + parser.GetAsciiSynopsis (appName, 79));
         return 1;
       }
-
-      try
+      catch (InputException e)
       {
-				if (arguments.Verbose)
-					log4net.Config.BasicConfigurator.Configure ();
-				
-				// select correct CodeDOM provider
-        CodeDomProvider provider;
-        switch (arguments.Language)
-        {
-          case Language.CSharp:
-            provider = new Microsoft.CSharp.CSharpCodeProvider ();
-						if (arguments.LinePrefix == null)
-							arguments.LinePrefix = "//";
-            break;
-          case Language.VB:
-            provider = new Microsoft.VisualBasic.VBCodeProvider ();
-						if (arguments.LinePrefix == null)
-							arguments.LinePrefix = "'";
-						break;
-          default:
-            throw new Exception ("Unknown language " + arguments.Language);
-        }
-
-        // generate classes for each [WxePageFunction] class
-        CodeCompileUnit unit = new CodeCompileUnit ();
-
-				string fileMask = Path.Combine (Directory.GetCurrentDirectory (), arguments.FileMask);
-				DirectoryInfo directory = new DirectoryInfo (Path.GetDirectoryName (fileMask));
-				FileInfo[] files = directory.GetFiles (
-						Path.GetFileName (fileMask), 
-						arguments.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-
-        bool outputUpToDate = false; 
-        FileInfo outputFile = new FileInfo (arguments.OutputFile);
-        if (arguments.ProjectFile != null)
-        {                
-          if (outputFile.Exists)
-            outputUpToDate = true;
-
-          FileInfo projectFile = new FileInfo (arguments.ProjectFile);
-          if (! projectFile.Exists)
-            throw new ApplicationException ("Project file " + arguments.ProjectFile + " not found.");
-
-          if (outputUpToDate && projectFile.LastWriteTimeUtc > outputFile.LastWriteTimeUtc)
-            outputUpToDate = false;
-        }
-
-        char[] whitespace = new char[] {' ', '\t'};
-				foreach (FileInfo file in files)
-				{
-          if (outputUpToDate  && file.LastWriteTimeUtc > outputFile.LastWriteTimeUtc)
-            outputUpToDate = false;
-
-					StreamReader reader = new StreamReader (file.FullName, true);
-					string line = reader.ReadLine();
-					int lineNumber = 1;
-					int firstLineNumber = -1;
-					StringBuilder xmlFragment = null;
-          List<int> indents = null;         // beginning line position for each line
-          bool validationFailed = false;
-
-          while (line != null)
-					{
-					  string originalLine = line;
-						line = line.TrimStart (whitespace);
-						if (line.StartsWith (arguments.LinePrefix))
-						{
-							line = line.Substring (arguments.LinePrefix.Length);
-							if (xmlFragment == null)
-							{
-								if (line.TrimStart (whitespace).StartsWith ("<" + FunctionDeclaration.ElementName))
-								{
-									xmlFragment = new StringBuilder (1000);
-									xmlFragment.AppendFormat ("<{0} xmlns=\"{1}\"", FunctionDeclaration.ElementName, FunctionDeclaration.SchemaUri);
-								  line = line.TrimStart (whitespace).Substring (FunctionDeclaration.ElementName.Length + 1);
-									xmlFragment.Append (line);
-								  indents = new List<int>();
-								  indents.Add (originalLine.IndexOf (line));
-
-									firstLineNumber = lineNumber;
-								}
-							}
-							else
-							{
-								xmlFragment.AppendLine ();
-								xmlFragment.Append (line);
-                indents.Add (originalLine.IndexOf (line));
-								if (line.TrimEnd (whitespace).EndsWith ("</" + FunctionDeclaration.ElementName + ">"))
-								{
-									// fragment complete, process it
-									StringReader stringReader = new StringReader (xmlFragment.ToString());
-
-									XmlSchemaSet schemas = new XmlSchemaSet ();
-									schemas.Add (FunctionDeclaration.SchemaUri, FunctionDeclaration.GetSchemaReader ());
-
-									XmlReaderSettings settings = new XmlReaderSettings ();
-									settings.Schemas = schemas;
-									settings.ValidationType = ValidationType.Schema;
-                  settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
-
-	                settings.ValidationEventHandler += delegate (object sender, ValidationEventArgs e)
-                      {
-                        XmlSchemaException schemaError = e.Exception;
-                        Uri uri = new Uri (schemaError.SourceUri);
-                        string path = uri.IsFile ? uri.LocalPath : schemaError.SourceUri;
-                        Console.Error.WriteLine ("{0}({1},{2}): {3} WG{4:0000}: {5}",
-                            path,
-                            schemaError.LineNumber + firstLineNumber - 1, 
-                            schemaError.LinePosition + indents[schemaError.LineNumber - 1],
-                            e.Severity.ToString ().ToLower (),
-                            1,
-                            schemaError.Message); 
-                        if (e.Severity == XmlSeverityType.Error)
-                          validationFailed = true;
-                      };
-
-								  XmlReader xmlReader = XmlReader.Create (stringReader, settings, file.FullName);
-									XmlSerializer serializer = new XmlSerializer (typeof (FunctionDeclaration), FunctionDeclaration.SchemaUri);
-
-									FunctionDeclaration declaration = (FunctionDeclaration) serializer.Deserialize(xmlReader);
-
-                  if (! validationFailed)
-  									GenerateClass (unit, declaration);
-								}
-							}
-						}
-						line = reader.ReadLine();
-						++ lineNumber;
-					}
-				}
-
-        // write generated code
-        if (! outputUpToDate)
-        {
-          using (TextWriter writer = new StreamWriter (arguments.OutputFile, false, Encoding.Unicode))
-          {
-            Console.WriteLine ("Writing classes to " + arguments.OutputFile);
-            CodeGeneratorOptions options = new CodeGeneratorOptions();
-            ICodeGenerator generator = provider.CreateGenerator (arguments.OutputFile);
-            generator.GenerateCodeFromCompileUnit (unit, writer, options);
-          }
-        }
-
-        return 0;
+        Console.Error.WriteLine ("{0}({1},{2}): error WG{3:0000}: {4}",
+            e.Path, e.Line, e.Position,
+            e.ErrorCode,
+            e.Message.Replace ("\r", "\\r"));
+        return 1;
       }
       catch (Exception e)
       {
         // write error info accpording to /verbose option
         Console.Error.WriteLine ("Execution aborted: {0}",  e.Message);
-        if (arguments.Verbose)
+        if (arguments != null && arguments.Verbose)
         {
           Console.Error.WriteLine ("Detailed exception information:");
           for (Exception current = e; current != null; current = current.InnerException)
@@ -246,7 +71,257 @@ namespace WxeFunctionGenerator
         }
         return 1;
       }
+
+      return 0;
     }
+
+    Program (Arguments args)
+    {
+      _arguments = args;
+    }
+
+    void Process ()
+    {
+			if (_arguments.Verbose)
+				log4net.Config.BasicConfigurator.Configure ();
+
+			// select correct CodeDOM provider and configure syntax
+      CodeDomProvider codeDomProvider;
+      switch (_arguments.Language)
+      {
+        case Language.CSharp:
+          codeDomProvider = new Microsoft.CSharp.CSharpCodeProvider ();
+          _inputProvider = new CSharpProvider();
+
+          break;
+        case Language.VB:
+          codeDomProvider = new Microsoft.VisualBasic.VBCodeProvider();
+          _inputProvider = new VBProvider();
+          break;
+
+        default:
+          throw new Exception ("Unknown language " + _arguments.Language);
+      }
+
+      // generate classes for each [WxePageFunction] class
+      CodeCompileUnit unit = new CodeCompileUnit ();
+      FunctionDeclaration declaration = null;
+
+			string fileMask = Path.Combine (Directory.GetCurrentDirectory (), _arguments.FileMask);
+			DirectoryInfo directory = new DirectoryInfo (Path.GetDirectoryName (fileMask));
+			FileInfo[] files = directory.GetFiles (
+					Path.GetFileName (fileMask), 
+					_arguments.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+
+      bool outputUpToDate = false; 
+      FileInfo outputFile = new FileInfo (_arguments.OutputFile);
+      if (_arguments.ProjectFile != null)
+      {                
+        if (outputFile.Exists)
+          outputUpToDate = true;
+
+        FileInfo projectFile = new FileInfo (_arguments.ProjectFile);
+        if (! projectFile.Exists)
+          throw new ApplicationException ("Project file " + _arguments.ProjectFile + " not found.");
+
+        if (outputUpToDate && projectFile.LastWriteTimeUtc > outputFile.LastWriteTimeUtc)
+          outputUpToDate = false;
+      }
+
+      char[] whitespace = new char[] {' ', '\t'};
+      FileInfo file = null;
+      try
+      {
+			  for (int idxFile = 0; idxFile < files.Length; ++idxFile)
+			  {
+			    file = files[idxFile];
+
+          if (outputUpToDate && file.LastWriteTimeUtc > outputFile.LastWriteTimeUtc)
+            outputUpToDate = false;
+
+          StringBuilder xmlFragment = null;
+          List<int> indents = null;         // beginning line position for each line
+          bool validationFailed = false;
+			    List<string> importNamespaces = new List<string>(); // namespaces to import
+			    SeparatedStringBuilder currentNamespace = new SeparatedStringBuilder (".");
+
+          StreamReader reader = new StreamReader (file.FullName, true);
+          int lineNumber = 1;
+          int firstLineNumber = -1; // line number of the first XML segment line
+          string line = reader.ReadLine ();
+          while (line != null)
+				  {
+            string lineArgument;
+			      CodeLineType lineType = _inputProvider.ParseLine (line, out lineArgument);
+
+            if (lineType == CodeLineType.NamespaceImport)
+            {
+              if (!importNamespaces.Contains (lineArgument))
+                importNamespaces.Add (lineArgument);
+            }
+            else if (lineType == CodeLineType.NamespaceDeclaration)
+            {
+              currentNamespace.Append (lineArgument);
+            }
+            else if (lineType == CodeLineType.ClassDeclaration)
+            {
+              if (declaration != null && string.IsNullOrEmpty (declaration.PageType))
+              {
+                string type = lineArgument;
+                if (currentNamespace.Length > 0)
+                  type = currentNamespace + "." + type;
+                declaration.PageType = type;
+              }
+            }
+            else if (lineType == CodeLineType.LineComment)
+            {
+              //string originalLine = line;
+              //line = line.TrimStart (whitespace);
+              //if (line.StartsWith (linePrefix))
+              //{
+              //  line = line.Substring (linePrefix.Length);
+              // line = lineArgument;
+						  if (xmlFragment == null)
+						  {
+							  if (lineArgument.TrimStart (whitespace).StartsWith ("<" + FunctionDeclaration.ElementName))
+							  {
+                  if (declaration != null)
+                  {
+                    // generate previous wxe function
+                    GenerateClass (unit, declaration, importNamespaces, file, firstLineNumber);
+                    declaration = null;
+                  }
+
+							    xmlFragment = new StringBuilder (1000);
+								  xmlFragment.AppendFormat ("<{0} xmlns=\"{1}\"", FunctionDeclaration.ElementName, FunctionDeclaration.SchemaUri);
+                  lineArgument = lineArgument.TrimStart (whitespace).Substring (FunctionDeclaration.ElementName.Length + 1);
+                  xmlFragment.Append (lineArgument);
+							    indents = new List<int>();
+                  indents.Add (line.IndexOf (lineArgument));
+
+								  firstLineNumber = lineNumber;
+							  }
+						  }
+						  else
+						  {
+							  xmlFragment.AppendLine ();
+                xmlFragment.Append (lineArgument);
+                indents.Add (line.IndexOf (lineArgument));
+                if (lineArgument.TrimEnd (whitespace).EndsWith ("</" + FunctionDeclaration.ElementName + ">"))
+							  {
+								  // fragment complete, process it
+								  StringReader stringReader = new StringReader (xmlFragment.ToString());
+
+								  XmlSchemaSet schemas = new XmlSchemaSet ();
+								  schemas.Add (FunctionDeclaration.SchemaUri, FunctionDeclaration.GetSchemaReader ());
+
+								  XmlReaderSettings settings = new XmlReaderSettings ();
+								  settings.Schemas = schemas;
+								  settings.ValidationType = ValidationType.Schema;
+                  settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
+
+                  settings.ValidationEventHandler += delegate (object sender, ValidationEventArgs e)
+                      {
+                        XmlSchemaException schemaError = e.Exception;
+                        Console.Error.WriteLine ("{0}({1},{2}): {3} WG{4:0000}: {5}",
+                            file.FullName,
+                            schemaError.LineNumber + firstLineNumber - 1, 
+                            schemaError.LinePosition + indents[schemaError.LineNumber - 1],
+                            e.Severity.ToString ().ToLower (),
+                            (int)InputError.InvalidSchema,
+                            schemaError.Message); 
+                        if (e.Severity == XmlSeverityType.Error)
+                          validationFailed = true;
+                      };
+
+							    XmlReader xmlReader = XmlReader.Create (stringReader, settings, file.FullName);
+								  XmlSerializer serializer = new XmlSerializer (typeof (FunctionDeclaration), FunctionDeclaration.SchemaUri);
+
+                  try
+                  {
+									  declaration = (FunctionDeclaration) serializer.Deserialize(xmlReader);
+                  }
+                  catch (InvalidOperationException e)
+                  {
+                    XmlException xmlException = e.InnerException as XmlException;
+                    if (xmlException != null)
+                    {
+                      throw new InputException (
+                          InputError.XmlError, 
+                          file.FullName, 
+                          xmlException.LineNumber + firstLineNumber - 1,  
+                          xmlException.LinePosition + indents[xmlException.LineNumber - 1], 
+                          xmlException);
+                    }
+                    else
+                    {
+                      throw;
+                    }
+                  }
+
+							    if (validationFailed)
+                  {
+                    declaration = null;
+                  }
+                  else
+                  {
+                    if (string.IsNullOrEmpty (declaration.AspxFile))
+                    {
+                      string cd = Environment.CurrentDirectory;
+                      string path = file.FullName;
+
+                      // TODO: geht nicht wenn parameter filemask ein ..\ o.ä. enthält
+                      Assertion.IsTrue (path.StartsWith (cd));
+                      path = path.Substring (cd.Length + 1);
+                      string ext = file.Extension;
+                      if (!string.IsNullOrEmpty (ext))
+                        path = path.Substring (0, path.Length - ext.Length);
+                      declaration.AspxFile = path;
+                    }
+
+                    // replace built-in types
+                    foreach (VariableDeclaration var in declaration.ParametersAndVariables)
+                      var.TypeName = _inputProvider.ConvertTypeName (var.TypeName);
+
+                    if (string.IsNullOrEmpty (declaration.FunctionBaseType))
+                      declaration.FunctionBaseType = _arguments.FunctionBaseType;
+                  }
+
+							  }
+						  }
+					  }
+
+					  line = reader.ReadLine();
+					  ++ lineNumber;
+				  }
+        
+          if (declaration != null)
+          {
+            GenerateClass (unit, declaration, importNamespaces, file, firstLineNumber);
+            declaration = null;
+          }
+        }
+      }
+      catch (Exception e)
+      {
+        if (e is InputException || file == null)
+          throw;
+        else
+          throw new InputException (InputError.Unknown, file.FullName, 1, 1, e);
+      }
+
+      // write generated code
+      if (! outputUpToDate)
+      {
+        using (TextWriter writer = new StreamWriter (_arguments.OutputFile, false, Encoding.Unicode))
+        {
+          Console.WriteLine ("Writing classes to " + _arguments.OutputFile);
+          CodeGeneratorOptions options = new CodeGeneratorOptions();
+          ICodeGenerator generator = codeDomProvider.CreateGenerator (_arguments.OutputFile);
+          generator.GenerateCodeFromCompileUnit (unit, writer, options);
+        }
+      }
+    } 
 
 		private static void SpliTypeName (string fullTypeName, out string nameSpace, out string typeName)
 		{
@@ -264,9 +339,14 @@ namespace WxeFunctionGenerator
 		}
 
     // generate output classes for [WxePageFunction] page class
-    static void GenerateClass (CodeCompileUnit unit, FunctionDeclaration functionDeclaration)
+    static void GenerateClass (CodeCompileUnit unit, FunctionDeclaration functionDeclaration, List<string> importNamespaces, FileInfo file, int line)
     {
-			string nameSpace;
+      if (string.IsNullOrEmpty (functionDeclaration.PageType))
+      {
+        throw new InputException (InputError.ClassNotFound, file.FullName, line, 1);
+      }
+
+      string nameSpace;
 			string typeName;
 			SpliTypeName (functionDeclaration.PageType, out nameSpace, out typeName);
 
@@ -277,8 +357,10 @@ namespace WxeFunctionGenerator
       CodeNamespace ns = new CodeNamespace (nameSpace);
       unit.Namespaces.Add (ns);
 
-			ns.Imports.Add (new CodeNamespaceImport ("System"));
-			ns.Imports.Add (new CodeNamespaceImport ("Remotion.Web.ExecutionEngine"));
+      foreach (string importNamespace in importNamespaces)
+        ns.Imports.Add (new CodeNamespaceImport (importNamespace));
+      //ns.Imports.Add (new CodeNamespaceImport ("System"));
+      //ns.Imports.Add (new CodeNamespaceImport ("Remotion.Web.ExecutionEngine"));
 
       // generate a partial class for the page that allows access to parameters and
       // local variables from page code
@@ -350,6 +432,7 @@ namespace WxeFunctionGenerator
         CodeMemberProperty localProperty = new CodeMemberProperty ();
         localProperty.Name = variableDeclaration.Name;
         localProperty.Type = new CodeTypeReference (variableDeclaration.TypeName);
+        // localProperty.Type = new LiteralTypeReference (variableDeclaration.TypeName);
 
         partialPageClass.Members.Add (localProperty);
         localProperty.Attributes = MemberAttributes.Public | MemberAttributes.Final;
@@ -446,15 +529,16 @@ namespace WxeFunctionGenerator
       defaultCtor.Attributes = MemberAttributes.Public;
 
       // ctor (params object[] args): base (args) {}
-      CodeConstructor untypedCtor = new CodeConstructor ();
-      functionClass.Members.Add (untypedCtor);
-      untypedCtor.Attributes = MemberAttributes.Public;
-      CodeParameterDeclarationExpression untypedParameters = new CodeParameterDeclarationExpression (
-          new CodeTypeReference (typeof (object[])),
-          "args");
-      untypedParameters.CustomAttributes.Add (new CodeAttributeDeclaration ("System.ParamArrayAttribute"));
-      untypedCtor.Parameters.Add (untypedParameters);
-      untypedCtor.BaseConstructorArgs.Add (new CodeArgumentReferenceExpression ("args"));
+      // replace by (VarRef<type1> arg1, VarRef<type2> arg2, ...)
+      //CodeConstructor untypedCtor = new CodeConstructor ();
+      //functionClass.Members.Add (untypedCtor);
+      //untypedCtor.Attributes = MemberAttributes.Public;
+      //CodeParameterDeclarationExpression untypedParameters = new CodeParameterDeclarationExpression (
+      //    new CodeTypeReference (typeof (object[])),
+      //    "args");
+      //untypedParameters.CustomAttributes.Add (new CodeAttributeDeclaration ("System.ParamArrayAttribute"));
+      //untypedCtor.Parameters.Add (untypedParameters);
+      //untypedCtor.BaseConstructorArgs.Add (new CodeArgumentReferenceExpression ("args"));
 
       // ctor (<type1> inarg1, <type2> inarg2, ...): base (inarg1, inarg2, ...) {}
       CodeConstructor typedCtor = new CodeConstructor ();
@@ -473,13 +557,15 @@ namespace WxeFunctionGenerator
       if (typedCtor.Parameters.Count > 0)
         functionClass.Members.Add (typedCtor);
 
-      // <returnType> Call (IWxePage page, <type> [ref|out] param1, <type> [ref|out] param2, ...)
+      // <returnType> Call (IWxePage page, WxeExecuteFunctionOptions options, <type> [ref|out] param1, <type> [ref|out] param2, ...)
       CodeMemberMethod callMethod = new CodeMemberMethod ();
       partialPageClass.Members.Add (callMethod);
       callMethod.Name = "Call";
       callMethod.Attributes = MemberAttributes.Static | MemberAttributes.Public;
       callMethod.Parameters.Add (new CodeParameterDeclarationExpression (
           new CodeTypeReference (typeof (IWxePage)), "currentPage"));
+      callMethod.Parameters.Add (new CodeParameterDeclarationExpression (
+          new CodeTypeReference (typeof (IWxeCallArguments)), "options"));
       foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
       {
         if (parameterDeclaration.IsReturnValue)
@@ -527,11 +613,22 @@ namespace WxeFunctionGenerator
               new CodeArgumentReferenceExpression (parameterDeclaration.Name)));
         }
       }
-      //   currentPage.ExecuteFunction (function);
+      //   function.SetCatchExceptionTypes (typeof (Exception));
       ifNotIsReturningPostBack.TrueStatements.Add (new CodeMethodInvokeExpression (
-          currentPage, "ExecuteFunction", 
-          new CodeExpression[] { new CodeVariableReferenceExpression ("function") } ));
-      //   throw new Exception ("(Unreachable code)"); 
+          function,
+          "SetCatchExceptionTypes", 
+          new CodeTypeOfExpression (typeof (Exception))));
+      //   options.Call (currentPage, function);
+      ifNotIsReturningPostBack.TrueStatements.Add (new CodeMethodInvokeExpression (
+          new CodeVariableReferenceExpression ("options"),
+          "Call",
+          currentPage,
+          function));
+              // //   currentPage.ExecuteFunction (function);
+              // ifNotIsReturningPostBack.TrueStatements.Add (new CodeMethodInvokeExpression (
+              //     currentPage, "ExecuteFunction",
+              //     new CodeExpression[] { new CodeVariableReferenceExpression ("function") }));
+              //    throw new Exception ("(Unreachable code)"); 
       ifNotIsReturningPostBack.TrueStatements.Add (new CodeThrowExceptionStatement (
           new CodeObjectCreateExpression (new CodeTypeReference (typeof (Exception)),
           new CodeExpression[] {
@@ -543,6 +640,21 @@ namespace WxeFunctionGenerator
           new CodeCastExpression (
               new CodeTypeReference (functionClass.Name),
               new CodePropertyReferenceExpression (currentPage, "ReturningFunction"))));
+      //    if (function.Exception != null)
+      CodeConditionStatement ifException = new CodeConditionStatement ();
+      ifNotIsReturningPostBack.FalseStatements.Add (ifException);
+      ifException.Condition = new CodeBinaryOperatorExpression (
+          new CodePropertyReferenceExpression (
+              function,
+              "Exception"),
+          CodeBinaryOperatorType.IdentityInequality,
+          new CodePrimitiveExpression (null));
+      //      throw function.Exception;
+      ifException.TrueStatements.Add (new CodeThrowExceptionStatement (
+          new CodePropertyReferenceExpression (
+              function,
+              "Exception")
+          ));
       //   ParamN = function.ParamN;
 			foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
       {
@@ -559,6 +671,35 @@ namespace WxeFunctionGenerator
             new CodePropertyReferenceExpression (function, parameterDeclaration.Name)));
         }
       }
+
+      // <returnType> Call (IWxePage page, <type> [ref|out] param1, <type> [ref|out] param2, ...)
+      CodeMemberMethod callMethodOverload = new CodeMemberMethod ();
+      callMethodOverload.Name = callMethod.Name;
+      callMethodOverload.ReturnType = callMethod.ReturnType;
+      callMethodOverload.Attributes = callMethod.Attributes;
+      CodeExpression[] callOverloadParameters = new CodeExpression[callMethod.Parameters.Count];
+      for (int i = 0; i < callMethod.Parameters.Count; ++i)
+      {
+        if (i == 1) // options parameter
+        {
+          callOverloadParameters[i] = new CodePropertyReferenceExpression (new CodeTypeReferenceExpression(typeof (WxeCallArguments)), "Default");
+        }
+        else
+        {
+          callMethodOverload.Parameters.Add (callMethod.Parameters[i]);
+          callOverloadParameters[i] = new CodeDirectionExpression (
+              callMethod.Parameters[i].Direction,
+              new CodeArgumentReferenceExpression (callMethod.Parameters[i].Name));
+        }
+      }
+      partialPageClass.Members.Add (callMethodOverload);
+      // [return] Call (page, WxeCallArguments.Default, param1, param2, ...);
+      CodeMethodInvokeExpression callOverloadStatement = new CodeMethodInvokeExpression (
+          new CodeTypeReferenceExpression ( /*nameSpace + "." + */partialPageClass.Name), callMethod.Name, callOverloadParameters);
+      if (callMethod.ReturnType.BaseType != typeof(void).FullName)
+        callMethodOverload.Statements.Add (new CodeMethodReturnStatement (callOverloadStatement));
+      else
+        callMethodOverload.Statements.Add (callOverloadStatement);
 
     }
   }

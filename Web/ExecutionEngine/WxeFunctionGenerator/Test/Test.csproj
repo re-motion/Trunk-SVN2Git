@@ -66,6 +66,7 @@
     <Compile Include="AutoPage.aspx.designer.cs">
       <DependentUpon>AutoPage.aspx</DependentUpon>
     </Compile>
+    <Compile Include="BaseFunction.cs" />
     <Compile Include="CalledPage.aspx.cs">
       <DependentUpon>CalledPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -99,9 +100,6 @@
       <Name>Web</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -127,6 +125,6 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PreBuildEvent>cd $(ProjectDir)
-$(SolutionDir)\WxeFunctionGenerator\bin\$(ConfigurationName)\wxegen.exe *.aspx.cs Generated.cs /v-</PreBuildEvent>
+$(SolutionDir)\WxeFunctionGenerator\bin\$(ConfigurationName)\wxegen.exe *.aspx.cs Generated.cs /func:Test.BaseFunction /v-</PreBuildEvent>
   </PropertyGroup>
 </Project>

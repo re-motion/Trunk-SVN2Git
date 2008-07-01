@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Web.ExecutionEngine;
 
-namespace WxeFunctionGenerator.Schema
+namespace Remotion.Web.ExecutionEngine.CodeGenerator.Schema
 {
 	[XmlRoot(FunctionDeclaration.ElementName, Namespace = FunctionDeclaration.SchemaUri)]
 	public class FunctionDeclaration
@@ -34,9 +34,10 @@ namespace WxeFunctionGenerator.Schema
 		private string _pageType;
 		private string _aspxFile;
 		private string _functionName = null;
-		private string _functionBaseType = typeof (WxeFunction).FullName;
+	  private string _functionBaseType = null;
 
 		private ParameterDeclaration[] _parameters = new ParameterDeclaration[0];
+    public ReturnValueDeclaration _returnValue;
 		private VariableDeclaration[] _variables = new VariableDeclaration[0];
 
 		[XmlAttribute("pageType")]
@@ -67,10 +68,16 @@ namespace WxeFunctionGenerator.Schema
 			set { _functionBaseType = value; }
 		}
 
-		[XmlElement("Parameter")]
+		[XmlElement ("Parameter")]
 		public ParameterDeclaration[] Parameters
 		{
-			get { return _parameters; }
+			get
+			{
+			  List<ParameterDeclaration> parameters = new List<ParameterDeclaration> (_parameters);
+        if (ReturnValue != null)
+          parameters.Add (ReturnValue);
+			  return parameters.ToArray();
+			}
 			set 
 			{
 				if (value == null)
@@ -79,7 +86,14 @@ namespace WxeFunctionGenerator.Schema
 					_parameters = value; }
 		}
 
-		[XmlElement("Variable")]
+	  [XmlElement ("ReturnValue")]
+    public ReturnValueDeclaration ReturnValue
+	  {
+      get { return _returnValue; }
+      set { _returnValue = value; }
+	  }
+
+		[XmlElement ("Variable")]
 		public VariableDeclaration[] Variables
 		{
 			get { return _variables; }
@@ -124,14 +138,34 @@ namespace WxeFunctionGenerator.Schema
 			get { return _typeName; }
 			set { _typeName = value; }
 		}
+
+    public virtual bool IsReturnValue
+    {
+      get { return false; }
+    }
 	}
+
+  [XmlType (Namespace = FunctionDeclaration.SchemaUri)]
+  public class ReturnValueDeclaration : ParameterDeclaration
+  {
+    public ReturnValueDeclaration()
+    {
+      Name = "ReturnValue";
+      Direction = WxeParameterDirection.Out;
+    }
+
+    public override bool IsReturnValue
+    {
+      get { return true; }
+    }
+  }
 
 	[XmlType(Namespace = FunctionDeclaration.SchemaUri)]
 	public class ParameterDeclaration: VariableDeclaration
 	{
 		private bool? _isRequired;
 		private WxeParameterDirection _direction;
-		private bool _isReturnValue;
+		// private bool _isReturnValue;
 
     /// <summary> Used internally. </summary>
 		[XmlAttribute ("required")]
@@ -156,12 +190,12 @@ namespace WxeFunctionGenerator.Schema
 			set { _direction = value; }
 		}
 
-		[XmlAttribute("returnValue")]
-		public bool IsReturnValue
-		{
-			get { return _isReturnValue; }
-			set { _isReturnValue = value; }
-		}
+    //[XmlAttribute("returnValue")]
+    //public bool IsReturnValue
+    //{
+    //  get { return _isReturnValue; }
+    //  set { _isReturnValue = value; }
+    //}
 	}
 
 }

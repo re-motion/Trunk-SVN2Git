@@ -1,13 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ !
+ ! This program is free software: you can redistribute it and/or modify it under 
+ ! the terms of the re:motion license agreement in license.txt. If you did not 
+ ! receive it, please visit http://www.re-motion.org/licensing.
+ ! 
+ ! Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ ! WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+-->
 <xs:schema xmlns:tns="http://www.re-motion.org/web/wxefunctiongenerator" elementFormDefault="qualified" targetNamespace="http://www.re-motion.org/web/wxefunctiongenerator" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="WxePageFunction" nillable="true" type="tns:FunctionDeclaration" />
   <xs:complexType name="FunctionDeclaration">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Parameter" type="tns:ParameterDeclaration" />
+      <xs:element minOccurs="0" maxOccurs="1" name="ReturnValue" type="tns:ReturnValue" />
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Variable" type="tns:VariableDeclaration" />
     </xs:sequence>
-    <xs:attribute name="pageType" type="xs:string" use="required" />
-		<xs:attribute name="aspxFile" type="xs:string" use="required" />
+    <xs:attribute name="pageType" type="xs:string" use="optional" />
+		<xs:attribute name="aspxFile" type="xs:string" use="optional" />
     <xs:attribute name="functionName" type="xs:string" use="optional" />
     <xs:attribute name="functionBaseType" type="xs:string" use="optional" />
   </xs:complexType>
@@ -16,9 +26,13 @@
       <xs:extension base="tns:VariableDeclaration">
 				<xs:attribute name="required" type="xs:boolean" use="optional" />
 				<xs:attribute name="direction" type="tns:WxeParameterDirection" use="optional" />
-				<xs:attribute name="returnValue" type="xs:boolean" default="false" />
+				<!-- <xs:attribute name="returnValue" type="xs:boolean" default="false" /> -->
       </xs:extension>
     </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ReturnValue">
+    <xs:attribute name="name" type="xs:string" use="optional" />
+    <xs:attribute name="type" type="xs:string" use="required" />
   </xs:complexType>
   <xs:complexType name="VariableDeclaration">
     <xs:attribute name="name" type="xs:string" use="required" />

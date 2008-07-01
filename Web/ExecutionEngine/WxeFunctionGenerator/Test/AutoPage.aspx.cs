@@ -1,30 +1,23 @@
-/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
- *
- * This program is free software: you can redistribute it and/or modify it under 
- * the terms of the re:motion license agreement in license.txt. If you did not 
- * receive it, please visit http://www.re-motion.org/licensing.
- * 
- * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
- */
-
 using System;
-using System.Configuration;
-using System.Collections;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 using Remotion.Web.ExecutionEngine;
 
 namespace Test
 {
-	// <WxePageFunction pageType="Test.AutoPage" aspxFile="AutoPage.aspx" functionBaseType="WxeFunction">
+	//[WxePageFunction ("AutoPage.aspx", typeof (WxeFunction))]
+	//[WxePageParameter (1, "InArg", typeof (string), true)]
+	//[WxePageParameter (2, "InOutArg", typeof (string), true, WxeParameterDirection.InOut)]
+	//[WxePageParameter (3, "OutArg", typeof (string), WxeParameterDirection.Out, IsReturnValue = true)]
+	//[WxePageVariable ("Suffix", typeof (string))]
+
+  //[WxeFunctionTargetPage (typeof (AutoPage))]
+  //public class AutoPageFunction
+  //{
+  //}
+
+  // <WxePageFunction pageType="Test.AutoPage" aspxFile="AutoPage.aspx" functionBaseType="WxeFunction">
 	//   <Parameter name="InArg" type="String" required="true" />
 	//   <Parameter name="InOutArg" type="String" required="true" direction="InOut" />
-	//   <Parameter name="OutArg" type="String" direction="Out" returnValue="true" />
+	//   <ReturnValue name="OutArg" type="String"/>
 	//   <Variable name="Suffix" type="String" />
 	// </WxePageFunction>
   public partial class AutoPage: WxePage
@@ -47,7 +40,8 @@ namespace Test
 
     protected void ExecCalledPageButton_Click (object sender, EventArgs e)
     {
-      InArgField.Text = CalledPage.Call (this, "hallo");
+      string a, b = null;
+      InArgField.Text = CalledPage.Call (this, "hallo", null, out a, ref b);
     }
 
     protected void ReturnButton_Click (object sender, EventArgs e)

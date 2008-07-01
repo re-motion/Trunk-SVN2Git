@@ -14,7 +14,7 @@ using System.Runtime.Serialization;
 namespace Remotion.Web.ExecutionEngine
 {
 
-/// <summary> This exception is thrown by the execution engine. </summary>
+/// <summary> This exception is thrown by the web execution engine. </summary>
 [Serializable]
 public class WxeException: ApplicationException
 {

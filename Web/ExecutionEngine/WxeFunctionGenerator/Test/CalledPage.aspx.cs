@@ -1,34 +1,15 @@
-/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
- *
- * This program is free software: you can redistribute it and/or modify it under 
- * the terms of the re:motion license agreement in license.txt. If you did not 
- * receive it, please visit http://www.re-motion.org/licensing.
- * 
- * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
- */
-
 using System;
-using System.Data;
-using System.Configuration;
-using System.Collections;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 using Remotion.Web.ExecutionEngine;
+using System.Collections.Generic;
 
 namespace Test
 {
-	//[WxePageFunction ("CalledPage.aspx")]
-	//[WxePageParameter (1, "input", typeof (string))]
-	//[WxePageParameter (2, "output", typeof (string), WxeParameterDirection.Out, IsReturnValue = true)]
-
-	// <WxePageFunction pageType="Test.CalledPage" aspxFile="CalledPage.aspx">
-	//   <Parameter name="input" type="String" />
-	//   <Parameter name="output" type="String" direction="Out" returnValue="true" />
+  // <WxePageFunction>
+  //   <Parameter name="input" type="string" />
+  //   <Parameter name="other" type="List{int[,][]}" />
+  //   <Parameter name="output" type="string" direction="Out" />
+  //   <Parameter name="bothways" type="string" direction="InOut" />
+  //   <ReturnValue type="string" />
 	// </WxePageFunction>
   public partial class CalledPage: WxePage
   {
@@ -38,8 +19,46 @@ namespace Test
 
 		protected void Button1_Click (object sender, EventArgs e)
 		{
-			output = "thank you";
+			ReturnValue = "thank you";
 			Return ();
 		}
+
+    public static void Call (IWxePage page, WxeArgument<string> input, WxeArgument<List<int[,][]>> other, WxeArgument<string> ReturnValue)
+    {
+
+    }
+
+    public static void Call (IWxePage page, string input, List<int[,][]> other, string ReturnValue)
+    {
+    }
+
+    public static void foo()
+    {
+      WxeArgument<List<int[,][]>> list = null;
+      IWxePage page = null;
+      Call (page, "", list, (WxeArgument<string>) null);
+      Call (page, "", new List<int[,][]>(), "");
+    }
   }
+
+  public interface IWxeArgument<T>
+  {
+    
+  }
+
+  public class WxeArgument<T>
+  {
+    private T _value;
+
+    public static implicit operator WxeArgument<T> (T value)
+    {
+      return new WxeArgument<T> (value);
+    }
+
+    public WxeArgument (T value)
+    {
+      _value = value;
+    }
+  }
+
 }
