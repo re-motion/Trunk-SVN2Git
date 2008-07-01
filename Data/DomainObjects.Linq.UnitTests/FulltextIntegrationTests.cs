@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -46,8 +47,10 @@ namespace Remotion.Data.DomainObjects.Linq.UnitTests
     {
       var rowCount = DatabaseAgent.ExecuteScalarCommand ("SELECT COUNT(*) FROM Ceo WHERE Contains ([Ceo].[Name], 'Fischer')");
       if (!rowCount.Equals (1))
-        WaitForIndices ();
+      {
+        Thread.Sleep (100);
+        WaitForIndices();
+      }
     }
-
   }
 }

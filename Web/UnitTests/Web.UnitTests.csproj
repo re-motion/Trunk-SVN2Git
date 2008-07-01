@@ -117,14 +117,14 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Core\Security.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
-      <Name>Security %28Security\Security%29</Name>
+      <Name>Security</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
       <Name>Security.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core\Web.csproj">
-      <Name>Web %28Web\Web%29</Name>
+      <Name>Web</Name>
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
@@ -358,7 +358,9 @@
     </Compile>
     <Compile Include="WxeDelegateStep.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="\Development\global\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
     <None Include="Web.UnitTests.build" />
     <Content Include="Res\UrlMapping.xml" />
     <Content Include="Res\UrlMappingWithEmptyFunctionType.xml" />

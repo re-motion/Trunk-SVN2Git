@@ -11,7 +11,9 @@
     <AssemblyName>Remotion.Web.Security</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -59,7 +61,9 @@
     <Compile Include="UI\DemandTargetWxeFunctionPermissionAttribute.cs" />
     <Compile Include="UI\WebSecurityAdapter.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="\Development\global\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
     <None Include="Web.Security.build" />
   </ItemGroup>
   <ItemGroup>
@@ -75,13 +79,13 @@
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
       <Name>Security.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Web\Core\Web.csproj">
+    <ProjectReference Include="..\Core\Web.csproj">
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
-      <Name>Web %28Web\Web%29</Name>
+      <Name>Web</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Core\Security.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
-      <Name>Security %28Security\Security%29</Name>
+      <Name>Security</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
