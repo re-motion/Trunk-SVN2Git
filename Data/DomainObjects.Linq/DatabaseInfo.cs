@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (classDefinition == null)
         return null;
 
-      string propertyIdentifier = ReflectionUtility.GetPropertyName (property);
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
       PropertyDefinition propertyDefinition = classDefinition.GetPropertyDefinition (propertyIdentifier);
 
       if (propertyDefinition != null)
@@ -135,7 +135,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (classDefinition == null)
         return null;
 
-      string propertyIdentifier = ReflectionUtility.GetPropertyName (property);
+      string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property);
       RelationDefinition relationDefinition = classDefinition.GetRelationDefinition (propertyIdentifier);
       if (relationDefinition == null)
         return null;

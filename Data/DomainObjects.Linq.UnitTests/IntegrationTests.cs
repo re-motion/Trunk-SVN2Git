@@ -416,13 +416,13 @@ namespace Remotion.Data.DomainObjects.Linq.UnitTests
 
     [Test]
     [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DataContext.Entity<Order>()"
-        + ".Where(o => (o.OrderNumber = 5)).Select(o => Entity().Where(c => (c = c))) (MethodCallExpression).")]
+        + ".Where(o => (o.OrderNumber = 5)).Select(o => Entity().Where(c => (c = null))) (MethodCallExpression).")]
     public void QueryWithSubQueryInSelectClause_WhereClause2 ()
     {
       var orders = from o in DataContext.Entity<Order> ()
                    where o.OrderNumber == 5
                    select
-                       (from c in DataContext.Entity<Computer> () where c == c select c);
+                       (from c in DataContext.Entity<Computer> () where c == null select c);
 
       IQueryable<Computer>[] result = orders.ToArray ();
     }
