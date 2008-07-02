@@ -19,6 +19,18 @@ namespace Remotion.UnitTests.Context
   [TestFixture]
   public class SafeContextTest
   {
+    [SetUp]
+    public void SetUp ()
+    {
+      SafeContext.SetInstance (null);
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      SafeContext.SetInstance (null);
+    }
+
     [Test]
     public void Instance_AutoInitialization ()
     {

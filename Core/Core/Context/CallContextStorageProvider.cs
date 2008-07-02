@@ -9,26 +9,30 @@
  */
 
 using System;
+using System.Runtime.Remoting.Messaging;
 using Remotion.BridgeInterfaces;
+using Remotion.Utilities;
 
 namespace Remotion.Context
 {
   public class CallContextStorageProvider : ICallContextStorageProvider
   {
-
     public object GetData (string key)
     {
-      throw new NotImplementedException ();
+      ArgumentUtility.CheckNotNull ("key", key);
+      return CallContext.GetData (key);
     }
 
     public void SetData (string key, object value)
     {
-      throw new NotImplementedException ();
+      ArgumentUtility.CheckNotNull ("key", key);
+      CallContext.SetData (key, value);
     }
 
     public void FreeData (string key)
     {
-      throw new NotImplementedException ();
+      ArgumentUtility.CheckNotNull ("key", key);
+      CallContext.FreeNamedDataSlot (key);
     }
   }
 }
