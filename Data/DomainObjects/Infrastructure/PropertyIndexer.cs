@@ -170,7 +170,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       Type currentType = typeToStartSearch;
       while (currentType != null && !Contains (currentType, shortPropertyName))
-        currentType = currentType.BaseType;
+      {
+        if (currentType.IsGenericType && !currentType.IsGenericTypeDefinition)
+          currentType = currentType.GetGenericTypeDefinition ();
+        else
+          currentType = currentType.BaseType;
+      }
 
       if (currentType != null)
         return this[currentType, shortPropertyName];
@@ -198,6 +203,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
       return Find (typeof (TDomainObject), shortPropertyName);
+    }
+
+    /// <summary>
+    /// Finds a property with the specified short name, starting its search at the type of the <see cref="DomainObject"/> whose properties
+    /// are represented by this indexer.
+    /// </summary>
+    /// <param name="shortPropertyName">The short name of the property to find.</param>
+    /// <returns>A <see cref="PropertyAccessor"/> encapsulating the first property with the given <paramref name="shortPropertyName"/>
+    /// found when traversing upwards through the inheritance hierarchy</returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="shortPropertyName"/>parameter is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">No matching property could be found.</exception>
+    /// <remarks>
+    /// This method exists as a convenience overload of <see cref="Find(Type, string)"/>. Instead of needing to specify a starting type for the search, 
+    /// this method assumes that it should start at the actual type of the current <see cref="DomainObject"/>.
+    /// </remarks>
+    public PropertyAccessor Find (string shortPropertyName)
+    {
+      ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
+      return Find (_domainObject.GetPublicDomainObjectType(), shortPropertyName);
     }
 
     /// <summary>

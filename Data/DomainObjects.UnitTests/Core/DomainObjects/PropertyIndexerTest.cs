@@ -146,6 +146,24 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DomainObjects
     }
 
     [Test]
+    public void FindFromGenericType ()
+    {
+      ClosedGenericClassWithManySideRelationProperties instance = (ClosedGenericClassWithManySideRelationProperties)
+          RepositoryAccessor.NewObject (typeof (ClosedGenericClassWithManySideRelationProperties)).With();
+      Assert.IsFalse (instance.Properties.Contains (typeof (ClosedGenericClassWithManySideRelationProperties), "BaseUnidirectional"));
+      Assert.AreEqual (instance.Properties[typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>), "BaseUnidirectional"],
+          instance.Properties.Find (typeof (ClosedGenericClassWithManySideRelationProperties), "BaseUnidirectional"));
+    }
+
+    [Test]
+    public void FindFromDerivedType_WithoutExplicitType ()
+    {
+      Distributor distributor = Distributor.NewObject ();
+      Assert.IsFalse (distributor.Properties.Contains (typeof (Distributor).FullName + ".ContactPerson"));
+      Assert.AreEqual (distributor.Properties[typeof (Partner), "ContactPerson"], distributor.Properties.Find ("ContactPerson"));
+    }
+
+    [Test]
     public void FindWithShadowedProperty ()
     {
       DerivedClassWithMixedProperties classWithMixedProperties =
