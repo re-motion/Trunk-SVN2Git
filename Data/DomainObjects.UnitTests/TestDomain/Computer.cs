@@ -37,5 +37,15 @@ namespace Remotion.Data.DomainObjects.UnitTests.TestDomain
 
     [DBBidirectionalRelation ("Computer", ContainsForeignKey = true)]
     public abstract Employee Employee { get; set; }
+
+    [StorageClassTransaction]
+    public abstract int Int32TransactionProperty { get; set; }
+
+    [StorageClassTransaction]
+    public abstract object ObjectTransactionProperty { get; set; }
+
+    [StorageClassTransaction]
+    [DBBidirectionalRelation ("ComputerTransactionProperty", ContainsForeignKey = true)]
+    public abstract Employee EmployeeTransactionProperty { get; set; }
   }
 }

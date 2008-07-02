@@ -217,6 +217,7 @@
     <Compile Include="Core\Cloning\DomainObjectClonerTest.cs" />
     <Compile Include="Core\Design\FakeDesignModeMappingNameResolver.cs" />
     <Compile Include="Core\DomainObjects\SimpleDomainObjectTest.cs" />
+    <Compile Include="Core\IntegrationTests\StorageClassTransactionTest.cs" />
     <Compile Include="Core\MixedDomains\SampleTypes\MixinAddingSimplePersistentProperties.cs" />
     <Compile Include="Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />

@@ -53,6 +53,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.TestDomain
       set { Properties["Remotion.Data.DomainObjects.UnitTests.TestDomain.Employee.Computer"].SetValue (value); }
     }
 
+    [StorageClassTransaction]
+    [DBBidirectionalRelation ("EmployeeTransactionProperty")]
+    public abstract Computer ComputerTransactionProperty { get; set; }
+
     public void DeleteWithSubordinates ()
     {
       foreach (Employee employee in Subordinates.Clone ())

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -242,6 +243,19 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Persistence.Rdbms
             Expect.Call (PrivateInvoke.InvokeNonPublicMethod (provider, "LoadDataContainers", new object[] { null }))
                 .IgnoreArguments().CallOriginalMethod(OriginalCallOptions.CreateExpectation);
           });
+    }
+
+    [Test]
+    public void LoadDataContainersByRelatedID_WithStorageClassTransaction ()
+    {
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Computer));
+      Assert.IsNotNull (classDefinition.GetEntityName ());
+
+      DataContainerCollection dataContainers = _loader.LoadDataContainersByRelatedID (
+          classDefinition, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "EmployeeTransactionProperty"),
+            DomainObjectIDs.Computer1);
+
+      Assert.That (dataContainers, Is.Empty);
     }
 
     [Test]

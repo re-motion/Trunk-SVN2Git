@@ -19,13 +19,22 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Transport
       get
       {
         return
-            @"<?xml version=""1.0""?>
+          @"<?xml version=""1.0""?>
 <XmlTransportItem ID=""Computer|c7c26bf5-871d-48c7-822a-e9b05aac4e5a|System.Guid"">
   <Properties>
     <Property Name=""Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.SerialNumber"">
       <string>12345-xzy-56</string>
     </Property>
     <Property Name=""Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.Employee"">Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid</Property>
+    <Property Name=""Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.Int32TransactionProperty"">
+      <int>0</int>
+    </Property>
+    <Property Name=""Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.ObjectTransactionProperty"">
+      <null />
+    </Property>
+    <Property Name=""Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.EmployeeTransactionProperty"">
+      <null />
+    </Property>
   </Properties>
 </XmlTransportItem>";
       }
@@ -43,6 +52,15 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Transport
       <string>63457-kol-34</string>
     </Property>
     <Property Name=""Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.Employee"">
+      <null />
+    </Property>
+    <Property Name=""Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.Int32TransactionProperty"">
+      <int>0</int>
+    </Property>
+    <Property Name=""Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.ObjectTransactionProperty"">
+      <null />
+    </Property>
+    <Property Name=""Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.EmployeeTransactionProperty"">
       <null />
     </Property>
   </Properties>

@@ -639,6 +639,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(computer, "Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.SerialNumber", "SerialNumber", typeof (string), false, 20));
       computer.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(computer, "Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.Employee", "EmployeeID", typeof (ObjectID), true));
+      computer.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (computer, "Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.Int32TransactionProperty", null, typeof (int), null, null, StorageClass.Transaction));
+      computer.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (computer, "Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.ObjectTransactionProperty", null, typeof (object), true, null, StorageClass.Transaction));
+      computer.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (computer, "Remotion.Data.DomainObjects.UnitTests.TestDomain.Computer.EmployeeTransactionProperty", null, typeof (ObjectID), true, null, StorageClass.Transaction));
 
       return computer;
     }

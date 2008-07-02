@@ -131,7 +131,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (propertyDefinition == null)
         throw Provider.CreateRdbmsProviderException ("Class '{0}' does not contain property '{1}'.", classDefinition.ID, propertyName);
 
-      if (classDefinition.GetEntityName () != null)
+      if (propertyDefinition.StorageClass != StorageClass.Persistent)
+        return new DataContainerCollection ();
+      else if (classDefinition.GetEntityName () != null)
       {
         SelectCommandBuilder commandBuilder = SelectCommandBuilder.CreateForRelatedIDLookup (Provider, classDefinition, propertyDefinition, relatedID);
         return Provider.LoadDataContainers (commandBuilder);
