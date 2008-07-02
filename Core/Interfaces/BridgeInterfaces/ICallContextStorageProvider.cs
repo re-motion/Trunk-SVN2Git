@@ -8,13 +8,13 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
+using Remotion.Context;
+using Remotion.Implementation;
 
-namespace Remotion.Context
+namespace Remotion.BridgeInterfaces
 {
-  // CallContextProvider
-  // HttpContextProvider
-  internal interface ISafeContextProvider
+  [ConcreteImplementation ("Remotion.Context.CallContextStorageProvider, Remotion, Version = <version>")]
+  public interface ICallContextStorageProvider : ISafeContextStorageProvider
   {
   }
 }

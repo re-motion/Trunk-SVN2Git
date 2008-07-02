@@ -42,8 +42,11 @@
   <ItemGroup>
     <Compile Include="AdapterRegistry.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementation.cs" />
+    <Compile Include="BridgeInterfaces\ICallContextStorageProvider.cs" />
     <Compile Include="Collections\ICache.cs" />
     <Compile Include="Collections\IDataStore.cs" />
+    <Compile Include="Context\ISafeContextStorageProvider.cs" />
+    <Compile Include="Context\SafeContext.cs" />
     <Compile Include="IAdapter.cs" />
     <Compile Include="Implementation\ArgumentUtility.cs" />
     <Compile Include="Implementation\ConcreteImplementationAttribute.cs" />

@@ -133,6 +133,7 @@
     <Compile Include="Collections\InterlockedDataStoreTest.cs" />
     <Compile Include="Collections\MonitorCheckingInterceptor.cs" />
     <Compile Include="Collections\SimpleDataStoreTest.cs" />
+    <Compile Include="Context\SafeContextTest.cs" />
     <Compile Include="Globalization\ResourceManagerFactoryTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicMethodCodeBuilder.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicMethodEmitter.cs" />
