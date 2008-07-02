@@ -402,7 +402,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Transaction
     }
 
     [Test]
-    public void SubTransactionHasSamePropertyValuessAsParent ()
+    public void SubTransactionHasSamePropertyValuessAsParent_ForPersistentProperties ()
     {
       Order newUnchangedOrder = Order.NewObject ();
       int newUnchangedOrderNumber = newUnchangedOrder.OrderNumber;
@@ -425,6 +425,33 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Transaction
         Assert.AreEqual (4711, newChangedOrder.OrderNumber);
         Assert.AreEqual (loadedUnchangedOrderNumber, loadedUnchangedOrder.OrderNumber);
         Assert.AreEqual (13, loadedChangedOrder.OrderNumber);
+      }
+    }
+
+    [Test]
+    public void SubTransactionHasSamePropertyValuessAsParent_ForTransactionProperties ()
+    {
+      OrderTicket newUnchangedOrderTicket = OrderTicket.NewObject ();
+      int newUnchangedInt32TransactionProperty = newUnchangedOrderTicket.Int32TransactionProperty;
+
+      OrderTicket newChangedOrderTicket = OrderTicket.NewObject ();
+      newChangedOrderTicket.Int32TransactionProperty = 4711;
+
+      OrderTicket loadedUnchangedOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      int loadedUnchangedInt32TransactionProperty = loadedUnchangedOrderTicket.Int32TransactionProperty;
+
+      OrderTicket loadedChangedOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
+      loadedChangedOrderTicket.Int32TransactionProperty = 13;
+
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        Assert.AreSame (loadedUnchangedOrderTicket, OrderTicket.GetObject (DomainObjectIDs.OrderTicket1));
+        Assert.AreSame (loadedChangedOrderTicket, OrderTicket.GetObject (DomainObjectIDs.OrderTicket2));
+
+        Assert.AreEqual (newUnchangedInt32TransactionProperty, newUnchangedOrderTicket.Int32TransactionProperty);
+        Assert.AreEqual (4711, newChangedOrderTicket.Int32TransactionProperty);
+        Assert.AreEqual (loadedUnchangedInt32TransactionProperty, loadedUnchangedOrderTicket.Int32TransactionProperty);
+        Assert.AreEqual (13, loadedChangedOrderTicket.Int32TransactionProperty);
       }
     }
 
