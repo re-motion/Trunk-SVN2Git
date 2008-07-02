@@ -77,10 +77,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           "FirstClass", "FirstEntity", "FirstStorageProvider", typeof (Company), false, new List<Type>());
 
       firstClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition(firstClass, "SecondClass", "SecondClassID", typeof (ObjectID), true, null, true));
+          CreatePropertyDefinition(firstClass, "SecondClass", "SecondClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
 
       firstClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition(firstClass, "ThirdClass", "ThirdClassID", typeof (ObjectID), true, null, true));
+          CreatePropertyDefinition (firstClass, "ThirdClass", "ThirdClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
 
       ReflectionBasedClassDefinition secondClass = new ReflectionBasedClassDefinition (
           "SecondClass", "SecondEntity", "FirstStorageProvider", typeof (Address), false, new List<Type>());
@@ -113,11 +113,11 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     }
 
     private PropertyDefinition CreatePropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName,
-        Type propertyType, bool? isNullable, int? maxLength, bool isPersistent)
+        Type propertyType, bool? isNullable, int? maxLength, StorageClass storageClass)
     {
       PropertyInfo dummyPropertyInfo = typeof (Order).GetProperty ("Number");
       return new ReflectionBasedPropertyDefinition (
-        classDefinition, dummyPropertyInfo, propertyName, columnName, propertyType, isNullable, maxLength, isPersistent);
+        classDefinition, dummyPropertyInfo, propertyName, columnName, propertyType, isNullable, maxLength, storageClass);
     }
 
     [Test]
@@ -137,7 +137,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           "DerivedClass", "BaseClassEntity", "FirstStorageProvider", typeof (Customer), false, baseClass, new List<Type>());
 
       derivedClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition(derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, true));
+          CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
 
       ReflectionBasedClassDefinition otherClass = new ReflectionBasedClassDefinition (
           "OtherClass", "OtherClassEntity", "FirstStorageProvider", typeof (DevelopmentPartner), false, new List<Type>());

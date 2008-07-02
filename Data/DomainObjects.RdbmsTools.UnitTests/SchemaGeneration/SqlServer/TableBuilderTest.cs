@@ -175,17 +175,17 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       ReflectionBasedClassDefinition abstractClass =
           new ReflectionBasedClassDefinition ("AbstractClass", null, "FirstStorageProvider", typeof (AbstractClass), false, new List<Type>());
       abstractClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition (abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, true));
+          CreatePropertyDefinition (abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent));
 
       ReflectionBasedClassDefinition derivedAbstractClass =
           new ReflectionBasedClassDefinition ("DerivedAbstractClass", null, "FirstStorageProvider", typeof (DerivedAbstractClass), false, abstractClass, new List<Type>());
       derivedAbstractClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition (derivedAbstractClass, "PropertyInAbstractDerivedClass", "PropertyInAbstractDerivedClass", typeof (string), false, 101, true));
+          CreatePropertyDefinition (derivedAbstractClass, "PropertyInAbstractDerivedClass", "PropertyInAbstractDerivedClass", typeof (string), false, 101, StorageClass.Persistent));
 
       ReflectionBasedClassDefinition derivedConcreteClass = new ReflectionBasedClassDefinition (
           "DerivedConcreteClass", "EntityName", "FirstStorageProvider", typeof (DerivedConcreteClass), false, derivedAbstractClass, new List<Type>());
       derivedConcreteClass.MyPropertyDefinitions.Add (
-          CreatePropertyDefinition (derivedConcreteClass, "PropertyInDerivedConcreteClass", "PropertyInDerivedConcreteClass", typeof (string), true, 102, true));
+          CreatePropertyDefinition (derivedConcreteClass, "PropertyInDerivedConcreteClass", "PropertyInDerivedConcreteClass", typeof (string), true, 102, StorageClass.Persistent));
 
       string expectedStatement =
           "CREATE TABLE [dbo].[EntityName]\r\n"
@@ -339,15 +339,15 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
 
     private PropertyDefinition CreatePropertyDefinition (Type propertyType, bool? isNullable, int? maxLength)
     {
-      return CreatePropertyDefinition(_classDefintion, "Name", "ColumnName", propertyType, isNullable, maxLength, true);
+      return CreatePropertyDefinition (_classDefintion, "Name", "ColumnName", propertyType, isNullable, maxLength, StorageClass.Persistent);
     }
 
     private PropertyDefinition CreatePropertyDefinition (ReflectionBasedClassDefinition classDefinition, string propertyName, string columnName,
-        Type propertyType, bool? isNullable, int? maxLength, bool isPersistent)
+        Type propertyType, bool? isNullable, int? maxLength, StorageClass storageClass)
     {
       PropertyInfo dummyPropertyInfo = typeof (Order).GetProperty ("Number");
       return new ReflectionBasedPropertyDefinition (
-          classDefinition, dummyPropertyInfo, propertyName, columnName, propertyType, isNullable, maxLength, isPersistent);
+          classDefinition, dummyPropertyInfo, propertyName, columnName, propertyType, isNullable, maxLength, storageClass);
     }
   }
 }
