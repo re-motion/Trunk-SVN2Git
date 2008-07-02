@@ -37,9 +37,6 @@ namespace Remotion.Data.DomainObjects
 
     // static members and constants
 
-    private static readonly Set<StorageClass> s_storageClassesInitializedForNew = new Set<StorageClass> (StorageClass.Persistent, StorageClass.Transaction);
-    private static readonly Set<StorageClass> s_storageClassesInitializedForExisting = new Set<StorageClass> (StorageClass.Transaction);
-
     /// <summary>
     /// Creates an empty <see cref="DataContainer"/> for a new <see cref="Remotion.Data.DomainObjects.DomainObject"/>. The <see cref="DataContainer"/>
     /// contains a new <see cref="PropertyValue"/> object for every <see cref="PropertyDefinition"/> in the respective <see cref="ClassDefinition"/>.
@@ -57,42 +54,50 @@ namespace Remotion.Data.DomainObjects
       DataContainer newDataContainer = new DataContainer (id);
       newDataContainer._state = DataContainerStateType.New;
 
-      InitializePropertyValues (newDataContainer, s_storageClassesInitializedForNew);
+      InitializeDefaultPropertyValues (newDataContainer);
       return newDataContainer;
     }
 
     /// <summary>
     /// Creates an empty <see cref="DataContainer"/> for an existing <see cref="Remotion.Data.DomainObjects.DomainObject"/>. The <see cref="DataContainer"/>
-    /// does not contain any <see cref="PropertyValue"/> objects.
+    /// contain all <see cref="PropertyValue"/> objects, just as if it had been created with <see cref="CreateNew"/>, but the values for persistent 
+    /// properties are set as returned by a lookup method.
     /// </summary>
     /// <remarks>
     /// The new <see cref="DataContainer"/> has a <see cref="State"/> of <see cref="StateType.Unchanged"/>. All <see cref="PropertyValue"/>s for the class specified by <see cref="ObjectID.ClassID"/> are created.
     /// </remarks>
     /// <param name="id">The <see cref="ObjectID"/> of the new <see cref="DataContainer"/> to create. Must not be <see langword="null"/>.</param>
     /// <param name="timestamp">The timestamp value of the existing object in the datasource.</param>
+    /// <param name="persistentValueLookup">A function object returning the value of a given persistent property for the existing object.</param>
     /// <returns>The new <see cref="DataContainer"/>.</returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
     /// <exception cref="Mapping.MappingException">ClassDefinition of <paramref name="id"/> does not exist in mapping.</exception>
-    public static DataContainer CreateForExisting (ObjectID id, object timestamp)
+    public static DataContainer CreateForExisting (ObjectID id, object timestamp, Func<PropertyDefinition, object> persistentValueLookup)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
       DataContainer dataContainer = new DataContainer (id, timestamp);
       dataContainer._state = DataContainerStateType.Existing;
 
-      InitializePropertyValues (dataContainer, s_storageClassesInitializedForExisting);
+      foreach (PropertyDefinition propertyDefinition in dataContainer.ClassDefinition.GetPropertyDefinitions ())
+      {
+        if (propertyDefinition.StorageClass == StorageClass.Persistent)
+        {
+          object value = persistentValueLookup (propertyDefinition);
+          dataContainer.PropertyValues.Add (new PropertyValue (propertyDefinition, value));
+        }
+        else
+          dataContainer.PropertyValues.Add (new PropertyValue (propertyDefinition));
+      }
+
       return dataContainer;
     }
 
-    private static void InitializePropertyValues (DataContainer newDataContainer, Set<StorageClass> initializedStorageClasses)
+    private static void InitializeDefaultPropertyValues (DataContainer newDataContainer)
     {
       foreach (PropertyDefinition propertyDefinition in newDataContainer.ClassDefinition.GetPropertyDefinitions ())
-      {
-        if (initializedStorageClasses.Contains (propertyDefinition.StorageClass))
-          newDataContainer.PropertyValues.Add (new PropertyValue (propertyDefinition));
-      }
+        newDataContainer.PropertyValues.Add (new PropertyValue (propertyDefinition));
     }
-
 
     /// <summary>
     /// Creates a <see cref="DataContainer"/> for the given <paramref name="id"/>, assuming the same state as another <see cref="DataContainer"/>.
@@ -640,7 +645,7 @@ namespace Remotion.Data.DomainObjects
     private DataContainer (FlattenedDeserializationInfo info)
         : this (info.GetValueForHandle<ObjectID> (), info.GetValue<object> (), new PropertyValueCollection())
     {
-      InitializePropertyValues (this, s_storageClassesInitializedForNew);
+      InitializeDefaultPropertyValues (this);
 
       _isDiscarded = info.GetBoolValue ();
       if (!_isDiscarded)

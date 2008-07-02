@@ -57,5 +57,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.TestDomain
     [DBBidirectionalRelation ("OrderTicket", ContainsForeignKey = true)]
     [Mandatory]
     public abstract Order Order { get; set; }
+
+
+    [StorageClassTransaction]
+    public abstract int Int32TransactionProperty { get; set; }
   }
 }

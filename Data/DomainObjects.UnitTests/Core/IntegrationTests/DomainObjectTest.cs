@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Threading;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -734,6 +735,22 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.IntegrationTests
 
       customer.Delete();
       ClientTransactionScope.CurrentTransaction.Commit();
+    }
+
+    [Test]
+    public void InsertComputerAndEmployee ()
+    {
+      Computer computer = Computer.NewObject ();
+      computer.Employee = Employee.NewObject ();
+      computer.SerialNumber = "12345";
+      computer.Employee.Name = "ABCDE";
+
+      ClientTransactionMock.Commit ();
+
+      computer.Employee.Delete ();
+      computer.Delete ();
+
+      ClientTransactionMock.Commit ();
     }
 
     [Test]

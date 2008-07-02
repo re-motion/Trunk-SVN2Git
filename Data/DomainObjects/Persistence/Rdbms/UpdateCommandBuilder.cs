@@ -11,6 +11,7 @@
 using System;
 using System.Data;
 using System.Text;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -47,14 +48,13 @@ public class UpdateCommandBuilder : CommandBuilder
 
     foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)
     {
-      if (MustBeUpdated (propertyValue))
+      if (propertyValue.Definition.StorageClass == StorageClass.Persistent && MustBeUpdated (propertyValue))
         AddPropertyValue (command, propertyValue);
     }
 
     if (command.Parameters.Count == 0)
     {
       command.Dispose ();
-      command = null;
       return null;
     }
 

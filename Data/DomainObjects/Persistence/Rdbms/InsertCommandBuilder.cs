@@ -11,6 +11,7 @@
 using System;
 using System.Data;
 using System.Text;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -60,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       foreach (PropertyValue propertyValue in _dataContainer.PropertyValues)
       {
-        if (propertyValue.PropertyType != typeof (ObjectID))
+        if (propertyValue.Definition.StorageClass == StorageClass.Persistent && propertyValue.PropertyType != typeof (ObjectID))
         {
           AppendColumn (propertyValue.Definition.StorageSpecificName, propertyValue.Definition.StorageSpecificName);
           AddCommandParameter (command, propertyValue.Definition.StorageSpecificName, propertyValue);

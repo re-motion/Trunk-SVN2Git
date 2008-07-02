@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Core.Resources;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
@@ -41,14 +42,17 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
 
     public DataContainer CreateCustomer1DataContainer ()
     {
-      DataContainer dataContainer = DataContainer.CreateForExisting (_domainObjectIDs.Customer1, null);
-      ClassDefinition classDefinition = dataContainer.ClassDefinition;
+      ObjectID id = _domainObjectIDs.Customer1;
+      ClassDefinition classDefinition = id.ClassDefinition;
+      Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
 
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.Name"), "Kunde 1"));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Customer.CustomerSince"), new DateTime (2000, 1, 1)));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Customer.Type"), Customer.CustomerType.Standard));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.IndustrialSector"), _domainObjectIDs.IndustrialSector1));
+      // use GetPropertyDefinition because we are setting properties from the base class here
+      persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.Name"), "Kunde 1");
+      persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Customer.CustomerSince"), new DateTime (2000, 1, 1));
+      persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Customer.Type"), Customer.CustomerType.Standard);
+      persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.IndustrialSector"), _domainObjectIDs.IndustrialSector1);
 
+      DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
       _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
@@ -58,53 +62,54 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
     {
       ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
-      DataContainer dataContainer = DataContainer.CreateForExisting (id, null);
-      ClassDefinition classDefinition = dataContainer.ClassDefinition;
+      ClassDefinition classDefinition = id.ClassDefinition;
+      Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
 
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.BooleanProperty"], false));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.ByteProperty"], (byte) 85));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.DateProperty"], new DateTime (2005, 1, 1)));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.DateTimeProperty"], new DateTime (2005, 1, 1, 17, 0, 0)));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.DecimalProperty"], (decimal) 123456.789));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.DoubleProperty"], 987654.321));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.EnumProperty"], ClassWithAllDataTypes.EnumType.Value1));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.GuidProperty"], new Guid ("{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}")));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.Int16Property"], (short) 32767));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.Int32Property"], 2147483647));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.Int64Property"], (long) 9223372036854775807));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.SingleProperty"], (float) 6789.321));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.StringProperty"], "abcdeföäü"));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.StringPropertyWithoutMaxLength"], "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.BinaryProperty"], ResourceManager.GetImage1 ()));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.BooleanProperty"], false);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.ByteProperty"], (byte) 85);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.DateProperty"], new DateTime (2005, 1, 1));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.DateTimeProperty"], new DateTime (2005, 1, 1, 17, 0, 0));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.DecimalProperty"], (decimal) 123456.789);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.DoubleProperty"], 987654.321);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.EnumProperty"], ClassWithAllDataTypes.EnumType.Value1);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.GuidProperty"], new Guid ("{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}"));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.Int16Property"], (short) 32767);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.Int32Property"], 2147483647);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.Int64Property"], (long) 9223372036854775807);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.SingleProperty"], (float) 6789.321);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.StringProperty"], "abcdeföäü");
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.StringPropertyWithoutMaxLength"], "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.BinaryProperty"], ResourceManager.GetImage1 ());
 
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"], true));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaByteProperty"], (byte) 78));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDateProperty"], new DateTime (2005, 2, 1)));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"], new DateTime (2005, 2, 1, 5, 0, 0)));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"], 765.098m));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"], 654321.789d));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaEnumProperty"], ClassWithAllDataTypes.EnumType.Value2));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaGuidProperty"], new Guid ("{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}")));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt16Property"], (short) 12000));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt32Property"], -2147483647));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt64Property"], 3147483647L));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaSingleProperty"], 12.456F));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"], true);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaByteProperty"], (byte) 78);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDateProperty"], new DateTime (2005, 2, 1));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"], new DateTime (2005, 2, 1, 5, 0, 0));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"], 765.098m);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"], 654321.789d);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaEnumProperty"], ClassWithAllDataTypes.EnumType.Value2);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaGuidProperty"], new Guid ("{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}"));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt16Property"], (short) 12000);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt32Property"], -2147483647);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt64Property"], 3147483647L);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaSingleProperty"], 12.456F);
 
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaBooleanWithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaByteWithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDateWithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDateTimeWithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDecimalWithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDoubleWithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaEnumWithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaGuidWithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt16WithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt32WithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt64WithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaSingleWithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"], null));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"], null));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaBooleanWithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaByteWithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDateWithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDateTimeWithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDecimalWithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaDoubleWithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaEnumWithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaGuidWithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt16WithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt32WithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaInt64WithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NaSingleWithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"], null);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"], null);
 
+      DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
       _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
@@ -112,13 +117,17 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
 
     public DataContainer CreatePartner1DataContainer ()
     {
-      DataContainer dataContainer = DataContainer.CreateForExisting (_domainObjectIDs.Partner1, null);
-      ClassDefinition classDefinition = dataContainer.ClassDefinition;
+      ObjectID id = _domainObjectIDs.Partner1;
 
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.Name"), "Partner 1"));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Partner.ContactPerson"), _domainObjectIDs.Person1));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.IndustrialSector"), _domainObjectIDs.IndustrialSector1));
+      ClassDefinition classDefinition = id.ClassDefinition;
+      Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
 
+      // use GetPropertyDefinition because we are setting properties from the base class here
+      persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.Name"), "Partner 1");
+      persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Partner.ContactPerson"), _domainObjectIDs.Person1);
+      persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.IndustrialSector"), _domainObjectIDs.IndustrialSector1);
+
+      DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
       _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
@@ -126,14 +135,18 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
 
     public DataContainer CreateDistributor2DataContainer ()
     {
-      DataContainer dataContainer = DataContainer.CreateForExisting (_domainObjectIDs.Distributor2, null);
-      ClassDefinition classDefinition = dataContainer.ClassDefinition;
+      ObjectID id = _domainObjectIDs.Distributor2;
 
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.Name"), "Händler 2"));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Partner.ContactPerson"), _domainObjectIDs.Person6));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.IndustrialSector"), _domainObjectIDs.IndustrialSector1));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Distributor.NumberOfShops"), 10));
+      ClassDefinition classDefinition = id.ClassDefinition;
+      Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
 
+      // use GetPropertyDefinition because we are setting properties from the base class here
+      persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.Name"), "Händler 2");
+      persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Partner.ContactPerson"), _domainObjectIDs.Person6);
+      persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Company.IndustrialSector"), _domainObjectIDs.IndustrialSector1);
+      persistentPropertyValues.Add (classDefinition.GetPropertyDefinition ("Remotion.Data.DomainObjects.UnitTests.TestDomain.Distributor.NumberOfShops"), 10);
+
+      DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
       _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
@@ -141,14 +154,18 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
 
     public DataContainer CreateOrder1DataContainer ()
     {
-      DataContainer dataContainer = DataContainer.CreateForExisting (_domainObjectIDs.Order1, null);
-      ClassDefinition classDefinition = dataContainer.ClassDefinition;
+      ObjectID id = _domainObjectIDs.Order1;
 
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.OrderNumber"], 1));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.DeliveryDate"], new DateTime (2005, 1, 1)));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Official"], _domainObjectIDs.Official1));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Customer"], _domainObjectIDs.Customer1));
+      ClassDefinition classDefinition = id.ClassDefinition;
+      Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
 
+
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.OrderNumber"], 1);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.DeliveryDate"], new DateTime (2005, 1, 1));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Official"], _domainObjectIDs.Official1);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Customer"], _domainObjectIDs.Customer1);
+
+      DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
       _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
@@ -156,14 +173,17 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
 
     public DataContainer CreateOrder2DataContainer ()
     {
-      DataContainer dataContainer = DataContainer.CreateForExisting (_domainObjectIDs.Order2, null);
-      ClassDefinition classDefinition = dataContainer.ClassDefinition;
+      ObjectID id = _domainObjectIDs.Order2;
 
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.OrderNumber"], 3));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.DeliveryDate"], new DateTime (2005, 3, 1)));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Official"], _domainObjectIDs.Official1));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Customer"], _domainObjectIDs.Customer3));
+      ClassDefinition classDefinition = id.ClassDefinition;
+      Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
+      
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.OrderNumber"], 3);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.DeliveryDate"], new DateTime (2005, 3, 1));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Official"], _domainObjectIDs.Official1);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Customer"], _domainObjectIDs.Customer3);
 
+      DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
       _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
@@ -171,14 +191,17 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
 
     public DataContainer CreateOrderWithoutOrderItemDataContainer ()
     {
-      DataContainer dataContainer = DataContainer.CreateForExisting (_domainObjectIDs.OrderWithoutOrderItem, null);
-      ClassDefinition classDefinition = dataContainer.ClassDefinition;
+      ObjectID id = _domainObjectIDs.OrderWithoutOrderItem;
 
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.OrderNumber"], 2));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.DeliveryDate"], new DateTime (2005, 2, 1)));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Official"], _domainObjectIDs.Official1));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Customer"], _domainObjectIDs.Customer1));
+      ClassDefinition classDefinition = id.ClassDefinition;
+      Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
+      
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.OrderNumber"], 2);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.DeliveryDate"], new DateTime (2005, 2, 1));
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Official"], _domainObjectIDs.Official1);
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Customer"], _domainObjectIDs.Customer1);
 
+      DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
       _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
@@ -186,12 +209,15 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
 
     public DataContainer CreateOrderTicket1DataContainer ()
     {
-      DataContainer dataContainer = DataContainer.CreateForExisting (_domainObjectIDs.OrderTicket1, null);
-      ClassDefinition classDefinition = dataContainer.ClassDefinition;
+      ObjectID id = _domainObjectIDs.OrderTicket1;
 
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderTicket.FileName"], @"C:\order1.png"));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderTicket.Order"], _domainObjectIDs.Order1));
+      ClassDefinition classDefinition = id.ClassDefinition;
+      Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
 
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderTicket.FileName"], @"C:\order1.png");
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderTicket.Order"], _domainObjectIDs.Order1);
+
+      DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
       _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
@@ -199,12 +225,15 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
 
     public DataContainer CreateOrderTicket2DataContainer ()
     {
-      DataContainer dataContainer = DataContainer.CreateForExisting (_domainObjectIDs.OrderTicket2, null);
-      ClassDefinition classDefinition = dataContainer.ClassDefinition;
+      ObjectID id = _domainObjectIDs.OrderTicket2;
 
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderTicket.FileName"], @"C:\order2.png"));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderTicket.Order"], _domainObjectIDs.OrderWithoutOrderItem));
+      ClassDefinition classDefinition = id.ClassDefinition;
+      Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
 
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderTicket.FileName"], @"C:\order2.png");
+      persistentPropertyValues.Add (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderTicket.Order"], _domainObjectIDs.OrderWithoutOrderItem);
+
+      DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
       _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
@@ -214,10 +243,20 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
     {
       ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{7D1F5F2E-D111-433b-A675-300B55DC4756}"));
 
-      DataContainer dataContainer = DataContainer.CreateForExisting (id, null);
+      Dictionary<PropertyDefinition, object> persistentPropertyValues = new Dictionary<PropertyDefinition, object> ();
+
+      DataContainer dataContainer = CreateExistingDataContainer (id, persistentPropertyValues);
       _clientTransactionMock.SetClientTransaction (dataContainer);
 
       return dataContainer;
+    }
+
+    private DataContainer CreateExistingDataContainer (ObjectID id, Dictionary<PropertyDefinition, object> persistentPropertyValues)
+    {
+      return DataContainer.CreateForExisting (id, null, delegate (PropertyDefinition propertyDefinition)
+      {
+        return persistentPropertyValues.ContainsKey (propertyDefinition) ? persistentPropertyValues[propertyDefinition] : propertyDefinition.DefaultValue;
+      });
     }
   }
 }

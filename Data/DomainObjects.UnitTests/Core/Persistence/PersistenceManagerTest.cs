@@ -467,13 +467,22 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Persistence
     
     private DataContainer CreateOrder1DataContainerWithInvalidCustomer ()
     {
-      DataContainer dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null);
-      ClassDefinition classDefinition = dataContainer.ClassDefinition;
-
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.OrderNumber"], 1));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.DeliveryDate"], new DateTime (2005, 1, 1)));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Official"], DomainObjectIDs.Official1));
-      dataContainer.PropertyValues.Add (new PropertyValue (classDefinition["Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Customer"], new ObjectID ("Company", (Guid) DomainObjectIDs.Customer1.Value)));
+      DataContainer dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, 
+          delegate (PropertyDefinition propertyDefinition) {
+            switch (propertyDefinition.PropertyName)
+            {
+              case "Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.OrderNumber": 
+                return 1;
+              case "Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Official":
+                return DomainObjectIDs.Official1;
+              case "Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Customer":
+                return new ObjectID ("Company", (Guid) DomainObjectIDs.Customer1.Value);
+              case "Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.DeliveryDate":
+                return new DateTime (2005, 1, 1);
+              default:
+                return propertyDefinition.DefaultValue;
+            }
+          });
 
       ClientTransactionMock.SetClientTransaction (dataContainer);
 

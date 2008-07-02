@@ -121,7 +121,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DataManagement
               "Remotion.Data.DomainObjects.UnitTests.TestDomain.Order.Official"
           };
 
-      DataContainer existingDataContainer = DataContainer.CreateForExisting (new ObjectID ("Order", Guid.NewGuid ()), null);
+      DataContainer existingDataContainer = DataContainer.CreateForExisting (new ObjectID ("Order", Guid.NewGuid ()), null, 
+          delegate (PropertyDefinition definition) { return definition.DefaultValue; });
 
       RelationEndPointID[] endPointIDs = RelationEndPointID.GetAllRelationEndPointIDs (existingDataContainer);
 

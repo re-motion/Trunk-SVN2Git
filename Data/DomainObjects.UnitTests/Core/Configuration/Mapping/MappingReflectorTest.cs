@@ -50,9 +50,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
       ClassDefinitionCollection actualClassDefinitions = mappingReflector.GetClassDefinitions();
       RelationDefinitionCollection actualRelationDefinitions = mappingReflector.GetRelationDefinitions (actualClassDefinitions);
 
-      ClassDefinitionChecker classDefinitionChecker = new ClassDefinitionChecker();
-      classDefinitionChecker.Check (TestMappingConfiguration.Current.ClassDefinitions, actualClassDefinitions, false, true);
-
       RelationDefinitionChecker relationDefinitionChecker = new RelationDefinitionChecker();
       relationDefinitionChecker.Check (TestMappingConfiguration.Current.RelationDefinitions, actualRelationDefinitions, true);
     }

@@ -47,7 +47,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
+      if (storageClass == StorageClass.Persistent)
+        ArgumentUtility.CheckNotNullOrEmpty ("columnName", columnName);
 
       _classDefinition = classDefinition;
       _serializedClassDefinitionID = classDefinition.ID;

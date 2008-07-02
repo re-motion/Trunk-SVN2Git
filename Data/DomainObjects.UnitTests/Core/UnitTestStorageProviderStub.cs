@@ -44,17 +44,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core
         return InnerProvider.LoadDataContainer (id);
       else
       {
-        DataContainer container = DataContainer.CreateForExisting (id, null);
-        foreach (PropertyDefinition propertyDefinition in id.ClassDefinition.GetPropertyDefinitions())
+        DataContainer container = DataContainer.CreateForExisting (id, null, delegate (PropertyDefinition propertyDefinition)
         {
-          PropertyValue propertyValue;
           if (propertyDefinition.PropertyName.EndsWith (".Name"))
-            propertyValue = new PropertyValue (propertyDefinition, "Max Sachbearbeiter");
+            return "Max Sachbearbeiter";
           else
-            propertyValue = new PropertyValue (propertyDefinition);
-
-          container.PropertyValues.Add (propertyValue);
-        }
+            return propertyDefinition.DefaultValue;
+        });
 
         int idAsInt = (int) id.Value;
         if (s_nextID <= idAsInt)

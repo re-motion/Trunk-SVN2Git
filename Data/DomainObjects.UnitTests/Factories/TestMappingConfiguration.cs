@@ -267,6 +267,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(orderTicket, "Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderTicket.FileName", "FileName", typeof (string), false, 255));
       orderTicket.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(orderTicket, "Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderTicket.Order", "OrderID", typeof (ObjectID), true));
+      orderTicket.MyPropertyDefinitions.Add (
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (orderTicket, "Remotion.Data.DomainObjects.UnitTests.TestDomain.OrderTicket.Int32TransactionProperty", null, typeof (int), null, null, StorageClass.Transaction));
 
       return orderTicket;
     }

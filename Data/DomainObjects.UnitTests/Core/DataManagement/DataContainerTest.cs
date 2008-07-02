@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DataManagement
           new ReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false, new List<Type> ());
 
       _newDataContainer = DataContainer.CreateNew (new ObjectID ("Order", idValue));
-      _existingDataContainer = DataContainer.CreateForExisting (new ObjectID ("Order", idValue), null);
+      _existingDataContainer = DataContainer.CreateForExisting (new ObjectID ("Order", idValue), null, delegate (PropertyDefinition propertyDefinition) { return propertyDefinition.DefaultValue; });
 
       ClientTransactionMock.SetClientTransaction (_existingDataContainer);
       ClientTransactionMock.SetClientTransaction (_newDataContainer);
@@ -547,6 +547,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DataManagement
     {
       DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()));
       Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Persistent")), Is.True);
+      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Persistent")].Value, Is.EqualTo (0));
+      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Persistent")].OriginalValue, Is.EqualTo (0));
     }
 
     [Test]
@@ -554,15 +556,69 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.DataManagement
     {
       DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()));
       Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Transaction")), Is.True);
+      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].Value, Is.EqualTo (0));
+      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].OriginalValue, Is.EqualTo (0));
     }
 
     [Test]
-    public void CreateForExisting_OnlyInitializedStoreageClassTransactionProperties ()
+    public void CreateNew_HasSamePropertyOrderAsClassDefinition ()
     {
-      DataContainer dc = DataContainer.CreateForExisting (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()), 1);
-      Assert.That (dc.PropertyValues.Count, Is.EqualTo (2));
+      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()));
+
+      int index = 0;
+      foreach (PropertyDefinition propertyDefinition in dc.ClassDefinition.GetPropertyDefinitions ())
+      {
+        if (propertyDefinition.StorageClass != StorageClass.None)
+        {
+          Assert.That (dc.PropertyValues[index].Definition, Is.SameAs (propertyDefinition));
+          index++;
+        }
+      }
+    }
+
+    [Test]
+    public void CreateForExisting_DoesNotIncludesStorageClassNoneProperties ()
+    {
+      DataContainer dc = DataContainer.CreateForExisting (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()), 1,
+          delegate { return 2; });
+      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("None")), Is.False);
+    }
+
+    [Test]
+    public void CreateForExisting_IncludesStorageClassPersistentProperties_WithPersistentValue ()
+    {
+      DataContainer dc = DataContainer.CreateForExisting (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()), 1, 
+          delegate { return 2; });
+      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Persistent")), Is.True);
+      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Persistent")].Value, Is.EqualTo (2));
+      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Persistent")].OriginalValue, Is.EqualTo (2));
+    }
+
+    [Test]
+    public void CreateForExisting_IncludesStorageClassTransactionProperties ()
+    {
+      DataContainer dc = DataContainer.CreateForExisting (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()), 1,
+          delegate { return 2; });
       Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Transaction")), Is.True);
-      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("TransactionWithObjectDataType")), Is.True);
+      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].Value, Is.EqualTo (0));
+      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].OriginalValue, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void CreateExisting_HasSamePropertyOrderAsClassDefinition ()
+    {
+      DataContainer dc = DataContainer.CreateForExisting (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid ()), 1,
+          delegate { return 2; });
+
+      int index = 0;
+      foreach (PropertyDefinition propertyDefinition in dc.ClassDefinition.GetPropertyDefinitions ())
+      {
+        if (propertyDefinition.StorageClass != StorageClass.None)
+        {
+          Assert.That (dc.PropertyValues[index].Definition, Is.SameAs (propertyDefinition));
+          index++;
+        }
+      }
     }
 
     private string GetStorageClassPropertyName (string shortName)

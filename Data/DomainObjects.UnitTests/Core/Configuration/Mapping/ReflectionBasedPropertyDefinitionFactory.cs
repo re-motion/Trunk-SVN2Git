@@ -46,7 +46,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyName", propertyName);
-      ArgumentUtility.CheckNotNull ("columnName", columnName);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
       PropertyInfo propertyInfo = typeof (Order).GetProperty ("OrderNumber");
