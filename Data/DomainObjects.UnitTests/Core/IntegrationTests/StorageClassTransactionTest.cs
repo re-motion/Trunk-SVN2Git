@@ -59,33 +59,86 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.IntegrationTests
       CheckValueInParallelRootTransaction (computer, referenceEmployee);
     }
 
-    private void CheckDefaultValueAndValueAfterSet (Computer computer, object referenceObject, Employee referenceEmployee)
+    [Test]
+    public void Commit_Rollback_SubtransactionExistingObject ()
     {
-      Assert.That (computer.Int32TransactionProperty, Is.EqualTo (0));
-      Assert.That (computer.ObjectTransactionProperty, Is.Null);
-      Assert.That (computer.EmployeeTransactionProperty, Is.Null);
+      object referenceObject = new object ();
+      object referenceObject2 = new object ();
+      Employee referenceEmployee = Employee.GetObject (DomainObjectIDs.Employee1);
+      Employee referenceEmployee2 = Employee.GetObject (DomainObjectIDs.Employee2);
+
+      Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       computer.Int32TransactionProperty = 5;
       computer.ObjectTransactionProperty = referenceObject;
       computer.EmployeeTransactionProperty = referenceEmployee;
+
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        CheckPropertiesAfterSet(computer, referenceObject, referenceEmployee);
+
+        computer.Int32TransactionProperty = 6;
+        computer.ObjectTransactionProperty = referenceObject2;
+        computer.EmployeeTransactionProperty = referenceEmployee2;
+
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (computer.Int32TransactionProperty, Is.EqualTo (6));
+      Assert.That (computer.ObjectTransactionProperty, Is.SameAs (referenceObject2));
+      Assert.That (computer.EmployeeTransactionProperty, Is.SameAs (referenceEmployee2));
+      Assert.That (computer.EmployeeTransactionProperty.ComputerTransactionProperty, Is.SameAs (computer));
+      Assert.That (referenceEmployee.ComputerTransactionProperty, Is.Null);
+    }
+
+    [Test]
+    public void Commit_Rollback_SubtransactionNewObject ()
+    {
+      object referenceObject = new object ();
+      Employee referenceEmployee = Employee.GetObject (DomainObjectIDs.Employee1);
+
+      Computer computer;
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        computer = Computer.NewObject ();
+        computer.Int32TransactionProperty = 5;
+        computer.ObjectTransactionProperty = referenceObject;
+        computer.EmployeeTransactionProperty = referenceEmployee;
+        CheckPropertiesAfterSet (computer, referenceObject, referenceEmployee);
+
+        ClientTransaction.Current.Commit ();
+      }
+
+      CheckPropertiesAfterSet (computer, referenceObject, referenceEmployee);
+    }
+
+    private void CheckPropertiesAfterSet (Computer computer, object referenceObject, Employee referenceEmployee)
+    {
       Assert.That (computer.Int32TransactionProperty, Is.EqualTo (5));
       Assert.That (computer.ObjectTransactionProperty, Is.SameAs (referenceObject));
       Assert.That (computer.EmployeeTransactionProperty, Is.SameAs (referenceEmployee));
       Assert.That (computer.EmployeeTransactionProperty.ComputerTransactionProperty, Is.SameAs (computer));
     }
 
+    private void CheckDefaultValueAndValueAfterSet (Computer computer, object referenceObject, Employee referenceEmployee)
+    {
+      Assert.That (computer.Int32TransactionProperty, Is.EqualTo (0));
+      Assert.That (computer.ObjectTransactionProperty, Is.Null);
+      Assert.That (computer.EmployeeTransactionProperty, Is.Null);
+
+      computer.Int32TransactionProperty = 5;
+      computer.ObjectTransactionProperty = referenceObject;
+      computer.EmployeeTransactionProperty = referenceEmployee;
+
+      CheckPropertiesAfterSet (computer, referenceObject, referenceEmployee);
+    }
+
     private void CheckValueAfterCommitAndRollback (Computer computer, object referenceObject, Employee referenceEmployee)
     {
       ClientTransactionMock.Commit ();
-      Assert.That (computer.Int32TransactionProperty, Is.EqualTo (5));
-      Assert.That (computer.ObjectTransactionProperty, Is.SameAs (referenceObject));
-      Assert.That (computer.EmployeeTransactionProperty, Is.SameAs (referenceEmployee));
-      Assert.That (computer.EmployeeTransactionProperty.ComputerTransactionProperty, Is.SameAs (computer));
+      CheckPropertiesAfterSet (computer, referenceObject, referenceEmployee);
 
       ClientTransactionMock.Rollback ();
-      Assert.That (computer.Int32TransactionProperty, Is.EqualTo (5));
-      Assert.That (computer.ObjectTransactionProperty, Is.SameAs (referenceObject));
-      Assert.That (computer.EmployeeTransactionProperty, Is.SameAs (referenceEmployee));
-      Assert.That (computer.EmployeeTransactionProperty.ComputerTransactionProperty, Is.SameAs (computer));
+      CheckPropertiesAfterSet (computer, referenceObject, referenceEmployee);
     }
 
     private void CheckValueInParallelRootTransaction (Computer computer, Employee referenceEmployee)
