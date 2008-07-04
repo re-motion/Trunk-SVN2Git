@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
+using Remotion.Context;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
@@ -25,8 +26,6 @@ namespace Remotion.Web.ExecutionEngine
 /// </summary>
 public class WxeContext
 {
-//  [ThreadStatic]
-//  private static WxeContext _current;
 
   /// <summary> The current <see cref="WxeContext"/>. </summary>
   /// <value> 
@@ -35,28 +34,13 @@ public class WxeContext
   /// </value>
   public static WxeContext Current
   {
-    // get { return _current; }
-    get { return System.Runtime.Remoting.Messaging.CallContext.GetData ("WxeContext") as WxeContext; }
-//    get 
-//    {
-//      object obj = System.Runtime.Remoting.Messaging.CallContext.GetData ("WxeContext");
-//      if (obj == null)
-//        return null;
-//      WxeContext context = obj as WxeContext;
-//      if (context != null)
-//        return context;
-//      // Loop unitl WxeContext-like type is found
-//      //if (obj.GetType().FullName == typeof (WxeContext).FullName)
-//      //  throw new InvalidOperationException ("Wrong Assembly");
-//      //else // Provoke an invalid cast exception
-//        return (WxeContext) obj;
-//    }
+    get { return SafeContext.Instance.GetData ("WxeContext") as WxeContext; }
   }
 
   internal static void SetCurrent (WxeContext value)
   {
     // _current = value; 
-    System.Runtime.Remoting.Messaging.CallContext.SetData ("WxeContext", value);
+    SafeContext.Instance.SetData ("WxeContext", value);
   }
 
   /// <summary> 

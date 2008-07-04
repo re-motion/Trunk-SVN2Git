@@ -105,6 +105,7 @@
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
@@ -129,7 +130,12 @@
   <ItemGroup>
     <Compile Include="AdapterRegistryMock.cs" />
     <Compile Include="AdapterRegistryTest.cs" />
-    <Compile Include="CallContextSingletonTest.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
+    <Compile Include="Reflection\AssemblyFinderTest.cs" />
+    <Compile Include="Reflection\AssemblyLoaderTest.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\FileLoadExceptionConsoleApplication\Program.cs" />
+    <Compile Include="Reflection\TestAssemblyFinder.cs" />
+    <Compile Include="SafeContextSingletonTest.cs" />
     <Compile Include="Collections\InterlockedDataStoreTest.cs" />
     <Compile Include="Collections\MonitorCheckingInterceptor.cs" />
     <Compile Include="Collections\SimpleDataStoreTest.cs" />
@@ -567,7 +573,7 @@
     <Compile Include="Collections\TupleAbcTest.cs" />
     <Compile Include="Collections\TupleAbTest.cs" />
     <Compile Include="Reflection\AssemblyFinderFilterTest.cs" />
-    <Compile Include="Reflection\AssemblyFinderTest.cs" />
+    <Compile Include="Reflection\AssemblyFinderIntegrationTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\MarkedExeAssembly\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\UnmarkedAssembly\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\UnmarkedInMemoryAssembly\AssemblyInfo.cs" />

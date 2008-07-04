@@ -30,7 +30,9 @@ namespace Remotion.Context
           if (_instance == null)
           {
             // set temporary context so that mixins can be used
-            _instance = VersionDependentImplementationBridge<ICallContextStorageProvider>.Implementation;
+            IBootstrapStorageProvider bootstrapStorageProvider = VersionDependentImplementationBridge<IBootstrapStorageProvider>.Implementation;
+            _instance = bootstrapStorageProvider;
+            
             // then determine the actual context to be used
             _instance = ObjectFactory.Create<SafeContext>().With().GetDefaultInstance();
           }
@@ -64,8 +66,10 @@ namespace Remotion.Context
     /// default mixin configuration will be considered for overriding this method.
     /// </para>
     /// </remarks>
-    protected virtual ISafeContextStorageProvider GetDefaultInstance ()
+    public virtual ISafeContextStorageProvider GetDefaultInstance ()
     {
+      // assert that access to bootstrapper Instance is possible while actual Instance is initialized:
+      object bootstrapperInstance = Instance;
       return VersionDependentImplementationBridge<ICallContextStorageProvider>.Implementation;
     }
   }

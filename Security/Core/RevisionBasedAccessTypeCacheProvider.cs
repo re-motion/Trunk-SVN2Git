@@ -10,10 +10,10 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Configuration;
+using Remotion.Context;
 using Remotion.Security.Configuration;
 
 namespace Remotion.Security
@@ -93,11 +93,11 @@ namespace Remotion.Security
 
     private int GetCurrentRevision()
     {
-      int? revision = (int?) CallContext.GetData (s_revisionKey);
+      int? revision = (int?) SafeContext.Instance.GetData (s_revisionKey);
       if (!revision.HasValue)
       {
         revision = SecurityConfiguration.Current.SecurityProvider.GetRevision();
-        CallContext.SetData (s_revisionKey, revision);
+        SafeContext.Instance.SetData (s_revisionKey, revision);
       }
 
       return revision.Value;

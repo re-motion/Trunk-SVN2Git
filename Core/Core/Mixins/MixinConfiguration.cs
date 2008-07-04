@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
+using Remotion.Context;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
@@ -25,7 +26,7 @@ namespace Remotion.Mixins
   /// <remarks>
   /// <para>
   /// Instances of this class represent a single mixin configuration, ie. a set of classes associated with mixins. The class manages a thread-local
-  /// (actually <see cref="CallContext"/>-local) single active configuration instance via its <see cref="ActiveConfiguration"/> property and
+  /// (actually <see cref="SafeContext"/>-local) single active configuration instance via its <see cref="ActiveConfiguration"/> property and
   /// related methods; the active configuration can conveniently be replaced via the <see cref="EnterScope"/> method. The also provides entry points
   /// for building new mixin configuration objects: <see cref="BuildNew"/>, <see cref="BuildFromActive"/>, and <see cref="BuildFrom"/>.
   /// </para>
@@ -162,7 +163,7 @@ namespace Remotion.Mixins
     //}
 
     /// <summary>
-    /// Temporarily replaces the mixin configuration associated with the current thread (actually <see cref="CallContext"/>) with this 
+    /// Temporarily replaces the mixin configuration associated with the current thread (actually <see cref="SafeContext"/>) with this 
     /// <see cref="MixinConfiguration"/>. The original configuration will be restored when the returned object's <see cref="IDisposable.Dispose"/> method
     /// is called.
     /// </summary>

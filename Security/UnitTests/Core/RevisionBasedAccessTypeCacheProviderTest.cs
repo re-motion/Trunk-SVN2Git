@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Specialized;
 using NUnit.Framework;
+using Remotion.Context;
 using Rhino.Mocks;
 using Remotion.Collections;
 using Remotion.Configuration;
@@ -46,7 +47,7 @@ namespace Remotion.Security.UnitTests.Core
     public void TearDown()
     {
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
-      System.Runtime.Remoting.Messaging.CallContext.SetData (typeof (RevisionBasedAccessTypeCacheProvider).AssemblyQualifiedName + "_Revision", null);
+      SafeContext.Instance.SetData (typeof (RevisionBasedAccessTypeCacheProvider).AssemblyQualifiedName + "_Revision", null);
     }
 
     [Test]

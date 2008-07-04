@@ -12,6 +12,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Context;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Context
@@ -37,7 +38,6 @@ namespace Remotion.UnitTests.Context
       ISafeContextStorageProvider instance = SafeContext.Instance;
       Assert.That (instance, Is.Not.Null);
       Assert.That (SafeContext.Instance, Is.SameAs (instance));
-      Assert.That (SafeContext.Instance, Is.InstanceOfType (typeof (CallContextStorageProvider)));
     }
 
     [Test]
@@ -64,7 +64,7 @@ namespace Remotion.UnitTests.Context
     {
       using (MixinConfiguration.BuildNew ().ForClass<SafeContext> ().AddMixin<TestSafeContextMixin> ().EnterScope ())
       {
-        Assert.That (SafeContext.Instance, Is.SameAs (TestSafeContextMixin.NewDefaultInstance));
+        Assert.That (ObjectFactory.Create<SafeContext>().With().GetDefaultInstance(), Is.SameAs (TestSafeContextMixin.NewDefaultInstance));
       }
     }
 
@@ -80,22 +80,10 @@ namespace Remotion.UnitTests.Context
     }
 
     [Test]
-    public void InstanceIsNotNull_WhenSafeContextIsInitialized ()
+    public void AutoInitialization_LeavesMixinConfigurationEmpty ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass<SafeContext> ().AddMixin<TestSafeContextInstanceIsNotNullMixin> ().EnterScope ())
-      {
-        Assert.That (SafeContext.Instance, Is.SameAs (TestSafeContextMixin.NewDefaultInstance));
-      }
-    }
-
-    public class TestSafeContextInstanceIsNotNullMixin : Mixin<SafeContext>
-    {
-      [OverrideTarget]
-      public ISafeContextStorageProvider GetDefaultInstance ()
-      {
-        Assert.That (SafeContext.Instance, Is.Not.Null);
-        return TestSafeContextMixin.NewDefaultInstance;
-      }
+      Dev.Null = SafeContext.Instance;
+      Assert.That (MixinConfiguration.HasActiveConfiguration, Is.False);
     }
   }
 }

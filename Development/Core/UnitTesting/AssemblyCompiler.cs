@@ -27,7 +27,7 @@ namespace Remotion.Development.UnitTesting
     }
     
     private readonly string _sourceDirectory;
-    private Assembly _compiledAssembly;
+    private CompilerResults _results;
     private readonly CompilerParameters _compilerParameters;
 
     public AssemblyCompiler (string sourceDirectory, string outputAssembly, params string[] referencedAssemblies)
@@ -61,36 +61,43 @@ namespace Remotion.Development.UnitTesting
       _compilerParameters.ReferencedAssemblies.AddRange (referencedAssemblies);
     }
 
-    public Assembly CompiledAssembly
+    public CompilerParameters CompilerParameters
     {
-      get { return _compiledAssembly; }
+      get { return _compilerParameters; }
     }
 
-    public string OutputAssembly
+    public Assembly CompiledAssembly
+    {
+      get { return _results != null ? _results.CompiledAssembly : null; }
+    }
+
+    public CompilerResults Results
+    {
+      get { return _results; }
+    }
+
+    public string OutputAssemblyPath
     {
       get { return _compilerParameters.OutputAssembly; }
     }
 
     public void Compile ()
     {
-      _compiledAssembly = null;
       CodeDomProvider provider = new CSharpCodeProvider ();
 
       string[] sourceFiles = Directory.GetFiles (_sourceDirectory);
 
-      CompilerResults compilerResults = provider.CompileAssemblyFromFile (_compilerParameters, sourceFiles);
+      _results = provider.CompileAssemblyFromFile (_compilerParameters, sourceFiles);
 
-      if (compilerResults.Errors.Count > 0)
+      if (_results.Errors.Count > 0)
       {
         StringBuilder errorBuilder = new StringBuilder ();
-        errorBuilder.AppendFormat ("Errors building {0} into {1}", _sourceDirectory, compilerResults.PathToAssembly).AppendLine ();
-        foreach (CompilerError compilerError in compilerResults.Errors)
+        errorBuilder.AppendFormat ("Errors building {0} into {1}", _sourceDirectory, _results.PathToAssembly).AppendLine ();
+        foreach (CompilerError compilerError in _results.Errors)
           errorBuilder.AppendFormat ("  ").AppendLine (compilerError.ToString ());
 
         throw new AssemblyCompilationException (errorBuilder.ToString ());
       }
-
-      _compiledAssembly = compilerResults.CompiledAssembly;
     }
 
     public void CompileInSeparateAppDomain ()

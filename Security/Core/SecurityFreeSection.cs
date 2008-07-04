@@ -9,13 +9,13 @@
  */
 
 using System;
-using System.Runtime.Remoting.Messaging;
+using Remotion.Context;
 
 namespace Remotion.Security
 {
   public sealed class SecurityFreeSection : IDisposable
   {
-    private static string s_activeSectionCountKey = typeof (SecurityFreeSection).AssemblyQualifiedName + "_ActiveSectionCount";
+    private static readonly string s_activeSectionCountKey = typeof (SecurityFreeSection).AssemblyQualifiedName + "_ActiveSectionCount";
 
     public static bool IsActive
     {
@@ -26,18 +26,18 @@ namespace Remotion.Security
     {
       get
       {
-        int? count = (int?) CallContext.GetData (s_activeSectionCountKey);
+        int? count = (int?) SafeContext.Instance.GetData (s_activeSectionCountKey);
         if (!count.HasValue)
         {
           count = 0;
-          CallContext.SetData (s_activeSectionCountKey, count);
+          SafeContext.Instance.SetData (s_activeSectionCountKey, count);
         }
 
         return count.Value;
       }
       set
       {
-        CallContext.SetData (s_activeSectionCountKey, value);
+        SafeContext.Instance.SetData (s_activeSectionCountKey, value);
       }
     }
 

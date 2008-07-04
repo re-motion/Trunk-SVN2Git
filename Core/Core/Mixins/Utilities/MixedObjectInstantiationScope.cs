@@ -10,6 +10,7 @@
 
 using System;
 using System.Runtime.Remoting.Messaging;
+using Remotion.Context;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Utilities.Singleton;
 
@@ -28,12 +29,30 @@ namespace Remotion.Mixins.Utilities
   /// class to instantiate mixed types.
   /// </para>
   /// <para>
-  /// This class is a singleton bound to the current <see cref="CallContext"/>.
+  /// This class is a singleton bound to the current <see cref="SafeContext"/>.
   /// </para>
   /// </remarks>
-  public class MixedObjectInstantiationScope
-      : CallContextSingletonBase<MixedObjectInstantiationScope, DefaultInstanceCreator<MixedObjectInstantiationScope>>, IDisposable
+  public class MixedObjectInstantiationScope : IDisposable
   {
+    private static readonly SafeContextSingleton<MixedObjectInstantiationScope> s_instance = 
+        new SafeContextSingleton<MixedObjectInstantiationScope> (typeof (MixedObjectInstantiationScope).FullName,
+        delegate { return new MixedObjectInstantiationScope(); });
+
+    public static MixedObjectInstantiationScope Current
+    {
+      get { return s_instance.Current; }
+    }
+
+    public static bool HasCurrent
+    {
+      get { return s_instance.HasCurrent; }
+    }
+
+    public static void SetCurrent (MixedObjectInstantiationScope value)
+    {
+      s_instance.SetCurrent (value);
+    }
+
     /// <summary>
     /// The mixin instances to be used when a mixed class is instantiated from within the scope.
     /// </summary>
@@ -44,7 +63,7 @@ namespace Remotion.Mixins.Utilities
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MixedObjectInstantiationScope"/> class, setting it as the
-    /// <see cref="CallContextSingletonBase{TSelf,TCreator}.Current"/> scope object. The previous scope is restored when this scope's <see cref="Dispose"/>
+    /// <see cref="Current"/> scope object. The previous scope is restored when this scope's <see cref="Dispose"/>
     /// method is called, e.g. from a <c>using</c> statement. The new scope will not contain any pre-created mixin instances.
     /// </summary>
     public MixedObjectInstantiationScope ()
@@ -55,7 +74,7 @@ namespace Remotion.Mixins.Utilities
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MixedObjectInstantiationScope"/> class, setting it as the
-    /// <see cref="CallContextSingletonBase{TSelf,TCreator}.Current"/> scope object. The previous scope is restored when this scope's <see cref="Dispose"/>
+    /// <see cref="Current"/> scope object. The previous scope is restored when this scope's <see cref="Dispose"/>
     /// method is called, e.g. from a <c>using</c> statement. The new scope contains the specified pre-created mixin instances.
     /// </summary>
     /// <param name="suppliedMixinInstances">The mixin instances to be used when a mixed type is instantiated from within the scope. The objects

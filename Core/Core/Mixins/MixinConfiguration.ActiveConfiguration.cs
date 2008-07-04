@@ -10,21 +10,22 @@
 
 using System;
 using System.Runtime.Remoting.Messaging;
+using Remotion.Context;
 using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins
 {
   public partial class MixinConfiguration
   {
-    private static readonly CallContextSingleton<MixinConfiguration> s_activeConfiguration =
-        new CallContextSingleton<MixinConfiguration> ("Remotion.Mixins.MixinConfiguration.s_activeConfiguration",
+    private static readonly SafeContextSingleton<MixinConfiguration> s_activeConfiguration =
+        new SafeContextSingleton<MixinConfiguration> ("Remotion.Mixins.MixinConfiguration.s_activeConfiguration",
         delegate { return CopyMasterConfiguration (); });
 
     /// <summary>
     /// Gets a value indicating whether this thread has an active mixin configuration.
     /// </summary>
     /// <value>
-    ///   True if there is an active configuration for the current thread (actually <see cref="CallContext"/>); otherwise, false.
+    ///   True if there is an active configuration for the current thread (actually <see cref="SafeContext"/>); otherwise, false.
     /// </value>
     /// <remarks>
     /// The <see cref="ActiveConfiguration"/> property will always return a non-<see langword="null"/> configuration, no matter whether one was
@@ -37,9 +38,9 @@ namespace Remotion.Mixins
     }
 
     /// <summary>
-    /// Gets the active mixin configuration for the current thread (actually <see cref="CallContext"/>).
+    /// Gets the active mixin configuration for the current thread (actually <see cref="SafeContext"/>).
     /// </summary>
-    /// <value>The active mixin configuration for the current thread (<see cref="CallContext"/>).</value>
+    /// <value>The active mixin configuration for the current thread (<see cref="SafeContext"/>).</value>
     /// <remarks>
     /// The <see cref="ActiveConfiguration"/> property will always return a non-<see langword="null"/> configuration, no matter whether one was
     /// set for the current thread or not. If none was set, a default one is built using <see cref="DeclarativeConfigurationBuilder.BuildDefaultConfiguration"/>.

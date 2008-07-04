@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Web;
 using System.Web.SessionState;
 using Remotion.Collections;
+using Remotion.Context;
 using Remotion.Logging;
 using Remotion.Utilities;
 
@@ -54,11 +55,11 @@ namespace Remotion.Web.ExecutionEngine
     {
       get
       {
-        WxeFunctionStateManager functionStateManager = (WxeFunctionStateManager) System.Runtime.Remoting.Messaging.CallContext.GetData (s_key);
+        WxeFunctionStateManager functionStateManager = (WxeFunctionStateManager) SafeContext.Instance.GetData (s_key);
         if (functionStateManager == null)
         {
           functionStateManager = new WxeFunctionStateManager (HttpContext.Current.Session);
-          System.Runtime.Remoting.Messaging.CallContext.SetData (s_key, functionStateManager);
+          SafeContext.Instance.SetData (s_key, functionStateManager);
         }
         return functionStateManager;
       }

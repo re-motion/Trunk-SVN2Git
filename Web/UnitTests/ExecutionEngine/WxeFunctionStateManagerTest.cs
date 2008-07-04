@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Threading;
 using System.Web.SessionState;
 using NUnit.Framework;
+using Remotion.Context;
 using Rhino.Mocks;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
@@ -53,7 +54,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     public void TearDown ()
     {
       HttpContextHelper.SetCurrent (null);
-      System.Runtime.Remoting.Messaging.CallContext.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, null);
+      SafeContext.Instance.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, null);
     }
 
     [Test]

@@ -10,6 +10,7 @@
 
 using System;
 using System.Runtime.Remoting.Messaging;
+using Remotion.Context;
 
 namespace Remotion.Mixins
 {
@@ -25,7 +26,7 @@ namespace Remotion.Mixins
 
     /// <summary>
     /// When called for the first time, restores the <see cref="MixinConfiguration"/> that was the <see cref="MixinConfiguration.ActiveConfiguration"/> for the current
-    /// thread (<see cref="CallContext"/>) before this object was constructed.
+    /// thread (<see cref="SafeContext"/>) before this object was constructed.
     /// </summary>
     /// <remarks>
     /// After this method has been called for the first time, further calls have no effects. If the <see cref="IDisposable.Dispose"/> method is not called, the

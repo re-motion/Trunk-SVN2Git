@@ -42,6 +42,7 @@
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Configuration.dll"/>
         <include asis="true" name="System.Data.dll"/>
+        <include asis="true" name="System.Web.dll"/>
       </references>
       <resources failonempty="true" dynamicprefix="true" prefix="Remotion.UnitTests">
         <include name="Resources/*.resx" />

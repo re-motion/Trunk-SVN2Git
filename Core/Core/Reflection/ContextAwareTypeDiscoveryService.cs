@@ -18,8 +18,8 @@ namespace Remotion.Reflection
   {
     private static readonly string s_defaultServiceKey = typeof (ContextAwareTypeDiscoveryService).FullName + ".DefaultService";
 
-    public static readonly CallContextSingleton<ITypeDiscoveryService> DefaultService =
-        new CallContextSingleton<ITypeDiscoveryService> (s_defaultServiceKey, CreateDefaultService);
+    public static readonly SafeContextSingleton<ITypeDiscoveryService> DefaultService =
+        new SafeContextSingleton<ITypeDiscoveryService> (s_defaultServiceKey, CreateDefaultService);
 
     private static ITypeDiscoveryService CreateDefaultService ()
     {

@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Runtime.Remoting.Messaging;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -33,6 +32,9 @@ namespace Remotion.Data.DomainObjects
   /// </remarks>
   public class ClientTransactionScope : IDisposable, ITransactionScope<ClientTransaction>
   {
+    private static readonly SafeContextSingleton<ClientTransactionScope> _scopeSingleton = 
+        new SafeContextSingleton<ClientTransactionScope> (typeof (ClientTransactionScope).FullName, delegate { return null; });
+
     /// <summary>
     /// Gets a value indicating if a <see cref="ClientTransaction"/> is currently set as <see cref="CurrentTransaction"/>. 
     /// </summary>
@@ -70,7 +72,7 @@ namespace Remotion.Data.DomainObjects
     /// <value>The current thread's active scope, or <see langword="null"/> if no scope is currently active.</value>
     public static ClientTransactionScope ActiveScope
     {
-      get { return (ClientTransactionScope) CallContext.GetData (c_callContextScopeKey);}
+      get { return _scopeSingleton.Current; }
     }
 
     /// <summary>
@@ -85,7 +87,7 @@ namespace Remotion.Data.DomainObjects
 
     private static void SetActiveScope (ClientTransactionScope scope)
     {
-      CallContext.SetData (c_callContextScopeKey, scope);
+      _scopeSingleton.SetCurrent (scope);
     }
 
     /// <summary>
@@ -102,8 +104,6 @@ namespace Remotion.Data.DomainObjects
     {
       return new ClientTransactionScope (null, DomainObjects.AutoRollbackBehavior.None);
     }
-
-    private const string c_callContextScopeKey = "Remotion.Data.DomainObjects.ClientTransactionScope.ActiveScope";
 
     private readonly ClientTransactionScope _previousScope;
     private readonly ClientTransaction _scopedTransaction;

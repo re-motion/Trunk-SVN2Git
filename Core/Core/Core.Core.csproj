@@ -91,7 +91,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
-    <Compile Include="CallContextSingleton.cs" />
+    <Compile Include="Context\BootstrapStorageProvider.cs" />
+    <Compile Include="Reflection\AssemblyLoader.cs" />
+    <Compile Include="SafeContextSingleton.cs" />
     <Compile Include="Collections\InterlockedDataStore.cs" />
     <Compile Include="Collections\NullDataStore.cs" />
     <Compile Include="Collections\SimpleDataStore.cs" />
@@ -289,7 +291,6 @@
     <Compile Include="Mixins\Utilities\ReflectionUtility.cs" />
     <Compile Include="Mixins\Utilities\Serialization\ReflectionObjectSerializer.cs" />
     <Compile Include="Mixins\Utilities\SignatureChecker.cs" />
-    <Compile Include="Mixins\Utilities\Singleton\CallContextSingletonBase.cs" />
     <Compile Include="Mixins\Utilities\Singleton\DefaultInstanceCreator.cs" />
     <Compile Include="Mixins\Utilities\Singleton\IInstanceCreator.cs" />
     <Compile Include="Mixins\Utilities\Singleton\ThreadSafeSingleton.cs" />

@@ -9,33 +9,36 @@
  */
 
 using System;
-using System.Runtime.Remoting.Messaging;
 using Remotion.BridgeInterfaces;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Context
 {
   /// <summary>
-  /// Implements <see cref="ISafeContextStorageProvider"/> by storing data in the thread-local <see cref="CallContext"/>.
+  /// Implements <see cref="ISafeContextStorageProvider"/> for bootstrapping of <see cref="SafeContext"/>. This provider should not be
+  /// used for any other purpose because it does not store its data in a thread-local way.
   /// </summary>
-  public class CallContextStorageProvider : ICallContextStorageProvider
+  public class BootstrapStorageProvider : IBootstrapStorageProvider
   {
+    private readonly SimpleDataStore<string, object> _data = new SimpleDataStore<string, object> ();
+    
     public object GetData (string key)
     {
       ArgumentUtility.CheckNotNull ("key", key);
-      return CallContext.GetData (key);
+      return _data.GetValueOrDefault (key);
     }
 
     public void SetData (string key, object value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
-      CallContext.SetData (key, value);
+      _data[key] = value;
     }
 
     public void FreeData (string key)
     {
       ArgumentUtility.CheckNotNull ("key", key);
-      CallContext.FreeNamedDataSlot (key);
+      _data.Remove (key);
     }
   }
 }

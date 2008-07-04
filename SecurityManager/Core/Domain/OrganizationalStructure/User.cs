@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Remoting.Messaging;
+using Remotion.Context;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
@@ -42,7 +43,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       get
       {
-        ObjectID userID = (ObjectID) CallContext.GetData (s_currentKey);
+        ObjectID userID = (ObjectID) SafeContext.Instance.GetData (s_currentKey);
         if (userID == null)
           return null;
         return GetObject (userID);
@@ -50,9 +51,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       set
       {
         if (value == null)
-          CallContext.SetData (s_currentKey, null);
+          SafeContext.Instance.SetData (s_currentKey, null);
         else
-          CallContext.SetData (s_currentKey, value.ID);
+          SafeContext.Instance.SetData (s_currentKey, value.ID);
       }
     }
 

@@ -15,6 +15,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
+using Remotion.Context;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -81,17 +82,17 @@ public sealed class HtmlHeadAppender
 
   private static HtmlHeadAppender GetCurrent()
   {
-    HtmlHeadAppender current = (HtmlHeadAppender) CallContext.GetData (c_contextKey);
+    HtmlHeadAppender current = (HtmlHeadAppender) SafeContext.Instance.GetData (c_contextKey);
     
     if (current == null)
     {
       lock (typeof (HtmlHeadAppender))
       {
-        current = (HtmlHeadAppender) CallContext.GetData (c_contextKey);
+        current = (HtmlHeadAppender) SafeContext.Instance.GetData (c_contextKey);
         if (current == null)
         {
           current = new HtmlHeadAppender();
-          CallContext.SetData (c_contextKey, current);
+          SafeContext.Instance.SetData (c_contextKey, current);
         }
       }
     }

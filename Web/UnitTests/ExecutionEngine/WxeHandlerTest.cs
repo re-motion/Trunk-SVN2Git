@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.Threading;
 using System.Web;
 using NUnit.Framework;
+using Remotion.Context;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.UnitTests.AspNetFramework;
@@ -95,7 +96,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       WxeFunctionStateManager.Current.Abort (_functionStateWithChildFunction);
 
       Remotion.Web.ExecutionEngine.UrlMapping.UrlMappingConfiguration.SetCurrent (null);
-      System.Runtime.Remoting.Messaging.CallContext.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, null);
+      SafeContext.Instance.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, null);
       base.TearDown ();
     }
 
