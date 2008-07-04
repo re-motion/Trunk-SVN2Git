@@ -79,10 +79,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder, FieldAttributes.Private);
       HideFieldFromDebugger (_firstField);
 
-      Statement initializationStatement = new ExpressionStatement (new MethodInvocationExpression (null, s_concreteTypeInitializationMethod,
-          new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression ()), 
-          new ConstReference (false).ToExpression ()));
-
+      Statement initializationStatement = GetInitializationStatement();
       _emitter.ReplicateBaseTypeConstructors (initializationStatement);
 
       AddTypeInitializer ();
@@ -99,6 +96,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       AddDebuggerAttributes();
 
       ImplementOverrides ();
+    }
+
+    private Statement GetInitializationStatement ()
+    {
+      ConditionExpression condition = new SameConditionExpression (_extensionsField.ToExpression (), NullExpression.Instance);
+      ExpressionStatement initializationMethodCall = new ExpressionStatement (new MethodInvocationExpression (null, s_concreteTypeInitializationMethod,
+          new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression ()),
+          new ConstReference (false).ToExpression ()));
+      
+      IfStatement ifStatement = new IfStatement (condition, initializationMethodCall);
+      return ifStatement;
     }
 
     private void HideFieldFromDebugger (FieldReference field)
@@ -313,13 +321,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         MethodDefinition implementingMember,
         MethodInfo interfaceMember)
     {
-      CustomMethodEmitter customMethodEmitter = Emitter.CreateInterfaceMethodImplementation (interfaceMember);
-      ExpressionReference implementer =
-          new ExpressionReference (interfaceMember.DeclaringType, implementerExpression, customMethodEmitter);
-      customMethodEmitter.ImplementByDelegating (implementer, interfaceMember);
+      CustomMethodEmitter introducedMethod = Emitter.CreateInterfaceMethodImplementation (interfaceMember);
 
-      ReplicateAttributes (implementingMember, customMethodEmitter);
-      return customMethodEmitter;
+      Statement initializationStatement = GetInitializationStatement ();
+      introducedMethod.AddStatement (initializationStatement);
+
+      ExpressionReference implementer =
+          new ExpressionReference (interfaceMember.DeclaringType, implementerExpression, introducedMethod);
+      introducedMethod.ImplementByDelegating (implementer, interfaceMember);
+
+      ReplicateAttributes (implementingMember, introducedMethod);
+      return introducedMethod;
     }
 
     private CustomPropertyEmitter ImplementIntroducedProperty (Expression implementerExpression, PropertyIntroductionDefinition property)
@@ -415,6 +427,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       MethodInfo proxyMethod = _baseCallGenerator.GetProxyMethodForOverriddenMethod (method);
       CustomMethodEmitter methodOverride = Emitter.CreateMethodOverride (method.MethodInfo);
+      Statement initializationStatement = GetInitializationStatement ();
+      methodOverride.AddStatement (initializationStatement);
       methodOverride.ImplementByDelegating (new TypeReferenceWrapper (_firstField, _firstField.Reference.FieldType), proxyMethod);
       return methodOverride;
     }

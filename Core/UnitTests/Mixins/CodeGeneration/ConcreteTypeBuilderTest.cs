@@ -407,13 +407,13 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinTypeBeforeGetConcreteTypeWorks ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<BaseOverridingMixinMember> ().Clear().AddMixins (typeof (MixinWithOverridableMember)).EnterScope())
+      using (MixinConfiguration.BuildFromActive().ForClass<TargetClassOverridingMixinMember> ().Clear().AddMixins (typeof (MixinWithOverridableMember)).EnterScope())
       {
-        Type t = ConcreteTypeBuilder.Current.GetConcreteMixinType (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseOverridingMixinMember)).Mixins[0]);
+        Type t = ConcreteTypeBuilder.Current.GetConcreteMixinType (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassOverridingMixinMember)).Mixins[0]);
         Assert.IsNotNull (t);
         Assert.IsTrue (typeof (MixinWithOverridableMember).IsAssignableFrom (t));
 
-        BaseOverridingMixinMember instance = ObjectFactory.Create<BaseOverridingMixinMember> ().With ();
+        TargetClassOverridingMixinMember instance = ObjectFactory.Create<TargetClassOverridingMixinMember> ().With ();
         Assert.AreSame (t, Mixin.Get<MixinWithOverridableMember> (instance).GetType ());
       }
     }

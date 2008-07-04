@@ -8,15 +8,23 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
 {
-  public class BaseOverridingMixinMember
+  public class MixinOverridingMethodCalledFromCtor : Mixin<object, object>
   {
-    [OverrideMixin]
-    protected void Foo ()
+    public object MyThis;
+    public object MyBase;
+
+    [OverrideTarget]
+    public virtual object VirtualMethod ()
     {
+      MyThis = This;
+      MyBase = Base;
+
+      return this;
     }
   }
 }

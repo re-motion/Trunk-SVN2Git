@@ -12,8 +12,11 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Utilities;
+using Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
@@ -94,6 +97,29 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
           throw ex.InnerException;
         }
       }
+    }
+
+    [Test]
+    public void OverriddenMethodCalledFromCtor ()
+    {
+      TargetClassCallingOverriddenMethodFromCtor instance =
+          CreateMixedObject<TargetClassCallingOverriddenMethodFromCtor> (typeof (MixinOverridingMethodCalledFromCtor)).With ();
+      MixinOverridingMethodCalledFromCtor mixin = Mixin.Get<MixinOverridingMethodCalledFromCtor> (instance);
+      Assert.That (instance.Result, Is.SameAs (mixin));
+      Assert.That (mixin.MyThis, Is.SameAs (instance));
+      Assert.That (mixin.MyBase, Is.Not.Null);
+    }
+
+    [Test]
+    public void IntroducedMethodCalledFromCtor ()
+    {
+      TargetClassCallingIntroducedMethodFromCtor instance =
+          CreateMixedObject<TargetClassCallingIntroducedMethodFromCtor> (typeof (MixinIntroducingMethodCalledFromCtor)).With ();
+      
+      MixinIntroducingMethodCalledFromCtor mixin = Mixin.Get<MixinIntroducingMethodCalledFromCtor> (instance);
+      Assert.That (instance.Result, Is.SameAs (mixin));
+      Assert.That (mixin.MyThis, Is.SameAs (instance));
+      Assert.That (mixin.MyBase, Is.Not.Null);
     }
   }
 }
