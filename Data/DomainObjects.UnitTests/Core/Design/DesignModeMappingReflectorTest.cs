@@ -111,7 +111,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Design
           {
             try
             {
-              Compile (@"Core\Design\DelaySignAssembly", @"Design.Dlls\Remotion.Data.DomainObjects.UnitTests.Design.DelaySignAssembly.dll");
+              AssemblyCompiler compiler = Compile (@"Core\Design\DelaySignAssembly", @"Design.Dlls\Remotion.Data.DomainObjects.UnitTests.Design.DelaySignAssembly.dll");
+              Dev.Null = compiler.CompiledAssembly;
               Assert.Fail ("Expected FileLoadException");
             }
             catch (FileLoadException)
@@ -153,7 +154,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Design
           new object[0]).Run();
     }
 
-    private static void Compile (string sourceDirectory, string outputAssembly)
+    private static AssemblyCompiler Compile (string sourceDirectory, string outputAssembly)
     {
       string outputAssemblyDirectory = Path.GetDirectoryName (Path.GetFullPath (outputAssembly));
       if (!Directory.Exists (outputAssemblyDirectory))
@@ -165,6 +166,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Design
           new string[] {"Remotion.dll", "Remotion.Data.Interfaces.dll", "Remotion.Data.DomainObjects.dll"});
 
       compiler.Compile();
+      return compiler;
     }
 
     private static IDesignerHost GetMockDesignerHost ()
