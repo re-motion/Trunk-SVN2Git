@@ -146,6 +146,8 @@
     <Compile Include="AspNetFramework\PageMock.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Context\HttpContextStorageProviderTest.cs" />
+    <Compile Include="Context\WebSafeContextMixinTest.cs" />
     <Compile Include="ExecutionEngine\CommitException.cs" />
     <Compile Include="ExecutionEngine\ReleaseException.cs" />
     <Compile Include="ExecutionEngine\RollbackException.cs" />

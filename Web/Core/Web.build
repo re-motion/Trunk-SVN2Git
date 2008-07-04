@@ -30,8 +30,9 @@
       </nowarn> 
       <sources failonempty="true">
         <include name="*.cs" />
-        <include name="Configuration/**/*.cs" />
         <include name="Compilation/**/*.cs" />
+        <include name="Configuration/**/*.cs" />
+        <include name="Context/**/*.cs" />
         <include name="ExecutionEngine/**/*.cs" />
         <include name="Properties/**/*.cs" />
         <include name="UI/**/*.cs" />

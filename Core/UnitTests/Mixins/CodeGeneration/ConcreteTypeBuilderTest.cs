@@ -21,6 +21,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
+using Remotion.Context;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
@@ -215,6 +216,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       
       AppDomainRunner.Run (delegate (object[] args)
       {
+        // ensure SafeContext is initialized, otherwise, this will interfere with our test below
+        Dev.Null = SafeContext.Instance;
+
         string modulePath = ConcreteTypeBuilder.Current.Scope.UnsignedModulePath;
 
         MockRepository repository = new MockRepository ();
@@ -275,6 +279,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       AppDomainRunner.Run (delegate (object[] args)
       {
+        // ensure SafeContext is initialized, otherwise, this will interfere with our test below
+        Dev.Null = SafeContext.Instance;
+
         string modulePath = ConcreteTypeBuilder.Current.Scope.UnsignedModulePath;
 
         MockRepository repository = new MockRepository ();
@@ -347,6 +354,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       AppDomainRunner.Run (delegate
       {
+        // ensure SafeContext is initialized, otherwise, this will interfere with our test below
+        Dev.Null = SafeContext.Instance;
+
         string modulePath = ConcreteTypeBuilder.Current.Scope.UnsignedModulePath;
         ConcreteTypeBuilder.Current.Scope.UnsignedAssemblyName = "Bla";
         Assembly assembly = Assembly.Load (AssemblyName.GetAssemblyName (modulePath));

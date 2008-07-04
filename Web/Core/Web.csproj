@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DF8BA786-9679-4879-8757-16AE2709D83A}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -99,6 +99,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
+    <Compile Include="Context\HttpContextStorageProvider.cs" />
+    <Compile Include="Context\WebSafeContextMixin.cs" />
     <Compile Include="ExecutionEngine\WxeCallExternalException.cs" />
     <Compile Include="ExecutionEngine\WxeIgnorableException.cs" />
     <Compile Include="ExecutionEngine\InconsistentClientTransactionScopeException.cs" />
@@ -516,10 +518,12 @@
     <None Include="Res\UI\WxeLauncher.ashx" />
     <None Include="Web.build" />
     <EmbeddedResource Include="Configuration\WebConfiguration.xsd">
-      <SubType>Designer</SubType>
+      <SubType>
+      </SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ExecutionEngine\UrlMapping\UrlMapping.xsd">
-      <SubType>Designer</SubType>
+      <SubType>
+      </SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\FormGridManager.de.resx">
       <SubType>Designer</SubType>
