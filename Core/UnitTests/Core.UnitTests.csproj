@@ -131,6 +131,7 @@
     <Compile Include="AdapterRegistryMock.cs" />
     <Compile Include="AdapterRegistryTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
+    <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Reflection\AssemblyFinderTest.cs" />
     <Compile Include="Reflection\AssemblyLoaderTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\FileLoadExceptionConsoleApplication\Program.cs" />
