@@ -288,7 +288,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\MixinForClassWithAllDataTypes1.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MixinForClassWithAllDataTypes1.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
