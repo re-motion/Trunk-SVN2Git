@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context.DeclarativeAnalyzers;
 using Remotion.Mixins.Context.FluentBuilders;
@@ -37,20 +38,92 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     }
 
     [Test]
-    public void AnalyzeExtendsAttribute_NonGeneric ()
+    public void ExtendsAttribute_Defaults ()
+    {
+      ExtendsAttribute attribute = new ExtendsAttribute (typeof (string));
+      Assert.That (attribute.AdditionalDependencies, Is.Empty);
+      Assert.That (attribute.SuppressedMixins, Is.Empty);
+      Assert.That (attribute.TargetType, Is.EqualTo (typeof (string)));
+      Assert.That (attribute.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Private));
+    }
+
+    [Test]
+    public void AnalyzeExtendsAttribute ()
+    {
+      ExtendsAttribute attribute = new ExtendsAttribute (typeof (object));
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), _extenderType, MemberVisibility.Private, attribute.AdditionalDependencies,
+          attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeExtendsAttribute (_extenderType, attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeExtendsAttribute_SuppressedMixins ()
     {
       ExtendsAttribute attribute = new ExtendsAttribute (typeof (object));
       attribute.SuppressedMixins = new Type[] { typeof (int) };
-      attribute.AdditionalDependencies = new Type[] { typeof (string) };
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), _extenderType, attribute.AdditionalDependencies, 
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), _extenderType, MemberVisibility.Private, attribute.AdditionalDependencies, 
           attribute.SuppressedMixins))
           .Return (null);
 
       _mockRepository.ReplayAll();
       _analyzer.AnalyzeExtendsAttribute (_extenderType, attribute);
       _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void AnalyzeExtendsAttribute_AdditionalDependencies ()
+    {
+      ExtendsAttribute attribute = new ExtendsAttribute (typeof (object));
+      attribute.AdditionalDependencies = new Type[] { typeof (string) };
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), _extenderType, MemberVisibility.Private, attribute.AdditionalDependencies,
+          attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeExtendsAttribute (_extenderType, attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeExtendsAttribute_PrivateVisibility ()
+    {
+      ExtendsAttribute attribute = new ExtendsAttribute (typeof (object));
+      attribute.IntroducedMemberVisibility = MemberVisibility.Private;
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), _extenderType, MemberVisibility.Private, attribute.AdditionalDependencies,
+          attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeExtendsAttribute (_extenderType, attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeExtendsAttribute_PublicVisibility ()
+    {
+      ExtendsAttribute attribute = new ExtendsAttribute (typeof (object));
+      attribute.IntroducedMemberVisibility = MemberVisibility.Public;
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), _extenderType, MemberVisibility.Public, attribute.AdditionalDependencies,
+          attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeExtendsAttribute (_extenderType, attribute);
+      _mockRepository.VerifyAll ();
     }
 
     [Test]
@@ -62,7 +135,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
       attribute.MixinTypeArguments = new Type[] { typeof (double) };
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (List<double>), attribute.AdditionalDependencies,
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (List<double>), MemberVisibility.Private, attribute.AdditionalDependencies,
           attribute.SuppressedMixins))
           .Return (null);
 
@@ -89,7 +162,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
       ExtendsAttribute attribute = new ExtendsAttribute (typeof (object));
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, null, null, null, null))
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, null, null, MemberVisibility.Private, null, null))
           .IgnoreArguments()
           .Throw (new InvalidOperationException ("Foofa."));
 

@@ -80,9 +80,10 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <param name="mixinKind">The kind of relationship the mixin has with its target class.</param>
     /// <param name="targetType">The target type to add a mixin for.</param>
     /// <param name="mixinType">The mixin type to add.</param>
+    /// <param name="introducedMemberVisibility">The default visibility to be used for introduced members.</param>
     /// <param name="explicitDependencies">The explicit dependencies of the mixin in the context of the target type.</param>
     /// <param name="suppressedMixins">The mixins suppressed by this mixin in the context of the target type.</param>
-    public virtual MixinConfigurationBuilder AddMixinToClass (MixinKind mixinKind, Type targetType, Type mixinType, IEnumerable<Type> explicitDependencies, IEnumerable<Type> suppressedMixins)
+    public virtual MixinConfigurationBuilder AddMixinToClass (MixinKind mixinKind, Type targetType, Type mixinType, MemberVisibility introducedMemberVisibility, IEnumerable<Type> explicitDependencies, IEnumerable<Type> suppressedMixins)
     {
       MixinContextBuilder mixinContextBuilder = AddMixinToClass (targetType, mixinType);
       CheckForSelfSuppressor (targetType, mixinType, suppressedMixins);
@@ -90,6 +91,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
       mixinContextBuilder
           .OfKind (mixinKind)
           .WithDependencies (EnumerableUtility.ToArray (explicitDependencies))
+          .WithIntroducedMemberVisibility (introducedMemberVisibility)
           .SuppressMixins (EnumerableUtility.ToArray (suppressedMixins));
 
       return this;

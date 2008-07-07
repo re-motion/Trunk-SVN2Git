@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context.DeclarativeAnalyzers;
 using Remotion.Mixins.Context.FluentBuilders;
@@ -33,15 +34,25 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
       _analyzer = new MixAnalyzer(_configurationBuilderMock);
     }
 
-    [Test]
+   [Test]
+   public void MixAttribute_Defaults ()
+   {
+     MixAttribute attribute = new MixAttribute (typeof (string), typeof (int));
+     Assert.That (attribute.AdditionalDependencies, Is.Empty);
+     Assert.That (attribute.SuppressedMixins, Is.Empty);
+     Assert.That (attribute.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Private));
+     Assert.That (attribute.MixinKind, Is.EqualTo (MixinKind.Extending));
+     Assert.That (attribute.TargetType, Is.EqualTo (typeof (string)));
+     Assert.That (attribute.MixinType, Is.EqualTo (typeof (int)));
+   }
+
+   [Test]
     public void AnalyzeMixAttribute ()
     {
       MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
-      attribute.SuppressedMixins = new Type[] { typeof (int) };
-      attribute.AdditionalDependencies = new Type[] { typeof (string) };
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (float), attribute.AdditionalDependencies,
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (float), MemberVisibility.Private, attribute.AdditionalDependencies,
           attribute.SuppressedMixins))
           .Return (null);
 
@@ -51,13 +62,93 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     }
 
     [Test]
-    public void AnalyzeMixAttribute_WithUsedKind ()
+    public void AnalyzeMixAttribute_SuppressedMixins ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.SuppressedMixins = new Type[] { typeof (int) };
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (float), MemberVisibility.Private, attribute.AdditionalDependencies,
+          attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeMixAttribute (attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeMixAttribute_AdditionalDependencies ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.AdditionalDependencies = new Type[] { typeof (string) };
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (float), MemberVisibility.Private, attribute.AdditionalDependencies,
+          attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeMixAttribute (attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeMixAttribute_Extending ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.MixinKind = MixinKind.Extending;
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (float), MemberVisibility.Private, attribute.AdditionalDependencies,
+          attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeMixAttribute (attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeMixAttribute_Used ()
     {
       MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
       attribute.MixinKind = MixinKind.Used;
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, typeof (object), typeof (float), attribute.AdditionalDependencies,
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, typeof (object), typeof (float), MemberVisibility.Private, attribute.AdditionalDependencies,
+          attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeMixAttribute (attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeMixAttribute_PrivateVisibility ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.IntroducedMemberVisibility = MemberVisibility.Private;
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (float), MemberVisibility.Private, attribute.AdditionalDependencies,
+          attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeMixAttribute (attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeMixAttribute_PublicVisibility ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.IntroducedMemberVisibility = MemberVisibility.Public;
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (float), MemberVisibility.Public, attribute.AdditionalDependencies,
           attribute.SuppressedMixins))
           .Return (null);
 
@@ -77,7 +168,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
       Expect
           .Call (
           _configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object),
-              typeof (float),
+              typeof (float), MemberVisibility.Private,
               attribute.AdditionalDependencies,
               attribute.SuppressedMixins))
           .Throw (new InvalidOperationException("Supper?"));

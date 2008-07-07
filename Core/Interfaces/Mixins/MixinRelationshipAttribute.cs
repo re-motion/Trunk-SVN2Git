@@ -17,6 +17,7 @@ namespace Remotion.Mixins
   {
     private Type[] _additionalDependencies = Type.EmptyTypes;
     private Type[] _suppressedMixins = Type.EmptyTypes;
+    private MemberVisibility _introducedMemberVisibility = MemberVisibility.Private;
 
     /// <summary>
     /// Gets or sets additional explicit base call dependencies for the applied mixin type. This can be used to establish an ordering when
@@ -47,6 +48,12 @@ namespace Remotion.Mixins
       {
         _suppressedMixins = ArgumentUtility.CheckNotNull ("value", value);
       }
+    }
+
+    public MemberVisibility IntroducedMemberVisibility
+    {
+      get { return _introducedMemberVisibility; }
+      set { _introducedMemberVisibility = value; }
     }
   }
 }

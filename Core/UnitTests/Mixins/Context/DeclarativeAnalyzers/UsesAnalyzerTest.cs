@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context.DeclarativeAnalyzers;
 using Remotion.Mixins.Context.FluentBuilders;
@@ -36,14 +37,22 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     }
 
     [Test]
+    public void UsesAttribute_Defaults ()
+    {
+      UsesAttribute attribute = new UsesAttribute (typeof (string));
+      Assert.That (attribute.AdditionalDependencies, Is.Empty);
+      Assert.That (attribute.SuppressedMixins, Is.Empty);
+      Assert.That (attribute.MixinType, Is.EqualTo (typeof (string)));
+      Assert.That (attribute.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Private));
+    }
+
+    [Test]
     public void AnalyzeUsesAttribute ()
     {
       UsesAttribute attribute = new UsesAttribute (typeof (string));
-      attribute.AdditionalDependencies = new Type[] { typeof (int) };
-      attribute.SuppressedMixins = new Type[] { typeof (double) };
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), attribute.AdditionalDependencies, attribute.SuppressedMixins))
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), MemberVisibility.Private, attribute.AdditionalDependencies, attribute.SuppressedMixins))
           .Return (null);
 
       _mockRepository.ReplayAll();
@@ -52,12 +61,74 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     }
 
     [Test]
+    public void AnalyzeUsesAttribute_AdditionalDependencies ()
+    {
+      UsesAttribute attribute = new UsesAttribute (typeof (string));
+      attribute.AdditionalDependencies = new Type[] { typeof (int) };
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), MemberVisibility.Private, attribute.AdditionalDependencies, attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeUsesAttribute (_userType, attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeUsesAttribute_SuppressedMixins ()
+    {
+      UsesAttribute attribute = new UsesAttribute (typeof (string));
+      attribute.SuppressedMixins = new Type[] { typeof (double) };
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), MemberVisibility.Private, attribute.AdditionalDependencies, attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeUsesAttribute (_userType, attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeUsesAttribute_PrivateVisibility ()
+    {
+      UsesAttribute attribute = new UsesAttribute (typeof (string));
+      attribute.SuppressedMixins = new Type[] { typeof (double) };
+      attribute.IntroducedMemberVisibility = MemberVisibility.Private;
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), MemberVisibility.Private, attribute.AdditionalDependencies, attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeUsesAttribute (_userType, attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void AnalyzeUsesAttribute_PublicVisibility ()
+    {
+      UsesAttribute attribute = new UsesAttribute (typeof (string));
+      attribute.SuppressedMixins = new Type[] { typeof (double) };
+      attribute.IntroducedMemberVisibility = MemberVisibility.Public;
+
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), MemberVisibility.Public, attribute.AdditionalDependencies, attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeUsesAttribute (_userType, attribute);
+      _mockRepository.VerifyAll ();
+    }
+    
+    [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Text")]
     public void AnalyzeUsesAttribute_InvalidOperation ()
     {
       UsesAttribute attribute = new UsesAttribute (typeof (string));
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, null, null, null, null))
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, null, null, MemberVisibility.Private, null, null))
           .IgnoreArguments()
           .Throw (new InvalidOperationException ("Text"));
 
@@ -67,6 +138,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
 
     [Uses (typeof (int))]
     [Uses (typeof (string))]
+    [Uses (typeof (double), IntroducedMemberVisibility = MemberVisibility.Public)]
     [IgnoreForMixinConfiguration]
     public class ClassWithMultipleUsesAttributes { }
 
@@ -82,6 +154,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
 
       analyzer.AnalyzeUsesAttribute (typeof (ClassWithMultipleUsesAttributes), attributes[0]); // expect
       analyzer.AnalyzeUsesAttribute (typeof (ClassWithMultipleUsesAttributes), attributes[1]); // expect
+      analyzer.AnalyzeUsesAttribute (typeof (ClassWithMultipleUsesAttributes), attributes[2]); // expect
 
       _mockRepository.ReplayAll ();
       analyzer.Analyze (typeof (ClassWithMultipleUsesAttributes));

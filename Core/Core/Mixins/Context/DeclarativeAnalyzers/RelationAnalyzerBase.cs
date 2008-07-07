@@ -25,11 +25,11 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
       _configurationBuilder = configurationBuilder;
     }
 
-    protected void AddMixinAndAdjustException (MixinKind mixinKind, Type targetType, Type mixinType, IEnumerable<Type> additionalDependencies, IEnumerable<Type> suppressedMixins)
+    protected void AddMixinAndAdjustException (MixinKind mixinKind, Type targetType, Type mixinType, MemberVisibility introducedMemberVisibility, IEnumerable<Type> additionalDependencies, IEnumerable<Type> suppressedMixins)
     {
       try
       {
-        _configurationBuilder.AddMixinToClass (mixinKind, targetType, mixinType, additionalDependencies, suppressedMixins);
+        _configurationBuilder.AddMixinToClass (mixinKind, targetType, mixinType, introducedMemberVisibility, additionalDependencies, suppressedMixins);
       }
       catch (Exception ex)
       {

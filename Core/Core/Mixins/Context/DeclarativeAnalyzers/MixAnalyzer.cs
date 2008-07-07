@@ -28,7 +28,7 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 
     public virtual void AnalyzeMixAttribute (MixAttribute mixAttribute)
     {
-      AddMixinAndAdjustException (mixAttribute.MixinKind, mixAttribute.TargetType, mixAttribute.MixinType, mixAttribute.AdditionalDependencies, mixAttribute.SuppressedMixins);
+      AddMixinAndAdjustException (mixAttribute.MixinKind, mixAttribute.TargetType, mixAttribute.MixinType, mixAttribute.IntroducedMemberVisibility, mixAttribute.AdditionalDependencies, mixAttribute.SuppressedMixins);
     }
   }
 }
