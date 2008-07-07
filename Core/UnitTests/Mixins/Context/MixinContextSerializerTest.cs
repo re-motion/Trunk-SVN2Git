@@ -27,14 +27,13 @@ namespace Remotion.UnitTests.Mixins.Context
     public void SetUp ()
     {
       _serializationInfo = new SerializationInfo (typeof (MixinContext), new FormatterConverter ());
-     
     }
 
     [Test]
     public void Serialize_MixinKind ()
     {
-      MixinContext context1 = new MixinContext (MixinKind.Extending, typeof (BT1Mixin1));
-      MixinContext context2 = new MixinContext (MixinKind.Used, typeof (BT1Mixin1));
+      MixinContext context1 = new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private);
+      MixinContext context2 = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Private);
       MixinContext deserializedContext1 = SerializeAndDeserialize (context1, "key1");
       MixinContext deserializedContext2 = SerializeAndDeserialize (context2, "key2");
       Assert.That (deserializedContext1.MixinKind, Is.EqualTo (MixinKind.Extending));
@@ -44,7 +43,7 @@ namespace Remotion.UnitTests.Mixins.Context
     [Test]
     public void Serialize_MixinType ()
     {
-      MixinContext context = new MixinContext (MixinKind.Extending, typeof (BT1Mixin1));
+      MixinContext context = new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private);
       MixinContext deserializedContext = SerializeAndDeserialize(context, "key");
       Assert.That (deserializedContext.MixinType, Is.EqualTo (typeof (BT1Mixin1)));
     }
@@ -52,12 +51,23 @@ namespace Remotion.UnitTests.Mixins.Context
     [Test]
     public void Serialize_ExplicitDependencies ()
     {
-      MixinContext contextWithoutDependencies = new MixinContext (MixinKind.Extending, typeof (BT1Mixin1));
-      MixinContext contextWithDependencies = new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), typeof (BT1Mixin2), typeof (BT2Mixin1));
+      MixinContext contextWithoutDependencies = new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private);
+      MixinContext contextWithDependencies = new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private, typeof (BT1Mixin2), typeof (BT2Mixin1));
       MixinContext deserializedContextWithoutDependencies = SerializeAndDeserialize (contextWithoutDependencies, "key1");
       MixinContext deserializedContextWithDependencies = SerializeAndDeserialize (contextWithDependencies, "key2");
       Assert.That (deserializedContextWithoutDependencies.ExplicitDependencies, Is.Empty);
       Assert.That (deserializedContextWithDependencies.ExplicitDependencies, Is.EquivalentTo(new Type[] {typeof (BT1Mixin2), typeof (BT2Mixin1)}));
+    }
+
+    [Test]
+    public void Serialize_IntroducedMemberVisibility ()
+    {
+      MixinContext context1 = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Private);
+      MixinContext context2 = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public);
+      MixinContext deserializedContext1 = SerializeAndDeserialize (context1, "key1");
+      MixinContext deserializedContext2 = SerializeAndDeserialize (context2, "key2");
+      Assert.That (deserializedContext1.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Private));
+      Assert.That (deserializedContext2.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Public));
     }
     
     private MixinContext SerializeAndDeserialize (MixinContext context, string key)

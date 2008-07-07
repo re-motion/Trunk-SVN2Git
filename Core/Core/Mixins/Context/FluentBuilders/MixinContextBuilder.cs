@@ -25,6 +25,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     private readonly Set<Type> _dependencies = new Set<Type> ();
 
     private MixinKind _mixinKind;
+    private MemberVisibility _introducedMemberVisiblity;
 
     public MixinContextBuilder (ClassContextBuilder parent, Type mixinType)
     {
@@ -34,6 +35,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
       _parent = parent;
       _mixinType = mixinType;
       _mixinKind = MixinKind.Extending;
+      _introducedMemberVisiblity = MemberVisibility.Private;
     }
 
     /// <summary>
@@ -70,6 +72,15 @@ namespace Remotion.Mixins.Context.FluentBuilders
     public IEnumerable<Type> Dependencies
     {
       get { return _dependencies; }
+    }
+
+    /// <summary>
+    /// Gets the default introduced member visiblity for this mixin.
+    /// </summary>
+    /// <value>The default introduced member visiblity.</value>
+    public MemberVisibility IntroducedMemberVisiblity
+    {
+      get { return _introducedMemberVisiblity; }
     }
 
     /// <summary>
@@ -162,12 +173,23 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
+    /// Sets the default visibility of members introduced by this mixin to the given <paramref name="memberVisibility"/>.
+    /// </summary>
+    /// <param name="memberVisibility">The default member visibility to be used.</param>
+    /// <returns>This object for further configuration of the mixin.</returns>
+    public MixinContextBuilder WithIntroducedMemberVisibility (MemberVisibility memberVisibility)
+    {
+      _introducedMemberVisiblity = memberVisibility;
+      return this;
+    }
+
+    /// <summary>
     /// Builds a mixin context with the data collected so far for the <see cref="MixinType"/>.
     /// </summary>
     /// <returns>A <see cref="MixinContext"/> holding all mixin configuration data collected so far.</returns>
     public virtual MixinContext BuildMixinContext ()
     {
-      MixinContext mixinContext = new MixinContext (_mixinKind, _mixinType, _dependencies);
+      MixinContext mixinContext = new MixinContext (_mixinKind, _mixinType, _introducedMemberVisiblity, _dependencies);
       return mixinContext;
     }
 

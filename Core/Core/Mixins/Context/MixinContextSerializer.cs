@@ -25,6 +25,7 @@ namespace Remotion.Mixins.Context
 
       info.AddValue (key + ".MixinKind", mixinContext.MixinKind);
       ReflectionObjectSerializer.SerializeType (mixinContext.MixinType, key + ".MixinType", info);
+      info.AddValue (key + ".IntroducedMemberVisibility", mixinContext.IntroducedMemberVisibility);
 
       info.AddValue (key + ".ExplicitDependencyCount", mixinContext.ExplicitDependencies.Count);
       IEnumerator<Type> dependencyEnumerator = mixinContext.ExplicitDependencies.GetEnumerator ();
@@ -39,13 +40,14 @@ namespace Remotion.Mixins.Context
 
       MixinKind mixinKind = (MixinKind) info.GetValue (key + ".MixinKind", typeof (MixinKind));
       Type mixinType = ReflectionObjectSerializer.DeserializeType (key + ".MixinType", info);
+      MemberVisibility introducedMemberVisibility = (MemberVisibility) info.GetValue (key + ".IntroducedMemberVisibility", typeof (MemberVisibility));
 
       int dependencyCount = info.GetInt32 (key + ".ExplicitDependencyCount");
       List<Type> explicitDependencies = new List<Type>();
       for (int i = 0; i < dependencyCount; ++i)
         explicitDependencies.Add (ReflectionObjectSerializer.DeserializeType (key + ".ExplicitDependencies[" + i + "]", info));
 
-      MixinContext newContext = new MixinContext (mixinKind, mixinType, explicitDependencies);
+      MixinContext newContext = new MixinContext (mixinKind, mixinType, introducedMemberVisibility, explicitDependencies);
       return newContext;
     }
   }

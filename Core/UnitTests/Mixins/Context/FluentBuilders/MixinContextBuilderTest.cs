@@ -42,6 +42,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       Assert.AreSame (_parentBuilderMock, _mixinBuilder.Parent);
       Assert.That (_mixinBuilder.Dependencies, Is.Empty);
       Assert.That (_mixinBuilder.MixinKind, Is.EqualTo (MixinKind.Extending));
+      Assert.That (_mixinBuilder.IntroducedMemberVisiblity, Is.EqualTo (MemberVisibility.Private));
     }
 
     [Test]
@@ -102,6 +103,27 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     }
 
     [Test]
+    public void WithIntroducedMemberVisibility_Public ()
+    {
+      _mixinBuilder.WithIntroducedMemberVisibility (MemberVisibility.Public);
+      Assert.That (_mixinBuilder.IntroducedMemberVisiblity, Is.EqualTo (MemberVisibility.Public));
+    }
+
+    [Test]
+    public void WithIntroducedMemberVisibility_Private ()
+    {
+      _mixinBuilder.WithIntroducedMemberVisibility (MemberVisibility.Private);
+      Assert.That (_mixinBuilder.IntroducedMemberVisiblity, Is.EqualTo (MemberVisibility.Private));
+    }
+
+    [Test]
+    public void WithIntroducedMemberVisibility_ReturnsMixinBuilder ()
+    {
+      MixinContextBuilder result = _mixinBuilder.WithIntroducedMemberVisibility (MemberVisibility.Public);
+      Assert.That (result, Is.SameAs (_mixinBuilder));
+    }
+
+    [Test]
     public void BuildContext_NoDependencies ()
     {
       MixinContext mixinContext = _mixinBuilder.BuildMixinContext ();
@@ -121,6 +143,22 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       _mixinBuilder.OfKind (MixinKind.Used);
       MixinContext mixinContext = _mixinBuilder.BuildMixinContext ();
       Assert.That (mixinContext.MixinKind, Is.EqualTo (MixinKind.Used));
+    }
+
+    [Test]
+    public void BuildContext_PrivateVisibility ()
+    {
+      _mixinBuilder.WithIntroducedMemberVisibility (MemberVisibility.Private);
+      MixinContext mixinContext = _mixinBuilder.BuildMixinContext ();
+      Assert.That (mixinContext.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Private));
+    }
+
+    [Test]
+    public void BuildContext_PublicVisibility ()
+    {
+      _mixinBuilder.WithIntroducedMemberVisibility (MemberVisibility.Public);
+      MixinContext mixinContext = _mixinBuilder.BuildMixinContext ();
+      Assert.That (mixinContext.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Public));
     }
 
     [Test]

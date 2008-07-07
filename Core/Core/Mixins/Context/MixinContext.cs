@@ -27,12 +27,15 @@ namespace Remotion.Mixins.Context
     /// The mixin type represented by the <see cref="MixinContext"/>.
     /// </summary>
     public readonly Type MixinType;
+
     /// <summary>
     /// The kind of relationship the configured mixin has with its target class.
     /// </summary>
     public readonly MixinKind MixinKind;
 
     private readonly ReadOnlyContextCollection<Type, Type> _explicitDependencies;
+    private readonly MemberVisibility _introducedMemberVisibility;
+
     private readonly int _cachedHashCode;
 
     /// <summary>
@@ -40,18 +43,21 @@ namespace Remotion.Mixins.Context
     /// </summary>
     /// <param name="mixinKind">The kind of relationship the configured mixin has with its target class.</param>
     /// <param name="mixinType">The mixin type represented by this <see cref="MixinContext"/>.</param>
+    /// <param name="introducedMemberVisibility">The default visbility of introduced members.</param>
     /// <param name="explicitDependencies">The explicit dependencies of the mixin.</param>
-    public MixinContext (MixinKind mixinKind, Type mixinType, IEnumerable<Type> explicitDependencies)
+    public MixinContext (MixinKind mixinKind, Type mixinType, MemberVisibility introducedMemberVisibility, IEnumerable<Type> explicitDependencies)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
       ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
 
       MixinType = mixinType;
       MixinKind = mixinKind;
+      _introducedMemberVisibility = introducedMemberVisibility;
 
       _explicitDependencies = new ReadOnlyContextCollection<Type, Type> (delegate (Type t) { return t; }, explicitDependencies);
 
-      _cachedHashCode = MixinKind.GetHashCode() ^ MixinType.GetHashCode () ^ EqualityUtility.GetXorHashCode (ExplicitDependencies);
+      _cachedHashCode = EqualityUtility.GetRotatedHashCode (MixinKind, MixinType, EqualityUtility.GetXorHashCode (ExplicitDependencies), 
+          IntroducedMemberVisibility);
     }
 
     /// <summary>
@@ -59,9 +65,10 @@ namespace Remotion.Mixins.Context
     /// </summary>
     /// <param name="mixinKind">The kind of mixin represented by this <see cref="MixinContext"/>.</param>
     /// <param name="mixinType">The mixin type represented by this <see cref="MixinContext"/>.</param>
+    /// <param name="introducedMemberVisibility">The default visbility of introduced members.</param>
     /// <param name="explicitDependencies">The explicit dependencies of the mixin.</param>
-    public MixinContext (MixinKind mixinKind, Type mixinType, params Type[] explicitDependencies)
-        : this (mixinKind, mixinType, (IEnumerable<Type>) explicitDependencies)
+    public MixinContext (MixinKind mixinKind, Type mixinType, MemberVisibility introducedMemberVisibility, params Type[] explicitDependencies)
+        : this (mixinKind, mixinType, introducedMemberVisibility, (IEnumerable<Type>) explicitDependencies)
     {
     }
 
@@ -79,12 +86,17 @@ namespace Remotion.Mixins.Context
       if (other == null)
         return false;
       
-      if (other.MixinKind != MixinKind || !other.MixinType.Equals (MixinType) || other.ExplicitDependencies.Count != ExplicitDependencies.Count)
+      if (other.MixinKind != MixinKind 
+        || other.MixinType != MixinType 
+        || other.IntroducedMemberVisibility != IntroducedMemberVisibility
+        || other.ExplicitDependencies.Count != ExplicitDependencies.Count)
         return false;
 
       foreach (Type explicitDependency in ExplicitDependencies)
+      {
         if (!other.ExplicitDependencies.ContainsKey (explicitDependency))
           return false;
+      }
       return true;
     }
 
@@ -107,10 +119,17 @@ namespace Remotion.Mixins.Context
     /// mixin's class declaration. This can be used to define the ordering of mixins in specific mixin configurations.</remarks>
     public ReadOnlyContextCollection<Type, Type> ExplicitDependencies
     {
-      get
-      {
-        return _explicitDependencies;
-      }
+      get { return _explicitDependencies; }
+    }
+
+
+    /// <summary>
+    /// Gets the default visibility of members introduced by this mixin.
+    /// </summary>
+    /// <value>The default introduced member visibility.</value>
+    public MemberVisibility IntroducedMemberVisibility
+    {
+      get { return _introducedMemberVisibility; }
     }
   }
 }

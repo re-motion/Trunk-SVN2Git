@@ -34,7 +34,7 @@ namespace Remotion.Mixins.Context
       {
         if (!mixins.ContainsKey (mixinType))
         {
-          MixinContext context = new MixinContext (MixinKind.Extending, mixinType, new Type[0]);
+          MixinContext context = new MixinContext (MixinKind.Extending, mixinType, MemberVisibility.Private, new Type[0]);
           mixins.Add (context.MixinType, context);
         }
         else

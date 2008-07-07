@@ -29,10 +29,10 @@ namespace Remotion.UnitTests.Mixins.Context
     [SetUp]
     public void SetUp ()
     {
-      _mcObject = new MixinContext (MixinKind.Extending, typeof (object));
-      _mcString = new MixinContext (MixinKind.Extending, typeof (string));
-      _mcList = new MixinContext (MixinKind.Extending, typeof (List<int>));
-      _mcDerived = new MixinContext (MixinKind.Extending, typeof (DerivedNullMixin));
+      _mcObject = new MixinContext (MixinKind.Extending, typeof (object), MemberVisibility.Private);
+      _mcString = new MixinContext (MixinKind.Extending, typeof (string), MemberVisibility.Private);
+      _mcList = new MixinContext (MixinKind.Extending, typeof (List<int>), MemberVisibility.Private);
+      _mcDerived = new MixinContext (MixinKind.Extending, typeof (DerivedNullMixin), MemberVisibility.Private);
       _collection = new MixinContextCollection (new MixinContext[] { _mcObject, _mcString, _mcList, _mcDerived});
     }
 

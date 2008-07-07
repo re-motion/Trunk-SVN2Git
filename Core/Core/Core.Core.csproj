@@ -92,6 +92,7 @@
   <ItemGroup>
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
+    <Compile Include="Mixins\Context\MemberVisibility.cs" />
     <Compile Include="Reflection\AssemblyLoader.cs" />
     <Compile Include="SafeContextSingleton.cs" />
     <Compile Include="Collections\InterlockedDataStore.cs" />
