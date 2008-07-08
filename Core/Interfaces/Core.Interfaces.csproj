@@ -75,6 +75,7 @@
     <Compile Include="Mixins\IInitializableMixin.cs" />
     <Compile Include="Mixins\IOverrideAttribute.cs" />
     <Compile Include="Mixins\MemberVisibility.cs" />
+    <Compile Include="Mixins\MemberVisibilityAttribute.cs" />
     <Compile Include="Mixins\MixAttribute.cs" />
     <Compile Include="Mixins\Mixin.cs" />
     <Compile Include="Mixins\MixinParameterAttributes.cs" />

@@ -10,6 +10,7 @@
 
 using System;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.SampleTypes
 {
@@ -18,6 +19,10 @@ namespace Remotion.UnitTests.Mixins.SampleTypes
     void MethodWithDefaultVisibility ();
     int PropertyWithDefaultVisibility { get; set; }
     event EventHandler EventWithDefaultVisibility;
+
+    void MethodWithPublicVisibility ();
+    int PropertyWithPublicVisibility { get; set; }
+    event EventHandler EventWithPublicVisibility;
   }
 
   public class MixinIntroducingMembersWithDifferentVisibilities : IMixinIntroducingMembersWithDifferentVisibilities
@@ -33,5 +38,20 @@ namespace Remotion.UnitTests.Mixins.SampleTypes
     }
 
     public event EventHandler EventWithDefaultVisibility;
+
+    [MemberVisibility (MemberVisibility.Public)]
+    public void MethodWithPublicVisibility ()
+    {
+    }
+
+    [MemberVisibility (MemberVisibility.Public)]
+    public int PropertyWithPublicVisibility
+    {
+      get { return 0; }
+      set { Dev.Null = value; }
+    }
+
+    [MemberVisibility (MemberVisibility.Public)]
+    public event EventHandler EventWithPublicVisibility;
   }
 }

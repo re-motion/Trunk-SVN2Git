@@ -424,5 +424,25 @@ namespace Remotion.UnitTests.Mixins.Definitions
             Is.EqualTo (MemberVisibility.Public));
       }
     }
+
+    [Test]
+    public void SpecialVisibility ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass<NullTarget> ()
+            .AddMixin<MixinIntroducingMembersWithDifferentVisibilities> ().WithIntroducedMemberVisibility (MemberVisibility.Private)
+          .EnterScope ())
+      {
+        TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
+        InterfaceIntroductionDefinition interfaceDefinition = definition.IntroducedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)];
+
+        Assert.That (interfaceDefinition.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")].Visibility,
+            Is.EqualTo (MemberVisibility.Public));
+        Assert.That (interfaceDefinition.IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")].Visibility,
+            Is.EqualTo (MemberVisibility.Public));
+        Assert.That (interfaceDefinition.IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")].Visibility,
+            Is.EqualTo (MemberVisibility.Public));
+      }
+    }
   }
 }

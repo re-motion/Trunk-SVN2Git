@@ -12,6 +12,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Collections;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions.Building
 {
@@ -94,7 +95,8 @@ namespace Remotion.Mixins.Definitions.Building
       {
         PropertyDefinition implementer = memberFinder.FindPropertyImplementation (interfaceProperty);
         CheckMemberImplementationFound (implementer, interfaceProperty);
-        introducedInterface.IntroducedProperties.Add (new PropertyIntroductionDefinition (introducedInterface, interfaceProperty, implementer, _defaultVisibility));
+        MemberVisibility visibility = GetVisibility (implementer.MemberInfo);
+        introducedInterface.IntroducedProperties.Add (new PropertyIntroductionDefinition (introducedInterface, interfaceProperty, implementer, visibility));
 
         MethodInfo getMethod = interfaceProperty.GetGetMethod();
         if (getMethod != null)
@@ -113,7 +115,8 @@ namespace Remotion.Mixins.Definitions.Building
       {
         EventDefinition implementer = memberFinder.FindEventImplementation (interfaceEvent);
         CheckMemberImplementationFound (implementer, interfaceEvent);
-        introducedInterface.IntroducedEvents.Add (new EventIntroductionDefinition (introducedInterface, interfaceEvent, implementer, _defaultVisibility));
+        MemberVisibility visibility = GetVisibility (implementer.MemberInfo);
+        introducedInterface.IntroducedEvents.Add (new EventIntroductionDefinition (introducedInterface, interfaceEvent, implementer, visibility));
 
         specialMethods.Add (interfaceEvent.GetAddMethod());
         specialMethods.Add (interfaceEvent.GetRemoveMethod());
@@ -129,9 +132,19 @@ namespace Remotion.Mixins.Definitions.Building
         {
           MethodDefinition implementer = memberFinder.FindMethodImplementation (interfaceMethod);
           CheckMemberImplementationFound (implementer, interfaceMethod);
-          introducedInterface.IntroducedMethods.Add (new MethodIntroductionDefinition (introducedInterface, interfaceMethod, implementer, _defaultVisibility));
+          MemberVisibility visibility = GetVisibility (implementer.MemberInfo);
+          introducedInterface.IntroducedMethods.Add (new MethodIntroductionDefinition (introducedInterface, interfaceMethod, implementer, visibility));
         }
       }
+    }
+
+    private MemberVisibility GetVisibility (MemberInfo implementingMemberInfo)
+    {
+      MemberVisibilityAttribute visibilityAttribute = AttributeUtility.GetCustomAttribute<MemberVisibilityAttribute> (implementingMemberInfo, false);
+      if (visibilityAttribute != null)
+        return visibilityAttribute.Visibility;
+      else
+        return _defaultVisibility;
     }
 
     private void CheckMemberImplementationFound (object implementation, MemberInfo interfaceMember)
