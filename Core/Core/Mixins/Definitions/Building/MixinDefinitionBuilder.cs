@@ -49,7 +49,7 @@ namespace Remotion.Mixins.Definitions.Building
       AnalyzeMembers(mixin);
       AnalyzeAttributes(mixin);
       AnalyzeAttributeIntroductions(mixin);
-      AnalyzeInterfaceIntroductions (mixin);
+      AnalyzeInterfaceIntroductions (mixin, mixinContext.IntroducedMemberVisibility);
       AnalyzeOverrides (mixin);
       AnalyzeDependencies(mixin, mixinContext.ExplicitDependencies);
     }
@@ -91,9 +91,9 @@ namespace Remotion.Mixins.Definitions.Building
       _attributeIntroductionBuilder.Apply (mixin);
     }
     
-    private void AnalyzeInterfaceIntroductions (MixinDefinition mixin)
+    private void AnalyzeInterfaceIntroductions (MixinDefinition mixin, MemberVisibility defaultVisibility)
     {
-      InterfaceIntroductionDefinitionBuilder introductionBuilder = new InterfaceIntroductionDefinitionBuilder (mixin);
+      InterfaceIntroductionDefinitionBuilder introductionBuilder = new InterfaceIntroductionDefinitionBuilder (mixin, defaultVisibility);
       introductionBuilder.Apply ();
     }
 

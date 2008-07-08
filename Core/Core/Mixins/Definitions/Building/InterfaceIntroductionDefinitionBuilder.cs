@@ -18,11 +18,13 @@ namespace Remotion.Mixins.Definitions.Building
   public class InterfaceIntroductionDefinitionBuilder
   {
     private readonly MixinDefinition _mixin;
+    private readonly MemberVisibility _defaultVisibility;
     private readonly Set<Type> _suppressedInterfaces;
 
-    public InterfaceIntroductionDefinitionBuilder (MixinDefinition mixin)
+    public InterfaceIntroductionDefinitionBuilder (MixinDefinition mixin, MemberVisibility defaultVisibility)
     {
       _mixin = mixin;
+      _defaultVisibility = defaultVisibility;
       _suppressedInterfaces = new Set<Type> (typeof (ISerializable), typeof (IDeserializationCallback), typeof (IInitializableMixin));
       AnalyzeSuppressedInterfaces ();
     }
@@ -92,7 +94,7 @@ namespace Remotion.Mixins.Definitions.Building
       {
         PropertyDefinition implementer = memberFinder.FindPropertyImplementation (interfaceProperty);
         CheckMemberImplementationFound (implementer, interfaceProperty);
-        introducedInterface.IntroducedProperties.Add (new PropertyIntroductionDefinition (introducedInterface, interfaceProperty, implementer));
+        introducedInterface.IntroducedProperties.Add (new PropertyIntroductionDefinition (introducedInterface, interfaceProperty, implementer, _defaultVisibility));
 
         MethodInfo getMethod = interfaceProperty.GetGetMethod();
         if (getMethod != null)
@@ -111,7 +113,7 @@ namespace Remotion.Mixins.Definitions.Building
       {
         EventDefinition implementer = memberFinder.FindEventImplementation (interfaceEvent);
         CheckMemberImplementationFound (implementer, interfaceEvent);
-        introducedInterface.IntroducedEvents.Add (new EventIntroductionDefinition (introducedInterface, interfaceEvent, implementer));
+        introducedInterface.IntroducedEvents.Add (new EventIntroductionDefinition (introducedInterface, interfaceEvent, implementer, _defaultVisibility));
 
         specialMethods.Add (interfaceEvent.GetAddMethod());
         specialMethods.Add (interfaceEvent.GetRemoveMethod());
@@ -127,7 +129,7 @@ namespace Remotion.Mixins.Definitions.Building
         {
           MethodDefinition implementer = memberFinder.FindMethodImplementation (interfaceMethod);
           CheckMemberImplementationFound (implementer, interfaceMethod);
-          introducedInterface.IntroducedMethods.Add (new MethodIntroductionDefinition (introducedInterface, interfaceMethod, implementer));
+          introducedInterface.IntroducedMethods.Add (new MethodIntroductionDefinition (introducedInterface, interfaceMethod, implementer, _defaultVisibility));
         }
       }
     }

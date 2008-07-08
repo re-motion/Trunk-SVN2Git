@@ -20,12 +20,13 @@ namespace Remotion.Mixins.Definitions
       where TMemberInfo : MemberInfo
       where TMemberDefinition : MemberDefinition
   {
-    private InterfaceIntroductionDefinition _declaringInterface;
-    private TMemberInfo _interfaceMember;
-    private TMemberDefinition _implementingMember;
+    private readonly InterfaceIntroductionDefinition _declaringInterface;
+    private readonly TMemberInfo _interfaceMember;
+    private readonly TMemberDefinition _implementingMember;
+    private readonly MemberVisibility _visibility;
 
     public MemberIntroductionDefinition (
-        InterfaceIntroductionDefinition declaringInterface, TMemberInfo interfaceMember, TMemberDefinition implementingMember)
+        InterfaceIntroductionDefinition declaringInterface, TMemberInfo interfaceMember, TMemberDefinition implementingMember, MemberVisibility visibility)
     {
       ArgumentUtility.CheckNotNull ("interfaceMember", interfaceMember);
       ArgumentUtility.CheckNotNull ("declaringInterface", declaringInterface);
@@ -34,6 +35,7 @@ namespace Remotion.Mixins.Definitions
       _declaringInterface = declaringInterface;
       _implementingMember = implementingMember;
       _interfaceMember = interfaceMember;
+      _visibility = visibility;
     }
 
     public InterfaceIntroductionDefinition DeclaringInterface
@@ -59,6 +61,11 @@ namespace Remotion.Mixins.Definitions
     public IVisitableDefinition Parent
     {
       get { return DeclaringInterface; }
+    }
+
+    public MemberVisibility Visibility
+    {
+      get { return _visibility; }
     }
 
     public abstract void Accept (IDefinitionVisitor visitor);

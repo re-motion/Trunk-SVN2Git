@@ -19,8 +19,8 @@ namespace Remotion.Mixins.Definitions
     private bool _introducesGetMethod;
     private bool _introducesSetMethod;
 
-    public PropertyIntroductionDefinition (InterfaceIntroductionDefinition declaringInterface, PropertyInfo interfaceMember, PropertyDefinition implementingMember)
-        : base (declaringInterface, interfaceMember, implementingMember)
+    public PropertyIntroductionDefinition (InterfaceIntroductionDefinition declaringInterface, PropertyInfo interfaceMember, PropertyDefinition implementingMember, MemberVisibility visibility)
+        : base (declaringInterface, interfaceMember, implementingMember, visibility)
     {
       _introducesGetMethod = interfaceMember.GetGetMethod() != null;
       _introducesSetMethod = interfaceMember.GetSetMethod () != null;

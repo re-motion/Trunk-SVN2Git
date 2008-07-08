@@ -136,6 +136,7 @@
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinIntroducingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinOverridingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\TargetClassCallingOverriddenMethodFromCtor.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinIntroducingMembersWithDifferentVisibilities.cs" />
     <Compile Include="Reflection\AssemblyFinderTest.cs" />
     <Compile Include="Reflection\AssemblyLoaderTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\FileLoadExceptionConsoleApplication\Program.cs" />

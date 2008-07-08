@@ -16,8 +16,8 @@ namespace Remotion.Mixins.Definitions
 {
   public class EventIntroductionDefinition : MemberIntroductionDefinition<EventInfo, EventDefinition>
   {
-    public EventIntroductionDefinition (InterfaceIntroductionDefinition declaringInterface, EventInfo interfaceMember, EventDefinition implementingMember)
-        : base (declaringInterface, interfaceMember, implementingMember)
+    public EventIntroductionDefinition (InterfaceIntroductionDefinition declaringInterface, EventInfo interfaceMember, EventDefinition implementingMember, MemberVisibility visibility)
+      : base (declaringInterface, interfaceMember, implementingMember, visibility)
     {
     }
 
