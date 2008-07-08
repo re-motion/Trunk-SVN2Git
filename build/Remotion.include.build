@@ -80,7 +80,7 @@
     <exec program="${svn.exe}">
       <arg line="copy" />
       <arg line="${repository}" />
-      <arg line="https://at-vie-remotion/svn/Remotion/tags/${build.version.noconfig}" />
+      <arg line="https://svn.re-motion.org/svn/Remotion/tags/${build.version.noconfig}" />
       <arg line="--revision ${revision}" />
       <arg line="--message &quot;Tagging build version ${build.version.noconfig}&quot;" />
     </exec>
@@ -98,7 +98,7 @@
     <exec program="${svn.exe}">
       <arg line="copy" />
       <arg line="${repository}" />
-      <arg line="https://at-vie-remotion/svn/Remotion/branches/${build.version.major}.${build.version.minor}" />
+      <arg line="https://svn.re-motion.org/svn/Remotion/branches/${build.version.major}.${build.version.minor}" />
       <arg line="--revision ${revision}" />
       <arg line="--message &quot;Branching version ${build.version.major}.${build.version.minor}&quot;" />
     </exec>
