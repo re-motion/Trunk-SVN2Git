@@ -306,7 +306,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
             new LoadArrayElementExpression (introduction.Implementer.MixinIndex, _extensionsField, typeof (object)));
 
         foreach (MethodIntroductionDefinition method in introduction.IntroducedMethods)
-          ImplementIntroducedMethod (implementerExpression, method.ImplementingMember, method.InterfaceMember);
+          ImplementIntroducedMethod (implementerExpression, method.ImplementingMember, method.InterfaceMember, method.Visibility);
 
         foreach (PropertyIntroductionDefinition property in introduction.IntroducedProperties)
           ImplementIntroducedProperty (implementerExpression, property);
@@ -319,9 +319,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private CustomMethodEmitter ImplementIntroducedMethod (
         Expression implementerExpression,
         MethodDefinition implementingMember,
-        MethodInfo interfaceMember)
+        MethodInfo interfaceMember,
+        MemberVisibility visibility)
     {
-      CustomMethodEmitter introducedMethod = Emitter.CreateInterfaceMethodImplementation (interfaceMember);
+      CustomMethodEmitter introducedMethod;
+      if (visibility == MemberVisibility.Public)
+        introducedMethod = Emitter.CreatePublicInterfaceMethodImplementation (interfaceMember);
+      else
+        introducedMethod = Emitter.CreateInterfaceMethodImplementation (interfaceMember);
 
       Statement initializationStatement = GetInitializationStatement ();
       introducedMethod.AddStatement (initializationStatement);
@@ -336,19 +341,25 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private CustomPropertyEmitter ImplementIntroducedProperty (Expression implementerExpression, PropertyIntroductionDefinition property)
     {
-      CustomPropertyEmitter propertyEmitter = Emitter.CreateInterfacePropertyImplementation (property.InterfaceMember);
+      CustomPropertyEmitter propertyEmitter;
+      if (property.Visibility == MemberVisibility.Public)
+        propertyEmitter = Emitter.CreatePublicInterfacePropertyImplementation (property.InterfaceMember);
+      else
+        propertyEmitter = Emitter.CreateInterfacePropertyImplementation (property.InterfaceMember);
 
       if (property.IntroducesGetMethod)
         propertyEmitter.GetMethod = ImplementIntroducedMethod (
             implementerExpression,
             property.ImplementingMember.GetMethod,
-            property.InterfaceMember.GetGetMethod());
+            property.InterfaceMember.GetGetMethod(),
+            property.Visibility);
 
       if (property.IntroducesSetMethod)
         propertyEmitter.SetMethod = ImplementIntroducedMethod (
             implementerExpression,
             property.ImplementingMember.SetMethod,
-            property.InterfaceMember.GetSetMethod());
+            property.InterfaceMember.GetSetMethod (),
+            property.Visibility);
 
       ReplicateAttributes (property.ImplementingMember, propertyEmitter);
       return propertyEmitter;
@@ -359,15 +370,22 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Assertion.IsNotNull (eventIntro.ImplementingMember.AddMethod);
       Assertion.IsNotNull (eventIntro.ImplementingMember.RemoveMethod);
 
-      CustomEventEmitter eventEmitter = Emitter.CreateInterfaceEventImplementation (eventIntro.InterfaceMember);
+      CustomEventEmitter eventEmitter;
+      if (eventIntro.Visibility == MemberVisibility.Public)
+        eventEmitter = Emitter.CreatePublicInterfaceEventImplementation (eventIntro.InterfaceMember);
+      else
+        eventEmitter = Emitter.CreateInterfaceEventImplementation (eventIntro.InterfaceMember);
+
       eventEmitter.AddMethod = ImplementIntroducedMethod (
           implementerExpression,
           eventIntro.ImplementingMember.AddMethod,
-          eventIntro.InterfaceMember.GetAddMethod());
+          eventIntro.InterfaceMember.GetAddMethod(),
+          eventIntro.Visibility);
       eventEmitter.RemoveMethod = ImplementIntroducedMethod (
           implementerExpression,
           eventIntro.ImplementingMember.RemoveMethod,
-          eventIntro.InterfaceMember.GetRemoveMethod());
+          eventIntro.InterfaceMember.GetRemoveMethod (),
+          eventIntro.Visibility);
 
       ReplicateAttributes (eventIntro.ImplementingMember, eventEmitter);
       return eventEmitter;

@@ -279,6 +279,13 @@ namespace Remotion.Reflection.CodeGeneration
     }
 
     // does not create the property's methods
+    public CustomPropertyEmitter CreatePublicInterfacePropertyImplementation (PropertyInfo interfaceProperty)
+    {
+      ArgumentUtility.CheckNotNull ("interfaceProperty", interfaceProperty);
+      return CreatePropertyOverrideOrInterfaceImplementation (interfaceProperty, true);
+    }
+
+    // does not create the property's methods
     private CustomPropertyEmitter CreatePropertyOverrideOrInterfaceImplementation (PropertyInfo baseOrInterfaceProperty, bool keepName)
     {
       ArgumentUtility.CheckNotNull ("baseOrInterfaceProperty", baseOrInterfaceProperty);
@@ -313,6 +320,13 @@ namespace Remotion.Reflection.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("interfaceEvent", interfaceEvent);
       return CreateEventOverrideOrInterfaceImplementation (interfaceEvent, false);
+    }
+
+    // does not create the event's methods
+    public CustomEventEmitter CreatePublicInterfaceEventImplementation (EventInfo interfaceEvent)
+    {
+      ArgumentUtility.CheckNotNull ("interfaceEvent", interfaceEvent);
+      return CreateEventOverrideOrInterfaceImplementation (interfaceEvent, true);
     }
 
     // does not create the event's methods

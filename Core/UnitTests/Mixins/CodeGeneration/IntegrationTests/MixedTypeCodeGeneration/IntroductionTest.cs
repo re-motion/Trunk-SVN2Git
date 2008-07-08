@@ -105,5 +105,41 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Assert.IsTrue (o is ICollection);
       Assert.IsTrue (o is IEnumerable);
     }
+
+    [Test]
+    public void IntroducedMemberVisibilites_Public ()
+    {
+      Type t = CreateMixedType (typeof (NullTarget), typeof (MixinIntroducingMembersWithDifferentVisibilities));
+      MethodInfo methodInfo = t.GetMethod ("MethodWithPublicVisibility", BindingFlags.Public | BindingFlags.Instance);
+      PropertyInfo propertyInfo = t.GetProperty ("PropertyWithPublicVisibility", BindingFlags.Public | BindingFlags.Instance);
+      EventInfo eventInfo = t.GetEvent ("EventWithPublicVisibility", BindingFlags.Public | BindingFlags.Instance);
+
+      Assert.That (methodInfo, Is.Not.Null);
+      Assert.That (propertyInfo, Is.Not.Null);
+      Assert.That (eventInfo, Is.Not.Null);
+    }
+
+    [Test]
+    public void IntroducedMemberVisibilites_Private ()
+    {
+      Type t = CreateMixedType (typeof (NullTarget), typeof (MixinIntroducingMembersWithDifferentVisibilities));
+      MethodInfo methodInfo = t.GetMethod (
+          typeof (IMixinIntroducingMembersWithDifferentVisibilities) + ".MethodWithDefaultVisibility", BindingFlags.NonPublic | BindingFlags.Instance);
+      PropertyInfo propertyInfo = t.GetProperty (
+          typeof (IMixinIntroducingMembersWithDifferentVisibilities) + ".PropertyWithDefaultVisibility",
+          BindingFlags.NonPublic | BindingFlags.Instance);
+      EventInfo eventInfo = t.GetEvent (
+          typeof (IMixinIntroducingMembersWithDifferentVisibilities) + ".EventWithDefaultVisibility", BindingFlags.NonPublic | BindingFlags.Instance);
+
+      Assert.That (methodInfo, Is.Not.Null);
+      Assert.That (propertyInfo, Is.Not.Null);
+      Assert.That (eventInfo, Is.Not.Null);
+
+      Assert.That (methodInfo.IsPrivate);
+      Assert.That (propertyInfo.GetGetMethod (true).IsPrivate);
+      Assert.That (propertyInfo.GetSetMethod (true).IsPrivate);
+      Assert.That (eventInfo.GetAddMethod (true).IsPrivate);
+      Assert.That (eventInfo.GetRemoveMethod (true).IsPrivate);
+    }
   }
 }

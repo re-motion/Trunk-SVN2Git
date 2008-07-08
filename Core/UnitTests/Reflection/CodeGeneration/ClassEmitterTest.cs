@@ -419,6 +419,28 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
+    public void CreatePublicInterfacePropertyImplementation ()
+    {
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreatePublicInterfacePropertyImplementation", typeof (object), new Type[] { typeof (IInterfaceWithProperty) },
+          TypeAttributes.Public | TypeAttributes.Class, false);
+
+      CustomPropertyEmitter property = classEmitter.CreatePublicInterfacePropertyImplementation (
+          typeof (IInterfaceWithProperty).GetProperty ("Property", _declaredInstanceBindingFlags));
+
+      Assert.IsNull (property.GetMethod);
+      Assert.IsNull (property.SetMethod);
+
+      property.SetMethod = classEmitter.CreateInterfaceMethodImplementation (
+          typeof (IInterfaceWithProperty).GetMethod ("set_Property", _declaredInstanceBindingFlags));
+      property.SetMethod.AddStatement (new ReturnStatement ());
+
+      Type builtType = classEmitter.BuildType ();
+
+      IInterfaceWithProperty instance = (IInterfaceWithProperty) Activator.CreateInstance (builtType);
+      instance.Property = 7;
+    }
+
+    [Test]
     public void PropertyNameIsChangedOnInterfaceImplementation ()
     {
       CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "PropertyNameIsChangedOnInterfaceImplementation", typeof (object), new Type[] { typeof (IInterfaceWithProperty) },
@@ -429,6 +451,24 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Assert.AreNotEqual ("Property", property.PropertyBuilder.Name);
       Assert.AreEqual (typeof (IInterfaceWithProperty).FullName + ".Property", property.PropertyBuilder.Name);
+
+      property.SetMethod = classEmitter.CreateInterfaceMethodImplementation (
+          typeof (IInterfaceWithProperty).GetMethod ("set_Property", _declaredInstanceBindingFlags));
+      property.SetMethod.AddStatement (new ReturnStatement ());
+
+      classEmitter.BuildType ();
+    }
+
+    [Test]
+    public void PropertyNameIsNotChangedOnPublicInterfaceImplementation ()
+    {
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "PropertyNameIsNotChangedOnPublicInterfaceImplementation", typeof (object), new Type[] { typeof (IInterfaceWithProperty) },
+          TypeAttributes.Public | TypeAttributes.Class, false);
+
+      CustomPropertyEmitter property = classEmitter.CreatePublicInterfacePropertyImplementation (
+          typeof (IInterfaceWithProperty).GetProperty ("Property", _declaredInstanceBindingFlags));
+
+      Assert.AreEqual ("Property", property.PropertyBuilder.Name);
 
       property.SetMethod = classEmitter.CreateInterfaceMethodImplementation (
           typeof (IInterfaceWithProperty).GetMethod ("set_Property", _declaredInstanceBindingFlags));
@@ -513,6 +553,30 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
+    public void CreatePublicInterfaceEventImplementation ()
+    {
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreatePublicInterfaceEventImplementation", typeof (object), new Type[] { typeof (IInterfaceWithEvent) },
+          TypeAttributes.Public | TypeAttributes.Class, false);
+
+      CustomEventEmitter eventEmitter = classEmitter.CreatePublicInterfaceEventImplementation (
+          typeof (IInterfaceWithEvent).GetEvent ("Event", _declaredInstanceBindingFlags));
+
+      eventEmitter.AddMethod = classEmitter.CreateInterfaceMethodImplementation (
+          typeof (IInterfaceWithEvent).GetMethod ("add_Event", _declaredInstanceBindingFlags));
+      eventEmitter.AddMethod.AddStatement (new ReturnStatement ());
+
+      eventEmitter.RemoveMethod = classEmitter.CreateInterfaceMethodImplementation (
+          typeof (IInterfaceWithEvent).GetMethod ("remove_Event", _declaredInstanceBindingFlags));
+      eventEmitter.RemoveMethod.AddStatement (new ReturnStatement ());
+
+      Type builtType = classEmitter.BuildType ();
+
+      IInterfaceWithEvent instance = (IInterfaceWithEvent) Activator.CreateInstance (builtType);
+      instance.Event += delegate { };
+      instance.Event -= delegate { };
+    }
+
+    [Test]
     public void EventNameIsChangedOnInterfaceImplementation ()
     {
       CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "EventNameIsChangedOnInterfaceImplementation", typeof (object), new Type[] { typeof (IInterfaceWithEvent) },
@@ -533,6 +597,28 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Assert.IsNull (builtType.GetEvent ("Event"));
       Assert.IsNotNull (builtType.GetEvent (typeof (IInterfaceWithEvent).FullName + ".Event", _declaredInstanceBindingFlags));
+    }
+
+    [Test]
+    public void EventNameIsNotChangedOnPublicInterfaceImplementation ()
+    {
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "EventNameIsNotChangedOnPublicInterfaceImplementation", typeof (object), new Type[] { typeof (IInterfaceWithEvent) },
+          TypeAttributes.Public | TypeAttributes.Class, false);
+
+      CustomEventEmitter eventEmitter = classEmitter.CreatePublicInterfaceEventImplementation (
+          typeof (IInterfaceWithEvent).GetEvent ("Event", _declaredInstanceBindingFlags));
+
+      eventEmitter.AddMethod = classEmitter.CreateInterfaceMethodImplementation (
+          typeof (IInterfaceWithEvent).GetMethod ("add_Event", _declaredInstanceBindingFlags));
+      eventEmitter.AddMethod.AddStatement (new ReturnStatement ());
+
+      eventEmitter.RemoveMethod = classEmitter.CreateInterfaceMethodImplementation (
+          typeof (IInterfaceWithEvent).GetMethod ("remove_Event", _declaredInstanceBindingFlags));
+      eventEmitter.RemoveMethod.AddStatement (new ReturnStatement ());
+
+      Type builtType = classEmitter.BuildType ();
+
+      Assert.IsNotNull (builtType.GetEvent ("Event", _declaredInstanceBindingFlags));
     }
 
     [Test]
