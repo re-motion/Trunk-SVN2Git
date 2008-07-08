@@ -21,6 +21,15 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
   public class DefaultInterfaceIntroductionRulesTest : ValidationTestBase
   {
     [Test]
+    public void FailsIfImplementingIMixinTarget ()
+    {
+      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinImplementingIMixinTarget));
+      DefaultValidationLog log = Validator.Validate (definition);
+
+      Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultInterfaceIntroductionRules.IMixinTargetCannotBeIntroduced", log));
+    }
+
+    [Test]
     public void FailsIfIntroducedInterfaceNotVisible ()
     {
       TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType2), typeof (MixinIntroducingInternalInterface));
