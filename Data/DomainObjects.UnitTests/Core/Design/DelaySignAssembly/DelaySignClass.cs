@@ -11,8 +11,6 @@
 using System;
 using System.Reflection;
 
-[assembly: AssemblyDelaySign (true)]
-
 namespace Remotion.Data.DomainObjects.UnitTests.Core.Design.DelaySignAssembly
 {
   public class DelaySignClass

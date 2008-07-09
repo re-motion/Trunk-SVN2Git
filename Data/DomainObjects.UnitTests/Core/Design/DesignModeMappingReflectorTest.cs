@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Design
           {
             try
             {
-              AssemblyCompiler compiler = Compile (@"Core\Design\DelaySignAssembly", @"Design.Dlls\Remotion.Data.DomainObjects.UnitTests.Design.DelaySignAssembly.dll");
+              AssemblyCompiler compiler = Compile (@"Core\Design\DelaySignAssembly", @"Design.Dlls\Remotion.Data.DomainObjects.UnitTests.Design.DelaySignAssembly.dll", @"/delaysign+ /keyfile:Core\Design\DelaySignAssembly\PublicKey.snk");
               Dev.Null = compiler.CompiledAssembly;
               Assert.Fail ("Expected FileLoadException");
             }
@@ -120,10 +120,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Design
             {
               // expected
             }
-            catch (AssemblyCompilationException)
+            catch (AssemblyCompilationException e)
             {
+              Console.WriteLine (
+                  Path.Combine (
+                      AppDomain.CurrentDomain.BaseDirectory, @"Design.Dlls\Remotion.Data.DomainObjects.UnitTests.Design.DelaySignAssembly.dll"));
+              Console.WriteLine (e.Message);
               // file gets locked on multiple executions
-              Assert.IsTrue (File.Exists (@"Design.Dlls\Remotion.Data.DomainObjects.UnitTests.Design.DelaySignAssembly.dll"));
+              Assert.IsTrue (File.Exists (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"Design.Dlls\Remotion.Data.DomainObjects.UnitTests.Design.DelaySignAssembly.dll")));
             }
           });
 
@@ -155,7 +159,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Design
           new object[0]).Run();
     }
 
-    private static AssemblyCompiler Compile (string sourceDirectory, string outputAssembly)
+    private static AssemblyCompiler Compile (string sourceDirectory, string outputAssembly, string compilerOptions)
     {
       string outputAssemblyDirectory = Path.GetDirectoryName (Path.GetFullPath (outputAssembly));
       if (!Directory.Exists (outputAssemblyDirectory))
@@ -165,7 +169,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Design
           sourceDirectory,
           outputAssembly,
           new string[] {"Remotion.dll", "Remotion.Data.Interfaces.dll", "Remotion.Data.DomainObjects.dll"});
-      compiler.CompilerParameters.CompilerOptions = @"/keyfile \Development\global\remotion.snk";
+      compiler.CompilerParameters.CompilerOptions = compilerOptions;
 
       compiler.Compile();
       return compiler;

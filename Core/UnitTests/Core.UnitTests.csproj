@@ -715,6 +715,7 @@
     <Compile Include="Xml\XmlSerializationUtilityTests\GetNamespaceTest.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Core.UnitTests.build" />
+    <TestAssembly Include="Reflection\TestAssemblies\DelaySignAssembly\PublicKey.snk" />
     <None Include="\Development\global\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

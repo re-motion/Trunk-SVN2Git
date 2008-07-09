@@ -75,6 +75,7 @@
       <fileset>
         <include name="Core/Configuration/Mapping/TestDomain/**/*.cs" />
         <include name="Core/Design/DelaySignAssembly/**/*.cs" />
+        <include name="Core/Design/DelaySignAssembly/**/*.snk" />
       </fileset>
     </copy>
 
