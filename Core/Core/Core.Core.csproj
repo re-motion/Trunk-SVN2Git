@@ -92,7 +92,9 @@
   <ItemGroup>
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
-    <Compile Include="Mixins\Validation\Rules\ContextStoreLookupUtility.cs" />
+    <Compile Include="Mixins\Definitions\IMemberIntroductionDefinition.cs" />
+    <Compile Include="Mixins\Validation\Rules\ContextStoreMemberLookupUtility.cs" />
+    <Compile Include="Mixins\Validation\Rules\ContextStoreMemberIntroductionLookupUtility.cs" />
     <Compile Include="Reflection\AssemblyLoader.cs" />
     <Compile Include="SafeContextSingleton.cs" />
     <Compile Include="Collections\InterlockedDataStore.cs" />

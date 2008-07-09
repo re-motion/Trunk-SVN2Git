@@ -19,7 +19,10 @@ namespace Remotion.Mixins.Validation.Rules
 {
   public class DefaultMethodIntroductionRules : RuleSetBase
   {
-    private readonly ContextStoreLookupUtility _cache = new ContextStoreLookupUtility ();
+    private readonly ContextStoreMemberLookupUtility<MethodDefinition> _memberLookupUtility = new ContextStoreMemberLookupUtility<MethodDefinition> ();
+    private readonly ContextStoreMemberIntroductionLookupUtility<MethodIntroductionDefinition> _introductionLookupUtility =
+        new ContextStoreMemberIntroductionLookupUtility<MethodIntroductionDefinition> ();
+
     private readonly SignatureChecker _signatureChecker = new SignatureChecker ();
 
     public override void Install (ValidatingVisitor visitor)
@@ -28,12 +31,13 @@ namespace Remotion.Mixins.Validation.Rules
       visitor.MethodIntroductionRules.Add (new DelegateValidationRule<MethodIntroductionDefinition> (PublicMethodNameMustBeUniqueInOtherMixins));
     }
 
+    [DelegateRuleDescription (Message = "A method introduced by a mixin cannot be public if the target class already has a method of the same name.")]
     private void PublicMethodNameMustBeUniqueInTargetClass (DelegateValidationRule<MethodIntroductionDefinition>.Args args)
     {
       if (args.Definition.Visibility == MemberVisibility.Public)
       {
         MethodInfo introducedMethod = args.Definition.InterfaceMember;
-        foreach (MethodDefinition method in _cache.GetCachedMethodsByName (args.Log.ContextStore, args.Definition.DeclaringInterface.TargetClass, introducedMethod.Name))
+        foreach (MethodDefinition method in _memberLookupUtility.GetCachedMembersByName (args.Log.ContextStore, args.Definition.DeclaringInterface.TargetClass, introducedMethod.Name))
         {
           if (_signatureChecker.MethodSignaturesMatch (method.MethodInfo, introducedMethod))
           {
@@ -45,13 +49,16 @@ namespace Remotion.Mixins.Validation.Rules
       args.Log.Succeed (args.Self);
     }
 
+    [DelegateRuleDescription (Message = "A method introduced by a mixin cannot be public if another mixin also introduces a public method of the same name.")]
     private void PublicMethodNameMustBeUniqueInOtherMixins (DelegateValidationRule<MethodIntroductionDefinition>.Args args)
     {
       if (args.Definition.Visibility == MemberVisibility.Public)
       {
         MethodInfo introducedMethod = args.Definition.InterfaceMember;
         IEnumerable<MethodIntroductionDefinition> otherIntroductionsWithSameName =
-            _cache.GetCachedPublicIntroductionsByName (args.Log.ContextStore, args.Definition.DeclaringInterface.TargetClass, introducedMethod.Name);
+            _introductionLookupUtility.GetCachedPublicIntroductionsByName (
+            args.Log.ContextStore, args.Definition.DeclaringInterface.TargetClass, introducedMethod.Name);
+
         foreach (MethodIntroductionDefinition method in otherIntroductionsWithSameName)
         {
             if (method != args.Definition && _signatureChecker.MethodSignaturesMatch (method.InterfaceMember, introducedMethod))

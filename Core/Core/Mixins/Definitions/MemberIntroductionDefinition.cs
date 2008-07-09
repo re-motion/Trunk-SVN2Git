@@ -16,8 +16,7 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Definitions
 {
   [DebuggerDisplay ("{InterfaceMember}")]
-  public abstract class MemberIntroductionDefinition<TMemberInfo, TMemberDefinition>: IVisitableDefinition
-      where TMemberInfo : MemberInfo
+  public abstract class MemberIntroductionDefinition<TMemberInfo, TMemberDefinition>: IMemberIntroductionDefinition where TMemberInfo : MemberInfo
       where TMemberDefinition : MemberDefinition
   {
     private readonly InterfaceIntroductionDefinition _declaringInterface;
@@ -41,6 +40,11 @@ namespace Remotion.Mixins.Definitions
     public InterfaceIntroductionDefinition DeclaringInterface
     {
       get { return _declaringInterface; }
+    }
+
+    public string Name
+    {
+      get { return InterfaceMember.Name; }
     }
 
     public TMemberInfo InterfaceMember

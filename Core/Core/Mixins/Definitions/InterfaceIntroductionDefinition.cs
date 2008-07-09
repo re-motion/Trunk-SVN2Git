@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using Remotion.Utilities;
@@ -60,6 +61,16 @@ namespace Remotion.Mixins.Definitions
     public TargetClassDefinition TargetClass
     {
       get { return Implementer.TargetClass; }
+    }
+
+    public IEnumerable<IMemberIntroductionDefinition> GetIntroducedMembers ()
+    {
+      foreach (MethodIntroductionDefinition introducedMethod in IntroducedMethods)
+        yield return introducedMethod;
+      foreach (PropertyIntroductionDefinition introducedProperty in IntroducedProperties)
+        yield return introducedProperty;
+      foreach (EventIntroductionDefinition introducedEvent in IntroducedEvents)
+        yield return introducedEvent;
     }
 
     public void Accept (IDefinitionVisitor visitor)
