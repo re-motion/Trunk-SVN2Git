@@ -122,12 +122,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Design
             }
             catch (AssemblyCompilationException e)
             {
-              Console.WriteLine (
-                  Path.Combine (
-                      AppDomain.CurrentDomain.BaseDirectory, @"Design.Dlls\Remotion.Data.DomainObjects.UnitTests.Design.DelaySignAssembly.dll"));
-              Console.WriteLine (e.Message);
               // file gets locked on multiple executions
-              Assert.IsTrue (File.Exists (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"Design.Dlls\Remotion.Data.DomainObjects.UnitTests.Design.DelaySignAssembly.dll")));
+              Assert.IsTrue (File.Exists (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"Design.Dlls\Remotion.Data.DomainObjects.UnitTests.Design.DelaySignAssembly.dll")), e.Message);
             }
           });
 
