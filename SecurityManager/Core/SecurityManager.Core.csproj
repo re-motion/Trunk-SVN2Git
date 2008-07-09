@@ -11,7 +11,7 @@
     <AssemblyName>Remotion.SecurityManager</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -316,7 +316,7 @@
     <None Include="Domain\SecurityManagerQueries.xml">
     </None>
     <None Include="GenerateSetupDBScript.ps1" />
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="..\..\remotion.snk"><Link>remotion.snk</Link></None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database\SecurityManagerSetupConstraints.sql" />

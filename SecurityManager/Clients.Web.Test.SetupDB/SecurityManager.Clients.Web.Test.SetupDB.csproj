@@ -11,7 +11,7 @@
     <AssemblyName>Remotion.SecurityManager.Clients.Web.Test.SetupDB</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -47,7 +47,7 @@
     <None Include="App.config" />
     <None Include="CreateDB.sql" />
     <Content Include="SecurityManagerSetupConstraints.sql" />
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="..\..\remotion.snk"><Link>remotion.snk</Link></None>
     <None Include="SecurityManagerSetupDBSpecialTables.sql" />
     <None Include="SecurityManagerSetupDB.sql" />
     <None Include="SetupDB.sql" />

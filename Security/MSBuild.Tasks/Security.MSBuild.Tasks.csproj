@@ -11,7 +11,7 @@
     <AssemblyName>Remotion.Security.MSBuild.Tasks</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="..\..\remotion.snk"><Link>remotion.snk</Link></None>
     <None Include="Security.MSBuild.Tasks.build" />
     <Compile Include="ExtractSecurityMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

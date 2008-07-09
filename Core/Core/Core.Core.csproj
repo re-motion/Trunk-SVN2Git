@@ -28,7 +28,7 @@
     </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -497,7 +497,7 @@
     <Compile Include="Xml\XmlSerializationUtility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="\Development\global\remotion.snk">
+    <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="Mixins\Context\Context.cd" />

@@ -13,7 +13,7 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Data.DomainObjects.Security.build" />
-    <None Include="\Development\global\remotion.snk">
+    <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
   </ItemGroup>

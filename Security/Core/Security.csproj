@@ -11,7 +11,7 @@
     <AssemblyName>Remotion.Security</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -45,7 +45,7 @@
       <SubType>
       </SubType>
     </EmbeddedResource>
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="..\..\remotion.snk"><Link>remotion.snk</Link></None>
     <None Include="Security.build" />
     <Compile Include="BaseDemandPermissionAttribute.cs" />
     <Compile Include="BridgeImplementations\AccessTypeCacheImplementation.cs" />

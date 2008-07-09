@@ -11,7 +11,7 @@
     <AssemblyName>Remotion.ObjectBinding.Web.Preview</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -66,7 +66,7 @@
     <Compile Include="UI\Controls\BocAutoCompleteReferenceValueExtender.cs" />
     <None Include="ObjectBinding.Web.Preview.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="..\..\remotion.snk"><Link>remotion.snk</Link></None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">

@@ -19,7 +19,9 @@
     </SccProvider>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>\Development\global\remotion.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -63,8 +65,10 @@
     <Compile Include="UiGeneratorSmartCopy.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
     <None Include="ObjectBinding.Web.CodeGenerator.build" />
-    <None Include="\Development\global\remotion.snk"><Link>remotion.snk</Link></None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Interfaces\Core.Interfaces.csproj">
