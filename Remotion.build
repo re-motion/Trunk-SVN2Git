@@ -17,10 +17,9 @@
   <include buildfile="build/Remotion.Doc.include.build" verbose="true" />
 
   <property name="solution.basedir" value="${project::get-base-directory()}" />
-  <property name="solution.global-dir" value="/development/global" overwrite="false"/>
   <property name="solution.build-version-file" value="${solution.basedir}/build/buildversion.xml" />
-  <property name="solution.key-file" value="${solution.global-dir}/remotion.snk" overwrite="false" />
-  <property name="solution.intellisense-xslt-file" value="file:///C:${solution.global-dir}/xslt/xmldoc.xslt" overwrite="false" />
+  <property name="solution.key-file" value="${solution.basedir}/remotion.snk" overwrite="false" />
+  <property name="solution.intellisense-xslt-file" value="file:///${solution.basedir}/build/xmldoc.xslt" overwrite="false" />
   <property name="prereq.assemblies" value="${solution.basedir}/prereq/assemblies" />
   <property name="project.basedir" value="${solution.basedir}/${project.dir}" dynamic="true" />
   <property name="build.outputdir" value="${build.basedir}/${nant.settings.currentframework}/bin/${project.config}" dynamic="true" />
@@ -29,8 +28,6 @@
   <property name="build.test.outputdir" value="${build.temp.basedir}/${nant.settings.currentframework}/tests/${project.config}" dynamic="true" />
   <property name="build.update.assembly-info" value="true" overwrite="false" />
   <property name="doc.targetdir" value="${build.basedir}/${nant.settings.currentframework}/doc" dynamic="true" />
-  <property name="sql.exe" value="C:\Program Files\Microsoft SQL Server\90\Tools\Binn\osql.exe" overwrite="false" />
-  <property name="sql.instance" value="localhost" overwrite="false" />
 
   <property name="svn.exe" value="C:\Program Files\Subversion\bin\svn.exe" overwrite="false"/>
   

@@ -502,7 +502,6 @@
     <None Include="Mixins\Validation\Validation.cd" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Content Include="Core.Core.build" />
-    <Content Include="doc\Building Remotion.txt" />
     <Content Include="doc\include\GettingStartedTemplate.html" />
     <Content Include="doc\include\Globalization\MultiLingualResourcesAttribute.xml" />
     <Content Include="doc\include\Globalization\ResourceManagerWrapper.xml" />
