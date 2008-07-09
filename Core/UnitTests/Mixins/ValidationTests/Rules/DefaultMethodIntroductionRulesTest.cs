@@ -10,8 +10,6 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Mixins;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -38,7 +36,22 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
     }
 
     [Test]
-    public void FailsIfPublicIntroducedMethod_HasSameNameAsTargetClassMethod ()
+    public void SucceedsIfPublicIntroducedMethod_HasSameNameButDifferentSignatureFromTargetClassMethod ()
+    {
+      TargetClassDefinition classDefinition =
+          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+              typeof (TargetClassWithSameNamesDifferentSignaturesAsIntroducedMembers),
+              typeof (MixinIntroducingMembersWithDifferentVisibilities));
+      MethodIntroductionDefinition definition = classDefinition
+          .IntroducedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
+          .IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
+
+      DefaultValidationLog log = Validator.Validate (definition);
+      AssertSuccess (log);
+    }
+
+    [Test]
+    public void FailsIfPublicIntroducedMethod_HasSameNameAndSignatureAsTargetClassMethod ()
     {
       TargetClassDefinition classDefinition =
           UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
@@ -75,6 +88,38 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
           UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
+      MethodIntroductionDefinition definition = classDefinition
+          .IntroducedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
+          .IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
+
+      DefaultValidationLog log = Validator.Validate (definition);
+      AssertSuccess (log);
+    }
+
+    [Test]
+    public void SucceedsIfPublicIntroducedMethod_HasSameNameButDifferentSignatureAsOther ()
+    {
+      TargetClassDefinition classDefinition =
+          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+              typeof (NullTarget),
+              typeof (MixinIntroducingMembersWithDifferentVisibilities),
+              typeof (OtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures));
+      MethodIntroductionDefinition definition = classDefinition
+          .IntroducedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
+          .IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
+
+      DefaultValidationLog log = Validator.Validate (definition);
+      AssertSuccess (log);
+    }
+
+    [Test]
+    public void SucceedsIfPublicIntroducedMethod_HasSameNameAsPrivatgeOther ()
+    {
+      TargetClassDefinition classDefinition =
+          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+              typeof (NullTarget),
+              typeof (MixinIntroducingMembersWithDifferentVisibilities),
+              typeof (MixinIntroducingMembersWithPrivateVisibilities));
       MethodIntroductionDefinition definition = classDefinition
           .IntroducedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
           .IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];

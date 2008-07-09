@@ -137,7 +137,10 @@
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinOverridingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\TargetClassCallingOverriddenMethodFromCtor.cs" />
     <Compile Include="Mixins\SampleTypes\MixinIntroducingMembersWithDifferentVisibilities.cs" />
-    <Compile Include="Mixins\ValidationTests\Rules\DefaultMemberIntroductionRulesTest.cs" />
+    <Compile Include="Mixins\ValidationTests\Rules\DefaultMethodIntroductionRulesTest.cs" />
+    <Compile Include="Mixins\ValidationTests\ValidationSampleTypes\MixinIntroducingMembersWithPrivateVisibilities.cs" />
+    <Compile Include="Mixins\ValidationTests\ValidationSampleTypes\OtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures.cs" />
+    <Compile Include="Mixins\ValidationTests\ValidationSampleTypes\TargetClassWithSameNamesDifferentSignaturesAsIntroducedMembers.cs" />
     <Compile Include="Mixins\ValidationTests\ValidationSampleTypes\OtherMixinIntroducingMembersWithDifferentVisibilities.cs" />
     <Compile Include="Mixins\ValidationTests\ValidationSampleTypes\TargetClassWithSameNamesAsIntroducedMembers.cs" />
     <Compile Include="Reflection\AssemblyFinderTest.cs" />

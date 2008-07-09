@@ -9,12 +9,19 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Remotion.Collections;
 using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Utilities;
 
 namespace Remotion.Mixins.Validation.Rules
 {
   public class DefaultMethodIntroductionRules : RuleSetBase
   {
+    private readonly ContextStoreLookupUtility _cache = new ContextStoreLookupUtility ();
+    private readonly SignatureChecker _signatureChecker = new SignatureChecker ();
+
     public override void Install (ValidatingVisitor visitor)
     {
       visitor.MethodIntroductionRules.Add (new DelegateValidationRule<MethodIntroductionDefinition> (PublicMethodNameMustBeUniqueInTargetClass));
@@ -25,10 +32,10 @@ namespace Remotion.Mixins.Validation.Rules
     {
       if (args.Definition.Visibility == MemberVisibility.Public)
       {
-        string methodName = args.Definition.InterfaceMember.Name;
-        foreach (MethodDefinition method in args.Definition.DeclaringInterface.TargetClass.Methods)
+        MethodInfo introducedMethod = args.Definition.InterfaceMember;
+        foreach (MethodDefinition method in _cache.GetCachedMethodsByName (args.Log.ContextStore, args.Definition.DeclaringInterface.TargetClass, introducedMethod.Name))
         {
-          if (method.Name == methodName)
+          if (_signatureChecker.MethodSignaturesMatch (method.MethodInfo, introducedMethod))
           {
             args.Log.Fail (args.Self);
             return;
@@ -42,17 +49,16 @@ namespace Remotion.Mixins.Validation.Rules
     {
       if (args.Definition.Visibility == MemberVisibility.Public)
       {
-        string methodName = args.Definition.InterfaceMember.Name;
-        foreach (InterfaceIntroductionDefinition interfaceIntroduction in args.Definition.DeclaringInterface.TargetClass.IntroducedInterfaces)
+        MethodInfo introducedMethod = args.Definition.InterfaceMember;
+        IEnumerable<MethodIntroductionDefinition> otherIntroductionsWithSameName =
+            _cache.GetCachedPublicIntroductionsByName (args.Log.ContextStore, args.Definition.DeclaringInterface.TargetClass, introducedMethod.Name);
+        foreach (MethodIntroductionDefinition method in otherIntroductionsWithSameName)
         {
-          foreach (MethodIntroductionDefinition method in interfaceIntroduction.IntroducedMethods)
-          {
-            if (method != args.Definition && method.InterfaceMember.Name == methodName)
+            if (method != args.Definition && _signatureChecker.MethodSignaturesMatch (method.InterfaceMember, introducedMethod))
             {
               args.Log.Fail (args.Self);
               return;
             }
-          }
         }
         args.Log.Succeed (args.Self);
       }

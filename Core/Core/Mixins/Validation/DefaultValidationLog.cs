@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 
@@ -25,6 +26,7 @@ namespace Remotion.Mixins.Validation
     private int warnings = 0;
     private int exceptions = 0;
     private int successes = 0;
+    private readonly SimpleDataStore<object, object> _contextStore = new SimpleDataStore<object, object> ();
 
     public IEnumerable<ValidationResult> GetResults()
     {
@@ -122,6 +124,11 @@ namespace Remotion.Mixins.Validation
     {
       GetCurrentResult ().Exceptions.Add (new ValidationExceptionResultItem (rule, ex));
       ++exceptions;
+    }
+
+    public IDataStore<object, object> ContextStore
+    {
+      get { return _contextStore; }
     }
 
     public void MergeIn (IValidationLog log)

@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Mixins.Definitions;
 
 namespace Remotion.Mixins.Validation
@@ -25,6 +26,8 @@ namespace Remotion.Mixins.Validation
     void Warn (IValidationRule rule);
     void Fail (IValidationRule rule);
     void UnexpectedException (IValidationRule rule, Exception ex);
+
+    IDataStore<object, object> ContextStore { get; }
 
     // methods for reading the log
 
