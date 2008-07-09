@@ -11,6 +11,7 @@
 using System;
 using System.ComponentModel.Design;
 using System.IO;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Configuration;
@@ -164,6 +165,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Design
           sourceDirectory,
           outputAssembly,
           new string[] {"Remotion.dll", "Remotion.Data.Interfaces.dll", "Remotion.Data.DomainObjects.dll"});
+      compiler.CompilerParameters.CompilerOptions = @"/keyfile \Development\global\remotion.snk";
 
       compiler.Compile();
       return compiler;

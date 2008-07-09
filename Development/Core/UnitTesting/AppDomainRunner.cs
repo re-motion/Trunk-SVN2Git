@@ -28,7 +28,7 @@ namespace Remotion.Development.UnitTesting
     private Proc<object[]> _action;
     private object[] _args;
 
-    public AppDomainRunner (AppDomainSetup domainSetup, Proc<object[]> action, object[] args)
+    public AppDomainRunner (AppDomainSetup domainSetup, Proc<object[]> action, params object[] args)
       : base (domainSetup)
     {
       _action = action;
