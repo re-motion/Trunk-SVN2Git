@@ -131,6 +131,6 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PreBuildEvent>cd $(ProjectDir)
-..\CodeGenerator\bin\$(ConfigurationName)\wxegen.exe *.aspx.cs Generated.cs /func:Test.BaseFunction /v-</PreBuildEvent>
+..\ExecutionEngine.CodeGenerator\bin\$(ConfigurationName)\wxegen.exe *.aspx.cs Generated.cs /func:Test.BaseFunction /v-</PreBuildEvent>
   </PropertyGroup>
 </Project>

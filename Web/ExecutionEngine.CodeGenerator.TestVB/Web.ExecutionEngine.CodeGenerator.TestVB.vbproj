@@ -161,7 +161,7 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PreBuildEvent>cd $(ProjectDir)
-..\CodeGenerator\bin\$(ConfigurationName)\wxegen.exe *.aspx.vb Generated.vb /lang:vb /v-
+..\ExecutionEngine.CodeGenerator\bin\$(ConfigurationName)\wxegen.exe *.aspx.vb Generated.vb /lang:vb /v-
 </PreBuildEvent>
   </PropertyGroup>
 </Project>
