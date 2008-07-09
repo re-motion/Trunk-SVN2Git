@@ -162,7 +162,7 @@
   <target name="all" depends="prereq,
       Core.Interfaces, Core.Core, Core.Mixins.MixerTool.Console, 
       Development.Core, Development.CodeDom, 
-      Web, Web.Security, 
+      Web, Web.ExecutionEngine.CodeGenerator, Web.Security,
       ObjectBinding.Interfaces, ObjectBinding, ObjectBinding.Web, ObjectBinding.Web.Preview, 
       ObjectBinding.Web.CodeGenerator, ObjectBinding.Web.CodeGenerator.Templates, 
       Data.Interfaces, Data.DomainObjects, Data.DomainObjects.Security, 
@@ -278,6 +278,14 @@
     <property name="project.name" value="Web" />
     <property name="project.dir" value="Web/Core" />
     <property name="project.output" value="Remotion.Web" />
+    <property name="project.extension" value="dll" />
+    <call target="execute-buildstep" />
+  </target>
+
+  <target name="Web.ExecutionEngine.CodeGenerator" depends="Core.Core, Web">
+    <property name="project.name" value="Web.ExecutionEngine.CodeGenerator" />
+    <property name="project.dir" value="Web/ExecutionEngine/CodeGenerator" />
+    <property name="project.output" value="Remotion.Web.ExecutionEngine.CodeGenerator" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
   </target>

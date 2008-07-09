@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ !
+ ! This program is free software: you can redistribute it and/or modify it under 
+ ! the terms of the re:motion license agreement in license.txt. If you did not 
+ ! receive it, please visit http://www.re-motion.org/licensing.
+ ! 
+ ! Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ ! WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+-->
+
+<!--EXTERNAL_PROPERTIES: build.outputdir;build.test.outputdir;project.output;project.extension;project.doc;build.debug;build.csc.define-->
+<project xmlns="nant-schema" name="Remotion.Web.ExecutionEngine.CodeGenerator">  
+
+  <target name="build" description="perform a build">
+  
+    <csc  target="library" 
+          output="${build.outputdir}/${project.output}.${project.extension}" 
+          doc="${project.doc}" 
+          debug="${build.debug}"
+          define="${build.csc.define}"
+          keyfile="${solution.key-file}">
+      <nowarn>
+        <!-- missing XML comment -->
+        <warning number="1591" />
+        <!-- only some parameters miss xml comment -->
+        <warning number="1573" />
+        <!-- Ambiguous reference in cref attribute -->
+        <warning number="0419" />
+      </nowarn> 
+      <sources failonempty="true">
+        <include name="*.cs" />
+        <include name="Schema/**/*.cs" />
+        <exclude name="Properties/AssemblyInfoTemplate.cs" />
+      </sources>
+      <references failonempty="true">
+        <include name="${build.outputdir}/Remotion.dll" />
+        <include name="${build.outputdir}/Remotion.Interfaces.dll"/>
+        <include name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
+        <include name="${build.outputdir}/Remotion.Security.Interfaces.dll"/>
+        <include name="${build.outputdir}/Remotion.Web.dll"/>
+        <include name="${build.outputdir}/log4net.dll" />
+        <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Web.dll"/>
+        <include asis="true" name="System.Xml.dll"/>
+      </references>
+      <resources failonempty="true" dynamicprefix="true" prefix="Remotion.Web.ExecutionEngine.CodeGenerator">
+        <include name="Schema/FunctionDeclaration.xsd" />
+      </resources>
+    </csc>
+        
+  </target>
+
+</project>
