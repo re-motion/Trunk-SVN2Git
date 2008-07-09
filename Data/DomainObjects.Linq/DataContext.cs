@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       SqlGenerator = ObjectFactory.Create<SqlServerGenerator>().With (DatabaseInfo.Instance);
       
-      WhereConditionParserRegistry whereConditionParserRegistry = SqlGenerator.DetailParser.WhereConditionParser;
+      WhereConditionParserRegistry whereConditionParserRegistry = SqlGenerator.DetailParserRegistries.WhereConditionParser;
       whereConditionParserRegistry.RegisterParser (typeof (MethodCallExpression), new ContainsObjectParser (whereConditionParserRegistry));
     }
 

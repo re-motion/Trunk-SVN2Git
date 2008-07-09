@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Linq.UnitTests
     public void SqlGenerator_HasOPFDetailParsers ()
     {
       ISqlGeneratorBase generator = DataContext.SqlGenerator;
-      IEnumerable<IWhereConditionParser> whereConditionParsers = generator.DetailParser.WhereConditionParser.GetParsers (
+      IEnumerable<IWhereConditionParser> whereConditionParsers = generator.DetailParserRegistries.WhereConditionParser.GetParsers (
           typeof (MethodCallExpression));
       IEnumerable<Type> parserTypes = from p in whereConditionParsers select p.GetType();
       Assert.That (parserTypes.ToArray(), List.Contains (typeof (ContainsObjectParser)));
