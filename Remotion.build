@@ -285,8 +285,8 @@
   <target name="Web.ExecutionEngine.CodeGenerator" depends="Core.Core, Web">
     <property name="project.name" value="Web.ExecutionEngine.CodeGenerator" />
     <property name="project.dir" value="Web/ExecutionEngine/CodeGenerator" />
-    <property name="project.output" value="Remotion.Web.ExecutionEngine.CodeGenerator" />
-    <property name="project.extension" value="dll" />
+    <property name="project.output" value="wxegen" />
+    <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
   </target>
 
