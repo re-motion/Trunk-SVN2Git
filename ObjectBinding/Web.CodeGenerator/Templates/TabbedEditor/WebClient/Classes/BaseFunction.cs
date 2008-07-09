@@ -9,11 +9,12 @@
  */
 
 using System;
-using Remotion.Data.DomainObjects.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine;
+using Remotion.Data.DomainObjects;
 
 namespace $PROJECT_ROOTNAMESPACE$.Classes
 {
-  public abstract class BaseFunction: WxeTransactedFunction
+  public abstract class BaseFunction : WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>
   {
     protected BaseFunction (params object[] args)
       : this (WxeTransactionMode.CreateChildIfParent, args)

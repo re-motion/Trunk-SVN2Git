@@ -35,35 +35,39 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Remotion.Core, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+    <Reference Include="Remotion, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\egoraFX\Remotion.Core.dll</HintPath>
+      <HintPath>$RemotionAssembly$\Remotion.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Interfaces, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$RemotionAssembly$\Remotion.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Data.DomainObjects, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\egoraFX\Remotion.Data.DomainObjects.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion.Data.DomainObjects.ObjectBinding, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\egoraFX\Remotion.Data.DomainObjects.ObjectBinding.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion.Data.DomainObjects.Web, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\egoraFX\Remotion.Data.DomainObjects.Web.dll</HintPath>
+      <HintPath>$RemotionAssembly$\Remotion.Data.DomainObjects.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.ObjectBinding, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\egoraFX\Remotion.ObjectBinding.dll</HintPath>
+      <HintPath>$RemotionAssembly$\Remotion.ObjectBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Data.Interfaces, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$RemotionAssembly$\Remotion.Data.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.ObjectBinding.Interfaces, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$RemotionAssembly$\Remotion.ObjectBinding.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.ObjectBinding.Web, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\egoraFX\Remotion.ObjectBinding.Web.dll</HintPath>
+      <HintPath>$RemotionAssembly$\Remotion.ObjectBinding.Web.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Web, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\egoraFX\Remotion.Web.dll</HintPath>
+      <HintPath>$RemotionAssembly$\Remotion.Web.dll</HintPath>
     </Reference>
-    
+
     <Reference Include="System" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
@@ -153,7 +157,7 @@
       <DependentUpon>SearchResult$DOMAIN_CLASSNAME$Form.aspx</DependentUpon>
     </Compile>
     $REPEAT_FOREACHCLASS_END$
-	
+
     <Compile Include="WxeFunctions.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -191,10 +195,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-	<PropertyGroup>
-		<PreBuildEvent>
+  <PropertyGroup>
+    <PreBuildEvent>
       cd ..
-      ..\..\egoraFx\wxegen\wxegen UI\*.aspx.cs WxeFunctions.cs /prjfile:$WebClientName$.csproj /functionbase:$PROJECT_ROOTNAMESPACE$.Classes.BaseFunction
+      $WxeGenPath$\wxegen UI\*.aspx.cs WxeFunctions.cs /prjfile:$WebClientName$.csproj /functionbase:PhoneBook.Web.Classes.BaseFunction
     </PreBuildEvent>
   </PropertyGroup>
 </Project>
