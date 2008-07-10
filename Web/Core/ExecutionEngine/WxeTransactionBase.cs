@@ -173,7 +173,8 @@ namespace Remotion.Web.ExecutionEngine
     
     /// <summary> Called after the <see cref="Transaction"/> has been created. </summary>
     /// <param name="transaction"> The <typeparamref name="TTransaction"/> that has been created. </param>
-    /// <remarks> Raises the <see cref="TransactionCreated"/> event. </remarks>
+    /// <remarks> Raises the <see cref="TransactionCreated"/> event. Note that the transaction has not yet been made current when this method is
+    /// called; overriders need to perform manual transaction management if they need to use <paramref name="transaction"/>.</remarks>
     protected virtual void OnTransactionCreated (TTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
@@ -550,9 +551,15 @@ namespace Remotion.Web.ExecutionEngine
 
     /// <summary> Is fired after the <see cref="Transaction"/> has been created. </summary>
     /// <remarks>
-    ///   <note type="caution">
-    ///     The event handler must be reattached after the <see cref="WxeTransactionBase{TTransaction}"/> has been deserialized.
-    ///   </note>
+    ///   <para>
+      ///   <note type="caution">
+      ///     The event handler must be reattached after the <see cref="WxeTransactionBase{TTransaction}"/> has been deserialized.
+      ///   </note>
+    ///   </para>
+    ///   <para>
+    ///   Note that the transaction has not yet been made current when this event is raised; subscribers need to perform manual transaction management 
+    ///   if they need to use the transaction.
+    ///   </para>
     /// </remarks>
     [field: NonSerialized]
     public event EventHandler<WxeTransactionEventArgs<TTransaction>> TransactionCreated;

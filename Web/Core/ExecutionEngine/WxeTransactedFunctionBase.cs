@@ -158,6 +158,8 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> 
     ///   Called after the <see cref="WxeTransactionBase{TTransaction}"/>'s <see cref="WxeTransactionBase{TTransaction}.Transaction"/> has been created.
     /// </summary>
+    /// <remarks>Note that the transaction has not yet been made current when this method is
+    /// called; overriders need to perform manual transaction management if they need to use <paramref name="transaction"/>.</remarks>
     protected virtual void OnTransactionCreated (TTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
