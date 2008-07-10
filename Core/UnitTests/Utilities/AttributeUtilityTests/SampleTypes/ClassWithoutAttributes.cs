@@ -9,13 +9,11 @@
  */
 
 using System;
-using System.Reflection;
 
-namespace Remotion.Mixins.Definitions
+namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
 {
-  public interface IAttributableDefinition
+  public class ClassWithoutAttributes
   {
-    MultiDefinitionCollection<Type, AttributeDefinition> CustomAttributes { get; }
-    ICustomAttributeProvider DeclaringEntity { get; }
+    
   }
 }

@@ -13,6 +13,7 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
+using Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
@@ -219,6 +220,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       public virtual event EventHandler Event;
     }
 
+    [MultiNonInherited, NonMultiNonInherited]
+    public class TargetWithNonInheritedAttributes
+    {
+    }
+
     public class TargetWithoutAttributes
     {
       public virtual void Method ()
@@ -231,6 +237,22 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       }
 
       public virtual event EventHandler Event;
+    }
+
+    [SuppressAttributes (typeof (Attribute))]
+    public class MixinSuppressingAllAttributes
+    {
+    }
+
+    [SuppressAttributes (typeof (Attribute))]
+    [MultiInherited, MultiNonInherited, NonMultiInherited, NonMultiNonInherited]
+    public class MixinSuppressingAllAttributesAddingAttributes
+    {
+    }
+
+    [MultiInherited, MultiNonInherited, NonMultiInherited, NonMultiNonInherited]
+    public class MixinAddingAttributes
+    {
     }
 
     private object[] GetRelevantAttributes (ICustomAttributeProvider source, bool inherit)
@@ -256,6 +278,28 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 
       Assert.That (attributes, Is.EquivalentTo (new object[] { new MultiInheritedAttribute (), new MultiInheritedAttribute(),
             new NonMultiNonInheritedAttribute (), new MultiNonInheritedAttribute(), new NonMultiInheritedAttribute() }));
+    }
+
+    [Test]
+    public void AttributesSuppressedByMixin_AreNotReplicatedFromBaseType ()
+    {
+      object[] attributes = GetRelevantAttributes (CreateMixedType (typeof (TargetWithNonInheritedAttributes), typeof (MixinSuppressingAllAttributes)), true);
+      Assert.AreEqual (0, attributes.Length);
+    }
+
+    [Test]
+    public void AttributesSuppressedByMixin_AreNotIntroducedFromOtherMixin ()
+    {
+      object[] attributes = GetRelevantAttributes (CreateMixedType (typeof (NullTarget), typeof (MixinSuppressingAllAttributes), typeof (MixinAddingAttributes)), true);
+      Assert.AreEqual (0, attributes.Length);
+    }
+
+    [Test]
+    public void AttributesSuppressedByMixin_AreIntroducedForSameMixin ()
+    {
+      object[] attributes = GetRelevantAttributes (CreateMixedType (typeof (NullTarget), typeof (MixinSuppressingAllAttributesAddingAttributes)), true);
+      Assert.AreEqual (2, attributes.Length);
+      Assert.That (attributes, Is.EquivalentTo (new object[] { new MultiInheritedAttribute (), new NonMultiInheritedAttribute() }));
     }
 
     [Test]

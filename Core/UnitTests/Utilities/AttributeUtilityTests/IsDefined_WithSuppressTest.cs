@@ -17,7 +17,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
 {
   [TestFixture]
-  public class IsDefined_WithSuppresTest
+  public class IsDefined_WithSuppressTest
   {
     [Test]
     public void IsDefined_NoAttributes ()

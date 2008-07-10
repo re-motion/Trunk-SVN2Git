@@ -9,13 +9,12 @@
  */
 
 using System;
-using System.Reflection;
 
-namespace Remotion.Mixins.Definitions
+namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
 {
-  public interface IAttributableDefinition
+  [SuppressAttributes (typeof (BaseNonInheritedAttribute))]
+  public class MixinSuppressingNonInheritedAttribute
   {
-    MultiDefinitionCollection<Type, AttributeDefinition> CustomAttributes { get; }
-    ICustomAttributeProvider DeclaringEntity { get; }
+    
   }
 }

@@ -136,6 +136,7 @@
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinIntroducingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinOverridingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\TargetClassCallingOverriddenMethodFromCtor.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassWithSuppressAttribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinIntroducingMembersWithDifferentVisibilities.cs" />
     <Compile Include="Mixins\ValidationTests\Rules\DefaultEventIntroductionRulesTest.cs" />
     <Compile Include="Mixins\ValidationTests\Rules\DefaultPropertyIntroductionRulesTest.cs" />
@@ -648,12 +649,15 @@
     <Compile Include="Utilities\AssertionTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\AttributeUsageTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\AttributeWithMetadataTest.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\IsDefined_WithSuppresTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesForMixedTypes_WithSuppressTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\IsDefined_WithSuppressTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromType_WithSuppresTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesWithMetadataTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseInheritedAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseClassWithAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseWithAttributesForSuppressed.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ClassWithNonInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ClassWithoutAttributes.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ComplexAttributeTarget.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromTypeTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\InstantiateAttributeDataTest.cs" />
@@ -664,6 +668,9 @@
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedClassWithAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedInheritedAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedWithAttributesAndSuppressed.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\MixinAddingInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\MixinAddingSuppressAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\MixinSuppressingNonInheritedAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\NotInheritedNotMultipleAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ImplicitUsageAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\IsDefinedFromMemberInfoTest.cs" />

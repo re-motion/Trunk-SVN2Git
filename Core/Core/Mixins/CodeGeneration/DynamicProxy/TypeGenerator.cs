@@ -477,13 +477,29 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       {
         // only replicate those attributes from the base which are not inherited anyway
         if (!attribute.IsCopyTemplate
-            && (!CanInheritAttributesFromBase (targetConfiguration) || !AttributeUtility.IsAttributeInherited (attribute.AttributeType)))
+            && (!CanInheritAttributesFromBase (targetConfiguration) 
+            || (!AttributeUtility.IsAttributeInherited (attribute.AttributeType) && !IsSuppressed (attribute))))
           AttributeReplicator.ReplicateAttribute (targetEmitter, attribute.Data);
       }
 
       // Replicate introduced attributes
       foreach (AttributeIntroductionDefinition attribute in targetConfiguration.IntroducedAttributes)
-        AttributeReplicator.ReplicateAttribute (targetEmitter, attribute.Attribute.Data);
+      {
+        if (!IsSuppressed (attribute.Attribute))
+          AttributeReplicator.ReplicateAttribute (targetEmitter, attribute.Attribute.Data);
+      }
+    }
+
+    private bool IsSuppressed (AttributeDefinition attribute)
+    {
+      foreach (AttributeIntroductionDefinition suppressAttribute in Configuration.IntroducedAttributes[typeof (SuppressAttributesAttribute)])
+      {
+        Type suppressedType = (Type) suppressAttribute.Attribute.Data.ConstructorArguments[0].Value;
+        if (suppressedType.IsAssignableFrom (attribute.AttributeType) 
+            && suppressAttribute.Attribute.DeclaringDefinition.DeclaringEntity != attribute.DeclaringDefinition.DeclaringEntity)
+          return true;
+      }
+      return false;
     }
 
     private bool CanInheritAttributesFromBase (IAttributeIntroductionTargetDefinition configuration)

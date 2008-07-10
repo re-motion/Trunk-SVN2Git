@@ -92,6 +92,11 @@ namespace Remotion.Mixins.Definitions
       get { return _customAttributes; }
     }
 
+    public ICustomAttributeProvider DeclaringEntity
+    {
+      get { return MemberInfo; }
+    }
+
     public IDefinitionCollection<Type, MemberDefinition> Overrides
     {
       get

@@ -90,6 +90,11 @@ namespace Remotion.Mixins.Definitions
       get { return _customAttributes; }
     }
 
+    public ICustomAttributeProvider DeclaringEntity
+    {
+      get { return Type; }
+    }
+
     public IEnumerable<MemberDefinition> GetAllMembers()
     {
       foreach (MethodDefinition method in Methods)

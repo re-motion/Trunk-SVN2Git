@@ -120,6 +120,14 @@ namespace Remotion.UnitTests.Mixins.Definitions
     }
 
     [Test]
+    public void SuppressAttributeIsNotIgnored ()
+    {
+      TargetClassDefinition classDefinition = 
+          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassWithSuppressAttribute), GenerationPolicy.ForceGeneration);
+      Assert.IsTrue (classDefinition.CustomAttributes.ContainsKey (typeof (SuppressAttributesAttribute)));
+    }
+
+    [Test]
     public void OverrideAttributeIsIgnored ()
     {
       MixinDefinition bt1m1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];

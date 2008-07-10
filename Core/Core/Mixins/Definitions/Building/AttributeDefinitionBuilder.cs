@@ -49,7 +49,8 @@ namespace Remotion.Mixins.Definitions.Building
 
     private bool IsIgnoredAttributeType (Type type)
     {
-      return type == typeof (SerializableAttribute) || type.Assembly.Equals (typeof (Mixin).Assembly);
+      return type == typeof (SerializableAttribute) 
+          || (type.Assembly == typeof (ExtendsAttribute).Assembly && type.Namespace.StartsWith ("Remotion.Mixins"));
     }
 
     private void Copy (MemberInfo attributeSource, CustomAttributeData copyAttributeData)
