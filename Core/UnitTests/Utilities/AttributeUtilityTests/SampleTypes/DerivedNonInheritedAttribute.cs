@@ -10,9 +10,14 @@
 
 using System;
 
-namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
+namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
 {
-  [AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = true)]
-  public class MultipleAttribute : Attribute, ICustomAttribute
-  { }
+  [AttributeUsage (AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+  public class DerivedNonInheritedAttribute : BaseNonInheritedAttribute
+  {
+    public DerivedNonInheritedAttribute (string context)
+        : base(context)
+    {
+    }
+  }
 }

@@ -1,0 +1,163 @@
+/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ *
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the re:motion license agreement in license.txt. If you did not 
+ * receive it, please visit http://www.re-motion.org/licensing.
+ * 
+ * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ */
+
+using System;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes;
+using Remotion.Utilities;
+
+namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
+{
+  [TestFixture]
+  public class AttributeWithMetadataTest
+  {
+    [Test]
+    public void IsInstanceOfType_True ()
+    {
+      AttributeWithMetadata attribute = new AttributeWithMetadata(typeof (BaseClassWithAttribute), new DerivedInheritedAttribute("X"));
+      Assert.That (attribute.IsInstanceOfType (typeof (Attribute)));
+      Assert.That (attribute.IsInstanceOfType (typeof (BaseInheritedAttribute)));
+      Assert.That (attribute.IsInstanceOfType (typeof (DerivedInheritedAttribute)));
+      Assert.That (attribute.IsInstanceOfType (typeof (ICustomAttribute)));
+    }
+
+    [Test]
+    public void IsInstanceOfType_False ()
+    {
+      AttributeWithMetadata attribute = new AttributeWithMetadata (typeof (BaseClassWithAttribute), new DerivedNonInheritedAttribute ("X"));
+      Assert.That (attribute.IsInstanceOfType (typeof (BaseInheritedAttribute)), Is.False);
+      Assert.That (attribute.IsInstanceOfType (typeof (ICustomAttribute)), Is.False);
+    }
+
+    [Test]
+    public void IncludeAll ()
+    {
+      AttributeWithMetadata[] attributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new BaseInheritedAttribute("X")),
+          new AttributeWithMetadata(typeof (object), new BaseNonInheritedAttribute("X")),
+          new AttributeWithMetadata(typeof (object), new DerivedInheritedAttribute("X")),
+          new AttributeWithMetadata(typeof (object), new DerivedNonInheritedAttribute("X")),
+      };
+      AttributeWithMetadata[] expectedAttributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new BaseInheritedAttribute("X")),
+          new AttributeWithMetadata(typeof (object), new DerivedInheritedAttribute("X")),
+      };
+
+      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.IncludeAll (attributes, typeof (ICustomAttribute)));
+      Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
+    }
+
+    [Test]
+    public void ExcludeAll ()
+    {
+      AttributeWithMetadata[] attributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new BaseInheritedAttribute("X")),
+          new AttributeWithMetadata(typeof (object), new BaseNonInheritedAttribute("X")),
+          new AttributeWithMetadata(typeof (object), new DerivedInheritedAttribute("X")),
+          new AttributeWithMetadata(typeof (object), new DerivedNonInheritedAttribute("X")),
+      };
+      AttributeWithMetadata[] expectedAttributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new BaseNonInheritedAttribute("X")),
+          new AttributeWithMetadata(typeof (object), new DerivedNonInheritedAttribute("X")),
+      };
+
+      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.ExcludeAll (attributes, typeof (ICustomAttribute)));
+      Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
+    }
+
+    [Test]
+    public void Suppress_DoesNotSuppressAnythingOnSameType ()
+    {
+      AttributeWithMetadata[] attributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new BaseInheritedAttribute("X")),
+      };
+      AttributeWithMetadata[] suppressAttributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new SuppressAttributesAttribute(typeof (BaseInheritedAttribute))),
+      };
+      AttributeWithMetadata[] expectedAttributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new BaseInheritedAttribute("X")),
+      };
+
+      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.Suppress (attributes, suppressAttributes));
+      Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
+    }
+
+    [Test]
+    public void Suppress_DoesSuppressSpecificAttribute_OnDifferentType ()
+    {
+      AttributeWithMetadata[] attributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new BaseInheritedAttribute("X")),
+      };
+      AttributeWithMetadata[] suppressAttributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (string), new SuppressAttributesAttribute(typeof (BaseInheritedAttribute))),
+      };
+      AttributeWithMetadata[] expectedAttributes = new AttributeWithMetadata[] {
+      };
+
+      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.Suppress (attributes, suppressAttributes));
+      Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
+    }
+
+    [Test]
+    public void Suppress_DoesSuppressDerivedAttribute_OnDifferentType ()
+    {
+      AttributeWithMetadata[] attributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new DerivedInheritedAttribute("X")),
+      };
+      AttributeWithMetadata[] suppressAttributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (string), new SuppressAttributesAttribute(typeof (BaseInheritedAttribute))),
+      };
+      AttributeWithMetadata[] expectedAttributes = new AttributeWithMetadata[] {
+      };
+
+      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.Suppress (attributes, suppressAttributes));
+      Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
+    }
+
+    [Test]
+    public void Suppress_DoesNotSuppressUnrelatedAttribute_OnDifferentType ()
+    {
+      AttributeWithMetadata[] attributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new BaseInheritedAttribute("X")),
+      };
+      AttributeWithMetadata[] suppressAttributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (string), new SuppressAttributesAttribute(typeof (DerivedInheritedAttribute))),
+      };
+      AttributeWithMetadata[] expectedAttributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new BaseInheritedAttribute("X")),
+      };
+
+      AttributeWithMetadata[] filteredAttributes = EnumerableUtility.ToArray (AttributeWithMetadata.Suppress (attributes, suppressAttributes));
+      Assert.That (filteredAttributes, Is.EqualTo (expectedAttributes));
+    }
+
+    [Test]
+    public void ExtractInstances ()
+    {
+      AttributeWithMetadata[] attributes = new AttributeWithMetadata[] {
+          new AttributeWithMetadata(typeof (object), new BaseInheritedAttribute("X")),
+          new AttributeWithMetadata(typeof (object), new BaseNonInheritedAttribute("X")),
+          new AttributeWithMetadata(typeof (object), new DerivedInheritedAttribute("X")),
+          new AttributeWithMetadata(typeof (object), new DerivedNonInheritedAttribute("X")),
+      };
+      object[] expectedInstances = new object[]
+      {
+        attributes[0].AttributeInstance,
+        attributes[1].AttributeInstance,
+        attributes[2].AttributeInstance,
+        attributes[3].AttributeInstance,
+      };
+
+      object[] instances = EnumerableUtility.ToArray (AttributeWithMetadata.ExtractInstances (attributes));
+      Assert.That (instances, Is.EqualTo (expectedInstances));
+    }
+  }
+}

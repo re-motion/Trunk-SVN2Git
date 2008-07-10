@@ -10,9 +10,12 @@
 
 using System;
 
-namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
+namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
 {
-  public class ImplicitUsageAttribute : Attribute
+  [BaseInherited ("DerivedDerivedWithAttributesForSuppressed")]
+  [DerivedInherited ("DerivedDerivedWithAttributesForSuppressed")]
+  public class DerivedDerivedWithAttributesForSuppressed : DerivedWithAttributesAndSuppressed
   {
+    
   }
 }

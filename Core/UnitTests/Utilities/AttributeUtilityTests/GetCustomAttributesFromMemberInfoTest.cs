@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests

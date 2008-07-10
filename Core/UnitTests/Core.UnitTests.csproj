@@ -647,22 +647,37 @@
     </Compile>
     <Compile Include="Utilities\AssertionTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\AttributeUsageTest.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\ComplexAttributeTarget.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\AttributeWithMetadataTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\IsDefined_WithSuppresTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromType_WithSuppresTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesWithMetadataTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseClassWithAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseWithAttributesForSuppressed.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ComplexAttributeTarget.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromTypeTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\InstantiateAttributeDataTest.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\NotInheritedNotMultipleAttribute.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\ImplicitUsageAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseNonInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedDerivedDerivedSuppressed.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedDerivedWithAttributesForSuppressed.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedNonInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedClassWithAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedWithAttributesAndSuppressed.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\NotInheritedNotMultipleAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ImplicitUsageAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\IsDefinedFromMemberInfoTest.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\MultipleAttribute.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\DerivedSampleClass.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\MultipleAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedSampleClass.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributeFromMemberInfoTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromMemberInfoTest.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\ICustomAttribute.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\InheritedAttribute.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\SampleClass.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ICustomAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\InheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\SampleClass.cs" />
     <Compile Include="Utilities\BidirectionalStringConverterTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\AttributeUtilityTests\ComplexAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ComplexAttribute.cs" />
     <Compile Include="Utilities\ConsoleUtilityTest.cs" />
     <Compile Include="Utilities\EnumDescriptionTest.cs">
       <SubType>Code</SubType>

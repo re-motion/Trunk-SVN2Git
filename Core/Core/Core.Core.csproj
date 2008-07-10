@@ -438,6 +438,7 @@
     <Compile Include="Utilities\AppDomainRunnerBase.cs" />
     <Compile Include="Utilities\AttributeUtility.cs" />
     <Compile Include="Utilities\Assertion.cs" />
+    <Compile Include="Utilities\AttributeWithMetadata.cs" />
     <Compile Include="Utilities\ConsoleUtility.cs" />
     <Compile Include="Utilities\DefaultConsoleManager.cs" />
     <Compile Include="Utilities\DesignerUtility.cs" />

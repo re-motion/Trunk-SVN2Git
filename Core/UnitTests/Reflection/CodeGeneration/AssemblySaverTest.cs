@@ -38,6 +38,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       string[] paths = AssemblySaver.SaveAssemblies (scope);
       Assert.AreEqual (1, paths.Length);
       Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, scope.StrongNamedModuleName), paths[0]);
+      File.Delete (paths[0]);
     }
 
     [Test]
@@ -49,6 +50,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       string[] paths = AssemblySaver.SaveAssemblies (scope);
       Assert.AreEqual (1, paths.Length);
       Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, scope.WeakNamedModuleName), paths[0]);
+      File.Delete (paths[0]);
     }
   }
 }

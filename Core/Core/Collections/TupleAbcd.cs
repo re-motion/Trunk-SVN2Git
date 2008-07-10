@@ -73,5 +73,10 @@ namespace Remotion.Collections
     {
       return EqualityUtility.GetRotatedHashCode (_a, _b, _c, _d);
     }
+
+    public override string ToString ()
+    {
+      return string.Format ("<{0}, {1}, {2}, {3}>", _a, _b, _c, _d);
+    }
   }
 }

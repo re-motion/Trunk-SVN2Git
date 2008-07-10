@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
+namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
 {
   [Inherited]
   public class SampleClass

@@ -94,6 +94,7 @@
     <Compile Include="Reflection\ProcInvoker.generated.cs" />
     <Compile Include="Reflection\ProcInvoker.template.cs" />
     <Compile Include="StandardDelegates.cs" />
+    <Compile Include="SuppressAttributesAttribute.cs" />
     <Compile Include="Utilities\ArgumentEmptyException.cs" />
     <Compile Include="Utilities\ArgumentItemNullException.cs" />
     <Compile Include="Utilities\ArgumentItemTypeException.cs" />

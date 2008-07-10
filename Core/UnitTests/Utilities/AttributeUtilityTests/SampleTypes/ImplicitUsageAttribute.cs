@@ -10,9 +10,9 @@
 
 using System;
 
-namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
+namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
 {
-  [AttributeUsage (AttributeTargets.All, Inherited = true, AllowMultiple = true)]
-  public class InheritedAttribute : Attribute, ICustomAttribute
-  { }
+  public class ImplicitUsageAttribute : Attribute
+  {
+  }
 }

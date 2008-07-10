@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.Collections;
 
 namespace Remotion.Utilities
 {
@@ -73,8 +74,46 @@ namespace Remotion.Utilities
       ArgumentUtility.CheckNotNull ("element", element);
       CheckAttributeType (attributeType, "attributeType");
 
+      Type elementAsType = element as Type;
+      if (elementAsType != null)
+        return GetCustomAttributes (elementAsType, attributeType, inherit);
+
       Attribute[] attributes = Attribute.GetCustomAttributes (element, typeof (Attribute), inherit);
       return Array.FindAll (attributes, delegate (Attribute attribute) { return attributeType.IsInstanceOfType (attribute); });
+    }
+
+    public static Attribute[] GetCustomAttributes (Type type, Type attributeType, bool inherit)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      CheckAttributeType (attributeType, "attributeType");
+
+      IEnumerable<AttributeWithMetadata> attributes = GetCustomAttributesWithMetadata (type, inherit);
+      IEnumerable<AttributeWithMetadata> suppressAttributes = AttributeWithMetadata.IncludeAll (attributes, typeof (SuppressAttributesAttribute));
+
+      IEnumerable<AttributeWithMetadata> filteredAttributes = AttributeWithMetadata.IncludeAll (attributes, attributeType);
+      filteredAttributes = AttributeWithMetadata.ExcludeAll (filteredAttributes, typeof (SuppressAttributesAttribute));
+
+      IEnumerable<AttributeWithMetadata> suppressedAttributes = AttributeWithMetadata.Suppress (filteredAttributes, suppressAttributes);
+      IEnumerable<Attribute> attributeInstances = AttributeWithMetadata.ExtractInstances (suppressedAttributes);
+
+      return EnumerableUtility.ToArray (attributeInstances);
+    }
+
+    public static IEnumerable<AttributeWithMetadata> GetCustomAttributesWithMetadata (Type type, bool inherit)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      Type currentType = type;
+      do
+      {
+        Attribute[] attributes = Attribute.GetCustomAttributes (currentType, false); // get attributes exactly for current type
+        foreach (Attribute attribute in attributes)
+        {
+          if (type == currentType || IsAttributeInherited (attribute.GetType()))
+            yield return new AttributeWithMetadata (currentType, attribute);
+        }
+        currentType = currentType.BaseType;
+      } while (inherit && currentType != null && currentType != typeof (object)); // iterate unless inherit == false, stop when typeof (object) is reached
     }
 
     private static void CheckAttributeType (Type attributeType, string parameterName)
