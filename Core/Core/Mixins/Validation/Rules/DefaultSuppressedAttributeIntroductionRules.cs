@@ -9,14 +9,16 @@
  */
 
 using System;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.Mixins.Definitions;
+using Remotion.Utilities;
 
-namespace Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes
+namespace Remotion.Mixins.Validation.Rules
 {
-  [Simple (S = "whazzup1")]
-  [Simple (S = "whazzup2")]
-  public class ClassWithCustomAttribute
+  public class DefaultSuppressedAttributeIntroductionRules : RuleSetBase
   {
-    
+    public override void Install (ValidatingVisitor visitor)
+    {
+      // no rules available
+    }
   }
 }

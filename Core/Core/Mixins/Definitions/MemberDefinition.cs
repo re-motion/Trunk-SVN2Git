@@ -25,7 +25,11 @@ namespace Remotion.Mixins.Definitions
     private readonly MultiDefinitionCollection<Type, AttributeDefinition> _customAttributes =
         new MultiDefinitionCollection<Type, AttributeDefinition> (delegate (AttributeDefinition a) { return a.AttributeType; });
     private readonly MultiDefinitionCollection<Type, AttributeIntroductionDefinition> _introducedAttributes =
-    new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (delegate (AttributeIntroductionDefinition a) { return a.AttributeType; });
+        new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (delegate (AttributeIntroductionDefinition a) { return a.AttributeType; });
+    private readonly MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> _suppressedIntroducedAttributes =
+        new MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> (
+        delegate (SuppressedAttributeIntroductionDefinition a) { return a.AttributeType; });
+
 
     private IDefinitionCollection<Type, MemberDefinition> _internalOverridesWrapper = null;
 
@@ -114,6 +118,11 @@ namespace Remotion.Mixins.Definitions
       get { return _introducedAttributes; }
     }
 
+    public MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> SuppressedIntroducedAttributes
+    {
+      get { return _suppressedIntroducedAttributes; }
+    }
+
     protected abstract IDefinitionCollection<Type, MemberDefinition> GetInternalOverridesWrapper();
 
     public virtual bool CanBeOverriddenBy (MemberDefinition overrider)
@@ -133,6 +142,8 @@ namespace Remotion.Mixins.Definitions
 
       _customAttributes.Accept (visitor);
       _introducedAttributes.Accept (visitor);
+
+      Assertion.IsTrue (SuppressedIntroducedAttributes.Count == 0, "Must be updated once we support suppressing attributes on members");
     }
 
     protected abstract void ChildSpecificAccept (IDefinitionVisitor visitor);

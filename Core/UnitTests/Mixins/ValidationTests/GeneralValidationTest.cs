@@ -91,6 +91,8 @@ namespace Remotion.UnitTests.Mixins.ValidationTests
       Assert.IsTrue (visitedDefinitions.ContainsKey (bt3));
       TargetClassDefinition btWithAdditionalDependencies = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassWithAdditionalDependencies));
       Assert.IsTrue (visitedDefinitions.ContainsKey (btWithAdditionalDependencies));
+      TargetClassDefinition targetWithSuppressAttribute = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassSuppressingBT1Attribute));
+      Assert.IsTrue (visitedDefinitions.ContainsKey (targetWithSuppressAttribute));
 
       MixinDefinition bt1m1 = bt1.Mixins[typeof (BT1Mixin1)];
       Assert.IsTrue (visitedDefinitions.ContainsKey (bt1m1));
@@ -188,6 +190,9 @@ namespace Remotion.UnitTests.Mixins.ValidationTests
 
       MixinDependencyDefinition md1 = btWithAdditionalDependencies.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinDependencies[typeof (MixinWithNoAdditionalDependency)];
       Assert.IsTrue (visitedDefinitions.ContainsKey (md1));
+
+      SuppressedAttributeIntroductionDefinition suppressedAttribute1 = targetWithSuppressAttribute.SuppressedIntroducedAttributes.GetFirstItem (typeof (BT1Attribute));
+      Assert.IsTrue (visitedDefinitions.ContainsKey (suppressedAttribute1));
     }
 
     [Test]

@@ -38,6 +38,7 @@ namespace Remotion.Mixins.Validation
     private readonly List<IValidationRule<MixinDependencyDefinition>> _mixinDependencyRules = new List<IValidationRule<MixinDependencyDefinition>> ();
     private readonly List<IValidationRule<AttributeDefinition>> _attributeRules = new List<IValidationRule<AttributeDefinition>> ();
     private readonly List<IValidationRule<AttributeIntroductionDefinition>> _attributeIntroductionRules = new List<IValidationRule<AttributeIntroductionDefinition>> ();
+    private readonly List<IValidationRule<SuppressedAttributeIntroductionDefinition>> _suppressedAttributeIntroductionRules = new List<IValidationRule<SuppressedAttributeIntroductionDefinition>> ();
 
     public ValidatingVisitor(IValidationLog validationLog)
     {
@@ -138,6 +139,11 @@ namespace Remotion.Mixins.Validation
     public IList<IValidationRule<AttributeIntroductionDefinition>> AttributeIntroductionRules
     {
       get { return _attributeIntroductionRules; }
+    }
+
+    public IList<IValidationRule<SuppressedAttributeIntroductionDefinition>> SuppressedAttributeIntroductionRules
+    {
+      get { return _suppressedAttributeIntroductionRules; }
     }
 
     public void Visit (TargetClassDefinition targetClass)
@@ -252,6 +258,12 @@ namespace Remotion.Mixins.Validation
     {
       ArgumentUtility.CheckNotNull ("attributeIntroduction", attributeIntroduction);
       CheckRules (_attributeIntroductionRules, attributeIntroduction);
+    }
+
+    public void Visit (SuppressedAttributeIntroductionDefinition suppressedAttributeIntroduction)
+    {
+      ArgumentUtility.CheckNotNull ("suppressedAttributeIntroduction", suppressedAttributeIntroduction);
+      CheckRules (_suppressedAttributeIntroductionRules, suppressedAttributeIntroduction);
     }
 
     private void CheckRules<TDefinition> (IEnumerable<IValidationRule<TDefinition>> rules, TDefinition definition) where TDefinition : IVisitableDefinition

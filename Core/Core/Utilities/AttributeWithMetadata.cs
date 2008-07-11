@@ -51,11 +51,11 @@ namespace Remotion.Utilities
         bool suppressed = false;
         foreach (AttributeWithMetadata suppressAttribute in suppressAttributesArray) // assume that there are only few suppressAttributes, if any
         {
-          if (attribute.DeclaringType != suppressAttribute.DeclaringType 
-              && attribute.IsInstanceOfType (((SuppressAttributesAttribute)suppressAttribute.AttributeInstance).AttributeBaseType))
+          SuppressAttributesAttribute suppressAttributeInstance = (SuppressAttributesAttribute)suppressAttribute.AttributeInstance;
+          if (suppressAttributeInstance.IsSuppressed (attribute.AttributeInstance.GetType(), attribute.DeclaringType, suppressAttribute.DeclaringType))
             suppressed = true;
         }
-        
+
         if (!suppressed)
           yield return attribute;
       }

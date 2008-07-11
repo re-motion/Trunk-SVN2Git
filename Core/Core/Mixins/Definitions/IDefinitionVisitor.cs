@@ -33,5 +33,6 @@ namespace Remotion.Mixins.Definitions
     void Visit (MixinDependencyDefinition mixinDependency);
     void Visit (AttributeDefinition attribute);
     void Visit (AttributeIntroductionDefinition attributeIntroduction);
+    void Visit (SuppressedAttributeIntroductionDefinition suppressedAttributeIntroduction);
   }
 }

@@ -9,11 +9,13 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace Remotion.Mixins.Definitions
 {
   public interface IAttributeIntroductionTargetDefinition : IAttributableDefinition, IVisitableDefinition
   {
     MultiDefinitionCollection<Type, AttributeIntroductionDefinition> IntroducedAttributes { get; }
+    MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> SuppressedIntroducedAttributes { get; }
   }
 }

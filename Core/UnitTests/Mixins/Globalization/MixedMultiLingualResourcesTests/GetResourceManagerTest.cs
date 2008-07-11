@@ -118,7 +118,6 @@ namespace Remotion.UnitTests.Mixins.Globalization.MixedMultiLingualResourcesTest
     }
 
     [Test]
-    [Ignore ("TODO: COMMONS-648")]
     public void AttributesFromMultipleMixins_InheritedFalse ()
     {
       using (MixinConfiguration.BuildNew ()
@@ -130,9 +129,9 @@ namespace Remotion.UnitTests.Mixins.Globalization.MixedMultiLingualResourcesTest
         ResourceManagerSet resourceManager =
             (ResourceManagerSet) MixedMultiLingualResources.GetResourceManager (typeof (ClassWithoutMultiLingualResourcesAttributes), false);
 
-        Assert.AreEqual (2, resourceManager.Count);
-        Assert.AreEqual ("OnMixin1", resourceManager[0].Name);
-        Assert.AreEqual ("OnMixin2", resourceManager[1].Name);
+        Assert.AreEqual (3, resourceManager.Count);
+        string[] names = new string[] { resourceManager[0].Name, resourceManager[1].Name, resourceManager[2].Name };
+        Assert.That (names, Is.EquivalentTo (new object[] {"OnMixin1", "OnMixin2a", "OnMixin2b"}));
       }
     }
 

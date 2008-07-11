@@ -20,6 +20,7 @@ namespace Remotion.Mixins.Definitions
   {
     private readonly IAttributableDefinition _declaringDefinition;
     private readonly CustomAttributeData _data;
+    private readonly object _instance;
     private readonly bool _isCopyTemplate;
 
     public AttributeDefinition (IAttributableDefinition declaringDefinition, CustomAttributeData data, bool isCopyTemplate)
@@ -27,11 +28,17 @@ namespace Remotion.Mixins.Definitions
       _declaringDefinition = declaringDefinition;
       _data = data;
       _isCopyTemplate = isCopyTemplate;
+      _instance = AttributeUtility.InstantiateCustomAttributeData (data);
     }
 
     public CustomAttributeData Data
     {
       get { return _data;}
+    }
+
+    public object Instance
+    {
+      get { return _instance; }
     }
 
     public Type AttributeType

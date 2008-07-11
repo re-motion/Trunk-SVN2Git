@@ -8,15 +8,10 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
-using Remotion.UnitTests.Mixins.SampleTypes;
-
-namespace Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  [Simple (S = "whazzup1")]
-  [Simple (S = "whazzup2")]
-  public class ClassWithCustomAttribute
+  [Simple]
+  public class MixinAddingSimpleAttribute
   {
-    
   }
 }

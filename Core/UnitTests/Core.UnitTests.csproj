@@ -136,8 +136,13 @@
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinIntroducingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinOverridingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\TargetClassCallingOverriddenMethodFromCtor.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinSuppressingAndAddingBT1Attribute.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinSuppressingBT1Attribute.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinAddingSimpleAttribute.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinAddingNonInheritedAttribute.cs" />
     <Compile Include="Mixins\SampleTypes\ClassWithSuppressAttribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinIntroducingMembersWithDifferentVisibilities.cs" />
+    <Compile Include="Mixins\SampleTypes\TargetClassSuppressingBT1Attribute.cs" />
     <Compile Include="Mixins\ValidationTests\Rules\DefaultEventIntroductionRulesTest.cs" />
     <Compile Include="Mixins\ValidationTests\Rules\DefaultPropertyIntroductionRulesTest.cs" />
     <Compile Include="Mixins\ValidationTests\Rules\DefaultMethodIntroductionRulesTest.cs" />
@@ -202,7 +207,7 @@
     <Compile Include="Reflection\CodeGeneration\SampleTypes\IMarkerInterface.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\SerializableClass.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\SerializableClassWithoutCtor.cs" />
-    <Compile Include="Reflection\CodeGeneration\SampleTypes\SimpleAttribute.cs" />
+    <Compile Include="Mixins\SampleTypes\SimpleAttribute.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\SimpleArrayProvider.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\StructWithMethod.cs" />
     <Compile Include="Reflection\CodeGeneration\SerializationEventRaiserTest.cs" />
@@ -660,7 +665,7 @@
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ClassWithoutAttributes.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ComplexAttributeTarget.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromTypeTest.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\InstantiateAttributeDataTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\InstantiateCustomAttributeDataTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseNonInheritedAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedDerivedDerivedSuppressed.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedDerivedWithAttributesForSuppressed.cs" />

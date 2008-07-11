@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using Remotion.Collections;
 
@@ -144,7 +145,7 @@ namespace Remotion.Utilities
       AttributeUsageAttribute[] usage =
           (AttributeUsageAttribute[]) attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), true);
       if (usage.Length == 0)
-        return null;
+        return new AttributeUsageAttribute (AttributeTargets.All);
       else
       {
         Assertion.IsTrue (usage.Length == 1, "AllowMultiple == false");
@@ -178,14 +179,16 @@ namespace Remotion.Utilities
       if (typedArgument.ArgumentType.IsArray)
       {
         IList<CustomAttributeTypedArgument> typedArgumentValue = (IList<CustomAttributeTypedArgument>) typedArgument.Value;
-        object[] array = (object[]) Array.CreateInstance (typedArgument.ArgumentType.GetElementType (), typedArgumentValue.Count);
+        Array array = Array.CreateInstance (typedArgument.ArgumentType.GetElementType (), typedArgumentValue.Count);
         for (int i = 0; i < typedArgumentValue.Count; i++)
         {
           CustomAttributeTypedArgument arrayElement = typedArgumentValue[i];
-          array[i] = ExtractValueFromAttributeArgument (arrayElement);
+          array.SetValue (ExtractValueFromAttributeArgument (arrayElement), i);
         }
         return array;
       }
+      else if (typedArgument.ArgumentType.IsEnum)
+        return Enum.ToObject (typedArgument.ArgumentType, typedArgument.Value);
       else
         return typedArgument.Value;
     }

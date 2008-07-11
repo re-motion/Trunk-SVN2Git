@@ -478,25 +478,23 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         // only replicate those attributes from the base which are not inherited anyway
         if (!attribute.IsCopyTemplate
             && (!CanInheritAttributesFromBase (targetConfiguration) 
-            || (!AttributeUtility.IsAttributeInherited (attribute.AttributeType) && !IsSuppressed (attribute))))
+            || (!AttributeUtility.IsAttributeInherited (attribute.AttributeType) && !IsSuppressedByMixin (attribute))))
           AttributeReplicator.ReplicateAttribute (targetEmitter, attribute.Data);
       }
 
       // Replicate introduced attributes
       foreach (AttributeIntroductionDefinition attribute in targetConfiguration.IntroducedAttributes)
-      {
-        if (!IsSuppressed (attribute.Attribute))
-          AttributeReplicator.ReplicateAttribute (targetEmitter, attribute.Attribute.Data);
-      }
+        AttributeReplicator.ReplicateAttribute (targetEmitter, attribute.Attribute.Data);
     }
 
-    private bool IsSuppressed (AttributeDefinition attribute)
+    private bool IsSuppressedByMixin (AttributeDefinition attribute)
     {
+      ICustomAttributeProvider declaringEntity = attribute.DeclaringDefinition.DeclaringEntity;
       foreach (AttributeIntroductionDefinition suppressAttribute in Configuration.IntroducedAttributes[typeof (SuppressAttributesAttribute)])
       {
-        Type suppressedType = (Type) suppressAttribute.Attribute.Data.ConstructorArguments[0].Value;
-        if (suppressedType.IsAssignableFrom (attribute.AttributeType) 
-            && suppressAttribute.Attribute.DeclaringDefinition.DeclaringEntity != attribute.DeclaringDefinition.DeclaringEntity)
+        SuppressAttributesAttribute suppressAttributeInstance = (SuppressAttributesAttribute)suppressAttribute.Attribute.Instance;
+        ICustomAttributeProvider suppressingEntity = suppressAttribute.Attribute.DeclaringDefinition.DeclaringEntity;
+        if (suppressAttributeInstance.IsSuppressed (attribute.AttributeType, declaringEntity, suppressingEntity))
           return true;
       }
       return false;

@@ -9,13 +9,13 @@
  */
 
 using System;
-using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.Mixins;
 
-namespace Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  [Simple (S = "whazzup1")]
-  [Simple (S = "whazzup2")]
-  public class ClassWithCustomAttribute
+  [SuppressAttributes(typeof (BT1Attribute))]
+  [BT1]
+  public class MixinSuppressingAndAddingBT1Attribute
   {
     
   }

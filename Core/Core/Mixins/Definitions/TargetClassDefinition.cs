@@ -33,6 +33,9 @@ namespace Remotion.Mixins.Definitions
     
     private readonly MultiDefinitionCollection<Type, AttributeIntroductionDefinition> _introducedAttributes =
         new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (delegate (AttributeIntroductionDefinition a) { return a.AttributeType; });
+    private readonly MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> _suppressedIntroducedAttributes =
+        new MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> (
+          delegate (SuppressedAttributeIntroductionDefinition a) { return a.AttributeType; });
 
     private readonly MixinTypeInstantiator _mixinTypeInstantiator;
     private readonly ClassContext _configurationContext;
@@ -54,6 +57,11 @@ namespace Remotion.Mixins.Definitions
     public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> IntroducedAttributes
     {
       get { return _introducedAttributes; }
+    }
+
+    public MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> SuppressedIntroducedAttributes
+    {
+      get { return _suppressedIntroducedAttributes; }
     }
 
     internal MixinTypeInstantiator MixinTypeInstantiator
@@ -82,6 +90,7 @@ namespace Remotion.Mixins.Definitions
       RequiredBaseCallTypes.Accept (visitor);
       RequiredMixinTypes.Accept (visitor);
       IntroducedAttributes.Accept (visitor);
+      SuppressedIntroducedAttributes.Accept (visitor);
     }
 
     public bool HasMixinWithConfiguredType(Type configuredType)

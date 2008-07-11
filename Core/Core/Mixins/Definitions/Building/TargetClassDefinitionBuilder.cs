@@ -56,6 +56,7 @@ namespace Remotion.Mixins.Definitions.Building
       ApplyMethodRequirements (classDefinition);
 
       AnalyzeOverrides (classDefinition);
+      AnalyzeAttributeIntroductions (classDefinition);
       return classDefinition;
     }
 
@@ -156,6 +157,35 @@ namespace Remotion.Mixins.Definitions.Building
     private bool IsVisibleToInheritorsOrExplicitInterfaceImpl (MethodInfo method)
     {
       return ReflectionUtility.IsPublicOrProtectedOrExplicit (method);
+    }
+
+    private void AnalyzeAttributeIntroductions (TargetClassDefinition classDefinition)
+    {
+      AttributeIntroductionDefinitionBuilder builder = new AttributeIntroductionDefinitionBuilder (classDefinition);
+      builder.AddPotentialSuppressors (classDefinition.CustomAttributes);
+      foreach (MixinDefinition mixin in classDefinition.Mixins)
+        builder.AddPotentialSuppressors (mixin.CustomAttributes);
+      foreach (MixinDefinition mixin in classDefinition.Mixins)
+        builder.Apply (mixin);
+
+      AnalyzeMemberAttributeIntroductions(classDefinition);
+    }
+
+    private void AnalyzeMemberAttributeIntroductions (TargetClassDefinition classDefinition)
+    {
+      const AttributeTargets memberTargets = AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field;
+      Assertion.IsTrue ((AttributeUtility.GetAttributeUsage (typeof (SuppressAttributesAttribute)).ValidOn & memberTargets) == 0, 
+          "must be updated with AddPotentialSuppressors once SuppressAttributesAttribute supports members");
+
+      foreach (MemberDefinition member in classDefinition.GetAllMembers ())
+      {
+        if (member.Overrides.Count != 0)
+        {
+          AttributeIntroductionDefinitionBuilder introductionBuilder = new AttributeIntroductionDefinitionBuilder (member);
+          foreach (MemberDefinition overrider in member.Overrides)
+            introductionBuilder.Apply (overrider);
+        }
+      }
     }
   }
 }

@@ -43,5 +43,15 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
     public void CtorWithStringAndTypeParamsArray ()
     {
     }
+
+    [Complex (new int[] {1, 2, 3})]
+    public void CtorWithIntArray ()
+    {
+    }
+
+    [Complex (new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday })]
+    public void CtorWithEnumArray ()
+    {
+    }
   }
 }

@@ -9,14 +9,12 @@
  */
 
 using System;
-using Remotion.UnitTests.Mixins.SampleTypes;
 
-namespace Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  [Simple (S = "whazzup1")]
-  [Simple (S = "whazzup2")]
-  public class ClassWithCustomAttribute
+  [AttributeUsage (AttributeTargets.All, AllowMultiple = true, Inherited = true)]
+  public class SimpleAttribute : Attribute
   {
-    
+    public string S;
   }
 }

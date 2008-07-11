@@ -48,7 +48,6 @@ namespace Remotion.Mixins.Definitions.Building
 
       AnalyzeMembers(mixin);
       AnalyzeAttributes(mixin);
-      AnalyzeAttributeIntroductions(mixin);
       AnalyzeInterfaceIntroductions (mixin, mixinContext.IntroducedMemberVisibility);
       AnalyzeOverrides (mixin);
       AnalyzeDependencies(mixin, mixinContext.ExplicitDependencies);
@@ -86,11 +85,6 @@ namespace Remotion.Mixins.Definitions.Building
       attributesBuilder.Apply (mixin.Type);
     }
 
-    private void AnalyzeAttributeIntroductions (MixinDefinition mixin)
-    {
-      _attributeIntroductionBuilder.Apply (mixin);
-    }
-    
     private void AnalyzeInterfaceIntroductions (MixinDefinition mixin, MemberVisibility defaultVisibility)
     {
       InterfaceIntroductionDefinitionBuilder introductionBuilder = new InterfaceIntroductionDefinitionBuilder (mixin, defaultVisibility);
@@ -110,8 +104,6 @@ namespace Remotion.Mixins.Definitions.Building
       OverridesAnalyzer<EventDefinition> eventAnalyzer = new OverridesAnalyzer<EventDefinition> (typeof (OverrideTargetAttribute), _targetClass.Events);
       foreach (Tuple<EventDefinition, EventDefinition> eventOverride in eventAnalyzer.Analyze (mixin.Events))
         InitializeOverride (eventOverride.A, eventOverride.B);
-
-      AnalyzeMemberAttributeIntroductions (mixin);
     }
 
     private void InitializeOverride (MemberDefinition overrider, MemberDefinition baseMember)
@@ -125,19 +117,7 @@ namespace Remotion.Mixins.Definitions.Building
       }
       baseMember.AddOverride (overrider);
     }
-
-    private void AnalyzeMemberAttributeIntroductions (MixinDefinition mixin)
-    {
-      foreach (MemberDefinition mixinMember in mixin.GetAllMembers ())
-      {
-        if (mixinMember.BaseAsMember != null)
-        {
-          AttributeIntroductionDefinitionBuilder introductionBuilder = new AttributeIntroductionDefinitionBuilder (mixinMember.BaseAsMember);
-          introductionBuilder.Apply (mixinMember);
-        }
-      }
-    }
-
+    
     private void AnalyzeDependencies (MixinDefinition mixin, IEnumerable<Type> additionalDependencies)
     {
       ThisDependencyDefinitionBuilder thisDependencyBuilder = new ThisDependencyDefinitionBuilder (mixin);

@@ -26,7 +26,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     }
 
     [Test]
-    public void GetAttributeUsageNullIfNotDefined ()
+    public void GetAttributeUsageNeverNull ()
     {
       AttributeUsageAttribute attribute = AttributeUtility.GetAttributeUsage (typeof (ImplicitUsageAttribute));
       Assert.IsNotNull (attribute);
@@ -37,7 +37,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void GetAttributeUsageWithNoAttribute ()
     {
       AttributeUsageAttribute attribute = AttributeUtility.GetAttributeUsage (typeof (object));
-      Assert.IsNull (attribute);
+      Assert.IsNotNull (attribute);
+      Assert.AreEqual (new AttributeUsageAttribute(AttributeTargets.All), attribute);
     }
 
     [Test]

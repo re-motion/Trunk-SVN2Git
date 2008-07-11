@@ -17,6 +17,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
     public Type T;
     public object[] Os;
     public Type[] Ts;
+    public int[] Is;
+    public DayOfWeek[] Es;
 
     private string s;
 
@@ -44,6 +46,16 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
     {
       T = t;
       Ts = ts;
+    }
+
+    public ComplexAttribute (int[] ints)
+    {
+      Is = ints;
+    }
+
+    public ComplexAttribute (DayOfWeek[] es)
+    {
+      Es = es;
     }
 
     public string S

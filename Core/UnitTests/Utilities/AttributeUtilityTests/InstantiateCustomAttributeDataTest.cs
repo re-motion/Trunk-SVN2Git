@@ -18,7 +18,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
 {
   [TestFixture]
-  public class InstantiateAttributeDataTest
+  public class InstantiateCustomAttributeDataTest
   {
     [Test]
     public void DefaultCtor ()
@@ -72,6 +72,20 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
       Assert.AreEqual (typeof (double), attribute.T);
       Assert.IsNull (attribute.S);
       Assert.That (attribute.Ts, Is.EqualTo (new Type[] { typeof (int), typeof (string) }));
+    }
+
+    [Test]
+    public void CtorWithIntArray ()
+    {
+      ComplexAttribute attribute = GetInstantiatedAttribute ("CtorWithIntArray");
+      Assert.That (attribute.Is, Is.EqualTo (new int[] { 1, 2, 3 }));
+    }
+
+    [Test]
+    public void CtorWithEnumArray ()
+    {
+      ComplexAttribute attribute = GetInstantiatedAttribute ("CtorWithEnumArray");
+      Assert.That (attribute.Es, Is.EqualTo (new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday }));
     }
 
     private ComplexAttribute GetInstantiatedAttribute (string methodName)

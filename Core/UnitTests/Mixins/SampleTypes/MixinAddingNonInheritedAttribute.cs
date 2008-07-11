@@ -8,13 +8,10 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
-
-namespace Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  [AttributeUsage (AttributeTargets.All, AllowMultiple = true, Inherited = true)]
-  public class SimpleAttribute : Attribute
+  [NonInherited]
+  public class MixinAddingNonInheritedAttribute
   {
-    public string S;
   }
 }

@@ -26,7 +26,6 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
       using (MixinConfiguration.BuildNew().ForClass<DerivedWithAttributesAndSuppressed>().AddMixin<MixinAddingInheritedAttribute>().EnterScope()) 
       {
         Type type = TypeFactory.GetConcreteType(typeof(DerivedWithAttributesAndSuppressed));
-        Assert.That (type.GetCustomAttributes (true), List.Contains (new BaseInheritedAttribute ("MixinAddingInheritedAttribute")));
         Assert.That (AttributeUtility.GetCustomAttributes (type, typeof (Attribute), true), 
             List.Not.Contains (new BaseInheritedAttribute ("MixinAddingInheritedAttribute")));
       }
