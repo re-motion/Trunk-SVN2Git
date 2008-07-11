@@ -8,19 +8,12 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
-using System.Collections.Generic;
 using Remotion.Data.Linq.DataObjectModel;
 
 namespace Remotion.Data.Linq.SqlGeneration
 {
-  public interface ICommandBuilder
+  public interface IMethodCallSqlGenerator
   {
-    void Append (string text);
-    void AppendEvaluation (IEvaluation evaluation);
-    void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction);
-    void AppendEvaluations (IEnumerable<IEvaluation> evaluations);
-    void AppendConstant (Constant constant);
-    CommandParameter AddParameter (object value);
+    void GenerateSql(MethodCall methodCall, ICommandBuilder commandBuilder);
   }
 }
