@@ -225,6 +225,16 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     }
 
     [Test]
+    public void AddConstraints_WithoutClassDefinitions ()
+    {
+      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
+
+      _constraintBuilder.AddConstraints (classes);
+
+      Assert.IsEmpty (_constraintBuilder.GetAddConstraintScript ());
+    }
+
+    [Test]
     public void GetDropConstraintsScript ()
     {
       _constraintBuilder.AddConstraint (ClassWithRelations);
@@ -239,6 +249,16 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           + "exec sp_executesql @statement\r\n";
 
       Assert.AreEqual (expectedScript, _constraintBuilder.GetDropConstraintScript());
+    }
+
+    [Test]
+    public void GetDropConstraintsScript_WithoutClasses ()
+    {
+      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
+
+      _constraintBuilder.AddConstraints (classes);
+
+      Assert.IsEmpty (_constraintBuilder.GetDropConstraintScript ());
     }
 
     [Test]

@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
     public void AddTables (ClassDefinitionCollection classes)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("classes", classes);
+      ArgumentUtility.CheckNotNull ("classes", classes);
 
       foreach (ClassDefinition currentClass in classes)
         AddTable (currentClass);

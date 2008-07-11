@@ -12,9 +12,12 @@ using System;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.ConfigurationLoader;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
+using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlServer
 {
@@ -28,6 +31,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     private FileBuilder _fileBuilder;
     private string _firstStorageProviderSetupDBScript;
     private string _secondStorageProviderSetupDBScript;
+    private string _firstStorageProviderSetupDBScriptWithoutTables;
 
     public override void TextFixtureSetUp ()
     {
@@ -47,6 +51,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           (RdbmsProviderDefinition) StorageConfiguration.StorageProviderDefinitions.GetMandatory ("SecondStorageProvider");
       _fileBuilder = new FileBuilder (MappingConfiguration, _firstStorageProviderDefinition);
       _firstStorageProviderSetupDBScript = GetEmbeddedStringResource ("TestData.SetupDB_FirstStorageProvider.sql");
+      _firstStorageProviderSetupDBScriptWithoutTables = GetEmbeddedStringResource ("TestData.SetupDB_FirstStorageProviderWithoutTables.sql");
       _secondStorageProviderSetupDBScript = GetEmbeddedStringResource ("TestData.SetupDB_SecondStorageProvider.sql");
     }
 
@@ -94,6 +99,24 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       Assert.AreEqual (_firstStorageProviderSetupDBScript, File.ReadAllText (@"TestDirectory\SetupDB_FirstStorageProvider.sql"));
       Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_SecondStorageProvider.sql"));
       Assert.AreEqual (_secondStorageProviderSetupDBScript, File.ReadAllText (@"TestDirectory\SetupDB_SecondStorageProvider.sql"));
+    }
+
+    [Test]
+    public void BuildWithEmptyMappingConfiguration ()
+    {
+      MockRepository mockRepository = new MockRepository();
+      IMappingLoader mappingLoaderStub = mockRepository.CreateMock<IMappingLoader>();
+      ClassDefinitionCollection classDefinitionCollection = new ClassDefinitionCollection();
+      SetupResult.For (mappingLoaderStub.ResolveTypes).Return (true);
+      SetupResult.For (mappingLoaderStub.NameResolver).Return (new ReflectionBasedNameResolver());
+      SetupResult.For (mappingLoaderStub.GetClassDefinitions ()).Return (classDefinitionCollection);
+      SetupResult.For (mappingLoaderStub.GetRelationDefinitions (classDefinitionCollection)).Return (new RelationDefinitionCollection());
+      mockRepository.ReplayAll();
+
+      FileBuilderBase.Build (typeof (FileBuilder), new MappingConfiguration (mappingLoaderStub), StorageConfiguration, "TestDirectory");
+
+      Assert.IsTrue (File.Exists (@"TestDirectory\SetupDB_FirstStorageProvider.sql"));
+      Assert.AreEqual (_firstStorageProviderSetupDBScriptWithoutTables, File.ReadAllText (@"TestDirectory\SetupDB_FirstStorageProvider.sql"));
     }
   }
 }

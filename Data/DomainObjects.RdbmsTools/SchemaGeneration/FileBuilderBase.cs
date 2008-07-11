@@ -59,9 +59,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
 
-      FileBuilderBase sqlFileBuilder = 
+      FileBuilderBase fileBuilder = 
           (FileBuilderBase) TypesafeActivator.CreateInstance (fileBuilderType).With (mappingConfiguration, rdbmsProviderDefinition);
-      File.WriteAllText (fileName, sqlFileBuilder.GetScript ());
+
+      File.WriteAllText (fileName, fileBuilder.GetScript ());
     }
 
     public static string GetFileName (StorageProviderDefinition storageProviderDefinition, string outputPath, bool multipleStorageProviders)

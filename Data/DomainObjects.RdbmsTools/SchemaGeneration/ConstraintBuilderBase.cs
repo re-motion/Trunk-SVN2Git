@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
     public void AddConstraints (ClassDefinitionCollection classes)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("classes", classes);
+      ArgumentUtility.CheckNotNull ("classes", classes);
 
       foreach (ClassDefinition currentClass in classes)
         AddConstraint (currentClass);

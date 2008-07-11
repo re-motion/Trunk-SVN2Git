@@ -149,6 +149,22 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
     }
 
     [Test]
+    public void AddTables_WithoutClassDefinitions ()
+    {
+      ClassDefinitionCollection classes = new ClassDefinitionCollection (false);
+
+      _mocks.ReplayAll ();
+
+      _stubTableBuilder.AddTables (classes);
+      string actualCreateTableScript = _stubTableBuilder.GetCreateTableScript ();
+      string actualDropTableScript = _stubTableBuilder.GetDropTableScript ();
+
+      _mocks.VerifyAll ();
+      Assert.IsEmpty (actualCreateTableScript);
+      Assert.IsEmpty (actualDropTableScript);
+    }
+
+    [Test]
     public void AddTableWithAbstractClass ()
     {
       _stubTableBuilder.AddTable (CompanyClass);
