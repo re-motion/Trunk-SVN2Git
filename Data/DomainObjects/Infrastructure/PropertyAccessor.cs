@@ -353,7 +353,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// this is the simple property type. For related objects, this is the related object's type. For related object collections,
     /// this is <see cref="ObjectList{T}"/>, where "T" is the related objects' type.
     /// </typeparam>
-    /// <returns>The value of the encapsulated property.</returns>
+    /// <returns>The value of the encapsulated property. For simple value properties,
+    /// this is the property value. For related objects, this is the related object. For related object collections,
+    /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</returns>
     /// <exception cref="InvalidTypeException">
     /// The type requested via <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyType"/>.
     /// </exception>
@@ -386,7 +388,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// this is <see cref="ObjectList{T}"/>, where "T" is the related objects' type.
     /// </typeparam>
     /// <param name="transaction">The <see cref="ClientTransaction"/> to get the value for.</param>
-    /// <returns>The value of the encapsulated property.</returns>
+    /// <returns>The value of the encapsulated property. For simple value properties,
+    /// this is the property value. For related objects, this is the related object. For related object collections,
+    /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="transaction"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="InvalidTypeException">
     /// The type requested via <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyType"/>.
@@ -442,7 +446,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// this is <see cref="ObjectList{T}"/>, where "T" is the related objects' type. The type parameter can usually be inferred and needn't be
     /// specified in such cases.
     /// </typeparam>
-    /// <param name="value">The value to be set.</param>
+    /// <param name="value">The value to be set. For simple value properties,
+    /// this is the value to be set. For related objects, this is the related object. For related object collections,
+    /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</param>
     /// <exception cref="InvalidTypeException">
     /// The type <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyType"/>.
     /// </exception>
@@ -464,7 +470,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// specified in such cases.
     /// </typeparam>
     /// <param name="transaction">The <see cref="ClientTransaction"/> to set the value for.</param>
-    /// <param name="value">The value to be set.</param>
+    /// <param name="value">The value to be set. For simple value properties,
+    /// this is the value to be set. For related objects, this is the related object. For related object collections,
+    /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</param>
     /// <exception cref="InvalidTypeException">
     /// The type <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyType"/>.
     /// </exception>
@@ -483,7 +491,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// Sets the property's value without performing an exact type check on the given value. The value must still be asssignable to
     /// <see cref="PropertyType"/>, though.
     /// </summary>
-    /// <param name="value">The value to be set.</param>
+    /// <param name="value">The value to be set. For simple value properties,
+    /// this is the value to be set. For related objects, this is the related object. For related object collections,
+    /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</param>
     /// <exception cref="InvalidTypeException">
     /// The given <paramref name="value"/> is not assignable to the property because of its type.
     /// </exception>
@@ -500,7 +510,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// asssignable to <see cref="PropertyType"/>, though.
     /// </summary>
     /// <param name="transaction">The <see cref="ClientTransaction"/> to set the value for.</param>
-    /// <param name="value">The value to be set.</param>
+    /// <param name="value">The value to be set. For simple value properties,
+    /// this is the value to be set. For related objects, this is the related object. For related object collections,
+    /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</param>
     /// <exception cref="InvalidTypeException">
     /// The given <paramref name="value"/> is not assignable to the property because of its type.
     /// </exception>
@@ -519,7 +531,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>
     /// Gets the property's value without performing a type check.
     /// </summary>
-    /// <returns>The value of the encapsulated property.</returns>
+    /// <returns>The value of the encapsulated property. For simple value properties,
+    /// this is the property value. For related objects, this is the related object. For related object collections,
+    /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</returns>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public object GetValueWithoutTypeCheck ()
@@ -531,7 +545,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// Gets the property's value without performing a type check for the given transaction.
     /// </summary>
     /// <param name="transaction">The <see cref="ClientTransaction"/> to get the value for.</param>
-    /// <returns>The value of the encapsulated property.</returns>
+    /// <returns>The value of the encapsulated property. For simple value properties,
+    /// this is the property value. For related objects, this is the related object. For related object collections,
+    /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="transaction"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
