@@ -16,22 +16,36 @@ namespace Remotion.Reflection
 {
   public static class ContextAwareTypeDiscoveryService
   {
-    private static readonly string s_defaultServiceKey = typeof (ContextAwareTypeDiscoveryService).FullName + ".DefaultService";
-
-    public static readonly SafeContextSingleton<ITypeDiscoveryService> DefaultService =
-        new SafeContextSingleton<ITypeDiscoveryService> (s_defaultServiceKey, CreateDefaultService);
-
-    private static ITypeDiscoveryService CreateDefaultService ()
-    {
-      return new AssemblyFinderTypeDiscoveryService (new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, false));
-    }
+    private static ITypeDiscoveryService _defaultService = null;
+    private static readonly object _defaultServiceLock = new object ();
 
     public static ITypeDiscoveryService GetInstance ()
     {
       if (DesignerUtility.IsDesignMode)
         return (ITypeDiscoveryService) DesignerUtility.DesignerHost.GetService (typeof (ITypeDiscoveryService));
       else
-        return DefaultService.Current;
+        return DefaultService;
+    }
+
+    public static void SetDefaultService (ITypeDiscoveryService newDefaultService)
+    {
+      lock (_defaultServiceLock)
+      {
+        _defaultService = newDefaultService;
+      }
+    }
+
+    public static ITypeDiscoveryService DefaultService
+    {
+      get
+      {
+        lock (_defaultServiceLock)
+        {
+          if (_defaultService == null)
+            _defaultService = new AssemblyFinderTypeDiscoveryService (new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, false));
+          return _defaultService;
+        }
+      }
     }
   }
 }
