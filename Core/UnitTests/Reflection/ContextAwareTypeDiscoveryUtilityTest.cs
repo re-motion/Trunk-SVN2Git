@@ -11,6 +11,7 @@
 using System;
 using System.ComponentModel.Design;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection;
 using Remotion.UnitTests.Design;
 using Remotion.Utilities;
@@ -87,6 +88,67 @@ namespace Remotion.UnitTests.Reflection
       Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryUtility.GetInstance ());
 
       _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void GetType_NormalMode_Success ()
+    {
+      Assert.That (ContextAwareTypeDiscoveryUtility.GetType (typeof (ContextAwareTypeDiscoveryUtilityTest).AssemblyQualifiedName, true),
+          Is.SameAs (typeof (ContextAwareTypeDiscoveryUtilityTest)));
+    }
+
+    [Test]
+    public void GetType_NormalMode_Failure_Null ()
+    {
+      Assert.That (ContextAwareTypeDiscoveryUtility.GetType ("dfgj", false), Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (TypeLoadException))]
+    public void GetType_NormalMode_Failure_Exception ()
+    {
+      ContextAwareTypeDiscoveryUtility.GetType ("dfgj", true);
+    }
+
+    [Test]
+    public void GetType_DesignMode_Success ()
+    {
+      IDesignerHost designerHostMock = _mockRepository.CreateMock<IDesignerHost> ();
+      Expect.Call (designerHostMock.GetType("abc")).Return (typeof (int));
+
+      _mockRepository.ReplayAll ();
+
+      DesignerUtility.SetDesignMode (new StubDesignModeHelper (designerHostMock));
+      Assert.That (ContextAwareTypeDiscoveryUtility.GetType ("abc", true), Is.SameAs (typeof (int)));
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void GetType_DesignMode_Failure_Null ()
+    {
+      IDesignerHost designerHostMock = _mockRepository.CreateMock<IDesignerHost> ();
+      Expect.Call (designerHostMock.GetType ("abc")).Return (null);
+
+      _mockRepository.ReplayAll ();
+
+      DesignerUtility.SetDesignMode (new StubDesignModeHelper (designerHostMock));
+      Assert.That (ContextAwareTypeDiscoveryUtility.GetType ("abc", false), Is.Null);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (TypeLoadException), ExpectedMessage = "Type 'abc' could not be loaded by the designer host.")]
+    public void GetType_DesignMode_Failure_Exception ()
+    {
+      IDesignerHost designerHostMock = _mockRepository.CreateMock<IDesignerHost> ();
+      Expect.Call (designerHostMock.GetType ("abc")).Return (null);
+
+      _mockRepository.ReplayAll ();
+
+      DesignerUtility.SetDesignMode (new StubDesignModeHelper (designerHostMock));
+      ContextAwareTypeDiscoveryUtility.GetType ("abc", true);
     }
   }
 }

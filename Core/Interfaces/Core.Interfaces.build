@@ -32,6 +32,7 @@
         <include name="BridgeInterfaces/**/*.cs" />
         <include name="Collections/**/*.cs" />
         <include name="Context/**/*.cs" />
+        <include name="Design/**/*.cs" />
         <include name="Implementation/**/*.cs" />
         <include name="Logging/**/*.cs" />
         <include name="Mixins/**/*.cs" />

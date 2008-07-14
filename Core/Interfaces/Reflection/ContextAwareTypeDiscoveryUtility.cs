@@ -21,6 +21,22 @@ namespace Remotion.Reflection
     private static ITypeDiscoveryService _defaultService = null;
     private static readonly object _defaultServiceLock = new object ();
 
+    public static ITypeDiscoveryService DefaultService
+    {
+      get
+      {
+        lock (_defaultServiceLock)
+        {
+          if (_defaultService == null)
+          {
+            _defaultService =
+                VersionDependentImplementationBridge<IAssemblyFinderTypeDiscoveryServiceImplementation>.Implementation.CreateTypeDiscoveryService();
+          }
+          return _defaultService;
+        }
+      }
+    }
+
     public static ITypeDiscoveryService GetInstance ()
     {
       if (DesignerUtility.IsDesignMode)
@@ -37,20 +53,20 @@ namespace Remotion.Reflection
       }
     }
 
-    public static ITypeDiscoveryService DefaultService
+    public static Type GetType (string typeName, bool throwOnError)
     {
-      get
+      if (DesignerUtility.IsDesignMode)
       {
-        lock (_defaultServiceLock)
+        Type type = DesignerUtility.GetDesignModeType (typeName);
+        if (type == null && throwOnError)
         {
-          if (_defaultService == null)
-          {
-            _defaultService =
-                VersionDependentImplementationBridge<IAssemblyFinderTypeDiscoveryServiceImplementation>.Implementation.CreateTypeDiscoveryService();
-          }
-          return _defaultService;
+          string message = string.Format ("Type '{0}' could not be loaded by the designer host.", typeName);
+          throw new TypeLoadException (message);
         }
+        return type;
       }
+      else
+        return Type.GetType (typeName, throwOnError);
     }
   }
 }
