@@ -117,7 +117,7 @@ namespace Remotion.Mixins.MixerTool
     public void Generate ()
     {
       MixinConfiguration configuration = MixinConfiguration.ActiveConfiguration;
-      ICollection typesToCheck = ContextAwareTypeDiscoveryService.GetInstance().GetTypes (null, false);
+      ICollection typesToCheck = ContextAwareTypeDiscoveryUtility.GetInstance().GetTypes (null, false);
       
       s_log.InfoFormat ("Generating types for {0} configured mixin targets and {1} loaded types.", configuration.ClassContexts.Count, typesToCheck.Count);
       GenerateForConfiguredContexts(configuration);

@@ -14,7 +14,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Reflection
 {
-  public static class ContextAwareTypeDiscoveryService
+  public static class ContextAwareTypeDiscoveryUtility
   {
     private static ITypeDiscoveryService _defaultService = null;
     private static readonly object _defaultServiceLock = new object ();

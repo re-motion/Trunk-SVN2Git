@@ -152,7 +152,6 @@
     <Compile Include="Configuration\ProviderHelperBase.cs" />
     <Compile Include="Design\DesignModeHelperBase.cs" />
     <Compile Include="Design\EnvDteDesignModeHelper.cs" />
-    <Compile Include="Design\IDesignModeHelper.cs" />
     <Compile Include="DoubleCheckedLockingContainer.cs" />
     <Compile Include="Globalization\IResourceManagerResolverUtility.cs" />
     <Compile Include="Globalization\IResourcesAttribute.cs" />
@@ -379,7 +378,7 @@
     <Compile Include="Reflection\AssemblyFinderTypeDiscoveryService.cs" />
     <Compile Include="Reflection\AttributeAssemblyFinderFilter.cs" />
     <Compile Include="Reflection\ConstructorWrapper.cs" />
-    <Compile Include="Reflection\ContextAwareTypeDiscoveryService.cs" />
+    <Compile Include="Reflection\ContextAwareTypeDiscoveryUtility.cs" />
     <Compile Include="Reflection\FuncInvoker.generated.cs" />
     <Compile Include="Reflection\FuncInvoker.template.cs" />
     <Compile Include="Reflection\IAssemblyFinderFilter.cs" />
@@ -443,7 +442,6 @@
     <Compile Include="Utilities\AttributeWithMetadata.cs" />
     <Compile Include="Utilities\ConsoleUtility.cs" />
     <Compile Include="Utilities\DefaultConsoleManager.cs" />
-    <Compile Include="Utilities\DesignerUtility.cs" />
     <Compile Include="Utilities\EnumerableUtility.cs" />
     <Compile Include="Utilities\EqualityUtility.cs" />
     <Compile Include="Utilities\FileUtility.cs" />

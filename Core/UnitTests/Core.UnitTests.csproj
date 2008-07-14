@@ -132,6 +132,7 @@
     <Compile Include="AdapterRegistryTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
+    <Compile Include="Design\DesignerUtilityTest.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\TargetClassCallingIntroducedMethodFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinIntroducingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinOverridingMethodCalledFromCtor.cs" />
@@ -611,7 +612,7 @@
     <TestAssembly Include="Reflection\TestAssemblies\MarkedAssemblyInDynamicDirectory\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\MarkedExeAssemblyInDynamicDirectory\AssemblyInfo.cs" />
     <Compile Include="Reflection\AssemblyFinderTypeDiscoveryServiceTest.cs" />
-    <Compile Include="Reflection\ContextAwareTypeDiscoveryServiceTest.cs" />
+    <Compile Include="Reflection\ContextAwareTypeDiscoveryUtilityTest.cs" />
     <Compile Include="Reflection\FuncInvokerWrapperTest.cs" />
     <Compile Include="Reflection\InheritanceHierarchyFilterTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\MarkedAssemblyWithOtherFileNameInRelativeSearchPath\AssemblyInfo.cs" />

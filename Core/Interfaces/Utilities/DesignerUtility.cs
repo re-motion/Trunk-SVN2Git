@@ -11,6 +11,7 @@
 using System;
 using System.ComponentModel.Design;
 using Remotion.Design;
+using Remotion.Implementation;
 
 namespace Remotion.Utilities
 {
@@ -38,9 +39,7 @@ namespace Remotion.Utilities
     {
       get
       {
-        if (!s_isDesignMode)
-          throw new InvalidOperationException ("DesignModeHelper can only be accessed while DesignMode is active.");
-
+        CheckDesignMode();
         return s_designModeHelper;
       }
     }
@@ -49,9 +48,7 @@ namespace Remotion.Utilities
     {
       get
       {
-        if (!s_isDesignMode)
-          throw new InvalidOperationException ("DesignerHost can only be accessed while DesignMode is active.");
-
+        CheckDesignMode();
         return s_designModeHelper.DesignerHost;
       }
     }
@@ -59,6 +56,20 @@ namespace Remotion.Utilities
     public static bool IsDesignMode
     {
       get { return s_isDesignMode; }
+    }
+
+    public static Type GetDesignModeType (string typeName)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
+      CheckDesignMode ();
+
+      return DesignerHost.GetType (typeName);
+    }
+
+    private static void CheckDesignMode ()
+    {
+      if (!s_isDesignMode)
+        throw new InvalidOperationException ("DesignModeHelper can only be accessed while DesignMode is active.");
     }
   }
 }

@@ -295,7 +295,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
         Assert.IsTrue (File.Exists (UnsignedAssemblyPath));
         Assert.IsTrue (File.Exists (SignedAssemblyPath));
 
-        ContextAwareTypeDiscoveryService.SetDefaultService (null); // trigger reloading of assemblies
+        ContextAwareTypeDiscoveryUtility.SetDefaultService (null); // trigger reloading of assemblies
 
         // trigger reanalysis of the default mixin configuration
         MixinConfiguration.SetActiveConfiguration (null);
@@ -317,7 +317,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
           contextsFromConfig.Add (context);
       }
 
-      foreach (Type t in ContextAwareTypeDiscoveryService.GetInstance ().GetTypes (null, false))
+      foreach (Type t in ContextAwareTypeDiscoveryUtility.GetInstance ().GetTypes (null, false))
       {
         if (!t.IsGenericTypeDefinition && !t.IsInterface)
         {

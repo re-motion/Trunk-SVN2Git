@@ -38,6 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdapterRegistry.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="Collections\IDataStore.cs" />
     <Compile Include="Context\ISafeContextStorageProvider.cs" />
     <Compile Include="Context\SafeContext.cs" />
+    <Compile Include="Design\IDesignModeHelper.cs" />
     <Compile Include="IAdapter.cs" />
     <Compile Include="Implementation\ArgumentUtility.cs" />
     <Compile Include="Implementation\ConcreteImplementationAttribute.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="Utilities\ArgumentItemNullException.cs" />
     <Compile Include="Utilities\ArgumentItemTypeException.cs" />
     <Compile Include="Utilities\ArgumentTypeException.cs" />
+    <Compile Include="Utilities\DesignerUtility.cs" />
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

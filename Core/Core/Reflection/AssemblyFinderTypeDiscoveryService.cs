@@ -20,7 +20,7 @@ namespace Remotion.Reflection
   /// <summary>
   /// Provides an implementation of the <see cref="ITypeDiscoveryService"/> interface that uses an <see cref="AssemblyFinder"/> to
   /// retrieve types. This class can be used to build components that can retrieve types via <see cref="IDesignerHost"/> and
-  /// <see cref="AssemblyFinder"/> using the same code for both. For example, it is used by <see cref="ContextAwareTypeDiscoveryService"/>
+  /// <see cref="AssemblyFinder"/> using the same code for both. For example, it is used by <see cref="ContextAwareTypeDiscoveryUtility"/>
   /// in the standard context.
   /// </summary>
   public class AssemblyFinderTypeDiscoveryService : ITypeDiscoveryService
