@@ -11,6 +11,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Utilities;
@@ -67,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       string publicDomainObjectTypeName = info.GetString ("PublicDomainObjectType.AssemblyQualifiedName");
       _baseMemberValues = (object[]) info.GetValue ("baseMemberValues", typeof (object[]));
-      _publicDomainObjectType = Type.GetType (publicDomainObjectTypeName);
+      _publicDomainObjectType = ContextAwareTypeDiscoveryUtility.GetType (publicDomainObjectTypeName, true);
 
       IDomainObjectFactory factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
 

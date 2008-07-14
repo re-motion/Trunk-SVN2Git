@@ -468,7 +468,7 @@ namespace Remotion.ObjectBinding.Web.CodeGenerator
 		private string GetName(string identifier)
 		{
       //MK: Hack requires BindableObject-implementation. Possible since GetClassInfos requires BindableObject-class
-		  return TypeUtility.GetType (identifier, true, false).Name;
+		  return TypeUtility.GetType (identifier, true).Name;
 		}
 
 		// TODO: remove

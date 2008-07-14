@@ -9,6 +9,7 @@
  */
 
 using System;
+using Remotion.Reflection;
 
 namespace Remotion.Implementation
 {
@@ -34,7 +35,7 @@ namespace Remotion.Implementation
 
     public Type ResolveType ()
     {
-      return Type.GetType (GetPartialTypeName(), true);
+      return ContextAwareTypeDiscoveryUtility.GetType (GetPartialTypeName (), true);
     }
 
     public object InstantiateType ()

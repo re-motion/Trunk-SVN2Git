@@ -53,9 +53,9 @@ namespace Remotion.ObjectBinding.BindableObject
           return null;
 
         if (IsDesignMode)
-          return TypeUtility.GetDesignModeType (_typeName, Site, false);
+          return TypeUtility.GetDesignModeType (_typeName, false);
 
-        _type = TypeUtility.GetType (_typeName, true, false);
+        _type = TypeUtility.GetType (_typeName, true);
         return _type;
       }
       set

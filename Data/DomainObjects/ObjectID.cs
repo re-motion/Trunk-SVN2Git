@@ -13,6 +13,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using System.Runtime.Serialization;
 
@@ -109,7 +110,7 @@ namespace Remotion.Data.DomainObjects
 
     private static object GetValue (string typeName, string value)
     {
-      Type type = Type.GetType (typeName);
+      Type type = ContextAwareTypeDiscoveryUtility.GetType (typeName, true);
 
       if (type == typeof (Guid))
         return new Guid (value);

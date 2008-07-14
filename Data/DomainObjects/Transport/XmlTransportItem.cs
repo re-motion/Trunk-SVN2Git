@@ -14,6 +14,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Transport
@@ -188,8 +189,8 @@ namespace Remotion.Data.DomainObjects.Transport
           return null;
         case "ObjectID":
           return typeof (ObjectID);
-          default:
-          return Type.GetType (valueTypeAttribute);
+        default:
+          return ContextAwareTypeDiscoveryUtility.GetType (valueTypeAttribute, true);
       }
     }
   }

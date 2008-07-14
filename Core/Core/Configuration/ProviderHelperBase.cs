@@ -14,6 +14,7 @@ using System.Configuration;
 using System.Configuration.Provider;
 using System.IO;
 using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Configuration
@@ -172,7 +173,7 @@ namespace Remotion.Configuration
             assemblyName.FullName);
       }
 
-      return Type.GetType (Assembly.CreateQualifiedName (assemblyName.FullName, typeName), true, false);
+      return ContextAwareTypeDiscoveryUtility.GetType (Assembly.CreateQualifiedName (assemblyName.FullName, typeName), true);
     }
 
     /// <summary>Initializes a collection of providers of the given type using the supplied settings.</summary>
@@ -257,7 +258,7 @@ namespace Remotion.Configuration
       if (string.IsNullOrEmpty (providerSettings.Type))
         throw new ArgumentException ("Type name must be specified for this provider.");
 
-      Type actualType = TypeUtility.GetType (providerSettings.Type, true, false);
+      Type actualType = TypeUtility.GetType (providerSettings.Type, true);
 
       if (!providerType.IsAssignableFrom (actualType))
         throw new ArgumentException (string.Format ("Provider must implement the class '{0}'.", providerType.FullName));

@@ -14,6 +14,7 @@ using System.ComponentModel.Design;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Design
@@ -66,7 +67,7 @@ namespace Remotion.Design
       try
       {
         //EnvDTE._DTE environment = (EnvDTE._DTE) ((IServiceProvider)site).GetService (typeof (EnvDTE._DTE));
-        Type _DTEType = Type.GetType ("EnvDTE._DTE, EnvDTE");
+        Type _DTEType = ContextAwareTypeDiscoveryUtility.GetType ("EnvDTE._DTE, EnvDTE", true);
         object environment = DesignerHost.GetService (_DTEType);
 
         if (environment != null)

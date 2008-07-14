@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using Remotion.Reflection;
 
 namespace Remotion.Utilities
 {
@@ -355,7 +356,7 @@ namespace Remotion.Utilities
       TypeConverterAttribute typeConverter = AttributeUtility.GetCustomAttribute<TypeConverterAttribute> (type, true);
       if (typeConverter != null)
       {
-        Type typeConverterType = Type.GetType (typeConverter.ConverterTypeName, true, false);
+        Type typeConverterType = ContextAwareTypeDiscoveryUtility.GetType (typeConverter.ConverterTypeName, true);
         return (TypeConverter) Activator.CreateInstance (typeConverterType);
       }
       return null;

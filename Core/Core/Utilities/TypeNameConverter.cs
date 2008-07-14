@@ -49,7 +49,7 @@ namespace Remotion.Utilities
         if (stringValue.Length == 0)
           return null;
         else
-          return TypeUtility.GetType (stringValue, true, false);
+          return TypeUtility.GetType (stringValue, true);
       }
       if (value == null)
         return null;

@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
 
     protected virtual void BuildSchema ()
     {
-      Type sqlFileBuilderType = TypeUtility.GetType (_rdbmsToolsParameter.SchemaFileBuilderTypeName, true, false);
+      Type sqlFileBuilderType = TypeUtility.GetType (_rdbmsToolsParameter.SchemaFileBuilderTypeName, true);
       FileBuilderBase.Build (
           sqlFileBuilderType,
           MappingConfiguration.Current,

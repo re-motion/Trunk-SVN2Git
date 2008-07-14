@@ -14,6 +14,7 @@ using System.ComponentModel.Design;
 using System.Text;
 using System.Text.RegularExpressions;
 using Remotion.Collections;
+using Remotion.Reflection;
 using R = System.Text.RegularExpressions;
 
 namespace Remotion.Utilities
@@ -143,7 +144,7 @@ namespace Remotion.Utilities
     public static Type GetType (string abbreviatedTypeName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
-      return Type.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName));
+      return GetType (abbreviatedTypeName, false);
     }
 
     /// <summary>
@@ -152,12 +153,14 @@ namespace Remotion.Utilities
     public static Type GetType (string abbreviatedTypeName, bool throwOnError)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
-      return Type.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName), throwOnError);
+      return ContextAwareTypeDiscoveryUtility.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName), throwOnError);
     }
 
     /// <summary>
     ///   Loads a type, optionally using an abbreviated type name as defined in <see cref="ParseAbbreviatedTypeName"/>.
     /// </summary>
+    [Obsolete ("GetType with ignoreCase is not supported any more. If absolutely needed, use Type.GetType in combination with " 
+        + "ParseAbbreviatedTypeName.", true)]
     public static Type GetType (string abbreviatedTypeName, bool throwOnError, bool ignoreCase)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
@@ -170,17 +173,10 @@ namespace Remotion.Utilities
       return type.FullName + ", " + type.Assembly.GetName().Name;
     }
 
-    public static Type GetDesignModeType (string abbreviatedTypeName, ISite site, bool throwOnError)
+    public static Type GetDesignModeType (string abbreviatedTypeName, bool throwOnError)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
-      ArgumentUtility.CheckNotNull ("site", site);
-
-      IDesignerHost designerHost = (IDesignerHost) site.GetService (typeof (IDesignerHost));
-      Assertion.IsNotNull (designerHost, "No IDesignerHost found.");
-      Type type = designerHost.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName));
-      if (type == null && throwOnError)
-        throw new TypeLoadException (string.Format ("Could not load type '{0}'.", ParseAbbreviatedTypeName (abbreviatedTypeName)));
-      return type;
+      return ContextAwareTypeDiscoveryUtility.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName), throwOnError);
     }
 
     /// <summary>

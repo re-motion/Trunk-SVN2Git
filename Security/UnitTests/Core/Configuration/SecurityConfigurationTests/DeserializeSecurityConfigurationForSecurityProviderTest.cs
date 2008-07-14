@@ -60,7 +60,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security defaultSecurityProvider=""SecurityManagerService"" />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Type expectedType = TypeUtility.GetType ("Remotion.SecurityManager::SecurityService", true, false);
+      Type expectedType = TypeUtility.GetType ("Remotion.SecurityManager::SecurityService", true);
 
       Assert.IsInstanceOfType (expectedType, Configuration.SecurityProvider);
     }

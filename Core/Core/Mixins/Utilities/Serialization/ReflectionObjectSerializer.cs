@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Utilities.Serialization
@@ -37,7 +38,7 @@ namespace Remotion.Mixins.Utilities.Serialization
     public static Type DeserializeType (string key, SerializationInfo info)
     {
       string typeName = info.GetString (key + ".AssemblyQualifiedName");
-      return Type.GetType (typeName, true);
+      return ContextAwareTypeDiscoveryUtility.GetType (typeName, true);
     }
 
     public static void SerializeMethodBase (MethodBase methodOrConstructor, string key, SerializationInfo info)

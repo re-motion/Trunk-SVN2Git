@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       ArgumentUtility.CheckNotNull ("config", config);
 
       string storageProviderTypeName = GetAndRemoveNonEmptyStringAttribute (config, "providerType", name, true);
-      Initialize (TypeUtility.GetType (storageProviderTypeName, true, false));
+      Initialize (TypeUtility.GetType (storageProviderTypeName, true));
     }
 
     protected StorageProviderDefinition (string name, Type storageProviderType)

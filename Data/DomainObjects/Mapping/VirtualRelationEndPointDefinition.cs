@@ -11,6 +11,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -110,7 +111,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckValidEnumValue ("cardinality", cardinality);
 
       if (classDefinition.IsClassTypeResolved && propertyTypeName != null)
-        propertyType = Type.GetType (propertyTypeName, true);
+        propertyType = ContextAwareTypeDiscoveryUtility.GetType (propertyTypeName, true);
 
       if (propertyType != null)
       {

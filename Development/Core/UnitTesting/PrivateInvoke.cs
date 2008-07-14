@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting
@@ -172,7 +173,7 @@ namespace Remotion.Development.UnitTesting
 
     public static object CreateInstancePublicCtor (string typeName, params object[] arguments)
     {
-      return CreateInstancePublicCtor (Type.GetType (typeName, true, false), arguments);
+      return CreateInstancePublicCtor (ContextAwareTypeDiscoveryUtility.GetType (typeName, true), arguments);
     }
 
     public static object CreateInstancePublicCtor (Type type, params object[] arguments)
@@ -192,7 +193,7 @@ namespace Remotion.Development.UnitTesting
 
     public static object CreateInstanceNonPublicCtor (string typeName, params object[] arguments)
     {
-      return CreateInstanceNonPublicCtor (Type.GetType (typeName, true, false), arguments);
+      return CreateInstanceNonPublicCtor (ContextAwareTypeDiscoveryUtility.GetType (typeName, true), arguments);
     }
 
     public static object CreateInstanceNonPublicCtor (Type type, params object[] arguments)
