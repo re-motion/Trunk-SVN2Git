@@ -11,11 +11,16 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.Design;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Context;
+using Remotion.Design;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins.BridgeImplementations;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDataSourceTests
@@ -24,7 +29,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
   public class DesignTime : TestBase
   {
     private BindableObjectDataSource _dataSource;
-    private BindableObjectProvider _provider;
     private MockRepository _mockRepository;
     private ISite _stubSite;
     private IDesignerHost _mockDesignerHost;
@@ -44,7 +48,35 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
       _mockDesignerHost = _mockRepository.CreateMock<IDesignerHost>();
       SetupResult.For (_stubSite.GetService (typeof (IDesignerHost))).Return (_mockDesignerHost);
 
-      _provider = (BindableObjectProvider) BusinessObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute));
+      IDesignModeHelper helperStub = _mockRepository.Stub<IDesignModeHelper> ();
+      SetupResult.For (helperStub.DesignerHost).Return (_mockDesignerHost);
+
+      DesignerUtility.SetDesignMode (helperStub);
+
+      PrepareMixinConfiguration (_mockDesignerHost);
+    }
+
+    private void PrepareMixinConfiguration (IDesignerHost host)
+    {
+      SetupResult.For (host.GetType ("Remotion.Mixins.BridgeImplementations.TypeUtilityImplementation, Remotion, Version = 1.9.0.202"))
+          .Return (typeof (TypeUtilityImplementation));
+      SetupResult.For (host.GetType ("Remotion.Mixins.BridgeImplementations.TypeFactoryImplementation, Remotion, Version = 1.9.0.202"))
+          .Return (typeof (TypeFactoryImplementation));
+      SetupResult.For (host.GetType ("Remotion.Context.BootstrapStorageProvider, Remotion, Version = 1.9.0.202"))
+          .Return (typeof (BootstrapStorageProvider));
+      SetupResult.For (host.GetType ("Remotion.Mixins.BridgeImplementations.MixedObjectInstantiator, Remotion, Version = 1.9.0.202"))
+          .Return (typeof (MixedObjectInstantiator));
+      ITypeDiscoveryService serviceStub = _mockRepository.Stub<ITypeDiscoveryService> ();
+      SetupResult.For (serviceStub.GetTypes (null, false)).IgnoreArguments ().Return (Assembly.GetExecutingAssembly ().GetTypes ());
+      SetupResult.For (host.GetService (typeof (ITypeDiscoveryService))).Return (serviceStub);
+      SetupResult.For (host.GetType ("Remotion.Context.CallContextStorageProvider, Remotion, Version = 1.9.0.202"))
+          .Return (typeof (CallContextStorageProvider));
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      DesignerUtility.ClearDesignMode ();
     }
 
     [Test]
