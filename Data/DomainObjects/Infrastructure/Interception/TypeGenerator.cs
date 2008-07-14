@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
@@ -111,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       {
         if (topMostGetOverride != null)
         {
-          if (topMostGetOverride.IsAbstract)
+          if (IsAutomaticProperty(topMostGetOverride))
             ImplementAbstractGetAccessor (topMostGetOverride, propertyIdentifier);
           else if (IsOverridable (topMostGetOverride))
             OverrideAccessor (topMostGetOverride, propertyIdentifier);
@@ -119,12 +120,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
         if (topMostSetOverride != null)
         {
-          if (topMostSetOverride.IsAbstract)
+          if (IsAutomaticProperty (topMostSetOverride))
             ImplementAbstractSetAccessor (topMostSetOverride, propertyIdentifier, property.PropertyType);
           else if (IsOverridable (topMostSetOverride))
             OverrideAccessor (topMostSetOverride, propertyIdentifier);
         }
       }
+    }
+
+    private bool IsAutomaticProperty (MethodInfo accessorMethod)
+    {
+      return accessorMethod.IsAbstract || (IsOverridable (accessorMethod) && accessorMethod.IsDefined (typeof (CompilerGeneratedAttribute), false));
     }
 
     private bool IsOverridable (MethodInfo method)
@@ -181,7 +187,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       ArgumentUtility.CheckNotNull ("accessor", accessor);
       ArgumentUtility.CheckNotNull ("propertyIdentifier", propertyIdentifier);
 
-      Assertion.IsTrue (accessor.IsAbstract);
       Assertion.IsTrue (accessor.ReturnType != typeof (void));
 
       CustomMethodEmitter emitter = _classEmitter.CreatePrivateMethodOverride (accessor);
@@ -202,7 +207,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       ArgumentUtility.CheckNotNull ("propertyIdentifier", propertyIdentifier);
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
-      Assertion.IsTrue (accessor.IsAbstract);
       Assertion.IsTrue (accessor.ReturnType == typeof (void));
 
       CustomMethodEmitter emitter = _classEmitter.CreatePrivateMethodOverride (accessor);

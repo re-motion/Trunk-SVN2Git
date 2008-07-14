@@ -359,6 +359,64 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Interception
     }
 
     [Test]
+    public void ImplementsAutomaticPropertyAccessors ()
+    {
+      Type type = CreateTypeGenerator (typeof (DOWithAutomaticProperties)).BuildType ();
+      Assert.IsNotNull (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_PropertyWithGetterOnly", _declaredInstanceFlags));
+      Assert.IsNull (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_PropertyWithGetterOnly", _declaredInstanceFlags));
+
+      Assert.IsNull (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_PropertyWithSetterOnly", _declaredInstanceFlags));
+      Assert.IsNotNull (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_PropertyWithSetterOnly", _declaredInstanceFlags));
+
+      Assert.IsNotNull (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_PropertyWithGetterAndSetter", _declaredInstanceFlags));
+      Assert.IsNotNull (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_PropertyWithGetterAndSetter", _declaredInstanceFlags));
+
+      Assert.IsNotNull (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_ProtectedProperty", _declaredInstanceFlags));
+      Assert.IsNotNull (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_ProtectedProperty", _declaredInstanceFlags));
+    }
+
+    [Test]
+    public void ImplementedAutomaticPropertyAccessorsArePrivate ()
+    {
+      Type type = CreateTypeGenerator (typeof (DOWithAutomaticProperties)).BuildType ();
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_PropertyWithGetterOnly", _declaredInstanceFlags).IsPrivate);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_PropertyWithSetterOnly", _declaredInstanceFlags).IsPrivate);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPrivate);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPrivate);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_ProtectedProperty", _declaredInstanceFlags).IsPrivate);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_ProtectedProperty", _declaredInstanceFlags).IsPrivate);
+    }
+
+    [Test]
+    public void ImplementsAutomaticProperties_ViaPropertyIndexer ()
+    {
+      Type type = CreateTypeGenerator (typeof (DOWithAutomaticProperties)).BuildType ();
+      DOWithAutomaticProperties instance = (DOWithAutomaticProperties) Activator.CreateInstance (type);
+
+      Assert.AreEqual (0, instance.PropertyWithGetterAndSetter);
+      instance.PropertyWithGetterAndSetter = 17;
+      Assert.AreEqual (17, instance.PropertyWithGetterAndSetter);
+      Assert.AreEqual (17, instance.Properties.Find ("PropertyWithGetterAndSetter").GetValueWithoutTypeCheck ());
+      instance.Properties.Find ("PropertyWithGetterAndSetter").SetValueWithoutTypeCheck (8);
+      Assert.AreEqual (8, instance.PropertyWithGetterAndSetter);
+      
+      Assert.IsNull (instance.PropertyWithGetterOnly);
+      instance.Properties.Find ("PropertyWithGetterOnly").SetValue ("hear, hear");
+      Assert.AreEqual ("hear, hear", instance.PropertyWithGetterOnly);
+
+      Assert.AreEqual (new DateTime (), instance.Properties.Find ("PropertyWithSetterOnly").GetValue<DateTime> ());
+      instance.PropertyWithSetterOnly = new DateTime (2260, 1, 2);
+      Assert.AreEqual (new DateTime (2260, 1, 2), instance.Properties.Find ("PropertyWithSetterOnly").GetValue<DateTime> ());
+
+      typeof (DOWithAutomaticProperties).GetProperty ("ProtectedProperty", _declaredInstanceFlags)
+          .SetValue (instance, 4711, _declaredInstanceFlags, null, null, null);
+      Assert.AreEqual (4711, instance.Properties.Find ("ProtectedProperty").GetValueWithoutTypeCheck ());
+      instance.Properties.Find ("ProtectedProperty").SetValueWithoutTypeCheck (9);
+      Assert.AreEqual (9, typeof (DOWithAutomaticProperties).GetProperty ("ProtectedProperty", _declaredInstanceFlags)
+          .GetValue (instance, _declaredInstanceFlags, null, null, null));
+    }
+
+    [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage = "Cannot instantiate type Remotion.Data.DomainObjects.UnitTests."
         + "Core.Interception.SampleTypes.NonInstantiableAbstractClassWithProps as its member get_Foo (on type NonInstantiableAbstractClassWithProps) is "
         + "abstract (and not an automatic property).")]

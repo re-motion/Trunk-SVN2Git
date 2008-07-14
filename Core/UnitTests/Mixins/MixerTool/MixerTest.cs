@@ -295,7 +295,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
         Assert.IsTrue (File.Exists (UnsignedAssemblyPath));
         Assert.IsTrue (File.Exists (SignedAssemblyPath));
 
-        ContextAwareTypeDiscoveryService.DefaultService.SetCurrent (null); // trigger reloading of assemblies
+        ContextAwareTypeDiscoveryService.SetDefaultService (null); // trigger reloading of assemblies
 
         // trigger reanalysis of the default mixin configuration
         MixinConfiguration.SetActiveConfiguration (null);

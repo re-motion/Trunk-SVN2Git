@@ -29,24 +29,24 @@ namespace Remotion.UnitTests.Reflection
     {
       _mockRepository = new MockRepository();
       _serviceMock = _mockRepository.CreateMock<ITypeDiscoveryService>();
-      ContextAwareTypeDiscoveryService.DefaultService.SetCurrent (null);
+      ContextAwareTypeDiscoveryService.SetDefaultService (null);
       DesignerUtility.ClearDesignMode ();
     }
 
     [TearDown]
     public void TearDown ()
     {
-      ContextAwareTypeDiscoveryService.DefaultService.SetCurrent (null);
+      ContextAwareTypeDiscoveryService.SetDefaultService (null);
       DesignerUtility.ClearDesignMode ();
     }
 
     [Test]
     public void AutoIntoDefaultService ()
     {
-      ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryService.DefaultService.Current;
+      ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryService.DefaultService;
       Assert.IsNotNull (defaultService);
-      Assert.AreSame (defaultService, ContextAwareTypeDiscoveryService.DefaultService.Current);
-      Assert.AreSame (defaultService, ContextAwareTypeDiscoveryService.DefaultService.Current);
+      Assert.AreSame (defaultService, ContextAwareTypeDiscoveryService.DefaultService);
+      Assert.AreSame (defaultService, ContextAwareTypeDiscoveryService.DefaultService);
       Assert.IsInstanceOfType (typeof (AssemblyFinderTypeDiscoveryService), defaultService);
       Assert.AreSame (ApplicationAssemblyFinderFilter.Instance, ((AssemblyFinderTypeDiscoveryService) defaultService).AssemblyFinder.Filter);
     }
@@ -54,16 +54,16 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void SetDefaultCurrent ()
     {
-      ContextAwareTypeDiscoveryService.DefaultService.SetCurrent (_serviceMock);
-      Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryService.DefaultService.Current);
+      ContextAwareTypeDiscoveryService.SetDefaultService (_serviceMock);
+      Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryService.DefaultService);
     }
 
     [Test]
     public void SetDefaultCurrent_Null ()
     {
-      ContextAwareTypeDiscoveryService.DefaultService.SetCurrent (_serviceMock);
-      ContextAwareTypeDiscoveryService.DefaultService.SetCurrent (null);
-      ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryService.DefaultService.Current;
+      ContextAwareTypeDiscoveryService.SetDefaultService (_serviceMock);
+      ContextAwareTypeDiscoveryService.SetDefaultService (null);
+      ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryService.DefaultService;
       Assert.IsNotNull (defaultService);
       Assert.AreNotSame (_serviceMock, defaultService);
     }
@@ -71,7 +71,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void StandardContext ()
     {
-      ContextAwareTypeDiscoveryService.DefaultService.SetCurrent (_serviceMock);
+      ContextAwareTypeDiscoveryService.SetDefaultService (_serviceMock);
       Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryService.GetInstance ());
     }
 
