@@ -37,12 +37,14 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       if (!_assemblySaveSuppressed)
       {
+#if !NO_PEVERIFY
         string[] paths = AssemblySaver.SaveAssemblies (_scope);
         foreach (string path in paths)
         {
           PEVerifier.VerifyPEFile (path);
           FileUtility.DeleteAndWaitForCompletion (path);
         }
+#endif
       }
     }
 
