@@ -9,17 +9,14 @@
  */
 
 using System;
-using System.Collections.Generic;
-using Remotion.Data.Linq.DataObjectModel;
 
-namespace Remotion.Data.Linq.SqlGeneration
+namespace Remotion.Data.DomainObjects.Linq.UnitTests
 {
-  public interface ICommandBuilder
+  public static class MethodExtensions
   {
-    void Append (string text);
-    void AppendEvaluation (IEvaluation evaluation);
-    void AppendSeparatedItems<T> (IEnumerable<T> items, Action<T> appendAction);
-    void AppendEvaluations (IEnumerable<IEvaluation> evaluations);
-    CommandParameter AddParameter (object value);
+    public static string ExtendString (this string extension)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

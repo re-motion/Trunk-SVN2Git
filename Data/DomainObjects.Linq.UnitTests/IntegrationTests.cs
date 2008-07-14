@@ -8,6 +8,7 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -15,6 +16,7 @@ using Remotion.Data.DomainObjects.UnitTests;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlGeneration.SqlServer;
 
 namespace Remotion.Data.DomainObjects.Linq.UnitTests
 {
@@ -446,6 +448,32 @@ namespace Remotion.Data.DomainObjects.Linq.UnitTests
                       select o;
 
       CheckQueryResult (orders, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order2, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
+    }
+
+    [Test]
+    public void Query_WithToUpper ()
+    {
+      var computers =
+          from c in DataContext.Entity<Computer> ()
+          where c.Employee.Name.ToUpper () == "TRILLIAN"
+          select c;
+      CheckQueryResult (computers, DomainObjectIDs.Computer2);
+    }
+
+    // test should show how own methods are registered and custom sql code is generated
+    // MethodExtension defines extension method "ExtendString"
+    // MethodExtendString generates sql code for this method
+    [Test]
+    public void Query_WithExtendString ()
+    {
+      DataContext.SqlGenerator.MethodCallRegistry.Register (
+          typeof (MethodExtensions).GetMethod ("ExtendString", new Type[] { typeof (string)}), new MethodExtendString ());
+      
+      var computers =
+          from c in DataContext.Entity<Computer> ()
+          where c.Employee.Name.ExtendString () == "Trillian"
+          select c;
+      CheckQueryResult (computers, DomainObjectIDs.Computer2);
     }
 
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)

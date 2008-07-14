@@ -59,6 +59,8 @@
     <Compile Include="DummyQueryable.cs" />
     <Compile Include="FulltextIntegrationTests.cs" />
     <Compile Include="IntegrationTests.cs" />
+    <Compile Include="MethodExtendString.cs" />
+    <Compile Include="MethodExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="QueryExecutorMixin.cs" />
