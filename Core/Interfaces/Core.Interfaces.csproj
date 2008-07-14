@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdapterRegistry.cs" />
+    <Compile Include="BridgeInterfaces\IAssemblyFinderTypeDiscoveryServiceImplementation.cs" />
     <Compile Include="BridgeInterfaces\IBoostrapStorageProvider.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementation.cs" />
     <Compile Include="BridgeInterfaces\ICallContextStorageProvider.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Mixins\UsesAttribute.cs" />
     <Compile Include="PermanentGuidAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\ContextAwareTypeDiscoveryUtility.cs" />
     <Compile Include="Reflection\FuncInvoker.generated.cs" />
     <Compile Include="Reflection\FuncInvoker.template.cs" />
     <Compile Include="Reflection\ProcInvoker.generated.cs" />

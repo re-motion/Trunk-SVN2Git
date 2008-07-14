@@ -10,6 +10,8 @@
 
 using System;
 using System.ComponentModel.Design;
+using Remotion.BridgeInterfaces;
+using Remotion.Implementation;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -42,7 +44,10 @@ namespace Remotion.Reflection
         lock (_defaultServiceLock)
         {
           if (_defaultService == null)
-            _defaultService = new AssemblyFinderTypeDiscoveryService (new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, false));
+          {
+            _defaultService =
+                VersionDependentImplementationBridge<IAssemblyFinderTypeDiscoveryServiceImplementation>.Implementation.CreateTypeDiscoveryService();
+          }
           return _defaultService;
         }
       }

@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
+    <Compile Include="BridgeImplementations\AssemblyFinderTypeDiscoveryServiceImplementation.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Mixins\Definitions\SuppressedAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\IMemberIntroductionDefinition.cs" />
@@ -378,7 +379,6 @@
     <Compile Include="Reflection\AssemblyFinderTypeDiscoveryService.cs" />
     <Compile Include="Reflection\AttributeAssemblyFinderFilter.cs" />
     <Compile Include="Reflection\ConstructorWrapper.cs" />
-    <Compile Include="Reflection\ContextAwareTypeDiscoveryUtility.cs" />
     <Compile Include="Reflection\FuncInvoker.generated.cs" />
     <Compile Include="Reflection\FuncInvoker.template.cs" />
     <Compile Include="Reflection\IAssemblyFinderFilter.cs" />
