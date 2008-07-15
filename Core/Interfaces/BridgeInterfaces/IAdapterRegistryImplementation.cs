@@ -13,7 +13,7 @@ using Remotion.Implementation;
 
 namespace Remotion.BridgeInterfaces
 {
-  [ConcreteImplementation ("Remotion.BridgeImplementations.AdapterRegistryImplementation, Remotion, Version = <version>")]
+  [ConcreteImplementation ("Remotion.BridgeImplementations.AdapterRegistryImplementation, Remotion, Version = <version>, PublicKeyToken = <publicKeyToken>")]
   public interface IAdapterRegistryImplementation
   {
     void SetAdapter (Type adapterType, IAdapter value);

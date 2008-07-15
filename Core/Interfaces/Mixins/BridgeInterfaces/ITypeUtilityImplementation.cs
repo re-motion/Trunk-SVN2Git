@@ -14,7 +14,7 @@ using Remotion.Implementation;
 
 namespace Remotion.Mixins.BridgeInterfaces
 {
-  [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.TypeUtilityImplementation, Remotion, Version = <version>")]
+  [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.TypeUtilityImplementation, Remotion, Version = <version>, PublicKeyToken = <publicKeyToken>")]
   public interface ITypeUtilityImplementation
   {
     bool IsGeneratedConcreteMixedType (Type type);

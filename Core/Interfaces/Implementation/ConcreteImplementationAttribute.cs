@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Text;
 using Remotion.Reflection;
 
 namespace Remotion.Implementation
@@ -16,26 +17,34 @@ namespace Remotion.Implementation
   [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
   public class ConcreteImplementationAttribute : Attribute
   {
-    private readonly string _partialTypeNameTemplate;
+    private readonly string _typeNameTemplate;
 
-    public ConcreteImplementationAttribute (string partialTypeNameTemplate)
+    public ConcreteImplementationAttribute (string typeNameTemplate)
     {
-      _partialTypeNameTemplate = ArgumentUtility.CheckNotNull ("partialTypeNameTemplate", partialTypeNameTemplate);
+      _typeNameTemplate = ArgumentUtility.CheckNotNull ("typeNameTemplate", typeNameTemplate);
     }
 
-    public string PartialTypeNameTemplate
+    public string TypeNameTemplate
     {
-      get { return _partialTypeNameTemplate; }
+      get { return _typeNameTemplate; }
     }
 
-    public string GetPartialTypeName()
+    public string GetTypeName()
     {
-      return _partialTypeNameTemplate.Replace ("<version>", FrameworkVersion.Value.ToString());
+      string versioned = _typeNameTemplate.Replace ("<version>", FrameworkVersion.Value.ToString());
+      return versioned.Replace ("<publicKeyToken>", GetPublicKeyTokenString());
+    }
+
+    private string GetPublicKeyTokenString ()
+    {
+      byte[] bytes = typeof (ConcreteImplementationAttribute).Assembly.GetName().GetPublicKeyToken();
+      return string.Format ("{0:x2}{1:x2}{2:x2}{3:x2}{4:x2}{5:x2}{6:x2}{7:x2}",
+          bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]);
     }
 
     public Type ResolveType ()
     {
-      return ContextAwareTypeDiscoveryUtility.GetType (GetPartialTypeName (), true);
+      return ContextAwareTypeDiscoveryUtility.GetType (GetTypeName (), true);
     }
 
     public object InstantiateType ()

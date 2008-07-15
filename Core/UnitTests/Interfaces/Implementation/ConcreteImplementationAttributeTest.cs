@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.BridgeImplementations;
 using Remotion.Development.UnitTesting;
 using Remotion.Implementation;
 
@@ -31,11 +32,19 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     }
 
     [Test]
-    public void GetPartialTypeName ()
+    public void GetTypeName ()
     {
       FrameworkVersion.Value = new Version (2, 4, 6, 8);
       ConcreteImplementationAttribute attribute = new ConcreteImplementationAttribute ("Name, Version = <version>");
-      Assert.AreEqual ("Name, Version = 2.4.6.8", attribute.GetPartialTypeName());
+      Assert.AreEqual ("Name, Version = 2.4.6.8", attribute.GetTypeName());
+    }
+
+    [Test]
+    public void GetTypeName_WithKeyToken ()
+    {
+      FrameworkVersion.Value = new Version (2, 4, 6, 8);
+      ConcreteImplementationAttribute attribute = new ConcreteImplementationAttribute ("Name, Version = <version>, PublicKeyToken = <publicKeyToken>");
+      Assert.AreEqual ("Name, Version = 2.4.6.8, PublicKeyToken = fee00910d6e5f53b", attribute.GetTypeName ());
     }
 
     [Test]
@@ -70,6 +79,19 @@ namespace Remotion.UnitTests.Interfaces.Implementation
       Assert.IsNotNull (instance);
       Assert.IsInstanceOfType(typeof (ConcreteImplementationAttributeTest), instance);
     }
+
+    [Test]
+    public void Instantiate_WithPublicKeyToken ()
+    {
+      FrameworkVersion.Value = typeof (AdapterRegistryImplementation).Assembly.GetName ().Version;
+      ConcreteImplementationAttribute attribute =
+          new ConcreteImplementationAttribute ("Remotion.BridgeImplementations.AdapterRegistryImplementation, Remotion, Version = <version>, "
+          + "PublicKeyToken = <publicKeyToken>");
+      object instance = attribute.InstantiateType ();
+      Assert.IsNotNull (instance);
+      Assert.IsInstanceOfType (typeof (AdapterRegistryImplementation), instance);
+    }
+
 
     public class ClassWithoutDefaultConstructor
     {

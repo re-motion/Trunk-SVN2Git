@@ -13,7 +13,7 @@ using Remotion.Implementation;
 
 namespace Remotion.BridgeInterfaces
 {
-  [ConcreteImplementation ("Remotion.BridgeImplementations.AssemblyFinderTypeDiscoveryServiceImplementation, Remotion, Version = <version>")]
+  [ConcreteImplementation ("Remotion.BridgeImplementations.AssemblyFinderTypeDiscoveryServiceImplementation, Remotion, Version = <version>, PublicKeyToken = <publicKeyToken>")]
   public interface IAssemblyFinderTypeDiscoveryServiceImplementation
   {
     ITypeDiscoveryService CreateTypeDiscoveryService ();

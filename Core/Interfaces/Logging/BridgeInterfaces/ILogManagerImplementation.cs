@@ -13,7 +13,7 @@ using Remotion.Implementation;
 
 namespace Remotion.Logging.BridgeInterfaces
 {
-  [ConcreteImplementation ("Remotion.Logging.BridgeImplementations.LogManagerImplementation, Remotion, Version = <version>")]
+  [ConcreteImplementation ("Remotion.Logging.BridgeImplementations.LogManagerImplementation, Remotion, Version = <version>, PublicKeyToken = <publicKeyToken>")]
   public interface ILogManagerImplementation
   {
     /// <summary>

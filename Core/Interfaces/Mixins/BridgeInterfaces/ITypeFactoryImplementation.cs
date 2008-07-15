@@ -13,7 +13,7 @@ using Remotion.Implementation;
 
 namespace Remotion.Mixins.BridgeInterfaces
 {
-  [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.TypeFactoryImplementation, Remotion, Version = <version>")]
+  [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.TypeFactoryImplementation, Remotion, Version = <version>, PublicKeyToken = <publicKeyToken>")]
   public interface ITypeFactoryImplementation
   {
     Type GetConcreteType (Type targetType, GenerationPolicy generationPolicy);
