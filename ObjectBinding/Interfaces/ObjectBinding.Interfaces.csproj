@@ -11,7 +11,8 @@
     <AssemblyName>Remotion.ObjectBinding.Interfaces</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion><SignAssembly>true</SignAssembly>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
@@ -36,9 +37,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="IBusinessObject.cs" />
     <Compile Include="IBusinessObjectBooleanProperty.cs" />
     <Compile Include="IBusinessObjectClass.cs" />
@@ -60,7 +58,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="ObjectBinding.Interfaces.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="..\..\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
