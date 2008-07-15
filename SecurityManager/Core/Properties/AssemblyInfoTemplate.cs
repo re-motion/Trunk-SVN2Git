@@ -10,7 +10,9 @@
 
 using System;
 using System.Reflection;
-using Remotion.Data.DomainObjects;
+using System.Resources;
+
+[assembly: NeutralResourcesLanguage ("en")]
 
 //
 // General Information about an assembly is controlled through the following 

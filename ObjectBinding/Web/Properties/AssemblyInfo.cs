@@ -10,9 +10,12 @@
 
 using System;
 using System.Reflection;
+using System.Resources;
 using System.Web.UI;
 
 [assembly: TagPrefix ("Remotion.ObjectBinding.Web.UI.Controls", "remotion")]
+
+[assembly: NeutralResourcesLanguage ("en")]
 
 //
 // General Information about an assembly is controlled through the following 
