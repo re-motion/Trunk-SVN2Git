@@ -30,9 +30,6 @@
         <include name="Properties/**/*.cs"/>
         <exclude name="Properties/AssemblyInfoTemplate.cs" />
       </sources>
-      <references failonempty="true">
-        <include asis="true" name="System.dll"/>
-      </references>
     </csc>
   </target>
 
