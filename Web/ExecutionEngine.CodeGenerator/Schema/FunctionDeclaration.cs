@@ -37,7 +37,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator.Schema
 	  private string _functionBaseType = null;
 
 		private ParameterDeclaration[] _parameters = new ParameterDeclaration[0];
-    public ReturnValueDeclaration _returnValue;
+    private ReturnValueDeclaration _returnValue;
 		private VariableDeclaration[] _variables = new VariableDeclaration[0];
 
 		[XmlAttribute("pageType")]
