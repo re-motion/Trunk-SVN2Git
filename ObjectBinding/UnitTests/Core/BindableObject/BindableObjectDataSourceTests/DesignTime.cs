@@ -74,8 +74,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
     }
 
     [TearDown]
-    public void TearDown ()
+    public override void TearDown ()
     {
+      base.TearDown();
       DesignerUtility.ClearDesignMode ();
     }
 
