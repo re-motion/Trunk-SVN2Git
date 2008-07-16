@@ -37,7 +37,6 @@ namespace Remotion.SecurityManager.UnitTests
     public virtual void TearDown()
     {
       ClientTransactionScope.ResetActiveScope();
-      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
   }
 }

@@ -146,17 +146,31 @@ namespace Remotion.Utilities
       return usage.AllowMultiple;
     }
 
+    private static readonly InterlockedCache<Type, AttributeUsageAttribute> s_cache = new InterlockedCache<Type, AttributeUsageAttribute>();
+
     public static AttributeUsageAttribute GetAttributeUsage (Type attributeType)
     {
-      AttributeUsageAttribute[] usage =
-          (AttributeUsageAttribute[]) attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), true);
-      if (usage.Length == 0)
-        return new AttributeUsageAttribute (AttributeTargets.All);
-      else
-      {
-        Assertion.IsTrue (usage.Length == 1, "AllowMultiple == false");
-        return usage[0];
-      }
+      ArgumentUtility.CheckNotNull ("attributeType", attributeType);
+
+      AttributeUsageAttribute cachedInstance = s_cache.GetOrCreateValue (
+          attributeType,
+          delegate (Type type)
+          {
+            AttributeUsageAttribute[] usage =
+                (AttributeUsageAttribute[]) type.GetCustomAttributes (typeof (AttributeUsageAttribute), true);
+            if (usage.Length == 0)
+              return new AttributeUsageAttribute (AttributeTargets.All);
+            else
+            {
+              Assertion.IsTrue (usage.Length == 1, "AllowMultiple == false");
+              return usage[0];
+            }
+          });
+      
+      AttributeUsageAttribute newInstance = new AttributeUsageAttribute (cachedInstance.ValidOn);
+      newInstance.AllowMultiple = cachedInstance.AllowMultiple;
+      newInstance.Inherited = cachedInstance.Inherited;
+      return newInstance;
     }
 
     public static Attribute InstantiateCustomAttributeData (CustomAttributeData data)

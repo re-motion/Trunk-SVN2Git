@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -35,6 +36,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       IBusinessObjectClass userClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (User));
       _tenantProperty = (IBusinessObjectReferenceProperty) userClass.GetPropertyDefinition ("Tenant");
       Assert.That (_tenantProperty, Is.Not.Null);
+    }
+
+    public override void TearDown ()
+    {
+      base.TearDown ();
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
 
     [Test]

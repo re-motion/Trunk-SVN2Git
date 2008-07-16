@@ -85,6 +85,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       base.TearDown();
 
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
 
     [Test]

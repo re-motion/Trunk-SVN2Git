@@ -12,6 +12,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -50,6 +51,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
 
       _group = Group.FindByUnqiueIdentifier ("UID: group0");
       Assert.That (_group, Is.Not.Null);
+    }
+
+    public override void TearDown ()
+    {
+      base.TearDown ();
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
 
     [Test]

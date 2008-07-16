@@ -48,6 +48,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       _testHelper.Transaction.EnterNonDiscardingScope();
     }
 
+    public override void TearDown ()
+    {
+      base.TearDown ();
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+    }
+    
     [Test]
     public void FindByUnqiueIdentifier_ValidGroup ()
     {
