@@ -134,9 +134,9 @@
     <Compile Include="DataManagement\ObjectEndPointModification.cs" />
     <Compile Include="DataManagement\RelationEndPointModification.cs" />
     <Compile Include="DBStorageGroupAttribute.cs" />
-    <Compile Include="Design\DomainObjectsDesignModeHelper.cs" />
-    <Compile Include="Design\DesignModeMappingLoaderAttribute.cs" />
-    <Compile Include="Design\DesignModeMappingReflector.cs" />
+    <Compile Include="Design\DomainObjectsDesignModeHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DomainObjectGraphTraverser.cs" />
     <Compile Include="DomainObjectMixin.cs" />
     <Compile Include="FullGraphTraversalStrategy.cs" />

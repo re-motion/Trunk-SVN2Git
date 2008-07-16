@@ -9,23 +9,26 @@
  */
 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.ConfigurationLoader;
-using Remotion.Data.DomainObjects.Design;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.UnitTests.Core.Design;
+using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Mapping
 {
-  [DesignModeMappingLoader(typeof (FakeDesignModeMappingLoader))]
-  public class FakeMappingLoader: IMappingLoader
+  public class FakeMappingLoader : IMappingLoader
   {
-    public FakeMappingLoader()
+    public FakeMappingLoader ()
     {
     }
 
-    public ClassDefinitionCollection GetClassDefinitions()
+    public ClassDefinitionCollection GetClassDefinitions ()
     {
-      return new ClassDefinitionCollection();
+      ClassDefinitionCollection classDefinitionCollection = new ClassDefinitionCollection();
+      classDefinitionCollection.Add (
+          new ReflectionBasedClassDefinition ("Fake", "Fake", "Fake", typeof (Company), false, new List<Type>()));
+
+      return classDefinitionCollection;
     }
 
     public RelationDefinitionCollection GetRelationDefinitions (ClassDefinitionCollection classDefinitions)

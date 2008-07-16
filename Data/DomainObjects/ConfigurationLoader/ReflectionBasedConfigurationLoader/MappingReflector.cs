@@ -11,15 +11,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.IO;
-using System.Reflection;
-using Remotion.Data.DomainObjects.Design;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
-  [DesignModeMappingLoader (typeof (DesignModeMappingReflector))]
   public class MappingReflector : MappingReflectorBase
   {
     private readonly ITypeDiscoveryService _typeDiscoveryService;

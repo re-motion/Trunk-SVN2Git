@@ -215,7 +215,6 @@
     <Compile Include="Core\Configuration\StorageProviders\TypeProviderTest.cs" />
     <TestDomain Include="Core\Design\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Core\Cloning\DomainObjectClonerTest.cs" />
-    <Compile Include="Core\Design\FakeDesignModeMappingNameResolver.cs" />
     <Compile Include="Core\DomainObjects\SimpleDomainObjectTest.cs" />
     <Compile Include="Core\IntegrationTests\StorageClassTransactionTest.cs" />
     <Compile Include="Core\Interception\SampleTypes\DOWithAutomaticProperties.cs" />
@@ -290,10 +289,7 @@
     <Compile Include="Core\Configuration\StorageProviders\StubStorageGroup2Attribute.cs" />
     <Compile Include="Core\Configuration\StorageProviders\PersistenceConfigurationTest.cs" />
     <Compile Include="Core\Configuration\StorageProviders\StubStorageGroup1Attribute.cs" />
-    <Compile Include="Core\Design\DesignModeMappingLoaderAttributeTest.cs" />
-    <Compile Include="Core\Design\DesignModeMappingReflectorTest.cs" />
     <Compile Include="Core\Design\DomainObjectsDesignModeHelperTest.cs" />
-    <Compile Include="Core\Design\FakeDesignModeMappingLoader.cs" />
     <Compile Include="Core\DomainObjects\ConstructionTest.cs" />
     <Compile Include="Core\IntegrationTests\MixedDomainTest.cs" />
     <Compile Include="Core\IntegrationTests\QueryTest.cs" />

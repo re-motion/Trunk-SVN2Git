@@ -12,9 +12,7 @@ using System;
 using System.ComponentModel;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Design;
 using Remotion.Utilities;
 
@@ -41,35 +39,9 @@ namespace Remotion.Data.DomainObjects.Design
       if (configuration != null)
       {
         ConfigurationWrapper.SetCurrent (ConfigurationWrapper.CreateFromConfigurationObject (configuration));
-        DomainObjectsConfiguration.SetCurrent (new DomainObjectsConfiguration());
-        MappingConfiguration.SetCurrent (new MappingConfiguration (GetMappingLoader()));       
+        DomainObjectsConfiguration.SetCurrent (new DomainObjectsConfiguration ());
+        MappingConfiguration.SetCurrent (null);
       }
-    }
-
-    private IMappingLoader GetMappingLoader()
-    {
-      Type mappingLoaderType = GetMappingLoaderType();
-      DesignModeMappingLoaderAttribute designModeMappingLoaderAttribute = 
-          AttributeUtility.GetCustomAttribute<DesignModeMappingLoaderAttribute> (mappingLoaderType, true);
-      Assertion.IsNotNull(
-          designModeMappingLoaderAttribute, 
-          "'{0}' does not have the '{1}' applied.", mappingLoaderType.FullName, typeof (DesignModeMappingLoaderAttribute).FullName);
-
-      return designModeMappingLoaderAttribute.CreateInstance (_designModeHelper.DesignerHost);
-    }
-
-    private Type GetMappingLoaderType()
-    {
-      IDomainObjectsConfiguration domainObjectsConfiguration = DomainObjectsConfiguration.Current;
-      Assertion.IsNotNull (domainObjectsConfiguration, "DomainObjectsConfiguration.Current evaluated and returned null.");
-
-      MappingLoaderConfiguration mappingLoaderConfiguration = domainObjectsConfiguration.MappingLoader;
-      Assertion.IsNotNull (mappingLoaderConfiguration, "DomainObjectsConfiguration.Current.MappingLoader evaluated and returned null.");
-      
-      Type mappingLoaderType = mappingLoaderConfiguration.MappingLoaderType;
-      Assertion.IsNotNull (mappingLoaderType, "DomainObjectsConfiguration.Current.MappingLoader.MappingLoaderType evaluated and returned null.");
-
-      return mappingLoaderType;
     }
   }
 }

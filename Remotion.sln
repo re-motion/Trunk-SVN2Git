@@ -140,8 +140,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.ExecutionEngine.CodeGenerator", "Web\ExecutionEngine.CodeGenerator\Web.ExecutionEngine.CodeGenerator.csproj", "{6693589F-085C-4CB7-A28A-426F19C19E6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.ExecutionEngine.CodeGenerator.Test", "Web\ExecutionEngine.CodeGenerator.Test\Web.ExecutionEngine.CodeGenerator.Test.csproj", "{2ADC369A-4CE5-4378-B72E-4FBEDD8FA724}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6693589F-085C-4CB7-A28A-426F19C19E6B} = {6693589F-085C-4CB7-A28A-426F19C19E6B}
+	EndProjectSection
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Web.ExecutionEngine.CodeGenerator.TestVB", "Web\ExecutionEngine.CodeGenerator.TestVB\Web.ExecutionEngine.CodeGenerator.TestVB.vbproj", "{88CA7395-A63D-4934-ADA7-7D0600C85DA3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6693589F-085C-4CB7-A28A-426F19C19E6B} = {6693589F-085C-4CB7-A28A-426F19C19E6B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
