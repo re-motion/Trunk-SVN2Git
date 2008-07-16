@@ -137,13 +137,13 @@ namespace Remotion.Utilities
     public static bool IsAttributeInherited (Type attributeType)
     {
       AttributeUsageAttribute usage = GetAttributeUsage (attributeType);
-      return usage != null ? usage.Inherited : true;
+      return usage.Inherited;
     }
 
     public static bool IsAttributeAllowMultiple (Type attributeType)
     {
       AttributeUsageAttribute usage = GetAttributeUsage (attributeType);
-      return usage != null ? usage.AllowMultiple : false;
+      return usage.AllowMultiple;
     }
 
     public static AttributeUsageAttribute GetAttributeUsage (Type attributeType)
