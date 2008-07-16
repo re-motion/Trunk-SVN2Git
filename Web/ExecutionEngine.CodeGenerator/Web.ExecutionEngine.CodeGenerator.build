@@ -14,7 +14,7 @@
 
   <target name="build" description="perform a build">
   
-    <csc  target="library" 
+    <csc  target="exe" 
           output="${build.outputdir}/${project.output}.${project.extension}" 
           doc="${project.doc}" 
           debug="${build.debug}"
