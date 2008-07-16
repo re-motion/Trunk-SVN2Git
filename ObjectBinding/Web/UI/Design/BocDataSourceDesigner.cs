@@ -13,13 +13,12 @@ using Remotion.Web.UI.Design;
 
 namespace Remotion.ObjectBinding.Web.UI.Design
 {
-
-public class BocDataSourceDesigner: WebControlDesigner
-{
-  public override string GetDesignTimeHtml()
+  public class BocDataSourceDesigner : WebControlDesigner
   {
-    return base.CreatePlaceHolderDesignTimeHtml();
+    public override string GetDesignTimeHtml ()
+    {
+      EnsureCheckForDuplicateAssemblies();
+      return CreatePlaceHolderDesignTimeHtml();
+    }
   }
-}
-
 }

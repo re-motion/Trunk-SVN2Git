@@ -25,11 +25,6 @@ namespace Remotion.ObjectBinding.Web.UI.Design
     {
     }
 
-    public override string GetDesignTimeHtml ()
-    {
-      return CreatePlaceHolderDesignTimeHtml();
-    }
-
     public override void Initialize (System.ComponentModel.IComponent component)
     {
       base.Initialize (component);
