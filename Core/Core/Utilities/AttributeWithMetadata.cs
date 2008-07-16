@@ -39,17 +39,15 @@ namespace Remotion.Utilities
       }
     }
 
-    public static IEnumerable<AttributeWithMetadata> Suppress (IEnumerable<AttributeWithMetadata> source, IEnumerable<AttributeWithMetadata> suppressAttributes)
+    public static IEnumerable<AttributeWithMetadata> Suppress (IEnumerable<AttributeWithMetadata> source, AttributeWithMetadata[] suppressAttributes)
     {
       ArgumentUtility.CheckNotNull ("source", source);
       ArgumentUtility.CheckNotNull ("suppressAttributes", suppressAttributes);
 
-      AttributeWithMetadata[] suppressAttributesArray = EnumerableUtility.ToArray (suppressAttributes);
-
       foreach (AttributeWithMetadata attribute in source)
       {
         bool suppressed = false;
-        foreach (AttributeWithMetadata suppressAttribute in suppressAttributesArray) // assume that there are only few suppressAttributes, if any
+        foreach (AttributeWithMetadata suppressAttribute in suppressAttributes) // assume that there are only few suppressAttributes, if any
         {
           SuppressAttributesAttribute suppressAttributeInstance = (SuppressAttributesAttribute)suppressAttribute.AttributeInstance;
           if (suppressAttributeInstance.IsSuppressed (attribute.AttributeInstance.GetType(), attribute.DeclaringType, suppressAttribute.DeclaringType))
