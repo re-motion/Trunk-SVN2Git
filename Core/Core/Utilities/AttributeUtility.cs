@@ -52,12 +52,12 @@ namespace Remotion.Utilities
       ArgumentUtility.CheckNotNull ("element", element);
       CheckAttributeType (attributeType, "attributeType");
 
-      Attribute[] attributeArray = GetCustomAttributes (element, attributeType, inherit);
+      object[] attributeArray = GetCustomAttributes (element, attributeType, inherit);
       if ((attributeArray == null) || (attributeArray.Length == 0))
         return null;
       if (attributeArray.Length != 1)
         throw new AmbiguousMatchException ("Multiple custom attributes of the same type found.");
-      return attributeArray[0];
+      return (Attribute)attributeArray[0];
     }
 
     public static T[] GetCustomAttributes<T> (MemberInfo element, bool inherit)
@@ -66,11 +66,10 @@ namespace Remotion.Utilities
       ArgumentUtility.CheckNotNull ("element", element);
       CheckAttributeType (typeof (T), "T");
       
-      Attribute[] attributesWithMatchingType = GetCustomAttributes (element, typeof (T), inherit);
-      return Array.ConvertAll<Attribute, T> (attributesWithMatchingType, delegate (Attribute attribute) { return (T) (object) attribute; });
+      return (T[])GetCustomAttributes (element, typeof (T), inherit);
     }
 
-    public static Attribute[] GetCustomAttributes (MemberInfo element, Type attributeType, bool inherit)
+    public static object[] GetCustomAttributes (MemberInfo element, Type attributeType, bool inherit)
     {
       ArgumentUtility.CheckNotNull ("element", element);
       CheckAttributeType (attributeType, "attributeType");
@@ -80,10 +79,11 @@ namespace Remotion.Utilities
         return GetCustomAttributes (elementAsType, attributeType, inherit);
 
       Attribute[] attributes = Attribute.GetCustomAttributes (element, typeof (Attribute), inherit);
-      return Array.FindAll (attributes, delegate (Attribute attribute) { return attributeType.IsInstanceOfType (attribute); });
+      Attribute[] filteredAttributes = Array.FindAll (attributes, delegate (Attribute attribute) { return attributeType.IsInstanceOfType (attribute); });
+      return (object[]) ArrayUtility.Convert (filteredAttributes, attributeType);
     }
 
-    public static Attribute[] GetCustomAttributes (Type type, Type attributeType, bool inherit)
+    public static object[] GetCustomAttributes (Type type, Type attributeType, bool inherit)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       CheckAttributeType (attributeType, "attributeType");
@@ -99,7 +99,7 @@ namespace Remotion.Utilities
       IEnumerable<AttributeWithMetadata> suppressedAttributes = AttributeWithMetadata.Suppress (filteredAttributes, suppressAttributes);
       IEnumerable<Attribute> attributeInstances = AttributeWithMetadata.ExtractInstances (suppressedAttributes);
 
-      return EnumerableUtility.ToArray (attributeInstances);
+      return (object[]) ArrayUtility.Convert (EnumerableUtility.ToArray (attributeInstances), attributeType);
     }
 
     public static AttributeWithMetadata[] GetCustomAttributesWithMetadata (Type type, bool inherit)

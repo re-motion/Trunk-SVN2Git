@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes;
 using Remotion.Utilities;
 
@@ -46,7 +47,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Test_FromBaseWithAttribute ()
     {
-      Attribute[] attributes = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (InheritedAttribute), true);
+      object[] attributes = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (InheritedAttribute), true);
 
       Assert.AreEqual (1, attributes.Length);
       Assert.IsNotNull (attributes[0]);
@@ -65,7 +66,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     [Test]
     public void Test_FromBaseWithInterface ()
     {
-      Attribute[] attributes = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (ICustomAttribute), true);
+      object[] attributes = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (ICustomAttribute), true);
 
       Assert.AreEqual (1, attributes.Length);
       Assert.IsNotNull (attributes[0]);
@@ -151,5 +152,13 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
 
       Assert.IsEmpty (attributes);
     }
+
+    [Test]
+    public void Test_ReturnSpecificArrayType ()
+    {
+      object[] attributes = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (BaseInheritedAttribute), false);
+      Assert.That (attributes, Is.InstanceOfType (typeof (BaseInheritedAttribute[])));
+    }
+
   }
 }
