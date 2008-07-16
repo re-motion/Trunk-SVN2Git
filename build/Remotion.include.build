@@ -89,7 +89,7 @@
   <target name="delete-tag" depends="init-build-version" description="Deletes an existing Tag with the current version number.">
     <exec program="${svn.exe}" failonerror="false">
       <arg line="remove" />
-      <arg line="https://at-vie-remotion/svn/Remotion/tags/${build.version.noconfig}" />
+      <arg line="https://svn.re-motion.org/svn/Remotion/tags/${build.version.noconfig}" />
       <arg line="--message &quot;Removing tag for build version ${build.version.noconfig}&quot;" />
     </exec>
   </target>
