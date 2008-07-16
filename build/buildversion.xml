@@ -3,7 +3,7 @@
   <major>1</major>
   <minor>9</minor>
   <build>
-    <increment currentValue="1" />
+    <increment currentValue="2" />
   </build>
   <revision>
     <map property="nant.settings.currentframework"><entry propertyvalue="net-1.0" versionvalue="10" /><entry propertyvalue="net-1.1" versionvalue="11" /><entry propertyvalue="net-2.0" versionvalue="20" /><default fail="true" /></map>
