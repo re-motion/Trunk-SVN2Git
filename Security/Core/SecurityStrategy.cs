@@ -71,7 +71,13 @@ namespace Remotion.Security
 
     private AccessType[] GetAccessFromLocalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, IPrincipal user)
     {
-      return _localCache.GetOrCreateValue (user.Identity.Name, delegate { return GetAccessFromGlobalCache (factory, securityProvider, user); });
+      string key = user.Identity.Name;
+      AccessType[] value;
+
+      if (!_localCache.TryGetValue (key, out value))
+        value = _localCache.GetOrCreateValue (key, delegate { return GetAccessFromGlobalCache (factory, securityProvider, user); });
+
+      return value;
     }
 
     private AccessType[] GetAccessFromGlobalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, IPrincipal user)
@@ -85,7 +91,12 @@ namespace Remotion.Security
         throw new InvalidOperationException ("ISecurityContextFactory.CreateSecurityContext() evaluated and returned null.");
 
       Tuple<ISecurityContext, string> key = new Tuple<ISecurityContext, string> (context, user.Identity.Name);
-      return globalAccessTypeCache.GetOrCreateValue (key, delegate { return GetAccessFromSecurityProvider (securityProvider, context, user); });
+
+      AccessType[] value;
+      if (!globalAccessTypeCache.TryGetValue (key, out value))
+        value = globalAccessTypeCache.GetOrCreateValue (key, delegate { return GetAccessFromSecurityProvider (securityProvider, context, user); });
+  
+      return value;
     }
 
     private AccessType[] GetAccessFromSecurityProvider (ISecurityProvider securityProvider, ISecurityContext context, IPrincipal user)
