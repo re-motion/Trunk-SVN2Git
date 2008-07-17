@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using System.Reflection;
 
@@ -32,6 +33,15 @@ namespace Remotion.Development.UnitTests.UnitTesting
         {
           Assert.AreEqual (0, args.Length);
         });
+    }
+
+    [Test]
+    public void SpecificAppBase ()
+    {
+      AppDomainRunner.Run (@"C:\", delegate (object[] args)
+      {
+        Assert.That (AppDomain.CurrentDomain.BaseDirectory, Is.EqualTo (@"C:\"));
+      });
     }
 
     [Test]

@@ -19,8 +19,14 @@ namespace Remotion.Development.UnitTesting
   {
     public static void Run (Proc<object[]> action, params object[] args)
     {
+      Run (AppDomain.CurrentDomain.BaseDirectory, action, args);
+    }
+
+    public static void Run (string applicationBase, Proc<object[]> action, params object[] args)
+    {
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
-      setup.DynamicBase = Path.GetTempPath();
+      setup.ApplicationBase = applicationBase;
+      setup.DynamicBase = Path.GetTempPath ();
       AppDomainRunner runner = new AppDomainRunner (setup, action, args);
       runner.Run ();
     }

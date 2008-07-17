@@ -41,8 +41,8 @@
     <buildversion versionfile="${solution.build-version-file}" increment="false" />
     <echo message="current version is ${build.version.noconfig}"/>
 
-    <property name="build.basedir" value="${solution.basedir}/build/${build.version.noconfig}" unless="${property::exists('build.local')}" />
-    <property name="build.basedir" value="${solution.basedir}/build/Current" if="${property::exists('build.local')}" />
+    <property name="build.basedir" value="${solution.basedir}/build/${build.version.noconfig}" unless="${property::exists('build.local')}" overwrite="false"/>
+    <property name="build.basedir" value="${solution.basedir}/build/Current" if="${property::exists('build.local')}" overwrite="false"/>
     
     <property name="build.temp.basedir" value="${build.temp.root}/${build.version.noconfig}" unless="${property::exists('build.local')}" />
     <property name="build.temp.basedir" value="${build.temp.root}/Current" if="${property::exists('build.local')}" />

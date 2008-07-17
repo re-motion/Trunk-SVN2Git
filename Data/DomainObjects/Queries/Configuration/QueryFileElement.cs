@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Queries.Configuration
       if (Path.IsPathRooted (path))
         return Path.GetFullPath (path);
       else
-        return Path.GetFullPath (Path.Combine (ReflectionUtility.GetConfigFileDirectory (), path));
+        return Path.GetFullPath (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, path));
     }
 
     private readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();

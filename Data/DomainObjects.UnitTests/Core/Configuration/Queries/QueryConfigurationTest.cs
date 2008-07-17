@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Configuration;
+using File=System.IO.File;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Queries
 {
@@ -89,18 +90,94 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Queries
     }
 
     [Test]
-    public void DefaultQueryFile ()
+    public void GetDefaultQueryFilePath_BaseDirectory ()
     {
       QueryConfiguration configuration = new QueryConfiguration ();
 
       Assert.That (configuration.QueryFiles.Count, Is.EqualTo (0));
       Assert.That (configuration.QueryDefinitions.Count, Is.GreaterThan (0));
 
-      Assert.That (QueryConfiguration.DefaultConfigurationFile, Is.EqualTo (Path.Combine (Environment.CurrentDirectory, "queries.xml")));
+      Assert.That (configuration.GetDefaultQueryFilePath (), Is.EqualTo (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "queries.xml")));
 
-      QueryConfigurationLoader loader = new QueryConfigurationLoader (QueryConfiguration.DefaultConfigurationFile);
+      QueryConfigurationLoader loader = new QueryConfigurationLoader (configuration.GetDefaultQueryFilePath ());
       QueryDefinitionChecker checker = new QueryDefinitionChecker ();
       checker.Check (loader.GetQueryDefinitions (), configuration.QueryDefinitions);
+    }
+
+    [Test]
+    public void GetDefaultQueryFilePath_WithRelativeSearchPath ()
+    {
+      AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
+      setup.ApplicationBase = Path.GetPathRoot (AppDomain.CurrentDomain.BaseDirectory);
+      setup.DynamicBase = Path.GetTempPath ();
+      setup.PrivateBinPath = Path.GetFullPath (AppDomain.CurrentDomain.BaseDirectory).Substring (setup.ApplicationBase.Length); // make a relative path
+
+      new AppDomainRunner (setup, delegate (object[] args)
+      {
+        QueryConfiguration configuration = new QueryConfiguration ();
+        Assert.That (!File.Exists (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "queries.xml")));
+        Assert.That (configuration.GetDefaultQueryFilePath (), Is.EqualTo (Path.Combine ((string) args[0], "queries.xml")));
+      }, AppDomain.CurrentDomain.BaseDirectory).Run();
+    }
+
+    [Test]
+    public void GetDefaultQueryFilePath_WithMultipleRelativeSearchPaths ()
+    {
+      AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
+      setup.ApplicationBase = Path.GetPathRoot (AppDomain.CurrentDomain.BaseDirectory);
+      setup.DynamicBase = Path.GetTempPath ();
+      setup.PrivateBinPath = @"A;B;C;Foo;" + Path.GetFullPath (AppDomain.CurrentDomain.BaseDirectory).Substring (setup.ApplicationBase.Length);  // make a relative path
+
+      new AppDomainRunner (setup, delegate (object[] args)
+      {
+        QueryConfiguration configuration = new QueryConfiguration ();
+        Assert.That (!File.Exists (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "queries.xml")));
+        Assert.That (configuration.GetDefaultQueryFilePath (), Is.EqualTo (Path.Combine ((string) args[0], "queries.xml")));
+      }, AppDomain.CurrentDomain.BaseDirectory).Run ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "No default query file found. Searched for one of the following files:\nC:\\queries.xml")]
+    public void GetDefaultQueryFilePath_ThrowsIfNoQueryFileExists ()
+    {
+      AppDomainRunner.Run (@"C:\", delegate
+      {
+        QueryConfiguration configuration = new QueryConfiguration ();
+        configuration.GetDefaultQueryFilePath ();
+      });
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "No default query file found. Searched for one of the following files:\nC:\\queries.xml\nC:\\Bin\\queries.xml\nC:\\Foo\\queries.xml")]
+    public void GetDefaultQueryFilePath_ThrowsIfNoQueryFileExists_WithMultipleRelativeSearchPaths ()
+    {
+      AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
+      setup.ApplicationBase = @"C:\";
+      setup.DynamicBase = Path.GetTempPath ();
+      setup.PrivateBinPath = @"Bin;Foo";
+
+      new AppDomainRunner (setup, delegate
+      {
+        QueryConfiguration configuration = new QueryConfiguration ();
+        configuration.GetDefaultQueryFilePath ();
+      }).Run ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = @"Two default query configuration files found", 
+        MatchType = MessageMatch.Contains)]
+    public void GetDefaultQueryFilePath_ThrowsIfMultipleQueryFilesExist ()
+    {
+      AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
+      setup.ApplicationBase = AppDomain.CurrentDomain.BaseDirectory;
+      setup.DynamicBase = Path.GetTempPath ();
+      setup.PrivateBinPath = ".";  // simulate multiple files by searching the same directory twice
+
+      new AppDomainRunner (setup, delegate
+      {
+        QueryConfiguration configuration = new QueryConfiguration ();
+        configuration.GetDefaultQueryFilePath ();
+      }, AppDomain.CurrentDomain.BaseDirectory).Run ();
     }
 
     [Test]
@@ -128,7 +205,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Queries
 
       Assert.AreEqual (1, configuration.QueryFiles.Count);
       Assert.AreEqual ("QueriesForLoaderTest.xml", configuration.QueryFiles[0].FileName);
-      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, "QueriesForLoaderTest.xml"), configuration.QueryFiles[0].RootedFileName);
+      Assert.AreEqual (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "QueriesForLoaderTest.xml"), configuration.QueryFiles[0].RootedFileName);
     }
 
     [Test]
@@ -147,9 +224,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Queries
 
       Assert.AreEqual (2, configuration.QueryFiles.Count);
       Assert.AreEqual ("Q1.xml", configuration.QueryFiles[0].FileName);
-      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, "Q1.xml"), configuration.QueryFiles[0].RootedFileName);
+      Assert.AreEqual (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "Q1.xml"), configuration.QueryFiles[0].RootedFileName);
       Assert.AreEqual ("Q2.xml", configuration.QueryFiles[1].FileName);
-      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, "Q2.xml"), configuration.QueryFiles[1].RootedFileName);
+      Assert.AreEqual (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "Q2.xml"), configuration.QueryFiles[1].RootedFileName);
     }
 
     [Test]
@@ -181,10 +258,28 @@ namespace Remotion.Data.DomainObjects.UnitTests.Core.Configuration.Queries
     }
 
     [Test]
+    public void RootedPath_UnaffectedByDirectoryChange()
+    {
+      QueryConfiguration configuration = new QueryConfiguration ("Core\\QueriesForLoaderTest.xml");
+      string pathBefore = configuration.QueryFiles[0].RootedFileName;
+
+      string oldDirectory = AppDomain.CurrentDomain.BaseDirectory;
+      try
+      {
+        Environment.CurrentDirectory = @"c:\";
+        Assert.That (configuration.QueryFiles[0].RootedFileName, Is.EqualTo (pathBefore));
+      }
+      finally
+      {
+        Environment.CurrentDirectory = oldDirectory;
+      }
+    }
+
+    [Test]
     public void GetDefinitions_UsesRootedPath ()
     {
       QueryConfiguration configuration = new QueryConfiguration ("Core\\QueriesForLoaderTest.xml");
-      string oldDirectory = Environment.CurrentDirectory;
+      string oldDirectory = AppDomain.CurrentDomain.BaseDirectory;
       try
       {
         Environment.CurrentDirectory = @"c:\";

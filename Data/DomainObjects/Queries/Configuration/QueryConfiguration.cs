@@ -9,9 +9,12 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationLoader;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries.Configuration
@@ -21,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Queries.Configuration
   /// </summary>
   public class QueryConfiguration : ExtendedConfigurationSection
   {
-    public static readonly string DefaultConfigurationFile = QueryFileElement.GetRootedPath ("queries.xml");
+    private const string c_defaultConfigurationFile = "queries.xml";
 
     private readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();
     private readonly ConfigurationProperty _queryFilesProperty;
@@ -56,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Queries.Configuration
     private QueryDefinitionCollection LoadAllQueryDefinitions ()
     {
       if (QueryFiles.Count == 0)
-        return new QueryConfigurationLoader (DefaultConfigurationFile).GetQueryDefinitions ();
+        return new QueryConfigurationLoader (GetDefaultQueryFilePath()).GetQueryDefinitions ();
       else
       {
         QueryDefinitionCollection result = new QueryDefinitionCollection ();
@@ -78,6 +81,48 @@ namespace Remotion.Data.DomainObjects.Queries.Configuration
         }
         return result;
       }
+    }
+
+    public string GetDefaultQueryFilePath ()
+    {
+      List<string> potentialPaths = GetPotentialDefaultQueryFilePaths();
+
+      string path = null;
+      foreach (string potentialPath in potentialPaths)
+      {
+        if (File.Exists (potentialPath))
+        {
+          if (path != null)
+          {
+            string message = string.Format ("Two default query configuration files found: '{0}' and '{1}'.", path, potentialPath);
+            throw new ConfigurationException (message);
+          }
+          path = potentialPath;
+        }
+      }
+
+      if (path == null)
+      {
+        string message = string.Format ("No default query file found. Searched for one of the following files:\n{0}",
+            SeparatedStringBuilder.Build ("\n", potentialPaths));
+        throw new ConfigurationException (message);
+      }
+      return path;
+    }
+
+    private List<string> GetPotentialDefaultQueryFilePaths ()
+    {
+      List<string> potentialPaths = new List<string> ();
+      potentialPaths.Add (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, c_defaultConfigurationFile));
+      if (AppDomain.CurrentDomain.RelativeSearchPath != null)
+      {
+        foreach (string part in AppDomain.CurrentDomain.RelativeSearchPath.Split (';'))
+        {
+          string absoluteSearchPath = Path.GetFullPath (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, part));
+          potentialPaths.Add (Path.Combine (absoluteSearchPath, c_defaultConfigurationFile));
+        }
+      }
+      return potentialPaths;
     }
 
     public ConfigurationElementCollection<QueryFileElement> QueryFiles

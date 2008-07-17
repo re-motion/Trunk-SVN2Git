@@ -211,6 +211,7 @@
     <TestDomain Include="Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
     <TestDomain Include="Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
     <TestDomain Include="Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
+    <Compile Include="Core\Configuration\Queries\QueryFileElementTest.cs" />
     <Compile Include="Core\Configuration\StorageProviders\RdbmsProviderDefinitionTest.cs" />
     <Compile Include="Core\Configuration\StorageProviders\TypeProviderTest.cs" />
     <TestDomain Include="Core\Design\DelaySignAssembly\DelaySignClass.cs" />
