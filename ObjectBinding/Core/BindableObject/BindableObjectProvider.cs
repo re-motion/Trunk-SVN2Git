@@ -21,6 +21,8 @@ namespace Remotion.ObjectBinding.BindableObject
   /// </summary>
   public class BindableObjectProvider : BusinessObjectProvider
   {
+    #region Obsolete
+
     [Obsolete ("Use BusinessObjectProvider.GetProvider instead. (Version 1.9.1.0)", true)]
     public static BindableObjectProvider Current
     {
@@ -33,6 +35,10 @@ namespace Remotion.ObjectBinding.BindableObject
       throw new NotImplementedException ("Obsolete. Use BusinessObjectProvider.GetProvider instead. (Version 1.9.1.0)");
     }
 
+    #endregion
+
+    private static readonly InterlockedCache<Type, Type> s_ProviderAttributeTypeCache = new InterlockedCache<Type, Type>();
+
     /// <summary>
     /// Use this method as a shortcut to retrieve the <see cref="BindableObjectProvider"/> for a <see cref="Type"/> 
     /// that has the <see cref="BindableObjectMixinBase{T}"/> applied without first retrieving the matching provider.
@@ -43,27 +49,35 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      Type concreteType = TypeUtility.GetConcreteMixedType (type);
-      BusinessObjectProviderAttribute attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
+      Type providerAttributeType = s_ProviderAttributeTypeCache.GetOrCreateValue (
+          type,
+          delegate (Type targetType)
+          {
+            Type concreteType = TypeUtility.GetConcreteMixedType (targetType);
+            BusinessObjectProviderAttribute attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
 
-      if (attribute == null)
-      {
-        throw new ArgumentException (
-            string.Format ("The type '{0}' does not have the '{1}' applied.", type.FullName, typeof (BusinessObjectProviderAttribute).FullName),
-            "type");
-      }
+            if (attribute == null)
+            {
+              throw new ArgumentException (
+                  string.Format (
+                      "The type '{0}' does not have the '{1}' applied.", targetType.FullName, typeof (BusinessObjectProviderAttribute).FullName),
+                  "type");
+            }
 
-      if (!ReflectionUtility.CanAscribe (attribute.BusinessObjectProviderType, typeof (BindableObjectProvider)))
-      {
-        throw new ArgumentException (
-            string.Format (
-                "The business object provider associated with the type '{0}' is not of type '{1}'.",
-                type.FullName,
-                typeof (BindableObjectProvider).FullName),
-            "type");
-      }
+            if (!ReflectionUtility.CanAscribe (attribute.BusinessObjectProviderType, typeof (BindableObjectProvider)))
+            {
+              throw new ArgumentException (
+                  string.Format (
+                      "The business object provider associated with the type '{0}' is not of type '{1}'.",
+                      targetType.FullName,
+                      typeof (BindableObjectProvider).FullName),
+                  "type");
+            }
 
-      return (BindableObjectProvider) GetProvider (attribute.GetType());
+            return attribute.GetType();
+          });
+
+      return (BindableObjectProvider) GetProvider (providerAttributeType);
     }
 
     /// <summary>
@@ -87,17 +101,17 @@ namespace Remotion.ObjectBinding.BindableObject
     private readonly IMetadataFactory _metadataFactory;
 
     public BindableObjectProvider ()
-      : this (BindableObjectMetadataFactory.Create(), BindableObjectServiceFactory.Create ())
+        : this (BindableObjectMetadataFactory.Create(), BindableObjectServiceFactory.Create())
     {
     }
 
     protected BindableObjectProvider (IMetadataFactory metadataFactory)
-      : this (metadataFactory, BindableObjectServiceFactory.Create())
+        : this (metadataFactory, BindableObjectServiceFactory.Create())
     {
     }
 
     public BindableObjectProvider (IMetadataFactory metadataFactory, IBusinessObjectServiceFactory serviceFactory)
-      : base (serviceFactory)
+        : base (serviceFactory)
     {
       ArgumentUtility.CheckNotNull ("metadataFactory", metadataFactory);
       ArgumentUtility.CheckNotNull ("serviceFactory", serviceFactory);
