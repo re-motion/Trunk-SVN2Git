@@ -11,7 +11,9 @@
     <AssemblyName>Remotion.ObjectBinding.UnitTests</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -66,6 +68,9 @@
     <Compile Include="Core\BindableObject\BooleanPropertyTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectServiceFactoryTest.cs" />
     <Compile Include="Core\TestDomain\ClassWithIdentityFromOtherBusinessObjectImplementation.cs" />
+    <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttributeFromMixin.cs" />
+    <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttribute.cs" />
+    <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithoutAttributeAndWithSpecificBusinessObjectProviderAttribute.cs" />
     <Compile Include="Core\TestDomain\OtherBusinessObjectImplementationProvider.cs" />
     <Compile Include="Core\TestDomain\DerivedStubBusinessObjectProviderAttribute.cs" />
     <Compile Include="Core\TestDomain\OtherBusinessObjectImplementationProviderAttribute.cs" />
@@ -240,7 +245,9 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerWithoutEditModeTest.cs" />
     <None Include="ObjectBinding.UnitTests.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="..\..\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">

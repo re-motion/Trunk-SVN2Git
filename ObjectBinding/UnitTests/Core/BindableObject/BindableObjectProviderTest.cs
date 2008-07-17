@@ -54,16 +54,45 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    [Ignore ("TODO: Implement once AttributeUtility has been extended.")]
     public void GetProviderForBindableObjectType_WithAttributeFromTypeOverridingAttributeFromMixin ()
     {
+      BindableObjectProvider provider =
+          BindableObjectProvider.GetProviderForBindableObjectType (typeof (DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttribute));
+
+      Assert.That (provider, Is.Not.Null);
+      Assert.That (provider, Is.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableObjectWithIdentityProviderAttribute))));
+      Assert.That (provider, Is.Not.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute))));
+    }
+
+    [Test]
+    public void GetProviderForBindableObjectType_WithAttributeFromTypeOverridingAttributeFromInheritedMixin ()
+    {
+      BindableObjectProvider provider =
+          BindableObjectProvider.GetProviderForBindableObjectType (
+              typeof (DerivedBusinessObjectClassWithoutAttributeAndWithSpecificBusinessObjectProviderAttribute));
+
+      Assert.That (provider, Is.Not.Null);
+      Assert.That (provider, Is.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableObjectWithIdentityProviderAttribute))));
+      Assert.That (provider, Is.Not.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute))));
+    }
+
+    [Test]
+    public void GetProviderForBindableObjectType_WithAttributeFromMixinOverridingAttributeInheritedFromBase ()
+    {
+      BindableObjectProvider provider =
+          BindableObjectProvider.GetProviderForBindableObjectType (
+              typeof (DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttributeFromMixin));
+
+      Assert.That (provider, Is.Not.Null);
+      Assert.That (provider, Is.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableObjectWithIdentityProviderAttribute))));
+      Assert.That (provider, Is.Not.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute))));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not have the "
-        + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
+            "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not have the "
+            + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
     public void GetProviderForBindableObjectType_WithMissingAttributeType ()
     {
       BindableObjectProvider.GetProviderForBindableObjectType (typeof (ManualBusinessObject));
@@ -72,8 +101,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "The business object provider associated with the type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.StubBusinessObject' "
-        + "is not of type 'Remotion.ObjectBinding.BindableObject.BindableObjectProvider'.\r\nParameter name: type")]
+            "The business object provider associated with the type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.StubBusinessObject' "
+            + "is not of type 'Remotion.ObjectBinding.BindableObject.BindableObjectProvider'.\r\nParameter name: type")]
     public void GetProviderForBindableObjectType_WithInvalidProviderType ()
     {
       BindableObjectProvider.GetProviderForBindableObjectType (typeof (StubBusinessObject));
@@ -114,9 +143,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleReferenceType' does not implement the "
-        + "'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding.BindableObject.BindableObjectMixinBase`1'.\r\n"
-        + "Parameter name: concreteType")]
+            "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleReferenceType' does not implement the "
+            + "'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding.BindableObject.BindableObjectMixinBase`1'.\r\n"
+            + "Parameter name: concreteType")]
     public void GetBindableObjectClass_WithTypeNotUsingBindableObjectMixin ()
     {
       _provider.GetBindableObjectClass (typeof (SimpleReferenceType));
@@ -158,9 +187,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetServiceFactory_WithMixin ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (BindableObjectServiceFactory)).AddMixin<MixinStub> ().EnterScope ())
+      using (MixinConfiguration.BuildNew().ForClass (typeof (BindableObjectServiceFactory)).AddMixin<MixinStub>().EnterScope())
       {
-        BindableObjectProvider provider = new BindableObjectProvider ();
+        BindableObjectProvider provider = new BindableObjectProvider();
         Assert.That (provider.ServiceFactory, Is.InstanceOfType (typeof (BindableObjectServiceFactory)));
         Assert.That (provider.ServiceFactory, Is.InstanceOfType (typeof (IMixinTarget)));
       }
