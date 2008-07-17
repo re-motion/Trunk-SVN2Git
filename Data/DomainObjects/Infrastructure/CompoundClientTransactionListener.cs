@@ -188,10 +188,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationEndPointMapCopyingFrom (source);
     }
 
-    public void RelationEndPointMapCopyingTo (RelationEndPointMap source)
+    public void RelationEndPointMapCopyingTo (RelationEndPointMap destination)
     {
       foreach (IClientTransactionListener listener in _listeners)
-        listener.RelationEndPointMapCopyingTo (source);
+        listener.RelationEndPointMapCopyingTo (destination);
     }
 
     public void DataManagerMarkingObjectDiscarded (ObjectID id)

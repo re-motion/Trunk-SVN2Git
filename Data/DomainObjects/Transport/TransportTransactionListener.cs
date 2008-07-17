@@ -166,7 +166,7 @@ namespace Remotion.Data.DomainObjects.Transport
       
     }
 
-    public void RelationEndPointMapCopyingTo (RelationEndPointMap source)
+    public void RelationEndPointMapCopyingTo (RelationEndPointMap destination)
     {
       
     }

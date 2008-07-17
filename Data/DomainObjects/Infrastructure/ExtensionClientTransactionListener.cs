@@ -173,7 +173,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public void RelationEndPointMapCopyingTo (RelationEndPointMap source)
+    public void RelationEndPointMapCopyingTo (RelationEndPointMap destination)
     {
       // not handled by this listener
     }

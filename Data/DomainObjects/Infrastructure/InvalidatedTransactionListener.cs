@@ -152,7 +152,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void RelationEndPointMapCopyingTo (RelationEndPointMap source)
+    public void RelationEndPointMapCopyingTo (RelationEndPointMap destination)
     {
       throw CreateException();
     }

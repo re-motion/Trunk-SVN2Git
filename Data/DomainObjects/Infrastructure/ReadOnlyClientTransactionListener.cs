@@ -166,7 +166,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
 
-    public virtual void RelationEndPointMapCopyingTo (RelationEndPointMap source)
+    public virtual void RelationEndPointMapCopyingTo (RelationEndPointMap destination)
     {
     }
 
