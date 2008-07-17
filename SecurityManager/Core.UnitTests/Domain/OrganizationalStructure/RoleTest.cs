@@ -66,6 +66,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       base.SetUp ();
 
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+
       _mocks = new MockRepository ();
       _mockSecurityProvider = (ISecurityProvider) _mocks.CreateMultiMock (typeof (ProviderBase), typeof (ISecurityProvider));
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);

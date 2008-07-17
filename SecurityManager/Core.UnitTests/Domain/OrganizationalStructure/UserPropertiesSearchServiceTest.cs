@@ -42,6 +42,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       base.SetUp();
 
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+
       _testHelper = new OrganizationalStructureTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
 
