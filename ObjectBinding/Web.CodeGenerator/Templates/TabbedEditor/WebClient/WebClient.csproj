@@ -198,7 +198,7 @@
   <PropertyGroup>
     <PreBuildEvent>
       cd ..
-      $WxeGenPath$\wxegen UI\*.aspx.cs WxeFunctions.cs /prjfile:$WebClientName$.csproj /functionbase:PhoneBook.Web.Classes.BaseFunction
+      $RemotionAssembly$\wxegen UI\*.aspx.cs WxeFunctions.cs /prjfile:$WebClientName$.csproj /functionbase:$PROJECT_ROOTNAMESPACE$.Classes.BaseFunction
     </PreBuildEvent>
   </PropertyGroup>
 </Project>
