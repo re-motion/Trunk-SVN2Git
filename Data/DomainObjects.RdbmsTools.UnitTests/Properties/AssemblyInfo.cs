@@ -21,7 +21,7 @@ using Remotion.Data.DomainObjects;
 
 [assembly: AssemblyTitle ("Remotion DomainObjects Database Tools UnitTests")]
 [assembly: AssemblyDescription ("UnitTests for the DomainObjects Database Tools Library")]
-[assembly: AssemblyConfiguration (".NET Framework: net-2.0, build type: debug")]
+[assembly: AssemblyConfiguration (".NET Framework: net-3.5, build type: debug")]
 [assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
 [assembly: AssemblyProduct("Remotion")]
 [assembly: AssemblyCopyright("(c) 2005 - 2008 rubicon informationstechnologie gmbh, www.rubicon.eu")]
@@ -40,4 +40,4 @@ using Remotion.Data.DomainObjects;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.9.0.202")]
+[assembly: AssemblyVersion("1.11.0.2")]
