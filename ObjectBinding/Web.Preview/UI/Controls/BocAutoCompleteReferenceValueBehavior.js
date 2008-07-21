@@ -10,6 +10,63 @@
 
 Type.registerNamespace ('Remotion.UI');
 
+Remotion.UI.ClickBehavior = function Remotion$UI$ClickBehavior (element)
+{
+  Remotion.UI.ClickBehavior.initializeBase(this, [element]);
+}
+
+function Remotion$UI$ClickBehavior$add_click(handler)
+{
+  this.get_events().addHandler('click', handler);
+}
+
+function Remotion$UI$ClickBehavior$remove_click(handler)
+{
+  this.get_events().removeHandler('click', handler);
+}
+
+function Remotion$UI$ClickBehavior$dispose() 
+{
+  $clearHandlers(this.get_element());
+  Remotion.UI.ClickBehavior.callBaseMethod(this, 'dispose');
+}
+
+function Remotion$UI$ClickBehavior$initialize()
+{
+  Remotion.UI.ClickBehavior.callBaseMethod(this, 'initialize');
+  $addHandlers(this.get_element(), { 'click' : this._onClick }, this);
+}
+
+function Remotion$UI$ClickBehavior$_onClick()
+{
+  var handler = this.get_events().getHandler('click');
+  if (handler)
+    handler(this, Sys.EventArgs.Empty);
+}
+    
+Remotion.UI.ClickBehavior.prototype = 
+{
+  _clickHandler: null,
+
+  add_click: Remotion$UI$ClickBehavior$add_click,
+  
+  remove_click: Remotion$UI$ClickBehavior$remove_click,
+
+  dispose: Remotion$UI$ClickBehavior$dispose,
+
+  initialize: Remotion$UI$ClickBehavior$initialize,
+
+  _onClick: Remotion$UI$ClickBehavior$_onClick
+}
+
+Remotion.UI.ClickBehavior.descriptor = 
+{
+  events: [ {name: 'click'} ]
+}
+
+Remotion.UI.ClickBehavior.registerClass('Remotion.UI.ClickBehavior', Sys.UI.Behavior);
+
+
 Sys.UI.DomElement.getLocation = function (element) 
 {
   var offsetX = 0;
@@ -35,149 +92,6 @@ Sys.UI.DomElement.getLocation = function (element)
 
   return { x: offsetX, y: offsetY };
 }
-
-//Remotion.UI.PopupBehavior = function Remotion$UI$PopupBehavior(element) {
-//    /// <param name="element" domElement="true"></param>
-//    var e = Function._validateParams(arguments, [
-//        {name: "element", domElement: true}
-//    ]);
-//    if (e) throw e;
-
-//    Remotion.UI.PopupBehavior.initializeBase(this, [element]);
-//}
-
-//  function Remotion$UI$PopupBehavior$dispose() {
-//    if (this._moveHandler && this.get_element()) 
-//    {
-//      this.hide();
-//      $removeHandler(this.get_element(), 'move', this._moveHandler);
-//      this._moveHandler = null;
-//    }
-//    Remotion.UI.PopupBehavior.callBaseMethod(this, 'dispose');
-//  }
-
-//  function Remotion$UI$PopupBehavior$_onMove() {
-//    var elt = this.get_element();
-//    if (elt._hideWindowedElementsIFrame)
-//    {
-//      elt.parentNode.insertBefore(elt._hideWindowedElementsIFrame, elt);
-//      elt._hideWindowedElementsIFrame.style.top = elt.style.top;
-//      elt._hideWindowedElementsIFrame.style.left = elt.style.left;
-//    }
-//  }
-
-//  function Remotion$UI$PopupBehavior$show() {
-//      var elt = this.get_element();
-//      Sys.UI.DomElement.setVisible(elt, true);
-//      var offsetParent = elt.offsetParent;
-//      if (!offsetParent) offsetParent = document.documentElement;
-//      var offsetParentLocation = Sys.UI.DomElement.getLocation(offsetParent);
-//      var parent = this.get_parentElement () ? this.get_parentElement () : offsetParent;
-//      var parentBounds = Sys.UI.DomElement.getBounds(parent);
-//      var diff = {x: parentBounds.x - offsetParentLocation.x, y:parentBounds.y - offsetParentLocation.y};
-//      var width = elt.offsetWidth - (elt.clientLeft ? elt.clientLeft * 2 : 0);
-//      var height = elt.offsetHeight - (elt.clientTop ? elt.clientTop * 2 : 0);
-//      var position;
-//      switch (this.get_positioningMode ()) {
-//          case AjaxControlToolkit.PositioningMode.Center:
-//              position = {
-//                  x: Math.round(parentBounds.width / 2 - width / 2),
-//                  y: Math.round(parentBounds.height / 2 - height / 2)
-//              };
-//              break;
-//          case AjaxControlToolkit.PositioningMode.BottomLeft:
-//              position = {
-//                  x: 0,
-//                  y: parentBounds.height
-//              };
-//              break;
-//          case AjaxControlToolkit.PositioningMode.BottomRight:
-//              position = {
-//                  x: parentBounds.width - width,
-//                  y: parentBounds.height
-//              };
-//              break;
-//          case AjaxControlToolkit.PositioningMode.TopLeft:
-//              position = {
-//                  x: 0,
-//                  y: -elt.offsetHeight
-//              };
-//              break;
-//          case AjaxControlToolkit.PositioningMode.TopRight:
-//              position = {
-//                  x: parentBounds.width - width,
-//                  y: -elt.offsetHeight
-//              };
-//              break;
-//          default:
-//              position = {x: 0, y: 0};
-//      }
-//      position.x += this.get_x () + diff.x;
-//      position.y += this.get_y () + diff.y;
-//      Sys.UI.DomElement.setLocation(elt, position.x, position.y);
-//      elt.style.width = width + "px";
-//      var newPosition = Sys.UI.DomElement.getBounds(elt);
-//      var documentWidth = self.innerWidth ? self.innerWidth : document.documentElement.clientWidth;
-//              if (!documentWidth) {
-//          documentWidth = document.body.clientWidth;
-//      }
-//      if (newPosition.x + newPosition.width > documentWidth - 5) {
-//          position.x -= newPosition.x + newPosition.width - documentWidth + 5;
-//      }
-//      if (newPosition.x < 0) {
-//          position.x -= newPosition.x;
-//      }
-//      if (newPosition.y < 0) {
-//          position.y -= newPosition.y;
-//      }
-//      Sys.UI.DomElement.setLocation(elt, position.x, position.y);
-//      if (Sys.Browser.agent === Sys.Browser.InternetExplorer) {
-//            var childFrame = elt._hideWindowedElementsIFrame;
-//            if (!childFrame) {
-//                childFrame = document.createElement("iframe");
-//                                childFrame.src = "about:blank";
-//                childFrame.style.position = "absolute";
-//                childFrame.style.display = "none";
-//                childFrame.scrolling = "no";
-//                childFrame.frameBorder = "0";
-//                childFrame.style.filter = "progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=0)";
-//                elt.parentNode.insertBefore(childFrame, elt);
-//                elt._hideWindowedElementsIFrame = childFrame;
-//                this._moveHandler = Function.createDelegate(this, this._onMove);
-//                Sys.UI.DomEvent.addHandler(elt, "move", this._moveHandler);
-//            }
-//            childFrame.style.top = elt.style.top;
-//            childFrame.style.left = elt.style.left;
-//            childFrame.style.width = elt.offsetWidth + "px";
-//            childFrame.style.height = elt.offsetHeight + "px";
-//            childFrame.style.display = elt.style.display;
-//            if (elt.currentStyle && elt.currentStyle.zIndex) {
-//                childFrame.style.zIndex = elt.currentStyle.zIndex;
-//            }
-//            else if (elt.style.zIndex) {
-//                childFrame.style.zIndex = elt.style.zIndex;
-//            }
-//      }
-//  }
-
-//Remotion.UI.PopupBehavior.prototype = {
-//    _moveHandler: null,
-//    
-//    show: Remotion$UI$PopupBehavior$show,
-//    
-//    dispose: Remotion$UI$PopupBehavior$dispose,
-//    
-//    _onMove: Remotion$UI$PopupBehavior$_onMove
-
-//}
-
-//Remotion.UI.PopupBehavior.descriptor = {
-//    methods: [   {name: 'show'} ]
-//}
-
-//Remotion.UI.PopupBehavior.registerClass('Remotion.UI.PopupBehavior', AjaxControlToolkit.PopupBehavior);
-
-
 
 
 Remotion.UI.BocAutoCompleteReferenceValueBehavior = function Remotion$UI$BocAutoCompleteReferenceValueBehavior (element)
@@ -276,7 +190,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_TextBoxID (value)
 {
   var element = $get(value);
   Sys.Debug.assert (element != null, String.format("No text box with ID '{0}' found.", value));
-  this._textBox = new Sys.Preview.UI.TextBox (element); 
+  this._textBox = new Sys.UI.Control (element); 
   this._textBox.initialize ();
 }
   
@@ -434,8 +348,8 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$initialize ()
   this._popUpControl.initialize ();
 
   var imageElement = document.createElement ('IMG');
-  this._dropDownImage = new Sys.Preview.UI.Image (imageElement);
-  this._dropDownImage.set_imageURL ('res/Remotion.Web/Image/Spacer.gif');
+  this._dropDownImage = new Sys.UI.Control (imageElement);
+  this._dropDownImage.get_element().src = 'res/Remotion.Web/Image/Spacer.gif';
   Sys.UI.DomElement.addCssClass (this._dropDownImage.get_element(), 'bocAutoCompleteReferenceValueDropDownImage');
   $addHandler (imageElement, 'mousedown', this._dropDownImageMouseDownHandler);
   
@@ -446,8 +360,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$initialize ()
   this.get_element().insertBefore (imageElement, this._hiddenField._element);
   this.get_element().style.paddingRight = imageElement.currentStyle.marginRight.replace (/-/, '');
  
-  this._dropDownImageClickBehavior = new Sys.Preview.UI.ClickBehavior (imageElement);
-  //this._dropDownImage.get_behaviors ().add (this._dropDownImageClickBehavior);
+  this._dropDownImageClickBehavior = new Remotion.UI.ClickBehavior (imageElement);
   this._dropDownImageClickBehavior.add_click (this._dropDownImageClickHandler);
   
   this._dropDownImageClickBehavior.initialize ();
@@ -543,8 +456,8 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListMous
 function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxFocus () 
 {
   if (this._oldText == null)
-    this._oldText = this._textBox.get_text();
-  this._currentPrefix = this._textBox.get_text().toUpperCase();
+    this._oldText = this._textBox.get_element().value;
+  this._currentPrefix = this._textBox.get_element().value.toUpperCase();
   this._updateTimer.set_enabled (true);
   this._blurTimer.set_enabled (false);
 }
@@ -552,7 +465,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxFocus ()
 function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxKeyDown (ev)
 {
   if (this._oldText == null)
-    this._oldText = this._textBox.get_text();
+    this._oldText = this._textBox.get_element().value;
     
   //var e = window.event;
   var e = ev;
@@ -609,7 +522,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxKeyDown (ev
       if (e.keyCode == Sys.UI.Key.tab)
       {
         var completionItem = this._completionListElement.childNodes[this._selectedIndex].value;
-        if (completionItem.DisplayName == this._textBox.get_text () || completionItem.DisplayName == this._oldText)
+        if (completionItem.DisplayName == this._textBox.get_element().value || completionItem.DisplayName == this._oldText)
         {
           var hasChanged = completionItem.DisplayName != this._oldText || this._lastKeyWasCursorUpOrDown;
           this._setValue (completionItem, true);
@@ -633,7 +546,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxKeyDown (ev
         e.returnValue = false;
       }
     }
-    else if (this._textBox.get_text ().length == 0)
+    else if (this._textBox.get_element().value.length == 0)
     {
       this._setValue (null, true);
       e.returnValue = e.keyCode == Sys.UI.Key.tab;
@@ -668,10 +581,10 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxKeyUp ()
         this._enableSuggestion = false;
         this._suggestionTimer.set_enabled (true);
         
-        var userText = this._textBox.get_text (); 
-        this._textBox.set_text (item.value.DisplayName);
+        var userText = this._textBox.get_element().value; 
+        this._textBox.get_element().value = item.value.DisplayName;
         var start = userText.length;
-        var end = this._textBox.get_text ().length; 
+        var end = this._textBox.get_element().value.length; 
         if (true) // IE
         {
           var range = this._textBox._element.createTextRange ();
@@ -690,7 +603,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxKeyUp ()
 function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_findItemByText ()
 {
   var children = this._completionListElement.childNodes;
-  var text = this._textBox.get_text ().toUpperCase();
+  var text = this._textBox.get_element().value.toUpperCase();
   if (text.length > 0)
   {
     var length = children.length;
@@ -712,7 +625,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxBlur ()
   {
     this._blurTimer.set_enabled (true);
   }
-  else if (this._textBox.get_text().length == 0)
+  else if (this._textBox.get_element().value.length == 0)
   {
     this._oldText = null;
     this._hiddenField._element.value = '';
@@ -736,7 +649,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_showCompletionList (
 {
   if (this._serviceUrl && this._serviceMethod) 
   {
-    var text = this._textBox.get_text();
+    var text = this._textBox.get_element().value;
     var currentRange = document.selection.createRange();
     if (currentRange.text.length > 0)
     {
@@ -806,7 +719,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_setValue (completion
 {
   this._updateTimer.set_enabled (false);
   var displayName = completionItem != null ? completionItem.DisplayName : '';
-  this._textBox.set_text (displayName);
+  this._textBox.get_element().value = displayName;
   this._currentPrefix = displayName.toUpperCase();
   this._oldText = null;
   this._hiddenField._element.value = completionItem != null ? completionItem.UniqueIdentifier : '';
@@ -928,7 +841,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onBlurTimerTick (sen
 {
   this._blurTimer.set_enabled (false);
   
-  if (this._textBox.get_text ().length == 0)
+  if (this._textBox.get_element().value.length == 0)
     this._setValue (null, true);
   else if (this._oldText != null || (Sys.UI.DomElement.getVisible(this._completionListElement) && this._selectedIndex == -1))
     this._resetValue ();
@@ -953,7 +866,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onDropDownImageMouse
 
 function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_resetValue ()
 {
-  this._textBox.set_text (this._oldText != null ? this._oldText : '');
+  this._textBox.get_element().value = (this._oldText != null ? this._oldText : '');
   this._removeSelection ();
   this._currentPrefix = this._oldText != null ? this._oldText.toUpperCase() : '';
   this._oldText = null;
@@ -962,7 +875,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_resetValue ()
 
 function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_removeSelection ()
 {
-  var start = this._textBox.get_text ().length;
+  var start = this._textBox.get_element().value.length;
   var end = start;
   if (true) // IE
   {

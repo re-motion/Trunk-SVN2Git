@@ -1,3 +1,7 @@
+1.11.1
+======
+- ObjectBInding.Web.Preview: Removed dependency to ASP.NET Futures (July 2007)
+
 1.9.1
 =====
 - BusinessObjectProvider erzeugt nun automatisch Standardimplementierungen typischer BusinessObjectServices. Man kann weiterhin

@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.Web.Preview.UI;
 using System.Web.UI;
 using System.ComponentModel;
 using AjaxControlToolkit;
@@ -114,7 +113,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override IEnumerable<ScriptReference> GetScriptReferences ()
     {
       List<ScriptReference> scriptReferences = new List<ScriptReference> ();
-      scriptReferences.Add (new ScriptReference(FrameworkScript.PreviewMainScriptResource, FrameworkScript.PreviewAssembly));
       scriptReferences.AddRange (base.GetScriptReferences ());
       return scriptReferences;
     }

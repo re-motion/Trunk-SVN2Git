@@ -1,3 +1,7 @@
+1.11.1
+======
+- Changed dependency form ASP.NET AJAX Extensions 1.0 to ASP.NET AJAX as integrated into .NET Framework 3.5.
+
 1.7.61
 ======
 - Rubicon.Web.UI.Controls.SmartLabel
