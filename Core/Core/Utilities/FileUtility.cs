@@ -47,5 +47,21 @@ namespace Remotion.Utilities
       while (File.Exists (sourceFileName) || !File.Exists (destinationFileName))
         Thread.Sleep (10);
     }
+
+    public const int CopyBufferSize = 1024 * 1024 * 64;
+    
+    public static void CopyStream (Stream input, Stream output)
+    {
+      ArgumentUtility.CheckNotNull ("input", input);
+      ArgumentUtility.CheckNotNull ("output", output);
+
+      byte[] buffer = new byte[CopyBufferSize];
+      int bytesRead;
+      do
+      {
+        bytesRead = input.Read (buffer, 0, buffer.Length);
+        output.Write (buffer, 0, bytesRead);
+      } while (bytesRead != 0);
+    }
   }
 }
