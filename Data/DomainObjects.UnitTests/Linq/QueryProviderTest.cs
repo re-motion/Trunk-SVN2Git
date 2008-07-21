@@ -10,10 +10,11 @@
 
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 
-namespace Remotion.Data.DomainObjects.Linq.UnitTests
+namespace Remotion.Data.DomainObjects.UnitTests.Linq
 {
   [TestFixture]
   public class QueryProviderTest

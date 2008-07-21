@@ -13,6 +13,7 @@ using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.UnitTests;
@@ -24,7 +25,7 @@ using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Mixins;
 
-namespace Remotion.Data.DomainObjects.Linq.UnitTests
+namespace Remotion.Data.DomainObjects.UnitTests.Linq
 {
   [TestFixture]
   public class QueryExecutorTest : ClientTransactionBaseTest

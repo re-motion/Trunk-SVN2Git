@@ -14,6 +14,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.Linq.Parsing.Details.WhereConditionParsing;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
@@ -22,7 +23,7 @@ using Rhino.Mocks;
 using Remotion.Data.DomainObjects.UnitTests;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 
-namespace Remotion.Data.DomainObjects.Linq.UnitTests
+namespace Remotion.Data.DomainObjects.UnitTests.Linq
 {
   [TestFixture]
   public class DataContextTest : ClientTransactionBaseTest

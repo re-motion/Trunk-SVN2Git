@@ -11,6 +11,7 @@
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
@@ -18,7 +19,7 @@ using Remotion.Data.DomainObjects.UnitTests;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.Linq.ExtensionMethods;
 
-namespace Remotion.Data.DomainObjects.Linq.UnitTests
+namespace Remotion.Data.DomainObjects.UnitTests.Linq
 {
   [TestFixture]
   public class FulltextIntegrationTests : ClientTransactionBaseTest
@@ -28,8 +29,15 @@ namespace Remotion.Data.DomainObjects.Linq.UnitTests
       base.TestFixtureSetUp ();
 
       SetDatabaseModifyable ();
+      DatabaseAgent.ExecuteBatch ("DataDomainObjects_DropFulltextIndices.sql", false);
       DatabaseAgent.ExecuteBatch ("DataDomainObjects_CreateFulltextIndices.sql", false);
       WaitForIndices ();
+    }
+
+    public override void TestFixtureTearDown ()
+    {
+      DatabaseAgent.ExecuteBatch ("DataDomainObjects_DropFulltextIndices.sql", false);
+      base.TestFixtureTearDown ();
     }
 
     [Test]

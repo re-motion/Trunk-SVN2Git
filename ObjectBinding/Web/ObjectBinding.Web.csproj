@@ -12,7 +12,8 @@
     </AssemblyKeyContainerName>
     <AssemblyName>Remotion.ObjectBinding.Web</AssemblyName>
     <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    </AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -29,7 +30,8 @@
     </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -89,7 +91,6 @@
     <Reference Include="System.Web">
       <Name>system.web</Name>
     </Reference>
-    <Reference Include="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Forms">
       <Name>system.windows.forms</Name>
     </Reference>

@@ -9,13 +9,14 @@
  */
 
 using System;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Mixins;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Linq.UnitTests
+namespace Remotion.Data.DomainObjects.UnitTests.Linq
 {
   [Extends(typeof (QueryExecutor<>))]
   public class QueryExecutorMixin : Mixin<object, QueryExecutorMixin.IBaseCallRequirements>
