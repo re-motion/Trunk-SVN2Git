@@ -23,7 +23,7 @@ using Rhino.Mocks;
 using Remotion.Data.DomainObjects.UnitTests;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Linq
+namespace Remotion.Data.DomainObjects.UnitTests.Core.Linq
 {
   [TestFixture]
   public class DataContextTest : ClientTransactionBaseTest

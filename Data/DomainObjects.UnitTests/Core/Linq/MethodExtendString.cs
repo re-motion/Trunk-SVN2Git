@@ -13,7 +13,7 @@ using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Linq
+namespace Remotion.Data.DomainObjects.UnitTests.Core.Linq
 {
   public class MethodExtendString : IMethodCallSqlGenerator
   {

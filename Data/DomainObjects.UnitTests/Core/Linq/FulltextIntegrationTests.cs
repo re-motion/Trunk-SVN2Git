@@ -16,10 +16,11 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.UnitTests;
+using Remotion.Data.DomainObjects.UnitTests.Core.Linq;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.Linq.ExtensionMethods;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Linq
+namespace Remotion.Data.DomainObjects.UnitTests.Core.Linq
 {
   [TestFixture]
   public class FulltextIntegrationTests : ClientTransactionBaseTest
@@ -56,8 +57,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     public void QueryWithContainsFullText ()
     {
       var ceos = from c in DataContext.Entity<Ceo> ()
-                      where c.Name.ContainsFulltext ("Fischer")
-                      select c;
+                 where c.Name.ContainsFulltext ("Fischer")
+                 select c;
       IntegrationTests.CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
     }
 

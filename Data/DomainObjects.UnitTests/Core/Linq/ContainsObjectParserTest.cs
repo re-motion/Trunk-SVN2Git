@@ -30,7 +30,7 @@ using Remotion.Data.Linq.UnitTests;
 using Remotion.Data.Linq.UnitTests.ParsingTest;
 using Rhino.Mocks;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Linq
+namespace Remotion.Data.DomainObjects.UnitTests.Core.Linq
 {
   [TestFixture]
   public class ContainsObjectParserTest : ClientTransactionBaseTest
@@ -236,8 +236,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
         return expectedResult;
       };
       Expect.Call (_containsParserMock.Parse (null, null))
-        .IgnoreArguments()
-        .Do (action);
+          .IgnoreArguments()
+          .Do (action);
 
       _mockRepository.ReplayAll ();
       ParseContext expectedParseContext = new ParseContext (

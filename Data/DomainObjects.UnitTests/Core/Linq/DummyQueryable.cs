@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Linq
+namespace Remotion.Data.DomainObjects.UnitTests.Core.Linq
 {
   public class DummyQueryable<T> : IQueryable<T>
   {

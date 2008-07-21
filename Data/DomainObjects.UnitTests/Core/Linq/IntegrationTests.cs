@@ -14,12 +14,13 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.UnitTests;
+using Remotion.Data.DomainObjects.UnitTests.Core.Linq;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Linq
+namespace Remotion.Data.DomainObjects.UnitTests.Core.Linq
 {
   [TestFixture]
   public class IntegrationTests : ClientTransactionBaseTest
@@ -31,7 +32,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
           from c in DataContext.Entity<Computer> ()
           select c;
       CheckQueryResult (computers, DomainObjectIDs.Computer1, DomainObjectIDs.Computer2, DomainObjectIDs.Computer3, DomainObjectIDs.Computer4,
-          DomainObjectIDs.Computer5);
+                        DomainObjectIDs.Computer5);
     }
 
     [Test]
@@ -41,7 +42,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
           from o in DataContext.Entity<OrderTicket> ()
           select o.Order;
       CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-          DomainObjectIDs.OrderWithoutOrderItem);
+                        DomainObjectIDs.OrderWithoutOrderItem);
     }
     
     [Test]
@@ -155,7 +156,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
           select e;
 
       CheckQueryResult (employees, DomainObjectIDs.Employee1, DomainObjectIDs.Employee2, DomainObjectIDs.Employee4, DomainObjectIDs.Employee5,
-          DomainObjectIDs.Employee6, DomainObjectIDs.Employee7);
+                        DomainObjectIDs.Employee6, DomainObjectIDs.Employee7);
     }
 
     [Test]
@@ -190,7 +191,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
           orderby o.OrderNumber
           select o;
       CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.Order2, DomainObjectIDs.Order3,
-          DomainObjectIDs.Order4, DomainObjectIDs.InvalidOrder);
+                        DomainObjectIDs.Order4, DomainObjectIDs.InvalidOrder);
     }
 
     [Test]
@@ -269,11 +270,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       var orders =
           from o in DataContext.Entity<Order> ()
           from o2 in
-            (from oi in DataContext.Entity<OrderItem> () where oi.Order == o select oi)
+              (from oi in DataContext.Entity<OrderItem> () where oi.Order == o select oi)
           select o2;
 
-       CheckQueryResult (orders, DomainObjectIDs.OrderItem5, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem1,
-        DomainObjectIDs.OrderItem3);
+      CheckQueryResult (orders, DomainObjectIDs.OrderItem5, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem1,
+                        DomainObjectIDs.OrderItem3);
     }
 
     [Test]
@@ -285,7 +286,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
           select o;
 
       CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-        DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
+                        DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
     }
 
     [Test]
@@ -306,7 +307,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
           select o;
 
       CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-          DomainObjectIDs.OrderWithoutOrderItem);
+                        DomainObjectIDs.OrderWithoutOrderItem);
     }
 
     [Test]
@@ -338,9 +339,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     {
       OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var orders = 
-        from o in DataContext.Entity<Order> ()
-        where (from y in DataContext.Entity <OrderItem>() where y == item select y.Order).Contains(o) 
-        select o;
+          from o in DataContext.Entity<Order> ()
+          where (from y in DataContext.Entity <OrderItem>() where y == item select y.Order).Contains(o) 
+          select o;
       CheckQueryResult (orders, DomainObjectIDs.Order1);
 
     }
@@ -353,7 +354,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
                    select x;
 
       CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order4,
-          DomainObjectIDs.InvalidOrder, DomainObjectIDs.OrderWithoutOrderItem);
+                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.OrderWithoutOrderItem);
     }
 
     [Test]
@@ -365,8 +366,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
                    select o;
 
       CheckQueryResult (orders,
-        DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order3, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.Order2,
-        DomainObjectIDs.Order4);
+                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order3, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.Order2,
+                        DomainObjectIDs.Order4);
     }
 
     [Test]
@@ -399,12 +400,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
                    select x;
 
       CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order4,
-          DomainObjectIDs.InvalidOrder, DomainObjectIDs.OrderWithoutOrderItem);
+                        DomainObjectIDs.InvalidOrder, DomainObjectIDs.OrderWithoutOrderItem);
     }
 
     [Test]
     [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DataContext.Entity<Order>()"
-        + ".Select(o => Entity().Select(c => c)) (MethodCallExpression).")]
+                                                                    + ".Select(o => Entity().Select(c => c)) (MethodCallExpression).")]
     public void QueryWithSubQuery_InSelectClause ()
     {
       var orders = from o in DataContext.Entity<Order>()
@@ -416,7 +417,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
 
     [Test]
     [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DataContext.Entity<Order>()"
-        + ".Where(o => (o.OrderNumber = 5)).Select(o => Entity().Select(c => c)) (MethodCallExpression).")]
+                                                                    + ".Where(o => (o.OrderNumber = 5)).Select(o => Entity().Select(c => c)) (MethodCallExpression).")]
     public void QueryWithSubQueryInSelectClause_WhereClause ()
     {
       var orders = from o in DataContext.Entity<Order> ()
@@ -429,7 +430,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
 
     [Test]
     [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DataContext.Entity<Order>()"
-        + ".Where(o => (o.OrderNumber = 5)).Select(o => Entity().Where(c => (c = null))) (MethodCallExpression).")]
+                                                                    + ".Where(o => (o.OrderNumber = 5)).Select(o => Entity().Where(c => (c = null))) (MethodCallExpression).")]
     public void QueryWithSubQueryInSelectClause_WhereClause2 ()
     {
       var orders = from o in DataContext.Entity<Order> ()
@@ -444,9 +445,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     public void QueryWithSeveralOrderBys ()
     {
       var orders = from o in DataContext.Entity<Order>()
-                      orderby o.OrderNumber
-                      orderby o.Customer.Name descending
-                      select o;
+                   orderby o.OrderNumber
+                   orderby o.Customer.Name descending
+                   select o;
 
       CheckQueryResult (orders, DomainObjectIDs.Order3, DomainObjectIDs.Order4, DomainObjectIDs.Order2, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
     }

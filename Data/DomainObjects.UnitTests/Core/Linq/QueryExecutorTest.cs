@@ -25,7 +25,7 @@ using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Mixins;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Linq
+namespace Remotion.Data.DomainObjects.UnitTests.Core.Linq
 {
   [TestFixture]
   public class QueryExecutorTest : ClientTransactionBaseTest
@@ -93,13 +93,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
         computerList.Add (computer);
 
       Computer[] expected = new Computer[]
-          {
-              Computer.GetObject (DomainObjectIDs.Computer1),
-              Computer.GetObject (DomainObjectIDs.Computer2),
-              Computer.GetObject (DomainObjectIDs.Computer3),
-              Computer.GetObject (DomainObjectIDs.Computer4),
-              Computer.GetObject (DomainObjectIDs.Computer5),
-          };
+                            {
+                                Computer.GetObject (DomainObjectIDs.Computer1),
+                                Computer.GetObject (DomainObjectIDs.Computer2),
+                                Computer.GetObject (DomainObjectIDs.Computer3),
+                                Computer.GetObject (DomainObjectIDs.Computer4),
+                                Computer.GetObject (DomainObjectIDs.Computer5),
+                            };
       Assert.That (computerList, Is.EquivalentTo (expected));
     }
 
@@ -149,10 +149,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
         orderList.Add (order);
 
       Order[] expected = new Order[]
-          {
-              Order.GetObject (DomainObjectIDs.Order1),
+                         {
+                             Order.GetObject (DomainObjectIDs.Order1),
 
-          };
+                         };
       Assert.That (orderList, Is.EquivalentTo (expected));
     }
 

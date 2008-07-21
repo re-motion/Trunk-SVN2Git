@@ -14,6 +14,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.UnitTests.Core.Linq;
 using Remotion.Data.Linq;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.Linq.Clauses;

@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Linq
+namespace Remotion.Data.DomainObjects.UnitTests.Core.Linq
 {
   public static class MethodExtensions
   {

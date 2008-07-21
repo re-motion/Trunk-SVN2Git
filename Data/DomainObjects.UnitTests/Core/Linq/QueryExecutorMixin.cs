@@ -16,7 +16,7 @@ using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Mixins;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Linq
+namespace Remotion.Data.DomainObjects.UnitTests.Core.Linq
 {
   [Extends(typeof (QueryExecutor<>))]
   public class QueryExecutorMixin : Mixin<object, QueryExecutorMixin.IBaseCallRequirements>
