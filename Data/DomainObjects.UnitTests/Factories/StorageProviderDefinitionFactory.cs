@@ -12,8 +12,8 @@ using System;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.UnitTests.Core;
-using Remotion.Data.DomainObjects.UnitTests.Core.TableInheritance;
+using Remotion.Data.DomainObjects.UnitTests.DomainObjects;
+using Remotion.Data.DomainObjects.UnitTests.DomainObjects.TableInheritance;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Factories
 {

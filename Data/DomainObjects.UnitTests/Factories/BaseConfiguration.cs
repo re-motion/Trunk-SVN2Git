@@ -17,8 +17,8 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.DomainObjects.UnitTests.Core.TableInheritance;
-using Remotion.Data.DomainObjects.UnitTests.Core.TableInheritance.TestDomain;
+using Remotion.Data.DomainObjects.UnitTests.DomainObjects.TableInheritance;
+using Remotion.Data.DomainObjects.UnitTests.DomainObjects.TableInheritance.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Reflection;
 

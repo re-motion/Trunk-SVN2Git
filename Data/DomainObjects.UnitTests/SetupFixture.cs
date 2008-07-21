@@ -11,7 +11,7 @@
 using System;
 using System.Data.SqlClient;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.UnitTests.Core.TableInheritance;
+using Remotion.Data.DomainObjects.UnitTests.DomainObjects.TableInheritance;
 using Remotion.Data.DomainObjects.UnitTests.Database;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Development.UnitTesting.Data.SqlClient;
