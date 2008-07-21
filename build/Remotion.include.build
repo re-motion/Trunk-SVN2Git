@@ -172,9 +172,7 @@
         <include name="log4net.*"/>
         <include name="Castle.Core.*"/>
         <include name="Castle.DynamicProxy.*"/>
-        <include name="System.Web.Extensions.dll"/>
         <include name="AjaxControlToolkit.dll" />
-        <include name="Microsoft.Web.Preview.dll" />
       </fileset>
     </copy>
 
@@ -183,8 +181,6 @@
     <if test="${not build.step.create-doc}">
       <advancedStyle style="${solution.intellisense-xslt-file}" in="${project.doc}" out="${build.outputdir}/${project.output}.xml" />
     </if>
-
-    <delete file="${build.outputdir}/System.Web.Extensions.dll"  />
   </target>
 
   <target name="buildtest" depends="check-project-config">
@@ -202,9 +198,7 @@
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Castle.Core.dll" overwrite="true"/>
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Castle.DynamicProxy.dll" overwrite="true"/>
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Rhino.Mocks.dll" overwrite="true"/>
-      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/System.Web.Extensions.dll" overwrite="true"/>
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/AjaxControlToolkit.dll" overwrite="true" />
-      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Microsoft.Web.Preview.dll" overwrite="true" />
       <copy todir="${build.test.outputdir}">
         <fileset basedir="${build.outputdir}">
           <include name="*.exe" />
@@ -231,9 +225,9 @@
     <if test="${not property::exists('project.config')}">
       <fail message="Specify a set-&lt;configuration&gt; target first. (set-debug, set-release or set-documentation)" />
     </if>
-    <!-- make shure, only .net-2.0 builds will be made -->
-    <if test="${nant.settings.currentframework != 'net-2.0'}">
-      <fail message="Only .net-2.0 builds are supported."/>
+
+    <if test="${nant.settings.currentframework != 'net-3.5'}">
+      <fail message="Only .net-3.5 builds are supported."/>
     </if>
   </target>
 
@@ -302,8 +296,6 @@
        
         <exclude name="**/Remotion.SecurityManager*/**" />
         <exclude name="*/bin/**/SecurityManager*.*" />
-        <exclude name="*/bin/**/System.Web.Extensions.dll" />
-        <exclude name="*/bin/**/Microsoft.Web.Preview.dll" />
       </fileset>
     </zip>
   </target>
@@ -360,8 +352,6 @@
         <exclude name="*.zip" />
         <exclude name="*/bin/documentation/**" />
         <exclude name="${build.temp.basedir}" />
-        <exclude name="*/bin/**/System.Web.Extensions.dll" />
-        <exclude name="*/bin/**/Microsoft.Web.Preview.dll" />
       </fileset>
     </zip>
   </target>

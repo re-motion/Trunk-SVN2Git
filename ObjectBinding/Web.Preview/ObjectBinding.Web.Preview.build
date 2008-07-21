@@ -43,13 +43,12 @@
         <include name="${build.outputdir}/Remotion.Web.dll" />
         <include name="${build.outputdir}/log4net.dll" />
         <include name="${build.outputdir}/AjaxControlToolkit.dll" />
-        <include name="${build.outputdir}/Microsoft.Web.Preview.dll" />
-        <include name="${build.outputdir}/System.Web.Extensions.dll" />
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Data.dll"/>
         <include asis="true" name="System.Design.dll"/>
         <include asis="true" name="System.Drawing.dll"/>
         <include asis="true" name="System.Web.dll"/>
+        <include asis="true" name="System.Web.Extensions.dll" />
         <include asis="true" name="System.Xml.dll"/>
       </references>
       <resources failonempty="true" dynamicprefix="true" prefix="Remotion.ObjectBinding.Web">
