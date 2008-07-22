@@ -35,11 +35,34 @@ namespace Remotion.Mixins.Utilities
       IMixinTarget castMixinTarget = mixinTarget as IMixinTarget;
       if (castMixinTarget != null)
       {
-        MixinDefinition mixinDefinition = castMixinTarget.Configuration.GetMixinByConfiguredType (mixinType);
+        TargetClassDefinition configuration = castMixinTarget.Configuration;
+        MixinDefinition mixinDefinition = FindMixinDefinition(configuration, mixinType);
         if (mixinDefinition != null)
           return castMixinTarget.Mixins[mixinDefinition.MixinIndex];
       }
       return null;
+    }
+
+    private static MixinDefinition FindMixinDefinition (TargetClassDefinition configuration, Type mixinType)
+    {
+      MixinDefinition mixinDefinition = configuration.GetMixinByConfiguredType (mixinType);
+      if (mixinDefinition == null)
+      {
+        foreach (MixinDefinition potentialMixinDefinition in configuration.Mixins)
+        {
+          if (mixinType.IsAssignableFrom (potentialMixinDefinition.Type))
+          {
+            if (mixinDefinition != null)
+            {
+              string message = string.Format ("Both mixins '{0}' and '{1}' match the given type '{2}'.", 
+                  mixinDefinition.FullName, potentialMixinDefinition.FullName, mixinType.Name);
+              throw new AmbiguousMatchException (message);
+            }
+            mixinDefinition = potentialMixinDefinition;
+          }
+        }
+      }
+      return mixinDefinition;
     }
 
     public static Type GetMixinBaseType (Type concreteMixinType)
