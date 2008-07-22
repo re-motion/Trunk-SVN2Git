@@ -20,30 +20,30 @@ namespace Remotion.Mixins.Definitions.Building
   {
     private readonly MixinDefinition _mixin;
     private readonly MemberVisibility _defaultVisibility;
-    private readonly Set<Type> _suppressedInterfaces;
+    private readonly Set<Type> _nonIntroducedInterfaces;
 
     public InterfaceIntroductionDefinitionBuilder (MixinDefinition mixin, MemberVisibility defaultVisibility)
     {
       _mixin = mixin;
       _defaultVisibility = defaultVisibility;
-      _suppressedInterfaces = new Set<Type> (typeof (ISerializable), typeof (IDeserializationCallback), typeof (IInitializableMixin));
-      AnalyzeSuppressedInterfaces ();
+      _nonIntroducedInterfaces = new Set<Type> (typeof (ISerializable), typeof (IDeserializationCallback), typeof (IInitializableMixin));
+      AnalyzeNonIntroducedInterfaces ();
     }
 
-    private void AnalyzeSuppressedInterfaces ()
+    private void AnalyzeNonIntroducedInterfaces ()
     {
       foreach (NonIntroducedAttribute notIntroducedAttribute in _mixin.Type.GetCustomAttributes (typeof (NonIntroducedAttribute), true))
-        _suppressedInterfaces.Add (notIntroducedAttribute.SuppressedInterface);
+        _nonIntroducedInterfaces.Add (notIntroducedAttribute.NonIntroducedInterface);
     }
 
     public void Apply ()
     {
       foreach (Type implementedInterface in _mixin.ImplementedInterfaces)
       {
-        if (_suppressedInterfaces.Contains (implementedInterface))
-          ApplySuppressed (implementedInterface, true);
+        if (_nonIntroducedInterfaces.Contains (implementedInterface))
+          ApplyNonIntroduced (implementedInterface, true);
         else if (_mixin.TargetClass.ImplementedInterfaces.Contains (implementedInterface))
-          ApplySuppressed (implementedInterface, false);
+          ApplyNonIntroduced (implementedInterface, false);
         else
           Apply (implementedInterface);
       }
@@ -70,11 +70,11 @@ namespace Remotion.Mixins.Definitions.Building
       AnalyzeIntroducedMembers (introducedInterface);
     }
 
-    public void ApplySuppressed (Type implementedInterface, bool explicitSuppression)
+    public void ApplyNonIntroduced (Type implementedInterface, bool explicitSuppression)
     {
-      SuppressedInterfaceIntroductionDefinition introducedInterface =
-          new SuppressedInterfaceIntroductionDefinition (implementedInterface, _mixin, explicitSuppression);
-      _mixin.SuppressedInterfaceIntroductions.Add (introducedInterface);
+      NonIntroducedInterfaceDefinition introducedInterface =
+          new NonIntroducedInterfaceDefinition (implementedInterface, _mixin, explicitSuppression);
+      _mixin.NonIntroducedInterfaces.Add (introducedInterface);
     }
 
 

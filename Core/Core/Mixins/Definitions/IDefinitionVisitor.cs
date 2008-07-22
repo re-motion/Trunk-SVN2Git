@@ -17,7 +17,7 @@ namespace Remotion.Mixins.Definitions
     void Visit (TargetClassDefinition targetClass);
     void Visit (MixinDefinition mixin);
     void Visit (InterfaceIntroductionDefinition interfaceIntroduction);
-    void Visit (SuppressedInterfaceIntroductionDefinition definition);
+    void Visit (NonIntroducedInterfaceDefinition definition);
     void Visit (MethodIntroductionDefinition methodIntroduction);
     void Visit (PropertyIntroductionDefinition propertyIntroduction);
     void Visit (EventIntroductionDefinition eventIntroduction);

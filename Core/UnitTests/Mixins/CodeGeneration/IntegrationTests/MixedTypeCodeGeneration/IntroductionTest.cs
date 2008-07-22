@@ -79,7 +79,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
-    public void ExplicitlySuppressedInterfaceIntroduction ()
+    public void ExplicitlyNonIntroducedInterface ()
     {
       object o = CreateMixedObject<NullTarget> (typeof (MixinSuppressingSimpleInterface)).With();
       Assert.IsFalse (o is ISimpleInterface);
@@ -87,7 +87,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
-    public void ImplicitlySuppressedInterfaceIntroduction ()
+    public void ImplicitlyNonIntroducedInterface ()
     {
       ClassImplementingSimpleInterface o = CreateMixedObject<ClassImplementingSimpleInterface> (typeof (MixinImplementingSimpleInterface)).With();
       Assert.IsTrue (o is ISimpleInterface);

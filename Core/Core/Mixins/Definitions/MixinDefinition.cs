@@ -20,9 +20,9 @@ namespace Remotion.Mixins.Definitions
   {
     public readonly UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> InterfaceIntroductions =
         new UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> (delegate (InterfaceIntroductionDefinition i) { return i.Type; });
-    public readonly UniqueDefinitionCollection<Type, SuppressedInterfaceIntroductionDefinition> SuppressedInterfaceIntroductions =
-        new UniqueDefinitionCollection<Type, SuppressedInterfaceIntroductionDefinition> (
-            delegate (SuppressedInterfaceIntroductionDefinition i) { return i.Type; });
+    public readonly UniqueDefinitionCollection<Type, NonIntroducedInterfaceDefinition> NonIntroducedInterfaces =
+        new UniqueDefinitionCollection<Type, NonIntroducedInterfaceDefinition> (
+            delegate (NonIntroducedInterfaceDefinition i) { return i.Type; });
     public readonly UniqueDefinitionCollection<Type, ThisDependencyDefinition> ThisDependencies =
         new UniqueDefinitionCollection<Type, ThisDependencyDefinition> (delegate (ThisDependencyDefinition d) { return d.RequiredType.Type; });
     public readonly UniqueDefinitionCollection<Type, BaseDependencyDefinition> BaseDependencies =
@@ -87,7 +87,7 @@ namespace Remotion.Mixins.Definitions
       visitor.Visit (this);
 
       InterfaceIntroductions.Accept (visitor);
-      SuppressedInterfaceIntroductions.Accept (visitor);
+      NonIntroducedInterfaces.Accept (visitor);
       ThisDependencies.Accept (visitor);
       BaseDependencies.Accept (visitor);
       MixinDependencies.Accept (visitor);

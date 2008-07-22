@@ -22,7 +22,7 @@ namespace Remotion.Mixins.Validation
     private readonly List<IValidationRule<TargetClassDefinition>> _targetClassRules = new List<IValidationRule<TargetClassDefinition>> ();
     private readonly List<IValidationRule<MixinDefinition>> _mixinRules = new List<IValidationRule<MixinDefinition>> ();
     private readonly List<IValidationRule<InterfaceIntroductionDefinition>> _interfaceIntroductionRules = new List<IValidationRule<InterfaceIntroductionDefinition>> ();
-    private readonly IList<IValidationRule<SuppressedInterfaceIntroductionDefinition>> _suppressedInterfaceIntroductionRules = new List<IValidationRule<SuppressedInterfaceIntroductionDefinition>> ();
+    private readonly IList<IValidationRule<NonIntroducedInterfaceDefinition>> _nonIntroductedInterfaceRules = new List<IValidationRule<NonIntroducedInterfaceDefinition>> ();
     private readonly List<IValidationRule<MethodIntroductionDefinition>> _methodIntroductionRules = new List<IValidationRule<MethodIntroductionDefinition>> ();
     private readonly List<IValidationRule<PropertyIntroductionDefinition>> _propertyIntroductionRules = new List<IValidationRule<PropertyIntroductionDefinition>> ();
     private readonly List<IValidationRule<EventIntroductionDefinition>> _eventIntroductionRules = new List<IValidationRule<EventIntroductionDefinition>> ();
@@ -61,9 +61,9 @@ namespace Remotion.Mixins.Validation
       get { return _interfaceIntroductionRules; }
     }
 
-    public IList<IValidationRule<SuppressedInterfaceIntroductionDefinition>> SuppressedInterfaceIntroductionRules
+    public IList<IValidationRule<NonIntroducedInterfaceDefinition>> NonIntroductedInterfaceRules
     {
-      get { return _suppressedInterfaceIntroductionRules; }
+      get { return _nonIntroductedInterfaceRules; }
     }
 
     public IList<IValidationRule<MethodIntroductionDefinition>> MethodIntroductionRules
@@ -164,10 +164,10 @@ namespace Remotion.Mixins.Validation
       CheckRules (_interfaceIntroductionRules, interfaceIntroduction);
     }
 
-    public void Visit (SuppressedInterfaceIntroductionDefinition suppressedInterfaceIntroduction)
+    public void Visit (NonIntroducedInterfaceDefinition nonIntroducedInterface)
     {
-      ArgumentUtility.CheckNotNull ("suppressedInterfaceIntroduction", suppressedInterfaceIntroduction);
-      CheckRules (_suppressedInterfaceIntroductionRules, suppressedInterfaceIntroduction);
+      ArgumentUtility.CheckNotNull ("suppressedInterfaceIntroduction", nonIntroducedInterface);
+      CheckRules (_nonIntroductedInterfaceRules, nonIntroducedInterface);
     }
 
     public void Visit (MethodIntroductionDefinition methodIntroduction)

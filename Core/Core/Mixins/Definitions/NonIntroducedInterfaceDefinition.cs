@@ -13,14 +13,14 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  public class SuppressedInterfaceIntroductionDefinition : IVisitableDefinition
+  public class NonIntroducedInterfaceDefinition : IVisitableDefinition
   {
     public readonly Type Type;
     public readonly MixinDefinition Implementer;
 
     private readonly bool _explicitSuppression;
 
-    public SuppressedInterfaceIntroductionDefinition (Type type, MixinDefinition implementer, bool explicitSuppression)
+    public NonIntroducedInterfaceDefinition (Type type, MixinDefinition implementer, bool explicitSuppression)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("implementer", implementer);

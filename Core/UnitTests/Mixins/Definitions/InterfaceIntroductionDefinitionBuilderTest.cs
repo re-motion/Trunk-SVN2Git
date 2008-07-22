@@ -310,13 +310,13 @@ namespace Remotion.UnitTests.Mixins.Definitions
         Assert.IsTrue (definition.ImplementedInterfaces.Contains (typeof (ISimpleInterface)));
         Assert.IsFalse (definition.IntroducedInterfaces.ContainsKey (typeof (ISimpleInterface)));
         Assert.IsTrue (
-            definition.Mixins[typeof (MixinImplementingSimpleInterface)].SuppressedInterfaceIntroductions.ContainsKey (
+            definition.Mixins[typeof (MixinImplementingSimpleInterface)].NonIntroducedInterfaces.ContainsKey (
                 typeof (ISimpleInterface)));
       }
     }
 
     [Test]
-    public void SuppressedInterfacedIsNotIntroduced ()
+    public void NonIntroducedInterfaceIsNotImplemented ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinSuppressingSimpleInterface)).EnterScope())
       {
@@ -324,38 +324,38 @@ namespace Remotion.UnitTests.Mixins.Definitions
         Assert.IsFalse (definition.ImplementedInterfaces.Contains (typeof (ISimpleInterface)));
         Assert.IsFalse (definition.IntroducedInterfaces.ContainsKey (typeof (ISimpleInterface)));
         Assert.IsTrue (
-            definition.Mixins[typeof (MixinSuppressingSimpleInterface)].SuppressedInterfaceIntroductions.ContainsKey (
+            definition.Mixins[typeof (MixinSuppressingSimpleInterface)].NonIntroducedInterfaces.ContainsKey (
                 typeof (ISimpleInterface)));
       }
     }
 
     [Test]
-    public void ExplicitlySuppressedInterfaceIntroduction ()
+    public void ExplicitlyNonIntroducedInterface ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinSuppressingSimpleInterface)).EnterScope())
       {
         TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
-        SuppressedInterfaceIntroductionDefinition suppressedDefinition =
-            definition.Mixins[typeof (MixinSuppressingSimpleInterface)].SuppressedInterfaceIntroductions[typeof (ISimpleInterface)];
-        Assert.IsTrue (suppressedDefinition.IsExplicitlySuppressed);
-        Assert.IsFalse (suppressedDefinition.IsShadowed);
-        Assert.AreSame (typeof (ISimpleInterface), suppressedDefinition.Type);
-        Assert.AreSame (definition.Mixins[typeof (MixinSuppressingSimpleInterface)], suppressedDefinition.Parent);
+        NonIntroducedInterfaceDefinition nonIntroducedDefinition =
+            definition.Mixins[typeof (MixinSuppressingSimpleInterface)].NonIntroducedInterfaces[typeof (ISimpleInterface)];
+        Assert.IsTrue (nonIntroducedDefinition.IsExplicitlySuppressed);
+        Assert.IsFalse (nonIntroducedDefinition.IsShadowed);
+        Assert.AreSame (typeof (ISimpleInterface), nonIntroducedDefinition.Type);
+        Assert.AreSame (definition.Mixins[typeof (MixinSuppressingSimpleInterface)], nonIntroducedDefinition.Parent);
       }
     }
 
     [Test]
-    public void ImplicitlySuppressedInterfaceIntroduction ()
+    public void ImplicitlyNonIntroducedInterface ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<ClassImplementingSimpleInterface> ().Clear().AddMixins (typeof (MixinImplementingSimpleInterface)).EnterScope())
       {
         TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassImplementingSimpleInterface));
-        SuppressedInterfaceIntroductionDefinition suppressedDefinition =
-            definition.Mixins[typeof (MixinImplementingSimpleInterface)].SuppressedInterfaceIntroductions[typeof (ISimpleInterface)];
-        Assert.IsFalse (suppressedDefinition.IsExplicitlySuppressed);
-        Assert.IsTrue (suppressedDefinition.IsShadowed);
-        Assert.AreSame (typeof (ISimpleInterface), suppressedDefinition.Type);
-        Assert.AreSame (definition.Mixins[typeof (MixinImplementingSimpleInterface)], suppressedDefinition.Parent);
+        NonIntroducedInterfaceDefinition nonIntroducedDefinition =
+            definition.Mixins[typeof (MixinImplementingSimpleInterface)].NonIntroducedInterfaces[typeof (ISimpleInterface)];
+        Assert.IsFalse (nonIntroducedDefinition.IsExplicitlySuppressed);
+        Assert.IsTrue (nonIntroducedDefinition.IsShadowed);
+        Assert.AreSame (typeof (ISimpleInterface), nonIntroducedDefinition.Type);
+        Assert.AreSame (definition.Mixins[typeof (MixinImplementingSimpleInterface)], nonIntroducedDefinition.Parent);
       }
     }
 

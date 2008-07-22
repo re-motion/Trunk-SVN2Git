@@ -21,16 +21,16 @@ namespace Remotion.Mixins
   [AttributeUsage (AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
   public class NonIntroducedAttribute : Attribute
   {
-    private readonly Type _suppressedInterface;
+    private readonly Type _nonIntroducedInterface;
 
     public NonIntroducedAttribute (Type suppressedInterface)
     {
-      _suppressedInterface = ArgumentUtility.CheckNotNull ("suppressedInterface", suppressedInterface);
+      _nonIntroducedInterface = ArgumentUtility.CheckNotNull ("suppressedInterface", suppressedInterface);
     }
 
-    public Type SuppressedInterface
+    public Type NonIntroducedInterface
     {
-      get { return _suppressedInterface; }
+      get { return _nonIntroducedInterface; }
     }
   }
 }
