@@ -37,6 +37,7 @@
       <include name="Remotion.Development.dll" />
       <include name="Remotion.Development.CodeDom.dll" />
       <include name="Remotion.Data.Interfaces.dll" />
+      <include name="Remotion.Data.Linq.dll" />
       <include name="Remotion.Data.DomainObjects.dll" />
       <include name="Remotion.Data.DomainObjects.Security.dll" />
       <include name="Remotion.Web.dll" />

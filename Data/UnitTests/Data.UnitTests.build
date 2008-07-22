@@ -34,12 +34,12 @@
         <include asis="true" name="${build.test.outputdir}/nunit.framework.dll"/>
         <include asis="true" name="${build.test.outputdir}/Rhino.Mocks.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.dll"/>
-        <include asis="true" name="${build.test.outputdir}/Remotion.Interfaces.dll"/>
-        <include asis="true" name="${build.test.outputdir}/Remotion.Development.dll"/>
-        <include asis="true" name="${build.test.outputdir}/Remotion.Data.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.Security.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.Data.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.Linq.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.Development.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.ObjectBinding.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.ObjectBinding.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Security.dll"/>
@@ -47,6 +47,8 @@
         <include asis="true" name="${build.test.outputdir}/Remotion.Web.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Web.UnitTests.dll"/>
         <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Core.dll"/>
+        <include asis="true" name="System.Configuration.dll"/>
         <include asis="true" name="System.Data.dll"/>
         <include asis="true" name="System.Web.dll"/>
         <include asis="true" name="System.Xml.dll"/>
@@ -74,15 +76,15 @@
 
     <copy todir="${build.test.outputdir}" overwrite="true">
       <fileset>
-        <include name="Core/Configuration/Mapping/TestDomain/**/*.cs" />
-        <include name="Core/Design/DelaySignAssembly/**/*.cs" />
-        <include name="Core/Design/DelaySignAssembly/**/*.snk" />
+        <include name="DomainObjects/Core/Configuration/Mapping/TestDomain/**/*.cs" />
+        <include name="DomainObjects/Core/Design/DelaySignAssembly/**/*.cs" />
+        <include name="DomainObjects/Core/Design/DelaySignAssembly/**/*.snk" />
       </fileset>
     </copy>
 
     <copy todir="${build.test.outputdir}/Security" flatten="true" overwrite="true">
       <fileset failonempty="true">
-        <include name="Security/Remotion.Data.UnitTests.DomainObjects.Security.*.xml" />
+        <include name="DomainObjects/Security/Remotion.Data.UnitTests.DomainObjects.Security.*.xml" />
       </fileset>
     </copy>
 

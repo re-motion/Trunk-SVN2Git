@@ -165,7 +165,7 @@
       Web, Web.ExecutionEngine.CodeGenerator, Web.Security,
       ObjectBinding.Interfaces, ObjectBinding, ObjectBinding.Web, ObjectBinding.Web.Preview, 
       ObjectBinding.Web.CodeGenerator, ObjectBinding.Web.CodeGenerator.Templates, 
-      Data.Interfaces, Data.DomainObjects, Data.DomainObjects.Security, 
+      Data.Interfaces, Data.Linq, Data.DomainObjects, Data.DomainObjects.Security, 
       Data.DomainObjects.RdbmsTools, Data.DomainObjects.RdbmsTools.Console, 
       Security.Interfaces, Security, Security.Metadata.Extractor, Security.MSBuild.Tasks, 
       SecurityManager.Core, SecurityManager.Metadata.Importer, SecurityManager.Clients.Web">
@@ -173,7 +173,7 @@
   </target>
 
   <target name="all-test" depends="prereq, Core.Mixins.Samples, Core.UnitTests, Development.CoreTest, Web.UnitTests, ObjectBinding.UnitTests, 
-      Data.DomainObjects.UnitTests, Data.DomainObjects.RdbmsTools.UnitTests, 
+      Data.UnitTests, Data.DomainObjects.RdbmsTools.UnitTests, 
       Security.UnitTests.TestDomain, Security.UnitTests, SecurityManager.Core.UnitTests">
     <echo message="Target has executed."/>
   </target>
@@ -241,8 +241,16 @@
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
   </target>
-  
-  <target name="Data.DomainObjects" depends="Core.Core, Data.Interfaces, ObjectBinding">
+
+  <target name="Data.Linq" depends="Core.Core">
+    <property name="project.name" value="Data.Linq" />
+    <property name="project.dir" value="Data/Linq" />
+    <property name="project.output" value="Remotion.Data.Linq" />
+    <property name="project.extension" value="dll" />
+    <call target="execute-buildstep" />
+  </target>
+
+  <target name="Data.DomainObjects" depends="Core.Core, Data.Interfaces, Data.Linq, ObjectBinding">
     <property name="project.name" value="Data.DomainObjects" />
     <property name="project.dir" value="Data/DomainObjects" />
     <property name="project.output" value="Remotion.Data.DomainObjects" />
@@ -472,17 +480,18 @@
     <call target="buildtest" />
   </target>
 
-  <target name="Data.DomainObjects.UnitTests">
+  <target name="Data.UnitTests">
     <call target="Core.Core" cascade="false"/>
+    <call target="Data.Linq" cascade="false"/>
     <call target="Data.DomainObjects" cascade="false"/>
     <call target="Development.Core" cascade="false"/>
     <call target="Security.Interfaces" cascade="false"/>
     <call target="Security" cascade="false"/>
     <call target="Data.DomainObjects.Security" cascade="false"/>
 
-    <property name="project.name" value="Data.DomainObjects.UnitTests" />
-    <property name="project.dir" value="Data/DomainObjects.UnitTests" />
-    <property name="project.output" value="Remotion.Data.DomainObjects.UnitTests" />
+    <property name="project.name" value="Data.UnitTests" />
+    <property name="project.dir" value="Data/UnitTests" />
+    <property name="project.output" value="Remotion.Data.UnitTests" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
   </target>
