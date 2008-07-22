@@ -34,21 +34,22 @@ namespace Remotion.Mixins.Validation
           sb.Append (Environment.NewLine).Append (item.Definition.FullName);
           string parentString = item.GetParentDefinitionString ();
           if (parentString.Length > 0)
-            sb.Append (" (").Append (parentString).Append (")");
-          sb.Append (": There were ");
-          sb.Append (item.Failures.Count).Append (" errors, ").Append (item.Warnings.Count).Append (" warnings, and ")
-              .Append (item.Exceptions.Count).Append (" unexpected exceptions. ");
-          if (item.Exceptions.Count > 0)
-            sb.Append ("First exception: ").Append (item.Exceptions[0].Message);
-          else if (item.Failures.Count > 0)
-            sb.Append ("First error: ").Append (item.Failures[0].Message);
+            sb.Append (" (").Append (parentString).Append ("):").Append (Environment.NewLine);
+
+          foreach (ValidationExceptionResultItem exception in item.Exceptions)
+            sb.Append ("Internal exception: ").Append (exception.Message).Append (Environment.NewLine);
+
+          foreach (ValidationResultItem failure in item.Failures)
+            sb.Append ("Error: ").Append (failure.Message).Append (Environment.NewLine);
+
+          foreach (ValidationResultItem warning in item.Warnings)
+            sb.Append ("Warning: ").Append (warning.Message).Append (Environment.NewLine);
         }
       }
-      sb.Append (Environment.NewLine).Append ("See Log.GetResults() for a full list of issues.");
       return sb.ToString ();
     }
 
-    public readonly IValidationLog ValidationLog;
+    private readonly IValidationLog _validationLog;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationException"/> class.
@@ -58,7 +59,7 @@ namespace Remotion.Mixins.Validation
     public ValidationException (string message, IValidationLog log)
         : base (message)
     {
-      ValidationLog = log;
+      _validationLog = log;
     }
 
     /// <summary>
@@ -80,13 +81,18 @@ namespace Remotion.Mixins.Validation
     protected ValidationException (SerializationInfo info, StreamingContext context)
         : base (info, context)
     {
-      ValidationLog = (IValidationLog) info.GetValue ("ValidationLog", typeof (IValidationLog));
+      _validationLog = (IValidationLog) info.GetValue ("ValidationLog", typeof (IValidationLog));
+    }
+
+    public IValidationLog ValidationLog
+    {
+      get { return _validationLog; }
     }
 
     public override void GetObjectData (SerializationInfo info, StreamingContext context)
     {
       base.GetObjectData (info, context);
-      info.AddValue ("ValidationLog", ValidationLog);
+      info.AddValue ("ValidationLog", _validationLog);
     }
   }
 }

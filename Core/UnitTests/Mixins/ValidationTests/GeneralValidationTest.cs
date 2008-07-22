@@ -202,11 +202,13 @@ namespace Remotion.UnitTests.Mixins.ValidationTests
       DefaultValidationLog log = Validator.Validate (definition);
 
       ValidationException exception = new ValidationException (log);
-      Assert.AreEqual ("Some parts of the mixin configuration could not be validated." + Environment.NewLine + "Remotion.UnitTests.Mixins."
-          + "ValidationTests.ValidationSampleTypes.AbstractMixinWithoutBase.AbstractMethod (Remotion.UnitTests.Mixins.ValidationTests.ValidationSampleTypes."
-          + "AbstractMixinWithoutBase -> Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingSingleMixinMethod): There were 1 errors, 0 warnings, and 0 unexpected "
-          + "exceptions. First error: A target class overrides a method from one of its mixins, but the mixin is not derived from one of the "
-          + "Mixin<...> base classes." + Environment.NewLine + "See Log.GetResults() for a full list of issues.", exception.Message);
+      Assert.AreEqual ("Some parts of the mixin configuration could not be validated." + Environment.NewLine
+          + "Remotion.UnitTests.Mixins.ValidationTests.ValidationSampleTypes.AbstractMixinWithoutBase.AbstractMethod (Remotion.UnitTests.Mixins."
+          + "ValidationTests.ValidationSampleTypes.AbstractMixinWithoutBase -> Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingSingleMixinMethod):"
+          + Environment.NewLine
+          + "Error: A target class overrides a method from one of its mixins, but the mixin is not derived from one of the Mixin<...> base classes."
+          + Environment.NewLine, 
+          exception.Message);
 
       Assert.AreSame (log, exception.ValidationLog);
     }
