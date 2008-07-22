@@ -42,8 +42,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
       string configPath = Path.Combine (Path.GetDirectoryName (new Uri (codeBaseUri).AbsolutePath), "Test.config");
       parameter.ConfigFile = configPath;
 
-      Assert.That (Path.IsPathRooted (configPath));
-      Assert.That (File.Exists (configPath));
+      Assert.That (Path.IsPathRooted (configPath), configPath);
+      Assert.That (File.Exists (configPath), configPath);
       
       AppDomainSetup setup = RdbmsToolsRunner.CreateAppDomainSetup (parameter);
       Assert.That (setup.ConfigurationFile, Is.EqualTo (configPath));
@@ -61,8 +61,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
       string configPath = Path.Combine (Path.GetDirectoryName (new Uri (codeBaseUri).AbsolutePath), "Test12313.config");
       parameter.ConfigFile = configPath;
 
-      Assert.That (Path.IsPathRooted (configPath));
-      Assert.That (File.Exists (configPath), Is.False);
+      Assert.That (Path.IsPathRooted (configPath), configPath);
+      Assert.That (File.Exists (configPath), Is.False, configPath);
 
       RdbmsToolsRunner.CreateAppDomainSetup (parameter);
     }
@@ -78,9 +78,9 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
       Environment.CurrentDirectory = Path.GetDirectoryName (configPath);
       parameter.ConfigFile = Path.GetFileName (configPath);
 
-      Assert.That (Path.IsPathRooted (configPath));
-      Assert.That (Path.IsPathRooted (parameter.ConfigFile), Is.False);
-      Assert.That (File.Exists (configPath));
+      Assert.That (Path.IsPathRooted (configPath), configPath);
+      Assert.That (Path.IsPathRooted (parameter.ConfigFile), Is.False, parameter.ConfigFile);
+      Assert.That (File.Exists (configPath), configPath);
       Assert.That (File.Exists (Path.Combine (Environment.CurrentDirectory, parameter.ConfigFile)));
 
       AppDomainSetup setup = RdbmsToolsRunner.CreateAppDomainSetup (parameter);
@@ -101,8 +101,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
       Environment.CurrentDirectory = Path.GetDirectoryName (configPath);
       parameter.ConfigFile = Path.GetFileName (configPath);
 
-      Assert.That (Path.IsPathRooted (configPath));
-      Assert.That (Path.IsPathRooted (parameter.ConfigFile), Is.False);
+      Assert.That (Path.IsPathRooted (configPath), configPath);
+      Assert.That (Path.IsPathRooted (parameter.ConfigFile), Is.False, parameter.ConfigFile);
       Assert.That (File.Exists (Path.Combine (Environment.CurrentDirectory, parameter.ConfigFile)), Is.False);
 
       RdbmsToolsRunner.CreateAppDomainSetup (parameter);

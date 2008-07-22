@@ -40,6 +40,12 @@
         <include name="SchemaGeneration/SqlServer/TestData/*.sql" />
       </resources>
     </csc>
+
+    <copy todir="${build.test.outputdir}" flatten="true" overwrite="true">
+      <fileset>
+        <include name="Test.config" />
+      </fileset>
+    </copy>
   </target>
   
 </project>
