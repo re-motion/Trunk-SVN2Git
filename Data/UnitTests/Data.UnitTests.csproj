@@ -121,7 +121,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.csproj">
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
-      <Name>ObjectBinding</Name>
+      <Name>ObjectBinding %28ObjectBinding\ObjectBinding%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ObjectBinding\Interfaces\ObjectBinding.Interfaces.csproj">
       <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
@@ -129,7 +129,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Core\Security.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
-      <Name>Security</Name>
+      <Name>Security %28Security\Security%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
@@ -137,7 +137,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Web\Core\Web.csproj">
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
-      <Name>Web</Name>
+      <Name>Web %28Web\Web%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Web\UnitTests\Web.UnitTests.csproj">
       <Project>{F3EE8E9C-5230-4D1A-B655-CA65E2D52F21}</Project>
@@ -1116,7 +1116,7 @@
     <None Include="Properties\AssemblyInfoTemplate.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="Data.DomainObjects.UnitTests.build" />
+    <None Include="Data.UnitTests.build" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithFakeMappingLoader.xml" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithMinimumSettings.xml" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithCustomSectionGroupName.xml" />
