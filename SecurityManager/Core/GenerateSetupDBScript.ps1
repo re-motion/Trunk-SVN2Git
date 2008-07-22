@@ -1,6 +1,6 @@
 .\..\..\Data\DomainObjects.RdbmsTools.Console\bin\Debug\dbschema.exe `
     "/baseDirectory:bin\debug" `
-    "/config:..\..\..\Clients.Web\web.config" `
+    "/config:..\Clients.Web\web.config" `
     "/schema" `
     "/schemaDirectory:Database"
 

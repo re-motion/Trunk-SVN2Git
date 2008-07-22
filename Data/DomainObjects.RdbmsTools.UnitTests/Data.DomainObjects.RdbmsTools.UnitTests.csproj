@@ -13,7 +13,8 @@
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -49,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\RdbmsToolsRunnerTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\ConstraintBuilderTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\FileBuilderTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\TableBuilderTest.cs" />
@@ -59,6 +61,9 @@
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
+    </None>
+    <None Include="Test.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <EmbeddedResource Include="SchemaGeneration\SqlServer\TestData\SetupDB_FirstStorageProviderWithoutTables.sql" />
     <Compile Include="SchemaGeneration\TableBuilderBaseTest.cs" />

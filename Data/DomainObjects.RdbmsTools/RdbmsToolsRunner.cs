@@ -31,13 +31,19 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
   {
     public static RdbmsToolsRunner Create (RdbmsToolsParameter rdbmsToolsParameter)
     {
+      AppDomainSetup appDomainSetup = CreateAppDomainSetup(rdbmsToolsParameter);
+      return new RdbmsToolsRunner (appDomainSetup, rdbmsToolsParameter);
+    }
+
+    public static AppDomainSetup CreateAppDomainSetup (RdbmsToolsParameter rdbmsToolsParameter)
+    {
       AppDomainSetup appDomainSetup = new AppDomainSetup();
       appDomainSetup.ApplicationName = "RdbmsTools";
       appDomainSetup.ApplicationBase = rdbmsToolsParameter.BaseDirectory;
       appDomainSetup.DynamicBase = Path.Combine (Path.GetTempPath(), "Remotion");
       if (!string.IsNullOrEmpty (rdbmsToolsParameter.ConfigFile))
       {
-        appDomainSetup.ConfigurationFile = rdbmsToolsParameter.ConfigFile;
+        appDomainSetup.ConfigurationFile = Path.GetFullPath (rdbmsToolsParameter.ConfigFile);
         if (!File.Exists (appDomainSetup.ConfigurationFile))
         {
           throw new FileNotFoundException (
@@ -47,7 +53,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
               appDomainSetup.ConfigurationFile);
         }
       }
-      return new RdbmsToolsRunner (appDomainSetup, rdbmsToolsParameter);
+      return appDomainSetup;
     }
 
     private readonly RdbmsToolsParameter _rdbmsToolsParameter;
