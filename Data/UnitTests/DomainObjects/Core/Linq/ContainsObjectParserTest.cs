@@ -25,8 +25,8 @@ using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
 using Remotion.Data.Linq.Parsing.Details.WhereConditionParsing;
 using Remotion.Data.Linq.Parsing.FieldResolving;
-using Remotion.Data.Linq.UnitTests;
-using Remotion.Data.Linq.UnitTests.ParsingTest;
+using Remotion.Data.UnitTests.Linq;
+using Remotion.Data.UnitTests.Linq.ParsingTest;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
