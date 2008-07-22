@@ -13,7 +13,8 @@
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -81,11 +82,11 @@
     </ProjectReference>
     <ProjectReference Include="..\Core\Web.csproj">
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
-      <Name>Web</Name>
+      <Name>Web %28Web\Web%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Core\Security.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
-      <Name>Security</Name>
+      <Name>Security %28Security\Security%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
