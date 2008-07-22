@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\RdbmsToolsRunnerTest.cs" />
+    <Compile Include="RdbmsToolsRunnerTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\ConstraintBuilderTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\FileBuilderTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\TableBuilderTest.cs" />

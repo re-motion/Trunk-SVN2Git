@@ -14,7 +14,7 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 
-namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.Properties
+namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
 {
   using Text = NUnit.Framework.SyntaxHelpers.Text;
 
