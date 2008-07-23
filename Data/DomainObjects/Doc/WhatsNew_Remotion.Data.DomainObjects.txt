@@ -1,3 +1,9 @@
+1.11.1.0
+========
+- dbschema.exe now generated SQL Server 2005 syntax instead of SQL Server 2000:
+  string without a maximum length is now generated as nvarchar (max) instead of ntext.
+  byte[] is now generated as varbinary (n|max) instead of image.
+
 1.7.74.0
 ========
 - COMMONS-390	Fixed	ClientTransaction.GetObjects
