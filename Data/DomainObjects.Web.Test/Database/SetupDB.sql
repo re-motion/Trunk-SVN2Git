@@ -35,9 +35,9 @@ CREATE TABLE [TableWithAllDataTypes] (
   [Int64] bigint NOT NULL,
   [Single] real NOT NULL,
   [String] nvarchar (100) NOT NULL,
-  [StringWithoutMaxLength] text NOT NULL,
+  [StringWithoutMaxLength] nvarchar (max) NOT NULL,
   [DelimitedStringArray] nvarchar (1000) NOT NULL,
-  [Binary] image NOT NULL,
+  [Binary] varbinary (1000000) NOT NULL,
 
   [NaBoolean] bit NULL,
   [NaByte] tinyint NULL,
@@ -66,7 +66,7 @@ CREATE TABLE [TableWithAllDataTypes] (
   [NaInt32WithNullValue] int NULL,
   [NaInt64WithNullValue] bigint NULL,
   [NaSingleWithNullValue] real NULL,
-  [NullableBinary] image NULL,
+  [NullableBinary] varbinary (1000000) NULL,
   
   [TableForRelationTestMandatory] uniqueidentifier NULL,
   [TableForRelationTestOptional] uniqueidentifier NULL,

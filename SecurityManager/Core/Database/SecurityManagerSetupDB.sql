@@ -285,7 +285,7 @@ CREATE TABLE [dbo].[LocalizedName]
   [Timestamp] rowversion NOT NULL,
 
   -- LocalizedName columns
-  [Text] ntext NOT NULL,
+  [Text] nvarchar (max) NOT NULL,
   [CultureID] uniqueidentifier NULL,
   [MetadataObjectID] uniqueidentifier NULL,
   [MetadataObjectIDClassID] varchar (100) NULL,
