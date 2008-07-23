@@ -3,19 +3,10 @@
   <major>1</major>
   <minor>11</minor>
   <build>
-    <increment currentValue="0" />
+    <increment currentValue="1" />
   </build>
   <revision>
-    <map property="nant.settings.currentframework">
-      <entry propertyvalue="net-3.5" versionvalue="00" />
-      <default fail="true" />
-    </map>
-    <map property="project.config">
-      <entry propertyvalue="release" versionvalue="1" />
-      <entry propertyvalue="debug" versionvalue="2" />
-      <entry propertyvalue="documentation" versionvalue="0" />
-      <entry propertyvalue="" versionvalue="0" />
-      <default fail="true" />
-    </map>
+    <map property="nant.settings.currentframework"><entry propertyvalue="net-3.5" versionvalue="00" /><default fail="true" /></map>
+    <map property="project.config"><entry propertyvalue="release" versionvalue="1" /><entry propertyvalue="debug" versionvalue="2" /><entry propertyvalue="documentation" versionvalue="0" /><entry propertyvalue="" versionvalue="0" /><default fail="true" /></map>
   </revision>
 </buildversion>
