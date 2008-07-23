@@ -59,7 +59,7 @@
     <property name="build.step.create-doc" value="false" />
     <property name="build.step.run-tests" value="true" />
     <property name="project.config" value="debug" />
-    <property name="build.debug" value="true" />
+    <property name="build.debug" value="Full" />
     <property name="build.csc.define" value="DEBUG;TRACE;"/>
     <call target="init-build-version" />
   </target>
@@ -71,7 +71,7 @@
     <property name="build.step.create-doc" value="false" />
     <property name="build.step.run-tests" value="true" />
     <property name="project.config" value="release" />
-    <property name="build.debug" value="false" />
+    <property name="build.debug" value="PdbOnly" />
     <property name="build.csc.define" value="TRACE;"/>
     <call target="init-build-version" />
   </target>
@@ -83,7 +83,7 @@
     <property name="build.step.create-doc" value="false" />
     <property name="build.step.run-tests" value="false" />
     <property name="project.config" value="documentation" />
-    <property name="build.debug" value="false" />
+    <property name="build.debug" value="None" />
     <call target="init-build-version" />
   </target>
 
@@ -94,7 +94,7 @@
     <property name="build.step.create-doc" value="false" />
     <property name="build.step.run-tests" value="false" />
     <property name="project.config" value="documentation" />
-    <property name="build.debug" value="false" />
+    <property name="build.debug" value="None" />
     <call target="init-build-version" />
   </target>
 
@@ -105,7 +105,7 @@
     <property name="build.step.create-doc" value="true" />
     <property name="build.step.run-tests" value="false" />
     <property name="project.config" value="documentation" />
-    <property name="build.debug" value="false" />
+    <property name="build.debug" value="None" />
     <property name="build.csc.define" value="TRACE;"/>
     <call target="init-build-version" />
   </target>
