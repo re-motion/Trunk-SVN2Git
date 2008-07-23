@@ -73,9 +73,13 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
     [DBColumn ("StringWithoutMaxLength")]
     public abstract string StringPropertyWithoutMaxLength { get; set; }
 
-    [BinaryProperty (IsNullable = false)]
+    [BinaryProperty (IsNullable = false, MaximumLength = 100)]
     [DBColumn ("Binary")]
     public abstract byte[] BinaryProperty { get; set; }
+
+    [BinaryProperty (IsNullable = false)]
+    [DBColumn ("BinaryWithoutMaxLength")]
+    public abstract byte[] BinaryWithoutMaxLengthProperty { get; set; }
 
     [DBColumn ("NaBoolean")]
     public abstract bool? NaBooleanProperty { get; set; }
@@ -153,8 +157,11 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
     [DBColumn ("NaSingleWithNullValue")]
     public abstract float? NaSingleWithNullValueProperty { get; set; }
 
-    [BinaryProperty (MaximumLength = 1000000)]
+    [BinaryProperty (MaximumLength = 100)]
     [DBColumn ("NullableBinary")]
     public abstract byte[] NullableBinaryProperty { get; set; }
+
+    [DBColumn ("NullableBinaryWithoutMaxLength")]
+    public abstract byte[] NullableBinaryWithoutMaxLengthProperty { get; set; }
   }
 }

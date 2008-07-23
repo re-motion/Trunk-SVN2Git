@@ -41,14 +41,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer
         return sqlDataType;
 
       if (propertyDefinition.PropertyType == typeof (String))
-      {
-        if (propertyDefinition.MaxLength.HasValue)
-          return string.Format ("nvarchar ({0})", propertyDefinition.MaxLength);
-        return "ntext";
-      }
+        return string.Format ("nvarchar ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString() : "max");
 
       if (propertyDefinition.PropertyType == typeof (Byte[]))
-        return "image";
+        return string.Format ("varbinary ({0})", propertyDefinition.MaxLength.HasValue ? propertyDefinition.MaxLength.ToString () : "max");
 
       return base.GetSqlDataType (propertyDefinition);
     }

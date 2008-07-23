@@ -72,10 +72,11 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       Assert.AreEqual ("int", _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (Int32Enum), null, null)));
       Assert.AreEqual ("smallint", _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (Int16Enum), null, null)));
 
-      Assert.AreEqual ("nvarchar (100)", _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (String), false, 100)));
-      Assert.AreEqual ("ntext", _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (String), false, null)));
+      Assert.AreEqual ("nvarchar (200)", _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (String), false, 200)));
+      Assert.AreEqual ("nvarchar (max)", _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (String), false, null)));
 
-      Assert.AreEqual ("image", _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (Byte[]), false, null)));
+      Assert.AreEqual ("varbinary (200)", _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (Byte[]), false, 200)));
+      Assert.AreEqual ("varbinary (max)", _tableBuilder.GetSqlDataType (CreatePropertyDefinition (typeof (Byte[]), false, null)));
     }
 
     [Test]
