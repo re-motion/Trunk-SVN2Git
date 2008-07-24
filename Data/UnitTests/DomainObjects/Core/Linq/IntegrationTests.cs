@@ -489,9 +489,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (domainBases.ToArray(), Is.Not.Empty);
     }
 
-
     [Test]
-    [Ignore]
     public void Query_WithSeveralFroms ()
     {
       var query =
