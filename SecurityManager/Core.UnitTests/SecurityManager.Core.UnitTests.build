@@ -38,6 +38,7 @@
         <include name="${build.test.outputdir}/Remotion.Data.Interfaces.dll"/>
         <include name="${build.test.outputdir}/Remotion.Data.DomainObjects.dll" />
         <include name="${build.test.outputdir}/Remotion.Data.DomainObjects.Security.dll" />
+        <include name="${build.test.outputdir}/Remotion.Data.Linq.dll"/>
         <include name="${build.test.outputdir}/Remotion.Development.dll" />
         <include name="${build.test.outputdir}/Remotion.ObjectBinding.dll" />
         <include name="${build.test.outputdir}/Remotion.ObjectBinding.Interfaces.dll" />

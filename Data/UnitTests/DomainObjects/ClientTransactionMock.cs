@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public IEnumerable<DomainObject> GetEnlistedObjects<T>()
       where T : DomainObject
     {
-      foreach (T t in base.EnlistedDomainObjects.Where (o => o is T))
+      foreach (T t in EnlistedDomainObjects.Where (o => o is T))
         yield return t;
     }
 
