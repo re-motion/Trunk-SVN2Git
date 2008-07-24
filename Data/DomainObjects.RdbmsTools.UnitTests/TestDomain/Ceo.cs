@@ -32,5 +32,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
     [DBBidirectionalRelation ("Ceo", ContainsForeignKey = true)]
     [Mandatory]
     public abstract Company Company { get; set; }
+
+    [StorageClassTransaction]
+    public abstract string TransactionalProperty { get; set; }
   }
 }

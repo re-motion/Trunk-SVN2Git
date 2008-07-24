@@ -172,7 +172,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
       StringBuilder columnListStringBuilder = new StringBuilder();
 
-      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions)
+      foreach (PropertyDefinition propertyDefinition in classDefinition.MyPropertyDefinitions.GetAllPersistent())
         columnListStringBuilder.Append (GetColumn (propertyDefinition, forceNullable));
 
       return string.Format (ColumnListOfParticularClassFormatString, classDefinition.ID, columnListStringBuilder);

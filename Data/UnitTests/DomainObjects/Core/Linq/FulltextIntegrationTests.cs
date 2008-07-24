@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       ClassDefinition orderClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
       QueryDefinition queryDefinition =
-          new QueryDefinition ("bla", orderClassDefinition.StorageProviderID, "SELECT * FROM Ceo WHERE Contains ([Ceo].[Name], 'Fischer')", QueryType.Collection);
+          new QueryDefinition ("bla", orderClassDefinition.StorageProviderID, "SELECT * FROM CeoView WHERE Contains ([CeoView].[Name], 'Fischer')", QueryType.Collection);
       Query query = new Query (queryDefinition);
 
       var orders = ClientTransactionMock.QueryManager.GetCollection<Ceo> (query).Cast<Ceo> ();
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private void WaitForIndices ()
     {
-      var rowCount = DatabaseAgent.ExecuteScalarCommand ("SELECT COUNT(*) FROM Ceo WHERE Contains ([Ceo].[Name], 'Fischer')");
+      var rowCount = DatabaseAgent.ExecuteScalarCommand ("SELECT COUNT(*) FROM CeoView WHERE Contains ([CeoView].[Name], 'Fischer')");
       if (!rowCount.Equals (1))
       {
         Thread.Sleep (100);

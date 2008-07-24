@@ -21,28 +21,55 @@ namespace Remotion.Development.UnitTesting
   {
     public const string c_sdkRegistryKey = @"SOFTWARE\Microsoft\.NETFramework";
     public const string c_sdkRegistryValue = "sdkInstallRootv2.0";
+
+    public const string c_windowsSdkRegistryKey = @"SOFTWARE\Microsoft\Microsoft SDKs\Windows";
+    public const string c_windowsSdkRegistryVersionValue = "CurrentVersion";
+    public const string c_windowsSdkRegistryInstallationFolderValue = "InstallationFolder";
+
     private static string s_peVerifyPath = null;
 
     public static string DefaultPEVerifyPath
     {
-      get { return Path.Combine (FrameworkSDKPath, @"bin\PEVerify.exe"); }
+      get { return Path.Combine (GetFrameworkSDKPath(), @"bin\PEVerify.exe"); }
     }
 
-    public static string FrameworkSDKPath
+    public static string GetFrameworkSDKPath ()
     {
-      get
+      string path;
+      try
       {
-        try
-        {
-          return (string) Registry.LocalMachine.OpenSubKey (c_sdkRegistryKey, false).GetValue (c_sdkRegistryValue);
-        }
-        catch (Exception ex)
-        {
-          string message = string.Format ("Cannot retrieve framework SDK location from {0}\\{1}: {2}", 
-              c_sdkRegistryKey, c_sdkRegistryValue, ex.Message);
-          throw new InvalidOperationException (message, ex);
-        }
+        path = GetSDKPathFromRegistry();
+        if (path == null)
+          path = GetWindowsSDKPathFromRegistry();
       }
+      catch (Exception ex)
+      {
+        throw CreateSdkNotFoundException (ex, ex.Message);
+      }
+
+      if (path == null)
+        throw CreateSdkNotFoundException (null, "Registry key not found.");
+      else
+        return path;
+    }
+
+    private static string GetSDKPathFromRegistry ()
+    {
+      return (string) Registry.LocalMachine.OpenSubKey (c_sdkRegistryKey, false).GetValue (c_sdkRegistryValue);
+    }
+
+    private static string GetWindowsSDKPathFromRegistry ()
+    {
+      string windowsSDKVersion = (string) Registry.LocalMachine.OpenSubKey (c_windowsSdkRegistryKey, false).GetValue (c_windowsSdkRegistryVersionValue);
+      string installationFolder = (string) Registry.LocalMachine.OpenSubKey (c_windowsSdkRegistryKey + "\\" + windowsSDKVersion, false).GetValue (c_windowsSdkRegistryInstallationFolderValue);
+      return installationFolder;
+    }
+
+    private static Exception CreateSdkNotFoundException (Exception inner, string reason)
+    {
+      string message = string.Format ("Cannot retrieve framework SDK location from {0}\\{1} or {2}\\[{3}]\\{4}: {5}", 
+        c_sdkRegistryKey, c_sdkRegistryValue, c_windowsSdkRegistryKey, c_windowsSdkRegistryVersionValue, c_windowsSdkRegistryInstallationFolderValue, reason);
+      return new InvalidOperationException (message, inner);
     }
 
     public static string PEVerifyPath

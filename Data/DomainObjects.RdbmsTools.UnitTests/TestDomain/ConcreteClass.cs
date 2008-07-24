@@ -28,5 +28,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
 
     [StringProperty (IsNullable = false, MaximumLength = 100)]
     public abstract string PropertyInConcreteClass { get; set; }
+
+    [StorageClassTransaction]
+    public abstract string TransactionalProperty { get; set; }
   }
 }

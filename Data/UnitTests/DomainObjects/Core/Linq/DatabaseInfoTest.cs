@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   [TestFixture]
   public class DatabaseInfoTest
   {
-    private IDatabaseInfo _databaseInfo;
+    private DatabaseInfo _databaseInfo;
     private SqlServerGenerator _sqlGenerator;
 
     [SetUp]
@@ -39,9 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void GetTableName()
     {
-      Assert.AreEqual ("Order", _databaseInfo.GetTableName (CreateFromClause<Order>()));
-      Assert.AreEqual ("Company", _databaseInfo.GetTableName (CreateFromClause<Customer> ()));
-      Assert.AreEqual ("TableWithValidRelations", _databaseInfo.GetTableName (CreateFromClause<ClassWithValidRelations> ()));
+      Assert.AreEqual ("OrderView", _databaseInfo.GetTableName (CreateFromClause<Order>()));
+      Assert.AreEqual ("CustomerView", _databaseInfo.GetTableName (CreateFromClause<Customer> ()));
+      Assert.AreEqual ("ClassWithValidRelationsView", _databaseInfo.GetTableName (CreateFromClause<ClassWithValidRelations> ()));
     }
 
     [Test]

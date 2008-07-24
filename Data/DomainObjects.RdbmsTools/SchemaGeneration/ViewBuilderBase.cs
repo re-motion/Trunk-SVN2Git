@@ -193,7 +193,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
       List<PropertyDefinition> allPropertyDefinitions = new List<PropertyDefinition> ();
       FillAllPropertyDefinitionsFromBaseClasses (classDefinition, allPropertyDefinitions);
 
-      foreach (PropertyDefinition propertyDefinitionInDerivedClass in classDefinition.MyPropertyDefinitions)
+      foreach (PropertyDefinition propertyDefinitionInDerivedClass in classDefinition.MyPropertyDefinitions.GetAllPersistent ())
         allPropertyDefinitions.Add (propertyDefinitionInDerivedClass);
 
       FillAllPropertyDefinitionsFromDerivedClasses (classDefinition, allPropertyDefinitions);
@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
       FillAllPropertyDefinitionsFromBaseClasses (classDefinition.BaseClass, allPropertyDefinitions);
 
-      foreach (PropertyDefinition propertyDefinitionInDerivedClass in classDefinition.BaseClass.MyPropertyDefinitions)
+      foreach (PropertyDefinition propertyDefinitionInDerivedClass in classDefinition.BaseClass.MyPropertyDefinitions.GetAllPersistent ())
         allPropertyDefinitions.Add (propertyDefinitionInDerivedClass);
     }
 
@@ -216,7 +216,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
     {
       foreach (ClassDefinition derivedClass in classDefinition.DerivedClasses)
       {
-        foreach (PropertyDefinition propertyDefinitionInDerivedClass in derivedClass.MyPropertyDefinitions)
+        foreach (PropertyDefinition propertyDefinitionInDerivedClass in derivedClass.MyPropertyDefinitions.GetAllPersistent ())
           allPropertyDefinitions.Add (propertyDefinitionInDerivedClass);
 
         FillAllPropertyDefinitionsFromDerivedClasses (derivedClass, allPropertyDefinitions);

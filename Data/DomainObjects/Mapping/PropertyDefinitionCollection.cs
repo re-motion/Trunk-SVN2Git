@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -25,7 +26,7 @@ public class PropertyDefinitionCollection : CommonCollection
   public event PropertyDefinitionAddingEventHandler Adding;
   public event PropertyDefinitionAddedEventHandler Added;
 
-  private ClassDefinition _classDefinition;
+  private readonly ClassDefinition _classDefinition;
 
   // construction and disposing
 
@@ -65,6 +66,15 @@ public class PropertyDefinitionCollection : CommonCollection
     }
 
     return false;
+  }
+
+  public IEnumerable<PropertyDefinition> GetAllPersistent ()
+  {
+    foreach (PropertyDefinition propertyDefinition in this)
+    {
+      if (propertyDefinition.StorageClass == StorageClass.Persistent)
+        yield return propertyDefinition;
+    }
   }
 
   public ClassDefinition ClassDefinition 

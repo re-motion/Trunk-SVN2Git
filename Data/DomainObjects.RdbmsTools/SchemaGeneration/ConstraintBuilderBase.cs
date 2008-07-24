@@ -136,6 +136,8 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
         return null;
 
       PropertyDefinition propertyDefinition = relationEndPoint.ClassDefinition.GetMandatoryPropertyDefinition (relationEndPoint.PropertyName);
+      if (propertyDefinition.StorageClass != StorageClass.Persistent)
+        return null;
 
       return GetConstraint (tableRootClassDefinition, relationEndPoint, propertyDefinition, oppositeClassDefinition);
     }

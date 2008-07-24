@@ -124,6 +124,11 @@ namespace Remotion.Data.DomainObjects.Mapping
       return _baseClass.GetEntityName();
     }
 
+    public string GetViewName ()
+    {
+      return ID + "View";
+    }
+
     public bool Contains (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);

@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Linq
         if (classDefinition == null)
           return null;
         else
-          return classDefinition.GetEntityName();
+          return classDefinition.GetViewName();
       }
     }
 

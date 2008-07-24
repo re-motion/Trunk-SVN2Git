@@ -16,7 +16,10 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Customer=Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer;
+using Order=Remotion.Data.UnitTests.DomainObjects.TestDomain.Order;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -464,7 +467,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     // MethodExtension defines extension method "ExtendString"
     // MethodExtendString generates sql code for this method
     [Test]
-    public void Query_WithExtendString ()
+    public void Query_WithCustomSqlGenerator_ForExtendStringMethod ()
     {
       DataContext.SqlGenerator.MethodCallRegistry.Register (
           typeof (MethodExtensions).GetMethod ("ExtendString", new Type[] { typeof (string)}), new MethodExtendString ());
@@ -474,6 +477,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           where c.Employee.Name.ExtendString () == "Trillian"
           select c;
       CheckQueryResult (computers, DomainObjectIDs.Computer2);
+    }
+
+    [Test]
+    public void Query_WithView ()
+    {
+      var domainBases =
+          from d in DataContext.Entity<DomainBase>()
+          select d;
+
+      Assert.That (domainBases.ToArray(), Is.Not.Empty);
     }
 
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)

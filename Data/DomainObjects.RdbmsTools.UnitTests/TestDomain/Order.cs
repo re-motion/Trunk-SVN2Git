@@ -41,5 +41,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
     [DBBidirectionalRelation ("Order")]
     [Mandatory]
     public abstract ObjectList<OrderItem> OrderItems { get; set; }
+
+    [DBBidirectionalRelation ("TransactionOrder")]
+    [StorageClassTransaction]
+    [Mandatory]
+    public abstract ObjectList<OrderItem> TransactionOrderItems { get; set; }
   }
 }

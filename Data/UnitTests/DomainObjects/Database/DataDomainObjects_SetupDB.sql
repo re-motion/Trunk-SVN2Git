@@ -1,6 +1,106 @@
 USE TestDomain
 GO
 
+-- Drop all views that will be created below
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_AddressView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_AddressView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_ClientView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_ClientView]
+  
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_DomainBaseView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_DomainBaseView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_PersonView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_PersonView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_CustomerView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_CustomerView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_FileSystemItemView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_FileSystemItemView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_FileView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_FileView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_HistoryEntryView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_HistoryEntryView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_OrderView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_OrderView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_OrganizationalUnitView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_OrganizationalUnitView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_RegionView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_RegionView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_FolderView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_FolderView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_SpecificFolderView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_SpecificFolderView]
+  
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CeoView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[CeoView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ClientView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[ClientView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'ComputerView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[ComputerView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CompanyView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[CompanyView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'CustomerView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[CustomerView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'PartnerView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[PartnerView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'DistributorView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[DistributorView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'EmployeeView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[EmployeeView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'FileSystemItemView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[FileSystemItemView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'FileView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[FileView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'FolderView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[FolderView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'IndustrialSectorView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[IndustrialSectorView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'LocationView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[LocationView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[OrderView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderItemView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[OrderItemView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderItemWithNewPropertyAccessView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[OrderItemWithNewPropertyAccessView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'OrderTicketView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[OrderTicketView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'PersonView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[PersonView]
+  
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SupplierView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[SupplierView]
+GO
+
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixedDomains_Target')
 BEGIN
   ALTER TABLE [MixedDomains_Target] DROP CONSTRAINT [FK_MixedDomains_Target_RelationProperty]
@@ -887,4 +987,260 @@ CREATE TABLE [TableInheritance_BaseClassWithInvalidRelationClassIDColumns] (
   -- Note: This table does not need to have foreign keys, because rows cannot be read because of invalid ClassID column structure
   CONSTRAINT [PK_TableInheritance_BaseClassWithInvalidRelationClassIDColumns] PRIMARY KEY CLUSTERED ([ID])
 ) 
+GO
+
+-- Create a view for every class
+
+CREATE VIEW [dbo].[TI_AddressView] ([ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country], [PersonID], [PersonIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country], [PersonID], [PersonIDClassID]
+    FROM [dbo].[TableInheritance_Address]
+    WHERE [ClassID] IN ('TI_Address')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TI_ClientView] ([ID], [ClassID], [Timestamp], [Name])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name]
+    FROM [dbo].[TableInheritance_Client]
+    WHERE [ClassID] IN ('TI_Client')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TI_DomainBaseView] ([ID], [ClassID], [Timestamp], [CreatedBy], [CreatedAt], [ClientID], [FirstName], [LastName], [DateOfBirth], [Photo], [CustomerType], [CustomerSince], [RegionID], [Name])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [CreatedBy], [CreatedAt], [ClientID], [FirstName], [LastName], [DateOfBirth], [Photo], [CustomerType], [CustomerSince], [RegionID], null
+    FROM [dbo].[TableInheritance_Person]
+    WHERE [ClassID] IN ('TI_Person', 'TI_Customer', 'TI_OrganizationalUnit')
+  UNION ALL
+  SELECT [ID], [ClassID], [Timestamp], [CreatedBy], [CreatedAt], [ClientID], null, null, null, null, null, null, null, [Name]
+    FROM [dbo].[TableInheritance_OrganizationalUnit]
+    WHERE [ClassID] IN ('TI_Person', 'TI_Customer', 'TI_OrganizationalUnit')
+GO
+
+CREATE VIEW [dbo].[TI_PersonView] ([ID], [ClassID], [Timestamp], [CreatedBy], [CreatedAt], [ClientID], [FirstName], [LastName], [DateOfBirth], [Photo], [CustomerType], [CustomerSince], [RegionID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [CreatedBy], [CreatedAt], [ClientID], [FirstName], [LastName], [DateOfBirth], [Photo], [CustomerType], [CustomerSince], [RegionID]
+    FROM [dbo].[TableInheritance_Person]
+    WHERE [ClassID] IN ('TI_Person', 'TI_Customer')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TI_CustomerView] ([ID], [ClassID], [Timestamp], [CreatedBy], [CreatedAt], [ClientID], [FirstName], [LastName], [DateOfBirth], [Photo], [CustomerType], [CustomerSince], [RegionID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [CreatedBy], [CreatedAt], [ClientID], [FirstName], [LastName], [DateOfBirth], [Photo], [CustomerType], [CustomerSince], [RegionID]
+    FROM [dbo].[TableInheritance_Person]
+    WHERE [ClassID] IN ('TI_Customer')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TI_FileSystemItemView] ([ID], [ClassID], [Timestamp], [Name], [ParentFolderID], [ParentFolderIDClassID], [Size], [FileCreatedAt], [FolderCreatedAt])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [ParentFolderID], [ParentFolderIDClassID], [Size], [FileCreatedAt], null
+    FROM [dbo].[TableInheritance_File]
+    WHERE [ClassID] IN ('TI_File', 'TI_Folder', 'TI_SpecificFolder')
+  UNION ALL
+  SELECT [ID], [ClassID], [Timestamp], [Name], [ParentFolderID], [ParentFolderIDClassID], null, null, [FolderCreatedAt]
+    FROM [dbo].[TableInheritance_Folder]
+    WHERE [ClassID] IN ('TI_File', 'TI_Folder', 'TI_SpecificFolder')
+GO
+
+CREATE VIEW [dbo].[TI_FileView] ([ID], [ClassID], [Timestamp], [Name], [ParentFolderID], [ParentFolderIDClassID], [Size], [FileCreatedAt])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [ParentFolderID], [ParentFolderIDClassID], [Size], [FileCreatedAt]
+    FROM [dbo].[TableInheritance_File]
+    WHERE [ClassID] IN ('TI_File')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TI_HistoryEntryView] ([ID], [ClassID], [Timestamp], [HistoryDate], [Text], [OwnerID], [OwnerIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [HistoryDate], [Text], [OwnerID], [OwnerIDClassID]
+    FROM [dbo].[TableInheritance_HistoryEntry]
+    WHERE [ClassID] IN ('TI_HistoryEntry')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TI_OrderView] ([ID], [ClassID], [Timestamp], [Number], [OrderDate], [CustomerID], [CustomerIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Number], [OrderDate], [CustomerID], [CustomerIDClassID]
+    FROM [dbo].[TableInheritance_Order]
+    WHERE [ClassID] IN ('TI_Order')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TI_OrganizationalUnitView] ([ID], [ClassID], [Timestamp], [CreatedBy], [CreatedAt], [ClientID], [Name])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [CreatedBy], [CreatedAt], [ClientID], [Name]
+    FROM [dbo].[TableInheritance_OrganizationalUnit]
+    WHERE [ClassID] IN ('TI_OrganizationalUnit')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TI_RegionView] ([ID], [ClassID], [Timestamp], [Name])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name]
+    FROM [dbo].[TableInheritance_Region]
+    WHERE [ClassID] IN ('TI_Region')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TI_FolderView] ([ID], [ClassID], [Timestamp], [Name], [ParentFolderID], [ParentFolderIDClassID], [FolderCreatedAt])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [ParentFolderID], [ParentFolderIDClassID], [FolderCreatedAt]
+    FROM [dbo].[TableInheritance_Folder]
+    WHERE [ClassID] IN ('TI_Folder', 'TI_SpecificFolder')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TI_SpecificFolderView] ([ID], [ClassID], [Timestamp], [Name], [ParentFolderID], [ParentFolderIDClassID], [FolderCreatedAt])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [ParentFolderID], [ParentFolderIDClassID], [FolderCreatedAt]
+    FROM [dbo].[TableInheritance_Folder]
+    WHERE [ClassID] IN ('TI_SpecificFolder')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[CeoView] ([ID], [ClassID], [Timestamp], [Name], [CompanyID], [CompanyIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [CompanyID], [CompanyIDClassID]
+    FROM [dbo].[Ceo]
+    WHERE [ClassID] IN ('Ceo')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[ClientView] ([ID], [ClassID], [Timestamp], [ParentClientID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [ParentClientID]
+    FROM [dbo].[Client]
+    WHERE [ClassID] IN ('Client')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[ComputerView] ([ID], [ClassID], [Timestamp], [SerialNumber], [EmployeeID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [SerialNumber], [EmployeeID]
+    FROM [dbo].[Computer]
+    WHERE [ClassID] IN ('Computer')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[CompanyView] ([ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [CustomerSince], [CustomerType], [ContactPersonID], [NumberOfShops], [SupplierQuality])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [CustomerSince], [CustomerType], [ContactPersonID], [NumberOfShops], [SupplierQuality]
+    FROM [dbo].[Company]
+    WHERE [ClassID] IN ('Company', 'Customer', 'Partner', 'Distributor', 'Supplier')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[CustomerView] ([ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [CustomerSince], [CustomerType])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [CustomerSince], [CustomerType]
+    FROM [dbo].[Company]
+    WHERE [ClassID] IN ('Customer')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[PartnerView] ([ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [ContactPersonID], [NumberOfShops], [SupplierQuality])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [ContactPersonID], [NumberOfShops], [SupplierQuality]
+    FROM [dbo].[Company]
+    WHERE [ClassID] IN ('Partner', 'Distributor', 'Supplier')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[DistributorView] ([ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [ContactPersonID], [NumberOfShops])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [ContactPersonID], [NumberOfShops]
+    FROM [dbo].[Company]
+    WHERE [ClassID] IN ('Distributor')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[EmployeeView] ([ID], [ClassID], [Timestamp], [Name], [SupervisorID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [SupervisorID]
+    FROM [dbo].[Employee]
+    WHERE [ClassID] IN ('Employee')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[FileSystemItemView] ([ID], [ClassID], [Timestamp], [ParentFolderID], [ParentFolderIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [ParentFolderID], [ParentFolderIDClassID]
+    FROM [dbo].[FileSystemItem]
+    WHERE [ClassID] IN ('FileSystemItem', 'File', 'Folder')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[FileView] ([ID], [ClassID], [Timestamp], [ParentFolderID], [ParentFolderIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [ParentFolderID], [ParentFolderIDClassID]
+    FROM [dbo].[FileSystemItem]
+    WHERE [ClassID] IN ('File')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[FolderView] ([ID], [ClassID], [Timestamp], [ParentFolderID], [ParentFolderIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [ParentFolderID], [ParentFolderIDClassID]
+    FROM [dbo].[FileSystemItem]
+    WHERE [ClassID] IN ('Folder')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[IndustrialSectorView] ([ID], [ClassID], [Timestamp], [Name])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name]
+    FROM [dbo].[IndustrialSector]
+    WHERE [ClassID] IN ('IndustrialSector')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[LocationView] ([ID], [ClassID], [Timestamp], [ClientID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [ClientID]
+    FROM [dbo].[Location]
+    WHERE [ClassID] IN ('Location')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[OrderView] ([ID], [ClassID], [Timestamp], [OrderNo], [DeliveryDate], [OfficialID], [CustomerID], [CustomerIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [OrderNo], [DeliveryDate], [OfficialID], [CustomerID], [CustomerIDClassID]
+    FROM [dbo].[Order]
+    WHERE [ClassID] IN ('Order')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[OrderItemView] ([ID], [ClassID], [Timestamp], [Position], [Product], [OrderID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Position], [Product], [OrderID]
+    FROM [dbo].[OrderItem]
+    WHERE [ClassID] IN ('OrderItem')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[OrderTicketView] ([ID], [ClassID], [Timestamp], [FileName], [OrderID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [FileName], [OrderID]
+    FROM [dbo].[OrderTicket]
+    WHERE [ClassID] IN ('OrderTicket')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[PersonView] ([ID], [ClassID], [Timestamp], [Name])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name]
+    FROM [dbo].[Person]
+    WHERE [ClassID] IN ('Person')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[SupplierView] ([ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [ContactPersonID], [SupplierQuality])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [ContactPersonID], [SupplierQuality]
+    FROM [dbo].[Company]
+    WHERE [ClassID] IN ('Supplier')
+  WITH CHECK OPTION
 GO
