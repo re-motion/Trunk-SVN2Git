@@ -17,10 +17,10 @@ using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Mixins;
 using Remotion.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
+namespace Remotion.SecurityManager.UnitTests
 {
   //TODO: Move to Remotion.Development.Data.DomainObjects.Linq
-  [Extends (typeof (QueryExecutor<>))]
+  [Extends(typeof (QueryExecutor<>))]
   public class QueryExecutorMixin : Mixin<object, QueryExecutorMixin.IBaseCallRequirements>
   {
     public interface IBaseCallRequirements

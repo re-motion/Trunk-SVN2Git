@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Remotion.Data.DomainObjects;
@@ -16,6 +17,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.ObjectBinding;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
+using Remotion.Data.DomainObjects.Linq;
 
 namespace Remotion.SecurityManager.Domain.Metadata
 {
@@ -42,14 +44,11 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      Query query = new Query ("Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition.FindByName");
-      query.Parameters.Add ("@name", name);
+      var result = from classDefinition in DataContext.Entity<SecurableClassDefinition>()
+                   where classDefinition.Name == name
+                   select classDefinition;
 
-      DomainObjectCollection result = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-      if (result.Count == 0)
-        return null;
-
-      return (SecurableClassDefinition) result[0];
+      return result.ToArray().FirstOrDefault();
     }
 
     public static DomainObjectCollection FindAll ()

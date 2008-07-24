@@ -29,13 +29,6 @@
     </statement>
   </query>
 
-  <query id="Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition.FindByName" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [SecurableClassDefinitionView] WHERE Name = @name;
-    </statement>
-  </query>
-
   <query id="Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition.FindAll" type="collection">
     <storageProviderID>SecurityManager</storageProviderID>
     <statement>
