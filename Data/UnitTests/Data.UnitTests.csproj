@@ -515,6 +515,7 @@
     <Compile Include="Linq\ParsingTest\StructureTest\SelectManyExpressionParserTest\RecursiveSelectManyExpressionParserTest.cs" />
     <Compile Include="Linq\ParsingTest\StructureTest\SelectManyExpressionParserTest\SimpleSelectManyExpressionParserTest.cs" />
     <Compile Include="Linq\ParsingTest\StructureTest\SelectManyExpressionParserTest\WhereSelectManyExpressionParserTest.cs" />
+    <Compile Include="Linq\ParsingTest\StructureTest\SimpleFromSourceExpressionParserTest.cs" />
     <Compile Include="Linq\ParsingTest\StructureTest\SourceExpressionParserTest.cs" />
     <Compile Include="Linq\ParsingTest\StructureTest\SubQueryFindingVisitorTest.cs" />
     <Compile Include="Linq\ParsingTest\StructureTest\WhereExpressionParserTest\BodyHelper.cs" />

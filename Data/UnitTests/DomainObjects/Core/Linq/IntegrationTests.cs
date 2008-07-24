@@ -489,6 +489,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (domainBases.ToArray(), Is.Not.Empty);
     }
 
+
+    [Test]
+    [Ignore]
+    public void Query_WithSeveralFroms ()
+    {
+      var query =
+          from o in DataContext.Entity<Order>()
+          from c in DataContext.Entity<OrderTicket>()
+          where c.Order == o
+          where o.OrderNumber == 1
+          select c;
+
+      CheckQueryResult (query, DomainObjectIDs.OrderTicket1);
+    }
+
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : TestDomainBase
     {
