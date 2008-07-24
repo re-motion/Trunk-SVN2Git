@@ -18,7 +18,7 @@ using Remotion.UnitTests.Mixins.SampleTypes;
 namespace Remotion.UnitTests.Mixins.Definitions
 {
   [TestFixture]
-  public class ClassDefinitionTest
+  public class TargetClassDefinitionTest
   {
     interface Interface
     {

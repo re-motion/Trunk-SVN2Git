@@ -12,7 +12,8 @@
     </AssemblyKeyContainerName>
     <AssemblyName>Remotion.UnitTests</AssemblyName>
     <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    </AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -29,7 +30,8 @@
     </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
     <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -333,7 +335,7 @@
     <Compile Include="Mixins\Context\SynchronizedReadOnlyContextCollectionTest.cs" />
     <Compile Include="Mixins\Definitions\AttributeDefinitionBuilderTest.cs" />
     <Compile Include="Mixins\Definitions\AttributeIntroductionDefinitionBuilderTest.cs" />
-    <Compile Include="Mixins\Definitions\ClassDefinitionTest.cs" />
+    <Compile Include="Mixins\Definitions\TargetClassDefinitionTest.cs" />
     <Compile Include="Mixins\Definitions\DependencyDefinitionBuilderTest.cs" />
     <Compile Include="Mixins\Definitions\DependencySorting\DependentMixinGrouperTest.cs" />
     <Compile Include="Mixins\Definitions\DependencySorting\MixinDependencyAnalyzerTest.cs" />
