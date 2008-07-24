@@ -9,6 +9,8 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -107,6 +109,13 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public int NumberOfCallsToLoadRelatedObject
     {
       get { return _numberOfCallsToLoadRelatedObject; }
+    }
+
+    public IEnumerable<DomainObject> GetEnlistedObjects<T>()
+      where T : DomainObject
+    {
+      foreach (T t in base.EnlistedDomainObjects.Where (o => o is T))
+        yield return t;
     }
 
     public new DataManager DataManager
