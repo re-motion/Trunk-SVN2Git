@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -1091,6 +1092,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         Assert.IsTrue (HasEventHandler (ClientTransaction.Current, "SubTransactionCreated", subTransactionCreatedHandler1));
         Assert.IsTrue (HasEventHandler (ClientTransaction.Current, "SubTransactionCreated", subTransactionCreatedHandler2));
       }
+    }
+
+    [Test]
+    public void LinqToClientTransaction ()
+    {
+      Order o1 = Order.GetObject (DomainObjectIDs.Order1);
+      Order o2 = Order.GetObject (DomainObjectIDs.Order2);
+      Order o3 = Order.GetObject (DomainObjectIDs.Order3);
+
+      var loadedOrders = from o in ClientTransactionMock.GetEnlistedObjects<Order>()
+                         select o;
+      Assert.That (loadedOrders.ToArray(), Is.EquivalentTo(new[] {o1, o2, o3}));
     }
 
     private bool HasEventHandler (object instance, string eventName, Delegate handler)
