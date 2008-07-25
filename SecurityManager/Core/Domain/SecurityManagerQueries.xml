@@ -46,13 +46,6 @@
     </statement>
   </query>
 
-  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.User.FindByUserName" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [UserView] WHERE UserName = @userName;
-    </statement>
-  </query>
-
   <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.User.FindByTenantID" type="collection">
     <storageProviderID>SecurityManager</storageProviderID>
     <statement>

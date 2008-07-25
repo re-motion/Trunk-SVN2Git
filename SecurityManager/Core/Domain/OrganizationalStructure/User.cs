@@ -11,9 +11,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.Remoting.Messaging;
+using System.Linq;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.BindableObject;
@@ -71,24 +72,28 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNull ("userName", userName);
 
-      Query query = new Query ("Remotion.SecurityManager.Domain.OrganizationalStructure.User.FindByUserName");
-      query.Parameters.Add ("@userName", userName);
+      var result = from u in DataContext.Entity<User>()
+                   where u.UserName == userName
+                   select u;
 
-      DomainObjectCollection users = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-      if (users.Count == 0)
-        return null;
-
-      return (User) users[0];
+      return result.ToArray().FirstOrDefault();
     }
 
-    public static DomainObjectCollection FindByTenantID (ObjectID tenantID)
+    public static ObjectList<User> FindByTenantID (ObjectID tenantID)
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
+
+      //var result = from u in DataContext.Entity<User>()
+      //             where u.Tenant.ID == tenantID
+      //             orderby u.LastName, u.FirstName
+      //             select u;
+
+      //return result.ToObjectList();
 
       Query query = new Query ("Remotion.SecurityManager.Domain.OrganizationalStructure.User.FindByTenantID");
       query.Parameters.Add ("@tenantID", tenantID);
 
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
+      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection<User> (query);
     }
 
     //[DemandMethodPermission (GeneralAccessTypes.Create)]
