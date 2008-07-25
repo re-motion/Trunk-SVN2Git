@@ -11,9 +11,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
 using Remotion.Security;
@@ -72,22 +74,22 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     public static DomainObjectCollection FindAll ()
     {
-      Query query = new Query ("Remotion.SecurityManager.Domain.OrganizationalStructure.Tenant.FindAll");
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
+      var result = from t in DataContext.Entity<Tenant>()
+                   orderby t.Name
+                   select t;
+
+      return result.ToObjectList();
     }
 
     public static Tenant FindByUnqiueIdentifier (string uniqueIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
-      Query query = new Query ("Remotion.SecurityManager.Domain.OrganizationalStructure.Tenant.FindByUnqiueIdentifier");
-      query.Parameters.Add ("@uniqueIdentifier", uniqueIdentifier);
+      var result = from t in DataContext.Entity<Tenant>()
+                   where t.UniqueIdentifier == uniqueIdentifier
+                   select t;
 
-      DomainObjectCollection tenants = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-      if (tenants.Count == 0)
-        return null;
-
-      return (Tenant) tenants[0];
+      return result.ToArray().FirstOrDefault();
     }
 
     [DemandMethodPermission (GeneralAccessTypes.Search)]

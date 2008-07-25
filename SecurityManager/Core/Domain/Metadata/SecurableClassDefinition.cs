@@ -51,7 +51,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return result.ToArray().FirstOrDefault();
     }
 
-    public static DomainObjectCollection FindAll ()
+    public static ObjectList<SecurableClassDefinition> FindAll ()
     {
       var result = from c in DataContext.Entity<SecurableClassDefinition>()
                    orderby c.Index
@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return result.ToObjectList();
     }
 
-    public static DomainObjectCollection FindAllBaseClasses ()
+    public static ObjectList<SecurableClassDefinition> FindAllBaseClasses ()
     {
       var result = from c in DataContext.Entity<SecurableClassDefinition>()
                    where c.BaseClass == null

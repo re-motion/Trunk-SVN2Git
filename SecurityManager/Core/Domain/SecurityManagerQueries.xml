@@ -46,20 +46,6 @@
     </statement>
   </query>
 
-  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.Tenant.FindAll" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [TenantView] ORDER BY [Name] ASC;
-    </statement>
-  </query>
-
-  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.Tenant.FindByUnqiueIdentifier" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [TenantView] WHERE [UniqueIdentifier] = @uniqueIdentifier;
-    </statement>
-  </query>
-
   <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.User.FindByUserName" type="collection">
     <storageProviderID>SecurityManager</storageProviderID>
     <statement>

@@ -34,20 +34,20 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return NewObject<AbstractRoleDefinition> ().With (metadataItemID, name, value);
     }
 
-    public static DomainObjectCollection Find (EnumWrapper[] abstractRoles)
+    public static ObjectList<AbstractRoleDefinition> Find (EnumWrapper[] abstractRoles)
     {
       if (abstractRoles.Length == 0)
-        return new DomainObjectCollection ();
+        return new ObjectList<AbstractRoleDefinition> ();
 
       FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder ();
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (queryBuilder.CreateQuery (abstractRoles));
+      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection<AbstractRoleDefinition> (queryBuilder.CreateQuery (abstractRoles));
     }
 
-    public static DomainObjectCollection FindAll ()
+    public static ObjectList<AbstractRoleDefinition> FindAll ()
     {
-      var result = from r in DataContext.Entity<AbstractRoleDefinition>()
-                   orderby r.Index
-                   select r;
+      var result = from ar in DataContext.Entity<AbstractRoleDefinition>()
+                   orderby ar.Index
+                   select ar;
 
       return result.ToObjectList();
     }
