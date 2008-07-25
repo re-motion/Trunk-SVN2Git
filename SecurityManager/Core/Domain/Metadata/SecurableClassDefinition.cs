@@ -44,28 +44,28 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      var result = from cd in DataContext.Entity<SecurableClassDefinition>()
-                   where cd.Name == name
-                   select cd;
+      var result = from c in DataContext.Entity<SecurableClassDefinition>()
+                   where c.Name == name
+                   select c;
 
       return result.ToArray().FirstOrDefault();
     }
 
     public static DomainObjectCollection FindAll ()
     {
-      var result = from cd in DataContext.Entity<SecurableClassDefinition>()
-                   orderby cd.Index
-                   select cd;
+      var result = from c in DataContext.Entity<SecurableClassDefinition>()
+                   orderby c.Index
+                   select c;
 
       return result.ToObjectList();
     }
 
     public static DomainObjectCollection FindAllBaseClasses ()
     {
-      var result = from cd in DataContext.Entity<SecurableClassDefinition>()
-                   where cd.BaseClass == null
-                   orderby cd.Index
-                   select cd;
+      var result = from c in DataContext.Entity<SecurableClassDefinition>()
+                   where c.BaseClass == null
+                   orderby c.Index
+                   select c;
 
       return result.ToObjectList();
     }

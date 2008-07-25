@@ -10,7 +10,9 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -43,8 +45,11 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public static DomainObjectCollection FindAll ()
     {
-      Query query = new Query ("Remotion.SecurityManager.Domain.Metadata.AbstractRoleDefinition.FindAll");
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
+      var result = from r in DataContext.Entity<AbstractRoleDefinition>()
+                   orderby r.Index
+                   select r;
+
+      return result.ToObjectList();
     }
 
     protected AbstractRoleDefinition ()
