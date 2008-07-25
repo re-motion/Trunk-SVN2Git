@@ -29,20 +29,6 @@
     </statement>
   </query>
 
-  <query id="Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition.FindAll" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [SecurableClassDefinitionView] ORDER BY [Index] ASC;
-    </statement>
-  </query>
-
-  <query id="Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition.FindAllBaseClasses" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [SecurableClassDefinitionView] WHERE BaseSecurableClassID IS NULL ORDER BY [Index] ASC;
-    </statement>
-  </query>
-
   <query id="Remotion.SecurityManager.Domain.Metadata.MetadataObject.Find" type="collection">
     <storageProviderID>SecurityManager</storageProviderID>
     <statement>

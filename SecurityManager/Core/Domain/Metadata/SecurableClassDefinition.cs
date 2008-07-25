@@ -44,23 +44,30 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      var result = from classDefinition in DataContext.Entity<SecurableClassDefinition>()
-                   where classDefinition.Name == name
-                   select classDefinition;
+      var result = from cd in DataContext.Entity<SecurableClassDefinition>()
+                   where cd.Name == name
+                   select cd;
 
       return result.ToArray().FirstOrDefault();
     }
 
     public static DomainObjectCollection FindAll ()
     {
-      Query query = new Query ("Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition.FindAll");
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
+      var result = from cd in DataContext.Entity<SecurableClassDefinition>()
+                   orderby cd.Index
+                   select cd;
+
+      return result.ToObjectList();
     }
 
     public static DomainObjectCollection FindAllBaseClasses ()
     {
-      Query query = new Query ("Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition.FindAllBaseClasses");
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
+      var result = from cd in DataContext.Entity<SecurableClassDefinition>()
+                   where cd.BaseClass == null
+                   orderby cd.Index
+                   select cd;
+
+      return result.ToObjectList();
     }
 
     // member fields
