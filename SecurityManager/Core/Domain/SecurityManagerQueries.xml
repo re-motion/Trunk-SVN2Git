@@ -59,11 +59,4 @@
       SELECT * FROM [GroupView] WHERE TenantID = @tenantID ORDER BY ShortName ASC, Name ASC;
     </statement>
   </query>
-
-  <query id="Remotion.SecurityManager.Domain.Metadata.Culture.Find" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [CultureView] WHERE CultureName = @cultureName;
-    </statement>
-  </query>
 </queries>

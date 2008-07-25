@@ -9,7 +9,9 @@
  */
 
 using System;
+using System.Linq;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
@@ -26,16 +28,15 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return NewObject<Culture> ().With (cultureName);
     }
 
-    public static Culture Find (string name)
+    public static Culture Find (string cultureName)
     {
-      Query query = new Query ("Remotion.SecurityManager.Domain.Metadata.Culture.Find");
-      query.Parameters.Add ("@cultureName", name);
+      ArgumentUtility.CheckNotNull ("cultureName", cultureName);
+      
+      var result = from c in DataContext.Entity<Culture>()
+                   where c.CultureName == cultureName
+                   select c;
 
-      DomainObjectCollection result = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-      if (result.Count == 0)
-        return null;
-
-      return (Culture) result[0];
+      return result.ToArray().FirstOrDefault();
     }
 
     protected Culture (string cultureName)
