@@ -571,8 +571,10 @@
     <Compile Include="Linq\TestQueryGenerators\WhereTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryProvider.cs" />
     <Compile Include="Linq\VisitorTest\ExpressionTreeVisitorTest\ExpressionInstanceCreator.cs" />
-    <Compile Include="Linq\VisitorTest\ExpressionTreeVisitorTest\ExpressionVisitorTest.cs" />
-    <Compile Include="Linq\VisitorTest\ExpressionTreeVisitorTest\ExpressionVisitor_SpecificExpressionsTest.cs" />
+    <Compile Include="Linq\VisitorTest\ExpressionTreeVisitorTest\ExpressionTreeVisitorTest.cs" />
+    <Compile Include="Linq\VisitorTest\ExpressionTreeVisitorTest\ExpressionTreeVisitor_BinaryExpressionsTest.cs" />
+    <Compile Include="Linq\VisitorTest\ExpressionTreeVisitorTest\ExpressionTreeVisitor_SpecificExpressionsTest.cs" />
+    <Compile Include="Linq\VisitorTest\ExpressionTreeVisitorTest\ExpressionTreeVisitor_SpecificExpressionsTestBase.cs" />
     <Compile Include="Linq\VisitorTest\ExpressionTreeVisitorTest\SimpleClass.cs" />
     <Compile Include="Linq\VisitorTest\ExpressionTreeVisitorTest\SpecialExpressionNode.cs" />
     <Compile Include="Linq\VisitorTest\StringVisitorTest.cs" />
