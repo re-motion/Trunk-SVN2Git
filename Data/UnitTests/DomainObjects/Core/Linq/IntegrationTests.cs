@@ -324,6 +324,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [Ignore ("Allow Contains queries with collections")]
+    public void QueryWithContainsInWhere_OnCollection ()
+    {
+      ObjectID[] possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 };
+      var orders =
+          from o in DataContext.Entity<Order> ()
+          where possibleItems.Contains (o.ID)
+          select o;
+
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2);
+    }
+
+    [Test]
     public void QueryWithContainsObject ()
     {
       OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
