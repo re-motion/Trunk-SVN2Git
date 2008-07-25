@@ -11,12 +11,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
@@ -39,10 +40,13 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return NewObject<Position> ().With ();
     }
 
-    public static DomainObjectCollection FindAll ()
+    public static ObjectList<Position> FindAll ()
     {
-      Query query = new Query ("Remotion.SecurityManager.Domain.OrganizationalStructure.Position.FindAll");
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
+      var result = from p in DataContext.Entity<Position> ()
+                   orderby p.Name
+                   select p;
+
+      return result.ToObjectList ();
     }
 
     [DemandMethodPermission (SecurityManagerAccessTypes.AssignRole)]
