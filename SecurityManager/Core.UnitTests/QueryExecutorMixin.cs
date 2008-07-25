@@ -21,7 +21,8 @@ namespace Remotion.SecurityManager.UnitTests
 {
   //TODO: Move to Remotion.Development.Data.DomainObjects.Linq
   [Extends(typeof (QueryExecutor<>))]
-  public class QueryExecutorMixin1 : Mixin<object, QueryExecutorMixin1.IBaseCallRequirements>
+  [AcceptsAlphabeticOrderingAttribute]
+  public class QueryExecutorMixin : Mixin<object, QueryExecutorMixin.IBaseCallRequirements>
   {
     public interface IBaseCallRequirements
     {
