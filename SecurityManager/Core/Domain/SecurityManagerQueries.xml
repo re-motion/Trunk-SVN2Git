@@ -60,13 +60,6 @@
     </statement>
   </query>
   
-  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.GroupType.FindAll" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [GroupTypeView] ORDER BY Name ASC;
-    </statement>
-  </query>
-  
   <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.Position.FindAll" type="collection">
     <storageProviderID>SecurityManager</storageProviderID>
     <statement>

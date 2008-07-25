@@ -10,7 +10,9 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
 using Remotion.Security;
@@ -37,10 +39,13 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return NewObject<GroupType> ().With ();
     }
 
-    public static DomainObjectCollection FindAll ()
+    public static ObjectList<GroupType> FindAll ()
     {
-      Query query = new Query ("Remotion.SecurityManager.Domain.OrganizationalStructure.GroupType.FindAll");
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
+      var result = from g in DataContext.Entity<GroupType>()
+                   orderby g.Name
+                   select g;
+
+      return result.ToObjectList();
     }
 
     [DemandMethodPermission (GeneralAccessTypes.Search)]
