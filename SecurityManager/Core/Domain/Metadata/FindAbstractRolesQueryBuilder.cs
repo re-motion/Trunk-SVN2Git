@@ -8,10 +8,11 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System.Text;
-using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Queries;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Security;
 using Remotion.Utilities;
 
@@ -20,41 +21,28 @@ namespace Remotion.SecurityManager.Domain.Metadata
   public class FindAbstractRolesQueryBuilder : QueryBuilder
   {
     public FindAbstractRolesQueryBuilder ()
-      : base ("FindAbstractRoles", typeof (AbstractRoleDefinition))
+        : base ("FindAbstractRoles", typeof (AbstractRoleDefinition))
     {
     }
 
-    public Query CreateQuery (EnumWrapper[] abstractRoles)
+    public IQueryable<AbstractRoleDefinition> CreateQuery (EnumWrapper[] abstractRoles)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abstractRoles", abstractRoles);
 
-      return CreateQueryFromStatement (GetStatement (abstractRoles));
-    }
-
-    protected string GetStatement (EnumWrapper[] abstractRoles)
-    {
-      using (StorageProviderManager storageProviderManager = new StorageProviderManager ())
+      Expression body = null;
+      foreach (EnumWrapper abstractRole in abstractRoles)
       {
-        RdbmsProvider storageProvider = (RdbmsProvider) storageProviderManager.GetMandatory (GetStorageProviderID ());
+        string abstractRoleName = abstractRole.Name;
+        var predicateExpression = ((Expression<System.Func<AbstractRoleDefinition, bool>>) (ar => ar.Name == abstractRoleName)).Body;
 
-        StringBuilder whereClauseBuilder = new StringBuilder (abstractRoles.Length * 50);
-        for (int i = 0; i < abstractRoles.Length; i++)
-        {
-          EnumWrapper roleWrapper = abstractRoles[i];
-
-          if (whereClauseBuilder.Length > 0)
-            whereClauseBuilder.Append (" OR ");
-
-          string parameterName = storageProvider.GetParameterName ("p" + i);
-          whereClauseBuilder.Append (storageProvider.DelimitIdentifier ("Name"));
-          whereClauseBuilder.Append (" = ");
-          whereClauseBuilder.Append (parameterName);
-
-          Parameters.Add (parameterName, roleWrapper.ToString ());
-        }
-
-        return string.Format ("SELECT * FROM {0} WHERE {1}", storageProvider.DelimitIdentifier ("AbstractRoleDefinitionView"), whereClauseBuilder);
+        if (body == null)
+          body = predicateExpression;
+        else
+          body = Expression.OrElse (body, predicateExpression);
       }
+
+      return DataContext.Entity<AbstractRoleDefinition>().Where (
+          Expression.Lambda<System.Func<AbstractRoleDefinition, bool>> (body, Expression.Parameter (typeof (AbstractRoleDefinition), "ar")));
     }
   }
 }

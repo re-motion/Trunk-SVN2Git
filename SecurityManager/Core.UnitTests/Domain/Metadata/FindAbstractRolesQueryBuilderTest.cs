@@ -9,8 +9,10 @@
  */
 
 using System;
+using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.TestDomain;
@@ -23,13 +25,47 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     [Test]
     public void CreateQuery_OneRole ()
     {
-      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder ();
-      Query query = queryBuilder.CreateQuery (new EnumWrapper[] { new EnumWrapper (ProjectRoles.QualityManager) });
+      var abstractRoles = new[] { new EnumWrapper (ProjectRoles.QualityManager) };
+      var expected = from ar in DataContext.Entity<AbstractRoleDefinition>()
+                     where ar.Name == abstractRoles[0].Name
+                     select ar;
 
-      Assert.AreEqual (1, query.Parameters.Count);
-      Assert.IsTrue (query.Parameters.Contains ("@p0"));
-      Assert.AreEqual ("QualityManager|Remotion.SecurityManager.UnitTests.TestDomain.ProjectRoles, Remotion.SecurityManager.UnitTests", query.Parameters["@p0"].Value);
-      Assert.AreEqual ("SELECT * FROM [AbstractRoleDefinitionView] WHERE [Name] = @p0", query.Statement);
+      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder();
+      var actual = queryBuilder.CreateQuery (abstractRoles);
+
+      ExpressionTreeComparer.Compare (expected, actual);
+    }
+
+    [Test]
+    public void CreateQuery_TwoRoles ()
+    {
+      var abstractRoles = new[] { new EnumWrapper (ProjectRoles.QualityManager), new EnumWrapper (ProjectRoles.Developer) };
+      var expected = from ar in DataContext.Entity<AbstractRoleDefinition>()
+                     where ar.Name == abstractRoles[0].Name || ar.Name == abstractRoles[1].Name
+                     select ar;
+
+      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder();
+      var actual = queryBuilder.CreateQuery (abstractRoles);
+
+      ExpressionTreeComparer.Compare (expected, actual);
+    }
+
+    [Test]
+    public void CreateQuery_ThreeRoles ()
+    {
+      var abstractRoles = new[]
+                          {
+                              new EnumWrapper (ProjectRoles.QualityManager), new EnumWrapper (ProjectRoles.Developer),
+                              new EnumWrapper (UndefinedAbstractRoles.Undefined)
+                          };
+      var expected = from ar in DataContext.Entity<AbstractRoleDefinition>()
+                     where ar.Name == abstractRoles[0].Name || ar.Name == abstractRoles[1].Name || ar.Name == abstractRoles[2].Name
+                     select ar;
+
+      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder();
+      var actual = queryBuilder.CreateQuery (abstractRoles);
+
+      ExpressionTreeComparer.Compare (expected, actual);
     }
   }
 }

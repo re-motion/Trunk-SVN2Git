@@ -13,7 +13,6 @@ using System.ComponentModel;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
@@ -26,21 +25,23 @@ namespace Remotion.SecurityManager.Domain.Metadata
   {
     public static AbstractRoleDefinition NewObject ()
     {
-      return NewObject<AbstractRoleDefinition> ().With ();
+      return NewObject<AbstractRoleDefinition>().With();
     }
 
     public static AbstractRoleDefinition NewObject (Guid metadataItemID, string name, int value)
     {
-      return NewObject<AbstractRoleDefinition> ().With (metadataItemID, name, value);
+      return NewObject<AbstractRoleDefinition>().With (metadataItemID, name, value);
     }
 
     public static ObjectList<AbstractRoleDefinition> Find (EnumWrapper[] abstractRoles)
     {
       if (abstractRoles.Length == 0)
-        return new ObjectList<AbstractRoleDefinition> ();
+        return new ObjectList<AbstractRoleDefinition>();
 
-      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder ();
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection<AbstractRoleDefinition> (queryBuilder.CreateQuery (abstractRoles));
+      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder();
+      var result = queryBuilder.CreateQuery (abstractRoles);
+
+      return result.ToObjectList();
     }
 
     public static ObjectList<AbstractRoleDefinition> FindAll ()
@@ -66,7 +67,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     }
 
     [DBBidirectionalRelation ("SpecificAbstractRole")]
-    [EditorBrowsable(EditorBrowsableState.Never)]
+    [EditorBrowsable (EditorBrowsableState.Never)]
     protected abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
   }
 }
