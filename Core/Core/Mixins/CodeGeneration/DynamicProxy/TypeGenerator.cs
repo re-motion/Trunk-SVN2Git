@@ -146,8 +146,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       interfaces.Add (typeof (IMixinTarget));
       interfaces.Add (typeof (IInitializableMixinTarget));
 
-      foreach (InterfaceIntroductionDefinition introduction in _configuration.IntroducedInterfaces)
-        interfaces.Add (introduction.Type);
+      foreach (InterfaceIntroductionDefinition introduction in _configuration.ReceivedInterfaces)
+        interfaces.Add (introduction.InterfaceType);
 
       Set<Type> alreadyImplementedInterfaces = new Set<Type> (interfaces);
       alreadyImplementedInterfaces.AddRange (_configuration.ImplementedInterfaces);
@@ -299,10 +299,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementIntroducedInterfaces ()
     {
-      foreach (InterfaceIntroductionDefinition introduction in _configuration.IntroducedInterfaces)
+      foreach (InterfaceIntroductionDefinition introduction in _configuration.ReceivedInterfaces)
       {
         Expression implementerExpression = new ConvertExpression (
-            introduction.Type,
+            introduction.InterfaceType,
             new LoadArrayElementExpression (introduction.Implementer.MixinIndex, _extensionsField, typeof (object)));
 
         foreach (MethodIntroductionDefinition method in introduction.IntroducedMethods)
@@ -396,7 +396,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       foreach (RequiredFaceTypeDefinition faceRequirement in Configuration.RequiredFaceTypes)
       {
         if (faceRequirement.Type.IsInterface && !Configuration.ImplementedInterfaces.Contains (faceRequirement.Type)
-            && !Configuration.IntroducedInterfaces.ContainsKey (faceRequirement.Type))
+            && !Configuration.ReceivedInterfaces.ContainsKey (faceRequirement.Type))
         {
           foreach (RequiredMethodDefinition requiredMethod in faceRequirement.Methods)
             ImplementRequiredDuckMethod (requiredMethod);
@@ -471,7 +471,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return eventOverride;
     }
 
-    private void ImplementAttributes (IAttributeIntroductionTargetDefinition targetConfiguration, IAttributableEmitter targetEmitter)
+    private void ImplementAttributes (IAttributeIntroductionTarget targetConfiguration, IAttributableEmitter targetEmitter)
     {
       foreach (AttributeDefinition attribute in targetConfiguration.CustomAttributes)
       {
@@ -483,24 +483,24 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       }
 
       // Replicate introduced attributes
-      foreach (AttributeIntroductionDefinition attribute in targetConfiguration.IntroducedAttributes)
+      foreach (AttributeIntroductionDefinition attribute in targetConfiguration.ReceivedAttributes)
         AttributeReplicator.ReplicateAttribute (targetEmitter, attribute.Attribute.Data);
     }
 
     private bool IsSuppressedByMixin (AttributeDefinition attribute)
     {
-      ICustomAttributeProvider declaringEntity = attribute.DeclaringDefinition.DeclaringEntity;
-      foreach (AttributeIntroductionDefinition suppressAttribute in Configuration.IntroducedAttributes[typeof (SuppressAttributesAttribute)])
+      ICustomAttributeProvider declaringEntity = attribute.DeclaringDefinition.CustomAttributeProvider;
+      foreach (AttributeIntroductionDefinition suppressAttribute in Configuration.ReceivedAttributes[typeof (SuppressAttributesAttribute)])
       {
         SuppressAttributesAttribute suppressAttributeInstance = (SuppressAttributesAttribute)suppressAttribute.Attribute.Instance;
-        ICustomAttributeProvider suppressingEntity = suppressAttribute.Attribute.DeclaringDefinition.DeclaringEntity;
+        ICustomAttributeProvider suppressingEntity = suppressAttribute.Attribute.DeclaringDefinition.CustomAttributeProvider;
         if (suppressAttributeInstance.IsSuppressed (attribute.AttributeType, declaringEntity, suppressingEntity))
           return true;
       }
       return false;
     }
 
-    private bool CanInheritAttributesFromBase (IAttributeIntroductionTargetDefinition configuration)
+    private bool CanInheritAttributesFromBase (IAttributeIntroductionTarget configuration)
     {
       // only methods and base classes can supply attributes for inheritance
       return configuration is TargetClassDefinition || configuration is MethodDefinition;
@@ -514,7 +514,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void AddDebuggerAttributes ()
     {
-      if (!Configuration.IntroducedAttributes.ContainsKey (typeof (DebuggerDisplayAttribute)))
+      if (!Configuration.ReceivedAttributes.ContainsKey (typeof (DebuggerDisplayAttribute)))
       {
         string debuggerString = "Mix of " + _configuration.Type.FullName + " + "
             + SeparatedStringBuilder.Build (" + ", _configuration.Mixins, delegate (MixinDefinition m) { return m.FullName; });

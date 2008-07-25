@@ -93,6 +93,10 @@ namespace Remotion.UnitTests.Mixins.ValidationTests
       Assert.IsTrue (visitedDefinitions.ContainsKey (btWithAdditionalDependencies));
       TargetClassDefinition targetWithSuppressAttribute = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassSuppressingBT1Attribute));
       Assert.IsTrue (visitedDefinitions.ContainsKey (targetWithSuppressAttribute));
+      TargetClassDefinition targetWithNonIntroducedAttribute = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassWithMixinNonIntroducingSimpleAttribute));
+      Assert.IsTrue (visitedDefinitions.ContainsKey (targetWithSuppressAttribute));
+      TargetClassDefinition targetClassWinningOverMixinAddingBT1AttributeToMember = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember));
+      Assert.IsTrue (visitedDefinitions.ContainsKey (targetClassWinningOverMixinAddingBT1AttributeToMember));
 
       MixinDefinition bt1m1 = bt1.Mixins[typeof (BT1Mixin1)];
       Assert.IsTrue (visitedDefinitions.ContainsKey (bt1m1));
@@ -108,6 +112,10 @@ namespace Remotion.UnitTests.Mixins.ValidationTests
       Assert.IsTrue (visitedDefinitions.ContainsKey (bt3m4));
       MixinDefinition bt3m5 = bt3.Mixins[typeof (BT3Mixin5)];
       Assert.IsTrue (visitedDefinitions.ContainsKey (bt3m5));
+      MixinDefinition mixinWithSuppressedAttribute = targetWithSuppressAttribute.Mixins[typeof (MixinAddingBT1Attribute)];
+      Assert.IsTrue (visitedDefinitions.ContainsKey (mixinWithSuppressedAttribute));
+      MixinDefinition mixinWithNonIntroducedAttribute = targetWithNonIntroducedAttribute.Mixins[typeof (MixinNonIntroducingSimpleAttribute)];
+      Assert.IsTrue (visitedDefinitions.ContainsKey (mixinWithNonIntroducedAttribute));
 
       MethodDefinition m1 = bt1.Methods[typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes)];
       Assert.IsTrue (visitedDefinitions.ContainsKey (m1));
@@ -117,6 +125,9 @@ namespace Remotion.UnitTests.Mixins.ValidationTests
       Assert.IsTrue (visitedDefinitions.ContainsKey (m3));
       MethodDefinition m4 = bt1m1.Methods[typeof (BT1Mixin1).GetMethod ("IntroducedMethod")];
       Assert.IsTrue (visitedDefinitions.ContainsKey (m4));
+      MethodDefinition memberWinningOverMixinAddingAttribute = targetClassWinningOverMixinAddingBT1AttributeToMember
+          .Methods[typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember).GetMethod ("VirtualMethod")];
+      Assert.IsTrue (visitedDefinitions.ContainsKey (memberWinningOverMixinAddingAttribute));
 
       PropertyDefinition p1 = bt1.Properties[typeof (BaseType1).GetProperty ("VirtualProperty")];
       Assert.IsTrue (visitedDefinitions.ContainsKey (p1));
@@ -162,9 +173,9 @@ namespace Remotion.UnitTests.Mixins.ValidationTests
       AttributeDefinition a8 = im3.ImplementingMember.CustomAttributes.GetFirstItem (typeof (BT1M1Attribute));
       Assert.IsTrue (visitedDefinitions.ContainsKey (a8));
 
-      AttributeIntroductionDefinition ai1 = bt1.IntroducedAttributes.GetFirstItem (typeof (BT1M1Attribute));
+      AttributeIntroductionDefinition ai1 = bt1.ReceivedAttributes.GetFirstItem (typeof (BT1M1Attribute));
       Assert.IsTrue (visitedDefinitions.ContainsKey (ai1));
-      AttributeIntroductionDefinition ai2 = m1.IntroducedAttributes.GetFirstItem (typeof (BT1M1Attribute));
+      AttributeIntroductionDefinition ai2 = m1.ReceivedAttributes.GetFirstItem (typeof (BT1M1Attribute));
       Assert.IsTrue (visitedDefinitions.ContainsKey (ai2));
 
       RequiredBaseCallTypeDefinition bc1 = bt3.RequiredBaseCallTypes[typeof (IBaseType34)];
@@ -191,8 +202,13 @@ namespace Remotion.UnitTests.Mixins.ValidationTests
       MixinDependencyDefinition md1 = btWithAdditionalDependencies.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinDependencies[typeof (MixinWithNoAdditionalDependency)];
       Assert.IsTrue (visitedDefinitions.ContainsKey (md1));
 
-      SuppressedAttributeIntroductionDefinition suppressedAttribute1 = targetWithSuppressAttribute.SuppressedIntroducedAttributes.GetFirstItem (typeof (BT1Attribute));
+      SuppressedAttributeIntroductionDefinition suppressedAttribute1 = mixinWithSuppressedAttribute.SuppressedAttributeIntroductions.GetFirstItem (typeof (BT1Attribute));
       Assert.IsTrue (visitedDefinitions.ContainsKey (suppressedAttribute1));
+
+      NonAttributeIntroductionDefinition nonIntroducedAttribute1 = mixinWithNonIntroducedAttribute.NonAttributeIntroductions.GetFirstItem (typeof (SimpleAttribute));
+      Assert.IsTrue (visitedDefinitions.ContainsKey (nonIntroducedAttribute1));
+      NonAttributeIntroductionDefinition nonIntroducedAttribute2 = memberWinningOverMixinAddingAttribute.Overrides[0].NonAttributeIntroductions[0];
+      Assert.IsTrue (visitedDefinitions.ContainsKey (nonIntroducedAttribute2));
     }
 
     [Test]

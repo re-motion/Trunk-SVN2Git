@@ -23,10 +23,10 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       TargetClassDefinition bt1 =
           UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinIntroducingInheritedInterface));
-      Assert.IsTrue (bt1.IntroducedInterfaces.ContainsKey (typeof (IMixinIII1)));
-      Assert.IsTrue (bt1.IntroducedInterfaces.ContainsKey (typeof (IMixinIII2)));
-      Assert.IsTrue (bt1.IntroducedInterfaces.ContainsKey (typeof (IMixinIII3)));
-      Assert.IsTrue (bt1.IntroducedInterfaces.ContainsKey (typeof (IMixinIII4)));
+      Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IMixinIII1)));
+      Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IMixinIII2)));
+      Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IMixinIII3)));
+      Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IMixinIII4)));
     }
 
     [Test]

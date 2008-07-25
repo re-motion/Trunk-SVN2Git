@@ -104,6 +104,9 @@
       <Name>System</Name>
     </Reference>
     <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
@@ -139,6 +142,7 @@
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinIntroducingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinOverridingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\TargetClassCallingOverriddenMethodFromCtor.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinNonIntroducingSimpleAttribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinSuppressingAndAddingBT1Attribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinSuppressingBT1Attribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinAddingSimpleAttribute.cs" />
@@ -146,6 +150,8 @@
     <Compile Include="Mixins\SampleTypes\ClassWithSuppressAttribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinIntroducingMembersWithDifferentVisibilities.cs" />
     <Compile Include="Mixins\SampleTypes\TargetClassSuppressingBT1Attribute.cs" />
+    <Compile Include="Mixins\SampleTypes\TargetClassWinningOverMixinAddingBT1AttributeToMember.cs" />
+    <Compile Include="Mixins\SampleTypes\TargetClassWithMixinNonIntroducingSimpleAttribute.cs" />
     <Compile Include="Mixins\ValidationTests\Rules\DefaultEventIntroductionRulesTest.cs" />
     <Compile Include="Mixins\ValidationTests\Rules\DefaultPropertyIntroductionRulesTest.cs" />
     <Compile Include="Mixins\ValidationTests\Rules\DefaultMethodIntroductionRulesTest.cs" />
@@ -506,7 +512,7 @@
     <Compile Include="Mixins\SampleTypes\MixinRequiringAllMembersBase.cs" />
     <Compile Include="Mixins\SampleTypes\MixinRequiringAllMembersFace.cs" />
     <Compile Include="Mixins\SampleTypes\MixinRequiringEmptyInterface.cs" />
-    <Compile Include="Mixins\SampleTypes\MixinSuppressingSimpleInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinNonIntroducingSimpleInterface.cs" />
     <Compile Include="Mixins\SampleTypes\MixinsWithCircularDependencies.cs" />
     <Compile Include="Mixins\SampleTypes\MixinWithAbstractMembers.cs" />
     <Compile Include="Mixins\SampleTypes\MixinWithAdditionalClassDependency.cs" />

@@ -9,14 +9,17 @@
  */
 
 using System;
-using System.Reflection;
+using Remotion.Mixins;
 
-namespace Remotion.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  public interface IAttributableDefinition
+  [Uses (typeof (MixinAddingBT1AttributeToMember))]
+  public class TargetClassWinningOverMixinAddingBT1AttributeToMember
   {
-    MultiDefinitionCollection<Type, AttributeDefinition> CustomAttributes { get; }
-    ICustomAttributeProvider CustomAttributeProvider { get; }
-    string FullName { get; }
+    [BT1]
+    public virtual string VirtualMethod ()
+    {
+      return "";
+    }
   }
 }

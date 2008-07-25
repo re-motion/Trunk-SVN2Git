@@ -16,7 +16,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  [DebuggerDisplay ("{_type.FullName} introduced via {_implementer.FullName}")]
+  [DebuggerDisplay ("{FullName} introduced via {Implementer.FullName}")]
   public class InterfaceIntroductionDefinition : IVisitableDefinition
   {
     public readonly UniqueDefinitionCollection<MethodInfo, MethodIntroductionDefinition> IntroducedMethods =
@@ -26,31 +26,21 @@ namespace Remotion.Mixins.Definitions
     public readonly UniqueDefinitionCollection<EventInfo, EventIntroductionDefinition> IntroducedEvents =
         new UniqueDefinitionCollection<EventInfo, EventIntroductionDefinition> (delegate (EventIntroductionDefinition m) { return m.InterfaceMember; });
 
-    private Type _type;
-    private MixinDefinition _implementer;
-
     public InterfaceIntroductionDefinition (Type type, MixinDefinition implementer)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("implementer", implementer);
 
-      _type = type;
-      _implementer = implementer;
+      InterfaceType = type;
+      Implementer = implementer;
     }
 
-    public Type Type
-    {
-      get { return _type; }
-    }
-
-    public MixinDefinition Implementer
-    {
-      get { return _implementer; }
-    }
+    public Type InterfaceType { get; private set; }
+    public MixinDefinition Implementer { get; private set; }
 
     public string FullName
     {
-      get { return Type.FullName; }
+      get { return InterfaceType.FullName; }
     }
 
     public IVisitableDefinition Parent

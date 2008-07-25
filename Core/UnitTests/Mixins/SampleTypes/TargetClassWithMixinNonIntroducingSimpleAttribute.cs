@@ -13,12 +13,9 @@ using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  [NonIntroduced (typeof (ISimpleInterface))]
-  public class MixinSuppressingSimpleInterface : ISimpleInterface
+  [Uses (typeof (MixinNonIntroducingSimpleAttribute))]
+  public class TargetClassWithMixinNonIntroducingSimpleAttribute
   {
-    public string Method ()
-    {
-      return "MixinSuppressingSimpleInterface.Method";
-    }
+    
   }
 }

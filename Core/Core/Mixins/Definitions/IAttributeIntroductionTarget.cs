@@ -9,14 +9,12 @@
  */
 
 using System;
-using System.Reflection;
+using System.Collections.Generic;
 
 namespace Remotion.Mixins.Definitions
 {
-  public interface IAttributableDefinition
+  public interface IAttributeIntroductionTarget : IAttributableDefinition, IVisitableDefinition
   {
-    MultiDefinitionCollection<Type, AttributeDefinition> CustomAttributes { get; }
-    ICustomAttributeProvider CustomAttributeProvider { get; }
-    string FullName { get; }
+    MultiDefinitionCollection<Type, AttributeIntroductionDefinition> ReceivedAttributes { get; }
   }
 }

@@ -33,7 +33,7 @@ namespace Remotion.Mixins.Definitions.Building
     private void AnalyzeNonIntroducedInterfaces ()
     {
       foreach (NonIntroducedAttribute notIntroducedAttribute in _mixin.Type.GetCustomAttributes (typeof (NonIntroducedAttribute), true))
-        _nonIntroducedInterfaces.Add (notIntroducedAttribute.NonIntroducedInterface);
+        _nonIntroducedInterfaces.Add (notIntroducedAttribute.NonIntroducedType);
     }
 
     public void Apply ()
@@ -51,9 +51,9 @@ namespace Remotion.Mixins.Definitions.Building
 
     public void Apply (Type implementedInterface)
     {
-      if (_mixin.TargetClass.IntroducedInterfaces.ContainsKey (implementedInterface))
+      if (_mixin.TargetClass.ReceivedInterfaces.ContainsKey (implementedInterface))
       {
-        MixinDefinition otherIntroducer = _mixin.TargetClass.IntroducedInterfaces[implementedInterface].Implementer;
+        MixinDefinition otherIntroducer = _mixin.TargetClass.ReceivedInterfaces[implementedInterface].Implementer;
         string message = string.Format (
             "Two mixins introduce the same interface {0} to base class {1}: {2} and {3}.",
             implementedInterface.FullName,
@@ -65,22 +65,22 @@ namespace Remotion.Mixins.Definitions.Building
 
       InterfaceIntroductionDefinition introducedInterface = new InterfaceIntroductionDefinition (implementedInterface, _mixin);
       _mixin.InterfaceIntroductions.Add (introducedInterface);
-      _mixin.TargetClass.IntroducedInterfaces.Add (introducedInterface);
+      _mixin.TargetClass.ReceivedInterfaces.Add (introducedInterface);
 
       AnalyzeIntroducedMembers (introducedInterface);
     }
 
     public void ApplyNonIntroduced (Type implementedInterface, bool explicitSuppression)
     {
-      NonIntroducedInterfaceDefinition introducedInterface =
-          new NonIntroducedInterfaceDefinition (implementedInterface, _mixin, explicitSuppression);
-      _mixin.NonIntroducedInterfaces.Add (introducedInterface);
+      NonInterfaceIntroductionDefinition nonIntroducedInterface =
+          new NonInterfaceIntroductionDefinition (implementedInterface, _mixin, explicitSuppression);
+      _mixin.NonInterfaceIntroductions.Add (nonIntroducedInterface);
     }
 
 
     private void AnalyzeIntroducedMembers (InterfaceIntroductionDefinition introducedInterface)
     {
-      MemberImplementationFinder memberFinder = new MemberImplementationFinder (introducedInterface.Type, _mixin);
+      MemberImplementationFinder memberFinder = new MemberImplementationFinder (introducedInterface.InterfaceType, _mixin);
       Set<MethodInfo> specialMethods = new Set<MethodInfo>();
 
       AnalyzeProperties (introducedInterface, memberFinder, specialMethods);
@@ -91,7 +91,7 @@ namespace Remotion.Mixins.Definitions.Building
     private void AnalyzeProperties (InterfaceIntroductionDefinition introducedInterface, MemberImplementationFinder memberFinder,
          Set<MethodInfo> specialMethods)
     {
-      foreach (PropertyInfo interfaceProperty in introducedInterface.Type.GetProperties())
+      foreach (PropertyInfo interfaceProperty in introducedInterface.InterfaceType.GetProperties())
       {
         PropertyDefinition implementer = memberFinder.FindPropertyImplementation (interfaceProperty);
         CheckMemberImplementationFound (implementer, interfaceProperty);
@@ -111,7 +111,7 @@ namespace Remotion.Mixins.Definitions.Building
     private void AnalyzeEvents (InterfaceIntroductionDefinition introducedInterface, MemberImplementationFinder memberFinder,
         Set<MethodInfo> specialMethods)
     {
-      foreach (EventInfo interfaceEvent in introducedInterface.Type.GetEvents())
+      foreach (EventInfo interfaceEvent in introducedInterface.InterfaceType.GetEvents())
       {
         EventDefinition implementer = memberFinder.FindEventImplementation (interfaceEvent);
         CheckMemberImplementationFound (implementer, interfaceEvent);
@@ -126,7 +126,7 @@ namespace Remotion.Mixins.Definitions.Building
     private void AnalyzeMethods (InterfaceIntroductionDefinition introducedInterface, MemberImplementationFinder memberFinder,
         Set<MethodInfo> specialMethods)
     {
-      foreach (MethodInfo interfaceMethod in introducedInterface.Type.GetMethods())
+      foreach (MethodInfo interfaceMethod in introducedInterface.InterfaceType.GetMethods())
       {
         if (!specialMethods.Contains (interfaceMethod))
         {

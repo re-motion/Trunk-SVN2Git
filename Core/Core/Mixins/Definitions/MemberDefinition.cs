@@ -16,20 +16,9 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Definitions
 {
   [DebuggerDisplay ("{MemberInfo}, DeclaringClass = {DeclaringClass.Type}")]
-  public abstract class MemberDefinition : IAttributeIntroductionTargetDefinition, IVisitableDefinition
+  public abstract class MemberDefinition : IAttributeIntroductionTarget, IAttributeIntroductionSource, IVisitableDefinition
   {
-    private readonly MemberInfo _memberInfo;
-    private readonly ClassDefinitionBase _declaringClass;
     private IVisitableDefinition _parent;
-
-    private readonly MultiDefinitionCollection<Type, AttributeDefinition> _customAttributes =
-        new MultiDefinitionCollection<Type, AttributeDefinition> (delegate (AttributeDefinition a) { return a.AttributeType; });
-    private readonly MultiDefinitionCollection<Type, AttributeIntroductionDefinition> _introducedAttributes =
-        new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (delegate (AttributeIntroductionDefinition a) { return a.AttributeType; });
-    private readonly MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> _suppressedIntroducedAttributes =
-        new MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> (
-        delegate (SuppressedAttributeIntroductionDefinition a) { return a.AttributeType; });
-
 
     private IDefinitionCollection<Type, MemberDefinition> _internalOverridesWrapper = null;
 
@@ -38,20 +27,30 @@ namespace Remotion.Mixins.Definitions
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       ArgumentUtility.CheckNotNull ("declaringClass", declaringClass);
 
-      _memberInfo = memberInfo;
-      _declaringClass = declaringClass;
+      SuppressedReceivedAttributes = new MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> (a => a.AttributeType);
+      ReceivedAttributes = new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (a => a.AttributeType);
+      CustomAttributes = new MultiDefinitionCollection<Type, AttributeDefinition> (a => a.AttributeType);
+
+      SuppressedAttributeIntroductions = new MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> (a => a.AttributeType);
+      NonAttributeIntroductions = new MultiDefinitionCollection<Type, NonAttributeIntroductionDefinition> (a => a.AttributeType);
+      AttributeIntroductions = new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (a => a.AttributeType);
+
+      MemberInfo = memberInfo;
+      DeclaringClass = declaringClass;
       _parent = declaringClass;
     }
 
-    public MemberInfo MemberInfo
-    {
-      get { return _memberInfo; }
-    }
+    public MultiDefinitionCollection<Type, AttributeDefinition> CustomAttributes { get; private set; }
+    
+    public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> ReceivedAttributes { get; private set; }
+    public MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> SuppressedReceivedAttributes { get; private set; }
 
-    public ClassDefinitionBase DeclaringClass
-    {
-      get { return _declaringClass; }
-    }
+    public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> AttributeIntroductions { get; private set; }
+    public MultiDefinitionCollection<Type, NonAttributeIntroductionDefinition> NonAttributeIntroductions { get; private set; }
+    public MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> SuppressedAttributeIntroductions { get; private set; }
+
+    public MemberInfo MemberInfo { get; private set; }
+    public ClassDefinitionBase DeclaringClass { get; private set; }
 
     public MemberTypes MemberType
     {
@@ -91,12 +90,7 @@ namespace Remotion.Mixins.Definitions
       internal set { _parent = ArgumentUtility.CheckNotNull ("value", value); }
     }
 
-    public MultiDefinitionCollection<Type, AttributeDefinition> CustomAttributes
-    {
-      get { return _customAttributes; }
-    }
-
-    public ICustomAttributeProvider DeclaringEntity
+    public ICustomAttributeProvider CustomAttributeProvider
     {
       get { return MemberInfo; }
     }
@@ -111,16 +105,6 @@ namespace Remotion.Mixins.Definitions
         }
         return _internalOverridesWrapper;
       }
-    }
-
-    public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> IntroducedAttributes
-    {
-      get { return _introducedAttributes; }
-    }
-
-    public MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> SuppressedIntroducedAttributes
-    {
-      get { return _suppressedIntroducedAttributes; }
     }
 
     protected abstract IDefinitionCollection<Type, MemberDefinition> GetInternalOverridesWrapper();
@@ -140,10 +124,11 @@ namespace Remotion.Mixins.Definitions
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       ChildSpecificAccept (visitor);
 
-      _customAttributes.Accept (visitor);
-      _introducedAttributes.Accept (visitor);
+      CustomAttributes.Accept (visitor);
+      AttributeIntroductions.Accept (visitor);
+      NonAttributeIntroductions.Accept (visitor);
 
-      Assertion.IsTrue (SuppressedIntroducedAttributes.Count == 0, "Must be updated once we support suppressing attributes on members");
+      Assertion.IsTrue (SuppressedAttributeIntroductions.Count == 0, "Must be updated once we support suppressing attributes on members");
     }
 
     protected abstract void ChildSpecificAccept (IDefinitionVisitor visitor);

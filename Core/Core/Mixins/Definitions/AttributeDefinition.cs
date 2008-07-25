@@ -46,6 +46,16 @@ namespace Remotion.Mixins.Definitions
       get { return _data.Constructor.DeclaringType; }
     }
 
+    public bool IsIntroducible
+    {
+      get { return AttributeUtility.IsAttributeInherited (AttributeType) || IsCopyTemplate; }
+    }
+
+    public bool IsSuppressAttribute
+    {
+      get { return typeof (SuppressAttributesAttribute).IsAssignableFrom (AttributeType); }
+    }
+
     public void Accept (IDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);

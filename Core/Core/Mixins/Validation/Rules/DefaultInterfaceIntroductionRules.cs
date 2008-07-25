@@ -24,13 +24,13 @@ namespace Remotion.Mixins.Validation.Rules
     [DelegateRuleDescription (Message = "The interface 'IMixinTarget' is part of the mixin infrastructure and cannot be introduced by a mixin.")]
     private void IMixinTargetCannotBeIntroduced (DelegateValidationRule<InterfaceIntroductionDefinition>.Args args)
     {
-      SingleMust (!typeof (IMixinTarget).Equals (args.Definition.Type), args.Log, args.Self);
+      SingleMust (!typeof (IMixinTarget).Equals (args.Definition.InterfaceType), args.Log, args.Self);
     }
 
     [DelegateRuleDescription (Message = "An interface introduced by a mixin does not have public visibility.")]
     private void IntroducedInterfaceMustBePublic (DelegateValidationRule<InterfaceIntroductionDefinition>.Args args)
     {
-      SingleMust (args.Definition.Type.IsVisible, args.Log, args.Self);
+      SingleMust (args.Definition.InterfaceType.IsVisible, args.Log, args.Self);
     }
   }
 }

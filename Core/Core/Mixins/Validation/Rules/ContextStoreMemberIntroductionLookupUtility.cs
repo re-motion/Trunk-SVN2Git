@@ -33,7 +33,7 @@ namespace Remotion.Mixins.Validation.Rules
     private MultiDictionary<string, TMemberIntroductionDefinition> GetUncachedIntroductions (TargetClassDefinition targetClass)
     {
       MultiDictionary<string, TMemberIntroductionDefinition> introductionDefinitions = new MultiDictionary<string, TMemberIntroductionDefinition> ();
-      foreach (InterfaceIntroductionDefinition interfaceIntroduction in targetClass.IntroducedInterfaces)
+      foreach (InterfaceIntroductionDefinition interfaceIntroduction in targetClass.ReceivedInterfaces)
       {
         foreach (IMemberIntroductionDefinition memberIntroduction in interfaceIntroduction.GetIntroducedMembers())
         {

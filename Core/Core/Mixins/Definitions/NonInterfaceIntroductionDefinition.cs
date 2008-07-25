@@ -9,31 +9,27 @@
  */
 
 using System;
+using System.Diagnostics;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  public class NonIntroducedInterfaceDefinition : IVisitableDefinition
+  [DebuggerDisplay ("{FullName}, not introduced by {Implementer.FullName}")]
+  public class NonInterfaceIntroductionDefinition : IVisitableDefinition
   {
-    public readonly Type Type;
-    public readonly MixinDefinition Implementer;
-
-    private readonly bool _explicitSuppression;
-
-    public NonIntroducedInterfaceDefinition (Type type, MixinDefinition implementer, bool explicitSuppression)
+    public NonInterfaceIntroductionDefinition (Type type, MixinDefinition implementer, bool explicitSuppression)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("implementer", implementer);
 
-      Type = type;
+      InterfaceType = type;
       Implementer = implementer;
-      _explicitSuppression = explicitSuppression;
+      IsExplicitlySuppressed = explicitSuppression;
     }
 
-    public bool IsExplicitlySuppressed
-    {
-      get { return _explicitSuppression; }
-    }
+    public Type InterfaceType { get; private set; }
+    public MixinDefinition Implementer { get; private set; }
+    public bool IsExplicitlySuppressed { get; private set; }
 
     public bool IsShadowed
     {
@@ -48,7 +44,7 @@ namespace Remotion.Mixins.Definitions
 
     public string FullName
     {
-      get { return Type.FullName; }
+      get { return InterfaceType.FullName; }
     }
 
     public IVisitableDefinition Parent

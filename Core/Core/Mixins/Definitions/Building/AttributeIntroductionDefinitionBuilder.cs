@@ -10,74 +10,79 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions.Building
 {
   public class AttributeIntroductionDefinitionBuilder
   {
-    private readonly IAttributeIntroductionTargetDefinition _target;
-    private readonly List<AttributeDefinition> _suppressors;
-
-    public AttributeIntroductionDefinitionBuilder (IAttributeIntroductionTargetDefinition target)
+    public AttributeIntroductionDefinitionBuilder (IAttributeIntroductionTarget target)
     {
-      _target = target;
-      _suppressors = new List<AttributeDefinition> ();
+      Target = target;
+      Suppressors = new List<AttributeDefinition> ();
     }
 
-    public List<AttributeDefinition> Suppressors
-    {
-      get { return _suppressors; }
-    }
-
-    public IAttributeIntroductionTargetDefinition Target
-    {
-      get { return _target; }
-    }
+    public List<AttributeDefinition> Suppressors { get; private set; }
+    public IAttributeIntroductionTarget Target { get; private set; }
 
     public void AddPotentialSuppressors (IEnumerable<AttributeDefinition> attributes)
     {
-      foreach (AttributeDefinition attribute in attributes)
-      {
-        if (typeof (SuppressAttributesAttribute).IsAssignableFrom (attribute.AttributeType))
-          _suppressors.Add (attribute);
-      }
+      Suppressors.AddRange (attributes.Where (a => a.IsSuppressAttribute));
     }
 
-    public void Apply (IAttributableDefinition attributeSource)
+    public void Apply (IAttributeIntroductionSource attributeSource)
     {
-      foreach (AttributeDefinition attribute in attributeSource.CustomAttributes)
+      foreach (AttributeDefinition attribute in attributeSource.CustomAttributes.Where (a => a.IsIntroducible))
       {
-        if (ShouldBeIntroduced (attribute))
+        AttributeDefinition suppressor = GetSuppressor (attribute);
+        if (suppressor != null)
         {
-          AttributeDefinition suppressor = GetSuppressor (attribute);
-          if (suppressor == null)
-            _target.IntroducedAttributes.Add (new AttributeIntroductionDefinition (_target, attribute));
-          else
-            _target.SuppressedIntroducedAttributes.Add (new SuppressedAttributeIntroductionDefinition (_target, attribute, suppressor));
+          var suppressedDefinition = new SuppressedAttributeIntroductionDefinition (Target, attribute, suppressor);
+          attributeSource.SuppressedAttributeIntroductions.Add (suppressedDefinition);
+        }
+        else if (IsImplicitlyExcluded (attribute))
+        {
+          var nonIntroductionDefinition = new NonAttributeIntroductionDefinition (attribute, false);
+          attributeSource.NonAttributeIntroductions.Add (nonIntroductionDefinition);
+        }
+        else if (IsExplicitlyExcluded (attribute))
+        {
+          var nonIntroductionDefinition = new NonAttributeIntroductionDefinition (attribute, true);
+          attributeSource.NonAttributeIntroductions.Add (nonIntroductionDefinition);
+        }
+        else
+        {
+          var introductionDefinition = new AttributeIntroductionDefinition (Target, attribute);
+          Target.ReceivedAttributes.Add (introductionDefinition);
+          attributeSource.AttributeIntroductions.Add (introductionDefinition);
         }
       }
     }
 
-    public bool ShouldBeIntroduced (AttributeDefinition attribute)
-    {
-      return (AttributeUtility.IsAttributeInherited (attribute.AttributeType) || attribute.IsCopyTemplate)
-          && (AttributeUtility.IsAttributeAllowMultiple (attribute.AttributeType) || !_target.CustomAttributes.ContainsKey (attribute.AttributeType));
-    }
-
     public AttributeDefinition GetSuppressor (AttributeDefinition attribute)
     {
-      ICustomAttributeProvider declaringEntity = attribute.DeclaringDefinition.DeclaringEntity;
-      foreach (AttributeDefinition suppressor in _suppressors)
-      {
-        SuppressAttributesAttribute suppressorInstance = (SuppressAttributesAttribute)suppressor.Instance;
-        ICustomAttributeProvider suppressingEntity = suppressor.DeclaringDefinition.DeclaringEntity;
-        if (suppressorInstance.IsSuppressed (attribute.AttributeType, declaringEntity, suppressingEntity))
-          return suppressor;
-      }
-      return null;
+      ICustomAttributeProvider declaringEntity = attribute.DeclaringDefinition.CustomAttributeProvider;
+      var suppressors = from s in Suppressors
+                        let instance = (SuppressAttributesAttribute) s.Instance
+                        let suppressingEntity = s.DeclaringDefinition.CustomAttributeProvider
+                        where instance.IsSuppressed (attribute.AttributeType, declaringEntity, suppressingEntity)
+                        select s;
+      return suppressors.FirstOrDefault ();
+    }
+
+    private bool IsImplicitlyExcluded (AttributeDefinition attribute)
+    {
+      return !AttributeUtility.IsAttributeAllowMultiple (attribute.AttributeType) && Target.CustomAttributes.ContainsKey (attribute.AttributeType);
+    }
+
+    private bool IsExplicitlyExcluded (AttributeDefinition attribute)
+    {
+      var excluders = from NonIntroducedAttribute excluder in attribute.DeclaringDefinition.CustomAttributeProvider.GetCustomAttributes (typeof (NonIntroducedAttribute), true)
+                      where excluder.NonIntroducedType.IsAssignableFrom (attribute.AttributeType)
+                      select attribute;
+      return excluders.Any();
     }
   }
 }

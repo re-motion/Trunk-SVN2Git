@@ -18,60 +18,43 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Definitions
 {
   [DebuggerDisplay ("{Type}")]
-  public class TargetClassDefinition : ClassDefinitionBase, IAttributeIntroductionTargetDefinition
+  public class TargetClassDefinition : ClassDefinitionBase, IAttributeIntroductionTarget
   {
     public readonly UniqueDefinitionCollection<Type, MixinDefinition> Mixins =
-        new UniqueDefinitionCollection<Type, MixinDefinition> (delegate (MixinDefinition m) { return m.Type; });
+        new UniqueDefinitionCollection<Type, MixinDefinition> (m => m.Type);
     public readonly UniqueDefinitionCollection<Type, RequiredFaceTypeDefinition> RequiredFaceTypes =
-        new UniqueDefinitionCollection<Type, RequiredFaceTypeDefinition> (delegate (RequiredFaceTypeDefinition t) { return t.Type; });
+        new UniqueDefinitionCollection<Type, RequiredFaceTypeDefinition> (t => t.Type);
     public readonly UniqueDefinitionCollection<Type, RequiredBaseCallTypeDefinition> RequiredBaseCallTypes =
-        new UniqueDefinitionCollection<Type, RequiredBaseCallTypeDefinition> (delegate (RequiredBaseCallTypeDefinition t) { return t.Type; });
+        new UniqueDefinitionCollection<Type, RequiredBaseCallTypeDefinition> (t => t.Type);
     public readonly UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> RequiredMixinTypes =
-        new UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> (delegate (RequiredMixinTypeDefinition t) { return t.Type; });
-    public readonly UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> IntroducedInterfaces =
-        new UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> (delegate (InterfaceIntroductionDefinition i) { return i.Type; });
-    
-    private readonly MultiDefinitionCollection<Type, AttributeIntroductionDefinition> _introducedAttributes =
-        new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (delegate (AttributeIntroductionDefinition a) { return a.AttributeType; });
-    private readonly MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> _suppressedIntroducedAttributes =
-        new MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> (
-          delegate (SuppressedAttributeIntroductionDefinition a) { return a.AttributeType; });
-
-    private readonly MixinTypeInstantiator _mixinTypeInstantiator;
-    private readonly ClassContext _configurationContext;
+        new UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> (t => t.Type);
+    public readonly UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> ReceivedInterfaces =
+        new UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> (i => i.InterfaceType);
 
     public TargetClassDefinition (ClassContext configurationContext)
         : base (configurationContext.Type)
     {
       ArgumentUtility.CheckNotNull ("configurationContext", configurationContext);
 
-      _configurationContext = configurationContext;
-      _mixinTypeInstantiator = new MixinTypeInstantiator (configurationContext.Type);
+      ReceivedAttributes = new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (a => a.AttributeType);
+
+      ConfigurationContext = configurationContext;
+      MixinTypeInstantiator = new MixinTypeInstantiator (configurationContext.Type);
     }
 
-    public ClassContext ConfigurationContext
-    {
-      get { return _configurationContext; }
-    }
+    public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> ReceivedAttributes { get; private set; }
 
-    public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> IntroducedAttributes
-    {
-      get { return _introducedAttributes; }
-    }
-
-    public MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> SuppressedIntroducedAttributes
-    {
-      get { return _suppressedIntroducedAttributes; }
-    }
-
-    internal MixinTypeInstantiator MixinTypeInstantiator
-    {
-      get { return _mixinTypeInstantiator; }
-    }
+    public ClassContext ConfigurationContext { get; private set; }
+    internal MixinTypeInstantiator MixinTypeInstantiator { get; private set; }
 
     public bool IsInterface
     {
       get { return Type.IsInterface; }
+    }
+
+    public bool IsAbstract
+    {
+      get { return Type.IsAbstract; }
     }
 
     public override IVisitableDefinition Parent
@@ -89,19 +72,17 @@ namespace Remotion.Mixins.Definitions
       RequiredFaceTypes.Accept (visitor);
       RequiredBaseCallTypes.Accept (visitor);
       RequiredMixinTypes.Accept (visitor);
-      IntroducedAttributes.Accept (visitor);
-      SuppressedIntroducedAttributes.Accept (visitor);
     }
 
     public bool HasMixinWithConfiguredType(Type configuredType)
     {
-      Type realType = _mixinTypeInstantiator.GetClosedMixinType (configuredType);
+      Type realType = MixinTypeInstantiator.GetClosedMixinType (configuredType);
       return Mixins.ContainsKey (realType);
     }
 
     public MixinDefinition GetMixinByConfiguredType(Type configuredType)
     {
-      Type realType = _mixinTypeInstantiator.GetClosedMixinType (configuredType);
+      Type realType = MixinTypeInstantiator.GetClosedMixinType (configuredType);
       return Mixins[realType];
     }
 
@@ -124,11 +105,6 @@ namespace Remotion.Mixins.Definitions
       foreach (MixinDefinition mixin in Mixins)
         foreach (EventDefinition eventDefinition in mixin.Events)
           yield return eventDefinition;
-    }
-
-    public bool IsAbstract
-    {
-      get { return Type.IsAbstract; }
     }
   }
 }

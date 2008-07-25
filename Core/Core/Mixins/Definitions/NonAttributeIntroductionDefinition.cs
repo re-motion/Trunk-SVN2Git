@@ -14,44 +14,43 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  [DebuggerDisplay ("{FullName}, suppressed on {Attribute.DeclaringDefinition.FullName} by {Suppressor.DeclaringDefinition.FullName}")]
-  public class SuppressedAttributeIntroductionDefinition : IVisitableDefinition
+  [DebuggerDisplay ("{FullName}, not introduced by {Attribute.DeclaringDefinition.FullName}")]
+  public class NonAttributeIntroductionDefinition : IVisitableDefinition
   {
-    public readonly IAttributeIntroductionTarget Target;
-    public readonly AttributeDefinition Attribute;
-    public readonly AttributeDefinition Suppressor;
-
-    public SuppressedAttributeIntroductionDefinition (IAttributeIntroductionTarget target, AttributeDefinition attribute,
-        AttributeDefinition suppressor)
+    public NonAttributeIntroductionDefinition (AttributeDefinition attribute, bool explicitSuppression)
     {
-      ArgumentUtility.CheckNotNull ("target", target);
       ArgumentUtility.CheckNotNull ("attribute", attribute);
-      ArgumentUtility.CheckNotNull ("suppressor", suppressor);
-
-      Target = target;
       Attribute = attribute;
-      Suppressor = suppressor;
+      IsExplicitlySuppressed = explicitSuppression;
     }
+
+    public AttributeDefinition Attribute { get; private set; }
+    public bool IsExplicitlySuppressed { get; private set; }
 
     public Type AttributeType
     {
       get { return Attribute.AttributeType; }
     }
 
-    public string FullName
+    public bool IsShadowed
     {
-      get { return Attribute.FullName; }
-    }
-
-    public IVisitableDefinition Parent
-    {
-      get { return Target; }
+      get { return !IsExplicitlySuppressed; }
     }
 
     public void Accept (IDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       visitor.Visit (this);
+    }
+
+    public string FullName
+    {
+      get { return Attribute.AttributeType.FullName; }
+    }
+
+    public IVisitableDefinition Parent
+    {
+      get { return Attribute.Parent; }
     }
   }
 }

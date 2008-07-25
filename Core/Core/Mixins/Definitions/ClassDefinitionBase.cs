@@ -90,7 +90,7 @@ namespace Remotion.Mixins.Definitions
       get { return _customAttributes; }
     }
 
-    public ICustomAttributeProvider DeclaringEntity
+    public ICustomAttributeProvider CustomAttributeProvider
     {
       get { return Type; }
     }

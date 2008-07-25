@@ -16,68 +16,55 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Definitions
 {
   [DebuggerDisplay ("{Type}, TargetClass = {TargetClass.Type}")]
-  public class MixinDefinition : ClassDefinitionBase
+  public class MixinDefinition : ClassDefinitionBase, IAttributeIntroductionSource
   {
     public readonly UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> InterfaceIntroductions =
-        new UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> (delegate (InterfaceIntroductionDefinition i) { return i.Type; });
-    public readonly UniqueDefinitionCollection<Type, NonIntroducedInterfaceDefinition> NonIntroducedInterfaces =
-        new UniqueDefinitionCollection<Type, NonIntroducedInterfaceDefinition> (
-            delegate (NonIntroducedInterfaceDefinition i) { return i.Type; });
+        new UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> (i => i.InterfaceType);
+    public readonly UniqueDefinitionCollection<Type, NonInterfaceIntroductionDefinition> NonInterfaceIntroductions =
+        new UniqueDefinitionCollection<Type, NonInterfaceIntroductionDefinition> (i => i.InterfaceType);
+
     public readonly UniqueDefinitionCollection<Type, ThisDependencyDefinition> ThisDependencies =
-        new UniqueDefinitionCollection<Type, ThisDependencyDefinition> (delegate (ThisDependencyDefinition d) { return d.RequiredType.Type; });
+        new UniqueDefinitionCollection<Type, ThisDependencyDefinition> (d => d.RequiredType.Type);
     public readonly UniqueDefinitionCollection<Type, BaseDependencyDefinition> BaseDependencies =
-        new UniqueDefinitionCollection<Type, BaseDependencyDefinition> (delegate (BaseDependencyDefinition d) { return d.RequiredType.Type; });
+        new UniqueDefinitionCollection<Type, BaseDependencyDefinition> (d => d.RequiredType.Type);
     public readonly UniqueDefinitionCollection<Type, MixinDependencyDefinition> MixinDependencies =
-        new UniqueDefinitionCollection<Type, MixinDependencyDefinition> (delegate (MixinDependencyDefinition d) { return d.RequiredType.Type; });
-
-    private readonly TargetClassDefinition _targetClass;
-    private readonly bool _acceptsAlphabeticOrdering;
-
-    private int _mixinIndex;
-    private readonly MixinKind _mixinKind;
+        new UniqueDefinitionCollection<Type, MixinDependencyDefinition> (d => d.RequiredType.Type);
 
     public MixinDefinition (MixinKind mixinKind, Type type, TargetClassDefinition targetClass, bool acceptsAlphabeticOrdering)
         : base (type)
     {
       ArgumentUtility.CheckNotNull ("targetClass", targetClass);
-      _mixinKind = mixinKind;
-      _targetClass = targetClass;
-      _acceptsAlphabeticOrdering = acceptsAlphabeticOrdering;
+
+      SuppressedAttributeIntroductions = new MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> (a => a.AttributeType);
+      NonAttributeIntroductions = new MultiDefinitionCollection<Type, NonAttributeIntroductionDefinition> (a => a.AttributeType);
+      AttributeIntroductions = new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (a => a.AttributeType);
+
+      MixinKind = mixinKind;
+      TargetClass = targetClass;
+      AcceptsAlphabeticOrdering = acceptsAlphabeticOrdering;
     }
 
-    public TargetClassDefinition TargetClass
-    {
-      get { return _targetClass; }
-    }
+    public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> AttributeIntroductions { get; private set; }
+    public MultiDefinitionCollection<Type, NonAttributeIntroductionDefinition> NonAttributeIntroductions { get; private set; }
+    public MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> SuppressedAttributeIntroductions { get; private set; }
 
-    public IEnumerable<MemberDefinition> GetAllOverrides()
-    {
-      foreach (MemberDefinition member in GetAllMembers())
-      {
-        if (member.BaseAsMember != null)
-          yield return member;
-      }
-    }
+    public TargetClassDefinition TargetClass { get; private set; }
+    public int MixinIndex { get; internal set; }
+    public MixinKind MixinKind { get; private set; }
+    public bool AcceptsAlphabeticOrdering { get; private set; }
 
     public override IVisitableDefinition Parent
     {
       get { return TargetClass; }
     }
 
-    public int MixinIndex
+    public IEnumerable<MemberDefinition> GetAllOverrides ()
     {
-      get { return _mixinIndex; }
-      internal set { _mixinIndex = value; }
-    }
-
-    public MixinKind MixinKind
-    {
-      get { return _mixinKind; }
-    }
-
-    public bool AcceptsAlphabeticOrdering
-    {
-      get { return _acceptsAlphabeticOrdering; }
+      foreach (MemberDefinition member in GetAllMembers ())
+      {
+        if (member.BaseAsMember != null)
+          yield return member;
+      }
     }
 
     protected override void ChildSpecificAccept (IDefinitionVisitor visitor)
@@ -87,7 +74,12 @@ namespace Remotion.Mixins.Definitions
       visitor.Visit (this);
 
       InterfaceIntroductions.Accept (visitor);
-      NonIntroducedInterfaces.Accept (visitor);
+      NonInterfaceIntroductions.Accept (visitor);
+      
+      AttributeIntroductions.Accept (visitor);
+      NonAttributeIntroductions.Accept (visitor);
+      SuppressedAttributeIntroductions.Accept (visitor);
+
       ThisDependencies.Accept (visitor);
       BaseDependencies.Accept (visitor);
       MixinDependencies.Accept (visitor);
@@ -95,9 +87,9 @@ namespace Remotion.Mixins.Definitions
 
     internal IEnumerable<DependencyDefinitionBase> GetOrderRelevantDependencies ()
     {
-      foreach (BaseDependencyDefinition dependency in BaseDependencies)
+      foreach (var dependency in BaseDependencies)
         yield return dependency;
-      foreach (MixinDependencyDefinition dependency in MixinDependencies)
+      foreach (var dependency in MixinDependencies)
         yield return dependency;
     }
   }

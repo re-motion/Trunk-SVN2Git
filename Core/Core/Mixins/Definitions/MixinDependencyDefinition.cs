@@ -23,8 +23,8 @@ namespace Remotion.Mixins.Definitions
     public override ClassDefinitionBase GetImplementer ()
     {
       if (RequiredType.Type.IsInterface)
-        return Depender.TargetClass.IntroducedInterfaces.ContainsKey (RequiredType.Type)
-            ? Depender.TargetClass.IntroducedInterfaces[RequiredType.Type].Implementer : null;
+        return Depender.TargetClass.ReceivedInterfaces.ContainsKey (RequiredType.Type)
+            ? Depender.TargetClass.ReceivedInterfaces[RequiredType.Type].Implementer : null;
       else
         return Depender.TargetClass.Mixins[RequiredType.Type];
     }

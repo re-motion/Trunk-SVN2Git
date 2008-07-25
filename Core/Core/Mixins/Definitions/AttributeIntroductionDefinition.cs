@@ -9,16 +9,18 @@
  */
 
 using System;
+using System.Diagnostics;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
+  [DebuggerDisplay ("{FullName} introduced via {Attribute.DeclaringDefinition.FullName}")]
   public class AttributeIntroductionDefinition : IVisitableDefinition
   {
-    public readonly IAttributeIntroductionTargetDefinition Target;
+    public readonly IAttributeIntroductionTarget Target;
     public readonly AttributeDefinition Attribute;
 
-    public AttributeIntroductionDefinition (IAttributeIntroductionTargetDefinition target, AttributeDefinition attribute)
+    public AttributeIntroductionDefinition (IAttributeIntroductionTarget target, AttributeDefinition attribute)
     {
       ArgumentUtility.CheckNotNull ("target", target);
       ArgumentUtility.CheckNotNull ("attribute", attribute);
@@ -39,7 +41,7 @@ namespace Remotion.Mixins.Definitions
 
     public IVisitableDefinition Parent
     {
-      get { return Target; }
+      get { return Attribute.Parent; }
     }
 
     public void Accept (IDefinitionVisitor visitor)

@@ -27,7 +27,7 @@ namespace Remotion.Mixins.Validation.Rules
     private void AllowMultipleRequiredIfAttributeIntroducedMultipleTimes (DelegateValidationRule<AttributeIntroductionDefinition>.Args args)
     {
       SingleMust (AttributeUtility.IsAttributeAllowMultiple (args.Definition.AttributeType)
-        || args.Definition.Target.IntroducedAttributes.GetItemCount (args.Definition.AttributeType) < 2, args.Log, args.Self);
+        || args.Definition.Target.ReceivedAttributes.GetItemCount (args.Definition.AttributeType) < 2, args.Log, args.Self);
     }
   }
 }

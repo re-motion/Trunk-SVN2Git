@@ -9,14 +9,16 @@
  */
 
 using System;
-using System.Reflection;
+using Remotion.Mixins;
 
-namespace Remotion.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  public interface IAttributableDefinition
+  [NonIntroduced (typeof (ISimpleInterface))]
+  public class MixinNonIntroducingSimpleInterface : ISimpleInterface
   {
-    MultiDefinitionCollection<Type, AttributeDefinition> CustomAttributes { get; }
-    ICustomAttributeProvider CustomAttributeProvider { get; }
-    string FullName { get; }
+    public string Method ()
+    {
+      return "MixinSuppressingSimpleInterface.Method";
+    }
   }
 }

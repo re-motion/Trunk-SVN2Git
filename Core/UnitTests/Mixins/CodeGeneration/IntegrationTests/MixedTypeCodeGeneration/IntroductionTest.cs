@@ -81,9 +81,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void ExplicitlyNonIntroducedInterface ()
     {
-      object o = CreateMixedObject<NullTarget> (typeof (MixinSuppressingSimpleInterface)).With();
+      object o = CreateMixedObject<NullTarget> (typeof (MixinNonIntroducingSimpleInterface)).With();
       Assert.IsFalse (o is ISimpleInterface);
-      Assert.IsTrue (Mixin.Get<MixinSuppressingSimpleInterface> (o) is ISimpleInterface);
+      Assert.IsTrue (Mixin.Get<MixinNonIntroducingSimpleInterface> (o) is ISimpleInterface);
     }
 
     [Test]

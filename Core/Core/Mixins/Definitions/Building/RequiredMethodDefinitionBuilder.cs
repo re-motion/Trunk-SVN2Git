@@ -87,7 +87,7 @@ namespace Remotion.Mixins.Definitions.Building
 
       if (requirement.TargetClass.ImplementedInterfaces.Contains (requirement.Type))
         ApplyForImplementedInterface (requirement);
-      else if (requirement.TargetClass.IntroducedInterfaces.ContainsKey (requirement.Type))
+      else if (requirement.TargetClass.ReceivedInterfaces.ContainsKey (requirement.Type))
         ApplyForIntroducedInterface (requirement);
       else
         ApplyWithDuckTyping (requirement);
@@ -109,7 +109,7 @@ namespace Remotion.Mixins.Definitions.Building
     private void ApplyForIntroducedInterface (RequirementDefinitionBase requirement)
     {
       Assertion.IsTrue (requirement.Type.IsInterface);
-      InterfaceIntroductionDefinition introduction = _targetClassDefinition.IntroducedInterfaces[requirement.Type];
+      InterfaceIntroductionDefinition introduction = _targetClassDefinition.ReceivedInterfaces[requirement.Type];
       foreach (EventIntroductionDefinition eventIntroduction in introduction.IntroducedEvents)
       {
         AddRequiredMethod (requirement, eventIntroduction.InterfaceMember.GetAddMethod (), eventIntroduction.ImplementingMember.AddMethod);

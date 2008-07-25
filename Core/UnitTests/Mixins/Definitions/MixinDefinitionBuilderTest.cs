@@ -136,7 +136,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       TargetClassDefinition def = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1),
           typeof (MixinIntroducingGenericInterfaceWithTargetAsThisType<>));
-      Assert.IsTrue (def.IntroducedInterfaces.ContainsKey (typeof (IEquatable<BaseType1>)));
+      Assert.IsTrue (def.ReceivedInterfaces.ContainsKey (typeof (IEquatable<BaseType1>)));
     }
 
     [Test]

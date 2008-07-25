@@ -9,14 +9,13 @@
  */
 
 using System;
-using System.Reflection;
+using Remotion.Mixins;
 
-namespace Remotion.Mixins.Definitions
+namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  public interface IAttributableDefinition
+  [NonIntroduced (typeof (SimpleAttribute))]
+  [SimpleAttribute]
+  public class MixinNonIntroducingSimpleAttribute
   {
-    MultiDefinitionCollection<Type, AttributeDefinition> CustomAttributes { get; }
-    ICustomAttributeProvider CustomAttributeProvider { get; }
-    string FullName { get; }
   }
 }

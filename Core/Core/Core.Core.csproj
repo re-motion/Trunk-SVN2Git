@@ -98,6 +98,8 @@
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
     <Compile Include="BridgeImplementations\AssemblyFinderTypeDiscoveryServiceImplementation.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
+    <Compile Include="Mixins\Definitions\IAttributeIntroductionSource.cs" />
+    <Compile Include="Mixins\Definitions\NonAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\SuppressedAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\IMemberIntroductionDefinition.cs" />
     <Compile Include="Mixins\Validation\Rules\ContextStoreMemberLookupUtility.cs" />
@@ -240,7 +242,7 @@
     <Compile Include="Mixins\Definitions\EventDefinition.cs" />
     <Compile Include="Mixins\Definitions\EventIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\IAttributableDefinition.cs" />
-    <Compile Include="Mixins\Definitions\IAttributeIntroductionTargetDefinition.cs" />
+    <Compile Include="Mixins\Definitions\IAttributeIntroductionTarget.cs" />
     <Compile Include="Mixins\Definitions\IDefinitionCollection.cs" />
     <Compile Include="Mixins\Definitions\IDefinitionVisitor.cs" />
     <Compile Include="Mixins\Definitions\InterfaceIntroductionDefinition.cs" />
@@ -259,7 +261,7 @@
     <Compile Include="Mixins\Definitions\RequiredMethodDefinition.cs" />
     <Compile Include="Mixins\Definitions\RequiredMixinTypeDefinition.cs" />
     <Compile Include="Mixins\Definitions\RequirementDefinitionBase.cs" />
-    <Compile Include="Mixins\Definitions\NonIntroducedInterfaceDefinition.cs" />
+    <Compile Include="Mixins\Definitions\NonInterfaceIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\TargetClassDefinition.cs" />
     <Compile Include="Mixins\Definitions\TargetClassDefinitionCache.cs" />
     <Compile Include="Mixins\Definitions\ThisDependencyDefinition.cs" />

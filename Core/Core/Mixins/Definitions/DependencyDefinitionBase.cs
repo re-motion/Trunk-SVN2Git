@@ -91,8 +91,8 @@ namespace Remotion.Mixins.Definitions
     {
       if (RequiredType.Type.IsAssignableFrom (_depender.TargetClass.Type))
         return _depender.TargetClass;
-      else if (_depender.TargetClass.IntroducedInterfaces.ContainsKey (RequiredType.Type))
-        return _depender.TargetClass.IntroducedInterfaces[RequiredType.Type].Implementer;
+      else if (_depender.TargetClass.ReceivedInterfaces.ContainsKey (RequiredType.Type))
+        return _depender.TargetClass.ReceivedInterfaces[RequiredType.Type].Implementer;
       else if (!RequiredType.IsEmptyInterface) // duck interface
         return _depender.TargetClass; 
       else

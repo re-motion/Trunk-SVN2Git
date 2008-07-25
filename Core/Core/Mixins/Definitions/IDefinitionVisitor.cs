@@ -17,7 +17,7 @@ namespace Remotion.Mixins.Definitions
     void Visit (TargetClassDefinition targetClass);
     void Visit (MixinDefinition mixin);
     void Visit (InterfaceIntroductionDefinition interfaceIntroduction);
-    void Visit (NonIntroducedInterfaceDefinition definition);
+    void Visit (NonInterfaceIntroductionDefinition nonIntroductionDefinition);
     void Visit (MethodIntroductionDefinition methodIntroduction);
     void Visit (PropertyIntroductionDefinition propertyIntroduction);
     void Visit (EventIntroductionDefinition eventIntroduction);
@@ -33,6 +33,7 @@ namespace Remotion.Mixins.Definitions
     void Visit (MixinDependencyDefinition mixinDependency);
     void Visit (AttributeDefinition attribute);
     void Visit (AttributeIntroductionDefinition attributeIntroduction);
+    void Visit (NonAttributeIntroductionDefinition nonAttributeIntroduction);
     void Visit (SuppressedAttributeIntroductionDefinition suppressedAttributeIntroduction);
   }
 }

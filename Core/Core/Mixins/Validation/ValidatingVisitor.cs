@@ -22,7 +22,7 @@ namespace Remotion.Mixins.Validation
     private readonly List<IValidationRule<TargetClassDefinition>> _targetClassRules = new List<IValidationRule<TargetClassDefinition>> ();
     private readonly List<IValidationRule<MixinDefinition>> _mixinRules = new List<IValidationRule<MixinDefinition>> ();
     private readonly List<IValidationRule<InterfaceIntroductionDefinition>> _interfaceIntroductionRules = new List<IValidationRule<InterfaceIntroductionDefinition>> ();
-    private readonly IList<IValidationRule<NonIntroducedInterfaceDefinition>> _nonIntroductedInterfaceRules = new List<IValidationRule<NonIntroducedInterfaceDefinition>> ();
+    private readonly IList<IValidationRule<NonInterfaceIntroductionDefinition>> _nonIntroductedInterfaceRules = new List<IValidationRule<NonInterfaceIntroductionDefinition>> ();
     private readonly List<IValidationRule<MethodIntroductionDefinition>> _methodIntroductionRules = new List<IValidationRule<MethodIntroductionDefinition>> ();
     private readonly List<IValidationRule<PropertyIntroductionDefinition>> _propertyIntroductionRules = new List<IValidationRule<PropertyIntroductionDefinition>> ();
     private readonly List<IValidationRule<EventIntroductionDefinition>> _eventIntroductionRules = new List<IValidationRule<EventIntroductionDefinition>> ();
@@ -38,6 +38,7 @@ namespace Remotion.Mixins.Validation
     private readonly List<IValidationRule<MixinDependencyDefinition>> _mixinDependencyRules = new List<IValidationRule<MixinDependencyDefinition>> ();
     private readonly List<IValidationRule<AttributeDefinition>> _attributeRules = new List<IValidationRule<AttributeDefinition>> ();
     private readonly List<IValidationRule<AttributeIntroductionDefinition>> _attributeIntroductionRules = new List<IValidationRule<AttributeIntroductionDefinition>> ();
+    private readonly List<IValidationRule<NonAttributeIntroductionDefinition>> _nonAttributeIntroductionRules = new List<IValidationRule<NonAttributeIntroductionDefinition>> ();
     private readonly List<IValidationRule<SuppressedAttributeIntroductionDefinition>> _suppressedAttributeIntroductionRules = new List<IValidationRule<SuppressedAttributeIntroductionDefinition>> ();
 
     public ValidatingVisitor(IValidationLog validationLog)
@@ -61,7 +62,7 @@ namespace Remotion.Mixins.Validation
       get { return _interfaceIntroductionRules; }
     }
 
-    public IList<IValidationRule<NonIntroducedInterfaceDefinition>> NonIntroductedInterfaceRules
+    public IList<IValidationRule<NonInterfaceIntroductionDefinition>> NonIntroductedInterfaceRules
     {
       get { return _nonIntroductedInterfaceRules; }
     }
@@ -141,6 +142,11 @@ namespace Remotion.Mixins.Validation
       get { return _attributeIntroductionRules; }
     }
 
+    public IList<IValidationRule<NonAttributeIntroductionDefinition>> NonAttributeIntroductionRules
+    {
+      get { return _nonAttributeIntroductionRules; }
+    }
+
     public IList<IValidationRule<SuppressedAttributeIntroductionDefinition>> SuppressedAttributeIntroductionRules
     {
       get { return _suppressedAttributeIntroductionRules; }
@@ -164,10 +170,10 @@ namespace Remotion.Mixins.Validation
       CheckRules (_interfaceIntroductionRules, interfaceIntroduction);
     }
 
-    public void Visit (NonIntroducedInterfaceDefinition nonIntroducedInterface)
+    public void Visit (NonInterfaceIntroductionDefinition nonIntroductionDefinition)
     {
-      ArgumentUtility.CheckNotNull ("suppressedInterfaceIntroduction", nonIntroducedInterface);
-      CheckRules (_nonIntroductedInterfaceRules, nonIntroducedInterface);
+      ArgumentUtility.CheckNotNull ("suppressedInterfaceIntroduction", nonIntroductionDefinition);
+      CheckRules (_nonIntroductedInterfaceRules, nonIntroductionDefinition);
     }
 
     public void Visit (MethodIntroductionDefinition methodIntroduction)
@@ -258,6 +264,12 @@ namespace Remotion.Mixins.Validation
     {
       ArgumentUtility.CheckNotNull ("attributeIntroduction", attributeIntroduction);
       CheckRules (_attributeIntroductionRules, attributeIntroduction);
+    }
+
+    public void Visit (NonAttributeIntroductionDefinition nonAttributeIntroduction)
+    {
+      ArgumentUtility.CheckNotNull ("nonAttributeIntroduction", nonAttributeIntroduction);
+      CheckRules (_nonAttributeIntroductionRules, nonAttributeIntroduction);
     }
 
     public void Visit (SuppressedAttributeIntroductionDefinition suppressedAttributeIntroduction)
