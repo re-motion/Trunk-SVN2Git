@@ -53,13 +53,6 @@
     </statement>
   </query>
 
-  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.Group.FindByUnqiueIdentifier" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [GroupView] WHERE [UniqueIdentifier] = @uniqueIdentifier;
-    </statement>
-  </query>
-
   <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.Group.FindByTenantID" type="collection">
     <storageProviderID>SecurityManager</storageProviderID>
     <statement>

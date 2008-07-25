@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Security.Principal;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
@@ -19,6 +20,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
+using Remotion.Data.DomainObjects.Linq;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
@@ -74,28 +76,30 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return DomainObject.GetObject<Group> (id);
     }
 
-    public static DomainObjectCollection FindByTenantID (ObjectID tenantID)
+    public static ObjectList<Group> FindByTenantID (ObjectID tenantID)
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
 
+      //var result = from g in DataContext.Entity<Group>()
+      //             where g.Tenant.ID == tenantID
+      //             orderby g.ShortName
+      //             select g;
+      
       Query query = new Query ("Remotion.SecurityManager.Domain.OrganizationalStructure.Group.FindByTenantID");
       query.Parameters.Add ("@tenantID", tenantID);
 
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
+      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection<Group> (query);
     }
 
     public static Group FindByUnqiueIdentifier (string uniqueIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
-      Query query = new Query ("Remotion.SecurityManager.Domain.OrganizationalStructure.Group.FindByUnqiueIdentifier");
-      query.Parameters.Add ("@uniqueIdentifier", uniqueIdentifier);
+      var result = from g in DataContext.Entity<Group>()
+                   where g.UniqueIdentifier == uniqueIdentifier
+                   select g;
 
-      DomainObjectCollection groups = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-      if (groups.Count == 0)
-        return null;
-
-      return (Group) groups[0];
+      return result.ToArray().FirstOrDefault();
     }
 
     //[DemandMethodPermission (GeneralAccessTypes.Create)]
