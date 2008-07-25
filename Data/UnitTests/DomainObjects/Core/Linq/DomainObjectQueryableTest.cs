@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
@@ -30,11 +31,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void DomainObjectQueryable_Executor()
+    public void Get_Executor()
     {
       DomainObjectQueryable<Order> queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
       Assert.IsNotNull (((QueryProviderBase) queryable.Provider).Executor);
     }
-
   }
 }

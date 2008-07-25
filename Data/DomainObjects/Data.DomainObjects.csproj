@@ -163,6 +163,7 @@
     <Compile Include="Linq\DatabaseInfo.cs" />
     <Compile Include="Linq\DataContext.cs" />
     <Compile Include="Linq\DomainObjectQueryable.cs" />
+    <Compile Include="Linq\ExtensionMethods.cs" />
     <Compile Include="Linq\QueryExecutor.cs" />
     <Compile Include="Linq\QueryProvider.cs" />
     <Compile Include="Mapping\ClassDefinitionValidator.cs" />

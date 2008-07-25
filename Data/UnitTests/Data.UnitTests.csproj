@@ -228,6 +228,7 @@
     <Compile Include="DomainObjects\Core\DomainObjects\SimpleDomainObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\StorageClassTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\DOWithAutomaticProperties.cs" />
+    <Compile Include="DomainObjects\Core\Linq\ExtensionMethodsTest.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinAddingSimplePersistentProperties.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ContainsObjectParserTest.cs" />
