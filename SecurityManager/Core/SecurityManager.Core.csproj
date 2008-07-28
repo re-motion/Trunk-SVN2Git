@@ -113,7 +113,6 @@
     <Compile Include="Domain\OrganizationalStructure\Position.cs" />
     <Compile Include="Domain\OrganizationalStructure\Role.cs" />
     <Compile Include="Domain\OrganizationalStructure\User.cs" />
-    <Compile Include="Domain\QueryBuilder.cs" />
     <Compile Include="Domain\Metadata\SecurableClassValidationResult.cs" />
     <Compile Include="Domain\Revision.cs" />
     <Compile Include="Domain\SecurityManagerAccessTypes.cs" />

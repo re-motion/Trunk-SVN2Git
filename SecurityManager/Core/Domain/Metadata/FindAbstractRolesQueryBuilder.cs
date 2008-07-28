@@ -18,10 +18,9 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata
 {
-  public class FindAbstractRolesQueryBuilder : QueryBuilder
+  public class FindAbstractRolesQueryBuilder
   {
     public FindAbstractRolesQueryBuilder ()
-        : base ("FindAbstractRoles", typeof (AbstractRoleDefinition))
     {
     }
 
