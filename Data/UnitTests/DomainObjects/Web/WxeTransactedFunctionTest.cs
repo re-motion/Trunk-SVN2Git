@@ -143,8 +143,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
       catch (WxeUnhandledException ex)
       {
         Assert.IsTrue (ex.InnerException is WxeNonRecoverableTransactionException);
-        Assert.IsTrue (ex.InnerException.InnerException is InconsistentClientTransactionScopeException);
-        Assert.AreEqual ("Somebody else has removed the active transaction scope.", ex.InnerException.InnerException.Message);
+        Assert.IsTrue (ex.InnerException.InnerException.InnerException is InconsistentClientTransactionScopeException);
+        Assert.AreEqual ("Somebody else has removed the active transaction scope.", ex.InnerException.InnerException.InnerException.Message);
       }
     }
 
@@ -159,8 +159,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
       catch (WxeUnhandledException ex)
       {
         Assert.IsTrue (ex.InnerException is WxeNonRecoverableTransactionException);
-        Assert.IsTrue (ex.InnerException.InnerException is InconsistentClientTransactionScopeException);
-        Assert.AreEqual ("The active transaction scope does not contain the expected scope.", ex.InnerException.InnerException.Message);
+        Assert.IsTrue (ex.InnerException.InnerException.InnerException is InconsistentClientTransactionScopeException);
+        Assert.AreEqual ("The active transaction scope does not contain the expected scope.", ex.InnerException.InnerException.InnerException.Message);
       }
     }
 
