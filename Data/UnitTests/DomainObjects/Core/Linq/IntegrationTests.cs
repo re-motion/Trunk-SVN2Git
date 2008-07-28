@@ -515,6 +515,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (query, DomainObjectIDs.OrderTicket1);
     }
 
+    [Test]
+    public void Query_WithCastOnResultSet ()
+    {
+      var query =
+          (from o in DataContext.Entity<Order> ()
+          where o.OrderNumber == 1
+          select o).Cast<TestDomainBase>();
+
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+    }
+
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : TestDomainBase
     {

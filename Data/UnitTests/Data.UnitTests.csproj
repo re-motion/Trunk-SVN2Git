@@ -560,6 +560,7 @@
     <Compile Include="Linq\Student_Detail.cs" />
     <Compile Include="Linq\Student_Detail_Detail.cs" />
     <Compile Include="Linq\TestQueryable.cs" />
+    <Compile Include="Linq\TestQueryGenerators\CastTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryGenerators\DistinctTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryGenerators\FromTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryGenerators\JoinTestQueryGenerator.cs" />
