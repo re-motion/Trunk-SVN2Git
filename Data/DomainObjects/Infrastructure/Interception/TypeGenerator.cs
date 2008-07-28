@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       // Analyze type before creating the class emitter; that way, we won't have half-created types lying around in case of configuration errors
       Set<Tuple<PropertyInfo, string>> properties = new InterceptedPropertyCollector (publicDomainObjectType).GetProperties ();
 
-      string typeName = typeToDeriveFrom.FullName + "_WithInterception_ " + Guid.NewGuid ().ToString ("N");
+      string typeName = typeToDeriveFrom.FullName + "_WithInterception_" + Guid.NewGuid ().ToString ("N");
       Type[] interfaces = new Type[] { typeof (IInterceptedDomainObject), typeof (ISerializable) };
       TypeAttributes flags = TypeAttributes.Public | TypeAttributes.Serializable;
 
