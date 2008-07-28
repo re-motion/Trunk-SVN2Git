@@ -11,6 +11,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Security;
@@ -22,6 +23,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
   [TestFixture]
   public class FindAbstractRolesQueryBuilderTest : DomainTest
   {
+    [Test]
+    public void CreateQuery_ZeroRoles ()
+    {
+      var abstractRoles = new EnumWrapper[0];
+      var expected = new AbstractRoleDefinition[0].AsQueryable ();
+
+      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder ();
+      var actual = queryBuilder.CreateQuery (abstractRoles);
+
+      Assert.That (actual, Is.TypeOf (expected.GetType()));
+    }
+
     [Test]
     public void CreateQuery_OneRole ()
     {

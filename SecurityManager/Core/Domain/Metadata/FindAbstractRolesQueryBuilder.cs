@@ -27,22 +27,25 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public IQueryable<AbstractRoleDefinition> CreateQuery (EnumWrapper[] abstractRoles)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("abstractRoles", abstractRoles);
+      ArgumentUtility.CheckNotNull ("abstractRoles", abstractRoles);
 
-      Expression body = null;
-      foreach (EnumWrapper abstractRole in abstractRoles)
-      {
-        string abstractRoleName = abstractRole.Name;
-        var predicateExpression = ((Expression<System.Func<AbstractRoleDefinition, bool>>) (ar => ar.Name == abstractRoleName)).Body;
+      if (abstractRoles.Length == 0)
+        return new AbstractRoleDefinition[0].AsQueryable ();
 
-        if (body == null)
-          body = predicateExpression;
-        else
-          body = Expression.OrElse (body, predicateExpression);
-      }
+      ParameterExpression parameter = Expression.Parameter (typeof (AbstractRoleDefinition), "ar");
 
-      return DataContext.Entity<AbstractRoleDefinition>().Where (
-          Expression.Lambda<System.Func<AbstractRoleDefinition, bool>> (body, Expression.Parameter (typeof (AbstractRoleDefinition), "ar")));
+      var predicates = from abstractRole in abstractRoles
+                       select GetPredicateForAbstractRole (parameter, abstractRole);
+
+      BinaryExpression body = predicates.Aggregate (Expression.OrElse);
+      return DataContext.Entity<AbstractRoleDefinition>().Where (Expression.Lambda<System.Func<AbstractRoleDefinition, bool>> (body, parameter));
+    }
+
+    private BinaryExpression GetPredicateForAbstractRole (ParameterExpression parameter, EnumWrapper abstractRole)
+    {
+      return Expression.Equal (
+          Expression.MakeMemberAccess (parameter, typeof (AbstractRoleDefinition).GetProperty ("Name")),
+          Expression.Constant (abstractRole.Name));
     }
   }
 }

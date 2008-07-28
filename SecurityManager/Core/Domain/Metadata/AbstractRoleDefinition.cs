@@ -35,8 +35,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public static ObjectList<AbstractRoleDefinition> Find (EnumWrapper[] abstractRoles)
     {
-      if (abstractRoles.Length == 0)
-        return new ObjectList<AbstractRoleDefinition>();
+      ArgumentUtility.CheckNotNull ("abstractRoles", abstractRoles);
 
       FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder();
       var result = queryBuilder.CreateQuery (abstractRoles);
