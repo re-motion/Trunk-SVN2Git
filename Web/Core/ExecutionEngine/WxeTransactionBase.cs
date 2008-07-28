@@ -312,11 +312,19 @@ namespace Remotion.Web.ExecutionEngine
         throw;
       }
 
-      if (_autoCommit)
-        CommitAndReleaseTransaction ();
-      else
-        RollbackAndReleaseTransaction ();
-      CheckAndRestorePreviousCurrentTransaction ();
+      try
+      {
+        if (_autoCommit)
+          CommitAndReleaseTransaction ();
+        else
+          RollbackAndReleaseTransaction ();
+        CheckAndRestorePreviousCurrentTransaction ();
+      }
+      catch (Exception ex)
+      {
+        RollbackAndRestoreTransactionForException (ex);
+        throw;
+      }
 
       s_log.Debug ("Ending execution of " + this.GetType ().Name);
     }

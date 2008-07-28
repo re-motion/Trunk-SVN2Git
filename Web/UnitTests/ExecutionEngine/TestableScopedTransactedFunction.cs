@@ -13,6 +13,7 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {
+  [Serializable]
   public class TestableScopedTransactedFunction : WxeScopedTransactedFunction<TestTransaction, TestTransactionScope, TestTransactionScopeManager>
   {
     private bool _autoCommit;

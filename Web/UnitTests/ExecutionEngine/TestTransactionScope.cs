@@ -47,7 +47,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     {
       if (_left)
         throw new InvalidOperationException ("Has already been left.");
-      _currentScope = _previousScope;
+      CurrentScope = _previousScope;
       _left = true;
     }
   }

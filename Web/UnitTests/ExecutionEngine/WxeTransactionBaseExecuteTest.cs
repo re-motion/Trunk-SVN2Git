@@ -9,82 +9,19 @@
  */
 
 using System;
-using System.Collections.Specialized;
-using System.Web;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UnitTests.AspNetFramework;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {
   [TestFixture]
-  public class WxeTransactionBaseExecuteTest
+  public class WxeTransactionBaseExecuteTest : WxeTest
   {
-    private HttpContext _currentHttpContext;
-    private WxeContext _context;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _currentHttpContext = HttpContextHelper.CreateHttpContext ("GET", "Other.wxe", null);
-      _currentHttpContext.Response.ContentEncoding = System.Text.Encoding.UTF8;
-      NameValueCollection queryString = new NameValueCollection ();
-      queryString.Add (WxeHandler.Parameters.ReturnUrl, "/Root.wxe");
-      HttpContextHelper.SetQueryString (_currentHttpContext, queryString);
-      HttpContextHelper.SetCurrent (_currentHttpContext);
-
-      _context = new WxeContextMock (_currentHttpContext);
-    }
-
-    private void PerformExecute (bool autoCommit, params Proc<WxeContext>[] stepDelegates)
-    {
-      MockRepository mockRepository = new MockRepository ();
-
-      WxeStepList steps = new WxeStepList ();
-      for (int i = 0; i < stepDelegates.Length; i++)
-      {
-        WxeStep step = mockRepository.CreateMock<WxeStep>();
-        steps.Add (step);
-      }
-
-      WxeTransactionMock transaction = new WxeTransactionMock (steps, autoCommit, false);
-
-      TestTransaction originalTransaction = TestTransaction.Current;
-
-      // expectations
-      for (int i = 0; i < stepDelegates.Length; i++)
-      {
-        steps[i].Execute (_context);
-
-        Proc<WxeContext> stepDelegate = stepDelegates[i];
-        LastCall.Do ((Proc<WxeContext>) delegate {
-          Assert.AreNotSame (originalTransaction, TestTransaction.Current, "WxeTransactionBase must set a new current transaction");
-          Assert.AreEqual (1, transaction.PreviousTransactions.Count);
-         
-          stepDelegate (_context);
-        });
-      }
-
-      mockRepository.ReplayAll ();
-
-      try
-      {
-        transaction.Execute (_context);
-      }
-      finally
-      {
-        mockRepository.VerifyAll();
-
-        Assert.AreEqual (0, transaction.PreviousTransactions.Count, "WxeTransactionBase must restore original transaction.");
-        Assert.AreSame (originalTransaction, TestTransaction.Current);
-      }
-    }
-
     [Test]
     public void SimpleExecute ()
     {
-      PerformExecute (false, delegate { }, delegate { }); // empty steps
+      PerformExecuteAndCheckTransaction (false, delegate { }, delegate { }); // empty steps
     }
 
     [Test]
@@ -93,7 +30,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       TestTransaction.Current = new TestTransaction ();
 
       TestTransaction executeTransaction = null;
-      PerformExecute (false, delegate { executeTransaction = TestTransaction.Current; });
+      PerformExecuteAndCheckTransaction (false, delegate { executeTransaction = TestTransaction.Current; });
       Assert.IsFalse (executeTransaction.IsCommitted);
     }
 
@@ -103,19 +40,19 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       TestTransaction.Current = new TestTransaction ();
 
       TestTransaction executeTransaction = null;
-      PerformExecute (true, delegate { executeTransaction = TestTransaction.Current; });
+      PerformExecuteAndCheckTransaction (true, delegate { executeTransaction = TestTransaction.Current; });
       Assert.IsTrue (executeTransaction.IsCommitted);
     }
 
     [Test]
-    public void SetAndResetTransactionWithException ()
+    public void SetAndResetTransaction_WithException ()
     {
       TestTransaction.Current = new TestTransaction ();
 
       TestTransaction executeTransaction = null;
       try
       {
-        PerformExecute (false, delegate
+        PerformExecuteAndCheckTransaction (false, delegate
         {
           executeTransaction = TestTransaction.Current;
           throw new ArgumentException ("fifi");
@@ -131,14 +68,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     }
 
     [Test]
-    public void SetAndResetTransactionAutoCommitWithException ()
+    public void SetAndResetTransaction_AutoCommit_WithException ()
     {
       TestTransaction.Current = new TestTransaction ();
 
       TestTransaction executeTransaction = null;
       try
       {
-        PerformExecute (true, delegate
+        PerformExecuteAndCheckTransaction (true, delegate
         {
           executeTransaction = TestTransaction.Current;
           throw new ArgumentException ("fifi");
@@ -151,6 +88,87 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       }
 
       Assert.IsFalse (executeTransaction.IsCommitted);
+    }
+
+    [Test]
+    public void SetAndResetTransaction_AutoCommit_WithCommitException ()
+    {
+      TestTransaction.Current = new TestTransaction ();
+      try
+      {
+        PerformExecuteAndCheckTransaction (true, delegate
+        {
+          TestTransaction.Current.ThrowOnCommit = true;
+        });
+        Assert.Fail ("Expected exception");
+      }
+      catch (CommitException)
+      {
+        // expected
+      }
+    }
+
+    [Test]
+    public void SetAndResetTransaction_NoAutoCommit_WithRollbackException ()
+    {
+      TestTransaction.Current = new TestTransaction ();
+      try
+      {
+        PerformExecuteAndCheckTransaction (false, delegate
+        {
+          TestTransaction.Current.ThrowOnRollback = true;
+        });
+        Assert.Fail ("Expected exception");
+      }
+      catch (RollbackException)
+      {
+        // expected
+      }
+    }
+
+    private void PerformExecuteAndCheckTransaction (bool autoCommit, params Proc<WxeContext>[] stepDelegates)
+    {
+      MockRepository mockRepository = new MockRepository ();
+
+      WxeStepList steps = new WxeStepList ();
+      for (int i = 0; i < stepDelegates.Length; i++)
+      {
+        WxeStep step = mockRepository.CreateMock<WxeStep> ();
+        steps.Add (step);
+      }
+
+      WxeTransactionMock transaction = new WxeTransactionMock (steps, autoCommit, false);
+
+      TestTransaction originalTransaction = TestTransaction.Current;
+
+      // expectations
+      for (int i = 0; i < stepDelegates.Length; i++)
+      {
+        steps[i].Execute (CurrentWxeContext);
+
+        Proc<WxeContext> stepDelegate = stepDelegates[i];
+        LastCall.Do ((Proc<WxeContext>) delegate
+        {
+          Assert.AreNotSame (originalTransaction, TestTransaction.Current, "WxeTransactionBase must set a new current transaction");
+          Assert.AreEqual (1, transaction.PreviousTransactions.Count);
+
+          stepDelegate (CurrentWxeContext);
+        });
+      }
+
+      mockRepository.ReplayAll ();
+
+      try
+      {
+        transaction.Execute (CurrentWxeContext);
+      }
+      finally
+      {
+        mockRepository.VerifyAll ();
+
+        Assert.AreEqual (0, transaction.PreviousTransactions.Count, "WxeTransactionBase must restore original transaction.");
+        Assert.AreSame (originalTransaction, TestTransaction.Current);
+      }
     }
   }
 }

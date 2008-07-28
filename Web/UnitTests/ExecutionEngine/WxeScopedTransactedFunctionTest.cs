@@ -293,6 +293,24 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       Assert.That (GetScopeManager ().CopiedTransactionEventHandlers, Is.Empty);
     }
 
+    [Test]
+    public void SerializingAndAbortingFunction_AfterConmitThrows_LeavesConsistentState ()
+    {
+      _function.Add (new WxeDelegateStep (delegate { TestTransaction.Current.ThrowOnCommit = true; }));
+      try
+      {
+        _function.Execute ();
+        Assert.Fail ("Expected CommitException");
+      }
+      catch (WxeUnhandledException ex)
+      {
+        Assert.That (ex.InnerException, Is.InstanceOfType (typeof (CommitException)));
+      }
+      var deserializedFunction = Serializer.SerializeAndDeserialize (_function);
+      deserializedFunction.Abort ();
+      Assert.That (deserializedFunction.IsAborted, Is.True);
+    }
+
     private TestTransactionScopeManager GetScopeManager ()
     {
       return (TestTransactionScopeManager) PrivateInvoke.GetNonPublicProperty (_function, "ScopeManager");
