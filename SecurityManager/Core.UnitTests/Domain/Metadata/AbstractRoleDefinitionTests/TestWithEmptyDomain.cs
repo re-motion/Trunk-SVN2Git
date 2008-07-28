@@ -16,22 +16,21 @@ using Remotion.SecurityManager.Domain.Metadata;
 namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.AbstractRoleDefinitionTests
 {
   [TestFixture]
-  public class Test : DomainTest
+  public class TestWithEmptyDomain : DomainTest
   {
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ();
+      ClientTransaction.NewRootTransaction().EnterNonDiscardingScope();
+      DatabaseFixtures dbFixtures = new DatabaseFixtures();
+      dbFixtures.CreateEmptyDomain();
     }
 
     [Test]
     public void FindAll_EmptyResult ()
     {
-     DatabaseFixtures dbFixtures = new DatabaseFixtures ();
-      dbFixtures.CreateEmptyDomain ();
-
-      DomainObjectCollection result = AbstractRoleDefinition.FindAll ();
+      DomainObjectCollection result = AbstractRoleDefinition.FindAll();
 
       Assert.AreEqual (0, result.Count);
     }

@@ -85,7 +85,7 @@
     <Compile Include="Domain\SecurityManagerObjectServiceFactoryMixinTest.cs" />
     <Compile Include="Domain\DatabaseFixtures.cs" />
     <Compile Include="Domain\DatabaseHelper.cs" />
-    <Compile Include="Domain\Metadata\AbstractRoleDefinitionTests\AbstractRoleDefinitionTest.cs" />
+    <Compile Include="Domain\Metadata\AbstractRoleDefinitionTests\TestWithEmptyDomain.cs" />
     <Compile Include="Domain\Metadata\AbstractRoleDefinitionTests\TestWithTwoTenants.cs" />
     <Compile Include="Domain\Metadata\AccessTypeReferenceTest.cs" />
     <Compile Include="Domain\Metadata\CultureTest.cs" />
