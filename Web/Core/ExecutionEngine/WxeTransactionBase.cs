@@ -322,7 +322,7 @@ namespace Remotion.Web.ExecutionEngine
       }
       catch (Exception ex)
       {
-        RollbackAndRestoreTransactionForException (ex);
+        RestorePreviousCurrentTransactionForException (ex);
         throw;
       }
 
