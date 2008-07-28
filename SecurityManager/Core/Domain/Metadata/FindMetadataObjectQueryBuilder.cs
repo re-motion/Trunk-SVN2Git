@@ -9,7 +9,11 @@
  */
 
 using System;
+using System.Linq;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata
 {
@@ -58,7 +62,27 @@ namespace Remotion.SecurityManager.Domain.Metadata
       }
     }
 
-    public Query CreateQuery (string metadataReference)
+    public IQueryable<MetadataObject> CreateQuery (string metadataReference)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("metadataReference", metadataReference);
+
+      MetadataID metadataID = MetadataID.Parse (metadataReference);
+
+      if (metadataID.StateValue.HasValue)
+      {
+        return from state in DataContext.Entity<StateDefinition>()
+               where state.StateProperty.MetadataItemID == metadataID.MetadataItemID && state.Value == metadataID.StateValue
+               select (MetadataObject) state;
+      }
+      else
+      {
+        return from m in DataContext.Entity<MetadataObject>()
+               where m.MetadataItemID == metadataID.MetadataItemID
+               select m;
+      }
+    }
+
+    public Query CreateSqlQuery (string metadataReference)
     {
       MetadataID metadataID = MetadataID.Parse (metadataReference);
 

@@ -82,6 +82,7 @@
     <Compile Include="Domain\AccessControl\StateCombinationComparerTest.cs" />
     <Compile Include="Domain\AccessControl\StateCombinationTest.cs" />
     <Compile Include="Domain\ExpressionTreeComparer.cs" />
+    <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
     <Compile Include="Domain\SecurityManagerObjectServiceFactoryMixinTest.cs" />
     <Compile Include="Domain\DatabaseFixtures.cs" />
     <Compile Include="Domain\DatabaseHelper.cs" />

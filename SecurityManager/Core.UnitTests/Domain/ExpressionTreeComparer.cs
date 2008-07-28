@@ -17,6 +17,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public static void Compare<T> (IQueryable<T> expected, IQueryable<T> actual)
         where T: DomainObject
     {
+      if (expected == null)
+      {
+        Assert.That (actual, Is.Null);
+        return;
+      }
+
+      Assert.That (actual, Is.Not.Null);
+
       CommandData expectedCommandData = GetCommandData (expected);
       CommandData actualCommandData = GetCommandData (actual);
 

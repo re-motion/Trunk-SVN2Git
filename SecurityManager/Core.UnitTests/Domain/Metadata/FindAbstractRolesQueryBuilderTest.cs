@@ -23,14 +23,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
   [TestFixture]
   public class FindAbstractRolesQueryBuilderTest : DomainTest
   {
+    private FindAbstractRolesQueryBuilder _queryBuilder;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+      _queryBuilder = new FindAbstractRolesQueryBuilder ();      
+    }
+
     [Test]
     public void CreateQuery_ZeroRoles ()
     {
       var abstractRoles = new EnumWrapper[0];
       var expected = new AbstractRoleDefinition[0].AsQueryable ();
 
-      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder ();
-      var actual = queryBuilder.CreateQuery (abstractRoles);
+      var actual = _queryBuilder.CreateQuery (abstractRoles);
 
       Assert.That (actual, Is.TypeOf (expected.GetType()));
     }
@@ -43,8 +50,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
                      where ar.Name == abstractRoles[0].Name
                      select ar;
 
-      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder();
-      var actual = queryBuilder.CreateQuery (abstractRoles);
+      var actual = _queryBuilder.CreateQuery (abstractRoles);
 
       ExpressionTreeComparer.Compare (expected, actual);
     }
@@ -57,8 +63,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
                      where ar.Name == abstractRoles[0].Name || ar.Name == abstractRoles[1].Name
                      select ar;
 
-      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder();
-      var actual = queryBuilder.CreateQuery (abstractRoles);
+      var actual = _queryBuilder.CreateQuery (abstractRoles);
 
       ExpressionTreeComparer.Compare (expected, actual);
     }
@@ -71,12 +76,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
                               new EnumWrapper (ProjectRoles.QualityManager), new EnumWrapper (ProjectRoles.Developer),
                               new EnumWrapper (UndefinedAbstractRoles.Undefined)
                           };
+
       var expected = from ar in DataContext.Entity<AbstractRoleDefinition>()
                      where ar.Name == abstractRoles[0].Name || ar.Name == abstractRoles[1].Name || ar.Name == abstractRoles[2].Name
                      select ar;
 
-      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder();
-      var actual = queryBuilder.CreateQuery (abstractRoles);
+      var actual = _queryBuilder.CreateQuery (abstractRoles);
 
       ExpressionTreeComparer.Compare (expected, actual);
     }

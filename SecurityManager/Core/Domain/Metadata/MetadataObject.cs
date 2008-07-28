@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     public static MetadataObject Find (string metadataID)
     {
       FindMetadataObjectQueryBuilder queryBuilder = new FindMetadataObjectQueryBuilder ();
-      DomainObjectCollection metadataObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (queryBuilder.CreateQuery (metadataID));
+      DomainObjectCollection metadataObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (queryBuilder.CreateSqlQuery (metadataID));
       if (metadataObjects.Count == 0)
         return null;
 
