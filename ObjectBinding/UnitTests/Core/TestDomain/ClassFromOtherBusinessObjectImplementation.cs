@@ -16,15 +16,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
   {
     public abstract object GetProperty (IBusinessObjectProperty property);
 
-    public abstract object GetProperty (string propertyIdentifier);
-
     public abstract void SetProperty (IBusinessObjectProperty property, object value);
 
-    public abstract void SetProperty (string propertyIdentifier, object value);
-
     public abstract string GetPropertyString (IBusinessObjectProperty property, string format);
-
-    public abstract string GetPropertyString (string propertyIdentifier);
 
     public abstract string DisplayName { get; }
 

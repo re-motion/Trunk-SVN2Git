@@ -25,12 +25,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 
     public object GetProperty (IBusinessObjectProperty property)
     {
-      return GetProperty (property.Identifier);
-    }
-
-    public object GetProperty (string propertyIdentifier)
-    {
-      if (propertyIdentifier == "StringProperty")
+      if (property.Identifier == "StringProperty")
         return StringProperty;
       else
         throw new NotSupportedException ();
@@ -38,12 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 
     public void SetProperty (IBusinessObjectProperty property, object value)
     {
-      SetProperty (property.Identifier, value);
-    }
-
-    public void SetProperty (string propertyIdentifier, object value)
-    {
-      if (propertyIdentifier == "StringProperty")
+      if (property.Identifier == "StringProperty")
         StringProperty = (string) value;
       else
         throw new NotSupportedException ();
@@ -51,12 +41,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 
     public string GetPropertyString (IBusinessObjectProperty property, string format)
     {
-      return GetPropertyString (property.Identifier);
-    }
-
-    public string GetPropertyString (string propertyIdentifier)
-    {
-      return GetProperty (propertyIdentifier).ToString ();
+      return GetProperty (property).ToString ();
     }
 
     public string DisplayName

@@ -38,21 +38,6 @@ namespace Remotion.ObjectBinding
     /// </exception>
     object GetProperty (IBusinessObjectProperty property);
 
-    // TODO: Replace with extension method in 2.0
-    /// <summary>
-    ///   Gets the value accessed through the <see cref="IBusinessObjectProperty"/> identified by the passed 
-    ///   <paramref name="propertyIdentifier"/>. 
-    /// </summary>
-    /// <param name="propertyIdentifier"> 
-    ///   A <see cref="String"/> identifing the <see cref="IBusinessObjectProperty"/> used to access the value. 
-    /// </param>
-    /// <returns> The property value for the <paramref name="propertyIdentifier"/> parameter. </returns>
-    /// <exception cref="Exception"> 
-    ///   Thrown if the <see cref="IBusinessObjectProperty"/> identified through the <paramref name="propertyIdentifier"/>
-    ///   is not part of this business object's class. 
-    /// </exception>
-    object GetProperty (string propertyIdentifier);
-
     /// <overloads> Sets the value accessed through the specified property. </overloads>
     /// <summary> Sets the value accessed through the specified <see cref="IBusinessObjectProperty"/>. </summary>
     /// <param name="property"> 
@@ -63,24 +48,6 @@ namespace Remotion.ObjectBinding
     ///   Thrown if the <paramref name="property"/> is not part of this business object's class. 
     /// </exception>
     void SetProperty (IBusinessObjectProperty property, object value);
-
-    // TODO: Replace with extension method in 2.0
-    /// <summary>
-    ///   Sets the value accessed through the <see cref="IBusinessObjectProperty"/> identified by the passed 
-    ///   <paramref name="propertyIdentifier"/>. 
-    /// </summary>
-    /// <param name="propertyIdentifier"> 
-    ///   A <see cref="String"/> identifing the <see cref="IBusinessObjectProperty"/> used to access the value. 
-    /// </param>
-    /// <param name="value"> 
-    ///   The new value for the <see cref="IBusinessObjectProperty"/> identified by the 
-    ///   <paramref name="propertyIdentifier"/> parameter. 
-    /// </param>
-    /// <exception cref="Exception"> 
-    ///   Thrown if the <see cref="IBusinessObjectProperty"/> identified by the <paramref name="propertyIdentifier"/>
-    ///   is not part of this business object's class. 
-    /// </exception>
-    void SetProperty (string propertyIdentifier, object value);
 
     /// <summary> 
     ///   Gets the formatted string representation of the value accessed through the specified 
@@ -95,23 +62,6 @@ namespace Remotion.ObjectBinding
     ///   Thrown if the <paramref name="property"/> is not part of this business object's class. 
     /// </exception>
     string GetPropertyString (IBusinessObjectProperty property, string format);
-
-    // TODO: Replace with extension method in 2.0
-    /// <summary> 
-    ///   Gets the string representation of the value accessed through the <see cref="IBusinessObjectProperty"/> 
-    ///   identified by the passed <paramref name="propertyIdentifier"/>.
-    /// </summary>
-    /// <param name="propertyIdentifier"> 
-    ///   A <see cref="String"/> identifing the <see cref="IBusinessObjectProperty"/> used to access the value. 
-    /// </param>
-    /// <returns> 
-    ///   The string representation of the property value for the <see cref="IBusinessObjectProperty"/> identified by the 
-    ///   <paramref name="propertyIdentifier"/> parameter. 
-    /// </returns>
-    /// <exception cref="Exception"> 
-    ///   Thrown if the <paramref name="propertyIdentifier"/> is not part of this business object's class. 
-    /// </exception>
-    string GetPropertyString (string propertyIdentifier);
 
     /// <summary> Gets the human readable representation of this <see cref="IBusinessObject"/>. </summary>
     /// <value> A <see cref="string"/> identifying this object to the user. </value>

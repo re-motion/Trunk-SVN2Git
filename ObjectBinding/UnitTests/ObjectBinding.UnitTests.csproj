@@ -13,7 +13,8 @@
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -67,6 +68,7 @@
     <Compile Include="Core\BindableObject\BindableObjectWithIdentityMixinTest.cs" />
     <Compile Include="Core\BindableObject\BooleanPropertyTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectServiceFactoryTest.cs" />
+    <Compile Include="Core\BusinessObjectExtensionMethodsTest.cs" />
     <Compile Include="Core\TestDomain\ClassWithIdentityFromOtherBusinessObjectImplementation.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttributeFromMixin.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttribute.cs" />

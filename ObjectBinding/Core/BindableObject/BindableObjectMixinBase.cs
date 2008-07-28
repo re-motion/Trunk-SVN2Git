@@ -69,24 +69,6 @@ namespace Remotion.ObjectBinding.BindableObject
       return false;
     }
 
-    /// <summary>
-    ///   Gets the value accessed through the <see cref="IBusinessObjectProperty"/> identified by the passed 
-    ///   <paramref name="propertyIdentifier"/>. 
-    /// </summary>
-    /// <param name="propertyIdentifier"> 
-    ///   A <see cref="String"/> identifing the <see cref="IBusinessObjectProperty"/> used to access the value. 
-    /// </param>
-    /// <returns> The property value for the <paramref name="propertyIdentifier"/> parameter. </returns>
-    /// <exception cref="Exception"> 
-    ///   Thrown if the <see cref="IBusinessObjectProperty"/> identified through the <paramref name="propertyIdentifier"/>
-    ///   is not part of this business object's class. 
-    /// </exception>
-    public object GetProperty (string propertyIdentifier)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyIdentifier", propertyIdentifier);
-      return GetProperty (_bindableObjectClass.GetPropertyDefinition (propertyIdentifier));
-    }
-
     /// <overloads> Sets the value accessed through the specified property. </overloads>
     /// <summary> Sets the value accessed through the specified <see cref="IBusinessObjectProperty"/>. </summary>
     /// <param name="property"> 
@@ -104,27 +86,6 @@ namespace Remotion.ObjectBinding.BindableObject
 
       //TODO: catch and unwrap the TargetException
       propertyBase.PropertyInfo.SetValue (This, nativeValue, new object[0]);
-    }
-
-    /// <summary>
-    ///   Sets the value accessed through the <see cref="IBusinessObjectProperty"/> identified by the passed 
-    ///   <paramref name="propertyIdentifier"/>. 
-    /// </summary>
-    /// <param name="propertyIdentifier"> 
-    ///   A <see cref="String"/> identifing the <see cref="IBusinessObjectProperty"/> used to access the value. 
-    /// </param>
-    /// <param name="value"> 
-    ///   The new value for the <see cref="IBusinessObjectProperty"/> identified by the 
-    ///   <paramref name="propertyIdentifier"/> parameter. 
-    /// </param>
-    /// <exception cref="Exception"> 
-    ///   Thrown if the <see cref="IBusinessObjectProperty"/> identified by the <paramref name="propertyIdentifier"/>
-    ///   is not part of this business object's class. 
-    /// </exception>
-    public void SetProperty (string propertyIdentifier, object value)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyIdentifier", propertyIdentifier);
-      SetProperty (_bindableObjectClass.GetPropertyDefinition (propertyIdentifier), value);
     }
 
     /// <summary> 
@@ -145,26 +106,6 @@ namespace Remotion.ObjectBinding.BindableObject
           (IBusinessObjectStringFormatterService)
           BusinessObjectClass.BusinessObjectProvider.GetService (typeof (IBusinessObjectStringFormatterService));
       return stringFormatterService.GetPropertyString ((IBusinessObject) This, property, format);
-    }
-
-    /// <summary> 
-    ///   Gets the string representation of the value accessed through the <see cref="IBusinessObjectProperty"/> 
-    ///   identified by the passed <paramref name="propertyIdentifier"/>.
-    /// </summary>
-    /// <param name="propertyIdentifier"> 
-    ///   A <see cref="String"/> identifing the <see cref="IBusinessObjectProperty"/> used to access the value. 
-    /// </param>
-    /// <returns> 
-    ///   The string representation of the property value for the <see cref="IBusinessObjectProperty"/> identified by the 
-    ///   <paramref name="propertyIdentifier"/> parameter. 
-    /// </returns>
-    /// <exception cref="Exception"> 
-    ///   Thrown if the <paramref name="propertyIdentifier"/> is not part of this business object's class. 
-    /// </exception>
-    public string GetPropertyString (string propertyIdentifier)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyIdentifier", propertyIdentifier);
-      return GetPropertyString (_bindableObjectClass.GetPropertyDefinition (propertyIdentifier), null);
     }
 
     /// <summary> Gets the <see cref="BindableObjectClass"/> of this business object. </summary>

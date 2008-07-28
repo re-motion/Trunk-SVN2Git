@@ -42,27 +42,9 @@ namespace Remotion.ObjectBinding
     /// <summary> Gets the value accessed through the specified <see cref="IBusinessObjectProperty"/>. </summary>
     public abstract object GetProperty (IBusinessObjectProperty property);
 
-    /// <summary>
-    ///   Gets the value accessed through the <see cref="IBusinessObjectProperty"/> identified by the passed 
-    ///   <paramref name="propertyIdentifier"/>. 
-    /// </summary>
-    public object GetProperty (string propertyIdentifier)
-    {
-      return GetProperty (GetBusinessObjectProperty (propertyIdentifier));
-    }
-
     /// <overloads> Sets the value accessed through the specified property. </overloads>
     /// <summary> Sets the value accessed through the specified <see cref="IBusinessObjectProperty"/>. </summary>
     public abstract void SetProperty (IBusinessObjectProperty property, object value);
-
-    /// <summary>
-    ///   Sets the value accessed through the <see cref="IBusinessObjectProperty"/> identified by the passed 
-    ///   <paramref name="propertyIdentifier"/>. 
-    /// </summary>
-    public void SetProperty (string propertyIdentifier, object value)
-    {
-      SetProperty (GetBusinessObjectProperty (propertyIdentifier), value);
-    }
 
     /// <overloads> Gets the string representation of the value accessed through the specified property.  </overloads>
     /// <summary> 
@@ -81,15 +63,6 @@ namespace Remotion.ObjectBinding
     public virtual string GetPropertyString (IBusinessObjectProperty property, string format)
     {
       return StringFormatterService.GetPropertyString (this, property, format);
-    }
-
-    /// <summary> 
-    ///   Gets the string representation of the value accessed through the <see cref="IBusinessObjectProperty"/> 
-    ///   identified by the passed <paramref name="propertyIdentifier"/>.
-    /// </summary>
-    public string GetPropertyString (string propertyIdentifier)
-    {
-      return GetPropertyString (GetBusinessObjectProperty (propertyIdentifier));
     }
 
     /// <summary> Gets the <see cref="IBusinessObjectClass"/> of this business object. </summary>

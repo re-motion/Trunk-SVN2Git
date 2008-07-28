@@ -56,29 +56,14 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       return BindableDomainObjectMixin.GetProperty (property);
     }
 
-    object IBusinessObject.GetProperty (string propertyIdentifier)
-    {
-      return BindableDomainObjectMixin.GetProperty (propertyIdentifier);
-    }
-
     void IBusinessObject.SetProperty (IBusinessObjectProperty property, object value)
     {
       BindableDomainObjectMixin.SetProperty (property, value);
     }
 
-    void IBusinessObject.SetProperty (string propertyIdentifier, object value)
-    {
-      BindableDomainObjectMixin.SetProperty (propertyIdentifier, value);
-    }
-
     string IBusinessObject.GetPropertyString (IBusinessObjectProperty property, string format)
     {
       return BindableDomainObjectMixin.GetPropertyString (property, format);
-    }
-
-    string IBusinessObject.GetPropertyString (string propertyIdentifier)
-    {
-      return BindableDomainObjectMixin.GetPropertyString (propertyIdentifier);
     }
 
     string IBusinessObject.DisplayNameSafe

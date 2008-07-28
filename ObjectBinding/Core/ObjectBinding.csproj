@@ -12,7 +12,8 @@
     </AssemblyKeyContainerName>
     <AssemblyName>Remotion.ObjectBinding</AssemblyName>
     <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    </AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -26,7 +27,10 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -74,6 +78,9 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Design">
       <Name>system.design</Name>
     </Reference>
@@ -119,6 +126,7 @@
     <Compile Include="BindableObject\ConstantEnumerationValueFilter.cs" />
     <Compile Include="BindableObject\BindableObjectWithIdentityProviderAttribute.cs" />
     <Compile Include="BindableObject\BindableObjectMetadataFactory.cs" />
+    <Compile Include="BusinessObjectExtensionMethods.cs" />
     <Compile Include="IBusinessObjectProviderWithIdentity.cs" />
     <Compile Include="IBusinessObjectServiceFactory.cs" />
     <Compile Include="BindableObject\IClassReflector.cs" />
@@ -234,7 +242,9 @@
     <Compile Include="UndefinedEnumValueAttribute.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="ObjectBinding.build" />
-    <None Include="..\..\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
     <EmbeddedResource Include="Design\BindableObject\BindableObjectTypePickerControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>BindableObjectTypePickerControl.cs</DependentUpon>
