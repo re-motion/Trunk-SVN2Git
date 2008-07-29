@@ -10,6 +10,7 @@
 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
@@ -24,9 +25,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateQuery()
     {
-      SqlServerGenerator sqlGenerator = new SqlServerGenerator (DatabaseInfo.Instance);
-      QueryExecutor<Supplier> executor = new QueryExecutor<Supplier> (sqlGenerator);
-      QueryProvider provider = new QueryProvider (executor);
+      var sqlGenerator = new SqlServerGenerator (DatabaseInfo.Instance);
+      var executor = new QueryExecutor<Supplier> (sqlGenerator);
+      var provider = new QueryProvider (executor);
       IQueryable<Supplier> query = from supplier in DataContext.Entity<Supplier> () select supplier;
 
       IQueryable<Supplier> queryCreatedByProvider = provider.CreateQuery<Supplier> (query.Expression);

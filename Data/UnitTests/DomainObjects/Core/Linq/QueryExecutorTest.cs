@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -36,7 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       base.SetUp ();
       _sqlGenerator = new SqlServerGenerator (DatabaseInfo.Instance);
     }
-
     
     [Test]
     public void ExecuteSingle()
@@ -103,10 +103,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'System.String'.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'Remotion.Data.DomainObjects.DomainObject'.")]
     public void ExecuteCollection_WrongType ()
     {
-      QueryExecutor<string> executor = new QueryExecutor<string> (_sqlGenerator);
+      QueryExecutor<DomainObject> executor = new QueryExecutor<DomainObject> (_sqlGenerator);
       executor.ExecuteCollection (GetParsedSimpleQuery());
     }
 

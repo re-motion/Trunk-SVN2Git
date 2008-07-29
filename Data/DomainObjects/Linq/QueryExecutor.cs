@@ -9,12 +9,14 @@
  */
 
 using System.Collections;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using System;
+using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
 
 namespace Remotion.Data.DomainObjects.Linq
@@ -51,9 +53,15 @@ namespace Remotion.Data.DomainObjects.Linq
       ClassDefinition classDefinition = GetClassDefinition();
       
       CommandData commandData = CreateStatement(queryModel);
+      CheckProjection (commandData.SqlGenerationData.SelectEvaluation);
+
       Query query = CreateQuery(classDefinition, commandData.Statement, commandData.Parameters);
-      
       return ClientTransaction.Current.QueryManager.GetCollection (query);
+    }
+
+    private void CheckProjection (IEvaluation evaluation)
+    {
+#warning TODO: Throw nice exception.
     }
 
     public virtual Query CreateQuery(ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)

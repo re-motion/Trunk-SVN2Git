@@ -534,6 +534,7 @@
     <Compile Include="Linq\QueryProviderImplementationTest\QueryableBaseTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\JoinCollectionTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\SelectedObjectActivatorTest.cs" />
+    <Compile Include="Linq\SqlGenerationTest\SqlGenerationDataTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\SqlGeneratorBaseTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\SqlGeneratorMock.cs" />
     <Compile Include="Linq\SqlGenerationTest\SqlGeneratorMockContext.cs" />

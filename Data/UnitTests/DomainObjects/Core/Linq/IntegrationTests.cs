@@ -526,6 +526,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (query, DomainObjectIDs.Order1);
     }
 
+    [Test]
+    [Ignore ("TODO: Throw nicer exception")]
+    public void Query_WithUnsupportedType ()
+    {
+      var query =
+          from o in DataContext.Entity<Order> ()
+           where o.OrderNumber == 1
+           select new { o, o.Customer };
+
+      var result = query.ToArray ()[0];
+      
+      Order expected = Order.GetObject (DomainObjectIDs.Order1);
+      Assert.That (result.o, Is.SameAs (expected));
+      Assert.That (result.Customer, Is.SameAs (expected.Customer));
+    }
+
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : TestDomainBase
     {
