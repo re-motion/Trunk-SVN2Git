@@ -61,7 +61,21 @@ namespace Remotion.Data.DomainObjects.Linq
 
     private void CheckProjection (IEvaluation evaluation)
     {
-#warning TODO: Throw nice exception.
+      if (!(evaluation is Column))
+      {
+        string message = string.Format ("This query provider does not support the given select projection ('{0}'). The projection must select "
+            + "single DomainObject instances.", evaluation.GetType ().Name);
+        throw new InvalidOperationException (message);
+      }
+      
+      Column column = (Column) evaluation;
+      if (column.Name != "*")
+      {
+        string message = string.Format (
+            "This query provider does not support selecting single columns ('{0}'). The projection must select whole DomainObject instances.",
+            column.ColumnSource.AliasString + "." + column.Name);
+        throw new InvalidOperationException (message);
+      }
     }
 
     public virtual Query CreateQuery(ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)

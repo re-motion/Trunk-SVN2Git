@@ -527,19 +527,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO: Throw nicer exception")]
-    public void Query_WithUnsupportedType ()
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This query provider does not support the given select projection "
+        + "('NewObject'). The projection must select single DomainObject instances.")]
+    public void Query_WithUnsupportedType_NewObject ()
     {
       var query =
           from o in DataContext.Entity<Order> ()
-           where o.OrderNumber == 1
-           select new { o, o.Customer };
+          where o.OrderNumber == 1
+          select new { o, o.Customer };
 
-      var result = query.ToArray ()[0];
-      
-      Order expected = Order.GetObject (DomainObjectIDs.Order1);
-      Assert.That (result.o, Is.SameAs (expected));
-      Assert.That (result.Customer, Is.SameAs (expected.Customer));
+      query.ToArray ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This query provider does not support the given select projection "
+        + "('Constant'). The projection must select single DomainObject instances.")]
+    public void Query_WithUnsupportedType_Constant ()
+    {
+      var query =
+          from o in DataContext.Entity<Order> ()
+          where o.OrderNumber == 1
+          select 1;
+
+      query.ToArray ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), "This query provider does not support selecting single columns ('o.ID'). The projection "
+      + "must select whole DomainObject instances.")]
+    public void Query_WithUnsupportedType_NonDomainObjectColumn ()
+    {
+      var query =
+          from o in DataContext.Entity<Order> ()
+          where o.OrderNumber == 1
+          select o.ID;
+
+      query.ToArray ();
     }
 
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
