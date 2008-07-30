@@ -14,7 +14,7 @@ using NUnit.Framework;
 using Rhino.Mocks.Exceptions;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Development.UnitTests.UnitTesting
+namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
   [TestFixture]
   public class SerializationCallbackTesterTest

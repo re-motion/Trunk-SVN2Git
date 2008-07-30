@@ -16,7 +16,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.IO;
 
-namespace Remotion.Development.UnitTests.UnitTesting.IO
+namespace Remotion.Development.UnitTests.Core.UnitTesting.IO
 {
   [TestFixture]
   public class TempFileTest

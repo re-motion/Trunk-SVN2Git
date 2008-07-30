@@ -12,7 +12,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Development.UnitTests.UnitTesting
+namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
 
   public class TypeWithFields

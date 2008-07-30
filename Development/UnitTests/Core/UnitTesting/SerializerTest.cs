@@ -16,7 +16,7 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using NUnit.Framework.SyntaxHelpers;
 
-namespace Remotion.Development.UnitTests.UnitTesting
+namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
   [TestFixture]
   public class SerializerTest

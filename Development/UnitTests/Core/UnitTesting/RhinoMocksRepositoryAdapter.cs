@@ -13,7 +13,7 @@ using Rhino.Mocks;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
-namespace Remotion.Development.UnitTests.UnitTesting
+namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
   public class RhinoMocksRepositoryAdapter : IMockRepository
   {

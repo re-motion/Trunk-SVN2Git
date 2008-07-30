@@ -118,29 +118,29 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UnitTesting\AppDomainRunnerTest.cs" />
-    <Compile Include="UnitTesting\Data\SqlClient\DatabaseAgentTest.cs" />
-    <Compile Include="UnitTesting\Data\SqlClient\TestableDatabaseAgent.cs" />
-    <Compile Include="UnitTesting\DevNullTest.cs" />
-    <Compile Include="UnitTesting\IO\TempFileTest.cs" />
-    <Compile Include="UnitTesting\PEVerifierTest.cs" />
-    <Compile Include="UnitTesting\RhinoMocksRepositoryAdapter.cs" />
-    <Compile Include="UnitTesting\SerializationCallbackTesterTest.cs" />
-    <Compile Include="UnitTesting\SerializerTest.cs" />
-    <Compile Include="UnitTesting\TestCreateInstance.cs">
+    <Compile Include="Core\UnitTesting\AppDomainRunnerTest.cs" />
+    <Compile Include="Core\UnitTesting\Data\SqlClient\DatabaseAgentTest.cs" />
+    <Compile Include="Core\UnitTesting\Data\SqlClient\TestableDatabaseAgent.cs" />
+    <Compile Include="Core\UnitTesting\DevNullTest.cs" />
+    <Compile Include="Core\UnitTesting\IO\TempFileTest.cs" />
+    <Compile Include="Core\UnitTesting\PEVerifierTest.cs" />
+    <Compile Include="Core\UnitTesting\RhinoMocksRepositoryAdapter.cs" />
+    <Compile Include="Core\UnitTesting\SerializationCallbackTesterTest.cs" />
+    <Compile Include="Core\UnitTesting\SerializerTest.cs" />
+    <Compile Include="Core\UnitTesting\TestCreateInstance.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UnitTesting\TestFieldAccess.cs">
+    <Compile Include="Core\UnitTesting\TestFieldAccess.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UnitTesting\TestMethodInvoke.cs">
+    <Compile Include="Core\UnitTesting\TestMethodInvoke.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UnitTesting\TestPropertyAccess.cs">
+    <Compile Include="Core\UnitTesting\TestPropertyAccess.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="Development.Core.Test.build" />
+    <None Include="Development.UnitTests.build" />
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>

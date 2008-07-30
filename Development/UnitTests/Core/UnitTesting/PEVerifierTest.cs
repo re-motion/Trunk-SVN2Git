@@ -13,7 +13,7 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using System.IO;
 
-namespace Remotion.Development.UnitTests.UnitTesting
+namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
   [TestFixture]
   public class PEVerifierTest

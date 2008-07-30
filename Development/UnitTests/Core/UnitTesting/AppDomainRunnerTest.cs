@@ -14,7 +14,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using System.Reflection;
 
-namespace Remotion.Development.UnitTests.UnitTesting
+namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
   [TestFixture]
   public class AppDomainRunnerTest

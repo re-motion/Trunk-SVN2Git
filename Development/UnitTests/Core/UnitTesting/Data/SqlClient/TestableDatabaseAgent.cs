@@ -1,7 +1,7 @@
 using System.Data;
 using Remotion.Development.UnitTesting.Data.SqlClient;
 
-namespace Remotion.Development.UnitTests.UnitTesting.Data.SqlClient
+namespace Remotion.Development.UnitTests.Core.UnitTesting.Data.SqlClient
 {
   public class TestableDatabaseAgent : DatabaseAgent
   {

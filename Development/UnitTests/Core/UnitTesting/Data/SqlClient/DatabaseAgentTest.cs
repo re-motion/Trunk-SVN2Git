@@ -4,7 +4,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Rhino.Mocks;
 
-namespace Remotion.Development.UnitTests.UnitTesting.Data.SqlClient
+namespace Remotion.Development.UnitTests.Core.UnitTesting.Data.SqlClient
 {
   [TestFixture]
   public class DatabaseAgentTest
