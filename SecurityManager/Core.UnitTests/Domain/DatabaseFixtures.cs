@@ -50,6 +50,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       }
     }
 
+    /// <summary>
+    ///  Inits security manager database with users, groups, roles, group types, position, etc for 2 tenants.
+    ///  Use to catch sideffect due to incorrect tenant domain seperation.
+    ///  Caution: DB setup is performance critical. Avoid if possible.
+    /// </summary>
+    /// <returns>The tenant to use in the test.</returns>
     public Tenant CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction transaction)
     {
       CreateEmptyDomain ();
