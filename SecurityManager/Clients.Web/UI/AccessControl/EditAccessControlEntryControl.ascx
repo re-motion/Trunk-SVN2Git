@@ -30,7 +30,7 @@
             <ListControlStyle AutoPostBack="True"/>
           </remotion:BocEnumValue></td>
           <td>
-            <remotion:BocReferenceValue ID="SpecificTenantField" runat="server" PropertyIdentifier="SpecificTenant" DataSourceControl="CurrentObject" Select="Remotion.SecurityManager.Domain.OrganizationalStructure.Tenant.FindAll" Required="True" >
+            <remotion:BocReferenceValue ID="SpecificTenantField" runat="server" PropertyIdentifier="SpecificTenant" DataSourceControl="CurrentObject" Required="True" >
               <PersistedCommand>
                 <remotion:BocCommand />
               </PersistedCommand>
@@ -42,7 +42,7 @@
   </tr>
   <tr>
     <td><remotion:SmartLabel ID="SpecificAbstractRoleLabel" runat="server" ForControl="SpecificAbstractRoleField"/></td>
-    <td><remotion:BocReferenceValue ID="SpecificAbstractRoleField" runat="server" PropertyIdentifier="SpecificAbstractRole" DataSourceControl="CurrentObject" Select="Remotion.SecurityManager.Domain.Metadata.AbstractRoleDefinition.FindAll" >
+    <td><remotion:BocReferenceValue ID="SpecificAbstractRoleField" runat="server" PropertyIdentifier="SpecificAbstractRole" DataSourceControl="CurrentObject" >
       <PersistedCommand>
         <remotion:BocCommand />
       </PersistedCommand>
@@ -55,7 +55,7 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" Select="Remotion.SecurityManager.Domain.OrganizationalStructure.Position.FindAll" OnSelectionChanged="SpecificPositionField_SelectionChanged" >
+            <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" OnSelectionChanged="SpecificPositionField_SelectionChanged" >
               <PersistedCommand>
                 <remotion:BocCommand />
               </PersistedCommand>
