@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
@@ -28,12 +29,13 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public static MetadataObject Find (string metadataID)
     {
-      FindMetadataObjectQueryBuilder queryBuilder = new FindMetadataObjectQueryBuilder ();
-      DomainObjectCollection metadataObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (queryBuilder.CreateSqlQuery (metadataID));
-      if (metadataObjects.Count == 0)
-        return null;
+      ArgumentUtility.CheckNotNullOrEmpty ("metadataID", metadataID);
 
-      return (MetadataObject) metadataObjects[0];
+      FindMetadataObjectQueryBuilder queryBuilder = new FindMetadataObjectQueryBuilder ();
+
+      var result = queryBuilder.CreateQuery (metadataID);
+
+      return result.ToArray().FirstOrDefault();
     }
 
     // member fields

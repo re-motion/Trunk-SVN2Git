@@ -12,14 +12,13 @@ using System;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata
 {
   public class FindMetadataObjectQueryBuilder
   {
-    private class MetadataID
+    private struct MetadataID
     {
       public static MetadataID Parse (string metadataID)
       {
@@ -42,23 +41,13 @@ namespace Remotion.SecurityManager.Domain.Metadata
         }
       }
 
-      private Guid _metadataItemID;
-      private int? _stateValue;
+      public readonly Guid MetadataItemID;
+      public readonly int? StateValue;
 
       public MetadataID (Guid metadataItemID, int? stateValue)
       {
-        _metadataItemID = metadataItemID;
-        _stateValue = stateValue;
-      }
-
-      public Guid MetadataItemID
-      {
-        get { return _metadataItemID; }
-      }
-
-      public int? StateValue
-      {
-        get { return _stateValue; }
+        MetadataItemID = metadataItemID;
+        StateValue = stateValue;
       }
     }
 
@@ -70,9 +59,9 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
       if (metadataID.StateValue.HasValue)
       {
-        return from state in DataContext.Entity<StateDefinition>()
+        return (from state in DataContext.Entity<StateDefinition>()
                where state.StateProperty.MetadataItemID == metadataID.MetadataItemID && state.Value == metadataID.StateValue
-               select (MetadataObject) state;
+               select state).Cast<MetadataObject>();
       }
       else
       {
@@ -80,37 +69,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
                where m.MetadataItemID == metadataID.MetadataItemID
                select m;
       }
-    }
-
-    public Query CreateSqlQuery (string metadataReference)
-    {
-      MetadataID metadataID = MetadataID.Parse (metadataReference);
-
-      if (metadataID.StateValue.HasValue)
-        return CreateFindStateDefinitionQuery (metadataID.MetadataItemID, metadataID.StateValue.Value);
-
-      return CreateFindMetadataObjectQuery (metadataID.MetadataItemID);
-    }
-
-    private Query CreateFindStateDefinitionQuery (Guid metadataItemID, int stateValue)
-    {
-      Query query = CreateBaseQuery ("Remotion.SecurityManager.Domain.Metadata.MetadataObject.Find.StateDefinition", metadataItemID);
-      query.Parameters.Add ("@stateValue", stateValue);
-
-      return query;
-    }
-
-    private Query CreateFindMetadataObjectQuery (Guid metadataItemID)
-    {
-      return CreateBaseQuery ("Remotion.SecurityManager.Domain.Metadata.MetadataObject.Find", metadataItemID);
-    }
-
-    private Query CreateBaseQuery (string queryID, Guid metadataItemID)
-    {
-      Query query = new Query (queryID);
-      query.Parameters.Add ("@metadataItemID", metadataItemID);
-
-      return query;
     }
   }
 }

@@ -29,23 +29,6 @@
     </statement>
   </query>
 
-  <query id="Remotion.SecurityManager.Domain.Metadata.MetadataObject.Find" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [MetadataObjectView] WHERE MetadataItemID = @metadataItemID;
-    </statement>
-  </query>
-
-  <query id="Remotion.SecurityManager.Domain.Metadata.MetadataObject.Find.StateDefinition" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM StateDefinitionView
-      INNER JOIN StatePropertyDefinitionView ON StateDefinitionView.StatePropertyID = StatePropertyDefinitionView.ID
-      WHERE StatePropertyDefinitionView.MetadataItemID = @metadataItemID
-      AND StateDefinitionView.Value = @stateValue;
-    </statement>
-  </query>
-
   <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.User.FindByTenantID" type="collection">
     <storageProviderID>SecurityManager</storageProviderID>
     <statement>

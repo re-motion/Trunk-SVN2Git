@@ -28,8 +28,14 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNull ("abstractRoles", abstractRoles);
 
+      //var abstractRoleNames = (from abstractRole in abstractRoles select abstractRole.Name).ToArray();
+
+      //return from ar in DataContext.Entity<AbstractRoleDefinition>()
+      //       where abstractRoleNames.Contains (ar.Name)
+      //       select ar;
+
       if (abstractRoles.Length == 0)
-        return new AbstractRoleDefinition[0].AsQueryable ();
+        return new AbstractRoleDefinition[0].AsQueryable();
 
       ParameterExpression parameter = Expression.Parameter (typeof (AbstractRoleDefinition), "ar");
 
