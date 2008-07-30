@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     private static void CheckPropertyObjects (Type type, string shortPropertyName,
-        Action<Tuple<PropertyDefinition, IRelationEndPointDefinition, ClassDefinition, string>> checker)
+        System.Action<Tuple<PropertyDefinition, IRelationEndPointDefinition, ClassDefinition, string>> checker)
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[type];
       string identifier = type.FullName + "." + shortPropertyName;
@@ -1292,7 +1292,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
 
-    private void ExpectDiscarded (Proc action)
+    private void ExpectDiscarded (Action action)
     {
       try
       {

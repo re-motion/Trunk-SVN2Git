@@ -220,12 +220,12 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
       Assert.IsEmpty (actualDropTableScript);
     }
 
-    private Proc<ClassDefinition, StringBuilder> CreateAddToDropTableScriptDelegate (string statement)
+    private Action<ClassDefinition, StringBuilder> CreateAddToDropTableScriptDelegate (string statement)
     {
       return delegate (ClassDefinition classDefinition, StringBuilder stringBuilder) { stringBuilder.Append (statement); };
     }
 
-    private Proc<ClassDefinition, StringBuilder> CreateAddToCreateTableScriptDelegate (string statement)
+    private Action<ClassDefinition, StringBuilder> CreateAddToCreateTableScriptDelegate (string statement)
     {
       return delegate (ClassDefinition classDefinition, StringBuilder stringBuilder) { stringBuilder.Append (statement); };
     }

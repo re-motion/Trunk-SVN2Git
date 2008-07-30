@@ -48,7 +48,7 @@ namespace Remotion.Mixins.Context
       });
     }
 
-    private static MixinConfiguration BuildDerivedConfiguration (MixinConfiguration parentConfiguration, Action<DeclarativeConfigurationBuilder> overrideGenerator)
+    private static MixinConfiguration BuildDerivedConfiguration (MixinConfiguration parentConfiguration, System.Action<DeclarativeConfigurationBuilder> overrideGenerator)
     {
       ArgumentUtility.CheckNotNull ("overrideGenerator", overrideGenerator);
       

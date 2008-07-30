@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransactionMock.AddListener (_listener);
     }
 
-    private void Expect (Proc expectation, Proc triggeringCode)
+    private void Expect (Action expectation, Action triggeringCode)
     {
       _mockRepository.BackToRecordAll ();
 

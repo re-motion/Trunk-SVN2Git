@@ -17,12 +17,12 @@ namespace Remotion.Development.UnitTesting
   [Serializable]
   public class AppDomainRunner : AppDomainRunnerBase
   {
-    public static void Run (Proc<object[]> action, params object[] args)
+    public static void Run (Action<object[]> action, params object[] args)
     {
       Run (AppDomain.CurrentDomain.BaseDirectory, action, args);
     }
 
-    public static void Run (string applicationBase, Proc<object[]> action, params object[] args)
+    public static void Run (string applicationBase, Action<object[]> action, params object[] args)
     {
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       setup.ApplicationBase = applicationBase;
@@ -31,10 +31,10 @@ namespace Remotion.Development.UnitTesting
       runner.Run ();
     }
 
-    private Proc<object[]> _action;
+    private Action<object[]> _action;
     private object[] _args;
 
-    public AppDomainRunner (AppDomainSetup domainSetup, Proc<object[]> action, params object[] args)
+    public AppDomainRunner (AppDomainSetup domainSetup, Action<object[]> action, params object[] args)
       : base (domainSetup)
     {
       _action = action;

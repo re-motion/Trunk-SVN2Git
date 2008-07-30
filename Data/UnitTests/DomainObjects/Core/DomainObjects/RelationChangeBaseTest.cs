@@ -19,7 +19,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
   public class RelationChangeBaseTest : ClientTransactionBaseTest
   {
-    protected void CheckTouching (Proc modification, TestDomainBase foreignKeyObject, string simpleForeignKeyPropertyName,
+    protected void CheckTouching (Action modification, TestDomainBase foreignKeyObject, string simpleForeignKeyPropertyName,
                                 params RelationEndPointID[] endPointsInvolved)
     {
       // Ensure all end points are loaded into the RelationEndPointMap before trying to check them

@@ -25,6 +25,6 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.ValidationSampleTypes
       set { Dev.Null = value; }
     }
 
-    public event Proc EventWithPublicVisibility;
+    public event Action EventWithPublicVisibility;
   }
 }

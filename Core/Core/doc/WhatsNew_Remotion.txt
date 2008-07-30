@@ -1,3 +1,9 @@
+1.11.2
+======
+- Renamed Proc delegates to Action.
+- Replaced Func<>...Func<,,,,> with delegates from System.Core.
+- Replaced Action<>...Action<,,,> with delegates from System.Core.
+
 1.7.46
 ======
 - Diverse Refacotrings in the BusinessObject Interfaces.

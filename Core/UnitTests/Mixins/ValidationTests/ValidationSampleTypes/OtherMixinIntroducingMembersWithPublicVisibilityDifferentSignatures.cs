@@ -18,7 +18,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.ValidationSampleTypes
   {
     void MethodWithPublicVisibility (int i);
     string PropertyWithPublicVisibility { get; set; }
-    event Proc EventWithPublicVisibility;
+    event Action EventWithPublicVisibility;
   }
 
   public class OtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures : IOtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures
@@ -36,6 +36,6 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.ValidationSampleTypes
     }
 
     [MemberVisibility (MemberVisibility.Public)]
-    public event Proc EventWithPublicVisibility;
+    public event Action EventWithPublicVisibility;
   }
 }

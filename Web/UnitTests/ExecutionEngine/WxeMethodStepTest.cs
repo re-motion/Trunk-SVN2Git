@@ -98,7 +98,7 @@ public class WxeMethodStepTest: WxeTest
   [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The delegate must contain a single method.", MatchType = MessageMatch.Contains)]
   public void MethodStepWithDelegateThrowsOnMultiDelegate ()
   {
-    Proc multiDelegate = _function.PublicStepMethod;
+    Action multiDelegate = _function.PublicStepMethod;
     multiDelegate += _function.PublicStepMethod;
     new WxeMethodStep (multiDelegate);
   }

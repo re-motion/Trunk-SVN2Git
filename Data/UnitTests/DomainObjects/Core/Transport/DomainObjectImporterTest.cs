@@ -408,13 +408,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       return transporter.GetBinaryTransportData ();
     }
 
-    private void CheckImport (Proc<List<DomainObject>> checker, params ObjectID[] objectsToImport)
+    private void CheckImport (Action<List<DomainObject>> checker, params ObjectID[] objectsToImport)
     {
       byte[] binaryData = GetBinaryDataFor (objectsToImport);
       CheckImport (checker, binaryData);
     }
 
-    private void CheckImport (Proc<List<DomainObject>> checker, byte[] binaryData)
+    private void CheckImport (Action<List<DomainObject>> checker, byte[] binaryData)
     {
       TransportedDomainObjects transportedObjects = Import(binaryData);
       List<DomainObject> domainObjects = new List<DomainObject> (transportedObjects.TransportedObjects);
@@ -426,7 +426,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       return new DomainObjectImporter (binaryData, BinaryImportStrategy.Instance).GetImportedObjects ();
     }
 
-    private void ModifyDatabase (Proc changer)
+    private void ModifyDatabase (Action changer)
     {
       SetDatabaseModifyable ();
       using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope())

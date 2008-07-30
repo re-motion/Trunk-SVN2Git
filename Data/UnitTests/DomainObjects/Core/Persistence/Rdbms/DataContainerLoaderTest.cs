@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       }
     }
 
-    private void CreateLoaderAndExpectProviderCall (Proc<DataContainerLoader> action, Proc<RdbmsProvider> expectationSetup)
+    private void CreateLoaderAndExpectProviderCall (Action<DataContainerLoader> action, Action<RdbmsProvider> expectationSetup)
     {
       Provider.Disconnect ();
 
@@ -336,7 +336,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       _mockRepository.VerifyAll ();
     }
 
-    private void CreateLoaderAndExpectProviderExecuteReader (Proc<DataContainerLoader> action)
+    private void CreateLoaderAndExpectProviderExecuteReader (Action<DataContainerLoader> action)
     {
       CreateLoaderAndExpectProviderCall (action, delegate (RdbmsProvider providerMock)
       {

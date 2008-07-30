@@ -83,14 +83,14 @@ public class WxeMethodStep: WxeStep
     _hasContext = parameters.Length > 0;
   }
 
-  public WxeMethodStep (Proc method)
+  public WxeMethodStep (Action method)
       : this (
           GetTargetFromDelegate (ArgumentUtility.CheckNotNull ("method", method)),
           GetMethodFromDelegate (ArgumentUtility.CheckNotNull ("method", method)))
   {
   }
 
-  public WxeMethodStep (Proc<WxeContext> method)
+  public WxeMethodStep (Action<WxeContext> method)
       : this (
           GetTargetFromDelegate (ArgumentUtility.CheckNotNull ("method", method)),
           GetMethodFromDelegate (ArgumentUtility.CheckNotNull ("method", method)))

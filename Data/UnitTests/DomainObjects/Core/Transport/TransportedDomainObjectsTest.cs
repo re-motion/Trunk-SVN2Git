@@ -220,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       return new List<DomainObject> (transportedObjects.TransportedObjects);
     }
 
-    private void ModifyDatabase (Proc changer)
+    private void ModifyDatabase (Action changer)
     {
       SetDatabaseModifyable ();
       using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())

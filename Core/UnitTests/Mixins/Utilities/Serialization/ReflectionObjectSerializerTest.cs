@@ -26,7 +26,7 @@ namespace Remotion.UnitTests.Mixins.Utilities.Serialization
     class SerializationTester<T> : ISerializable
     {
       public readonly T Value;
-      public static Proc<T, string, SerializationInfo> Serializer;
+      public static Action<T, string, SerializationInfo> Serializer;
       public static Func<string, SerializationInfo, T> Deserializer;
 
       public SerializationTester (T value)
@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Mixins.Utilities.Serialization
       }
     }
 
-    private static T PerformSerialization<T> (T value, Proc<T, string, SerializationInfo> serializer, Func<string, SerializationInfo, T> deserializer)
+    private static T PerformSerialization<T> (T value, Action<T, string, SerializationInfo> serializer, Func<string, SerializationInfo, T> deserializer)
     {
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("serializer", serializer);

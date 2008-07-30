@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       NotifyDomainObjectMixins (instance, delegate (IDomainObjectMixin mixin) { mixin.OnDomainObjectLoaded (loadMode); });
     }
 
-    private static void NotifyDomainObjectMixins (DomainObject instance, Proc<IDomainObjectMixin> notifier)
+    private static void NotifyDomainObjectMixins (DomainObject instance, Action<IDomainObjectMixin> notifier)
     {
       IMixinTarget instanceAsMixinTarget = instance as IMixinTarget;
       if (instanceAsMixinTarget != null)

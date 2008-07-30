@@ -126,7 +126,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       }
     }
 
-    private void PerformExecuteAndCheckTransaction (bool autoCommit, params Proc<WxeContext>[] stepDelegates)
+    private void PerformExecuteAndCheckTransaction (bool autoCommit, params Action<WxeContext>[] stepDelegates)
     {
       MockRepository mockRepository = new MockRepository ();
 
@@ -146,8 +146,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       {
         steps[i].Execute (CurrentWxeContext);
 
-        Proc<WxeContext> stepDelegate = stepDelegates[i];
-        LastCall.Do ((Proc<WxeContext>) delegate
+        Action<WxeContext> stepDelegate = stepDelegates[i];
+        LastCall.Do ((Action<WxeContext>) delegate
         {
           Assert.AreNotSame (originalTransaction, TestTransaction.Current, "WxeTransactionBase must set a new current transaction");
           Assert.AreEqual (1, transaction.PreviousTransactions.Count);

@@ -52,7 +52,7 @@ namespace Remotion.Development.UnitTests.UnitTesting.Data.SqlClient
       _mockRepository.VerifyAll ();
     }
 
-    private void SetupCommandExpectations (string commandText, IDbTransaction transaction, Proc actualCommandExpectation)
+    private void SetupCommandExpectations (string commandText, IDbTransaction transaction, Action actualCommandExpectation)
     {
       using (_mockRepository.Ordered ())
       {

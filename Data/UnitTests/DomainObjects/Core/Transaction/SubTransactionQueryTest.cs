@@ -162,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         extensionMock.FilterQueryResult (null, null, null); // expectation
         LastCall.Constraints (Mocks_Is.Same (ClientTransactionMock), Mocks_Is.Anything (), Mocks_Is.Anything ());
-        LastCall.Do ((Proc<ClientTransaction, DomainObjectCollection, IQuery>) delegate
+        LastCall.Do ((Action<ClientTransaction, DomainObjectCollection, IQuery>) delegate
         {
           Assert.AreSame (ClientTransactionMock, ClientTransaction.Current);
         });
@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         extensionMock.FilterQueryResult (null, null, null); // expectation
         LastCall.IgnoreArguments();
-        LastCall.Do ((Proc<ClientTransaction, DomainObjectCollection, IQuery>) delegate
+        LastCall.Do ((Action<ClientTransaction, DomainObjectCollection, IQuery>) delegate
         {
           Order.GetObject (DomainObjectIDs.Order1);
         });

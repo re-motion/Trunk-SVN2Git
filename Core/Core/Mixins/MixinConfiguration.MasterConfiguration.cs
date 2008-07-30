@@ -47,7 +47,7 @@ namespace Remotion.Mixins
     /// first time after this method has been called. If a thread attempts to access its mixin configuration for the first time while
     /// a change is in progress, it will block until until that process has finished (i.e. until <paramref name="editor"/> has returned).
     /// </remarks>
-    public static void EditMasterConfiguration (Proc<MixinConfiguration> editor)
+    public static void EditMasterConfiguration (Action<MixinConfiguration> editor)
     {
       lock (_masterConfigurationLock)
       {

@@ -17,9 +17,9 @@ namespace Remotion.Reflection.CodeGeneration.DPExtensions
 {
   public class ILStatement : Statement
   {
-    private readonly Proc<IMemberEmitter, ILGenerator> _ilSource;
+    private readonly Action<IMemberEmitter, ILGenerator> _ilSource;
 
-    public ILStatement (Proc<IMemberEmitter, ILGenerator> ilSource)
+    public ILStatement (Action<IMemberEmitter, ILGenerator> ilSource)
     {
       _ilSource = ilSource;
     }

@@ -17,9 +17,9 @@ namespace Remotion.Web.UnitTests
   [Serializable]
   public class WxeDelegateStep : WxeStep
   {
-    private readonly Proc _action;
+    private readonly Action _action;
 
-    public WxeDelegateStep (Proc action)
+    public WxeDelegateStep (Action action)
     {
       ArgumentUtility.CheckNotNull ("action", action);
       _action = action;

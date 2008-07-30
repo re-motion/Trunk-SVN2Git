@@ -95,7 +95,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       PerformSerializationTests (10250, "SerializeValuePropertyObjects10250", 1168, 4231, CreateAndFillValuePropertyObject);
     }
 
-    private void PerformSerializationTests (int count, string nameOfTest, int serExpectedMS, int deserExpectedMS, Proc objectCreator)
+    private void PerformSerializationTests (int count, string nameOfTest, int serExpectedMS, int deserExpectedMS, Action objectCreator)
     {
       PerformSerializationTests (nameOfTest, serExpectedMS, deserExpectedMS, delegate
       {

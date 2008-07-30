@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       }
     }
 
-    private void TestObjectLoadingWithRelatedObjects (Proc accessCode, ObjectID expectedMainObjectID, bool expectCollection, bool expectLoadedEvent,
+    private void TestObjectLoadingWithRelatedObjects (Action accessCode, ObjectID expectedMainObjectID, bool expectCollection, bool expectLoadedEvent,
         IEnumerable<ObjectID> expectedRelatedIDs)
     {
       _mockRepository.BackToRecordAll ();

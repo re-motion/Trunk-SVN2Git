@@ -81,7 +81,7 @@ namespace Remotion.Mixins.CodeGeneration
     /// <param name="scopeAccessor">A delegate accessing the scope while access to it is locked.</param>
     /// <remarks>This methods locks the scope while executing <paramref name="scopeAccessor"/>. This ensures that no other method of
     /// <see cref="ConcreteTypeBuilder"/> modifies the scope while it is being accessed.</remarks>
-    public void LockAndAccessScope (Proc<IModuleManager> scopeAccessor)
+    public void LockAndAccessScope (Action<IModuleManager> scopeAccessor)
     {
       lock (_scopeLockObject)
       {

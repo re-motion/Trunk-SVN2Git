@@ -25,6 +25,6 @@ namespace Remotion.UnitTests.Mixins.SampleTypes
       set { }
     }
 
-    public event Action<string> Event;
+    public event System.Action<string> Event;
   }
 }

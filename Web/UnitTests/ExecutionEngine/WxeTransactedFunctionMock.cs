@@ -21,7 +21,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
   public class WxeTransactedFunctionMock : WxeTransactedFunctionBase<ITransaction>
   {
     private ProxyWxeTransaction _storedWxeTransaction;
-    public event Proc OnStep1;
+    public event Action OnStep1;
 
     public WxeTransactedFunctionMock (ProxyWxeTransaction wxeTransaction)
       : base ()
