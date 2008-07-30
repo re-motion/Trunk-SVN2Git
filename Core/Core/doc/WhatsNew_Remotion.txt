@@ -3,6 +3,7 @@
 - Renamed Proc delegates to Action.
 - Replaced Func<>...Func<,,,,> with delegates from System.Core.
 - Replaced Action<>...Action<,,,> with delegates from System.Core.
+- Remtion.Reflection.MethodCaller: Renamed CallProc to CallAction.
 
 1.7.46
 ======

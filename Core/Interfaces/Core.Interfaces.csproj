@@ -99,8 +99,8 @@
     <Compile Include="Reflection\ContextAwareTypeDiscoveryUtility.cs" />
     <Compile Include="Reflection\FuncInvoker.generated.cs" />
     <Compile Include="Reflection\FuncInvoker.template.cs" />
-    <Compile Include="Reflection\ProcInvoker.generated.cs" />
-    <Compile Include="Reflection\ProcInvoker.template.cs" />
+    <Compile Include="Reflection\ActionInvoker.generated.cs" />
+    <Compile Include="Reflection\ActionInvoker.template.cs" />
     <Compile Include="StandardDelegates.cs" />
     <Compile Include="SuppressAttributesAttribute.cs" />
     <Compile Include="Utilities\ArgumentEmptyException.cs" />

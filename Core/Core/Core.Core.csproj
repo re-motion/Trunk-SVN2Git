@@ -390,8 +390,8 @@
     <Compile Include="Reflection\FuncInvoker.template.cs" />
     <Compile Include="Reflection\IAssemblyFinderFilter.cs" />
     <Compile Include="Reflection\NonApplicationAssemblyAttribute.cs" />
-    <Compile Include="Reflection\ProcInvoker.generated.cs" />
-    <Compile Include="Reflection\ProcInvoker.template.cs" />
+    <Compile Include="Reflection\ActionInvoker.generated.cs" />
+    <Compile Include="Reflection\ActionInvoker.template.cs" />
     <Compile Include="Reflection\RegexAssemblyFinderFilter.cs" />
     <Compile Include="Reflection\ApplicationAssemblyFinderFilter.cs" />
     <Compile Include="Reflection\DelegateCreator.cs">
