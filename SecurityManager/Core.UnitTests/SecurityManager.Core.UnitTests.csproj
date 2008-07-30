@@ -64,6 +64,11 @@
     <Compile Include="Configuration\TestSecurityManagerConfiguration.cs" />
     <Compile Include="DomainTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPriorityComparerTest.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchPosition.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchAbstractRoleDefinition.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchOtherProperty.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchTenant.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SetUpFixture.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\ValidationTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\GetActualPriorityTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\MatchesTokenTest.cs" />
@@ -83,6 +88,7 @@
     <Compile Include="Domain\AccessControl\StateCombinationTest.cs" />
     <Compile Include="Domain\ExpressionTreeComparer.cs" />
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
+    <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SetUpFixture.cs" />
     <Compile Include="Domain\SecurityManagerObjectServiceFactoryMixinTest.cs" />
     <Compile Include="Domain\DatabaseFixtures.cs" />
     <Compile Include="Domain\DatabaseHelper.cs" />

@@ -33,10 +33,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     public bool SupportsIdentity (IBusinessObjectReferenceProperty property)
     {
       ArgumentUtility.CheckNotNull ("property", property);
-      if (property.Identifier == c_parentName)
-        return true;
-      else
-        return false;
+      
+      switch (property.Identifier)
+      {
+        case c_parentName:
+          return true;
+        default:
+          return false;
+      }
     }
 
     public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement)

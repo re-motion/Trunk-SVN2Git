@@ -35,10 +35,15 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNull ("property", property);
 
-      if (property.Identifier == c_groupName || property.Identifier == c_userName)
-        return true;
-      else
-        return false;
+      switch (property.Identifier)
+      {
+        case c_groupName:
+          return true;
+        case c_userName:
+          return true;
+        default:
+          return false;
+      }
     }
 
     public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement)
