@@ -16,6 +16,7 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain;
+using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Rhino.Mocks;
 
@@ -76,6 +77,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       Assert.That (
           _serviceFactory.CreateService (_bindableObjectProvider, typeof (RolePropertiesSearchService)),
           Is.InstanceOfType (typeof (RolePropertiesSearchService)));
+    }
+
+    [Test]
+    public void GetService_FromAccessControlEntryPropertiesSearchService ()
+    {
+      Assert.That (
+          _serviceFactory.CreateService (_bindableObjectProvider, typeof (AccessControlEntryPropertiesSearchService)),
+          Is.InstanceOfType (typeof (AccessControlEntryPropertiesSearchService)));
     }
 
     [Test]

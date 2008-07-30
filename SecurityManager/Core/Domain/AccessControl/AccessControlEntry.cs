@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -88,6 +89,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
+    [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
     [DBColumn ("TenantID")]
     public abstract Tenant SpecificTenant { get; set; }
 
@@ -99,6 +101,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DBColumn ("GroupTypeID")]
     public abstract GroupType SpecificGroupType { get; set; }
 
+    [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
     [DBBidirectionalRelation ("AccessControlEntries")]
     [DBColumn ("PositionID")]
     public abstract Position SpecificPosition { get; set; }
@@ -107,6 +110,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DBColumn ("UserID")]
     public abstract User SpecificUser { get; set; }
 
+    [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
     [DBBidirectionalRelation ("AccessControlEntries")]
     [DBColumn ("AbstractRoleID")]
     public abstract AbstractRoleDefinition SpecificAbstractRole { get; set; }

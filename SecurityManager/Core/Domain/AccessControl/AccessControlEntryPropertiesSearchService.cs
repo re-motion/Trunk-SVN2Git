@@ -47,6 +47,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement)
     {
+      ArgumentUtility.CheckNotNullAndType<AccessControlEntry> ("referencingObject", referencingObject);
       ArgumentUtility.CheckNotNull ("property", property);
 
       switch (property.Identifier)

@@ -13,6 +13,7 @@ using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
@@ -65,6 +66,9 @@ namespace Remotion.SecurityManager.Domain
 
       if (serviceType == typeof (RolePropertiesSearchService))
         return new RolePropertiesSearchService();
+
+      if (serviceType == typeof (AccessControlEntryPropertiesSearchService))
+        return new AccessControlEntryPropertiesSearchService ();
 
       return Base.CreateService (provider, serviceType);
     }
