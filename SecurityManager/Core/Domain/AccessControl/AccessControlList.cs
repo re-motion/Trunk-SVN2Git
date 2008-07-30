@@ -38,8 +38,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     // member fields
 
-    private DomainObjectCollection _accessControlEntriesToBeDeleted;
-    private DomainObjectCollection _stateCombinations;
+    private ObjectList<AccessControlEntry> _accessControlEntriesToBeDeleted;
+    private ObjectList<StateCombination> _stateCombinationsToBeDeleted;
 
     // construction and disposing
 
@@ -65,12 +65,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private void StateCombinations_Added (object sender, DomainObjectCollectionChangeEventArgs args)
     {
-      StateCombination stateCombination = (StateCombination) args.DomainObject;
-      DomainObjectCollection stateCombinations = StateCombinations;
+      var stateCombination = (StateCombination) args.DomainObject;
+      var stateCombinations = StateCombinations;
       if (stateCombinations.Count == 1)
         stateCombination.Index = 0;
       else
-        stateCombination.Index = ((StateCombination) stateCombinations[stateCombinations.Count - 2]).Index + 1;
+        stateCombination.Index = stateCombinations[stateCombinations.Count - 2].Index + 1;
       Touch();
       if (Class != null)
         Class.Touch();
@@ -78,12 +78,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private void AccessControlEntries_Added (object sender, DomainObjectCollectionChangeEventArgs args)
     {
-      AccessControlEntry ace = (AccessControlEntry) args.DomainObject;
-      DomainObjectCollection accessControlEntries = AccessControlEntries;
+      var ace = (AccessControlEntry) args.DomainObject;
+      var accessControlEntries = AccessControlEntries;
       if (accessControlEntries.Count == 1)
         ace.Index = 0;
       else
-        ace.Index = ((AccessControlEntry) accessControlEntries[accessControlEntries.Count - 2]).Index + 1;
+        ace.Index = accessControlEntries[accessControlEntries.Count - 2].Index + 1;
       Touch();
     }
 
@@ -111,9 +111,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("token", token);
 
-      List<AccessControlEntry> entries = new List<AccessControlEntry>();
+      var entries = new List<AccessControlEntry>();
 
-      foreach (AccessControlEntry entry in AccessControlEntries)
+      foreach (var entry in AccessControlEntries)
       {
         if (entry.MatchesToken (token))
           entries.Add (entry);
@@ -129,7 +129,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (aces.Length == 0)
         return aces;
 
-      AccessControlEntry[] sortedAces = (AccessControlEntry[]) aces.Clone();
+      var sortedAces = (AccessControlEntry[]) aces.Clone();
 
       Array.Sort (sortedAces, new AccessControlEntryPriorityComparer());
       Array.Reverse (sortedAces);
@@ -145,12 +145,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("token", token);
 
-      List<AccessTypeDefinition> accessTypes = new List<AccessTypeDefinition>();
+      var accessTypes = new List<AccessTypeDefinition>();
 
-      AccessControlEntry[] aces = FilterAcesByPriority (FindMatchingEntries (token));
-      foreach (AccessControlEntry ace in aces)
+      foreach (var ace in FilterAcesByPriority (FindMatchingEntries (token)))
       {
-        foreach (AccessTypeDefinition allowedAccessType in ace.GetAllowedAccessTypes())
+        foreach (var allowedAccessType in ace.GetAllowedAccessTypes())
         {
           if (!accessTypes.Contains (allowedAccessType))
             accessTypes.Add (allowedAccessType);
@@ -167,20 +166,20 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       base.OnDeleting (args);
 
       _accessControlEntriesToBeDeleted = AccessControlEntries.Clone();
-      _stateCombinations = StateCombinations.Clone();
+      _stateCombinationsToBeDeleted = StateCombinations.Clone();
     }
 
     protected override void OnDeleted (EventArgs args)
     {
       base.OnDeleted (args);
 
-      foreach (AccessControlEntry accessControlEntry in _accessControlEntriesToBeDeleted)
+      foreach (var accessControlEntry in _accessControlEntriesToBeDeleted)
         accessControlEntry.Delete();
       _accessControlEntriesToBeDeleted = null;
 
-      foreach (StateCombination stateCombination in _stateCombinations)
+      foreach (var stateCombination in _stateCombinationsToBeDeleted)
         stateCombination.Delete();
-      _stateCombinations = null;
+      _stateCombinationsToBeDeleted = null;
     }
 
     public StateCombination CreateStateCombination ()
@@ -188,7 +187,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (Class == null)
         throw new InvalidOperationException ("Cannot create StateCombination if no SecurableClassDefinition is assigned to this AccessControlList.");
 
-      StateCombination stateCombination = StateCombination.NewObject();
+      var stateCombination = StateCombination.NewObject();
       stateCombination.Class = Class;
       stateCombination.AccessControlList = this;
 
@@ -200,8 +199,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (Class == null)
         throw new InvalidOperationException ("Cannot create AccessControlEntry if no SecurableClassDefinition is assigned to this AccessControlList.");
 
-      AccessControlEntry accessControlEntry = AccessControlEntry.NewObject();
-      foreach (AccessTypeDefinition accessTypeDefinition in Class.AccessTypes)
+      var accessControlEntry = AccessControlEntry.NewObject();
+      foreach (var accessTypeDefinition in Class.AccessTypes)
         accessControlEntry.AttachAccessType (accessTypeDefinition);
       accessControlEntry.AccessControlList = this;
 

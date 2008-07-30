@@ -70,16 +70,19 @@ namespace Remotion.Utilities
       T[] result = new T[array.Length + 1];
       result[0] = item;
       for (int i = 0; i < array.Length; ++i)
-        result[i+1] = array[i];
+        result[i + 1] = array[i];
       return result;
     }
 
-    public static TResult[] Convert<TSource, TResult> (TSource[] array)
-      where TResult: TSource 
+    public static TResult[] Convert<TSource, TResult> (ICollection<TSource> collection)
+        where TResult: TSource
     {
-      if (array == null)
+      if (collection == null)
         return null;
-      return Array.ConvertAll<TSource, TResult> (array, delegate (TSource current) { return (TResult) current; });
+
+      TResult[] result = (TResult[]) Array.CreateInstance (typeof (TResult), collection.Count);
+      collection.CopyTo ((TSource[]) (Array) result, 0);
+      return result;
     }
 
     public static Array Convert (Array array, Type elementType)
@@ -89,15 +92,15 @@ namespace Remotion.Utilities
       int[] lowerBounds = new int[rank];
       for (int dimension = 0; dimension < rank; ++dimension)
       {
-        lengths[dimension] = array.GetLength(dimension);
+        lengths[dimension] = array.GetLength (dimension);
         lowerBounds[dimension] = array.GetLowerBound (dimension);
       }
-      
+
       Array result = Array.CreateInstance (elementType, lengths, lowerBounds);
       array.CopyTo (result, 0);
       return result;
     }
-    
+
     public static Array Convert (ICollection collection, Type elementType)
     {
       ArgumentUtility.CheckNotNull ("collection", collection);
@@ -110,11 +113,7 @@ namespace Remotion.Utilities
 
     public static T[] Convert<T> (ICollection<T> collection)
     {
-      ArgumentUtility.CheckNotNull ("collection", collection);
-
-      T[] result = (T[]) Array.CreateInstance (typeof (T), collection.Count);
-      collection.CopyTo (result, 0);
-      return result;
+      return Convert<T, T> (collection);
     }
 
     public static T[] Insert<T> (T[] original, int index, T value)

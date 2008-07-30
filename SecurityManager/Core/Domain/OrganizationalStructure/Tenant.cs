@@ -72,7 +72,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return DomainObject.GetObject<Tenant> (id);
     }
 
-    public static DomainObjectCollection FindAll ()
+    public static ObjectList<Tenant> FindAll ()
     {
       var result = from t in DataContext.Entity<Tenant>()
                    orderby t.Name

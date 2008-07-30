@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -240,6 +241,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsTrue (enumerator.MoveNext ());
       Assert.AreSame (_orderItem2, enumerator.Current);
       Assert.IsFalse (enumerator.MoveNext ());
+    }
+
+    [Test]
+    public void ToArray ()
+    {
+      OrderItem[] orderItems = _order.OrderItems.ToArray ();
+
+      Assert.That (orderItems, Is.EquivalentTo (_order.OrderItems));
     }
   }
 }

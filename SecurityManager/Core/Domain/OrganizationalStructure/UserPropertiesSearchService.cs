@@ -48,7 +48,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         case c_owningGroupName:
           if (user.Tenant == null)
             return new IBusinessObject[0];
-          return (IBusinessObject[]) ArrayUtility.Convert (Group.FindByTenantID (user.Tenant.ID), typeof (IBusinessObject));
+          return Group.FindByTenantID (user.Tenant.ID).ToArray();
         default:
           throw new ArgumentException (
               string.Format (

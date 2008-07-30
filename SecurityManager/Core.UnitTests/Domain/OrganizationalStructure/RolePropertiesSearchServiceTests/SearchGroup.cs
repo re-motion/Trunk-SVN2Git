@@ -23,19 +23,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
   [TestFixture]
   public class SearchGroup : DomainTest
   {
-    private DatabaseFixtures _dbFixtures;
     private OrganizationalStructureTestHelper _testHelper;
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _groupProperty;
     private Group _group;
-
-    public override void TestFixtureSetUp ()
-    {
-      base.TestFixtureSetUp();
-
-      _dbFixtures = new DatabaseFixtures();
-      _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants(ClientTransaction.NewRootTransaction());
-    }
 
     public override void SetUp ()
     {

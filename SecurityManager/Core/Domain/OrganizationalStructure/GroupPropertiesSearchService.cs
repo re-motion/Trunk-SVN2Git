@@ -9,6 +9,7 @@
  */
 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
@@ -48,7 +49,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         case c_parentName:
           if (group.Tenant == null)
             return new IBusinessObject[0];
-          return (IBusinessObject[]) ArrayUtility.Convert (group.GetPossibleParentGroups (group.Tenant.ID), typeof (IBusinessObject));
+          return group.GetPossibleParentGroups (group.Tenant.ID).ToArray();
         default:
           throw new ArgumentException (
               string.Format (

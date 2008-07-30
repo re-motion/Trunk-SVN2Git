@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     // member fields
 
-    private DomainObjectCollection _permissionsToBeDeleted;
+    private ObjectList<Permission> _permissionsToBeDeleted;
 
     // construction and disposing
 
@@ -149,15 +149,15 @@ namespace Remotion.SecurityManager.Domain.AccessControl
             string.Format ("The access type '{0}' has already been attached to this access control entry.", accessType.Name), "accessType");
       }
 
-      Permission permission = Permission.NewObject();
+      var permission = Permission.NewObject();
       permission.AccessType = accessType;
       permission.Allowed = null;
-      DomainObjectCollection permissions = GetPermissions();
+      var permissions = GetPermissions();
       permissions.Add (permission);
       if (permissions.Count == 1)
         permission.Index = 0;
       else
-        permission.Index = ((Permission) permissions[permissions.Count - 2]).Index + 1;
+        permission.Index = permissions[permissions.Count - 2].Index + 1;
       Touch();
     }
 
@@ -165,7 +165,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
 
-      Permission permission = GetPermission (accessType);
+      var permission = GetPermission (accessType);
       permission.Allowed = true;
     }
 
@@ -173,7 +173,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
 
-      Permission permission = GetPermission (accessType);
+      var permission = GetPermission (accessType);
       permission.Allowed = null;
     }
 
@@ -216,7 +216,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (SpecificAbstractRole == null)
         return true;
 
-      foreach (AbstractRoleDefinition abstractRole in token.AbstractRoles)
+      foreach (var abstractRole in token.AbstractRoles)
       {
         if (abstractRole.ID == SpecificAbstractRole.ID)
           return true;
@@ -257,17 +257,19 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private Permission GetPermission (AccessTypeDefinition accessType)
     {
-      Permission permission = FindPermission (accessType);
+      var permission = FindPermission (accessType);
       if (permission == null)
+      {
         throw new ArgumentException (
             string.Format ("The access type '{0}' is not assigned to this access control entry.", accessType.Name), "accessType");
+      }
 
       return permission;
     }
 
     private Permission FindPermission (AccessTypeDefinition accessType)
     {
-      foreach (Permission permission in Permissions)
+      foreach (var permission in Permissions)
       {
         if (permission.AccessType.ID == accessType.ID)
           return permission;
@@ -308,7 +310,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       base.OnDeleted (args);
 
-      foreach (Permission permission in _permissionsToBeDeleted)
+      foreach (var permission in _permissionsToBeDeleted)
         permission.Delete();
 
       _permissionsToBeDeleted = null;
@@ -316,7 +318,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public AccessControlEntryValidationResult Validate ()
     {
-      AccessControlEntryValidationResult result = new AccessControlEntryValidationResult();
+      var result = new AccessControlEntryValidationResult();
 
       if (State != StateType.Deleted)
       {

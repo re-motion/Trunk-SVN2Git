@@ -98,12 +98,12 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     private void AccessControlLists_Added (object sender, DomainObjectCollectionChangeEventArgs args)
     {
-      AccessControlList accessControlList = (AccessControlList) args.DomainObject;
-      DomainObjectCollection accessControlLists = AccessControlLists;
+      var accessControlList = (AccessControlList) args.DomainObject;
+      var accessControlLists = AccessControlLists;
       if (accessControlLists.Count == 1)
         accessControlList.Index = 0;
       else
-        accessControlList.Index = ((AccessControlList) accessControlLists[accessControlLists.Count - 2]).Index + 1;
+        accessControlList.Index = accessControlLists[accessControlLists.Count - 2].Index + 1;
       Touch();
     }
 
@@ -131,9 +131,9 @@ namespace Remotion.SecurityManager.Domain.Metadata
       {
         if (_stateProperties == null)
         {
-          ObjectList<StatePropertyDefinition> stateProperties = new ObjectList<StatePropertyDefinition>();
+          var stateProperties = new ObjectList<StatePropertyDefinition>();
 
-          foreach (StatePropertyReference propertyReference in StatePropertyReferences)
+          foreach (var propertyReference in StatePropertyReferences)
             stateProperties.Add (propertyReference.StateProperty);
 
           _stateProperties = new ObjectList<StatePropertyDefinition> (stateProperties, true);
@@ -154,9 +154,9 @@ namespace Remotion.SecurityManager.Domain.Metadata
       {
         if (_accessTypes == null)
         {
-          ObjectList<AccessTypeDefinition> accessTypes = new ObjectList<AccessTypeDefinition>();
+          var accessTypes = new ObjectList<AccessTypeDefinition>();
 
-          foreach (AccessTypeReference accessTypeReference in AccessTypeReferences)
+          foreach (var accessTypeReference in AccessTypeReferences)
             accessTypes.Add (accessTypeReference.AccessType);
 
           _accessTypes = new ObjectList<AccessTypeDefinition> (accessTypes, true);
@@ -175,14 +175,14 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public void AddAccessType (AccessTypeDefinition accessType)
     {
-      AccessTypeReference reference = AccessTypeReference.NewObject();
+      var reference = AccessTypeReference.NewObject();
       reference.AccessType = accessType;
       AccessTypeReferences.Add (reference);
-      DomainObjectCollection accessTypeReferences = AccessTypeReferences;
+      var accessTypeReferences = AccessTypeReferences;
       if (accessTypeReferences.Count == 1)
         reference.Index = 0;
       else
-        reference.Index = ((AccessTypeReference) accessTypeReferences[accessTypeReferences.Count - 2]).Index + 1;
+        reference.Index = accessTypeReferences[accessTypeReferences.Count - 2].Index + 1;
       Touch();
 
       _accessTypes = null;
@@ -190,7 +190,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public void AddStateProperty (StatePropertyDefinition stateProperty)
     {
-      StatePropertyReference reference = StatePropertyReference.NewObject();
+      var reference = StatePropertyReference.NewObject();
       reference.StateProperty = stateProperty;
 
       StatePropertyReferences.Add (reference);
@@ -199,7 +199,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public StateCombination FindStateCombination (List<StateDefinition> states)
     {
-      foreach (StateCombination stateCombination in StateCombinations)
+      foreach (var stateCombination in StateCombinations)
       {
         if (stateCombination.MatchesStates (states))
           return stateCombination;
@@ -220,7 +220,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public SecurableClassValidationResult Validate ()
     {
-      SecurableClassValidationResult result = new SecurableClassValidationResult();
+      var result = new SecurableClassValidationResult();
 
       ValidateUniqueStateCombinations (result);
 
@@ -229,11 +229,11 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public void ValidateUniqueStateCombinations (SecurableClassValidationResult result)
     {
-      Dictionary<StateCombination, StateCombination> stateCombinations = new Dictionary<StateCombination, StateCombination> (new StateCombinationComparer());
+      var stateCombinations = new Dictionary<StateCombination, StateCombination> (new StateCombinationComparer());
 
       Assertion.IsTrue (State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object are not empty but the object is deleted.", ID);
 
-      foreach (StateCombination stateCombination in StateCombinations)
+      foreach (var stateCombination in StateCombinations)
       {
         if (stateCombinations.ContainsKey (stateCombination))
         {

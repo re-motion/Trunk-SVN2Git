@@ -51,11 +51,11 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         case c_groupName:
           if (role.User == null || role.User.Tenant == null)
             return new IBusinessObject[0];
-          return (IBusinessObject[]) ArrayUtility.Convert (role.GetPossibleGroups (role.User.Tenant.ID), typeof (IBusinessObject));
+          return role.GetPossibleGroups (role.User.Tenant.ID).ToArray();
         case c_userName:
           if (role.Group == null || role.Group.Tenant == null)
             return new IBusinessObject[0];
-          return (IBusinessObject[]) ArrayUtility.Convert (User.FindByTenantID (role.Group.Tenant.ID), typeof (IBusinessObject));
+          return User.FindByTenantID (role.Group.Tenant.ID).ToArray();
         default:
           throw new ArgumentException (
               string.Format (

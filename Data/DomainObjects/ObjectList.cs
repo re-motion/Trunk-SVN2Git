@@ -12,11 +12,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
 {
   [Serializable]
-  public class ObjectList<T> : DomainObjectCollection, IList<T> where T : DomainObject
+// ReSharper disable RedundantExtendsListEntry
+  public class ObjectList<T> : DomainObjectCollection, IList<T>, ICollection<T> where T : DomainObject
+// ReSharper restore RedundantExtendsListEntry
   {
     public ObjectList()
         : base (typeof (T))
@@ -85,6 +88,11 @@ namespace Remotion.Data.DomainObjects
     {
       foreach (T t in (IEnumerable) this)
         yield return t;
+    }
+
+    public T[] ToArray()
+    {
+      return ArrayUtility.Convert<T> (this);
     }
   }
 }
