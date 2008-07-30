@@ -9,9 +9,9 @@
  */
 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
@@ -21,43 +21,18 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   /// <remarks>
   /// The service is applied to the <see cref="User.OwningGroup"/> property via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
-  public sealed class UserPropertiesSearchService : ISearchAvailableObjectsService
+  public sealed class UserPropertiesSearchService : SecurityManagerSearchServiceBase<User>
   {
-    private const string c_owningGroupName = "OwningGroup";
-
     public UserPropertiesSearchService ()
     {
+      AddSearchDelegate ("OwningGroup", FindPossibleOwningGroups);
     }
 
-    public bool SupportsIdentity (IBusinessObjectReferenceProperty property)
+    private IBusinessObject[] FindPossibleOwningGroups (User user, IBusinessObjectReferenceProperty property, string searchStatement)
     {
-      ArgumentUtility.CheckNotNull ("property", property);
-      
-      switch (property.Identifier)
-      {
-        case c_owningGroupName:
-          return true;
-        default:
-          return false;
-      }
-    }
-
-    public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement)
-    {
-      User user = ArgumentUtility.CheckNotNullAndType<User> ("referencingObject", referencingObject);
-      ArgumentUtility.CheckNotNull ("property", property);
-
-      switch (property.Identifier)
-      {
-        case c_owningGroupName:
-          if (user.Tenant == null)
-            return new IBusinessObject[0];
-          return Group.FindByTenantID (user.Tenant.ID).ToArray();
-        default:
-          throw new ArgumentException (
-              string.Format (
-                  "The property '{0}' is not supported by the '{1}' type.", property.DisplayName, typeof (UserPropertiesSearchService).FullName));
-      }
+      if (user.Tenant == null)
+        return new IBusinessObject[0];
+      return Group.FindByTenantID (user.Tenant.ID).ToArray();
     }
   }
 }

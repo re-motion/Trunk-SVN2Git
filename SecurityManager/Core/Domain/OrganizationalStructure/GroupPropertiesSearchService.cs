@@ -12,7 +12,6 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
@@ -22,43 +21,18 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   /// <remarks>
   /// The service is applied to the <see cref="Group.Parent"/> property via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
-  public sealed class GroupPropertiesSearchService : ISearchAvailableObjectsService
+  public sealed class GroupPropertiesSearchService : SecurityManagerSearchServiceBase<Group>
   {
-    private const string c_parentName = "Parent";
-
     public GroupPropertiesSearchService ()
     {
+      AddSearchDelegate ("Parent", FindPossibleParentGroups);
     }
 
-    public bool SupportsIdentity (IBusinessObjectReferenceProperty property)
+    private IBusinessObject[] FindPossibleParentGroups (Group group, IBusinessObjectReferenceProperty property, string searchStatement)
     {
-      ArgumentUtility.CheckNotNull ("property", property);
-      
-      switch (property.Identifier)
-      {
-        case c_parentName:
-          return true;
-        default:
-          return false;
-      }
-    }
-
-    public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement)
-    {
-      Group group = ArgumentUtility.CheckNotNullAndType<Group> ("referencingObject", referencingObject);
-      ArgumentUtility.CheckNotNull ("property", property);
-
-      switch (property.Identifier)
-      {
-        case c_parentName:
-          if (group.Tenant == null)
-            return new IBusinessObject[0];
-          return group.GetPossibleParentGroups (group.Tenant.ID).ToArray();
-        default:
-          throw new ArgumentException (
-              string.Format (
-                  "The property '{0}' is not supported by the '{1}' type.", property.DisplayName, typeof (GroupPropertiesSearchService).FullName));
-      }
+      if (group.Tenant == null)
+        return new IBusinessObject[0];
+      return group.GetPossibleParentGroups (group.Tenant.ID).ToArray();
     }
   }
 }

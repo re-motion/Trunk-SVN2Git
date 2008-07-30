@@ -9,9 +9,9 @@
  */
 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
@@ -22,50 +22,26 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   /// The service is applied to the <see cref="Role.Group"/> and the <see cref="Role.User"/> properties via the
   /// <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
-  public sealed class RolePropertiesSearchService : ISearchAvailableObjectsService
+  public sealed class RolePropertiesSearchService : SecurityManagerSearchServiceBase<Role>
   {
-    private const string c_groupName = "Group";
-    private const string c_userName = "User";
-
     public RolePropertiesSearchService ()
     {
+      AddSearchDelegate ("Group", FindPossibleGroups);
+      AddSearchDelegate ("User", FindPossibleUsers);
     }
 
-    public bool SupportsIdentity (IBusinessObjectReferenceProperty property)
+    private IBusinessObject[] FindPossibleGroups (Role role, IBusinessObjectReferenceProperty property, string searchStatement)
     {
-      ArgumentUtility.CheckNotNull ("property", property);
-
-      switch (property.Identifier)
-      {
-        case c_groupName:
-          return true;
-        case c_userName:
-          return true;
-        default:
-          return false;
-      }
+      if (role.User == null || role.User.Tenant == null)
+        return new IBusinessObject[0];
+      return role.GetPossibleGroups (role.User.Tenant.ID).ToArray();
     }
 
-    public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement)
+    private IBusinessObject[] FindPossibleUsers (Role role, IBusinessObjectReferenceProperty property, string searchStatement)
     {
-      Role role = ArgumentUtility.CheckNotNullAndType<Role> ("referencingObject", referencingObject);
-      ArgumentUtility.CheckNotNull ("property", property);
-
-      switch (property.Identifier)
-      {
-        case c_groupName:
-          if (role.User == null || role.User.Tenant == null)
-            return new IBusinessObject[0];
-          return role.GetPossibleGroups (role.User.Tenant.ID).ToArray();
-        case c_userName:
-          if (role.Group == null || role.Group.Tenant == null)
-            return new IBusinessObject[0];
-          return User.FindByTenantID (role.Group.Tenant.ID).ToArray();
-        default:
-          throw new ArgumentException (
-              string.Format (
-                  "The property '{0}' is not supported by the '{1}' type.", property.DisplayName, typeof (RolePropertiesSearchService).FullName));
-      }
+      if (role.Group == null || role.Group.Tenant == null)
+        return new IBusinessObject[0];
+      return User.FindByTenantID (role.Group.Tenant.ID).ToArray();
     }
   }
 }

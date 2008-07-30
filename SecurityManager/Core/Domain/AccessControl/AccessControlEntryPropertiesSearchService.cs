@@ -10,61 +10,26 @@
 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
   /// <summary>
-  /// The <see cref="AccessControlEntryPropertiesSearchService"/> is used to return the values that can be assigned to the various 
-  /// properties of <see cref="AccessControlEntry"/>.
+  /// Implementation of <see cref="ISearchAvailableObjectsService"/> for the <see cref="AccessControlEntry"/> type.
   /// </summary>
-  public class AccessControlEntryPropertiesSearchService : ISearchAvailableObjectsService
+  /// <remarks>
+  /// The service is applied to the <see cref="AccessControlEntry.SpecificTenant"/>, <see cref="AccessControlEntry.SpecificPosition"/>, 
+  /// and <see cref="AccessControlEntry.SpecificAbstractRole"/> properties via the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
+  /// </remarks>
+  public class AccessControlEntryPropertiesSearchService : SecurityManagerSearchServiceBase<AccessControlEntry>
   {
-    private const string c_specificAbstractRoleName = "SpecificAbstractRole";
-    private const string c_specificTenantName = "SpecificTenant";
-    private const string c_specificPositionName = "SpecificPosition";
-
-    public bool SupportsIdentity (IBusinessObjectReferenceProperty property)
+    public AccessControlEntryPropertiesSearchService ()
     {
-      ArgumentUtility.CheckNotNull ("property", property);
-
-      switch (property.Identifier)
-      {
-        case c_specificTenantName:
-          return true;
-        case c_specificPositionName:
-          return true;
-        case c_specificAbstractRoleName:
-          return true;
-        default:
-          return false;
-      }
-    }
-
-    public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement)
-    {
-      ArgumentUtility.CheckNotNullAndType<AccessControlEntry> ("referencingObject", referencingObject);
-      ArgumentUtility.CheckNotNull ("property", property);
-
-      switch (property.Identifier)
-      {
-        case c_specificTenantName:
-          return Tenant.FindAll().ToArray();
-        case c_specificPositionName:
-          return Position.FindAll ().ToArray ();
-        case c_specificAbstractRoleName:
-          return AbstractRoleDefinition.FindAll().ToArray ();
-        default:
-          throw new ArgumentException (
-              string.Format (
-                  "The property '{0}' is not supported by the '{1}' type.",
-                  property.DisplayName,
-                  typeof (AccessControlEntryPropertiesSearchService).FullName));
-      }
+      AddSearchDelegate ("SpecificTenant", delegate { return Tenant.FindAll().ToArray(); });
+      AddSearchDelegate ("SpecificPosition", delegate { return Position.FindAll().ToArray(); });
+      AddSearchDelegate ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll().ToArray(); });
     }
   }
 }
