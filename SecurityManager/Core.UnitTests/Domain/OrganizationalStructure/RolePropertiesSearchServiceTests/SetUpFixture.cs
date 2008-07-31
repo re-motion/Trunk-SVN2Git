@@ -12,8 +12,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     [SetUp]
     public void SetUp ()
     {
-      _dbFixtures = new DatabaseFixtures();
-      _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.NewRootTransaction());
+      try
+      {
+        _dbFixtures = new DatabaseFixtures();
+        _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.NewRootTransaction());
+      }
+      catch (Exception e)
+      {
+        Console.WriteLine (e);
+        throw;
+      }
     }
   }
 }
