@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.Data.UnitTesting.DomainObjects.Linq;
 
 //
 // General Information about an assembly is controlled through the following 
@@ -40,3 +41,5 @@ using Remotion.Data.DomainObjects;
 // by using the '*' as shown below:
 
 [assembly: AssemblyVersion("1.11.0.2")]
+
+[assembly: ApplyQueryExecutorMixin]

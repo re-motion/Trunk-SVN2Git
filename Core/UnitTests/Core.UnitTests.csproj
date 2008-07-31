@@ -142,6 +142,7 @@
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinIntroducingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinOverridingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\TargetClassCallingOverriddenMethodFromCtor.cs" />
+    <Compile Include="Mixins\MixAttributeTest.cs" />
     <Compile Include="Mixins\SampleTypes\MixinNonIntroducingSimpleAttribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinSuppressingAndAddingBT1Attribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinSuppressingBT1Attribute.cs" />

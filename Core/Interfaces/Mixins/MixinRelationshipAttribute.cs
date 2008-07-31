@@ -10,6 +10,7 @@
 
 using System;
 using Remotion.Implementation;
+using System.Linq;
 
 namespace Remotion.Mixins
 {
@@ -50,10 +51,31 @@ namespace Remotion.Mixins
       }
     }
 
+    /// <summary>
+    /// Gets or sets the default visibility of members introduced by the mixin to the target class. The default is <see cref="MemberVisibility.Private"/>.
+    /// </summary>
+    /// <value>The introduced member visibility.</value>
     public MemberVisibility IntroducedMemberVisibility
     {
       get { return _introducedMemberVisibility; }
       set { _introducedMemberVisibility = value; }
+    }
+
+    public override bool Equals (object obj)
+    {
+      var other = obj as MixinRelationshipAttribute;
+      return !object.ReferenceEquals (other, null)
+          && IntroducedMemberVisibility == other.IntroducedMemberVisibility
+          && SuppressedMixins.SequenceEqual (other.SuppressedMixins)
+          && AdditionalDependencies.SequenceEqual (other.AdditionalDependencies);
+    }
+
+    public override int GetHashCode ()
+    {
+      int hc = IntroducedMemberVisibility.GetHashCode ()
+          ^ SuppressedMixins.Aggregate (0, (acc, t) => acc ^ t.GetHashCode())
+          ^ AdditionalDependencies.Aggregate (0, (acc, t) => acc ^ t.GetHashCode ());
+      return hc;
     }
   }
 }

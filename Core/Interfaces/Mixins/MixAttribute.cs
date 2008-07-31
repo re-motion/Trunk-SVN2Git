@@ -72,5 +72,23 @@ namespace Remotion.Mixins
     {
       get { return _mixinType; }
     }
+
+    public override bool Equals (object obj)
+    {
+      MixAttribute other = obj as MixAttribute;
+      return !object.ReferenceEquals (other, null)
+          && TargetType == other.TargetType
+          && MixinType == other.MixinType
+          && MixinKind == other.MixinKind
+          && base.Equals (other);
+    }
+
+    public override int GetHashCode ()
+    {
+      return TargetType.GetHashCode()
+          ^ MixinType.GetHashCode()
+          ^ MixinKind.GetHashCode() 
+          ^ base.GetHashCode ();
+    }
   }
 }

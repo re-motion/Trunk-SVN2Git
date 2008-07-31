@@ -10,20 +10,29 @@
 
 using System;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Mixins.Context.FluentBuilders;
 
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {
   public class MixAnalyzer : RelationAnalyzerBase
   {
+    private readonly Set<MixAttribute> _handledBindings = new Set<MixAttribute>();
+
     public MixAnalyzer (MixinConfigurationBuilder configurationBuilder) : base (configurationBuilder)
     {
     }
 
-    public virtual void Analyze (Assembly assembly)
+    public virtual void Analyze (ICustomAttributeProvider assembly)
     {
       foreach (MixAttribute attribute in assembly.GetCustomAttributes (typeof (MixAttribute), false))
-        AnalyzeMixAttribute (attribute);
+      {
+        if (!_handledBindings.Contains (attribute))
+        {
+          AnalyzeMixAttribute (attribute);
+          _handledBindings.Add (attribute);
+        }
+      }
     }
 
     public virtual void AnalyzeMixAttribute (MixAttribute mixAttribute)

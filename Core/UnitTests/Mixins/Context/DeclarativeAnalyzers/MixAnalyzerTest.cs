@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
@@ -193,6 +194,50 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
 
       _mockRepository.ReplayAll ();
       analyzer.Analyze (typeof (MixAnalyzerTest).Assembly);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Analyze_IgnoresDuplicates ()
+    {
+      var duplicateAttributes = new [] {new MixAttribute(typeof (object), typeof (string)), new MixAttribute (typeof (object), typeof (string))};
+      
+      var analyzer = _mockRepository.CreateMock<MixAnalyzer> (_configurationBuilderMock);
+      var assemblyStub = _mockRepository.Stub<ICustomAttributeProvider> ();
+
+      SetupResult.For (assemblyStub.GetCustomAttributes (typeof (MixAttribute), false)).Return (duplicateAttributes);
+
+      analyzer.Analyze (assemblyStub);
+      LastCall.CallOriginalMethod (OriginalCallOptions.CreateExpectation);
+
+      analyzer.AnalyzeMixAttribute (duplicateAttributes[0]); // expectation, exactly once
+
+      _mockRepository.ReplayAll ();
+      analyzer.Analyze (assemblyStub);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Analyze_DuplicatesMeansFullEquality ()
+    {
+      var duplicateAttributes = new[] { 
+        new MixAttribute (typeof (object), typeof (string)) { MixinKind = MixinKind.Extending }, 
+        new MixAttribute (typeof (object), typeof (string)) { MixinKind = MixinKind.Used } 
+      };
+
+      var analyzer = _mockRepository.CreateMock<MixAnalyzer> (_configurationBuilderMock);
+      var assemblyStub = _mockRepository.Stub<ICustomAttributeProvider> ();
+
+      SetupResult.For (assemblyStub.GetCustomAttributes (typeof (MixAttribute), false)).Return (duplicateAttributes);
+
+      analyzer.Analyze (assemblyStub);
+      LastCall.CallOriginalMethod (OriginalCallOptions.CreateExpectation);
+
+      analyzer.AnalyzeMixAttribute (duplicateAttributes[0]); // expectation
+      analyzer.AnalyzeMixAttribute (duplicateAttributes[1]); // expectation
+
+      _mockRepository.ReplayAll ();
+      analyzer.Analyze (assemblyStub);
       _mockRepository.VerifyAll ();
     }
   }
