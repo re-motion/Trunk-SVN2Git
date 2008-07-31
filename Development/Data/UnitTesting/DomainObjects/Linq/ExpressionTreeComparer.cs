@@ -18,37 +18,21 @@ namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
   public class ExpressionTreeComparer
   {
     public delegate void AssertThatActualIsEqualToExpected (object actual, object expected);
-    public delegate void AssertThatActualIsNull (object actual);
-    public delegate void AssertThatActualIsNotNull (object actual);
 
     private readonly AssertThatActualIsEqualToExpected _assertThatActualIsEqualToExpected;
-    private readonly AssertThatActualIsNull _assertThatActualIsNull;
-    private readonly AssertThatActualIsNotNull _assertThatActualIsNotNull;
 
-    public ExpressionTreeComparer (
-        AssertThatActualIsEqualToExpected thatActualIsEqualToExpected,
-        AssertThatActualIsNull assertThatActualIsNull,
-        AssertThatActualIsNotNull assertThatActualIsNotNull)
+    public ExpressionTreeComparer (AssertThatActualIsEqualToExpected thatActualIsEqualToExpected)
     {
       ArgumentUtility.CheckNotNull ("thatActualIsEqualToExpected", thatActualIsEqualToExpected);
-      ArgumentUtility.CheckNotNull ("assertThatActualIsNull", assertThatActualIsNull);
-      ArgumentUtility.CheckNotNull ("assertThatActualIsNotNull", assertThatActualIsNotNull);
 
       _assertThatActualIsEqualToExpected = thatActualIsEqualToExpected;
-      _assertThatActualIsNotNull = assertThatActualIsNotNull;
-      _assertThatActualIsNull = assertThatActualIsNull;
     }
 
     public void Compare<T> (IQueryable<T> expected, IQueryable<T> actual)
         where T: DomainObject
     {
-      if (expected == null)
-      {
-        _assertThatActualIsNull (actual);
-        return;
-      }
-
-      _assertThatActualIsNotNull (actual);
+      ArgumentUtility.CheckNotNull ("expected", expected);
+      ArgumentUtility.CheckNotNull ("actual", actual);
 
       CommandData expectedCommandData = GetCommandData (expected);
       CommandData actualCommandData = GetCommandData (actual);

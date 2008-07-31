@@ -30,10 +30,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     {
       base.TestFixtureSetUp();
 
-      _expressionTreeComparer = new ExpressionTreeComparer (
-          (actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)),
-          actual => Assert.That (actual, Is.Null),
-          actual => Assert.That (actual, Is.Not.Null));
+      _expressionTreeComparer = new ExpressionTreeComparer ((actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)));
     }
 
     public override void SetUp ()

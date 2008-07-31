@@ -10,7 +10,6 @@
 
 using System;
 using System.Reflection;
-using Remotion.Data.DomainObjects;
 using Remotion.Development.Data.UnitTesting.DomainObjects.Linq;
 
 //
