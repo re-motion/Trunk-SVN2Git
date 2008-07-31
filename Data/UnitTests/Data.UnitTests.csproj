@@ -477,6 +477,7 @@
     <Compile Include="Linq\ParsingTest\DetailsTest\WhereConditionParsingTest\MemberExpressionParserTest.cs" />
     <Compile Include="Linq\ParsingTest\DetailsTest\WhereConditionParsingTest\MethodCallExpressionParserTest.cs" />
     <Compile Include="Linq\ParsingTest\DetailsTest\WhereConditionParsingTest\ParameterExpressionParserTest.cs" />
+    <Compile Include="Linq\ParsingTest\DetailsTest\WhereConditionParsingTest\SubQueryExpressionParserTest.cs" />
     <Compile Include="Linq\ParsingTest\DetailsTest\WhereConditionParsingTest\UnaryExpressionParserTest.cs" />
     <Compile Include="Linq\ParsingTest\ExpressionTreeComparer.cs" />
     <Compile Include="Linq\ParsingTest\FieldResolvingTest\ClauseFieldResolverTest.cs" />

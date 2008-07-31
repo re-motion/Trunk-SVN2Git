@@ -324,7 +324,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("Allow Contains queries with collections")]
     public void QueryWithContainsInWhere_OnCollection ()
     {
       ObjectID[] possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 };
@@ -564,7 +563,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       query.ToArray ();
     }
-
+    
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : TestDomainBase
     {
