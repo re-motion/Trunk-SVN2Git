@@ -37,8 +37,12 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNull ("abstractRoles", abstractRoles);
 
-      FindAbstractRolesQueryBuilder queryBuilder = new FindAbstractRolesQueryBuilder();
-      var result = queryBuilder.CreateQuery (abstractRoles);
+      var abstractRoleNames = (from abstractRole in abstractRoles select abstractRole.Name).ToArray();
+
+      var result = from ar in DataContext.Entity<AbstractRoleDefinition>()
+                   where abstractRoleNames.Contains (ar.Name)
+                   orderby ar.Index
+                   select ar;
 
       return result.ToObjectList();
     }

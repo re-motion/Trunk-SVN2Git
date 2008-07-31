@@ -90,7 +90,6 @@
     <Compile Include="Domain\Metadata\Culture.cs" />
     <Compile Include="Domain\Metadata\CultureImporter.cs" />
     <Compile Include="Domain\Metadata\EnumValueDefinition.cs" />
-    <Compile Include="Domain\Metadata\FindAbstractRolesQueryBuilder.cs" />
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilder.cs" />
     <Compile Include="Domain\Metadata\ImportException.cs" />
     <Compile Include="Domain\Metadata\LocalizedName.cs" />

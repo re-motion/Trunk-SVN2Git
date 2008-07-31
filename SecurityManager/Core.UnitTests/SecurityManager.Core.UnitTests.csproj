@@ -99,7 +99,6 @@
     <Compile Include="Domain\Metadata\MetadataObjectTests\FindTest.cs" />
     <Compile Include="Domain\Metadata\MetadataObjectTests\Test.cs" />
     <Compile Include="Domain\Metadata\CultureImporterTest.cs" />
-    <Compile Include="Domain\Metadata\FindAbstractRolesQueryBuilderTest.cs" />
     <Compile Include="Domain\Metadata\MetadataImporterTest.cs" />
     <Compile Include="Domain\Metadata\MetadataObjectAssert.cs" />
     <Compile Include="Domain\Metadata\MetadataTestHelper.cs" />
