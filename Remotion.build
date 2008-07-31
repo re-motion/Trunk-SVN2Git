@@ -428,9 +428,7 @@
   
   <!--======================= UNIT TESTS =======================-->
 
-  <target name="Core.Mixins.Samples">
-    <call target="Core.Core" cascade="false"/>
-
+  <target name="Core.Mixins.Samples" depends="Core.Core">
     <property name="project.name" value="Core.Mixins.Samples" />
     <property name="project.dir" value="Core/Mixins.Samples" />
     <property name="project.output" value="Remotion.Mixins.Samples" />
@@ -438,11 +436,7 @@
     <call target="buildtest" />
   </target>
   
-  <target name="Core.UnitTests">
-    <call target="Core.Core" cascade="false"/>
-    <call target="Core.Mixins.Samples" cascade="false"/>
-    <call target="Development.Core" cascade="false"/>
-
+  <target name="Core.UnitTests" depends="Core.Core, Core.Mixins.Samples, Development.Core">
     <property name="project.name" value="Core.UnitTests" />
     <property name="project.dir" value="Core/UnitTests" />
     <property name="project.output" value="Remotion.UnitTests" />
@@ -450,9 +444,7 @@
     <call target="buildtest" />
   </target>
 
-  <target name="Development.UnitTests">
-    <call target="Development.Core" cascade="false"/>
-
+  <target name="Development.UnitTests" depends="Development.Core, Development.Data">
     <property name="project.name" value="Development.UnitTests" />
     <property name="project.dir" value="Development/UnitTests" />
     <property name="project.output" value="Remotion.Development.UnitTests" />
@@ -460,13 +452,7 @@
     <call target="buildtest" />
   </target>
 
-  <target name="Web.UnitTests">
-    <call target="Core.Core" cascade="false"/>
-    <call target="Development.Core" cascade="false"/>
-    <call target="Web" cascade="false"/>
-    <call target="Security" cascade="false"/>
-    <call target="Web.Security" cascade="false"/>
-
+  <target name="Web.UnitTests" depends="Core.Core, Development.Core, Web, Security, Web.Security">
     <property name="project.name" value="Web.UnitTests" />
     <property name="project.dir" value="Web/UnitTests" />
     <property name="project.output" value="Remotion.Web.UnitTests" />
@@ -474,13 +460,7 @@
     <call target="buildtest" />
   </target>
 
-  <target name="ObjectBinding.UnitTests">
-    <call target="Core.Core" cascade="false"/>
-    <call target="Development.Core" cascade="false"/>
-    <call target="ObjectBinding" cascade="false"/>
-    <call target="Web" cascade="false"/>
-    <call target="Web.UnitTests" cascade="false"/>
-
+  <target name="ObjectBinding.UnitTests" depends="Core.Core, Development.Core, ObjectBinding, Web, Web.UnitTests">
     <property name="project.name" value="ObjectBinding.UnitTests" />
     <property name="project.dir" value="ObjectBinding/UnitTests" />
     <property name="project.output" value="Remotion.ObjectBinding.UnitTests" />
@@ -488,16 +468,9 @@
     <call target="buildtest" />
   </target>
 
-  <target name="Data.UnitTests">
-    <call target="Core.Core" cascade="false"/>
-    <call target="Data.Linq" cascade="false"/>
-    <call target="Data.DomainObjects" cascade="false"/>
-    <call target="Development.Core" cascade="false"/>
-    <call target="Development.Data" cascade="false"/>
-    <call target="Security.Interfaces" cascade="false"/>
-    <call target="Security" cascade="false"/>
-    <call target="Data.DomainObjects.Security" cascade="false"/>
-
+  <target name="Data.UnitTests" depdends="
+          Core.Core, Data.Linq, Data.DomainObjects, Data.DomainObjects.Security
+          Development.Core, Development.Data, Security.Interfaces, Security">
     <property name="project.name" value="Data.UnitTests" />
     <property name="project.dir" value="Data/UnitTests" />
     <property name="project.output" value="Remotion.Data.UnitTests" />
@@ -505,11 +478,7 @@
     <call target="buildtest" />
   </target>
 
-  <target name="Data.DomainObjects.RdbmsTools.UnitTests">
-    <call target="Core.Core" cascade="false"/>
-    <call target="Data.DomainObjects" cascade="false"/>
-    <call target="Data.DomainObjects.RdbmsTools" cascade="false"/>
-
+  <target name="Data.DomainObjects.RdbmsTools.UnitTests" depends="Core.Core, Data.DomainObjects, Data.DomainObjects.RdbmsTools">
     <property name="project.name" value="Data.DomainObjects.RdbmsTools.UnitTests" />
     <property name="project.dir" value="Data/DomainObjects.RdbmsTools.UnitTests" />
     <property name="project.output" value="Remotion.Data.DomainObjects.RdbmsTools.UnitTests" />
@@ -525,13 +494,7 @@
     <call target="buildtest" />
   </target>
 
-  <target name="Security.UnitTests">
-    <call target="Core.Core" cascade="false"/>
-    <call target="Data.DomainObjects" cascade="false"/>
-    <call target="Development.Core" cascade="false"/>
-    <call target="Security" cascade="false"/>
-    <call target="Security.UnitTests.TestDomain" cascade="false"/>
-
+  <target name="Security.UnitTests" depends="Core.Core, Data.DomainObjects, Development.Core, Security, Security.UnitTests.TestDomain">
     <property name="project.name" value="Security.UnitTests" />
     <property name="project.dir" value="Security/UnitTests" />
     <property name="project.output" value="Remotion.Security.UnitTests" />
@@ -539,16 +502,8 @@
     <call target="buildtest" />
   </target>
 
-  <target name="SecurityManager.Core.UnitTests">
-    <call target="Core.Core" cascade="false"/>
-    <call target="Data.DomainObjects" cascade="false"/>
-    <call target="Data.DomainObjects.Security" cascade="false"/>
-    <call target="Development.Core" cascade="false"/>
-    <call target="Development.Data" cascade="false"/>
-    <call target="ObjectBinding" cascade="false"/>
-    <call target="Security" cascade="false"/>
-    <call target="SecurityManager.Core" cascade="false"/>
-
+  <target name="SecurityManager.Core.UnitTests" depends="Core.Core, Data.DomainObjects, Data.DomainObjects.Security, 
+          Development.Core, Development.Data, ObjectBinding, Security, SecurityManager.Core">
     <property name="project.name" value="SecurityManager.Core.UnitTests" />
     <property name="project.dir" value="SecurityManager/Core.UnitTests" />
     <property name="project.output" value="Remotion.SecurityManager.UnitTests" />
