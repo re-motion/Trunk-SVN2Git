@@ -646,5 +646,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Assert.IsNull (type.GetMethod (typeof (DOOverridingVirtualStorageClassNoneProperties).FullName + ".get_PropertyOverridingGetterAndSetter", _declaredInstanceFlags));
       Assert.IsNull (type.GetMethod (typeof (DOOverridingVirtualStorageClassNoneProperties).FullName + ".set_PropertyOverridingGetterAndSetter", _declaredInstanceFlags));
     }
+
+    [Test]
+    public void Overrides_PerformConstructorCheck ()
+    {
+      Type type = CreateTypeGenerator (typeof (DOWithVirtualStorageClassNoneProperties)).BuildType ();
+      Assert.That (type.GetMethod ("PerformConstructorCheck", _declaredInstanceFlags), Is.Not.Null);
+    }
+
+    [Test]
+    public void Overrides_PerformConstructorCheck_WithNoOp ()
+    {
+      DOWithVirtualStorageClassNoneProperties instance = 
+          (DOWithVirtualStorageClassNoneProperties) RepositoryAccessor.NewObject (typeof (DOWithVirtualStorageClassNoneProperties)).With ();
+      PrivateInvoke.InvokeNonPublicMethod (instance, "PerformConstructorCheck");
+    }
   }
 }

@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 
 
@@ -24,12 +25,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       public string S;
       public object O;
 
-      protected DomainObjectWithSpecialConstructor (string s)
+      public DomainObjectWithSpecialConstructor (string s)
       {
         S = s;
       }
 
-      protected DomainObjectWithSpecialConstructor (object o)
+      public DomainObjectWithSpecialConstructor (object o)
       {
         O = o;
       }
@@ -56,6 +57,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       DomainObjectWithSpecialConstructor d2 = DomainObjectWithSpecialConstructor.NewObject (obj);
       Assert.IsNull (d2.S);
       Assert.AreSame (obj, d2.O);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "DomainObject constructors must not be called directly. Use " 
+        + "DomainObject.NewObject to create DomainObject instances.")]
+    public void ConstructorThrowsIfCalledDirectly ()
+    {
+      new DomainObjectWithSpecialConstructor ("string");
+    }
+
+    [Test]
+    public void ConstructorWorksIfCalledIndirectly ()
+    {
+      var instance = DomainObjectWithSpecialConstructor.NewObject ("string");
+      Assert.That (instance, Is.Not.Null);
     }
   }
 }

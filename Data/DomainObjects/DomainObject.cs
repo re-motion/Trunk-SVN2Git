@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using Remotion.Collections;
@@ -198,7 +199,10 @@ namespace Remotion.Data.DomainObjects
     /// which delegates to <see cref="NewObject{T}"/>, passing it the required constructor arguments.</remarks>
     protected DomainObject ()
     {
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
+      PerformConstructorCheck ();
       Type publicDomainObjectType = GetPublicDomainObjectType();
+// ReSharper restore DoNotCallOverridableMethodsInConstructor
 
       ClientTransactionScope.CurrentTransaction.TransactionEventSink.NewObjectCreating (publicDomainObjectType, this);
       DataContainer firstDataContainer = ClientTransactionScope.CurrentTransaction.CreateNewDataContainer (publicDomainObjectType);
@@ -235,6 +239,21 @@ namespace Remotion.Data.DomainObjects
     }
 
     // methods and properties
+
+    /// <summary>
+    /// Ensures that <see cref="DomainObject"/> instances are not created via constructor checks.
+    /// </summary>
+    /// <remarks>
+    /// The default implementation of this method throws an exception. When the runtime code generation invoked via <see cref="NewObject{T}"/>
+    /// generates a concrete <see cref="DomainObject"/> type, it overrides this method to disable the exception. This ensures that 
+    /// <see cref="DomainObject"/> instances cannot be created simply by calling the <see cref="DomainObject"/>'s constructor.
+    /// </remarks>
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    protected virtual void PerformConstructorCheck ()
+    {
+      throw new InvalidOperationException ("DomainObject constructors must not be called directly. Use DomainObject.NewObject to create DomainObject "
+          + "instances.");
+    }
 
     /// <summary>
     /// Serializes the base data needed to deserialize a <see cref="DomainObject"/> instance.

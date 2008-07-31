@@ -31,6 +31,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
     private static readonly MethodInfo s_getPublicDomainObjectTypeMethod =
         typeof (DomainObject).GetMethod ("GetPublicDomainObjectType", _infrastructureBindingFlags);
+    private static readonly MethodInfo s_performConstructorCheckMethod =
+        typeof (DomainObject).GetMethod ("PerformConstructorCheck", _infrastructureBindingFlags);
     private static readonly MethodInfo s_preparePropertyAccessMethod =
         typeof (DomainObject).GetMethod ("PreparePropertyAccess", _infrastructureBindingFlags);
     private static readonly MethodInfo s_propertyAccessFinishedMethod =
@@ -80,6 +82,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       _classEmitter.ReplicateBaseTypeConstructors ();
       OverrideGetPublicDomainObjectType ();
+      OverridePerformConstructorCheck ();
       ProcessProperties (properties);
       ImplementISerializable ();
     }
@@ -92,6 +95,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     private void OverrideGetPublicDomainObjectType ()
     {
       _classEmitter.CreateMethodOverride (s_getPublicDomainObjectTypeMethod).ImplementByReturning (new TypeTokenExpression (_publicDomainObjectType));
+    }
+
+    private void OverridePerformConstructorCheck ()
+    {
+      _classEmitter.CreateMethodOverride (s_performConstructorCheckMethod).ImplementByReturningVoid ();
     }
 
     private void ProcessProperties (IEnumerable<Tuple<PropertyInfo, string>> properties)

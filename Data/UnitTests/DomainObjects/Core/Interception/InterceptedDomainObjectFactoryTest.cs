@@ -222,12 +222,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The domain object's type Remotion.Data.UnitTests.DomainObjects.Core.Interception.SampleTypes.DOWithConstructors was not "
-        + "created by InterceptedDomainObjectFactory.GetConcreteDomainObjectType.\r\nParameter name: instance")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The domain object's type Remotion.Data.UnitTests.DomainObjects.Core.Interception."
+        + "InterceptedDomainObjectFactoryTest+DirectlyInstantiableDO was not created by "
+        + "InterceptedDomainObjectFactory.GetConcreteDomainObjectType.\r\nParameter name: instance")]
     public void PrepareUnconstructedInstanceThrowsOnTypeNotCreatedByFactory ()
     {
-      _factory.PrepareUnconstructedInstance (new DOWithConstructors (7));
+      _factory.PrepareUnconstructedInstance (new DirectlyInstantiableDO());
+    }
+
+    [DBTable]
+    private class DirectlyInstantiableDO : DomainObject
+    {
+      protected override void PerformConstructorCheck ()
+      {
+      }
     }
   }
 }
