@@ -107,6 +107,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DBBidirectionalRelation ("AccessControlList", SortExpression = "[Index] ASC")]
     public abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
 
+    /// <summary>
+    /// Returns the ACEs which match the passed <see cref="SecurityToken"></typeparamref>
+    /// </summary>
+    /// <param name="token">The security token that will be matched against the ACL entries. Must not be null.</param>
+    /// <returns>array of ACEs</returns>
     public AccessControlEntry[] FindMatchingEntries (SecurityToken token)
     {
       ArgumentUtility.CheckNotNull ("token", token);
