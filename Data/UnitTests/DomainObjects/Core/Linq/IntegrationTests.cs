@@ -336,6 +336,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void QueryWithContainsInWhere_OnEmptyCollection ()
+    {
+      ObjectID[] possibleItems = new ObjectID[] {  };
+      var orders =
+          from o in DataContext.Entity<Order> ()
+          where possibleItems.Contains (o.ID)
+          select o;
+
+      CheckQueryResult (orders);
+    }
+
+    [Test]
     public void QueryWithContainsObject ()
     {
       OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
