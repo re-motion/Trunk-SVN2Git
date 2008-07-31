@@ -12,8 +12,8 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Development.Data.UnitTesting.DomainObjects.Linq;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.TestDomain;
@@ -24,18 +24,29 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
   public class FindAbstractRolesQueryBuilderTest : DomainTest
   {
     private FindAbstractRolesQueryBuilder _queryBuilder;
+    private ExpressionTreeComparer _expressionTreeComparer;
+
+    public override void TestFixtureSetUp ()
+    {
+      base.TestFixtureSetUp();
+
+      _expressionTreeComparer = new ExpressionTreeComparer (
+          (actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)),
+          actual => Assert.That (actual, Is.Null),
+          actual => Assert.That (actual, Is.Not.Null));
+    }
 
     public override void SetUp ()
     {
-      base.SetUp ();
-      _queryBuilder = new FindAbstractRolesQueryBuilder ();      
+      base.SetUp();
+      _queryBuilder = new FindAbstractRolesQueryBuilder();
     }
 
     [Test]
     public void CreateQuery_ZeroRoles ()
     {
       var abstractRoles = new EnumWrapper[0];
-      var expected = new AbstractRoleDefinition[0].AsQueryable ();
+      var expected = new AbstractRoleDefinition[0].AsQueryable();
 
       var actual = _queryBuilder.CreateQuery (abstractRoles);
 
@@ -52,7 +63,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       var actual = _queryBuilder.CreateQuery (abstractRoles);
 
-      ExpressionTreeComparer.Compare (expected, actual);
+      _expressionTreeComparer.Compare (expected, actual);
     }
 
     [Test]
@@ -65,7 +76,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       var actual = _queryBuilder.CreateQuery (abstractRoles);
 
-      ExpressionTreeComparer.Compare (expected, actual);
+      _expressionTreeComparer.Compare (expected, actual);
     }
 
     [Test]
@@ -83,7 +94,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       var actual = _queryBuilder.CreateQuery (abstractRoles);
 
-      ExpressionTreeComparer.Compare (expected, actual);
+      _expressionTreeComparer.Compare (expected, actual);
     }
   }
 }

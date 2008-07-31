@@ -87,7 +87,6 @@
     <Compile Include="Domain\AccessControl\StateCombinationBuilderTest.cs" />
     <Compile Include="Domain\AccessControl\StateCombinationComparerTest.cs" />
     <Compile Include="Domain\AccessControl\StateCombinationTest.cs" />
-    <Compile Include="Domain\ExpressionTreeComparer.cs" />
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SetUpFixture.cs" />
     <Compile Include="Domain\SecurityManagerObjectServiceFactoryMixinTest.cs" />
@@ -126,7 +125,6 @@
     <Compile Include="Domain\SerializationTest.cs" />
     <Compile Include="Persistence\RevisionSqlProviderExtensionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueryExecutorMixin.cs" />
     <Compile Include="SecurityServiceTest.cs" />
     <Compile Include="SetUpFixture.cs" />
     <Compile Include="TestDomain\AbstractRoles.cs" />
@@ -168,6 +166,10 @@
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Development\Data\Development.Data.csproj">
+      <Project>{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}</Project>
+      <Name>Development.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.csproj">
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>

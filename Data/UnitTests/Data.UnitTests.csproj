@@ -119,6 +119,10 @@
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Development\Data\Development.Data.csproj">
+      <Project>{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}</Project>
+      <Name>Development.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.csproj">
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
       <Name>ObjectBinding %28ObjectBinding\ObjectBinding%29</Name>
@@ -240,7 +244,6 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests.cs" />
     <Compile Include="DomainObjects\Core\Linq\MethodExtendString.cs" />
     <Compile Include="DomainObjects\Core\Linq\MethodExtensions.cs" />
-    <Compile Include="DomainObjects\Core\Linq\QueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\Linq\QueryExecutorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\QueryProviderTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />

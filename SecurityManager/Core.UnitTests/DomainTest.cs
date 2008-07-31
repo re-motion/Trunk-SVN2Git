@@ -11,32 +11,34 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
-using Remotion.ObjectBinding;
-using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.SecurityManager.UnitTests
 {
   public abstract class DomainTest
   {
-    protected DomainTest()
+    protected DomainTest ()
     {
     }
 
     [TestFixtureSetUp]
-    public virtual void TestFixtureSetUp()
+    public virtual void TestFixtureSetUp ()
     {
     }
 
     [SetUp]
-    public virtual void SetUp()
+    public virtual void SetUp ()
     {
     }
 
     [TearDown]
-    public virtual void TearDown()
+    public virtual void TearDown ()
     {
       ClientTransactionScope.ResetActiveScope();
+    }
+
+    [TestFixtureTearDown]
+    public virtual void TestFixtureTearDown ()
+    {
     }
   }
 }

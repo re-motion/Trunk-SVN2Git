@@ -34,6 +34,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       base.TestFixtureSetUp();
 
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+      
       _dbFixtures = new DatabaseFixtures();
       _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.NewRootTransaction());
     }
@@ -42,8 +44,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       base.SetUp();
 
-      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-      
       _testHelper = new OrganizationalStructureTestHelper ();
       _testHelper.Transaction.EnterNonDiscardingScope();
 
@@ -57,9 +57,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Assert.That (_group, Is.Not.Null);
     }
 
-    public override void TearDown ()
+    public override void TestFixtureTearDown ()
     {
-      base.TearDown ();
+      base.TestFixtureTearDown ();
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
 

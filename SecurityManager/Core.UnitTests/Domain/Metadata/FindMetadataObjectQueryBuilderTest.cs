@@ -11,8 +11,9 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Development.Data.UnitTesting.DomainObjects.Linq;
 using Remotion.SecurityManager.Domain.Metadata;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
@@ -21,6 +22,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
   public class FindMetadataObjectQueryBuilderTest : DomainTest
   {
     private FindMetadataObjectQueryBuilder _queryBuilder;
+    private ExpressionTreeComparer _expressionTreeComparer;
+
+    public override void TestFixtureSetUp ()
+    {
+      base.TestFixtureSetUp();
+
+      _expressionTreeComparer = new ExpressionTreeComparer (
+          (actual, exptected) => Assert.That (actual, Is.EqualTo (exptected)),
+          actual => Assert.That (actual, Is.Null),
+          actual => Assert.That (actual, Is.Not.Null));
+    }
 
     [SetUp]
     public override void SetUp ()
@@ -40,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       var actual = _queryBuilder.CreateQuery (metadataObjectID);
 
-      ExpressionTreeComparer.Compare (expected, actual);
+      _expressionTreeComparer.Compare (expected, actual);
     }
 
     [Test]
@@ -54,7 +66,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       var actual = _queryBuilder.CreateQuery (metadataObjectID);
 
-      ExpressionTreeComparer.Compare (expected, actual.Cast<StateDefinition>());
+      _expressionTreeComparer.Compare (expected, actual.Cast<StateDefinition>());
     }
 
     [Test]

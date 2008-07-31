@@ -29,8 +29,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     {
       base.SetUp();
 
-      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-
       _testHelper = new OrganizationalStructureTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
 
@@ -38,12 +36,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       IBusinessObjectClass userClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (User));
       _tenantProperty = (IBusinessObjectReferenceProperty) userClass.GetPropertyDefinition ("Tenant");
       Assert.That (_tenantProperty, Is.Not.Null);
-    }
-
-    public override void TearDown ()
-    {
-      base.TearDown ();
-      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
 
     [Test]

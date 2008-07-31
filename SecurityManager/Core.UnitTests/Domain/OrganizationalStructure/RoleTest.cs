@@ -66,8 +66,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       base.SetUp ();
 
-      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-
       _mocks = new MockRepository ();
       _mockSecurityProvider = (ISecurityProvider) _mocks.CreateMultiMock (typeof (ProviderBase), typeof (ISecurityProvider));
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
@@ -212,7 +210,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       SecurityConfiguration.Current.SecurityProvider = new NullSecurityProvider ();
       SecurityConfiguration.Current.UserProvider = new ThreadUserProvider ();
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (RolePropertiesSearchService), new RolePropertiesSearchService ());
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (RolePropertiesSearchService), new RolePropertiesSearchService ());
       IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (Role));
       IBusinessObjectReferenceProperty groupProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("Group");
       Assert.That (groupProperty, Is.Not.Null);
@@ -235,7 +234,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     {
       SecurityConfiguration.Current.SecurityProvider = new NullSecurityProvider ();
       SecurityConfiguration.Current.UserProvider = new ThreadUserProvider ();
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (RolePropertiesSearchService), new RolePropertiesSearchService ());
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (RolePropertiesSearchService), new RolePropertiesSearchService ());
       IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (Role));
       IBusinessObjectReferenceProperty userProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("User");
       Assert.That (userProperty, Is.Not.Null);

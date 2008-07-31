@@ -33,8 +33,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     {
       base.SetUp ();
 
-      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-
       _testHelper = new OrganizationalStructureTestHelper ();
       _testHelper.Transaction.EnterNonDiscardingScope ();
 
@@ -42,12 +40,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       IBusinessObjectClass aceClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (AccessControlEntry));
       _property = (IBusinessObjectReferenceProperty) aceClass.GetPropertyDefinition ("SpecificAbstractRole");
       Assert.That (_property, Is.Not.Null);
-    }
-
-    public override void TearDown ()
-    {
-      base.TearDown ();
-      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
 
     [Test]

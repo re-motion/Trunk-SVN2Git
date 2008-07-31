@@ -9,19 +9,18 @@
  */
 
 using System;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Mixins;
 using Remotion.Utilities;
 
-namespace Remotion.SecurityManager.UnitTests
+namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
 {
-  //TODO: Move to Remotion.Development.Data.DomainObjects.Linq
-  [Extends(typeof (QueryExecutor<>))]
-  [AcceptsAlphabeticOrderingAttribute]
+  /// <summary>
+  /// This mixin writes the generated Linq statements to the console. 
+  /// Use the <see cref="ApplyQueryExecutorMixinAttribute"/> to your assembly to actually apply the mixin.
+  /// </summary>
   public class QueryExecutorMixin : Mixin<object, QueryExecutorMixin.IBaseCallRequirements>
   {
     public interface IBaseCallRequirements
@@ -33,11 +32,11 @@ namespace Remotion.SecurityManager.UnitTests
     public Query CreateQuery (ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
     {
       Query query = Base.CreateQuery (classDefinition, statement, commandParameters);
-      QueryConstructed(query);
+      QueryConstructed (query);
       return query;
     }
 
-    private static void QueryConstructed (Query query)
+    private void QueryConstructed (Query query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 

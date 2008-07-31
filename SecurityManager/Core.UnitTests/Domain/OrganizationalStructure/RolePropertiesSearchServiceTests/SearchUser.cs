@@ -32,8 +32,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     {
       base.SetUp();
 
-      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-
       _testHelper = new OrganizationalStructureTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
 
@@ -44,12 +42,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
 
       _user = User.FindByUserName ("group0/user1");
       Assert.That (_user, Is.Not.Null);
-    }
-
-    public override void TearDown ()
-    {
-      base.TearDown ();
-      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
 
     [Test]

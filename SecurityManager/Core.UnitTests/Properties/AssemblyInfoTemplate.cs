@@ -10,6 +10,7 @@
 
 using System;
 using System.Reflection;
+using Remotion.Development.Data.UnitTesting.DomainObjects.Linq;
 
 //
 // General Information about an assembly is controlled through the following 
@@ -36,3 +37,5 @@ using System.Reflection;
 // by using the '*' as shown below:
 
 [assembly: AssemblyVersion("@versionnumber@")]
+
+[assembly: ApplyQueryExecutorMixin]

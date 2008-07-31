@@ -33,6 +33,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     {
       base.TestFixtureSetUp();
 
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (AccessControlEntryPropertiesSearchService), new AccessControlEntryPropertiesSearchService ());
+  
       _dbFixtures = new DatabaseFixtures ();
       _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.NewRootTransaction ());
     }
@@ -41,13 +44,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     {
       base.SetUp();
       
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (AccessControlEntryPropertiesSearchService), new AccessControlEntryPropertiesSearchService());
       _aceClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (AccessControlEntry));
     
       _testHelper = new AccessControlTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
       
       _ace = AccessControlEntry.NewObject ();
+    }
+
+    public override void TestFixtureTearDown ()
+    {
+      base.TestFixtureTearDown ();
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
 
     [Test]
