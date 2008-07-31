@@ -31,6 +31,7 @@
         <include name="${build.test.outputdir}/Remotion.dll" />
         <include name="${build.test.outputdir}/Remotion.Interfaces.dll" />
         <include name="${build.test.outputdir}/Remotion.Development.dll" />
+        <include name="${build.test.outputdir}/Remotion.Development.Web.dll" />
         <include name="${build.test.outputdir}/Remotion.ObjectBinding.dll" />
         <include name="${build.test.outputdir}/Remotion.ObjectBinding.Interfaces.dll" />
         <include name="${build.test.outputdir}/Remotion.ObjectBinding.Web.dll" />

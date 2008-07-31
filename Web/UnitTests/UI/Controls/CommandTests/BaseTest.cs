@@ -10,11 +10,11 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
-using Remotion.Web.UnitTests.AspNetFramework;
-using Remotion.Web.UnitTests.Configuration;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
 namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
 {

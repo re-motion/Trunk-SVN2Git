@@ -11,9 +11,8 @@
 using System;
 using Remotion.Web.Configuration;
 
-namespace Remotion.Web.UnitTests.Configuration
+namespace Remotion.Development.Web.UnitTesting.Configuration
 {
-
   public static class WebConfigurationFactory
   {
     public static WebConfiguration GetExecutionEngineWithDefaultWxeHandler ()
@@ -93,5 +92,4 @@ namespace Remotion.Web.UnitTests.Configuration
       return config;
     }
   }
-
 }

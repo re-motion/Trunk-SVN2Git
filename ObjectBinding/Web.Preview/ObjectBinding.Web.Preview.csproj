@@ -77,13 +77,13 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Web\Core\Web.csproj">
+    <ProjectReference Include="..\..\Web\Core\Web.Core.csproj">
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
-      <Name>Web %28Web\Web%29</Name>
+      <Name>Web.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Core\ObjectBinding.csproj">
+    <ProjectReference Include="..\Core\ObjectBinding.Core.csproj">
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
-      <Name>ObjectBinding %28ObjectBinding\ObjectBinding%29</Name>
+      <Name>ObjectBinding.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Interfaces\ObjectBinding.Interfaces.csproj">
       <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>

@@ -10,7 +10,7 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Web.UnitTests.Configuration;
+using Remotion.Development.Web.UnitTesting.Configuration;
 
 namespace Remotion.Web.UnitTests.UI.Controls.WebButtonTests
 {

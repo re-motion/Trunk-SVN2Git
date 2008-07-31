@@ -11,11 +11,9 @@
 using System;
 using System.Web.UI;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Development.Web.UnitTesting.UI.Controls
 {
-
-public class NamingContainerMock : Control, INamingContainer
-{
-}
-
+  public class NamingContainerMock : Control, INamingContainer
+  {
+  }
 }

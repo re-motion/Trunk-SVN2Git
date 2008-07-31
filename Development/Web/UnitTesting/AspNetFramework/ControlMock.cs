@@ -11,9 +11,8 @@
 using System;
 using System.Web.UI;
 
-namespace Remotion.Web.UnitTests.AspNetFramework
+namespace Remotion.Development.Web.UnitTesting.AspNetFramework
 {
-
   public class ControlMock : Control
   {
     // types
@@ -72,5 +71,4 @@ namespace Remotion.Web.UnitTests.AspNetFramework
       return _valueInControlState;
     }
   }
-
 }

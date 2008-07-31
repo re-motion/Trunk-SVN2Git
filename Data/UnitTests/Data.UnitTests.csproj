@@ -123,29 +123,29 @@
       <Project>{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}</Project>
       <Name>Development.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.csproj">
+    <ProjectReference Include="..\..\Development\Web\Development.Web.csproj">
+      <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
+      <Name>Development.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.Core.csproj">
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
-      <Name>ObjectBinding %28ObjectBinding\ObjectBinding%29</Name>
+      <Name>ObjectBinding.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ObjectBinding\Interfaces\ObjectBinding.Interfaces.csproj">
       <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
       <Name>ObjectBinding.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Security\Core\Security.csproj">
+    <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
-      <Name>Security %28Security\Security%29</Name>
+      <Name>Security.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
       <Name>Security.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Web\Core\Web.csproj">
+    <ProjectReference Include="..\..\Web\Core\Web.Core.csproj">
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
-      <Name>Web %28Web\Web%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Web\UnitTests\Web.UnitTests.csproj">
-      <Project>{F3EE8E9C-5230-4D1A-B655-CA65E2D52F21}</Project>
-      <Name>Web.UnitTests</Name>
+      <Name>Web.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\DomainObjects.Security\Data.DomainObjects.Security.csproj">
       <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>

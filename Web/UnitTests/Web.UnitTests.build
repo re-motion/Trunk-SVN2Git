@@ -35,6 +35,7 @@
         <include name="${build.test.outputdir}/Remotion.Interfaces.dll" />
         <include name="${build.test.outputdir}/Remotion.Data.Interfaces.dll"/>
         <include name="${build.test.outputdir}/Remotion.Development.dll" />
+        <include name="${build.test.outputdir}/Remotion.Development.Web.dll" />
         <include name="${build.test.outputdir}/Remotion.Security.dll" />
         <include name="${build.test.outputdir}/Remotion.Security.Interfaces.dll" />
         <include name="${build.test.outputdir}/Remotion.Web.dll" />

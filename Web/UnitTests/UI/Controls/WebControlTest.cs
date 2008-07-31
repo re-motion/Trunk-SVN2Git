@@ -10,8 +10,10 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI;
-using Remotion.Web.UnitTests.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.UI;
 
 namespace Remotion.Web.UnitTests.UI.Controls
 {

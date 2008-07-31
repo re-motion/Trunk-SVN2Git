@@ -197,9 +197,9 @@
       <Project>{AC34B1D8-A295-44A4-AE9D-8167B3C3ED44}</Project>
       <Name>Security.UnitTests.TestDomain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Core\Security.csproj">
+    <ProjectReference Include="..\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
-      <Name>Security %28Security\Security%29</Name>
+      <Name>Security.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

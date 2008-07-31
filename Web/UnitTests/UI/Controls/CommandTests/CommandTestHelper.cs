@@ -16,7 +16,7 @@ using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UnitTests.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UnitTests.UI.Controls.CommandTests

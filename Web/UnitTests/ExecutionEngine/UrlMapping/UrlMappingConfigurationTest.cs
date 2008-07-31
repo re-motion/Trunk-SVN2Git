@@ -12,7 +12,7 @@ using System;
 using System.IO;
 using NUnit.Framework;
 using Remotion.Web.ExecutionEngine.UrlMapping;
-using Remotion.Web.UnitTests.Configuration;
+using Remotion.Development.Web.UnitTesting.Configuration;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.UrlMapping
 {

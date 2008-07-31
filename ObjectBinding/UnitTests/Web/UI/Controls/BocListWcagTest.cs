@@ -10,9 +10,9 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UnitTests.Configuration;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {

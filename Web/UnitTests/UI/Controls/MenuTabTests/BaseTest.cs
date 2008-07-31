@@ -10,10 +10,10 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
-using Remotion.Web.UnitTests.Configuration;
 
 namespace Remotion.Web.UnitTests.UI.Controls.MenuTabTests
 {

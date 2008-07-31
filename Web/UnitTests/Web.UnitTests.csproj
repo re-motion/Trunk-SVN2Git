@@ -119,16 +119,20 @@
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
-    <ProjectReference Include="..\..\Security\Core\Security.csproj">
+    <ProjectReference Include="..\..\Development\Web\Development.Web.csproj">
+      <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
+      <Name>Development.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
-      <Name>Security %28Security\Security%29</Name>
+      <Name>Security.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
       <Name>Security.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Core\Web.csproj">
-      <Name>Web %28Web\Web%29</Name>
+    <ProjectReference Include="..\Core\Web.Core.csproj">
+      <Name>Web.Core</Name>
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
@@ -138,18 +142,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AspNetFramework\ControlMock.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AspNetFramework\HtmlTextWriterSingleTagMock.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AspNetFramework\HttpContextHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AspNetFramework\PageMock.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Context\WebSafeContextMixinTest.cs" />
     <Compile Include="ExecutionEngine\CommitException.cs" />
@@ -175,12 +167,6 @@
     <Compile Include="ExecutionEngine\WxeTransactedFunctionParameterEnlisterTest.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionBaseExecuteTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Configuration\WebConfigurationFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Configuration\WebConfigurationMock.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\ProxyWxeTransaction.cs" />
@@ -214,9 +200,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\UrlMapping\UrlMappingSchemaTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExecutionEngine\WxeContextMock.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxeContextTest.cs">
@@ -298,12 +281,6 @@
     <Compile Include="UI\Controls\CommandTests\EventCommandTest.cs" />
     <Compile Include="UI\Controls\CommandTests\NoneCommandTest.cs" />
     <Compile Include="UI\Controls\CommandTests\HrefCommandTest.cs" />
-    <Compile Include="UI\Controls\ControlInvoker.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\ControlInvokerTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="UI\Controls\EmailAddressValidatorMock.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -318,9 +295,6 @@
     <Compile Include="UI\Controls\MenuTabTests\SecurityTestWithVisible.cs" />
     <Compile Include="UI\Controls\MenuTabTests\SecurityTestWithEnabled.cs" />
     <Compile Include="UI\Controls\MenuTabTests\WcagTest.cs" />
-    <Compile Include="UI\Controls\NamingContainerMock.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="UI\Controls\NavigationCommandTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -353,12 +327,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Design\WebDesignModeHelperTest.cs" />
-    <Compile Include="UI\SiteMock.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UI\WcagHelperMock.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Utilities\UrlUtilityTest.cs">
       <SubType>Code</SubType>
     </Compile>

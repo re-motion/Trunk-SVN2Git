@@ -13,10 +13,11 @@ using System.Collections.Specialized;
 using System.Web;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
-using Remotion.Web.UnitTests.AspNetFramework;
-using Remotion.Web.UnitTests.Configuration;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
@@ -37,7 +38,7 @@ public class WxeContextTest
     NameValueCollection queryString = new NameValueCollection ();
     queryString.Add (WxeHandler.Parameters.ReturnUrl, "/Root.wxe");
 
-    _currentHttpContext = CreateHttpContext (queryString);
+    _currentHttpContext = WxeContextMock.CreateHttpContext (queryString);
 
     _functionType = typeof (TestFunction);
     _functionTypeName = WebTypeUtility.GetQualifiedName (_functionType);
@@ -51,23 +52,6 @@ public class WxeContextTest
     WebConfigurationMock.Current = new Remotion.Web.Configuration.WebConfiguration();
     WebConfigurationMock.Current.ExecutionEngine.MaximumUrlLength = 100;
 
-  }
-
-  public static HttpContext CreateHttpContext (NameValueCollection queryString)
-  {
-    HttpContext context = HttpContextHelper.CreateHttpContext ("GET", "Other.wxe", null);
-    context.Response.ContentEncoding = System.Text.Encoding.UTF8;
-    HttpContextHelper.SetQueryString (context, queryString);
-    HttpContextHelper.SetCurrent (context);
-    return context;
-  }
-
-  public static HttpContext CreateHttpContext ()
-  {
-    NameValueCollection queryString = new NameValueCollection ();
-    queryString.Add (WxeHandler.Parameters.ReturnUrl, "/Root.wxe");
-
-    return CreateHttpContext (queryString);
   }
 
   [TearDown]

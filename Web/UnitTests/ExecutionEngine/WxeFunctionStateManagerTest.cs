@@ -20,7 +20,7 @@ using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UnitTests.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {

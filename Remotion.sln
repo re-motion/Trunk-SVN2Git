@@ -88,7 +88,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Development.CodeDom", "Deve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Development.UnitTests", "Development\UnitTests\Development.UnitTests.csproj", "{F5416318-15B4-421E-9B44-03CD4C052D5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding", "ObjectBinding\Core\ObjectBinding.csproj", "{FDCCDB1E-0962-41DA-99A1-2DB390C48748}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Core", "ObjectBinding\Core\ObjectBinding.Core.csproj", "{FDCCDB1E-0962-41DA-99A1-2DB390C48748}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Interfaces", "ObjectBinding\Interfaces\ObjectBinding.Interfaces.csproj", "{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}"
 EndProject
@@ -104,7 +104,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Preview",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Test", "ObjectBinding\Web.Test\ObjectBinding.Web.Test.csproj", "{FE98ED8D-E645-4E11-9431-FA5EE8ED7C86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security", "Security\Core\Security.csproj", "{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Core", "Security\Core\Security.Core.csproj", "{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Security.Interfaces", "Security\Interfaces\Security.Interfaces.csproj", "{6B243694-318E-4C20-A2EA-B910EFE5F2F6}"
 EndProject
@@ -131,7 +131,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityManager.Core.UnitTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityManager.Metadata.Importer", "SecurityManager\Metadata.Importer\SecurityManager.Metadata.Importer.csproj", "{28A3431B-A3A8-4E8D-BDA8-CB3CC7EA2894}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Core\Web.csproj", "{DF8BA786-9679-4879-8757-16AE2709D83A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Core", "Web\Core\Web.Core.csproj", "{DF8BA786-9679-4879-8757-16AE2709D83A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Security", "Web\Security\Web.Security.csproj", "{9B6F6D1A-A7EA-4EE8-B36E-E31CF7E518E3}"
 EndProject
@@ -152,6 +152,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Web.ExecutionEngine.CodeGen
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Development.Data", "Development\Data\Development.Data.csproj", "{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Development.Web", "Development\Web\Development.Web.csproj", "{44924ED6-8C12-416D-972F-F1F10417E7EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -343,6 +345,10 @@ Global
 		{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44924ED6-8C12-416D-972F-F1F10417E7EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44924ED6-8C12-416D-972F-F1F10417E7EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44924ED6-8C12-416D-972F-F1F10417E7EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44924ED6-8C12-416D-972F-F1F10417E7EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -367,6 +373,7 @@ Global
 		{AD1A0CD9-C08C-449C-9A7D-2D8BC5439BDC} = {9F4D90EC-6AD2-495D-BFC3-270DC15974DD}
 		{F5416318-15B4-421E-9B44-03CD4C052D5A} = {9F4D90EC-6AD2-495D-BFC3-270DC15974DD}
 		{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED} = {9F4D90EC-6AD2-495D-BFC3-270DC15974DD}
+		{44924ED6-8C12-416D-972F-F1F10417E7EF} = {9F4D90EC-6AD2-495D-BFC3-270DC15974DD}
 		{FDCCDB1E-0962-41DA-99A1-2DB390C48748} = {72195525-BF6C-43D6-AC96-39E34D02EA34}
 		{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B} = {72195525-BF6C-43D6-AC96-39E34D02EA34}
 		{5F1B88F7-FAFB-45C2-A357-333245870A6B} = {72195525-BF6C-43D6-AC96-39E34D02EA34}

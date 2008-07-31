@@ -95,12 +95,8 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
-    </Reference>
-    <Reference Include="System.Xml">
-      <Name>System.XML</Name>
-    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
@@ -125,6 +121,10 @@
     <ProjectReference Include="..\Data\Development.Data.csproj">
       <Project>{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}</Project>
       <Name>Development.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Web\Development.Web.csproj">
+      <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
+      <Name>Development.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +155,7 @@
     <Compile Include="Core\UnitTesting\TestPropertyAccess.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Web\UnitTesting\UI\Controls\ControlInvokerTest.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Development.UnitTests.build" />
     <None Include="..\..\remotion.snk">

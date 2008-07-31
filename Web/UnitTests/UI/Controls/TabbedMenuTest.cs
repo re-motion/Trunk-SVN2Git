@@ -14,8 +14,8 @@ using System.Web;
 using NUnit.Framework;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UnitTests.AspNetFramework;
-using Remotion.Web.UnitTests.Configuration;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UnitTests.UI.Controls

@@ -14,9 +14,8 @@ using System.Web.UI;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
-namespace Remotion.Web.UnitTests.AspNetFramework
+namespace Remotion.Development.Web.UnitTesting.AspNetFramework
 {
-
   public class PageMock : Page
   {
     // types
@@ -81,5 +80,4 @@ namespace Remotion.Web.UnitTests.AspNetFramework
       PrivateInvoke.InvokeNonPublicMethod (this, typeof (Page), "SaveAllState", new object[0]);
     }
   }
-
 }

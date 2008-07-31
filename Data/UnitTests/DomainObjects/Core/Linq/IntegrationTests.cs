@@ -552,8 +552,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), "This query provider does not support selecting single columns ('o.ID'). The projection "
-      + "must select whole DomainObject instances.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage=
+      "This query provider does not support selecting single columns ('o.ID'). The projection must select whole DomainObject instances.")]
     public void Query_WithUnsupportedType_NonDomainObjectColumn ()
     {
       var query =

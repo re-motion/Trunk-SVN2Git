@@ -14,11 +14,11 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UnitTests.AspNetFramework;
-using Remotion.Web.UnitTests.Configuration;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UnitTests.UI.Controls

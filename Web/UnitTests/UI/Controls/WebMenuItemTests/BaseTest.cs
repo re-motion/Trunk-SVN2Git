@@ -13,7 +13,7 @@ using NUnit.Framework;
 using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
-using Remotion.Web.UnitTests.Configuration;
+using Remotion.Development.Web.UnitTesting.Configuration;
 
 namespace Remotion.Web.UnitTests.UI.Controls.WebMenuItemTests
 {

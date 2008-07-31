@@ -13,7 +13,7 @@ using System.Collections.Specialized;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UnitTests.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
 namespace Remotion.Web.UnitTests.UI.Controls.MenuTabTests
 {

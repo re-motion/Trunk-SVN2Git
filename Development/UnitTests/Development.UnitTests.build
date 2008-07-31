@@ -33,10 +33,14 @@
         <include name="${build.test.outputdir}/Remotion.Data.Linq.dll" />
         <include name="${build.test.outputdir}/Remotion.Development.dll" />
         <include name="${build.test.outputdir}/Remotion.Development.Data.dll" />
+        <include name="${build.test.outputdir}/Remotion.Development.Web.dll" />
         <include name="${build.test.outputdir}/nunit.framework.dll" />
         <include name="${build.test.outputdir}/Rhino.Mocks.dll" />
         <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Configuration.dll"/>
         <include asis="true" name="System.Core.dll"/>
+        <include asis="true" name="System.Data.dll"/>
+        <include asis="true" name="System.Web.dll"/>
       </references>
     </csc>
         

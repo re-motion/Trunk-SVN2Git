@@ -10,7 +10,7 @@
 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Web.UnitTests.ExecutionEngine;
+using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web
 {
@@ -21,7 +21,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
 
     public override void SetUp ()
     {
-      _context = new WxeContextMock (WxeContextTest.CreateHttpContext());
+      _context = new WxeContextMock (WxeContextMock.CreateHttpContext());
 
       base.SetUp ();
     }

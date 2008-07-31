@@ -12,8 +12,9 @@ using System;
 using System.Web;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UnitTests.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {
