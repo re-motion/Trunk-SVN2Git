@@ -3888,10 +3888,10 @@ public class BocList:
   {
     foreach (BocColumnDefinition columnDefinition in _fixedColumns)
     {
-      if (columnDefinition is BocAllPropertiesPlacehoderColumnDefinition)
+      if (columnDefinition is BocAllPropertiesPlaceholderColumnDefinition)
       {
         EnsureAllPropertyColumnsDefinitionsAppended (
-            (BocAllPropertiesPlacehoderColumnDefinition) columnDefinition, columnDefinitionList);
+            (BocAllPropertiesPlaceholderColumnDefinition) columnDefinition, columnDefinitionList);
       }
       else
       {
@@ -3915,10 +3915,10 @@ public class BocList:
 
     foreach (BocColumnDefinition columnDefinition in _selectedView.ColumnDefinitions)
     {
-      if (columnDefinition is BocAllPropertiesPlacehoderColumnDefinition)
+      if (columnDefinition is BocAllPropertiesPlaceholderColumnDefinition)
       {
         EnsureAllPropertyColumnsDefinitionsAppended (
-            (BocAllPropertiesPlacehoderColumnDefinition) columnDefinition, columnDefinitionList);
+            (BocAllPropertiesPlaceholderColumnDefinition) columnDefinition, columnDefinitionList);
       }
       else
       {
@@ -3928,7 +3928,7 @@ public class BocList:
   }
 
   private void EnsureAllPropertyColumnsDefinitionsAppended (
-      BocAllPropertiesPlacehoderColumnDefinition placeholderColumnDefinition, ArrayList columnDefinitionList)
+      BocAllPropertiesPlaceholderColumnDefinition placeholderColumnDefinition, ArrayList columnDefinitionList)
   {
     if (_hasAppendedAllPropertyColumnDefinitions)
       return;

@@ -982,7 +982,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   }
 
   /// <summary> A column definition that acts as a placeholder for inserting a column for each property. </summary>
-  public class BocAllPropertiesPlacehoderColumnDefinition : BocColumnDefinition
+  public class BocAllPropertiesPlaceholderColumnDefinition : BocColumnDefinition
   {
     [Browsable (false)]
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
@@ -1028,7 +1028,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Gets the human readable name of this type. </summary>
     protected override string DisplayedTypeName
     {
-      get { return "AllPropertiesPlacehoderColumnDefinition"; }
+      get { return "AllPropertiesPlaceholderColumnDefinition"; }
     }
   }
 

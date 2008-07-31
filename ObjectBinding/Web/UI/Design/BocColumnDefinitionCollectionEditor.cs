@@ -31,7 +31,7 @@ public class BocColumnDefinitionCollectionEditor: AdvancedCollectionEditor
       typeof (BocRowEditModeColumnDefinition),
       typeof (BocCustomColumnDefinition),
       typeof (BocDropDownMenuColumnDefinition),
-      typeof (BocAllPropertiesPlacehoderColumnDefinition)};
+      typeof (BocAllPropertiesPlaceholderColumnDefinition)};
   }
 }
 
