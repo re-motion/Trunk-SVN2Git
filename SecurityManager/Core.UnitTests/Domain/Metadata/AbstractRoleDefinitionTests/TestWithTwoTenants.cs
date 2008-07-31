@@ -48,7 +48,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.AbstractRoleDefinit
     [Test]
     public void Find_ValidAbstractRole ()
     {
-      DomainObjectCollection result = AbstractRoleDefinition.Find (new EnumWrapper[] { new EnumWrapper (ProjectRoles.QualityManager) });
+      DomainObjectCollection result = AbstractRoleDefinition.Find (new[] { new EnumWrapper (ProjectRoles.QualityManager) });
 
       Assert.AreEqual (1, result.Count);
       Assert.AreEqual ("QualityManager|Remotion.SecurityManager.UnitTests.TestDomain.ProjectRoles, Remotion.SecurityManager.UnitTests", ((AbstractRoleDefinition) result[0]).Name);

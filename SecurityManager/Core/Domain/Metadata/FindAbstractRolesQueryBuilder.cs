@@ -10,8 +10,6 @@
 
 using System;
 using System.Linq;
-using System.Linq.Expressions;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Security;
 using Remotion.Utilities;
@@ -28,29 +26,14 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNull ("abstractRoles", abstractRoles);
 
-      //var abstractRoleNames = (from abstractRole in abstractRoles select abstractRole.Name).ToArray();
-
-      //return from ar in DataContext.Entity<AbstractRoleDefinition>()
-      //       where abstractRoleNames.Contains (ar.Name)
-      //       select ar;
-
       if (abstractRoles.Length == 0)
         return new AbstractRoleDefinition[0].AsQueryable();
 
-      ParameterExpression parameter = Expression.Parameter (typeof (AbstractRoleDefinition), "ar");
+      var abstractRoleNames = (from abstractRole in abstractRoles select abstractRole.Name).ToArray();
 
-      var predicates = from abstractRole in abstractRoles
-                       select GetPredicateForAbstractRole (parameter, abstractRole);
-
-      BinaryExpression body = predicates.Aggregate (Expression.OrElse);
-      return DataContext.Entity<AbstractRoleDefinition>().Where (Expression.Lambda<System.Func<AbstractRoleDefinition, bool>> (body, parameter));
-    }
-
-    private BinaryExpression GetPredicateForAbstractRole (ParameterExpression parameter, EnumWrapper abstractRole)
-    {
-      return Expression.Equal (
-          Expression.MakeMemberAccess (parameter, typeof (AbstractRoleDefinition).GetProperty ("Name")),
-          Expression.Constant (abstractRole.Name));
+      return from ar in DataContext.Entity<AbstractRoleDefinition>()
+             where abstractRoleNames.Contains (ar.Name)
+             select ar;
     }
   }
 }

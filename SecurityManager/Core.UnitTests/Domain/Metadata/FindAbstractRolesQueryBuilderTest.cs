@@ -51,42 +51,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    public void CreateQuery_OneRole ()
-    {
-      var abstractRoles = new[] { new EnumWrapper (ProjectRoles.QualityManager) };
-      var expected = from ar in DataContext.Entity<AbstractRoleDefinition>()
-                     where ar.Name == abstractRoles[0].Name
-                     select ar;
-
-      var actual = _queryBuilder.CreateQuery (abstractRoles);
-
-      _expressionTreeComparer.Compare (expected, actual);
-    }
-
-    [Test]
     public void CreateQuery_TwoRoles ()
     {
       var abstractRoles = new[] { new EnumWrapper (ProjectRoles.QualityManager), new EnumWrapper (ProjectRoles.Developer) };
-      var expected = from ar in DataContext.Entity<AbstractRoleDefinition>()
-                     where ar.Name == abstractRoles[0].Name || ar.Name == abstractRoles[1].Name
-                     select ar;
-
-      var actual = _queryBuilder.CreateQuery (abstractRoles);
-
-      _expressionTreeComparer.Compare (expected, actual);
-    }
-
-    [Test]
-    public void CreateQuery_ThreeRoles ()
-    {
-      var abstractRoles = new[]
-                          {
-                              new EnumWrapper (ProjectRoles.QualityManager), new EnumWrapper (ProjectRoles.Developer),
-                              new EnumWrapper (UndefinedAbstractRoles.Undefined)
-                          };
-
-      var expected = from ar in DataContext.Entity<AbstractRoleDefinition>()
-                     where ar.Name == abstractRoles[0].Name || ar.Name == abstractRoles[1].Name || ar.Name == abstractRoles[2].Name
+      var abstractRoleNames = (from abstractRole in abstractRoles select abstractRole.Name).ToArray ();
+      var expected = from ar in DataContext.Entity<AbstractRoleDefinition> ()
+                     where abstractRoleNames.Contains (ar.Name)
                      select ar;
 
       var actual = _queryBuilder.CreateQuery (abstractRoles);
