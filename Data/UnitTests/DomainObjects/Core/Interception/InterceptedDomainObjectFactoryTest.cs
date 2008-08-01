@@ -142,18 +142,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests."
-        + "DomainObjects.Core.Interception.SampleTypes.NonInstantiableClassWithAutomaticRelatedCollectionSetter, automatic "
-        + "properties for related object collections cannot have setters: property 'RelatedObjects', property id 'Remotion.Data.UnitTests."
-        + "DomainObjects.Core.Interception.SampleTypes.NonInstantiableClassWithAutomaticRelatedCollectionSetter.RelatedObjects'."
-        + "\r\nParameter name: baseType")]
-    public void AbstractWithAutoCollectionSetterCannotBeInstantiated ()
-    {
-      _factory.GetConcreteDomainObjectType (typeof (NonInstantiableClassWithAutomaticRelatedCollectionSetter));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception."
         + "SampleTypes.NonInstantiableSealedClass as it is sealed.\r\nParameter name: baseType")]
     public void SealedCannotBeInstantiated ()

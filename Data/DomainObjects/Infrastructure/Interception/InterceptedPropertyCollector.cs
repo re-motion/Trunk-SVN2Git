@@ -10,6 +10,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -18,6 +19,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 {
   internal class InterceptedPropertyCollector
   {
+    public static bool IsAutomaticPropertyAccessor (MethodInfo accessorMethod)
+    {
+      return accessorMethod != null && (accessorMethod.IsAbstract || accessorMethod.IsDefined (typeof (CompilerGeneratedAttribute), false));
+    }
+
+    public static bool IsOverridable (MethodInfo method)
+    {
+      return method != null && method.IsVirtual && !method.IsFinal;
+    }
+
     private const BindingFlags _declaredInfrastructureBindingFlags =
         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
@@ -88,14 +99,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       MethodInfo getMethod = property.GetGetMethod (true);
       MethodInfo setMethod = property.GetSetMethod (true);
 
-      ValidatePropertySetter (setMethod, property, propertyIdentifier);
-
       if (getMethod != null)
+      {
+        ValidateAccessor (property, getMethod, "get accessor");
         _validatedMethods.Add (getMethod.GetBaseDefinition());
+      }
       if (setMethod != null)
-        _validatedMethods.Add (setMethod.GetBaseDefinition ());
+      {
+        ValidateAccessor (property, setMethod, "set accessor");
+        _validatedMethods.Add (setMethod.GetBaseDefinition());
+      }
 
       _properties.Add (new Tuple<PropertyInfo, string> (property, propertyIdentifier));
+    }
+
+    private void ValidateAccessor (PropertyInfo property, MethodInfo accessor, string accessorDescription)
+    {
+      if (IsAutomaticPropertyAccessor (accessor) && !IsOverridable (accessor))
+      {
+        string message = string.Format ("Cannot instantiate type '{0}' as its member '{1}' has a non-virtual {2}.",
+            _baseType.FullName, property.Name, accessorDescription);
+        throw new NonInterceptableTypeException (message, _baseType);
+      }
     }
 
     private void ValidateBaseType ()
@@ -122,20 +147,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       if (currentType.BaseType != null)
         ValidateRemainingMethods (currentType.BaseType);
-    }
-
-   private void ValidatePropertySetter (MethodInfo propertySetter, PropertyInfo property, string propertyIdentifier)
-    {
-      if (propertySetter != null && PropertyAccessor.GetPropertyKind (_classDefinition, propertyIdentifier) == PropertyKind.RelatedObjectCollection)
-      {
-        throw new NonInterceptableTypeException (
-            string.Format (
-                "Cannot instantiate type {0}, automatic properties for related object collections cannot have setters: property '{1}', property id '{2}'.",
-                _baseType.FullName,
-                property.Name,
-                propertyIdentifier),
-            _baseType);
-      }
     }
   }
 }

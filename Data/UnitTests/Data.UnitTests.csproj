@@ -231,6 +231,9 @@
     <Compile Include="DomainObjects\Core\Cloning\DomainObjectClonerTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\SimpleDomainObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\StorageClassTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\Interception\SampleTypes\ClassWithNonVirtualAutomaticPropertyGetter.cs" />
+    <Compile Include="DomainObjects\Core\Interception\SampleTypes\ClassWithNonVirtualAutomaticPropertySetter.cs" />
+    <Compile Include="DomainObjects\Core\Interception\SampleTypes\ClassWithNonVirtualManualPropertyAccessors.cs" />
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\DOWithAutomaticProperties.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExtensionMethodsTest.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinAddingSimplePersistentProperties.cs" />
@@ -336,7 +339,7 @@
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\IPropertyInterface.cs" />
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\NonInstantiableAbstractClass.cs" />
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\NonInstantiableAbstractClassWithProps.cs" />
-    <Compile Include="DomainObjects\Core\Interception\SampleTypes\NonInstantiableClassWithAutomaticRelatedCollectionSetter.cs" />
+    <Compile Include="DomainObjects\Core\Interception\SampleTypes\ClassWithAbstractRelatedCollectionSetter.cs" />
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\NonInstantiableNonDomainClass.cs" />
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\NonInstantiableSealedClass.cs" />
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\DOImplementingISerializable.cs" />

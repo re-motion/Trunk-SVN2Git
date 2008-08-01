@@ -15,21 +15,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.SampleTypes
 {
   [DBTable]
   [Instantiable]
-  public abstract class NonInstantiableClassWithAutomaticRelatedCollectionSetter : DomainObject
+  public abstract class ClassWithNonVirtualAutomaticPropertySetter : SimpleDomainObject<ClassWithNonVirtualAutomaticPropertySetter>
   {
-    public static NonInstantiableClassWithAutomaticRelatedCollectionSetter NewObject ()
-    {
-      return NewObject<NonInstantiableClassWithAutomaticRelatedCollectionSetter> ().With ();
-    }
-
-    protected NonInstantiableClassWithAutomaticRelatedCollectionSetter()
-    {
-    }
-
     [DBBidirectionalRelation ("RelatedObjects")]
-    public abstract NonInstantiableClassWithAutomaticRelatedCollectionSetter Parent { get; }
+    public abstract ClassWithNonVirtualAutomaticPropertySetter Parent { get; }
 
     [DBBidirectionalRelation ("Parent")]
-    public abstract ObjectList<NonInstantiableClassWithAutomaticRelatedCollectionSetter> RelatedObjects { get; set; }
+    public virtual ObjectList<ClassWithNonVirtualAutomaticPropertySetter> RelatedObjects { get; private set; }
   }
 }

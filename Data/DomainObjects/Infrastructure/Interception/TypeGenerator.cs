@@ -116,34 +116,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       MethodInfo topMostGetOverride = getMethod != null ? GetTopMostOverrideOfMethod (getMethod) : null;
       MethodInfo topMostSetOverride = setMethod != null ? GetTopMostOverrideOfMethod (setMethod) : null;
 
-      if (IsOverridable (topMostGetOverride) || IsOverridable (topMostSetOverride))
+      if (InterceptedPropertyCollector.IsOverridable (topMostGetOverride))
       {
-        if (topMostGetOverride != null)
-        {
-          if (IsAutomaticProperty(topMostGetOverride))
-            ImplementAbstractGetAccessor (topMostGetOverride, propertyIdentifier);
-          else if (IsOverridable (topMostGetOverride))
-            OverrideAccessor (topMostGetOverride, propertyIdentifier);
-        }
-
-        if (topMostSetOverride != null)
-        {
-          if (IsAutomaticProperty (topMostSetOverride))
-            ImplementAbstractSetAccessor (topMostSetOverride, propertyIdentifier, property.PropertyType);
-          else if (IsOverridable (topMostSetOverride))
-            OverrideAccessor (topMostSetOverride, propertyIdentifier);
-        }
+        if (InterceptedPropertyCollector.IsAutomaticPropertyAccessor (topMostGetOverride))
+          ImplementAbstractGetAccessor (topMostGetOverride, propertyIdentifier);
+        else
+          OverrideAccessor (topMostGetOverride, propertyIdentifier);
       }
-    }
 
-    private bool IsAutomaticProperty (MethodInfo accessorMethod)
-    {
-      return accessorMethod.IsAbstract || (IsOverridable (accessorMethod) && accessorMethod.IsDefined (typeof (CompilerGeneratedAttribute), false));
-    }
-
-    private bool IsOverridable (MethodInfo method)
-    {
-      return method != null && method.IsVirtual && !method.IsFinal;
+      if (InterceptedPropertyCollector.IsOverridable (topMostSetOverride))
+      {
+        if (InterceptedPropertyCollector.IsAutomaticPropertyAccessor (topMostSetOverride))
+          ImplementAbstractSetAccessor (topMostSetOverride, propertyIdentifier, property.PropertyType);
+        else
+          OverrideAccessor (topMostSetOverride, propertyIdentifier);
+      }
     }
 
     private MethodInfo GetTopMostOverrideOfMethod (MethodInfo method)
@@ -179,7 +166,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       ArgumentUtility.CheckNotNull ("propertyIdentifier", propertyIdentifier);
 
       Assertion.IsFalse (accessor.IsAbstract);
-      Assertion.IsTrue (IsOverridable (accessor));
+      Assertion.IsTrue (InterceptedPropertyCollector.IsOverridable (accessor));
 
       CustomMethodEmitter emitter = _classEmitter.CreatePrivateMethodOverride (accessor);
       MethodInvocationExpression baseCallExpression =

@@ -111,6 +111,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     }
 
     [Test]
+    public void SetPropertyValue_WithCollectionSet ()
+    {
+      ClassWithAbstractRelatedCollectionSetter instance = ClassWithAbstractRelatedCollectionSetter.NewObject ();
+      var newRelatedObjects = new ObjectList<ClassWithAbstractRelatedCollectionSetter> ();
+      instance.RelatedObjects = newRelatedObjects;
+      Assert.That (instance.RelatedObjects, Is.SameAs (newRelatedObjects));
+    }
+
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception.SampleTypes.NonInstantiableAbstractClass "
         + "as its member Foo (on type NonInstantiableAbstractClass) is abstract (and not an "
@@ -128,18 +138,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void AbstractWithNonAutoPropertiesCannotBeInstantiated ()
     {
       NonInstantiableAbstractClassWithProps.NewObject();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests."
-        + "DomainObjects.Core.Interception.SampleTypes.NonInstantiableClassWithAutomaticRelatedCollectionSetter, automatic properties "
-        + "for related object collections cannot have setters: property 'RelatedObjects', property id 'Remotion.Data.UnitTests."
-        + "DomainObjects.Core.Interception.SampleTypes.NonInstantiableClassWithAutomaticRelatedCollectionSetter.RelatedObjects'.",
-        MatchType = MessageMatch.Contains)]
-    public void AbstractWithAutoCollectionSetterCannotBeInstantiated ()
-    {
-      NonInstantiableClassWithAutomaticRelatedCollectionSetter.NewObject();
     }
 
     [Test]

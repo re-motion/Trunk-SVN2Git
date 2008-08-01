@@ -302,6 +302,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     }
 
     [Test]
+    public void ImplementsAbstractPropertyAccessors_CollectionSetters ()
+    {
+      Type type = CreateTypeGenerator (typeof (ClassWithAbstractRelatedCollectionSetter)).BuildType ();
+      Assert.IsNotNull (type.GetMethod (typeof (ClassWithAbstractRelatedCollectionSetter).FullName + ".get_RelatedObjects", _declaredInstanceFlags));
+      Assert.IsNotNull (type.GetMethod (typeof (ClassWithAbstractRelatedCollectionSetter).FullName + ".set_RelatedObjects", _declaredInstanceFlags));
+    }
+
+    [Test]
     public void ImplementedAbstractPropertyAccessorsArePrivate ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithAbstractProperties)).BuildType ();
@@ -428,17 +436,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage = "Cannot instantiate type Remotion.Data.UnitTests."
-        + "DomainObjects.Core.Interception.SampleTypes.NonInstantiableClassWithAutomaticRelatedCollectionSetter, "
-        + "automatic properties for related object collections cannot have setters: property 'RelatedObjects', property id 'Remotion.Data.UnitTests."
-        + "DomainObjects.Core.Interception.SampleTypes.NonInstantiableClassWithAutomaticRelatedCollectionSetter."
-        + "RelatedObjects'.")]
-    public void ThrowsOnAbstractRelatedObjectCollectionSetter ()
-    {
-      CreateTypeGenerator (typeof (NonInstantiableClassWithAutomaticRelatedCollectionSetter)).BuildType();
-    }
-
-    [Test]
-    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage = "Cannot instantiate type Remotion.Data.UnitTests."
        + "DomainObjects.Core.Interception.SampleTypes.NonInstantiableAbstractClass as its member Foo (on type NonInstantiableAbstractClass) is abstract (and not an "
         + "automatic property).")]
     public void ThrowsOnAbstractMethod ()
@@ -469,6 +466,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void ThrowsOnClassWithoutClassDefinition ()
     {
       CreateTypeGenerator (typeof (NonInstantiableNonDomainClass)).BuildType ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage = "Cannot instantiate type 'Remotion.Data.UnitTests.DomainObjects." 
+        + "Core.Interception.SampleTypes.ClassWithNonVirtualAutomaticPropertyGetter' as its member 'RelatedObjects' has a non-virtual get accessor.")]
+    public void ThrowsOnNonVirtualAutomaticPropertyGetter ()
+    {
+      CreateTypeGenerator (typeof (ClassWithNonVirtualAutomaticPropertyGetter)).BuildType ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage = "Cannot instantiate type 'Remotion.Data.UnitTests.DomainObjects."
+        + "Core.Interception.SampleTypes.ClassWithNonVirtualAutomaticPropertySetter' as its member 'RelatedObjects' has a non-virtual set accessor.")]
+    public void ThrowsOnNonVirtualAutomaticPropertySetter ()
+    {
+      CreateTypeGenerator (typeof (ClassWithNonVirtualAutomaticPropertySetter)).BuildType ();
+    }
+
+    [Test]
+    public void DoesntThrowOnNonVirtualManualPropertyAccessors ()
+    {
+      CreateTypeGenerator (typeof (ClassWithNonVirtualManualPropertyAccessors)).BuildType ();
     }
 
     [Test]
