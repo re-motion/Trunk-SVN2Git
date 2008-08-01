@@ -262,7 +262,7 @@ namespace Remotion.ObjectBinding.Sample
     }
 
     [Browsable(false)]
-    public virtual string HelpUrl
+    public virtual HelpInfo HelpInfo
     {
       get { return null; }
     }

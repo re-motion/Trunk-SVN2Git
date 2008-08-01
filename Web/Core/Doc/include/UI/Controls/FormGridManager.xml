@@ -567,8 +567,8 @@ Example for a row with labels and the controls in adjecent row.
     <remarks>
       Override this method to change how the help provider is constructed.
     </remarks>
-    <param name="helpUrl"> 
-      The URL referencing the help.
+    <param name="helpInfo"> 
+      The <see cref="HelpInfo"/> object used to generate the hyperlink.
     </param>
     <returns> 
       The new help provider. 

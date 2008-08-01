@@ -2519,16 +2519,22 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
   ///   and creates a help provider.
   /// </summary>
   /// <include file='doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/CreateHelpProvider/*' />
-  protected virtual void CreateHelpProvider(FormGridRow dataRow)
+  protected virtual void CreateHelpProvider (FormGridRow dataRow)
   {
     ArgumentUtility.CheckNotNull ("dataRow", dataRow);
     CheckFormGridRowType ("dataRow", dataRow, FormGridRowType.DataRow);
     ArgumentUtility.CheckNotNull ("dataRow.LabelsCell", dataRow.LabelsCell);
     ArgumentUtility.CheckNotNull ("dataRow.ControlsCell", dataRow.ControlsCell);
 
-    for (int i = 0; i < dataRow.LabelsCell.Controls.Count; i++)
+    dataRow.HelpProvider = GetHelpProviderFromControlsCollection (dataRow.LabelsCell.Controls)
+                           ?? GetHelpProviderFromControlsCollection (dataRow.ControlsCell.Controls);
+  }
+
+  private Control GetHelpProviderFromControlsCollection (ControlCollection controls)
+  {
+    for (int i = 0; i < controls.Count; i++)
     {
-      Control control = (Control) dataRow.LabelsCell.Controls[i];
+      Control control = controls[i];
       if (!control.Visible)
         continue;
 
@@ -2536,36 +2542,15 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
       if (smartControl == null)
         continue;
 
-      string helpUrl = smartControl.HelpUrl;
-      if (helpUrl != null && helpUrl != String.Empty)
+      HelpInfo helpInfo = smartControl.HelpInfo;
+      if (helpInfo != null)
       {
-        helpUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (FormGridManager), ResourceType.HelpPage, helpUrl);
-        dataRow.HelpProvider = GetHelpProvider (helpUrl);
-
         //  We have a help provider, first come, only one served
-        return;
+        return GetHelpProvider (helpInfo);
       }
     }
 
-    for (int i = 0; i < dataRow.ControlsCell.Controls.Count; i++)
-    {
-      Control control = (Control) dataRow.ControlsCell.Controls[i];
-      if (!control.Visible)
-        continue;
-
-      ISmartControl smartControl = control as ISmartControl;
-      if (smartControl == null)
-        continue;
-
-      string helpUrl = smartControl.HelpUrl;
-      if (helpUrl != null && helpUrl != String.Empty)
-      {
-        dataRow.HelpProvider = GetHelpProvider (helpUrl);
-
-        //  We have a help provider, first come, only one served
-        return;
-      }
-    }
+    return null;
   }
 
   protected void UpdateGeneratedRowsVisibility (FormGridRow dataRow)
@@ -2890,20 +2875,24 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
 
   /// <summary> Builds the help provider. </summary>
   /// <include file='doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/GetHelpProvider/*' />
-  protected virtual Control GetHelpProvider (string helpUrl)
+  protected virtual Control GetHelpProvider (HelpInfo helpInfo)
   {
+    ArgumentUtility.CheckNotNull ("helpUrl", helpInfo);
+
     Image helpIcon = new Image();
     helpIcon.ImageUrl = GetImageUrl (FormGridImage.Help);
  
     IResourceManager resourceManager = GetResourceManager();
 
     helpIcon.AlternateText = resourceManager.GetString (ResourceIdentifier.HelpAlternateText);
-    helpIcon.ToolTip = resourceManager.GetString (ResourceIdentifier.HelpTitle);
-
+    helpIcon.ToolTip = helpInfo.ToolTip ?? resourceManager.GetString (ResourceIdentifier.HelpTitle);
+    
     HtmlAnchor helpAnchor = new HtmlAnchor();
-    helpAnchor.HRef = helpUrl;
     helpAnchor.Controls.Add (helpIcon);
-    helpAnchor.Target = "_new";
+    helpAnchor.HRef = UrlUtility.ResolveUrl (helpInfo.NavigateUrl);
+    helpAnchor.Target = helpInfo.Target;
+    if (!string.IsNullOrEmpty (helpInfo.OnClick))
+      helpAnchor.Attributes.Add ("onClick", helpInfo.OnClick);
 
     return helpAnchor;
   }

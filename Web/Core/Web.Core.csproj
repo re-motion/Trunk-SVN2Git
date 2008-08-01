@@ -259,6 +259,7 @@
     <Compile Include="UI\Controls\ControlItemCollection.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\HelpInfo.cs" />
     <Compile Include="UI\Controls\MainMenuTab.cs" />
     <Compile Include="UI\Controls\MissingPermissionBehavior.cs" />
     <Compile Include="UI\Controls\DatePickerPage.cs">

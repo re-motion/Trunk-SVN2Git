@@ -46,13 +46,18 @@ public class FormGridLabel: Label, ISmartControl
   public string HelpUrl
   {
     get { return _helpUrl; }
-    set { _helpUrl = value; }
+    set { _helpUrl = StringUtility.NullToEmpty (value); }
   }
 
   [Browsable (false)]
   public bool IsRequired
   {
     get { return _required; }
+  }
+
+  HelpInfo ISmartControl.HelpInfo
+  {
+    get { return (_helpUrl != null) ? new HelpInfo (_helpUrl) : null; }
   }
 
   BaseValidator[] ISmartControl.CreateValidators()

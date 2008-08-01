@@ -315,9 +315,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    string ISmartControl.HelpUrl
+    HelpInfo ISmartControl.HelpInfo
     {
-      get { return null; }
+      get { return BusinessObjectBoundWebControl.GetHelpInfo (this); }
     }
 
     bool ISmartControl.UseLabel

@@ -259,7 +259,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     }
 
     [Browsable (false)]
-    public virtual string HelpUrl
+    public virtual HelpInfo HelpInfo
     {
       get { return null; }
     }

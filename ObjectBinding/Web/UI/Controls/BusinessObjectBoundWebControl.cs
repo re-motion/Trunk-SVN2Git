@@ -145,30 +145,53 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
 
-      IconInfo iconInfo = null;
-
-      IBusinessObjectWebUIService webUIService =
-          (IBusinessObjectWebUIService) businessObjectProvider.GetService (typeof (IBusinessObjectWebUIService));
+      var webUIService = businessObjectProvider.GetService<IBusinessObjectWebUIService> ();
 
       if (webUIService != null)
-        iconInfo = webUIService.GetIcon (businessObject);
+        return webUIService.GetIcon (businessObject);
 
-      return iconInfo;
+      return null;
     }
 
+    /// <summary>
+    ///   Gets the <see cref="IBusinessObjectService"/> from the <paramref name="businessObjectProvider"/> and queries it for a <see cref="string"/>
+    ///   to be used as tool-tip.
+    /// </summary>
+    /// <param name="businessObject"> 
+    ///   The <see cref="IBusinessObject"/> to be passed to the <see cref="IBusinessObjectWebUIService"/>'s 
+    ///   <see cref="IBusinessObjectWebUIService.GetIcon"/> method.
+    /// </param>
+    /// <param name="businessObjectProvider"> 
+    ///   The <see cref="IBusinessObjectProvider"/> to be used to get the <see cref="IconInfo"/> object. Must not be <see langowrd="null"/>. 
+    /// </param>
     public static string GetToolTip (IBusinessObject businessObject, IBusinessObjectProvider businessObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
 
-      string toolTip = null;
-
-      IBusinessObjectWebUIService webUIService =
-          (IBusinessObjectWebUIService) businessObjectProvider.GetService (typeof (IBusinessObjectWebUIService));
+      var webUIService = businessObjectProvider.GetService<IBusinessObjectWebUIService>();
 
       if (webUIService != null)
-        toolTip = webUIService.GetToolTip (businessObject);
+        return webUIService.GetToolTip (businessObject);
 
-      return toolTip;
+      return null;
+    }
+
+    public static HelpInfo GetHelpInfo (IBusinessObjectBoundWebControl control)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      if (control.DataSource == null)
+        return null;
+
+      var businessObjectProvider = control.DataSource.BusinessObjectProvider;
+      if (businessObjectProvider == null)
+        return null;
+
+      var webUIService = businessObjectProvider.GetService<IBusinessObjectWebUIService>();
+      if (webUIService != null)
+        return webUIService.GetHelpInfo (control, control.DataSource.BusinessObjectClass, control.Property, control.DataSource.BusinessObject);
+
+      return null;
     }
 
     private BusinessObjectBinding _binding;
@@ -346,11 +369,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    /// <summary> Specifies the relative URL to the help text for this control. </summary>
+    /// <summary>Gets an instance of the <see cref="HelpInfo"/> type, which contains all information needed for rendering a help-link.</summary>
     [Browsable (false)]
-    public virtual string HelpUrl
+    public virtual HelpInfo HelpInfo
     {
-      get { return null; }
+      get { return GetHelpInfo (this); }
     }
 
     /// <summary>Gets the input control that can be referenced by HTML tags like &lt;label for=...&gt; using its <see cref="Control.ClientID"/>.</summary>
