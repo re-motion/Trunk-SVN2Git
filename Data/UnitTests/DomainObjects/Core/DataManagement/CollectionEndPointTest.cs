@@ -24,6 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     private RelationEndPointID _customerEndPointID;
     private DomainObjectCollection _orders;
+    private DomainObjectCollection _freeOrders;
     private CollectionEndPoint _customerEndPoint;
     private DomainObject _order1;
     private DomainObject _order2;
@@ -36,7 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
 
-      _orders = new OrderCollection {_order1, _order2};
+      _orders = new OrderCollection { _order1, _order2 };
+      _freeOrders = new OrderCollection { _order1, _order2 };
 
       _customerEndPoint = CreateCollectionEndPoint (_customerEndPointID, _orders);
     }
@@ -67,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentNullException))]
     public void InitializeWithInvalidRelationEndPointID ()
     {
-      CreateCollectionEndPoint (null, _orders);
+      CreateCollectionEndPoint (null, _freeOrders);
     }
 
     [Test]
@@ -81,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (DataManagementException), ExpectedMessage = "Internal error: CollectionEndPoint must have an ILinkChangeDelegate registered.")]
     public void RemoveFromOppositeDomainObjects ()
     {
-      var collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, _orders);
+      var collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, _freeOrders);
       collectionEndPoint.OppositeDomainObjects.Remove (_order1.ID);
     }
 
@@ -91,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var newOrder = Order.GetObject (DomainObjectIDs.Order2);
 
-      var collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, _orders);
+      var collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, _freeOrders);
       collectionEndPoint.OppositeDomainObjects.Add (newOrder);
     }
 
@@ -613,8 +615,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void ReplaceOppositeCollection_SetsChangeDelegateOfNewCollection ()
     {
+      var oldOpposites = new DomainObjectCollection (new[] { _order2 }, false);
       var newOpposites = new DomainObjectCollection (new[] { _order2 }, false);
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, _orders);
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, oldOpposites);
 
       endPoint.ReplaceOppositeCollection (newOpposites);
       Assert.That (newOpposites.ChangeDelegate, Is.SameAs (endPoint));
@@ -640,8 +643,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       CreateCollectionEndPoint (_customerEndPointID, newOpposites);
       Assert.That (newOpposites.ChangeDelegate, Is.Not.Null);
 
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, _orders);
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, _freeOrders);
       endPoint.ReplaceOppositeCollection (newOpposites);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The new opossite collection must have the same type as the old "
+        + "collection ('Remotion.Data.DomainObjects.ObjectList`1[[Remotion.Data.UnitTests.DomainObjects.TestDomain.Order, Remotion.Data.UnitTests, "
+        + "Version=1.11.0.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b]]'), but its type is 'Remotion.Data.DomainObjects.ObjectList`1"
+        + "[[Remotion.Data.UnitTests.DomainObjects.TestDomain.Client, Remotion.Data.UnitTests, Version=1.11.0.2, Culture=neutral, "
+        + "PublicKeyToken=fee00910d6e5f53b]]'.")]
+    public void ReplaceOppositeCollection_ThrowsIfCollectionOfOtherTypeIsSet ()
+    {
+      var orders = new ObjectList<Order> ();
+      var clients = new ObjectList<Client> ();
+
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, orders);
+      endPoint.ReplaceOppositeCollection (clients);
     }
 
     [Test]

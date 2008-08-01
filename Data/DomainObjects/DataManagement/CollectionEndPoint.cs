@@ -80,7 +80,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException ("The new opposite collection is already associated with another relation property.");
 
       if (_oppositeDomainObjects != null)
+      {
+        if (_oppositeDomainObjects.GetType () != oppositeDomainObjects.GetType ())
+        {
+          string message = string.Format ("The new opossite collection must have the same type as the old collection ('{0}'), but its type is '{1}'.", 
+              _oppositeDomainObjects.GetType ().FullName, oppositeDomainObjects.GetType ().FullName);
+          throw new InvalidOperationException (message);
+        }
         _oppositeDomainObjects.ChangeDelegate = null;
+      }
 
       _oppositeDomainObjects = oppositeDomainObjects;
       _oppositeDomainObjects.ChangeDelegate = this;
