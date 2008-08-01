@@ -22,12 +22,12 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager
 {
-  public class SecurityService: ExtendedProviderBase, ISecurityProvider
+  public class SecurityService: ExtendedProviderBase, IRevisionBasedSecurityProvider
   {
-    private static ILog s_log = LogManager.GetLogger (typeof (SecurityService));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (SecurityService));
 
-    private IAccessControlListFinder _accessControlListFinder;
-    private ISecurityTokenBuilder _securityTokenBuilder;
+    private readonly IAccessControlListFinder _accessControlListFinder;
+    private readonly ISecurityTokenBuilder _securityTokenBuilder;
 
     public SecurityService()
         : this (new AccessControlListFinder(), new SecurityTokenBuilder())

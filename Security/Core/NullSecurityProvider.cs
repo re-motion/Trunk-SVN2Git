@@ -41,15 +41,6 @@ namespace Remotion.Security
       return new AccessType[0];
     }
 
-    /// <summary>
-    /// The "Null Object" implementation always returns 0.
-    /// </summary>
-    /// <returns>Always returns 0 for the revision.</returns>
-    public int GetRevision ()
-    {
-      return 0;
-    }
-
     bool INullObject.IsNull
     {
       get { return true; }

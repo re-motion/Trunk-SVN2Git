@@ -28,8 +28,8 @@ using Remotion.SecurityManager.UnitTests.TestDomain;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 using Mocks_List = Rhino.Mocks.Constraints.List;
 using Mocks_Property = Rhino.Mocks.Constraints.Property;
-using SecurityContext=Remotion.Security.SecurityContext;
 using log4net.Filter;
+using SecurityContext=Remotion.Security.SecurityContext;
 
 namespace Remotion.SecurityManager.UnitTests
 {
@@ -216,7 +216,7 @@ namespace Remotion.SecurityManager.UnitTests
     [Test]
     public void GetIsNull ()
     {
-      Assert.IsFalse (((ISecurityProvider) _service).IsNull);
+      Assert.IsFalse (((IRevisionBasedSecurityProvider) _service).IsNull);
     }
     
     private AccessControlList CreateAcl (AccessControlEntry ace)

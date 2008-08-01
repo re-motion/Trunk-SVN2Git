@@ -47,12 +47,6 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
-    public void GetRevision_ReturnsZero ()
-    {
-      Assert.AreEqual (0, _securityProvider.GetRevision());
-    }
-
-    [Test]
     public void GetIsNull ()
     {
       Assert.IsTrue (_securityProvider.IsNull);

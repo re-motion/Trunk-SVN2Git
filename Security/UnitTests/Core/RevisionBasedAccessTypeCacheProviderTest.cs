@@ -11,15 +11,15 @@
 using System;
 using System.Collections.Specialized;
 using NUnit.Framework;
-using Remotion.Context;
-using Rhino.Mocks;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Configuration;
+using Remotion.Context;
 using Remotion.Development.UnitTesting;
 using Remotion.Security.Configuration;
 using Remotion.Security.UnitTests.Core.Configuration;
 using Remotion.Security.UnitTests.Core.SampleDomain;
-using NUnit.Framework.SyntaxHelpers;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core
 {
@@ -27,33 +27,33 @@ namespace Remotion.Security.UnitTests.Core
   public class RevisionBasedAccessTypeCacheProviderTest
   {
     private MockRepository _mocks;
-    private ISecurityProvider _mockSecurityProvider;
+    private IRevisionBasedSecurityProvider _mockSecurityProvider;
     private IGlobalAccessTypeCacheProvider _provider;
 
     [SetUp]
-    public void SetUp()
+    public void SetUp ()
     {
       _provider = new RevisionBasedAccessTypeCacheProvider();
 
       _mocks = new MockRepository();
 
-      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
-      _mockSecurityProvider = _mocks.CreateMock<ISecurityProvider> ();
+      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
+      _mockSecurityProvider = _mocks.CreateMock<IRevisionBasedSecurityProvider>();
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
     }
 
     [TearDown]
-    public void TearDown()
+    public void TearDown ()
     {
-      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
+      SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
       SafeContext.Instance.SetData (typeof (RevisionBasedAccessTypeCacheProvider).AssemblyQualifiedName + "_Revision", null);
     }
 
     [Test]
     public void Initialize ()
     {
-      NameValueCollection config = new NameValueCollection ();
+      NameValueCollection config = new NameValueCollection();
       config.Add ("description", "The Description");
 
       ExtendedProviderBase provider = new RevisionBasedAccessTypeCacheProvider ("Provider", config);
@@ -63,32 +63,32 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
-    public void GetCache()
+    public void GetCache ()
     {
       Expect.Call (_mockSecurityProvider.GetRevision()).Return (0);
       _mocks.ReplayAll();
 
-      ICache<Tuple<ISecurityContext, string>, AccessType[]> actual = _provider.GetCache ();
+      ICache<Tuple<ISecurityContext, string>, AccessType[]> actual = _provider.GetCache();
 
       _mocks.VerifyAll();
       Assert.IsNotNull (actual);
     }
 
     [Test]
-    public void GetCache_SameCacheTwice()
+    public void GetCache_SameCacheTwice ()
     {
       Expect.Call (_mockSecurityProvider.GetRevision()).Return (0);
       _mocks.ReplayAll();
 
-      ICache<Tuple<ISecurityContext, string>, AccessType[]> expected = _provider.GetCache ();
-      ICache<Tuple<ISecurityContext, string>, AccessType[]> actual = _provider.GetCache ();
+      ICache<Tuple<ISecurityContext, string>, AccessType[]> expected = _provider.GetCache();
+      ICache<Tuple<ISecurityContext, string>, AccessType[]> actual = _provider.GetCache();
 
       _mocks.VerifyAll();
       Assert.AreSame (expected, actual);
     }
 
     [Test]
-    public void GetCache_InvalidateFromOtherThread()
+    public void GetCache_InvalidateFromOtherThread ()
     {
       using (_mocks.Ordered())
       {
@@ -97,7 +97,7 @@ namespace Remotion.Security.UnitTests.Core
       }
       _mocks.ReplayAll();
 
-      ICache<Tuple<ISecurityContext, string>, AccessType[]> expected = _provider.GetCache ();
+      ICache<Tuple<ISecurityContext, string>, AccessType[]> expected = _provider.GetCache();
       ICache<Tuple<ISecurityContext, string>, AccessType[]> actual = null;
 
       ThreadRunner.Run (delegate { actual = _provider.GetCache(); });
@@ -107,15 +107,21 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
-    public void GetCache_WithNullSecurityProvider()
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage =
+            "The 'Remotion.Security.RevisionBasedAccessTypeCacheProvider' requires a security provider implementing the "
+            + "'Remotion.Security.IRevisionBasedSecurityProvider' interface, but the 'Remotion.Security.NullSecurityProvider' only implements the "
+            + "'System.IServiceProvider' interface. This exception might be caused if the security provider is set to 'None' but the "
+            + "global accesstype-cache provider is still configured for revision based caching.")]
+    public void GetCache_WithNullSecurityProvider ()
     {
       SecurityConfiguration.Current.SecurityProvider = new NullSecurityProvider();
 
-      Assert.AreSame (_provider.GetCache(), _provider.GetCache());
+      _provider.GetCache();
     }
 
     [Test]
-    public void GetIsNull()
+    public void GetIsNull ()
     {
       Assert.IsFalse (_provider.IsNull);
     }
@@ -123,24 +129,24 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void SerializeInstanceNotInConfiguration ()
     {
-      NameValueCollection config = new NameValueCollection ();
+      NameValueCollection config = new NameValueCollection();
       config.Add ("description", "The Description");
 
       RevisionBasedAccessTypeCacheProvider provider = new RevisionBasedAccessTypeCacheProvider ("MyProvider", config);
       SecurityContext securityContext = new SecurityContext (typeof (SecurableObject));
       AccessType[] accessTypes = new AccessType[] { AccessType.Get (TestAccessTypes.Fifth) };
-      provider.GetCache ().GetOrCreateValue (Tuple.NewTuple ((ISecurityContext) securityContext, "bla"), delegate { return accessTypes; });
+      provider.GetCache().GetOrCreateValue (Tuple.NewTuple ((ISecurityContext) securityContext, "bla"), delegate { return accessTypes; });
 
       RevisionBasedAccessTypeCacheProvider deserializedProvider = Serializer.SerializeAndDeserialize (provider);
 
       Assert.AreEqual ("MyProvider", deserializedProvider.Name);
       Assert.AreEqual ("The Description", deserializedProvider.Description);
-      Assert.IsInstanceOfType (typeof (InterlockedCache<Tuple<ISecurityContext, string>, AccessType[]>), deserializedProvider.GetCache ());
-      Assert.AreNotSame (provider.GetCache(), deserializedProvider.GetCache ());
+      Assert.IsInstanceOfType (typeof (InterlockedCache<Tuple<ISecurityContext, string>, AccessType[]>), deserializedProvider.GetCache());
+      Assert.AreNotSame (provider.GetCache(), deserializedProvider.GetCache());
       Assert.IsFalse (((IGlobalAccessTypeCacheProvider) deserializedProvider).IsNull);
 
       AccessType[] newAccessTypes;
-      bool result = deserializedProvider.GetCache ().TryGetValue (Tuple.NewTuple ((ISecurityContext) securityContext, "bla"), out newAccessTypes);
+      bool result = deserializedProvider.GetCache().TryGetValue (Tuple.NewTuple ((ISecurityContext) securityContext, "bla"), out newAccessTypes);
       Assert.IsTrue (result);
       Assert.AreNotSame (accessTypes, newAccessTypes);
       Assert.AreEqual (1, newAccessTypes.Length);
@@ -150,9 +156,8 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void SerializeInstanceFromConfiguration ()
     {
-      RevisionBasedAccessTypeCacheProvider provider =
-          (RevisionBasedAccessTypeCacheProvider) SecurityConfiguration.Current.GlobalAccessTypeCacheProviders["RevisionBased"];
-      
+      var provider = (RevisionBasedAccessTypeCacheProvider) SecurityConfiguration.Current.GlobalAccessTypeCacheProviders["RevisionBased"];
+
       RevisionBasedAccessTypeCacheProvider deserializedProvider = Serializer.SerializeAndDeserialize (provider);
       Assert.AreSame (provider, deserializedProvider);
     }

@@ -33,14 +33,14 @@ namespace Remotion.Security
 
     // member fields
 
-    private readonly object _syncRoot = new object ();
+    private readonly object _syncRoot = new object();
 
     private CacheType _cache;
     private int _revision;
 
     // construction and disposing
 
-    public RevisionBasedAccessTypeCacheProvider()
+    public RevisionBasedAccessTypeCacheProvider ()
         : this ("Revision", new NameValueCollection())
     {
     }
@@ -49,7 +49,7 @@ namespace Remotion.Security
         : base (name, config)
     {
       _revision = 0;
-      _cache = new CacheType ();
+      _cache = new CacheType();
     }
 
     protected RevisionBasedAccessTypeCacheProvider (SerializationInfo info, StreamingContext context)
@@ -73,7 +73,7 @@ namespace Remotion.Security
       }
     }
 
-    public ICache<Tuple<ISecurityContext, string>, AccessType[]> GetCache()
+    public ICache<Tuple<ISecurityContext, string>, AccessType[]> GetCache ()
     {
       int currentRevision = GetCurrentRevision();
       if (_revision < currentRevision)
@@ -91,16 +91,35 @@ namespace Remotion.Security
       return _cache;
     }
 
-    private int GetCurrentRevision()
+    private int GetCurrentRevision ()
     {
       int? revision = (int?) SafeContext.Instance.GetData (s_revisionKey);
       if (!revision.HasValue)
       {
-        revision = SecurityConfiguration.Current.SecurityProvider.GetRevision();
+        revision = GetRevisionFromSecurityProvider();
         SafeContext.Instance.SetData (s_revisionKey, revision);
       }
 
       return revision.Value;
+    }
+
+    private int? GetRevisionFromSecurityProvider ()
+    {
+      var securityProvider = SecurityConfiguration.Current.SecurityProvider as IRevisionBasedSecurityProvider;
+      if (securityProvider == null)
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "The '{0}' requires a security provider implementing the '{1}' interface, but the '{2}' only implements the '{3}' interface. "
+                + "This exception might be caused if the security provider is set to 'None' but the global accesstype-cache provider "
+                + "is still configured for revision based caching.",
+                typeof (RevisionBasedAccessTypeCacheProvider).FullName,
+                typeof (IRevisionBasedSecurityProvider).FullName,
+                SecurityConfiguration.Current.SecurityProvider.GetType().FullName,
+                typeof (IServiceProvider).FullName));
+      }
+
+      return securityProvider.GetRevision();
     }
 
     bool INullObject.IsNull
