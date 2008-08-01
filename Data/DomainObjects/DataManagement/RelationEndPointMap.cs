@@ -440,7 +440,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return RelationEndPoint.CreateNullRelationEndPoint (definition);
     }
 
-    private RelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
+    public RelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
       if (_relationEndPoints.Contains (endPointID))
         return _relationEndPoints[endPointID];

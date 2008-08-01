@@ -36,6 +36,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private ICollectionEndPointChangeDelegate _changeDelegate = null;
 
     private readonly DomainObjectCollection _originalOppositeDomainObjects;
+    private DomainObjectCollection _originalOppositeDomainObjectsReference;
     private DomainObjectCollection _oppositeDomainObjects;
 
     private bool _hasBeenTouched;
@@ -62,6 +63,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _originalOppositeDomainObjects = originalOppositeDomainObjects;
       ReplaceOppositeCollection(oppositeDomainObjects);
+      _originalOppositeDomainObjectsReference = oppositeDomainObjects;
       _hasBeenTouched = false;
     }
 
@@ -76,7 +78,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void ReplaceOppositeCollection (DomainObjectCollection oppositeDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-      if (oppositeDomainObjects.ChangeDelegate != null && oppositeDomainObjects.ChangeDelegate != this)
+      if (oppositeDomainObjects == _oppositeDomainObjects)
+      {
+        _hasBeenTouched = true;
+        return;
+      }
+
+      if (oppositeDomainObjects.ChangeDelegate != null)
         throw new InvalidOperationException ("The new opposite collection is already associated with another relation property.");
 
       if (_oppositeDomainObjects != null)
@@ -92,6 +100,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _oppositeDomainObjects = oppositeDomainObjects;
       _oppositeDomainObjects.ChangeDelegate = this;
+      _hasBeenTouched = true;
     }
 
     public override RelationEndPoint Clone ()
@@ -133,7 +142,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override void Commit ()
     {
       if (HasChanged)
+      {
         _originalOppositeDomainObjects.Commit (_oppositeDomainObjects);
+        _originalOppositeDomainObjectsReference = _oppositeDomainObjects;
+      }
 
       _hasBeenTouched = false;
     }
@@ -141,14 +153,21 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override void Rollback ()
     {
       if (HasChanged)
+      {
+        ReplaceOppositeCollection (_originalOppositeDomainObjectsReference);
         _oppositeDomainObjects.Rollback (_originalOppositeDomainObjects);
+      }
 
       _hasBeenTouched = false;
     }
 
     public override bool HasChanged
     {
-      get { return ClientTransaction.HasCollectionEndPointChanged (this); }
+      get
+      {
+        return OppositeDomainObjects != OriginalOppositeDomainObjectsReference
+            || ClientTransaction.HasCollectionEndPointDataChanged (OppositeDomainObjects, OriginalOppositeDomainObjects);
+      }
     }
 
     public override bool HasBeenTouched
@@ -213,6 +232,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public DomainObjectCollection OriginalOppositeDomainObjects
     {
       get { return _originalOppositeDomainObjects; }
+    }
+
+    public DomainObjectCollection OriginalOppositeDomainObjectsReference
+    {
+      get { return _originalOppositeDomainObjectsReference; }
     }
 
     public DomainObjectCollection OppositeDomainObjects

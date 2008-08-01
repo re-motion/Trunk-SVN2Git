@@ -318,11 +318,12 @@ public abstract class ClientTransaction : ITransaction
   protected internal abstract DomainObjectCollection LoadRelatedObjects (RelationEndPointID relationEndPointID);
 
   /// <summary>
-  /// Determines whether a specific collection end point has changed with the semantics defined by this transaction.
+  /// Determines whether a specific collection end point's data has changed with the semantics defined by this transaction.
   /// </summary>
-  /// <param name="endPoint">The end point to check for changes.</param>
+  /// <param name="originalData">The end point to check for changes.</param>
+  /// <param name="currentData">The end point to check for changes.</param>
   /// <returns>
-  /// True if the collection end point has changed; otherwise, false.
+  /// True if the collection end point data has changed; otherwise, false.
   /// </returns>
   /// <remarks>
   /// Implementations will usually just compare the <see cref="CollectionEndPoint.OppositeDomainObjects"/> collection with the
@@ -330,7 +331,7 @@ public abstract class ClientTransaction : ITransaction
   /// to ignore ordering or not for such a check. Ignoring ordering means a collection end point will not be committed if only the ordering of
   /// its opposite objects has changed.
   /// </remarks>
-  protected internal abstract bool HasCollectionEndPointChanged (CollectionEndPoint endPoint);
+  protected internal abstract bool HasCollectionEndPointDataChanged (DomainObjectCollection currentData, DomainObjectCollection originalData);
 
   /// <summary>
   /// Gets the <see cref="IQueryManager"/> of the <b>ClientTransaction</b>.

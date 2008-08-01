@@ -361,9 +361,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected internal override bool HasCollectionEndPointChanged (CollectionEndPoint endPoint)
+    protected internal override bool HasCollectionEndPointDataChanged (DomainObjectCollection currentData, DomainObjectCollection originalData)
     {
-      return !DomainObjectCollection.Compare (endPoint.OppositeDomainObjects, endPoint.OriginalOppositeDomainObjects, false);
+      return !DomainObjectCollection.Compare (currentData, originalData, false);
     }
   }
 }

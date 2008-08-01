@@ -670,5 +670,93 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (newOpposites.ChangeDelegate, Is.Not.Null);
       endPoint.ReplaceOppositeCollection (newOpposites);
     }
+
+    [Test]
+    public void ReplaceOppositeCollection_SetsTouchedFlag ()
+    {
+      var newOpposites = new DomainObjectCollection (new[] { _order2 }, false);
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, newOpposites);
+      Assert.That (endPoint.HasBeenTouched, Is.False);
+
+      endPoint.ReplaceOppositeCollection (newOpposites);
+      Assert.That (endPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_SetsChangedFlag_WhenSetToNewCollection ()
+    {
+      var oldOpposites = new DomainObjectCollection (new[] { _order2 }, false);
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, oldOpposites);
+      Assert.That (endPoint.HasChanged, Is.False);
+      endPoint.ReplaceOppositeCollection (oldOpposites);
+      Assert.That (endPoint.HasChanged, Is.False);
+
+      var newOpposites = new DomainObjectCollection (new[] { _order2 }, false);
+      endPoint.ReplaceOppositeCollection (newOpposites);
+      Assert.That (endPoint.HasChanged, Is.True);
+    }
+
+    [Test]
+    public void RollbackAfterReplace_RestoresPreviousReference ()
+    {
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, _freeOrders);
+      var newOpposites = new OrderCollection { _order2 };
+
+      endPoint.ReplaceOppositeCollection (newOpposites); // replace collection
+      endPoint.Rollback ();
+
+      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (_freeOrders));
+      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _order2 }));
+      Assert.That (endPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (endPoint));
+      Assert.That (newOpposites.ChangeDelegate, Is.Null);
+    }
+
+    [Test]
+    public void RollbackAfterReplace_RestoresPreviousReference_UndowsModifications_LeavesModificationOnDetached ()
+    {
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, _freeOrders);
+      var newOpposites = new OrderCollection { _order2 };
+
+      _freeOrders.Clear (); // modify collection
+      endPoint.ReplaceOppositeCollection (newOpposites); // replace collection
+      newOpposites.Add (_order1);
+      endPoint.Rollback ();
+
+      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (_freeOrders));
+      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order1, _order2 }));
+      Assert.That (endPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (endPoint));
+      Assert.That (newOpposites.ChangeDelegate, Is.Null);
+      Assert.That (newOpposites, Is.EqualTo (new[] { _order2, _order1 } )); // does not undo changes on detached collection
+    }
+
+    [Test]
+    public void CommitAfterReplace_SavesReference ()
+    {
+      var oldOpposites = _freeOrders;
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, oldOpposites);
+      var newOpposites = new OrderCollection { _order2 };
+
+      oldOpposites.Clear (); // modify collection
+      endPoint.ReplaceOppositeCollection (newOpposites); // replace collection
+      endPoint.Commit ();
+
+      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
+      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order2 }));
+      Assert.That (endPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (endPoint));
+      Assert.That (oldOpposites.ChangeDelegate, Is.Null);
+
+      endPoint.Rollback ();
+
+      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
+      Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order2 }));
+      Assert.That (endPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (endPoint));
+      Assert.That (oldOpposites.ChangeDelegate, Is.Null);
+    }
+
+    [Test]
+    [Ignore ("TODO: Finish implementation of reference semantics")]
+    public void SavedOriginalReference_WithSerialization ()
+    {
+    }
   }
 }

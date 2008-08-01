@@ -73,7 +73,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-      CollectionEndPoint endPoint = (CollectionEndPoint) transaction.DataManager.RelationEndPointMap[CreateRelationEndPointID(propertyAccessor)];
+      RelationEndPointID id = CreateRelationEndPointID(propertyAccessor);
+      CollectionEndPoint endPoint = (CollectionEndPoint) transaction.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (id);
       endPoint.ReplaceOppositeCollection ((DomainObjectCollection) value);
     }
 

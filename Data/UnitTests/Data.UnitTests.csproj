@@ -230,6 +230,7 @@
     <TestDomain Include="DomainObjects\Core\Design\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="DomainObjects\Core\Cloning\DomainObjectClonerTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\SimpleDomainObjectTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\CollectionSetterTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\StorageClassTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\ClassWithNonVirtualAutomaticPropertyGetter.cs" />
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\ClassWithNonVirtualAutomaticPropertySetter.cs" />

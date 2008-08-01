@@ -54,6 +54,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       {
         return CurrentProperty.GetValue<ObjectList<Company>> ();
       }
+      set
+      {
+        CurrentProperty.SetValue (value);
+      }
     }
   }
 }
