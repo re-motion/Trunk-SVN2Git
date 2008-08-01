@@ -415,9 +415,10 @@ namespace Remotion.Data.DomainObjects
       get { return _requiredItemType; }
     }
 
-    internal ICollectionChangeDelegate ChangeDelegate
+    public ICollectionChangeDelegate ChangeDelegate
     {
-      set { _changeDelegate = value; }
+      get { return _changeDelegate; }
+      internal set { _changeDelegate = value; }
     }
 
     /// <summary>

@@ -12,7 +12,7 @@ using System;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  internal interface ICollectionChangeDelegate
+  public interface ICollectionChangeDelegate
   {
     void PerformInsert (DomainObjectCollection collection, DomainObject domainObject, int index);
     void PerformReplace (DomainObjectCollection collection, DomainObject domainObject, int index);

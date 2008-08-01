@@ -28,10 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private DomainObject _order1;
     private DomainObject _order2;
 
-    public CollectionEndPointTest ()
-    {
-    }
-
     public override void SetUp ()
     {
       base.SetUp ();
@@ -40,9 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
 
-      _orders = new OrderCollection ();
-      _orders.Add (_order1);
-      _orders.Add (_order2);
+      _orders = new OrderCollection {_order1, _order2};
 
       _customerEndPoint = CreateCollectionEndPoint (_customerEndPointID, _orders);
     }
@@ -73,23 +67,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (ArgumentNullException))]
     public void InitializeWithInvalidRelationEndPointID ()
     {
-      CollectionEndPoint endPoint = CreateCollectionEndPoint (null, _orders);
+      CreateCollectionEndPoint (null, _orders);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void InitializeWithNullObjectIDCollection ()
     {
-      CollectionEndPoint endPoint = CreateCollectionEndPoint (_customerEndPointID, null);
+      CreateCollectionEndPoint (_customerEndPointID, null);
     }
 
     [Test]
     [ExpectedException (typeof (DataManagementException), ExpectedMessage = "Internal error: CollectionEndPoint must have an ILinkChangeDelegate registered.")]
     public void RemoveFromOppositeDomainObjects ()
     {
-      CollectionEndPoint collectionEndPoint = new CollectionEndPoint (
-          ClientTransactionMock, _customerEndPointID, _orders);
-
+      var collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, _orders);
       collectionEndPoint.OppositeDomainObjects.Remove (_order1.ID);
     }
 
@@ -97,11 +89,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [ExpectedException (typeof (DataManagementException), ExpectedMessage = "Internal error: CollectionEndPoint must have an ILinkChangeDelegate registered.")]
     public void AddToOppositeDomainObjects ()
     {
-      Order newOrder = Order.GetObject (DomainObjectIDs.Order2);
+      var newOrder = Order.GetObject (DomainObjectIDs.Order2);
 
-      CollectionEndPoint collectionEndPoint = new CollectionEndPoint (
-          ClientTransactionMock, _customerEndPointID, _orders);
-
+      var collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, _orders);
       collectionEndPoint.OppositeDomainObjects.Add (newOrder);
     }
 
@@ -221,7 +211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.AreEqual (_customerEndPoint.OriginalOppositeDomainObjects.Count, _customerEndPoint.OppositeDomainObjects.Count);
 
-      RelationEndPointModification modification = _customerEndPoint.CreateModification (CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
+      var modification = _customerEndPoint.CreateModification (CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
       modification.Begin ();
       modification.Perform ();
       modification.End ();
@@ -234,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.AreEqual (_customerEndPoint.OriginalOppositeDomainObjects.Count, _customerEndPoint.OppositeDomainObjects.Count);
 
-      RelationEndPointModification modification =
+      var modification =
           _customerEndPoint.CreateModification (
               CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
       modification.Perform();
@@ -247,7 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.AreEqual (_customerEndPoint.OriginalOppositeDomainObjects.Count, _customerEndPoint.OppositeDomainObjects.Count);
 
-      RelationEndPointModification modification = _customerEndPoint.CreateModification (CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
+      var modification = _customerEndPoint.CreateModification (CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
       modification.Begin ();
       _customerEndPoint.PerformDelete ();
       modification.End ();
@@ -295,8 +285,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       OrderItem item1 = order.OrderItems[0];
       OrderItem item2 = order.OrderItems[1];
 
-      RelationEndPointID id = new RelationEndPointID (order.ID, typeof (Order) + ".OrderItems");
-      CollectionEndPoint endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id];
+      var id = new RelationEndPointID (order.ID, typeof (Order) + ".OrderItems");
+      var endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id];
       Assert.IsNotNull (endPoint.ChangeDelegate);
       Assert.AreSame (ClientTransactionMock, endPoint.ClientTransaction);
       Assert.IsNotNull (endPoint.Definition);
@@ -317,7 +307,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreSame (item1, endPoint.OriginalOppositeDomainObjects[0]);
       Assert.AreSame (item2, endPoint.OriginalOppositeDomainObjects[1]);
 
-      CollectionEndPoint clone = (CollectionEndPoint) endPoint.Clone ();
+      var clone = (CollectionEndPoint) endPoint.Clone ();
 
       Assert.IsNotNull (clone);
 
@@ -327,22 +317,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CloneChanged ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      OrderItem originalItem1 = order.OrderItems[0];
-      OrderItem originalItem2 = order.OrderItems[1];
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var originalItem1 = order.OrderItems[0];
+      var originalItem2 = order.OrderItems[1];
 
       order.OrderItems.Clear ();
 
-      OrderItem item1 = OrderItem.NewObject ();
-      OrderItem item2 = OrderItem.NewObject ();
-      OrderItem item3 = OrderItem.NewObject ();
+      var item1 = OrderItem.NewObject ();
+      var item2 = OrderItem.NewObject ();
+      var item3 = OrderItem.NewObject ();
 
       order.OrderItems.Add (item1);
       order.OrderItems.Add (item2);
       order.OrderItems.Add (item3);
 
-      RelationEndPointID id = new RelationEndPointID (order.ID, typeof (Order) + ".OrderItems");
-      CollectionEndPoint endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id];
+      var id = new RelationEndPointID (order.ID, typeof (Order) + ".OrderItems");
+      var endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id];
       Assert.IsNotNull (endPoint.ChangeDelegate);
       Assert.AreSame (ClientTransactionMock, endPoint.ClientTransaction);
       Assert.IsNotNull (endPoint.Definition);
@@ -364,17 +354,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreSame (originalItem1, endPoint.OriginalOppositeDomainObjects[0]);
       Assert.AreSame (originalItem2, endPoint.OriginalOppositeDomainObjects[1]);
 
-      CollectionEndPoint clone = (CollectionEndPoint) endPoint.Clone ();
-
+      var clone = (CollectionEndPoint) endPoint.Clone ();
       Assert.IsNotNull (clone);
-
       CheckIfRelationEndPointsAreEqual (endPoint, clone);
     }
 
     [Test]
     public void Commit ()
     {
-      Order newOrder = Order.NewObject ();
+      var newOrder = Order.NewObject ();
       _customerEndPoint.OppositeDomainObjects.Add (newOrder);
 
       Assert.IsTrue (_customerEndPoint.HasChanged);
@@ -382,8 +370,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.IsTrue (_customerEndPoint.OppositeDomainObjects.ContainsObject (newOrder));
       Assert.IsFalse (_customerEndPoint.OriginalOppositeDomainObjects.ContainsObject (newOrder));
 
-      DomainObjectCollection collectionBefore = _customerEndPoint.OppositeDomainObjects;
-      DomainObjectCollection originalCollectionBefore = _customerEndPoint.OriginalOppositeDomainObjects;
+      var collectionBefore = _customerEndPoint.OppositeDomainObjects;
+      var originalCollectionBefore = _customerEndPoint.OriginalOppositeDomainObjects;
 
       _customerEndPoint.Commit ();
 
@@ -413,7 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Rollback ()
     {
-      Order newOrder = Order.NewObject ();
+      var newOrder = Order.NewObject ();
       _customerEndPoint.OppositeDomainObjects.Add (newOrder);
 
       Assert.IsTrue (_customerEndPoint.HasChanged);
@@ -421,8 +409,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.IsTrue (_customerEndPoint.OppositeDomainObjects.ContainsObject (newOrder));
       Assert.IsFalse (_customerEndPoint.OriginalOppositeDomainObjects.ContainsObject (newOrder));
 
-      DomainObjectCollection collectionBefore = _customerEndPoint.OppositeDomainObjects;
-      DomainObjectCollection originalCollectionBefore = _customerEndPoint.OriginalOppositeDomainObjects;
+      var collectionBefore = _customerEndPoint.OppositeDomainObjects;
+      var originalCollectionBefore = _customerEndPoint.OriginalOppositeDomainObjects;
 
       _customerEndPoint.Rollback ();
 
@@ -452,13 +440,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_ChangedIntoUnchanged ()
     {
-      DomainObjectCollection orders1 = new DomainObjectCollection (new DomainObject[] { _order1 }, false);
-      DomainObjectCollection orders2 = new DomainObjectCollection (new DomainObject[] { _order2 }, false);
+      var orders1 = new DomainObjectCollection (new[] { _order1 }, false);
+      var orders2 = new DomainObjectCollection (new[] { _order2 }, false);
 
-      CollectionEndPoint endPoint1 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone());
-      CollectionEndPoint endPoint2 = CreateCollectionEndPoint (_customerEndPointID, orders2.Clone ());
+      var endPoint1 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone());
+      var endPoint2 = CreateCollectionEndPoint (_customerEndPointID, orders2.Clone ());
 
-      Order newOrder = Order.NewObject ();
+      var newOrder = Order.NewObject ();
       endPoint2.OppositeDomainObjects.Add (newOrder);
 
       Assert.IsFalse (endPoint1.HasChanged);
@@ -466,8 +454,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (orders1));
       Assert.That (endPoint1.OriginalOppositeDomainObjects, Is.EquivalentTo (orders1));
 
-      DomainObjectCollection collectionBefore = endPoint1.OppositeDomainObjects;
-      DomainObjectCollection originalCollectionBefore = endPoint1.OriginalOppositeDomainObjects;
+      var collectionBefore = endPoint1.OppositeDomainObjects;
+      var originalCollectionBefore = endPoint1.OriginalOppositeDomainObjects;
 
       PrivateInvoke.InvokeNonPublicMethod (endPoint1, "TakeOverCommittedData", endPoint2);
 
@@ -483,19 +471,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_UnchangedIntoUnchanged ()
     {
-      DomainObjectCollection orders1 = new DomainObjectCollection (new DomainObject[] { _order1 }, false);
-      DomainObjectCollection orders2 = new DomainObjectCollection (new DomainObject[] { _order2 }, false);
+      var orders1 = new DomainObjectCollection (new[] { _order1 }, false);
+      var orders2 = new DomainObjectCollection (new[] { _order2 }, false);
 
-      CollectionEndPoint endPoint1 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone ());
-      CollectionEndPoint endPoint2 = CreateCollectionEndPoint (_customerEndPointID, orders2.Clone ());
+      var endPoint1 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone ());
+      var endPoint2 = CreateCollectionEndPoint (_customerEndPointID, orders2.Clone ());
 
       Assert.IsFalse (endPoint1.HasChanged);
       Assert.IsFalse (endPoint1.HasBeenTouched);
       Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (orders1));
       Assert.That (endPoint1.OriginalOppositeDomainObjects, Is.EquivalentTo (orders1));
 
-      DomainObjectCollection collectionBefore = endPoint1.OppositeDomainObjects;
-      DomainObjectCollection originalCollectionBefore = endPoint1.OriginalOppositeDomainObjects;
+      var collectionBefore = endPoint1.OppositeDomainObjects;
+      var originalCollectionBefore = endPoint1.OriginalOppositeDomainObjects;
 
       PrivateInvoke.InvokeNonPublicMethod (endPoint1, "TakeOverCommittedData", endPoint2);
 
@@ -511,13 +499,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_ChangedIntoChanged ()
     {
-      DomainObjectCollection orders1 = new DomainObjectCollection (new DomainObject[] { _order1 }, false);
-      DomainObjectCollection orders2 = new DomainObjectCollection (new DomainObject[] { _order2 }, false);
+      var orders1 = new DomainObjectCollection (new[] { _order1 }, false);
+      var orders2 = new DomainObjectCollection (new[] { _order2 }, false);
 
-      CollectionEndPoint endPoint1 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone());
-      CollectionEndPoint endPoint2 = CreateCollectionEndPoint (_customerEndPointID, orders2.Clone ());
+      var endPoint1 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone());
+      var endPoint2 = CreateCollectionEndPoint (_customerEndPointID, orders2.Clone ());
 
-      Order newOrder = Order.NewObject ();
+      var newOrder = Order.NewObject ();
       endPoint2.OppositeDomainObjects.Add (newOrder);
 
       endPoint1.OppositeDomainObjects.Clear ();
@@ -527,8 +515,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new object[0]));
       Assert.That (endPoint1.OriginalOppositeDomainObjects, Is.EquivalentTo (orders1));
 
-      DomainObjectCollection collectionBefore = endPoint1.OppositeDomainObjects;
-      DomainObjectCollection originalCollectionBefore = endPoint1.OriginalOppositeDomainObjects;
+      var collectionBefore = endPoint1.OppositeDomainObjects;
+      var originalCollectionBefore = endPoint1.OriginalOppositeDomainObjects;
 
       PrivateInvoke.InvokeNonPublicMethod (endPoint1, "TakeOverCommittedData", endPoint2);
 
@@ -544,11 +532,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_UnchangedIntoChanged ()
     {
-      DomainObjectCollection orders1 = new DomainObjectCollection (new DomainObject[] { _order1 }, false);
-      DomainObjectCollection orders2 = new DomainObjectCollection (new DomainObject[] { _order2 }, false);
+      var orders1 = new DomainObjectCollection (new[] { _order1 }, false);
+      var orders2 = new DomainObjectCollection (new[] { _order2 }, false);
 
-      CollectionEndPoint endPoint1 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone ());
-      CollectionEndPoint endPoint2 = CreateCollectionEndPoint (_customerEndPointID, orders2.Clone ());
+      var endPoint1 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone ());
+      var endPoint2 = CreateCollectionEndPoint (_customerEndPointID, orders2.Clone ());
 
       endPoint1.OppositeDomainObjects.Clear ();
 
@@ -557,8 +545,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (new object[0]));
       Assert.That (endPoint1.OriginalOppositeDomainObjects, Is.EquivalentTo (orders1));
 
-      DomainObjectCollection collectionBefore = endPoint1.OppositeDomainObjects;
-      DomainObjectCollection originalCollectionBefore = endPoint1.OriginalOppositeDomainObjects;
+      var collectionBefore = endPoint1.OppositeDomainObjects;
+      var originalCollectionBefore = endPoint1.OriginalOppositeDomainObjects;
 
       PrivateInvoke.InvokeNonPublicMethod (endPoint1, "TakeOverCommittedData", endPoint2);
 
@@ -574,18 +562,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void TakeOverCommittedData_UnchangedIntoEqual ()
     {
-      DomainObjectCollection orders1 = new DomainObjectCollection (new DomainObject[] {_order1}, false);
+      var orders1 = new DomainObjectCollection (new[] {_order1}, false);
 
-      CollectionEndPoint endPoint1 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone ());
-      CollectionEndPoint endPoint2 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone ());
+      var endPoint1 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone ());
+      var endPoint2 = CreateCollectionEndPoint (_customerEndPointID, orders1.Clone ());
 
       Assert.IsFalse (endPoint1.HasChanged);
       Assert.IsFalse (endPoint1.HasBeenTouched);
       Assert.That (endPoint1.OppositeDomainObjects, Is.EquivalentTo (orders1));
       Assert.That (endPoint1.OriginalOppositeDomainObjects, Is.EquivalentTo (orders1));
 
-      DomainObjectCollection collectionBefore = endPoint1.OppositeDomainObjects;
-      DomainObjectCollection originalCollectionBefore = endPoint1.OriginalOppositeDomainObjects;
+      var collectionBefore = endPoint1.OppositeDomainObjects;
+      var originalCollectionBefore = endPoint1.OriginalOppositeDomainObjects;
 
       PrivateInvoke.InvokeNonPublicMethod (endPoint1, "TakeOverCommittedData", endPoint2);
 
@@ -596,6 +584,73 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.AreSame (collectionBefore, endPoint1.OppositeDomainObjects);
       Assert.AreSame (originalCollectionBefore, endPoint1.OriginalOppositeDomainObjects);
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_SetsProperty_WithReferenceSemantics ()
+    {
+      var oldOpposites = new DomainObjectCollection (new[] { _order1 }, false);
+      var newOpposites = new DomainObjectCollection (new[] { _order2 }, false);
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, oldOpposites);
+      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (oldOpposites));
+
+      endPoint.ReplaceOppositeCollection (newOpposites);
+      Assert.That (endPoint.OppositeDomainObjects, Is.SameAs (newOpposites));
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_LeavesOriginalCollection ()
+    {
+      var oldOpposites = new DomainObjectCollection (new[] { _order1 }, false);
+      var newOpposites = new DomainObjectCollection (new[] { _order2 }, false);
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, oldOpposites);
+      var originalOpposites = endPoint.OriginalOppositeDomainObjects;
+
+      endPoint.ReplaceOppositeCollection (newOpposites);
+      Assert.That (endPoint.OriginalOppositeDomainObjects, Is.SameAs (originalOpposites));
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_SetsChangeDelegateOfNewCollection ()
+    {
+      var newOpposites = new DomainObjectCollection (new[] { _order2 }, false);
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, _orders);
+
+      endPoint.ReplaceOppositeCollection (newOpposites);
+      Assert.That (newOpposites.ChangeDelegate, Is.SameAs (endPoint));
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_ResetsChangeDelegateOfOldCollection ()
+    {
+      var oldOpposites = new DomainObjectCollection (new[] { _order1 }, false);
+      var newOpposites = new DomainObjectCollection (new[] { _order2 }, false);
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, oldOpposites);
+
+      endPoint.ReplaceOppositeCollection (newOpposites);
+      Assert.That (oldOpposites.ChangeDelegate, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The new opposite collection is already associated with another " 
+        + "relation property.")]
+    public void ReplaceOppositeCollection_ThrowsIfCollectionAlreadyHasChangeDelegate ()
+    {
+      var newOpposites = new DomainObjectCollection (new[] { _order2 }, false);
+      CreateCollectionEndPoint (_customerEndPointID, newOpposites);
+      Assert.That (newOpposites.ChangeDelegate, Is.Not.Null);
+
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, _orders);
+      endPoint.ReplaceOppositeCollection (newOpposites);
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_WorksIfCollectionHasSameChangeDelegate ()
+    {
+      var newOpposites = new DomainObjectCollection (new[] { _order2 }, false);
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, newOpposites);
+      Assert.That (newOpposites.ChangeDelegate, Is.Not.Null);
+      endPoint.ReplaceOppositeCollection (newOpposites);
     }
   }
 }

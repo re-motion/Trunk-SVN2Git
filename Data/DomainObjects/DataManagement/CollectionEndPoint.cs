@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private ICollectionEndPointChangeDelegate _changeDelegate = null;
 
     private readonly DomainObjectCollection _originalOppositeDomainObjects;
-    private readonly DomainObjectCollection _oppositeDomainObjects;
+    private DomainObjectCollection _oppositeDomainObjects;
 
     private bool _hasBeenTouched;
 
@@ -61,8 +61,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("originalOppositeDomainObjects", originalOppositeDomainObjects);
 
       _originalOppositeDomainObjects = originalOppositeDomainObjects;
-      _oppositeDomainObjects = oppositeDomainObjects;
-      _oppositeDomainObjects.ChangeDelegate = this;
+      ReplaceOppositeCollection(oppositeDomainObjects);
       _hasBeenTouched = false;
     }
 
@@ -73,6 +72,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     // methods and properties
+
+    public void ReplaceOppositeCollection (DomainObjectCollection oppositeDomainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
+      if (oppositeDomainObjects.ChangeDelegate != null && oppositeDomainObjects.ChangeDelegate != this)
+        throw new InvalidOperationException ("The new opposite collection is already associated with another relation property.");
+
+      if (_oppositeDomainObjects != null)
+        _oppositeDomainObjects.ChangeDelegate = null;
+
+      _oppositeDomainObjects = oppositeDomainObjects;
+      _oppositeDomainObjects.ChangeDelegate = this;
+    }
 
     public override RelationEndPoint Clone ()
     {
