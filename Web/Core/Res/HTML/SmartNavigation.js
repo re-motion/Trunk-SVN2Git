@@ -138,10 +138,9 @@ function SmartFocus_Restore (data)
   if (! StringUtility.IsNullOrEmpty (activeElementID))
   {
     var activeElement = window.document.getElementById (activeElementID);
-    if (activeElement != null)
+    if (activeElement != null && !TypeUtility.IsUndefined (activeElement.disabled) && !activeElement.disabled)
     {
       activeElement.focus();
     }
   }
 }
-

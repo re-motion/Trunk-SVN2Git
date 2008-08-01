@@ -258,10 +258,11 @@ function SmartPage_Context (
   {
     try
     {
-      if (!TypeUtility.IsUndefined (window.document.activeElement) && window.document.activeElement != null)
+      if (!TypeUtility.IsUndefined (window.document.activeElement) && window.document.activeElement != null
+          && window.document.body != window.document.activeElement && window.document.body.contains (window.document.activeElement)
+          && !TypeUtility.IsUndefined (window.document.activeElement.tagName) && IsFocusableTag (window.document.activeElement.tagName))
       {
-        if (window.document.body != window.document.activeElement && window.document.body.contains (window.document.activeElement))
-          _activeElement = window.document.activeElement;
+        _activeElement = window.document.activeElement;
       }
     }
     catch (e)
@@ -269,7 +270,7 @@ function SmartPage_Context (
     }
     
     if (_activeElement != null 
-        && (TypeUtility.IsUndefined (_activeElement.parentElement) || _activeElement.parentElement == null))
+        && (TypeUtility.IsUndefined (_activeElement.parentNode) || _activeElement.parentNode == null))
     {
       _activeElement = null;
     }
@@ -322,7 +323,7 @@ function SmartPage_Context (
   {
     _isSubmitting = false;
     _isSubmittingBeforeUnload = false;
-    HideStatusMessage();
+    this.HideStatusMessage();
   }
   
   // Determines whether the page was loaded from cache.
@@ -440,7 +441,7 @@ function SmartPage_Context (
   // Override for the ASP.NET __doPostBack method.
   this.DoPostBack = function (eventTarget, eventArgument)
   {
-    var eventSource = document.getElementById (eventTarget);
+    var eventSource = document.getElementById (UniqueIDToClientID (eventTarget));
     this.SetActiveElement (eventSource);      
     this.DoPostBackInternal (eventTarget, eventArgument);
   };
@@ -768,7 +769,14 @@ function SmartPage_Context (
     } 
     else if (! TypeUtility.IsUndefined (object.removeEventListener))
     {
-      object.removeEventListener (eventType, handler, false);
+      try
+      {
+        object.removeEventListener (eventType, handler, false);
+      }
+      catch (e)
+      {
+        //CNA fail with Firefox 1.5
+      }
     }
   }
 
@@ -779,29 +787,29 @@ function SmartPage_Context (
     if (eventHandlers == null)
       return;
 
-      for (var i = 0; i < eventHandlers.length; i++)
+    for (var i = 0; i < eventHandlers.length; i++)
+    {
+      var eventHandler = GetFunctionPointer (eventHandlers[i]);
+      if (eventHandler != null)
       {
-        var eventHandler = GetFunctionPointer (eventHandlers[i]);
-        if (eventHandler != null)
-        {
-          var arg1 = null;
-          var arg2 = null;
-          var args = ExecuteEventHandlers.arguments;
+        var arg1 = null;
+        var arg2 = null;
+        var args = ExecuteEventHandlers.arguments;
+        
+        if (args.length > 1)
+          arg1 = args[1];
+        if (args.length > 2)
+          arg2 = args[2];
           
-          if (args.length > 1)
-            arg1 = args[1];
-          if (args.length > 2)
-            arg2 = args[2];
-            
-          try
-          {
-            eventHandler (arg1, arg2);
-          }
-          catch (e)
-          {
-          }
+        try
+        {
+          eventHandler (arg1, arg2);
+        }
+        catch (e)
+        {
         }
       }
+    }
   };
 
   // Evaluates the string and returns the specified function.
@@ -904,7 +912,7 @@ function SmartPage_Context (
     message.style.top = windowHeight/2 - message.offsetHeight/2 + scrollTop;
   };
 
-  function HideStatusMessage ()
+  this.HideStatusMessage = function()
   {
     if (_statusMessageWindow != null)
     {
@@ -1038,7 +1046,17 @@ function SmartPage_Context (
     
     return false;
   }
+
+  this.ClearIsSubmitting = function ()
+  {
+    _isSubmitting = false;
+  }
   
+  this.DisableAbortConfirmation = function()
+  {
+    _isAbortConfirmationEnabled = false;
+  }
+    
   // Perform initialization
   this.Init();
 }
