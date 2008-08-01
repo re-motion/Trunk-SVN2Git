@@ -61,6 +61,7 @@
     <Compile Include="GlobalAccessTypeCacheProviderObjectReference.cs" />
     <Compile Include="IFunctionalSecurityStrategy.cs" />
     <Compile Include="IGlobalAccessTypeCacheProvider.cs" />
+    <Compile Include="IRevisionBasedSecurityProvider.cs" />
     <Compile Include="NullIdentity.cs" />
     <Compile Include="NullPrincipal.cs" />
     <Compile Include="NullSecurityClient.cs" />
