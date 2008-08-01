@@ -297,15 +297,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Related object collections cannot be set.",
-          MatchType = MessageMatch.Contains)]
-    public void PropertyAccessorThrowsIfSettingObjectList ()
-    {
-      IndustrialSector sector = IndustrialSector.NewObject ();
-      CreateAccessor (sector, "Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies").SetValue (new ObjectList<Company> ());
-    }
-
-    [Test]
     public void IsValidProperty ()
     {
       Assert.IsFalse (PropertyAccessor.IsValidProperty (MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)], "Bla"));
@@ -654,14 +645,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Related object collections cannot be set.")]
-    public void SetValueWithoutTypeCheckThrowsOnRelatedObjectCollection ()
-    {
-      Order newOrder = Order.NewObject ();
-      newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"].SetValueWithoutTypeCheck (new ObjectList<OrderItem>());
-    }
-
-    [Test]
     public void GetValueTx ()
     {
       Order newOrder = Order.NewObject ();
@@ -967,6 +950,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void SetValueTx_WithObjectList ()
+    {
+      IndustrialSector sector = IndustrialSector.NewObject ();
+      ObjectList<Company> newCompanies = new ObjectList<Company> ();
+      CreateAccessor (sector, "Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies").SetValue (newCompanies);
+      Assert.That (sector.Companies, Is.SameAs (newCompanies));
+    }
+
+    [Test]
     [ExpectedException (typeof (ClientTransactionsDifferException))]
     public void SetValueTxWithInvalidTransactionNew ()
     {
@@ -1015,6 +1007,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       }
       Assert.AreEqual (2, order.OrderNumber);
       Assert.AreSame (orderTicket2, order.OrderTicket);
+    }
+
+    [Test]
+    public void SetValueWithoutTypeCheckTx_WithObjectList ()
+    {
+      IndustrialSector sector = IndustrialSector.NewObject ();
+      ObjectList<Company> newCompanies = new ObjectList<Company> ();
+      CreateAccessor (sector, "Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies").SetValueWithoutTypeCheckTx (ClientTransactionMock, newCompanies);
+      Assert.That (sector.Companies, Is.SameAs (newCompanies));
     }
 
     [Test]
