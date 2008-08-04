@@ -14,11 +14,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Security
 {
-  //TODO: Hashcode base
-  //TODO FS: Introduce ISecurityContext and move to interfaces-assembly/securityassembly
   /// <summary>Collects all security-specific information for an instance or type, and is passed as parameter during the permission check.</summary>
   [Serializable]
-  public sealed class SecurityContext : ISecurityContext
+  public sealed class SecurityContext : ISecurityContext, IEquatable<SecurityContext>
   {
     private readonly string _class;
     private readonly string _owner;
@@ -97,15 +95,7 @@ namespace Remotion.Security
 
     public override int GetHashCode ()
     {
-      int hashCode = _class.GetHashCode ();
-      if (_owner != null)
-        hashCode ^= _owner.GetHashCode ();
-      if (_ownerGroup != null)
-        hashCode ^= _ownerGroup.GetHashCode ();
-      if (_ownerTenant != null)
-        hashCode ^= _ownerTenant.GetHashCode ();
-
-      return hashCode;
+      return EqualityUtility.GetRotatedHashCode (_class, _owner, _ownerGroup, _ownerTenant);
     }
 
     public override bool Equals (object obj)
@@ -113,16 +103,16 @@ namespace Remotion.Security
       SecurityContext other = obj as SecurityContext;
       if (other == null)
         return false;
-      return Equals (other);
+      return ((IEquatable<SecurityContext>)this).Equals (other);
     }
 
-    public bool Equals (ISecurityContext other)
+    bool IEquatable<ISecurityContext>.Equals (ISecurityContext other)
     {
       SecurityContext otherContext = other as SecurityContext;
-      return otherContext != null && Equals (otherContext);
+      return otherContext != null && ((IEquatable<SecurityContext>)this).Equals (otherContext);
     }
 
-    public bool Equals (SecurityContext other)
+    bool IEquatable<SecurityContext>.Equals (SecurityContext other)
     {
       if (other == null)
         return false;

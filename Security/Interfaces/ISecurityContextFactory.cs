@@ -12,8 +12,15 @@ using System;
 
 namespace Remotion.Security
 {
-  /// <summary>Defines the signature for a factory method to create a <see cref="ISecurityContext"/> for a buiness object.</summary>
-  /// <remarks><note type="implementnotes">Typically implemented by business objects (acting as their own <see cref="ISecurityContextFactory"/>).</note></remarks>
+  /// <summary>
+  /// Objects implementing the <see cref="ISecurityContextFactory"/> interface are typically used by the <see cref="ISecurityStrategy"/> 
+  /// to create an <see cref="ISecurityContext"/> for a buiness object.
+  /// </summary>
+  /// <remarks>
+  /// <note type="implementnotes">
+  /// Usually directly implemented by a secured business object, thus acting as their own <see cref="ISecurityContextFactory"/>.
+  /// </note>
+  /// </remarks>
   public interface ISecurityContextFactory
   {
     /// <summary>Gets the <see cref="ISecurityContext"/> for a business object.</summary>
