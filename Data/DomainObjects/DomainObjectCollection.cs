@@ -12,7 +12,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -270,7 +270,6 @@ namespace Remotion.Data.DomainObjects
 
     private Type _requiredItemType;
     
-    // this field will not be serialized via IFlattenedSerializable.SerializeIntoFlatStructure
     [NonSerialized]
     private ICollectionChangeDelegate _changeDelegate = null;
 
@@ -1220,47 +1219,5 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("array", array);
       CopyTo (array, arrayIndex);
     }
-
-    #region Serialization
-
-    public void DeserializeFromFlatStructure (FlattenedDeserializationInfo info)
-    {
-      _requiredItemType = info.GetValueForHandle<Type>();
-      Added += info.GetValue<DomainObjectCollectionChangeEventHandler> ();
-      Adding += info.GetValue<DomainObjectCollectionChangeEventHandler> ();
-      Removed += info.GetValue<DomainObjectCollectionChangeEventHandler> ();
-      Removing += info.GetValue<DomainObjectCollectionChangeEventHandler> ();
-
-      int count = info.GetIntValue();
-      for (int i = 0; i < count; ++i)
-      {
-        ObjectID id = info.GetValueForHandle<ObjectID>();
-        DomainObject domainObject = info.GetValueForHandle<DomainObject>();
-        BaseAdd (id, domainObject);
-      }
-
-      SetIsReadOnly (info.GetBoolValue ());
-    }
-
-    public void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
-    {
-      info.AddHandle (_requiredItemType);
-      info.AddValue (Added);
-      info.AddValue (Adding);
-      info.AddValue (Removed);
-      info.AddValue (Removing);
-
-      info.AddIntValue (Count);
-      for (int i = 0; i < Count; ++i)
-      {
-        DomainObject domainObject = this[i];
-        info.AddHandle (domainObject.ID);
-        info.AddHandle (domainObject);
-      }
-
-      info.AddBoolValue (IsReadOnly);
-    }
-
-    #endregion
   }
 }

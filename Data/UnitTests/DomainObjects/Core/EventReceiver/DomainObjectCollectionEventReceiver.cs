@@ -13,6 +13,7 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 {
+  [Serializable]
   public class DomainObjectCollectionEventReceiver : EventReceiverBase
   {
     // types

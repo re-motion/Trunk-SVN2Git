@@ -9,22 +9,12 @@
  */
 
 using System;
-using System.Collections.Generic;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
 {
-  public class FlattenedSerializationWriter<T>
+  [Serializable]
+  internal class FlattenedSerializableMarker
   {
-    private readonly List<T> _data = new List<T> ();
-    
-    public T[] GetData ()
-    {
-      return _data.ToArray ();
-    }
-
-    public void AddSimpleValue (T value)
-    {
-      _data.Add (value);
-    }
+    public static readonly FlattenedSerializableMarker Instance = new FlattenedSerializableMarker();
   }
 }

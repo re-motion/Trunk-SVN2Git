@@ -11,6 +11,7 @@
 using System;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
+using FlattenedSerializationInfo=Remotion.Data.DomainObjects.Infrastructure.Serialization.FlattenedSerializationInfo;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
@@ -106,7 +107,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return true; }
     }
 
-    protected override void SerializeIntoFlatStructure (Remotion.Data.DomainObjects.Infrastructure.FlattenedSerializationInfo info)
+    protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       throw new InvalidOperationException ("SerializeIntoFlatStructure cannot be called on a NullCollectionEndPoint.");
     }

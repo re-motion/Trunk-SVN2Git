@@ -11,6 +11,8 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -63,13 +65,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.IsTrue (deserializedEndPoint.OppositeDomainObjects.Contains (DomainObjectIDs.OrderItem2));
       Assert.IsTrue (deserializedEndPoint.OppositeDomainObjects.Contains (DomainObjectIDs.OrderItem5));
       Assert.IsFalse (deserializedEndPoint.OppositeDomainObjects.IsReadOnly);
-      Assert.AreSame (deserializedEndPoint, PrivateInvoke.GetNonPublicField (deserializedEndPoint.OppositeDomainObjects, "_changeDelegate"));
+      Assert.AreSame (deserializedEndPoint, deserializedEndPoint.OppositeDomainObjects.ChangeDelegate);
 
       Assert.AreEqual (2, deserializedEndPoint.OriginalOppositeDomainObjects.Count);
       Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjects.Contains (DomainObjectIDs.OrderItem1));
       Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjects.Contains (DomainObjectIDs.OrderItem2));
       Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjects.IsReadOnly);
-      Assert.AreSame (deserializedEndPoint, PrivateInvoke.GetNonPublicField (deserializedEndPoint.OriginalOppositeDomainObjects, "_changeDelegate"));
+      Assert.AreSame (deserializedEndPoint, deserializedEndPoint.OriginalOppositeDomainObjects.ChangeDelegate);
 
       Assert.IsNull (deserializedEndPoint.ChangeDelegate);
     }
@@ -79,6 +81,62 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
       Assert.IsFalse (deserializedEndPoint.HasBeenTouched);
+    }
+
+    [Test]
+    public void CollectionEndPoint_ReplacedCollection ()
+    {
+      var newOpposites = _endPoint.OppositeDomainObjects.Clone();
+      _endPoint.ReplaceOppositeCollection (newOpposites);
+      CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+      Assert.That (deserializedEndPoint.HasChanged, Is.True);
+
+      var deserializedNewOpposites = deserializedEndPoint.OppositeDomainObjects;
+      deserializedEndPoint.Rollback ();
+      
+      Assert.That (deserializedEndPoint.HasChanged, Is.False);
+      var deserializedOldOpposites = deserializedEndPoint.OppositeDomainObjects;
+      Assert.That (deserializedOldOpposites, Is.Not.SameAs (deserializedNewOpposites));
+      Assert.That (deserializedOldOpposites, Is.Not.Null);
+    }
+
+    [Test]
+    public void CollectionEndPoint_ReplacedCollection_ReferenceEqualityWithOtherCollection ()
+    {
+      var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var oldOpposites = industrialSector.Companies;
+      var newOpposites = industrialSector.Companies.Clone ();
+      industrialSector.Companies = newOpposites;
+
+      var tuple = Tuple.NewTuple (ClientTransactionMock, industrialSector, oldOpposites, newOpposites);
+      var deserializedTuple = Serializer.SerializeAndDeserialize (tuple);
+      using (deserializedTuple.A.EnterDiscardingScope())
+      {
+        Assert.That (deserializedTuple.B.Companies, Is.SameAs (deserializedTuple.D));
+        ClientTransaction.Current.Rollback();
+        Assert.That (deserializedTuple.B.Companies, Is.SameAs (deserializedTuple.C));
+      }
+    }
+
+    [Test]
+    public void CollectionEndPoint_ChangeDelegates ()
+    {
+      var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var oldOpposites = industrialSector.Companies;
+      var newOpposites = industrialSector.Companies.Clone ();
+      industrialSector.Companies = newOpposites;
+
+      var tuple = Tuple.NewTuple (ClientTransactionMock, industrialSector, oldOpposites, newOpposites);
+      var deserializedTuple = Serializer.SerializeAndDeserialize (tuple);
+      using (deserializedTuple.A.EnterDiscardingScope ())
+      {
+        var propertyName = Configuration.NameResolver.GetPropertyName (typeof (IndustrialSector), "Companies");
+        var endPointID = new RelationEndPointID (industrialSector.ID, propertyName);
+        var endPoint = ((ClientTransactionMock)ClientTransaction.Current).DataManager.RelationEndPointMap[endPointID];
+        Assert.That (deserializedTuple.B.Companies.ChangeDelegate, Is.SameAs (endPoint));
+        ClientTransaction.Current.Rollback ();
+        Assert.That (deserializedTuple.B.Companies.ChangeDelegate, Is.SameAs (endPoint));
+      }
     }
   }
 }

@@ -10,7 +10,7 @@
 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 {

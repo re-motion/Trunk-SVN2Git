@@ -10,7 +10,7 @@
 
 using System;
 using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Reflection;

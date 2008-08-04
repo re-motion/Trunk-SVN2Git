@@ -11,7 +11,7 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
 {
   public class FlattenedSerializationReader<T>
   {

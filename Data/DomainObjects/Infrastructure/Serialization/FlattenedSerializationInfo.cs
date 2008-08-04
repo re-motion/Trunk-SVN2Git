@@ -12,9 +12,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
 {
   public class FlattenedSerializationInfo
   {

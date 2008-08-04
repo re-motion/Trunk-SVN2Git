@@ -786,11 +786,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (oldOpposites, Is.EqualTo (new[] { _order1 }));
       Assert.That (newOpposites, Is.EqualTo (new[] { _order2 }));
     }
-
-    [Test]
-    [Ignore ("TODO: Finish implementation of reference semantics")]
-    public void SavedOriginalReference_WithSerialization ()
-    {
-    }
   }
 }

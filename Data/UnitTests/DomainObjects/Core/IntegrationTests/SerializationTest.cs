@@ -10,6 +10,8 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -580,6 +582,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         AreEqual (location2Client, deserializedLocation2.Client);
         Assert.AreEqual (location3.ID, deserializedLocation3.ID);
         AreEqual (location3Client, deserializedLocation3.Client);
+      }
+    }
+
+    [Test]
+    public void ReplacedDomainObjectCollection ()
+    {
+      IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
+      var oldCompanies = industrialSector.Companies;
+      var newCompanies = new ObjectList<Company> { Company.NewObject(), Company.NewObject()};
+      industrialSector.Companies = newCompanies;
+
+      var serializationTuple = Tuple.NewTuple (ClientTransactionMock, industrialSector, oldCompanies, newCompanies);
+      var deserializedTuple = Serializer.SerializeAndDeserialize (serializationTuple);
+      using (deserializedTuple.A.EnterDiscardingScope ())
+      {
+        var deserializedIndustrialSector = deserializedTuple.B;
+        var deserializedOldCompanies = deserializedTuple.C;
+        var deserializedNewCompanies = deserializedTuple.D;
+        Assert.That (deserializedIndustrialSector.Companies, Is.SameAs (deserializedNewCompanies));
+        ClientTransaction.Current.Rollback ();
+        Assert.That (deserializedIndustrialSector.Companies, Is.SameAs (deserializedOldCompanies));
       }
     }
 

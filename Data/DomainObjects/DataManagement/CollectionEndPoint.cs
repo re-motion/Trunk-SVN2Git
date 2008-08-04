@@ -10,7 +10,7 @@
 
 using System;
 using System.Reflection;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -62,8 +62,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("originalOppositeDomainObjects", originalOppositeDomainObjects);
 
       _originalOppositeDomainObjects = originalOppositeDomainObjects;
-      _oppositeDomainObjects = oppositeDomainObjects;
-      _oppositeDomainObjects.ChangeDelegate = this;
+      PerformReplaceOppositeCollection(oppositeDomainObjects);
       _originalOppositeDomainObjectsReference = oppositeDomainObjects;
       _hasBeenTouched = false;
     }
@@ -95,8 +94,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _oppositeDomainObjects.ChangeDelegate = this;
       SynchronizeWithNewOppositeObjects (oppositeDomainObjects);
 
-      _oppositeDomainObjects = oppositeDomainObjects;
-      _oppositeDomainObjects.ChangeDelegate = this;
+      PerformReplaceOppositeCollection (oppositeDomainObjects);
       _hasBeenTouched = true;
     }
 
@@ -111,6 +109,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
             _oppositeDomainObjects.GetType ().FullName, oppositeDomainObjects.GetType ().FullName);
         throw new InvalidOperationException (message);
       }
+    }
+
+    private void PerformReplaceOppositeCollection (DomainObjectCollection oppositeDomainObjects)
+    {
+      _oppositeDomainObjects = oppositeDomainObjects;
+      _oppositeDomainObjects.ChangeDelegate = this;
     }
 
     private void SynchronizeWithNewOppositeObjects (DomainObjectCollection newOppositeObjects)
@@ -171,7 +175,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (HasChanged)
       {
-        ReplaceOppositeCollection (_originalOppositeDomainObjectsReference);
+        _oppositeDomainObjects.ChangeDelegate = null;
+        PerformReplaceOppositeCollection (_originalOppositeDomainObjectsReference);
         _oppositeDomainObjects.Rollback (_originalOppositeDomainObjects);
       }
 
@@ -317,25 +322,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
     protected CollectionEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
-      Type collectionType = info.GetValueForHandle<Type>();
-      _originalOppositeDomainObjects = (DomainObjectCollection) 
-          TypesafeActivator.CreateInstance (collectionType, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With();
-      _originalOppositeDomainObjects.DeserializeFromFlatStructure (info);
+      _originalOppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection> ();
       _originalOppositeDomainObjects.ChangeDelegate = this;
-
-      _oppositeDomainObjects = (DomainObjectCollection)
-          TypesafeActivator.CreateInstance (collectionType, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With ();
-      _oppositeDomainObjects.DeserializeFromFlatStructure (info);
+      _oppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection> ();
       _oppositeDomainObjects.ChangeDelegate = this;
+      _originalOppositeDomainObjectsReference = info.GetValueForHandle<DomainObjectCollection> ();
 
       _hasBeenTouched = info.GetBoolValue ();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      info.AddHandle (_originalOppositeDomainObjects.GetType());
-      _originalOppositeDomainObjects.SerializeIntoFlatStructure (info);
-      _oppositeDomainObjects.SerializeIntoFlatStructure (info);
+      info.AddHandle (_originalOppositeDomainObjects);
+      info.AddHandle (_oppositeDomainObjects);
+      info.AddHandle (_originalOppositeDomainObjectsReference);
       info.AddBoolValue (_hasBeenTouched);
     }
 

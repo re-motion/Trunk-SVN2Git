@@ -8,7 +8,9 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+
+namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
 {
   public interface IFlattenedSerializable
   {

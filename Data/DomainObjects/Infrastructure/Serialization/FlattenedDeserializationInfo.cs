@@ -15,7 +15,7 @@ using System.Runtime.Serialization;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
 {
   public class FlattenedDeserializationInfo
   {
