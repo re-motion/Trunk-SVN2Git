@@ -649,11 +649,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The new opposite collection must have the same type as the old "
-        + "collection ('Remotion.Data.DomainObjects.ObjectList`1[[Remotion.Data.UnitTests.DomainObjects.TestDomain.Order, Remotion.Data.UnitTests, "
-        + "Version=1.11.0.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b]]'), but its type is 'Remotion.Data.DomainObjects.ObjectList`1"
-        + "[[Remotion.Data.UnitTests.DomainObjects.TestDomain.Client, Remotion.Data.UnitTests, Version=1.11.0.2, Culture=neutral, "
-        + "PublicKeyToken=fee00910d6e5f53b]]'.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = @"The new opposite collection must have the same type as the old "
+        + @"collection \(\'Remotion.Data.DomainObjects.ObjectList.*\'\), but its type is \'Remotion.Data.DomainObjects.ObjectList"
+        + @".*\'.", MatchType = MessageMatch.Regex)]
     public void ReplaceOppositeCollection_ThrowsIfCollectionOfOtherTypeIsSet ()
     {
       var orders = new ObjectList<Order> ();
