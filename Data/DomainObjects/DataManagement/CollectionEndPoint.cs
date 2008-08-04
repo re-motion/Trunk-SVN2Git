@@ -62,7 +62,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("originalOppositeDomainObjects", originalOppositeDomainObjects);
 
       _originalOppositeDomainObjects = originalOppositeDomainObjects;
-      ReplaceOppositeCollection(oppositeDomainObjects);
+      _oppositeDomainObjects = oppositeDomainObjects;
+      _oppositeDomainObjects.ChangeDelegate = this;
       _originalOppositeDomainObjectsReference = oppositeDomainObjects;
       _hasBeenTouched = false;
     }
@@ -84,23 +85,39 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return;
       }
 
-      if (oppositeDomainObjects.ChangeDelegate != null)
-        throw new InvalidOperationException ("The new opposite collection is already associated with another relation property.");
+      CheckNewOppositeCollection(oppositeDomainObjects);
 
-      if (_oppositeDomainObjects != null)
-      {
-        if (_oppositeDomainObjects.GetType () != oppositeDomainObjects.GetType ())
-        {
-          string message = string.Format ("The new opossite collection must have the same type as the old collection ('{0}'), but its type is '{1}'.", 
-              _oppositeDomainObjects.GetType ().FullName, oppositeDomainObjects.GetType ().FullName);
-          throw new InvalidOperationException (message);
-        }
-        _oppositeDomainObjects.ChangeDelegate = null;
-      }
+      DomainObjectCollection oldOpposites = _oppositeDomainObjects;
+      oldOpposites.ChangeDelegate = null;
+
+      // temporarily set a clone of the old collection; that way, we can keep the old collection unmodified while synchronizing
+      _oppositeDomainObjects = oldOpposites.Clone (false);
+      _oppositeDomainObjects.ChangeDelegate = this;
+      SynchronizeWithNewOppositeObjects (oppositeDomainObjects);
 
       _oppositeDomainObjects = oppositeDomainObjects;
       _oppositeDomainObjects.ChangeDelegate = this;
       _hasBeenTouched = true;
+    }
+
+    private void CheckNewOppositeCollection (DomainObjectCollection oppositeDomainObjects)
+    {
+      if (oppositeDomainObjects.ChangeDelegate != null)
+        throw new InvalidOperationException ("The new opposite collection is already associated with another relation property.");
+
+      if (_oppositeDomainObjects.GetType () != oppositeDomainObjects.GetType ())
+      {
+        string message = string.Format ("The new opposite collection must have the same type as the old collection ('{0}'), but its type is '{1}'.", 
+            _oppositeDomainObjects.GetType ().FullName, oppositeDomainObjects.GetType ().FullName);
+        throw new InvalidOperationException (message);
+      }
+    }
+
+    private void SynchronizeWithNewOppositeObjects (DomainObjectCollection newOppositeObjects)
+    {
+      _oppositeDomainObjects.Clear ();
+      foreach (DomainObject opposite in newOppositeObjects)
+        _oppositeDomainObjects.Add (opposite);
     }
 
     public override RelationEndPoint Clone ()

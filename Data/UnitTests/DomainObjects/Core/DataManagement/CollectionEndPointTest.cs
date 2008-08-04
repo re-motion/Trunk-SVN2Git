@@ -16,6 +16,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -648,7 +649,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The new opossite collection must have the same type as the old "
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The new opposite collection must have the same type as the old "
         + "collection ('Remotion.Data.DomainObjects.ObjectList`1[[Remotion.Data.UnitTests.DomainObjects.TestDomain.Order, Remotion.Data.UnitTests, "
         + "Version=1.11.0.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b]]'), but its type is 'Remotion.Data.DomainObjects.ObjectList`1"
         + "[[Remotion.Data.UnitTests.DomainObjects.TestDomain.Client, Remotion.Data.UnitTests, Version=1.11.0.2, Culture=neutral, "
@@ -751,6 +752,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (endPoint.OppositeDomainObjects, Is.EqualTo (new[] { _order2 }));
       Assert.That (endPoint.OppositeDomainObjects.ChangeDelegate, Is.SameAs (endPoint));
       Assert.That (oldOpposites.ChangeDelegate, Is.Null);
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_UpdatesOppositeEndPointViaChangeDelegate ()
+    {
+      var mockRepository = new MockRepository ();
+      var changeDelegateMock = mockRepository.CreateMock<ICollectionEndPointChangeDelegate> ();
+      var oldOpposites = new OrderCollection { _order1 };
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, oldOpposites);
+      endPoint.ChangeDelegate = changeDelegateMock;
+
+      changeDelegateMock.PerformRemove (endPoint, _order1); // expectation
+      changeDelegateMock.PerformInsert (endPoint, _order2, 1); // expectation
+
+      mockRepository.ReplayAll ();
+
+      var newOpposites = new OrderCollection { _order2 };
+      endPoint.ReplaceOppositeCollection (newOpposites);
+      
+      mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void ReplaceOppositeCollection_LeavesOriginalCollectionUnchanged ()
+    {
+      var oldOpposites = new OrderCollection { _order1 };
+      var endPoint = CreateCollectionEndPoint (_customerEndPointID, oldOpposites);
+
+      var newOpposites = new OrderCollection { _order2 };
+      endPoint.ReplaceOppositeCollection (newOpposites);
+
+      Assert.That (oldOpposites, Is.EqualTo (new[] { _order1 }));
+      Assert.That (newOpposites, Is.EqualTo (new[] { _order2 }));
     }
 
     [Test]

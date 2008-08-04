@@ -13,6 +13,29 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
+  /// <summary>
+  /// This class performs the actual changes to the <see cref="DomainObjectCollection"/> backing a <see cref="CollectionEndPoint"/>.
+  /// </summary>
+  /// <remarks>
+  /// <para>
+  /// When the  <see cref="DomainObjectCollection"/> of a <see cref="CollectionEndPoint"/> is changed from the outside, the collection first 
+  /// propagates the changes to the <see cref="CollectionEndPoint"/> via the <see cref="ICollectionChangeDelegate"/> interface. The 
+  /// <see cref="CollectionEndPoint"/> again propagates the changes to an implementer of the <see cref="ICollectionEndPointChangeDelegate"/> interface,
+  /// usually the  <see cref="RelationEndPointMap"/>.
+  /// </para>
+  /// <para>
+  /// The <see cref="RelationEndPointMap"/> creates one instance of  <see cref="ObjectEndPointModification"/> and 
+  /// <see cref="CollectionEndPointModification"/> each; these objects contain the exact parameters 
+  /// about how to change the individual end points, and they know which events to notify at which stage in the modification process. The 
+  /// <see cref="CollectionEndPointModification"/> then creates a <see cref="CollectionEndPointChangeAgent"/>, and this agent finally performs the
+  /// changes on the <see cref="DomainObjectCollection"/> via its <see cref="DomainObjectCollection.PerformAdd"/>, 
+  /// <see cref="DomainObjectCollection.PerformInsert"/>, and <see cref="DomainObjectCollection.PerformRemove"/> methods.
+  /// </para>
+  /// <para>
+  /// Thus, changes are propagated as follows: DomainObjectCollection => CollectionEndPoint => RelationEndPointMap => 
+  /// CollectionEndPointModification => CollectionEndPointChangeAgent => DomainObjectCollection
+  /// </para>
+  /// </remarks>
 public class CollectionEndPointChangeAgent
 {
   // types

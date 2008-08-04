@@ -102,26 +102,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO: Finish implementation of reference semantics")]
     public void ReplaceCollectionProperty_WithOldElements ()
     {
+      var oldCompanies = _newIndustrialSector.Companies;
+
       _newIndustrialSector.Companies.Add (_newCompany1);
       _newIndustrialSector.Companies.Add (_newCompany2);
       _newIndustrialSector.Companies = new ObjectList<Company> ();
 
       Assert.That (_newCompany1.IndustrialSector, Is.Null);
       Assert.That (_newCompany2.IndustrialSector, Is.Null);
+      Assert.That (oldCompanies, Is.EqualTo (new[] { _newCompany1, _newCompany2 }));
     }
 
     [Test]
-    [Ignore ("TODO: Finish implementation of reference semantics")]
     public void ReplaceCollectionProperty_WithNewElements ()
     {
+      var oldCompanies = _newIndustrialSector.Companies;
+
       var newCompanies = new ObjectList<Company> {_newCompany1, _newCompany2};
       _newIndustrialSector.Companies = newCompanies;
 
       Assert.That (_newCompany1.IndustrialSector, Is.SameAs (_newIndustrialSector));
       Assert.That (_newCompany2.IndustrialSector, Is.SameAs (_newIndustrialSector));
+      Assert.That (oldCompanies, Is.Empty);
     }
   }
 }
