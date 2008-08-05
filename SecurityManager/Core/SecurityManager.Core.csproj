@@ -57,6 +57,11 @@
     <None Include="Database\SecurityManagerSetupDB.sql">
     </None>
     <None Include="SecurityManager.Core.build" />
+    <Compile Include="AclTools\Expansion\AclSecurityContextHelper.cs" />
+    <Compile Include="AclTools\Expansion\ClassStateExpander.cs" />
+    <Compile Include="AclTools\Expansion\ClassStateTuple.cs" />
+    <Compile Include="AclTools\Expansion\IClassStateExpander.cs" />
+    <Compile Include="AclTools\Expansion\OuterProductOfStateProperties.cs" />
     <Compile Include="Configuration\SecurityManagerConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>

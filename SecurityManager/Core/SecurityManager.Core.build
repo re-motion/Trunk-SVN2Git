@@ -29,6 +29,7 @@
     
       <sources failonempty="true">
         <include name="*.cs" />
+        <include name="AclTools/**/*.cs" />
         <include name="Configuration/**/*.cs" />
         <include name="Domain/**/*.cs" />
         <include name="Persistence/**/*.cs" />
