@@ -228,12 +228,12 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       Assertion.IsTrue (State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object are not empty but the object is deleted.", ID);
 
-      var stateCombinations = StateCombinations
-          .GroupBy<StateCombination, StateCombination> (sc => sc, new StateCombinationComparer())
+      var dupblicateStateCombinations = StateCombinations
+          .GroupBy (sc => sc, new StateCombinationComparer())
           .Where (g => g.Count() > 1)
           .SelectMany (g => g);
 
-      foreach (StateCombination stateCombination in stateCombinations)
+      foreach (StateCombination stateCombination in dupblicateStateCombinations)
         result.AddInvalidStateCombination (stateCombination);
     }
 
