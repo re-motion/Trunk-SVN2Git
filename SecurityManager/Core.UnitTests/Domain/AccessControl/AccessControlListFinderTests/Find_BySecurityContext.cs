@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       {
         expectedAccessControlList = _currentClassDefinition.AccessControlLists[0];
       }
-      SecurityContext context = new SecurityContext (typeof (Order));
+      SecurityContext context = SecurityContext.CreateStateless(typeof (Order));
      
       AccessControlListFinder aclFinder = new AccessControlListFinder ();
       AccessControlList foundAcl = aclFinder.Find (ClientTransaction.NewRootTransaction (), context);
@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
         ExpectedMessage = "The securable class 'Remotion.SecurityManager.UnitTests.TestDomain.PremiumOrder, Remotion.SecurityManager.UnitTests' cannot be found.")]
     public void Fail_WithUnkownSecurableClassDefinition ()
     {
-      SecurityContext context = new SecurityContext (typeof (PremiumOrder));
+      SecurityContext context = SecurityContext.CreateStateless(typeof (PremiumOrder));
 
       AccessControlListFinder aclFinder = new AccessControlListFinder ();
       aclFinder.Find (ClientTransaction.NewRootTransaction (), context);

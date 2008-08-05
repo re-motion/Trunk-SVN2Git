@@ -50,7 +50,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       _mockContextFactory = _mocks.CreateMock<ISecurityContextFactory>();
 
       _user = new GenericPrincipal (new GenericIdentity ("user"), new string[0]);
-      _context = new SecurityContext (typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum> (), new Enum[0]);
+      _context = SecurityContext.Create(typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum> (), new Enum[0]);
       _globalAccessTypeCacheKey = new GlobalCacheKey (_context, _user.Identity.Name);
 
       _strategy = new SecurityStrategy (_mockLocalAccessTypeCache, _mockGlobalAccessTypeCacheProvider);

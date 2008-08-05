@@ -133,7 +133,7 @@ namespace Remotion.Security.UnitTests.Core
       config.Add ("description", "The Description");
 
       RevisionBasedAccessTypeCacheProvider provider = new RevisionBasedAccessTypeCacheProvider ("MyProvider", config);
-      SecurityContext securityContext = new SecurityContext (typeof (SecurableObject));
+      SecurityContext securityContext = SecurityContext.CreateStateless(typeof (SecurableObject));
       AccessType[] accessTypes = new AccessType[] { AccessType.Get (TestAccessTypes.Fifth) };
       provider.GetCache().GetOrCreateValue (Tuple.NewTuple ((ISecurityContext) securityContext, "bla"), delegate { return accessTypes; });
 

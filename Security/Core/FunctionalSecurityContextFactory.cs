@@ -27,7 +27,7 @@ namespace Remotion.Security
 
     public FunctionalSecurityContextFactory (Type classType)
     {
-      _context = new SecurityContext (classType);
+      _context = SecurityContext.CreateStateless(classType);
     }
     
     // methods and properties

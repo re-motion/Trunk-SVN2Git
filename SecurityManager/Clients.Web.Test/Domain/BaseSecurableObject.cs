@@ -39,8 +39,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test.Domain
 
     public ISecurityContext CreateSecurityContext ()
     {
-      return new SecurityContext (
-          GetPublicDomainObjectType(), GetOwnerName(), GetOwnerGroupName(), GetOwnerTenantName(), GetStates(), GetAbstractRoles());
+      return SecurityContext.Create(GetPublicDomainObjectType(), GetOwnerName(), GetOwnerGroupName(), GetOwnerTenantName(), GetStates(), GetAbstractRoles());
     }
 
     private string GetOwnerTenantName ()

@@ -259,7 +259,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       string owner = string.Empty;
       Dictionary<string, Enum> states = new Dictionary<string, Enum> ();
       List<Enum> abstractRoles = new List<Enum> ();
-      SecurityContext securityContext = new SecurityContext (classType, owner, owningGroup, owningTenant, states, abstractRoles);
+      SecurityContext securityContext = SecurityContext.Create(classType, owner, owningGroup, owningTenant, states, abstractRoles);
 
       AccessType[] returnedAccessTypes = Array.ConvertAll<Enum, AccessType> (returnedAccessTypeEnums, AccessType.Get);
 
@@ -275,7 +275,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Dictionary<string, Enum> states = new Dictionary<string, Enum> ();
       states.Add ("Delegation", delegation);
       List<Enum> abstractRoles = new List<Enum> ();
-      SecurityContext securityContext = new SecurityContext (classType, owner, owningGroup, owningTenant, states, abstractRoles);
+      SecurityContext securityContext = SecurityContext.Create(classType, owner, owningGroup, owningTenant, states, abstractRoles);
 
       AccessType[] returnedAccessTypes = Array.ConvertAll<Enum, AccessType> (returnedAccessTypeEnums, AccessType.Get);
 

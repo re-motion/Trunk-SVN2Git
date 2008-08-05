@@ -91,7 +91,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       _testHelper.CreateAclsForOrderAndPaymentStates (classDefinition);
       Dictionary<string, Enum> states = new Dictionary<string, Enum> ();
       states.Add ("State", PaymentState.None);
-      SecurityContext context = new SecurityContext (typeof (Order), "owner", "ownerGroup", "ownerTenant", states, null);
+      SecurityContext context = SecurityContext.Create(typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
 
       AccessControlListFinder aclFinder = new AccessControlListFinder ();
       aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
@@ -108,7 +108,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       states.Add ("State", OrderState.Delivered);
       states.Add ("Payment", PaymentState.None);
       states.Add ("New", PaymentState.None);
-      SecurityContext context = new SecurityContext (typeof (Order), "owner", "ownerGroup", "ownerTenant", states, null);
+      SecurityContext context = SecurityContext.Create(typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
 
       AccessControlListFinder aclFinder = new AccessControlListFinder ();
       AccessControlList acl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
@@ -176,7 +176,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
 
     private SecurityContext CreateStatelessContext ()
     {
-      return new SecurityContext (typeof (Order), "owner", "ownerGroup", "ownerTenant", null, null);
+      return SecurityContext.Create(typeof (Order), "owner", "ownerGroup", "ownerTenant", new Dictionary<string, Enum> (), new Enum[0]);
     }
 
     private SecurityContext CreateContextForDeliveredAndUnpaidOrder ()
@@ -190,7 +190,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       states.Add ("State", OrderState.Delivered);
       states.Add ("Payment", PaymentState.None);
 
-      return new SecurityContext (type, "owner", "ownerGroup", "ownerTenant", states, null);
+      return SecurityContext.Create(type, "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
     }
 
     private SecurityContext CreateContextForDeliveredAndUnpaidAndDhlOrder (Type type)
@@ -200,7 +200,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       states.Add ("Payment", PaymentState.None);
       states.Add ("Delivery", Delivery.Dhl);
 
-      return new SecurityContext (type, "owner", "ownerGroup", "ownerTenant", states, null);
+      return SecurityContext.Create(type, "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
     }
 
     private SecurityContext CreateContextWithoutPaymentState ()
@@ -208,7 +208,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       Dictionary<string, Enum> states = new Dictionary<string, Enum> ();
       states.Add ("State", OrderState.Delivered);
 
-      return new SecurityContext (typeof (Order), "owner", "ownerGroup", "ownerTenant", states, null);
+      return SecurityContext.Create(typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
     }
   }
 }

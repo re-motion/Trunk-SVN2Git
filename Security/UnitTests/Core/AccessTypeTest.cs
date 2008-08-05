@@ -42,21 +42,20 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
-    [Ignore]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage = "Enumerated type 'Remotion.Security.UnitTests.Core.SampleDomain.TestAccessTypesWithoutAccessTypeAttribute' cannot be used as an access type. "
         + "Valid access types must have the Remotion.Security.AccessTypeAttribute applied.\r\nParameter name: accessType")]
     public void GetAccessTypeFromEnumWithoutAccessTypeAttribute ()
     {
-      AccessType.Get (new EnumWrapper (TestAccessTypesWithoutAccessTypeAttribute.First));
+      AccessType.Get (TestAccessTypesWithoutAccessTypeAttribute.First);
     }
 
     [Test]
     public void GetFromCache ()
     {
       Assert.AreSame (AccessType.Get (TestAccessTypes.First), AccessType.Get (TestAccessTypes.First));
-      Assert.AreSame (AccessType.Get (TestAccessTypes.Second), AccessType.Get (TestAccessTypes.Second));
-      Assert.AreSame (AccessType.Get (TestAccessTypes.Third), AccessType.Get (TestAccessTypes.Third));
+      Assert.AreSame (AccessType.Get (new EnumWrapper (TestAccessTypes.Second)), AccessType.Get (TestAccessTypes.Second));
+      Assert.AreSame (AccessType.Get (new EnumWrapper (TestAccessTypes.Third)), AccessType.Get (new EnumWrapper (TestAccessTypes.Third)));
     }
 
     [Test]

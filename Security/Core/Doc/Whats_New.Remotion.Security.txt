@@ -1,3 +1,7 @@
+1.11.3
+======
+- SecurityContext: Changed constructor to factory methods and provided overload for instaniating an instance by using EnumWrappers instead of Enums.
+
 1.7.41
 ======
 - Konfiguration:

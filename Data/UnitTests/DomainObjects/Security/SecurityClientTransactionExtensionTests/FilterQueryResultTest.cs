@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     public void Test_AccessedViaDomainObject ()
     {
       _testHelper.AddExtension (_extension);
-      _testHelper.ExpectSecurityProviderGetAccess (new SecurityContext (typeof (SecurableObject)), GeneralAccessTypes.Find);
+      _testHelper.ExpectSecurityProviderGetAccess (SecurityContext.CreateStateless(typeof (SecurableObject)), GeneralAccessTypes.Find);
       _testHelper.ReplayAll ();
 
       _testHelper.Transaction.QueryManager.GetCollection (new Query ("GetSecurableObjects"));

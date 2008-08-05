@@ -66,13 +66,12 @@ namespace Remotion.SecurityManager.Clients.Web.Test
     {
       ISecurityProvider provider = SecurityConfiguration.Current.SecurityProvider;
       SecurityContext context =
-          new SecurityContext (
-              typeof (File),
-              "1A",
-              "{00000004-1000-0000-0000-000000000007}",
-              string.Empty,
-              new Dictionary<string, Enum>(),
-              new Enum[] {DomainAbstractRoles.Creator});
+          SecurityContext.Create(typeof (File),
+                 "1A",
+                 "{00000004-1000-0000-0000-000000000007}",
+                 string.Empty,
+                 new Dictionary<string, Enum>(),
+                 new Enum[] {DomainAbstractRoles.Creator});
       GenericPrincipal user = new GenericPrincipal (new GenericIdentity ("1A"), new string[0]);
       AccessType[] accessTypes = provider.GetAccess (context, user);
     }

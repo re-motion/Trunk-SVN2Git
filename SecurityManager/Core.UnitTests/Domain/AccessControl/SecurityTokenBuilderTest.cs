@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Security.Principal;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -205,27 +206,27 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     private SecurityContext CreateContext (params Enum[] abstractRoles)
     {
-      return new SecurityContext (typeof (Order), "owner", "UID: testOwningGroup", "UID: testTenant", null, abstractRoles);
+      return SecurityContext.Create(typeof (Order), "owner", "UID: testOwningGroup", "UID: testTenant", new Dictionary<string, Enum>(), abstractRoles);
     }
 
     private SecurityContext CreateContextWithoutOwningTenant ()
     {
-      return new SecurityContext (typeof (Order), "owner", "UID: testOwningGroup", null, null, null);
+      return SecurityContext.Create(typeof (Order), "owner", "UID: testOwningGroup", null, new Dictionary<string, Enum> (), new Enum[0]);
     }
 
     private SecurityContext CreateContextWithNotExistingOwningTenant ()
     {
-      return new SecurityContext (typeof (Order), "owner", "UID: testOwningGroup", "UID: NotExistingTenant", null, null);
+      return SecurityContext.Create(typeof (Order), "owner", "UID: testOwningGroup", "UID: NotExistingTenant", new Dictionary<string, Enum> (), new Enum[0]);
     }
 
     private SecurityContext CreateContextWithoutOwningGroup ()
     {
-      return new SecurityContext (typeof (Order), "owner", null, "UID: testTenant", null, null);
+      return SecurityContext.Create(typeof (Order), "owner", null, "UID: testTenant", new Dictionary<string, Enum> (), new Enum[0]);
     }
 
     private SecurityContext CreateContextWithNotExistingOwningGroup ()
     {
-      return new SecurityContext (typeof (Order), "owner", "UID: NotExistingGroup", "UID: testTenant", null, null);
+      return SecurityContext.Create(typeof (Order), "owner", "UID: NotExistingGroup", "UID: testTenant", new Dictionary<string, Enum> (), new Enum[0]);
     }
   }
 }

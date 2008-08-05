@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
-      return new SecurityContext (GetPublicDomainObjectType());
+      return SecurityContext.CreateStateless(GetPublicDomainObjectType());
     }
 
     public new void Delete ()

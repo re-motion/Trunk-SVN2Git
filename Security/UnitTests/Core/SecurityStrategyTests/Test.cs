@@ -39,7 +39,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       _stubContextFactory = _mocks.CreateMock<ISecurityContextFactory> ();
 
       _user = new GenericPrincipal (new GenericIdentity ("user"), new string[0]);
-      _context = new SecurityContext (typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum> (), new Enum[0]);
+      _context = SecurityContext.Create(typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum> (), new Enum[0]);
       SetupResult.For (_stubContextFactory.CreateSecurityContext ()).Return (_context);
 
       _strategy = new SecurityStrategy (new NullCache<string, AccessType[]> (), new NullGlobalAccessTypeCacheProvider ());

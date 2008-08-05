@@ -16,7 +16,7 @@ using Remotion.Security.BridgeInterfaces;
 
 namespace Remotion.Security
 {
-   /// <summary>Represents an access type enum value.</summary>
+  /// <summary>Represents an access type enum value.</summary>
   /// <remarks>
   /// Use the static <see cref="O:Remotion.Security.AccessType.Get"/> methods to convert an enum to an access type.
   /// <note>For the set of basic access types see <see cref="T:Remotion.Security.GeneralAccessTypes"/>.</note>
@@ -28,19 +28,31 @@ namespace Remotion.Security
 
     // static members and constants
 
-    private static readonly ICache<EnumWrapper, AccessType> s_cache = 
+    private static readonly ICache<EnumWrapper, AccessType> s_cache =
         VersionDependentImplementationBridge<IAccessTypeCacheImplementation>.Implementation.CreateCache();
 
     public static AccessType Get (Enum accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
+
+      Type type = accessType.GetType();
+      if (!Attribute.IsDefined (type, typeof (AccessTypeAttribute), false))
+      {
+        throw new ArgumentException (
+            string.Format (
+                "Enumerated type '{0}' cannot be used as an access type. Valid access types must have the {1} applied.",
+                type.FullName,
+                typeof (AccessTypeAttribute).FullName),
+            "accessType");
+      }
+
       return Get (new EnumWrapper (accessType));
     }
 
     public static AccessType Get (EnumWrapper accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
-      return s_cache.GetOrCreateValue (accessType, delegate (EnumWrapper key) { return new AccessType (key); });
+      return s_cache.GetOrCreateValue (accessType, key => new AccessType (key));
     }
 
     // member fields
@@ -63,7 +75,7 @@ namespace Remotion.Security
 
     public override string ToString ()
     {
-      return _value.ToString ();
+      return _value.ToString();
     }
 
     object IObjectReference.GetRealObject (StreamingContext context)

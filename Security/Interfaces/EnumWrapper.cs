@@ -22,6 +22,11 @@ namespace Remotion.Security
   [Serializable]
   public struct EnumWrapper : IEquatable<EnumWrapper>
   {
+    private static string GetPartialAssemblyQualifiedName (Type type)
+    {
+      return type.FullName + ", " + type.Assembly.GetName ().Name;
+    }
+
     private readonly string _name;
 
     /// <summary>
@@ -42,11 +47,6 @@ namespace Remotion.Security
       }
     }
 
-    private static string GetPartialAssemblyQualifiedName (Type type)
-    {
-      return type.FullName + ", " + type.Assembly.GetName ().Name;
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="EnumWrapper"/> class, setting the wrapper's name to the specified string.
     /// </summary>
@@ -58,13 +58,14 @@ namespace Remotion.Security
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EnumWrapper"/> class, setting the wrapper's name to a string of the format "name|typeName".
+    /// Initializes a new instance of the <see cref="EnumWrapper"/> class, setting the wrapper's <see cref="Name"/> to a string of the format 
+    /// "valueName|typeName".
     /// </summary>
-    /// <param name="name">The name to be set.</param>
+    /// <param name="valueName">The enum value name to be set.</param>
     /// <param name="typeName">The type name to be integrated into the name.</param>
-    public EnumWrapper (string name, string typeName)
-        : this (string.Format ("{0}|{1}", 
-          ArgumentUtility.CheckNotNullOrEmpty ("name", name), 
+    public EnumWrapper (string valueName, string typeName)
+        : this (string.Format ("{0}|{1}",
+          ArgumentUtility.CheckNotNullOrEmpty ("valueName", valueName), 
           ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName)))
     {
     }
@@ -84,5 +85,4 @@ namespace Remotion.Security
       return base.Equals (other);
     }
   }
-
 }

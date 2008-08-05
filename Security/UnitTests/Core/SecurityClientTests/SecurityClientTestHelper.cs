@@ -21,12 +21,12 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
   {
     public static SecurityClientTestHelper CreateForStatelessSecurity ()
     {
-      return new SecurityClientTestHelper (new SecurityContext (typeof (SecurableObject)));
+      return new SecurityClientTestHelper (SecurityContext.CreateStateless(typeof (SecurableObject)));
     }
     
     public static SecurityClientTestHelper CreateForStatefulSecurity ()
     {
-      SecurityContext context = new SecurityContext (typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum> (), new Enum[0]);
+      SecurityContext context = SecurityContext.Create(typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum> (), new Enum[0]);
       return new SecurityClientTestHelper (context);
     }
 

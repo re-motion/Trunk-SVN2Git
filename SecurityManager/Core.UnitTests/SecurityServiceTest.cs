@@ -58,7 +58,7 @@ namespace Remotion.SecurityManager.UnitTests
      _mockTokenBuilder = _mocks.CreateMock<ISecurityTokenBuilder> ();
 
      _service = new SecurityService (_mockAclFinder, _mockTokenBuilder);
-     _context = new SecurityContext (typeof (Order), "Owner", "UID: OwnerGroup", "OwnerTenant", null, null);
+     _context = SecurityContext.Create(typeof (Order), "Owner", "UID: OwnerGroup", "OwnerTenant", new Dictionary<string, Enum>(), new Enum[0]);
 
       _clientTransaction = ClientTransaction.NewRootTransaction ();
       using (_clientTransaction.EnterNonDiscardingScope ())
