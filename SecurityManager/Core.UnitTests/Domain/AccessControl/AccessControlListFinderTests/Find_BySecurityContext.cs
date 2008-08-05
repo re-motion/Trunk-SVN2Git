@@ -56,8 +56,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     }
 
     [Test]
-    [ExpectedException (typeof (AccessControlException),
-        ExpectedMessage = "The securable class 'Remotion.SecurityManager.UnitTests.TestDomain.PremiumOrder, Remotion.SecurityManager.UnitTests' cannot be found.")]
+    [ExpectedException (typeof (AccessControlException), ExpectedMessage = 
+        "The securable class 'Remotion.SecurityManager.UnitTests.TestDomain.PremiumOrder, Remotion.SecurityManager.UnitTests' cannot be found.")]
     public void Fail_WithUnkownSecurableClassDefinition ()
     {
       SecurityContext context = SecurityContext.CreateStateless(typeof (PremiumOrder));

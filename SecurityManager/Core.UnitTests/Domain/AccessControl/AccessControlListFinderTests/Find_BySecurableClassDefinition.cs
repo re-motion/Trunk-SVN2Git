@@ -26,19 +26,19 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
 
     public override void SetUp ()
     {
-      base.SetUp ();
-      _testHelper = new AccessControlTestHelper ();
-      _testHelper.Transaction.EnterNonDiscardingScope ();
+      base.SetUp();
+      _testHelper = new AccessControlTestHelper();
+      _testHelper.Transaction.EnterNonDiscardingScope();
     }
 
     [Test]
     public void Succeed_WithoutStateProperties ()
     {
-      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition ();
+      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
       AccessControlList acl = _testHelper.CreateAcl (classDefinition);
-      SecurityContext context = CreateStatelessContext ();
+      SecurityContext context = CreateStatelessContext();
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
 
       Assert.AreSame (acl, foundAcl);
@@ -47,11 +47,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     [Test]
     public void Succeed_WithStates ()
     {
-      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition ();
+      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
       AccessControlList acl = _testHelper.GetAclForDeliveredAndUnpaidStates (classDefinition);
-      SecurityContext context = CreateContextForDeliveredAndUnpaidOrder ();
+      SecurityContext context = CreateContextForDeliveredAndUnpaidOrder();
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
 
       Assert.AreSame (acl, foundAcl);
@@ -60,11 +60,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     [Test]
     public void Succeed_WithStatesAndStateless ()
     {
-      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition ();
+      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
       AccessControlList acl = _testHelper.GetAclForStateless (classDefinition);
-      SecurityContext context = CreateStatelessContext ();
+      SecurityContext context = CreateStatelessContext();
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
 
       Assert.AreSame (acl, foundAcl);
@@ -74,43 +74,46 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     [ExpectedException (typeof (AccessControlException), ExpectedMessage = "The state 'Payment' is missing in the security context.")]
     public void Fail_WithSecurityContextDoesNotContainAllStates ()
     {
-      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition ();
+      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
       _testHelper.CreateAclsForOrderAndPaymentStates (classDefinition);
-      SecurityContext context = CreateContextWithoutPaymentState ();
+      SecurityContext context = CreateContextWithoutPaymentState();
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlListFinder aclFinder = new AccessControlListFinder();
       aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
     }
 
     [Test]
-    [ExpectedException (typeof (AccessControlException),
-        ExpectedMessage = "The state 'None|Remotion.SecurityManager.UnitTests.TestDomain.PaymentState, Remotion.SecurityManager.UnitTests' is not defined for the property 'State' of the securable class 'Remotion.SecurityManager.UnitTests.TestDomain.Order, Remotion.SecurityManager.UnitTests' or its base classes.")]
+    [ExpectedException (typeof (AccessControlException), ExpectedMessage =
+        "The state 'None|Remotion.SecurityManager.UnitTests.TestDomain.PaymentState, Remotion.SecurityManager.UnitTests' is not defined for the "
+        + "property 'State' of the securable class 'Remotion.SecurityManager.UnitTests.TestDomain.Order, Remotion.SecurityManager.UnitTests' "
+        + "or its base classes.")]
     public void Fail_WithSecurityContextContainsStateWithInvalidValue ()
     {
-      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition ();
+      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
       _testHelper.CreateAclsForOrderAndPaymentStates (classDefinition);
-      Dictionary<string, Enum> states = new Dictionary<string, Enum> ();
+      Dictionary<string, Enum> states = new Dictionary<string, Enum>();
       states.Add ("State", PaymentState.None);
-      SecurityContext context = SecurityContext.Create(typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
+      SecurityContext context = SecurityContext.Create (typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlListFinder aclFinder = new AccessControlListFinder();
       aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
     }
 
     [Test]
-    [ExpectedException (typeof (AccessControlException),
-        ExpectedMessage = "The ACL for the securable class 'Remotion.SecurityManager.UnitTests.TestDomain.Order, Remotion.SecurityManager.UnitTests' could not be found.")]
+    [ExpectedException (typeof (AccessControlException), ExpectedMessage =
+        "The ACL for the securable class 'Remotion.SecurityManager.UnitTests.TestDomain.Order, Remotion.SecurityManager.UnitTests' "
+        + "could not be found.")]
     public void Fail_WithSecurityContextContainsInvalidState ()
     {
-      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition ();
+      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
       _testHelper.CreateAclsForOrderAndPaymentStates (classDefinition);
-      Dictionary<string, Enum> states = new Dictionary<string, Enum> ();
+      Dictionary<string, Enum> states = new Dictionary<string, Enum>();
       states.Add ("State", OrderState.Delivered);
       states.Add ("Payment", PaymentState.None);
       states.Add ("New", PaymentState.None);
-      SecurityContext context = SecurityContext.Create(typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
+      SecurityContext context = SecurityContext.Create (typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList acl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
 
       Assert.IsNull (acl);
@@ -119,12 +122,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     [Test]
     public void Succeed_WithDerivedClassDefinitionAndPropertiesInBaseClass ()
     {
-      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition ();
+      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       SecurableClassDefinition specialOrderClass = _testHelper.CreateSpecialOrderClassDefinition (orderClass);
       AccessControlList acl = _testHelper.GetAclForDeliveredAndUnpaidStates (orderClass);
       SecurityContext context = CreateContextForDeliveredAndUnpaidOrder (typeof (SpecialOrder));
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, specialOrderClass, context);
 
       Assert.AreSame (acl, foundAcl);
@@ -133,13 +136,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     [Test]
     public void Succeed_WithDerivedClassDefinitionAndSameProperties ()
     {
-      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition ();
+      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       SecurableClassDefinition specialOrderClass = _testHelper.CreateSpecialOrderClassDefinition (orderClass);
       AccessControlList aclForOrder = _testHelper.GetAclForDeliveredAndUnpaidStates (orderClass);
       AccessControlList aclForSpecialOrder = _testHelper.GetAclForDeliveredAndUnpaidStates (specialOrderClass);
       SecurityContext context = CreateContextForDeliveredAndUnpaidOrder (typeof (SpecialOrder));
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, specialOrderClass, context);
 
       Assert.AreSame (aclForSpecialOrder, foundAcl);
@@ -148,13 +151,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     [Test]
     public void Succeed_WithDerivedClassDefinitionAndAdditionalProperty ()
     {
-      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition ();
+      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       SecurableClassDefinition premiumOrderClass = _testHelper.CreatePremiumOrderClassDefinition (orderClass);
       AccessControlList aclForOrder = _testHelper.GetAclForDeliveredAndUnpaidStates (orderClass);
       AccessControlList aclForPremiumOrder = _testHelper.GetAclForDeliveredAndUnpaidAndDhlStates (premiumOrderClass);
       SecurityContext context = CreateContextForDeliveredAndUnpaidAndDhlOrder (typeof (SpecialOrder));
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, premiumOrderClass, context);
 
       Assert.AreSame (aclForPremiumOrder, foundAcl);
@@ -164,19 +167,19 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     [ExpectedException (typeof (AccessControlException), ExpectedMessage = "The state 'Delivery' is missing in the security context.")]
     public void Fail_WithDerivedClassDefinitionAndMissingStatePropertyInSecurityContext ()
     {
-      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition ();
+      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       SecurableClassDefinition premiumOrderClass = _testHelper.CreatePremiumOrderClassDefinition (orderClass);
       AccessControlList aclForOrder = _testHelper.GetAclForDeliveredAndUnpaidStates (orderClass);
       AccessControlList aclForPremiumOrder = _testHelper.GetAclForDeliveredAndUnpaidAndDhlStates (premiumOrderClass);
       SecurityContext context = CreateContextForDeliveredAndUnpaidOrder (typeof (SpecialOrder));
 
-      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlListFinder aclFinder = new AccessControlListFinder();
       aclFinder.Find (ClientTransactionScope.CurrentTransaction, premiumOrderClass, context);
     }
 
     private SecurityContext CreateStatelessContext ()
     {
-      return SecurityContext.Create(typeof (Order), "owner", "ownerGroup", "ownerTenant", new Dictionary<string, Enum> (), new Enum[0]);
+      return SecurityContext.Create (typeof (Order), "owner", "ownerGroup", "ownerTenant", new Dictionary<string, Enum>(), new Enum[0]);
     }
 
     private SecurityContext CreateContextForDeliveredAndUnpaidOrder ()
@@ -186,29 +189,29 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
 
     private SecurityContext CreateContextForDeliveredAndUnpaidOrder (Type type)
     {
-      Dictionary<string, Enum> states = new Dictionary<string, Enum> ();
+      Dictionary<string, Enum> states = new Dictionary<string, Enum>();
       states.Add ("State", OrderState.Delivered);
       states.Add ("Payment", PaymentState.None);
 
-      return SecurityContext.Create(type, "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
+      return SecurityContext.Create (type, "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
     }
 
     private SecurityContext CreateContextForDeliveredAndUnpaidAndDhlOrder (Type type)
     {
-      Dictionary<string, Enum> states = new Dictionary<string, Enum> ();
+      Dictionary<string, Enum> states = new Dictionary<string, Enum>();
       states.Add ("State", OrderState.Delivered);
       states.Add ("Payment", PaymentState.None);
       states.Add ("Delivery", Delivery.Dhl);
 
-      return SecurityContext.Create(type, "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
+      return SecurityContext.Create (type, "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
     }
 
     private SecurityContext CreateContextWithoutPaymentState ()
     {
-      Dictionary<string, Enum> states = new Dictionary<string, Enum> ();
+      Dictionary<string, Enum> states = new Dictionary<string, Enum>();
       states.Add ("State", OrderState.Delivered);
 
-      return SecurityContext.Create(typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
+      return SecurityContext.Create (typeof (Order), "owner", "ownerGroup", "ownerTenant", states, new Enum[0]);
     }
   }
 }

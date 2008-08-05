@@ -71,6 +71,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
+    [Ignore ("TODO: Implement")]
+    public void MatchesStates_StatefulWithWildcard ()
+    {
+      StateCombination combination = _testHelper.GetStateCombinationForDeliveredAndUnpaidOrder ();
+      List<StateDefinition> states = combination.GetStates ();
+
+      Assert.Fail ("TODO: Implement");
+      Assert.IsTrue (combination.MatchesStates (states));
+    }
+
+    [Test]
     public void AttachState_NewState ()
     {
       SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
