@@ -44,6 +44,17 @@ public class SeparatedStringBuilder
   }
 
   /// <summary>
+  /// Appends the result of selector(item) for each item in the specified list.
+  /// </summary>
+  public static string Build<T> (string separator, IEnumerable list, Func<T, string> selector)
+  {
+    SeparatedStringBuilder sb = new SeparatedStringBuilder (separator);
+    foreach (T item in list)
+      sb.Append (selector (item));
+    return sb.ToString ();
+  }
+
+  /// <summary>
   /// Appends each item in the specified list.
   /// </summary>
   public static string Build<T> (string separator, IEnumerable list)

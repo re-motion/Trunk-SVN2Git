@@ -16,9 +16,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects
 {
   [Serializable]
-// ReSharper disable RedundantExtendsListEntry
-  public class ObjectList<T> : DomainObjectCollection, IList<T>, ICollection<T>, IEnumerable<T> where T : DomainObject
-// ReSharper restore RedundantExtendsListEntry
+  public class ObjectList<T> : DomainObjectCollection, IList<T> where T : DomainObject
   {
     public ObjectList()
         : base (typeof (T))

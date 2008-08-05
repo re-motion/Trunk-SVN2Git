@@ -18,19 +18,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   {
     public bool Equals (StateCombination x, StateCombination y)
     {
-      List<StateDefinition> statesX = x.GetStates ();
+      HashSet<StateDefinition> statesX = new HashSet<StateDefinition> (x.GetStates());
       List<StateDefinition> statesY = y.GetStates ();
 
-      if (statesX.Count != statesY.Count)
-        return false;
-
-      foreach (StateDefinition stateX in statesX)
-      {
-        if (!statesY.Contains (stateX))
-          return false;
-      }
-
-      return true;
+      return statesX.SetEquals (statesY);
     }
 
     public int GetHashCode (StateCombination obj)

@@ -305,7 +305,7 @@ namespace Remotion.Data.DomainObjects
     /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
     public DomainObjectCollection (DomainObjectCollection collection, bool makeCollectionReadOnly)
-        : this ((IEnumerable<DomainObject>) ArgumentUtility.CheckNotNull ("collection", collection), makeCollectionReadOnly)
+        : this ((IEnumerable) ArgumentUtility.CheckNotNull ("collection", collection), makeCollectionReadOnly)
     {
       Assertion.IsTrue (base.Count == collection.Count);
       _requiredItemType = collection.RequiredItemType;
@@ -318,9 +318,18 @@ namespace Remotion.Data.DomainObjects
     /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
     public DomainObjectCollection (IEnumerable<DomainObject> domainObjects, bool makeCollectionReadOnly)
+      :this ((IEnumerable) domainObjects, makeCollectionReadOnly)
     {
-      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+    }
 
+    /// <summary>
+    /// Initializes a new <b>DomainObjectCollection</b> as a shallow copy of a given enumeration of <see cref="DomainObject"/>s.
+    /// </summary>
+    /// <param name="domainObjects">The <see cref="DomainObject"/>s to copy. Must not be <see langword="null"/>.</param>
+    /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
+    /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
+    private DomainObjectCollection (IEnumerable domainObjects, bool makeCollectionReadOnly)
+    {
       foreach (DomainObject domainObject in domainObjects)
         Add (domainObject);
 
@@ -1206,18 +1215,6 @@ namespace Remotion.Data.DomainObjects
     {
       if (_changeDelegate != null)
         _changeDelegate.MarkAsTouched ();
-    }
-
-    void ICollection<DomainObject>.Add (DomainObject item)
-    {
-      ArgumentUtility.CheckNotNull ("item", item);
-      Add (item);
-    }
-
-    void ICollection<DomainObject>.CopyTo (DomainObject[] array, int arrayIndex)
-    {
-      ArgumentUtility.CheckNotNull ("array", array);
-      CopyTo (array, arrayIndex);
     }
   }
 }

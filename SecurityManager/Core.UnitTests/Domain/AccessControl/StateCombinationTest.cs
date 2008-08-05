@@ -143,16 +143,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    [ExpectedException (typeof (ConstraintViolationException),
-        ExpectedMessage =
-        "The securable class definition 'Remotion.SecurityManager.UnitTests.TestDomain.Order' contains at least one state combination, which has been defined twice."
-        )]
+    [ExpectedException (typeof (ConstraintViolationException), ExpectedMessage =
+        "The securable class definition 'Remotion.SecurityManager.UnitTests.TestDomain.Order' contains at least one state combination "
+        + "that has been defined twice.")]
     public void ValidateDuringCommit_ByTouchOnClassForChangedStateUsagesCollection ()
     {
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
       StateDefinition paidState = paymentProperty[new EnumWrapper (PaymentState.Paid).Name];
-      StateDefinition notPaidState = paymentProperty[new EnumWrapper(PaymentState.None).Name];
+      StateDefinition notPaidState = paymentProperty[new EnumWrapper (PaymentState.None).Name];
       StateCombination combination1 = _testHelper.CreateStateCombination (orderClass, paidState);
       StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, notPaidState);
       StateCombination combination3 = _testHelper.CreateStateCombination (orderClass);
@@ -165,7 +164,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         combination2.StateUsages.Remove (combination2.StateUsages[0]);
         combination2.AttachState (paidState);
 
-        ClientTransaction.Current.Commit ();
+        ClientTransaction.Current.Commit();
       }
     }
 
@@ -175,7 +174,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       StateCombination combination = _testHelper.CreateStateCombination (orderClass);
       combination.AccessControlList.AccessControlEntries.Add (AccessControlEntry.NewObject());
-      
+
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.AreEqual (StateType.Unchanged, GetStateFromDataContainer (orderClass));
@@ -194,7 +193,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     private StateType GetStateFromDataContainer (DomainObject orderClass)
     {
-      DataContainer dataContainer = (DataContainer) 
+      DataContainer dataContainer =
+          (DataContainer)
           PrivateInvoke.InvokeNonPublicMethod (orderClass, typeof (DomainObject), "GetDataContainerForTransaction", orderClass.ClientTransaction);
       return dataContainer.State;
     }

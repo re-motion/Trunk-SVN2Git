@@ -199,13 +199,10 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public StateCombination FindStateCombination (List<StateDefinition> states)
     {
-      foreach (var stateCombination in StateCombinations)
-      {
-        if (stateCombination.MatchesStates (states))
-          return stateCombination;
-      }
-
-      return null;
+      var result = from sc in StateCombinations
+                   where sc.MatchesStates (states)
+                   select sc;
+      return result.FirstOrDefault();
     }
 
     public AccessControlList CreateAccessControlList ()
@@ -229,22 +226,15 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public void ValidateUniqueStateCombinations (SecurableClassValidationResult result)
     {
-      var stateCombinations = new Dictionary<StateCombination, StateCombination> (new StateCombinationComparer());
-
       Assertion.IsTrue (State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object are not empty but the object is deleted.", ID);
 
-      foreach (var stateCombination in StateCombinations)
-      {
-        if (stateCombinations.ContainsKey (stateCombination))
-        {
-          result.AddInvalidStateCombination (stateCombinations[stateCombination]);
-          result.AddInvalidStateCombination (stateCombination);
-        }
-        else
-        {
-          stateCombinations.Add (stateCombination, stateCombination);
-        }
-      }
+      var stateCombinations = StateCombinations
+          .GroupBy<StateCombination, StateCombination> (sc => sc, new StateCombinationComparer())
+          .Where (g => g.Count() > 1)
+          .SelectMany (g => g);
+
+      foreach (StateCombination stateCombination in stateCombinations)
+        result.AddInvalidStateCombination (stateCombination);
     }
 
     protected override void OnCommitting (EventArgs args)
@@ -253,7 +243,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       if (!result.IsValid)
       {
         throw new ConstraintViolationException (
-            string.Format ("The securable class definition '{0}' contains at least one state combination, which has been defined twice.", Name));
+            string.Format ("The securable class definition '{0}' contains at least one state combination that has been defined twice.", Name));
       }
 
       base.OnCommitting (args);

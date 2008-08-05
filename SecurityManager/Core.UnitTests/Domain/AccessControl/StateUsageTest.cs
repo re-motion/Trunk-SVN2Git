@@ -27,20 +27,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     public override void SetUp ()
     {
-      base.SetUp ();
-      _testHelper = new AccessControlTestHelper ();
+      base.SetUp();
+      _testHelper = new AccessControlTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
     }
 
     [Test]
-    [ExpectedException (typeof (ConstraintViolationException),
-       ExpectedMessage = "The securable class definition 'Remotion.SecurityManager.UnitTests.TestDomain.Order' contains at least one state combination, which has been defined twice.")]
+    [ExpectedException (typeof (ConstraintViolationException), ExpectedMessage =
+        "The securable class definition 'Remotion.SecurityManager.UnitTests.TestDomain.Order' contains at least one state combination "
+        + "that has been defined twice.")]
     public void ValidateDuringCommit_ByTouchOnClass ()
     {
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
       StateDefinition paidState = paymentProperty[new EnumWrapper (PaymentState.Paid).Name];
-      StateDefinition notPaidState = paymentProperty[new EnumWrapper(PaymentState.None).Name];
+      StateDefinition notPaidState = paymentProperty[new EnumWrapper (PaymentState.None).Name];
       StateCombination combination1 = _testHelper.CreateStateCombination (orderClass, paidState);
       StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, notPaidState);
       StateCombination combination3 = _testHelper.CreateStateCombination (orderClass);
@@ -70,7 +71,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     private static List<StateDefinition> CreateEmptyStateList ()
     {
-      return new List<StateDefinition> ();
+      return new List<StateDefinition>();
     }
   }
 }
