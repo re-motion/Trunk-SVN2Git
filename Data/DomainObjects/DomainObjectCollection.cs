@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects
   /// </para>
   /// </remarks>
   [Serializable]
-  public class DomainObjectCollection : CommonCollection, ICloneable, IList, ICollection<DomainObject>
+  public class DomainObjectCollection : CommonCollection, ICloneable, IList
   {
     // types
 

@@ -11,14 +11,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
 {
   [Serializable]
 // ReSharper disable RedundantExtendsListEntry
-  public class ObjectList<T> : DomainObjectCollection, IList<T>, ICollection<T> where T : DomainObject
+  public class ObjectList<T> : DomainObjectCollection, IList<T>, ICollection<T>, IEnumerable<T> where T : DomainObject
 // ReSharper restore RedundantExtendsListEntry
   {
     public ObjectList()

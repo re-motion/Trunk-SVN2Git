@@ -250,5 +250,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.That (orderItems, Is.EquivalentTo (_order.OrderItems));
     }
+
+    [Test]
+    public void Linq ()
+    {
+      var result = from oi in _order.OrderItems where oi.Position == 0 select oi;
+    }
   }
 }

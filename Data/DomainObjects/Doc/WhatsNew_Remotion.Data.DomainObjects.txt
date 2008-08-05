@@ -1,5 +1,10 @@
-1.11.1.0
-========
+1.11.3
+======
+- DomainObjectCollection: Dropped ICollection<DomainObject> from DomainObjectCollection to avoid conflicts with type inferencing in Linq-queries
+  when using ObjectList<T>.
+
+1.11.1
+======
 - dbschema.exe now generated SQL Server 2005 syntax instead of SQL Server 2000:
   string without a maximum length is now generated as nvarchar (max) instead of ntext.
   byte[] is now generated as varbinary (n|max) instead of image.
