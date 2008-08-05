@@ -108,9 +108,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
 
     /// <summary>
-    /// Returns the ACEs which match the passed <see cref="SecurityToken"></typeparamref>
+    /// Returns the ACEs which match the passed <see cref="SecurityToken"/>
     /// </summary>
-    /// <param name="token">The security token that will be matched against the ACL entries. Must not be null.</param>
+    /// <param name="token">The security token that will be matched against the ACL entries. Must not be <see langword="null" />.</param>
     /// <returns>array of ACEs</returns>
     public AccessControlEntry[] FindMatchingEntries (SecurityToken token)
     {
