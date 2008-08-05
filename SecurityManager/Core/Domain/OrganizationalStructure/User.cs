@@ -76,7 +76,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
                    where u.UserName == userName
                    select u;
 
-      return result.ToArray().FirstOrDefault();
+      return result.ToArray().SingleOrDefault();
     }
 
     public static ObjectList<User> FindByTenantID (ObjectID tenantID)

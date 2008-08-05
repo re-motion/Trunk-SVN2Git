@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
                    where c.CultureName == cultureName
                    select c;
 
-      return result.ToArray().FirstOrDefault();
+      return result.ToArray().SingleOrDefault();
     }
 
     protected Culture (string cultureName)

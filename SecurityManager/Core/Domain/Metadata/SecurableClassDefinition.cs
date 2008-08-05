@@ -48,7 +48,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
                    where c.Name == name
                    select c;
 
-      return result.ToArray().FirstOrDefault();
+      return result.ToArray ().SingleOrDefault ();
     }
 
     public static ObjectList<SecurableClassDefinition> FindAll ()
@@ -202,7 +202,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       var result = from sc in StateCombinations
                    where sc.MatchesStates (states)
                    select sc;
-      return result.FirstOrDefault();
+      return result.SingleOrDefault();
     }
 
     public AccessControlList CreateAccessControlList ()

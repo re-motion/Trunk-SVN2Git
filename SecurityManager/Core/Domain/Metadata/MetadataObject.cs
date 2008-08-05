@@ -35,7 +35,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
       var result = queryBuilder.CreateQuery (metadataID);
 
-      return result.ToArray().FirstOrDefault();
+      return result.ToArray().SingleOrDefault();
     }
 
     // member fields
