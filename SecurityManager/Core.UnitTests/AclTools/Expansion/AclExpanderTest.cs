@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
@@ -19,6 +20,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     private SecurableClassDefinition OrderClass { get; set; }
     private SecurableClassDefinition DummyClass { get; set; }
 
+    private AccessControlTestHelper _testHelper;
+    private SecurableClassDefinition _orderClass;
+    private StateCombinationBuilder _stateCombinationBuilder;
+    private OuterProductOfStateProperties _outerProductOfStateProperties;
+
 
     public override void SetUp ()
     {
@@ -26,7 +32,82 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       ClientTransaction.NewRootTransaction().EnterDiscardingScope();
       OrderClass = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID);
       DummyClass = SecurableClassDefinition.NewObject ();
+
+      _testHelper = new AccessControlTestHelper ();
+      _testHelper.Transaction.EnterNonDiscardingScope ();
+      _orderClass = _testHelper.CreateOrderClassDefinition ();
+      _stateCombinationBuilder = new StateCombinationBuilder (_orderClass);
+      _outerProductOfStateProperties = new OuterProductOfStateProperties (_orderClass);
     }
+
+    private void LogStopwatch(Stopwatch stopwatch, String message)
+    {
+      Console.Write (Environment.NewLine + Environment.NewLine + message + ": " + String.Format ("{0} ms = {1} s = {2} min", stopwatch.ElapsedMilliseconds, stopwatch.ElapsedMilliseconds / (1000.0), stopwatch.ElapsedMilliseconds / (1000.0 * 60.0)));
+    }
+
+    private void LogPropertyStateTuples (PropertyStateTuple[][] propertyStateTuples)
+    {
+      Console.Write (Environment.NewLine + "LogPropertyStateTuples: ");
+      int i = 0;
+      foreach (var propertyStateTupleArray in propertyStateTuples)
+      {
+        Console.Write (Environment.NewLine + String.Format ("{0}) ", i));
+        ++i;
+        foreach (var propertyStateTuple in propertyStateTupleArray)
+          Console.Write(String.Format ("[{0}]", propertyStateTuple.State.Name));
+      }
+    }
+
+    private delegate PropertyStateTuple[][] CalculatePropertyOuterProductDelegate ();
+
+    private PropertyStateTuple[][] CalculatePropertyOuterProduct (
+      string delegateIdentifierName, CalculatePropertyOuterProductDelegate calculatePropertyOuterProduct,
+      bool logResult)
+    {
+      Stopwatch stopwatch = new Stopwatch();
+      stopwatch.Start ();
+      PropertyStateTuple[][] propertyOuterProduct = calculatePropertyOuterProduct();
+      stopwatch.Stop ();
+      LogStopwatch (stopwatch, delegateIdentifierName);
+
+      if (logResult)
+      {
+        LogPropertyStateTuples (propertyOuterProduct);
+      }
+
+      return propertyOuterProduct;
+    }
+
+
+
+    [Test]
+    public void TestPropertyOuterProductImplementations ()
+    {
+      //for (int i = 0; i < 5; i++)
+      for (int i = 0; i < 2; i++)
+      {
+        //StatePropertyDefinition property = _testHelper.CreateStateProperty (Guid.NewGuid ().ToString ());
+        StatePropertyDefinition property = _testHelper.CreateStateProperty ("p" + i);
+        for (int j = 0; j < 3; j++)
+        {
+          //property.AddState (Guid.NewGuid ().ToString (), j);
+          property.AddState ("s" + i + "-" + j, j);
+        }
+        _orderClass.AddStateProperty (property);
+      }
+
+      const bool logResult = true;
+      PropertyStateTuple[][] actualSCB = CalculatePropertyOuterProduct ("StateCombinationBuilder.CreatePropertyProduct", _stateCombinationBuilder.CreatePropertyProduct, logResult);
+      PropertyStateTuple[][] actualOPOSP = CalculatePropertyOuterProduct ("OuterProductOfStateProperties.CalculateOuterProduct3", _outerProductOfStateProperties.CalculateOuterProduct3, logResult);
+
+      //Assert.That (actualSCB, Is.EquivalentTo (actualOPOSP));
+
+      Console.WriteLine ("");
+    }
+
+
+
+    //OuterProductOfStateProperties
 
     //private void Log (string format, params Object[] variables)
     //{

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
 
@@ -28,9 +29,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private SecurableClassDefinition _securableClass;
     private int[] _aStatePropertyDefinedStateIndex;
     private bool _stateOuterProductHasMore;
-    private AclSecurityContextHelper _aclSecurityContextHelper;
+    //private AclSecurityContextHelper _aclSecurityContextHelper;
 
     private List<AclSecurityContextHelper> _outerProductOfStateProperties;
+    //private List<List<PropertyStateTuple>> _outerProductOfStateProperties2;
 
 
     public OuterProductOfStateProperties (SecurableClassDefinition securableClass)
@@ -38,6 +40,127 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _securableClass = securableClass;
       CalculateOuterProduct ();
     }
+
+
+
+    public PropertyStateTuple[][] CalculateOuterProduct3 ()
+    {
+      int iStateCombinations = 0;
+      var stateProperties = SecurableClass.StateProperties;
+
+      int nrStateCombinations = CalcOuterProductNrStateCombinations(SecurableClass);
+      int numberStateProperties = stateProperties.Count;
+      PropertyStateTuple[][] outerProductOfStateProperties = new PropertyStateTuple[nrStateCombinations][];
+
+      int[] aStatePropertyDefinedStateIndex = null;
+
+      bool stateOuterProductHasMore = false;
+      int nStateCombinations = CalcOuterProductNrStateCombinations (SecurableClass);
+      if (nStateCombinations > 0)
+      {
+        aStatePropertyDefinedStateIndex = new int[numberStateProperties];
+        stateOuterProductHasMore = true;
+      }
+
+      while (stateOuterProductHasMore)
+      {
+        PropertyStateTuple[] propertyStateTuples = new PropertyStateTuple[numberStateProperties];
+
+        for (int iStateProperty = 0; iStateProperty < numberStateProperties; ++iStateProperty)
+        {
+          var stateProperty = stateProperties[iStateProperty];
+          propertyStateTuples[iStateProperty] = new PropertyStateTuple (stateProperty, stateProperty.DefinedStates[aStatePropertyDefinedStateIndex[iStateProperty]]);
+        }
+
+        outerProductOfStateProperties[iStateCombinations] = propertyStateTuples;
+        ++iStateCombinations;
+
+        // Do the "next"-step in the for-loop-indices array (aStatePropertyDefinedStateIndex)
+        // This also updates stateOuterProductHasMore 
+        stateOuterProductHasMore = false;
+        for (int iStateProperty2 = 0; iStateProperty2 < numberStateProperties; ++iStateProperty2)
+        {
+          ++aStatePropertyDefinedStateIndex[iStateProperty2];
+          if (aStatePropertyDefinedStateIndex[iStateProperty2] < stateProperties[iStateProperty2].DefinedStates.Count)
+          {
+            stateOuterProductHasMore = true;
+            break;
+          }
+          else
+          {
+            aStatePropertyDefinedStateIndex[iStateProperty2] = 0;
+          }
+        }
+      }
+
+      return outerProductOfStateProperties;
+    }
+
+
+    public PropertyStateTuple[][] CalculateOuterProduct2 ()
+    {
+      int iStateCombinations = 0;
+      var stateProperties = SecurableClass.StateProperties;
+
+      //_outerProductOfStateProperties = new List<AclSecurityContextHelper> ();
+      //_outerProductOfStateProperties2 = new List<List<PropertyStateTuple>>();
+
+      PropertyStateTuple[][] outerProductOfStateProperties = new PropertyStateTuple[CalcOuterProductNrStateCombinations (SecurableClass)][];
+
+      // To avoid using _stateOuterProductHasMore, the following line needs to be enabled.  
+      // (Note however that this leads to less stable code due to a dependency on the order the processing of the _aStatePropertyDefinedStateIndex array):
+      // int iStatePropertyLast = _aStatePropertyDefinedStateIndex.Length - 1;
+      // if (_aStatePropertyDefinedStateIndex[iStatePropertyLast] < stateProperties[iStatePropertyLast].DefinedStates.Count)
+
+      _stateOuterProductHasMore = false;
+      int nStateCombinations = CalcOuterProductNrStateCombinations (SecurableClass);
+      if (nStateCombinations > 0)
+      {
+        _aStatePropertyDefinedStateIndex = new int[SecurableClass.StateProperties.Count];
+        _stateOuterProductHasMore = true;
+      }
+
+      while (_stateOuterProductHasMore)
+      {
+        int numberStateProperties = stateProperties.Count;
+        PropertyStateTuple[] propertyStateTuples = new PropertyStateTuple[numberStateProperties];
+
+        for (int iStateProperty = 0; iStateProperty < numberStateProperties; ++iStateProperty)
+        {
+          var stateProperty = stateProperties[iStateProperty];
+          //Log("stateProperty.Name={0}, iStateProperty={1}, stateProperty={2}", stateProperty.Name, iStateProperty, stateProperty);
+          propertyStateTuples[iStateProperty] = new PropertyStateTuple (stateProperty, stateProperty.DefinedStates[_aStatePropertyDefinedStateIndex[iStateProperty]]);
+        }
+        //Log ("aclSecurityContextHelper={0}", _aclSecurityContextHelper);
+
+        outerProductOfStateProperties[iStateCombinations] = propertyStateTuples;
+        ++iStateCombinations;
+
+        // Do the "next"-step in the for-loop-indices array (_aStatePropertyDefinedStateIndex)
+        // This also updates _stateOuterProductHasMore 
+        _stateOuterProductHasMore = false;
+        for (int iStateProperty2 = 0; iStateProperty2 < _aStatePropertyDefinedStateIndex.Length; ++iStateProperty2)
+        {
+          ++_aStatePropertyDefinedStateIndex[iStateProperty2];
+          if (_aStatePropertyDefinedStateIndex[iStateProperty2] < stateProperties[iStateProperty2].DefinedStates.Count)
+          {
+            _stateOuterProductHasMore = true;
+            break;
+          }
+          else
+            _aStatePropertyDefinedStateIndex[iStateProperty2] = 0;
+        }
+      }
+
+      return outerProductOfStateProperties;
+    }
+
+
+
+
+
+
+
 
 
     private void CalculateOuterProduct ()
