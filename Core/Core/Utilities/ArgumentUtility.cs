@@ -13,7 +13,6 @@ using System.Collections;
 
 namespace Remotion.Utilities
 {
- 
   /// <summary>
   /// This utility class provides methods for checking arguments.
   /// </summary>
@@ -61,46 +60,62 @@ namespace Remotion.Utilities
       return actualValue;
     }
 
-    public static T CheckNotNullOrEmpty<T> (string argumentName, T collection)
-      where T: ICollection
+    public static T CheckNotNullOrEmpty<T> (string argumentName, T enumerable)
+        where T: IEnumerable
     {
-      CheckNotNull (argumentName, collection);
-      if (collection.Count == 0)
-        throw new ArgumentEmptyException (argumentName);
+      CheckNotNull (argumentName, enumerable);
+      CheckNotEmpty (argumentName, enumerable);
 
-      return collection;
+      return enumerable;
     }
 
-    public static T CheckNotNullOrItemsNull<T> (string argumentName, T collection)
-       where T: ICollection
-     {
-      CheckNotNull (argumentName, collection);
+    public static T CheckNotNullOrItemsNull<T> (string argumentName, T enumerable)
+        where T: IEnumerable
+    {
+      CheckNotNull (argumentName, enumerable);
 
       int i = 0;
-      foreach (object item in collection)
+      foreach (object item in enumerable)
       {
         if (item == null)
           throw new ArgumentItemNullException (argumentName, i);
         ++i;
       }
 
-      return collection;
+      return enumerable;
     }
 
-    public static T CheckNotNullOrEmptyOrItemsNull<T> (string argumentName, T collection)
-       where T : ICollection
+    public static T CheckNotNullOrEmptyOrItemsNull<T> (string argumentName, T enumerable)
+        where T: IEnumerable
     {
-      CheckNotNullOrItemsNull (argumentName, collection);
-      if (collection.Count == 0)
-        throw new ArgumentEmptyException (argumentName);
-      
-      return collection;
+      CheckNotNullOrItemsNull (argumentName, enumerable);
+      CheckNotEmpty (argumentName, enumerable);
+
+      return enumerable;
+    }
+
+    private static T CheckNotEmpty<T> (string argumentName, T enumerable)
+        where T: IEnumerable
+    {
+      if (enumerable != null)
+      {
+        ICollection collection = enumerable as ICollection;
+        if (collection != null && collection.Count == 0)
+          throw new ArgumentEmptyException (argumentName);
+        else if (!enumerable.GetEnumerator().MoveNext())
+          throw new ArgumentEmptyException (argumentName);
+      }
+
+      return enumerable;
     }
 
     public static void ThrowEnumArgumentOutOfRangeException (string argumentName, Enum actualValue)
     {
-      string message = string.Format ("The value of argument {0} is not a valid value of the type {1}. Actual value was {2}.",
-          argumentName, actualValue.GetType (), actualValue);
+      string message = string.Format (
+          "The value of argument {0} is not a valid value of the type {1}. Actual value was {2}.",
+          argumentName,
+          actualValue.GetType(),
+          actualValue);
       throw new ArgumentOutOfRangeException (argumentName, actualValue, message);
     }
 
@@ -110,7 +125,7 @@ namespace Remotion.Utilities
         throw new ArgumentNullException (argumentName);
 
       if (!expectedType.IsInstanceOfType (actualValue))
-        throw new ArgumentTypeException (argumentName, expectedType, actualValue.GetType ());
+        throw new ArgumentTypeException (argumentName, expectedType, actualValue.GetType());
       return actualValue;
     }
 
@@ -131,13 +146,13 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentNullException">The <paramref name="actualValue"/> is a <see langword="null"/>.</exception>
     /// <exception cref="ArgumentTypeException">The <paramref name="actualValue"/> is an instance of another type.</exception>
     public static TExpected CheckNotNullAndType<TExpected> (string argumentName, object actualValue)
-      // where TExpected: struct
+        // where TExpected: struct
     {
       if (actualValue == null)
         throw new ArgumentNullException (argumentName);
 
       if (! (actualValue is TExpected))
-        throw new ArgumentTypeException (argumentName, typeof (TExpected), actualValue.GetType ());
+        throw new ArgumentTypeException (argumentName, typeof (TExpected), actualValue.GetType());
       return (TExpected) actualValue;
     }
 
@@ -152,7 +167,7 @@ namespace Remotion.Utilities
       }
 
       if (!expectedType.IsInstanceOfType (actualValue))
-        throw new ArgumentTypeException (argumentName, expectedType, actualValue.GetType ());
+        throw new ArgumentTypeException (argumentName, expectedType, actualValue.GetType());
       return actualValue;
     }
 
@@ -277,14 +292,14 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentTypeException"> If <paramref name="enumValue"/> is not of the specified type. </exception>
     /// <exception cref="ArgumentOutOfRangeException"> If <paramref name="enumValue"/> has a numeric value that is not completely defined within its 
     /// enumeration type. For flag types, every bit must correspond to at least one enumeration value. </exception>
-    public static TEnum? CheckValidEnumValueAndType <TEnum> (string argumentName, object enumValue)
-      where TEnum: struct
+    public static TEnum? CheckValidEnumValueAndType<TEnum> (string argumentName, object enumValue)
+        where TEnum: struct
     {
       if (enumValue == null)
         return default (TEnum?);
 
       if (! (enumValue is TEnum))
-        throw new ArgumentTypeException (argumentName, typeof(TEnum), enumValue.GetType());
+        throw new ArgumentTypeException (argumentName, typeof (TEnum), enumValue.GetType());
 
       if (! EnumUtility.IsValidEnumValue (enumValue))
         throw new ArgumentOutOfRangeException (argumentName);
@@ -301,14 +316,14 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentTypeException"> If <paramref name="enumValue"/> is not of the specified type. </exception>
     /// <exception cref="ArgumentOutOfRangeException"> If <paramref name="enumValue"/> has a numeric value that is not completely defined within its 
     /// enumeration type. For flag types, every bit must correspond to at least one enumeration value. </exception>
-    public static TEnum CheckValidEnumValueAndTypeAndNotNull <TEnum> (string argumentName, object enumValue)
-      where TEnum: struct
+    public static TEnum CheckValidEnumValueAndTypeAndNotNull<TEnum> (string argumentName, object enumValue)
+        where TEnum: struct
     {
       if (enumValue == null)
         throw new ArgumentNullException (argumentName);
 
       if (! (enumValue is TEnum))
-        throw new ArgumentTypeException (argumentName, typeof(TEnum), enumValue.GetType());
+        throw new ArgumentTypeException (argumentName, typeof (TEnum), enumValue.GetType());
 
       if (!EnumUtility.IsValidEnumValue (enumValue))
         throw new ArgumentOutOfRangeException (argumentName);

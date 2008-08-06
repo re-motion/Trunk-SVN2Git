@@ -42,5 +42,17 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       list.Add (null);
       ArgumentUtility.CheckNotNullOrItemsNull ("arg", list);
     }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentItemNullException))]
+    public void Fail_zItemNullIEnumerable ()
+    {
+      ArgumentUtility.CheckNotNullOrItemsNull ("arg", GetEnumerableWithNullValue());
+    }
+
+    private IEnumerable GetEnumerableWithNullValue ()
+    {
+      yield return null;
+    }
 	}
 }

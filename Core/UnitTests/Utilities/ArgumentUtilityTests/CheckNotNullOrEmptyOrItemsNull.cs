@@ -13,6 +13,7 @@ using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Utilities;
+using System.Collections.Generic;
 
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
@@ -50,6 +51,13 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     }
 
     [Test]
+    [ExpectedExceptionAttribute (typeof (ArgumentEmptyException))]
+    public void Fail_EmptyIEnumerable ()
+    {
+      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", GetEmptyEnumerable());
+    }
+
+    [Test]
     public void Succeed_Array ()
     {
       string[] array = new string[] { "test" };
@@ -64,6 +72,25 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       list.Add ("test");
       ArrayList result = ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", list);
       Assert.That (result, Is.SameAs (list));
+    }
+
+    [Test]
+    public void Succeed_IEnumerable ()
+    {
+      IEnumerable enumerable  = GetEnumerableWithValue();
+      IEnumerable result = ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", enumerable);
+      Assert.That (result, Is.SameAs (enumerable));
+      Assert.That (result.GetEnumerator ().MoveNext (), Is.True);
+    }
+
+    private IEnumerable GetEnumerableWithValue ()
+    {
+      yield return "test";
+    }
+
+    private IEnumerable GetEmptyEnumerable ()
+    {
+      yield break;
     }
   }
 }
