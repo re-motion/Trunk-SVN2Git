@@ -58,21 +58,19 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       }
     }
 
-    private delegate PropertyStateTuple[][] CalculatePropertyOuterProductDelegate ();
-
-    private PropertyStateTuple[][] CalculatePropertyOuterProduct (
-      string delegateIdentifierName, CalculatePropertyOuterProductDelegate calculatePropertyOuterProduct,
+    private T CalculatePropertyOuterProduct<T> (
+      string delegateIdentifierName, Func<T> calculatePropertyOuterProduct,
       bool logResult)
     {
       Stopwatch stopwatch = new Stopwatch();
       stopwatch.Start ();
-      PropertyStateTuple[][] propertyOuterProduct = calculatePropertyOuterProduct();
+      T propertyOuterProduct = calculatePropertyOuterProduct();
       stopwatch.Stop ();
       LogStopwatch (stopwatch, delegateIdentifierName);
 
       if (logResult)
       {
-        LogPropertyStateTuples (propertyOuterProduct);
+        // LogPropertyStateTuples (propertyOuterProduct);
       }
 
       return propertyOuterProduct;
@@ -97,8 +95,19 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       }
 
       const bool logResult = false;
-      PropertyStateTuple[][] actualSCB = CalculatePropertyOuterProduct ("StateCombinationBuilder.CreatePropertyProduct", _stateCombinationBuilder.CreatePropertyProduct, logResult); //, iProperty, iState);
-      PropertyStateTuple[][] actualOPOSP = CalculatePropertyOuterProduct ("OuterProductOfStateProperties.CalculateOuterProduct3", _outerProductOfStateProperties.CalculateOuterProduct3, logResult); //, iProperty, iState);
+      var actualSCB = CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("StateCombinationBuilder.CreatePropertyProduct", _stateCombinationBuilder.CreatePropertyProduct, logResult); //, iProperty, iState);
+      GC.Collect (2);
+      GC.WaitForPendingFinalizers ();
+      var actualOPOSP = CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("OuterProductOfStateProperties.CalculateOuterProduct3", _outerProductOfStateProperties.CalculateOuterProduct3, logResult); //, iProperty, iState);
+      GC.Collect (2);
+      GC.WaitForPendingFinalizers ();
+      var actualOPOSP4 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("OuterProductOfStateProperties.CalculateOuterProduct4", _outerProductOfStateProperties.CalculateOuterProduct4, logResult); //, iProperty, iState);
+      GC.Collect (2);
+      GC.WaitForPendingFinalizers ();
+      var actualOPOSP5 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("OuterProductOfStateProperties.CalculateOuterProduct5", _outerProductOfStateProperties.CalculateOuterProduct5, logResult); //, iProperty, iState);
+      GC.Collect (2);
+      GC.WaitForPendingFinalizers();
+      var actualOPOSP6 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("OuterProductOfStateProperties.CalculateOuterProduct6", _outerProductOfStateProperties.CalculateOuterProduct6, logResult); //, iProperty, iState);
 
       Assert.That (actualOPOSP.Length, Is.EqualTo (actualSCB.Length));
 
