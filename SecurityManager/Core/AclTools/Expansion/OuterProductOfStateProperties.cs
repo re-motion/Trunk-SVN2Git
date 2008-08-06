@@ -45,53 +45,52 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public PropertyStateTuple[][] CalculateOuterProduct3 ()
     {
-      int iStateCombinations = 0;
       var stateProperties = SecurableClass.StateProperties;
 
-      int nrStateCombinations = CalcOuterProductNrStateCombinations(SecurableClass);
+      int nrStateCombinations = CalcOuterProductNrStateCombinations (SecurableClass);
       int numberStateProperties = stateProperties.Count;
       PropertyStateTuple[][] outerProductOfStateProperties = new PropertyStateTuple[nrStateCombinations][];
 
+      var stateDefinitions = new StateDefinition[numberStateProperties][];
+      for (int i = 0; i < numberStateProperties; ++i)
+        stateDefinitions[i] = stateProperties[i].DefinedStates.ToArray();
+
       int[] aStatePropertyDefinedStateIndex = null;
 
-      bool stateOuterProductHasMore = false;
-      int nStateCombinations = CalcOuterProductNrStateCombinations (SecurableClass);
-      if (nStateCombinations > 0)
+      if (nrStateCombinations > 0)
       {
         aStatePropertyDefinedStateIndex = new int[numberStateProperties];
-        stateOuterProductHasMore = true;
       }
 
-      while (stateOuterProductHasMore)
-      {
-        PropertyStateTuple[] propertyStateTuples = new PropertyStateTuple[numberStateProperties];
-
-        for (int iStateProperty = 0; iStateProperty < numberStateProperties; ++iStateProperty)
+      for (int iStateCombinations = 0; iStateCombinations < nrStateCombinations; ++iStateCombinations)
         {
-          var stateProperty = stateProperties[iStateProperty];
-          propertyStateTuples[iStateProperty] = new PropertyStateTuple (stateProperty, stateProperty.DefinedStates[aStatePropertyDefinedStateIndex[iStateProperty]]);
-        }
+          PropertyStateTuple[] propertyStateTuples = new PropertyStateTuple[numberStateProperties];
 
-        outerProductOfStateProperties[iStateCombinations] = propertyStateTuples;
-        ++iStateCombinations;
-
-        // Do the "next"-step in the for-loop-indices array (aStatePropertyDefinedStateIndex)
-        // This also updates stateOuterProductHasMore 
-        stateOuterProductHasMore = false;
-        for (int iStateProperty2 = 0; iStateProperty2 < numberStateProperties; ++iStateProperty2)
-        {
-          ++aStatePropertyDefinedStateIndex[iStateProperty2];
-          if (aStatePropertyDefinedStateIndex[iStateProperty2] < stateProperties[iStateProperty2].DefinedStates.Count)
+          for (int iStateProperty = 0; iStateProperty < numberStateProperties; ++iStateProperty)
           {
-            stateOuterProductHasMore = true;
-            break;
+            var stateProperty = stateProperties[iStateProperty];
+            var stateDefinitionsForProperty = stateDefinitions[iStateProperty];
+            //propertyStateTuples[iStateProperty] = new PropertyStateTuple (stateProperty, stateProperty.DefinedStates[aStatePropertyDefinedStateIndex[iStateProperty]]);
+            propertyStateTuples[iStateProperty] = new PropertyStateTuple (stateProperty, stateDefinitionsForProperty[aStatePropertyDefinedStateIndex[numberStateProperties - 1 - iStateProperty]]);
           }
-          else
+
+          outerProductOfStateProperties[iStateCombinations] = propertyStateTuples;
+
+          // Do the "next"-step in the for-loop-indices array (aStatePropertyDefinedStateIndex)
+          // This also updates stateOuterProductHasMore 
+          for (int iStateProperty2 = 0; iStateProperty2 < numberStateProperties; ++iStateProperty2)
           {
-            aStatePropertyDefinedStateIndex[iStateProperty2] = 0;
+            ++aStatePropertyDefinedStateIndex[iStateProperty2];
+            if (aStatePropertyDefinedStateIndex[iStateProperty2] < stateDefinitions[iStateProperty2].Length)
+            {
+              break;
+            }
+            else
+            {
+              aStatePropertyDefinedStateIndex[iStateProperty2] = 0;
+            }
           }
         }
-      }
 
       return outerProductOfStateProperties;
     }
@@ -244,7 +243,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         foreach (var statePropertyDefinition in stateProperties)
         {
           int nDefinedStates = statePropertyDefinition.DefinedStates.Count;
-          Assertion.IsTrue (nDefinedStates > 0);
+          //Assertion.IsTrue (nDefinedStates > 0);
           nStateCombinations *= nDefinedStates;
         }
         return nStateCombinations;

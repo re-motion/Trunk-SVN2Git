@@ -84,25 +84,29 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void TestPropertyOuterProductImplementations ()
     {
       //for (int i = 0; i < 5; i++)
-      for (int i = 0; i < 2; i++)
+      for (int iProperty = 0; iProperty < 8; iProperty++)
       {
         //StatePropertyDefinition property = _testHelper.CreateStateProperty (Guid.NewGuid ().ToString ());
-        StatePropertyDefinition property = _testHelper.CreateStateProperty ("p" + i);
-        for (int j = 0; j < 3; j++)
+        StatePropertyDefinition property = _testHelper.CreateStateProperty ("p" + iProperty);
+        for (int iState = 0; iState < 4; iState++)
         {
           //property.AddState (Guid.NewGuid ().ToString (), j);
-          property.AddState ("s" + i + "-" + j, j);
+          property.AddState ("s" + iProperty + "-" + iState, iState);
         }
         _orderClass.AddStateProperty (property);
       }
 
-      const bool logResult = true;
-      PropertyStateTuple[][] actualSCB = CalculatePropertyOuterProduct ("StateCombinationBuilder.CreatePropertyProduct", _stateCombinationBuilder.CreatePropertyProduct, logResult);
-      PropertyStateTuple[][] actualOPOSP = CalculatePropertyOuterProduct ("OuterProductOfStateProperties.CalculateOuterProduct3", _outerProductOfStateProperties.CalculateOuterProduct3, logResult);
+      const bool logResult = false;
+      PropertyStateTuple[][] actualSCB = CalculatePropertyOuterProduct ("StateCombinationBuilder.CreatePropertyProduct", _stateCombinationBuilder.CreatePropertyProduct, logResult); //, iProperty, iState);
+      PropertyStateTuple[][] actualOPOSP = CalculatePropertyOuterProduct ("OuterProductOfStateProperties.CalculateOuterProduct3", _outerProductOfStateProperties.CalculateOuterProduct3, logResult); //, iProperty, iState);
 
-      //Assert.That (actualSCB, Is.EquivalentTo (actualOPOSP));
+      Assert.That (actualOPOSP.Length, Is.EqualTo (actualSCB.Length));
 
-      Console.WriteLine ("");
+      for (int i = 0; i < actualSCB.Length; ++i)
+      {
+        Assert.That (actualSCB[i], Is.EquivalentTo (actualOPOSP[i]));
+      }
+
     }
 
 
