@@ -19,7 +19,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public bool Equals (StateCombination x, StateCombination y)
     {
       HashSet<StateDefinition> statesX = new HashSet<StateDefinition> (x.GetStates());
-      List<StateDefinition> statesY = y.GetStates ();
+      StateDefinition[] statesY = y.GetStates ();
 
       return statesX.SetEquals (statesY);
     }

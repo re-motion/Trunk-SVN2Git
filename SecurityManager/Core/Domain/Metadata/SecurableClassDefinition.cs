@@ -199,10 +199,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public StateCombination FindStateCombination (List<StateDefinition> states)
     {
-      var result = from sc in StateCombinations
-                   where sc.MatchesStates (states)
-                   select sc;
-      return result.SingleOrDefault();
+      return StateCombinations.Where (sc => sc.MatchesStates (states)).SingleOrDefault ();
     }
 
     public AccessControlList CreateAccessControlList ()

@@ -18,7 +18,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
     public ClassStateTuple(SecurableClassDefinition classDefinition, StateCombination stateCombination) : 
-      base(classDefinition,stateCombination.GetStates())
+      base(classDefinition, new List<StateDefinition> (stateCombination.GetStates()))
     {
       //StateList.Sort()
     }

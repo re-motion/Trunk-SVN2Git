@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void MatchesStates_DeliveredAndUnpaid ()
     {
       StateCombination combination = _testHelper.GetStateCombinationForDeliveredAndUnpaidOrder();
-      List<StateDefinition> states = combination.GetStates();
+      StateDefinition[] states = combination.GetStates ();
 
       Assert.IsTrue (combination.MatchesStates (states));
     }
@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void MatchesStates_StatelessAndDemandDeliveredAndUnpaid ()
     {
       StateCombination deliverdAndUnpaidCombination = _testHelper.GetStateCombinationForDeliveredAndUnpaidOrder();
-      List<StateDefinition> states = deliverdAndUnpaidCombination.GetStates();
+      StateDefinition[] states = deliverdAndUnpaidCombination.GetStates();
       StateCombination statelessCombination = GetStatelessCombinationForClass (deliverdAndUnpaidCombination.Class);
 
       Assert.IsFalse (statelessCombination.MatchesStates (states));
@@ -75,7 +75,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void MatchesStates_StatefulWithWildcard ()
     {
       StateCombination combination = _testHelper.GetStateCombinationForDeliveredAndUnpaidOrder ();
-      List<StateDefinition> states = combination.GetStates ();
+      StateDefinition[] states = combination.GetStates ();
 
       Assert.Fail ("TODO: Implement");
       Assert.IsTrue (combination.MatchesStates (states));
@@ -94,7 +94,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         combination.AttachState (property["Test1"]);
 
         Assert.AreEqual (1, combination.StateUsages.Count);
-        StateUsage stateUsage = (StateUsage) combination.StateUsages[0];
+        StateUsage stateUsage = combination.StateUsages[0];
         Assert.AreSame (property["Test1"], stateUsage.StateDefinition);
         Assert.AreEqual (StateType.Changed, classDefinition.State);
       }
@@ -117,9 +117,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
       StateCombination combination = _testHelper.CreateStateCombination (classDefinition);
 
-      List<StateDefinition> states = combination.GetStates();
+      StateDefinition[] states = combination.GetStates();
 
-      Assert.AreEqual (0, states.Count);
+      Assert.AreEqual (0, states.Length);
     }
 
     [Test]
@@ -127,12 +127,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
       StatePropertyDefinition property = _testHelper.CreatePaymentStateProperty (classDefinition);
-      StateDefinition state = (StateDefinition) property.DefinedStates[1];
+      StateDefinition state = property.DefinedStates[1];
       StateCombination combination = _testHelper.CreateStateCombination (classDefinition, state);
 
-      List<StateDefinition> states = combination.GetStates();
+      StateDefinition[] states = combination.GetStates();
 
-      Assert.AreEqual (1, states.Count);
+      Assert.AreEqual (1, states.Length);
       Assert.AreSame (state, states[0]);
     }
 
@@ -141,14 +141,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (classDefinition);
-      StateDefinition paidState = (StateDefinition) paymentProperty.DefinedStates[1];
+      StateDefinition paidState = paymentProperty.DefinedStates[1];
       StatePropertyDefinition orderStateProperty = _testHelper.CreateOrderStateProperty (classDefinition);
-      StateDefinition deliveredState = (StateDefinition) orderStateProperty.DefinedStates[1];
+      StateDefinition deliveredState = orderStateProperty.DefinedStates[1];
       StateCombination combination = _testHelper.CreateStateCombination (classDefinition, paidState, deliveredState);
 
-      List<StateDefinition> states = combination.GetStates();
+      StateDefinition[] states = combination.GetStates();
 
-      Assert.AreEqual (2, states.Count);
+      Assert.AreEqual (2, states.Length);
       Assert.Contains (paidState, states);
       Assert.Contains (deliveredState, states);
     }

@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 
@@ -20,6 +21,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
   public class StateCombinationBuilderTest : DomainTest
   {
     private AccessControlTestHelper _testHelper;
+    private SecurableClassDefinition _orderClass;
+    private StateCombinationBuilder _stateCombinationBuilder;
 
     public override void SetUp ()
     {
@@ -27,71 +30,89 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       _testHelper = new AccessControlTestHelper ();
       _testHelper.Transaction.EnterNonDiscardingScope();
+      _orderClass = _testHelper.CreateOrderClassDefinition ();
+      _stateCombinationBuilder = new StateCombinationBuilder (_orderClass);
     }
 
     [Test]
-    public void CreateAndAttach_FromClassWithoutStateProperties ()
+    public void Create_WithoutStateProperty ()
     {
+      Assert.That (_orderClass.StateProperties, Is.Empty);
 
-      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition ();
-      StateCombinationBuilder builder = new StateCombinationBuilder ();
+      StateDefinition[][] expected = new StateDefinition[][] { };
 
-      List<StateCombination> actualStateCombinations = builder.CreateAndAttach (orderClass);
-     
-      Assert.AreEqual (1, actualStateCombinations.Count);
-      StateCombination actualStatelessStateCombination = actualStateCombinations[0];
-      CheckStateCombination (orderClass, actualStatelessStateCombination, "Stateless");
-      Assert.AreEqual (0, actualStatelessStateCombination.StateUsages.Count);
+      StateDefinition[][] actual = _stateCombinationBuilder.CreatePropertyProduct ();
+
+      Check (actual, expected);
     }
 
     [Test]
-    [Ignore ("Most likely obsolete")]
-    public void CreateAndAttach_FromClassWithSingleStateProperties ()
+    public void Create_WithSingleStateProperty ()
     {
-      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition ();
-      StatePropertyDefinition orderStateProperty = _testHelper.CreateOrderStateProperty (orderClass);
-      StateCombinationBuilder builder = new StateCombinationBuilder ();
+      StatePropertyDefinition orderStateProperty = _testHelper.CreateOrderStateProperty (_orderClass);
+      Assert.That (_orderClass.StateProperties.Count, Is.EqualTo (1));
 
-      List<StateCombination> actualStateCombinations = builder.CreateAndAttach (orderClass);
-    
-      Assert.AreEqual (3, actualStateCombinations.Count);
+      StateDefinition[][] expected =
+          new[]
+          {
+              new[] { orderStateProperty.DefinedStates[0] },
+              new[] { orderStateProperty.DefinedStates[1] },
+          };
 
-      StateCombination actualStatelessStateCombination = actualStateCombinations[0];
-      CheckStateCombination (orderClass, actualStatelessStateCombination, "Stateless");
-      Assert.AreEqual (0, actualStatelessStateCombination.StateUsages.Count);
+      StateDefinition[][] actual = _stateCombinationBuilder.CreatePropertyProduct ();
 
-      StateCombination actualReceivedStateCombination = actualStateCombinations[1];
-      CheckStateCombination (orderClass, actualReceivedStateCombination, "Received State");
-      Assert.AreEqual (1, actualReceivedStateCombination.StateUsages.Count);
-
-      StateCombination actualDeliveredStateCombination = actualStateCombinations[2];
-      CheckStateCombination (orderClass, actualDeliveredStateCombination, "Delivered State");
-      Assert.AreEqual (1, actualDeliveredStateCombination.StateUsages.Count);
+      Check (actual, expected);
     }
 
-    private static void CheckStateCombination (SecurableClassDefinition orderClass,StateCombination actualStateCombination, string message, params object[] parameters)
+    [Test]
+    public void Create_WithTwoStateProperties ()
     {
-      Assert.AreSame (orderClass, actualStateCombination.Class, message, parameters);
-      Assert.IsNotNull (actualStateCombination.AccessControlList, message, parameters);
-      Assert.AreSame (orderClass, actualStateCombination.AccessControlList.Class, message, parameters);
-      Assert.Contains (actualStateCombination, actualStateCombination.AccessControlList.StateCombinations, message, parameters);
+      StatePropertyDefinition orderStateProperty = _testHelper.CreateOrderStateProperty (_orderClass);
+      StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (_orderClass);
+      Assert.That (_orderClass.StateProperties.Count, Is.EqualTo (2));
+
+      StateDefinition[][] expected =
+          new[]
+          {
+              new[] { orderStateProperty.DefinedStates[0], paymentProperty.DefinedStates[0] },
+              new[] { orderStateProperty.DefinedStates[0], paymentProperty.DefinedStates[1] },
+              new[] { orderStateProperty.DefinedStates[1], paymentProperty.DefinedStates[0] },
+              new[] { orderStateProperty.DefinedStates[1], paymentProperty.DefinedStates[1] },
+          };
+
+      StateDefinition[][] actual = _stateCombinationBuilder.CreatePropertyProduct ();
+
+      Check (actual, expected);
     }
 
+    [Test]
+    public void Create_WithThreeStatePropertiesAndOneOfThemEmpty ()
+    {
+      StatePropertyDefinition orderStateProperty = _testHelper.CreateOrderStateProperty (_orderClass);
+      StatePropertyDefinition emptyProperty = _testHelper.CreateStateProperty ("Empty");
+      _orderClass.AddStateProperty (emptyProperty);
+      StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (_orderClass);
+      Assert.That (_orderClass.StateProperties.Count, Is.EqualTo (3));
 
-    //[Test]
-    //public void Create_From ()
-    //{
-    //  SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinitionWithProperties ();
-    //  List<StateCombination> expectedStateCombinations = _testHelper.CreateStateCombinationsForOrder ();
+      StateDefinition[][] expected =
+          new[]
+          {
+              new[] { orderStateProperty.DefinedStates[0], null, paymentProperty.DefinedStates[0] },
+              new[] { orderStateProperty.DefinedStates[0], null, paymentProperty.DefinedStates[1] },
+              new[] { orderStateProperty.DefinedStates[1], null, paymentProperty.DefinedStates[0] },
+              new[] { orderStateProperty.DefinedStates[1], null, paymentProperty.DefinedStates[1] },
+          };
 
-    //  List<StateDefinition> states = new List<StateDefinition> ();
-    //  StateCombinationBuilder builder = new StateCombinationBuilder ();
+      StateDefinition[][] actual = _stateCombinationBuilder.CreatePropertyProduct ();
 
-    //  List<StateCombination> actualStateCombinations = builder.Create (states);
+      Check (actual, expected);
+    }
 
-    //  Assert.AreEqual (5, expectedStateCombinations.Count);
-    //  Assert.AreEqual (5, actualStateCombinations.Count);
-    //}
-
+    private void Check (StateDefinition[][] actual, StateDefinition[][] expected)
+    {
+      Assert.That (actual.Length, Is.EqualTo (expected.Length));
+      for (int i = 0; i < actual.Length; i++)
+        Assert.That (actual[0], Is.EquivalentTo (expected[0]));
+    }
   }
 }

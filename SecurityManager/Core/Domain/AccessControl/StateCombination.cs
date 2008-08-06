@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
@@ -76,16 +77,16 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [Mandatory]
     public abstract AccessControlList AccessControlList { get; set; }
 
-    public bool MatchesStates (List<StateDefinition> states)
+    public bool MatchesStates (IList<StateDefinition> states)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("states", states);
 
       if (StateUsages.Count == 0 && states.Count > 0)
         return false;
 
-      foreach (StateUsage usage in StateUsages)
+      foreach (StateUsage stateUsage in StateUsages)
       {
-        if (!states.Contains (usage.StateDefinition))
+        if (!states.Contains (stateUsage.StateDefinition))
           return false;
       }
 
@@ -94,19 +95,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public void AttachState (StateDefinition state)
     {
-      StateUsage usage = StateUsage.NewObject ();
-      usage.StateDefinition = state;
-      StateUsages.Add (usage);
+      StateUsage stateUsage = StateUsage.NewObject ();
+      stateUsage.StateDefinition = state;
+      StateUsages.Add (stateUsage);
     }
 
-    public List<StateDefinition> GetStates ()
+    public StateDefinition[] GetStates ()
     {
-      List<StateDefinition> states = new List<StateDefinition> ();
-
-      foreach (StateUsage stateUsage in StateUsages)
-        states.Add (stateUsage.StateDefinition);
-
-      return states;
+      return StateUsages.Select (stateUsage => stateUsage.StateDefinition).ToArray();
     }
 
     //TODO: Rewrite with test

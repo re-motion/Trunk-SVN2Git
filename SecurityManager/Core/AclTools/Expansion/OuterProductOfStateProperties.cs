@@ -16,7 +16,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       set
       {
         _securableClass = value;
-        CalculateOuterProduct();
+        CalculateOuterProduct ();
       }
     }
 
@@ -35,8 +35,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public OuterProductOfStateProperties (SecurableClassDefinition securableClass)
     {
-      this.SecurableClass = securableClass;
-      CalculateOuterProduct();
+      _securableClass = securableClass;
+      CalculateOuterProduct ();
     }
 
 
@@ -192,38 +192,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void Log (string format, params Object[] variables)
     {
       Console.WriteLine (String.Format (format, variables));
-    }
-
-
-    public StateDefinition[][] CreatePropertyProduct ()
-    {
-      List<IList<StateDefinition>> seed = new List<IList<StateDefinition>>();
-      var result = _securableClass.StateProperties
-          .Select (property => (IList<StateDefinition>) property.DefinedStates)
-          .Aggregate (seed, (previous, current) => CreateOuterProduct (previous, current));
-
-      return result.Select (innerList => innerList.ToArray()).ToArray();
-    }
-
-    private List<IList<StateDefinition>> CreateOuterProduct (List<IList<StateDefinition>> previous, IList<StateDefinition> current)
-    {
-      List<IList<StateDefinition>> result = new List<IList<StateDefinition>>();
-
-      if (previous.Count == 0)
-      {
-        foreach (StateDefinition stateDefinition in current)
-          result.Add (new List<StateDefinition> { stateDefinition });
-      }
-      else
-      {
-        foreach (IList<StateDefinition> previousStateDefinitions in previous)
-        {
-          foreach (StateDefinition stateDefinition in current)
-            result.Add (new List<StateDefinition> (previousStateDefinitions) { stateDefinition });
-        }
-      }
-
-      return result;
     }
   }
 }

@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
 
@@ -17,33 +18,36 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 {
   public class StateCombinationBuilder
   {
-    // types
+    private readonly SecurableClassDefinition _classDefinition;
 
-    // static members
-
-    // member fields
-
-    // construction and disposing
-
-    public StateCombinationBuilder ()
-    {
-    }
-
-    // methods and properties
-
-    public List<StateCombination> CreateAndAttach (SecurableClassDefinition classDefinition)
+    public StateCombinationBuilder (SecurableClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      
+      _classDefinition = classDefinition;
+    }
 
-      StateCombination stateCombination = StateCombination.NewObject();
-      stateCombination.AccessControlList = AccessControlList.NewObject();
-      stateCombination.AccessControlList.Class = classDefinition;
-      stateCombination.Class = classDefinition;
+    public SecurableClassDefinition ClassDefinition
+    {
+      get { return _classDefinition; }
+    }
 
-      List<StateCombination> stateCombinations = new List<StateCombination>();
-      stateCombinations.Add (stateCombination);
+    public StateDefinition[][] CreatePropertyProduct ()
+    {
+      IEnumerable<IEnumerable<StateDefinition>> seed = new StateDefinition[][] { };
+      var allStatesByProperty = _classDefinition.StateProperties.Select (property => property.DefinedStates);
+      var aggregatedStates = allStatesByProperty.Aggregate (seed, (previous, current) => CreateOuterProduct (previous, current));
 
-      return stateCombinations;
+      return aggregatedStates.Select (innerList => innerList.ToArray ()).ToArray ();
+    }
+
+    private IEnumerable<IEnumerable<StateDefinition>> CreateOuterProduct (
+        IEnumerable<IEnumerable<StateDefinition>> previous,
+        IEnumerable<StateDefinition> current)
+    {
+      return from p in previous.DefaultIfEmpty (new StateDefinition[0])
+             from c in current.DefaultIfEmpty ()
+             select p.Concat (new[] { c });
     }
   }
 }

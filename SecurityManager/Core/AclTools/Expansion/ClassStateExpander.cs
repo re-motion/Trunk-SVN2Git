@@ -77,7 +77,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       ArgumentUtility.CheckNotNull ("class", securableClass);
       ArgumentUtility.CheckNotNull ("state", state);
       ArgumentUtility.CheckNotNull ("_classStateToAclMap", _classStateToAclMap);
-      return _classStateToAclMap[new ClassStateTuple(securableClass, state.GetStates())];
+      return _classStateToAclMap[new ClassStateTuple(securableClass, new List<StateDefinition>(state.GetStates()))];
     }
 
    
