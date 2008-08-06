@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         IEnumerable<PropertyStateTuple> current)
     {
       return from p in previous.DefaultIfEmpty (new PropertyStateTuple[0])
-             from c in current.DefaultIfEmpty()
+             from c in current
              select p.Concat (new[] { c });
     }
   }
