@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -26,11 +25,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _testHelper = new AccessControlTestHelper ();
+      _testHelper = new AccessControlTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
-      _orderClass = _testHelper.CreateOrderClassDefinition ();
+      _orderClass = _testHelper.CreateOrderClassDefinition();
       _stateCombinationBuilder = new StateCombinationBuilder (_orderClass);
     }
 
@@ -39,9 +38,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       Assert.That (_orderClass.StateProperties, Is.Empty);
 
-      StateDefinition[][] expected = new StateDefinition[][] { };
+      PropertyStateTuple[][] expected = new PropertyStateTuple[][] { };
 
-      StateDefinition[][] actual = _stateCombinationBuilder.CreatePropertyProduct ();
+      PropertyStateTuple[][] actual = _stateCombinationBuilder.CreatePropertyProduct();
 
       Check (actual, expected);
     }
@@ -52,14 +51,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StatePropertyDefinition orderStateProperty = _testHelper.CreateOrderStateProperty (_orderClass);
       Assert.That (_orderClass.StateProperties.Count, Is.EqualTo (1));
 
-      StateDefinition[][] expected =
+      PropertyStateTuple[][] expected =
           new[]
           {
-              new[] { orderStateProperty.DefinedStates[0] },
-              new[] { orderStateProperty.DefinedStates[1] },
+              new[] { CreateTuple (orderStateProperty, 0) },
+              new[] { CreateTuple (orderStateProperty, 1) },
           };
 
-      StateDefinition[][] actual = _stateCombinationBuilder.CreatePropertyProduct ();
+      PropertyStateTuple[][] actual = _stateCombinationBuilder.CreatePropertyProduct();
 
       Check (actual, expected);
     }
@@ -71,16 +70,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (_orderClass);
       Assert.That (_orderClass.StateProperties.Count, Is.EqualTo (2));
 
-      StateDefinition[][] expected =
+      PropertyStateTuple[][] expected =
           new[]
           {
-              new[] { orderStateProperty.DefinedStates[0], paymentProperty.DefinedStates[0] },
-              new[] { orderStateProperty.DefinedStates[0], paymentProperty.DefinedStates[1] },
-              new[] { orderStateProperty.DefinedStates[1], paymentProperty.DefinedStates[0] },
-              new[] { orderStateProperty.DefinedStates[1], paymentProperty.DefinedStates[1] },
+              new[] { CreateTuple (orderStateProperty, 0), CreateTuple (paymentProperty, 0) },
+              new[] { CreateTuple (orderStateProperty, 0), CreateTuple (paymentProperty, 1) },
+              new[] { CreateTuple (orderStateProperty, 1), CreateTuple (paymentProperty, 0) },
+              new[] { CreateTuple (orderStateProperty, 1), CreateTuple (paymentProperty, 1) },
           };
 
-      StateDefinition[][] actual = _stateCombinationBuilder.CreatePropertyProduct ();
+      PropertyStateTuple[][] actual = _stateCombinationBuilder.CreatePropertyProduct();
 
       Check (actual, expected);
     }
@@ -94,21 +93,26 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (_orderClass);
       Assert.That (_orderClass.StateProperties.Count, Is.EqualTo (3));
 
-      StateDefinition[][] expected =
+      PropertyStateTuple[][] expected =
           new[]
           {
-              new[] { orderStateProperty.DefinedStates[0], null, paymentProperty.DefinedStates[0] },
-              new[] { orderStateProperty.DefinedStates[0], null, paymentProperty.DefinedStates[1] },
-              new[] { orderStateProperty.DefinedStates[1], null, paymentProperty.DefinedStates[0] },
-              new[] { orderStateProperty.DefinedStates[1], null, paymentProperty.DefinedStates[1] },
+              new[] { CreateTuple (orderStateProperty, 0), new PropertyStateTuple (emptyProperty, null), CreateTuple (paymentProperty, 0) },
+              new[] { CreateTuple (orderStateProperty, 0), new PropertyStateTuple (emptyProperty, null), CreateTuple (paymentProperty, 1) },
+              new[] { CreateTuple (orderStateProperty, 1), new PropertyStateTuple (emptyProperty, null), CreateTuple (paymentProperty, 0) },
+              new[] { CreateTuple (orderStateProperty, 1), new PropertyStateTuple (emptyProperty, null), CreateTuple (paymentProperty, 1) },
           };
 
-      StateDefinition[][] actual = _stateCombinationBuilder.CreatePropertyProduct ();
+      PropertyStateTuple[][] actual = _stateCombinationBuilder.CreatePropertyProduct();
 
       Check (actual, expected);
     }
 
-    private void Check (StateDefinition[][] actual, StateDefinition[][] expected)
+    private PropertyStateTuple CreateTuple (StatePropertyDefinition stateProperty, int stateIndex)
+    {
+      return new PropertyStateTuple (stateProperty, stateProperty.DefinedStates[stateIndex]);
+    }
+
+    private void Check (PropertyStateTuple[][] actual, PropertyStateTuple[][] expected)
     {
       Assert.That (actual.Length, Is.EqualTo (expected.Length));
       for (int i = 0; i < actual.Length; i++)
