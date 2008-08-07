@@ -49,15 +49,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void Create ()
     {
       // Note: This test builds its own relations without a sort expression.
-      ReflectionBasedClassDefinition domainBaseClass = new ReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), false, new List<Type> ());
+      ReflectionBasedClassDefinition domainBaseClass = new ReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), false, new PersistentMixinFinderMock());
 
       ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition (
-          "Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass, new List<Type> ());
+          "Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass, new PersistentMixinFinderMock());
 
       ReflectionBasedClassDefinition organizationalUnitClass = new ReflectionBasedClassDefinition (
-          "OrganizationalUnit", "TableInheritance_OrganizationalUnit", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass, new List<Type> ());
+          "OrganizationalUnit", "TableInheritance_OrganizationalUnit", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass, new PersistentMixinFinderMock());
 
-      ReflectionBasedClassDefinition clientClass = new ReflectionBasedClassDefinition ("Client", "TableInheritance_Client", TableInheritanceTestDomainProviderID, typeof (Client), false, new List<Type> ());
+      ReflectionBasedClassDefinition clientClass = new ReflectionBasedClassDefinition ("Client", "TableInheritance_Client", TableInheritanceTestDomainProviderID, typeof (Client), false, new PersistentMixinFinderMock());
 
       domainBaseClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(domainBaseClass, "Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.DomainBase.Client", "ClientID", typeof (ObjectID)));
 

@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           "ClassWithMixedProperties",
           c_testDomainProviderID,
           typeof (ClassWithMixedProperties),
-          false, new List<Type>());
+          false, new PersistentMixinFinderMock());
 
       CreatePropertyDefinitionsForClassWithMixedProperties (classDefinition);
 
@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           c_testDomainProviderID,
           typeof (DerivedClassWithMixedProperties),
           false,
-          CreateClassWithMixedPropertiesClassDefinition(), new List<Type>());
+          CreateClassWithMixedPropertiesClassDefinition(), new PersistentMixinFinderMock());
 
       CreatePropertyDefinitionsForDerivedClassWithMixedProperties (classDefinition);
 
@@ -211,7 +211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           "ClassWithOneSideRelationProperties",
           c_testDomainProviderID,
           typeof (ClassWithOneSideRelationProperties),
-          false, new List<Type>());
+          false, new PersistentMixinFinderMock());
 
       return classDefinition;
     }
@@ -223,7 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           null,
           c_testDomainProviderID,
           typeof (BaseClassWithoutStorageSpecificIdentifierAttribute),
-          true, new List<Type>());
+          true, new PersistentMixinFinderMock());
 
       return classDefinition;
     }
@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           c_testDomainProviderID,
           typeof (DerivedClassWithStorageSpecificIdentifierAttribute),
           false,
-          CreateBaseClassWithoutStorageSpecificIdentifierAttributeDefinition (), new List<Type>());
+          CreateBaseClassWithoutStorageSpecificIdentifierAttributeDefinition (), new PersistentMixinFinderMock());
 
       return classDefinition;
     }

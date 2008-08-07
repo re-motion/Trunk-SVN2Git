@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      _classDefinition = new ReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false, new List<Type> ());
+      _classDefinition = new ReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false, new PersistentMixinFinderMock());
       _collection = new ClassDefinitionCollection ();
     }
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       try
       {
-        _collection.Add (new ReflectionBasedClassDefinition ("OtherID", "OtherTable", c_testDomainProviderID, typeof (Order), false, new List<Type>()));
+        _collection.Add (new ReflectionBasedClassDefinition ("OtherID", "OtherTable", c_testDomainProviderID, typeof (Order), false, new PersistentMixinFinderMock()));
         Assert.Fail ("Expected an ArgumentException.");
       }
       catch (ArgumentException e)
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void AddTwiceWithSameClassID ()
     {
       _collection.Add (_classDefinition);
-      _collection.Add (new ReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Customer), false, new List<Type>()));
+      _collection.Add (new ReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Customer), false, new PersistentMixinFinderMock ()));
     }
 
     [Test]
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       _collection.Add (_classDefinition);
 
       ReflectionBasedClassDefinition copy = new ReflectionBasedClassDefinition (
-          _classDefinition.ID, _classDefinition.MyEntityName, _classDefinition.StorageProviderID, _classDefinition.ClassType, false, _classDefinition.BaseClass, new List<Type>());
+          _classDefinition.ID, _classDefinition.MyEntityName, _classDefinition.StorageProviderID, _classDefinition.ClassType, false, _classDefinition.BaseClass, new PersistentMixinFinderMock());
 
       Assert.IsFalse (_collection.Contains (copy));
     }

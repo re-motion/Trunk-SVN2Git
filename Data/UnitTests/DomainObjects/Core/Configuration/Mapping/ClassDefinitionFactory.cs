@@ -21,7 +21,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public static ReflectionBasedClassDefinition CreateOrderDefinition()
     {
       return new ReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProviderID", typeof (Order), false,
-          new List<Type> ());
+          new PersistentMixinFinderMock());
     }
 
     public static ReflectionBasedClassDefinition CreateOrderDefinitionWithResolvedCustomerProperty()

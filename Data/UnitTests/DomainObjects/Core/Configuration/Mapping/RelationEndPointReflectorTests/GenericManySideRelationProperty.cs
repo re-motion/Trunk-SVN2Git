@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Relat
           "ClosedGenericClassWithManySideRelationProperties",
           "TestDomain",
           typeof (ClosedGenericClassWithManySideRelationProperties),
-          false, new List<Type> ());
+          false, new PersistentMixinFinderMock());
     }
 
     [Test]

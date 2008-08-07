@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           "ClosedGenericClassWithOneSideRelationProperties",
           c_testDomainProviderID,
           typeof (ClosedGenericClassWithOneSideRelationProperties),
-          false, new List<Type> ());
+          false, new PersistentMixinFinderMock());
 
       return classDefinition;
     }
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           "ClosedGenericClassWithManySideRelationProperties",
           c_testDomainProviderID,
           typeof (ClosedGenericClassWithManySideRelationProperties),
-          false, new List<Type> ());
+          false, new PersistentMixinFinderMock());
 
       CreatePropertyDefinitionsForClosedGenericClassWithManySideRelationProperties (classDefinition);
 

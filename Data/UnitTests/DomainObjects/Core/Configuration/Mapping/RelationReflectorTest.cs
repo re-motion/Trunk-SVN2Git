@@ -571,7 +571,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] persistentMixins)
     {
-      return new ReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, persistentMixins);
+      return new ReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, new PersistentMixinFinderMock (persistentMixins));
     }
 
     private Type GetClassWithInvalidBidirectionalRelationLeftSide ()

@@ -192,9 +192,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ContainsRelationEndPointDefinitionNotInMapping()
     {
-      ReflectionBasedClassDefinition orderDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new List<Type> ());
+      ReflectionBasedClassDefinition orderDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
       ReflectionBasedClassDefinition orderTicketDefinition =
-          new ReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false, new List<Type> ());
+          new ReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false, new PersistentMixinFinderMock());
       orderTicketDefinition.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(orderTicketDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", "OrderID", typeof (ObjectID), false));
 

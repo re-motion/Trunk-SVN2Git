@@ -30,10 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       ReflectionBasedClassDefinition classDefinition;
       if (typeof (DomainObject).IsAssignableFrom (type))
         classDefinition = new ReflectionBasedClassDefinition (type.Name, type.Name, c_testDomainProviderID, type, true,
-          new List<Type> ());
+          new PersistentMixinFinderMock());
       else
         classDefinition = new ReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false,
-          new List<Type> ());
+          new PersistentMixinFinderMock());
 
       return new PropertyReflector (classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver);
     }

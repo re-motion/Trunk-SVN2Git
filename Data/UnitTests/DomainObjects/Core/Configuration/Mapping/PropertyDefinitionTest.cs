@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       base.SetUp ();
 
-      _classDefinition = new ReflectionBasedClassDefinition ("Order", "OrderTable", c_testDomainProviderID, typeof (Order), false, new List<Type> ());
+      _classDefinition = new ReflectionBasedClassDefinition ("Order", "OrderTable", c_testDomainProviderID, typeof (Order), false, new PersistentMixinFinderMock());
     }
 
     [Test]

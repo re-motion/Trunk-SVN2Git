@@ -10,11 +10,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Text;
 using Remotion.Utilities;
-using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
@@ -27,23 +25,23 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly Type _classType;
     [NonSerialized]
-    private readonly ICollection<Type> _persistentMixins;
+    private readonly IPersistentMixinFinder _persistentMixinFinder;
 
-    public ReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, ICollection<Type> persistentMixins)
-        : this (id, entityName, storageProviderID, classType, isAbstract, null, persistentMixins)
+    public ReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, IPersistentMixinFinder persistentMixinFinder)
+        : this (id, entityName, storageProviderID, classType, isAbstract, null, persistentMixinFinder)
     {
     }
 
-    public ReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, ReflectionBasedClassDefinition baseClass, ICollection<Type> persistentMixins)
+    public ReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, ReflectionBasedClassDefinition baseClass, IPersistentMixinFinder persistentMixinFinder)
         : base (id, entityName, storageProviderID, true)
     {
       ArgumentUtility.CheckNotNull ("classType", classType);
-      ArgumentUtility.CheckNotNull ("persistentMixins", persistentMixins);
+      ArgumentUtility.CheckNotNull ("persistentMixins", persistentMixinFinder);
       if (!classType.IsSubclassOf (typeof (DomainObject)))
         throw CreateMappingException ("Type '{0}' of class '{1}' is not derived from 'Remotion.Data.DomainObjects.DomainObject'.", classType, ID);
      
       _classType = classType;
-      _persistentMixins = new Set<Type> (persistentMixins);
+      _persistentMixinFinder = persistentMixinFinder;
       _isAbstract = isAbstract;
 
       if (baseClass != null)
@@ -59,9 +57,14 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return (ReflectionBasedClassDefinition) base.BaseClass; }
     }
 
+    public IPersistentMixinFinder PersistentMixinFinder
+    {
+      get { return _persistentMixinFinder; }
+    }
+
     public IEnumerable<Type> PersistentMixins
     {
-      get { return _persistentMixins; }
+      get { return _persistentMixinFinder.GetPersistentMixins(); }
     }
 
     public override bool IsAbstract
@@ -79,14 +82,15 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return true; }
     }
 
+#warning TODO: Move to PersistentMixinFinder
     public Type GetPersistentMixin (Type mixinToSearch)
     {
       ArgumentUtility.CheckNotNull ("mixinToSearch", mixinToSearch);
-      if (_persistentMixins.Contains (mixinToSearch))
+      if (PersistentMixins.Contains (mixinToSearch))
         return mixinToSearch;
       else
       {
-        foreach (Type mixin in _persistentMixins)
+        foreach (Type mixin in PersistentMixins)
         {
           if (mixinToSearch.IsAssignableFrom (mixin))
             return mixin;

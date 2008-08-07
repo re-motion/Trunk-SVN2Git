@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void ValidateAbstractClass ()
     {
-      ClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false, new List<Type>());
+      ClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false, new PersistentMixinFinderMock());
       _classDefinitions.Add (personClass);
 
       try
@@ -54,9 +54,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void ValidateAbstractClassHandlesNullEntityNameWithInherited ()
     {
-      ReflectionBasedClassDefinition domainBaseClass = new ReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true, new List<Type>());
-      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass, new List<Type>());
-      ReflectionBasedClassDefinition customerClass = new ReflectionBasedClassDefinition ("Customer", null, TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass, new List<Type>());
+      ReflectionBasedClassDefinition domainBaseClass = new ReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition customerClass = new ReflectionBasedClassDefinition ("Customer", null, TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass, new PersistentMixinFinderMock());
 
       _classDefinitions.Add (domainBaseClass);
       _classDefinitions.Add (personClass);
@@ -70,10 +70,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void ValidateAbstractClassHandlesSameInheritedEntityName ()
     {
-      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, new List<Type>());
+      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, new PersistentMixinFinderMock());
 
       ReflectionBasedClassDefinition customerClass = new ReflectionBasedClassDefinition (
-          "Customer", personClass.MyEntityName, TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass, new List<Type>());
+          "Customer", personClass.MyEntityName, TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass, new PersistentMixinFinderMock());
 
       _classDefinitions.Add (personClass);
       _classDefinitions.Add (customerClass);
@@ -89,10 +89,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         + " which is different from inherited entity name 'TableInheritance_Person'.")]
     public void ValidateWithDifferentEntityNames ()
     {
-      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, new List<Type>());
+      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, new PersistentMixinFinderMock());
 
       ReflectionBasedClassDefinition customerClass = new ReflectionBasedClassDefinition (
-          "Customer", "DifferentEntityNameThanBaseClass", TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass, new List<Type>());
+          "Customer", "DifferentEntityNameThanBaseClass", TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass, new PersistentMixinFinderMock());
 
       _classDefinitions.Add (personClass);
       _classDefinitions.Add (customerClass);
@@ -106,8 +106,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         + " but the base class is not part of the collection itself.")]
     public void ValidateWithBaseClassNotInCollection ()
     {
-      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, new List<Type>());
-      ReflectionBasedClassDefinition customerClass = new ReflectionBasedClassDefinition ("Customer", null, TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass, new List<Type>());
+      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition customerClass = new ReflectionBasedClassDefinition ("Customer", null, TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass, new PersistentMixinFinderMock());
 
       _classDefinitions.Add (customerClass);
       _classDefinitions.Validate ();
@@ -118,8 +118,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         ExpectedMessage = "Validate cannot be invoked, because class 'Customer' is a derived class of 'Person', but is not part of the collection itself.")]
     public void ValidateWithDerivedClassNotInCollection ()
     {
-      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, new List<Type>());
-      new ReflectionBasedClassDefinition ("Customer", null, TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass, new List<Type>());
+      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, new PersistentMixinFinderMock());
+      new ReflectionBasedClassDefinition ("Customer", null, TableInheritanceTestDomainProviderID, typeof (Customer), false, personClass, new PersistentMixinFinderMock());
 
       _classDefinitions.Add (personClass);
       _classDefinitions.Validate ();
@@ -128,8 +128,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void ValidateEntityNameWithAbstractBaseClass ()
     {
-      ReflectionBasedClassDefinition domainBaseClass = new ReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true, new List<Type>());
-      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass, new List<Type>());
+      ReflectionBasedClassDefinition domainBaseClass = new ReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass, new PersistentMixinFinderMock());
 
       _classDefinitions.Add (domainBaseClass);
       _classDefinitions.Add (personClass);
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void ValidateWithoutBaseClass ()
     {
-      ReflectionBasedClassDefinition addressClass = new ReflectionBasedClassDefinition ("Address", "TableInheritance_Address", TableInheritanceTestDomainProviderID, typeof (Address), false, new List<Type>());
+      ReflectionBasedClassDefinition addressClass = new ReflectionBasedClassDefinition ("Address", "TableInheritance_Address", TableInheritanceTestDomainProviderID, typeof (Address), false, new PersistentMixinFinderMock());
 
       _classDefinitions.Add (addressClass);
 
@@ -157,15 +157,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         + "in same inheritance hierarchy already defines property 'PersonName' with the same storage specific name.")]
     public void ValidateWithSameColumnNameInDifferentInheritanceBranches ()
     {
-      ReflectionBasedClassDefinition domainBaseClass = new ReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true, new List<Type>());
+      ReflectionBasedClassDefinition domainBaseClass = new ReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true, new PersistentMixinFinderMock());
 
       ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition (
-          "Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass, new List<Type>());
+          "Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass, new PersistentMixinFinderMock());
 
       personClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(personClass, "PersonName", "NameColumn", typeof (string), false, 100));
 
       ReflectionBasedClassDefinition organizationalUnitClass = new ReflectionBasedClassDefinition (
-          "OrganizationalUnit", "TableInheritance_OrganizationalUnit", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass, new List<Type>());
+          "OrganizationalUnit", "TableInheritance_OrganizationalUnit", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass, new PersistentMixinFinderMock());
 
       organizationalUnitClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(organizationalUnitClass, "OrganizationalUnitName", "NameColumn", typeof (string), false, 100));
 
@@ -182,13 +182,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         + " specify the same entity name 'TableInheritance_Person', which is not allowed.")]
     public void ValidateWithSameEntityNamesInDifferentInheritanceBranches ()
     {
-      ReflectionBasedClassDefinition domainBaseClass = new ReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true, new List<Type>());
+      ReflectionBasedClassDefinition domainBaseClass = new ReflectionBasedClassDefinition ("DomainBase", null, TableInheritanceTestDomainProviderID, typeof (DomainBase), true, new PersistentMixinFinderMock());
 
       ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition (
-          "Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass, new List<Type>());
+          "Person", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (Person), false, domainBaseClass, new PersistentMixinFinderMock());
 
       ReflectionBasedClassDefinition organizationalUnitClass = new ReflectionBasedClassDefinition (
-          "OrganizationalUnit", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass, new List<Type>());
+          "OrganizationalUnit", "TableInheritance_Person", TableInheritanceTestDomainProviderID, typeof (OrganizationalUnit), false, domainBaseClass, new PersistentMixinFinderMock());
 
       _classDefinitions.Add (domainBaseClass);
       _classDefinitions.Add (personClass);

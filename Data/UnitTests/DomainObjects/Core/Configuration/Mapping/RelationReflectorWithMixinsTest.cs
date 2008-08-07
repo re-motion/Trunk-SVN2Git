@@ -258,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] mixins)
     {
-      return new ReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, new List<Type> (mixins));
+      return new ReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, new PersistentMixinFinderMock(mixins));
     }
 
     private RelationReflector CreateRelationReflectorForProperty (ReflectionBasedClassDefinition classDefinition, Type declaringType, string propertyName)

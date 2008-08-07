@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Relat
           "ClassWithManySideRelationProperties",
           "TestDomain",
           typeof (ClassWithManySideRelationProperties),
-          false, new List<Type> ());
+          false, new PersistentMixinFinderMock());
     }
 
     [Test]

@@ -25,10 +25,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         "Class 'Partner' must not define property 'Name', because base class 'Company' already defines a property with the same name.")]
     public void ValidateMappingWithDuplicatePropertyBaseClass ()
     {
-      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type> ());
+      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
 
       ReflectionBasedClassDefinition partnerClass = new ReflectionBasedClassDefinition (
-          "Partner", "Company", "TestDomain", typeof (Partner), false, companyClass, new List<Type> ());
+          "Partner", "Company", "TestDomain", typeof (Partner), false, companyClass, new PersistentMixinFinderMock());
 
       partnerClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (partnerClass, "Name", "Name", typeof (string), 100));
       companyClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (companyClass, "Name", "Name", typeof (string), 100));
@@ -41,13 +41,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         "Class 'Supplier' must not define property 'Name', because base class 'Company' already defines a property with the same name.")]
     public void ValidateMappingWithDuplicatePropertyBaseOfBaseClass ()
     {
-      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type> ());
+      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
 
       ReflectionBasedClassDefinition partnerClass = new ReflectionBasedClassDefinition (
-          "Partner", "Company", "TestDomain", typeof (Partner), false, companyClass, new List<Type> ());
+          "Partner", "Company", "TestDomain", typeof (Partner), false, companyClass, new PersistentMixinFinderMock());
 
       ReflectionBasedClassDefinition supplierClass = new ReflectionBasedClassDefinition (
-          "Supplier", "Company", "TestDomain", typeof (Supplier), false, partnerClass, new List<Type> ());
+          "Supplier", "Company", "TestDomain", typeof (Supplier), false, partnerClass, new PersistentMixinFinderMock());
 
       supplierClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (supplierClass, "Name", "Name", typeof (string), 100));
       companyClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (companyClass, "Name", "Name", typeof (string), 100));

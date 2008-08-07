@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           "ClassWithOneSideRelationProperties",
           c_testDomainProviderID,
           typeof (ClassWithOneSideRelationProperties),
-          false, new List<Type> ());
+          false, new PersistentMixinFinderMock());
 
       return classDefinition;
     }
@@ -132,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           "ClassWithManySideRelationProperties",
           c_testDomainProviderID,
           typeof (ClassWithManySideRelationProperties),
-          false, new List<Type> ());
+          false, new PersistentMixinFinderMock());
 
       CreatePropertyDefinitionsForClassWithManySideRelationProperties (classDefinition);
 
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           "ClassWithMixedProperties",
           c_testDomainProviderID,
           typeof (ClassWithMixedProperties),
-          false, new List<Type> ());
+          false, new PersistentMixinFinderMock());
 
       CreatePropertyDefinitionsForClassWithMixedProperties (classDefinition);
 

@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           Type,
           IsAbstract(),
           GetBaseClassDefinition (classDefinitions),
-          PersistentMixinFinder.GetPersistentMixins ());
+          PersistentMixinFinder);
 
       CreatePropertyDefinitions (classDefinition, GetPropertyInfos (classDefinition));
 

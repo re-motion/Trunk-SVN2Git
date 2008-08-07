@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void Initialize()
     {
-      ClassDefinition actual = new ReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false, new List<Type>());
+      ClassDefinition actual = new ReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false, new PersistentMixinFinderMock());
 
       Assert.That (actual.ID, Is.EqualTo ("Order"));
       Assert.That (actual.MyEntityName, Is.EqualTo ("OrderTable"));
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetToString()
     {
-      ClassDefinition actual = new ReflectionBasedClassDefinition ("OrderID", "OrderTable", "StorageProvider", typeof (Order), false, new List<Type>());
+      ClassDefinition actual = new ReflectionBasedClassDefinition ("OrderID", "OrderTable", "StorageProvider", typeof (Order), false, new PersistentMixinFinderMock());
 
       Assert.That (actual.ToString(), Is.EqualTo (typeof (ReflectionBasedClassDefinition).FullName + ": OrderID"));
     }
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetIsAbstract_FromNonAbstractType()
     {
-      ReflectionBasedClassDefinition actual = new ReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false, new List<Type>());
+      ReflectionBasedClassDefinition actual = new ReflectionBasedClassDefinition ("Order", "OrderTable", "StorageProvider", typeof (Order), false, new PersistentMixinFinderMock());
 
       Assert.IsFalse (actual.IsAbstract);
     }
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void GetIsAbstract_FromAbstractType()
     {
       ReflectionBasedClassDefinition actual = new ReflectionBasedClassDefinition (
-          "Order", "OrderTable", "StorageProvider", typeof (AbstractClass), true, new List<Type>());
+          "Order", "OrderTable", "StorageProvider", typeof (AbstractClass), true, new PersistentMixinFinderMock());
 
       Assert.IsTrue (actual.IsAbstract);
     }
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void GetIsAbstract_FromArgumentFalse()
     {
       ReflectionBasedClassDefinition actual = 
-          new ReflectionBasedClassDefinition ("ClassID", "Table", "StorageProvider", typeof (AbstractClass), false, new List<Type>());
+          new ReflectionBasedClassDefinition ("ClassID", "Table", "StorageProvider", typeof (AbstractClass), false, new PersistentMixinFinderMock());
 
       Assert.IsFalse (actual.IsAbstract);
     }
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void GetIsAbstract_FromArgumentTrue()
     {
-      ReflectionBasedClassDefinition actual = new ReflectionBasedClassDefinition ("ClassID", "Table", "StorageProvider", typeof (Order), true, new List<Type>());
+      ReflectionBasedClassDefinition actual = new ReflectionBasedClassDefinition ("ClassID", "Table", "StorageProvider", typeof (Order), true, new PersistentMixinFinderMock());
 
       Assert.IsTrue (actual.IsAbstract);
     }
@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         + "'Remotion.Data.DomainObjects.DomainObject'.")]
     public void ClassTypeWithInvalidDerivation()
     {
-      new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (ClassNotDerivedFromDomainObject), false, new List<Type>());
+      new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (ClassNotDerivedFromDomainObject), false, new PersistentMixinFinderMock());
     }
 
     [Test]
@@ -238,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         "Type 'Remotion.Data.DomainObjects.DomainObject' of class 'Company' is not derived from 'Remotion.Data.DomainObjects.DomainObject'.")]
     public void ClassTypeDomainObject()
     {
-      new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (DomainObject), false, new List<Type>());
+      new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (DomainObject), false, new PersistentMixinFinderMock());
     }
 
     [Test]
@@ -246,18 +246,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         ExpectedMessage = "Cannot derive class 'Customer' from base class 'Company' handled by different StorageProviders.")]
     public void BaseClassWithDifferentStorageProvider()
     {
-      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "Provider 1", typeof (Company), false, new List<Type>());
-      new ReflectionBasedClassDefinition ("Customer", "Company", "Provider 2", typeof (Customer), false, companyClass, new List<Type>());
+      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "Provider 1", typeof (Company), false, new PersistentMixinFinderMock());
+      new ReflectionBasedClassDefinition ("Customer", "Company", "Provider 2", typeof (Customer), false, companyClass, new PersistentMixinFinderMock());
     }
 
     [Test]
     public void ClassTypeIsNotDerivedFromBaseClassType()
     {
-      ReflectionBasedClassDefinition orderClass = new ReflectionBasedClassDefinition ("Order", "Order",c_testDomainProviderID, typeof (Order), false, new List<Type>());
+      ReflectionBasedClassDefinition orderClass = new ReflectionBasedClassDefinition ("Order", "Order",c_testDomainProviderID, typeof (Order), false, new PersistentMixinFinderMock());
 
       try
       {
-        new ReflectionBasedClassDefinition ("Distributor", "Company",c_testDomainProviderID, typeof (Distributor), false, orderClass, new List<Type>());
+        new ReflectionBasedClassDefinition ("Distributor", "Company",c_testDomainProviderID, typeof (Distributor), false, orderClass, new PersistentMixinFinderMock());
         Assert.Fail ("MappingException was expected.");
       }
       catch (MappingException ex)
@@ -278,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         "Property 'Name' cannot be added to class 'Company', because it already defines a property with the same name.")]
     public void AddDuplicateProperty()
     {
-      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type>());
+      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
 
       companyClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(companyClass, "Name", "Name", typeof (string), 100));
       companyClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(companyClass, "Name", "Name", typeof (string), 100));
@@ -289,8 +289,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         "Property 'Name' cannot be added to class 'Order', because it was initialized for class 'Company'.")]
     public void AddPropertyToOtherClass ()
     {
-      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type>());
-      ReflectionBasedClassDefinition orderClass = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new List<Type>());
+      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition orderClass = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
 
       ReflectionBasedPropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(companyClass, "Name", "Name", typeof (string), 100);
       orderClass.MyPropertyDefinitions.Add (propertyDefinition);
@@ -301,8 +301,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         "Property 'Name' cannot be added to class 'Company', because it was initialized for class 'Company'.")]
     public void AddPropertyToOtherClassWithSameID ()
     {
-      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type>());
-      ReflectionBasedClassDefinition otherCompanyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type>());
+      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition otherCompanyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
 
       ReflectionBasedPropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(companyClass, "Name", "Name", typeof (string), 100);
       otherCompanyClass.MyPropertyDefinitions.Add (propertyDefinition);
@@ -313,11 +313,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         "Property 'Name' cannot be added to class 'Customer', because base class 'Company' already defines a property with the same name.")]
     public void AddDuplicatePropertyBaseClass()
     {
-      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type>());
+      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
       companyClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(companyClass, "Name", "Name", typeof (string), 100));
 
       ReflectionBasedClassDefinition customerClass = new ReflectionBasedClassDefinition (
-          "Customer", "Company", "TestDomain", typeof (Customer), false, companyClass, new List<Type>());
+          "Customer", "Company", "TestDomain", typeof (Customer), false, companyClass, new PersistentMixinFinderMock());
       customerClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(customerClass, "Name", "Name", typeof (string), 100));
     }
 
@@ -326,14 +326,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         "Property 'Name' cannot be added to class 'Supplier', because base class 'Company' already defines a property with the same name.")]
     public void AddDuplicatePropertyBaseOfBaseClass()
     {
-      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type>());
+      ReflectionBasedClassDefinition companyClass = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
       companyClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(companyClass, "Name", "Name", typeof (string), 100));
 
       ReflectionBasedClassDefinition partnerClass = new ReflectionBasedClassDefinition (
-          "Partner", "Company", "TestDomain", typeof (Partner), false, companyClass, new List<Type>());
+          "Partner", "Company", "TestDomain", typeof (Partner), false, companyClass, new PersistentMixinFinderMock());
 
       ReflectionBasedClassDefinition supplierClass = new ReflectionBasedClassDefinition (
-          "Supplier", "Company", "TestDomain", typeof (Supplier), false, partnerClass, new List<Type>());
+          "Supplier", "Company", "TestDomain", typeof (Supplier), false, partnerClass, new PersistentMixinFinderMock());
 
       supplierClass.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(supplierClass, "Name", "Name", typeof (string), 100));
     }
@@ -341,7 +341,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ConstructorWithoutBaseClass()
     {
-      new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new List<Type>());
+      new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
 
       // Expectation: no exception
     }
@@ -731,7 +731,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       // Note: Never use a ClassDefinition of TestMappingConfiguration or MappingConfiguration here, to ensure
       // this test does not affect other tests through modifying the singleton instances.
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new List<Type>());
+      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
      
       PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "Test", "Test", typeof (int));
       Assert.AreSame (classDefinition, propertyDefinition.ClassDefinition);
@@ -745,7 +745,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       // Note: Never use a ClassDefinition of TestMappingConfiguration or MappingConfiguration here, to ensure
       // this test does not affect other tests through modifying the singleton instances.
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new List<Type>());
+      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
 
       PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "Test", "Test", typeof (int));
       Assert.AreSame (classDefinition, propertyDefinition.ClassDefinition);
@@ -884,10 +884,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
+    public void PersistentMixinFinder ()
+    {
+      var mixinFinder = new PersistentMixinFinderMock ();
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixinFinder);
+      Assert.That (classDefinition.PersistentMixinFinder, Is.SameAs (mixinFinder));
+    }
+
+    [Test]
     public void PersistentMixins_Empty ()
     {
       var mixins = new Type[0];
-      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, new PersistentMixinFinderMock (mixins));
       Assert.That (classDefinition.PersistentMixins, Is.EqualTo (mixins));
     }
 
@@ -895,7 +903,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void PersistentMixins_NonEmpty ()
     {
       var mixins = new[] { typeof (MixinA), typeof (MixinB) };
-      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, new PersistentMixinFinderMock (mixins));
       Assert.That (classDefinition.PersistentMixins, Is.EqualTo (mixins));
     }
 
@@ -903,7 +911,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void GetPersistentMixin_TypeFound ()
     {
       var mixins = new[] { typeof (MixinA), typeof (MixinB) };
-      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, new PersistentMixinFinderMock (mixins));
       Assert.That (classDefinition.GetPersistentMixin (typeof (MixinA)), Is.SameAs (typeof (MixinA)));
       Assert.That (classDefinition.GetPersistentMixin (typeof (MixinB)), Is.SameAs (typeof (MixinB)));
     }
@@ -912,7 +920,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void GetPersistentMixin_BaseFound ()
     {
       var mixins = new[] { typeof (MixinB) };
-      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, new PersistentMixinFinderMock (mixins));
       Assert.That (classDefinition.GetPersistentMixin (typeof (MixinA)), Is.SameAs (typeof (MixinB)));
       Assert.That (classDefinition.GetPersistentMixin (typeof (MixinB)), Is.SameAs (typeof (MixinB)));
     }
@@ -921,7 +929,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void GetPersistentMixin_Null ()
     {
       var mixins = new Type[0];
-      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, new PersistentMixinFinderMock (mixins));
       Assert.That (classDefinition.GetPersistentMixin (typeof (MixinA)), Is.Null);
       Assert.That (classDefinition.GetPersistentMixin (typeof (MixinB)), Is.Null);
     }

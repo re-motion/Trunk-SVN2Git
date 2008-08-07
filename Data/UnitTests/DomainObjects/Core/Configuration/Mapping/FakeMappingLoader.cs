@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       ClassDefinitionCollection classDefinitionCollection = new ClassDefinitionCollection();
       classDefinitionCollection.Add (
-          new ReflectionBasedClassDefinition ("Fake", "Fake", "Fake", typeof (Company), false, new List<Type>()));
+          new ReflectionBasedClassDefinition ("Fake", "Fake", "Fake", typeof (Company), false, new PersistentMixinFinderMock ()));
 
       return classDefinitionCollection;
     }

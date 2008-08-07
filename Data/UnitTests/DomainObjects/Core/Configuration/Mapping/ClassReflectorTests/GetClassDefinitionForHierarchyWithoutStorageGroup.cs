@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           "ClassWithoutStorageGroupWithMixedProperties",
           DefaultStorageProviderID,
           typeof (ClassWithoutStorageGroupWithMixedProperties),
-          false, new List<Type> ());
+          false, new PersistentMixinFinderMock());
 
       CreatePropertyDefinitionsForClassWithoutStorageGroupWithMixedProperties (classDefinition);
 
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           DefaultStorageProviderID,
           typeof (DerivedClassWithoutStorageGroupWithMixedProperties),
           false,
-          CreateClassWithoutStorageGroupWithMixedPropertiesClassDefinition (), new List<Type> ());
+          CreateClassWithoutStorageGroupWithMixedPropertiesClassDefinition (), new PersistentMixinFinderMock());
 
       CreatePropertyDefinitionsForDerivedClassWithoutStorageGroupWithMixedProperties (classDefinition);
 

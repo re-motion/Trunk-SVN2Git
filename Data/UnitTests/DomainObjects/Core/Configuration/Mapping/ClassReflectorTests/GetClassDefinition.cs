@@ -277,7 +277,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           c_testDomainProviderID,
           typeof (ClassWithMixedProperties),
           false,
-          new  List<Type>());
+          new PersistentMixinFinderMock());
 
       CreatePropertyDefinitionsForClassWithMixedProperties (classDefinition);
 
@@ -293,7 +293,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           typeof (DerivedClassWithMixedProperties),
           false,
           CreateClassWithMixedPropertiesClassDefinition(),
-          new List<Type> ());
+          new PersistentMixinFinderMock());
 
       CreatePropertyDefinitionsForDerivedClassWithMixedProperties (classDefinition);
 
@@ -308,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           c_testDomainProviderID,
           typeof (ClassWithOneSideRelationProperties),
           false,
-          new List<Type> ());
+          new PersistentMixinFinderMock());
 
       return classDefinition;
     }
@@ -321,7 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           c_testDomainProviderID,
           typeof (BaseClassWithoutStorageSpecificIdentifierAttribute),
           true,
-          new List<Type> ());
+          new PersistentMixinFinderMock());
 
       return classDefinition;
     }
@@ -335,7 +335,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
           typeof (DerivedClassWithStorageSpecificIdentifierAttribute),
           false,
           CreateBaseClassWithoutStorageSpecificIdentifierAttributeDefinition (),
-          new List<Type> ());
+          new PersistentMixinFinderMock());
 
       return classDefinition;
     }

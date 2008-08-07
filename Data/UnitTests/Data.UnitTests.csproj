@@ -183,6 +183,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\MixinSuppressingAnother.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\TargetClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\TargetClassC.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\PersistentMixinFinderMock.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyFinderTests\MixinPropertyFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionBasedClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionBasedNameResolverTest.cs" />

@@ -169,6 +169,7 @@
     <Compile Include="Linq\QueryProvider.cs" />
     <Compile Include="Mapping\ClassDefinitionValidator.cs" />
     <Compile Include="Mapping\IMappingNameResolver.cs" />
+    <Compile Include="Mapping\IPersistentMixinFinder.cs" />
     <Compile Include="Mapping\ReflectionBasedClassDefinitionValidator.cs" />
     <Compile Include="Mapping\ReflectionBasedNameResolver.cs" />
     <Compile Include="Mapping\RelationKindType.cs" />
