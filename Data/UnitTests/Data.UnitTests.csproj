@@ -480,6 +480,7 @@
     <Compile Include="Linq\ParsingTest\DetailsTest\SelectProjectionParsingTest\MethodCallExpressionParserTest.cs" />
     <Compile Include="Linq\ParsingTest\DetailsTest\SelectProjectionParsingTest\NewExpressionParserTest.cs" />
     <Compile Include="Linq\ParsingTest\DetailsTest\SelectProjectionParsingTest\ParameterExpressionParserTest.cs" />
+    <Compile Include="Linq\ParsingTest\DetailsTest\SelectProjectionParsingTest\ResultModifierParserTest.cs" />
     <Compile Include="Linq\ParsingTest\DetailsTest\WhereConditionParserRegistryTest.cs" />
     <Compile Include="Linq\ParsingTest\DetailsTest\WhereConditionParsingTest\BinaryExpressionParserTest.cs" />
     <Compile Include="Linq\ParsingTest\DetailsTest\WhereConditionParsingTest\ConstantExpressionParserTest.cs" />
@@ -582,6 +583,7 @@
     <Compile Include="Linq\TestQueryGenerators\FromTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryGenerators\JoinTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryGenerators\LetTestQueryGenerator.cs" />
+    <Compile Include="Linq\TestQueryGenerators\MethodCallTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryGenerators\MixedTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryGenerators\OrderByTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryGenerators\SelectTestQueryGenerator.cs" />

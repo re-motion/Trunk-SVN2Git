@@ -136,10 +136,9 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fromIdentifier", fromIdentifier);
 
       LambdaExpression projection = Expression.Lambda(fromIdentifier);
-      return new SelectClause (whereClause, projection, false);
+      return new SelectClause (whereClause, projection, null);
     }
-
-
+    
     public PropertyInfo GetForeignKeyProperty (PropertyInfo collectionProperty) // Order.OrderItems
     {
       ArgumentUtility.CheckNotNull ("collectionProperty", collectionProperty);

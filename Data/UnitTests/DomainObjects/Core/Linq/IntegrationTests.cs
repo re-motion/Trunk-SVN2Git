@@ -575,6 +575,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       query.ToArray ();
     }
+
+    [Test]
+    [Ignore ("Not supported by OPF")]
+    public void QueryWithCount ()
+    {
+      var number = (from o in DataContext.Entity<Order>()
+                    select o).Count();
+      Assert.AreEqual (number, 6);
+    }
+
+    [Test]
+    public void QueryWithFirst ()
+    {
+      var query = (from o in DataContext.Entity<Order>()
+                   select o).First();
+      Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
+    }
     
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : TestDomainBase
