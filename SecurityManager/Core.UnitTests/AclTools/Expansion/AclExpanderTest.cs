@@ -23,7 +23,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     private AccessControlTestHelper _testHelper;
     private SecurableClassDefinition _orderClass;
     private StateCombinationBuilder _stateCombinationBuilder;
-    private OuterProductOfStateProperties _outerProductOfStateProperties;
+    private StateCombinationBuilderFast _outerProductOfStateProperties;
 
 
     public override void SetUp ()
@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       _testHelper.Transaction.EnterNonDiscardingScope ();
       _orderClass = _testHelper.CreateOrderClassDefinition ();
       _stateCombinationBuilder = new StateCombinationBuilder (_orderClass);
-      _outerProductOfStateProperties = new OuterProductOfStateProperties (_orderClass);
+      _outerProductOfStateProperties = new StateCombinationBuilderFast (_orderClass);
     }
 
     private void LogStopwatch(Stopwatch stopwatch, String message)
@@ -95,19 +95,20 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       }
 
       const bool logResult = false;
+#if(true)
       var actualSCB = CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("StateCombinationBuilder.CreatePropertyProduct", _stateCombinationBuilder.CreatePropertyProduct, logResult); //, iProperty, iState);
       GC.Collect (2);
       GC.WaitForPendingFinalizers ();
-      var actualOPOSP = CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("OuterProductOfStateProperties.CalculateOuterProduct3", _outerProductOfStateProperties.CalculateOuterProduct3, logResult); //, iProperty, iState);
+      var actualOPOSP = CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("StateCombinationBuilderFast.CalculateOuterProduct3", _outerProductOfStateProperties.CalculateOuterProduct3, logResult); //, iProperty, iState);
       GC.Collect (2);
       GC.WaitForPendingFinalizers ();
-      var actualOPOSP4 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("OuterProductOfStateProperties.CalculateOuterProduct4", _outerProductOfStateProperties.CalculateOuterProduct4, logResult); //, iProperty, iState);
+      var actualOPOSP4 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("StateCombinationBuilderFast.CalculateOuterProduct4", _outerProductOfStateProperties.CalculateOuterProduct4, logResult); //, iProperty, iState);
       GC.Collect (2);
       GC.WaitForPendingFinalizers ();
-      var actualOPOSP5 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("OuterProductOfStateProperties.CalculateOuterProduct5", _outerProductOfStateProperties.CalculateOuterProduct5, logResult); //, iProperty, iState);
+      var actualOPOSP5 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("StateCombinationBuilderFast.CalculateOuterProduct5", _outerProductOfStateProperties.CalculateOuterProduct5, logResult); //, iProperty, iState);
       GC.Collect (2);
       GC.WaitForPendingFinalizers();
-      var actualOPOSP6 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("OuterProductOfStateProperties.CalculateOuterProduct6", _outerProductOfStateProperties.CalculateOuterProduct6, logResult); //, iProperty, iState);
+      var actualOPOSP6 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("StateCombinationBuilderFast.CalculateOuterProduct6", _outerProductOfStateProperties.CalculateOuterProduct6, logResult); //, iProperty, iState);
 
       Assert.That (actualOPOSP.Length, Is.EqualTo (actualSCB.Length));
 
@@ -115,12 +116,22 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       {
         Assert.That (actualSCB[i], Is.EquivalentTo (actualOPOSP[i]));
       }
+#endif
+
+#if(false)
+      for (int i = 0; i < 10; ++i)
+      {
+        GC.Collect (2);
+        GC.WaitForPendingFinalizers ();
+        CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("StateCombinationBuilderFast.CalculateOuterProduct3", _outerProductOfStateProperties.CalculateOuterProduct3, logResult); //, iProperty, iState);
+      }
+#endif
 
     }
 
 
 
-    //OuterProductOfStateProperties
+    //StateCombinationBuilderFast
 
     //private void Log (string format, params Object[] variables)
     //{
@@ -171,7 +182,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 //    public void OuterProductOfStatePropertiesTest ()
 //    {
 //      // DummyClass must have zero state combinations
-//      Assert.That (OuterProductOfStateProperties.CalcOuterProductNrStateCombinations (DummyClass), Is.EqualTo (0));
+//      Assert.That (StateCombinationBuilderFast.CalcOuterProductNrStateCombinations (DummyClass), Is.EqualTo (0));
 
 //      SecurableClassDefinition testClass = OrderClass;
 
@@ -186,11 +197,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 //      }
 //      Log ("------------------------------------------");
 
-//      int nStateCombinations = OuterProductOfStateProperties.CalcOuterProductNrStateCombinations (testClass);
+//      int nStateCombinations = StateCombinationBuilderFast.CalcOuterProductNrStateCombinations (testClass);
 //      Console.WriteLine (String.Format ("nStateCombinations={0}", nStateCombinations));
 //      Assert.That (nStateCombinations, Is.GreaterThan (3));
 
-//      var outerProductOfStateProperties = new OuterProductOfStateProperties (testClass);
+//      var outerProductOfStateProperties = new StateCombinationBuilderFast (testClass);
 //      //var aclSecurityContextHelperList = new List<AclSecurityContextHelper> ();
 
 //      //Dictionary<string, Enum> leftStates = new Dictionary<string, Enum> ();

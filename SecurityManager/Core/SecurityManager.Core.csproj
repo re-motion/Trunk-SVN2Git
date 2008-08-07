@@ -61,7 +61,7 @@
     <Compile Include="AclTools\Expansion\ClassStateExpander.cs" />
     <Compile Include="AclTools\Expansion\ClassStateTuple.cs" />
     <Compile Include="AclTools\Expansion\IClassStateExpander.cs" />
-    <Compile Include="AclTools\Expansion\OuterProductOfStateProperties.cs" />
+    <Compile Include="AclTools\Expansion\StateCombinationBuilderFast.cs" />
     <Compile Include="Configuration\SecurityManagerConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -73,6 +73,7 @@
     <Compile Include="Domain\AccessControl\AccessControlList.cs" />
     <Compile Include="Domain\AccessControl\AccessControlListFinder.cs" />
     <Compile Include="Domain\AccessControl\AccessControlObject.cs" />
+    <Compile Include="Domain\AccessControl\IStateCombinationBuilder.cs" />
     <Compile Include="Domain\AccessControl\PropertyStateTuple.cs" />
     <Compile Include="Domain\SecurityManagerSearchServiceBase.cs" />
     <Compile Include="Domain\AccessControl\TenantSelection.cs" />

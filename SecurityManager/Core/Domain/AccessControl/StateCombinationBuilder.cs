@@ -20,7 +20,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// Used for creating the outer product of a <see cref="SecurableClassDefinition"/>'s <see cref="SecurableClassDefinition.StateProperties"/>'
   /// <see cref="StateDefinition"/> values.
   /// </summary>
-  public class StateCombinationBuilder
+  public class StateCombinationBuilder : IStateCombinationBuilder
   {
     private readonly SecurableClassDefinition _classDefinition;
 

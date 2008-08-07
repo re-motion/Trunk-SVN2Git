@@ -8,10 +8,21 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  // Create outer prodcut of all state-property states of the passed SecurableClassDefinition
-  public class OuterProductOfStateProperties //: IEnumerator<AclSecurityContextHelper>, IEnumerable<AclSecurityContextHelper>
+  /// <summary>
+  /// Creates the outer prodcut of all state-property states of the passed SecurableClassDefinition.
+  /// Runtime is currently (2008-08-07) around 20x faster than the LINQ based StateCombinationBuilder implemantation.
+  /// </summary>
+  
+  // Release build:
+  // StateCombinationBuilderFast.CalculateOuterProduct3 (numberProperty=8,numberState=4): 195 ms = 0,195 s = 0,00325 min
+  // StateCombinationBuilderFast.CalculateOuterProduct4 (numberProperty=8,numberState=4): 189 ms = 0,189 s = 0,00315 min
+  // StateCombinationBuilderFast.CalculateOuterProduct5 (numberProperty=8,numberState=4): 166 ms = 0,166 s = 0,00276666666666667 min
+  // StateCombinationBuilderFast.CalculateOuterProduct6 (numberProperty=8,numberState=4): 152 ms = 0,152 s = 0,00253333333333333 min
+  // StateCombinationBuilder.CreatePropertyProduct (numberProperty=8,numberState=4): 3958 ms = 3,958 s = 0,0659666666666667 min
+
+  public class StateCombinationBuilderFast : IStateCombinationBuilder //: IEnumerator<AclSecurityContextHelper>, IEnumerable<AclSecurityContextHelper>
   {
-    public SecurableClassDefinition SecurableClass
+    public SecurableClassDefinition ClassDefinition
     {
       get { return _securableClass; }
     }
@@ -29,30 +40,39 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private List<AclSecurityContextHelper> _outerProductOfStateProperties;
 
+
+    public PropertyStateTuple[][] CreatePropertyProduct ()
+    {
+      return CalculateOuterProduct3();
+    }
+
     // for variant 6
     private readonly int _stateCombinationCount;
     private readonly StateDefinition[][] _stateDefinitions;
     private readonly int _statePropertyCount;
     
-    public OuterProductOfStateProperties (SecurableClassDefinition securableClass)
+    public StateCombinationBuilderFast (SecurableClassDefinition securableClass)
     {
       _securableClass = securableClass;
-      _stateCombinationCount = CalcOuterProductNrStateCombinations (SecurableClass);
       _stateDefinitions = GetStateDefinitionsPerProperty ();
-      _statePropertyCount = SecurableClass.StateProperties.Count;
+      _statePropertyCount = ClassDefinition.StateProperties.Count;
+      _stateCombinationCount = CalcOuterProductNrStateCombinations (securableClass);
+      //Console.WriteLine ("_stateCombinationCount=" + _stateCombinationCount);
     }
 
     public PropertyStateTuple[,] CalculateOuterProduct6 ()
     {
+      //Console.WriteLine ("_stateCombinationCount=" + _stateCombinationCount);
+
       if (_stateCombinationCount == 0)
         return null;
 
       PropertyStateTuple[,] result = new PropertyStateTuple[_stateCombinationCount, _statePropertyCount];
       int[] currentStatePropertyIndices = new int[_statePropertyCount];
 
-      for (int currentStateCombination = 0; currentStateCombination < _stateCombinationCount; ++currentStateCombination)
+      for (int iCurrentStateCombination = 0; iCurrentStateCombination < _stateCombinationCount; ++iCurrentStateCombination)
       {
-        CalculateCurrentCombination(result, currentStateCombination, currentStatePropertyIndices);
+        CalculateCurrentCombination(result, iCurrentStateCombination, currentStatePropertyIndices);
         PrepareNextCombination(currentStatePropertyIndices);
       }
 
@@ -75,7 +95,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       for (int iStateProperty = 0; iStateProperty < _statePropertyCount; ++iStateProperty)
       {
-        var stateProperty = SecurableClass.StateProperties[iStateProperty];
+        var stateProperty = ClassDefinition.StateProperties[iStateProperty];
         var stateDefinitionsForProperty = _stateDefinitions[iStateProperty];
         PropertyStateTuple newTuple = new PropertyStateTuple (stateProperty, stateDefinitionsForProperty[statePropertyIndices[_statePropertyCount - 1 - iStateProperty]]);
         result[currentStateCombination, iStateProperty] = newTuple;
@@ -84,17 +104,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private StateDefinition[][] GetStateDefinitionsPerProperty ()
     {
-      var stateDefinitions = new StateDefinition[SecurableClass.StateProperties.Count][];
+      var stateDefinitions = new StateDefinition[ClassDefinition.StateProperties.Count][];
       for (int i = 0; i < stateDefinitions.Length; ++i)
-        stateDefinitions[i] = SecurableClass.StateProperties[i].DefinedStates.ToArray ();
+        stateDefinitions[i] = ClassDefinition.StateProperties[i].DefinedStates.ToArray ();
       return stateDefinitions;
     }
 
     public PropertyStateTuple[,] CalculateOuterProduct5 ()
     {
-      var stateProperties = SecurableClass.StateProperties;
+      var stateProperties = ClassDefinition.StateProperties;
 
-      int nrStateCombinations = CalcOuterProductNrStateCombinations (SecurableClass);
+      int nrStateCombinations = CalcOuterProductNrStateCombinations (ClassDefinition);
       int numberStateProperties = stateProperties.Count;
       PropertyStateTuple[,] outerProductOfStateProperties = new PropertyStateTuple[numberStateProperties, nrStateCombinations];
 
@@ -140,9 +160,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public PropertyStateTuple[,] CalculateOuterProduct4 ()
     {
-      var stateProperties = SecurableClass.StateProperties;
+      var stateProperties = ClassDefinition.StateProperties;
 
-      int nrStateCombinations = CalcOuterProductNrStateCombinations (SecurableClass);
+      int nrStateCombinations = CalcOuterProductNrStateCombinations (ClassDefinition);
       int numberStateProperties = stateProperties.Count;
       PropertyStateTuple[,] outerProductOfStateProperties = new PropertyStateTuple[nrStateCombinations,numberStateProperties];
 
@@ -188,9 +208,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public PropertyStateTuple[][] CalculateOuterProduct3 ()
     {
-      var stateProperties = SecurableClass.StateProperties;
+      var stateProperties = ClassDefinition.StateProperties;
 
-      int nrStateCombinations = CalcOuterProductNrStateCombinations (SecurableClass);
+      int nrStateCombinations = CalcOuterProductNrStateCombinations (ClassDefinition);
       int numberStateProperties = stateProperties.Count;
       PropertyStateTuple[][] outerProductOfStateProperties = new PropertyStateTuple[nrStateCombinations][];
 
@@ -242,12 +262,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public PropertyStateTuple[][] CalculateOuterProduct2 ()
     {
       int iStateCombinations = 0;
-      var stateProperties = SecurableClass.StateProperties;
+      var stateProperties = ClassDefinition.StateProperties;
 
-      //_outerProductOfStateProperties = new List<AclSecurityContextHelper> ();
-      //_outerProductOfStateProperties2 = new List<List<PropertyStateTuple>>();
-
-      PropertyStateTuple[][] outerProductOfStateProperties = new PropertyStateTuple[CalcOuterProductNrStateCombinations (SecurableClass)][];
+      PropertyStateTuple[][] outerProductOfStateProperties = new PropertyStateTuple[CalcOuterProductNrStateCombinations (ClassDefinition)][];
 
       // To avoid using _stateOuterProductHasMore, the following line needs to be enabled.  
       // (Note however that this leads to less stable code due to a dependency on the order the processing of the _aStatePropertyDefinedStateIndex array):
@@ -255,10 +272,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // if (_aStatePropertyDefinedStateIndex[iStatePropertyLast] < stateProperties[iStatePropertyLast].DefinedStates.Count)
 
       _stateOuterProductHasMore = false;
-      int nStateCombinations = CalcOuterProductNrStateCombinations (SecurableClass);
+      int nStateCombinations = CalcOuterProductNrStateCombinations (ClassDefinition);
       if (nStateCombinations > 0)
       {
-        _aStatePropertyDefinedStateIndex = new int[SecurableClass.StateProperties.Count];
+        _aStatePropertyDefinedStateIndex = new int[ClassDefinition.StateProperties.Count];
         _stateOuterProductHasMore = true;
       }
 
@@ -299,15 +316,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
-
-
-
-
-
-
     private void CalculateOuterProduct ()
     {
-      var stateProperties = SecurableClass.StateProperties;
+      var stateProperties = ClassDefinition.StateProperties;
 
       _outerProductOfStateProperties = new List<AclSecurityContextHelper>();
 
@@ -317,17 +328,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // if (_aStatePropertyDefinedStateIndex[iStatePropertyLast] < stateProperties[iStatePropertyLast].DefinedStates.Count)
 
       _stateOuterProductHasMore = false;
-      int nStateCombinations = CalcOuterProductNrStateCombinations (SecurableClass);
+      int nStateCombinations = CalcOuterProductNrStateCombinations (ClassDefinition);
       if (nStateCombinations > 0)
       {
-        _aStatePropertyDefinedStateIndex = new int[SecurableClass.StateProperties.Count];
+        _aStatePropertyDefinedStateIndex = new int[ClassDefinition.StateProperties.Count];
         _stateOuterProductHasMore = true;
       }
 
       while (_stateOuterProductHasMore)
       {
         // Create a AclSecurityContextHelper containing the state definitions referenced from the current for-loop-indices array (_aStatePropertyDefinedStateIndex)
-        var aclSecurityContextHelper = new AclSecurityContextHelper (SecurableClass.Name);
+        var aclSecurityContextHelper = new AclSecurityContextHelper (ClassDefinition.Name);
         for (int iStateProperty = 0; iStateProperty < stateProperties.Count; ++iStateProperty)
         {
           var stateProperty = stateProperties[iStateProperty];
@@ -357,102 +368,44 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public IEnumerator GetEnumerator ()
-    {
-      //IEnumerator<int> items = (IEnumerator<int>) new[] {1, 2, 3}.GetEnumerator();
-      //foreach (int i in items)
+    //public IEnumerator GetEnumerator ()
+    //{
+    //  //IEnumerator<int> items = (IEnumerator<int>) new[] {1, 2, 3}.GetEnumerator();
+    //  //foreach (int i in items)
 
-      foreach (var aclSecurityContextHelper in _outerProductOfStateProperties)
-        yield return aclSecurityContextHelper;
-    }
+    //  foreach (var aclSecurityContextHelper in _outerProductOfStateProperties)
+    //    yield return aclSecurityContextHelper;
+    //}
 
-    public string ToTestString ()
-    {
-      string s = "";
-      foreach (var aclSecurityContextHelper in _outerProductOfStateProperties)
-        s += Environment.NewLine + aclSecurityContextHelper.ToTestString();
-      return s;
-    }
+    //public string ToTestString ()
+    //{
+    //  string s = "";
+    //  foreach (var aclSecurityContextHelper in _outerProductOfStateProperties)
+    //    s += Environment.NewLine + aclSecurityContextHelper.ToTestString();
+    //  return s;
+    //}
 
 
     public static int CalcOuterProductNrStateCombinations (SecurableClassDefinition classDefinition)
     {
       var stateProperties = classDefinition.StateProperties;
       if (stateProperties.Count <= 0)
+      {
         return 0;
+      }
       else
       {
         int nStateCombinations = 1;
         foreach (var statePropertyDefinition in stateProperties)
         {
           int nDefinedStates = statePropertyDefinition.DefinedStates.Count;
-          //Assertion.IsTrue (nDefinedStates > 0);
+          Assertion.IsTrue (nDefinedStates > 0);
           nStateCombinations *= nDefinedStates;
         }
         return nStateCombinations;
       }
     }
 
-#if(false)
-    #region Implementation of IEnumerator
-
-    public bool MoveNext ()
-    {
-      return _MoveNext();
-    }
-
-    public void Reset ()
-    {
-      ArgumentUtility.CheckNotNull ("SecurableClass", SecurableClass);
-      _stateOuterProductHasMore = false;
-      _aclSecurityContextHelper = null;
-      int nStateCombinations = CalcOuterProductNrStateCombinations (SecurableClass);
-      if (nStateCombinations > 0)
-      {
-        _aStatePropertyDefinedStateIndex = new int[SecurableClass.StateProperties.Count];
-        _stateOuterProductHasMore = true;
-      }
-    }
-
-    AclSecurityContextHelper IEnumerator<AclSecurityContextHelper>.Current
-    {
-      get
-      {
-        return _aclSecurityContextHelper;
-      }
-    }
-
-    public object Current
-    {
-      get
-      {
-        return _aclSecurityContextHelper;
-      }
-    }
-
-
-    #endregion
-
-    public void Dispose ()
-    {
-      // empty
-    }
-
-
-    #region Implementation of IEnumerable
-
-    public IEnumerator<AclSecurityContextHelper> GetEnumerator ()
-    {
-      return this;
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return this;
-    }
-
-    #endregion
-#endif
 
     private void Log (string format, params Object[] variables)
     {

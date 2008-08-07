@@ -9,8 +9,11 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 
@@ -22,6 +25,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     private AccessControlTestHelper _testHelper;
     private SecurableClassDefinition _orderClass;
     private StateCombinationBuilder _stateCombinationBuilder;
+    //private StateCombinationBuilderFast stateCombinationBuilderFast;
 
     public override void SetUp ()
     {
@@ -106,6 +110,84 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       Check (actual, expected);
     }
+
+
+    [Test]
+    public void TestStateCombinationBuildersPerformance ()
+    {
+      const int numberProperty = 8;
+      const int numberState = 4;
+      for (int iProperty = 0; iProperty < numberProperty; iProperty++)
+      {
+        StatePropertyDefinition property = _testHelper.CreateStateProperty ("p" + iProperty);
+        for (int iState = 0; iState < numberState; iState++)
+        {
+          property.AddState ("s" + iProperty + "-" + iState, iState);
+        }
+        _orderClass.AddStateProperty (property);
+      }
+
+      // Must not initialize StateCombinationBuilderFast before states/properties in class exist !
+      var stateCombinationBuilderFast = new StateCombinationBuilderFast (_orderClass);
+
+      const bool logResult = false;
+      var actualOPOSP = CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("StateCombinationBuilderFast.CalculateOuterProduct3", stateCombinationBuilderFast.CalculateOuterProduct3, logResult, numberProperty, numberState);
+      var actualOPOSP4 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("StateCombinationBuilderFast.CalculateOuterProduct4", stateCombinationBuilderFast.CalculateOuterProduct4, logResult, numberProperty, numberState);
+      var actualOPOSP5 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("StateCombinationBuilderFast.CalculateOuterProduct5", stateCombinationBuilderFast.CalculateOuterProduct5, logResult, numberProperty, numberState);
+      var actualOPOSP6 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("StateCombinationBuilderFast.CalculateOuterProduct6", stateCombinationBuilderFast.CalculateOuterProduct6, logResult, numberProperty, numberState);
+      var actualSCB = CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("StateCombinationBuilder.CreatePropertyProduct", _stateCombinationBuilder.CreatePropertyProduct, logResult, numberProperty, numberState);
+      Console.Write (Environment.NewLine);
+
+      Assert.That (actualOPOSP.Length, Is.EqualTo (actualSCB.Length));
+
+      for (int i = 0; i < actualSCB.Length; ++i)
+      {
+        Assert.That (actualSCB[i], Is.EquivalentTo (actualOPOSP[i]));
+      }
+
+    }
+
+    private void LogStopwatch (Stopwatch stopwatch, String message)
+    {
+      Console.Write (Environment.NewLine + Environment.NewLine + message + ": " + String.Format ("{0} ms = {1} s = {2} min", stopwatch.ElapsedMilliseconds, stopwatch.ElapsedMilliseconds / (1000.0), stopwatch.ElapsedMilliseconds / (1000.0 * 60.0)));
+    }
+
+    private void LogPropertyStateTuples (PropertyStateTuple[][] propertyStateTuples)
+    //private void LogPropertyStateTuples<T> (T propertyStateTuples) where T : IEnumerable<T>
+    {
+      Console.Write (Environment.NewLine + "LogPropertyStateTuples: ");
+      int i = 0;
+      foreach (var propertyStateTupleArray in propertyStateTuples)
+      {
+        Console.Write (Environment.NewLine + String.Format ("{0}) ", i));
+        ++i;
+        foreach (var propertyStateTuple in propertyStateTupleArray)
+          Console.Write (String.Format ("[{0}]", propertyStateTuple.State.Name));
+      }
+    }
+
+    private T CalculatePropertyOuterProduct<T> (
+      string delegateIdentifierName, Func<T> calculatePropertyOuterProduct,
+      bool logResult, int numberProperty, int numberState)
+    {
+      Stopwatch stopwatch = new Stopwatch ();
+
+      GC.Collect (2);
+      GC.WaitForPendingFinalizers ();
+
+      stopwatch.Start ();
+      T propertyOuterProduct = calculatePropertyOuterProduct ();
+      stopwatch.Stop ();
+      LogStopwatch (stopwatch, delegateIdentifierName + String.Format (" (numberProperty={0},numberState={1})", numberProperty, numberState));
+
+      if (logResult)
+      {
+        //LogPropertyStateTuples (propertyOuterProduct);
+      }
+
+      return propertyOuterProduct;
+    }
+
 
     private PropertyStateTuple CreateTuple (StatePropertyDefinition stateProperty, int stateIndex)
     {

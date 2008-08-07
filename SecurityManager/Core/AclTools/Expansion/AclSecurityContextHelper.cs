@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -76,10 +77,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void AddState(StatePropertyDefinition statePropertyDefinition, StateDefinition stateDefinition)
     {
-      //Log ("!!! {0} !!! {1} !!! {2} !!!", stateDefinition.ShortName(), stateDefinition.Name, stateDefinition.ToString ());
-      
       _states.Add (statePropertyDefinition.Name, new EnumWrapper (stateDefinition.Name));
-      //stateDefinitions.Add (stateDefinition);
       _stateDefinitionList.Add (stateDefinition);
     }
 
@@ -103,10 +101,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
     */
 
+    /// <summary>
+    /// Returns the list of StateDefinition|s stored in the class.
+    /// </summary>
     public List<StateDefinition> GetStateDefinitionList ()
     {
       return _stateDefinitionList;
     }
+
+    /// <summary>
+    /// Initializes the list of StateDefinition|s of the class (existing states will be replaced).
+    /// </summary>
+    /// <param name="stateDefinitions">Any collection (IEnumerable)</param>
+    public void SetStates (IEnumerable<StateDefinition> stateDefinitions) 
+    {
+      _stateDefinitionList.Clear();
+      _stateDefinitionList.AddRange (stateDefinitions);
+    }
+
 
 
     public override string ToString ()
@@ -164,16 +176,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public static string ShortName (this StateDefinition stateDefinition)
     {
       return stateDefinition.Name.LeftUntilChar ('|');
-      //string name = stateDefinition.Name;
-      //int iSeparator = name.IndexOf ('|');
-      //if(iSeparator > 0)
-      //{
-      //  return name.Substring (0, iSeparator);
-      //}
-      //else
-      //{
-      //  return name;
-      //}
     }
   }
 

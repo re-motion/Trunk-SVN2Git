@@ -32,23 +32,30 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       AccessControlListFinder aclFinder = new AccessControlListFinder();
 
       // Retrieve all class definitions from the DB
-      ObjectList<SecurableClassDefinition> classList = SecurableClassDefinition.FindAll();
+      IList<SecurableClassDefinition> classList = SecurableClassDefinition.FindAll();
 
       // For each of the retrieved class definitions
-      foreach (var securableClass in classList)
+      foreach (var secuarableClass in classList)
       {
-        // Initialize a OuterProductOfStateProperties-object that generates all possible state combinations
+        // Initialize a StateCombinationBuilderFast-object that generates all possible state combinations
         // of a given class.
-        var outerProductOfStateProperties = new OuterProductOfStateProperties (securableClass);
+        //var outerProductOfStateProperties = new StateCombinationBuilderFast (securableClass);
 
         // Iterate over all state combinations
-        foreach (AclSecurityContextHelper aclSecurityContextHelper in outerProductOfStateProperties)
+        //foreach (AclSecurityContextHelper aclSecurityContextHelper in outerProductOfStateProperties)
+        foreach (var stateCombination in secuarableClass.StateCombinations)
         {
+          // Create an AclSecurityContextHelper and initialize it with the StateDefinition|s of 
+          // the current foreach StateCombination
+          var aclSecurityContextHelper = new AclSecurityContextHelper (secuarableClass.Name);
+          aclSecurityContextHelper.SetStates (stateCombination.GetStates());
+
           // Retrieve the ACL for this (class,state)-combination
-          AccessControlList acl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, securableClass, aclSecurityContextHelper);
+          AccessControlList acl = 
+            aclFinder.Find (ClientTransactionScope.CurrentTransaction, secuarableClass, aclSecurityContextHelper);
 
           // Store the retrieved ACL in a map, indexed by (class, state-definition-list)
-          _classStateToAclMap.Add (new ClassStateTuple (securableClass, aclSecurityContextHelper.GetStateDefinitionList ()), acl);
+          _classStateToAclMap.Add (new ClassStateTuple (secuarableClass, aclSecurityContextHelper.GetStateDefinitionList ()), acl);
         } 
       }
     }
