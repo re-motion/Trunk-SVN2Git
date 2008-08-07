@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         if (relationDefinitions.Contains (relationID))
           return relationDefinitions[relationID];
 
-        RelationDefinition relationDefinition = new RelationDefinition (
+        var relationDefinition = new RelationDefinition (
             relationID,
             relationEndPointReflector.GetMetadata (),
             CreateOppositeEndPointDefinition (classDefinitions));

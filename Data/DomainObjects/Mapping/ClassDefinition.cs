@@ -431,7 +431,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       if (!ReferenceEquals (args.PropertyDefinition.ClassDefinition, this))
       {
         throw CreateMappingException (
-            "Proeprty '{0}' cannot be added to class '{1}', because it was initialized for class '{2}'.",
+            "Property '{0}' cannot be added to class '{1}', because it was initialized for class '{2}'.",
             args.PropertyDefinition.PropertyName,
             _id,
             args.PropertyDefinition.ClassDefinition.ID);
@@ -468,7 +468,7 @@ namespace Remotion.Data.DomainObjects.Mapping
           definingClass = string.Format ("base class '{0}'", basePropertyDefinition.ClassDefinition.ID);
 
         throw CreateMappingException (
-            "Proeprty '{0}' cannot be added to class '{1}', because {2} already defines a property with the same name.",
+            "Property '{0}' cannot be added to class '{1}', because {2} already defines a property with the same name.",
             args.PropertyDefinition.PropertyName,
             _id,
             definingClass);
