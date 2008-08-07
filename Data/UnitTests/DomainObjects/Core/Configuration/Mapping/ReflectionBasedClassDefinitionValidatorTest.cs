@@ -15,6 +15,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -24,8 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ValidateCurrentMixinConfiguration_OkWhenNoPersistentChanges ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false,
-          new Type[] { typeof (MixinA) });
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, new[] { typeof (MixinA) });
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (MixinA)).EnterScope ())
       {
         new ReflectionBasedClassDefinitionValidator (classDefinition).ValidateCurrentMixinConfiguration (); // ok, no changes
@@ -36,6 +36,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         new ReflectionBasedClassDefinitionValidator (classDefinition).ValidateCurrentMixinConfiguration (); // ok, no persistence-related changes
       }
     }
+
+    [Test]
+    public void ValidateCurrentMixinConfiguration_OkOnInheritanceRootInheritingMixin ()
+    {
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (InheritanceRootInheritingMixin), false, new[] { typeof (MixinE) });
+      new ReflectionBasedClassDefinitionValidator (classDefinition).ValidateCurrentMixinConfiguration (); // ok, no changes
+    }
+
+    [Test]
+    public void CreateNewPersistentMixinFinder_IncludeInheritedMixins_InheritanceRoot ()
+    {
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (InheritanceRootInheritingMixin), false, new Type[0]);
+      Assert.That (new ReflectionBasedClassDefinitionValidator (classDefinition).CreateNewPersistentMixinFinder ().IncludeInherited, Is.True);
+    }
+
+    [Test]
+    public void CreateNewPersistentMixinFinder_IncludeInheritedMixins_BelowInheritanceRoot ()
+    {
+      var baseClassDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Company), false, new Type[0]);
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Customer), false, baseClassDefinition, new Type[0]);
+      Assert.That (new ReflectionBasedClassDefinitionValidator (classDefinition).CreateNewPersistentMixinFinder ().IncludeInherited, Is.False);
+    }
+
+
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "A persistence-related mixin was removed from the domain object type "

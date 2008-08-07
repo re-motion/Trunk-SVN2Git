@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
                                 select from state in property.DefinedStates.DefaultIfEmpty()
                                        select new PropertyStateTuple (property, state);
 
-      var aggregatedStates = allStatesByProperty.Aggregate (seed, (previous, current) => CreateOuterProduct (previous, current));
+      var aggregatedStates = allStatesByProperty.Aggregate (seed, CreateOuterProduct);
 
       return aggregatedStates.Select (innerList => innerList.ToArray()).ToArray();
     }

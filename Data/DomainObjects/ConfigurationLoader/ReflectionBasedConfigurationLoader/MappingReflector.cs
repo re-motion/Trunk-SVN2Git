@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Linq;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -33,16 +34,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       _typeDiscoveryService = typeDiscoveryService;
     }
 
-    protected override Type[] GetDomainObjectTypes ()
+    protected override IEnumerable<Type> GetDomainObjectTypes ()
     {
-      List<Type> domainObjectClasses = new List<Type>();
-      foreach (Type type in _typeDiscoveryService.GetTypes (null, false))
-      {
-        if (typeof (DomainObject).IsAssignableFrom (type) && !domainObjectClasses.Contains (type))
-          domainObjectClasses.Add (type);
-      }
-
-      return domainObjectClasses.ToArray();
+      return (from type in _typeDiscoveryService.GetTypes (typeof (DomainObject), false).Cast<Type>()
+              where !type.IsDefined (typeof (IgnoreForMappingConfigurationAttribute), false)
+              select type).Distinct();
     }
   }
 }

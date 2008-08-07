@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
     }
 
     [Test]
-    public void FindPropertyInfos_WithDiamond ()
+    public void FindPropertyInfos_WithDiamondShapedInheritance ()
     {
       MixinPropertyFinder propertyFinder = CreatePropertyFinder (typeof (DiamondTarget), false);
 
@@ -100,9 +100,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
                   }));
     }
 
+    [Test]
+    public void FindPropertyInfos_ForMixinAppliedAboveInheritanceRoot ()
+    {
+      MixinPropertyFinder propertyFinder = CreatePropertyFinder (typeof (InheritanceRootInheritingMixin), true);
+
+      Assert.That (EnumerableUtility.ToArray (
+          propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (InheritanceRootInheritingMixin)))),
+          Is.EquivalentTo (new[] { GetProperty (typeof (MixinE), "P9"), }));
+    }
+
     private MixinPropertyFinder CreatePropertyFinder (Type type, bool includeBaseProperties)
     {
-      return new MixinPropertyFinder (typeof (StubPropertyFinderBase), new PersistentMixinFinder (type), includeBaseProperties,
+      return new MixinPropertyFinder (typeof (StubPropertyFinderBase), new PersistentMixinFinder (type, includeBaseProperties), includeBaseProperties,
           new ReflectionBasedNameResolver ());
     }
   }

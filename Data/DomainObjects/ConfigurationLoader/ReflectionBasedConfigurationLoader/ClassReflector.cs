@@ -33,37 +33,26 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return new RdbmsClassReflector (type, nameResolver);
     }
 
-    private readonly Type _type;
-    private readonly IMappingNameResolver _nameResolver;
-    private readonly PersistentMixinFinder _persistentMixinFinder;
-
     public ClassReflector (Type type, IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
-      _type = type;
-      _nameResolver = nameResolver;
-      _persistentMixinFinder = new PersistentMixinFinder (type);
+      Type = type;
+      NameResolver = nameResolver;
+      PersistentMixinFinder = new PersistentMixinFinder (type, IsInheritanceRoot());
     }
 
-    public Type Type
-    {
-      get { return _type; }
-    }
-
-    public IMappingNameResolver NameResolver
-    {
-      get { return _nameResolver; }
-    }
-
+    public PersistentMixinFinder PersistentMixinFinder { get; private set; }
+    public Type Type { get; private set; }
+    public IMappingNameResolver NameResolver { get; private set; }
 
     public ReflectionBasedClassDefinition GetClassDefinition (ClassDefinitionCollection classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
 
-      if (classDefinitions.Contains (_type))
-        return (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (_type);
+      if (classDefinitions.Contains (Type))
+        return (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (Type);
 
       ReflectionBasedClassDefinition classDefinition = CreateClassDefinition (classDefinitions);
       classDefinitions.Add (classDefinition);
@@ -78,9 +67,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("relationDefinitions", relationDefinitions);
 
       List<RelationDefinition> relations = new List<RelationDefinition>();
-      ReflectionBasedClassDefinition classDefinition = (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (_type);
+      ReflectionBasedClassDefinition classDefinition = (ReflectionBasedClassDefinition) classDefinitions.GetMandatory (Type);
 
-      foreach (PropertyInfo propertyInfo in GetRelationPropertyInfos (classDefinition, _persistentMixinFinder))
+      foreach (PropertyInfo propertyInfo in GetRelationPropertyInfos (classDefinition, PersistentMixinFinder))
       {
         RelationReflector relationReflector = RelationReflector.CreateRelationReflector (classDefinition, propertyInfo, NameResolver);
         RelationDefinition relationDefinition = relationReflector.GetMetadata (classDefinitions, relationDefinitions);
@@ -112,10 +101,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           GetID(),
           GetStorageSpecificIdentifier(),
           GetStorageProviderID(),
-          _type,
+          Type,
           IsAbstract(),
           GetBaseClassDefinition (classDefinitions),
-          _persistentMixinFinder.GetPersistentMixins ());
+          PersistentMixinFinder.GetPersistentMixins ());
 
       CreatePropertyDefinitions (classDefinition, GetPropertyInfos (classDefinition));
 
@@ -125,32 +114,32 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     //TODO: Add constructor checks
     private void ValidateType ()
     {
-      if (_type.IsGenericType && !IsDomainObjectBase (_type))
-        throw CreateMappingException (null, _type.GetGenericTypeDefinition(), "Generic domain objects are not supported.");
+      if (Type.IsGenericType && !IsDomainObjectBase (Type))
+        throw CreateMappingException (null, Type.GetGenericTypeDefinition(), "Generic domain objects are not supported.");
       
       if (!IsAbstract())
       {
         BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.ExactBinding;
-        ConstructorInfo legacyLoadConstructor = _type.GetConstructor (flags, null, new Type[] {typeof (DataContainer)}, null);
+        ConstructorInfo legacyLoadConstructor = Type.GetConstructor (flags, null, new Type[] {typeof (DataContainer)}, null);
         if (legacyLoadConstructor != null)
         {
           throw CreateMappingException (
               null,
-              _type,
+              Type,
               "The domain object type has a legacy infrastructure constructor for loading (a nonpublic constructor taking a single DataContainer "
               + "argument). The reflection-based mapping does not use this constructor any longer and requires it to be removed.");
         }
       }
 
-      if (IsInheritenceRoot() && Attribute.IsDefined (_type.BaseType, typeof (StorageGroupAttribute), true))
+      if (IsInheritanceRoot() && Attribute.IsDefined (Type.BaseType, typeof (StorageGroupAttribute), true))
       {
-        Type baseType = _type.BaseType;
+        Type baseType = Type.BaseType;
         while (!AttributeUtility.IsDefined<StorageGroupAttribute> (baseType, false))
           baseType = baseType.BaseType;
 
         throw CreateMappingException (
             null,
-            _type,
+            Type,
             "The domain object type cannot redefine the '{0}' already defined on base type '{1}'.",
             typeof (StorageGroupAttribute),
             baseType);
@@ -168,15 +157,15 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private string GetID ()
     {
-      ClassIDAttribute attribute = AttributeUtility.GetCustomAttribute<ClassIDAttribute> (_type, false);
+      ClassIDAttribute attribute = AttributeUtility.GetCustomAttribute<ClassIDAttribute> (Type, false);
       if (attribute != null)
         return attribute.ClassID;
-      return _type.Name;
+      return Type.Name;
     }
 
     protected virtual string GetStorageSpecificIdentifier ()
     {
-      IStorageSpecificIdentifierAttribute attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (_type, false);
+      IStorageSpecificIdentifierAttribute attribute = AttributeUtility.GetCustomAttribute<IStorageSpecificIdentifierAttribute> (Type, false);
       if (attribute != null && !string.IsNullOrEmpty (attribute.Identifier))
         return attribute.Identifier;
       return GetID();
@@ -186,7 +175,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     //TODO: Test for DefaultStorageProvider
     private string GetStorageProviderID ()
     {
-      StorageGroupAttribute storageGroupAttribute = AttributeUtility.GetCustomAttribute<StorageGroupAttribute> (_type, true);
+      StorageGroupAttribute storageGroupAttribute = AttributeUtility.GetCustomAttribute<StorageGroupAttribute> (Type, true);
       if (storageGroupAttribute == null)
         return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinition.Name;
 
@@ -199,18 +188,18 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private bool IsAbstract ()
     {
-      if (_type.IsAbstract)
-        return !Attribute.IsDefined (_type, typeof (InstantiableAttribute), false);
+      if (Type.IsAbstract)
+        return !Attribute.IsDefined (Type, typeof (InstantiableAttribute), false);
 
       return false;
     }
 
-    private bool IsInheritenceRoot ()
+    private bool IsInheritanceRoot ()
     {
-      if (IsDomainObjectBase (_type.BaseType))
+      if (IsDomainObjectBase (Type.BaseType))
         return true;
 
-      return Attribute.IsDefined (_type, typeof (StorageGroupAttribute), false);
+      return Attribute.IsDefined (Type, typeof (StorageGroupAttribute), false);
     }
 
     private bool IsDomainObjectBase (Type type)
@@ -220,22 +209,22 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private ReflectionBasedClassDefinition GetBaseClassDefinition (ClassDefinitionCollection classDefinitions)
     {
-      if (IsInheritenceRoot())
+      if (IsInheritanceRoot())
         return null;
 
-      ClassReflector classReflector = (ClassReflector) TypesafeActivator.CreateInstance (GetType()).With (_type.BaseType, NameResolver);
+      ClassReflector classReflector = (ClassReflector) TypesafeActivator.CreateInstance (GetType()).With (Type.BaseType, NameResolver);
       return classReflector.GetClassDefinition (classDefinitions);
     }
 
     private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
-      PropertyFinder propertyFinder = new PropertyFinder (_type, IsInheritenceRoot (), _persistentMixinFinder, NameResolver);
+      PropertyFinder propertyFinder = new PropertyFinder (Type, IsInheritanceRoot (), PersistentMixinFinder, NameResolver);
       return propertyFinder.FindPropertyInfos (classDefinition);
     }
 
     private PropertyInfo[] GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition, PersistentMixinFinder persistentMixinFinder)
     {
-      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (_type, IsInheritenceRoot (), _persistentMixinFinder, NameResolver);
+      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (Type, IsInheritanceRoot (), PersistentMixinFinder, NameResolver);
       return relationPropertyFinder.FindPropertyInfos (classDefinition);
     }
   }

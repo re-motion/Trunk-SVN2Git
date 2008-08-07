@@ -15,7 +15,7 @@ using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
 {
-  public class MixinAddingPersistentProperties : DomainObjectMixin<DomainObject>, IMixinAddingPeristentProperties
+  public class MixinAddingPersistentProperties : BaseForMixinAddingPersistentProperties, IMixinAddingPeristentProperties
   {
     private int _nonPersistentProperty = 0;
 
@@ -72,22 +72,4 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
       set { Properties[typeof (MixinAddingPersistentProperties), "CollectionPropertyNSide"].SetValue (value); }
     }
   }
-
-  //public class MixinAddingPersistentProperties2 : DomainObjectMixin<DomainObject>
-  //{
-  //  [DBColumn("Storm")]
-  //  public int PersistentProperty
-  //  {
-  //    get { return Properties[typeof (MixinAddingPersistentProperties2), "PersistentProperty"].GetValue<int> (); }
-  //    set { Properties[typeof (MixinAddingPersistentProperties2), "PersistentProperty"].SetValue (value); }
-  //  }
-
-  //  [DBBidirectionalRelation ("RelationProperty4")]
-  //  [DBColumn ("Winter")]
-  //  public RelationTargetForPersistentMixin CollectionPropertyNSide
-  //  {
-  //    get { return Properties[typeof (MixinAddingPersistentProperties2), "CollectionPropertyNSide"].GetValue<RelationTargetForPersistentMixin> (); }
-  //    set { Properties[typeof (MixinAddingPersistentProperties2), "CollectionPropertyNSide"].SetValue (value); }
-  //  }
-  //}
 }

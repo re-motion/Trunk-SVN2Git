@@ -176,10 +176,12 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondLeft.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondTarget.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\InheritanceRootInheritingMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\MixinBeingSuppressed.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\MixinNotOnBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DerivedMixinNotOnBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\MixinSuppressingAnother.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\TargetClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\TargetClassC.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyFinderTests\MixinPropertyFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\ReflectionBasedClassDefinitionValidatorTest.cs" />
@@ -237,7 +239,12 @@
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\ClassWithNonVirtualManualPropertyAccessors.cs" />
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\DOWithAutomaticProperties.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExtensionMethodsTest.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\BaseForMixinAddingPersistentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinAddingPersistentPropertiesAboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\InheritanceRootInheritingPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinAddingSimplePersistentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\RelationTargetForPersistentMixinAboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\TargetClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ContainsObjectParserTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DatabaseInfoTest.cs" />

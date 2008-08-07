@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       Type current = mixin;
       while (current != null && !IsMixinBaseClass (current))
       {
-        if (!processedMixins.Contains (current) && (!_persistentMixinFinder.IsInParentContext (current) || _includeBaseProperties))
+        if (!processedMixins.Contains (current) && (_includeBaseProperties || !_persistentMixinFinder.IsInParentContext (current)))
         {
           PropertyFinderBase mixinPropertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (_propertyFinderType)
               .With (

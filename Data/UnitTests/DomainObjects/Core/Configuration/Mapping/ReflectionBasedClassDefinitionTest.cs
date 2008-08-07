@@ -859,17 +859,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void PropertyInfoWithShadowedProperty ()
     {
-      PropertyInfo property1 = typeof (Shadower).GetProperty ("Name",
-          BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-      PropertyInfo property2 =
-          typeof (Base).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+      var property1 = typeof (Shadower).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+      var property2 = typeof (Base).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
       ClassDefinition classDefinition1 = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Shadower));
       ClassDefinition classDefinition2 = classDefinition1.BaseClass;
 
-      ReflectionBasedPropertyDefinition propertyDefinition1 =
+      var propertyDefinition1 =
           (ReflectionBasedPropertyDefinition) classDefinition1.GetMandatoryPropertyDefinition (property1.DeclaringType.FullName + "." + property1.Name);
-      ReflectionBasedPropertyDefinition propertyDefinition2 =
+      var propertyDefinition2 =
           (ReflectionBasedPropertyDefinition) classDefinition2.GetMandatoryPropertyDefinition (property2.DeclaringType.FullName + "." + property2.Name);
       
       Assert.AreEqual (property1, propertyDefinition1.PropertyInfo);
@@ -888,44 +886,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void PersistentMixins_Empty ()
     {
-      Type[] mixins = new Type[0];
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
+      var mixins = new Type[0];
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
       Assert.That (classDefinition.PersistentMixins, Is.EqualTo (mixins));
     }
 
     [Test]
     public void PersistentMixins_NonEmpty ()
     {
-      Type[] mixins = new Type[] { typeof (MixinA), typeof (MixinB) };
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
+      var mixins = new[] { typeof (MixinA), typeof (MixinB) };
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
       Assert.That (classDefinition.PersistentMixins, Is.EqualTo (mixins));
     }
 
     [Test]
-    public void HasPersistentMixin_True ()
+    public void GetPersistentMixin_TypeFound ()
     {
-      Type[] mixins = new Type[] { typeof (MixinA), typeof (MixinB) };
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
-      Assert.IsTrue (classDefinition.HasPersistentMixin (typeof (MixinA)));
-      Assert.IsTrue (classDefinition.HasPersistentMixin (typeof (MixinB)));
+      var mixins = new[] { typeof (MixinA), typeof (MixinB) };
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
+      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinA)), Is.SameAs (typeof (MixinA)));
+      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinB)), Is.SameAs (typeof (MixinB)));
     }
 
     [Test]
-    public void HasPersistentMixin_TrueWithBase ()
+    public void GetPersistentMixin_BaseFound ()
     {
-      Type[] mixins = new Type[] { typeof (MixinB) };
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
-      Assert.IsTrue (classDefinition.HasPersistentMixin (typeof (MixinA)));
-      Assert.IsTrue (classDefinition.HasPersistentMixin (typeof (MixinB)));
+      var mixins = new[] { typeof (MixinB) };
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
+      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinA)), Is.SameAs (typeof (MixinB)));
+      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinB)), Is.SameAs (typeof (MixinB)));
     }
 
     [Test]
-    public void HasPersistentMixin_False ()
+    public void GetPersistentMixin_Null ()
     {
-      Type[] mixins = new Type[0];
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
-      Assert.IsFalse (classDefinition.HasPersistentMixin (typeof (MixinA)));
-      Assert.IsFalse (classDefinition.HasPersistentMixin (typeof (MixinB)));
+      var mixins = new Type[0];
+      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
+      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinA)), Is.Null);
+      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinB)), Is.Null);
     }
   }
 }

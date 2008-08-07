@@ -18,72 +18,96 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <summary>Base class for reflecting on the relations of a class.</summary>
   public abstract class RelationReflectorBase : MemberReflectorBase
   {
-    private readonly BidirectionalRelationAttribute _bidirectionalRelationAttribute;
-    private readonly ReflectionBasedClassDefinition _classDefinition;
-    private readonly bool _isMixedProperty;
-
     protected RelationReflectorBase (
         ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo, Type bidirectionalRelationAttributeType, IMappingNameResolver nameResolver)
         : base (propertyInfo, nameResolver)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      CheckClassDefinitionType (classDefinition, propertyInfo);
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom (
           "bidirectionalRelationAttributeType", bidirectionalRelationAttributeType, typeof (BidirectionalRelationAttribute));
 
-      _classDefinition = classDefinition;
-      _bidirectionalRelationAttribute =
+      ClassDefinition = classDefinition;
+      BidirectionalRelationAttribute =
           (BidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (PropertyInfo, bidirectionalRelationAttributeType, true);
-      _isMixedProperty = _classDefinition.HasPersistentMixin (PropertyInfo.DeclaringType);
+      DeclaringMixin = ClassDefinition.GetPersistentMixin (PropertyInfo.DeclaringType);
+      DomainObjectTypeDeclaringProperty = GetDomainObjectTypeDeclaringProperty ();
+
+      CheckClassDefinitionType ();
     }
 
-    public ReflectionBasedClassDefinition ClassDefinition
-    {
-      get { return _classDefinition; }
-    }
+    public ReflectionBasedClassDefinition ClassDefinition { get; private set; }
+    public BidirectionalRelationAttribute BidirectionalRelationAttribute { get; private set; }
+    public Type DeclaringMixin { get; private set; }
 
-    public BidirectionalRelationAttribute BidirectionalRelationAttribute
-    {
-      get { return _bidirectionalRelationAttribute; }
-    }
+    public Type DomainObjectTypeDeclaringProperty { get; private set; }
 
     protected bool IsBidirectionalRelation
     {
-      get { return _bidirectionalRelationAttribute != null; }
+      get { return BidirectionalRelationAttribute != null; }
     }
 
     public bool IsMixedProperty
     {
-      get { return _isMixedProperty; }
+      get { return DeclaringMixin != null; }
+    }
+
+    private Type GetDomainObjectTypeDeclaringProperty ()
+    {
+      if (IsMixedProperty)
+      {
+#warning TODO: find the type where the mixin was first declared
+        return ClassDefinition.ClassType;
+      }
+      else
+        return PropertyInfo.DeclaringType;
     }
 
     protected PropertyInfo GetOppositePropertyInfo ()
     {
       Type type = GetDomainObjectTypeFromRelationProperty (PropertyInfo);
       PropertyInfo oppositePropertyInfo = GetOppositePropertyInfo (type);
-      if (oppositePropertyInfo != null)
-        return oppositePropertyInfo;
+      
+      if (oppositePropertyInfo == null)
+        oppositePropertyInfo = GetOppositePropertyInfoFromMixins (type);
+      
+      if (oppositePropertyInfo == null)
+        oppositePropertyInfo = GetOppositePropertyInfoFromBaseTypes (type); // property defined on base type?
 
-      foreach (Type mixinType in new PersistentMixinFinder (type).GetPersistentMixins ())
+      if (oppositePropertyInfo == null)
       {
-        oppositePropertyInfo = GetOppositePropertyInfo (mixinType);
-        if (oppositePropertyInfo != null)
-          return oppositePropertyInfo;
+        throw CreateMappingException (
+            null,
+            PropertyInfo,
+            "Opposite relation property '{0}' could not be found on type '{1}'.",
+            BidirectionalRelationAttribute.OppositeProperty,
+            GetDomainObjectTypeFromRelationProperty (PropertyInfo));
       }
 
+      return oppositePropertyInfo;
+    }
+
+    private PropertyInfo GetOppositePropertyInfoFromMixins (Type type)
+    {
+      foreach (var mixinType in new PersistentMixinFinder (type).GetPersistentMixins ())
+      {
+        var oppositePropertyInfo = GetOppositePropertyInfo (mixinType);
+        if (oppositePropertyInfo != null)
+          return oppositePropertyInfo;
+        else
+          return GetOppositePropertyInfoFromBaseTypes (mixinType); // property defined on mixin's base type?
+      }
+      return null;
+    }
+
+    private PropertyInfo GetOppositePropertyInfoFromBaseTypes (Type type)
+    {
       for (Type baseType = type.BaseType; baseType != null; baseType = baseType.BaseType)
       {
-        oppositePropertyInfo = GetOppositePropertyInfo (baseType);
+        var oppositePropertyInfo = GetOppositePropertyInfo (baseType);
         if (oppositePropertyInfo != null)
           return oppositePropertyInfo;
       }
-
-      throw CreateMappingException (
-          null,
-          PropertyInfo,
-          "Opposite relation property '{0}' could not be found on type '{1}'.",
-          BidirectionalRelationAttribute.OppositeProperty,
-          GetDomainObjectTypeFromRelationProperty (PropertyInfo));
+      return null;
     }
 
     private PropertyInfo GetOppositePropertyInfo (Type type)
@@ -101,16 +125,16 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         return propertyInfo.PropertyType;
     }
 
-    private void CheckClassDefinitionType (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
+    private void CheckClassDefinitionType ()
     {
-      if (!PropertyInfo.DeclaringType.IsAssignableFrom (classDefinition.ClassType) && !classDefinition.HasPersistentMixin (PropertyInfo.DeclaringType))
+      if (!PropertyInfo.DeclaringType.IsAssignableFrom (ClassDefinition.ClassType) && !IsMixedProperty)
       {
         string message = string.Format (
             "The classDefinition's class type '{0}' is not assignable to the property's declaring type.\r\nDeclaring type: {1}, property: {2}",
-            classDefinition.ClassType,
-            propertyInfo.DeclaringType,
-            propertyInfo.Name);
-        throw new ArgumentTypeException (message, null, classDefinition.ClassType, propertyInfo.DeclaringType);
+            ClassDefinition.ClassType,
+            PropertyInfo.DeclaringType,
+            PropertyInfo.Name);
+        throw new ArgumentTypeException (message, null, ClassDefinition.ClassType, PropertyInfo.DeclaringType);
       }
     }
   }

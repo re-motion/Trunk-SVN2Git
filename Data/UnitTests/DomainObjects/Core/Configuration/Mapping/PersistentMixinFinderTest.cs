@@ -52,21 +52,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public void ForTargetClassBase ()
     {
       Type targetType = typeof (TargetClassBase);
-      CheckPersistentMixins (targetType, typeof (MixinBase));
+      CheckPersistentMixins (targetType, false, typeof (MixinBase));
     }
 
     [Test]
     public void ForTargetClassA ()
     {
       Type targetType = typeof (TargetClassA);
-      CheckPersistentMixins (targetType, typeof (MixinA), typeof (MixinC), typeof (MixinD));
+      CheckPersistentMixins (targetType, false, typeof (MixinA), typeof (MixinC), typeof (MixinD));
     }
 
     [Test]
     public void ForTargetClassB ()
     {
       Type targetType = typeof (TargetClassB);
-      CheckPersistentMixins (targetType, typeof (MixinB), typeof (MixinE));
+      CheckPersistentMixins (targetType, false, typeof (MixinB), typeof (MixinE));
+    }
+
+    [Test]
+    public void ForTargetClassB_WithIncludeInheritedMixins ()
+    {
+      Type targetType = typeof (TargetClassB);
+      CheckPersistentMixins (targetType, true, typeof (MixinB), typeof (MixinE), typeof (MixinC), typeof (MixinD));
     }
 
     public class PersistedGenericMixin<T> : DomainObjectMixin<T>
@@ -134,9 +141,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       }
     }
 
-    private void CheckPersistentMixins (Type targetType, params Type[] expectedTypes)
+    private void CheckPersistentMixins (Type targetType, bool includeInherited, params Type[] expectedTypes)
     {
-      List<Type> mixinTypes = new PersistentMixinFinder (targetType).GetPersistentMixins ();
+      List<Type> mixinTypes = new PersistentMixinFinder (targetType, includeInherited).GetPersistentMixins ();
       Assert.That (mixinTypes, Is.EquivalentTo (expectedTypes));
     }
   }

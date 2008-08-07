@@ -355,6 +355,7 @@ CREATE TABLE [dbo].[Group]
   [TenantID] uniqueidentifier NULL,
   [ParentID] uniqueidentifier NULL,
   [GroupTypeID] uniqueidentifier NULL,
+  [IntProperty] int NOT NULL,
 
   CONSTRAINT [PK_Group] PRIMARY KEY CLUSTERED ([ID])
 )
@@ -367,6 +368,7 @@ CREATE TABLE [dbo].[GroupType]
 
   -- GroupType columns
   [Name] nvarchar (100) NOT NULL,
+  [IntProperty] int NOT NULL,
 
   CONSTRAINT [PK_GroupType] PRIMARY KEY CLUSTERED ([ID])
 )
@@ -380,6 +382,7 @@ CREATE TABLE [dbo].[GroupTypePosition]
   -- GroupTypePosition columns
   [GroupTypeID] uniqueidentifier NULL,
   [PositionID] uniqueidentifier NULL,
+  [IntProperty] int NOT NULL,
 
   CONSTRAINT [PK_GroupTypePosition] PRIMARY KEY CLUSTERED ([ID])
 )
@@ -393,6 +396,7 @@ CREATE TABLE [dbo].[Position]
   -- Position columns
   [Name] nvarchar (100) NOT NULL,
   [Delegation] int NOT NULL,
+  [IntProperty] int NOT NULL,
 
   CONSTRAINT [PK_Position] PRIMARY KEY CLUSTERED ([ID])
 )
@@ -407,6 +411,7 @@ CREATE TABLE [dbo].[Role]
   [GroupID] uniqueidentifier NULL,
   [PositionID] uniqueidentifier NULL,
   [UserID] uniqueidentifier NULL,
+  [IntProperty] int NOT NULL,
 
   CONSTRAINT [PK_Role] PRIMARY KEY CLUSTERED ([ID])
 )
@@ -422,6 +427,7 @@ CREATE TABLE [dbo].[Tenant]
   [UniqueIdentifier] nvarchar (100) NOT NULL,
   [IsAbstract] bit NOT NULL,
   [ParentID] uniqueidentifier NULL,
+  [IntProperty] int NOT NULL,
 
   CONSTRAINT [PK_Tenant] PRIMARY KEY CLUSTERED ([ID])
 )
@@ -439,6 +445,7 @@ CREATE TABLE [dbo].[User]
   [UserName] nvarchar (100) NOT NULL,
   [TenantID] uniqueidentifier NULL,
   [OwningGroupID] uniqueidentifier NULL,
+  [IntProperty] int NOT NULL,
 
   CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED ([ID])
 )
@@ -644,57 +651,57 @@ CREATE VIEW [dbo].[StatePropertyReferenceView] ([ID], [ClassID], [Timestamp], [S
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[GroupView] ([ID], [ClassID], [Timestamp], [Name], [ShortName], [UniqueIdentifier], [TenantID], [ParentID], [GroupTypeID])
+CREATE VIEW [dbo].[GroupView] ([ID], [ClassID], [Timestamp], [Name], [ShortName], [UniqueIdentifier], [TenantID], [ParentID], [GroupTypeID], [IntProperty])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Name], [ShortName], [UniqueIdentifier], [TenantID], [ParentID], [GroupTypeID]
+  SELECT [ID], [ClassID], [Timestamp], [Name], [ShortName], [UniqueIdentifier], [TenantID], [ParentID], [GroupTypeID], [IntProperty]
     FROM [dbo].[Group]
     WHERE [ClassID] IN ('Group')
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[GroupTypeView] ([ID], [ClassID], [Timestamp], [Name])
+CREATE VIEW [dbo].[GroupTypeView] ([ID], [ClassID], [Timestamp], [Name], [IntProperty])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Name]
+  SELECT [ID], [ClassID], [Timestamp], [Name], [IntProperty]
     FROM [dbo].[GroupType]
     WHERE [ClassID] IN ('GroupType')
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[GroupTypePositionView] ([ID], [ClassID], [Timestamp], [GroupTypeID], [PositionID])
+CREATE VIEW [dbo].[GroupTypePositionView] ([ID], [ClassID], [Timestamp], [GroupTypeID], [PositionID], [IntProperty])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [GroupTypeID], [PositionID]
+  SELECT [ID], [ClassID], [Timestamp], [GroupTypeID], [PositionID], [IntProperty]
     FROM [dbo].[GroupTypePosition]
     WHERE [ClassID] IN ('GroupTypePosition')
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[PositionView] ([ID], [ClassID], [Timestamp], [Name], [Delegation])
+CREATE VIEW [dbo].[PositionView] ([ID], [ClassID], [Timestamp], [Name], [Delegation], [IntProperty])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Name], [Delegation]
+  SELECT [ID], [ClassID], [Timestamp], [Name], [Delegation], [IntProperty]
     FROM [dbo].[Position]
     WHERE [ClassID] IN ('Position')
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[RoleView] ([ID], [ClassID], [Timestamp], [GroupID], [PositionID], [UserID])
+CREATE VIEW [dbo].[RoleView] ([ID], [ClassID], [Timestamp], [GroupID], [PositionID], [UserID], [IntProperty])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [GroupID], [PositionID], [UserID]
+  SELECT [ID], [ClassID], [Timestamp], [GroupID], [PositionID], [UserID], [IntProperty]
     FROM [dbo].[Role]
     WHERE [ClassID] IN ('Role')
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[TenantView] ([ID], [ClassID], [Timestamp], [Name], [UniqueIdentifier], [IsAbstract], [ParentID])
+CREATE VIEW [dbo].[TenantView] ([ID], [ClassID], [Timestamp], [Name], [UniqueIdentifier], [IsAbstract], [ParentID], [IntProperty])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Name], [UniqueIdentifier], [IsAbstract], [ParentID]
+  SELECT [ID], [ClassID], [Timestamp], [Name], [UniqueIdentifier], [IsAbstract], [ParentID], [IntProperty]
     FROM [dbo].[Tenant]
     WHERE [ClassID] IN ('Tenant')
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[UserView] ([ID], [ClassID], [Timestamp], [Title], [FirstName], [LastName], [UserName], [TenantID], [OwningGroupID])
+CREATE VIEW [dbo].[UserView] ([ID], [ClassID], [Timestamp], [Title], [FirstName], [LastName], [UserName], [TenantID], [OwningGroupID], [IntProperty])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Title], [FirstName], [LastName], [UserName], [TenantID], [OwningGroupID]
+  SELECT [ID], [ClassID], [Timestamp], [Title], [FirstName], [LastName], [UserName], [TenantID], [OwningGroupID], [IntProperty]
     FROM [dbo].[User]
     WHERE [ClassID] IN ('User')
   WITH CHECK OPTION

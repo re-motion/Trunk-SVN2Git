@@ -79,19 +79,19 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return true; }
     }
 
-    public bool HasPersistentMixin (Type mixinType)
+    public Type GetPersistentMixin (Type mixinToSearch)
     {
-      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
-      if (_persistentMixins.Contains (mixinType))
-        return true;
+      ArgumentUtility.CheckNotNull ("mixinToSearch", mixinToSearch);
+      if (_persistentMixins.Contains (mixinToSearch))
+        return mixinToSearch;
       else
       {
         foreach (Type mixin in _persistentMixins)
         {
-          if (mixinType.IsAssignableFrom (mixin))
-            return true;
+          if (mixinToSearch.IsAssignableFrom (mixin))
+            return mixin;
         }
-        return false;
+        return null;
       }
     }
 

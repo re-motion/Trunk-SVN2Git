@@ -25,6 +25,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
   {
     private ReflectionBasedClassDefinition _mixinTargetClassDefinition;
     private ReflectionBasedClassDefinition _relatedClassDefinition;
+    private ReflectionBasedClassDefinition _inheritanceRootInheritingMixinClassDefinition;
+
     private ClassDefinitionCollection _classDefinitions;
     private RelationDefinitionCollection _relationDefinitions;
 
@@ -36,34 +38,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           CreateReflectionBasedClassDefinition (typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties));
       _relatedClassDefinition = 
           CreateReflectionBasedClassDefinition (typeof (RelationTargetForPersistentMixin), typeof (MixinAddingPersistentProperties));
+      _inheritanceRootInheritingMixinClassDefinition =
+          CreateReflectionBasedClassDefinition (typeof (InheritanceRootInheritingPersistentMixin), typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot));
 
-      _classDefinitions = new ClassDefinitionCollection();
-      _classDefinitions.Add (_mixinTargetClassDefinition);
-      _classDefinitions.Add (_relatedClassDefinition);
-
+      _classDefinitions = new ClassDefinitionCollection {_mixinTargetClassDefinition, _relatedClassDefinition};
       _relationDefinitions = new RelationDefinitionCollection();
     }
 
     [Test]
     public void IsMixedProperty_True ()
     {
-      PropertyInfo propertyInfo = typeof (MixinAddingPersistentProperties).GetProperty ("UnidirectionalRelationProperty");
-      PropertyReflector propertyReflector = new PropertyReflector (_mixinTargetClassDefinition, propertyInfo, new ReflectionBasedNameResolver ());
-      PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
-      _mixinTargetClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      RelationReflector relationReflector = new RelationReflector (_mixinTargetClassDefinition, propertyInfo, new ReflectionBasedNameResolver ());
-      Assert.IsTrue (relationReflector.IsMixedProperty);
+      var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition, typeof (MixinAddingPersistentProperties), 
+          "UnidirectionalRelationProperty");
+      Assert.That (relationReflector.IsMixedProperty, Is.True);
+    }
+
+    [Test]
+    public void DeclaringMixin ()
+    {
+      var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition, typeof (MixinAddingPersistentProperties),
+          "UnidirectionalRelationProperty");
+      Assert.That (relationReflector.DeclaringMixin, Is.SameAs (typeof (MixinAddingPersistentProperties)));
     }
 
     [Test]
     public void DomainObjectTypeDeclaringProperty ()
     {
-      PropertyInfo propertyInfo = typeof (MixinAddingPersistentProperties).GetProperty ("UnidirectionalRelationProperty");
-      PropertyReflector propertyReflector = new PropertyReflector (_mixinTargetClassDefinition, propertyInfo, new ReflectionBasedNameResolver ());
-      PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
-      _mixinTargetClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
-      RelationReflector relationReflector = new RelationReflector (_mixinTargetClassDefinition, propertyInfo, new ReflectionBasedNameResolver ());
-      Assert.AreEqual (typeof (TargetClassForPersistentMixin), relationReflector.DomainObjectTypeDeclaringProperty);
+      var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition, typeof (MixinAddingPersistentProperties),
+          "PersistentProperty");
+      Assert.That (relationReflector.DomainObjectTypeDeclaringProperty, Is.EqualTo (typeof (TargetClassForPersistentMixin)));
+    }
+
+    [Test]
+    [Ignore ("TODO: Support relations with mixins above inheritance root")]
+    public void DomainObjectTypeDeclaringProperty_WithMixinAboveInheritanceRoot ()
+    {
+      var relationReflector = CreateRelationReflectorForProperty(_inheritanceRootInheritingMixinClassDefinition, 
+          typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot), "PersistentRelationProperty");
+      Assert.That (relationReflector.DomainObjectTypeDeclaringProperty, Is.EqualTo (typeof (TargetClassAboveInheritanceRoot)));
     }
 
     [Test]
@@ -191,9 +203,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.That (_relationDefinitions.Count, Is.EqualTo (0));
     }
 
+    [Test]
+    public void GetMetadata_Mixed_OppositePropertyPrivateOnBase ()
+    {
+      PropertyInfo propertyInfo = 
+          typeof (BaseForMixinAddingPersistentProperties).GetProperty ("PrivateBaseRelationProperty", BindingFlags.NonPublic | BindingFlags.Instance);
+      var propertyReflector = new PropertyReflector (_mixinTargetClassDefinition, propertyInfo, new ReflectionBasedNameResolver ());
+      var propertyDefinition = propertyReflector.GetMetadata ();
+      _mixinTargetClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+
+      var relationReflector = new RelationReflector (_mixinTargetClassDefinition, propertyInfo, new ReflectionBasedNameResolver ());
+
+      Assert.IsNotNull (relationReflector.GetMetadata (_classDefinitions, _relationDefinitions));
+      Assert.That (_relationDefinitions.Count, Is.EqualTo (1));
+      Assert.That (_relationDefinitions[0].ID, NUnit.Framework.SyntaxHelpers.Text.Contains (propertyDefinition.PropertyName));
+    }
+
+    [Test]
+    [Ignore ("TODO: Support relations with mixins above inheritance root")]
+    public void GetMetadata_Mixed_PropertyAboveInheritanceRoot ()
+    {
+      PropertyInfo propertyInfo = typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot).GetProperty ("PersistentRelationProperty",
+          BindingFlags.Public | BindingFlags.Instance);
+      var propertyReflector = new PropertyReflector (_inheritanceRootInheritingMixinClassDefinition, propertyInfo, new ReflectionBasedNameResolver ());
+      var propertyDefinition = propertyReflector.GetMetadata ();
+      _inheritanceRootInheritingMixinClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+
+      var relationReflector = new RelationReflector (_inheritanceRootInheritingMixinClassDefinition, propertyInfo, new ReflectionBasedNameResolver ());
+
+      Assert.IsNotNull (relationReflector.GetMetadata (_classDefinitions, _relationDefinitions));
+      Assert.That (_relationDefinitions.Count, Is.EqualTo (1));
+      Assert.That (_relationDefinitions[0].ID, NUnit.Framework.SyntaxHelpers.Text.Contains (propertyDefinition.PropertyName));
+    }
+
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] mixins)
     {
       return new ReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, new List<Type> (mixins));
+    }
+
+    private RelationReflector CreateRelationReflectorForProperty (ReflectionBasedClassDefinition classDefinition, Type declaringType, string propertyName)
+    {
+      var propertyInfo = declaringType.GetProperty (propertyName);
+      var propertyReflector = new PropertyReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver ());
+      var propertyDefinition = propertyReflector.GetMetadata ();
+
+      classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      return new RelationReflector (classDefinition, propertyInfo, new ReflectionBasedNameResolver ());
     }
   }
 }

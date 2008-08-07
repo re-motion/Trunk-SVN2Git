@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     public override void ValidateCurrentMixinConfiguration ()
     {
       base.ValidateCurrentMixinConfiguration ();
-      Set<Type> currentMixins = new Set<Type> (new PersistentMixinFinder (_classDefinition.ClassType).GetPersistentMixins ());
+      Set<Type> currentMixins = new Set<Type> (CreateNewPersistentMixinFinder().GetPersistentMixins ());
       foreach (Type t in _classDefinition.PersistentMixins)
       {
         if (!currentMixins.Contains (t))
@@ -44,6 +44,11 @@ namespace Remotion.Data.DomainObjects.Mapping
             + "information was built: {1}.", _classDefinition.ClassType.FullName, SeparatedStringBuilder.Build (", ", currentMixins));
         throw new MappingException (message);
       }
+    }
+
+    public PersistentMixinFinder CreateNewPersistentMixinFinder ()
+    {
+      return new PersistentMixinFinder (_classDefinition.ClassType, _classDefinition.GetInheritanceRootClass() == _classDefinition);
     }
   }
 }

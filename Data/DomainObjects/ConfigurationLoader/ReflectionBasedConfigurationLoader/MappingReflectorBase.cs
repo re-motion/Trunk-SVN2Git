@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -21,15 +22,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   {
     private readonly IMappingNameResolver _nameResolver = new ReflectionBasedNameResolver();
 
-    protected MappingReflectorBase()
-    {
-    }
-
-    protected abstract Type[] GetDomainObjectTypes();
+    protected abstract IEnumerable<Type> GetDomainObjectTypes();
 
     public ClassDefinitionCollection GetClassDefinitions()
     {
-      ClassDefinitionCollection classDefinitions = new ClassDefinitionCollection();
+      var classDefinitions = new ClassDefinitionCollection();
       foreach (ClassReflector classReflector in CreateClassReflectors())
         classReflector.GetClassDefinition (classDefinitions);
 
@@ -39,41 +36,29 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public RelationDefinitionCollection GetRelationDefinitions (ClassDefinitionCollection classDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);
-      RelationDefinitionCollection relationDefinitions = new RelationDefinitionCollection();
+      var relationDefinitions = new RelationDefinitionCollection();
       foreach (ClassReflector classReflector in CreateClassReflectorsForRelations (classDefinitions))
         classReflector.GetRelationDefinitions (classDefinitions, relationDefinitions);
 
       return relationDefinitions;
     }
 
-    private List<ClassReflector> CreateClassReflectors()
+    private IEnumerable<ClassReflector> CreateClassReflectors()
     {
-      List<ClassReflector> classReflectors = new List<ClassReflector>();
-      InheritanceHierarchyFilter inheritanceHierarchyFilter = new InheritanceHierarchyFilter (GetDomainObjectTypesSorted());
-      foreach (Type domainObjectClass in inheritanceHierarchyFilter.GetLeafTypes())
-        classReflectors.Add (ClassReflector.CreateClassReflector (domainObjectClass, NameResolver));
-      
-      return classReflectors;
+      var inheritanceHierarchyFilter = new InheritanceHierarchyFilter (GetDomainObjectTypesSorted());
+      return from domainObjectClass in inheritanceHierarchyFilter.GetLeafTypes()
+             select ClassReflector.CreateClassReflector (domainObjectClass, NameResolver);
     }
 
-    private List<ClassReflector> CreateClassReflectorsForRelations (ClassDefinitionCollection classDefinitions)
+    private IEnumerable<ClassReflector> CreateClassReflectorsForRelations (IEnumerable classDefinitions)
     {
-      List<ClassReflector> classReflectors = new List<ClassReflector> ();
-      foreach (ReflectionBasedClassDefinition classDefinition in classDefinitions)
-        classReflectors.Add (ClassReflector.CreateClassReflector (classDefinition.ClassType, NameResolver));
-
-      return classReflectors;
+      return from classDefinition in classDefinitions.Cast<ClassDefinition>()
+             select ClassReflector.CreateClassReflector (classDefinition.ClassType, NameResolver);
     }
 
     private Type[] GetDomainObjectTypesSorted ()
     {
-      Type[] domainObjectTypes = GetDomainObjectTypes ();
-
-      Array.Sort (
-          domainObjectTypes,
-          delegate (Type left, Type right) { return string.Compare (left.FullName, right.FullName, StringComparison.OrdinalIgnoreCase); });
-
-      return domainObjectTypes;
+      return GetDomainObjectTypes ().OrderBy (t => t.FullName, StringComparer.OrdinalIgnoreCase).ToArray();
     }
 
     bool IMappingLoader.ResolveTypes

@@ -38,17 +38,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
     }
 
-    public Type DomainObjectTypeDeclaringProperty
-    {
-      get
-      {
-        if (IsMixedProperty)
-          return ClassDefinition.ClassType;
-        else
-          return PropertyInfo.DeclaringType;
-      }
-    }
-
     public RelationDefinition GetMetadata (ClassDefinitionCollection classDefinitions, RelationDefinitionCollection relationDefinitions)
     {
       ArgumentUtility.CheckNotNull ("classDefinitions", classDefinitions);

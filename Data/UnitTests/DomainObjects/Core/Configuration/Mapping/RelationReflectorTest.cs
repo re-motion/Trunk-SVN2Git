@@ -56,6 +56,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
+    public void DeclaringMixin_Null ()
+    {
+      PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("Unidirectional");
+      PropertyReflector propertyReflector = new PropertyReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
+      PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
+      _classWithManySideRelationPropertiesClassDefinition.MyPropertyDefinitions.Add (propertyDefinition);
+      RelationReflector relationReflector = new RelationReflector (_classWithManySideRelationPropertiesClassDefinition, propertyInfo, Configuration.NameResolver);
+      Assert.That (relationReflector.DeclaringMixin, Is.Null);
+    }
+
+    [Test]
     public void DomainObjectTypeDeclaringProperty ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithManySideRelationProperties).GetProperty ("Unidirectional");

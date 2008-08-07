@@ -131,6 +131,7 @@
     <Compile Include="Cloning\CompleteCloneStrategy.cs" />
     <Compile Include="Cloning\DomainObjectCloner.cs" />
     <Compile Include="Cloning\ICloneStrategy.cs" />
+    <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IgnoreForMappingConfigurationAttribute.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\MixinPropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\RelationPropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\MappingReflectorBase.cs" />
