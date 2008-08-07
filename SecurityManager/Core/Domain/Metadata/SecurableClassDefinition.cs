@@ -197,7 +197,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       _stateProperties = null;
     }
 
-    public StateCombination FindStateCombination (List<StateDefinition> states)
+    public StateCombination FindStateCombination (IList<StateDefinition> states)
     {
       return StateCombinations.Where (sc => sc.MatchesStates (states)).SingleOrDefault ();
     }

@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
@@ -32,7 +31,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       ArgumentUtility.CheckNotNull ("context", context);
 
       SecurableClassDefinition classDefinition;
-      using (transaction.EnterNonDiscardingScope ())
+      using (transaction.EnterNonDiscardingScope())
       {
         classDefinition = SecurableClassDefinition.FindByName (context.Class);
       }
@@ -79,33 +78,39 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return classDefinition.FindStateCombination (states);
     }
 
-    private List<StateDefinition> GetStates (IList stateProperties, ISecurityContext context)
+    private List<StateDefinition> GetStates (IList<StatePropertyDefinition> stateProperties, ISecurityContext context)
     {
-      List<StateDefinition> states = new List<StateDefinition> ();
+      List<StateDefinition> states = new List<StateDefinition>();
 
       if (context.IsStateless)
         return states;
 
-      foreach (StatePropertyDefinition property in stateProperties)
-      {
-        if (!context.ContainsState (property.Name))
-          throw CreateAccessControlException ("The state '{0}' is missing in the security context.", property.Name);
-
-        EnumWrapper enumWrapper = context.GetState (property.Name);
-
-        if (!property.ContainsState (enumWrapper.Name))
-        {
-          throw CreateAccessControlException ("The state '{0}' is not defined for the property '{1}' of the securable class '{2}' or its base classes.",
-              enumWrapper.Name, property.Name, context.Class);
-        }
-
-        states.Add (property.GetState (enumWrapper.Name));
-      }
-
-      if (context.GetNumberOfStates () > stateProperties.Count)
+      if (context.GetNumberOfStates() > stateProperties.Count)
         return null;
 
+      foreach (var stateProperty in stateProperties)
+        states.Add (GetState (stateProperty, context));
+
       return states;
+    }
+
+    private StateDefinition GetState (StatePropertyDefinition property, ISecurityContext context)
+    {
+      if (!context.ContainsState (property.Name))
+        throw CreateAccessControlException ("The state '{0}' is missing in the security context.", property.Name);
+
+      EnumWrapper enumWrapper = context.GetState (property.Name);
+
+      if (!property.ContainsState (enumWrapper.Name))
+      {
+        throw CreateAccessControlException (
+            "The state '{0}' is not defined for the property '{1}' of the securable class '{2}' or its base classes.",
+            enumWrapper.Name,
+            property.Name,
+            context.Class);
+      }
+
+      return property.GetState (enumWrapper.Name);
     }
 
     private AccessControlException CreateAccessControlException (string message, params object[] args)

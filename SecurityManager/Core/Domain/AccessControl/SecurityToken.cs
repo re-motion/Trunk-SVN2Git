@@ -20,22 +20,22 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 {
   public sealed class SecurityToken
   {
-    private User _user;
-    private Tenant _owningTenant;
-    private ReadOnlyCollection<Group> _owningGroups;
+    private readonly User _user;
+    private readonly Tenant _owningTenant;
+    private readonly ReadOnlyCollection<Group> _owningGroups;
     private ReadOnlyCollection<Group> _userGroups;
     private ReadOnlyCollection<Role> _owningGroupRoles;
-    private ReadOnlyCollection<AbstractRoleDefinition> _abstractRoles;
+    private readonly ReadOnlyCollection<AbstractRoleDefinition> _abstractRoles;
 
-    public SecurityToken (User user, Tenant owningTenant, List<Group> owningGroups, List<AbstractRoleDefinition> abstractRoles)
+    public SecurityToken (User user, Tenant owningTenant, IList<Group> owningGroups, IList<AbstractRoleDefinition> abstractRoles)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("owningGroups", owningGroups);
       ArgumentUtility.CheckNotNullOrItemsNull ("abstractRoles", abstractRoles);
 
       _user = user;
       _owningTenant = owningTenant;
-      _owningGroups = owningGroups.AsReadOnly ();
-      _abstractRoles = abstractRoles.AsReadOnly ();
+      _owningGroups = new ReadOnlyCollection<Group> (owningGroups);
+      _abstractRoles = new ReadOnlyCollection<AbstractRoleDefinition> (abstractRoles);
     }
 
 

@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Principal;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
@@ -40,8 +41,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       {
         User user = GetUser (principal.Identity.Name);
         Tenant owningTenant = GetTenant (context.OwnerTenant);
-        List<Group> owningGroups = GetGroups (context.OwnerGroup);
-        List<AbstractRoleDefinition> abstractRoles = GetAbstractRoles (context.AbstractRoles);
+        IList<Group> owningGroups = GetGroups (context.OwnerGroup);
+        IList<AbstractRoleDefinition> abstractRoles = GetAbstractRoles (context.AbstractRoles);
 
         return new SecurityToken (user, owningTenant, owningGroups, abstractRoles);
       }
@@ -93,39 +94,25 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return groups;
     }
 
-    private List<AbstractRoleDefinition> GetAbstractRoles (EnumWrapper[] abstractRoleNames)
+    private IList<AbstractRoleDefinition> GetAbstractRoles (EnumWrapper[] abstractRoleNames)
     {
-      DomainObjectCollection abstractRolesCollection = AbstractRoleDefinition.Find (abstractRoleNames);
+      IList<AbstractRoleDefinition> abstractRolesCollection = AbstractRoleDefinition.Find (abstractRoleNames);
 
       EnumWrapper? missingAbstractRoleName = FindFirstMissingAbstractRole (abstractRoleNames, abstractRolesCollection);
       if (missingAbstractRoleName != null)
         throw CreateAccessControlException ("The abstract role '{0}' could not be found.", missingAbstractRoleName);
 
-      List<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition>();
-      foreach (AbstractRoleDefinition abstractRole in abstractRolesCollection)
-        abstractRoles.Add (abstractRole);
-
-      return abstractRoles;
+      return abstractRolesCollection;
     }
 
-    private EnumWrapper? FindFirstMissingAbstractRole (EnumWrapper[] expectedAbstractRoles, DomainObjectCollection actualAbstractRolesCollection)
+    private EnumWrapper? FindFirstMissingAbstractRole (EnumWrapper[] expectedAbstractRoles, IList<AbstractRoleDefinition> actualAbstractRolesCollection)
     {
-      if (expectedAbstractRoles.Length == actualAbstractRolesCollection.Count)
-        return null;
+      var actualAbstractRoles = from r in actualAbstractRolesCollection select new EnumWrapper (r.Name);
+      var result = from expected in expectedAbstractRoles
+                   where !actualAbstractRoles.Contains (expected)
+                   select (EnumWrapper?)expected;
 
-      AbstractRoleDefinition[] actualAbstractRoles = new AbstractRoleDefinition[actualAbstractRolesCollection.Count];
-      actualAbstractRolesCollection.CopyTo (actualAbstractRoles, 0);
-
-      foreach (EnumWrapper expectedAbstractRole in expectedAbstractRoles)
-      {
-        Predicate<AbstractRoleDefinition> match =
-            delegate (AbstractRoleDefinition current) { return current.Name.Equals (expectedAbstractRole.ToString(), StringComparison.Ordinal); };
-
-        if (!Array.Exists (actualAbstractRoles, match))
-          return expectedAbstractRole;
-      }
-
-      return null;
+      return result.FirstOrDefault();
     }
 
     private AccessControlException CreateAccessControlException (string message, params object[] args)
