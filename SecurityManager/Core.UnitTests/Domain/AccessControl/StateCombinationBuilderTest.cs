@@ -113,6 +113,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
 
     [Test]
+    [Explicit]
     public void TestStateCombinationBuildersPerformance ()
     {
       const int numberProperty = 8;
@@ -136,7 +137,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       var actualOPOSP5 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("StateCombinationBuilderFast.CalculateOuterProduct5", stateCombinationBuilderFast.CalculateOuterProduct5, logResult, numberProperty, numberState);
       var actualOPOSP6 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("StateCombinationBuilderFast.CalculateOuterProduct6", stateCombinationBuilderFast.CalculateOuterProduct6, logResult, numberProperty, numberState);
       var actualSCB = CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("StateCombinationBuilder.CreatePropertyProduct", _stateCombinationBuilder.CreatePropertyProduct, logResult, numberProperty, numberState);
-      Console.Write (Environment.NewLine);
+      Console.WriteLine();
 
       Assert.That (actualOPOSP.Length, Is.EqualTo (actualSCB.Length));
 
@@ -149,7 +150,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     private void LogStopwatch (Stopwatch stopwatch, String message)
     {
-      Console.Write (Environment.NewLine + Environment.NewLine + message + ": " + String.Format ("{0} ms = {1} s = {2} min", stopwatch.ElapsedMilliseconds, stopwatch.ElapsedMilliseconds / (1000.0), stopwatch.ElapsedMilliseconds / (1000.0 * 60.0)));
+      Console.WriteLine();
+      Console.WriteLine (message + ": " + String.Format ("{0} ms = {1} s = {2} min", stopwatch.ElapsedMilliseconds, stopwatch.ElapsedMilliseconds / (1000.0), stopwatch.ElapsedMilliseconds / (1000.0 * 60.0)));
     }
 
     private void LogPropertyStateTuples (PropertyStateTuple[][] propertyStateTuples)

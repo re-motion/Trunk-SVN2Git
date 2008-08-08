@@ -79,6 +79,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
+    [Explicit]
     public void TestPropertyOuterProductImplementations ()
     {
       //for (int i = 0; i < 5; i++)

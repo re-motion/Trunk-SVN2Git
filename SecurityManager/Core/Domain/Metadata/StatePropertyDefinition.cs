@@ -9,6 +9,8 @@
  */
 
 using System;
+using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Utilities;
 
@@ -19,28 +21,20 @@ namespace Remotion.SecurityManager.Domain.Metadata
   [DBTable]
   public abstract class StatePropertyDefinition : MetadataObject
   {
-    // types
-
-    // static members and constants
-
     public static StatePropertyDefinition NewObject ()
     {
-      return NewObject<StatePropertyDefinition> ().With ();
+      return NewObject<StatePropertyDefinition>().With();
     }
 
     public static StatePropertyDefinition NewObject (Guid metadataItemID, string name)
     {
-      return NewObject<StatePropertyDefinition> ().With (metadataItemID, name);
+      return NewObject<StatePropertyDefinition>().With (metadataItemID, name);
     }
 
-    public static new StatePropertyDefinition GetObject (ObjectID id)
+    public new static StatePropertyDefinition GetObject (ObjectID id)
     {
       return DomainObject.GetObject<StatePropertyDefinition> (id);
     }
-
-    // member fields
-
-    // construction and disposing
 
     protected StatePropertyDefinition ()
     {
@@ -51,8 +45,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
       MetadataItemID = metadataItemID;
       Name = name;
     }
-
-    // methods and properties
 
     //TODO: Rename to StatePropertyReferences
     [DBBidirectionalRelation ("StateProperty")]
@@ -66,52 +58,32 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      foreach (StateDefinition state in DefinedStates)
-      {
-        if (state.Name == name)
-          return state;
-      }
-
-      throw new ArgumentException (string.Format ("The state '{0}' is not defined for the property '{1}'.", name, Name), "name");
+      return DefinedStates.Single (
+          s => s.Name == name,
+          () => CreateArgumentException ("name", "The state '{0}' is not defined for the property '{1}'.", name, Name));
     }
 
     public bool ContainsState (string name)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      foreach (StateDefinition state in DefinedStates)
-      {
-        if (state.Name == name)
-          return true;
-      }
-
-      return false;
+      return DefinedStates.Any (s => s.Name == name);
     }
 
     public StateDefinition GetState (int stateValue)
     {
-      foreach (StateDefinition state in DefinedStates)
-      {
-        if (state.Value == stateValue)
-          return state;
-      }
-
-      throw new ArgumentException (string.Format ("A state with the value {0} is not defined for the property '{1}'.", stateValue, Name), "stateValue");
+      return DefinedStates.Single (
+          s => s.Value == stateValue,
+          () => CreateArgumentException ("stateValue", "A state with the value {0} is not defined for the property '{1}'.", stateValue, Name));
     }
 
     public bool ContainsState (int stateValue)
     {
-      foreach (StateDefinition state in DefinedStates)
-      {
-        if (state.Value == stateValue)
-          return true;
-      }
-
-      return false;
+      return DefinedStates.Any (s => s.Value == stateValue);
     }
 
     [StorageClassNone]
-    public StateDefinition this[string stateName]
+    public StateDefinition this [string stateName]
     {
       get { return GetState (stateName); }
     }
@@ -120,7 +92,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNullOrEmpty ("stateName", stateName);
 
-      StateDefinition newStateDefinition = StateDefinition.NewObject ();
+      StateDefinition newStateDefinition = StateDefinition.NewObject();
       newStateDefinition.Name = stateName;
       newStateDefinition.Value = value;
       newStateDefinition.Index = value;
@@ -132,6 +104,11 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNull ("newState", newState);
       DefinedStates.Add (newState);
+    }
+
+    private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)
+    {
+      return new ArgumentException (string.Format (format, args), argumentName);
     }
   }
 }
