@@ -7,7 +7,7 @@ using Remotion.SecurityManager.Domain.Metadata;
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   /// <summary>
-  /// Tuple of security context class and state, that supports the necessary interfaces to be stored in a Dictionary (<see cref="ClassStateExpander"/>)
+  /// Tuple of security context class and state, that supports the necessary interfaces to be stored in a Dictionary (<see cref="ClassStateDictionary"/>)
   /// </summary>
   public class ClassStateTuple : Tuple<SecurableClassDefinition, List<StateDefinition>>, IComparable<ClassStateTuple>
   {

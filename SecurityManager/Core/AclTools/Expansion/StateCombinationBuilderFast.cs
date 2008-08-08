@@ -40,9 +40,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private List<AclSecurityContextHelper> _outerProductOfStateProperties;
 
-
+    
     public PropertyStateTuple[][] CreatePropertyProduct ()
     {
+
       return CalculateOuterProduct3();
     }
 

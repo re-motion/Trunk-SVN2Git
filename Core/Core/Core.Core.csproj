@@ -434,6 +434,7 @@
     <Compile Include="Text\CommandLine\Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Text\Diagnostic\To.cs" />
     <Compile Include="Text\IdentifierGenerator.cs">
       <SubType>Code</SubType>
     </Compile>

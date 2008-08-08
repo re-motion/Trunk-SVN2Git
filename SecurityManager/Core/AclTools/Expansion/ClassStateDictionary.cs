@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
@@ -9,33 +11,40 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public class ClassStateExpander //: IClassStateExpander
+  public class ClassStateDictionary 
   {
-    private SortedDictionary<ClassStateTuple, AccessControlList> _classStateToAclMap = new SortedDictionary<ClassStateTuple, AccessControlList>();
+    private readonly SortedDictionary<ClassStateTuple, AccessControlList> _classStateToAclMap = new SortedDictionary<ClassStateTuple, AccessControlList>();
 
-    public ClassStateExpander ()
+    public ClassStateDictionary (IEnumerable<SecurableClassDefinition> classes)
     {
-      _Init();
+      _Init (classes);
     }
 
+    public ClassStateDictionary () : this(null) {}
+
+
     /// <summary>
-    /// Initalizes the ClassStateExpander with the access control lists (ACLs) for each 
-    /// (SecurableClassDefinition, StateCombination)-combination. 
+    /// Initalizes the ClassStateDictionary with the access control lists (ACLs) for each 
+    /// (SecurableClassDefinition, StateCombination)-combination of the passed classes collection. 
     /// After initialization use the GetACL-methods to retrieve
     /// the ACL that applies to a given (SecurableClassDefinition, StateCombination)-combination.
     /// </summary>
-    private void _Init ()
+    private void _Init (IEnumerable<SecurableClassDefinition> classes)
     {
-      _classStateToAclMap.Clear();
+      _classStateToAclMap.Clear ();
 
       // Create an aclFinder to enable us to query for ACLs for a given (class,state)-combination
       AccessControlListFinder aclFinder = new AccessControlListFinder();
 
       // Retrieve all class definitions from the DB
-      IList<SecurableClassDefinition> classList = SecurableClassDefinition.FindAll();
+      //IEnumerable<SecurableClassDefinition> classes = SecurableClassDefinition.FindAll();
+      if (classes == null)
+      {
+        classes = SecurableClassDefinition.FindAll();
+      }
 
       // For each of the retrieved class definitions
-      foreach (var secuarableClass in classList)
+      foreach (var secuarableClass in classes)
       {
         // Initialize a StateCombinationBuilderFast-object that generates all possible state combinations
         // of a given class.
@@ -87,6 +96,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return _classStateToAclMap[new ClassStateTuple(securableClass, new List<StateDefinition>(state.GetStates()))];
     }
 
-   
+    public override string ToString ()
+    {
+      var stringbuilder = new StringBuilder();
+      foreach(var mapEntry in _classStateToAclMap)
+      {
+        stringbuilder.AppendLine (String.Format ("[{0},{1}]", To.Text(mapEntry.Key), mapEntry.Value));
+      }
+      return stringbuilder.ToString();
+    }
+    
   }
 }

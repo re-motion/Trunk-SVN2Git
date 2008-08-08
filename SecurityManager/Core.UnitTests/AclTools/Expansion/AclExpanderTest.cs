@@ -11,31 +11,38 @@ using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 using Remotion.Utilities;
 using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.SecurityManager.AclTools;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
   [TestFixture]
   public class AclExpanderTest : DomainTest
   {
-    private SecurableClassDefinition OrderClass { get; set; }
-    private SecurableClassDefinition DummyClass { get; set; }
+    //private SecurableClassDefinition OrderClass { get; set; }
+    //private SecurableClassDefinition DummyClass { get; set; }
 
     private AccessControlTestHelper _testHelper;
     private SecurableClassDefinition _orderClass;
+    private SecurableClassDefinition _dummyClass;
     private StateCombinationBuilder _stateCombinationBuilder;
     private StateCombinationBuilderFast _outerProductOfStateProperties;
+    private SecurableClassDefinition _orderClassWithProperties;
 
 
     public override void SetUp ()
     {
       base.SetUp();
       ClientTransaction.NewRootTransaction().EnterDiscardingScope();
-      OrderClass = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID);
-      DummyClass = SecurableClassDefinition.NewObject ();
+      _orderClass = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID);
+      _dummyClass = SecurableClassDefinition.NewObject ();
 
       _testHelper = new AccessControlTestHelper ();
       _testHelper.Transaction.EnterNonDiscardingScope ();
       _orderClass = _testHelper.CreateOrderClassDefinition ();
+      //_testHelper.CreateStateCombination()
+
+      _orderClassWithProperties = _testHelper.CreateOrderClassDefinitionWithProperties ();
+
       _stateCombinationBuilder = new StateCombinationBuilder (_orderClass);
       _outerProductOfStateProperties = new StateCombinationBuilderFast (_orderClass);
     }
@@ -77,106 +84,83 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    private void LogVariables (string format, params Object[] variables)
+    {
+      Console.WriteLine (String.Format (format, variables));
+    }
+
+    private void Log (Object obj)
+    {
+      Console.WriteLine (obj);
+    }
+    
 
     [Test]
-    [Explicit]
-    public void TestPropertyOuterProductImplementations ()
+    public void ClassStateDictionaryTest ()
     {
-      //for (int i = 0; i < 5; i++)
-      for (int iProperty = 0; iProperty < 8; iProperty++)
-      {
-        //StatePropertyDefinition property = _testHelper.CreateStateProperty (Guid.NewGuid ().ToString ());
-        StatePropertyDefinition property = _testHelper.CreateStateProperty ("p" + iProperty);
-        for (int iState = 0; iState < 4; iState++)
-        {
-          //property.AddState (Guid.NewGuid ().ToString (), j);
-          property.AddState ("s" + iProperty + "-" + iState, iState);
-        }
-        _orderClass.AddStateProperty (property);
-      }
+      SecurableClassDefinition testClass = _orderClass;
 
-      const bool logResult = false;
-#if(true)
-      var actualSCB = CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("StateCombinationBuilder.CreatePropertyProduct", _stateCombinationBuilder.CreatePropertyProduct, logResult); //, iProperty, iState);
-      GC.Collect (2);
-      GC.WaitForPendingFinalizers ();
-      var actualOPOSP = CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("StateCombinationBuilderFast.CalculateOuterProduct3", _outerProductOfStateProperties.CalculateOuterProduct3, logResult); //, iProperty, iState);
-      GC.Collect (2);
-      GC.WaitForPendingFinalizers ();
-      var actualOPOSP4 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("StateCombinationBuilderFast.CalculateOuterProduct4", _outerProductOfStateProperties.CalculateOuterProduct4, logResult); //, iProperty, iState);
-      GC.Collect (2);
-      GC.WaitForPendingFinalizers ();
-      var actualOPOSP5 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("StateCombinationBuilderFast.CalculateOuterProduct5", _outerProductOfStateProperties.CalculateOuterProduct5, logResult); //, iProperty, iState);
-      GC.Collect (2);
-      GC.WaitForPendingFinalizers();
-      var actualOPOSP6 = CalculatePropertyOuterProduct<PropertyStateTuple[,]> ("StateCombinationBuilderFast.CalculateOuterProduct6", _outerProductOfStateProperties.CalculateOuterProduct6, logResult); //, iProperty, iState);
+      //var aceOwningTenant = _testHelper.CreateAceWithOwningTenant();
+      var acl = _testHelper.CreateAcl (testClass, testClass.StateProperties[0].DefinedStates[0]);
+      //_testHelper.
+      //testClass.
 
-      Assert.That (actualOPOSP.Length, Is.EqualTo (actualSCB.Length));
+      var accessControlListFinder = new AccessControlListFinder();
 
-      for (int i = 0; i < actualSCB.Length; ++i)
-      {
-        Assert.That (actualSCB[i], Is.EquivalentTo (actualOPOSP[i]));
-      }
-#endif
+      var classStateDictionary = new ClassStateDictionary (new List<SecurableClassDefinition>() { testClass });
 
-#if(false)
-      for (int i = 0; i < 10; ++i)
-      {
-        GC.Collect (2);
-        GC.WaitForPendingFinalizers ();
-        CalculatePropertyOuterProduct<PropertyStateTuple[][]> ("StateCombinationBuilderFast.CalculateOuterProduct3", _outerProductOfStateProperties.CalculateOuterProduct3, logResult); //, iProperty, iState);
-      }
-#endif
+      var aclSecurityContextHelper = new AclSecurityContextHelper (testClass.Name);
+      //aclSecurityContextHelper.AddState
+      //accessControlListFinder.Find (_testHelper.Transaction, testClass, );
+      //Assert.That (classStateDictionary.GetACL (new ClassStateTuple (testClass, testClass.StateCombinations[0])), Is.EqualTo ());
+      
+      
+      //Log (To.Text(classStateDictionary));
+      //Log (classStateDictionary.ToString());
+
 
     }
 
 
 
-    //StateCombinationBuilderFast
+    private void ClassStateTupleTestHelper (ClassStateTuple classStateTuple, StateCombination stateCombination)
+    {
+      Assert.That (classStateTuple.Class, Is.EqualTo (_orderClassWithProperties));
+      Assert.That (classStateTuple.Class, Is.Not.EqualTo (_dummyClass));
+      Assert.That (classStateTuple.StateList, Is.EqualTo (stateCombination.GetStates ()));
+    }
 
-    //private void Log (string format, params Object[] variables)
-    //{
-    //  Console.WriteLine (String.Format (format, variables));
-    //}
+    [Test]
+    public void ClassStateTupleTest ()
+    {
+      SecurableClassDefinition testClass = _orderClassWithProperties;
+      foreach (StateCombination stateCombination in testClass.StateCombinations)
+      {
+        var classStateTuple = new ClassStateTuple (_orderClassWithProperties, stateCombination);
+        ClassStateTupleTestHelper (classStateTuple, stateCombination);
 
-
-    //private void ClassStateTupleTestHelper (ClassStateTuple classStateTuple, StateCombination stateCombination)
-    //{
-    //  Assert.That (classStateTuple.Class, Is.EqualTo (OrderClass));
-    //  Assert.That (classStateTuple.Class, Is.Not.EqualTo (DummyClass));
-    //  Assert.That (classStateTuple.StateList, Is.EqualTo (stateCombination.GetStates()));
-    //}
-
-    //[Test]
-    //public void ClassStateTupleTest ()
-    //{
-    //  SecurableClassDefinition testClass = OrderClass;
-    //  foreach(StateCombination stateCombination in testClass.StateCombinations)
-    //  {
-    //    var classStateTuple = new ClassStateTuple (OrderClass, stateCombination);
-    //    ClassStateTupleTestHelper (classStateTuple, stateCombination);
-
-    //    var classStateTuple2 = new ClassStateTuple (OrderClass, stateCombination.GetStates ());
-    //    ClassStateTupleTestHelper (classStateTuple2, stateCombination);
-    //  }
-    //}
+        var classStateTuple2 = new ClassStateTuple (_orderClassWithProperties, stateCombination);
+        ClassStateTupleTestHelper (classStateTuple2, stateCombination);
+      }
+    }
 
 
-    //[Test]
-    //public void AclSecurityContextHelperTest ()
-    //{
-    //  SecurableClassDefinition testClass = OrderClass;
-    //  var aclSecurityContextHelper = new AclSecurityContextHelper(testClass.Name);
-    //  Assert.That (aclSecurityContextHelper.Class, Is.EqualTo (testClass.Name));
-      
-    //  StatePropertyDefinition statePropertyDefinition = testClass.StateProperties[0];
-    //  StateDefinition stateDefinition = statePropertyDefinition.GetState (0);
-    //  aclSecurityContextHelper.AddState (statePropertyDefinition, stateDefinition);
-    //  Assert.That (aclSecurityContextHelper.GetStateDefinitionList (), Is.EqualTo (new List<StateDefinition>() { stateDefinition } ));
-    //  Assert.That (aclSecurityContextHelper.GetStateDefinitionList (), Is.Not.EqualTo (new List<StateDefinition> () { null }));
+    [Test]
+    public void AclSecurityContextHelperTest ()
+    {
+      //SecurableClassDefinition testClass = OrderClass;
+      SecurableClassDefinition testClass = _orderClassWithProperties;
+      var aclSecurityContextHelper = new AclSecurityContextHelper (testClass.Name);
+      Assert.That (aclSecurityContextHelper.Class, Is.EqualTo (testClass.Name));
 
-    //  Assert.That (aclSecurityContextHelper.GetState (statePropertyDefinition.Name), Is.EqualTo (new EnumWrapper (stateDefinition.Name)));
-    //}
+      StatePropertyDefinition statePropertyDefinition = testClass.StateProperties[0];
+      StateDefinition stateDefinition = statePropertyDefinition.GetState (0);
+      aclSecurityContextHelper.AddState (statePropertyDefinition, stateDefinition);
+      Assert.That (aclSecurityContextHelper.GetStateDefinitionList (), Is.EqualTo (new List<StateDefinition> () { stateDefinition }));
+      Assert.That (aclSecurityContextHelper.GetStateDefinitionList (), Is.Not.EqualTo (new List<StateDefinition> () { null }));
+
+      Assert.That (aclSecurityContextHelper.GetState (statePropertyDefinition.Name), Is.EqualTo (new EnumWrapper (stateDefinition.Name)));
+    }
 
 
 //    [Test]
@@ -240,7 +224,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 //    {
 //      SecurableClassDefinition orderClass = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID);
       
-//      ClassStateExpander classStateExpander = new ClassStateExpander();
+//      ClassStateDictionary classStateExpander = new ClassStateDictionary();
 //      //classStateExpander.Init();
       
 //      //var aclList = SetUpFixture.aclList;

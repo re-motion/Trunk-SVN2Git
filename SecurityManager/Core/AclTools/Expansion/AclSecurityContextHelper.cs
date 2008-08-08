@@ -158,25 +158,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
   }
 
-  public static class ExtensionMethods
-  {
-    public static string LeftUntilChar (this string s, char separator)
-    {
-      int iSeparator = s.IndexOf (separator);
-      if (iSeparator > 0)
-      {
-        return s.Substring (0, iSeparator);
-      }
-      else
-      {
-        return s;
-      }
-    }
 
-    public static string ShortName (this StateDefinition stateDefinition)
-    {
-      return stateDefinition.Name.LeftUntilChar ('|');
-    }
-  }
 
 }
