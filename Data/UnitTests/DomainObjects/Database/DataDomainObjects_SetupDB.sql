@@ -104,6 +104,7 @@ GO
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixedDomains_Target')
 BEGIN
   ALTER TABLE [MixedDomains_Target] DROP CONSTRAINT [FK_MixedDomains_Target_RelationProperty]
+  ALTER TABLE [MixedDomains_Target] DROP CONSTRAINT [FK_MixedDomains_Target_PrivateBaseRelationPropertyID]
   ALTER TABLE [MixedDomains_Target] DROP CONSTRAINT [FK_MixedDomains_Target_CollectionPropertyNSide]
   ALTER TABLE [MixedDomains_Target] DROP CONSTRAINT [FK_MixedDomains_Target_UnidirectionalRelationProperty]
 END
@@ -889,6 +890,7 @@ CREATE TABLE [MixedDomains_Target] (
   [PersistentProperty] int NOT NULL,
   [ExtraPersistentProperty] int NOT NULL,
   [RelationPropertyID] uniqueidentifier NULL,
+  [PrivateBaseRelationPropertyID] uniqueidentifier NULL,
   [CollectionPropertyNSideID] uniqueidentifier NULL,
   [UnidirectionalRelationPropertyID] uniqueidentifier NULL,
   
@@ -909,6 +911,7 @@ CREATE TABLE [MixedDomains_RelationTarget] (
 GO
 
 ALTER TABLE [MixedDomains_Target] ADD CONSTRAINT [FK_MixedDomains_Target_RelationProperty] FOREIGN KEY ([RelationPropertyID]) REFERENCES [MixedDomains_RelationTarget] ([ID])
+ALTER TABLE [MixedDomains_Target] ADD CONSTRAINT [FK_MixedDomains_Target_PrivateBaseRelationPropertyID] FOREIGN KEY ([PrivateBaseRelationPropertyID]) REFERENCES [MixedDomains_RelationTarget] ([ID])
 ALTER TABLE [MixedDomains_Target] ADD CONSTRAINT [FK_MixedDomains_Target_CollectionPropertyNSide] FOREIGN KEY ([CollectionPropertyNSideID]) REFERENCES [MixedDomains_RelationTarget] ([ID])
 ALTER TABLE [MixedDomains_Target] ADD CONSTRAINT [FK_MixedDomains_Target_UnidirectionalRelationProperty] FOREIGN KEY ([UnidirectionalRelationPropertyID]) REFERENCES [MixedDomains_RelationTarget] ([ID])
 GO
