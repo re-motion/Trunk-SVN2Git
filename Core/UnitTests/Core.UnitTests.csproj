@@ -136,7 +136,7 @@
     <Compile Include="AdapterRegistryMock.cs" />
     <Compile Include="AdapterRegistryTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
-    <Compile Include="Collections\CollectionsEnumerableTest.cs" />
+    <Compile Include="Collections\EnumerableExtensionsTest.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Design\DesignerUtilityTest.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\TargetClassCallingIntroducedMethodFromCtor.cs" />
