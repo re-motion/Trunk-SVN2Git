@@ -76,9 +76,11 @@ namespace Remotion.Mixins.Utilities.DependencySort
       }
       else if (rootCandidates.Count == 1)
       {
-        IEnumerator<T> enumerator = rootCandidates.GetEnumerator ();
-        enumerator.MoveNext ();
-        return enumerator.Current;
+        using (IEnumerator<T> enumerator = rootCandidates.GetEnumerator())
+        {
+          enumerator.MoveNext ();
+          return enumerator.Current;
+        }
       }
       else
       {

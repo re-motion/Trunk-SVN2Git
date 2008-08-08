@@ -46,29 +46,31 @@ namespace Remotion.UnitTests.Mixins.Context
           (Func<int, string>) delegate { return ""; }, new int[0]);
       PrivateInvoke.SetNonPublicField (_collection, "_internalCollection", innerMock);
 
-      IEnumerator<int> enumerator = new List<int>().GetEnumerator();
-      int[] array = new int[0];
-
-      using (repository.Ordered ())
+      using (IEnumerator<int> enumerator = new List<int>().GetEnumerator())
       {
-        Expect.Call (innerMock.Count).Return (1);
-        Expect.Call (innerMock.Contains (7)).Return (true);
-        Expect.Call (innerMock.ContainsKey ("8")).Return (false);
-        Expect.Call (innerMock["8"]).Return (1);
-        Expect.Call (innerMock.GetEnumerator ()).Return (enumerator);
-        innerMock.CopyTo(array, 13);
+        int[] array = new int[0];
+
+        using (repository.Ordered())
+        {
+          Expect.Call (innerMock.Count).Return (1);
+          Expect.Call (innerMock.Contains (7)).Return (true);
+          Expect.Call (innerMock.ContainsKey ("8")).Return (false);
+          Expect.Call (innerMock["8"]).Return (1);
+          Expect.Call (innerMock.GetEnumerator()).Return (enumerator);
+          innerMock.CopyTo (array, 13);
+        }
+
+        repository.ReplayAll();
+
+        Assert.AreEqual (1, _collection.Count);
+        Assert.AreEqual (true, _collection.Contains (7));
+        Assert.AreEqual (false, _collection.ContainsKey ("8"));
+        Assert.AreEqual (1, _collection["8"]);
+        Assert.AreEqual (enumerator, _collection.GetEnumerator());
+        _collection.CopyTo (array, 13);
+
+        repository.VerifyAll();
       }
-
-      repository.ReplayAll();
-
-      Assert.AreEqual (1, _collection.Count);
-      Assert.AreEqual (true, _collection.Contains (7));
-      Assert.AreEqual (false, _collection.ContainsKey ("8"));
-      Assert.AreEqual (1, _collection["8"]);
-      Assert.AreEqual (enumerator, _collection.GetEnumerator ());
-      _collection.CopyTo (array, 13);
-
-      repository.VerifyAll();
     }
 
     [Test]

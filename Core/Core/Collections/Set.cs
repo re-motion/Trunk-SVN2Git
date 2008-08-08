@@ -55,7 +55,7 @@ namespace Remotion.Collections
     /// <exception cref="ArgumentNullException">The <paramref name="initialItems"/> parameter is <see langword="null"/> or contains a
     /// <see langword="null"/> reference.</exception>
     public Set (IEnumerable<T> initialItems)
-        : this()
+      : this ()
     {
       ArgumentUtility.CheckNotNull ("initialItems", initialItems);
       AddRange (initialItems);
@@ -69,7 +69,7 @@ namespace Remotion.Collections
     /// <exception cref="ArgumentNullException">The <paramref name="initialItems"/> parameter is <see langword="null"/> or contains a
     /// <see langword="null"/> reference.</exception>
     public Set (params T[] initialItems)
-        : this ((IEnumerable<T>) initialItems)
+      : this ((IEnumerable<T>) initialItems)
     {
     }
 
@@ -92,7 +92,7 @@ namespace Remotion.Collections
     /// <exception cref="ArgumentNullException">The <paramref name="initialItems"/> parameter is <see langword="null"/> or contains a
     /// <see langword="null"/> reference, or the <paramref name="equalityComparer"/> parameter is <see langword="null"/>.</exception>
     public Set (IEnumerable<T> initialItems, IEqualityComparer<T> equalityComparer)
-        : this (equalityComparer)
+      : this (equalityComparer)
     {
       ArgumentUtility.CheckNotNull ("initialItems", initialItems);
       AddRange (initialItems);
@@ -129,7 +129,7 @@ namespace Remotion.Collections
     /// </summary>
     public void Clear ()
     {
-      _items.Clear();
+      _items.Clear ();
     }
 
     /// <summary>
@@ -194,7 +194,7 @@ namespace Remotion.Collections
     /// <returns>An array holding the same items as the set</returns>
     /// <remarks>The elements are copied to the <see cref="T:System.Array"/> in the same order in which the enumerator iterates through the
     /// set.</remarks>
-    public T[] ToArray()
+    public T[] ToArray ()
     {
       T[] array = new T[Count];
       CopyTo (array, 0);
@@ -275,9 +275,11 @@ namespace Remotion.Collections
     {
       if (Count == 0)
         throw new InvalidOperationException ("The set is empty.");
-      IEnumerator<T> enumerator = GetEnumerator();
-      enumerator.MoveNext();
-      return enumerator.Current;
+      using (IEnumerator<T> enumerator = GetEnumerator())
+      {
+        enumerator.MoveNext();
+        return enumerator.Current;
+      }
     }
   }
 }

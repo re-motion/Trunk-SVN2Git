@@ -39,12 +39,14 @@ namespace Remotion.UnitTests.Mixins.ValidationTests
     [Test]
     public void ValidationResultDefinition ()
     {
-      IValidationLog log = MixinConfiguration.ActiveConfiguration.Validate ();
+      IValidationLog log = MixinConfiguration.ActiveConfiguration.Validate();
 
-      IEnumerator<ValidationResult> results = log.GetResults ().GetEnumerator ();
-      Assert.IsTrue (results.MoveNext ());
-      ValidationResult firstResult = results.Current;
-      Assert.IsNotNull (firstResult.Definition);
+      using (IEnumerator<ValidationResult> results = log.GetResults().GetEnumerator())
+      {
+        Assert.IsTrue (results.MoveNext());
+        ValidationResult firstResult = results.Current;
+        Assert.IsNotNull (firstResult.Definition);
+      }
     }
 
     [Test]

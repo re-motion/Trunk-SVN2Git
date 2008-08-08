@@ -94,11 +94,13 @@ namespace Remotion.Utilities
 
     public static T FirstOrDefault<T> (IEnumerable<T> source)
     {
-      IEnumerator<T> enumerator = source.GetEnumerator ();
-      if (enumerator.MoveNext ())
-        return enumerator.Current;
-      else
-        return default (T);
+      using (IEnumerator<T> enumerator = source.GetEnumerator())
+      {
+        if (enumerator.MoveNext ())
+          return enumerator.Current;
+        else
+          return default (T);
+      }
     }
   }
 }

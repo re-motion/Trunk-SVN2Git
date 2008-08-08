@@ -28,9 +28,11 @@ namespace Remotion.Mixins.Context
       info.AddValue (key + ".IntroducedMemberVisibility", mixinContext.IntroducedMemberVisibility);
 
       info.AddValue (key + ".ExplicitDependencyCount", mixinContext.ExplicitDependencies.Count);
-      IEnumerator<Type> dependencyEnumerator = mixinContext.ExplicitDependencies.GetEnumerator ();
-      for (int i = 0; dependencyEnumerator.MoveNext (); ++i)
-        ReflectionObjectSerializer.SerializeType (dependencyEnumerator.Current, key + ".ExplicitDependencies[" + i + "]", info);
+      using (IEnumerator<Type> dependencyEnumerator = mixinContext.ExplicitDependencies.GetEnumerator())
+      {
+        for (int i = 0; dependencyEnumerator.MoveNext (); ++i)
+          ReflectionObjectSerializer.SerializeType (dependencyEnumerator.Current, key + ".ExplicitDependencies[" + i + "]", info);
+      }
     }
 
     public static MixinContext DeserializeFromFlatStructure (string key, SerializationInfo info)

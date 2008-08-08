@@ -313,15 +313,19 @@ namespace Remotion.Mixins.Context
     {
       ReflectionObjectSerializer.SerializeType (_type, "_type", info);
       info.AddValue ("_mixins.Count", _mixins.Count);
-      IEnumerator<MixinContext> mixinEnumerator = _mixins.GetEnumerator ();
-      for (int i = 0; mixinEnumerator.MoveNext (); ++i)
-        MixinContextSerializer.SerializeIntoFlatStructure (mixinEnumerator.Current, "_mixins[" + i + "]", info);
-
-      IEnumerator<Type> interfaceEnumerator = _completeInterfaces.GetEnumerator ();
-      info.AddValue ("_completeInterfaces.Count", _completeInterfaces.Count);
-      for (int i = 0; interfaceEnumerator.MoveNext (); ++i)
-        ReflectionObjectSerializer.SerializeType (interfaceEnumerator.Current, "_completeInterfaces[" + i + "]", info);
+      using (IEnumerator<MixinContext> mixinEnumerator = _mixins.GetEnumerator())
+      {
+        for (int i = 0; mixinEnumerator.MoveNext(); ++i)
+          MixinContextSerializer.SerializeIntoFlatStructure (mixinEnumerator.Current, "_mixins[" + i + "]", info);
+      }
+      using (IEnumerator<Type> interfaceEnumerator = _completeInterfaces.GetEnumerator())
+      {
+        info.AddValue ("_completeInterfaces.Count", _completeInterfaces.Count);
+        for (int i = 0; interfaceEnumerator.MoveNext(); ++i)
+          ReflectionObjectSerializer.SerializeType (interfaceEnumerator.Current, "_completeInterfaces[" + i + "]", info);
+      }
     }
+
     #endregion
   }
 }

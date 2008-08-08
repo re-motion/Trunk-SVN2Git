@@ -232,15 +232,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetEnumerator ()
     {
-      IEnumerator<OrderItem> enumerator = new ObjectList<OrderItem> ().GetEnumerator();
-      Assert.IsFalse (enumerator.MoveNext ());
+      using (IEnumerator<OrderItem> enumerator = new ObjectList<OrderItem>().GetEnumerator())
+      {
+        Assert.IsFalse (enumerator.MoveNext());
+      }
 
-      enumerator = _orderItemList.GetEnumerator ();
-      Assert.IsTrue (enumerator.MoveNext ());
-      Assert.AreSame (_orderItem1, enumerator.Current);
-      Assert.IsTrue (enumerator.MoveNext ());
-      Assert.AreSame (_orderItem2, enumerator.Current);
-      Assert.IsFalse (enumerator.MoveNext ());
+      using (IEnumerator<OrderItem> enumerator = _orderItemList.GetEnumerator())
+      {
+        Assert.IsTrue (enumerator.MoveNext());
+        Assert.AreSame (_orderItem1, enumerator.Current);
+        Assert.IsTrue (enumerator.MoveNext());
+        Assert.AreSame (_orderItem2, enumerator.Current);
+        Assert.IsFalse (enumerator.MoveNext());
+      }
     }
 
     [Test]

@@ -83,10 +83,13 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
 
     private Exception CreateCannotResolveException (IEnumerable<MixinDefinition> equalRoots)
     {
-      IEnumerator<MixinDefinition> equalRootsEnumerator = equalRoots.GetEnumerator ();
-      bool hasFirst = equalRootsEnumerator.MoveNext ();
-      Assertion.IsTrue (hasFirst);
-      MixinDefinition first = equalRootsEnumerator.Current;
+      MixinDefinition first;
+      using (IEnumerator<MixinDefinition> equalRootsEnumerator = equalRoots.GetEnumerator())
+      {
+        bool hasFirst = equalRootsEnumerator.MoveNext ();
+        Assertion.IsTrue (hasFirst);
+        first = equalRootsEnumerator.Current;
+      }
 
       string message = string.Format ("The following mixins are applied to the same base class {0} and require a clear base call ordering, but do not "
           + "provide enough dependency information: {1}.{2}Please supply additional dependencies to the mixin definitions, use the "

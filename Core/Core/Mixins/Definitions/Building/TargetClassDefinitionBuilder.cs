@@ -72,21 +72,25 @@ namespace Remotion.Mixins.Definitions.Building
       ArgumentUtility.CheckNotNull ("classContext", classContext);
 
       MixinDefinitionBuilder mixinDefinitionBuilder = new MixinDefinitionBuilder (classDefinition);
-      
-      IEnumerator<MixinContext> enumerator = classContext.Mixins.GetEnumerator ();
-      for (int i = 0; enumerator.MoveNext (); ++i)
-        mixinDefinitionBuilder.Apply (enumerator.Current, i);
+
+      using (IEnumerator<MixinContext> enumerator = classContext.Mixins.GetEnumerator())
+      {
+        for (int i = 0; enumerator.MoveNext (); ++i)
+          mixinDefinitionBuilder.Apply (enumerator.Current, i);
+      }
 
       // It's important to have a list before clearing the mixins. If we were working with lazy enumerator streams here, we would clear the input for
       // the sorting algorithm before actually executing it...
       List<MixinDefinition> sortedMixins = SortMixins (classDefinition.Mixins);
       classDefinition.Mixins.Clear();
 
-      IEnumerator<MixinDefinition> mixinEnumerator = sortedMixins.GetEnumerator();
-      for (int i = 0; mixinEnumerator.MoveNext(); ++i)
+      using (IEnumerator<MixinDefinition> mixinEnumerator = sortedMixins.GetEnumerator())
       {
-        mixinEnumerator.Current.MixinIndex = i;
-        classDefinition.Mixins.Add (mixinEnumerator.Current);
+        for (int i = 0; mixinEnumerator.MoveNext(); ++i)
+        {
+          mixinEnumerator.Current.MixinIndex = i;
+          classDefinition.Mixins.Add (mixinEnumerator.Current);
+        }
       }
     }
 
