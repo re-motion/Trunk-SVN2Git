@@ -17,7 +17,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
-using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -25,16 +24,6 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
-  [Extends (typeof (OrganizationalStructureObject))]
-  public class PersistentMixin : DomainObjectMixin<OrganizationalStructureObject>
-  {
-    public int IntProperty
-    {
-      get { return Properties[typeof (PersistentMixin), "IntProperty"].GetValue<int> (); }
-      set { Properties[typeof (PersistentMixin), "IntProperty"].SetValue (value); }
-    }
-  }
-
   [Serializable]
   [MultiLingualResources ("Remotion.SecurityManager.Globalization.Domain.OrganizationalStructure.User")]
   [PermanentGuid ("759DA370-E2C4-4221-B878-BE378C916042")]

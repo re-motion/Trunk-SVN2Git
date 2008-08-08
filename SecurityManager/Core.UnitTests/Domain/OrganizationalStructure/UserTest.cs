@@ -329,13 +329,5 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         Assert.IsTrue (user is ITestInterface);
       }
     }
-
-    [Test]
-    public void PersistentlyMixedUserTest ()
-    {
-      User user = CreateUser ();
-      Assert.IsNotNull (Mixin.Get<PersistentMixin> (user));
-      Mixin.Get<PersistentMixin> (user).IntProperty = 7;
-    }
   }
 }
