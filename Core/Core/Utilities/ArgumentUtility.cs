@@ -102,8 +102,14 @@ namespace Remotion.Utilities
         ICollection collection = enumerable as ICollection;
         if (collection != null && collection.Count == 0)
           throw new ArgumentEmptyException (argumentName);
-        else if (!enumerable.GetEnumerator().MoveNext())
-          throw new ArgumentEmptyException (argumentName);
+
+        IEnumerator enumerator = enumerable.GetEnumerator();
+        IDisposable disposeableEnumerator = enumerator as IDisposable;
+        using (disposeableEnumerator)
+        {
+          if (!enumerator.MoveNext())
+            throw new ArgumentEmptyException (argumentName);
+        }
       }
 
       return enumerable;
