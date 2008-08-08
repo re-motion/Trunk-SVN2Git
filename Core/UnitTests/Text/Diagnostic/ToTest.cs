@@ -16,7 +16,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
     [Test]
     [Ignore]
-    public void ToTextOfObjectTest ()
+    public void ObjectTest ()
     {
       Object o = 5711;
       Assert.That (To.Text (o), Is.EqualTo(o.ToString()));
@@ -24,6 +24,23 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Object o2 = new object();
       Assert.That (To.Text (o2), Is.EqualTo (o2.ToString ()));
     }
+
+    [Test]
+    public void FallbackToStringTest ()
+    {
+      FallbackToStringTestSingleType ("abcd EFGH");
+      FallbackToStringTestSingleType (87971132);
+      FallbackToStringTestSingleType (4786.5323);
+      int i = 8723;
+      FallbackToStringTestSingleType (i);
+    }
+
+    private void FallbackToStringTestSingleType<T> (T t)
+    {
+      Assert.That (To.Text (t), Is.EqualTo (t.ToString ()));
+    }
+
+
 
     [Test]
     public void RegisteredHandlerTest ()

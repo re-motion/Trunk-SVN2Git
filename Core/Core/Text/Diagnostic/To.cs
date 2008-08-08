@@ -28,14 +28,18 @@ namespace Remotion.Text.Diagnostic
 
     public static string Text (object o)
     {
-      //return null;
-      return (String) _typeHandlerMap[o.GetType()].DynamicInvoke(o);
+      Delegate handler = null;
+      _typeHandlerMap.TryGetValue (o.GetType(), out handler);
+      if (handler != null)
+      {
+        return (String) handler.DynamicInvoke (o);
+      }
+      else
+      {
+        return o.ToString();
+      }
     }
 
-    //public static string Text (Test test)
-    //{
-    //  return "[That's not my name,179]";
-    //}
     private static Dictionary<Type, Delegate> _typeHandlerMap = new Dictionary<Type, Delegate>();
 
 
