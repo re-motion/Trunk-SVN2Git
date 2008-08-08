@@ -28,16 +28,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly Type _type;
     private readonly bool _includeBaseProperties;
     private readonly Set<MethodInfo> _explicitInterfaceImplementations;
-    private readonly PersistentMixinFinder _persistentMixinFinder;
     private readonly IMappingNameResolver _nameResolver;
 
-    protected PropertyFinderBase (Type type, bool includeBaseProperties, PersistentMixinFinder persistentMixinFinder, IMappingNameResolver nameResolver)
+    protected PropertyFinderBase (Type type, bool includeBaseProperties, IMappingNameResolver nameResolver)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
       _type = type;
-      _persistentMixinFinder = persistentMixinFinder;
       _nameResolver = nameResolver;
       _includeBaseProperties = includeBaseProperties;
       _explicitInterfaceImplementations = GetExplicitInterfaceImplementations (type);
@@ -65,22 +63,22 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       if (_includeBaseProperties && _type.BaseType != typeof (DomainObject))
       {
-        PropertyFinderBase propertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (GetType()).With (_type.BaseType, true,
-            (PersistentMixinFinder) null, // mixins are only checked on the top level, we get all inherited mixins anyway
-            NameResolver);
+        var propertyFinder = (PropertyFinderBase) TypesafeActivator.CreateInstance (GetType()).With (_type.BaseType, true, NameResolver);
         propertyInfos.AddRange (propertyFinder.FindPropertyInfos (classDefinition));
       }
 
       propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType (classDefinition));
 
-      MixinPropertyFinder mixinPropertyFinder = new MixinPropertyFinder (GetType(), _persistentMixinFinder, IncludeBaseProperties, NameResolver);
-      propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins(classDefinition));
+      // TODO: mixins are only checked on the top level, we get all inherited mixins anyway
+      if (_type == classDefinition.ClassType)
+      {
+        var mixinPropertyFinder = new MixinPropertyFinder (GetType(), classDefinition.PersistentMixinFinder, IncludeBaseProperties, NameResolver);
+        propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins (classDefinition));
+      }
 
       return propertyInfos.ToArray();
     }
-
     
-
     protected virtual bool FindPropertiesFilter (ReflectionBasedClassDefinition classDefinition, PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

@@ -23,8 +23,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// </summary>
   public class RelationPropertyFinder : PropertyFinderBase
   {
-    public RelationPropertyFinder (Type type, bool includeBaseProperties, PersistentMixinFinder persistentMixinFinder, IMappingNameResolver nameResolver)
-        : base (type, includeBaseProperties, persistentMixinFinder, nameResolver)
+    public RelationPropertyFinder (Type type, bool includeBaseProperties, IMappingNameResolver nameResolver)
+        : base (type, includeBaseProperties, nameResolver)
     {
     }
 

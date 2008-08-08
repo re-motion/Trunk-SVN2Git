@@ -218,13 +218,13 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private PropertyInfo[] GetPropertyInfos (ReflectionBasedClassDefinition classDefinition)
     {
-      PropertyFinder propertyFinder = new PropertyFinder (Type, IsInheritanceRoot (), PersistentMixinFinder, NameResolver);
+      PropertyFinder propertyFinder = new PropertyFinder (Type, IsInheritanceRoot (), NameResolver);
       return propertyFinder.FindPropertyInfos (classDefinition);
     }
 
     private PropertyInfo[] GetRelationPropertyInfos (ReflectionBasedClassDefinition classDefinition, PersistentMixinFinder persistentMixinFinder)
     {
-      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (Type, IsInheritanceRoot (), PersistentMixinFinder, NameResolver);
+      RelationPropertyFinder relationPropertyFinder = new RelationPropertyFinder (Type, IsInheritanceRoot (), NameResolver);
       return relationPropertyFinder.FindPropertyInfos (classDefinition);
     }
   }

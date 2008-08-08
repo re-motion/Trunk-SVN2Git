@@ -9,7 +9,6 @@
  */
 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 
@@ -17,18 +16,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
 {
   public class StubPropertyFinderBase : PropertyFinderBase
   {
+    public StubPropertyFinderBase (Type type, bool includeBaseProperties, IMappingNameResolver nameResolver)
+      : base (type, includeBaseProperties, nameResolver)
+    {
+    }
+
     public StubPropertyFinderBase (Type type, bool includeBaseProperties)
-      : this (type, includeBaseProperties, new PersistentMixinFinder (type))
-    {
-    }
-
-    public StubPropertyFinderBase (Type type, bool includeBaseProperties, PersistentMixinFinder persistentMixinFinder, IMappingNameResolver nameResolver)
-      : base (type, includeBaseProperties, persistentMixinFinder, nameResolver)
-    {
-    }
-
-    public StubPropertyFinderBase (Type type, bool includeBaseProperties, PersistentMixinFinder persistentMixinFinder)
-      : this (type, includeBaseProperties, persistentMixinFinder, new ReflectionBasedNameResolver ())
+      : this (type, includeBaseProperties, new ReflectionBasedNameResolver ())
     {
     }
   }
