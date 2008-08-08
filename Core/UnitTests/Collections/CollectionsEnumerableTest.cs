@@ -17,7 +17,7 @@ using Remotion.Collections;
 namespace Remotion.UnitTests.Collections
 {
   [TestFixture]
-  public class EnumerableTest
+  public class CollectionsEnumerableTest
   {
     private IEnumerable<string> _enumerableWithoutValues;
     private IEnumerable<string> _enumerableWithOneValue;

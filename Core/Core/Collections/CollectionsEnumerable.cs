@@ -17,7 +17,7 @@ namespace Remotion.Collections
   /// <summary>
   /// Provides a set of <see langword="static"/> methods for querying objects that implement <see cref="IEnumerable{T}"/>.
   /// </summary>
-  public static class Enumerable
+  public static class CollectionsEnumerable
   {
     /// <summary>
     /// Returns the first element of a sequence
