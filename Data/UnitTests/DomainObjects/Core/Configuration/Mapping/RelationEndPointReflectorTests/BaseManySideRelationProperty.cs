@@ -28,12 +28,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Relat
     {
       base.SetUp();
 
-      _classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithManySideRelationProperties",
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithManySideRelationProperties",
           "ClassWithManySideRelationProperties",
           "TestDomain",
           typeof (ClassWithManySideRelationProperties),
-          false, new PersistentMixinFinderMock());
+          false);
     }
 
     [Test]

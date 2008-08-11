@@ -177,12 +177,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
 
     private ReflectionBasedClassDefinition CreateClassWithMixedPropertiesClassDefinition()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithMixedProperties",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithMixedProperties",
           "ClassWithMixedProperties",
           c_testDomainProviderID,
           typeof (ClassWithMixedProperties),
-          false, new PersistentMixinFinderMock());
+          false);
 
       CreatePropertyDefinitionsForClassWithMixedProperties (classDefinition);
 
@@ -191,13 +190,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
 
     private ReflectionBasedClassDefinition CreateDerivedClassWithMixedPropertiesClassDefinition()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "DerivedClassWithMixedProperties",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DerivedClassWithMixedProperties",
           null,
           c_testDomainProviderID,
           typeof (DerivedClassWithMixedProperties),
           false,
-          CreateClassWithMixedPropertiesClassDefinition(), new PersistentMixinFinderMock());
+          CreateClassWithMixedPropertiesClassDefinition());
 
       CreatePropertyDefinitionsForDerivedClassWithMixedProperties (classDefinition);
 
@@ -206,37 +204,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
 
     private ReflectionBasedClassDefinition CreateClassWithOneSideRelationPropertiesClassDefinition()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithOneSideRelationProperties",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithOneSideRelationProperties",
           "ClassWithOneSideRelationProperties",
           c_testDomainProviderID,
           typeof (ClassWithOneSideRelationProperties),
-          false, new PersistentMixinFinderMock());
+          false);
 
       return classDefinition;
     }
 
     private ReflectionBasedClassDefinition CreateBaseClassWithoutStorageSpecificIdentifierAttributeDefinition ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "BaseClassWithoutStorageSpecificIdentifierAttribute",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("BaseClassWithoutStorageSpecificIdentifierAttribute",
           null,
           c_testDomainProviderID,
           typeof (BaseClassWithoutStorageSpecificIdentifierAttribute),
-          true, new PersistentMixinFinderMock());
+          true);
 
       return classDefinition;
     }
 
     private ReflectionBasedClassDefinition CreateDerivedClassWithStorageSpecificIdentifierAttributeClassDefinition ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "DerivedClassWithStorageSpecificIdentifierAttribute",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DerivedClassWithStorageSpecificIdentifierAttribute",
           "DerivedClassWithStorageSpecificIdentifierAttribute",
           c_testDomainProviderID,
           typeof (DerivedClassWithStorageSpecificIdentifierAttribute),
           false,
-          CreateBaseClassWithoutStorageSpecificIdentifierAttributeDefinition (), new PersistentMixinFinderMock());
+          CreateBaseClassWithoutStorageSpecificIdentifierAttributeDefinition ());
 
       return classDefinition;
     }

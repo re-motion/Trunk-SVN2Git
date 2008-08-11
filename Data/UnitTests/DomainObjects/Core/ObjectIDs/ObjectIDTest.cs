@@ -280,7 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     [ExpectedException (typeof (MappingException))]
     public void InitializeWithUnknownClassDefinitionID ()
     {
-      ReflectionBasedClassDefinition unknownDefinition = new ReflectionBasedClassDefinition ("UnknownClass", "UnknownTable", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition unknownDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("UnknownClass", "UnknownTable", "TestDomain", typeof (Order), false);
       Guid value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
 
       ObjectID id = new ObjectID (unknownDefinition, value);
@@ -292,7 +292,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
         + " do not refer to the same ClassDefinition in the mapping configuration.\r\nParameter name: classDefinition")]
     public void InitializeWithUnknownClassDefinitionType ()
     {
-      ReflectionBasedClassDefinition unknownDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (InvalidDomainObject), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition unknownDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (InvalidDomainObject), false);
       Guid value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
 
       ObjectID id = new ObjectID (unknownDefinition, value);
@@ -318,7 +318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
         + " do not refer to the same ClassDefinition in the mapping configuration.\r\nParameter name: classDefinition")]
     public void InitializeWithInvalidClassDefinition ()
     {
-      ReflectionBasedClassDefinition invalidDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Customer), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition invalidDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Customer), false);
       ObjectID id = new ObjectID (invalidDefinition, Guid.NewGuid ());
     }
 
@@ -327,7 +327,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
         ExpectedMessage = "The provided ClassDefinition 'Order' is not the same reference as the ClassDefinition found in the mapping configuration.\r\nParameter name: classDefinition")]
     public void InitializeWithClassDefinitionNotPartOfMappingConfiguration ()
     {
-      ReflectionBasedClassDefinition invalidDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition invalidDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
       ObjectID id = new ObjectID (invalidDefinition, Guid.NewGuid ());
     }
 

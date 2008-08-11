@@ -53,7 +53,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PersistentMixinFinderMock.cs" />
     <Compile Include="RdbmsToolsRunnerTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\ConstraintBuilderTest.cs" />
     <Compile Include="SchemaGeneration\SqlServer\FileBuilderTest.cs" />

@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       int? maxLength = (propertyType == typeof (string)) ? (int?) 100 : null;
 
       ReflectionBasedClassDefinition classDefinition =
-          new ReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false, new PersistentMixinFinderMock());
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false);
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, name, name, propertyType, isNullable, maxLength, StorageClass.Persistent);
       return new PropertyValue (definition, value);
     }

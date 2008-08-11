@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
             + " 'Remotion.Data.DomainObjects.DomainObjectCollection'.")]
     public void VirtualEndPointOfDomainObjectType ()
     {
-      ReflectionBasedClassDefinition companyDefinition = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition companyDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);
 
       VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(companyDefinition, "Dummy", false, CardinalityType.One, typeof (DomainObject));
     }
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void VirtualEndPointOfDomainObjectCollectionType ()
     {
-      ReflectionBasedClassDefinition companyDefinition = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition companyDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);
 
       VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(companyDefinition, "Dummy", false, CardinalityType.Many, typeof (DomainObjectCollection));
     }
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void VirtualEndPointOfOrderCollectionType ()
     {
-      ReflectionBasedClassDefinition companyDefinition = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition companyDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);
 
       VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(companyDefinition, "Dummy", false, CardinalityType.Many, typeof (OrderCollection));
     }
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         + " must be derived from 'Remotion.Data.DomainObjects.DomainObject'.")]
     public void VirtualEndPointWithCardinalityOneAndWrongPropertyType ()
     {
-      ReflectionBasedClassDefinition companyDefinition = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition companyDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);
 
       VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(companyDefinition, "Dummy", false, CardinalityType.One, typeof (OrderCollection));
     }
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         + " must be or be derived from 'Remotion.Data.DomainObjects.DomainObjectCollection'.")]
     public void VirtualEndPointWithCardinalityManyAndWrongPropertyType ()
     {
-      ReflectionBasedClassDefinition companyDefinition = new ReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition companyDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", "TestDomain", typeof (Company), false);
 
       VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(companyDefinition, "Dummy", false, CardinalityType.Many, typeof (Company));
     }
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void InitializeWithSortExpression ()
     {
-      ReflectionBasedClassDefinition customerDefinition = new ReflectionBasedClassDefinition ("Customer", "Customer", "TestDomain", typeof (Customer), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition customerDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Customer", "Customer", "TestDomain", typeof (Customer), false);
 
       VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(customerDefinition, "Orders", false, CardinalityType.Many, typeof (OrderCollection), "OrderNumber desc");
 
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Property 'Orders' of class 'Customer' must not specify a SortExpression, because cardinality is equal to 'one'.")]
     public void InitializeWithSortExpressionAndCardinalityOfOne ()
     {
-      ReflectionBasedClassDefinition customerDefinition = new ReflectionBasedClassDefinition ("Customer", "Customer", "TestDomain", typeof (Customer), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition customerDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Customer", "Customer", "TestDomain", typeof (Customer), false);
 
       VirtualRelationEndPointDefinition endPointDefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(customerDefinition, "Orders", false, CardinalityType.One, typeof (Order), "OrderNumber desc");
     }

@@ -1,4 +1,4 @@
-/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+  /* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
  *
  * This program is free software: you can redistribute it and/or modify it under 
  * the terms of the re:motion license agreement in license.txt. If you did not 

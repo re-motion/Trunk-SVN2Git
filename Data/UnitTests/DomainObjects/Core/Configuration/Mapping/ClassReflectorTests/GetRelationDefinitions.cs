@@ -115,24 +115,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
 
     private ClassDefinition CreateClassWithOneSideRelationPropertiesClassDefinition ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithOneSideRelationProperties",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithOneSideRelationProperties",
           "ClassWithOneSideRelationProperties",
           c_testDomainProviderID,
           typeof (ClassWithOneSideRelationProperties),
-          false, new PersistentMixinFinderMock());
+          false);
 
       return classDefinition;
     }
 
     private ClassDefinition CreateClassWithManySideRelationPropertiesClassDefinition ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithManySideRelationProperties",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithManySideRelationProperties",
           "ClassWithManySideRelationProperties",
           c_testDomainProviderID,
           typeof (ClassWithManySideRelationProperties),
-          false, new PersistentMixinFinderMock());
+          false);
 
       CreatePropertyDefinitionsForClassWithManySideRelationProperties (classDefinition);
 
@@ -141,12 +139,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
 
     private ClassDefinition CreateClassWithMixedPropertiesClassDefinition ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithMixedProperties",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithMixedProperties",
           "ClassWithMixedProperties",
           c_testDomainProviderID,
           typeof (ClassWithMixedProperties),
-          false, new PersistentMixinFinderMock());
+          false);
 
       CreatePropertyDefinitionsForClassWithMixedProperties (classDefinition);
 

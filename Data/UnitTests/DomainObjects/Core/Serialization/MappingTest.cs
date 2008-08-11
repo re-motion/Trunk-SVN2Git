@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The ReflectionBasedPropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithoutClassDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("ClassID", "EntityName", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassID", "EntityName", "TestDomain", typeof (Order), false);
       PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "PropertyName", "ColumnName", typeof (string), true, 100);
 
       SerializeAndDeserialize (propertyDefinition);
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The ReflectionBasedPropertyDefinition 'OrderNumber' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithClassDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("ClassID", "EntityName", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassID", "EntityName", "TestDomain", typeof (Order), false);
       PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "OrderNumber", "OrderNo", typeof (int));
       classDefinition.MyPropertyDefinitions.Add (propertyDefinition);
 
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The ReflectionBasedPropertyDefinition 'PropertyName' cannot be serialized because is is not part of the current mapping.")]
     public void PropertyDefinitionWithUnresolvedNativePropertyType_NotInMapping ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
       PropertyDefinition propertyDefinition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "PropertyName", "ColumnName", typeof (int));
 
       PropertyDefinition deserializedPropertyDefinition = (PropertyDefinition) SerializeAndDeserialize (propertyDefinition);
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The RelationEndPointDefinition 'Order' cannot be serialized because is is not part of the current mapping.")]
     public void RelationEndPointDefinitionWithoutRelationDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
       classDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "Order", "OrderID", typeof (ObjectID), false));
       RelationEndPointDefinition endPointdefinition = new RelationEndPointDefinition (classDefinition, "Order", true);
 
@@ -105,8 +105,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The RelationEndPointDefinition 'Order' cannot be serialized because is is not part of the current mapping.")]
     public void RelationEndPointDefinitionWithRelationDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition orderDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
-      ReflectionBasedClassDefinition orderTicketDefinition = new ReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
+      ReflectionBasedClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
 
       orderTicketDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false));
 
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The ReflectionBasedVirtualRelationEndPointDefinition 'OrderTicket' cannot be serialized because is is not part of the current mapping.")]
     public void VirtualRelationEndPointDefinitionWithoutRelationDefinition_NotInMapping ()
     {
-      ClassDefinition classDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
 
       VirtualRelationEndPointDefinition endPointdefinition = ReflectionBasedVirtualRelationEndPointDefinitionFactory.CreateReflectionBasedVirtualRelationEndPointDefinition(classDefinition, "OrderTicket", true, CardinalityType.One, typeof (Order));
 
@@ -149,8 +149,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The ReflectionBasedVirtualRelationEndPointDefinition 'OrderTicket' cannot be serialized because is is not part of the current mapping.")]
     public void VirtualRelationEndPointDefinitionWithRelationDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition orderDefinition = new ReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false, new PersistentMixinFinderMock());
-      ReflectionBasedClassDefinition orderTicketDefinition = new ReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition orderDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
+      ReflectionBasedClassDefinition orderTicketDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", "TestDomain", typeof (OrderTicket), false);
 
       orderTicketDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(orderTicketDefinition, "Order", "OrderID", typeof (ObjectID), false));
 
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The AnonymousRelationEndPointDefinition '<anonymous>' cannot be serialized because is is not part of the current mapping.")]
     public void AnonymousRelationEndPointDefinitionWithoutRelationDefinition_NotInMapping ()
     {
-      ClassDefinition classDefinition = new ReflectionBasedClassDefinition ("Client", "Client", "TestDomain", typeof (Client), false, new PersistentMixinFinderMock());
+      ClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Client", "Client", "TestDomain", typeof (Client), false);
 
       AnonymousRelationEndPointDefinition endPointdefinition = new AnonymousRelationEndPointDefinition (classDefinition);
 
@@ -190,8 +190,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ExpectedMessage = "The AnonymousRelationEndPointDefinition '<anonymous>' cannot be serialized because is is not part of the current mapping.")]
     public void AnonymousRelationEndPointDefinitionWithRelationDefinition_NotInMapping ()
     {
-      ReflectionBasedClassDefinition clientDefinition = new ReflectionBasedClassDefinition ("Client", "Client", "TestDomain", typeof (Client), false, new PersistentMixinFinderMock());
-      ReflectionBasedClassDefinition locationDefinition = new ReflectionBasedClassDefinition ("Location", "Location", "TestDomain", typeof (Location), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition clientDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Client", "Client", "TestDomain", typeof (Client), false);
+      ReflectionBasedClassDefinition locationDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Location", "Location", "TestDomain", typeof (Location), false);
 
       locationDefinition.MyPropertyDefinitions.Add (ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(locationDefinition, "Client", "ClientID", typeof (ObjectID), false));
 

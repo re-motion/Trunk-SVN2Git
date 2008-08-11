@@ -140,27 +140,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateTestDomainBaseDefinition()
     {
-      ReflectionBasedClassDefinition testDomainBase = new ReflectionBasedClassDefinition (
-          "TestDomainBase", null, DatabaseTest.c_testDomainProviderID, typeof (TestDomainBase), true,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition testDomainBase = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("TestDomainBase", null, DatabaseTest.c_testDomainProviderID, typeof (TestDomainBase), true);
 
       return testDomainBase;
     }
 
     private ReflectionBasedClassDefinition CreateStorageProviderStubDomainBaseDefinition()
     {
-      ReflectionBasedClassDefinition storageProviderStubDomainBase = new ReflectionBasedClassDefinition (
-          "StorageProviderStubDomainBase", null, DatabaseTest.c_unitTestStorageProviderStubID, typeof (StorageProviderStubDomainBase), true,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition storageProviderStubDomainBase = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("StorageProviderStubDomainBase", null, DatabaseTest.c_unitTestStorageProviderStubID, typeof (StorageProviderStubDomainBase), true);
 
       return storageProviderStubDomainBase;
     }
 
     private ReflectionBasedClassDefinition CreateCompanyDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition company = new ReflectionBasedClassDefinition (
-          "Company", "Company", DatabaseTest.c_testDomainProviderID, typeof (Company), false, baseClass,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition company = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Company", "Company", DatabaseTest.c_testDomainProviderID, typeof (Company), false, baseClass);
 
       company.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(company, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Name", "Name", typeof (string), false, 100));
@@ -172,9 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateCustomerDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition customer = new ReflectionBasedClassDefinition (
-          "Customer", null, DatabaseTest.c_testDomainProviderID, typeof (Customer), false, baseClass,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition customer = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Customer", null, DatabaseTest.c_testDomainProviderID, typeof (Customer), false, baseClass);
 
       customer.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(customer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.CustomerSince", "CustomerSince", typeof (DateTime?)));
@@ -187,9 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreatePartnerDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition partner = new ReflectionBasedClassDefinition (
-          "Partner", null, DatabaseTest.c_testDomainProviderID, typeof (Partner), false, baseClass,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition partner = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Partner", null, DatabaseTest.c_testDomainProviderID, typeof (Partner), false, baseClass);
 
       partner.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(partner, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Partner.ContactPerson", "ContactPersonID", typeof (ObjectID), true));
@@ -199,9 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateSupplierDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition supplier = new ReflectionBasedClassDefinition (
-          "Supplier", null, DatabaseTest.c_testDomainProviderID, typeof (Supplier), false, baseClass,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition supplier = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Supplier", null, DatabaseTest.c_testDomainProviderID, typeof (Supplier), false, baseClass);
 
       supplier.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(supplier, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Supplier.SupplierQuality", "SupplierQuality", typeof (int)));
@@ -211,9 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateDistributorDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition distributor = new ReflectionBasedClassDefinition (
-          "Distributor", null, DatabaseTest.c_testDomainProviderID, typeof (Distributor), false, baseClass,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition distributor = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Distributor", null, DatabaseTest.c_testDomainProviderID, typeof (Distributor), false, baseClass);
 
       distributor.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(distributor, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Distributor.NumberOfShops", "NumberOfShops", typeof (int)));
@@ -223,9 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateOrderDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition order = new ReflectionBasedClassDefinition (
-          "Order", "Order", DatabaseTest.c_testDomainProviderID, typeof (Order), false, baseClass,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition order = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", DatabaseTest.c_testDomainProviderID, typeof (Order), false, baseClass);
 
       order.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(order, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber", "OrderNo", typeof (int)));
@@ -241,9 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateOfficialDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition official = new ReflectionBasedClassDefinition (
-          "Official", "Official", DatabaseTest.c_unitTestStorageProviderStubID, typeof (Official), false, baseClass,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition official = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Official", "Official", DatabaseTest.c_unitTestStorageProviderStubID, typeof (Official), false, baseClass);
 
       official.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(official, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Official.Name", "Name", typeof (string), false, 100));
@@ -253,16 +235,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateSpecialOfficialDefinition (ReflectionBasedClassDefinition officialDefinition)
     {
-      return new ReflectionBasedClassDefinition (
-          "SpecialOfficial", null, DatabaseTest.c_unitTestStorageProviderStubID, typeof (SpecialOfficial), false, officialDefinition,
-          new PersistentMixinFinderMock());
+      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("SpecialOfficial", null, DatabaseTest.c_unitTestStorageProviderStubID, typeof (SpecialOfficial), false, officialDefinition);
     }
 
     private ReflectionBasedClassDefinition CreateOrderTicketDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition orderTicket = new ReflectionBasedClassDefinition (
-          "OrderTicket", "OrderTicket", DatabaseTest.c_testDomainProviderID, typeof (OrderTicket), false, baseClass,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition orderTicket = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderTicket", "OrderTicket", DatabaseTest.c_testDomainProviderID, typeof (OrderTicket), false, baseClass);
 
       orderTicket.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(orderTicket, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName", "FileName", typeof (string), false, 255));
@@ -276,9 +254,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateOrderItemDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition orderItem = new ReflectionBasedClassDefinition (
-          "OrderItem", "OrderItem", DatabaseTest.c_testDomainProviderID, typeof (OrderItem), false, baseClass,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition orderItem = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("OrderItem", "OrderItem", DatabaseTest.c_testDomainProviderID, typeof (OrderItem), false, baseClass);
 
       orderItem.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(orderItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", "OrderID", typeof (ObjectID), true));
@@ -292,9 +268,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateCeoDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition ceo = new ReflectionBasedClassDefinition (
-          "Ceo", "Ceo", DatabaseTest.c_testDomainProviderID, typeof (Ceo), false, baseClass,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition ceo = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Ceo", "Ceo", DatabaseTest.c_testDomainProviderID, typeof (Ceo), false, baseClass);
 
       ceo.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(ceo, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Name", "Name", typeof (string), false, 100));
@@ -306,8 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreatePersonDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition person = new ReflectionBasedClassDefinition (
-          "Person", "Person", DatabaseTest.c_testDomainProviderID, typeof (Person), false, baseClass, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition person = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", "Person", DatabaseTest.c_testDomainProviderID, typeof (Person), false, baseClass);
 
       person.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(person, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Person.Name", "Name", typeof (string), false, 100));
@@ -317,8 +290,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateClientDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition client = new ReflectionBasedClassDefinition (
-          "Client", "Client", DatabaseTest.c_testDomainProviderID, typeof (Client), false, baseClass, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition client = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Client", "Client", DatabaseTest.c_testDomainProviderID, typeof (Client), false, baseClass);
 
       client.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(client, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Client.ParentClient", "ParentClientID", typeof (ObjectID), true));
@@ -328,8 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateLocationDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition location = new ReflectionBasedClassDefinition (
-          "Location", "Location", DatabaseTest.c_testDomainProviderID, typeof (Location), false, baseClass, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition location = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Location", "Location", DatabaseTest.c_testDomainProviderID, typeof (Location), false, baseClass);
 
       location.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(location, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client", "ClientID", typeof (ObjectID), true));
@@ -339,8 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateFileSystemItemDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition fileSystemItem = new ReflectionBasedClassDefinition (
-          "FileSystemItem", "FileSystemItem", DatabaseTest.c_testDomainProviderID, typeof (FileSystemItem), false, baseClass, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition fileSystemItem = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("FileSystemItem", "FileSystemItem", DatabaseTest.c_testDomainProviderID, typeof (FileSystemItem), false, baseClass);
 
       fileSystemItem.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(fileSystemItem, "Remotion.Data.UnitTests.DomainObjects.TestDomain.FileSystemItem.ParentFolder", "ParentFolderID", typeof (ObjectID), true));
@@ -350,16 +320,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateFolderDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition folder = new ReflectionBasedClassDefinition (
-          "Folder", null, DatabaseTest.c_testDomainProviderID, typeof (Folder), false, baseClass, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition folder = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Folder", null, DatabaseTest.c_testDomainProviderID, typeof (Folder), false, baseClass);
 
       return folder;
     }
 
     private ReflectionBasedClassDefinition CreateFileDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition file = new ReflectionBasedClassDefinition (
-          "File", null, DatabaseTest.c_testDomainProviderID, typeof (File), false, baseClass, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition file = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("File", null, DatabaseTest.c_testDomainProviderID, typeof (File), false, baseClass);
 
       return file;
     }
@@ -367,8 +335,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     //TODO: remove Date and NaDate properties
     private ReflectionBasedClassDefinition CreateClassWithAllDataTypesDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition classWithAllDataTypes = new ReflectionBasedClassDefinition (
-          "ClassWithAllDataTypes", "TableWithAllDataTypes", DatabaseTest.c_testDomainProviderID, typeof (ClassWithAllDataTypes), false, baseClass, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition classWithAllDataTypes = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithAllDataTypes", "TableWithAllDataTypes", DatabaseTest.c_testDomainProviderID, typeof (ClassWithAllDataTypes), false, baseClass);
 
       classWithAllDataTypes.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classWithAllDataTypes, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty", "Boolean", typeof (bool)));
@@ -459,52 +426,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateClassWithGuidKeyDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithGuidKey",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithGuidKey",
           "TableWithGuidKey",
           DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithGuidKey),
           false,
-          baseClass, new PersistentMixinFinderMock());
+          baseClass);
 
       return classDefinition;
     }
 
     private ReflectionBasedClassDefinition CreateClassWithInvalidKeyTypeDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithKeyOfInvalidType",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithKeyOfInvalidType",
           "TableWithKeyOfInvalidType",
           DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithKeyOfInvalidType),
           false,
-          baseClass, new PersistentMixinFinderMock());
+          baseClass);
 
       return classDefinition;
     }
 
     private ReflectionBasedClassDefinition CreateClassWithoutIDColumnDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithoutIDColumn",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithoutIDColumn",
           "TableWithoutIDColumn",
           DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithoutIDColumn),
           false,
-          baseClass, new PersistentMixinFinderMock());
+          baseClass);
 
       return classDefinition;
     }
 
     private ReflectionBasedClassDefinition CreateClassWithoutClassIDColumnDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithoutClassIDColumn",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithoutClassIDColumn",
           "TableWithoutClassIDColumn",
           DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithoutClassIDColumn),
           false,
-          baseClass, new PersistentMixinFinderMock());
+          baseClass);
 
       return classDefinition;
     }
@@ -512,26 +475,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     private ReflectionBasedClassDefinition CreateClassWithoutTimestampColumnDefinition (ReflectionBasedClassDefinition baseClass)
     {
       ReflectionBasedClassDefinition classDefinition =
-          new ReflectionBasedClassDefinition (
-              "ClassWithoutTimestampColumn",
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithoutTimestampColumn",
               "TableWithoutTimestampColumn",
               DatabaseTest.c_testDomainProviderID,
               typeof (ClassWithoutTimestampColumn),
               false,
-              baseClass, new PersistentMixinFinderMock());
+              baseClass);
 
       return classDefinition;
     }
 
     private ReflectionBasedClassDefinition CreateClassWithValidRelationsDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithValidRelations",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithValidRelations",
           "TableWithValidRelations",
           DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithValidRelations),
           false,
-          baseClass, new PersistentMixinFinderMock());
+          baseClass);
 
       classDefinition.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional", "TableWithGuidKeyOptionalID", typeof (ObjectID), true));
@@ -544,13 +505,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateClassWithInvalidRelationDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithInvalidRelation",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithInvalidRelation",
           "TableWithInvalidRelation",
           DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithInvalidRelation),
           false,
-          baseClass, new PersistentMixinFinderMock());
+          baseClass);
 
       classDefinition.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithInvalidRelation.ClassWithGuidKey", "TableWithGuidKeyID", typeof (ObjectID), true));
@@ -560,13 +520,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateClassWithoutRelatedClassIDColumnDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithoutRelatedClassIDColumn",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithoutRelatedClassIDColumn",
           "TableWithoutRelatedClassIDColumn",
           DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithoutRelatedClassIDColumn),
           false,
-          baseClass, new PersistentMixinFinderMock());
+          baseClass);
 
       classDefinition.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithoutRelatedClassIDColumn.Distributor", "DistributorID", typeof (ObjectID), true));
@@ -576,13 +535,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateClassWithoutRelatedClassIDColumnAndDerivationDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithOptionalOneToOneRelationAndOppositeDerivedClass",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithOptionalOneToOneRelationAndOppositeDerivedClass",
           "TableWithOptionalOneToOneRelationAndOppositeDerivedClass",
           DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithOptionalOneToOneRelationAndOppositeDerivedClass),
           false,
-          baseClass, new PersistentMixinFinderMock());
+          baseClass);
 
       classDefinition.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithOptionalOneToOneRelationAndOppositeDerivedClass.Company", "CompanyID", typeof (ObjectID), true));
@@ -593,13 +551,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     private ReflectionBasedClassDefinition CreateClassWithOptionalOneToOneRelationAndOppositeDerivedClassDefinition (
         ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithoutRelatedClassIDColumnAndDerivation",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithoutRelatedClassIDColumnAndDerivation",
           "TableWithoutRelatedClassIDColumnAndDerivation",
           DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithoutRelatedClassIDColumnAndDerivation),
           false,
-          baseClass, new PersistentMixinFinderMock());
+          baseClass);
 
       classDefinition.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithoutRelatedClassIDColumnAndDerivation.Company", "CompanyID", typeof (ObjectID), true));
@@ -609,8 +566,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateIndustrialSectorDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition industrialSector = new ReflectionBasedClassDefinition (
-          "IndustrialSector", "IndustrialSector", DatabaseTest.c_testDomainProviderID, typeof (IndustrialSector), false, baseClass, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition industrialSector = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("IndustrialSector", "IndustrialSector", DatabaseTest.c_testDomainProviderID, typeof (IndustrialSector), false, baseClass);
 
       industrialSector.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(industrialSector, "Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name", "Name", typeof (string), false, 100));
@@ -620,8 +576,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateEmployeeDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition employee = new ReflectionBasedClassDefinition (
-          "Employee", "Employee", DatabaseTest.c_testDomainProviderID, typeof (Employee), false, baseClass, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition employee = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Employee", "Employee", DatabaseTest.c_testDomainProviderID, typeof (Employee), false, baseClass);
 
       employee.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(employee, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name", "Name", typeof (string), false, 100));
@@ -633,8 +588,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateComputerDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition computer = new ReflectionBasedClassDefinition (
-          "Computer", "Computer", DatabaseTest.c_testDomainProviderID, typeof (Computer), false, baseClass, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition computer = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Computer", "Computer", DatabaseTest.c_testDomainProviderID, typeof (Computer), false, baseClass);
 
       computer.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(computer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber", "SerialNumber", typeof (string), false, 20));
@@ -652,13 +606,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
     private ReflectionBasedClassDefinition CreateClassWithRelatedClassIDColumnAndNoInheritanceDefinition (ReflectionBasedClassDefinition baseClass)
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithRelatedClassIDColumnAndNoInheritance",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithRelatedClassIDColumnAndNoInheritance",
           "TableWithRelatedClassIDColumnAndNoInheritance",
           DatabaseTest.c_testDomainProviderID,
           typeof (ClassWithRelatedClassIDColumnAndNoInheritance),
           false,
-          baseClass, new PersistentMixinFinderMock());
+          baseClass);
 
       classDefinition.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithRelatedClassIDColumnAndNoInheritance.ClassWithGuidKey", "TableWithGuidKeyID", typeof (ObjectID), true));

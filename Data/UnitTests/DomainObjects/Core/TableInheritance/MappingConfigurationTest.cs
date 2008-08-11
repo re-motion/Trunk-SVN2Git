@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [ExpectedException (typeof (MappingException))]
     public void Validate ()
     {
-      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false);
 
       MappingConfiguration mappingConfiguration = 
           new MappingConfiguration (new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (TestDomainFactory.ConfigurationMappingTestDomainEmpty)));
@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void SetCurrentValidates ()
     {
-      ReflectionBasedClassDefinition personClass = new ReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false, new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition personClass = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Person", null, TableInheritanceTestDomainProviderID, typeof (Person), false);
 
       MappingConfiguration mappingConfiguration = 
           new MappingConfiguration (new MappingReflector (BaseConfiguration.GetTypeDiscoveryService (TestDomainFactory.ConfigurationMappingTestDomainEmpty)));

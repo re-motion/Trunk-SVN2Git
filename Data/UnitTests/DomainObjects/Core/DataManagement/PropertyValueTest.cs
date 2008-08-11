@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       base.SetUp ();
 
-      _classDefinition = new ReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false, new PersistentMixinFinderMock());
+      _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false);
     }
     
     [Test]

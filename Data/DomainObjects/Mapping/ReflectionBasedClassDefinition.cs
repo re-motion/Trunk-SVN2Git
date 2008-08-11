@@ -27,11 +27,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     [NonSerialized]
     private readonly IPersistentMixinFinder _persistentMixinFinder;
 
-    public ReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, IPersistentMixinFinder persistentMixinFinder)
-        : this (id, entityName, storageProviderID, classType, isAbstract, null, persistentMixinFinder)
-    {
-    }
-
     public ReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, ReflectionBasedClassDefinition baseClass, IPersistentMixinFinder persistentMixinFinder)
         : base (id, entityName, storageProviderID, true)
     {

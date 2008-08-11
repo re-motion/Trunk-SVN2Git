@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Relat
 
     private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type)
     {
-      return new ReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, new PersistentMixinFinderMock());
+      return ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false);
     }
   }
 }

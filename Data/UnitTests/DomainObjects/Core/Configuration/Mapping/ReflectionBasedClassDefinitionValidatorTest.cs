@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ValidateCurrentMixinConfiguration_OkWhenNoPersistentChanges ()
     {
-      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, new PersistentMixinFinderMock(typeof (MixinA)));
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, typeof (MixinA));
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (MixinA)).EnterScope ())
       {
         new ReflectionBasedClassDefinitionValidator (classDefinition).ValidateCurrentMixinConfiguration (); // ok, no changes
@@ -40,22 +40,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ValidateCurrentMixinConfiguration_OkOnInheritanceRootInheritingMixin ()
     {
-      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (InheritanceRootInheritingMixin), false, new PersistentMixinFinderMock(typeof (MixinE) ));
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (InheritanceRootInheritingMixin), false, typeof (MixinE) );
       new ReflectionBasedClassDefinitionValidator (classDefinition).ValidateCurrentMixinConfiguration (); // ok, no changes
     }
 
     [Test]
     public void CreateNewPersistentMixinFinder_IncludeInheritedMixins_InheritanceRoot ()
     {
-      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (InheritanceRootInheritingMixin), false, new PersistentMixinFinderMock());
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (InheritanceRootInheritingMixin), false);
       Assert.That (new ReflectionBasedClassDefinitionValidator (classDefinition).CreateNewPersistentMixinFinder ().IncludeInherited, Is.True);
     }
 
     [Test]
     public void CreateNewPersistentMixinFinder_IncludeInheritedMixins_BelowInheritanceRoot ()
     {
-      var baseClassDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Company), false, new PersistentMixinFinderMock());
-      var classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Customer), false, baseClassDefinition, new PersistentMixinFinderMock());
+      var baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Company), false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Customer), false, baseClassDefinition);
       Assert.That (new ReflectionBasedClassDefinitionValidator (classDefinition).CreateNewPersistentMixinFinder ().IncludeInherited, Is.False);
     }
 
@@ -67,8 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain.MixinA.")]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixisMissing ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false,
-          new PersistentMixinFinderMock(typeof (MixinA)));
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, typeof (MixinA));
       using (MixinConfiguration.BuildFromActive ().ForClass<Order> ().Clear ().EnterScope ())
       {
         new ReflectionBasedClassDefinitionValidator (classDefinition).ValidateCurrentMixinConfiguration ();
@@ -82,8 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain.MixinC.")]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsAdded ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false,
-          new PersistentMixinFinderMock(typeof (MixinA)));
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, typeof (MixinA));
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Order)).Clear ().AddMixins (typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope ())
       {
         new ReflectionBasedClassDefinitionValidator (classDefinition).ValidateCurrentMixinConfiguration ();
@@ -97,10 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         + "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain.MixinC.")]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsChangeOnParentClass ()
     {
-      ReflectionBasedClassDefinition baseClassDefinition = new ReflectionBasedClassDefinition ("xbase", "xx", "xxx", typeof (Company), false,
-          new PersistentMixinFinderMock(typeof (MixinA) ));
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Customer), false, baseClassDefinition,
-          new PersistentMixinFinderMock());
+      ReflectionBasedClassDefinition baseClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("xbase", "xx", "xxx", typeof (Company), false, typeof (MixinA) );
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Customer), false, baseClassDefinition);
       using (MixinConfiguration.BuildFromActive ().ForClass (typeof (Company)).Clear ().AddMixins (typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope ())
       {
         new ReflectionBasedClassDefinitionValidator (classDefinition).ValidateCurrentMixinConfiguration ();

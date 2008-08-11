@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     public void AddConstraintWithTwoConstraints ()
     {
       ReflectionBasedClassDefinition firstClass = new ReflectionBasedClassDefinition (
-          "FirstClass", "FirstEntity", "FirstStorageProvider", typeof (Company), false, new PersistentMixinFinderMock());
+          "FirstClass", "FirstEntity", "FirstStorageProvider", typeof (Company), false, null, new PersistentMixinFinder(typeof (Company)));
 
       firstClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition(firstClass, "SecondClass", "SecondClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
@@ -83,10 +83,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
           CreatePropertyDefinition (firstClass, "ThirdClass", "ThirdClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
 
       ReflectionBasedClassDefinition secondClass = new ReflectionBasedClassDefinition (
-          "SecondClass", "SecondEntity", "FirstStorageProvider", typeof (Address), false, new PersistentMixinFinderMock());
+          "SecondClass", "SecondEntity", "FirstStorageProvider", typeof (Address), false, null, new PersistentMixinFinder (typeof (Address)));
 
       ReflectionBasedClassDefinition thirdClass = new ReflectionBasedClassDefinition (
-          "ThirdClass", "ThirdEntity", "FirstStorageProvider", typeof (Employee), false, new PersistentMixinFinderMock());
+          "ThirdClass", "ThirdEntity", "FirstStorageProvider", typeof (Employee), false, null, new PersistentMixinFinder(typeof (Employee)));
 
       RelationDefinition relationDefinition1 = new RelationDefinition (
           "FirstClassToSecondClass",
@@ -131,16 +131,16 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     public void AddConstraintWithRelationInDerivedClass ()
     {
       ReflectionBasedClassDefinition baseClass = new ReflectionBasedClassDefinition (
-          "BaseClass", "BaseClassEntity", "FirstStorageProvider", typeof (Company), false, new PersistentMixinFinderMock());
+          "BaseClass", "BaseClassEntity", "FirstStorageProvider", typeof (Company), false, null, new PersistentMixinFinder(typeof (Company)));
 
       ReflectionBasedClassDefinition derivedClass = new ReflectionBasedClassDefinition (
-          "DerivedClass", "BaseClassEntity", "FirstStorageProvider", typeof (Customer), false, baseClass, new PersistentMixinFinderMock());
+          "DerivedClass", "BaseClassEntity", "FirstStorageProvider", typeof (Customer), false, baseClass, new PersistentMixinFinder(typeof (Customer)));
 
       derivedClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (derivedClass, "OtherClass", "OtherClassID", typeof (ObjectID), true, null, StorageClass.Persistent));
 
       ReflectionBasedClassDefinition otherClass = new ReflectionBasedClassDefinition (
-          "OtherClass", "OtherClassEntity", "FirstStorageProvider", typeof (DevelopmentPartner), false, new PersistentMixinFinderMock());
+          "OtherClass", "OtherClassEntity", "FirstStorageProvider", typeof (DevelopmentPartner), false, null, new PersistentMixinFinder(typeof (DevelopmentPartner)));
 
       RelationDefinition relationDefinition1 = new RelationDefinition (
           "OtherClassToDerivedClass",

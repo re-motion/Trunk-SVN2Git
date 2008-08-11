@@ -96,12 +96,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
 
     private ReflectionBasedClassDefinition CreateClassWithoutStorageGroupWithMixedPropertiesClassDefinition ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClassWithoutStorageGroupWithMixedProperties",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClassWithoutStorageGroupWithMixedProperties",
           "ClassWithoutStorageGroupWithMixedProperties",
           DefaultStorageProviderID,
           typeof (ClassWithoutStorageGroupWithMixedProperties),
-          false, new PersistentMixinFinderMock());
+          false);
 
       CreatePropertyDefinitionsForClassWithoutStorageGroupWithMixedProperties (classDefinition);
 
@@ -110,13 +109,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
 
     private ReflectionBasedClassDefinition CreateDerivedClassWithoutStorageGroupWithMixedPropertiesClassDefinition ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "DerivedClassWithoutStorageGroupWithMixedProperties",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("DerivedClassWithoutStorageGroupWithMixedProperties",
           "DerivedClassWithoutStorageGroupWithMixedProperties",
           DefaultStorageProviderID,
           typeof (DerivedClassWithoutStorageGroupWithMixedProperties),
           false,
-          CreateClassWithoutStorageGroupWithMixedPropertiesClassDefinition (), new PersistentMixinFinderMock());
+          CreateClassWithoutStorageGroupWithMixedPropertiesClassDefinition ());
 
       CreatePropertyDefinitionsForDerivedClassWithoutStorageGroupWithMixedProperties (classDefinition);
 

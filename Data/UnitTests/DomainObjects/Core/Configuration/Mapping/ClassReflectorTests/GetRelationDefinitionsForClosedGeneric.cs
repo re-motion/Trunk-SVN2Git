@@ -71,24 +71,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
 
     private ClassDefinition CreateClosedGenericClassWithOneSideRelationPropertiesClassDefinition ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClosedGenericClassWithOneSideRelationProperties",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClosedGenericClassWithOneSideRelationProperties",
           "ClosedGenericClassWithOneSideRelationProperties",
           c_testDomainProviderID,
           typeof (ClosedGenericClassWithOneSideRelationProperties),
-          false, new PersistentMixinFinderMock());
+          false);
 
       return classDefinition;
     }
 
     private ClassDefinition CreateClosedGenericClassWithManySideRelationPropertiesClassDefinition ()
     {
-      ReflectionBasedClassDefinition classDefinition = new ReflectionBasedClassDefinition (
-          "ClosedGenericClassWithManySideRelationProperties",
+      ReflectionBasedClassDefinition classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("ClosedGenericClassWithManySideRelationProperties",
           "ClosedGenericClassWithManySideRelationProperties",
           c_testDomainProviderID,
           typeof (ClosedGenericClassWithManySideRelationProperties),
-          false, new PersistentMixinFinderMock());
+          false);
 
       CreatePropertyDefinitionsForClosedGenericClassWithManySideRelationProperties (classDefinition);
 

@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Guid idValue = Guid.NewGuid ();
       ReflectionBasedClassDefinition orderClass =
-          new ReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false, new PersistentMixinFinderMock());
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false);
 
       _newDataContainer = DataContainer.CreateNew (new ObjectID ("Order", idValue));
       _existingDataContainer = DataContainer.CreateForExisting (new ObjectID ("Order", idValue), null, delegate (PropertyDefinition propertyDefinition) { return propertyDefinition.DefaultValue; });

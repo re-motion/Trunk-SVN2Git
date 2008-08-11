@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties));
       _relatedClassDefinition = 
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationTargetForPersistentMixin), typeof (MixinAddingPersistentProperties));
-      _inheritanceRootInheritingMixinClassDefinition = new ReflectionBasedClassDefinition ("InheritanceRootInheritingPersistentMixin", 
+      _inheritanceRootInheritingMixinClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition("InheritanceRootInheritingPersistentMixin", 
           "InheritanceRootInheritingPersistentMixin", "TestDomain", typeof (InheritanceRootInheritingPersistentMixin), false, 
           new PersistentMixinFinder(typeof (InheritanceRootInheritingPersistentMixin), true));
 

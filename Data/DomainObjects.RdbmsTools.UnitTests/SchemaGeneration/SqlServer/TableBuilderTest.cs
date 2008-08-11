@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
       base.SetUp();
 
       _tableBuilder = new TableBuilder();
-      _classDefintion = new ReflectionBasedClassDefinition ("ClassID", "Table", "StorageProvider", typeof (Order), false, new PersistentMixinFinderMock());
+      _classDefintion = new ReflectionBasedClassDefinition ("ClassID", "Table", "StorageProvider", typeof (Order), false, null, new PersistentMixinFinder(typeof (Order)));
     }
 [Test]
     public void GetSqlDataType ()
@@ -174,17 +174,17 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     public void AddToCreateTableScriptWithTwoAbstractBaseClasses ()
     {
       ReflectionBasedClassDefinition abstractClass =
-          new ReflectionBasedClassDefinition ("AbstractClass", null, "FirstStorageProvider", typeof (AbstractClass), false, new PersistentMixinFinderMock());
+          new ReflectionBasedClassDefinition ("AbstractClass", null, "FirstStorageProvider", typeof (AbstractClass), false, null, new PersistentMixinFinder(typeof (AbstractClass)));
       abstractClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (abstractClass, "PropertyInAbstractClass", "PropertyInAbstractClass", typeof (string), true, 100, StorageClass.Persistent));
 
       ReflectionBasedClassDefinition derivedAbstractClass =
-          new ReflectionBasedClassDefinition ("DerivedAbstractClass", null, "FirstStorageProvider", typeof (DerivedAbstractClass), false, abstractClass, new PersistentMixinFinderMock());
+          new ReflectionBasedClassDefinition ("DerivedAbstractClass", null, "FirstStorageProvider", typeof (DerivedAbstractClass), false, abstractClass, new PersistentMixinFinder (typeof (DerivedAbstractClass)));
       derivedAbstractClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (derivedAbstractClass, "PropertyInAbstractDerivedClass", "PropertyInAbstractDerivedClass", typeof (string), false, 101, StorageClass.Persistent));
 
       ReflectionBasedClassDefinition derivedConcreteClass = new ReflectionBasedClassDefinition (
-          "DerivedConcreteClass", "EntityName", "FirstStorageProvider", typeof (DerivedConcreteClass), false, derivedAbstractClass, new PersistentMixinFinderMock());
+          "DerivedConcreteClass", "EntityName", "FirstStorageProvider", typeof (DerivedConcreteClass), false, derivedAbstractClass, new PersistentMixinFinder(typeof (DerivedConcreteClass)));
       derivedConcreteClass.MyPropertyDefinitions.Add (
           CreatePropertyDefinition (derivedConcreteClass, "PropertyInDerivedConcreteClass", "PropertyInDerivedConcreteClass", typeof (string), true, 102, StorageClass.Persistent));
 
