@@ -16,7 +16,7 @@ using Remotion.Web.UI.Globalization;
 namespace OBWTest.IndividualControlTests
 {
 
-public class BaseUserControl : 
+public abstract class BaseUserControl : 
     DataEditUserControl, 
     IObjectWithResources //  Provides the UserControl's ResourceManager via GetResourceManager() 
 {

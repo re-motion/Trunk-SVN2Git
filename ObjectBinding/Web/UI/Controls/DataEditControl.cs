@@ -17,8 +17,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <remarks>
   ///   This class must be inherited from, overwriting <see cref="DataSource"/>.
   /// </remarks>
-  public class DataEditUserControl : UserControl, IDataEditControl
-      //public abstract class DataEditUserControl: UserControl, IDataEditControl
+  //public class DataEditUserControl : UserControl, IDataEditControl
+  public abstract class DataEditUserControl: UserControl, IDataEditControl
   {
     public IBusinessObject BusinessObject
     {
@@ -63,14 +63,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   This method should be <see langword="abstract"/>, but <see langword="abstract"/> base classes are not 
     ///   supported by VS.NET designer.
     /// </remarks>
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    public virtual IBusinessObjectDataSourceControl DataSource
-    {
-      get { throw new NotImplementedException ("Property DataSource must be overridden by derived classes to return a non-null value."); }
-    }
+    //[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    //public virtual IBusinessObjectDataSourceControl DataSource
+    //{
+    //  get { throw new NotImplementedException ("Property DataSource must be overridden by derived classes to return a non-null value."); }
+    //}
 
-    //  /// <summary> Gets the control's data source. </summary>
-    //  [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    //  public abstract IBusinessObjectDataSourceControl DataSource { get; }
+    ///// <summary> Gets the control's data source. </summary>
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public abstract IBusinessObjectDataSourceControl DataSource { get; }
   }
 }
