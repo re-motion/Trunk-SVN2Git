@@ -32,9 +32,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     public override void SetUp ()
     {
       base.SetUp();
-      _classWithManySideRelationPropertiesClassDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithManySideRelationProperties));
-      _classWithOneSideRelationPropertiesClassDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties));
-      _classWithBothEndPointsOnSameClassClassDefinition = CreateReflectionBasedClassDefinition (typeof (ClassWithBothEndPointsOnSameClass));
+      _classWithManySideRelationPropertiesClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithManySideRelationProperties));
+      _classWithOneSideRelationPropertiesClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithOneSideRelationProperties));
+      _classWithBothEndPointsOnSameClassClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (ClassWithBothEndPointsOnSameClass));
 
       _classDefinitions = new ClassDefinitionCollection
                             {
@@ -336,10 +336,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors.ClassWithInvalidUnidirectionalRelation", true, false);
 
       var propertyInfo = type.GetProperty ("LeftSide");
-      var classDefinition = CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
       relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
     }
@@ -356,10 +356,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
 
       var propertyInfo = type.GetProperty ("InvalidOppositePropertyNameLeftSide");
-      var classDefinition = CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
       relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
     }
@@ -377,10 +377,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
       
       var propertyInfo = type.GetProperty ("InvalidPropertyNameInBidirectionalRelationAttributeOnOppositePropertyLeftSide");
-      var classDefinition = CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
       relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
     }
@@ -397,10 +397,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
       
       var propertyInfo = type.GetProperty ("InvalidOppositePropertyTypeLeftSide");
-      var classDefinition = CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide()));
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide()));
       
       relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
     }
@@ -417,14 +417,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Type mixinType = GetMixinAddingBidirectionalRelationTwice();
 
       var propertyInfo = mixinType.GetProperty ("RealSide");
-      var classDefinition = CreateReflectionBasedClassDefinition (type, mixinType);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type, mixinType);
 
       var propertyReflector = new PropertyReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       classDefinition.MyPropertyDefinitions.Add (propertyReflector.GetMetadata ());
 
       var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetRelationTargetForMixinAddingBidirectionalRelationTwice ()));
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetRelationTargetForMixinAddingBidirectionalRelationTwice ()));
 
       relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
     }
@@ -441,10 +441,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide ();
 
       var propertyInfo = type.GetProperty ("BaseInvalidOppositePropertyTypeLeftSide");
-      var classDefinition = CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
       relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
     }
@@ -461,10 +461,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
       
       var propertyInfo = type.GetProperty ("InvalidOppositeCollectionPropertyTypeLeftSide");
-      var classDefinition = CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
       relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
     }
@@ -481,10 +481,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide ();
 
       var propertyInfo = type.GetProperty ("BaseInvalidOppositeCollectionPropertyTypeLeftSide");
-      var classDefinition = CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
       relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
     }
@@ -502,10 +502,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
       
       var propertyInfo = type.GetProperty ("MissingBidirectionalRelationAttributeLeftSide");
-      var classDefinition = CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
       relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
     }
@@ -523,10 +523,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Type type = GetClassWithInvalidBidirectionalRelationLeftSide();
 
       var propertyInfo = type.GetProperty ("MissingBidirectionalRelationAttributeForCollectionPropertyLeftSide");
-      var classDefinition = CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
       relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
     }
@@ -543,10 +543,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors.ClassWithInvalidBidirectionalRelationLeftSide", true, false);
 
       var propertyInfo = type.GetProperty ("NoContainsKeyLeftSide");
-      var classDefinition = CreateReflectionBasedClassDefinition (type);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition (type);
       var relationReflector = new RelationReflector (classDefinition, propertyInfo, Configuration.NameResolver);
       _classDefinitions.Add (classDefinition);
-      _classDefinitions.Add (CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (GetClassWithInvalidBidirectionalRelationRightSide ()));
 
       relationReflector.GetMetadata (_classDefinitions, _relationDefinitions);
     }
@@ -566,12 +566,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           "Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.TestDomain.Errors.DerivedClassHavingAnOverriddenPropertyWithMappingAttribute", true, false);
       var propertyInfo = declaringType.GetProperty ("Int32");
 
-      new RelationReflector (CreateReflectionBasedClassDefinition (classType), propertyInfo, Configuration.NameResolver);
-    }
-
-    private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] persistentMixins)
-    {
-      return new ReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, new PersistentMixinFinderMock (persistentMixins));
+      new RelationReflector (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (classType), propertyInfo, Configuration.NameResolver);
     }
 
     private Type GetClassWithInvalidBidirectionalRelationLeftSide ()

@@ -10,9 +10,11 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
 {
+  [IgnoreForMappingConfiguration]
   public class MixinAddingPersistentPropertiesAboveInheritanceRoot : DomainObjectMixin<DomainObject>
   {
     public int PersistentProperty

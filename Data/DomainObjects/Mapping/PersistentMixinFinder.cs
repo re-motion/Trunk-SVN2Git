@@ -25,6 +25,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     private Type[] _persistentMixins;
+    private readonly List<ClassContext> _parentClassContexts;
 
     public PersistentMixinFinder (Type type)
       : this (type, false)
@@ -36,9 +37,30 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("type", type);
       Type = type;
       IncludeInherited = includeInherited;
-      MixinConfiguration = TargetClassDefinitionUtility.GetContext (Type, Mixins.MixinConfiguration.ActiveConfiguration, GenerationPolicy.GenerateOnlyIfConfigured);
+      MixinConfiguration = TargetClassDefinitionUtility.GetContext (Type, Mixins.MixinConfiguration.ActiveConfiguration, 
+          GenerationPolicy.GenerateOnlyIfConfigured);
       if (MixinConfiguration != null)
-        ParentClassContext = TargetClassDefinitionUtility.GetContext (Type.BaseType, Mixins.MixinConfiguration.ActiveConfiguration, GenerationPolicy.GenerateOnlyIfConfigured);
+      {
+        ParentClassContext = TargetClassDefinitionUtility.GetContext (
+            Type.BaseType, Mixins.MixinConfiguration.ActiveConfiguration, GenerationPolicy.GenerateOnlyIfConfigured);
+        _parentClassContexts = GetParentClassContexts ();
+      }
+    }
+
+    private List<ClassContext> GetParentClassContexts ()
+    {
+      List<ClassContext> parentClassContexts = new List<ClassContext> ();
+      ClassContext current = MixinConfiguration;
+      while (current != null && current.Type.BaseType != null)
+      {
+        ClassContext parent = TargetClassDefinitionUtility.GetContext (current.Type.BaseType, Mixins.MixinConfiguration.ActiveConfiguration, 
+            GenerationPolicy.GenerateOnlyIfConfigured);
+        if (parent != null)
+          parentClassContexts.Add (parent);
+        current = parent;
+      }
+      parentClassContexts.Reverse (); // first base is first
+      return parentClassContexts;
     }
 
     public Type Type { get; private set; }
@@ -107,6 +129,17 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
       else
         return mixin;
+    }
+
+    public Type FindOriginalMixinTarget (Type mixinType)
+    {
+      ClassContext parent = _parentClassContexts.FirstOrDefault (c => c.Mixins.ContainsKey (mixinType));
+      if (parent != null)
+        return parent.Type;
+      else if (MixinConfiguration.Mixins.ContainsKey (mixinType))
+        return MixinConfiguration.Type;
+      else
+        return null;
     }
   }
 }

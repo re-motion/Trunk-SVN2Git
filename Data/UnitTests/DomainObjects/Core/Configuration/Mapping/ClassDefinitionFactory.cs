@@ -32,5 +32,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       return classDefinition;
     }
+
+
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] mixins)
+    {
+      return new ReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, new PersistentMixinFinderMock(mixins));
+    }
   }
 }

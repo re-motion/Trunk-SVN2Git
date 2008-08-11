@@ -55,8 +55,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       if (IsMixedProperty)
       {
-#warning TODO: find the type where the mixin was first declared
         return ClassDefinition.ClassType;
+#warning TODO: Make use of FindOriginalMixinTarget
+#warning TODO: Throw if FindOriginalMixinTarget returns null
+        // ClassDefinition.PersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin);
       }
       else
         return PropertyInfo.DeclaringType;

@@ -21,5 +21,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     bool IncludeInherited { get; }
     Type[] GetPersistentMixins ();
     bool IsInParentContext (Type mixinType);
+    Type FindOriginalMixinTarget (Type mixinType);
   }
 }

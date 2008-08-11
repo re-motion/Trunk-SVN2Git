@@ -35,11 +35,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       base.SetUp();
 
       _mixinTargetClassDefinition = 
-          CreateReflectionBasedClassDefinition (typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties));
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties));
       _relatedClassDefinition = 
-          CreateReflectionBasedClassDefinition (typeof (RelationTargetForPersistentMixin), typeof (MixinAddingPersistentProperties));
-      _inheritanceRootInheritingMixinClassDefinition =
-          CreateReflectionBasedClassDefinition (typeof (InheritanceRootInheritingPersistentMixin), typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot));
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationTargetForPersistentMixin), typeof (MixinAddingPersistentProperties));
+      _inheritanceRootInheritingMixinClassDefinition = new ReflectionBasedClassDefinition ("InheritanceRootInheritingPersistentMixin", 
+          "InheritanceRootInheritingPersistentMixin", "TestDomain", typeof (InheritanceRootInheritingPersistentMixin), false, 
+          new PersistentMixinFinder(typeof (InheritanceRootInheritingPersistentMixin), true));
 
       _classDefinitions = new ClassDefinitionCollection {_mixinTargetClassDefinition, _relatedClassDefinition};
       _relationDefinitions = new RelationDefinitionCollection();
@@ -62,6 +63,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
+    public void DeclaringMixin_InvalidPropertyType ()
+    {
+      var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition, typeof (MixinAddingPersistentProperties),
+          "UnidirectionalRelationProperty");
+      Assert.That (relationReflector.DeclaringMixin, Is.SameAs (typeof (MixinAddingPersistentProperties)));
+    }
+
+    [Test]
     public void DomainObjectTypeDeclaringProperty ()
     {
       var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition, typeof (MixinAddingPersistentProperties),
@@ -70,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    [Ignore ("TODO: Support relations with mixins above inheritance root")]
+    [Ignore ("TODO: Implement mixins above inheritance root")]
     public void DomainObjectTypeDeclaringProperty_WithMixinAboveInheritanceRoot ()
     {
       var relationReflector = CreateRelationReflectorForProperty(_inheritanceRootInheritingMixinClassDefinition, 
@@ -244,21 +253,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.That (_relationDefinitions[0].ID, NUnit.Framework.SyntaxHelpers.Text.Contains (relationReflector.PropertyInfo.Name));
     }
 
+    [Ignore ("TODO: Implement mixins above inheritance root")]
     [Test]
-    [Ignore ("TODO: Support relations with mixins above inheritance root")]
     public void GetMetadata_Mixed_PropertyAboveInheritanceRoot ()
     {
       var relationReflector = CreateRelationReflectorForProperty (_inheritanceRootInheritingMixinClassDefinition,
           typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot), "PersistentRelationProperty");
+      _classDefinitions.Add (ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationTargetForPersistentMixinAboveInheritanceRoot)));
 
       Assert.That (relationReflector.GetMetadata (_classDefinitions, _relationDefinitions), Is.Not.Null);
       Assert.That (_relationDefinitions.Count, Is.EqualTo (1));
       Assert.That (_relationDefinitions[0].ID, NUnit.Framework.SyntaxHelpers.Text.Contains (relationReflector.PropertyInfo.Name));
-    }
-
-    private ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] mixins)
-    {
-      return new ReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, new PersistentMixinFinderMock(mixins));
     }
 
     private RelationReflector CreateRelationReflectorForProperty (ReflectionBasedClassDefinition classDefinition, Type declaringType, string propertyName)

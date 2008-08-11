@@ -48,5 +48,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       throw new System.NotImplementedException();
     }
+
+    public Type FindOriginalMixinTarget (Type mixinType)
+    {
+      throw new System.NotImplementedException();
+    }
   }
 }

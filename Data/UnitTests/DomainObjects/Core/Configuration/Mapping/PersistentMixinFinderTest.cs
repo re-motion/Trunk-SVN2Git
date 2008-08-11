@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -26,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void IsInParentContext_WithNullParentContext ()
     {
-      PersistentMixinFinder finder = new PersistentMixinFinder (typeof (TargetClassBase));
+      var finder = new PersistentMixinFinder (typeof (TargetClassBase));
       Assert.That (finder.ParentClassContext, Is.Null);
       Assert.That (finder.IsInParentContext (typeof (MixinBase)), Is.False);
     }
@@ -34,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void IsInParentContext_WithParentContext ()
     {
-      PersistentMixinFinder finder = new PersistentMixinFinder (typeof (TargetClassA));
+      var finder = new PersistentMixinFinder (typeof (TargetClassA));
       Assert.That (finder.ParentClassContext, Is.Not.Null);
       Assert.That (finder.IsInParentContext (typeof (MixinBase)), Is.True);
       Assert.That (finder.IsInParentContext (typeof (MixinA)), Is.False);
@@ -139,6 +138,86 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
         Type[] persistentMixins = new PersistentMixinFinder (typeof (TargetClassA)).GetPersistentMixins ();
         Assert.That (persistentMixins, Is.Empty);
       }
+    }
+
+    [Test]
+    public void FindOriginalMixinTarget_MixinNotDefined ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass (typeof (TargetClassA))
+          .AddMixin (typeof (MixinA))
+          .EnterScope ())
+      {
+        Type originalTarget = new PersistentMixinFinder (typeof (TargetClassA)).FindOriginalMixinTarget (typeof (MixinB));
+        Assert.That (originalTarget, Is.Null);
+      }
+    }
+
+    [Test]
+    public void FindOriginalMixinTarget_MixinOnClass ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass (typeof (TargetClassA))
+          .AddMixin (typeof (MixinA))
+          .EnterScope ())
+      {
+        Type originalTarget = new PersistentMixinFinder (typeof (TargetClassA)).FindOriginalMixinTarget(typeof (MixinA));
+        Assert.That (originalTarget, Is.SameAs (typeof (TargetClassA)));
+      }
+    }
+
+    [Test]
+    public void FindOriginalMixinTarget_MixinOnBase ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass (typeof (TargetClassBase))
+          .AddMixin (typeof (MixinA))
+          .EnterScope ())
+      {
+        Type originalTarget = new PersistentMixinFinder (typeof (TargetClassA)).FindOriginalMixinTarget (typeof (MixinA));
+        Assert.That (originalTarget, Is.SameAs (typeof (TargetClassBase)));
+      }
+    }
+
+    [Test]
+    public void FindOriginalMixinTarget_MixinOnBaseBase ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass (typeof (TargetClassBase))
+          .AddMixin (typeof (MixinA))
+          .EnterScope ())
+      {
+        Type originalTarget = new PersistentMixinFinder (typeof (TargetClassB)).FindOriginalMixinTarget (typeof (MixinA));
+        Assert.That (originalTarget, Is.SameAs (typeof (TargetClassBase)));
+      }
+    }
+
+    [Test]
+    public void FindOriginalMixinTarget_MixinOnBaseBaseBase ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass (typeof (object))
+          .AddMixin (typeof (MixinA))
+          .EnterScope ())
+      {
+        Type originalTarget = new PersistentMixinFinder (typeof (TargetClassB)).FindOriginalMixinTarget (typeof (MixinA));
+        Assert.That (originalTarget, Is.SameAs (typeof (object)));
+      }
+    }
+
+    [Test]
+    public void FindOriginalMixinTarget_MixinOnBaseBaseBase_WithNonCurrentConfiguration ()
+    {
+      PersistentMixinFinder persistentMixinFinder;
+      using (MixinConfiguration.BuildNew ()
+          .ForClass (typeof (object))
+          .AddMixin (typeof (MixinA))
+          .EnterScope ())
+      {
+        persistentMixinFinder = new PersistentMixinFinder (typeof (TargetClassB));
+      }
+      Type originalTarget = persistentMixinFinder.FindOriginalMixinTarget (typeof (MixinA));
+      Assert.That (originalTarget, Is.SameAs (typeof (object)));
     }
 
     private void CheckPersistentMixins (Type targetType, bool includeInherited, params Type[] expectedTypes)
