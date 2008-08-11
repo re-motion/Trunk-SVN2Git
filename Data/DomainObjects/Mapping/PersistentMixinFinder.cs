@@ -24,8 +24,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       return Utilities.ReflectionUtility.CanAscribe (mixinType, typeof (DomainObjectMixin<,>));
     }
 
+    private readonly ClassContext _mixinConfiguration;
+    private readonly List<ClassContext> _allParentClassContexts;
+    private readonly ClassContext _parentClassContext;
+    private readonly bool _includeInherited;
+
     private Type[] _persistentMixins;
-    private readonly List<ClassContext> _parentClassContexts;
 
     public PersistentMixinFinder (Type type)
       : this (type, false)
@@ -36,14 +40,18 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("type", type);
       Type = type;
-      IncludeInherited = includeInherited;
-      MixinConfiguration = TargetClassDefinitionUtility.GetContext (Type, Mixins.MixinConfiguration.ActiveConfiguration, 
+      _includeInherited = includeInherited;
+      _mixinConfiguration = TargetClassDefinitionUtility.GetContext (Type, Mixins.MixinConfiguration.ActiveConfiguration, 
           GenerationPolicy.GenerateOnlyIfConfigured);
       if (MixinConfiguration != null)
       {
-        ParentClassContext = TargetClassDefinitionUtility.GetContext (
-            Type.BaseType, Mixins.MixinConfiguration.ActiveConfiguration, GenerationPolicy.GenerateOnlyIfConfigured);
-        _parentClassContexts = GetParentClassContexts ();
+        if (Type.BaseType != null)
+        {
+          _parentClassContext = TargetClassDefinitionUtility.GetContext (
+              Type.BaseType, Mixins.MixinConfiguration.ActiveConfiguration, GenerationPolicy.GenerateOnlyIfConfigured);
+        }
+        if (IncludeInherited)
+          _allParentClassContexts = GetParentClassContexts();
       }
     }
 
@@ -65,9 +73,20 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public Type Type { get; private set; }
 
-    public ClassContext MixinConfiguration { get; private set; }
-    public ClassContext ParentClassContext { get; private set; }
-    public bool IncludeInherited { get; private set; }
+    public ClassContext MixinConfiguration
+    {
+      get { return _mixinConfiguration; }
+    }
+
+    public ClassContext ParentClassContext
+    {
+      get { return _parentClassContext; }
+    }
+
+    public bool IncludeInherited
+    {
+      get { return _includeInherited; }
+    }
 
     public Type[] GetPersistentMixins ()
     {
@@ -133,10 +152,13 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public Type FindOriginalMixinTarget (Type mixinType)
     {
-      ClassContext parent = _parentClassContexts.FirstOrDefault (c => c.Mixins.ContainsKey (mixinType));
+      if (!IncludeInherited && ParentClassContext != null && ParentClassContext.Mixins.ContainsKey (mixinType))
+        throw new InvalidOperationException ("The given mixin is inherited from the base class, but includeInherited is not set to true.");
+
+      ClassContext parent = _allParentClassContexts != null ? _allParentClassContexts.FirstOrDefault (c => c.Mixins.ContainsKey (mixinType)) : null;
       if (parent != null)
         return parent.Type;
-      else if (MixinConfiguration.Mixins.ContainsKey (mixinType))
+      else if (MixinConfiguration != null && MixinConfiguration.Mixins.ContainsKey (mixinType))
         return MixinConfiguration.Type;
       else
         return null;
