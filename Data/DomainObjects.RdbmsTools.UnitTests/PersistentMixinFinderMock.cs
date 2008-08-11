@@ -48,5 +48,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
     {
       throw new System.NotImplementedException();
     }
+
+    public Type FindOriginalMixinTarget (Type mixinType)
+    {
+      throw new System.NotImplementedException();
+    }
   }
 }
