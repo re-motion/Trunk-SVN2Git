@@ -168,7 +168,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     private void OpenSelfButton_Click(object sender, System.EventArgs e)
     {
       if (!IsReturningPostBack)
-        ExecuteFunctionExternal (new SessionWxeFunction (true), "_blank", OpenSelfButton, true);
+        this.ExecuteFunctionExternal (new SessionWxeFunction (true), "_blank", OpenSelfButton, true);
     }
 
     private void Button1_Click(object sender, System.EventArgs e)
@@ -194,18 +194,18 @@ namespace Remotion.Web.Test.ExecutionEngine
     private void ExecuteButton_Click(object sender, System.EventArgs e)
     {
       if (!IsReturningPostBack)
-        ExecuteFunction (new SampleWxeFunction ());
+        this.ExecuteFunction (new SampleWxeFunction ());
     }
 
     private void ExecuteNoRepostButton_Click (object sender, System.EventArgs e)
     {
-      ExecuteFunctionNoRepost (new SampleWxeFunction (), (Control) sender);
+      this.ExecuteFunctionNoRepost (new SampleWxeFunction (), (Control) sender);
     }
 
     private void OpenSampleFunctionButton_Click (object sender, System.EventArgs e)
     {
       if (! IsReturningPostBack)
-        ExecuteFunction (new SampleWxeFunction(), false, false);
+        this.ExecuteFunction (new SampleWxeFunction (), false, false);
     }
 
     private void OpenSampleFunctionWithPermanentUrlButton_Click (object sender, System.EventArgs e)
@@ -221,7 +221,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     private void OpenSampleFunctionInNewWindowButton_Click (object sender, System.EventArgs e)
     {
       if (!IsReturningPostBack)
-        ExecuteFunctionExternal (new SampleWxeFunction (), "_blank", (Control) sender, true, false, false);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), "_blank", (Control) sender, true, false, false);
     }
 
     private void OpenSampleFunctionWithPermanentUrlInNewWindowButton_Click (object sender, System.EventArgs e)
@@ -230,32 +230,32 @@ namespace Remotion.Web.Test.ExecutionEngine
       {
         NameValueCollection queryString = new NameValueCollection();
         queryString.Add ("Parameter", "Hello World!");
-        ExecuteFunctionExternal (new SampleWxeFunction (), "_blank", (Control) sender, true, true, true, queryString);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), "_blank", (Control) sender, true, true, true, queryString);
       }
     }
 
     private void OpenSessionFunctionButton_Click(object sender, System.EventArgs e)
     {
       if (! IsReturningPostBack)
-        ExecuteFunction (new SessionWxeFunction (true), false, false);
+        this.ExecuteFunction (new SessionWxeFunction (true), false, false);
     }
 
     private void OpenSessionFunctionWithPermanentUrlButton_Click(object sender, System.EventArgs e)
     {
       if (! IsReturningPostBack)
-        ExecuteFunction (new SessionWxeFunction (true), true, true);
+        this.ExecuteFunction (new SessionWxeFunction (true), true, true);
     }
 
     private void OpenSessionFunctionInNewWindowButton_Click (object sender, System.EventArgs e)
     {
       if (!IsReturningPostBack)
-        ExecuteFunctionExternal (new SessionWxeFunction (true), "_blank", (Control) sender, true, false, false);
+        this.ExecuteFunctionExternal (new SessionWxeFunction (true), "_blank", (Control) sender, true, false, false);
     }
 
     private void OpenSessionFunctionWithPermanentUrlInNewWindowButton_Click (object sender, System.EventArgs e)
     {
       if (!IsReturningPostBack)
-        ExecuteFunctionExternal (new SessionWxeFunction (true), "_blank", (Control) sender, true, true, true);
+        this.ExecuteFunctionExternal (new SessionWxeFunction (true), "_blank", (Control) sender, true, true, true);
     }
 
     private void OpenSampleFunctionByRedirectButton_Click(object sender, System.EventArgs e)
@@ -264,7 +264,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       {
         NameValueCollection queryString = new NameValueCollection();
         queryString.Add ("Parameter", "Hello World!");
-        ExecuteFunctionExternal (new SampleWxeFunction (), false, true, queryString, true, null);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), false, true, queryString, true, null);
       }
     }
 
@@ -274,7 +274,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       {
         NameValueCollection queryString = new NameValueCollection();
         queryString.Add ("Parameter", "Hello World!");
-        ExecuteFunctionExternal (new SampleWxeFunction (), false, true, queryString, false, null);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), false, true, queryString, false, null);
       }
     }
 
@@ -282,7 +282,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     {
       if (!IsReturningPostBack)
       {
-        ExecuteFunctionExternal (new SampleWxeFunction (), true, true, null, true, null);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), true, true, null, true, null);
       }
     }
 
@@ -290,7 +290,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     {
       if (!IsReturningPostBack)
       {
-        ExecuteFunctionExternal (new SampleWxeFunction (), true, true, null, false, null);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), true, true, null, false, null);
       }
     }
 

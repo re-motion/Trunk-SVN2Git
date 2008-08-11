@@ -15,6 +15,7 @@ using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -78,7 +79,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         SecurableClassDefinition classDefinition = (SecurableClassDefinition) e.BusinessObjectTreeNode.BusinessObject;
         EditPermissionsFormFunction function = new EditPermissionsFormFunction (classDefinition.ID);
         string features = "width=1000, height=700, resizable=yes, menubar=no, toolbar=no, location=no, status=no";
-        ExecuteFunctionExternal (function, "_blank", features, (Control) sender, true);
+        this.ExecuteFunctionExternal (function, "_blank", features, (Control) sender, true);
       }
       else
       {

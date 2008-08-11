@@ -1,3 +1,7 @@
+1.11.3
+======
+- WxePage: Changed overloads for ExecuteFunction to extension methods.
+
 1.11.2
 ======
 - Remotion.Web.UI.Controls.ISmartControl: 

@@ -704,7 +704,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary>
     /// Gets or sets a flag that determines whether the post back from a node click must be executed synchronously when the tree is rendered within 
-    /// an <see cref="UpdatePanel"/>.
+    /// an <see cref="T:System.Web.UI.UpdatePanel"/>.
     /// </summary>
     [PersistenceMode (PersistenceMode.Attribute)]
     [Category ("Behavior")]

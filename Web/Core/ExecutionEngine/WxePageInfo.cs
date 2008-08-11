@@ -343,26 +343,9 @@ public class WxePageInfo: WxeTemplateControlInfo, IDisposable
 
 
   /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunction(Remotion.Web.ExecutionEngine.WxeFunction)">IWxePage.ExecuteFunction(WxeFunction)</see>.
-  /// </summary>
-  public void ExecuteFunction (WxeFunction function)
-  {
-    ExecuteFunction (function, false, false, null);
-  }
-
-  /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunction(Remotion.Web.ExecutionEngine.WxeFunction,System.Boolean,System.Boolean)">IWxePage.ExecuteFunction(WxeFunction,Boolean,Boolean)</see>.
-  /// </summary>
-  public void ExecuteFunction (WxeFunction function, bool createPermaUrl, bool useParentPermaUrl)
-  {
-    ExecuteFunction (function, createPermaUrl, useParentPermaUrl, null);
-  }
-
-  /// <summary>
   ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunction(Remotion.Web.ExecutionEngine.WxeFunction,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection)">IWxePage.ExecuteFunction(WxeFunction,Boolean,Boolean,NameValueCollection)</see>.
   /// </summary>
-  public void ExecuteFunction (
-      WxeFunction function, bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters)
+  public void ExecuteFunction (WxeFunction function, bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters)
   {
     _httpContext.Handler = WxeHandler;
     try
@@ -377,61 +360,15 @@ public class WxePageInfo: WxeTemplateControlInfo, IDisposable
 
 
   /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control)">IWxePage.ExecuteFunctionNoRepost (WxeFunction,Control)</see>.
-  /// </summary>
-  public void ExecuteFunctionNoRepost (WxeFunction function, Control sender)
-  {
-    ExecuteFunctionNoRepost (function, sender, UsesEventTarget, false, false, null);
-  }
-
-  /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean)">IWxePage.ExecuteFunctionNoRepost(WxeFunction,Control,Boolean)</see>.
-  /// </summary>
-  public void ExecuteFunctionNoRepost (WxeFunction function, Control sender, bool usesEventTarget)
-  {
-    ExecuteFunctionNoRepost (function, sender, usesEventTarget, false, false, null);
-  }
-
-  /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean)">IWxePage.ExecuteFunctionNoRepost (WxeFunction,Control,Boolean,Boolean)</see>.
-  /// </summary>
-  public void ExecuteFunctionNoRepost (
-      WxeFunction function, Control sender, bool createPermaUrl, bool useParentPermaUrl)
-  {
-    ExecuteFunctionNoRepost (function, sender, UsesEventTarget, createPermaUrl, useParentPermaUrl, null);
-  }
-
-  /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection)">IWxePage.ExecuteFunctionNoRepost (WxeFunction,Control,Boolean,Boolean,NameValueCollection)</see>.
-  /// </summary>
-  public void ExecuteFunctionNoRepost (
-      WxeFunction function, Control sender, 
-      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters)
-  {
-    ExecuteFunctionNoRepost (function, sender, UsesEventTarget, createPermaUrl, useParentPermaUrl, permaUrlParameters);
-  }
-
-  /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean,System.Boolean)">IWxePage.ExecuteFunctionNoRepost(WxeFunction,Control,Boolean,Boolean,Boolean)</see>.
-  /// </summary>
-  public void ExecuteFunctionNoRepost (
-      WxeFunction function, Control sender, bool usesEventTarget, bool createPermaUrl, bool useParentPermaUrl)
-  {
-    ExecuteFunctionNoRepost (function, sender, usesEventTarget, createPermaUrl, useParentPermaUrl, null);
-  }
-
-  /// <summary>
   ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection)">IWxePage.ExecuteFunctionNoRepost(WxeFunction,Control,Boolean,Boolean,Boolean,NameValueCollection)</see>.
   /// </summary>
   public void ExecuteFunctionNoRepost (
-      WxeFunction function, Control sender, bool usesEventTarget, 
-      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters)
+      WxeFunction function, Control sender, bool usesEventTarget, bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters)
   {
     _httpContext.Handler = WxeHandler;
     try
     {
-      CurrentStep.ExecuteFunctionNoRepost (
-          _page, function, sender, usesEventTarget, createPermaUrl, useParentPermaUrl, permaUrlParameters);
+      CurrentStep.ExecuteFunctionNoRepost (_page, function, sender, usesEventTarget, createPermaUrl, useParentPermaUrl, permaUrlParameters);
     }
     finally
     {
@@ -459,15 +396,6 @@ public class WxePageInfo: WxeTemplateControlInfo, IDisposable
   }
 
   /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionExternal(Remotion.Web.ExecutionEngine.WxeFunction,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection)">IWxePage.ExecuteFunctionExternal(WxeFunction,Boolean,Boolean,NameValueCollection)</see>.
-  /// </summary>
-  public void ExecuteFunctionExternal (
-      WxeFunction function, bool createPermaUrl, bool useParentPermaUrl, NameValueCollection urlParameters)
-  {
-    ExecuteFunctionExternal (function, createPermaUrl, useParentPermaUrl, urlParameters, true, null);
-  }
-
-  /// <summary>
   ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionExternal(Remotion.Web.ExecutionEngine.WxeFunction,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection,System.Boolean,System.Collections.Specialized.NameValueCollection)">IWxePage.ExecuteFunctionExternal(WxeFunction,Boolean,Boolean,NameValueCollection,Boolean,NameValueCollection)</see>.
   /// </summary>
   public void ExecuteFunctionExternal (
@@ -477,114 +405,12 @@ public class WxePageInfo: WxeTemplateControlInfo, IDisposable
     _httpContext.Handler = WxeHandler;
     try
     {
-      CurrentStep.ExecuteFunctionExternal (
-          _page, function, createPermaUrl, useParentPermaUrl, urlParameters, returnToCaller, callerUrlParameters);
+      CurrentStep.ExecuteFunctionExternal (_page, function, createPermaUrl, useParentPermaUrl, urlParameters, returnToCaller, callerUrlParameters);
     }
     finally
     {
       _httpContext.Handler = _page;
     }
-  }
-
-  #region ExecuteFunctionExternalNoRepost
-//  /// <summary>
-//  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionExternalNoRepost(Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection)">IWxePage.ExecuteFunctionExternalNoRepost(WxeFunction,Control,Boolean,Boolean,NameValueCollection)</see>.
-//  /// </summary>
-//  public void ExecuteFunctionExternalNoRepost (
-//      WxeFunction function, Control sender,
-//      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection urlParameters)
-//  {
-//    ExecuteFunctionExternalNoRepost (function, sender, UsesEventTarget, createPermaUrl, useParentPermaUrl, urlParameters, true, null);
-//  }
-//
-//  /// <summary>
-//  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionExternalNoRepost(Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection)">IWxePage.ExecuteFunctionExternalNoRepost(WxeFunctionControl,Boolean,Boolean,Boolean,NameValueCollection)</see>.
-//  /// </summary>
-//  public void ExecuteFunctionExternalNoRepost (
-//      WxeFunction function, Control sender, bool usesEventTarget,
-//      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection urlParameters)
-//  {
-//    ExecuteFunctionExternalNoRepost (function, sender, usesEventTarget, createPermaUrl, useParentPermaUrl, urlParameters, true, null);
-//  }
-//
-//  /// <summary>
-//  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionExternalNoRepost(Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection,System.Boolean,System.Collections.Specialized.NameValueCollection)">IWxePage.ExecuteFunctionExternalNoRepost(WxeFunction,Control,Boolean,Boolean,NameValueCollection,Boolean,NameValueCollection)</see>.
-//  /// </summary>
-//  public void ExecuteFunctionExternalNoRepost (
-//      WxeFunction function, Control sender,
-//      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection urlParameters, 
-//      bool returnToCaller, NameValueCollection callerUrlParameters)
-//  {
-//    ExecuteFunctionExternalNoRepost (
-//        function, sender, UsesEventTarget, createPermaUrl, useParentPermaUrl, urlParameters, returnToCaller, callerUrlParameters);
-//  }
-//
-//  /// <summary>
-//  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionExternalNoRepost(Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection,System.Boolean,System.Collections.Specialized.NameValueCollection)">IWxePage.ExecuteFunctionExternalNoRepost(WxeFunction,Control,Boolean,Boolean,Boolean,NameValueCollection,Boolean,NameValueCollection)</see>.
-//  /// </summary>
-//  public void ExecuteFunctionExternalNoRepost (
-//      WxeFunction function, Control sender, bool usesEventTarget,
-//      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection urlParameters, 
-//      bool returnToCaller, NameValueCollection callerUrlParameters)
-//  {
-//    _httpContext.Handler = WxeHandler;
-//    try
-//    {
-//      CurrentStep.ExecuteFunctionExternalNoRepost (
-//          _page, function, sender, usesEventTarget, createPermaUrl, useParentPermaUrl, urlParameters, returnToCaller, callerUrlParameters);
-//    }
-//    finally
-//    {
-//      _httpContext.Handler = _page;
-//    }
-//  }
-  #endregion
-
-  /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionExternal(Remotion.Web.ExecutionEngine.WxeFunction,System.String,System.Web.UI.Control,System.Boolean)">IWxePage.ExecuteFunctionExternal(WxeFunction,String,Control,Boolean)</see>.
-  /// </summary>
-  public void ExecuteFunctionExternal (WxeFunction function, string target, Control sender, bool returningPostback)
-  {
-    ExecuteFunctionExternal (function, target, null, sender, returningPostback, false, false, null);
-  }
-
-  /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionExternal(Remotion.Web.ExecutionEngine.WxeFunction,System.String,System.String,System.Web.UI.Control,System.Boolean)">IWxePage.ExecuteFunctionExternal(WxeFunction,String,String,Control,Boolean)</see>.
-  /// </summary>
-  public void ExecuteFunctionExternal (
-      WxeFunction function, string target, string features, Control sender, bool returningPostback)
-  {
-    ExecuteFunctionExternal (function, target, features, sender, returningPostback, false, false, null);
-  }
-
-  /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionExternal(Remotion.Web.ExecutionEngine.WxeFunction,System.String,System.Web.UI.Control,System.Boolean,System.Boolean,System.Boolean)">IWxePage.ExecuteFunctionExternal(WxeFunction,String,Control,Boolean,Boolean,Boolean)</see>.
-  /// </summary>
-  public void ExecuteFunctionExternal (
-      WxeFunction function, string target, Control sender, bool returningPostback, 
-      bool createPermaUrl, bool useParentPermaUrl)
-  {
-    ExecuteFunctionExternal (function, target, null, sender, returningPostback, createPermaUrl, useParentPermaUrl, null);
-  }
-
-  /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionExternal(Remotion.Web.ExecutionEngine.WxeFunction,System.String,System.Web.UI.Control,System.Boolean,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection)">IWxePage.ExecuteFunctionExternal(WxeFunction,String,Control,Boolean,Boolean,Boolean,NameValueCollection)</see>.
-  /// </summary>
-  public void ExecuteFunctionExternal (
-      WxeFunction function, string target, Control sender, bool returningPostback, 
-      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection urlParameters)
-  {
-    ExecuteFunctionExternal (function, target, null, sender, returningPostback, createPermaUrl, useParentPermaUrl, urlParameters);
-  }
-
-  /// <summary>
-  ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.ExecuteFunctionExternal(Remotion.Web.ExecutionEngine.WxeFunction,System.String,System.String,System.Web.UI.Control,System.Boolean,System.Boolean,System.Boolean)">IWxePage.ExecuteFunctionExternal(WxeFunction,String,String,Control,Boolean,Boolean,Boolean)</see>.
-  /// </summary>
-  public void ExecuteFunctionExternal (
-      WxeFunction function, string target, string features, Control sender, bool returningPostback, 
-      bool createPermaUrl, bool useParentPermaUrl)
-  {
-    ExecuteFunctionExternal (function, target, features, sender, returningPostback, createPermaUrl, useParentPermaUrl, null);
   }
 
   /// <summary>

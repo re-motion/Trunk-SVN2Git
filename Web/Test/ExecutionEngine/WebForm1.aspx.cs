@@ -128,7 +128,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       if (! IsReturningPostBack)
       {
         SubFunction subFunction = new SubFunction ("sub var 1", "vall var2");
-        ExecuteFunction (subFunction);
+        this.ExecuteFunction (subFunction);
       }
       else
       {
@@ -152,7 +152,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       if (! IsReturningPostBack)
       {
         SubFunction subFunction = new SubFunction ("subext var 1", "vall var2");
-        ExecuteFunctionExternal (subFunction, "_blank", (Control) sender, true);
+        this.ExecuteFunctionExternal (subFunction, "_blank", (Control) sender, true);
       }
       else
       {
@@ -163,19 +163,19 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     private void SubNoReturnButton_Click (object sender, System.EventArgs e)
     {
-      ExecuteFunctionNoRepost (new SubFunction ("v1", "button"), (Control) sender);    
+      this.ExecuteFunctionNoRepost (new SubFunction ("v1", "button"), (Control) sender);    
     }
 
     private void SubNoReturnField_TextChanged (object sender, System.EventArgs e)
     {
-      ExecuteFunctionNoRepost (new SubFunction ("v1", "textbox"), (Control) sender);    
+      this.ExecuteFunctionNoRepost (new SubFunction ("v1", "textbox"), (Control) sender);    
     }
 
     private void Calendar1_SelectionChanged(object sender, System.EventArgs e)
     {
       if (! IsReturningPostBack)
       {
-        ExecuteFunctionExternal (new SubFunction ("v1", "calendar"), "_blank", (Control) sender, true);
+        this.ExecuteFunctionExternal (new SubFunction ("v1", "calendar"), "_blank", (Control) sender, true);
       }
       else
       {
