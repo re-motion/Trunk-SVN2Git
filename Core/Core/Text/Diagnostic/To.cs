@@ -34,6 +34,8 @@ namespace Remotion.Text.Diagnostic
       public int Int { get; set; }
       public LinkedList<string> LinkedListString { get; set; }
       public List<List<string>> ListListString { get; set; }
+      public Object[][][] Array3D { get; set; }
+      public Object[,] RectangularArray2D { get; set; }
     }
 
 
@@ -44,6 +46,7 @@ namespace Remotion.Text.Diagnostic
       // *) Is null
       // *) Type handler registered
       // *) Is string (Treat seperately to prevent from being treated as IEnumerable)
+      // *) Is rectangular array (Treat seperately to prevent from being treated as 1D-collection by IEnumerable)
       // *) Implements IToText
       // *) If !IsInterface: Base type handler registered (recursive)
       // *) Implements IEnumerable ("is container")
@@ -71,9 +74,13 @@ namespace Remotion.Text.Diagnostic
       {
         return (string) o;
       }
+      //else if (type.IsArray)
+      //{
+      //  Array array = (Array) o;
+      //  return ArrayToText (array);
+      //}
       else if (type.GetInterface ("IEnumerable") != null) 
       {
-        //return o.ToString();
         IEnumerable collection = (IEnumerable) o;
         return CollectionToText (collection);
       }
@@ -82,6 +89,57 @@ namespace Remotion.Text.Diagnostic
         return o.ToString();
       }
     }
+
+
+    //public static string ArrayToText (Array array)
+    //{
+    //  int rank = array.Rank;
+    //  var arrayIndices = new int[rank];
+    //  for (int iRank = 0; iRank < rank; ++iRank)
+    //  {
+
+    //  }
+    //}
+
+    //  if (_stateCombinationCount == 0)
+    //    return null;
+
+    //  PropertyStateTuple[,] result = new PropertyStateTuple[_stateCombinationCount, _statePropertyCount];
+    //  int[] currentStatePropertyIndices = new int[_statePropertyCount];
+
+    //  for (int iCurrentStateCombination = 0; iCurrentStateCombination < _stateCombinationCount; ++iCurrentStateCombination)
+    //  {
+    //    ArrayToText_CalculateCurrentCombination (result, iCurrentStateCombination, currentStatePropertyIndices);
+    //    ArrayToText_PrepareNextCombination (currentStatePropertyIndices);
+    //  }
+
+    //  return result;
+    //}
+
+    //private void ArrayToText_PrepareNextCombination (int[] arrayIndices)
+    //{
+    //  for (int iStateProperty2 = 0; iStateProperty2 < _statePropertyCount; ++iStateProperty2)
+    //  {
+    //    ++statePropertyIndices[iStateProperty2];
+    //    if (statePropertyIndices[iStateProperty2] < _stateDefinitions[iStateProperty2].Length)
+    //      break;
+    //    else
+    //      statePropertyIndices[iStateProperty2] = 0;
+    //  }
+    //}
+
+    //private void ArrayToText_CalculateCurrentCombination (PropertyStateTuple[,] result, int currentStateCombination, int[] arrayIndices)
+    //{
+    //  for (int iStateProperty = 0; iStateProperty < _statePropertyCount; ++iStateProperty)
+    //  {
+    //    var stateProperty = ClassDefinition.StateProperties[iStateProperty];
+    //    var stateDefinitionsForProperty = _stateDefinitions[iStateProperty];
+    //    PropertyStateTuple newTuple = new PropertyStateTuple (stateProperty, stateDefinitionsForProperty[arrayIndices[_statePropertyCount - 1 - iStateProperty]]);
+    //    result[currentStateCombination, iStateProperty] = newTuple;
+    //  }
+    //}
+
+
 
     private static Dictionary<Type, Delegate> _typeHandlerMap = new Dictionary<Type, Delegate>();
 

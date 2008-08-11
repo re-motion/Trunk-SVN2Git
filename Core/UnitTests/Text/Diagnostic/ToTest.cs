@@ -181,22 +181,49 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
 
+    [Test]
+    public void TwoDimensionalEnumerableTest ()
+    {
+      To.ClearHandlers ();
+      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.ListListString)));
+      var test = new To.Test ("That's not my name", 179);
+      test.ListListString = new List<List<string>>() { new List<string>(){"A1","A2"} , new List<string>(){"B1","B2","B3" } };
+      string toTextTest = To.Text (test);
+      Log ("toTextTest=" + toTextTest);
+      Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{{A1,A2},{B1,B2,B3}}]"));
+    }
 
-    //[Test]
-    //public void OneDimensionalEnumerableTest ()
-    //{
-    //  To.ClearHandlers ();
-    //  To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text(x.ListListString)));
-    //  var test = new To.Test ("That's not my name", 179);
-    //  //InitTestInstanceContainer (test);
-    //  //test.ListListString = new List<List<string>>() { new List<string>(){"A1","A2"} , new List<string>(){"B1","B2","B3" } };
-    //  test.ListString = new List<string> () { "A1", "A2", "A3","A4" ,"A5"};
-    //  //test.ListListString.Add (new List<string> () { "A1", "A2", "Ccc", "Ddd" });
-    //  string toTextTest = To.Text (test);
-    //  Log ("toTextTest=" + toTextTest);
-    //  //Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{{A1,A2},{B1,B2,B3}}]"));
-    //  Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{A1,A2,A3,A4,A5}]"));
-    //}
+
+    [Test]
+    public void ThreeDimensionalEnumerableTest ()
+    {
+      To.ClearHandlers ();
+      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.Array3D)));
+      var test = new To.Test ("That's not my name", 179);
+      //Object[,] aaa = { { 1 } };
+      test.Array3D = new Object[][][] { new Object[][] { new Object[] { 91,82,73,64 } } };
+      string toTextTest = To.Text (test);
+      Log ("toTextTest=" + toTextTest);
+      Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{{{91,82,73,64}}}]"));
+    }
+
+
+    [Test]
+    [Ignore] // TODO: Treat rectangular multidimensional arrays seperately from other collections
+    public void RectangularArrayEnumerableTest ()
+    {
+      To.ClearHandlers ();
+      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.RectangularArray2D)));
+      var test = new To.Test ("That's not my name", 179);
+      //Object[,] aaa = { { 1 } };
+      test.RectangularArray2D = new Object[,] {{1,3,5},{7,11,13}};
+      //test.RectangularArray2D.
+      string toTextTest = To.Text (test);
+      Log ("toTextTest=" + toTextTest);
+      Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{{1,3,5},{7,11,13}}]"));
+    }
+
+
 
     public static void Log (string s)
     {

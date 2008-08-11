@@ -636,6 +636,7 @@
     <Compile Include="Text\CommandLine\CommandLineParserTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Text\Diagnostic\OuterProductTest.cs" />
     <Compile Include="Text\Diagnostic\ToTest.cs" />
     <Compile Include="Text\IdentifierGeneratorTest.cs">
       <SubType>Code</SubType>

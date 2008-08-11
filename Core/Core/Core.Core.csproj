@@ -90,6 +90,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
@@ -434,6 +435,7 @@
     <Compile Include="Text\CommandLine\Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Text\Diagnostic\OuterProduct.cs" />
     <Compile Include="Text\Diagnostic\To.cs" />
     <Compile Include="Text\IdentifierGenerator.cs">
       <SubType>Code</SubType>
