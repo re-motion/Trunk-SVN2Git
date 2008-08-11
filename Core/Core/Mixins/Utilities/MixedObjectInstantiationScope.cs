@@ -53,10 +53,7 @@ namespace Remotion.Mixins.Utilities
       s_instance.SetCurrent (value);
     }
 
-    /// <summary>
-    /// The mixin instances to be used when a mixed class is instantiated from within the scope.
-    /// </summary>
-    public readonly object[] SuppliedMixinInstances;
+    private readonly object[] _suppliedMixinInstances;
 
     private MixedObjectInstantiationScope _previous;
     private bool _isDisposed = false;
@@ -69,7 +66,7 @@ namespace Remotion.Mixins.Utilities
     public MixedObjectInstantiationScope ()
     {
       StorePreviousAndSetCurrent ();
-      SuppliedMixinInstances = new object[0];
+      _suppliedMixinInstances = new object[0];
     }
 
     /// <summary>
@@ -83,12 +80,20 @@ namespace Remotion.Mixins.Utilities
     public MixedObjectInstantiationScope (params object[] suppliedMixinInstances)
     {
       StorePreviousAndSetCurrent ();
-      SuppliedMixinInstances = suppliedMixinInstances;
+      _suppliedMixinInstances = suppliedMixinInstances;
     }
 
     public bool IsDisposed
     {
       get { return _isDisposed; }
+    }
+
+    /// <summary>
+    /// The mixin instances to be used when a mixed class is instantiated from within the scope.
+    /// </summary>
+    public object[] SuppliedMixinInstances
+    {
+      get { return _suppliedMixinInstances; }
     }
 
     /// <summary>

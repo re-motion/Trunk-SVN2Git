@@ -23,15 +23,8 @@ namespace Remotion.Mixins.Context
   /// </remarks>
   public class MixinContext
   {
-    /// <summary>
-    /// The mixin type represented by the <see cref="MixinContext"/>.
-    /// </summary>
-    public readonly Type MixinType;
-
-    /// <summary>
-    /// The kind of relationship the configured mixin has with its target class.
-    /// </summary>
-    public readonly MixinKind MixinKind;
+    private readonly Type _mixinType;
+    private readonly MixinKind _mixinKind;
 
     private readonly ReadOnlyContextCollection<Type, Type> _explicitDependencies;
     private readonly MemberVisibility _introducedMemberVisibility;
@@ -50,13 +43,13 @@ namespace Remotion.Mixins.Context
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
       ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
 
-      MixinType = mixinType;
-      MixinKind = mixinKind;
+      _mixinType = mixinType;
+      _mixinKind = mixinKind;
       _introducedMemberVisibility = introducedMemberVisibility;
 
       _explicitDependencies = new ReadOnlyContextCollection<Type, Type> (delegate (Type t) { return t; }, explicitDependencies);
 
-      _cachedHashCode = EqualityUtility.GetRotatedHashCode (MixinKind, MixinType, EqualityUtility.GetXorHashCode (ExplicitDependencies), 
+      _cachedHashCode = EqualityUtility.GetRotatedHashCode (_mixinKind, _mixinType, EqualityUtility.GetXorHashCode (ExplicitDependencies), 
           IntroducedMemberVisibility);
     }
 
@@ -86,8 +79,8 @@ namespace Remotion.Mixins.Context
       if (other == null)
         return false;
       
-      if (other.MixinKind != MixinKind 
-        || other.MixinType != MixinType 
+      if (other._mixinKind != _mixinKind 
+        || other._mixinType != _mixinType 
         || other.IntroducedMemberVisibility != IntroducedMemberVisibility
         || other.ExplicitDependencies.Count != ExplicitDependencies.Count)
         return false;
@@ -130,6 +123,22 @@ namespace Remotion.Mixins.Context
     public MemberVisibility IntroducedMemberVisibility
     {
       get { return _introducedMemberVisibility; }
+    }
+
+    /// <summary>
+    /// The mixin type represented by the <see cref="MixinContext"/>.
+    /// </summary>
+    public Type MixinType
+    {
+      get { return _mixinType; }
+    }
+
+    /// <summary>
+    /// The kind of relationship the configured mixin has with its target class.
+    /// </summary>
+    public MixinKind MixinKind
+    {
+      get { return _mixinKind; }
     }
   }
 }

@@ -19,15 +19,14 @@ namespace Remotion.Mixins.Definitions
 {
   public abstract class ClassDefinitionBase : IAttributableDefinition, IVisitableDefinition
   {
-    public readonly UniqueDefinitionCollection<MethodInfo, MethodDefinition> Methods =
-        new UniqueDefinitionCollection<MethodInfo, MethodDefinition> (delegate (MethodDefinition m) { return m.MethodInfo; });
-    public readonly UniqueDefinitionCollection<PropertyInfo, PropertyDefinition> Properties =
-        new UniqueDefinitionCollection<PropertyInfo, PropertyDefinition> (delegate (PropertyDefinition p) { return p.PropertyInfo; });
-    public readonly UniqueDefinitionCollection<EventInfo, EventDefinition> Events =
-        new UniqueDefinitionCollection<EventInfo, EventDefinition> (delegate (EventDefinition p) { return p.EventInfo; });
-
+    private readonly UniqueDefinitionCollection<MethodInfo, MethodDefinition> _methods =
+        new UniqueDefinitionCollection<MethodInfo, MethodDefinition> (m => m.MethodInfo);
+    private readonly UniqueDefinitionCollection<PropertyInfo, PropertyDefinition> _properties =
+        new UniqueDefinitionCollection<PropertyInfo, PropertyDefinition> (p => p.PropertyInfo);
+    private readonly UniqueDefinitionCollection<EventInfo, EventDefinition> _events =
+        new UniqueDefinitionCollection<EventInfo, EventDefinition> (p => p.EventInfo);
     private readonly MultiDefinitionCollection<Type, AttributeDefinition> _customAttributes =
-        new MultiDefinitionCollection<Type, AttributeDefinition> (delegate (AttributeDefinition a) { return a.AttributeType; });
+        new MultiDefinitionCollection<Type, AttributeDefinition> (a => a.AttributeType);
 
     private readonly Type _type;
     private readonly Set<Type> _implementedInterfaces;
@@ -95,28 +94,43 @@ namespace Remotion.Mixins.Definitions
       get { return Type; }
     }
 
+    public UniqueDefinitionCollection<MethodInfo, MethodDefinition> Methods
+    {
+      get { return _methods; }
+    }
+
+    public UniqueDefinitionCollection<PropertyInfo, PropertyDefinition> Properties
+    {
+      get { return _properties; }
+    }
+
+    public UniqueDefinitionCollection<EventInfo, EventDefinition> Events
+    {
+      get { return _events; }
+    }
+
     public IEnumerable<MemberDefinition> GetAllMembers()
     {
-      foreach (MethodDefinition method in Methods)
+      foreach (MethodDefinition method in _methods)
         yield return method;
-      foreach (PropertyDefinition property in Properties)
+      foreach (PropertyDefinition property in _properties)
         yield return property;
-      foreach (EventDefinition eventDefinition in Events)
+      foreach (EventDefinition eventDefinition in _events)
         yield return eventDefinition;
     }
 
     public IEnumerable<MethodDefinition> GetAllMethods ()
     {
-      foreach (MethodDefinition method in Methods)
+      foreach (MethodDefinition method in _methods)
         yield return method;
-      foreach (PropertyDefinition property in Properties)
+      foreach (PropertyDefinition property in _properties)
       {
         if (property.GetMethod != null)
           yield return property.GetMethod;
         if (property.SetMethod != null)
           yield return property.SetMethod;
       }
-      foreach (EventDefinition eventDef in Events)
+      foreach (EventDefinition eventDef in _events)
       {
         yield return eventDef.AddMethod;
         yield return eventDef.RemoveMethod;
@@ -129,9 +143,9 @@ namespace Remotion.Mixins.Definitions
 
       ChildSpecificAccept (visitor);
 
-      Methods.Accept (visitor);
-      Properties.Accept (visitor);
-      Events.Accept (visitor);
+      _methods.Accept (visitor);
+      _properties.Accept (visitor);
+      _events.Accept (visitor);
       CustomAttributes.Accept (visitor);
     }
 

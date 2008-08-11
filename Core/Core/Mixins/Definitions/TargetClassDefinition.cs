@@ -20,32 +20,47 @@ namespace Remotion.Mixins.Definitions
   [DebuggerDisplay ("{Type}")]
   public class TargetClassDefinition : ClassDefinitionBase, IAttributeIntroductionTarget
   {
-    public readonly UniqueDefinitionCollection<Type, MixinDefinition> Mixins =
+    private readonly UniqueDefinitionCollection<Type, MixinDefinition> _mixins =
         new UniqueDefinitionCollection<Type, MixinDefinition> (m => m.Type);
-    public readonly UniqueDefinitionCollection<Type, RequiredFaceTypeDefinition> RequiredFaceTypes =
+    private readonly UniqueDefinitionCollection<Type, RequiredFaceTypeDefinition> _requiredFaceTypes =
         new UniqueDefinitionCollection<Type, RequiredFaceTypeDefinition> (t => t.Type);
-    public readonly UniqueDefinitionCollection<Type, RequiredBaseCallTypeDefinition> RequiredBaseCallTypes =
+    private readonly UniqueDefinitionCollection<Type, RequiredBaseCallTypeDefinition> _requiredBaseCallTypes =
         new UniqueDefinitionCollection<Type, RequiredBaseCallTypeDefinition> (t => t.Type);
-    public readonly UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> RequiredMixinTypes =
+    private readonly UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> _requiredMixinTypes =
         new UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> (t => t.Type);
-    public readonly UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> ReceivedInterfaces =
+    
+    private readonly UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> _receivedInterfaces =
         new UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> (i => i.InterfaceType);
+    private readonly MultiDefinitionCollection<Type, AttributeIntroductionDefinition> _receivedAttributes;
+
+    private readonly ClassContext _configurationContext;
+    private readonly MixinTypeInstantiator _mixinTypeInstantiator;
 
     public TargetClassDefinition (ClassContext configurationContext)
         : base (configurationContext.Type)
     {
       ArgumentUtility.CheckNotNull ("configurationContext", configurationContext);
 
-      ReceivedAttributes = new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (a => a.AttributeType);
+      _receivedAttributes = new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (a => a.AttributeType);
 
-      ConfigurationContext = configurationContext;
-      MixinTypeInstantiator = new MixinTypeInstantiator (configurationContext.Type);
+      _configurationContext = configurationContext;
+      _mixinTypeInstantiator = new MixinTypeInstantiator (configurationContext.Type);
     }
 
-    public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> ReceivedAttributes { get; private set; }
+    public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> ReceivedAttributes
+    {
+      get { return _receivedAttributes; }
+    }
 
-    public ClassContext ConfigurationContext { get; private set; }
-    internal MixinTypeInstantiator MixinTypeInstantiator { get; private set; }
+    public ClassContext ConfigurationContext
+    {
+      get { return _configurationContext; }
+    }
+
+    internal MixinTypeInstantiator MixinTypeInstantiator
+    {
+      get { return _mixinTypeInstantiator; }
+    }
 
     public bool IsInterface
     {
@@ -62,47 +77,72 @@ namespace Remotion.Mixins.Definitions
       get { return null; }
     }
 
+    public UniqueDefinitionCollection<Type, MixinDefinition> Mixins
+    {
+      get { return _mixins; }
+    }
+
+    public UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> ReceivedInterfaces
+    {
+      get { return _receivedInterfaces; }
+    }
+
+    public UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> RequiredMixinTypes
+    {
+      get { return _requiredMixinTypes; }
+    }
+
+    public UniqueDefinitionCollection<Type, RequiredBaseCallTypeDefinition> RequiredBaseCallTypes
+    {
+      get { return _requiredBaseCallTypes; }
+    }
+
+    public UniqueDefinitionCollection<Type, RequiredFaceTypeDefinition> RequiredFaceTypes
+    {
+      get { return _requiredFaceTypes; }
+    }
+
     protected override void ChildSpecificAccept (IDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
 
       visitor.Visit (this);
       
-      Mixins.Accept (visitor);
-      RequiredFaceTypes.Accept (visitor);
-      RequiredBaseCallTypes.Accept (visitor);
-      RequiredMixinTypes.Accept (visitor);
+      _mixins.Accept (visitor);
+      _requiredFaceTypes.Accept (visitor);
+      _requiredBaseCallTypes.Accept (visitor);
+      _requiredMixinTypes.Accept (visitor);
     }
 
     public bool HasMixinWithConfiguredType(Type configuredType)
     {
       Type realType = MixinTypeInstantiator.GetClosedMixinType (configuredType);
-      return Mixins.ContainsKey (realType);
+      return _mixins.ContainsKey (realType);
     }
 
     public MixinDefinition GetMixinByConfiguredType(Type configuredType)
     {
       Type realType = MixinTypeInstantiator.GetClosedMixinType (configuredType);
-      return Mixins[realType];
+      return _mixins[realType];
     }
 
     public IEnumerable<MethodDefinition> GetAllMixinMethods()
     {
-      foreach (MixinDefinition mixin in Mixins)
+      foreach (MixinDefinition mixin in _mixins)
         foreach (MethodDefinition method in mixin.Methods)
           yield return method;
     }
 
     public IEnumerable<PropertyDefinition> GetAllMixinProperties ()
     {
-      foreach (MixinDefinition mixin in Mixins)
+      foreach (MixinDefinition mixin in _mixins)
         foreach (PropertyDefinition property in mixin.Properties)
           yield return property;
     }
 
     public IEnumerable<EventDefinition> GetAllMixinEvents ()
     {
-      foreach (MixinDefinition mixin in Mixins)
+      foreach (MixinDefinition mixin in _mixins)
         foreach (EventDefinition eventDefinition in mixin.Events)
           yield return eventDefinition;
     }

@@ -27,9 +27,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
           UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      EventIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithDefaultVisibility")];
+      EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithDefaultVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -42,9 +40,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
           UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesDifferentSignaturesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      EventIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
+      EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultEventIntroductionRules.PublicEventNameMustBeUniqueInTargetClass", log));
@@ -57,9 +53,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
           UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      EventIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
+      EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultEventIntroductionRules.PublicEventNameMustBeUniqueInTargetClass", log));
@@ -73,9 +67,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));
-      EventIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithDefaultVisibility")];
+      EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithDefaultVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -88,9 +80,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
           UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      EventIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
+      EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -104,9 +94,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (MixinIntroducingMembersWithPrivateVisibilities));
-      EventIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
+      EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -121,9 +109,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures));
-      EventIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
+      EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultEventIntroductionRules.PublicEventNameMustBeUniqueInOtherMixins", log));
@@ -137,9 +123,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));
-      EventIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
+      EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultEventIntroductionRules.PublicEventNameMustBeUniqueInOtherMixins", log));

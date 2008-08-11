@@ -27,9 +27,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
           UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      PropertyIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithDefaultVisibility")];
+      PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithDefaultVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -42,9 +40,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
           UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesDifferentSignaturesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      PropertyIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
+      PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInTargetClass", log));
@@ -57,9 +53,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
           UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      PropertyIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
+      PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInTargetClass", log));
@@ -73,9 +67,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));
-      PropertyIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithDefaultVisibility")];
+      PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithDefaultVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -88,9 +80,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
           UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      PropertyIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
+      PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -104,9 +94,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (MixinIntroducingMembersWithPrivateVisibilities));
-      PropertyIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
+      PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -121,9 +109,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures));
-      PropertyIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
+      PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInOtherMixins", log));
@@ -137,9 +123,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));
-      PropertyIntroductionDefinition definition = classDefinition
-          .ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]
-          .IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
+      PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
 
       DefaultValidationLog log = Validator.Validate (definition);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultPropertyIntroductionRules.PublicPropertyNameMustBeUniqueInOtherMixins", log));

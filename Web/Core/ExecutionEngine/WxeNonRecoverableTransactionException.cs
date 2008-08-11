@@ -24,7 +24,7 @@ namespace Remotion.Web.ExecutionEngine
           originalException.Message, transactionException.Message);
     }
 
-    public readonly Exception TransactionException;
+    private readonly Exception _transactionException;
 
     public WxeNonRecoverableTransactionException (string message, Exception innerException)
       : base (message, innerException)
@@ -37,7 +37,12 @@ namespace Remotion.Web.ExecutionEngine
                 ArgumentUtility.CheckNotNull ("transactionException", transactionException)),
             originalException)
     {
-      TransactionException = transactionException;
+      _transactionException = transactionException;
+    }
+
+    public Exception TransactionException
+    {
+      get { return _transactionException; }
     }
   }
 }

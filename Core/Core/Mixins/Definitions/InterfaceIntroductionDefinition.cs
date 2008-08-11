@@ -19,12 +19,12 @@ namespace Remotion.Mixins.Definitions
   [DebuggerDisplay ("{FullName} introduced via {Implementer.FullName}")]
   public class InterfaceIntroductionDefinition : IVisitableDefinition
   {
-    public readonly UniqueDefinitionCollection<MethodInfo, MethodIntroductionDefinition> IntroducedMethods =
-        new UniqueDefinitionCollection<MethodInfo, MethodIntroductionDefinition> (delegate (MethodIntroductionDefinition m) { return m.InterfaceMember; });
-    public readonly UniqueDefinitionCollection<PropertyInfo, PropertyIntroductionDefinition> IntroducedProperties =
-        new UniqueDefinitionCollection<PropertyInfo, PropertyIntroductionDefinition> (delegate (PropertyIntroductionDefinition m) { return m.InterfaceMember; });
-    public readonly UniqueDefinitionCollection<EventInfo, EventIntroductionDefinition> IntroducedEvents =
-        new UniqueDefinitionCollection<EventInfo, EventIntroductionDefinition> (delegate (EventIntroductionDefinition m) { return m.InterfaceMember; });
+    private readonly UniqueDefinitionCollection<MethodInfo, MethodIntroductionDefinition> _introducedMethods =
+        new UniqueDefinitionCollection<MethodInfo, MethodIntroductionDefinition> (m => m.InterfaceMember);
+    private readonly UniqueDefinitionCollection<PropertyInfo, PropertyIntroductionDefinition> _introducedProperties =
+        new UniqueDefinitionCollection<PropertyInfo, PropertyIntroductionDefinition> (m => m.InterfaceMember);
+    private readonly UniqueDefinitionCollection<EventInfo, EventIntroductionDefinition> _introducedEvents =
+        new UniqueDefinitionCollection<EventInfo, EventIntroductionDefinition> (m => m.InterfaceMember);
 
     public InterfaceIntroductionDefinition (Type type, MixinDefinition implementer)
     {
@@ -53,13 +53,28 @@ namespace Remotion.Mixins.Definitions
       get { return Implementer.TargetClass; }
     }
 
+    public UniqueDefinitionCollection<EventInfo, EventIntroductionDefinition> IntroducedEvents
+    {
+      get { return _introducedEvents; }
+    }
+
+    public UniqueDefinitionCollection<PropertyInfo, PropertyIntroductionDefinition> IntroducedProperties
+    {
+      get { return _introducedProperties; }
+    }
+
+    public UniqueDefinitionCollection<MethodInfo, MethodIntroductionDefinition> IntroducedMethods
+    {
+      get { return _introducedMethods; }
+    }
+
     public IEnumerable<IMemberIntroductionDefinition> GetIntroducedMembers ()
     {
-      foreach (MethodIntroductionDefinition introducedMethod in IntroducedMethods)
+      foreach (MethodIntroductionDefinition introducedMethod in _introducedMethods)
         yield return introducedMethod;
-      foreach (PropertyIntroductionDefinition introducedProperty in IntroducedProperties)
+      foreach (PropertyIntroductionDefinition introducedProperty in _introducedProperties)
         yield return introducedProperty;
-      foreach (EventIntroductionDefinition introducedEvent in IntroducedEvents)
+      foreach (EventIntroductionDefinition introducedEvent in _introducedEvents)
         yield return introducedEvent;
     }
 
@@ -67,9 +82,9 @@ namespace Remotion.Mixins.Definitions
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       visitor.Visit (this);
-      IntroducedMethods.Accept (visitor);
-      IntroducedProperties.Accept (visitor);
-      IntroducedEvents.Accept (visitor);
+      _introducedMethods.Accept (visitor);
+      _introducedProperties.Accept (visitor);
+      _introducedEvents.Accept (visitor);
     }
   }
 }

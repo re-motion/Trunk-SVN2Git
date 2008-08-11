@@ -17,7 +17,7 @@ namespace Remotion.Mixins.Definitions
   [DebuggerDisplay ("{RequiredType.Type}, Depender = {Depender.Type}")]
   public abstract class DependencyDefinitionBase : IVisitableDefinition
   {
-    public readonly UniqueDefinitionCollection<Type, DependencyDefinitionBase> AggregatedDependencies;
+    private readonly UniqueDefinitionCollection<Type, DependencyDefinitionBase> _aggregatedDependencies;
 
     private readonly RequirementDefinitionBase _requirement; // the required face or base interface
     private readonly MixinDefinition _depender; // the mixin (directly or indirectly) defining the requirement
@@ -33,7 +33,7 @@ namespace Remotion.Mixins.Definitions
       _depender = depender;
       _aggregator = aggregator;
 
-      AggregatedDependencies = new UniqueDefinitionCollection<Type, DependencyDefinitionBase> (
+      _aggregatedDependencies = new UniqueDefinitionCollection<Type, DependencyDefinitionBase> (
           delegate (DependencyDefinitionBase d) { return d.RequiredType.Type; },
           HasSameDepender);
     }
@@ -82,7 +82,12 @@ namespace Remotion.Mixins.Definitions
     // aggregates hold nested dependencies
     public bool IsAggregate
     {
-      get { return AggregatedDependencies.Count > 0; }
+      get { return _aggregatedDependencies.Count > 0; }
+    }
+
+    public UniqueDefinitionCollection<Type, DependencyDefinitionBase> AggregatedDependencies
+    {
+      get { return _aggregatedDependencies; }
     }
 
     public abstract void Accept (IDefinitionVisitor visitor);

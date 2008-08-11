@@ -30,8 +30,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     [Test]
     public void AdditionalDependenciesAreAnalyzed ()
     {
-      Assert.IsTrue (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassForGlobalMix)).Mixins[typeof (MixinForGlobalMix)]
-          .MixinDependencies.ContainsKey (typeof (AdditionalDependencyForGlobalMix)));
+      Assert.IsTrue (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassForGlobalMix)).Mixins[typeof (MixinForGlobalMix)].MixinDependencies.ContainsKey (typeof (AdditionalDependencyForGlobalMix)));
     }
 
     [Test]

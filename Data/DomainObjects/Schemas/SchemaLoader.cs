@@ -10,7 +10,6 @@
 
 using System;
 using System.Xml.Schema;
-using Remotion.Data.DomainObjects.ConfigurationLoader;
 using Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationLoader;
 using Remotion.Utilities;
 using Remotion.Xml;
@@ -23,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Schemas
 
     // static members and constants
 
-    public readonly static SchemaLoader Queries = new SchemaLoader ("Queries.xsd", PrefixNamespace.QueryConfigurationNamespace.Uri);
+    public static readonly SchemaLoader Queries = new SchemaLoader ("Queries.xsd", PrefixNamespace.QueryConfigurationNamespace.Uri);
 
     // member fields
 

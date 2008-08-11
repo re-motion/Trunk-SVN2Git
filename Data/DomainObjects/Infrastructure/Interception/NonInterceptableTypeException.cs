@@ -21,10 +21,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
   /// </summary>
   public class NonInterceptableTypeException : Exception
   {
-    /// <summary>
-    /// The type that cannot be intercepted.
-    /// </summary>
-    public readonly Type Type;
+    private readonly Type _type;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NonInterceptableTypeException"/> class.
@@ -34,7 +31,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     public NonInterceptableTypeException (string message, Type type)
         : base (message)
     {
-      Type = type;
+      _type = type;
+    }
+
+    /// <summary>
+    /// The type that cannot be intercepted.
+    /// </summary>
+    public Type Type
+    {
+      get { return _type; }
     }
   }
 }

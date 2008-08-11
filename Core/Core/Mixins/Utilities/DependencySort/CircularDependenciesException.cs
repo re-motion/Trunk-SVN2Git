@@ -15,18 +15,23 @@ namespace Remotion.Mixins.Utilities.DependencySort
 {
   public class CircularDependenciesException<T> : Exception
   {
-    public readonly IEnumerable<T> Circulars;
+    private readonly IEnumerable<T> _circulars;
 
     public CircularDependenciesException (string message, IEnumerable<T> circulars)
         : base (message)
     {
-      Circulars = circulars;
+      _circulars = circulars;
     }
 
     public CircularDependenciesException (string message, IEnumerable<T> circulars, Exception inner)
         : base (message, inner)
     {
-      Circulars = circulars;
+      _circulars = circulars;
+    }
+
+    public IEnumerable<T> Circulars
+    {
+      get { return _circulars; }
     }
   }
 }

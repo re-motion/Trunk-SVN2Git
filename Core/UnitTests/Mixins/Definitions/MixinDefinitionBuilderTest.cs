@@ -210,8 +210,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
           .ForClass<ClassWithMixinsAcceptingAlphabeticOrdering> ().AddMixin<MixinAcceptingAlphabeticOrdering1> ()
           .EnterScope ())
       {
-        MixinDefinition accepter = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassWithMixinsAcceptingAlphabeticOrdering))
-            .Mixins[typeof (MixinAcceptingAlphabeticOrdering1)];
+        MixinDefinition accepter = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassWithMixinsAcceptingAlphabeticOrdering)).Mixins[typeof (MixinAcceptingAlphabeticOrdering1)];
         Assert.IsTrue (accepter.AcceptsAlphabeticOrdering);
       }
     }
@@ -221,8 +220,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<NullMixin> ().EnterScope ())
       {
-        MixinDefinition accepter = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget))
-            .Mixins[typeof (NullMixin)];
+        MixinDefinition accepter = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (NullMixin)];
         Assert.IsFalse (accepter.AcceptsAlphabeticOrdering);
       }
     }
@@ -232,8 +230,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<NullMixin> ().OfKind (MixinKind.Extending).EnterScope ())
       {
-        MixinDefinition mixin = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget))
-            .Mixins[typeof (NullMixin)];
+        MixinDefinition mixin = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (NullMixin)];
         Assert.That (mixin.MixinKind, Is.EqualTo (MixinKind.Extending));
       }
     }
@@ -243,8 +240,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<NullMixin> ().OfKind (MixinKind.Used).EnterScope ())
       {
-        MixinDefinition mixin = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget))
-            .Mixins[typeof (NullMixin)];
+        MixinDefinition mixin = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (NullMixin)];
         Assert.That (mixin.MixinKind, Is.EqualTo (MixinKind.Used));
       }
     }

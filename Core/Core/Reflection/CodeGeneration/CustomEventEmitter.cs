@@ -23,8 +23,8 @@ namespace Remotion.Reflection.CodeGeneration
 
   public class CustomEventEmitter : IAttributableEmitter
   {
-    public readonly CustomClassEmitter DeclaringType;
-    public readonly EventBuilder EventBuilder;
+    private readonly CustomClassEmitter _declaringType;
+    private readonly EventBuilder _eventBuilder;
 
     private readonly string _name;
     private readonly EventKind _eventKind;
@@ -39,8 +39,8 @@ namespace Remotion.Reflection.CodeGeneration
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("eventType", eventType);
 
-      DeclaringType = declaringType;
-      EventBuilder = declaringType.TypeBuilder.DefineEvent (name, attributes, eventType);
+      _declaringType = declaringType;
+      _eventBuilder = declaringType.TypeBuilder.DefineEvent (name, attributes, eventType);
       _name = name;
       _eventKind = eventKind;
       _eventType = eventType;
@@ -65,7 +65,7 @@ namespace Remotion.Reflection.CodeGeneration
           throw new InvalidOperationException ("Add methods can only be assigned once.");
 
         _addMethod = value;
-        EventBuilder.SetAddOnMethod (_addMethod.MethodBuilder);
+        _eventBuilder.SetAddOnMethod (_addMethod.MethodBuilder);
       }
     }
 
@@ -87,7 +87,7 @@ namespace Remotion.Reflection.CodeGeneration
           throw new InvalidOperationException ("Remove methods can only be assigned once.");
 
         _removeMethod = value;
-        EventBuilder.SetRemoveOnMethod (_removeMethod.MethodBuilder);
+        _eventBuilder.SetRemoveOnMethod (_removeMethod.MethodBuilder);
       }
     }
 
@@ -106,6 +106,16 @@ namespace Remotion.Reflection.CodeGeneration
       get { return _eventKind; }
     }
 
+    public CustomClassEmitter DeclaringType
+    {
+      get { return _declaringType; }
+    }
+
+    public EventBuilder EventBuilder
+    {
+      get { return _eventBuilder; }
+    }
+
     private void CreateAddMethod ()
     {
       Assertion.IsNull (_addMethod);
@@ -113,7 +123,7 @@ namespace Remotion.Reflection.CodeGeneration
       MethodAttributes flags = MethodAttributes.Public | MethodAttributes.SpecialName;
       if (EventKind == EventKind.Static)
         flags |= MethodAttributes.Static;
-      CustomMethodEmitter method = DeclaringType.CreateMethod ("add_" + Name, flags);
+      CustomMethodEmitter method = _declaringType.CreateMethod ("add_" + Name, flags);
       method.SetParameterTypes (new Type[] { EventType });
       AddMethod = method;
     }
@@ -125,14 +135,14 @@ namespace Remotion.Reflection.CodeGeneration
       MethodAttributes flags = MethodAttributes.Public | MethodAttributes.SpecialName;
       if (EventKind == EventKind.Static)
         flags |= MethodAttributes.Static;
-      CustomMethodEmitter method = DeclaringType.CreateMethod ("remove_" + Name, flags);
+      CustomMethodEmitter method = _declaringType.CreateMethod ("remove_" + Name, flags);
       method.SetParameterTypes (new Type[] { EventType });
       RemoveMethod = method;
     }
 
     public void AddCustomAttribute (CustomAttributeBuilder customAttribute)
     {
-      EventBuilder.SetCustomAttribute (customAttribute);
+      _eventBuilder.SetCustomAttribute (customAttribute);
     }
 
     internal void EnsureValid ()

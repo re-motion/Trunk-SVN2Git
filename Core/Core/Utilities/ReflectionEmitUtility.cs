@@ -21,20 +21,45 @@ namespace Remotion.Utilities
   {
     public struct CustomAttributeBuilderData
     {
-      public readonly object[] ConstructorArgs;
-      public readonly PropertyInfo[] NamedProperties;
-      public readonly object[] PropertyValues;
-      public readonly FieldInfo[] NamedFields;
-      public readonly object[] FieldValues;
+      private readonly object[] _constructorArgs;
+      private readonly PropertyInfo[] _namedProperties;
+      private readonly object[] _propertyValues;
+      private readonly FieldInfo[] _namedFields;
+      private readonly object[] _fieldValues;
 
       public CustomAttributeBuilderData (object[] constructorArgs, PropertyInfo[] namedProperties, object[] propertyValues, FieldInfo[] namedFields,
                                          object[] fieldValues)
       {
-        ConstructorArgs = constructorArgs;
-        FieldValues = fieldValues;
-        NamedFields = namedFields;
-        PropertyValues = propertyValues;
-        NamedProperties = namedProperties;
+        _constructorArgs = constructorArgs;
+        _fieldValues = fieldValues;
+        _namedFields = namedFields;
+        _propertyValues = propertyValues;
+        _namedProperties = namedProperties;
+      }
+
+      public object[] FieldValues
+      {
+        get { return _fieldValues; }
+      }
+
+      public FieldInfo[] NamedFields
+      {
+        get { return _namedFields; }
+      }
+
+      public object[] PropertyValues
+      {
+        get { return _propertyValues; }
+      }
+
+      public PropertyInfo[] NamedProperties
+      {
+        get { return _namedProperties; }
+      }
+
+      public object[] ConstructorArgs
+      {
+        get { return _constructorArgs; }
       }
     }
 

@@ -223,8 +223,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinIndirectlyAddingNonInheritedAttributeFromSelf)).EnterScope())
       {
-        MixinDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget))
-            .Mixins[typeof (MixinIndirectlyAddingNonInheritedAttributeFromSelf)];
+        MixinDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinIndirectlyAddingNonInheritedAttributeFromSelf)];
         Assert.IsFalse (definition.CustomAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)));
         Assert.IsTrue (definition.CustomAttributes.ContainsKey (typeof (NonInheritedAttribute)));
       }
@@ -235,8 +234,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinIndirectlyAddingInheritedAttributeFromSelf)).EnterScope())
       {
-        MixinDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget))
-            .Mixins[typeof (MixinIndirectlyAddingInheritedAttributeFromSelf)];
+        MixinDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinIndirectlyAddingInheritedAttributeFromSelf)];
         Assert.IsTrue (definition.CustomAttributes.ContainsKey (typeof (AttributeWithParameters)));
         Assert.AreEqual (1, new List<AttributeDefinition> (definition.CustomAttributes[typeof (AttributeWithParameters)]).Count);
       }
@@ -247,8 +245,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinIndirectlyAddingAttribute)).EnterScope())
       {
-        MethodDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinIndirectlyAddingAttribute)]
-            .Methods[typeof (MixinIndirectlyAddingAttribute).GetMethod ("ToString")];
+        MethodDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinIndirectlyAddingAttribute)].Methods[typeof (MixinIndirectlyAddingAttribute).GetMethod ("ToString")];
 
         Assert.IsFalse (definition.CustomAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)));
         Assert.IsTrue (definition.CustomAttributes.ContainsKey (typeof (AttributeWithParameters)));
@@ -274,8 +271,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinIndirectlyAddingFilteredAttributes)).EnterScope())
       {
-        MethodDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinIndirectlyAddingFilteredAttributes)]
-            .Methods[typeof (MixinIndirectlyAddingFilteredAttributes).GetMethod ("ToString")];
+        MethodDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinIndirectlyAddingFilteredAttributes)].Methods[typeof (MixinIndirectlyAddingFilteredAttributes).GetMethod ("ToString")];
 
         Assert.IsFalse (definition.CustomAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)));
         Assert.IsFalse (definition.CustomAttributes.ContainsKey (typeof (AttributeWithParameters)));

@@ -210,8 +210,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
         List<AttributeIntroductionDefinition> introductions =
             new List<AttributeIntroductionDefinition> (definition.ReceivedAttributes[typeof (AttributeWithParameters)]);
         List<AttributeDefinition> attributes = new List<AttributeDefinition> (
-            definition.Overrides[typeof (MixinIndirectlyAddingAttribute)].DeclaringClass
-                .Methods[typeof (MixinIndirectlyAddingAttribute).GetMethod ("ToString")].CustomAttributes[typeof (AttributeWithParameters)]);
+            definition.Overrides[typeof (MixinIndirectlyAddingAttribute)].DeclaringClass.Methods[typeof (MixinIndirectlyAddingAttribute).GetMethod ("ToString")].CustomAttributes[typeof (AttributeWithParameters)]);
 
         Assert.AreEqual (1, introductions.Count);
         Assert.AreEqual (1, attributes.Count);

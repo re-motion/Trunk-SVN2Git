@@ -17,31 +17,41 @@ namespace Remotion.Mixins.Definitions
   [DebuggerDisplay ("{FullName} introduced via {Attribute.DeclaringDefinition.FullName}")]
   public class AttributeIntroductionDefinition : IVisitableDefinition
   {
-    public readonly IAttributeIntroductionTarget Target;
-    public readonly AttributeDefinition Attribute;
+    private readonly IAttributeIntroductionTarget _target;
+    private readonly AttributeDefinition _attribute;
 
     public AttributeIntroductionDefinition (IAttributeIntroductionTarget target, AttributeDefinition attribute)
     {
       ArgumentUtility.CheckNotNull ("target", target);
       ArgumentUtility.CheckNotNull ("attribute", attribute);
 
-      Target = target;
-      Attribute = attribute;
+      _target = target;
+      _attribute = attribute;
     }
 
     public Type AttributeType
     {
-      get { return Attribute.AttributeType; }
+      get { return _attribute.AttributeType; }
     }
 
     public string FullName
     {
-      get { return Attribute.FullName; }
+      get { return _attribute.FullName; }
     }
 
     public IVisitableDefinition Parent
     {
-      get { return Attribute.Parent; }
+      get { return _attribute.Parent; }
+    }
+
+    public IAttributeIntroductionTarget Target
+    {
+      get { return _target; }
+    }
+
+    public AttributeDefinition Attribute
+    {
+      get { return _attribute; }
     }
 
     public void Accept (IDefinitionVisitor visitor)

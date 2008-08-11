@@ -21,10 +21,10 @@ namespace Remotion.Mixins.Validation
   {
     public struct Args
     {
-      public readonly ValidatingVisitor Validator;
-      public readonly TDefinition Definition;
-      public readonly IValidationLog Log;
-      public readonly DelegateValidationRule<TDefinition> Self;
+      private readonly ValidatingVisitor _validator;
+      private readonly TDefinition _definition;
+      private readonly IValidationLog _log;
+      private readonly DelegateValidationRule<TDefinition> _self;
 
       public Args (ValidatingVisitor validator, TDefinition definition, IValidationLog log, DelegateValidationRule<TDefinition> self)
       {
@@ -33,17 +33,37 @@ namespace Remotion.Mixins.Validation
         ArgumentUtility.CheckNotNull ("log", log);
         ArgumentUtility.CheckNotNull ("self", self);
 
-        Validator = validator;
-        Self = self;
-        Log = log;
-        Definition = definition;
+        _validator = validator;
+        _self = self;
+        _log = log;
+        _definition = definition;
+      }
+
+      public ValidatingVisitor Validator
+      {
+        get { return _validator; }
+      }
+
+      public TDefinition Definition
+      {
+        get { return _definition; }
+      }
+
+      public IValidationLog Log
+      {
+        get { return _log; }
+      }
+
+      public DelegateValidationRule<TDefinition> Self
+      {
+        get { return _self; }
       }
     }
 
     private static string GetRuleName (Rule rule)
     {
       MethodInfo method = rule.Method;
-      DelegateRuleDescriptionAttribute attribute = AttributeUtility.GetCustomAttribute<DelegateRuleDescriptionAttribute> (method, true);
+      var attribute = AttributeUtility.GetCustomAttribute<DelegateRuleDescriptionAttribute> (method, true);
       if (attribute == null || attribute.RuleName == null)
         return method.DeclaringType.FullName + "." + rule.Method.Name;
       else
@@ -53,7 +73,7 @@ namespace Remotion.Mixins.Validation
     private static string GetMessage (Rule rule)
     {
       MethodInfo method = rule.Method;
-      DelegateRuleDescriptionAttribute attribute = AttributeUtility.GetCustomAttribute<DelegateRuleDescriptionAttribute> (method, true);
+      var attribute = AttributeUtility.GetCustomAttribute<DelegateRuleDescriptionAttribute> (method, true);
       if (attribute == null || attribute.Message == null)
         return FormatMessage (rule.Method.Name);
       else
@@ -62,7 +82,7 @@ namespace Remotion.Mixins.Validation
 
     private static string FormatMessage (string message)
     {
-      StringBuilder sb = new StringBuilder ();
+      var sb = new StringBuilder ();
 
       for (int i = 0; i < message.Length; ++i)
       {

@@ -20,11 +20,11 @@ namespace Remotion.Mixins.Definitions
   [DebuggerDisplay ("{Type}, TargetClass = {TargetClass.Type}")]
   public abstract class RequirementDefinitionBase : IVisitableDefinition
   {
-    public readonly UniqueDefinitionCollection<DependencyDefinitionBase, DependencyDefinitionBase> RequiringDependencies =
-        new UniqueDefinitionCollection<DependencyDefinitionBase, DependencyDefinitionBase> (delegate (DependencyDefinitionBase d) { return d; });
+    private readonly UniqueDefinitionCollection<DependencyDefinitionBase, DependencyDefinitionBase> _requiringDependencies =
+        new UniqueDefinitionCollection<DependencyDefinitionBase, DependencyDefinitionBase> (d => d);
 
-    public readonly UniqueDefinitionCollection<MethodInfo, RequiredMethodDefinition> Methods =
-        new UniqueDefinitionCollection<MethodInfo, RequiredMethodDefinition> (delegate (RequiredMethodDefinition m) { return m.InterfaceMethod; });
+    private readonly UniqueDefinitionCollection<MethodInfo, RequiredMethodDefinition> _methods =
+        new UniqueDefinitionCollection<MethodInfo, RequiredMethodDefinition> (m => m.InterfaceMethod);
 
     private readonly TargetClassDefinition _targetClass;
     private readonly Type _type;
@@ -68,19 +68,29 @@ namespace Remotion.Mixins.Definitions
       get { return IsEmptyInterface && Type.GetInterfaces().Length != 0; }
     }
 
+    public UniqueDefinitionCollection<DependencyDefinitionBase, DependencyDefinitionBase> RequiringDependencies
+    {
+      get { return _requiringDependencies; }
+    }
+
+    public UniqueDefinitionCollection<MethodInfo, RequiredMethodDefinition> Methods
+    {
+      get { return _methods; }
+    }
+
     public void Accept (IDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       ConcreteAccept (visitor);
-      Methods.Accept (visitor);
+      _methods.Accept (visitor);
     }
 
     protected abstract void ConcreteAccept (IDefinitionVisitor visitor);
 
     public IEnumerable<MixinDefinition> FindRequiringMixins()
     {
-      Set<MixinDefinition> mixins = new Set<MixinDefinition>();
-      foreach (DependencyDefinitionBase dependency in RequiringDependencies)
+      var mixins = new Set<MixinDefinition>();
+      foreach (DependencyDefinitionBase dependency in _requiringDependencies)
         mixins.Add (dependency.Depender);
       return mixins;
     }

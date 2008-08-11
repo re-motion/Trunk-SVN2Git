@@ -15,9 +15,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public abstract class RelationEndPointModification
   {
-    public readonly RelationEndPoint AffectedEndPoint;
-    public readonly IEndPoint OldEndPoint;
-    public readonly IEndPoint NewEndPoint;
+    private readonly RelationEndPoint _affectedEndPoint;
+    private readonly IEndPoint _oldEndPoint;
+    private readonly IEndPoint _newEndPoint;
 
     public RelationEndPointModification (RelationEndPoint affectedEndPoint, IEndPoint oldEndPoint, IEndPoint newEndPoint)
     {
@@ -25,33 +25,48 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("oldEndPoint", oldEndPoint);
       ArgumentUtility.CheckNotNull ("newEndPoint", newEndPoint);
 
-      AffectedEndPoint = affectedEndPoint;
-      OldEndPoint = oldEndPoint;
-      NewEndPoint = newEndPoint;
+      _affectedEndPoint = affectedEndPoint;
+      _oldEndPoint = oldEndPoint;
+      _newEndPoint = newEndPoint;
+    }
+
+    public RelationEndPoint AffectedEndPoint
+    {
+      get { return _affectedEndPoint; }
+    }
+
+    public IEndPoint OldEndPoint
+    {
+      get { return _oldEndPoint; }
+    }
+
+    public IEndPoint NewEndPoint
+    {
+      get { return _newEndPoint; }
     }
 
     public abstract void Perform ();
 
     public virtual void Begin ()
     {
-      AffectedEndPoint.GetDomainObject().BeginRelationChange (
-          AffectedEndPoint.PropertyName, OldEndPoint.GetDomainObject(), NewEndPoint.GetDomainObject());
+      _affectedEndPoint.GetDomainObject().BeginRelationChange (
+          _affectedEndPoint.PropertyName, _oldEndPoint.GetDomainObject(), _newEndPoint.GetDomainObject());
     }
 
     public virtual void End ()
     {
-      DomainObject domainObject = AffectedEndPoint.GetDomainObject ();
-      domainObject.EndRelationChange (AffectedEndPoint.PropertyName);
+      DomainObject domainObject = _affectedEndPoint.GetDomainObject ();
+      domainObject.EndRelationChange (_affectedEndPoint.PropertyName);
     }
 
     public virtual void NotifyClientTransactionOfBegin ()
     {
-      AffectedEndPoint.NotifyClientTransactionOfBeginRelationChange (OldEndPoint, NewEndPoint);
+      _affectedEndPoint.NotifyClientTransactionOfBeginRelationChange (_oldEndPoint, _newEndPoint);
     }
 
     public virtual void NotifyClientTransactionOfEnd ()
     {
-      AffectedEndPoint.NotifyClientTransactionOfEndRelationChange ();
+      _affectedEndPoint.NotifyClientTransactionOfEndRelationChange ();
     }
 
     public void ExecuteAllSteps ()

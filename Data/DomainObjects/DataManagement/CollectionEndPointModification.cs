@@ -14,20 +14,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
 {
   public class CollectionEndPointModification : RelationEndPointModification
   {
-    public readonly CollectionEndPointChangeAgent ChangeAgent;
-
+    private readonly CollectionEndPointChangeAgent _changeAgent;
     private readonly CollectionEndPoint _affectedEndPoint;
 
     public CollectionEndPointModification (CollectionEndPoint affectedEndPoint, CollectionEndPointChangeAgent changeAgent)
       : base (affectedEndPoint, changeAgent.OldEndPoint, changeAgent.NewEndPoint)
     {
       _affectedEndPoint = affectedEndPoint;
-      ChangeAgent = changeAgent;
+      _changeAgent = changeAgent;
+    }
+
+    public CollectionEndPointChangeAgent ChangeAgent
+    {
+      get { return _changeAgent; }
     }
 
     public override void Begin ()
     {
-      ChangeAgent.BeginRelationChange();
+      _changeAgent.BeginRelationChange();
       base.Begin();
     }
 
@@ -38,7 +42,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void End ()
     {
-      ChangeAgent.EndRelationChange();
+      _changeAgent.EndRelationChange();
       base.End();
     }
   }

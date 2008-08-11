@@ -18,44 +18,99 @@ namespace Remotion.Mixins.Definitions
   [DebuggerDisplay ("{Type}, TargetClass = {TargetClass.Type}")]
   public class MixinDefinition : ClassDefinitionBase, IAttributeIntroductionSource
   {
-    public readonly UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> InterfaceIntroductions =
+    private readonly UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> _interfaceIntroductions =
         new UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> (i => i.InterfaceType);
-    public readonly UniqueDefinitionCollection<Type, NonInterfaceIntroductionDefinition> NonInterfaceIntroductions =
+    private readonly UniqueDefinitionCollection<Type, NonInterfaceIntroductionDefinition> _nonInterfaceIntroductions =
         new UniqueDefinitionCollection<Type, NonInterfaceIntroductionDefinition> (i => i.InterfaceType);
 
-    public readonly UniqueDefinitionCollection<Type, ThisDependencyDefinition> ThisDependencies =
+    private readonly UniqueDefinitionCollection<Type, ThisDependencyDefinition> _thisDependencies =
         new UniqueDefinitionCollection<Type, ThisDependencyDefinition> (d => d.RequiredType.Type);
-    public readonly UniqueDefinitionCollection<Type, BaseDependencyDefinition> BaseDependencies =
+    private readonly UniqueDefinitionCollection<Type, BaseDependencyDefinition> _baseDependencies =
         new UniqueDefinitionCollection<Type, BaseDependencyDefinition> (d => d.RequiredType.Type);
-    public readonly UniqueDefinitionCollection<Type, MixinDependencyDefinition> MixinDependencies =
+    private readonly UniqueDefinitionCollection<Type, MixinDependencyDefinition> _mixinDependencies =
         new UniqueDefinitionCollection<Type, MixinDependencyDefinition> (d => d.RequiredType.Type);
 
+    private readonly MultiDefinitionCollection<Type, AttributeIntroductionDefinition> _attributeIntroductions = 
+        new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (a => a.AttributeType);
+    private readonly MultiDefinitionCollection<Type, NonAttributeIntroductionDefinition> _nonAttributeIntroductions =
+        new MultiDefinitionCollection<Type, NonAttributeIntroductionDefinition> (a => a.AttributeType);
+    private readonly MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> _suppressedAttributeIntroductions =
+        new MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> (a => a.AttributeType);
+
+    private readonly TargetClassDefinition _targetClass;
+    private readonly MixinKind _mixinKind;
+    private readonly bool _acceptsAlphabeticOrdering;
+    
     public MixinDefinition (MixinKind mixinKind, Type type, TargetClassDefinition targetClass, bool acceptsAlphabeticOrdering)
         : base (type)
     {
       ArgumentUtility.CheckNotNull ("targetClass", targetClass);
 
-      SuppressedAttributeIntroductions = new MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> (a => a.AttributeType);
-      NonAttributeIntroductions = new MultiDefinitionCollection<Type, NonAttributeIntroductionDefinition> (a => a.AttributeType);
-      AttributeIntroductions = new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (a => a.AttributeType);
-
-      MixinKind = mixinKind;
-      TargetClass = targetClass;
-      AcceptsAlphabeticOrdering = acceptsAlphabeticOrdering;
+      _mixinKind = mixinKind;
+      _targetClass = targetClass;
+      _acceptsAlphabeticOrdering = acceptsAlphabeticOrdering;
     }
 
-    public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> AttributeIntroductions { get; private set; }
-    public MultiDefinitionCollection<Type, NonAttributeIntroductionDefinition> NonAttributeIntroductions { get; private set; }
-    public MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> SuppressedAttributeIntroductions { get; private set; }
+    public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> AttributeIntroductions
+    {
+      get { return _attributeIntroductions; }
+    }
 
-    public TargetClassDefinition TargetClass { get; private set; }
-    public int MixinIndex { get; internal set; }
-    public MixinKind MixinKind { get; private set; }
-    public bool AcceptsAlphabeticOrdering { get; private set; }
+    public MultiDefinitionCollection<Type, NonAttributeIntroductionDefinition> NonAttributeIntroductions
+    {
+      get { return _nonAttributeIntroductions; }
+    }
+
+    public MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> SuppressedAttributeIntroductions
+    {
+      get { return _suppressedAttributeIntroductions; }
+    }
+
+    public TargetClassDefinition TargetClass
+    {
+      get { return _targetClass; }
+    }
+
+    public MixinKind MixinKind
+    {
+      get { return _mixinKind; }
+    }
+
+    public bool AcceptsAlphabeticOrdering
+    {
+      get { return _acceptsAlphabeticOrdering; }
+    }
 
     public override IVisitableDefinition Parent
     {
       get { return TargetClass; }
+    }
+
+    public int MixinIndex { get; internal set; }
+
+    public UniqueDefinitionCollection<Type, ThisDependencyDefinition> ThisDependencies
+    {
+      get { return _thisDependencies; }
+    }
+
+    public UniqueDefinitionCollection<Type, BaseDependencyDefinition> BaseDependencies
+    {
+      get { return _baseDependencies; }
+    }
+
+    public UniqueDefinitionCollection<Type, MixinDependencyDefinition> MixinDependencies
+    {
+      get { return _mixinDependencies; }
+    }
+
+    public UniqueDefinitionCollection<Type, NonInterfaceIntroductionDefinition> NonInterfaceIntroductions
+    {
+      get { return _nonInterfaceIntroductions; }
+    }
+
+    public UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> InterfaceIntroductions
+    {
+      get { return _interfaceIntroductions; }
     }
 
     public IEnumerable<MemberDefinition> GetAllOverrides ()
@@ -73,23 +128,23 @@ namespace Remotion.Mixins.Definitions
 
       visitor.Visit (this);
 
-      InterfaceIntroductions.Accept (visitor);
-      NonInterfaceIntroductions.Accept (visitor);
+      _interfaceIntroductions.Accept (visitor);
+      _nonInterfaceIntroductions.Accept (visitor);
       
       AttributeIntroductions.Accept (visitor);
       NonAttributeIntroductions.Accept (visitor);
       SuppressedAttributeIntroductions.Accept (visitor);
 
-      ThisDependencies.Accept (visitor);
-      BaseDependencies.Accept (visitor);
-      MixinDependencies.Accept (visitor);
+      _thisDependencies.Accept (visitor);
+      _baseDependencies.Accept (visitor);
+      _mixinDependencies.Accept (visitor);
     }
 
     internal IEnumerable<DependencyDefinitionBase> GetOrderRelevantDependencies ()
     {
-      foreach (var dependency in BaseDependencies)
+      foreach (var dependency in _baseDependencies)
         yield return dependency;
-      foreach (var dependency in MixinDependencies)
+      foreach (var dependency in _mixinDependencies)
         yield return dependency;
     }
   }

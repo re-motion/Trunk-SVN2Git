@@ -17,9 +17,9 @@ namespace Remotion.Mixins.Definitions
   [DebuggerDisplay ("{FullName}, suppressed on {Attribute.DeclaringDefinition.FullName} by {Suppressor.DeclaringDefinition.FullName}")]
   public class SuppressedAttributeIntroductionDefinition : IVisitableDefinition
   {
-    public readonly IAttributeIntroductionTarget Target;
-    public readonly AttributeDefinition Attribute;
-    public readonly AttributeDefinition Suppressor;
+    private readonly IAttributeIntroductionTarget _target;
+    private readonly AttributeDefinition _attribute;
+    private readonly AttributeDefinition _suppressor;
 
     public SuppressedAttributeIntroductionDefinition (IAttributeIntroductionTarget target, AttributeDefinition attribute,
         AttributeDefinition suppressor)
@@ -28,24 +28,39 @@ namespace Remotion.Mixins.Definitions
       ArgumentUtility.CheckNotNull ("attribute", attribute);
       ArgumentUtility.CheckNotNull ("suppressor", suppressor);
 
-      Target = target;
-      Attribute = attribute;
-      Suppressor = suppressor;
+      _target = target;
+      _attribute = attribute;
+      _suppressor = suppressor;
     }
 
     public Type AttributeType
     {
-      get { return Attribute.AttributeType; }
+      get { return _attribute.AttributeType; }
     }
 
     public string FullName
     {
-      get { return Attribute.FullName; }
+      get { return _attribute.FullName; }
     }
 
     public IVisitableDefinition Parent
     {
-      get { return Target; }
+      get { return _target; }
+    }
+
+    public IAttributeIntroductionTarget Target
+    {
+      get { return _target; }
+    }
+
+    public AttributeDefinition Attribute
+    {
+      get { return _attribute; }
+    }
+
+    public AttributeDefinition Suppressor
+    {
+      get { return _suppressor; }
     }
 
     public void Accept (IDefinitionVisitor visitor)

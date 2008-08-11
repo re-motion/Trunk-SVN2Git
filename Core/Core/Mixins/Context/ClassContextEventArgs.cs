@@ -16,12 +16,17 @@ namespace Remotion.Mixins.Context
   [Serializable]
   public class ClassContextEventArgs : EventArgs
   {
-    public readonly ClassContext ClassContext;
+    private readonly ClassContext _classContext;
 
     public ClassContextEventArgs (ClassContext classContext)
     {
       ArgumentUtility.CheckNotNull ("classContext", classContext);
-      ClassContext = classContext;
+      _classContext = classContext;
+    }
+
+    public ClassContext ClassContext
+    {
+      get { return _classContext; }
     }
   }
 }

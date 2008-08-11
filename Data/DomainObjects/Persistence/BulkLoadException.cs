@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Persistence
     /// <summary>
     /// The exceptions that occurred while the objects were loaded.
     /// </summary>
-    public readonly List<Exception> Exceptions;
+    private readonly List<Exception> _exceptions;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BulkLoadException"/> class.
@@ -31,7 +31,15 @@ namespace Remotion.Data.DomainObjects.Persistence
     public BulkLoadException (IEnumerable<Exception> exceptions)
         : base (CreateMessage (exceptions))
     {
-      Exceptions = new List<Exception> (exceptions);
+      _exceptions = new List<Exception> (exceptions);
+    }
+
+    /// <summary>
+    /// The exceptions that occurred while the objects were loaded.
+    /// </summary>
+    public List<Exception> Exceptions
+    {
+      get { return _exceptions; }
     }
 
     private static string CreateMessage (IEnumerable<Exception> exceptions)

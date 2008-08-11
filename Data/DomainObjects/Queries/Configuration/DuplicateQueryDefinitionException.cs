@@ -14,14 +14,24 @@ namespace Remotion.Data.DomainObjects.Queries.Configuration
 {
   public class DuplicateQueryDefinitionException : Exception
   {
-    public readonly QueryDefinition QueryDefinition;
-    public readonly QueryDefinition Duplicate;
+    private readonly QueryDefinition _queryDefinition;
+    private readonly QueryDefinition _duplicate;
 
     public DuplicateQueryDefinitionException (QueryDefinition queryDefinition, QueryDefinition duplicate)
         : base (GetMessage (queryDefinition))
     {
-      QueryDefinition = queryDefinition;
-      Duplicate = duplicate;
+      _queryDefinition = queryDefinition;
+      _duplicate = duplicate;
+    }
+
+    public QueryDefinition QueryDefinition
+    {
+      get { return _queryDefinition; }
+    }
+
+    public QueryDefinition Duplicate
+    {
+      get { return _duplicate; }
     }
 
     private static string GetMessage (QueryDefinition queryDefinition)

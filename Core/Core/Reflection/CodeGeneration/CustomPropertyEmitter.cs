@@ -24,8 +24,8 @@ namespace Remotion.Reflection.CodeGeneration
 
   public class CustomPropertyEmitter : IAttributableEmitter
   {
-    public readonly CustomClassEmitter DeclaringType;
-    public readonly PropertyBuilder PropertyBuilder;
+    private readonly CustomClassEmitter _declaringType;
+    private readonly PropertyBuilder _propertyBuilder;
 
     private readonly Type _propertyType;
     private readonly string _name;
@@ -42,7 +42,7 @@ namespace Remotion.Reflection.CodeGeneration
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
       ArgumentUtility.CheckNotNull ("indexParameters", indexParameters);
 
-      DeclaringType = declaringType;
+      _declaringType = declaringType;
       _name = name;
       _propertyKind = propertyKind;
 
@@ -53,7 +53,7 @@ namespace Remotion.Reflection.CodeGeneration
       // CallingConventions callingConvention = propertyKind == PropertyKind.Instance ? CallingConventions.HasThis : CallingConventions.Standard;
       // PropertyBuilder = DeclaringType.TypeBuilder.DefineProperty (name, attributes, callingConvention, propertyType, null, null, indexParameters,
       //    null, null);
-      PropertyBuilder = DeclaringType.TypeBuilder.DefineProperty (name, attributes, propertyType, indexParameters);
+      _propertyBuilder = _declaringType.TypeBuilder.DefineProperty (name, attributes, propertyType, indexParameters);
     }
 
     public Type PropertyType
@@ -74,7 +74,7 @@ namespace Remotion.Reflection.CodeGeneration
         if (value != null)
         {
           _getMethod = value;
-          PropertyBuilder.SetGetMethod (_getMethod.MethodBuilder);
+          _propertyBuilder.SetGetMethod (_getMethod.MethodBuilder);
         }
         else
           throw new ArgumentNullException ("value", "Due to limitations in Reflection.Emit, property accessors cannot be set to null.");
@@ -89,7 +89,7 @@ namespace Remotion.Reflection.CodeGeneration
         if (value != null)
         {
           _setMethod = value;
-          PropertyBuilder.SetSetMethod (_setMethod.MethodBuilder);
+          _propertyBuilder.SetSetMethod (_setMethod.MethodBuilder);
         }
         else
           throw new ArgumentNullException ("value", "Due to limitations in Reflection.Emit, property accessors cannot be set to null.");
@@ -106,14 +106,24 @@ namespace Remotion.Reflection.CodeGeneration
       get { return _propertyKind; }
     }
 
+    public CustomClassEmitter DeclaringType
+    {
+      get { return _declaringType; }
+    }
+
+    public PropertyBuilder PropertyBuilder
+    {
+      get { return _propertyBuilder; }
+    }
+
     public CustomPropertyEmitter ImplementWithBackingField ()
     {
       string fieldName = MakeBackingFieldName (Name);
       FieldReference backingField;
       if (PropertyKind == PropertyKind.Static)
-        backingField = DeclaringType.CreateStaticField (fieldName, PropertyType);
+        backingField = _declaringType.CreateStaticField (fieldName, PropertyType);
       else
-        backingField = DeclaringType.CreateField (fieldName, PropertyType);
+        backingField = _declaringType.CreateField (fieldName, PropertyType);
       return ImplementWithBackingField (backingField);
     }
 
@@ -148,7 +158,7 @@ namespace Remotion.Reflection.CodeGeneration
         if (PropertyKind == PropertyKind.Static)
           flags |= MethodAttributes.Static;
 
-        CustomMethodEmitter method = DeclaringType.CreateMethod ("get_" + Name, flags);
+        CustomMethodEmitter method = _declaringType.CreateMethod ("get_" + Name, flags);
         method.SetReturnType (PropertyType);
         method.SetParameterTypes (IndexParameters);
         GetMethod = method;
@@ -166,7 +176,7 @@ namespace Remotion.Reflection.CodeGeneration
         if (PropertyKind == PropertyKind.Static)
           flags |= MethodAttributes.Static;
 
-        CustomMethodEmitter method = DeclaringType.CreateMethod ("set_" + Name, flags);
+        CustomMethodEmitter method = _declaringType.CreateMethod ("set_" + Name, flags);
         Type[] setterParameterTypes = new Type[IndexParameters.Length + 1];
         IndexParameters.CopyTo (setterParameterTypes, 0);
         setterParameterTypes[IndexParameters.Length] = PropertyType;
@@ -179,7 +189,7 @@ namespace Remotion.Reflection.CodeGeneration
     public void AddCustomAttribute (CustomAttributeBuilder customAttribute)
     {
       ArgumentUtility.CheckNotNull ("customAttribute", customAttribute);
-      PropertyBuilder.SetCustomAttribute (customAttribute);
+      _propertyBuilder.SetCustomAttribute (customAttribute);
     }
 
   }

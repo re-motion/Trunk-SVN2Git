@@ -19,28 +19,28 @@ namespace Remotion.Mixins.Validation
   [Serializable]
   public struct ValidationResult
   {
-    public readonly IVisitableDefinition Definition;
+    private readonly IVisitableDefinition _definition;
 
-    public readonly List<ValidationResultItem> Successes;
-    public readonly List<ValidationResultItem> Warnings;
-    public readonly List<ValidationResultItem> Failures;
-    public readonly List<ValidationExceptionResultItem> Exceptions;
+    private readonly List<ValidationResultItem> _successes;
+    private readonly List<ValidationResultItem> _warnings;
+    private readonly List<ValidationResultItem> _failures;
+    private readonly List<ValidationExceptionResultItem> _exceptions;
 
     public ValidationResult (IVisitableDefinition definition)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
 
-      Definition = definition;
-      Successes = new List<ValidationResultItem> ();
-      Warnings = new List<ValidationResultItem> ();
-      Failures = new List<ValidationResultItem> ();
-      Exceptions = new List<ValidationExceptionResultItem> ();
+      _definition = definition;
+      _successes = new List<ValidationResultItem> ();
+      _warnings = new List<ValidationResultItem> ();
+      _failures = new List<ValidationResultItem> ();
+      _exceptions = new List<ValidationExceptionResultItem> ();
     }
 
     public string GetParentDefinitionString()
     {
-      SeparatedStringBuilder sb = new SeparatedStringBuilder(" -> ");
-      IVisitableDefinition parent = Definition.Parent;
+      var sb = new SeparatedStringBuilder(" -> ");
+      IVisitableDefinition parent = _definition.Parent;
       while (parent != null)
       {
         sb.Append (parent.FullName);
@@ -51,7 +51,32 @@ namespace Remotion.Mixins.Validation
 
     public int TotalRulesExecuted
     {
-      get { return Successes.Count + Warnings.Count + Failures.Count + Exceptions.Count; }
+      get { return _successes.Count + _warnings.Count + _failures.Count + _exceptions.Count; }
+    }
+
+    public List<ValidationExceptionResultItem> Exceptions
+    {
+      get { return _exceptions; }
+    }
+
+    public List<ValidationResultItem> Failures
+    {
+      get { return _failures; }
+    }
+
+    public List<ValidationResultItem> Warnings
+    {
+      get { return _warnings; }
+    }
+
+    public List<ValidationResultItem> Successes
+    {
+      get { return _successes; }
+    }
+
+    public IVisitableDefinition Definition
+    {
+      get { return _definition; }
     }
   }
 }

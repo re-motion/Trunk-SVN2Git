@@ -19,7 +19,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding
 {
   internal class BaseRequirements
   {
-    public readonly Type RequirementsType;
+    private readonly Type _requirementsType;
 
     private readonly IDictionary<MethodInfo, MethodInfo> _methodToInterfaceMap;
 
@@ -28,8 +28,13 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding
       ArgumentUtility.CheckNotNull ("requirementsType", requirementsType);
       ArgumentUtility.CheckNotNull ("methodToInterfaceMap", methodToInterfaceMap);
 
-      RequirementsType = requirementsType;
+      _requirementsType = requirementsType;
       _methodToInterfaceMap = methodToInterfaceMap;
+    }
+
+    public Type RequirementsType
+    {
+      get { return _requirementsType; }
     }
 
     public MethodInfo GetBaseCallMethod (MethodInfo targetMethod)

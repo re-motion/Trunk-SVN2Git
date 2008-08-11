@@ -25,8 +25,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests.Rules
     {
       TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (MixinWithUnsatisfiedEmptyBaseDependency));
       DefaultValidationLog log = Validator.Validate (
-          definition.Mixins[typeof (MixinWithUnsatisfiedEmptyBaseDependency)].
-              BaseDependencies[typeof (IEmptyInterface)]);
+          definition.Mixins[typeof (MixinWithUnsatisfiedEmptyBaseDependency)].BaseDependencies[typeof (IEmptyInterface)]);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultBaseDependencyRules.DependencyMustBeSatisfied", log));
     }

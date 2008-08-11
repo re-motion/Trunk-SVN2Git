@@ -127,8 +127,7 @@ namespace Remotion.UnitTests.Mixins.ValidationTests
       Assert.IsTrue (visitedDefinitions.ContainsKey (m3));
       MethodDefinition m4 = bt1m1.Methods[typeof (BT1Mixin1).GetMethod ("IntroducedMethod")];
       Assert.IsTrue (visitedDefinitions.ContainsKey (m4));
-      MethodDefinition memberWinningOverMixinAddingAttribute = targetClassWinningOverMixinAddingBT1AttributeToMember
-          .Methods[typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember).GetMethod ("VirtualMethod")];
+      MethodDefinition memberWinningOverMixinAddingAttribute = targetClassWinningOverMixinAddingBT1AttributeToMember.Methods[typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember).GetMethod ("VirtualMethod")];
       Assert.IsTrue (visitedDefinitions.ContainsKey (memberWinningOverMixinAddingAttribute));
 
       PropertyDefinition p1 = bt1.Properties[typeof (BaseType1).GetProperty ("VirtualProperty")];

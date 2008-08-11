@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   // no constructor for loading required
   internal class FactoryBasedDomainObjectCreator : IDomainObjectCreator
   {
-    public readonly static FactoryBasedDomainObjectCreator Instance = new FactoryBasedDomainObjectCreator ();
+    public static readonly FactoryBasedDomainObjectCreator Instance = new FactoryBasedDomainObjectCreator ();
 
     public DomainObject CreateWithDataContainer (DataContainer dataContainer)
     {

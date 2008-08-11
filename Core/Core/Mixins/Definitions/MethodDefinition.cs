@@ -15,12 +15,12 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  public class MethodDefinition : MemberDefinition, IVisitableDefinition
+  public class MethodDefinition : MemberDefinition
   {
-    private static SignatureChecker s_signatureChecker = new SignatureChecker ();
+    private static readonly SignatureChecker s_signatureChecker = new SignatureChecker ();
 
-    public readonly new UniqueDefinitionCollection<Type, MethodDefinition> Overrides =
-        new UniqueDefinitionCollection<Type, MethodDefinition> (delegate (MethodDefinition m) { return m.DeclaringClass.Type; });
+    private readonly UniqueDefinitionCollection<Type, MethodDefinition> _overrides =
+        new UniqueDefinitionCollection<Type, MethodDefinition> (m => m.DeclaringClass.Type);
 
     private MethodDefinition _base;
 
@@ -57,24 +57,22 @@ namespace Remotion.Mixins.Definitions
       get { return MethodInfo.IsAbstract; }
     }
 
+    public new UniqueDefinitionCollection<Type, MethodDefinition> Overrides
+    {
+      get { return _overrides; }
+    }
+
     protected override IDefinitionCollection<Type, MemberDefinition> GetInternalOverridesWrapper()
     {
-      return new CovariantDefinitionCollectionWrapper<Type, MethodDefinition, MemberDefinition>(Overrides);
+      return new CovariantDefinitionCollectionWrapper<Type, MethodDefinition, MemberDefinition>(_overrides);
     }
 
     protected override bool IsSignatureCompatibleWith (MemberDefinition overrider)
     {
       ArgumentUtility.CheckNotNull ("overrider", overrider);
 
-      MethodDefinition overriderMethod = overrider as MethodDefinition;
-      if (overriderMethod == null)
-      {
-        return false;
-      }
-      else
-      {
-        return IsSignatureCompatibleWithMethod (overriderMethod);
-      }
+      var overriderMethod = overrider as MethodDefinition;
+      return overriderMethod != null && IsSignatureCompatibleWithMethod (overriderMethod);
     }
 
     private bool IsSignatureCompatibleWithMethod (MethodDefinition overrider)
@@ -87,14 +85,14 @@ namespace Remotion.Mixins.Definitions
     {
       ArgumentUtility.CheckNotNull ("member", member);
 
-      MethodDefinition method = member as MethodDefinition;
+      var method = member as MethodDefinition;
       if (method == null)
       {
         string message = string.Format ("Member {0} cannot override method {1} - it is not a method.", member.FullName, FullName);
         throw new ArgumentException (message);
       }
 
-      Overrides.Add (method);
+      _overrides.Add (method);
     }
 
     protected override void ChildSpecificAccept (IDefinitionVisitor visitor)
