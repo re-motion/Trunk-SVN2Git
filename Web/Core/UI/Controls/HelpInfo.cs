@@ -32,7 +32,7 @@ namespace Remotion.Web.UI.Controls
     /// Initializes a new instance of the <see cref="HelpInfo"/> type.
     /// </summary>
     /// <param name="navigateUrl">The URL assigned to the hyperlinks <c>href</c>-attribute. Must not be <see langword="null" /> or empty.</param>
-    /// <param name="target">The target for the <paramref cref="navigateUrl"/>.</param>
+    /// <param name="target">The target for the <paramref name="navigateUrl"/>.</param>
     /// <param name="toolTip">The tool-tip to be displayed when hovering over the help-link.</param>
     /// <param name="onClick">The javascript to be executed for the <c>OnClick</c> event on the client.</param>
     public HelpInfo (string navigateUrl, string target, string toolTip, string onClick)
