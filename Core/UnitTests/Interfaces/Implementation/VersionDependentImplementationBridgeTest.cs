@@ -18,13 +18,13 @@ namespace Remotion.UnitTests.Interfaces.Implementation
   [TestFixture]
   public class VersionDependentImplementationBridgeTest
   {
-    [ConcreteImplementation ("Remotion.UnitTests.Interfaces.Implementation.VersionDependentImplementationBridgeTest+VersionDependentImplementation, " 
-        + "Remotion.UnitTests, Version = <version>")]
+    [ConcreteImplementation ("Remotion.UnitTests.Interfaces.Implementation.VersionDependentImplementationBridgeTest+VersionDependentImplementation, "
+        + "Remotion.UnitTests, Culture = neutral, Version = <version>")]
     public interface IVersionIndependentInterface { }
     public class VersionDependentImplementation : IVersionIndependentInterface { }
 
-    [ConcreteImplementation ("Remotion.UnitTests.Interfaces.Implementation.VersionDependentImplementationBridgeTest+VersionDependentImplementation, " 
-        + "Remotion.UnitTests, Version = <version>")]
+    [ConcreteImplementation ("Remotion.UnitTests.Interfaces.Implementation.VersionDependentImplementationBridgeTest+VersionDependentImplementation, "
+        + "Remotion.UnitTests, Culture = neutral, Version = <version>")]
     public interface IVersionIndependentInterface2 { }
 
     [SetUp]
