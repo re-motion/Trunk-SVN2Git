@@ -9,13 +9,12 @@
  */
 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.PropertyFinderTests
@@ -31,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       Assert.That (EnumerableUtility.ToArray (
           propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (TargetClassA)))),
           Is.EquivalentTo (
-              new PropertyInfo[]
+              new []
                   {
                       GetProperty (typeof (MixinBase), "P0a"),
                       GetProperty (typeof (MixinA), "P5"),
@@ -48,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       Assert.That (EnumerableUtility.ToArray (
           propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (TargetClassA)))),
           Is.EquivalentTo (
-              new PropertyInfo[]
+              new[]
                   {
                       GetProperty (typeof (MixinA), "P5"),
                       GetProperty (typeof (MixinC), "P7"),
@@ -64,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       Assert.That (EnumerableUtility.ToArray (
           propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (TargetClassB)))),
           Is.EquivalentTo (
-              new PropertyInfo[]
+              new []
                   {
                       GetProperty (typeof (MixinB), "P6"),
                       GetProperty (typeof (MixinE), "P9"),
@@ -79,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       Assert.That (EnumerableUtility.ToArray (
           propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (TargetClassC)))),
           Is.EquivalentTo (
-              new PropertyInfo[]
+              new []
                   {
                       GetProperty (typeof (DerivedMixinNotOnBase), "DerivedMixinProperty"),
                       GetProperty (typeof (MixinNotOnBase), "MixinProperty"),
@@ -94,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
       Assert.That (EnumerableUtility.ToArray (
           propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (DiamondTarget)))),
           Is.EquivalentTo (
-              new PropertyInfo[]
+              new[]
                   {
                       GetProperty (typeof (DiamondBase), "PBase"),
                   }));
@@ -103,11 +102,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
     [Test]
     public void FindPropertyInfos_ForMixinAppliedAboveInheritanceRoot ()
     {
-      MixinPropertyFinder propertyFinder = CreatePropertyFinder (typeof (InheritanceRootInheritingMixin), true);
+      MixinPropertyFinder propertyFinder = CreatePropertyFinder (typeof (InheritanceRootInheritingPersistentMixin), true);
 
-      Assert.That (EnumerableUtility.ToArray (
-          propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (InheritanceRootInheritingMixin)))),
-          Is.EquivalentTo (new[] { GetProperty (typeof (MixinE), "P9"), }));
+      Assert.That (
+          EnumerableUtility.ToArray (
+              propertyFinder.FindPropertyInfosOnMixins (CreateReflectionBasedClassDefinition (typeof (InheritanceRootInheritingPersistentMixin)))),
+          Is.EquivalentTo (
+              new[]
+                {
+                    GetProperty (typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot), "PersistentProperty"),
+                    GetProperty (typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot), "PersistentRelationProperty")
+                }));
     }
 
     private MixinPropertyFinder CreatePropertyFinder (Type type, bool includeBaseProperties)

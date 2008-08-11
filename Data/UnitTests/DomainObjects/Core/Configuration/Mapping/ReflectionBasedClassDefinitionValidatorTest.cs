@@ -13,6 +13,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 using NUnit.Framework.SyntaxHelpers;
@@ -40,14 +41,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void ValidateCurrentMixinConfiguration_OkOnInheritanceRootInheritingMixin ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (InheritanceRootInheritingMixin), false, typeof (MixinE) );
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (InheritanceRootInheritingPersistentMixin), false, typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot));
       new ReflectionBasedClassDefinitionValidator (classDefinition).ValidateCurrentMixinConfiguration (); // ok, no changes
     }
 
     [Test]
     public void CreateNewPersistentMixinFinder_IncludeInheritedMixins_InheritanceRoot ()
     {
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (InheritanceRootInheritingMixin), false);
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (InheritanceRootInheritingPersistentMixin), false);
       Assert.That (new ReflectionBasedClassDefinitionValidator (classDefinition).CreateNewPersistentMixinFinder ().IncludeInherited, Is.True);
     }
 

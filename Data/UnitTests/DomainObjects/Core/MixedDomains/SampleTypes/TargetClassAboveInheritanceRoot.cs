@@ -16,7 +16,6 @@ using Remotion.Mixins;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
 {
   [Uses (typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot))]
-  [IgnoreForMappingConfiguration]
   public class TargetClassAboveInheritanceRoot : DomainObject
   {
   }

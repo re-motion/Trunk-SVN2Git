@@ -15,6 +15,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 
@@ -265,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Class
     [Test]
     public void PersistentMixinFinder_InheritanceRoot ()
     {
-      var classReflector = new ClassReflector (typeof (InheritanceRootInheritingMixin), Configuration.NameResolver);
+      var classReflector = new ClassReflector (typeof (InheritanceRootInheritingPersistentMixin), Configuration.NameResolver);
       Assert.That (classReflector.PersistentMixinFinder.IncludeInherited, Is.True);
     }
 

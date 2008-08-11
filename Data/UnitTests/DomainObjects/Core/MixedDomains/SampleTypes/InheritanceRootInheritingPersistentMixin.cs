@@ -18,7 +18,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
 {
   [DBTable]
   [TestDomain]
-  [IgnoreForMappingConfiguration]
   public class InheritanceRootInheritingPersistentMixin : TargetClassAboveInheritanceRoot
   {
     public static IFuncInvoker<InheritanceRootInheritingPersistentMixin> NewObject ()

@@ -20,7 +20,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
   {
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, ReflectionBasedClassDefinition baseClass, params Type[] persistentMixins)
     {
-      return new ReflectionBasedClassDefinition (id, entityName, storageProviderID, classType, isAbstract, baseClass, new PersistentMixinFinderMock (persistentMixins));
+      return new ReflectionBasedClassDefinition (id, entityName, storageProviderID, classType, isAbstract, baseClass, new PersistentMixinFinderMock (classType, persistentMixins));
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, ReflectionBasedClassDefinition baseClass, IPersistentMixinFinder persistentMixinFinder)
@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, params Type[] persistentMixins)
     {
-      return CreateReflectionBasedClassDefinition (id, entityName, storageProviderID, classType, isAbstract, null, new PersistentMixinFinderMock (persistentMixins));
+      return CreateReflectionBasedClassDefinition (id, entityName, storageProviderID, classType, isAbstract, null, new PersistentMixinFinderMock (classType, persistentMixins));
     }
 
     public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (string id, string entityName, string storageProviderID, Type classType, bool isAbstract, IPersistentMixinFinder persistentMixinFinder)
@@ -38,10 +38,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       return CreateReflectionBasedClassDefinition(id, entityName, storageProviderID, classType, isAbstract, null, persistentMixinFinder);
     }
 
+    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] mixins)
+    {
+      return CreateReflectionBasedClassDefinition (type.Name, type.Name, "TestDomain", type, false, mixins);
+    }
+
     public static ReflectionBasedClassDefinition CreateOrderDefinition()
     {
-      return CreateReflectionBasedClassDefinition("Order", "OrderTable", "StorageProviderID", typeof (Order), false,
-          new PersistentMixinFinderMock());
+      return CreateReflectionBasedClassDefinition("Order", "OrderTable", "StorageProviderID", typeof (Order), false);
     }
 
     public static ReflectionBasedClassDefinition CreateOrderDefinitionWithResolvedCustomerProperty()
@@ -51,12 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(classDefinition, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", "CustomerID", typeof (ObjectID), false));
 
       return classDefinition;
-    }
-
-
-    public static ReflectionBasedClassDefinition CreateReflectionBasedClassDefinition (Type type, params Type[] mixins)
-    {
-      return CreateReflectionBasedClassDefinition(type.Name, type.Name, "TestDomain", type, false, new PersistentMixinFinderMock(mixins));
     }
   }
 }

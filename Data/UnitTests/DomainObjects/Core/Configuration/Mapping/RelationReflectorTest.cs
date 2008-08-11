@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
       var relationReflector = CreateRelationReflectorForProperty (_classWithManySideRelationPropertiesClassDefinition,
           typeof (ClassWithManySideRelationProperties), "Unidirectional");
-      Assert.That (relationReflector.DomainObjectTypeDeclaringProperty, Is.EqualTo (typeof (ClassWithManySideRelationProperties)));
+      Assert.That (relationReflector.DeclaringDomainObjectTypeForProperty, Is.EqualTo (typeof (ClassWithManySideRelationProperties)));
     }
 
     [Test]

@@ -170,29 +170,29 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private void ValidateOppositePropertyInfoDeclaringType (PropertyInfo oppositePropertyInfo, ClassDefinitionCollection classDefintions)
     {
       Type oppositeDomainObjectType = GetDomainObjectTypeFromRelationProperty (oppositePropertyInfo);
-      if (classDefintions.Contains (DomainObjectTypeDeclaringProperty))
+      if (classDefintions.Contains (DeclaringDomainObjectTypeForProperty))
       {
-        if (DomainObjectTypeDeclaringProperty != oppositeDomainObjectType)
+        if (DeclaringDomainObjectTypeForProperty != oppositeDomainObjectType)
         {
           throw CreateMappingException (
               null,
               PropertyInfo,
               "The declaring type '{0}' does not match the type of the opposite relation propery '{1}' declared on type '{2}'.",
-              DomainObjectTypeDeclaringProperty.Name,
+              DeclaringDomainObjectTypeForProperty.Name,
               BidirectionalRelationAttribute.OppositeProperty,
               oppositePropertyInfo.DeclaringType.FullName);
         }
       }
       else
       {
-        if (DomainObjectTypeDeclaringProperty.IsAssignableFrom (oppositeDomainObjectType))
+        if (DeclaringDomainObjectTypeForProperty.IsAssignableFrom (oppositeDomainObjectType))
           return;
 
         throw CreateMappingException (
             null,
             PropertyInfo,
             "The declaring type '{0}' cannot be assigned to the type of the opposite relation propery '{1}' declared on type '{2}'.",
-            DomainObjectTypeDeclaringProperty.Name,
+            DeclaringDomainObjectTypeForProperty.Name,
             BidirectionalRelationAttribute.OppositeProperty,
             oppositePropertyInfo.DeclaringType.FullName);
       }

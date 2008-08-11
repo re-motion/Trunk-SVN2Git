@@ -17,6 +17,8 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
@@ -63,28 +65,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    public void DeclaringMixin_InvalidPropertyType ()
-    {
-      var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition, typeof (MixinAddingPersistentProperties),
-          "UnidirectionalRelationProperty");
-      Assert.That (relationReflector.DeclaringMixin, Is.SameAs (typeof (MixinAddingPersistentProperties)));
-    }
-
-    [Test]
     public void DomainObjectTypeDeclaringProperty ()
     {
       var relationReflector = CreateRelationReflectorForProperty (_mixinTargetClassDefinition, typeof (MixinAddingPersistentProperties),
           "PersistentProperty");
-      Assert.That (relationReflector.DomainObjectTypeDeclaringProperty, Is.EqualTo (typeof (TargetClassForPersistentMixin)));
+      Assert.That (relationReflector.DeclaringDomainObjectTypeForProperty, Is.EqualTo (typeof (TargetClassForPersistentMixin)));
     }
 
     [Test]
-    [Ignore ("TODO: Implement mixins above inheritance root")]
     public void DomainObjectTypeDeclaringProperty_WithMixinAboveInheritanceRoot ()
     {
       var relationReflector = CreateRelationReflectorForProperty(_inheritanceRootInheritingMixinClassDefinition, 
           typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot), "PersistentRelationProperty");
-      Assert.That (relationReflector.DomainObjectTypeDeclaringProperty, Is.EqualTo (typeof (TargetClassAboveInheritanceRoot)));
+      Assert.That (relationReflector.DeclaringDomainObjectTypeForProperty, Is.EqualTo (typeof (TargetClassAboveInheritanceRoot)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin) "
+        + "evaluated and returned null.")]
+    public void DomainObjectTypeDeclaringProperty_OriginalMixinTargetNull ()
+    {
+      var mockRepository = new MockRepository ();
+      var mixinFinderMock = mockRepository.CreateMock<IPersistentMixinFinder> ();
+
+      Expect.Call (mixinFinderMock.GetPersistentMixins ()).Return (new[] { typeof (MixinAddingPersistentProperties) });
+      Expect.Call (mixinFinderMock.FindOriginalMixinTarget (typeof (MixinAddingPersistentProperties))).Return (null);
+
+      mockRepository.ReplayAll ();
+
+      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false,
+          mixinFinderMock);
+      CreateRelationReflectorForProperty (classDefinition, typeof (MixinAddingPersistentProperties), "UnidirectionalRelationProperty");
     }
 
     [Test]
@@ -253,7 +264,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.That (_relationDefinitions[0].ID, NUnit.Framework.SyntaxHelpers.Text.Contains (relationReflector.PropertyInfo.Name));
     }
 
-    [Ignore ("TODO: Implement mixins above inheritance root")]
     [Test]
     public void GetMetadata_Mixed_PropertyAboveInheritanceRoot ()
     {

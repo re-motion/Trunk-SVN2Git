@@ -10,15 +10,13 @@
 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
 {
   [DBTable]
-  [IgnoreForMappingConfiguration]
-  public abstract class RelationTargetForPersistentMixinAboveInheritanceRoot : SimpleDomainObject<RelationTargetForPersistentMixinAboveInheritanceRoot>
+  public class RelationTargetForPersistentMixinAboveInheritanceRoot : SimpleDomainObject<RelationTargetForPersistentMixinAboveInheritanceRoot>
   {
     [DBBidirectionalRelation("PersistentRelationProperty", ContainsForeignKey = false)]
-    public abstract TargetClassAboveInheritanceRoot RelationProperty1 { get; set; }
+    public virtual InheritanceRootInheritingPersistentMixin RelationProperty1 { get; set; }
   }
 }

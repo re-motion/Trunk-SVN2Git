@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
@@ -30,7 +31,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       BidirectionalRelationAttribute =
           (BidirectionalRelationAttribute) AttributeUtility.GetCustomAttribute (PropertyInfo, bidirectionalRelationAttributeType, true);
       DeclaringMixin = ClassDefinition.GetPersistentMixin (PropertyInfo.DeclaringType);
-      DomainObjectTypeDeclaringProperty = GetDomainObjectTypeDeclaringProperty ();
+      DeclaringDomainObjectTypeForProperty = GetDeclaringDomainObjectTypeForProperty ();
 
       CheckClassDefinitionType ();
     }
@@ -39,7 +40,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public BidirectionalRelationAttribute BidirectionalRelationAttribute { get; private set; }
     public Type DeclaringMixin { get; private set; }
 
-    public Type DomainObjectTypeDeclaringProperty { get; private set; }
+    public Type DeclaringDomainObjectTypeForProperty { get; private set; }
 
     protected bool IsBidirectionalRelation
     {
@@ -51,14 +52,14 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return DeclaringMixin != null; }
     }
 
-    private Type GetDomainObjectTypeDeclaringProperty ()
+    private Type GetDeclaringDomainObjectTypeForProperty ()
     {
       if (IsMixedProperty)
       {
-        return ClassDefinition.ClassType;
-#warning TODO: Make use of FindOriginalMixinTarget
-#warning TODO: Throw if FindOriginalMixinTarget returns null
-        // ClassDefinition.PersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin);
+        var originalMixinTarget = ClassDefinition.PersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin);
+        if (originalMixinTarget == null)
+          throw new InvalidOperationException (string.Format ("IPersistentMixinFinder.FindOriginalMixinTarget (DeclaringMixin) evaluated and returned null."));
+        return originalMixinTarget;
       }
       else
         return PropertyInfo.DeclaringType;
@@ -90,7 +91,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private PropertyInfo GetOppositePropertyInfoFromMixins (Type type)
     {
-      foreach (var mixinType in new PersistentMixinFinder (type).GetPersistentMixins ())
+      foreach (var mixinType in new PersistentMixinFinder (type, true).GetPersistentMixins ())
       {
         var oppositePropertyInfo = GetOppositePropertyInfo (mixinType);
         if (oppositePropertyInfo != null)

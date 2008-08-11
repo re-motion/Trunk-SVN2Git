@@ -77,7 +77,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return true; }
     }
 
-#warning TODO: Move to PersistentMixinFinder
     public Type GetPersistentMixin (Type mixinToSearch)
     {
       ArgumentUtility.CheckNotNull ("mixinToSearch", mixinToSearch);

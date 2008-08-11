@@ -176,12 +176,10 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondLeft.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DiamondTarget.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\InheritanceRootInheritingMixin.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\MixinBeingSuppressed.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\MixinNotOnBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\DerivedMixinNotOnBase.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\MixinSuppressingAnother.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\TargetClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MixinTestDomain\TargetClassC.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PersistentMixinFinderMock.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyFinderTests\MixinPropertyFinderTest.cs" />

@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private List<ClassContext> GetParentClassContexts ()
     {
-      List<ClassContext> parentClassContexts = new List<ClassContext> ();
+      var parentClassContexts = new List<ClassContext> ();
       ClassContext current = MixinConfiguration;
       while (current != null && current.Type.BaseType != null)
       {

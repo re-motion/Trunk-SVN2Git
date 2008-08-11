@@ -882,7 +882,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void PersistentMixinFinder ()
     {
-      var mixinFinder = new PersistentMixinFinderMock ();
+      var mixinFinder = new PersistentMixinFinderMock (typeof (Order));
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition("x", "xx", "xxx", typeof (Order), false, mixinFinder);
       Assert.That (classDefinition.PersistentMixinFinder, Is.SameAs (mixinFinder));
     }
@@ -901,33 +901,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       var mixins = new[] { typeof (MixinA), typeof (MixinB) };
       var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
       Assert.That (classDefinition.PersistentMixins, Is.EqualTo (mixins));
-    }
-
-    [Test]
-    public void GetPersistentMixin_TypeFound ()
-    {
-      var mixins = new[] { typeof (MixinA), typeof (MixinB) };
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
-      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinA)), Is.SameAs (typeof (MixinA)));
-      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinB)), Is.SameAs (typeof (MixinB)));
-    }
-
-    [Test]
-    public void GetPersistentMixin_BaseFound ()
-    {
-      var mixins = new[] { typeof (MixinB) };
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
-      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinA)), Is.SameAs (typeof (MixinB)));
-      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinB)), Is.SameAs (typeof (MixinB)));
-    }
-
-    [Test]
-    public void GetPersistentMixin_Null ()
-    {
-      var mixins = new Type[0];
-      var classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("x", "xx", "xxx", typeof (Order), false, mixins);
-      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinA)), Is.Null);
-      Assert.That (classDefinition.GetPersistentMixin (typeof (MixinB)), Is.Null);
     }
   }
 }

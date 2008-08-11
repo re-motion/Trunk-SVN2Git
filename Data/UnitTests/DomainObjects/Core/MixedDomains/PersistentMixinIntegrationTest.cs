@@ -270,7 +270,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     }
 
     [Test]
-    [Ignore ("TODO: Support relations with mixins above inheritance root")]
     public void TargetClassAboveInheritanceRoot ()
     {
       var tc = InheritanceRootInheritingPersistentMixin.NewObject ().With ();
@@ -280,7 +279,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     }
 
     [Test]
-    [Ignore ("TODO: Support relations with mixins above inheritance root")]
     public void RelationOnTargetClassAboveInheritanceRoot ()
     {
       var tc = InheritanceRootInheritingPersistentMixin.NewObject ().With ();

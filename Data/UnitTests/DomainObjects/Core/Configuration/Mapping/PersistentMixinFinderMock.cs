@@ -17,10 +17,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 {
   public class PersistentMixinFinderMock : IPersistentMixinFinder
   {
+    private readonly Type _classType;
     private readonly Type[] _persistentMixins;
 
-    public PersistentMixinFinderMock (params Type[] persistentMixins)
+    public PersistentMixinFinderMock (Type classType, params Type[] persistentMixins)
     {
+      _classType = classType;
       _persistentMixins = persistentMixins;
     }
 
@@ -51,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
     public Type FindOriginalMixinTarget (Type mixinType)
     {
-      throw new System.NotImplementedException();
+      return _classType;
     }
   }
 }
