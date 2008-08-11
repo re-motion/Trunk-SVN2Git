@@ -40,9 +40,10 @@ namespace Remotion.Text.Diagnostic
 
     public static string Text (object o)
     {
-      // Handle fallback cascade:
+      // Handle Cascade:
       // *) Is null
       // *) Type handler registered
+      // *) Is string (Treat seperately to prevent from being treated as IEnumerable)
       // *) Implements IToText
       // *) If !IsInterface: Base type handler registered (recursive)
       // *) Implements IEnumerable ("is container")
@@ -66,14 +67,15 @@ namespace Remotion.Text.Diagnostic
       {
         return (String) handler.DynamicInvoke (o);
       }
-      else if (type.GetInterface("IEnumerable") != null) 
+      else if (type == typeof (string))
       {
-        return o.ToString();
-        //IEnumerable collection = (IEnumerable) o;
-        //foreach (var element in collection)
-        //{
-
-        //}
+        return (string) o;
+      }
+      else if (type.GetInterface ("IEnumerable") != null) 
+      {
+        //return o.ToString();
+        IEnumerable collection = (IEnumerable) o;
+        return CollectionToText (collection);
       }
       else
       {
@@ -95,39 +97,40 @@ namespace Remotion.Text.Diagnostic
     }
 
 
-    public static void RegisterStandardHandlers ()
+    public static void RegisterStringHandlers ()
     {
       RegisterHandler<String> (x => "\"" + x + "\"");
       RegisterHandler<char> (x => "'" + x + "'");
     }
 
 
-    //public static string CollectionToText (IEnumerable collection, string start, string seperator, string end)
-    //{
-    //  var sb = new StringBuilder ();
-    //  sb.Append (start);
-    //  bool insertSeperator = false; // no seperator before first element
-    //  foreach (T t in collection)
-    //  {
-    //    if (insertSeperator)
-    //    {
-    //      sb.Append (seperator);
-    //    }
-    //    else
-    //    {
-    //      insertSeperator = true;
-    //    }
+    public static string CollectionToText (IEnumerable collection)
+    {
+      const string start = "{";
+      const string seperator = ",";
+      const string end = "}";
+      var sb = new StringBuilder ();
 
-    //    //string s = To.Text (t);
-    //    //sb.Append (s);
-    //    sb.Append (To.Text (t));
-    //    //sb.Append (" !!! ");
-    //    //sb.Append (t.ToString());
+      sb.Append (start);
+      bool insertSeperator = false; // no seperator before first element
+      foreach (Object element in collection)
+      {
+        if (insertSeperator)
+        {
+          sb.Append (seperator);
+        }
+        else
+        {
+          insertSeperator = true;
+        }
 
-    //  }
-    //  sb.Append (end);
-    //  return sb.ToString ();
-    //}
+        sb.Append (To.Text (element));
+
+        //Log (element.ToString());
+      }
+      sb.Append (end);
+      return sb.ToString ();
+    }
 
 
 

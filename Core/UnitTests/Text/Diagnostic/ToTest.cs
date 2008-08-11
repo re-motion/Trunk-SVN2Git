@@ -109,7 +109,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void InitStandardHandlersTest ()
     {
       To.ClearHandlers ();
-      To.RegisterStandardHandlers ();
+      To.RegisterStringHandlers ();
       Assert.That (To.Text ("Some text"), Is.EqualTo ("\"Some text\""));
       Assert.That (To.Text ('x'), Is.EqualTo ("'x'"));
     }
@@ -127,6 +127,17 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (To.Text (o), Is.EqualTo (o.ToString()));
     }
 
+    [Test]
+    public void StringNotEnumerableTest ()
+    {
+      To.ClearHandlers ();
+      string s = "Wow look at the size of that thing";
+      string toTextTest = To.Text (s);
+      const string toTextTestExpected = "Wow look at the size of that thing";
+      Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
+    }
+
+
 
     [Test]
     public void NullEnumerableTest ()
@@ -141,30 +152,33 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
     }
 
-    //[Test]
-    //public void EmptyEnumerableTest ()
-    //{
-    //  To.ClearHandlers ();
-    //  To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.ListListString)));
-    //  var test = new To.Test ("That's not my name", 179);
-    //  test.LinkedListString = new LinkedList<string> ();
-    //  string toTextTest = To.Text (test);
-    //  const string toTextTestExpected = "[Test: That's not my name;179;{}]";
-    //  Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
-    //}
+    [Test]
+    public void EmptyEnumerableTest ()
+    {
+      To.ClearHandlers ();
+      //To.RegisterHandler<string> (x => x); // To prevent string being treated as collection
+      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.ListListString)));
+      var test = new To.Test ("That's not my name", 179);
+      test.LinkedListString = new LinkedList<string> ();
+      string toTextTest = To.Text (test);
+      const string toTextTestExpected = "[Test: That's not my name;179;{}]";
+      Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
+    }
 
-    //[Test]
-    //public void OneDimensionalEnumerableTest ()
-    //{
-    //  To.ClearHandlers ();
-    //  To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.ListListString)));
-    //  var test = new To.Test ("That's not my name", 179);
-    //  string[] linkedListInit = { "A1", "A2", "A3", "A4", "A5" };
-    //  test.LinkedListString = new LinkedList<string> (linkedListInit);
-    //  string toTextTest = To.Text (test);
-    //  const string toTextTestExpected = "[Test: That's not my name;179;{A1,A2,A3,A4,A5}]";
-    //  Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
-    //}
+    [Test]
+    public void OneDimensionalEnumerableTest ()
+    {
+      To.ClearHandlers ();
+      //To.RegisterHandler<string> (x => x); // To prevent string being treated as collection
+      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.LinkedListString)));
+      var test = new To.Test ("That's not my name", 179);
+      string[] linkedListInit = { "A1", "A2", "A3", "A4", "A5" };
+      test.LinkedListString = new LinkedList<string> (linkedListInit);
+      //LogVariables ("LinkedListString.Count={0}", test.LinkedListString.Count);
+      string toTextTest = To.Text (test);
+      const string toTextTestExpected = "[Test: That's not my name;179;{A1,A2,A3,A4,A5}]";
+      Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
+    }
 
 
 
