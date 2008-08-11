@@ -32,16 +32,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      domainObject.Committed += new EventHandler (Committed);
-      domainObject.Committing += new EventHandler (Committing);
-      domainObject.RolledBack += new EventHandler (RolledBack);
-      domainObject.RollingBack += new EventHandler (RollingBack);
-      domainObject.Deleted += new EventHandler (Deleted);
-      domainObject.Deleting += new EventHandler (Deleting);
-      domainObject.PropertyChanged += new PropertyChangeEventHandler (PropertyChanged);
-      domainObject.PropertyChanging += new PropertyChangeEventHandler (PropertyChanging);
-      domainObject.RelationChanged += new RelationChangedEventHandler (RelationChanged);
-      domainObject.RelationChanging += new RelationChangingEventHandler (RelationChanging);
+      domainObject.Committed += Committed;
+      domainObject.Committing += Committing;
+      domainObject.RolledBack += RolledBack;
+      domainObject.RollingBack += RollingBack;
+      domainObject.Deleted += Deleted;
+      domainObject.Deleting += Deleting;
+      domainObject.PropertyChanged += PropertyChanged;
+      domainObject.PropertyChanging += PropertyChanging;
+      domainObject.RelationChanged += RelationChanged;
+      domainObject.RelationChanging += RelationChanging;
     }
 
     // abstract methods and properties
@@ -50,17 +50,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     public abstract void RelationChanged (object sender, RelationChangedEventArgs args);
     public abstract void PropertyChanging (object sender, PropertyChangeEventArgs args);
     public abstract void PropertyChanged (object sender, PropertyChangeEventArgs args);
-    //TODO ES: change all calls to this method and remove LastCall if possible
     public abstract void Deleting (object sender, EventArgs e);
-    //TODO ES: change all calls to this method and remove LastCall if possible
     public abstract void Deleted (object sender, EventArgs e);
-    //TODO ES: change all calls to this method and remove LastCall if possible
     public abstract void Committing (object sender, EventArgs e);
-    //TODO ES: change all calls to this method and remove LastCall if possible
     public abstract void Committed (object sender, EventArgs e);
-    //TODO ES: change all calls to this method and remove LastCall if possible
     public abstract void RollingBack (object sender, EventArgs e);
-    //TODO ES: change all calls to this method and remove LastCall if possible
     public abstract void RolledBack (object sender, EventArgs e);
 
     // methods and properties
