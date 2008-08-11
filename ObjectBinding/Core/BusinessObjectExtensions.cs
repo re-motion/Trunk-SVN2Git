@@ -16,7 +16,7 @@ namespace Remotion.ObjectBinding
   /// <summary>
   /// This class contains extension methods for the <see cref="IBusinessObject"/> interface.
   /// </summary>
-  public static class BusinessObjectExtensionMethods
+  public static class BusinessObjectExtensions
   {
     /// <summary>
     ///   Gets the value accessed through the <see cref="IBusinessObjectProperty"/> identified by the passed <paramref name="propertyIdentifier"/>. 

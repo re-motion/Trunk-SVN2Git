@@ -126,7 +126,7 @@
     <Compile Include="BindableObject\ConstantEnumerationValueFilter.cs" />
     <Compile Include="BindableObject\BindableObjectWithIdentityProviderAttribute.cs" />
     <Compile Include="BindableObject\BindableObjectMetadataFactory.cs" />
-    <Compile Include="BusinessObjectExtensionMethods.cs" />
+    <Compile Include="BusinessObjectExtensions.cs" />
     <Compile Include="IBusinessObjectProviderWithIdentity.cs" />
     <Compile Include="IBusinessObjectServiceFactory.cs" />
     <Compile Include="BindableObject\IClassReflector.cs" />
