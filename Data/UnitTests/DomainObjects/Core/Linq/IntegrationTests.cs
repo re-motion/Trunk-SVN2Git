@@ -580,7 +580,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Ignore ("Not supported by OPF")]
     public void QueryWithCount ()
     {
-      var number = (from o in DataContext.Entity<Order>()
+      var number = (from o in DataContext.Entity<Order> ()
                     select o).Count();
       Assert.AreEqual (number, 6);
     }
@@ -592,7 +592,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                    select o).First();
       Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
     }
-    
+
+    [Test]
+    public void QueryWithWhereOnForeignKey_RealSide ()
+    {
+      ObjectID id = DomainObjectIDs.Order1;
+      var query = from oi in DataContext.Entity<OrderItem> ()
+                  where oi.Order.ID == id
+                  select oi;
+      CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    public void QueryWithWhereOnForeignKey_VirtualSide ()
+    {
+      ObjectID id = DomainObjectIDs.Computer1;
+      var query = from e in DataContext.Entity<Employee> ()
+                  where e.Computer.ID == id
+                  select e;
+      CheckQueryResult (query, DomainObjectIDs.Employee3);
+    }
+
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : TestDomainBase
     {

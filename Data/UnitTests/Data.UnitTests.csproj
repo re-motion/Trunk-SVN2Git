@@ -493,7 +493,7 @@
     <Compile Include="Linq\ParsingTest\ExpressionTreeComparer.cs" />
     <Compile Include="Linq\ParsingTest\FieldResolvingTest\ClauseFieldResolverTest.cs" />
     <Compile Include="Linq\ParsingTest\FieldResolvingTest\FieldSourcePathBuilderTest.cs" />
-    <Compile Include="Linq\ParsingTest\FieldResolvingTest\FromClauseFieldResolverVisitorTest.cs" />
+    <Compile Include="Linq\ParsingTest\FieldResolvingTest\ClauseFieldResolverVisitorTest.cs" />
     <Compile Include="Linq\ParsingTest\FieldResolvingTest\JoinedTableContextTest.cs" />
     <Compile Include="Linq\ParsingTest\FieldResolvingTest\OrderingFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\ParsingTest\FieldResolvingTest\QueryModelFieldResolverTest.cs" />
