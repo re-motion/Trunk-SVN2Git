@@ -45,7 +45,7 @@ public class WxeContext
 
   /// <summary> 
   ///   Gets the permanent URL for the <see cref="WxeFunction"/> of the specified <paramref name="functionType"/> 
-  ///   and using the <paramref name="queryString"/>.
+  ///   and using the <paramref name="urlParameters"/>.
   /// </summary>
   /// <remarks> Call this method only from pages not implementing <see cref="IWxePage"/>. </remarks>
   /// <exception cref="WxeException">
@@ -60,7 +60,7 @@ public class WxeContext
 
   /// <summary> 
   ///   Gets the permanent URL for the <see cref="WxeFunction"/> of the specified <paramref name="functionType"/> 
-  ///   and using the <paramref name="queryString"/>.
+  ///   and using the <paramref name="urlParameters"/>.
   /// </summary>
   /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/GetPermanentUrl/param[@name="httpContext" or @name="functionType" or @name="urlParameters" or @name="fallbackOnCurrentUrl"]' />
   protected static string GetPermanentUrl (

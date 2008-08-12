@@ -106,6 +106,7 @@
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Context\WebSafeContextMixin.cs" />
+    <Compile Include="ExecutionEngine\WxeCallOptionsExternalByRedirect.cs" />
     <Compile Include="ExecutionEngine\IWxeCallArguments.cs" />
     <Compile Include="ExecutionEngine\WxeCallExternalException.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptions.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="ExecutionEngine\WxeFunctionStateManager.cs" />
     <Compile Include="ExecutionEngine\WxeNonRecoverableTransactionException.cs" />
     <Compile Include="ExecutionEngine\WxePageExtensions.cs" />
+    <Compile Include="ExecutionEngine\WxePermaUrlCallArguments.cs" />
     <Compile Include="ExecutionEngine\WxePermaUrlOptions.cs" />
     <Compile Include="ExecutionEngine\WxeScopedTransaction.cs" />
     <Compile Include="ExecutionEngine\WxeScopedTransactedFunction.cs" />

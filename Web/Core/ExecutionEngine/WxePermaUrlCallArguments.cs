@@ -1,4 +1,4 @@
-﻿/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
  *
  * This program is free software: you can redistribute it and/or modify it under 
  * the terms of the re:motion license agreement in license.txt. If you did not 
@@ -9,33 +9,35 @@
  */
 
 using System;
-using System.Web.UI;
+using System.Collections.Specialized;
 using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxeCallArguments : IWxeCallArguments
+  public class WxePermaUrlCallArguments : IWxeCallArguments
   {
-    private class DefaultArguments : WxePermaUrlCallArguments
-    {
-      public DefaultArguments ()
-        :base (new WxeCallOptions (WxePermaUrlOptions.Null))
-      {
-      }
-    }
-
-    public static readonly IWxeCallArguments Default = new DefaultArguments ();
-
-    private readonly Control _sender;
     private readonly WxeCallOptions _options;
 
-    public WxeCallArguments (Control sender, WxeCallOptions options)
+    public WxePermaUrlCallArguments ()
+        : this (new WxeCallOptions  (new WxePermaUrlOptions (false, null)))
     {
-      ArgumentUtility.CheckNotNull ("sender", sender);
+    }
+
+    public WxePermaUrlCallArguments (bool useParentPermaUrl)
+        : this (new WxeCallOptions  (new WxePermaUrlOptions (useParentPermaUrl, null)))
+    {
+    }
+
+    public WxePermaUrlCallArguments (bool useParentPermaUrl, NameValueCollection urlParameters)
+        :this (new WxeCallOptions  (new WxePermaUrlOptions (useParentPermaUrl, urlParameters)))
+    {
+    }
+
+    protected internal WxePermaUrlCallArguments (WxeCallOptions options)
+    {
       ArgumentUtility.CheckNotNull ("options", options);
 
       _options = options;
-      _sender = sender;
     }
 
     public void Dispatch (IWxePage page, WxeFunction function)
@@ -43,12 +45,7 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("function", function);
 
-      _options.Dispatch (page, function, this);
-    }
-
-    public Control Sender
-    {
-      get { return _sender; }
+      _options.Dispatch (page, function, null);
     }
 
     public WxeCallOptions Options

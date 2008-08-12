@@ -10,12 +10,31 @@
 
 using System;
 using System.Collections.Specialized;
-using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxePermaUrlOptions : IWxeCallArguments
+  public class WxePermaUrlOptions : INullObject
   {
+    private sealed class NullPermaUrlOptions : WxePermaUrlOptions, INullObject
+    {
+      public NullPermaUrlOptions ()
+        : base (false, null)
+      {
+      }
+
+      public override bool UsePermaUrl
+      {
+        get { return false; }
+      }
+
+      bool INullObject.IsNull
+      {
+        get { return true; }
+      }
+    }
+
+    public static WxePermaUrlOptions Null = new NullPermaUrlOptions();
+
     private readonly bool _useParentPermaUrl;
     private readonly NameValueCollection _urlParameters;
 
@@ -35,6 +54,11 @@ namespace Remotion.Web.ExecutionEngine
       _urlParameters = urlParameters;
     }
 
+    public virtual bool UsePermaUrl
+    {
+      get { return true; }
+    }
+
     public bool UseParentPermaUrl
     {
       get { return _useParentPermaUrl; }
@@ -45,12 +69,9 @@ namespace Remotion.Web.ExecutionEngine
       get { return _urlParameters; }
     }
 
-    public void Call (IWxePage page, WxeFunction function)
+    bool INullObject.IsNull
     {
-      ArgumentUtility.CheckNotNull ("page", page);
-      ArgumentUtility.CheckNotNull ("function", function);
-
-      page.ExecuteFunction (function, true, UseParentPermaUrl, UrlParameters);
+      get { return false; }
     }
   }
 }

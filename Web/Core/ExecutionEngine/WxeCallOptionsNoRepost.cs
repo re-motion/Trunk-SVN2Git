@@ -13,55 +13,42 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxeCallOptionsNoRepost: WxeCallOptions
+  public class WxeCallOptionsNoRepost : WxeCallOptions
   {
     private readonly bool? _usesEventTarget;
 
     public WxeCallOptionsNoRepost ()
-        : this (null, null)
+      : this (null, WxePermaUrlOptions.Null)
     {
     }
 
     public WxeCallOptionsNoRepost (bool? usesEventTarget)
-        : this (usesEventTarget, null)
+      : this (usesEventTarget, WxePermaUrlOptions.Null)
     {
     }
 
-    public WxeCallOptionsNoRepost (WxePermaUrlOptions usePermaUrl)
-        : this (null, usePermaUrl)
+    public WxeCallOptionsNoRepost (WxePermaUrlOptions permaUrlOptions)
+      : this (null, permaUrlOptions)
     {
     }
 
-    public WxeCallOptionsNoRepost (bool? usesEventTarget, WxePermaUrlOptions usePermaUrl)
-        : base (usePermaUrl)
+    public WxeCallOptionsNoRepost (bool? usesEventTarget, WxePermaUrlOptions permaUrlOptions)
+      : base (permaUrlOptions)
     {
       _usesEventTarget = usesEventTarget;
     }
 
-    public override void Call (IWxePage page, WxeFunction function, WxeCallArguments handler)
+    public override void Dispatch (IWxePage page, WxeFunction function, WxeCallArguments handler)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("handler", handler);
 
-      if (UsePermaUrl != null)
-      {
-        if (_usesEventTarget != null)
-          page.ExecuteFunctionNoRepost (function, handler.Sender, _usesEventTarget.Value, true, UsePermaUrl.UseParentPermaUrl, UsePermaUrl.UrlParameters);
-        else
-          page.ExecuteFunctionNoRepost (function, handler.Sender, true, UsePermaUrl.UseParentPermaUrl, UsePermaUrl.UrlParameters);
-      }
-      else
-      {
-        if (_usesEventTarget != null)
-          page.ExecuteFunctionNoRepost (function, handler.Sender, _usesEventTarget.Value);
-        else
-          page.ExecuteFunctionNoRepost (function, handler.Sender);
-      }
+      page.Executor.ExecuteFunctionNoRepost (function, handler.Sender, _usesEventTarget, PermaUrlOptions);
     }
 
-    public bool? UsesEventTarget 
-    { 
+    public bool? UsesEventTarget
+    {
       get { return _usesEventTarget; }
     }
   }

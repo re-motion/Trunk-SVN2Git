@@ -25,20 +25,7 @@ namespace Remotion.Web.ExecutionEngine
   /// </remarks>
   public class WxeExecutor : IDisposable
   {
-    internal static bool GetUsesEventTarget (IWxePage page)
-    {
-      NameValueCollection postBackCollection = page.GetPostBackCollection ();
-      if (postBackCollection == null)
-      {
-        if (page.IsPostBack)
-          throw new InvalidOperationException ("The IWxePage has no PostBackCollection even though this is a post back.");
-        return false;
-      }
-      return !StringUtility.IsNullOrEmpty (postBackCollection[ControlHelper.PostEventSourceID]);
-    }
-    
     private readonly HttpContext _httpContext;
-
     private readonly IWxePage _page;
     private readonly WxePageInfo _wxePageInfo;
 
@@ -67,12 +54,15 @@ namespace Remotion.Web.ExecutionEngine
       get { return _httpContext; }
     }
 
-    public void ExecuteFunction (WxeFunction function, bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters)
+    public void ExecuteFunction (WxeFunction function, WxePermaUrlOptions permaUrlOptions)
     {
+      ArgumentUtility.CheckNotNull ("function", function);
+      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+
       try
       {
         _httpContext.Handler = _wxePageInfo.WxeHandler;
-        _wxePageInfo.CurrentStep.ExecuteFunction (_page, function, createPermaUrl, useParentPermaUrl, permaUrlParameters);
+        _wxePageInfo.CurrentStep.ExecuteFunction (_page, function, permaUrlOptions);
       }
       finally
       {
@@ -80,13 +70,16 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
-    public void ExecuteFunctionNoRepost (
-        WxeFunction function, Control sender, bool usesEventTarget, bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters)
+    public void ExecuteFunctionNoRepost (WxeFunction function, Control sender, bool? usesEventTarget, WxePermaUrlOptions permaUrlOptions)
     {
+      ArgumentUtility.CheckNotNull ("function", function);
+      ArgumentUtility.CheckNotNull ("sender", sender);
+      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+
       try
       {
         _httpContext.Handler = _wxePageInfo.WxeHandler;
-        _wxePageInfo.CurrentStep.ExecuteFunctionNoRepost (_page, function, sender, usesEventTarget, createPermaUrl, useParentPermaUrl, permaUrlParameters);
+        _wxePageInfo.CurrentStep.ExecuteFunctionNoRepost (_page, function, sender, usesEventTarget ?? UsesEventTarget, permaUrlOptions);
       }
       finally
       {
@@ -94,41 +87,34 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
-    /// <summary> 
-    ///   Gets a flag describing whether the post back was most likely caused by the ASP.NET post back mechanism.
-    /// </summary>
-    /// <value> <see langword="true"/> if the post back collection contains the <b>__EVENTTARGET</b> field. </value>
-    protected bool UsesEventTarget
+    public void ExecuteFunctionExternalByRedirect (
+        WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
     {
-      get { return GetUsesEventTarget (_page); }
+      ArgumentUtility.CheckNotNull ("function", function);
+      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+
+      try
+      {
+        _httpContext.Handler = _wxePageInfo.WxeHandler;
+        _wxePageInfo.CurrentStep.ExecuteFunctionExternalByRedirect (_page, function, permaUrlOptions, returnToCaller, callerUrlParameters);
+      }
+      finally
+      {
+        _httpContext.Handler = _page;
+      }
     }
 
     public void ExecuteFunctionExternal (
-        WxeFunction function, bool createPermaUrl, bool useParentPermaUrl, NameValueCollection urlParameters,
-        bool returnToCaller, NameValueCollection callerUrlParameters)
-    {
-      try
-      {
-        _httpContext.Handler = _wxePageInfo.WxeHandler;
-        _wxePageInfo.CurrentStep.ExecuteFunctionExternal (_page, function, createPermaUrl, useParentPermaUrl, urlParameters, returnToCaller, callerUrlParameters);
-      }
-      finally
-      {
-        _httpContext.Handler = _page;
-      }
-    }
-
-    public void ExecuteFunctionExternal (
-        WxeFunction function, string target, string features, Control sender, bool returningPostback,
-        bool createPermaUrl, bool useParentPermaUrl, NameValueCollection urlParameters)
+        WxeFunction function, string target, string features, Control sender, bool returningPostback, WxePermaUrlOptions permaUrlOptions)
     {
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNullOrEmpty ("target", target);
+      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
 
       string functionToken = _wxePageInfo.CurrentStep.GetFunctionTokenForExternalFunction (function, returningPostback);
 
       string href = _wxePageInfo.CurrentStep.GetDestinationUrlForExternalFunction (
-          function, functionToken, createPermaUrl, useParentPermaUrl, urlParameters);
+          function, functionToken, permaUrlOptions.UsePermaUrl, permaUrlOptions.UseParentPermaUrl, permaUrlOptions.UrlParameters);
 
       string openScript;
       if (features != null)
@@ -140,16 +126,33 @@ namespace Remotion.Web.ExecutionEngine
       function.ReturnUrl = "javascript:" + GetClosingScriptForExternalFunction (functionToken, sender, returningPostback);
     }
 
+    /// <summary> 
+    ///   Gets a flag describing whether the post back was most likely caused by the ASP.NET post back mechanism.
+    /// </summary>
+    /// <value> <see langword="true"/> if the post back collection contains the <b>__EVENTTARGET</b> field. </value>
+    private bool UsesEventTarget
+    {
+      get
+      {
+        NameValueCollection postBackCollection = _page.GetPostBackCollection();
+        if (postBackCollection == null)
+        {
+          if (_page.IsPostBack)
+            throw new InvalidOperationException ("The IWxePage has no PostBackCollection even though this is a post back.");
+          return false;
+        }
+        return !StringUtility.IsNullOrEmpty (postBackCollection[ControlHelper.PostEventSourceID]);
+      }
+    }
+
     /// <summary> Gets the client script to be used as the return URL for the window of the external function. </summary>
     private string GetClosingScriptForExternalFunction (string functionToken, Control sender, bool returningPostback)
     {
       if (!returningPostback)
-      {
         return "window.close();";
-      }
       else if (UsesEventTarget)
       {
-        NameValueCollection postBackCollection = _page.GetPostBackCollection ();
+        NameValueCollection postBackCollection = _page.GetPostBackCollection();
         if (postBackCollection == null)
           throw new InvalidOperationException ("The IWxePage has no PostBackCollection even though this is a post back.");
 
@@ -162,7 +165,10 @@ namespace Remotion.Web.ExecutionEngine
       {
         ArgumentUtility.CheckNotNull ("sender", sender);
         if (!(sender is IPostBackEventHandler || sender is IPostBackDataHandler))
-          throw new ArgumentException ("The sender must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.");
+        {
+          throw new ArgumentException (
+              "The sender must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.");
+        }
         return FormatDoSubmitClientScript (functionToken, _page.CurrentStep.PageToken, sender.ClientID);
       }
     }
@@ -184,7 +190,11 @@ namespace Remotion.Web.ExecutionEngine
           + "  window.opener.wxeDoPostBack('{2}', '{3}', '{4}'); \r\n"
           + "}} \r\n"
           + "window.close(); \r\n",
-          WxePageInfo.PageTokenID, pageToken, eventTarget, eventArgument, functionToken);
+          WxePageInfo.PageTokenID,
+          pageToken,
+          eventTarget,
+          eventArgument,
+          functionToken);
     }
 
     /// <summary> 
@@ -203,7 +213,10 @@ namespace Remotion.Web.ExecutionEngine
           + "  window.opener.wxeDoSubmit('{2}', '{3}'); \r\n"
           + "}} \r\n"
           + "window.close(); \r\n",
-          WxePageInfo.PageTokenID, pageToken, senderID, functionToken);
+          WxePageInfo.PageTokenID,
+          pageToken,
+          senderID,
+          functionToken);
     }
   }
 }

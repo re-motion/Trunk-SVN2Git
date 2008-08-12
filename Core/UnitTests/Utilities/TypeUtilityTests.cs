@@ -148,6 +148,13 @@ namespace Remotion.UnitTests.Utilities
                             "a.b[[c.d[[e.f[[g.h[...], g, ver=1]], e, ver=2]], c, ver=3]], a, ver=4");
     }
 
+    [Test]
+    public void TestDeepNestedWithArgsWithStrongName ()
+    {
+      AssertTransformation ("a::b[[c::d[[e::f[[g::h[...], ver=1, token=2]], ver=2, token=3]], ver=3, token=4]], ver=4, token=5",
+                            "a.b[[c.d[[e.f[[g.h[...], g, ver=1, token=2]], e, ver=2, token=3]], c, ver=3, token=4]], a, ver=4, token=5");
+    }
+
     private void AssertTransformation (string abbreviatedName, string fullName)
     {
       string result = TypeUtility.ParseAbbreviatedTypeName (abbreviatedName);

@@ -134,15 +134,8 @@ public class MyFunction: WxeFunction
     <param name="function"> 
       The <see cref="WxeFunction"/> to be executed. Must not be <see langword="null"/>. 
     </param>
-    <param name="createPermaUrl"> 
-      <see langword="true"/> to redirect the client to a URL that can be used as a perma-URL. 
-    </param>
-    <param name="useParentPermaUrl">
-      <see langword="true"/> to add the parent function's perma-URL. 
-    </param>
-    <param name="permaUrlParameters">
-      Provides the list of arguments for the perma-URL's query string. Use <see langword="null"/>
-      to indicate that the <paramref name="function"/>'s current parameters should be used for the query string.
+    <param name="permaUrlOptions"> 
+      The <see cref="WxePermaUrlOptions"/> used for executing the function using a permanent URL.      
     </param>
     <remarks>
       Note that if you call this method from a postback event handler, the postback event will be raised again 

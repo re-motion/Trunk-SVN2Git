@@ -19,23 +19,23 @@ namespace Remotion.Web.ExecutionEngine
     private readonly string _features;
     private readonly bool _returningPostback;
 
-    public WxeCallOptionsExternal (string target, string features, bool returningPostback)
-        : this (target, features, returningPostback, null)
+    public WxeCallOptionsExternal (string target)
+        : this (target, null, true, WxePermaUrlOptions.Null)
     {
     }
 
     public WxeCallOptionsExternal (string target, string features)
-        : this (target, features, true, null)
+      : this (target, features, true, WxePermaUrlOptions.Null)
     {
     }
 
-    public WxeCallOptionsExternal (string target)
-        : this (target, null, true, null)
+    public WxeCallOptionsExternal (string target, string features, bool returningPostback)
+      : this (target, features, returningPostback, WxePermaUrlOptions.Null)
     {
     }
 
-    public WxeCallOptionsExternal (string target, string features, bool returningPostback, WxePermaUrlOptions usePermaUrl)
-        : base (usePermaUrl)
+    public WxeCallOptionsExternal (string target, string features, bool returningPostback, WxePermaUrlOptions permaUrlOptions)
+      : base (permaUrlOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("target", target);
 
@@ -44,16 +44,17 @@ namespace Remotion.Web.ExecutionEngine
       _returningPostback = returningPostback;
     }
 
-    public override void Call (IWxePage page, WxeFunction function, WxeCallArguments handler)
+    public override void Dispatch (IWxePage page, WxeFunction function, WxeCallArguments handler)
     {
-      if (UsePermaUrl != null)
-        page.ExecuteFunctionExternal (function, _target, _features, handler.Sender, _returningPostback, true, UsePermaUrl.UseParentPermaUrl, UsePermaUrl.UrlParameters);
-      else
-        page.ExecuteFunctionExternal (function, _target, _features, handler.Sender, _returningPostback);
+      ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("function", function);
+      ArgumentUtility.CheckNotNull ("handler", handler);
+
+      page.Executor.ExecuteFunctionExternal (function, _target, _features, handler.Sender, _returningPostback, PermaUrlOptions);
 
       throw new WxeCallExternalException();
     }
-    
+
     public string Target
     {
       get { return _target; }

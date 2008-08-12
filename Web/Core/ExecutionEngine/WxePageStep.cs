@@ -377,35 +377,35 @@ public class WxePageStep: WxeStep
 
   /// <summary> Executes the specified <see cref="WxeFunction"/>, then returns to this page. </summary>
   /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/ExecuteFunction/*' />
-  public void ExecuteFunction (
-      IWxePage page, WxeFunction function, 
-      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters)
+  public void ExecuteFunction (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
   {
     ArgumentUtility.CheckNotNull ("page", page);
+    ArgumentUtility.CheckNotNull ("function", function);
+    ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
 
     //  Back-up postback data of the executing page
     _postBackCollection = new NameValueCollection (page.GetPostBackCollection());
-    
-    InternalExecuteFunction (page, function, createPermaUrl, useParentPermaUrl, permaUrlParameters);
+
+    InternalExecuteFunction (page, function, permaUrlOptions);
   }
 
   /// <summary>
   ///   Executes the specified <see cref="WxeFunction"/>, then returns to this page without raising the 
   ///   postback event after the user returns.
   /// </summary>
-  /// <remarks> Invoke this method by calling <see cref="WxePageExtensions.ExecuteFunctionNoRepost"/>. </remarks>
-  internal void ExecuteFunctionNoRepost (
-      IWxePage page, WxeFunction function, Control sender, bool usesEventTarget,
-      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters)
+  /// <remarks> Invoke this method by calling <see cref="WxeExecutor.ExecuteFunctionNoRepost"/>. </remarks>
+  internal void ExecuteFunctionNoRepost (IWxePage page, WxeFunction function, Control sender, bool usesEventTarget, WxePermaUrlOptions permaUrlOptions)
   {
     ArgumentUtility.CheckNotNull ("page", page);
+    ArgumentUtility.CheckNotNull ("function", function);
+    ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
 
     //  Back-up post back data of the executing page
     _postBackCollection = new NameValueCollection (page.GetPostBackCollection());
 
     RemoveEventSource (_postBackCollection, sender, usesEventTarget);
 
-    InternalExecuteFunction (page, function, createPermaUrl, useParentPermaUrl, permaUrlParameters);
+    InternalExecuteFunction (page, function, permaUrlOptions);
   }
 
   private void RemoveEventSource (NameValueCollection postBackCollection, Control sender, bool usesEventTarget)
@@ -426,62 +426,40 @@ public class WxePageStep: WxeStep
 
   /// <summary> Executes the specified <see cref="WxeFunction"/>, then returns to this page. </summary>
   /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/InternalExecuteFunction/*' />
-  private void InternalExecuteFunction (
-      IWxePage page, WxeFunction function, 
-      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters)
+  private void InternalExecuteFunction (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
   {
-    ArgumentUtility.CheckNotNull ("page", page);
-    ArgumentUtility.CheckNotNull ("function", function);
-
     if (_function != null)
       throw new InvalidOperationException ("Cannot execute function while another function executes.");
 
     _function = function; 
     _function.SetParentStep (this);
-    _isRedirectToPermanentUrlRequired = createPermaUrl;
-    _useParentPermaUrl = useParentPermaUrl;
-    _permaUrlParameters = permaUrlParameters;
+    _isRedirectToPermanentUrlRequired = permaUrlOptions.UsePermaUrl;
+    _useParentPermaUrl = permaUrlOptions.UseParentPermaUrl;
+    _permaUrlParameters = permaUrlOptions.UrlParameters;
 
     InvokeSaveAllState ((Page) page);
 
     Execute();
   }
 
-  internal void ExecuteFunctionExternal (
-      IWxePage page, WxeFunction function,
-      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters,
-      bool returnToCaller, NameValueCollection callerUrlParameters)
+  internal void ExecuteFunctionExternalByRedirect (
+      IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
   {
     //  Back-up post back data of the executing page
     _postBackCollection = new NameValueCollection (page.GetPostBackCollection());
 
-    InternalExecuteFunctionExternal (page, function, createPermaUrl, useParentPermaUrl, permaUrlParameters, returnToCaller, callerUrlParameters);
+    InternalExecuteFunctionExternalByRedirect (page, function, permaUrlOptions, returnToCaller, callerUrlParameters);
   }
 
-//  internal void ExecuteFunctionExternalNoRepost (
-//      IWxePage page, WxeFunction function, Control sender, bool usesEventTarget,
-//      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters,
-//      bool returnToCaller, NameValueCollection callerUrlParameters)
-//  {
-//    //  Back-up post back data of the executing page
-//    _postBackCollection = new NameValueCollection (page.GetPostBackCollection());
-//
-//    RemoveEventSource (_postBackCollection, sender, usesEventTarget);
-//
-//    InternalExecuteFunctionExternal (page, function, createPermaUrl, useParentPermaUrl, permaUrlParameters, returnToCaller, callerUrlParameters);
-//  }
-
-  private void InternalExecuteFunctionExternal (
-      IWxePage page, WxeFunction function,
-      bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters,
-      bool returnToCaller, NameValueCollection callerUrlParameters)
+  private void InternalExecuteFunctionExternalByRedirect (
+      IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
   {
     _isExecuteFunctionExternalRequired = true;
     _isExternalFunctionInvoked = false;
-    _function = function; 
-    _createPermaUrl = createPermaUrl;
-    _useParentPermaUrl = useParentPermaUrl;
-    _permaUrlParameters = permaUrlParameters;
+    _function = function;
+    _createPermaUrl = permaUrlOptions.UsePermaUrl;
+    _useParentPermaUrl = permaUrlOptions.UseParentPermaUrl;
+    _permaUrlParameters = permaUrlOptions.UrlParameters;
     _returnToCaller = returnToCaller;
     _callerUrlParameters = null;
     if (_returnToCaller)

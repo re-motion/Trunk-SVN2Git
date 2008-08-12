@@ -25,8 +25,8 @@ namespace Remotion.Web.ExecutionEngine
   ///     {
   ///       IWxeCallArguments args;
   ///       args = WxeCallArguments.Default;                                    
-  ///       args = new WxePermaUrlOptions ();                                  
-  ///       args = new WxePermaUrlOptions (true);
+  ///       args = new WxePermaUrlCallArguments ();                                  
+  ///       args = new WxePermaUrlCallArguments (true);
   ///       args = new WxeCallArguments ((Control) sender, new WxeCallOptionsExternal ("_blank"));
   ///       args = new WxeCallArguments ((Control) sender, new WxeCallOptionsNoRepost ());
   ///       args = new WxeCallArguments ((Control) sender, new WxeCallOptions ());
@@ -39,6 +39,6 @@ namespace Remotion.Web.ExecutionEngine
   /// </example>
   public interface IWxeCallArguments
   {
-    void Call (IWxePage page, WxeFunction function);
+    void Dispatch (IWxePage page, WxeFunction function);
   }
 }

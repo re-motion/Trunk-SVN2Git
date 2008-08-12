@@ -15,32 +15,31 @@ namespace Remotion.Web.ExecutionEngine
 {
   public class WxeCallOptions 
   {
-    private readonly WxePermaUrlOptions _usePermaUrl;
-
-    public WxeCallOptions (WxePermaUrlOptions usePermaUrl)
-    {
-      _usePermaUrl = usePermaUrl;
-    }
+    private readonly WxePermaUrlOptions _permaUrlOptions;
 
     public WxeCallOptions ()
-        : this (null)
+        : this (WxePermaUrlOptions.Null)
     {
     }
 
-    public virtual void Call (IWxePage page, WxeFunction function, WxeCallArguments handler)
+    public WxeCallOptions (WxePermaUrlOptions permaUrlOptions)
+    {
+      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+
+      _permaUrlOptions = permaUrlOptions;
+    }
+
+    public virtual void Dispatch (IWxePage page, WxeFunction function, WxeCallArguments handler)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("function", function);
 
-      if (_usePermaUrl != null)
-        _usePermaUrl.Call (page, function);
-      else
-        page.ExecuteFunction (function);
+      page.Executor.ExecuteFunction (function, _permaUrlOptions);
     }
 
-    public WxePermaUrlOptions UsePermaUrl
+    public WxePermaUrlOptions PermaUrlOptions
     {
-      get { return _usePermaUrl; }
+      get { return _permaUrlOptions; }
     }
   }
 }
