@@ -111,6 +111,7 @@
     <Compile Include="ExecutionEngine\WxeCallOptions.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptionsExternal.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptionsNoRepost.cs" />
+    <Compile Include="ExecutionEngine\WxeExecutor.cs" />
     <Compile Include="ExecutionEngine\WxeIgnorableException.cs" />
     <Compile Include="ExecutionEngine\InconsistentClientTransactionScopeException.cs" />
     <Compile Include="ExecutionEngine\IWxePage.cs" />
@@ -566,6 +567,7 @@
     <Content Include="Doc\include\Configuration\SmartNavigationConfiguration.xml" />
     <Content Include="Doc\include\Configuration\WcagConfiguration.xml" />
     <Content Include="Doc\include\Configuration\WebConfiguration.xml" />
+    <Content Include="Doc\include\ExecutionEngine\WxePageExtensions.xml" />
     <Content Include="Doc\include\ExecutionEngine\IWxePage.xml" />
     <Content Include="Doc\include\ExecutionEngine\UrlMapping\UrlMappingConfiguration.xml" />
     <Content Include="Doc\include\ExecutionEngine\WxeContext.xml" />

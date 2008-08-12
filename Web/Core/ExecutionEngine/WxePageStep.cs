@@ -393,7 +393,7 @@ public class WxePageStep: WxeStep
   ///   Executes the specified <see cref="WxeFunction"/>, then returns to this page without raising the 
   ///   postback event after the user returns.
   /// </summary>
-  /// <remarks> Invoke this method by calling <see cref="WxePageInfo.ExecuteFunctionNoRepost"/>. </remarks>
+  /// <remarks> Invoke this method by calling <see cref="WxePageExtensions.ExecuteFunctionNoRepost"/>. </remarks>
   internal void ExecuteFunctionNoRepost (
       IWxePage page, WxeFunction function, Control sender, bool usesEventTarget,
       bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters)

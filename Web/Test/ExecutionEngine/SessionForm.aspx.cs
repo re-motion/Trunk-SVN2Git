@@ -214,7 +214,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       {
         NameValueCollection queryString = new NameValueCollection();
         queryString.Add ("Parameter", "Hello World!");
-        ExecuteFunction (new SampleWxeFunction(), true, true, queryString);
+        this.ExecuteFunction (new SampleWxeFunction(), true, true, queryString);
       }
     }
 

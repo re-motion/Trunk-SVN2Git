@@ -565,7 +565,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       callMethod.Parameters.Add (new CodeParameterDeclarationExpression (
           new CodeTypeReference (typeof (IWxePage)), "currentPage"));
       callMethod.Parameters.Add (new CodeParameterDeclarationExpression (
-          new CodeTypeReference (typeof (IWxeCallArguments)), "options"));
+          new CodeTypeReference (typeof (IWxeCallArguments)), "arguments"));
       foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
       {
         if (parameterDeclaration.IsReturnValue)
@@ -620,7 +620,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
           new CodeTypeOfExpression (typeof (Exception))));
       //   options.Call (currentPage, function);
       ifNotIsReturningPostBack.TrueStatements.Add (new CodeMethodInvokeExpression (
-          new CodeVariableReferenceExpression ("options"),
+          new CodeVariableReferenceExpression ("arguments"),
           "Call",
           currentPage,
           function));

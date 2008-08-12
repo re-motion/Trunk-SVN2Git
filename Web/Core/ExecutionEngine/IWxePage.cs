@@ -23,38 +23,6 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> End this page step and continue with the WXE function. </summary>
     void ExecuteNextStep ();
 
-    /// <summary> Executes the <paramref name="function"/> in the current window. </summary>
-    /// <include file='doc\include\ExecutionEngine\IWxePage.xml' path='IWxePage/ExecuteFunction/param[@name="function" or @name="createPermaUrl" or @name="useParentPermaUrl" or @name="permaUrlParameters"]' />
-    void ExecuteFunction (WxeFunction function, bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters);
-  
-    /// <summary>
-    ///   Executes the <paramref name="function"/> in the current window without triggering the current post-back event 
-    ///   on returning.
-    /// </summary>
-    /// <include file='doc\include\ExecutionEngine\IWxePage.xml' path='IWxePage/ExecuteFunctionNoRepost/param[@name="function" or @name="sender" or @name="usesEventTarget" or @name="createPermaUrl" or @name="useParentPermaUrl" or @name="permaUrlParameters"]' />
-    void ExecuteFunctionNoRepost (
-        WxeFunction function, Control sender, bool usesEventTarget, 
-        bool createPermaUrl, bool useParentPermaUrl, NameValueCollection permaUrlParameters);
-
-    /// <summary> 
-    ///   Executes a <see cref="WxeFunction"/> outside the current function's context (i.e. asynchron) using the 
-    ///   current window or frame. The execution engine uses a redirect request to transfer the execution to the 
-    ///   new function.
-    /// </summary>
-    /// <include file='doc\include\ExecutionEngine\IWxePage.xml' path='IWxePage/ExecuteFunctionExternal/param[@name="function" or @name="createPermaUrl" or @name="useParentPermaUrl" or @name="urlParameters" or @name="returnToCaller" or @name="callerUrlParameters"]' />
-    void ExecuteFunctionExternal (
-        WxeFunction function, bool createPermaUrl, bool useParentPermaUrl, NameValueCollection urlParameters,
-        bool returnToCaller, NameValueCollection callerUrlParameters);
-  
-    /// <summary> 
-    ///   Executes a <see cref="WxeFunction"/> outside the current function's context (i.e. asynchron) using the 
-    ///   specified window or frame through javascript window.open(...).
-    /// </summary>
-    /// <include file='doc\include\ExecutionEngine\IWxePage.xml' path='IWxePage/ExecuteFunctionExternal/param[@name="function" or @name="target" or @name="features" or @name="sender" or @name="returningPostback" or @name="createPermaUrl" or @name="useParentPermaUrl" or @name="urlParameters"]' />
-    void ExecuteFunctionExternal (
-        WxeFunction function, string target, string features, Control sender, bool returningPostback, 
-        bool createPermaUrl, bool useParentPermaUrl, NameValueCollection urlParameters);
-
     /// <summary> Gets a flag describing whether this post-back has been triggered by returning from a WXE function. </summary>
     bool IsReturningPostBack { get; }
 
@@ -127,5 +95,7 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> Gets or sets the <see cref="WxeHandler"/> of the current request. </summary>
     [EditorBrowsable (EditorBrowsableState.Never)]
     WxeHandler WxeHandler { get; }
+
+    WxeExecutor Executor { get; }
   }
 }

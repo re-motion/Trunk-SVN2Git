@@ -16,6 +16,7 @@ namespace Remotion.Web.ExecutionEngine
   /// 
   /// </summary>
   /// <example>
+  /// <code escaped="true" lang="C#">
   /// internal class Sample
   /// {
   ///   void OnClick (object sender, EventArgs e)
@@ -29,11 +30,12 @@ namespace Remotion.Web.ExecutionEngine
   ///       args = new WxeCallArguments ((Control) sender, new WxeCallOptionsExternal ("_blank"));
   ///       args = new WxeCallArguments ((Control) sender, new WxeCallOptionsNoRepost ());
   ///       args = new WxeCallArguments ((Control) sender, new WxeCallOptions ());
-  ///       // MyPage.Call (this, handler, arg1);</example>
+  ///       // MyPage.Call (this, handler, arg1);
   ///      }
   ///     catch (WxeIgnorableException) { }
   ///   }
   /// }
+  /// </code>
   /// </example>
   public interface IWxeCallArguments
   {
