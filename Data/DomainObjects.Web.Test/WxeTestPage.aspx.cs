@@ -180,7 +180,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
         using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
         {
           RememberCurrentClientTransaction();
-          this.ExecuteFunction (new ParentPageStepTestTransactedFunction());
+          this.ExecuteFunction (new ParentPageStepTestTransactedFunction(), WxeCallArguments.Default);
         } // we must dispose the scope on the original thread
       }
       else
