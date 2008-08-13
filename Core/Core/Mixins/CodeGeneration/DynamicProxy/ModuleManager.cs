@@ -39,14 +39,20 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private string _strongModulePath;
 
     private ModuleScope _scope;
+    private readonly int _currentCount;
 
     public ModuleManager ()
     {
-      int currentCount = Interlocked.Increment (ref s_counter);
-      _strongModulePath = DefaultStrongModulePath.Replace ("{counter}", currentCount.ToString());
+      _currentCount = Interlocked.Increment (ref s_counter);
+      _strongModulePath = FormatModuleOrAssemblyName (DefaultStrongModulePath);
       _strongAssemblyName = Path.GetFileNameWithoutExtension (_strongModulePath);
-      _weakModulePath = DefaultWeakModulePath.Replace ("{counter}", currentCount.ToString ());
+      _weakModulePath = FormatModuleOrAssemblyName (DefaultWeakModulePath);
       _weakAssemblyName = Path.GetFileNameWithoutExtension (_weakModulePath);
+    }
+
+    private string FormatModuleOrAssemblyName (string formatSring)
+    {
+      return formatSring.Replace ("{counter}", _currentCount.ToString ());
     }
 
     public ITypeGenerator CreateTypeGenerator (TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider)
@@ -85,9 +91,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       get { return _strongAssemblyName;  }
       set
       {
+        ArgumentUtility.CheckNotNull ("value", value);
         if (HasSignedAssembly)
           throw new InvalidOperationException ("The name can only be set before the first type is built.");
-        _strongAssemblyName = value;
+        _strongAssemblyName = FormatModuleOrAssemblyName (value);
       }
     }
 
@@ -96,9 +103,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       get { return _weakAssemblyName; }
       set
       {
+        ArgumentUtility.CheckNotNull ("value", value);
         if (HasUnsignedAssembly)
           throw new InvalidOperationException ("The name can only be set before the first type is built.");
-        _weakAssemblyName = value;
+        _weakAssemblyName = FormatModuleOrAssemblyName (value);
       }
     }
 
@@ -107,9 +115,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       get { return _strongModulePath; }
       set
       {
+        ArgumentUtility.CheckNotNull ("value", value);
         if (HasSignedAssembly)
           throw new InvalidOperationException ("The module path can only be set before the first type is built.");
-        _strongModulePath = value;
+        _strongModulePath = FormatModuleOrAssemblyName (value);
       }
     }
 
@@ -118,9 +127,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       get { return _weakModulePath; }
       set
       {
+        ArgumentUtility.CheckNotNull ("value", value);
         if (HasUnsignedAssembly)
           throw new InvalidOperationException ("The module path can only be set before the first type is built.");
-        _weakModulePath = value;
+        _weakModulePath = FormatModuleOrAssemblyName (value);
       }
     }
 

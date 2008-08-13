@@ -313,6 +313,30 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       Assert.That (Path.GetFileNameWithoutExtension (scope2.UnsignedModulePath), Is.EqualTo (scope2.UnsignedAssemblyName));
     }
 
+    [Test]
+    public void ManualStrongName_CanUseCounterVariable ()
+    {
+      var scope1 = new ModuleManager {SignedAssemblyName = "abc{counter}", SignedModulePath = "xyz{counter}"};
+      var scope2 = new ModuleManager {SignedAssemblyName = "abc{counter}", SignedModulePath = "xyz{counter}"};
+
+      Assert.That (scope1.SignedAssemblyName, Is.Not.EqualTo ("abc{counter}"));
+      Assert.That (scope1.SignedModulePath, Is.Not.EqualTo ("xyz{counter}"));
+      Assert.That (scope2.SignedAssemblyName, Is.Not.EqualTo (scope1.SignedAssemblyName));
+      Assert.That (scope2.SignedModulePath, Is.Not.EqualTo (scope1.SignedModulePath));
+    }
+
+    [Test]
+    public void ManualWeakName_CanUseCounterVariable ()
+    {
+      var scope1 = new ModuleManager { UnsignedAssemblyName = "abc{counter}", UnsignedModulePath = "xyz{counter}" };
+      var scope2 = new ModuleManager { UnsignedAssemblyName = "abc{counter}", UnsignedModulePath = "xyz{counter}" };
+
+      Assert.That (scope1.UnsignedAssemblyName, Is.Not.EqualTo ("abc{counter}"));
+      Assert.That (scope1.UnsignedModulePath, Is.Not.EqualTo ("xyz{counter}"));
+      Assert.That (scope2.UnsignedAssemblyName, Is.Not.EqualTo (scope1.UnsignedAssemblyName));
+      Assert.That (scope2.UnsignedModulePath, Is.Not.EqualTo (scope1.UnsignedModulePath));
+    }
+
     private Type GetUnsignedConcreteType ()
     {
       Type t = TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
