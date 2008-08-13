@@ -53,7 +53,8 @@ namespace Remotion.Mixins.CodeGeneration
     /// threads at the same time (or while another thread executes methods on <see cref="ConcreteTypeBuilder"/>). Use the
     /// <see cref="LockAndAccessScope"/> method to access the scope in a thread-safe way.
     /// </summary>
-    /// <value>The module scope of this <see cref="ConcreteTypeBuilder"/>.</value>
+    /// <value>The module scope of this <see cref="ConcreteTypeBuilder"/>. If set to <see langword="null"/>, a new <see cref="IModuleManager"/>
+    /// will be created the next time the <see cref="Scope"/> property is accessed.</value>
     public IModuleManager Scope
     {
       get
@@ -67,7 +68,6 @@ namespace Remotion.Mixins.CodeGeneration
       }
       set
       {
-        ArgumentUtility.CheckNotNull ("value", value);
         lock (_scopeLockObject)
         {
           _scope = value;

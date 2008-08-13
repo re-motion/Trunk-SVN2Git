@@ -13,9 +13,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
+using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
@@ -27,16 +29,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
   public class ModuleManagerTest
   {
     private IModuleManager _moduleManager;
-    private const string c_signedAssemblyFileName = "Remotion.Mixins.Generated.Signed.dll";
-    private const string c_unsignedAssemblyFileName = "Remotion.Mixins.Generated.Unsigned.dll";
+    private const string c_signedAssemblyFileName = "Remotion.Mixins.Generated.ModuleManagerTest.Signed.dll";
+    private const string c_unsignedAssemblyFileName = "Remotion.Mixins.Generated.ModuleManagerTest.Unsigned.dll";
 
     [SetUp]
     public void SetUp ()
     {
       ConcreteTypeBuilder.SetCurrent (null);
       _moduleManager = ConcreteTypeBuilder.Current.Scope;
-      _moduleManager.SignedAssemblyName = "Remotion.Mixins.Generated.Signed";
-      _moduleManager.UnsignedAssemblyName = "Remotion.Mixins.Generated.Unsigned";
+      _moduleManager.SignedAssemblyName = Path.GetFileNameWithoutExtension (c_signedAssemblyFileName);
+      _moduleManager.UnsignedAssemblyName = Path.GetFileNameWithoutExtension (c_unsignedAssemblyFileName);
       _moduleManager.SignedModulePath = c_signedAssemblyFileName;
       _moduleManager.UnsignedModulePath = c_unsignedAssemblyFileName;
       DeleteSavedAssemblies();
@@ -229,7 +231,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       _moduleManager.SaveAssemblies();
       AssemblyName assemblyName = AssemblyName.GetAssemblyName (c_unsignedAssemblyFileName);
 
-      Assert.AreEqual ("Remotion.Mixins.Generated.Unsigned", assemblyName.Name);
+      Assert.AreEqual (Path.GetFileNameWithoutExtension (c_unsignedAssemblyFileName), assemblyName.Name);
     }
 
     [Test]
@@ -240,7 +242,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       _moduleManager.SaveAssemblies();
       AssemblyName assemblyName = AssemblyName.GetAssemblyName (c_signedAssemblyFileName);
 
-      Assert.AreEqual ("Remotion.Mixins.Generated.Signed", assemblyName.Name);
+      Assert.AreEqual (Path.GetFileNameWithoutExtension (c_signedAssemblyFileName), assemblyName.Name);
     }
 
     [Test]
@@ -287,6 +289,28 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       string[] assemblyPaths = _moduleManager.SaveAssemblies();
       CheckForAttributeOnAssembly (typeof (NonApplicationAssemblyAttribute), AssemblyName.GetAssemblyName (assemblyPaths[0]));
       CheckForAttributeOnAssembly (typeof (NonApplicationAssemblyAttribute), AssemblyName.GetAssemblyName (assemblyPaths[1]));
+    }
+
+    [Test]
+    public void NewScope_HasNewAssemblyNames ()
+    {
+      var scope1 = new ModuleManager ();
+      var scope2 = new ModuleManager ();
+
+      Assert.That (scope1.SignedAssemblyName, Is.Not.EqualTo (scope2.SignedAssemblyName));
+      Assert.That (scope1.UnsignedAssemblyName, Is.Not.EqualTo (scope2.UnsignedAssemblyName));
+    }
+
+    [Test]
+    public void ModuleNames_MatchAssemblyNames ()
+    {
+      var scope1 = new ModuleManager ();
+      var scope2 = new ModuleManager ();
+
+      Assert.That (Path.GetFileNameWithoutExtension (scope1.SignedModulePath), Is.EqualTo (scope1.SignedAssemblyName));
+      Assert.That (Path.GetFileNameWithoutExtension (scope2.SignedModulePath), Is.EqualTo (scope2.SignedAssemblyName));
+      Assert.That (Path.GetFileNameWithoutExtension (scope1.UnsignedModulePath), Is.EqualTo (scope1.UnsignedAssemblyName));
+      Assert.That (Path.GetFileNameWithoutExtension (scope2.UnsignedModulePath), Is.EqualTo (scope2.UnsignedAssemblyName));
     }
 
     private Type GetUnsignedConcreteType ()

@@ -9,9 +9,11 @@
  */
 
 using System;
+using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
+using System.Threading;
 using Castle.DynamicProxy;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
@@ -25,16 +27,27 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   // threads at the same time.
   public class ModuleManager : IModuleManager
   {
-    public const string DefaultWeakModulePath = "Remotion.Mixins.Generated.Unsigned.dll";
-    public const string DefaultStrongModulePath = "Remotion.Mixins.Generated.Signed.dll";
+    public const string DefaultWeakModulePath = "Remotion.Mixins.Generated.Unsigned.{counter}.dll";
+    public const string DefaultStrongModulePath = "Remotion.Mixins.Generated.Signed.{counter}.dll";
 
-    private string _weakAssemblyName = "Remotion.Mixins.Generated.Unsigned";
-    private string _weakModulePath = DefaultWeakModulePath;
+    private static int s_counter = 0; // we count the instances of this class so that we can generate unique assembly names
 
-    private string _strongAssemblyName = "Remotion.Mixins.Generated.Signed";
-    private string _strongModulePath = DefaultStrongModulePath;
+    private string _weakAssemblyName;
+    private string _weakModulePath;
+
+    private string _strongAssemblyName;
+    private string _strongModulePath;
 
     private ModuleScope _scope;
+
+    public ModuleManager ()
+    {
+      int currentCount = Interlocked.Increment (ref s_counter);
+      _strongModulePath = DefaultStrongModulePath.Replace ("{counter}", currentCount.ToString());
+      _strongAssemblyName = Path.GetFileNameWithoutExtension (_strongModulePath);
+      _weakModulePath = DefaultWeakModulePath.Replace ("{counter}", currentCount.ToString ());
+      _weakAssemblyName = Path.GetFileNameWithoutExtension (_weakModulePath);
+    }
 
     public ITypeGenerator CreateTypeGenerator (TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider)
     {
