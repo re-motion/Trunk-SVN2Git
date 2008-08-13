@@ -29,6 +29,9 @@ namespace Remotion.UnitTests.Mixins.MixerTool
 {
   [Serializable]
   [TestFixture]
+#if NET35SP1
+  [Ignore ("TODO: Due to a bug in .net 3.5 SP1 this test will cause the ExecutionEngine to crash.")]
+#endif
   public class MixerTest : MixerToolBaseTest
   {
     [Test]
@@ -40,7 +43,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       mixer.Execute (false);
     }
 
-   [Test]
+    [Test]
     public void Execute_SaveTrue_Unsigned ()
     {
       Assert.IsFalse (File.Exists (UnsignedAssemblyPath));
