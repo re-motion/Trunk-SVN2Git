@@ -20,48 +20,8 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Mixins.Utilities.Serialization
 {
   [TestFixture]
-#if NET35SP1
-  [Ignore ("TODO: Due to a bug in .net 3.5 SP1 this test will cause the ExecutionEngine to crash.")]
-#endif
   public class ReflectionObjectSerializerTest
   {
-    [Serializable]
-    class SerializationTester<T> : ISerializable
-    {
-      public readonly T Value;
-      public static Action<T, string, SerializationInfo> Serializer;
-      public static Func<string, SerializationInfo, T> Deserializer;
-
-      public SerializationTester (T value)
-      {
-        ArgumentUtility.CheckNotNull ("value", value);
-        Value = value;
-      }
-
-      protected SerializationTester (SerializationInfo info, StreamingContext context)
-      {
-        Value = Deserializer ("Value", info);
-        Assert.IsNotNull (Value);
-      }
-
-      public void GetObjectData (SerializationInfo info, StreamingContext context)
-      {
-        Serializer (Value, "Value", info);
-      }
-    }
-
-    private static T PerformSerialization<T> (T value, Action<T, string, SerializationInfo> serializer, Func<string, SerializationInfo, T> deserializer)
-    {
-      ArgumentUtility.CheckNotNull ("value", value);
-      ArgumentUtility.CheckNotNull ("serializer", serializer);
-      ArgumentUtility.CheckNotNull ("deserializer", deserializer);
-
-      SerializationTester<T>.Serializer = serializer;
-      SerializationTester<T>.Deserializer = deserializer;
-      SerializationTester<T> tester = new SerializationTester<T>(value);
-      return Serializer.SerializeAndDeserialize (tester).Value;
-    }
-
     [Test]
     public void SerializeTypes()
     {
@@ -73,24 +33,15 @@ namespace Remotion.UnitTests.Mixins.Utilities.Serialization
           PerformSerialization (typeof (Dictionary<int, string>.Enumerator), ReflectionObjectSerializer.SerializeType, ReflectionObjectSerializer.DeserializeType));
     }
 
-    public void SameName<T> () { }
-    public void SameName () { }
-
-    private static void TestMethodSerialization (MethodBase method)
-    {
-      Assert.AreEqual (method, PerformSerialization (method, ReflectionObjectSerializer.SerializeMethodBase,
-          ReflectionObjectSerializer.DeserializeMethodBase));
-    }
-
     [Test]
     public void SerializeMethods ()
     {
       TestMethodSerialization (typeof (object).GetMethod ("Equals", BindingFlags.Public | BindingFlags.Instance));
       TestMethodSerialization (typeof (Console).GetMethod ("WriteLine", new Type[] { typeof (string), typeof (object[]) }));
-      TestMethodSerialization (typeof (ReflectionObjectSerializerTest).GetMethod ("PerformSerialization", BindingFlags.NonPublic | BindingFlags.Static));
+      TestMethodSerialization (typeof (ReflectionObjectSerializerTest).GetMethod ("PerformSerialization", BindingFlags.NonPublic | BindingFlags.Instance));
 
       MethodInfo[] methods =
-        Array.FindAll (typeof (ReflectionObjectSerializerTest).GetMethods (), delegate (MethodInfo m) { return m.Name == "SameName"; });
+        Array.FindAll (typeof (ReflectionObjectSerializerTest).GetMethods (), m => m.Name == "SameName");
       Assert.AreEqual (2, methods.Length);
 
       TestMethodSerialization (methods[0]);
@@ -115,6 +66,10 @@ namespace Remotion.UnitTests.Mixins.Utilities.Serialization
       TestMethodSerialization (typeof (GenericType<int>).GetMethod ("GenericMethod").MakeGenericMethod (typeof (DateTime)));
     }
 
+    // Used by SerializeMethods test caste
+    public void SameName<T> () { }
+    public void SameName () { }
+
     [Test]
     public void SerializeConstructors()
     {
@@ -125,6 +80,55 @@ namespace Remotion.UnitTests.Mixins.Utilities.Serialization
       TestMethodSerialization (typeof (GenericType<>).GetConstructor (new Type[] {typeof (GenericType<>).GetGenericArguments()[0]}));
       TestMethodSerialization (typeof (GenericType<int>).GetConstructor (new Type[] {typeof (int)}));
       TestMethodSerialization (typeof (GenericType<object>).GetConstructor (new Type[] { typeof (object) }));
+    }
+
+    private T PerformSerialization<T> (T value, Action<T, string, SerializationInfo> serializer, Func<string, SerializationInfo, T> deserializer)
+    {
+      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("serializer", serializer);
+      ArgumentUtility.CheckNotNull ("deserializer", deserializer);
+
+      SerializationMethods<T>.Serializer = serializer;
+      SerializationMethods<T>.Deserializer = deserializer;
+      var tester = new SerializationTester<T> (value);
+      return Serializer.SerializeAndDeserialize (tester).Value;
+    }
+
+    private void TestMethodSerialization (MethodBase method)
+    {
+      Assert.AreEqual (method, PerformSerialization (method, ReflectionObjectSerializer.SerializeMethodBase,
+          ReflectionObjectSerializer.DeserializeMethodBase));
+    }
+
+    // This class holds a value which is manually serialized and deserialized via the delegates specified in the SerializationMethods class.
+    [Serializable]
+    class SerializationTester<T> : ISerializable
+    {
+      public readonly T Value;
+
+      public SerializationTester (T value)
+      {
+        ArgumentUtility.CheckNotNull ("value", value);
+        Value = value;
+      }
+
+      protected SerializationTester (SerializationInfo info, StreamingContext context)
+      {
+        Value = SerializationMethods<T>.Deserializer ("Value", info);
+        Assert.IsNotNull (Value);
+      }
+
+      public void GetObjectData (SerializationInfo info, StreamingContext context)
+      {
+        SerializationMethods<T>.Serializer (Value, "Value", info);
+      }
+    }
+
+    // Holds the methods used by SerializationTester for serialization.
+    static class SerializationMethods<T>
+    {
+      public static Action<T, string, SerializationInfo> Serializer;
+      public static Func<string, SerializationInfo, T> Deserializer;
     }
   }
 }
