@@ -28,6 +28,11 @@ namespace Remotion.Web.ExecutionEngine
     {
     }
 
+    public WxePermaUrlCallArguments (NameValueCollection urlParameters)
+      : this (new WxeCallOptions (new WxePermaUrlOptions (false, urlParameters)))
+    {
+    }
+
     public WxePermaUrlCallArguments (bool useParentPermaUrl, NameValueCollection urlParameters)
         :this (new WxeCallOptions  (new WxePermaUrlOptions (useParentPermaUrl, urlParameters)))
     {
@@ -40,12 +45,12 @@ namespace Remotion.Web.ExecutionEngine
       _options = options;
     }
 
-    public void Dispatch (IWxePage page, WxeFunction function)
+    public void Dispatch (WxeExecutor executor, WxeFunction function)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);
 
-      _options.Dispatch (page, function, null);
+      _options.Dispatch (executor, function, null);
     }
 
     public WxeCallOptions Options

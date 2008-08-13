@@ -26,16 +26,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
   public partial class SecurableClassDefinitionListForm : BasePage
   {
 
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    // methods and properties
-
     protected new SecurableClassDefinitionListFormFunction CurrentFunction
     {
       get { return (SecurableClassDefinitionListFormFunction) base.CurrentFunction; }
@@ -78,8 +68,15 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       {
         SecurableClassDefinition classDefinition = (SecurableClassDefinition) e.BusinessObjectTreeNode.BusinessObject;
         EditPermissionsFormFunction function = new EditPermissionsFormFunction (classDefinition.ID);
-        string features = "width=1000, height=700, resizable=yes, menubar=no, toolbar=no, location=no, status=no";
-        this.ExecuteFunctionExternal (function, "_blank", features, (Control) sender, true);
+        var options = new WxeCallOptionsExternal (
+            "_blank", "width=1000, height=700, resizable=yes, menubar=no, toolbar=no, location=no, status=no", true);
+        try
+        {
+          ExecuteFunction (function, new WxeCallArguments ((Control) sender, options));
+        }
+        catch (WxeCallExternalException)
+        {
+        }
       }
       else
       {

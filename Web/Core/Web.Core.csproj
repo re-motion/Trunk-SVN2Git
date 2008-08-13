@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DF8BA786-9679-4879-8757-16AE2709D83A}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -119,7 +119,7 @@
     <Compile Include="ExecutionEngine\WxeCallArguments.cs" />
     <Compile Include="ExecutionEngine\WxeFunctionStateManager.cs" />
     <Compile Include="ExecutionEngine\WxeNonRecoverableTransactionException.cs" />
-    <Compile Include="ExecutionEngine\WxePageExtensions.cs" />
+    <Compile Include="ExecutionEngine\Obsolete\WxePageExtensions.cs" />
     <Compile Include="ExecutionEngine\WxePermaUrlCallArguments.cs" />
     <Compile Include="ExecutionEngine\WxePermaUrlOptions.cs" />
     <Compile Include="ExecutionEngine\WxeScopedTransaction.cs" />

@@ -116,7 +116,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       EditRoleFormFunction editRoleFormFunction = new EditRoleFormFunction ((role != null) ? role.ID : null, user, group);
 
       editRoleFormFunction.TransactionMode = WxeTransactionMode.None;
-      Page.ExecuteFunction (editRoleFormFunction);
+      Page.ExecuteFunction (editRoleFormFunction, WxeCallArguments.Default);
     }
 
     protected void ChildrenList_MenuItemClick (object sender, WebMenuItemClickEventArgs e)
@@ -128,7 +128,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
           SearchGroupFormFunction searchGroupFormFunction = new SearchGroupFormFunction ();
           searchGroupFormFunction.TransactionMode = WxeTransactionMode.None;
 
-          Page.ExecuteFunction (searchGroupFormFunction);
+          Page.ExecuteFunction (searchGroupFormFunction, WxeCallArguments.Default);
         }
         else
         {

@@ -36,12 +36,12 @@ namespace Remotion.Web.ExecutionEngine
       _callerUrlParameters = callerUrlParameters;
     }
 
-    public override void Dispatch (IWxePage page, WxeFunction function, WxeCallArguments handler)
+    public override void Dispatch (WxeExecutor executor, WxeFunction function, WxeCallArguments handler)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);
 
-      page.Executor.ExecuteFunctionExternalByRedirect (function, PermaUrlOptions, _returnToCaller, _callerUrlParameters);
+      executor.ExecuteFunctionExternalByRedirect (function, this);
 
       throw new WxeCallExternalException ();
     }

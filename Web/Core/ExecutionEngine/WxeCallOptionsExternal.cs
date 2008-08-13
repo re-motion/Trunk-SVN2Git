@@ -44,13 +44,13 @@ namespace Remotion.Web.ExecutionEngine
       _returningPostback = returningPostback;
     }
 
-    public override void Dispatch (IWxePage page, WxeFunction function, WxeCallArguments handler)
+    public override void Dispatch (WxeExecutor executor, WxeFunction function, WxeCallArguments handler)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("handler", handler);
 
-      page.Executor.ExecuteFunctionExternal (function, _target, _features, handler.Sender, _returningPostback, PermaUrlOptions);
+      executor.ExecuteFunctionExternal (function, handler.Sender, this);
 
       throw new WxeCallExternalException();
     }

@@ -1,6 +1,7 @@
 1.11.3
 ======
 - WxePage: Changed overloads for ExecuteFunction to extension methods.
+- WxePage: ExecuteFunctionExternal, ExecuteFunctionNoRepost: parameter "sender" is now mandatory.
 
 1.11.2
 ======

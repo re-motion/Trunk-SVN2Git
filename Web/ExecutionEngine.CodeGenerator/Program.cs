@@ -618,12 +618,12 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
           function,
           "SetCatchExceptionTypes", 
           new CodeTypeOfExpression (typeof (Exception))));
-      //   options.Dispatch (currentPage, function);
+      //  currentPage.ExecuteFunction (function, arguments);
       ifNotIsReturningPostBack.TrueStatements.Add (new CodeMethodInvokeExpression (
-          new CodeVariableReferenceExpression ("arguments"),
-          "Dispatch",
           currentPage,
-          function));
+          "ExecuteFunction",
+          function,
+          new CodeVariableReferenceExpression ("arguments")));
               // //   currentPage.ExecuteFunction (function);
               // ifNotIsReturningPostBack.TrueStatements.Add (new CodeMethodInvokeExpression (
               //     currentPage, "ExecuteFunction",

@@ -23,6 +23,7 @@ using System.Web.UI.WebControls;
 using Remotion.Collections;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Obsolete;
 using Remotion.Web.Test.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;

@@ -23,6 +23,11 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> End this page step and continue with the WXE function. </summary>
     void ExecuteNextStep ();
 
+    /// <summary>Executes the <paramref name="function"/> using the specified <paramref name="callArguments"/>.</summary>
+    /// <param name="function">The <see cref="WxeFunction"/> to be executed.</param>
+    /// <param name="callArguments">The <see cref="IWxeCallArguments"/> used to control the function invocation.</param>
+    void ExecuteFunction (WxeFunction function, IWxeCallArguments callArguments);
+
     /// <summary> Gets a flag describing whether this post-back has been triggered by returning from a WXE function. </summary>
     bool IsReturningPostBack { get; }
 
@@ -95,7 +100,5 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> Gets or sets the <see cref="WxeHandler"/> of the current request. </summary>
     [EditorBrowsable (EditorBrowsableState.Never)]
     WxeHandler WxeHandler { get; }
-
-    WxeExecutor Executor { get; }
   }
 }

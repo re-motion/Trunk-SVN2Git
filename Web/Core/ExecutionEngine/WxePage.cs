@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using Remotion.Collections;
+using Remotion.Utilities;
 using Remotion.Web.UI;
 
 namespace Remotion.Web.ExecutionEngine
@@ -26,15 +27,21 @@ namespace Remotion.Web.ExecutionEngine
   {
     #region IWxePage Impleplementation
 
-    WxeExecutor IWxePage.Executor
-    {
-      get { return _wxePageInfo.Executor; }
-    }
-
     /// <summary> End this page step and continue with the WXE function. </summary>
     public void ExecuteNextStep ()
     {
       _wxePageInfo.ExecuteNextStep ();
+    }
+
+    /// <summary>Executes the <paramref name="function"/> using the specified <paramref name="callArguments"/>.</summary>
+    /// <param name="function">The <see cref="WxeFunction"/> to be executed. Must not be <see langword="null" />.</param>
+    /// <param name="callArguments">The <see cref="IWxeCallArguments"/> used to control the function invocation. Must not be <see langword="null" />.</param>
+    public void ExecuteFunction (WxeFunction function, IWxeCallArguments callArguments)
+    {
+      ArgumentUtility.CheckNotNull ("function", function);
+      ArgumentUtility.CheckNotNull ("callArguments", callArguments);
+
+      callArguments.Dispatch (_wxePageInfo.Executor, function);
     }
 
     /// <summary> Gets a flag describing whether this post-back has been triggered by returning from a WXE function. </summary>
@@ -336,7 +343,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   </para>
     /// </remarks>
     [Description ("The flag that determines whether to allow out-of-sequence postbacks (i.e. post-backs from an already "
-                 + "submitted page because of the cache). Undefined is interpreted as false.")]
+                  + "submitted page because of the cache). Undefined is interpreted as false.")]
     [Category ("Behavior")]
     [DefaultValue (null)]
     public virtual bool? EnableOutOfSequencePostBacks
@@ -401,8 +408,8 @@ namespace Remotion.Web.ExecutionEngine
     ///   Use <see cref="AreStatusMessagesEnabled"/> to evaluate this property.
     /// </remarks>
     [Description ("The flag that determines whether to display a status message when the user attempts to start a "
-               + "second request or returns to a page that has already been submitted (i.e. a cached page). "
-               + "Undefined is interpreted as true.")]
+                  + "second request or returns to a page that has already been submitted (i.e. a cached page). "
+                  + "Undefined is interpreted as true.")]
     [Category ("Behavior")]
     [DefaultValue (null)]
     public virtual bool? EnableStatusMessages

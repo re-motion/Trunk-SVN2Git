@@ -75,7 +75,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       {
         EditUserFormFunction editUserFormFunction = new EditUserFormFunction (((User) e.BusinessObject).ID);
         editUserFormFunction.TransactionMode = WxeTransactionMode.None;
-        Page.ExecuteFunction (editUserFormFunction);
+        Page.ExecuteFunction (editUserFormFunction, WxeCallArguments.Default);
       }
       else
       {
@@ -90,7 +90,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       {
         EditUserFormFunction editUserFormFunction = new EditUserFormFunction (null);
         editUserFormFunction.TransactionMode = WxeTransactionMode.None;
-        Page.ExecuteFunction (editUserFormFunction);
+        Page.ExecuteFunction (editUserFormFunction, WxeCallArguments.Default);
       }
       else
       {

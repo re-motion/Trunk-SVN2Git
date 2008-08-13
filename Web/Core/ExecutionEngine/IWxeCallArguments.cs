@@ -39,6 +39,6 @@ namespace Remotion.Web.ExecutionEngine
   /// </example>
   public interface IWxeCallArguments
   {
-    void Dispatch (IWxePage page, WxeFunction function);
+    void Dispatch (WxeExecutor executor, WxeFunction function);
   }
 }

@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       {
         EditGroupTypeFormFunction editGroupTypeFormFunction = new EditGroupTypeFormFunction (((GroupType) e.BusinessObject).ID);
         editGroupTypeFormFunction.TransactionMode = WxeTransactionMode.None;
-        Page.ExecuteFunction (editGroupTypeFormFunction);
+        Page.ExecuteFunction (editGroupTypeFormFunction, WxeCallArguments.Default);
       }
       else
       {
@@ -79,7 +79,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       {
         EditGroupTypeFormFunction editGroupTypeFormFunction = new EditGroupTypeFormFunction (null);
         editGroupTypeFormFunction.TransactionMode = WxeTransactionMode.None;
-        Page.ExecuteFunction (editGroupTypeFormFunction);
+        Page.ExecuteFunction (editGroupTypeFormFunction, WxeCallArguments.Default);
       }
       else
       {

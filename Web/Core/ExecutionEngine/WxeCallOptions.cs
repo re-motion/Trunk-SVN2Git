@@ -29,12 +29,12 @@ namespace Remotion.Web.ExecutionEngine
       _permaUrlOptions = permaUrlOptions;
     }
 
-    public virtual void Dispatch (IWxePage page, WxeFunction function, WxeCallArguments handler)
+    public virtual void Dispatch (WxeExecutor executor, WxeFunction function, WxeCallArguments handler)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);
 
-      page.Executor.ExecuteFunction (function, _permaUrlOptions);
+      executor.ExecuteFunction (function, _permaUrlOptions);
     }
 
     public WxePermaUrlOptions PermaUrlOptions

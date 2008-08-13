@@ -14,7 +14,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine.Obsolete
 {
   /// <summary>
   /// This class contains extension methods for the <see cref="IWxePage"/> interface.
@@ -55,7 +55,7 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary>Executes the <paramref name="function"/> in the current window without triggering the current post-back event on returning.</summary>
     /// <remarks>
     ///   This overload allows you to specify whether the current event was caused by the <c>__EVENTTARGET</c> field.
-    ///   When in doubt, use <see cref="M:Remotion.Web.ExecutionEngine.WxePageExtensions.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.IWxePage,Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control)">WxePageExtensions.ExecuteFunctionNoRepost(IWxePage,WxeFunction,Control)</see>.
+    ///   When in doubt, use <see cref="M:Remotion.Web.ExecutionEngine.Obsolete.WxePageExtensions.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.IWxePage,Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control)">WxePageExtensions.ExecuteFunctionNoRepost(IWxePage,WxeFunction,Control)</see>.
     /// </remarks>
     /// <include file='doc\include\ExecutionEngine\WxePageExtensions.xml' path='WxePageExtensions/ExecuteFunctionNoRepost/param[@name="page" or @name="function" or @name="sender" or @name="usesEventTarget"]' />
     public static void ExecuteFunctionNoRepost (this IWxePage page, WxeFunction function, Control sender, bool usesEventTarget)
@@ -84,7 +84,7 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary>Executes the <paramref name="function"/> in the current window without triggering the current post-back event on returning.</summary>
     /// <remarks>
     ///   This overload allows you to specify whether the current event was caused by the <c>__EVENTTARGET</c> field.
-    ///   When in doubt, use <see cref="M:Remotion.Web.ExecutionEngine.WxePageExtensions.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.IWxePage,Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean)">WxePageExtensions.ExecuteFunctionNoRepost(IWxePage,WxeFunction,Control,Boolean,Boolean)</see>.
+    ///   When in doubt, use <see cref="M:Remotion.Web.ExecutionEngine.Obsolete.WxePageExtensions.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.IWxePage,Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean)">WxePageExtensions.ExecuteFunctionNoRepost(IWxePage,WxeFunction,Control,Boolean,Boolean)</see>.
     /// </remarks>
     /// <include file='doc\include\ExecutionEngine\WxePageExtensions.xml' path='WxePageExtensions/ExecuteFunctionNoRepost/param[@name="page" or @name="function" or @name="sender" or @name="usesEventTarget" or @name="createPermaUrl" or @name="useParentPermaUrl"]' />
     public static void ExecuteFunctionNoRepost (this IWxePage page, WxeFunction function, Control sender, bool usesEventTarget, bool createPermaUrl, bool useParentPermaUrl)
@@ -95,7 +95,7 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary>Executes the <paramref name="function"/> in the current window without triggering the current post-back event on returning.</summary>
     /// <remarks>
     ///   This overload allows you to specify whether the current event was caused by the <c>__EVENTTARGET</c> field.
-    ///   When in doubt, use <see cref="M:Remotion.Web.ExecutionEngine.WxePageExtensions.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.IWxePage,Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection)">WxePageExtensions.ExecuteFunctionNoRepost(IWxePage,WxeFunction,Control,Boolean,Boolean,NameValueCollection)</see>.
+    ///   When in doubt, use <see cref="M:Remotion.Web.ExecutionEngine.Obsolete.WxePageExtensions.ExecuteFunctionNoRepost(Remotion.Web.ExecutionEngine.IWxePage,Remotion.Web.ExecutionEngine.WxeFunction,System.Web.UI.Control,System.Boolean,System.Boolean,System.Collections.Specialized.NameValueCollection)">WxePageExtensions.ExecuteFunctionNoRepost(IWxePage,WxeFunction,Control,Boolean,Boolean,NameValueCollection)</see>.
     /// </remarks>
     /// <include file='doc\include\ExecutionEngine\WxePageExtensions.xml' path='WxePageExtensions/ExecuteFunctionNoRepost/param[@name="page" or @name="function" or @name="sender" or @name="usesEventTarget" or @name="createPermaUrl" or @name="useParentPermaUrl" or @name="permaUrlParameters"]' />
     public static void ExecuteFunctionNoRepost (
@@ -218,7 +218,7 @@ namespace Remotion.Web.ExecutionEngine
 
       try
       {
-        callArguments.Dispatch (page, function);
+        page.ExecuteFunction (function, callArguments);
       }
       catch (WxeCallExternalException)
       {

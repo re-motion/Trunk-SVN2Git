@@ -16,6 +16,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Obsolete;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {

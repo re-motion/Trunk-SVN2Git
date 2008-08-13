@@ -114,7 +114,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       EditRoleFormFunction editRoleFormFunction = new EditRoleFormFunction ( (role != null) ? role.ID : null, user, group);
 
       editRoleFormFunction.TransactionMode = WxeTransactionMode.None;
-      Page.ExecuteFunction (editRoleFormFunction);
+      Page.ExecuteFunction (editRoleFormFunction, WxeCallArguments.Default);
     }
   }
 }

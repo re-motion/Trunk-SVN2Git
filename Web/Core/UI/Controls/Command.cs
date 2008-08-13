@@ -669,10 +669,19 @@ namespace Remotion.Web.UI.Controls
         bool hasTarget = !StringUtility.IsNullOrEmpty (target);
         WxeFunction function = WxeFunctionCommand.InitializeFunction (additionalWxeParameters);
 
+        IWxeCallArguments callArguments;
         if (hasTarget)
-          wxePage.ExecuteFunctionExternal (function, target, null, false);
+          callArguments = new WxeCallArguments (OwnerControl, new WxeCallOptionsExternal (target, null, false));
         else
-          wxePage.ExecuteFunction (function);
+          callArguments = WxeCallArguments.Default;
+
+        try
+        {
+          wxePage.ExecuteFunction (function, callArguments);
+        }
+        catch (WxeCallExternalException)
+        {
+        }
       }
     }
 

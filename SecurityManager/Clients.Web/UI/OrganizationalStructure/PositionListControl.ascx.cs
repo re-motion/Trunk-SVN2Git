@@ -66,7 +66,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       {
         EditPositionFormFunction editPositionFormFunction = new EditPositionFormFunction (((Position) e.BusinessObject).ID);
         editPositionFormFunction.TransactionMode = WxeTransactionMode.None;
-        Page.ExecuteFunction (editPositionFormFunction);
+        Page.ExecuteFunction (editPositionFormFunction, WxeCallArguments.Default);
       }
       else
       {
@@ -81,7 +81,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       {
         EditPositionFormFunction editPositionFormFunction = new EditPositionFormFunction (null);
         editPositionFormFunction.TransactionMode = WxeTransactionMode.None;
-        Page.ExecuteFunction (editPositionFormFunction);
+        Page.ExecuteFunction (editPositionFormFunction, WxeCallArguments.Default);
       }
       else
       {

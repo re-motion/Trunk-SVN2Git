@@ -38,13 +38,13 @@ namespace Remotion.Web.ExecutionEngine
       _usesEventTarget = usesEventTarget;
     }
 
-    public override void Dispatch (IWxePage page, WxeFunction function, WxeCallArguments handler)
+    public override void Dispatch (WxeExecutor executor, WxeFunction function, WxeCallArguments handler)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("handler", handler);
 
-      page.Executor.ExecuteFunctionNoRepost (function, handler.Sender, _usesEventTarget, PermaUrlOptions);
+      executor.ExecuteFunctionNoRepost (function, handler.Sender, this);
     }
 
     public bool? UsesEventTarget

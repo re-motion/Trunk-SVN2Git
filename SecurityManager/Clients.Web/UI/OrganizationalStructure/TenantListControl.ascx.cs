@@ -74,7 +74,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       {
         EditTenantFormFunction editTenantFormFunction = new EditTenantFormFunction (((Tenant) e.BusinessObject).ID);
         editTenantFormFunction.TransactionMode = WxeTransactionMode.None;
-        Page.ExecuteFunction (editTenantFormFunction);
+        Page.ExecuteFunction (editTenantFormFunction, WxeCallArguments.Default);
       }
       else
       {
@@ -89,7 +89,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       {
         EditTenantFormFunction editTenantFormFunction = new EditTenantFormFunction (null);
         editTenantFormFunction.TransactionMode = WxeTransactionMode.None;
-        Page.ExecuteFunction (editTenantFormFunction);
+        Page.ExecuteFunction (editTenantFormFunction, WxeCallArguments.Default);
       }
       else
       {

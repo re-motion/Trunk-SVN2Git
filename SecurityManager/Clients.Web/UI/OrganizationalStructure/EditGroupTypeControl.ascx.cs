@@ -126,7 +126,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
         new EditGroupTypePositionFormFunction ( (groupTypePosition != null) ? groupTypePosition.ID : null, position, groupType);
 
       editGroupTypePositionFormFunction.TransactionMode = WxeTransactionMode.None;
-      Page.ExecuteFunction (editGroupTypePositionFormFunction);
+      Page.ExecuteFunction (editGroupTypePositionFormFunction, WxeCallArguments.Default);
     }
 
     protected void GroupsList_MenuItemClick (object sender, WebMenuItemClickEventArgs e)
@@ -138,7 +138,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
           SearchGroupFormFunction searchGroupFormFunction = new SearchGroupFormFunction ();
           searchGroupFormFunction.TransactionMode = WxeTransactionMode.None;
 
-          Page.ExecuteFunction (searchGroupFormFunction);
+          Page.ExecuteFunction (searchGroupFormFunction, WxeCallArguments.Default);
         }
         else
         {

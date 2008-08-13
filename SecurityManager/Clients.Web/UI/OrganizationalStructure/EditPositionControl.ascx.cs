@@ -121,7 +121,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
         new EditGroupTypePositionFormFunction ( (groupTypePosition != null) ? groupTypePosition.ID : null, position, groupType);
 
       editGroupTypePositionFormFunction.TransactionMode = WxeTransactionMode.None;
-      Page.ExecuteFunction (editGroupTypePositionFormFunction);
+      Page.ExecuteFunction (editGroupTypePositionFormFunction, WxeCallArguments.Default);
     }
   }
 }

@@ -70,16 +70,17 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
-    public void ExecuteFunctionNoRepost (WxeFunction function, Control sender, bool? usesEventTarget, WxePermaUrlOptions permaUrlOptions)
+    public void ExecuteFunctionNoRepost (WxeFunction function, Control sender, WxeCallOptionsNoRepost options)
     {
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("sender", sender);
-      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+      ArgumentUtility.CheckNotNull ("options", options);
 
       try
       {
         _httpContext.Handler = _wxePageInfo.WxeHandler;
-        _wxePageInfo.CurrentStep.ExecuteFunctionNoRepost (_page, function, sender, usesEventTarget ?? UsesEventTarget, permaUrlOptions);
+        _wxePageInfo.CurrentStep.ExecuteFunctionNoRepost (
+            _page, function, sender, options.UsesEventTarget ?? UsesEventTarget, options.PermaUrlOptions);
       }
       finally
       {
@@ -87,16 +88,16 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
-    public void ExecuteFunctionExternalByRedirect (
-        WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
+    public void ExecuteFunctionExternalByRedirect (WxeFunction function, WxeCallOptionsExternalByRedirect options)
     {
       ArgumentUtility.CheckNotNull ("function", function);
-      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+      ArgumentUtility.CheckNotNull ("options", options);
 
       try
       {
         _httpContext.Handler = _wxePageInfo.WxeHandler;
-        _wxePageInfo.CurrentStep.ExecuteFunctionExternalByRedirect (_page, function, permaUrlOptions, returnToCaller, callerUrlParameters);
+        _wxePageInfo.CurrentStep.ExecuteFunctionExternalByRedirect (
+            _page, function, options.PermaUrlOptions, options.ReturnToCaller, options.CallerUrlParameters);
       }
       finally
       {
@@ -104,26 +105,25 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
-    public void ExecuteFunctionExternal (
-        WxeFunction function, string target, string features, Control sender, bool returningPostback, WxePermaUrlOptions permaUrlOptions)
+    public void ExecuteFunctionExternal (WxeFunction function, Control sender, WxeCallOptionsExternal options)
     {
       ArgumentUtility.CheckNotNull ("function", function);
-      ArgumentUtility.CheckNotNullOrEmpty ("target", target);
-      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+      ArgumentUtility.CheckNotNull ("sender", sender);
+      ArgumentUtility.CheckNotNull ("options", options);
 
-      string functionToken = _wxePageInfo.CurrentStep.GetFunctionTokenForExternalFunction (function, returningPostback);
+      string functionToken = _wxePageInfo.CurrentStep.GetFunctionTokenForExternalFunction (function, options.ReturningPostback);
 
       string href = _wxePageInfo.CurrentStep.GetDestinationUrlForExternalFunction (
-          function, functionToken, permaUrlOptions.UsePermaUrl, permaUrlOptions.UseParentPermaUrl, permaUrlOptions.UrlParameters);
+          function,
+          functionToken,
+          options.PermaUrlOptions.UsePermaUrl,
+          options.PermaUrlOptions.UseParentPermaUrl,
+          options.PermaUrlOptions.UrlParameters);
 
-      string openScript;
-      if (features != null)
-        openScript = string.Format ("window.open('{0}', '{1}', '{2}');", href, target, features);
-      else
-        openScript = string.Format ("window.open('{0}', '{1}');", href, target);
+      string openScript = string.Format ("window.open('{0}', '{1}', '{2}');", href, options.Target, StringUtility.NullToEmpty (options.Features));
       ScriptUtility.RegisterStartupScriptBlock ((Page) _page, "WxeExecuteFunction", openScript);
 
-      function.ReturnUrl = "javascript:" + GetClosingScriptForExternalFunction (functionToken, sender, returningPostback);
+      function.ReturnUrl = "javascript:" + GetClosingScriptForExternalFunction (functionToken, sender, options.ReturningPostback);
     }
 
     /// <summary> 
@@ -158,8 +158,7 @@ namespace Remotion.Web.ExecutionEngine
 
         string eventTarget = postBackCollection[ControlHelper.PostEventSourceID];
         string eventArgument = postBackCollection[ControlHelper.PostEventArgumentID];
-        return FormatDoPostBackClientScript (
-            functionToken, _page.CurrentStep.PageToken, sender.ClientID, eventTarget, eventArgument);
+        return FormatDoPostBackClientScript (functionToken, _page.CurrentStep.PageToken, sender.ClientID, eventTarget, eventArgument);
       }
       else
       {
@@ -180,16 +179,17 @@ namespace Remotion.Web.ExecutionEngine
     private string FormatDoPostBackClientScript (string functionToken, string pageToken, string senderID, string eventTarget, string eventArgument)
     {
       return string.Format (
-          "\r\n"
-          + "if (   window.opener != null \r\n"
-          + "    && ! window.opener.closed \r\n"
-          + "    && window.opener.wxeDoPostBack != null \r\n"
-          + "    && window.opener.document.getElementById('{0}') != null \r\n"
-          + "    && window.opener.document.getElementById('{0}').value == '{1}') \r\n"
-          + "{{ \r\n"
-          + "  window.opener.wxeDoPostBack('{2}', '{3}', '{4}'); \r\n"
-          + "}} \r\n"
-          + "window.close(); \r\n",
+@"
+if (   window.opener != null
+    && ! window.opener.closed
+    && window.opener.wxeDoPostBack != null
+    && window.opener.document.getElementById('{0}') != null
+    && window.opener.document.getElementById('{0}').value == '{1}')
+{{
+  window.opener.wxeDoPostBack('{2}', '{3}', '{4}'); 
+}}
+window.close();
+",
           WxePageInfo.PageTokenID,
           pageToken,
           eventTarget,
@@ -203,16 +203,17 @@ namespace Remotion.Web.ExecutionEngine
     private string FormatDoSubmitClientScript (string functionToken, string pageToken, string senderID)
     {
       return string.Format (
-          "\r\n"
-          + "if (   window.opener != null \r\n"
-          + "    && ! window.opener.closed \r\n"
-          + "    && window.opener.wxeDoSubmit != null \r\n"
-          + "    && window.opener.document.getElementById('{0}') != null \r\n"
-          + "    && window.opener.document.getElementById('{0}').value == '{1}') \r\n"
-          + "{{ \r\n"
-          + "  window.opener.wxeDoSubmit('{2}', '{3}'); \r\n"
-          + "}} \r\n"
-          + "window.close(); \r\n",
+@"
+if (   window.opener != null
+    && ! window.opener.closed
+    && window.opener.wxeDoSubmit != null
+    && window.opener.document.getElementById('{0}') != null
+    && window.opener.document.getElementById('{0}').value == '{1}')
+{{
+  window.opener.wxeDoSubmit('{2}', '{3}');
+}}
+window.close();
+",
           WxePageInfo.PageTokenID,
           pageToken,
           senderID,

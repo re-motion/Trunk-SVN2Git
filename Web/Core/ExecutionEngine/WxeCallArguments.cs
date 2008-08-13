@@ -38,12 +38,12 @@ namespace Remotion.Web.ExecutionEngine
       _sender = sender;
     }
 
-    public void Dispatch (IWxePage page, WxeFunction function)
+    public void Dispatch (WxeExecutor executor, WxeFunction function)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);
 
-      _options.Dispatch (page, function, this);
+      _options.Dispatch (executor, function, this);
     }
 
     public Control Sender
