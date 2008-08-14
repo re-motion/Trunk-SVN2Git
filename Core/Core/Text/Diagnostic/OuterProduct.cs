@@ -9,6 +9,7 @@ namespace Remotion.Text.Diagnostic
   /// <summary>
   /// Allows a class implementing the IProcessor interface to visit each member of an outer product of a variable number of independently sized tuples.
   /// From a programmer's view the class supplies "variable number of nested for loops"-functionality.
+  /// For convenience derive you processor class from <see cref="OuterProduct.ProcessorBase"/> (see examples below).
   /// </summary>
   /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProduct/ClassExample1/*' />
   /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProduct/ClassExample2/*' />
@@ -19,33 +20,69 @@ namespace Remotion.Text.Diagnostic
     /// Interface a "Processor" class which can be passed to OuterProduct.ProcessOuterProduct needs to implement.
     /// </summary>
     public interface IProcessor {
+      /// <summary>
+      /// Processor callback invoked before a nested for loop starts.
+      /// </summary>
+      /// <returns><c>true</c> to continue looping, <c>false</c> to break from the current loop.</returns>
       bool DoBeforeLoop ();
+      /// <summary>
+      /// Processor callback invoked after a nested for loop has finished.
+      /// </summary>
+      /// <returns><c>true</c> to continue looping, <c>false</c> to break from the current loop.</returns>
       bool DoAfterLoop ();
+      /// <summary>
+      /// Before each callback to the processor the OuterProduct class sets the current <c>ProcessingState</c> through a
+      /// call to this method. The processor class is expected to store the <c>ProcessingState</c> to be able to access
+      /// it during the callbacks.
+      /// </summary>
+      /// <param name="processingState"></param>
       void SetProcessingState (ProcessingState processingState);
+
+      /// <summary>
+      /// The current <c>ProcessingState</c> to be used during callbacks. Set by the OuterProduct class
+      /// in call to <see cref="SetProcessingState"></see>.
+      /// </summary>
       OuterProduct.ProcessingState ProcessingState { get; }
     }
 
     /// <summary>
-    /// Convenience class to derive OuterProduct-processors from. ALready supplies ProcessingState-functionality.
+    /// Convenience class to derive OuterProduct-processors from. Already supplies ProcessingState-functionality.
     /// </summary>
     public class ProcessorBase : IProcessor 
     { 
       private OuterProduct.ProcessingState _processingState;
+      /// <summary>
+      /// The current <see cref="ProcessingState"/> to be used during callbacks.
+      /// </summary>
       public OuterProduct.ProcessingState ProcessingState
       {
         get { return _processingState; }
       }
 
+      /// <summary>
+      /// Default implementation for the callback before a new for loop starts. Simply keeps on looping.
+      /// Override to implement your own functionality.
+      /// </summary>
+      /// <returns><see cref="IProcessor.DoBeforeLoop"/></returns>
       public virtual bool DoBeforeLoop ()
       {
         return true;
       }
 
+      /// <summary>
+      /// Default implementation for the callback after a for loop finishes. Simply keeps on looping.
+      /// Override to implement your own functionality.
+      /// </summary>
+      /// <returns><see cref="IProcessor.DoAfterLoop"/></returns>
       public virtual bool DoAfterLoop ()
       {
         return true;
       }
       
+      /// <summary>
+      /// Internal use only: Used by OuterProduct class to set the current <see cref="ProcessingState"/> before invoking a callback.
+      /// </summary>
+      /// <param name="processingState"></param>
       public void SetProcessingState (OuterProduct.ProcessingState processingState)
       {
         _processingState = processingState;
@@ -60,6 +97,12 @@ namespace Remotion.Text.Diagnostic
     /// </summary>
     public struct ProcessingState
     {
+      /// <summary>
+      /// Initializes a ProcessingState with an OuterProduct reference and the current dimension index 
+      /// (= nested-for-loop loop-variable index).
+      /// </summary>
+      /// <param name="outerProduct"></param>
+      /// <param name="dimensionIndex"></param>
       public ProcessingState (OuterProduct outerProduct, int dimensionIndex)
       {
         _outerProduct = outerProduct;
@@ -72,6 +115,7 @@ namespace Remotion.Text.Diagnostic
       /// <summary>
       /// The outer product dimension which is currently processed (i.e. the index of the currently running for-loop).
       /// </summary>
+      /// <value></value>
       public int DimensionIndex
       {
         get { return _dimensionIndex; }
@@ -80,6 +124,7 @@ namespace Remotion.Text.Diagnostic
       /// <summary>
       /// Integer array containing the number of elements in each outer product dimension.
       /// </summary>
+      /// <value></value>
       public int[] NumberElementsPerDimension
       {
         get { return _outerProduct.NumberElementsPerDimension; }
@@ -89,6 +134,7 @@ namespace Remotion.Text.Diagnostic
       /// Integer array containing the current permutation of outer product indices (i.e. each array entry is the current value of each for-loop variable;
       /// <see cref="ElementIndex"/>).
       /// </summary>
+      /// <value></value>
       public int[] DimensionIndices
       {
         get { return _outerProduct.DimensionIndices; }
@@ -97,6 +143,7 @@ namespace Remotion.Text.Diagnostic
       /// <summary>
       /// The overall number of elements in the outer product.
       /// </summary>
+      /// <value></value>
       public int NumberElementsOverall
       {
         get { return _outerProduct.NumberElementsOverall; }
@@ -105,6 +152,7 @@ namespace Remotion.Text.Diagnostic
       /// <summary>
       /// ElementIndex (=DimensionIndices[DimensionIndex]) is the value of the loop-variable of the currently running for-loop.
       /// </summary>
+      /// <value></value>
       public int ElementIndex
       {
         get { return _outerProduct.DimensionIndices[_dimensionIndex]; }
@@ -121,6 +169,7 @@ namespace Remotion.Text.Diagnostic
       /// <summary>
       /// Whether the element is the last element in the current for-loop.
       /// </summary>
+      /// <value></value>
       public bool IsLastLoopElement
       {
         get { return ElementIndex == (NumberElementsPerDimension[DimensionIndex] - 1); }
@@ -129,6 +178,7 @@ namespace Remotion.Text.Diagnostic
       /// <summary>
       /// Whether the current for-loop is the innermost loop.
       /// </summary>
+      /// <value></value>
       public bool IsInnermostLoop
       {
         get { return DimensionIndex == (NumberElementsPerDimension.Length - 1); }
@@ -137,6 +187,7 @@ namespace Remotion.Text.Diagnostic
       /// <summary>
       /// Whether the current for-loop is the outermost loop.
       /// </summary>
+      /// <value></value>
       public bool IsOutermostLoop
       {
         get { return DimensionIndex == 0; }
@@ -145,6 +196,7 @@ namespace Remotion.Text.Diagnostic
       /// <summary>
       /// Used internally by OuterProduct.ProcessOuterProduct. 
       /// </summary>
+      /// <value>The element index to set.</value>
       public void SetCurrentElementIndex (int elementIndex)
       {
         DimensionIndices[_dimensionIndex] = elementIndex;
@@ -153,11 +205,17 @@ namespace Remotion.Text.Diagnostic
       /// <summary>
       /// The overall elements of the outer product which have already been processed.
       /// </summary>
+      /// <value></value>
       public int NumberElementsProcessed
       {
         get { return _outerProduct.NumberElementsProcessed; }
       }
 
+      /// <summary>
+      /// Returns a copy of the current <c>DimensionIndices</c>-array. 
+      /// Use if you want to e.g. store the generated dimension indices permutations
+      /// in your own collection.
+      /// </summary>
       public int[] GetDimensionIndicesCopy ()
       {
         return (int[]) DimensionIndices.Clone();
@@ -176,23 +234,34 @@ namespace Remotion.Text.Diagnostic
     private int[] _currentDimensionIndices;
 
 
-
+    /// <summary>
+    /// The total number of outer product elements that have been visited by the processor.
+    /// </summary>
     public int NumberElementsProcessed
     {
       get { return _numberElementsProcessed; }
     }
 
+    /// <summary>
+    /// The number of elements in each outer product dimension.
+    /// </summary>
     public int[] NumberElementsPerDimension
     {
       get { return _numberElementsPerDimension; }
       private set { _numberElementsPerDimension = value; }
     }
 
+    /// <summary>
+    /// The total number of elements in the outer product (= the product of all NumberElementsPerDimension entries).
+    /// </summary>
     public int NumberElementsOverall
     {
       get { return _numberElementsOverall; }
     }
 
+    /// <summary>
+    /// The dimension indices representing the current outer product permutation.
+    /// </summary>
     public int[] DimensionIndices
     {
       get { return _currentDimensionIndices; }
@@ -204,21 +273,31 @@ namespace Remotion.Text.Diagnostic
     public int Length { get { return NumberElementsOverall; } }
 
 
+    //-------------------------------------------------------------------------------
+    // Ctors
+    //-------------------------------------------------------------------------------
 
+    ///<overloads>
+    ///OuterProduct can be initialized in a general way by passing the number of elements
+    ///along each dimension in an integer array, or specialized by passing a rectangular array whose
+    ///dimensions will then be used.
+    ///</overloads>
     /// <summary>
-    /// Ctor to initialize OuterProduct from an integer array, where each array entry gives the number of elements along its
+    /// Initializes OuterProduct from an integer array, where each array entry gives the number of elements along its
     /// corresponding dimension. In programers terms: The number of times each nested for-loop will loop.
     /// </summary>
-    /// <param name="numberElementsPerDimension"></param>
+    /// <param name="numberElementsPerDimension">"Number of loops for each for"-loop array</param>
     public OuterProduct (int[] numberElementsPerDimension)
     {
       Init ((int[]) numberElementsPerDimension.Clone () );
     }
 
     /// <summary>
-    /// Ctor to initialize OuterProduct from an (rectangular) array.
+    /// Initializes OuterProduct from a (rectangular) array. Use to iterate over a rectangular array and access
+    /// its members with <c>rectangularArray.GetValue (ProcessingState.DimensionIndices)</c> in the
+    /// OuterProduct.IProcessor implementation.
     /// </summary>
-    /// <param name="array"></param>
+    /// <param name="array">Array from whose dimensions the dimensions of the outer product will be initialized.</param>
     public OuterProduct (Array array)
     {
       Init (array);

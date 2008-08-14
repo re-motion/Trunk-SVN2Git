@@ -31,7 +31,7 @@ public class OuterProductPermutations : OuterProduct.ProcessorBase
   }
 }   
 
-// Use teh OuterProduct-processor to produce a List<int[]> of all permuations and write them to the console: 
+// Use the OuterProduct-processor to produce a List<int[]> of all permuations and write them to the console: 
 public void CreateOuterProductPermutationsList ()
 {
   var dimensionArray = new int[] { 2, 3, 2 }; //  2-tuple x 3-tuple x 2-tuple 
@@ -64,7 +64,8 @@ Console output:
       <code>
         <![CDATA[
 // Implement a simple OuterProduct-processor to create a pretty-print string of a rectangular array 
-// (deriving from OuterProduct.ProcessorBase is convenient, but we could instead also implement OuterProduct.IProcessor on any class):
+// (deriving from OuterProduct.ProcessorBase is convenient, but we could also instead  
+// implement OuterProduct.IProcessor on any class):
 public class RectangularArrayToString : OuterProduct.ProcessorBase
 {
   protected Array _rectangularArray;
