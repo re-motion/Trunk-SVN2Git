@@ -440,6 +440,7 @@
     </Compile>
     <Compile Include="Text\Diagnostic\OuterProduct.cs" />
     <Compile Include="Text\Diagnostic\To.cs" />
+    <Compile Include="Text\Diagnostic\ToTextStrategy.cs" />
     <Compile Include="Text\IdentifierGenerator.cs">
       <SubType>Code</SubType>
     </Compile>

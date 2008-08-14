@@ -10,6 +10,54 @@ namespace Remotion.UnitTests.Text.Diagnostic
   [TestFixture]
   public class ToTest
   {
+    public class Test
+    {
+      public Test ()
+      {
+        Name = "DefaultName";
+        Int = 1234567;
+      }
+
+      public Test (string name, int i0)
+      {
+        Name = name;
+        Int = i0;
+        ListListString = new List<List<string>> ();
+      }
+
+      public string Name { get; set; }
+      public int Int { get; set; }
+      public LinkedList<string> LinkedListString { get; set; }
+      public List<List<string>> ListListString { get; set; }
+      public Object[][][] Array3D { get; set; }
+      public Object[,] RectangularArray2D { get; set; }
+      public Object[,,] RectangularArray3D { get; set; }
+    }
+
+    public class Test2 
+    {
+      public Test2 ()
+      {
+        Name = "DefaultName";
+        Int = 1234567;
+      }
+
+      public Test2 (string name, int i0)
+      {
+        Name = name;
+        Int = i0;
+        ListListString = new List<List<string>> ();
+      }
+
+      public string Name { get; set; }
+      public int Int { get; set; }
+      public LinkedList<string> LinkedListString { get; set; }
+      public List<List<string>> ListListString { get; set; }
+      public Object[][][] Array3D { get; set; }
+      public Object[,] RectangularArray2D { get; set; }
+      public Object[, ,] RectangularArray3D { get; set; }
+    }
+
 
     [Test]
     [Ignore]
@@ -40,10 +88,10 @@ namespace Remotion.UnitTests.Text.Diagnostic
     private void RegisterHandlers ()
     {
       To.RegisterHandler<Object> (x => String.Format ("[Object: {0}]", x.ToString ()));
-      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1}]", x.Name, x.Int));
+      To.RegisterHandler<ToTest.Test> (x => String.Format ("[Test: {0};{1}]", x.Name, x.Int));
     }
 
-    private void InitTestInstanceContainer (To.Test test)
+    private void InitTestInstanceContainer (ToTest.Test test)
     {
       test.ListListString.Add (new List<string> () { "Aaa","Bbb","Ccc","Ddd"});
       test.ListListString.Add (new List<string> () { "R1 C0", "R1 C1" });
@@ -61,8 +109,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Log ("toTextO=" + toTextO);
       Assert.That (toTextO, Is.EqualTo (String.Format ("[Object: {0}]", o.ToString ())));
 
-      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1}]", x.Name, x.Int));
-      var test = new To.Test ("That's not my name", 179);
+      To.RegisterHandler<ToTest.Test> (x => String.Format ("[Test: {0};{1}]", x.Name, x.Int));
+      var test = new ToTest.Test ("That's not my name", 179);
       string toTextTest = To.Text (test);
       Log ("toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179]"));
@@ -143,9 +191,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void NullEnumerableTest ()
     {
       To.ClearHandlers ();
-      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), 
+      To.RegisterHandler<ToTest.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), 
         To.Text (x.Int), To.Text (x.LinkedListString)));
-      var test = new To.Test ("That's not my name", 179);
+      var test = new ToTest.Test ("That's not my name", 179);
       test.LinkedListString = null;
       string toTextTest = To.Text (test);
       const string toTextTestExpected = "[Test: That's not my name;179;null]";
@@ -157,8 +205,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       To.ClearHandlers ();
       //To.RegisterHandler<string> (x => x); // To prevent string being treated as collection
-      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.ListListString)));
-      var test = new To.Test ("That's not my name", 179);
+      To.RegisterHandler<ToTest.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.ListListString)));
+      var test = new ToTest.Test ("That's not my name", 179);
       test.LinkedListString = new LinkedList<string> ();
       string toTextTest = To.Text (test);
       const string toTextTestExpected = "[Test: That's not my name;179;{}]";
@@ -170,8 +218,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       To.ClearHandlers ();
       //To.RegisterHandler<string> (x => x); // To prevent string being treated as collection
-      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.LinkedListString)));
-      var test = new To.Test ("That's not my name", 179);
+      To.RegisterHandler<ToTest.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.LinkedListString)));
+      var test = new ToTest.Test ("That's not my name", 179);
       string[] linkedListInit = { "A1", "A2", "A3", "A4", "A5" };
       test.LinkedListString = new LinkedList<string> (linkedListInit);
       //LogVariables ("LinkedListString.Count={0}", test.LinkedListString.Count);
@@ -185,8 +233,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void TwoDimensionalEnumerableTest ()
     {
       To.ClearHandlers ();
-      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.ListListString)));
-      var test = new To.Test ("That's not my name", 179);
+      To.RegisterHandler<ToTest.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.ListListString)));
+      var test = new ToTest.Test ("That's not my name", 179);
       test.ListListString = new List<List<string>>() { new List<string>(){"A1","A2"} , new List<string>(){"B1","B2","B3" } };
       string toTextTest = To.Text (test);
       Log ("toTextTest=" + toTextTest);
@@ -198,8 +246,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void ThreeDimensionalEnumerableTest ()
     {
       To.ClearHandlers ();
-      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.Array3D)));
-      var test = new To.Test ("That's not my name", 179);
+      To.RegisterHandler<ToTest.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.Array3D)));
+      var test = new ToTest.Test ("That's not my name", 179);
       //Object[,] aaa = { { 1 } };
       test.Array3D = new Object[][][] { new Object[][] { new Object[] { 91,82,73,64 } } };
       string toTextTest = To.Text (test);
@@ -209,20 +257,51 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
 
     [Test]
-    [Ignore] // TODO: Treat rectangular multidimensional arrays seperately from other collections
-    public void RectangularArrayEnumerableTest ()
+    public void RectangularArrayTest ()
     {
       To.ClearHandlers ();
-      To.RegisterHandler<To.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.RectangularArray2D)));
-      var test = new To.Test ("That's not my name", 179);
-      //Object[,] aaa = { { 1 } };
+      To.RegisterHandler<ToTest.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.RectangularArray2D)));
+      var test = new ToTest.Test ("That's not my name", 179);
       test.RectangularArray2D = new Object[,] {{1,3,5},{7,11,13}};
-      //test.RectangularArray2D.
       string toTextTest = To.Text (test);
       Log ("toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{{1,3,5},{7,11,13}}]"));
     }
 
+    [Test]
+    public void RectangularArrayTest2 ()
+    {
+      To.ClearHandlers ();
+      To.RegisterHandler<ToTest.Test> (x => String.Format ("[Test: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.RectangularArray3D)));
+      To.RegisterHandler<ToTest.Test2> (x => String.Format ("[Test2: {0};{1};{2}]", To.Text (x.Name), To.Text (x.Int), To.Text (x.RectangularArray2D)));
+      var test = new ToTest.Test ("That's not my name", 179);
+      Test2[,,] at2 = new Test2[3, 3, 3];
+
+      for (int i0 = 0; i0 < 2; i0++)
+      {
+        for (int i1 = 0; i1 < 2; i1++)
+        {
+          for (int i2 = 0; i2 < 2; i2++)
+          {
+            var test2 = new ToTest.Test2 (String.Format ("{0}-{1}-{2}", i0, i1, i2), i0 ^ i1 ^ i2);
+            test2.RectangularArray2D = new string[,] { {"A" + i0,"B" + 1}, {"C" + i2,"D"} };
+            at2[i0, i1, i2] = test2;
+          }
+        }
+      }
+      test.RectangularArray3D = new Object[,,]
+                                {
+                                    {
+                                        { at2[0, 0, 0], at2[0, 0, 1] }, { at2[0, 1, 0], at2[0, 1, 1] },
+                                    },
+                                    {
+                                        { at2[1, 0, 0], at2[1, 0, 1] }, { at2[1, 1, 0], at2[1, 1, 1] },
+                                    },
+                                };
+      string toTextTest = To.Text (test);
+      Log ("toTextTest=" + toTextTest);
+      Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{{{[Test2: 0-0-0;0;{{A0,B1},{C0,D}}],[Test2: 0-0-1;1;{{A0,B1},{C1,D}}]},{[Test2: 0-1-0;1;{{A0,B1},{C0,D}}],[Test2: 0-1-1;0;{{A0,B1},{C1,D}}]}},{{[Test2: 1-0-0;1;{{A1,B1},{C0,D}}],[Test2: 1-0-1;0;{{A1,B1},{C1,D}}]},{[Test2: 1-1-0;0;{{A1,B1},{C0,D}}],[Test2: 1-1-1;1;{{A1,B1},{C1,D}}]}}}]"));
+    }
 
 
     public static void Log (string s)
