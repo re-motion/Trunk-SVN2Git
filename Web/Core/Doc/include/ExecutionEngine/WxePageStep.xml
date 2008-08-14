@@ -54,7 +54,7 @@
           </term>
           <description>
             The execution path will immedeatly leave the page and the exception will be passed through the 
-            hierarchy of steps until it is caught by a <see cref="WxeTryCatch"/> block or by a 
+            hierarchy of steps until it is caught by a <see cref="Obsolete.WxeTryCatch"/> block or by a 
             <see cref="WxeFunction"/> where the exception type has been registered for catching. Please refer
             to the <see cref="WxeFunction"/>'s documentation for details on working with exceptions.
           </description>

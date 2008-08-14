@@ -12,6 +12,7 @@ using System;
 using System.ComponentModel;
 using Remotion.Collections;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Obsolete;
 
 namespace Remotion.Web.ExecutionEngine
 {

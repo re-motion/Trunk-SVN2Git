@@ -57,6 +57,7 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Obsolete;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {

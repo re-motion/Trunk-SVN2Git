@@ -11,8 +11,9 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Web;
 
-namespace Remotion.Web.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine.Obsolete
 {
   [AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
   public class WxeExceptionAttribute : Attribute
@@ -37,7 +38,6 @@ namespace Remotion.Web.ExecutionEngine
       get { return _exceptionType; }
     }
   }
-
 
   /// <summary>
   ///   Try-Catch block.
@@ -134,6 +134,12 @@ namespace Remotion.Web.ExecutionEngine
           if (e is System.Threading.ThreadAbortException)
             throw;
 
+          Exception unwrappedException = e as HttpException;
+          while (unwrappedException is HttpException)
+          {
+            unwrappedException = unwrappedException.InnerException;
+          } 
+
           for (int i = 0; i < _catchBlocks.Count; ++i)
           {
             WxeCatchBlock catchBlock = (WxeCatchBlock) _catchBlocks[i];
@@ -141,6 +147,12 @@ namespace Remotion.Web.ExecutionEngine
             {
               _executingCatchBlock = i;
               catchBlock.Exception = e;
+              break;
+            }
+            else if (catchBlock.ExceptionType.IsAssignableFrom (unwrappedException.GetType()))
+            {
+              _executingCatchBlock = i;
+              catchBlock.Exception = unwrappedException;
               break;
             }
           }
