@@ -254,6 +254,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (ceos, DomainObjectIDs.Ceo12, DomainObjectIDs.Ceo5, DomainObjectIDs.Ceo3);
     }
 
+    
     [Test]
     public void QueryWithWhereAndImplicitJoin ()
     {
@@ -588,8 +589,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void QueryWithFirst ()
     {
-      var query = (from o in DataContext.Entity<Order>()
+      var query = (from o in DataContext.Entity<Order>() 
                    select o).First();
+      Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
+    }
+
+    [Test]
+    //[Ignore]
+    public void QueryWithSingleAndPredicate ()
+    {
+      var query = (from o in DataContext.Entity<Order>()
+                    select o).Single (i => i.OrderNumber == 5);
       Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
     }
 

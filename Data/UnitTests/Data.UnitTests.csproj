@@ -461,6 +461,7 @@
     <Compile Include="Linq\DataObjectModelTest\DatabaseInfoUtilityTest.cs" />
     <Compile Include="Linq\DataObjectModelTest\FieldDescriptorTest.cs" />
     <Compile Include="Linq\DataObjectModelTest\FieldSourcePathTest.cs" />
+    <Compile Include="Linq\DataObjectModelTest\MethodCallTest.cs" />
     <Compile Include="Linq\DataObjectModelTest\NewObjectTest.cs" />
     <Compile Include="Linq\DataObjectModelTest\SubQueryExpressionTest.cs" />
     <Compile Include="Linq\DataObjectModelTest\SubQueryTest.cs" />
