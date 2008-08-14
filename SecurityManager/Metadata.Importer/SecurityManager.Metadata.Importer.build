@@ -23,7 +23,8 @@
       <nowarn>
         <!-- missing XML comment -->
         <warning number="1591" /> 
-      </nowarn> 
+      </nowarn>
+      <warnaserror refid="doc-warn-as-error"/>
       <sources failonempty="true">
         <include name="*.cs" />
         <include name="Properties/**/*.cs" />

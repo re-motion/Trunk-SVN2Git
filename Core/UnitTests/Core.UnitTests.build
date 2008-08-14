@@ -22,7 +22,7 @@
       <nowarn>
         <!--  unused member warning  -->
         <warning number="0067" />
-      </nowarn> 
+      </nowarn>
       <sources failonempty="true">
         <include name="**/*.cs" />
         <exclude name="bin/**" />

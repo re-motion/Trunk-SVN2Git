@@ -27,7 +27,8 @@
         <warning number="0419" />
         <!-- obsolete -->
         <warning number="0618" />
-      </nowarn> 
+      </nowarn>
+      <warnaserror refid="doc-warn-as-error"/>
       <sources failonempty="true">
         <include name="*.cs" />
         <include name="Properties/**/*.cs" />

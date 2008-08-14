@@ -21,7 +21,7 @@
       <nowarn>
         <!-- obsolete warning -->
         <warning number="0618" />
-      </nowarn> 
+      </nowarn>
       <sources failonempty="true">
         <include name="**/*.cs"/>
         <exclude name="bin/**" />

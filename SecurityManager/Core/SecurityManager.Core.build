@@ -25,8 +25,8 @@
         <warning number="1591" />
         <!-- Ambiguous reference in cref attribute -->
         <warning number="0419" />
-      </nowarn> 
-    
+      </nowarn>
+      <warnaserror refid="doc-warn-as-error"/>
       <sources failonempty="true">
         <include name="*.cs" />
         <include name="AclTools/**/*.cs" />

@@ -26,6 +26,7 @@
         <!-- Ambiguous reference in cref attribute -->
         <warning number="0419" />
       </nowarn>
+      <warnaserror refid="doc-warn-as-error"/>
       <sources failonempty="true">
         <include name="*.cs" />
         <include name="BridgeInterfaces/**/*.cs" />
