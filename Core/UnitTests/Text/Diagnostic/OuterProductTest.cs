@@ -185,7 +185,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
     /// <summary>
-    /// OuterProduct.IProcessor used in OuterProduct code sample
+    /// OuterProduct.IProcessor used in OuterProduct "pretty print rectangular arrays of arbitrary dimensions" code sample
     /// </summary>
     public class RectangularArrayToString : OuterProduct.ProcessorBase
     {
@@ -218,6 +218,28 @@ namespace Remotion.UnitTests.Text.Diagnostic
         return true;
       }
     }
+
+
+
+
+    /// <summary>
+    /// OuterProduct.IProcessor used in OuterProduct "create outer prodcut permutations" code sample
+    /// </summary>
+    public class OuterProductPermutations : OuterProduct.ProcessorBase
+    {
+      public readonly List<int[]> outerProductPermutations = new List<int[]> (); // To keep sample concise
+      public override bool DoBeforeLoop ()
+      {
+        if (ProcessingState.IsInnermostLoop)
+        {
+          Log (CollectionToSequenceString (ProcessingState.DimensionIndices));
+         outerProductPermutations.Add (ProcessingState.GetDimensionIndicesCopy() );
+        }
+        return true;
+      }
+    }
+
+
 
     /// <summary>
     /// Helper function to convert a collection into a human-readable string; use To.Text-facility instead as soon as it is fully implemented.
@@ -265,6 +287,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (outerProduct.Length, Is.EqualTo (5*7*11)); 
     }
 
+
     [Test]
     public void ArrayCtorTest ()
     {
@@ -308,6 +331,19 @@ namespace Remotion.UnitTests.Text.Diagnostic
       string s = processor.GetResult ();
       Log (s);
       Assert.That (s, Is.EqualTo ("{(0,0),(0,1),(0,2)},{(1,0),(1,1),(1,2)}"));
+    }
+
+
+    [Test]
+    public void PermutationVisitorTest ()
+    {
+      var dimensionArray = new int[] { 2,3,2 };
+      var outerProduct = new OuterProduct (dimensionArray);
+      var processor = new OuterProductProcessorOneLineString (null);
+      outerProduct.ProcessOuterProduct (processor);
+      string s = processor.GetResult ();
+      Log (s);
+      Assert.That (s, Is.EqualTo ("{{(0,0,0),(0,0,1)},{(0,1,0),(0,1,1)},{(0,2,0),(0,2,1)}},{{(1,0,0),(1,0,1)},{(1,1,0),(1,1,1)},{(1,2,0),(1,2,1)}}"));
     }
 
 
@@ -486,7 +522,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
 
     [Test]
-    public void RectangularArrayToStringTest ()
+    public void SampleRectangularArrayToStringTest ()
     {
       List<String> resultStrings = new List<string> { "A1,A2,A3", "{A1,A2,A3},{B1,B2,B3},{C1,C2,C3}", "{{A1,A2},{B1,B2}},{{C1,C2},{D1,D2}}" };
 
@@ -506,6 +542,31 @@ namespace Remotion.UnitTests.Text.Diagnostic
         Assert.That (new List<String> { result }, Is.SubsetOf (resultStrings));
       }
     }
+
+
+    [Test]
+    public void SamplePermutationVisitorTest ()
+    {
+      var dimensionArray = new int[] { 2, 3, 2 };
+      var outerProduct = new OuterProduct (dimensionArray);
+      var processor = new OuterProductPermutations ();
+      outerProduct.ProcessOuterProduct (processor);
+      var result = processor.outerProductPermutations;
+      Log ("--------------------------");
+      foreach (var ints in result)
+      {
+        System.Console.Write ("(");
+        foreach (var i in ints)
+        {
+          System.Console.Write (i + " ");
+        }
+        System.Console.Write (") ");
+        //Log (CollectionToSequenceString (ints));
+      }
+      var resultExpected = new int[][] { new int[] { 0, 0, 0 }, new int[] { 0, 0, 1 }, new int[] { 0, 1, 0 }, new int[] { 0, 1, 1 }, new int[] { 0, 2, 0 }, new int[] { 0, 2, 1 }, new int[] { 1, 0, 0 }, new int[] { 1, 0, 1 }, new int[] { 1, 1, 0 }, new int[] { 1, 1, 1 }, new int[] { 1, 2, 0 }, new int[] { 1, 2, 1 } };
+      Assert.That (result.ToArray(), Is.EqualTo (resultExpected));
+    }
+
     
 
     /// <summary>

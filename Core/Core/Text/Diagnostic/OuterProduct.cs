@@ -10,7 +10,8 @@ namespace Remotion.Text.Diagnostic
   /// Allows a class implementing the IProcessor interface to visit each member of an outer product of a variable number of independently sized tuples.
   /// From a programmer's view the class supplies "variable number of nested for loops"-functionality.
   /// </summary>
-  /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProduct/Class/*' />
+  /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProduct/ClassExample1/*' />
+  /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProduct/ClassExample2/*' />
   
   public class OuterProduct 
   {
@@ -27,7 +28,7 @@ namespace Remotion.Text.Diagnostic
     /// <summary>
     /// Convenience class to derive OuterProduct-processors from. ALready supplies ProcessingState-functionality.
     /// </summary>
-    public abstract class ProcessorBase : IProcessor 
+    public class ProcessorBase : IProcessor 
     { 
       private OuterProduct.ProcessingState _processingState;
       public OuterProduct.ProcessingState ProcessingState
@@ -35,9 +36,15 @@ namespace Remotion.Text.Diagnostic
         get { return _processingState; }
       }
 
-      public abstract bool DoBeforeLoop ();
+      public virtual bool DoBeforeLoop ()
+      {
+        return true;
+      }
 
-      public abstract bool DoAfterLoop ();
+      public virtual bool DoAfterLoop ()
+      {
+        return true;
+      }
       
       public void SetProcessingState (OuterProduct.ProcessingState processingState)
       {
@@ -149,6 +156,11 @@ namespace Remotion.Text.Diagnostic
       public int NumberElementsProcessed
       {
         get { return _outerProduct.NumberElementsProcessed; }
+      }
+
+      public int[] GetDimensionIndicesCopy ()
+      {
+        return (int[]) DimensionIndices.Clone();
       }
     }
 
