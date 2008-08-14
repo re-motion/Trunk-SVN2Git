@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -67,7 +67,8 @@
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
-    <NoWarn>1591;0419</NoWarn><WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592</WarningsAsErrors>
+    <NoWarn>1591;0419</NoWarn>
+    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592</WarningsAsErrors>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -527,6 +528,7 @@
     <Content Include="doc\include\NamespaceDoc.xml" />
     <Content Include="doc\include\Reflection\TypesafeInvoker.xml" />
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
+    <Content Include="doc\include\Text\Diagnostic\OuterProduct.xml" />
     <Content Include="doc\include\Utilities\EqualityUtility.xml" />
     <Content Include="doc\include\Utilities\WorkContext.xml" />
     <Content Include="doc\WhatsNew_Remotion.txt" />

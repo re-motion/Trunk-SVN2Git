@@ -10,65 +10,7 @@ namespace Remotion.Text.Diagnostic
   /// Allows a class implementing the IProcessor interface to visit each member of an outer product of a variable number of independently sized tuples.
   /// From a programmer's view the class supplies "variable number of nested for loops"-functionality.
   /// </summary>
-  /// <example> Usage example: Get all permutations of containing
-  /// <code>
-  /// <![CDATA[
-  /// // Implement a simple OuterProduct-processor (deriving from OuterProduct.ProcessorBase is convenient, but we could also implement OuterProduct.IProcessor on any class)
-  /// public class RectangularArrayToString : OuterProduct.ProcessorBase
-  /// {
-  ///   protected Array _rectangularArray;
-  ///   public readonly StringBuilder _result = new StringBuilder (); // To keep sample concise
-  /// 
-  ///   public RectangularArrayToString (Array rectangularArray) { _rectangularArray = rectangularArray; }
-  /// 
-  ///   public override bool DoBeforeLoop ()
-  ///   {
-  ///     if (ProcessingState.IsInnermostLoop)
-  ///     {
-  ///       _result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
-  ///       _result.Append (_rectangularArray.GetValue (ProcessingState.DimensionIndices).ToString ());
-  ///     }
-  ///     else
-  ///     {
-  ///       _result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
-  ///       _result.Append ("{");
-  ///     }
-  ///     return true;
-  ///   }
-  /// 
-  ///   public override bool DoAfterLoop ()
-  ///   {
-  ///     if (!ProcessingState.IsInnermostLoop)
-  ///     {
-  ///       _result.Append ("}");
-  ///     }
-  ///     return true;
-  ///   }
-  /// }  
-  /// 
-  /// // Use RectangularArrayToString to produce string representations of rectangular arrays of arbitrary dimensions: 
-  /// public void RectangularArraysToString ()
-  /// {
-  ///   Array rectangularArray1D = new string[] { "A1", "A2", "A3" };
-  ///   Array rectangularArray2D = new string[,] { { "A1", "A2", "A3" }, { "B1", "B2", "B3" }, { "C1", "C2", "C3" } };
-  ///   Array rectangularArray3D = new string[,,] { { { "A1", "A2" }, { "B1", "B2" } }, { { "C1", "C2" }, { "D1", "D2" } } };
-  ///   var arrays = new List<Array> () { rectangularArray1D, rectangularArray2D, rectangularArray3D };
-  ///   foreach (var array in arrays)
-  ///   {
-  ///     var outerProduct = new OuterProduct (array);
-  ///     var processor = new RectangularArrayToString (array);
-  ///     outerProduct.ProcessOuterProduct (processor);
-  ///     System.Console.WriteLine (processor._result.ToString ());
-  ///   }
-  /// }
-  /// 
-  /// Console output:
-  /// A1,A2,A3
-  /// {A1,A2,A3},{B1,B2,B3},{C1,C2,C3}
-  /// {{A1,A2},{B1,B2}},{{C1,C2},{D1,D2}}
-  /// ]]>
-  /// </code>
-  /// </example>
+  /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProduct/Class/*' />
   
   public class OuterProduct 
   {

@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ !
+ ! This program is free software: you can redistribute it and/or modify it under 
+ ! the terms of the re:motion license agreement in license.txt. If you did not 
+ ! receive it, please visit http://www.re-motion.org/licensing.
+ ! 
+ ! Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ ! WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+-->
+
+<OuterProduct>
+  <Class>
+    <example>
+      Produce string representations of rectangular arrays of arbitrary dimensions:
+      <code>
+        <![CDATA[
+// Implement a simple OuterProduct-processor (deriving from OuterProduct.ProcessorBase is convenient, but we could also implement OuterProduct.IProcessor on any class)
+public class RectangularArrayToString : OuterProduct.ProcessorBase
+{
+  protected Array _rectangularArray;
+  public readonly StringBuilder _result = new StringBuilder (); // To keep sample concise
+
+  public RectangularArrayToString (Array rectangularArray) { _rectangularArray = rectangularArray; }
+
+  public override bool DoBeforeLoop ()
+  {
+    if (ProcessingState.IsInnermostLoop)
+    {
+      _result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
+      _result.Append (_rectangularArray.GetValue (ProcessingState.DimensionIndices).ToString ());
+    }
+    else
+    {
+      _result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
+      _result.Append ("{");
+    }
+    return true;
+  }
+
+  public override bool DoAfterLoop ()
+  {
+    if (!ProcessingState.IsInnermostLoop)
+    {
+      _result.Append ("}");
+    }
+    return true;
+  }
+}  
+
+// Use RectangularArrayToString to produce string representations of rectangular arrays of arbitrary dimensions: 
+public void RectangularArraysToString ()
+{
+  Array rectangularArray1D = new string[] { "A1", "A2", "A3" };
+  Array rectangularArray2D = new string[,] { { "A1", "A2", "A3" }, { "B1", "B2", "B3" }, { "C1", "C2", "C3" } };
+  Array rectangularArray3D = new string[,,] { { { "A1", "A2" }, { "B1", "B2" } }, { { "C1", "C2" }, { "D1", "D2" } } };
+  var arrays = new List<Array> () { rectangularArray1D, rectangularArray2D, rectangularArray3D };
+  foreach (var array in arrays)
+  {
+    var outerProduct = new OuterProduct (array);
+    var processor = new RectangularArrayToString (array);
+    outerProduct.ProcessOuterProduct (processor);
+    System.Console.WriteLine (processor._result.ToString ());
+  }
+}
+
+Console output:
+A1,A2,A3
+{A1,A2,A3},{B1,B2,B3},{C1,C2,C3}
+{{A1,A2},{B1,B2}},{{C1,C2},{D1,D2}}
+        ]]>
+      </code>
+    </example>
+  </Class>
+</OuterProduct>
