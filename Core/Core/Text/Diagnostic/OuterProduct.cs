@@ -280,7 +280,7 @@ namespace Remotion.Text.Diagnostic
     ///<overloads>
     ///OuterProduct can be initialized in a general way by passing the number of elements
     ///along each dimension in an integer array, or specialized by passing a rectangular array whose
-    ///dimensions will then be used.
+    ///dimensions shall be used by the outer product.
     ///</overloads>
     /// <summary>
     /// Initializes OuterProduct from an integer array, where each array entry gives the number of elements along its
