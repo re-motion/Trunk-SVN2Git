@@ -12,6 +12,7 @@ namespace Remotion.Text.Diagnostic
   /// </summary>
   /// <example> Usage example: Get all permutations of containing
   /// <code>
+  /// <![CDATA[
   /// // Implement a simple OuterProduct-processor (deriving from OuterProduct.ProcessorBase is convenient, but we could also implement OuterProduct.IProcessor on any class)
   /// public class RectangularArrayToString : OuterProduct.ProcessorBase
   /// {
@@ -51,7 +52,7 @@ namespace Remotion.Text.Diagnostic
   ///   Array rectangularArray1D = new string[] { "A1", "A2", "A3" };
   ///   Array rectangularArray2D = new string[,] { { "A1", "A2", "A3" }, { "B1", "B2", "B3" }, { "C1", "C2", "C3" } };
   ///   Array rectangularArray3D = new string[,,] { { { "A1", "A2" }, { "B1", "B2" } }, { { "C1", "C2" }, { "D1", "D2" } } };
-  ///   var arrays = new List&lt;Array&gt; () { rectangularArray1D, rectangularArray2D, rectangularArray3D };
+  ///   var arrays = new List<Array> () { rectangularArray1D, rectangularArray2D, rectangularArray3D };
   ///   foreach (var array in arrays)
   ///   {
   ///     var outerProduct = new OuterProduct (array);
@@ -65,6 +66,7 @@ namespace Remotion.Text.Diagnostic
   /// A1,A2,A3
   /// {A1,A2,A3},{B1,B2,B3},{C1,C2,C3}
   /// {{A1,A2},{B1,B2}},{{C1,C2},{D1,D2}}
+  /// ]]>
   /// </code>
   /// </example>
   
