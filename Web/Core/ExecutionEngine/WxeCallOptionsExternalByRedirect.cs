@@ -20,17 +20,17 @@ namespace Remotion.Web.ExecutionEngine
     private readonly NameValueCollection _callerUrlParameters;
 
     public WxeCallOptionsExternalByRedirect ()
-      : this (new WxePermaUrlOptions (false, null), true, null)
+        : this (new WxePermaUrlOptions (false, null), true, null)
     {
     }
 
     public WxeCallOptionsExternalByRedirect (NameValueCollection urlParameters)
-      : this (new WxePermaUrlOptions (false, urlParameters), true, null)
+        : this (new WxePermaUrlOptions (false, urlParameters), true, null)
     {
     }
 
     public WxeCallOptionsExternalByRedirect (WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
-      : base (permaUrlOptions)
+        : base (permaUrlOptions)
     {
       _returnToCaller = returnToCaller;
       _callerUrlParameters = callerUrlParameters;
@@ -43,7 +43,7 @@ namespace Remotion.Web.ExecutionEngine
 
       executor.ExecuteFunctionExternalByRedirect (function, this);
 
-      throw new WxeCallExternalException ();
+      throw new WxeCallExternalException();
     }
 
     public bool ReturnToCaller

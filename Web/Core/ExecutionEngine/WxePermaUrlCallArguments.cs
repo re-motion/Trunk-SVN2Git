@@ -19,22 +19,22 @@ namespace Remotion.Web.ExecutionEngine
     private readonly WxeCallOptions _options;
 
     public WxePermaUrlCallArguments ()
-        : this (new WxeCallOptions  (new WxePermaUrlOptions (false, null)))
+        : this (new WxeCallOptions (new WxePermaUrlOptions (false, null)))
     {
     }
 
     public WxePermaUrlCallArguments (bool useParentPermaUrl)
-        : this (new WxeCallOptions  (new WxePermaUrlOptions (useParentPermaUrl, null)))
+        : this (new WxeCallOptions (new WxePermaUrlOptions (useParentPermaUrl, null)))
     {
     }
 
     public WxePermaUrlCallArguments (NameValueCollection urlParameters)
-      : this (new WxeCallOptions (new WxePermaUrlOptions (false, urlParameters)))
+        : this (new WxeCallOptions (new WxePermaUrlOptions (false, urlParameters)))
     {
     }
 
     public WxePermaUrlCallArguments (bool useParentPermaUrl, NameValueCollection urlParameters)
-        :this (new WxeCallOptions  (new WxePermaUrlOptions (useParentPermaUrl, urlParameters)))
+        : this (new WxeCallOptions (new WxePermaUrlOptions (useParentPermaUrl, urlParameters)))
     {
     }
 

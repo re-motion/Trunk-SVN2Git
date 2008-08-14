@@ -32,7 +32,7 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     public WxePermaUrlOptions (bool useParentPermaUrl, NameValueCollection urlParameters)
-      :this (true, useParentPermaUrl, urlParameters)
+        : this (true, useParentPermaUrl, urlParameters)
     {
     }
 

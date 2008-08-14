@@ -19,12 +19,12 @@ namespace Remotion.Web.ExecutionEngine
     private class DefaultArguments : WxePermaUrlCallArguments
     {
       public DefaultArguments ()
-        :base (new WxeCallOptions (WxePermaUrlOptions.Null))
+          : base (new WxeCallOptions (WxePermaUrlOptions.Null))
       {
       }
     }
 
-    public static readonly IWxeCallArguments Default = new DefaultArguments ();
+    public static readonly IWxeCallArguments Default = new DefaultArguments();
 
     private readonly Control _sender;
     private readonly WxeCallOptions _options;

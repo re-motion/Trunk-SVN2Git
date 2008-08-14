@@ -25,17 +25,17 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     public WxeCallOptionsExternal (string target, string features)
-      : this (target, features, true, WxePermaUrlOptions.Null)
+        : this (target, features, true, WxePermaUrlOptions.Null)
     {
     }
 
     public WxeCallOptionsExternal (string target, string features, bool returningPostback)
-      : this (target, features, returningPostback, WxePermaUrlOptions.Null)
+        : this (target, features, returningPostback, WxePermaUrlOptions.Null)
     {
     }
 
     public WxeCallOptionsExternal (string target, string features, bool returningPostback, WxePermaUrlOptions permaUrlOptions)
-      : base (permaUrlOptions)
+        : base (permaUrlOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("target", target);
 

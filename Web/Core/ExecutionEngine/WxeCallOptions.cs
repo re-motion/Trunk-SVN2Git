@@ -13,7 +13,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxeCallOptions 
+  public class WxeCallOptions
   {
     private readonly WxePermaUrlOptions _permaUrlOptions;
 
