@@ -13,7 +13,7 @@
     application="UnitTests" 
     xmlns="http://www.re-motion.org/Data/DomainObjects/Queries/1.0" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Queries/1.0 ..\DomainObjects\Schemas\Queries.xsd">
+    xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Queries/1.0 ..\..\DomainObjects\Schemas\Queries.xsd">
 
   <query id="QueryWithoutParameter" type="scalar">
     <storageProviderID>TestDomain</storageProviderID>
