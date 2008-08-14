@@ -228,7 +228,7 @@ namespace Remotion.Web.ExecutionEngine.Obsolete
     private static IWxeCallArguments CreateCallArguments (Control sender, WxeCallOptions options)
     {
       if (sender == null)
-        return new WxePermaUrlCallArguments (options);
+        return new WxeCallArgumentsBase (options);
       else
         return new WxeCallArguments (sender, options);
     }

@@ -14,36 +14,18 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxeCallArguments : IWxeCallArguments
+  public sealed class WxeCallArguments : WxeCallArgumentsBase
   {
-    private class DefaultArguments : WxePermaUrlCallArguments
-    {
-      public DefaultArguments ()
-          : base (new WxeCallOptions (WxePermaUrlOptions.Null))
-      {
-      }
-    }
-
-    public static readonly IWxeCallArguments Default = new DefaultArguments();
+    public static readonly IWxeCallArguments Default = new WxeCallArgumentsBase (new WxeCallOptions (WxePermaUrlOptions.Null));
 
     private readonly Control _sender;
-    private readonly WxeCallOptions _options;
 
     public WxeCallArguments (Control sender, WxeCallOptions options)
+        : base (options)
     {
       ArgumentUtility.CheckNotNull ("sender", sender);
-      ArgumentUtility.CheckNotNull ("options", options);
 
-      _options = options;
       _sender = sender;
-    }
-
-    public void Dispatch (WxeExecutor executor, WxeFunction function)
-    {
-      ArgumentUtility.CheckNotNull ("executor", executor);
-      ArgumentUtility.CheckNotNull ("function", function);
-
-      _options.Dispatch (executor, function, this);
     }
 
     public Control Sender
@@ -51,9 +33,12 @@ namespace Remotion.Web.ExecutionEngine
       get { return _sender; }
     }
 
-    public WxeCallOptions Options
+    protected override void Dispatch (IWxeExecutor executor, WxeFunction function)
     {
-      get { return _options; }
+      ArgumentUtility.CheckNotNull ("executor", executor);
+      ArgumentUtility.CheckNotNull ("function", function);
+
+      Options.Dispatch (executor, function, this);
     }
   }
 }

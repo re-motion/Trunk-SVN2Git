@@ -108,6 +108,8 @@
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Context\WebSafeContextMixin.cs" />
+    <Compile Include="ExecutionEngine\IWxeExecutor.cs" />
+    <Compile Include="ExecutionEngine\WxeCallArgumentsBase.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptionsExternalByRedirect.cs" />
     <Compile Include="ExecutionEngine\IWxeCallArguments.cs" />
     <Compile Include="ExecutionEngine\WxeCallExternalException.cs" />

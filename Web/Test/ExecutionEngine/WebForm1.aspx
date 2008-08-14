@@ -8,7 +8,6 @@
  % WITHOUT WARRANTY OF ANY KIND, either express or implied. 
 --%>
 <%@ Register TagPrefix="uc1" TagName="UserControl1" Src="UserControl1.ascx" %>
-<%@ Register TagPrefix="rwc" Namespace="Remotion.Web.UI.Controls" Assembly="Remotion.Web" %>
 <%@ Page language="c#" Codebehind="WebForm1.aspx.cs" AutoEventWireup="false" Inherits="Remotion.Web.Test.ExecutionEngine.WebForm1" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
 <HTML>

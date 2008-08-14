@@ -7,7 +7,6 @@
  % Unless otherwise provided, this software is distributed on an "AS IS" basis, 
  % WITHOUT WARRANTY OF ANY KIND, either express or implied. 
 --%>
-<%@ Register TagPrefix="remotion" Namespace="Remotion.Web.UI.Controls" Assembly="Remotion.Web" %>
 <%@ Page language="c#" Codebehind="SessionForm.aspx.cs" AutoEventWireup="false" Inherits="Remotion.Web.Test.ExecutionEngine.SessionForm" smartNavigation="False"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" >
 <html>

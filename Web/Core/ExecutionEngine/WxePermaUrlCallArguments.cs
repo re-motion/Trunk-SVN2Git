@@ -10,52 +10,29 @@
 
 using System;
 using System.Collections.Specialized;
-using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxePermaUrlCallArguments : IWxeCallArguments
+  public sealed class WxePermaUrlCallArguments : WxeCallArgumentsBase
   {
-    private readonly WxeCallOptions _options;
-
     public WxePermaUrlCallArguments ()
-        : this (new WxeCallOptions (new WxePermaUrlOptions (false, null)))
+        : base (new WxeCallOptions (new WxePermaUrlOptions (false, null)))
     {
     }
 
     public WxePermaUrlCallArguments (bool useParentPermaUrl)
-        : this (new WxeCallOptions (new WxePermaUrlOptions (useParentPermaUrl, null)))
+        : base (new WxeCallOptions (new WxePermaUrlOptions (useParentPermaUrl, null)))
     {
     }
 
     public WxePermaUrlCallArguments (NameValueCollection urlParameters)
-        : this (new WxeCallOptions (new WxePermaUrlOptions (false, urlParameters)))
+        : base (new WxeCallOptions (new WxePermaUrlOptions (false, urlParameters)))
     {
     }
 
     public WxePermaUrlCallArguments (bool useParentPermaUrl, NameValueCollection urlParameters)
-        : this (new WxeCallOptions (new WxePermaUrlOptions (useParentPermaUrl, urlParameters)))
+        : base (new WxeCallOptions (new WxePermaUrlOptions (useParentPermaUrl, urlParameters)))
     {
-    }
-
-    protected internal WxePermaUrlCallArguments (WxeCallOptions options)
-    {
-      ArgumentUtility.CheckNotNull ("options", options);
-
-      _options = options;
-    }
-
-    public void Dispatch (WxeExecutor executor, WxeFunction function)
-    {
-      ArgumentUtility.CheckNotNull ("executor", executor);
-      ArgumentUtility.CheckNotNull ("function", function);
-
-      _options.Dispatch (executor, function, null);
-    }
-
-    public WxeCallOptions Options
-    {
-      get { return _options; }
     }
   }
 }

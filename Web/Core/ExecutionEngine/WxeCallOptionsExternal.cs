@@ -44,7 +44,7 @@ namespace Remotion.Web.ExecutionEngine
       _returningPostback = returningPostback;
     }
 
-    public override void Dispatch (WxeExecutor executor, WxeFunction function, WxeCallArguments handler)
+    public override void Dispatch (IWxeExecutor executor, WxeFunction function, WxeCallArguments handler)
     {
       ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);

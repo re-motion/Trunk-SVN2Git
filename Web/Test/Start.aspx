@@ -46,6 +46,9 @@
       <p>
         <a href="redirected.wxe">redirected.wxe</a>
       </p>
+      <p>
+        <a href="ShowUserControl.wxe">ShowUserControl.wxe</a>
+      </p>      
       <asp:Button id="ResetSessionButton" runat="server" Text="Reset Session"></asp:Button>
     </form>
   </body>

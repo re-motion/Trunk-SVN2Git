@@ -23,7 +23,7 @@ namespace Remotion.Web.ExecutionEngine
   /// <remarks>
   /// Dispose the <see cref="WxeExecutor"/> at the end of the page life cycle, i.e. in the <see cref="Control.Dispose"/> method.
   /// </remarks>
-  public class WxeExecutor : IDisposable
+  public class WxeExecutor : IDisposable, IWxeExecutor
   {
     private readonly HttpContext _httpContext;
     private readonly IWxePage _page;

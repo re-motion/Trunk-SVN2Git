@@ -13,33 +13,33 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxeCallOptions
+  public class WxeCallArgumentsBase : IWxeCallArguments
   {
-    private readonly WxePermaUrlOptions _permaUrlOptions;
+    private readonly WxeCallOptions _options;
 
-    public WxeCallOptions ()
-        : this (WxePermaUrlOptions.Null)
+    protected internal WxeCallArgumentsBase (WxeCallOptions options)
     {
+      ArgumentUtility.CheckNotNull ("options", options);
+
+      _options = options;
     }
 
-    public WxeCallOptions (WxePermaUrlOptions permaUrlOptions)
+    public WxeCallOptions Options
     {
-      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
-
-      _permaUrlOptions = permaUrlOptions;
+      get { return _options; }
     }
 
-    public virtual void Dispatch (IWxeExecutor executor, WxeFunction function, WxeCallArguments handler)
+    protected virtual void Dispatch (IWxeExecutor executor, WxeFunction function)
     {
       ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);
 
-      executor.ExecuteFunction (function, _permaUrlOptions);
+      _options.Dispatch (executor, function, null);
     }
 
-    public WxePermaUrlOptions PermaUrlOptions
+    void IWxeCallArguments.Dispatch (IWxeExecutor executor, WxeFunction function)
     {
-      get { return _permaUrlOptions; }
+      Dispatch (executor, function);
     }
   }
 }

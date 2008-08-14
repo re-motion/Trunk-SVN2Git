@@ -13,8 +13,25 @@ using System;
 namespace Remotion.Web.ExecutionEngine
 {
   /// <summary>
-  /// 
+  ///   The <see cref="IWxeCallArguments"/> interface is used to to collect the parameters for executing a <see cref="WxeFunction"/>.
   /// </summary>
+  /// <remarks>
+  /// <para>
+  ///   The usage pattern is to pass the <see cref="IWxeCallArguments"/> and the <see cref="WxeFunction"/> to the <see cref="IWxePage.ExecuteFunction"/>
+  ///   method defined by the <see cref="IWxePage"/>. This methood then invokes the <see cref="Dispatch"/> method, passing the page's 
+  ///   <see cref="IWxeExecutor"/> and the <see cref="WxeFunction"/>. It is the <see cref="Dispatch"/> method's responsibility to correctly 
+  ///   execute the <see cref="WxeFunction"/> with the help of the <see cref="IWxeExecutor"/> and using the call arguments
+  ///   that are part of this <see cref="IWxeCallArguments"/> object.
+  /// </para>
+  /// <para>
+  ///   Use the <see cref="WxeCallArguments.Default"/> instance exposed on the <see cref="WxeCallArguments"/> type if your usecase is to simply
+  ///   invoke a sub-function on your page.   
+  /// </para>
+  /// <para>
+  ///   The <b>WxeGen</b> also allows for a simplified syntax by providing static <b>Call</b> methods on each page that will accept all required 
+  ///   parameters (the <see cref="IWxePage"/>, the <see cref="IWxeCallArguments"/>, and additional arguments required by the specific function).
+  /// </para>
+  /// </remarks>
   /// <example>
   /// <code escaped="true" lang="C#">
   /// internal class Sample
@@ -23,14 +40,14 @@ namespace Remotion.Web.ExecutionEngine
   ///   {
   ///     try
   ///     {
-  ///       IWxeCallArguments args;
-  ///       args = WxeCallArguments.Default;                                    
-  ///       args = new WxePermaUrlCallArguments ();                                  
-  ///       args = new WxePermaUrlCallArguments (true);
-  ///       args = new WxeCallArguments ((Control) sender, new WxeCallOptionsExternal ("_blank"));
-  ///       args = new WxeCallArguments ((Control) sender, new WxeCallOptionsNoRepost ());
-  ///       args = new WxeCallArguments ((Control) sender, new WxeCallOptions ());
-  ///       // MyPage.Call (this, handler, arg1);
+  ///       IWxeCallArguments callArguments;
+  ///       callArguments = WxeCallArguments.Default;                                    
+  ///       callArguments = new WxePermaUrlCallArguments ();                                  
+  ///       callArguments = new WxePermaUrlCallArguments (true);
+  ///       callArguments = new WxeCallArguments ((Control) sender, new WxeCallOptionsExternal ("_blank"));
+  ///       callArguments = new WxeCallArguments ((Control) sender, new WxeCallOptionsNoRepost ());
+  ///       callArguments = new WxeCallArguments ((Control) sender, new WxeCallOptions ());
+  ///       // MyPage.Call (this, callArguments, arg1, arg2, ...);
   ///      }
   ///     catch (WxeIgnorableException) { }
   ///   }
@@ -39,6 +56,6 @@ namespace Remotion.Web.ExecutionEngine
   /// </example>
   public interface IWxeCallArguments
   {
-    void Dispatch (WxeExecutor executor, WxeFunction function);
+    void Dispatch (IWxeExecutor executor, WxeFunction function);
   }
 }
