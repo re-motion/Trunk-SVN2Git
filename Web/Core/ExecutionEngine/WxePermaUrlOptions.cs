@@ -13,50 +13,39 @@ using System.Collections.Specialized;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxePermaUrlOptions : INullObject
+  public sealed class WxePermaUrlOptions : INullObject
   {
-    private sealed class NullPermaUrlOptions : WxePermaUrlOptions, INullObject
-    {
-      public NullPermaUrlOptions ()
-        : base (false, null)
-      {
-      }
+    public static readonly WxePermaUrlOptions Null = new WxePermaUrlOptions (false, false, null);
 
-      public override bool UsePermaUrl
-      {
-        get { return false; }
-      }
-
-      bool INullObject.IsNull
-      {
-        get { return true; }
-      }
-    }
-
-    public static WxePermaUrlOptions Null = new NullPermaUrlOptions();
-
+    private readonly bool _usePermaUrl;
     private readonly bool _useParentPermaUrl;
     private readonly NameValueCollection _urlParameters;
 
     public WxePermaUrlOptions ()
-        : this (false, null)
+        : this (true, false, null)
     {
     }
 
     public WxePermaUrlOptions (bool useParentPermaUrl)
-        : this (useParentPermaUrl, null)
+        : this (true, useParentPermaUrl, null)
     {
     }
 
     public WxePermaUrlOptions (bool useParentPermaUrl, NameValueCollection urlParameters)
+      :this (true, useParentPermaUrl, urlParameters)
     {
+    }
+
+    private WxePermaUrlOptions (bool usePermaUrl, bool useParentPermaUrl, NameValueCollection urlParameters)
+    {
+      _usePermaUrl = usePermaUrl;
       _useParentPermaUrl = useParentPermaUrl;
       _urlParameters = urlParameters;
     }
 
-    public virtual bool UsePermaUrl
+    public bool UsePermaUrl
     {
-      get { return true; }
+      get { return _usePermaUrl; }
     }
 
     public bool UseParentPermaUrl
@@ -71,7 +60,7 @@ namespace Remotion.Web.ExecutionEngine
 
     bool INullObject.IsNull
     {
-      get { return false; }
+      get { return !_usePermaUrl; }
     }
   }
 }
