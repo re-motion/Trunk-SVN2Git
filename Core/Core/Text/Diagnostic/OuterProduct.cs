@@ -70,7 +70,7 @@ namespace Remotion.Text.Diagnostic
   /// </code>
   /// </example>
   
-  public class OuterProduct
+  public class OuterProduct 
   {
     /// <summary>
     /// Interface a "Processor" class which can be passed to OuterProduct.ProcessOuterProduct needs to implement.
