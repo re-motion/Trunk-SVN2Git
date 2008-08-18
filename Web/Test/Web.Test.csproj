@@ -127,6 +127,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExecutionEngine\ShowSecondUserControlFormFunction.cs" />
+    <Compile Include="ExecutionEngine\SecondControl.ascx.cs">
+      <DependentUpon>SecondControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ExecutionEngine\SecondControl.ascx.designer.cs">
+      <DependentUpon>SecondControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ExecutionEngine\FirstControl.ascx.cs">
+      <DependentUpon>FirstControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ExecutionEngine\FirstControl.ascx.designer.cs">
+      <DependentUpon>FirstControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ExecutionEngine\ShowUserControlFormFunction.cs" />
     <Compile Include="ExecutionEngine\UserControlForm.aspx.cs">
       <DependentUpon>UserControlForm.aspx</DependentUpon>
@@ -243,6 +256,8 @@
     <Compile Include="UpdatePanelTests\SutUserControl.ascx.designer.cs">
       <DependentUpon>SutUserControl.ascx</DependentUpon>
     </Compile>
+    <Content Include="ExecutionEngine\SecondControl.ascx" />
+    <Content Include="ExecutionEngine\FirstControl.ascx" />
     <Content Include="ExecutionEngine\UserControlForm.aspx" />
     <Content Include="MultiplePostBackCatching\TestSuiteForm.aspx" />
     <Content Include="MultiplePostBackCatching\UpdatePanelTestSuiteForm.aspx" />

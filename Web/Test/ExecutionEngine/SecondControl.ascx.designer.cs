@@ -11,34 +11,34 @@
 namespace Remotion.Web.Test.ExecutionEngine {
     
     
-    public partial class UserControlForm {
+    public partial class SecondControl {
         
         /// <summary>
-        /// TheForm control.
+        /// ControlLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm TheForm;
+        protected global::System.Web.UI.WebControls.Label ControlLabel;
         
         /// <summary>
-        /// PageLabel control.
+        /// ExecuteNextStepButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label PageLabel;
+        protected global::Remotion.Web.UI.Controls.WebButton ExecuteNextStepButton;
         
         /// <summary>
-        /// PageButton control.
+        /// PostbackButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton PageButton;
+        protected global::Remotion.Web.UI.Controls.WebButton PostbackButton;
         
         /// <summary>
         /// ViewStateLabel control.
@@ -57,14 +57,5 @@ namespace Remotion.Web.Test.ExecutionEngine {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label ControlStateLabel;
-        
-        /// <summary>
-        /// FirstControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.Web.Test.ExecutionEngine.FirstControl FirstControl;
     }
 }
