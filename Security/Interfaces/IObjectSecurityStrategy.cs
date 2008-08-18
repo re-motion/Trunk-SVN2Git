@@ -18,7 +18,7 @@ namespace Remotion.Security
   /// Typically the <see cref="IObjectSecurityStrategy"/> knows its business object (possibly indirectly) 
   /// and uses the security-relevant object state (as part of the <see cref="ISecurityContext"/>) as 
   /// parameter when evaluating the required permissions.
-  /// <note type="implementnotes">Implementations are free to decide whether they provide caching.</note>
+  /// <note type="inotes">Implementations are free to decide whether they provide caching.</note>
   /// </remarks>
   public interface IObjectSecurityStrategy
   {

@@ -17,7 +17,7 @@ namespace Remotion.Security
   /// to create an <see cref="ISecurityContext"/> for a buiness object.
   /// </summary>
   /// <remarks>
-  /// <note type="implementnotes">
+  /// <note type="inotes">
   /// Usually directly implemented by a secured business object, thus acting as their own <see cref="ISecurityContextFactory"/>.
   /// </note>
   /// </remarks>

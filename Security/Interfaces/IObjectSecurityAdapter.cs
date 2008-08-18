@@ -15,7 +15,7 @@ namespace Remotion.Security
   /// <remarks>
   /// It is registered in the <see cref="AdapterRegistry"/> and is used for security checks 
   /// in implementations of <see cref="I:Remotion.ObjectBinding.IBusinessObjectProperty"/>.
-  /// <note type="implementnotes">
+  /// <note type="inotes">
   /// A typical implementation uses a <see cref="T:Remotion.Security.SecurityClient"/> that further dispatches to an 
   /// <see cref="IObjectSecurityStrategy"/> retrieved from the <see cref="ISecurableObject"/>.
   /// </note>

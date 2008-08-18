@@ -14,7 +14,7 @@ using System.Security.Principal;
 namespace Remotion.Security
 {
   /// <summary>Encapsulates the security checks.</summary>
-  /// <remarks><note type="implementnotes">Implementations are free to decide whether they provide caching.</note></remarks>
+  /// <remarks><note type="inotes">Implementations are free to decide whether they provide caching.</note></remarks>
   public interface ISecurityStrategy
   {
     /// <summary>Determines whether the requested access is granted.</summary>
@@ -24,7 +24,7 @@ namespace Remotion.Security
     /// <param name="requiredAccessTypes">The access rights required for the access to be granted.</param>
     /// <returns><see langword="true"/> if the <paramref name="requiredAccessTypes"/> are granted.</returns>
     /// <remarks>
-    /// <note type="implementnotes">
+    /// <note type="inotes">
     /// When caching is provided by the implementation, <see cref="ISecurityContextFactory.CreateSecurityContext"/> of the <paramref name="factory"/>
     /// shall only be called when the local cache does not already have a reference to a <see cref="ISecurityContext"/>.
     /// </note>

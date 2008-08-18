@@ -17,7 +17,7 @@ namespace Remotion.Security
   /// Cache for the <see cref="AccessType"/> array, using the <see cref="SecurityContext"/> and the user name (<see cref="string"/>) as key.
   /// These are used as parameters for each call to the <see cref="ISecurityProvider.GetAccess"/> method of <see cref="ISecurityProvider"/>.
   /// </summary>
-  /// <remarks><note type="implementnotes">Implementations are free to implement their own best practice for keeping the cache up to date.</note></remarks>
+  /// <remarks><note type="inotes">Implementations are free to implement their own best practice for keeping the cache up to date.</note></remarks>
   public interface IGlobalAccessTypeCacheProvider : INullObject
   {
     /// <summary>

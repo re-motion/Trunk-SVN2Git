@@ -22,7 +22,9 @@ namespace Remotion.Data.DomainObjects
     /// This method is invoked when a subtransaction of <paramref name="parentClientTransaction"/> is about to be created.
     /// </summary>
     /// <param name="parentClientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
-    /// <note type="implementnotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
+    /// <remarks>
+    /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
+    /// </remarks>
     void SubTransactionCreating (ClientTransaction parentClientTransaction);
 
     /// <summary>
@@ -30,7 +32,9 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="parentClientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="subTransaction">The subtransaction created by <paramref name="parentClientTransaction"/>.</param>
-    /// <note type="implementnotes">The implementation of this method must not throw an exception.</note>
+    /// <remarks>
+    /// <note type="inotes">The implementation of this method must not throw an exception.</note>
+    /// </remarks>
     void SubTransactionCreated (ClientTransaction parentClientTransaction, ClientTransaction subTransaction);
 
     /// <summary>
@@ -39,7 +43,9 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="type">The <see cref="System.Type"/> of the new <see cref="DomainObject"/>.</param>
-    /// <note type="implementnotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
+    /// <remarks>
+    /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
+    /// </remarks>
     void NewObjectCreating (ClientTransaction clientTransaction, Type type);
 
     /// <summary>
@@ -48,7 +54,9 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> to be loaded.</param>
-    /// <note type="implementnotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
+    /// <remarks>
+    /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
+    /// </remarks>
     void ObjectLoading (ClientTransaction clientTransaction, ObjectID id);
 
     /// <summary>
@@ -58,8 +66,8 @@ namespace Remotion.Data.DomainObjects
     /// <param name="loadedDomainObjects">A collection of all <see cref="DomainObject"/>s that were loaded.</param>
     /// <remarks>
     ///   <see cref="DomainObject.OnLoaded"/> is called before this method is invoked, whereas <see cref="ClientTransaction.Loaded"/> is fired after it.
+    /// <note type="inotes">The implementation of this method must not throw an exception.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method must not throw an exception.</note>
     void ObjectsLoaded (ClientTransaction clientTransaction, DomainObjectCollection loadedDomainObjects);
 
     /// <summary>
@@ -79,8 +87,8 @@ namespace Remotion.Data.DomainObjects
     ///   <para>
     ///     The events <see cref="DomainObject.Deleting"/> and <see cref="DomainObject.RelationChanging"/> are fired after this method was invoked.
     ///   </para>
+    /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject);
 
     /// <summary>
@@ -100,8 +108,8 @@ namespace Remotion.Data.DomainObjects
     ///   <para>
     ///     The events <see cref="DomainObject.RelationChanged"/> and <see cref="DomainObject.Deleted"/> are fired after this method is invoked.
     ///   </para>
+    /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="ObjectDeleting"/> instead.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="ObjectDeleting"/> instead.</note>
     void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject);
 
     /// <summary>
@@ -117,8 +125,8 @@ namespace Remotion.Data.DomainObjects
     /// <param name="valueAccess">A value indicating whether the current or the original value is being accessed.</param>
     /// <remarks>
     ///   Use this method to cancel the operation, whereas <see cref="PropertyValueRead"/> should be used to perform actions on its successful execution.
+    /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess);
 
     /// <summary>
@@ -134,8 +142,8 @@ namespace Remotion.Data.DomainObjects
     /// <param name="valueAccess">A value indicating whether the current or the original value was accessed.</param>
     /// <remarks>
     ///   Use this method to perform actions on a successful execution, whereas <see cref="PropertyValueReading"/> should be used to cancel the operation.
+    /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="PropertyValueReading"/> instead.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="PropertyValueReading"/> instead.</note>
     void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess);
 
     /// <summary>
@@ -157,8 +165,8 @@ namespace Remotion.Data.DomainObjects
     ///   <para>
     ///     The events <see cref="DataContainer.PropertyChanging"/> and <see cref="DomainObject.PropertyChanging"/> are fired after this method was invoked.
     ///   </para>
+    /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue);
 
     /// <summary>
@@ -179,8 +187,8 @@ namespace Remotion.Data.DomainObjects
     ///   <para>
     ///     The events <see cref="DataContainer.PropertyChanged"/> and <see cref="DomainObject.PropertyChanged"/> are fired before this method is invoked.
     ///   </para>
+    /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="PropertyValueChanging"/> instead.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="PropertyValueChanging"/> instead.</note>
     void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue);
 
     /// <summary>
@@ -193,8 +201,8 @@ namespace Remotion.Data.DomainObjects
     /// <param name="valueAccess">A value indicating whether the current or the original value is being accessed.</param>
     /// <remarks>
     ///   Use this method to cancel the operation, whereas <see cref="RelationRead"/> should be used to perform actions on its successful execution.
+    /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, ValueAccess valueAccess);
 
     /// <summary>
@@ -212,8 +220,8 @@ namespace Remotion.Data.DomainObjects
     ///   <para>
     ///     If the opposite object was not loaded yet, <see cref="ObjectsLoaded"/> is invoked before this method.
     ///   </para>
+    /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationReading"/> instead.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationReading"/> instead.</note>
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject relatedObject, ValueAccess valueAccess);
 
     /// <summary>
@@ -233,8 +241,8 @@ namespace Remotion.Data.DomainObjects
     ///   <para>
     ///     If the opposite objects were not loaded yet, <see cref="ObjectsLoaded"/> is invoked before this method.
     ///   </para>
+    /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationReading"/> instead.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationReading"/> instead.</note>
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObjectCollection relatedObjects, ValueAccess valueAccess);
 
     /// <summary>
@@ -274,8 +282,8 @@ namespace Remotion.Data.DomainObjects
     ///   <para>
     ///     If the opposite object(s) was/were not loaded yet, <see cref="ObjectsLoaded"/> is invoked before this method.
     ///   </para>
+    /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject);
 
     /// <summary>
@@ -291,8 +299,8 @@ namespace Remotion.Data.DomainObjects
     ///   <para>
     ///     The <see cref="DomainObject.RelationChanged"/> events are fired after this method is invoked.
     ///   </para>
+    /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationChanging"/> instead.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationChanging"/> instead.</note>
     void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, string propertyName);
 
     /// <summary>
@@ -306,8 +314,8 @@ namespace Remotion.Data.DomainObjects
     ///   <para>
     ///     If some objects that were returned by the query were not loaded yet, <see cref="ObjectsLoaded"/> is invoked before this method.
     ///   </para>
+    /// <note type="inotes">The implementation of this method must not throw an exception.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method must not throw an exception.</note>
     void FilterQueryResult (ClientTransaction clientTransaction, DomainObjectCollection queryResult, IQuery query);
 
     /// <summary>
@@ -322,8 +330,8 @@ namespace Remotion.Data.DomainObjects
     ///     The <see cref="DomainObject.Committing"/> events are fired before this method is invoked, 
     ///     whereas <see cref="ClientTransaction.Committing"/> is fired after it.
     ///   </para>
+    /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     void Committing (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects);
 
     /// <summary>
@@ -338,8 +346,8 @@ namespace Remotion.Data.DomainObjects
     ///   <para>
     ///     The events <see cref="DomainObject.Committed"/> and <see cref="ClientTransaction.Committed"/> are fired before this method is invoked. 
     ///   </para>
+    /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="Committing"/> instead.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="Committing"/> instead.</note>
     void Committed (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects);
 
     /// <summary>
@@ -350,8 +358,8 @@ namespace Remotion.Data.DomainObjects
     /// <param name="changedDomainObjects">A read-only <see cref="DomainObjectCollection"/> holding all changed <see cref="DomainObject"/>s that are being rolled back.</param>
     /// <remarks>
     ///   <para>Use this method to cancel the operation, whereas <see cref="RolledBack"/> should be used to perform actions on its successful execution.</para>
+    /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     void RollingBack (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects);
 
     /// <summary>
@@ -361,8 +369,8 @@ namespace Remotion.Data.DomainObjects
     /// <param name="changedDomainObjects">A read-only <see cref="DomainObjectCollection"/> holding all changed <see cref="DomainObject"/>s that are being rolled back.</param>
     /// <remarks>
     ///   Use this method to perform actions on a successful execution, whereas <see cref="RollingBack"/> should be used to cancel the operation.
+    /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RollingBack"/> instead.</note>
     /// </remarks>
-    /// <note type="implementnotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RollingBack"/> instead.</note>
     void RolledBack (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects);
   }
 }
