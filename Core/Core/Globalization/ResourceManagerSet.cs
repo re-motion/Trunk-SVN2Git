@@ -23,7 +23,7 @@ namespace Remotion.Globalization
   /// </summary>
   public class ResourceManagerSet : ReadOnlyCollection<IResourceManager>, IResourceManager
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (ResourceManagerWrapper));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (ResourceManagerSet));
 
     private string _name;
 
