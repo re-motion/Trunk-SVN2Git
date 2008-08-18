@@ -146,7 +146,7 @@ namespace Remotion.Text.Diagnostic
 
     public void CollectionToText (IEnumerable collection, ToTextBuilder toTextBuilder)
     {
-      toTextBuilder.AppendCollection(collection);
+      toTextBuilder.AppendEnumerable(collection);
     }
 
     //public void CollectionToText (IEnumerable collection, ToTextBuilder toTextBuilder)
@@ -176,59 +176,62 @@ namespace Remotion.Text.Diagnostic
 
 
 
-    private class ArrayToTextProcessor : OuterProduct.ProcessorBase
-    {
-      protected readonly Array _array;
-      private ToTextBuilder _toTextColllector;
-      //public readonly StringBuilder _result = new StringBuilder ();
+    //private class ArrayToTextProcessor : OuterProduct.ProcessorBase
+    //{
+    //  protected readonly Array _array;
+    //  private ToTextBuilder _toTextColllector;
+    //  //public readonly StringBuilder _result = new StringBuilder ();
 
-      public ArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
-      {
-        _array = rectangularArray;
-        _toTextColllector = toTextBuilder;
-      }
+    //  public ArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
+    //  {
+    //    _array = rectangularArray;
+    //    _toTextColllector = toTextBuilder;
+    //  }
 
-      public override bool DoBeforeLoop ()
-      {
-        if (ProcessingState.IsInnermostLoop)
-        {
-          _toTextColllector.s (ProcessingState.IsFirstLoopElement ? "" : ",");
-          _toTextColllector.ToText  (_array.GetValue (ProcessingState.DimensionIndices));
-        }
-        else
-        {
-          _toTextColllector.s (ProcessingState.IsFirstLoopElement ? "" : ",");
-          _toTextColllector.s ("{");
-        }
-        return true;
-      }
+    //  public override bool DoBeforeLoop ()
+    //  {
+    //    if (ProcessingState.IsInnermostLoop)
+    //    {
+    //      _toTextColllector.s (ProcessingState.IsFirstLoopElement ? "" : ",");
+    //      _toTextColllector.ToText  (_array.GetValue (ProcessingState.DimensionIndices));
+    //    }
+    //    else
+    //    {
+    //      _toTextColllector.s (ProcessingState.IsFirstLoopElement ? "" : ",");
+    //      _toTextColllector.s ("{");
+    //    }
+    //    return true;
+    //  }
 
-      public override bool DoAfterLoop ()
-      {
-        if (!ProcessingState.IsInnermostLoop)
-        {
-          _toTextColllector.s ("}");
-        }
-        return true;
-      }
+    //  public override bool DoAfterLoop ()
+    //  {
+    //    if (!ProcessingState.IsInnermostLoop)
+    //    {
+    //      _toTextColllector.s ("}");
+    //    }
+    //    return true;
+    //  }
 
-      //public String GetResult ()
-      //{
-      //  return "{" + _toTextColllector.ToString () + "}";
-      //}
-    }
+    //  //public String GetResult ()
+    //  //{
+    //  //  return "{" + _toTextColllector.ToString () + "}";
+    //  //}
+    //}
+
+    //public void ArrayToText (Array array, ToTextBuilder toTextBuilder)
+    //{
+    //  var outerProduct = new OuterProduct (array);
+    //  toTextBuilder.AppendString("{");
+    //  var processor = new ArrayToTextProcessor (array, toTextBuilder);
+    //  outerProduct.ProcessOuterProduct (processor);
+    //  toTextBuilder.AppendString ("}");
+    //  //return processor.GetResult ();
+    //}
 
     public void ArrayToText (Array array, ToTextBuilder toTextBuilder)
     {
-      var outerProduct = new OuterProduct (array);
-      toTextBuilder.AppendString("{");
-      var processor = new ArrayToTextProcessor (array, toTextBuilder);
-      outerProduct.ProcessOuterProduct (processor);
-      toTextBuilder.AppendString ("}");
-      //return processor.GetResult ();
+      toTextBuilder.AppendArray(array);
     }
-
-
 
 
 

@@ -171,7 +171,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       var toTextBuilder = GetTextBuilder ();
       var list = New.List (New.List (5, 3, 1), New.List(11,13,17));
-      toTextBuilder.AppendCollection (list);
+      toTextBuilder.AppendEnumerable (list);
       var result = toTextBuilder.ToString ();
       Log(result);
       Assert.That (result, Is.EqualTo ("{{5,3,1},{11,13,17}}"));
@@ -182,6 +182,42 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       var toTextBuilder = GetTextBuilder ();
       var list = New.List(New.List(New.List("A", "B", "C")));
+      toTextBuilder.collection (list);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{{{A,B,C}}}"));
+    }
+
+    [Test]
+    public void AppendArray2DTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      //var array = new int[][] {new int[] {1,2},new int[] {3,4},new int[] {5,6}};
+      var array = New.Array (New.Array(1,2),New.Array(3,4),New.Array(5,6));
+      toTextBuilder.AppendArray (array);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{{1,2},{3,4},{5,6}}"));
+    }
+
+    [Test]
+    public void AppendArray3DTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      //var array = new int[][] {new int[] {1,2},new int[] {3,4},new int[] {5,6}};
+      var array = New.Array (New.Array (New.Array (1, 3), New.Array (5, 7)), New.Array (New.Array (11, 13), New.Array (17, 19)), New.Array (New.Array (23, 29), New.Array (31, 37)));
+      toTextBuilder.AppendArray (array);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{{{1,3},{5,7}},{{11,13},{17,19}},{{23,29},{31,37}}}"));
+    }
+
+
+    [Test]
+    public void arrayTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      var list = New.List (New.List (New.List ("A", "B", "C")));
       toTextBuilder.collection (list);
       var result = toTextBuilder.ToString ();
       Log (result);

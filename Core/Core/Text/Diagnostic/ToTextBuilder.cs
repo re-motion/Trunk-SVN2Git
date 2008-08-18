@@ -98,7 +98,7 @@ namespace Remotion.Text.Diagnostic
       return this;
     }
 
-    public ToTextBuilder AppendCollection (IEnumerable collection)
+    public ToTextBuilder AppendEnumerable (IEnumerable collection)
     {
       const string sequenceStart = "{";
       const string sequenceSeperator = ",";
@@ -120,6 +120,56 @@ namespace Remotion.Text.Diagnostic
         ToText (element);
       }
       Append (sequenceEnd);
+      return this;
+    }
+
+
+
+    private class ArrayToTextProcessor : OuterProduct.ProcessorBase
+    {
+      protected readonly Array _array;
+      private ToTextBuilder _toTextBuilder;
+      //public readonly StringBuilder _result = new StringBuilder ();
+
+      public ArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
+      {
+        _array = rectangularArray;
+        _toTextBuilder = toTextBuilder;
+      }
+
+      public override bool DoBeforeLoop ()
+      {
+        if (ProcessingState.IsInnermostLoop)
+        {
+          _toTextBuilder.s (ProcessingState.IsFirstLoopElement ? "" : ",");
+          _toTextBuilder.ToText (_array.GetValue (ProcessingState.DimensionIndices));
+        }
+        else
+        {
+          _toTextBuilder.s (ProcessingState.IsFirstLoopElement ? "" : ",");
+          _toTextBuilder.s ("{");
+        }
+        return true;
+      }
+
+      public override bool DoAfterLoop ()
+      {
+        if (!ProcessingState.IsInnermostLoop)
+        {
+          _toTextBuilder.s ("}");
+        }
+        return true;
+      }
+    }
+
+
+    public ToTextBuilder AppendArray (Array array)
+    {
+      var outerProduct = new OuterProduct (array);
+      AppendString ("{");
+      var processor = new ArrayToTextProcessor (array, this);
+      outerProduct.ProcessOuterProduct (processor);
+      AppendString ("}");
       return this;
     }
 
@@ -212,10 +262,14 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder collection (IEnumerable collection)
     {
-      return AppendCollection (collection);
+      return AppendEnumerable (collection);
     }
 
 
+    public ToTextBuilder array (Array array)
+    {
+      return AppendArray (array);
+    }
 
 
 

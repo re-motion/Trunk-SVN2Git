@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using System.Collections.Generic;
@@ -8,6 +9,15 @@ namespace Remotion.UnitTests.Text.Diagnostic
   [NUnit.Framework.TestFixture]
   public class NewTest
   {
+
+    [Test]
+    public void NewArrayTest ()
+    {
+      var collection = New.Array (New.Array(7, 11),New.Array( 13, 17));
+      var collectionExpected = new int[][] { new int[] { 7, 11 }, new int[] { 13, 17 } };
+      Assert.That (collection, Is.EqualTo (collectionExpected));
+    }
+
 
     [Test]
     public void NewListTest ()

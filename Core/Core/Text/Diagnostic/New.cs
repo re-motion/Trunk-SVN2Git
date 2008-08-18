@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Remotion.Text.Diagnostic
@@ -7,6 +8,7 @@ namespace Remotion.Text.Diagnostic
   /// </summary>
   /// <example><code>
   /// <![CDATA[  
+  /// var array = New.Array (New.Array(7, 11),New.Array( 13, 17));
   /// var listList = New.List( New.List(1,2), New.List(3,4) );
   /// var queue = New.Queue("process","emit0","wait");
   /// var d = New.Dictionary("A",1, "B",2, "C",3); // d["A"]=1, d["B"]=2,...
@@ -14,6 +16,17 @@ namespace Remotion.Text.Diagnostic
   /// </code></example>
   public partial class New
   {
+
+    public static T[] Array<T> (params T[] values)
+    {
+      //var container = new T[values.Length];
+      //foreach (var t in values)
+      //{
+      //  container.;
+      //}
+      return values;
+    }
+
     public static List<T> List<T> (params T[] values)
     {
       var container = new List<T> (values);
@@ -85,5 +98,6 @@ namespace Remotion.Text.Diagnostic
       return container;
     }
 
+ 
   }
 }
