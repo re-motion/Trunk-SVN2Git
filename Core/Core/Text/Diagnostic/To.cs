@@ -14,7 +14,7 @@ namespace Remotion.Text.Diagnostic
       // *) Type handler registered
       // *) Is string (Treat seperately to prevent from being treated as IEnumerable)
       // *) Is rectangular array (Treat seperately to prevent from being treated as 1D-collection by IEnumerable)
-      // *) Implements IToText
+      // *) Implements IToTextHandler
       // *) If !IsInterface: Base type handler registered (recursive)
       // *) Implements IEnumerable ("is container")
       // *) If enabled: Log properties through reflection
@@ -166,12 +166,12 @@ namespace Remotion.Text.Diagnostic
 
 
 
-    public static void Log (string s)
+    private static void Log (string s)
     {
       Console.WriteLine ("[To]: " + s);
     }
 
-    public static void LogVariables (string format, params object[] parameterArray)
+    private static void LogVariables (string format, params object[] parameterArray)
     {
       Log (String.Format (format, parameterArray));
     }
