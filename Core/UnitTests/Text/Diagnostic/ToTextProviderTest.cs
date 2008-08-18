@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Logging;
 using Remotion.Text.Diagnostic;
 
 namespace Remotion.UnitTests.Text.Diagnostic
@@ -322,16 +323,11 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
 
+    // Logging
+    private static readonly ILog s_log = LogManager.GetLogger (typeof(ToTextBuilderTest));
+    static ToTextProviderTest() { LogManager.InitializeConsole (); }
+    public static void Log (string s) { s_log.Info (s); }
 
-    public static void Log (string s)
-    {
-      Console.WriteLine (s);
-    }
-
-    public static void LogVariables (string format, params object[] parameterArray)
-    {
-      Log (String.Format (format, parameterArray));
-    }
 
   }
 

@@ -438,6 +438,7 @@
     <Compile Include="Text\CommandLine\Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Text\Diagnostic\New.cs" />
     <Compile Include="Text\Diagnostic\OuterProduct.cs" />
     <Compile Include="Text\Diagnostic\To.cs" />
     <Compile Include="Text\Diagnostic\ToTextProvider.cs" />

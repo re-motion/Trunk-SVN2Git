@@ -2,22 +2,24 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Logging;
 using Remotion.Text.Diagnostic;
 
 namespace Remotion.UnitTests.Text.Diagnostic
 {
-  internal class New
-  {
-    static public List<T> List<T>(params T[] values)
-    {
-      var list = new List<T>(values);
-      return list;
-    }
-  }
+  //internal class New
+  //{
+  //  static public List<T> List<T>(params T[] values)
+  //  {
+  //    var list = new List<T>(values);
+  //    return list;
+  //  }
+  //}
 
   [NUnit.Framework.TestFixture]
   public class ToTextBuilderTest
   {
+
     [Test]
     public void StringTest ()
     {
@@ -115,7 +117,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
       var toTextBuilder = GetTextBuilder ();
       toTextBuilder.s("START-").nl.tab.sf ("[{0};{1};{2}]", i, f, s).space.s("-END");
       var result = toTextBuilder.ToString ();
-      Log(result);
+      //Log(result);
+      s_log.Info(result);
       Assert.That (result, Is.EqualTo ("START-" + Environment.NewLine + "\t[987654321;3,14;Text] -END"));
     }
 
@@ -164,6 +167,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
 
+
+
     public static ToTextBuilder GetTextBuilder ()
     {
       var toTextProvider = new ToTextProvider(); 
@@ -172,16 +177,10 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
 
 
-    public static void Log (string s)
-    {
-      Console.WriteLine (s);
-    }
-
-    public static void LogVariables (string format, params object[] parameterArray)
-    {
-      Log (String.Format (format, parameterArray));
-    }
-
+    // Logging
+    private static readonly ILog s_log = LogManager.GetLogger (typeof(ToTextBuilderTest));
+    static ToTextBuilderTest() { LogManager.InitializeConsole (); }
+    public static void Log (string s) { s_log.Info (s); }
 
   }
 
