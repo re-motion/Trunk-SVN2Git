@@ -146,28 +146,33 @@ namespace Remotion.Text.Diagnostic
 
     public void CollectionToText (IEnumerable collection, ToTextBuilder toTextBuilder)
     {
-      const string start = "{";
-      const string seperator = ",";
-      const string end = "}";
-      //var sb = new StringBuilder ();
-
-      toTextBuilder.Append (start);
-      bool insertSeperator = false; // no seperator before first element
-      foreach (Object element in collection)
-      {
-        if (insertSeperator)
-        {
-          toTextBuilder.Append (seperator);
-        }
-        else
-        {
-          insertSeperator = true;
-        }
-
-        toTextBuilder.ToText (element);
-      }
-      toTextBuilder.Append (end);
+      toTextBuilder.AppendCollection(collection);
     }
+
+    //public void CollectionToText (IEnumerable collection, ToTextBuilder toTextBuilder)
+    //{
+    //  const string start = "{";
+    //  const string seperator = ",";
+    //  const string end = "}";
+    //  //var sb = new StringBuilder ();
+
+    //  toTextBuilder.Append (start);
+    //  bool insertSeperator = false; // no seperator before first element
+    //  foreach (Object element in collection)
+    //  {
+    //    if (insertSeperator)
+    //    {
+    //      toTextBuilder.Append (seperator);
+    //    }
+    //    else
+    //    {
+    //      insertSeperator = true;
+    //    }
+
+    //    toTextBuilder.ToText (element);
+    //  }
+    //  toTextBuilder.Append (end);
+    //}
 
 
 

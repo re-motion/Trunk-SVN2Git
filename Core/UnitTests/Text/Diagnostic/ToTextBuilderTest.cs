@@ -166,7 +166,27 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (result, Is.EqualTo ("myList:{5,3,1}"));
     }
 
+    [Test]
+    public void AppendCollectionTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      var list = New.List (New.List (5, 3, 1), New.List(11,13,17));
+      toTextBuilder.AppendCollection (list);
+      var result = toTextBuilder.ToString ();
+      Log(result);
+      Assert.That (result, Is.EqualTo ("{{5,3,1},{11,13,17}}"));
+    }
 
+    [Test]
+    public void collectionTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      var list = New.List(New.List(New.List("A", "B", "C")));
+      toTextBuilder.collection (list);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{{{A,B,C}}}"));
+    }   
 
 
     public static ToTextBuilder GetTextBuilder ()

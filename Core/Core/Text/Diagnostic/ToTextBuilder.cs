@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Remotion.Text.Diagnostic
@@ -96,6 +98,33 @@ namespace Remotion.Text.Diagnostic
       return this;
     }
 
+    public ToTextBuilder AppendCollection (IEnumerable collection)
+    {
+      const string sequenceStart = "{";
+      const string sequenceSeperator = ",";
+      const string sequenceEnd = "}";
+
+      Append (sequenceStart);
+      bool insertSeperator = false; // no seperator before first element
+      foreach (Object element in collection)
+      {
+        if (insertSeperator)
+        {
+          Append (sequenceSeperator);
+        }
+        else
+        {
+          insertSeperator = true;
+        }
+
+        ToText (element);
+      }
+      Append (sequenceEnd);
+      return this;
+    }
+
+
+
     public ToTextBuilder AppendToText (Object o)
     {
       _toTextProvider.ToText (o, this);
@@ -181,6 +210,13 @@ namespace Remotion.Text.Diagnostic
       return AppendObjectToString (o);
     }
 
+    public ToTextBuilder collection (IEnumerable collection)
+    {
+      return AppendCollection (collection);
+    }
+
+
+
 
 
     public override string ToString ()
@@ -194,5 +230,7 @@ namespace Remotion.Text.Diagnostic
       _toTextProvider.ToText(o, this);
       return this;
     }
+
+
   }
 }
