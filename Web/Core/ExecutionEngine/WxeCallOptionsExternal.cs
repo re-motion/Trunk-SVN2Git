@@ -13,6 +13,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  /// <summary>
+  /// Use the <see cref="WxeCallOptionsExternal"/> type if you whish to execute a <see cref="WxeFunction"/> as a new root function, 
+  /// typically in a new window. The <see cref="WxeFunction"/> will be initialized on the server and then opened via a Javascript call.
+  /// </summary>
   public class WxeCallOptionsExternal : WxeCallOptions
   {
     private readonly string _target;

@@ -13,6 +13,11 @@ using System.Collections.Specialized;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  /// <summary>
+  /// Use the <see cref="WxePermaUrlOptions"/> to specify that the user should be provided with a perma-URL to the <see cref="WxeFunction"/> in the 
+  /// browser's location bar. Use the <see cref="Null"/> value of the <see cref="WxePermaUrlOptions"/> if you do not wish to create a perma-URL for
+  /// the <see cref="WxeFunction"/>.
+  /// </summary>
   public sealed class WxePermaUrlOptions : INullObject
   {
     public static readonly WxePermaUrlOptions Null = new WxePermaUrlOptions (false, false, null);

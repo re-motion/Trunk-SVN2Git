@@ -13,6 +13,11 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  /// <summary>
+  /// The <see cref="WxeCallOptions"/> type represents the most generic of options for executing a <see cref="WxeFunction"/>, namely it only controls
+  /// whether the useer should be presented with a perma-URL to the <see cref="WxeFunction"/>.
+  /// Use the derived types if you require additional control over the <see cref="WxeFunction"/>'s execution.
+  /// </summary>
   public class WxeCallOptions
   {
     private readonly WxePermaUrlOptions _permaUrlOptions;

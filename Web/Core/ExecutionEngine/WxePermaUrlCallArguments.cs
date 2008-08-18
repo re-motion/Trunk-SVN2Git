@@ -13,6 +13,10 @@ using System.Collections.Specialized;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  /// <summary>
+  /// Use an instance of the <see cref="WxePermaUrlCallArguments"/> to execute a sub-function within the same window while providing a perma-URL
+  /// in the browser's location bar.
+  /// </summary>
   public sealed class WxePermaUrlCallArguments : WxeCallArgumentsBase
   {
     public WxePermaUrlCallArguments ()

@@ -18,14 +18,15 @@ namespace Remotion.Web.ExecutionEngine
   /// <remarks>
   /// <para>
   ///   The usage pattern is to pass the <see cref="IWxeCallArguments"/> and the <see cref="WxeFunction"/> to the <see cref="IWxePage.ExecuteFunction"/>
-  ///   method defined by the <see cref="IWxePage"/>. This methood then invokes the <see cref="Dispatch"/> method, passing the page's 
-  ///   <see cref="IWxeExecutor"/> and the <see cref="WxeFunction"/>. It is the <see cref="Dispatch"/> method's responsibility to correctly 
-  ///   execute the <see cref="WxeFunction"/> with the help of the <see cref="IWxeExecutor"/> and using the call arguments
-  ///   that are part of this <see cref="IWxeCallArguments"/> object.
+  ///   method defined by the <see cref="IWxePage"/>. This methood then invokes the <see cref="Dispatch"/> method, passing the <see cref="IWxeExecutor"/>
+  ///   for the <see cref="IWxePage"/> and the <see cref="WxeFunction"/>. It is the <see cref="Dispatch"/> method's responsibility to correctly 
+  ///   execute the <see cref="WxeFunction"/> with the help of the <see cref="IWxeExecutor"/> and using the state of this <see cref="IWxeCallArguments"/> object.
   /// </para>
   /// <para>
   ///   Use the <see cref="WxeCallArguments.Default"/> instance exposed on the <see cref="WxeCallArguments"/> type if your usecase is to simply
-  ///   invoke a sub-function on your page.   
+  ///   invoke a sub-function on your page. If you whish to execute the function with more advanced <see cref="WxeCallOptions"/>, isntantiate an 
+  ///   instance of the <see cref="WxeCallArguments"/> type. Finally, the <see cref="WxePermaUrlCallArguments"/> type is used if simply wish to
+  ///   display a perma-URL in the browser's location-bar.
   /// </para>
   /// <para>
   ///   The <b>WxeGen</b> also allows for a simplified syntax by providing static <b>Call</b> methods on each page that will accept all required 

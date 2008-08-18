@@ -13,6 +13,13 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  /// <summary>
+  /// The <see cref="WxeCallArgumentsBase"/> type is the default implementation of <see cref="IWxeCallArguments"/> and acts as the base type for
+  /// the <see cref="WxeCallArguments"/> and <see cref="WxePermaUrlCallArguments"/> types.
+  /// </summary>
+  /// <remarks>
+  /// <note type="inotes">Override the <see cref="Dispatch"/> method to control the execution of the <see cref="WxeFunction"/>.</note>
+  /// </remarks>
   public class WxeCallArgumentsBase : IWxeCallArguments
   {
     private readonly WxeCallOptions _options;
