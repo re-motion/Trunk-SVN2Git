@@ -1,7 +1,17 @@
 using System.Collections.Generic;
 
-namespace Remotion.UnitTests.Text.Diagnostic
+namespace Remotion.Text.Diagnostic
 {
+  /// <summary>
+  /// Supplies factories to easily create instances of complex objects such as containers.
+  /// </summary>
+  /// <example><code>
+  /// <![CDATA[  
+  /// var listList = New.List( New.List(1,2), New.List(3,4) );
+  /// var queue = New.Queue("process","emit0","wait");
+  /// var d = New.Dictionary("A",1, "B",2, "C",3); // d["A"]=1, d["B"]=2,...
+  /// ]]>
+  /// </code></example>
   public partial class New
   {
     public static List<T> List<T> (params T[] values)
@@ -10,8 +20,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
       return container;
     }
 
-    
-    
+
+
     public static Queue<T> Queue<T> (params T[] values)
     {
       var container = new Queue<T> (values);
@@ -35,7 +45,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       var container = new Dictionary<TKey, TValue> (keyValuePairs.Length);
       foreach (var pair in keyValuePairs)
       {
-        container.Add (pair.Key,pair.Value);
+        container.Add (pair.Key, pair.Value);
       }
 
       return container;
@@ -74,6 +84,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
       container[key3] = value3;
       return container;
     }
-  
+
   }
 }

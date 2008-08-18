@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using System.Collections.Generic;
+using Remotion.Text.Diagnostic;
 
 namespace Remotion.UnitTests.Text.Diagnostic
 {
