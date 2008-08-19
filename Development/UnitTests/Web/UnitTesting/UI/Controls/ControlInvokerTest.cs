@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Specialized;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -29,9 +30,12 @@ namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
     // member fields
 
     private HttpContext _currentHttpContext;
+    
+    private PageMock _page;
     private PlaceHolder _parent;
     private Literal _child;
 
+    private PageMock _pageAfterPostBack;
     private PlaceHolder _parentAfterPostBack;
     private Literal _childAfterPostBack;
   
@@ -54,11 +58,16 @@ namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
       _currentHttpContext = HttpContextHelper.CreateHttpContext ("GET", "default.html", null);
       HttpContextHelper.SetCurrent (_currentHttpContext);
 
+      _page = new PageMock ();
+      _page.SetRequestValueCollection (new NameValueCollection ());
+      _currentHttpContext.Handler = _page;
+
       _parent = new PlaceHolder();
       _parent.ID = "Parent";
       _parent.Init += new EventHandler (Control_Init);
       _parent.Load += new EventHandler (Control_Load);
       _parent.PreRender += new EventHandler (Control_PreRender);
+      _page.Controls.Add (_parent);
 
       _child = new Literal();
       _child.ID = "Child";
@@ -70,11 +79,17 @@ namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
 
       _invoker = new ControlInvoker (_parent);
 
+
+      _pageAfterPostBack = new PageMock ();
+      _pageAfterPostBack.SetRequestValueCollection (new NameValueCollection ());
+      _currentHttpContext.Handler = _pageAfterPostBack;
+
       _parentAfterPostBack = new PlaceHolder();
       _parentAfterPostBack.ID = "Parent";
       _parentAfterPostBack.Init += new EventHandler (Control_Init);
       _parentAfterPostBack.Load += new EventHandler (Control_Load);
       _parentAfterPostBack.PreRender += new EventHandler (Control_PreRender);
+      _pageAfterPostBack.Controls.Add (_parentAfterPostBack);
 
       _childAfterPostBack = new Literal();
       _childAfterPostBack.ID = "Child";
@@ -118,7 +133,6 @@ namespace Remotion.Development.UnitTests.Web.UnitTesting.UI.Controls
     }
 
     [Test]
-    [Ignore ("LoadViewStateRecursive requires a posted back Page.")]
     public void TestViewState ()
     {
       _invoker.InitRecursive();
