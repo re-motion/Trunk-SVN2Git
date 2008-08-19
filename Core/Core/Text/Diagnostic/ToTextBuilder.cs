@@ -26,7 +26,6 @@ namespace Remotion.Text.Diagnostic
     private class ToTextStringBuilder
     {
       private StringBuilder _stringBuilder = new StringBuilder ();
-      //private bool enabled = true;
 
       public ToTextStringBuilder()
       {
@@ -50,8 +49,7 @@ namespace Remotion.Text.Diagnostic
       }
     }
 
-    //private StringBuilder _stringBuilder = new StringBuilder();
-    private ToTextStringBuilder _stringBuilder = new ToTextStringBuilder ();
+    private ToTextStringBuilder _toTextStringBuilder = new ToTextStringBuilder ();
     private ToTextProvider _toTextProvider;
     
     private string _enumerableBegin = "{";
@@ -90,7 +88,7 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(OutputComplexityLevel complexityLevel)
     {
-      _stringBuilder.Enabled = (_outputComplexity >= complexityLevel) ? true : false;
+      _toTextStringBuilder.Enabled = (_outputComplexity >= complexityLevel) ? true : false;
       return this; 
     }
 
@@ -141,7 +139,7 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder AppendString (string s)
     {
-      _stringBuilder.Append (s);
+      _toTextStringBuilder.Append (s);
       return this;
     }
 
@@ -149,59 +147,59 @@ namespace Remotion.Text.Diagnostic
     {
       if (_useMultiline)
       {
-        _stringBuilder.Append (System.Environment.NewLine);
+        _toTextStringBuilder.Append (System.Environment.NewLine);
       }
       return this;
     }
 
     public ToTextBuilder AppendSpace ()
     {
-      _stringBuilder.Append (" ");
+      _toTextStringBuilder.Append (" ");
       return this;
     }
 
     public ToTextBuilder AppendTabulator ()
     {
-      _stringBuilder.Append ("\t");
+      _toTextStringBuilder.Append ("\t");
       return this;
     }
 
     public ToTextBuilder AppendSeperator ()
     {
-      _stringBuilder.Append (",");
+      _toTextStringBuilder.Append (",");
       return this;
     }
 
     public ToTextBuilder AppendComma ()
     {
-      _stringBuilder.Append (",");
+      _toTextStringBuilder.Append (",");
       return this;
     }
 
     public ToTextBuilder AppendColon ()
     {
-      _stringBuilder.Append (":");
+      _toTextStringBuilder.Append (":");
       return this;
     }
 
     public ToTextBuilder AppendSemiColon ()
     {
-      _stringBuilder.Append (";");
+      _toTextStringBuilder.Append (";");
       return this;
     }
 
 
     private ToTextBuilder AppendObjectToString (object o)
     {
-      _stringBuilder.Append (o.ToString());
+      _toTextStringBuilder.Append (o.ToString());
       return this;
     }
 
 
     public ToTextBuilder AppendMember (string name, Object o)
     {
-      _stringBuilder.Append (name);
-      _stringBuilder.Append (":");
+      _toTextStringBuilder.Append (name);
+      _toTextStringBuilder.Append (":");
       _toTextProvider.ToText (o, this);
       return this;
     }
@@ -247,10 +245,6 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder AppendEnumerable (IEnumerable collection)
     {
-      //const string sequenceStart = "{";
-      //const string sequenceSeperator = ",";
-      //const string sequenceEnd = "}";
-
       Append (EnumerableBegin);
       bool insertSeperator = false; // no seperator before first element
       foreach (Object element in collection)
@@ -276,7 +270,6 @@ namespace Remotion.Text.Diagnostic
     {
       protected readonly Array _array;
       private readonly ToTextBuilder _toTextBuilder;
-      //public readonly StringBuilder _result = new StringBuilder ();
 
       public ArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
       {
@@ -294,9 +287,6 @@ namespace Remotion.Text.Diagnostic
         }
         else
         {
-          //_toTextBuilder.AppendString (ProcessingState.IsFirstLoopElement ? "" : ",");
-          //_toTextBuilder.AppendString ("{");
-          //InsertSeperator ();
           _toTextBuilder.AppendString (_toTextBuilder.ArrayBegin);
         }
         return true;
@@ -306,7 +296,6 @@ namespace Remotion.Text.Diagnostic
       {
         if (!ProcessingState.IsInnermostLoop)
         {
-          //_toTextBuilder.AppendString ("}");
           _toTextBuilder.AppendString (_toTextBuilder.ArrayEnd);
         }
         return true;
@@ -360,8 +349,8 @@ namespace Remotion.Text.Diagnostic
 
     public bool Enabled
     {
-      get { return _stringBuilder.Enabled;  } 
-      set { _stringBuilder.Enabled = value;  } 
+      get { return _toTextStringBuilder.Enabled;  } 
+      set { _toTextStringBuilder.Enabled = value;  } 
     }
 
 
@@ -453,12 +442,11 @@ namespace Remotion.Text.Diagnostic
 
     public override string ToString ()
     {
-      return _stringBuilder.ToString();
+      return _toTextStringBuilder.ToString();
     }
 
     public ToTextBuilder ToText (object o)
     {
-      //throw new NotImplementedException();
       _toTextProvider.ToText(o, this);
       return this;
     }

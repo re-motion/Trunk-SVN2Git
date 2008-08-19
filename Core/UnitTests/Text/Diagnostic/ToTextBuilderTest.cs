@@ -7,15 +7,6 @@ using Remotion.Text.Diagnostic;
 
 namespace Remotion.UnitTests.Text.Diagnostic
 {
-  //internal class New
-  //{
-  //  static public List<T> List<T>(params T[] values)
-  //  {
-  //    var list = new List<T>(values);
-  //    return list;
-  //  }
-  //}
-
   [NUnit.Framework.TestFixture]
   public class ToTextBuilderTest
   {
@@ -117,7 +108,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
       var toTextBuilder = GetTextBuilder ();
       toTextBuilder.s("START-").nl.tab.sf ("[{0};{1};{2}]", i, f, s).space.s("-END");
       var result = toTextBuilder.ToString ();
-      //Log(result);
       s_log.Info(result);
       Assert.That (result, Is.EqualTo ("START-" + Environment.NewLine + "\t[987654321;3,14;Text] -END"));
     }
@@ -127,7 +117,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void tsTest ()
     {
       var toTextBuilder = GetTextBuilder ();
-      //var list = new List<int> () { 5, 3, 1 };
       var o = new Object();
       toTextBuilder.ts (o);
       var result = toTextBuilder.ToString ();
@@ -204,7 +193,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void AppendArray3DTest ()
     {
       var toTextBuilder = GetTextBuilder ();
-      //var array = new int[][] {new int[] {1,2},new int[] {3,4},new int[] {5,6}};
       var array = New.Array (New.Array (New.Array (1, 3), New.Array (5, 7)), New.Array (New.Array (11, 13), New.Array (17, 19)), New.Array (New.Array (23, 29), New.Array (31, 37)));
       toTextBuilder.AppendArray (array);
       var result = toTextBuilder.ToString ();
@@ -297,7 +285,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void OutputComplexityTest ()
     {
       var toTextBuilder = GetTextBuilder ();
-      //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Complex;
       toTextBuilder.OutputComplex();
       Assert.That (toTextBuilder.OutputComplexity, Is.EqualTo (ToTextBuilder.OutputComplexityLevel.Complex));
     }
@@ -307,12 +294,10 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       var toTextBuilder = GetTextBuilder ();
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
-      //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Skeleton;
       toTextBuilder.OutputSkeleton();
       toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(ToTextBuilder.OutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (false));
 
-      //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Basic;
       toTextBuilder.OutputBasic();
       toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
@@ -337,7 +322,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       {
         var toTextBuilder = GetTextBuilder ();
-        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Disable;
         toTextBuilder.OutputDisable();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo (""));
@@ -345,7 +329,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
       {
         var toTextBuilder = GetTextBuilder ();
-        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Skeleton;
         toTextBuilder.OutputSkeleton ();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("s"));
@@ -353,7 +336,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
       {
         var toTextBuilder = GetTextBuilder ();
-        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Basic;
         toTextBuilder.OutputBasic(); 
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,s"));
@@ -361,7 +343,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
       {
         var toTextBuilder = GetTextBuilder ();
-        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Medium;
         toTextBuilder.OutputMedium(); 
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,m,s"));
@@ -369,7 +350,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
       {
         var toTextBuilder = GetTextBuilder ();
-        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Complex;
         toTextBuilder.OutputComplex();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,c,m,s"));
@@ -377,7 +357,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
       {
         var toTextBuilder = GetTextBuilder ();
-        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Full;
         toTextBuilder.OutputFull();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,c,f,m,s"));
