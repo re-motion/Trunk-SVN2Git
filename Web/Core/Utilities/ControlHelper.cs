@@ -10,12 +10,15 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reflection;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
@@ -207,54 +210,131 @@ namespace Remotion.Web.Utilities
       }
     }
 
-    /// <summary> Encapsulates the invokation of <see cref="Control"/>'s LoadViewStateRecursive method. </summary>
+    /// <summary> Encapsulates the invocation of <see cref="Control"/>'s LoadViewStateRecursive method. </summary>
     /// <param name="target"> The <see cref="Control"/> to be restored. </param>
     /// <param name="viewState"> The view state object used for restoring. </param>
     public static void LoadViewStateRecursive (Control target, object viewState)
     {
       ArgumentUtility.CheckNotNull ("target", target);
 
-      const BindingFlags bindingFlags = BindingFlags.DeclaredOnly
-                                      | BindingFlags.Instance
-                                      | BindingFlags.NonPublic
-                                      | BindingFlags.InvokeMethod;
-
       //  HACK: Reflection on internal void Control.LoadViewStateRecursive (object)
       //  internal void System.Web.UI.Control.LoadViewStateRecursive (object)
-      typeof (Control).InvokeMember ("LoadViewStateRecursive", bindingFlags, null, target, new object[] { viewState });
+      MethodCaller.CallAction ("LoadViewStateRecursive", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic)
+        .With (target, viewState);
     }
 
-    /// <summary> Encapsulates the invokation of <see cref="Control"/>'s SaveViewStateRecursive method. </summary>
+    /// <summary> Encapsulates the invocation of <see cref="Control"/>'s SaveViewStateRecursive method. </summary>
     /// <param name="target"> The <see cref="Control"/> to be saved. </param>
     /// <returns> The view state object for <paramref name="target"/>. </returns>
     public static object SaveViewStateRecursive (Control target)
     {
       ArgumentUtility.CheckNotNull ("target", target);
 
-      const BindingFlags bindingFlags = BindingFlags.DeclaredOnly
-                                      | BindingFlags.Instance
-                                      | BindingFlags.NonPublic
-                                      | BindingFlags.InvokeMethod;
-
       //  HACK: Reflection on internal object Control.SaveViewStateRecursive()
       //  internal object System.Web.UI.Control.LoadViewStateRecursive()
-      object viewState = typeof (Control).InvokeMember ("SaveViewStateRecursive", bindingFlags, null, target, new object[0]);
+      return MethodCaller.CallFunc<object> ("SaveViewStateRecursive", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic)
+        .With (target);
+    }
+    
+    /// <summary>Encapsulates the invocation of <see cref="Page"/>'s SaveAllState method.</summary>
+    /// <param name="page">The <see cref="Page"/> for which SaveAllState will be invoked. Must not be <see langword="null" />.</param>
+    public static void SaveAllState (Page page)
+    {
+      ArgumentUtility.CheckNotNull ("page", page);
 
-      return viewState;
+      //  HACK: Reflection on protected void Page.SaveAllState()
+      //  private void System.Web.UI.Page.SaveAllState()
+      MethodCaller.CallAction ("SaveAllState", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic).With (page);
     }
 
-    public static PageStatePersister GetPageStatePersister (Page target)
+    /// <summary>Encapsulates the invocation of <see cref="Control"/>'s SaveChildControlState method.</summary>
+    /// <param name="control">The <see cref="Control"/> for which SaveChildControlState will be invoked. Must not be <see langword="null" />.</param>
+    public static Dictionary<string, object> SaveChildControlState<TNamingContainer> (TNamingContainer control)
+        where TNamingContainer : Control, INamingContainer
     {
-      ArgumentUtility.CheckNotNull ("target", target);
+      ArgumentUtility.CheckNotNull ("control", control);
 
-      const BindingFlags bindingFlags = BindingFlags.DeclaredOnly
-                                      | BindingFlags.Instance
-                                      | BindingFlags.NonPublic
-                                      | BindingFlags.GetProperty;
+      //  HACK: Reflection on private ControlSet Page._registeredControlsRequiringControlState
+      //  private ControlSet System.Web.UI.Page._registeredControlsRequiringControlState
+      var registeredControlsRequiringControlStateFieldInfo = typeof (Page).GetField ("_registeredControlsRequiringControlState", BindingFlags.Instance | BindingFlags.NonPublic);
+      var registeredControlsRequiringControlState = (ICollection) registeredControlsRequiringControlStateFieldInfo.GetValue (control.Page);
+      
+      Dictionary<string, object> dictionary = new Dictionary<string, object> ();
+      if (registeredControlsRequiringControlState != null)
+      {
+        foreach (Control registeredControl in registeredControlsRequiringControlState)
+        {
+          if (registeredControl.UniqueID.StartsWith (control.UniqueID) && registeredControl != control)
+          {
+            object controlState = SaveControlStateInternal (registeredControl);
+            if (controlState != null)
+              dictionary.Add (registeredControl.UniqueID, controlState);
+          }
+        }
+      }
+
+      if (dictionary.Count == 0)
+        return null;
+      return dictionary;
+    }
+
+    /// <summary>Encapsulates the invocation of <see cref="Control"/>'s SaveControlStateInternal method.</summary>
+    /// <param name="control">The <see cref="Control"/> for which SaveControlStateInternal will be invoked. Must not be <see langword="null" />.</param>
+    public static object SaveControlStateInternal (Control control)
+    {
+      //  HACK: Reflection on protected object Page.SaveControlStateInternal
+      //  protected object System.Web.UI.Page.SaveControlStateInternal
+      return MethodCaller.CallFunc<object> ("SaveControlStateInternal", BindingFlags.Instance | BindingFlags.NonPublic).With (control);
+    }
+
+    /// <summary>Returns the control states for all controls that are child-controls of the passed <see cref="Control"/>.</summary>
+    public static Dictionary<string, object> GetChildControlState<TNamingContainer> (TNamingContainer control)
+        where TNamingContainer : Control, INamingContainer
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      var childControlState = new Dictionary<string, object> ();
+
+      var pageStatePersister = ControlHelper.GetPageStatePersister (control.Page);
+      var controlStates = (IDictionary) pageStatePersister.ControlState;
+
+      foreach (string key in controlStates.Keys)
+      {
+        if (key.StartsWith (control.UniqueID) && key != control.UniqueID)
+          childControlState.Add (key, controlStates[key]);
+      }
+
+      if (childControlState.Count == 0)
+        return null;
+      return childControlState;
+    }
+
+    /// <summary>Sets the control states for the child control of the passed <see cref="Control"/>.</summary>
+    public static void SetChildControlState<TNamingContainer> (TNamingContainer control, IDictionary newControlState)
+        where TNamingContainer : Control, INamingContainer
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      if (newControlState == null)
+        return;
+
+      var pageStatePersister = ControlHelper.GetPageStatePersister (control.Page);
+      var controlState = (IDictionary) pageStatePersister.ControlState;
+
+      foreach (string key in newControlState.Keys)
+        controlState[key] = newControlState[key];
+    }
+
+    /// <summary>Encapsulates the get-access the the <see cref="Page"/>'s PageStatePersister property.</summary>
+    public static PageStatePersister GetPageStatePersister (Page page)
+    {
+      ArgumentUtility.CheckNotNull ("target", page);
+
+      const BindingFlags bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetProperty;
 
       //  HACK: Reflection on protected PageStatePersister Page.PageStatePersister
       //  protected PageStatePersister System.Web.UI.Page.PageStatePersister
-      return (PageStatePersister) typeof (Page).InvokeMember ("PageStatePersister", bindingFlags, null, target, new object[0]);
+      return (PageStatePersister) typeof (Page).InvokeMember ("PageStatePersister", bindingFlags, null, page, new object[0]);
     }
 
     public static bool IsResponseTextXml (HttpContext context)

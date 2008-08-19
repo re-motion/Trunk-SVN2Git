@@ -19,7 +19,6 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
-
   [PersistChildren (true)]
   [ParseChildren (true, "RealControls")]
   public class LazyContainer : Control, INamingContainer
@@ -183,35 +182,14 @@ namespace Remotion.Web.UI.Controls
 
     private void RestoreChildControlState ()
     {
-      if (_childControlStatesBackUp == null)
-        return;
+      ControlHelper.SetChildControlState(this, _childControlStatesBackUp);
 
-      PageStatePersister pageStatePersister = ControlHelper.GetPageStatePersister (Page);
-      IDictionary childControlStates = (IDictionary) pageStatePersister.ControlState;
-
-      foreach (string key in _childControlStatesBackUp.Keys)
-      {
-        if (!childControlStates.Contains (key))
-          childControlStates.Add (key, _childControlStatesBackUp[key]);
-      }
-        
       _childControlStatesBackUp = null;
     }
 
     private void BackUpChildControlState ()
     {
-      _childControlStatesBackUp = new Dictionary<string, object> ();
-
-      PageStatePersister pageStatePersister = ControlHelper.GetPageStatePersister (Page);
-      IDictionary controlStates = (IDictionary) pageStatePersister.ControlState;
-      foreach (string key in controlStates.Keys)
-      {
-        if (key.StartsWith (UniqueID) && key != UniqueID)
-          _childControlStatesBackUp.Add (key, controlStates[key]);
-      }
-
-      if (_childControlStatesBackUp.Count == 0)
-        _childControlStatesBackUp = null;
+      _childControlStatesBackUp = ControlHelper.GetChildControlState (this);
     }
 
     protected override object SaveControlState ()

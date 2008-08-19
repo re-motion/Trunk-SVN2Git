@@ -25,10 +25,6 @@ namespace Remotion.Web.UnitTests.UI.Controls
     private NamingContainerMock _namingContainer;
     private ControlInvoker _namingContainerInvoker;
 
-    public WebControlTest ()
-    {
-    }
-
     [SetUp]
     public virtual void SetUp ()
     {

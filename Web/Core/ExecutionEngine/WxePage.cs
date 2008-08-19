@@ -92,7 +92,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   Gets or sets the message displayed when the user attempts to submit while the page is already aborting. 
     /// </summary>
     /// <remarks> 
-    ///   In case of an empty <see cref="String"/>, the text is read from the resources for <see cref="WxePageInfo"/>. 
+    ///   In case of an empty <see cref="String"/>, the text is read from the resources for <see cref="WxePageInfo{TWxePage}"/>. 
     /// </remarks>
     [Description ("The message displayed when the user attempts to submit while the page is already aborting.")]
     [Category ("Appearance")]
@@ -108,7 +108,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   or aborted. 
     /// </summary>
     /// <remarks> 
-    ///   In case of an empty <see cref="String"/>, the text is read from the resources for <see cref="WxePageInfo"/>. 
+    ///   In case of an empty <see cref="String"/>, the text is read from the resources for <see cref="WxePageInfo{TWxePage}"/>. 
     /// </remarks>
     [Description ("The message displayed when the user returnes to a cached page that has already been submitted or aborted.")]
     [Category ("Appearance")]
@@ -141,7 +141,7 @@ namespace Remotion.Web.ExecutionEngine
 
     #endregion
 
-    private readonly WxePageInfo _wxePageInfo;
+    private readonly WxePageInfo<WxePage> _wxePageInfo;
     private bool _disposed;
     private bool? _enableOutOfSequencePostBacks;
     private bool? _enableAbort;
@@ -149,7 +149,7 @@ namespace Remotion.Web.ExecutionEngine
 
     public WxePage ()
     {
-      _wxePageInfo = new WxePageInfo (this);
+      _wxePageInfo = new WxePageInfo<WxePage> (this);
       _disposed = false;
     }
 
@@ -164,7 +164,7 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     /// <summary> Overrides <see cref="Page.DeterminePostBackMode"/>. </summary>
-    /// <remarks> Uses <see cref="WxePageInfo.EnsurePostBackModeDetermined"/> determine the postback mode. </remarks>
+    /// <remarks> Uses <see cref="WxePageInfo{TWxePage}.EnsurePostBackModeDetermined"/> determine the postback mode. </remarks>
     protected override NameValueCollection DeterminePostBackMode ()
     {
       NameValueCollection result = _wxePageInfo.EnsurePostBackModeDetermined (Context);
@@ -187,45 +187,33 @@ namespace Remotion.Web.ExecutionEngine
     }
 
 
-    /// <remarks> Uses <see cref="WxePageInfo.SavePageStateToPersistenceMedium"/> to save the viewstate. </remarks>
+    /// <remarks> Uses <see cref="WxePageInfo{TWxePage}.SavePageStateToPersistenceMedium"/> to save the viewstate. </remarks>
     protected override void SavePageStateToPersistenceMedium (object viewState)
     {
-      bool isControlStateInSession = true;
-      if (isControlStateInSession)
-        _wxePageInfo.SavePageStateToPersistenceMedium (viewState);
-      else
-        base.SavePageStateToPersistenceMedium (viewState);
+      _wxePageInfo.SavePageStateToPersistenceMedium (viewState);
     }
 
-    /// <remarks> Uses <see cref="WxePageInfo.LoadPageStateFromPersistenceMedium"/> to load the viewstate. </remarks>
+    /// <remarks> Uses <see cref="WxePageInfo{TWxePage}.LoadPageStateFromPersistenceMedium"/> to load the viewstate. </remarks>
     protected override object LoadPageStateFromPersistenceMedium ()
     {
-      bool isControlStateInSession = true;
-      if (isControlStateInSession)
+      object state = _wxePageInfo.LoadPageStateFromPersistenceMedium();
+      PageStatePersister persister = this.PageStatePersister;
+      if (state is Pair)
       {
-        object state = _wxePageInfo.LoadPageStateFromPersistenceMedium ();
-        PageStatePersister persister = this.PageStatePersister;
-        if (state is Pair)
-        {
-          Pair pair = (Pair) state;
-          persister.ControlState = pair.First;
-          persister.ViewState = pair.Second;
-        }
-        else
-        {
-          persister.ViewState = state;
-        }
-
-        return state;
+        Pair pair = (Pair) state;
+        persister.ControlState = pair.First;
+        persister.ViewState = pair.Second;
       }
       else
       {
-        return base.LoadPageStateFromPersistenceMedium ();
+        persister.ViewState = state;
       }
+
+      return state;
     }
 
 
-    /// <remarks> Invokes <see cref="WxePageInfo.OnPreRenderComplete"/> before calling the base-implementation. </remarks>
+    /// <remarks> Invokes <see cref="WxePageInfo{TWxePage}.OnPreRenderComplete"/> before calling the base-implementation. </remarks>
     protected override void OnPreRenderComplete (EventArgs e)
     {
       // wxeInfo.OnPreRenderComplete() must be called before base.OnPreRenderComplete (EventArgs)

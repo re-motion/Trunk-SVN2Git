@@ -13,11 +13,7 @@
 <HTML>
   <HEAD>
     <title>WebForm1</title>
-    <meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
-    <meta content="C#" name="CODE_LANGUAGE">
-    <meta content="JavaScript" name="vs_defaultClientScript">
-    <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
-    <rwc:htmlheadcontents id=HtmlHeadContents runat="server"></rwc:htmlheadcontents>
+    <remotion:htmlheadcontents id=HtmlHeadContents runat="server"/>
   </HEAD>
   <body MS_POSITIONING="GridLayout">
     <FORM id="Form1" method="post" runat="server">

@@ -10,10 +10,11 @@
 
 using System;
 using System.Web.UI;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
 namespace Remotion.Development.Web.UnitTesting.UI.Controls
 {
-  public class NamingContainerMock : Control, INamingContainer
+  public class NamingContainerMock : ControlMock, INamingContainer
   {
   }
 }

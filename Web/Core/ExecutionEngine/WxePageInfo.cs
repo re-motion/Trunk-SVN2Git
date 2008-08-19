@@ -21,7 +21,8 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxePageInfo : WxeTemplateControlInfo, IDisposable
+  public class WxePageInfo<TWxePage> : WxeTemplateControlInfo, IDisposable
+    where TWxePage: Page, IWxePage
   {
     /// <summary> A list of resources. </summary>
     /// <remarks> 
@@ -47,11 +48,11 @@ namespace Remotion.Web.ExecutionEngine
     private const string c_styleFileUrl = "ExecutionEngine.css";
     private const string c_styleFileUrlForIE = "ExecutionEngineIE.css";
 
-    private static readonly string s_scriptFileKey = typeof (WxePageInfo).FullName + "_Script";
-    private static readonly string s_styleFileKey = typeof (WxePageInfo).FullName + "_Style";
-    private static readonly string s_styleFileKeyForIE = typeof (WxePageInfo).FullName + "_StyleIE";
+    private static readonly string s_scriptFileKey = typeof (WxePageInfo<>).FullName + "_Script";
+    private static readonly string s_styleFileKey = typeof (WxePageInfo<>).FullName + "_Style";
+    private static readonly string s_styleFileKeyForIE = typeof (WxePageInfo<>).FullName + "_StyleIE";
 
-    private readonly IWxePage _page;
+    private readonly TWxePage _page;
     private WxeForm _wxeForm;
     private bool _postbackCollectionInitialized = false;
     private bool _isPostDataHandled = false;
@@ -63,17 +64,17 @@ namespace Remotion.Web.ExecutionEngine
 
     private string _statusIsAbortingMessage = string.Empty;
     private string _statusIsCachedMessage = string.Empty;
-    private WxeExecutor _wxeExecutor;
+    private WxeExecutor<TWxePage> _wxeExecutor;
 
     /// <summary> Initializes a new instance of the <b>WxePageInfo</b> type. </summary>
     /// <param name="page"> 
     ///   The <see cref="IWxePage"/> containing this <b>WxePageInfo</b> object. 
     ///   The page must be derived from <see cref="System.Web.UI.Page">System.Web.UI.Page</see>.
     /// </param>
-    public WxePageInfo (IWxePage page)
+    public WxePageInfo (TWxePage page)
       : base (page)
     {
-      ArgumentUtility.CheckNotNullAndType<Page> ("page", page);
+      ArgumentUtility.CheckNotNull ("page", page);
       _page = page;
     }
 
@@ -99,7 +100,7 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("context", context);
       base.Initialize (context);
 
-      _wxeExecutor = new WxeExecutor (context, _page, this);
+      _wxeExecutor = new WxeExecutor<TWxePage> (context, _page, this);
 
       if (!ControlHelper.IsDesignMode (_page, context))
       {
@@ -108,16 +109,16 @@ namespace Remotion.Web.ExecutionEngine
       }
 
       if (_page.CurrentStep != null)
-        ScriptManager.RegisterHiddenField ((Page) _page, WxePageInfo.PageTokenID, CurrentStep.PageToken);
+        ScriptManager.RegisterHiddenField (_page, WxePageInfo<TWxePage>.PageTokenID, CurrentStep.PageToken);
 
-      _wxeForm.LoadPostData += new EventHandler (Form_LoadPostData);
+      _wxeForm.LoadPostData += Form_LoadPostData;
 
-      if (!ControlHelper.IsDesignMode (_page))
+      if (!ControlHelper.IsDesignMode (_page, context))
       {
-        string url = ResourceUrlResolver.GetResourceUrl ((Page) _page, typeof (WxePageInfo), ResourceType.Html, c_scriptFileUrl);
+        string url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo<>), ResourceType.Html, c_scriptFileUrl);
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
 
-        url = ResourceUrlResolver.GetResourceUrl ((Page) _page, typeof (WxePageInfo), ResourceType.Html, c_styleFileUrl);
+        url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo<>), ResourceType.Html, c_styleFileUrl);
         HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
 
         //      url = ResourceUrlResolver.GetResourceUrl (page, typeof (WxePageInfo), ResourceType.Html, c_styleFileUrlForIE);
@@ -195,11 +196,11 @@ namespace Remotion.Web.ExecutionEngine
 
       WxeContext wxeContext = WxeContext.Current;
 
-      int postBackID = int.Parse (postBackCollection[WxePageInfo.PostBackSequenceNumberID]);
+      int postBackID = int.Parse (postBackCollection[WxePageInfo<TWxePage>.PostBackSequenceNumberID]);
       if (postBackID != wxeContext.PostBackID)
         wxeContext.SetIsOutOfSequencePostBack (true);
 
-      string returningToken = postBackCollection[WxePageInfo.ReturningTokenID];
+      string returningToken = postBackCollection[WxePageInfo<TWxePage>.ReturningTokenID];
       if (!StringUtility.IsNullOrEmpty (returningToken))
       {
         WxeFunctionStateManager functionStates = WxeFunctionStateManager.Current;
@@ -216,30 +217,29 @@ namespace Remotion.Web.ExecutionEngine
     public void OnPreRenderComplete ()
     {
       WxeContext wxeContext = WxeContext.Current;
-      Page page = (Page) _page;
 
-      ScriptManager.RegisterHiddenField (page, WxeHandler.Parameters.WxeFunctionToken, wxeContext.FunctionToken);
-      ScriptManager.RegisterHiddenField (page, WxePageInfo.ReturningTokenID, null);
+      ScriptManager.RegisterHiddenField (_page, WxeHandler.Parameters.WxeFunctionToken, wxeContext.FunctionToken);
+      ScriptManager.RegisterHiddenField (_page, WxePageInfo<TWxePage>.ReturningTokenID, null);
       int nextPostBackID = wxeContext.PostBackID + 1;
-      ScriptManager.RegisterHiddenField (page, WxePageInfo.PostBackSequenceNumberID, nextPostBackID.ToString ());
+      ScriptManager.RegisterHiddenField (_page, WxePageInfo<TWxePage>.PostBackSequenceNumberID, nextPostBackID.ToString ());
 
       string key = "wxeDoSubmit";
-      ScriptUtility.RegisterClientScriptBlock (page, key,
+      ScriptUtility.RegisterClientScriptBlock (_page, key,
             "function wxeDoSubmit (button, pageToken) { \r\n"
           + "  var theForm = document." + _wxeForm.ClientID + "; \r\n"
-          + "  theForm." + WxePageInfo.ReturningTokenID + ".value = pageToken; \r\n"
+          + "  theForm." + WxePageInfo<TWxePage>.ReturningTokenID + ".value = pageToken; \r\n"
           + "  document.getElementById(button).click(); \r\n"
           + "}");
 
       key = "wxeDoPostBack";
-      ScriptUtility.RegisterClientScriptBlock (page, key,
+      ScriptUtility.RegisterClientScriptBlock (_page, key,
             "function wxeDoPostBack (control, argument, returningToken) { \r\n"
           + "  var theForm = document." + _wxeForm.ClientID + "; \r\n"
-          + "  theForm." + WxePageInfo.ReturningTokenID + ".value = returningToken; \r\n"
+          + "  theForm." + WxePageInfo<TWxePage>.ReturningTokenID + ".value = returningToken; \r\n"
           + "  __doPostBack (control, argument); \r\n"
           + "}");
 
-      HtmlHeadAppender.Current.RegisterUtilitiesJavaScriptInclude ((Page) _page);
+      HtmlHeadAppender.Current.RegisterUtilitiesJavaScriptInclude (_page);
 
       RegisterWxeInitializationScript ();
       SetCacheSettings ();
@@ -264,7 +264,7 @@ namespace Remotion.Web.ExecutionEngine
       if (WxeHandler.IsSessionManagementEnabled)
       {
         //  Ensure the registration of "__doPostBack" on the page.
-        temp = _page.GetPostBackEventReference ((Page) _page);
+        temp = _page.ClientScript.GetPostBackEventReference (_page, null);
 
         bool isAbortEnabled = _page.IsAbortEnabled;
 
@@ -314,7 +314,7 @@ namespace Remotion.Web.ExecutionEngine
       initScript.AppendLine ("    ").Append (statusIsAbortingMessage).AppendLine (",");
       initScript.AppendLine ("    ").Append (statusIsCachedMessage).AppendLine (");");
 
-      ScriptUtility.RegisterClientScriptBlock ((Page) _page, "wxeInitialize", initScript.ToString ());
+      ScriptUtility.RegisterClientScriptBlock (_page, "wxeInitialize", initScript.ToString ());
     }
 
 
@@ -341,7 +341,7 @@ namespace Remotion.Web.ExecutionEngine
 
 
     /// <summary>
-    ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.GetPermanentUrlParameters()">IWxePage.GetPermanentUrlParameters()</see>.
+    ///   Implements <see cref="IWxePage.GetPermanentUrlParameters">IWxePage.GetPermanentUrlParameters()</see>.
     /// </summary>
     public NameValueCollection GetPermanentUrlParameters ()
     {
@@ -355,7 +355,7 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     /// <summary>
-    ///   Implements <see cref="M:Remotion.Web.ExecutionEngine.IWxePage.GetPermanentUrl()">IWxePage.GetPermanentUrl()</see>.
+    ///   Implements <see cref="IWxePage.GetPermanentUrl">IWxePage.GetPermanentUrl()</see>.
     /// </summary>
     public string GetPermanentUrl ()
     {
@@ -409,10 +409,10 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     /// <summary> Saves the viewstate into the executing <see cref="WxePageStep"/>. </summary>
-    /// <param name="viewState"> An <b>ASP.NET</b> viewstate object. </param>
-    public void SavePageStateToPersistenceMedium (object viewState)
+    /// <param name="state"> An <b>ASP.NET</b> viewstate object. </param>
+    public void SavePageStateToPersistenceMedium (object state)
     {
-      CurrentStep.SavePageStateToPersistenceMedium (viewState);
+      CurrentStep.SavePageStateToPersistenceMedium (state);
     }
 
     /// <summary> Returns the viewstate previously saved into the executing <see cref="WxePageStep"/>. </summary>
@@ -439,7 +439,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </remarks>
     public void Dispose ()
     {
-      if (ControlHelper.IsDesignMode (_page))
+      if (ControlHelper.IsDesignMode ((Control)_page))
         return;
 
       HttpContext httpContext = null;
@@ -510,7 +510,7 @@ namespace Remotion.Web.ExecutionEngine
       WindowState[key] = value;
     }
 
-    public WxeExecutor Executor
+    public WxeExecutor<TWxePage> Executor
     {
       get
       {

@@ -130,12 +130,14 @@
     <Compile Include="ExecutionEngine\ShowSecondUserControlFormFunction.cs" />
     <Compile Include="ExecutionEngine\SecondControl.ascx.cs">
       <DependentUpon>SecondControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\SecondControl.ascx.designer.cs">
       <DependentUpon>SecondControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="ExecutionEngine\FirstControl.ascx.cs">
       <DependentUpon>FirstControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\FirstControl.ascx.designer.cs">
       <DependentUpon>FirstControl.ascx</DependentUpon>

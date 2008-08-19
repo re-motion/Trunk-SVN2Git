@@ -32,7 +32,7 @@ public class WxePageStep: WxeStep
   private string _pageToken;
   private WxeFunction _function;
   private NameValueCollection _postBackCollection;
-  private string _viewState;
+  private string _state;
   private bool _isRedirectToPermanentUrlRequired = false;
   private bool _useParentPermaUrl = false;
   private NameValueCollection _permaUrlParameters;
@@ -193,7 +193,7 @@ public class WxePageStep: WxeStep
     context.SetIsPostBack (true);
 
     // Correct the PostBack-Sequence number
-    _postBackCollection[WxePageInfo.PostBackSequenceNumberID] = context.PostBackID.ToString();
+    _postBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString();
 
     //  Provide the backed up postback data to the executing page
     context.PostBackCollection = _postBackCollection;
@@ -218,7 +218,7 @@ public class WxePageStep: WxeStep
     else
     {
       // Correct the PostBack-Sequence number
-      _postBackCollection[WxePageInfo.PostBackSequenceNumberID] = context.PostBackID.ToString();
+      _postBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString();
       //  Provide the backed up postback data to the executing page
       context.PostBackCollection = _postBackCollection;
       context.SetIsReturningPostBack (true);
@@ -377,7 +377,8 @@ public class WxePageStep: WxeStep
 
   /// <summary> Executes the specified <see cref="WxeFunction"/>, then returns to this page. </summary>
   /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/ExecuteFunction/*' />
-  public void ExecuteFunction (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
+  public void ExecuteFunction<TWxePage> (TWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
+      where TWxePage : Page, IWxePage
   {
     ArgumentUtility.CheckNotNull ("page", page);
     ArgumentUtility.CheckNotNull ("function", function);
@@ -393,8 +394,9 @@ public class WxePageStep: WxeStep
   ///   Executes the specified <see cref="WxeFunction"/>, then returns to this page without raising the 
   ///   postback event after the user returns.
   /// </summary>
-  /// <remarks> Invoke this method by calling <see cref="WxeExecutor.ExecuteFunctionNoRepost"/>. </remarks>
-  internal void ExecuteFunctionNoRepost (IWxePage page, WxeFunction function, Control sender, bool usesEventTarget, WxePermaUrlOptions permaUrlOptions)
+  /// <remarks> Invoke this method by calling <see cref="WxeExecutor{TWxePage}.ExecuteFunctionNoRepost"/>. </remarks>
+  internal void ExecuteFunctionNoRepost<TWxePage> (TWxePage page, WxeFunction function, Control sender, bool usesEventTarget, WxePermaUrlOptions permaUrlOptions)
+      where TWxePage : Page, IWxePage
   {
     ArgumentUtility.CheckNotNull ("page", page);
     ArgumentUtility.CheckNotNull ("function", function);
@@ -426,7 +428,8 @@ public class WxePageStep: WxeStep
 
   /// <summary> Executes the specified <see cref="WxeFunction"/>, then returns to this page. </summary>
   /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/InternalExecuteFunction/*' />
-  private void InternalExecuteFunction (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
+  private void InternalExecuteFunction<TWxePage> (TWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
+     where TWxePage : Page, IWxePage
   {
     if (_function != null)
       throw new InvalidOperationException ("Cannot execute function while another function executes.");
@@ -437,13 +440,14 @@ public class WxePageStep: WxeStep
     _useParentPermaUrl = permaUrlOptions.UseParentPermaUrl;
     _permaUrlParameters = permaUrlOptions.UrlParameters;
 
-    InvokeSaveAllState ((Page) page);
+    ControlHelper.SaveAllState (page);
 
     Execute();
   }
 
-  internal void ExecuteFunctionExternalByRedirect (
-      IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
+  internal void ExecuteFunctionExternalByRedirect<TWxePage> (
+      TWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
+     where TWxePage : Page, IWxePage
   {
     //  Back-up post back data of the executing page
     _postBackCollection = new NameValueCollection (page.GetPostBackCollection());
@@ -451,8 +455,9 @@ public class WxePageStep: WxeStep
     InternalExecuteFunctionExternalByRedirect (page, function, permaUrlOptions, returnToCaller, callerUrlParameters);
   }
 
-  private void InternalExecuteFunctionExternalByRedirect (
-      IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
+  private void InternalExecuteFunctionExternalByRedirect<TWxePage> (
+      TWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
+    where TWxePage : Page, IWxePage
   {
     _isExecuteFunctionExternalRequired = true;
     _isExternalFunctionInvoked = false;
@@ -470,17 +475,9 @@ public class WxePageStep: WxeStep
         _callerUrlParameters = NameValueCollectionUtility.Clone (callerUrlParameters);
     }
 
-    InvokeSaveAllState ((Page) page);
+    ControlHelper.SaveAllState (page);
 
     Execute();
-  }
-
-  private void InvokeSaveAllState (Page page)
-  {
-    // page.SaveVieState()
-    MethodInfo saveViewStateMethod;
-    saveViewStateMethod = typeof (Page).GetMethod ("SaveAllState", BindingFlags.Instance | BindingFlags.NonPublic);
-    saveViewStateMethod.Invoke (page, new object[0]); 
   }
 
   /// <summary> Gets the token for this page step. </summary>
@@ -497,14 +494,14 @@ public class WxePageStep: WxeStep
     return Page;
   }
 
-  /// <summary> Saves the passed <paramref name="viewState"/> object into the <see cref="WxePageStep"/>. </summary>
-  /// <param name="viewState"> An <b>ASP.NET</b> viewstate object. </param>
-  public void SavePageStateToPersistenceMedium (object viewState)
+  /// <summary> Saves the passed <paramref name="state"/> object into the <see cref="WxePageStep"/>. </summary>
+  /// <param name="state"> An <b>ASP.NET</b> viewstate object. </param>
+  public void SavePageStateToPersistenceMedium (object state)
   {
     LosFormatter formatter = new LosFormatter ();
     StringWriter writer = new StringWriter ();
-    formatter.Serialize (writer, viewState);
-    _viewState = writer.ToString();
+    formatter.Serialize (writer, state);
+    _state = writer.ToString();
   }
 
   /// <summary> 
@@ -514,7 +511,7 @@ public class WxePageStep: WxeStep
   public object LoadPageStateFromPersistenceMedium()
   {
     LosFormatter formatter = new LosFormatter ();
-    return formatter.Deserialize (_viewState);
+    return formatter.Deserialize (_state);
   }
   
   /// <summary> 
