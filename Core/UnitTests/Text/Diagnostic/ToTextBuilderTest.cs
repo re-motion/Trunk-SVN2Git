@@ -297,7 +297,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void OutputComplexityTest ()
     {
       var toTextBuilder = GetTextBuilder ();
-      toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Complex;
+      //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Complex;
+      toTextBuilder.OutputComplex();
       Assert.That (toTextBuilder.OutputComplexity, Is.EqualTo (ToTextBuilder.OutputComplexityLevel.Complex));
     }
 
@@ -306,11 +307,13 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       var toTextBuilder = GetTextBuilder ();
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
-      toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Skeleton;
+      //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Skeleton;
+      toTextBuilder.OutputSkeleton();
       toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(ToTextBuilder.OutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (false));
 
-      toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Basic;
+      //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Basic;
+      toTextBuilder.OutputBasic();
       toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
     }
@@ -334,42 +337,48 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       {
         var toTextBuilder = GetTextBuilder ();
-        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Disable;
+        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Disable;
+        toTextBuilder.OutputDisable();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo (""));
       }
 
       {
         var toTextBuilder = GetTextBuilder ();
-        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Skeleton;
-        var result = AllFilterLevelsFilteredOutput(toTextBuilder).ToString();
+        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Skeleton;
+        toTextBuilder.OutputSkeleton ();
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("s"));
       }
 
       {
         var toTextBuilder = GetTextBuilder ();
-        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Basic;
+        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Basic;
+        toTextBuilder.OutputBasic(); 
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,s"));
       }
 
       {
         var toTextBuilder = GetTextBuilder ();
-        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Medium;
+        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Medium;
+        toTextBuilder.OutputMedium(); 
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,m,s"));
       }
 
       {
         var toTextBuilder = GetTextBuilder ();
-        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Complex;
+        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Complex;
+        toTextBuilder.OutputComplex();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,c,m,s"));
       }
 
       {
         var toTextBuilder = GetTextBuilder ();
-        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Full;
+        //toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Full;
+        toTextBuilder.OutputFull();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,c,f,m,s"));
       }

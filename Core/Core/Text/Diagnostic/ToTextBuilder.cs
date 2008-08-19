@@ -76,9 +76,16 @@ namespace Remotion.Text.Diagnostic
 
     public OutputComplexityLevel OutputComplexity
     {
-      get { return _outputComplexity;  }
-      set { _outputComplexity = value; }
+      get { return _outputComplexity; }
+      //set { _outputComplexity = value; }
     }
+
+    public void OutputDisable () { _outputComplexity = OutputComplexityLevel.Disable; }
+    public void OutputSkeleton () { _outputComplexity = OutputComplexityLevel.Skeleton; }
+    public void OutputBasic () { _outputComplexity = OutputComplexityLevel.Basic; }
+    public void OutputMedium () { _outputComplexity = OutputComplexityLevel.Medium; }
+    public void OutputComplex () { _outputComplexity = OutputComplexityLevel.Complex; }
+    public void OutputFull () { _outputComplexity = OutputComplexityLevel.Full; }
 
 
     public ToTextBuilder AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(OutputComplexityLevel complexityLevel)
