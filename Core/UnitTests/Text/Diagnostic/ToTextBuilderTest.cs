@@ -364,6 +364,15 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
 
+    [Test]
+    public void AppendObjectTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      var o = new Object();
+      Assert.That (toTextBuilder.Append (o).ToString (), Is.EqualTo (o.ToString()));
+    }
+
+
     public static ToTextBuilder GetTextBuilder ()
     {
       var toTextProvider = new ToTextProvider(); 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Remotion.Utilities;
 
@@ -8,64 +9,14 @@ namespace Remotion.Text.Diagnostic
 {
   public class ToTextProvider
   {
+    private Dictionary<Type, Delegate> _typeHandlerMap = new Dictionary<Type, Delegate> ();
+    private bool _automaticObjectToText = true;
 
-    //public string ToText (object o, ToTextBuilder toTextCollector)
-    //{
-    //  // Handle Cascade:
-    //  // *) Is null
-    //  // *) Type handler registered
-    //  // *) Is string (Treat seperately to prevent from being treated as IEnumerable)
-    //  // *) Is rectangular array (Treat seperately to prevent from being treated as 1D-collection by IEnumerable)
-    //  // *) Implements IToTextHandler
-    //  // *) If !IsInterface: Base type handler registered (recursive)
-    //  // *) Implements IEnumerable ("is container")
-    //  // *) If enabled: Log properties through reflection
-    //  // *) ToString()
-
-    //  // Functionality:
-    //  // * Register handlers for interfaces, which can be called by ToText handlers of specific types.
-
-    //  if (o == null)
-    //  {
-    //    Log ("null");
-    //    return "null";
-    //  }
-
-    //  Delegate handler = null;
-    //  Type type = o.GetType ();
-
-    //  Log (type.ToString ());
-
-    //  _typeHandlerMap.TryGetValue (type, out handler);
-
-    //  if (handler != null)
-    //  {
-    //    return (String) handler.DynamicInvoke (o);
-    //  }
-    //  else if (type == typeof (string))
-    //  {
-    //    return (string) o;
-    //  }
-    //  else if (type.IsArray)
-    //  {
-    //    Array array = (Array) o;
-    //    return ArrayToText (array);
-    //  }
-    //  else if (type.GetInterface ("IEnumerable") != null)
-    //  {
-    //    var collection = (IEnumerable) o;
-    //    return CollectionToText (collection);
-    //  }
-    //  else
-    //  {
-    //    return o.ToString ();
-    //  }
-    //}
-
-
-    //public string ToText (object o)
-    //{
-    //}
+    private string ToText (object o)
+    {
+      var toTextBuilder = new ToTextBuilder(this);
+      return toTextBuilder.ToText(o).ToString();
+    }
 
     public void ToText (object o, ToTextBuilder toTextBuilder)
     {
@@ -115,15 +66,20 @@ namespace Remotion.Text.Diagnostic
       {
         CollectionToText ((IEnumerable) o, toTextBuilder);
       }
+      //else if (type.IsPrimitive)
+      //{
+      //  // TODO: Make sure floating point numbers are emitted with '.' comma character (non-localized)
+      //  toTextBuilder.Append (o);
+      //}
+      //else if (_automaticObjectToText)
+      //{
+      //  AutomaticObjectToText(o, toTextBuilder);
+      //}
       else
       {
         toTextBuilder.AppendString (o.ToString ());
       }
     }
-
-
-
-    private Dictionary<Type, Delegate> _typeHandlerMap = new Dictionary<Type, Delegate> ();
 
 
     public void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
@@ -149,88 +105,100 @@ namespace Remotion.Text.Diagnostic
       toTextBuilder.AppendEnumerable(collection);
     }
 
-    //public void CollectionToText (IEnumerable collection, ToTextBuilder toTextBuilder)
-    //{
-    //  const string start = "{";
-    //  const string seperator = ",";
-    //  const string end = "}";
-    //  //var sb = new StringBuilder ();
-
-    //  toTextBuilder.Append (start);
-    //  bool insertSeperator = false; // no seperator before first element
-    //  foreach (Object element in collection)
-    //  {
-    //    if (insertSeperator)
-    //    {
-    //      toTextBuilder.Append (seperator);
-    //    }
-    //    else
-    //    {
-    //      insertSeperator = true;
-    //    }
-
-    //    toTextBuilder.ToText (element);
-    //  }
-    //  toTextBuilder.Append (end);
-    //}
-
-
-
-    //private class ArrayToTextProcessor : OuterProduct.ProcessorBase
-    //{
-    //  protected readonly Array _array;
-    //  private ToTextBuilder _toTextColllector;
-    //  //public readonly StringBuilder _result = new StringBuilder ();
-
-    //  public ArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
-    //  {
-    //    _array = rectangularArray;
-    //    _toTextColllector = toTextBuilder;
-    //  }
-
-    //  public override bool DoBeforeLoop ()
-    //  {
-    //    if (ProcessingState.IsInnermostLoop)
-    //    {
-    //      _toTextColllector.s (ProcessingState.IsFirstLoopElement ? "" : ",");
-    //      _toTextColllector.ToText  (_array.GetValue (ProcessingState.DimensionIndices));
-    //    }
-    //    else
-    //    {
-    //      _toTextColllector.s (ProcessingState.IsFirstLoopElement ? "" : ",");
-    //      _toTextColllector.s ("{");
-    //    }
-    //    return true;
-    //  }
-
-    //  public override bool DoAfterLoop ()
-    //  {
-    //    if (!ProcessingState.IsInnermostLoop)
-    //    {
-    //      _toTextColllector.s ("}");
-    //    }
-    //    return true;
-    //  }
-
-    //  //public String GetResult ()
-    //  //{
-    //  //  return "{" + _toTextColllector.ToString () + "}";
-    //  //}
-    //}
-
-    //public void ArrayToText (Array array, ToTextBuilder toTextBuilder)
-    //{
-    //  var outerProduct = new OuterProduct (array);
-    //  toTextBuilder.AppendString("{");
-    //  var processor = new ArrayToTextProcessor (array, toTextBuilder);
-    //  outerProduct.ProcessOuterProduct (processor);
-    //  toTextBuilder.AppendString ("}");
-    //  //return processor.GetResult ();
-    //}
 
     public void ArrayToText (Array array, ToTextBuilder toTextBuilder)
     {
       toTextBuilder.AppendArray(array);
+    }
+
+
+    // Outputs the names & values of all public fields and properties of the passed Object.
+    private static void ObjectFieldsAndPropertiesToString (object obj)
+    {
+      Type type = obj.GetType();
+
+      foreach (var fieldInfo in type.GetFields())
+      {
+        string fieldName = fieldInfo.Name;
+        var fieldValue = type.GetField(fieldName).GetValue(obj);
+        Console.WriteLine (String.Format ("\nField: name={0}, value={1}", fieldName, fieldValue));
+      }
+
+      foreach (var fieldInfo in type.GetProperties())
+      {
+        string propertyName = fieldInfo.Name;
+        var propertyValue = type.GetProperty(propertyName).GetValue(obj, null);
+        Console.WriteLine (String.Format ("\nProperty: name={0}, value={1}", propertyName, propertyValue));
+      }
+    }
+
+    public void ProcessMemberInfos (string message, Object o, BindingFlags bindingFlags, MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
+    {
+      Log ("---------------------------------------------------");
+      Log (message);
+      Log ("---------------------------------------------------");
+      Type type = o.GetType ();
+      MemberInfo[] memberInfos = type.GetMembers (bindingFlags);
+
+
+      toTextBuilder.nl.s ("Members:").nl.s ();
+      foreach (var memberInfo in memberInfos)
+      {
+        //toTextBuilder.nl.s (memberInfo.ToString ()).comma.space.s (memberInfo.Name);
+        //if ((memberInfo.MemberType & (MemberTypes.Field | MemberTypes.Property)) != 0)
+        if ((memberInfo.MemberType & memberTypeFlags) != 0)
+        {
+          //LogVariables ("\nname: {0}, value: {1}", memberInfo.Name, type.GetProperty (memberInfo.Name).GetValue (o, null));
+          //LogVariables ("name: {0}", memberInfo.Name);
+          string name = memberInfo.Name;
+          Log("name=" + name);
+          var value = type.GetProperty(memberInfo.Name).GetValue(o, null);
+          Log ("value=" + value);
+          string valueToText = ToText (value);
+          Log ("valueToText=" + valueToText);
+          //LogVariables ("\nname: {0}, value: {1}", name, valueString);
+        }
+      }
+      Log ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    }
+
+    public void AutomaticObjectToText (object o, ToTextBuilder toTextBuilder)
+    {
+      Log(">>>>>>>>>>> AUTOMATICOBJECTTOTEST: " + o + " " + o.GetType());
+      //ObjectFieldsAndPropertiesToString(o);
+      ProcessMemberInfos ("Public Properties", o, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Property, toTextBuilder);
+      ProcessMemberInfos("Non Public Properties", o, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Property, toTextBuilder);
+      ProcessMemberInfos ("Public Fields", o, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Field, toTextBuilder);
+      ProcessMemberInfos ("Non Public Fields", o, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Field, toTextBuilder);
+
+      //Type type = o.GetType();
+
+      //toTextBuilder.nl.s ("Fields:").nl.s();
+      //foreach (var info in type.GetFields())
+      //{
+      //  toTextBuilder.AppendString(info.ToString());
+      //}
+
+      //toTextBuilder.nl.s ("Properties:").nl.s ();
+      //foreach (var info in type.GetProperties ())
+      //{
+      //  toTextBuilder.AppendString (info.ToString ());
+
+      //  Log( "!!!! " + type.GetProperty(info.Name).GetValue(o, null).ToString() );
+      //}
+
+      
+
+      //MemberInfo[] memberInfos =
+      //  type.GetMembers ( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
+
+      //toTextBuilder.nl.s ("Members:").nl.s();
+      //foreach (var memberInfo in memberInfos)
+      //{
+
+      //  toTextBuilder.nl.s(memberInfo.ToString()).comma.space.s(memberInfo.Name);
+      //  //memberInfo.GetType().Is
+      //}
     }
 
 

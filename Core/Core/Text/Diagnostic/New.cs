@@ -19,13 +19,30 @@ namespace Remotion.Text.Diagnostic
 
     public static T[] Array<T> (params T[] values)
     {
-      //var container = new T[values.Length];
-      //foreach (var t in values)
-      //{
-      //  container.;
-      //}
       return values;
     }
+
+
+    public static object[] Objects (params object[] values)
+    {
+      return values;
+    }
+
+    public static object[][] Objects (params object[][] values)
+    {
+      return values;
+    }
+
+    public static object[][][] Objects (params object[][][] values)
+    {
+      return values;
+    }
+
+    public static object[][][][] Objects (params object[][][][] values)
+    {
+      return values;
+    }
+
 
     public static List<T> List<T> (params T[] values)
     {

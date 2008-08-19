@@ -334,6 +334,12 @@ namespace Remotion.Text.Diagnostic
       return AppendString (s);
     }
 
+    public ToTextBuilder Append (Object o)
+    {
+      _toTextStringBuilder.Append(o);
+      return this;
+    }
+
 
     public ToTextBuilder ToTextString (string s)
     {
@@ -370,6 +376,15 @@ namespace Remotion.Text.Diagnostic
       return AppendString (s);
     }
 
+    public ToTextBuilder s ()
+    {
+      return this;
+    }
+
+    public ToTextBuilder nil ()
+    {
+      return this;
+    }
 
     public ToTextBuilder nl 
     {

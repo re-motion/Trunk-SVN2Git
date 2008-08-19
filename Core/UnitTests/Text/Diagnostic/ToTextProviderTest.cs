@@ -35,6 +35,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
       public Object[][][] Array3D { get; set; }
       public Object[,] RectangularArray2D { get; set; }
       public Object[, ,] RectangularArray3D { get; set; }
+
+      private string _privateFieldString = "FieldString text";
+      private List<List<string>> _privateFieldListList = New.List(New.List("private", "field"),New.List("list of", "list"));
     }
 
     public class Test2
@@ -230,7 +233,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void OneDimensionalEnumerableTest ()
     {
       ToTextProvider toText = GetTextProvider ();
-      //toText.RegisterHandler<string> (x => x); // To prevent string being treated as collection
       toText.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.LinkedListString)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
       string[] linkedListInit = { "A1", "A2", "A3", "A4", "A5" };
@@ -315,6 +317,22 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Log ("toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{{{[Test2: 0-0-0;0;{{A0,B1},{C0,D}}],[Test2: 0-0-1;1;{{A0,B1},{C1,D}}]},{[Test2: 0-1-0;1;{{A0,B1},{C0,D}}],[Test2: 0-1-1;0;{{A0,B1},{C1,D}}]}},{{[Test2: 1-0-0;1;{{A1,B1},{C0,D}}],[Test2: 1-0-1;0;{{A1,B1},{C1,D}}]},{[Test2: 1-1-0;0;{{A1,B1},{C0,D}}],[Test2: 1-1-1;1;{{A1,B1},{C1,D}}]}}}]"));
     }
+
+
+
+    [Test]
+    [Ignore]
+    public void AutomaticObjectToTextTest ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+      var test = new Test ("That's not my name", 179);
+      test.Array3D = new Object[][][] { new Object[][] { new Object[] { 91, 82, 73, 64 } } };
+      test.LinkedListString = new LinkedList<string> ();
+      string toTextTest = ToText(toText,test);
+      Log(toTextTest);
+     //Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
+    }
+
 
 
     public static ToTextProvider GetTextProvider ()

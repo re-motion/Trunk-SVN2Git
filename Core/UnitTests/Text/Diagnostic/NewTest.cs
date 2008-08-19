@@ -13,11 +13,43 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void NewArrayTest ()
     {
-      var collection = New.Array (New.Array(7, 11),New.Array( 13, 17));
-      var collectionExpected = new int[][] { new int[] { 7, 11 }, new int[] { 13, 17 } };
+      int[][] collection = New.Array (New.Array(7, 11),New.Array( 13, 17));
+      int[][] collectionExpected = new int[][] { new int[] { 7, 11 }, new int[] { 13, 17 } };
       Assert.That (collection, Is.EqualTo (collectionExpected));
     }
 
+    [Test]
+    public void NewArrayOfObjectTest ()
+    {
+      var o = new object();
+      object[][] collection = New.Array (New.Array (o,o), New.Array (o,o));
+      object[][] collectionExpected = new object[][] { new object[] { o, o }, new object[] { o, o } };
+      Assert.That (collection, Is.EqualTo (collectionExpected));
+    }
+
+    [Test]
+    public void NewArrayObjectTest ()
+    {
+      object[] collection = New.Objects (1, 2, 3);
+      var collectionExpected = new object[] { 1,2,3 };
+      Assert.That (collection, Is.EqualTo (collectionExpected));
+    }
+
+    [Test]
+    public void NewArrayObject2Test ()
+    {
+      object[][] collection = New.Objects (New.Objects (7, 11), New.Objects (13, 17));
+      object[][] collectionExpected = new object[][] { new object[] { 7, 11 }, new object[] { 13, 17 } };
+      Assert.That (collection, Is.EqualTo (collectionExpected));
+    }
+
+    [Test]
+    public void NewArrayObject3Test ()
+    {
+      object[][][] collection = New.Objects (New.Objects (New.Objects (7, 11), New.Objects (7, 11)), New.Objects (New.Objects (7, 11), New.Objects (7, 11)));
+      object[][][] collectionExpected = new object[][][] { new object[][] { new object[] { 7, 11 }, new object[] { 7, 11 } }, new object[][] { new object[] { 7, 11 }, new object[] { 7, 11 } } };
+      Assert.That (collection, Is.EqualTo (collectionExpected));
+    }
 
     [Test]
     public void NewListTest ()
