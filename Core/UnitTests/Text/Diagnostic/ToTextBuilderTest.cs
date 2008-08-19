@@ -279,6 +279,101 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (result2, Is.EqualTo ("Hello world here comes the" + Environment.NewLine + "newline"));
     }
 
+    [Test]
+    public void EnabledTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      toTextBuilder.s ("test");
+      Assert.That (toTextBuilder.ToString (), Is.EqualTo ("test"));
+      toTextBuilder.Enabled = false;
+      toTextBuilder.s ("test");
+      Assert.That (toTextBuilder.ToString (), Is.EqualTo ("test"));
+      toTextBuilder.Enabled = true;
+      toTextBuilder.s ("test");
+      Assert.That (toTextBuilder.ToString (), Is.EqualTo ("testtest"));
+    }
+
+    [Test]
+    public void OutputComplexityTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Complex;
+      Assert.That (toTextBuilder.OutputComplexity, Is.EqualTo (ToTextBuilder.OutputComplexityLevel.Complex));
+    }
+
+    [Test]
+    public void ComplexityFilteringSettingTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
+      toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Skeleton;
+      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(ToTextBuilder.OutputComplexityLevel.Basic);
+      Assert.That (toTextBuilder.Enabled, Is.EqualTo (false));
+
+      toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Basic;
+      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Basic);
+      Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
+    }
+
+
+    public ToTextBuilder AllFilterLevelsFilteredOutput (ToTextBuilder toTextBuilder)
+    {
+      if (toTextBuilder == null)
+      {
+        toTextBuilder = GetTextBuilder ();
+      }
+      toTextBuilder.cBasic.s ("b").comma.cComplex.s ("c").comma.cFull.s ("f").comma.cMedium.s ("m").comma.cSkeleton.s ("s");
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      return toTextBuilder;
+    }
+
+
+    [Test]
+    public void ComplexityFilteringTest ()
+    {
+      {
+        var toTextBuilder = GetTextBuilder ();
+        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Disable;
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
+        Assert.That (result, Is.EqualTo (""));
+      }
+
+      {
+        var toTextBuilder = GetTextBuilder ();
+        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Skeleton;
+        var result = AllFilterLevelsFilteredOutput(toTextBuilder).ToString();
+        Assert.That (result, Is.EqualTo ("s"));
+      }
+
+      {
+        var toTextBuilder = GetTextBuilder ();
+        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Basic;
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
+        Assert.That (result, Is.EqualTo ("b,s"));
+      }
+
+      {
+        var toTextBuilder = GetTextBuilder ();
+        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Medium;
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
+        Assert.That (result, Is.EqualTo ("b,m,s"));
+      }
+
+      {
+        var toTextBuilder = GetTextBuilder ();
+        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Complex;
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
+        Assert.That (result, Is.EqualTo ("b,c,m,s"));
+      }
+
+      {
+        var toTextBuilder = GetTextBuilder ();
+        toTextBuilder.OutputComplexity = ToTextBuilder.OutputComplexityLevel.Full;
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
+        Assert.That (result, Is.EqualTo ("b,c,f,m,s"));
+      }
+    }
 
 
     public static ToTextBuilder GetTextBuilder ()

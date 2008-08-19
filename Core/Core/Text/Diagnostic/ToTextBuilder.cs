@@ -7,7 +7,7 @@ namespace Remotion.Text.Diagnostic
 {
   public class ToTextBuilder
   {
-    /* Features:
+    /* Planned Features:
      * Start-/End(class)
      * Start-/EndCollection(class)
      * Start-/EndCollectionDimension(class)
@@ -23,7 +23,35 @@ namespace Remotion.Text.Diagnostic
      * XML: Support text to be added to be processed to become XML compatible ("<" -> "&lt;" etc). Use CDATA ?
     */
 
-    private StringBuilder _stringBuilder = new StringBuilder();
+    private class ToTextStringBuilder
+    {
+      private StringBuilder _stringBuilder = new StringBuilder ();
+      //private bool enabled = true;
+
+      public ToTextStringBuilder()
+      {
+        Enabled = true;
+      }
+
+      public bool Enabled { get; set; }
+
+      public StringBuilder Append<T> (T t)
+      {
+        if (Enabled)
+        {
+          _stringBuilder.Append (t);
+        }
+        return _stringBuilder;
+      }
+
+      public override string ToString ()
+      {
+        return _stringBuilder.ToString ();
+      }
+    }
+
+    //private StringBuilder _stringBuilder = new StringBuilder();
+    private ToTextStringBuilder _stringBuilder = new ToTextStringBuilder ();
     private ToTextProvider _toTextProvider;
     
     private string _enumerableBegin = "{";
@@ -33,7 +61,70 @@ namespace Remotion.Text.Diagnostic
     private string _arraySeparator = ",";
     private string _arrayEnd = "}";
     private bool _useMultiline = true;
+    private OutputComplexityLevel _outputComplexity = OutputComplexityLevel.Basic;
 
+
+    public enum OutputComplexityLevel
+    {
+      Disable,
+      Skeleton,
+      Basic,
+      Medium,
+      Complex,
+      Full,
+    };
+
+    public OutputComplexityLevel OutputComplexity
+    {
+      get { return _outputComplexity;  }
+      set { _outputComplexity = value; }
+    }
+
+
+    public ToTextBuilder AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(OutputComplexityLevel complexityLevel)
+    {
+      _stringBuilder.Enabled = (_outputComplexity >= complexityLevel) ? true : false;
+      return this; 
+    }
+
+    public ToTextBuilder cSkeleton
+    {
+      get
+      {
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Skeleton);
+      }
+    }
+
+    public ToTextBuilder cBasic
+    {
+      get {
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Basic);
+      }
+    }
+
+    public ToTextBuilder cMedium
+    {
+      get
+      {
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Medium);
+      }
+    }
+
+    public ToTextBuilder cComplex
+    {
+      get
+      {
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Complex);
+      }
+    }
+
+    public ToTextBuilder cFull
+    {
+      get
+      {
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Full);
+      }
+    }
 
     public ToTextBuilder(ToTextProvider toTextProvider)
     {
@@ -260,6 +351,13 @@ namespace Remotion.Text.Diagnostic
       set { _useMultiline = value; }
     }
 
+    public bool Enabled
+    {
+      get { return _stringBuilder.Enabled;  } 
+      set { _stringBuilder.Enabled = value;  } 
+    }
+
+
 
     //--------------------------------------------------------------------------
     // Shorthand notations
@@ -357,8 +455,6 @@ namespace Remotion.Text.Diagnostic
       _toTextProvider.ToText(o, this);
       return this;
     }
-
-
 
   }
 }
