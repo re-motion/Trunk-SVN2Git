@@ -222,7 +222,44 @@ namespace Remotion.UnitTests.Text.Diagnostic
       var result = toTextBuilder.ToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("{{{A,B,C}}}"));
-    }   
+    }
+
+
+    [Test]
+    public void EnumerableTagTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      var list = New.List (New.List (5, 3, 1), New.List (11, 13, 17));
+      toTextBuilder.EnumerableBegin = "(";
+      toTextBuilder.EnumerableSeparator = ";";
+      toTextBuilder.EnumerableEnd = ")";
+      toTextBuilder.ArrayBegin = "X";
+      toTextBuilder.ArraySeparator = "Y";
+      toTextBuilder.ArrayEnd = "Z";
+      
+      toTextBuilder.AppendEnumerable (list);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("((5;3;1);(11;13;17))"));
+    }
+
+    [Test]
+    public void ArrayTagTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      var array = New.Array (New.Array (New.Array (1, 3), New.Array (5, 7)), New.Array (New.Array (11, 13), New.Array (17, 19)), New.Array (New.Array (23, 29), New.Array (31, 37)));
+      toTextBuilder.ArrayBegin = "<{[";
+      toTextBuilder.ArraySeparator = "§|§";
+      toTextBuilder.ArrayEnd = "]}>";
+      toTextBuilder.EnumerableBegin = "X";
+      toTextBuilder.EnumerableSeparator = "Y";
+      toTextBuilder.EnumerableEnd = "Z";
+
+      toTextBuilder.AppendArray (array);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("<{[<{[<{[1§|§3]}>§|§<{[5§|§7]}>]}>§|§<{[<{[11§|§13]}>§|§<{[17§|§19]}>]}>§|§<{[<{[23§|§29]}>§|§<{[31§|§37]}>]}>]}>"));
+    }
 
 
     public static ToTextBuilder GetTextBuilder ()

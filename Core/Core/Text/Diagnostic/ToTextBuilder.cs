@@ -25,6 +25,13 @@ namespace Remotion.Text.Diagnostic
 
     private StringBuilder _stringBuilder = new StringBuilder();
     private ToTextProvider _toTextProvider;
+    
+    private string _enumerableBegin = "{";
+    private string _enumerableSeparator = ",";
+    private string _enumerableEnd = "}";
+    private string _arrayBegin = "{";
+    private string _arraySeparator = ",";
+    private string _arrayEnd = "}";
 
 
     public ToTextBuilder(ToTextProvider toTextProvider)
@@ -91,26 +98,64 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder AppendMember (string name, Object o)
     {
-      //throw new System.NotImplementedException ();
       _stringBuilder.Append (name);
       _stringBuilder.Append (":");
       _toTextProvider.ToText (o, this);
       return this;
     }
 
+
+    public string EnumerableBegin
+    {
+      get { return _enumerableBegin; }
+      set { _enumerableBegin = value; }
+    }
+
+    public string EnumerableSeparator
+    {
+      get { return _enumerableSeparator; }
+      set { _enumerableSeparator = value; }
+    }
+
+    public string EnumerableEnd
+    {
+      get { return _enumerableEnd; }
+      set { _enumerableEnd = value; }
+    }
+
+
+    public string ArrayBegin
+    {
+      get { return _arrayBegin; }
+      set { _arrayBegin = value; }
+    }
+
+    public string ArraySeparator
+    {
+      get { return _arraySeparator; }
+      set { _arraySeparator = value; }
+    }
+
+    public string ArrayEnd
+    {
+      get { return _arrayEnd; }
+      set { _arrayEnd = value; }
+    }
+
+
     public ToTextBuilder AppendEnumerable (IEnumerable collection)
     {
-      const string sequenceStart = "{";
-      const string sequenceSeperator = ",";
-      const string sequenceEnd = "}";
+      //const string sequenceStart = "{";
+      //const string sequenceSeperator = ",";
+      //const string sequenceEnd = "}";
 
-      Append (sequenceStart);
+      Append (EnumerableBegin);
       bool insertSeperator = false; // no seperator before first element
       foreach (Object element in collection)
       {
         if (insertSeperator)
         {
-          Append (sequenceSeperator);
+          Append (EnumerableSeparator);
         }
         else
         {
@@ -119,7 +164,7 @@ namespace Remotion.Text.Diagnostic
 
         ToText (element);
       }
-      Append (sequenceEnd);
+      Append (EnumerableEnd);
       return this;
     }
 
@@ -128,7 +173,7 @@ namespace Remotion.Text.Diagnostic
     private class ArrayToTextProcessor : OuterProduct.ProcessorBase
     {
       protected readonly Array _array;
-      private ToTextBuilder _toTextBuilder;
+      private readonly ToTextBuilder _toTextBuilder;
       //public readonly StringBuilder _result = new StringBuilder ();
 
       public ArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
@@ -139,15 +184,18 @@ namespace Remotion.Text.Diagnostic
 
       public override bool DoBeforeLoop ()
       {
+        InsertSeperator ();
+
         if (ProcessingState.IsInnermostLoop)
         {
-          _toTextBuilder.s (ProcessingState.IsFirstLoopElement ? "" : ",");
           _toTextBuilder.ToText (_array.GetValue (ProcessingState.DimensionIndices));
         }
         else
         {
-          _toTextBuilder.s (ProcessingState.IsFirstLoopElement ? "" : ",");
-          _toTextBuilder.s ("{");
+          //_toTextBuilder.AppendString (ProcessingState.IsFirstLoopElement ? "" : ",");
+          //_toTextBuilder.AppendString ("{");
+          //InsertSeperator ();
+          _toTextBuilder.AppendString (_toTextBuilder.ArrayBegin);
         }
         return true;
       }
@@ -156,9 +204,18 @@ namespace Remotion.Text.Diagnostic
       {
         if (!ProcessingState.IsInnermostLoop)
         {
-          _toTextBuilder.s ("}");
+          //_toTextBuilder.AppendString ("}");
+          _toTextBuilder.AppendString (_toTextBuilder.ArrayEnd);
         }
         return true;
+      }
+
+      protected void InsertSeperator ()
+      {
+        if (!ProcessingState.IsFirstLoopElement)
+        {
+          _toTextBuilder.AppendString (_toTextBuilder.ArraySeparator);
+        }
       }
     }
 
@@ -166,10 +223,10 @@ namespace Remotion.Text.Diagnostic
     public ToTextBuilder AppendArray (Array array)
     {
       var outerProduct = new OuterProduct (array);
-      AppendString ("{");
+      AppendString (ArrayBegin); // outer opening bracket
       var processor = new ArrayToTextProcessor (array, this);
       outerProduct.ProcessOuterProduct (processor);
-      AppendString ("}");
+      AppendString (ArrayEnd); // outer closing bracket
       return this;
     }
 
