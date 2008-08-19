@@ -262,6 +262,25 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
 
+
+    [Test] public void SinglelineMultilineTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      toTextBuilder.UseMultiLine = false;
+      toTextBuilder.s("Hello").nl.s (" world");
+      var result = toTextBuilder.ToString ();
+      Log(result);
+      Assert.That (result, Is.EqualTo ("Hello world"));
+
+      toTextBuilder.UseMultiLine = true;
+      toTextBuilder.s (" here comes the").nl.s ("newline");
+      var result2 = toTextBuilder.ToString ();
+      Log (result2);
+      Assert.That (result2, Is.EqualTo ("Hello world here comes the" + Environment.NewLine + "newline"));
+    }
+
+
+
     public static ToTextBuilder GetTextBuilder ()
     {
       var toTextProvider = new ToTextProvider(); 

@@ -32,6 +32,7 @@ namespace Remotion.Text.Diagnostic
     private string _arrayBegin = "{";
     private string _arraySeparator = ",";
     private string _arrayEnd = "}";
+    private bool _useMultiline = true;
 
 
     public ToTextBuilder(ToTextProvider toTextProvider)
@@ -48,7 +49,10 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder AppendNewLine ()
     {
-      _stringBuilder.Append (System.Environment.NewLine);
+      if (_useMultiline)
+      {
+        _stringBuilder.Append (System.Environment.NewLine);
+      }
       return this;
     }
 
@@ -249,6 +253,18 @@ namespace Remotion.Text.Diagnostic
       return AppendString (s);
     }
 
+
+    public bool UseMultiLine
+    {
+      get { return _useMultiline; }
+      set { _useMultiline = value; }
+    }
+
+
+    //--------------------------------------------------------------------------
+    // Shorthand notations
+    //--------------------------------------------------------------------------
+
     public ToTextBuilder sf (string format, params object[] paramArray)
     {
       return AppendString (string.Format (format, paramArray));
@@ -341,6 +357,7 @@ namespace Remotion.Text.Diagnostic
       _toTextProvider.ToText(o, this);
       return this;
     }
+
 
 
   }
