@@ -72,7 +72,7 @@ namespace Remotion.Logging
     //------------------------------------------------------------------------
     // Factories
     //------------------------------------------------------------------------
-    public static ISimpleLogger GetLogger (bool enableConsole)
+    public static ISimpleLogger Get (bool enableConsole)
     {
       if (enableConsole)
       {
@@ -84,7 +84,7 @@ namespace Remotion.Logging
       }
     }
 
-    public static ISimpleLogger GetLogger (string fileName, bool enable)
+    public static ISimpleLogger Get (string fileName, bool enable)
     {
       if (enable)
       {

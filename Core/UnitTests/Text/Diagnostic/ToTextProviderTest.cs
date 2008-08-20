@@ -12,7 +12,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
   [TestFixture]
   public class ToTextProviderTest
   {
-    private ISimpleLogger log = SimpleLogger.GetLogger (true);
+    private ISimpleLogger log = SimpleLogger.Get (true);
 
     public class TestSimple
     {
