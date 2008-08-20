@@ -32,13 +32,19 @@ namespace Remotion.Text.Diagnostic
       set { _automaticCharEnclosing = value; }
     }
 
-    private string ToText (object o)
+    //private string ToText (object obj)
+    //{
+    //  var toTextBuilder = new ToTextBuilder(this);
+    //  return toTextBuilder.ToText(obj).ToString();
+    //}
+
+    public string ToTextString (object obj)
     {
-      var toTextBuilder = new ToTextBuilder(this);
-      return toTextBuilder.ToText(o).ToString();
+      var toTextBuilder = new ToTextBuilder (this);
+      return toTextBuilder.ToText (obj).ToString ();
     }
 
-    public void ToText (object o, ToTextBuilder toTextBuilder)
+    public void ToText (object obj, ToTextBuilder toTextBuilder)
     {
       Assertion.IsNotNull (toTextBuilder);
 
@@ -58,7 +64,7 @@ namespace Remotion.Text.Diagnostic
       // * Register handlers for interfaces, which can be called by ToText handlers of specific types.
       // * Automatic call stack indentation
 
-      if (o == null)
+      if (obj == null)
       {
         Log ("null");
         toTextBuilder.AppendString ("null");
@@ -66,7 +72,7 @@ namespace Remotion.Text.Diagnostic
       }
 
       Delegate handler = null;
-      Type type = o.GetType ();
+      Type type = obj.GetType ();
 
       Log (type.ToString ());
 
@@ -74,11 +80,11 @@ namespace Remotion.Text.Diagnostic
 
       if (handler != null)
       {
-        handler.DynamicInvoke (o, toTextBuilder);
+        handler.DynamicInvoke (obj, toTextBuilder);
       }
       else if (type == typeof (string))
       {
-        string s= (string) o;
+        string s= (string) obj;
         if (UseAutomaticStringEnclosing)
         {
           toTextBuilder.Append ('"');
@@ -92,7 +98,7 @@ namespace Remotion.Text.Diagnostic
       }
       else if (type == typeof (char))
       {
-        char c = (char) o;
+        char c = (char) obj;
         if (UseAutomaticCharEnclosing)
         {
           toTextBuilder.Append ('\'');
@@ -107,23 +113,23 @@ namespace Remotion.Text.Diagnostic
       else if (type.IsPrimitive)
       {
         // TODO: Make sure floating point numbers are emitted with '.' comma character (non-localized)
-        toTextBuilder.Append (o);
+        toTextBuilder.Append (obj);
       }
       else if (type.IsArray)
       {
-        ArrayToText ((Array) o, toTextBuilder);
+        ArrayToText ((Array) obj, toTextBuilder);
       }
       else if (type.GetInterface ("IEnumerable") != null)
       {
-        CollectionToText ((IEnumerable) o, toTextBuilder);
+        CollectionToText ((IEnumerable) obj, toTextBuilder);
       }
       else if (_automaticObjectToText)
       {
-        AutomaticObjectToText (o, toTextBuilder);
+        AutomaticObjectToText (obj, toTextBuilder);
       }
       else
       {
-        toTextBuilder.AppendString (o.ToString ());
+        toTextBuilder.AppendString (obj.ToString ());
       }
     }
 
@@ -251,5 +257,7 @@ namespace Remotion.Text.Diagnostic
     {
       Log (String.Format (format, parameterArray));
     }
+
+ 
   }
 }

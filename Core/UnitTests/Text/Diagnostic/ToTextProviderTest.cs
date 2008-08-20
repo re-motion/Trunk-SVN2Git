@@ -12,6 +12,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
   [TestFixture]
   public class ToTextProviderTest
   {
+    private ISimpleLogger log = SimpleLogger.GetLogger (true);
 
     public class TestSimple
     {
@@ -392,7 +393,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
       test.Array3D = new Object[][][] { new Object[][] { new Object[] { 91, 82, 73, 64 } } };
       test.LinkedListString = new LinkedList<string> ();
       string toTextTest = ToText(toText,test);
-      Log(toTextTest);
+      //Log(toTextTest);
+      log.It(toTextTest);
       string toTextTestExpected = "[Test   Name=\"That's not my name\"  Int=179  LinkedListString={}  ListListString={}  Array3D={{{91,82,73,64}}}  RectangularArray2D=null  RectangularArray3D=null  _privateFieldString=\"FieldString text\"  _privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}} ]";
       Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
 
@@ -410,14 +412,12 @@ namespace Remotion.UnitTests.Text.Diagnostic
       return toTextProvider;
     }
 
-
     // Logging
     //private static readonly ILog s_log = LogManager.GetLogger (typeof(ToTextBuilderTest));
     //static ToTextProviderTest() { LogManager.InitializeConsole (); }
     //public static void Log (string s) { s_log.Info (s); }
 
     public static void Log (string s) { System.Console.WriteLine (s); }
-
   }
 
 }
