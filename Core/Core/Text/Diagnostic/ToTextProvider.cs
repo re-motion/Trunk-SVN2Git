@@ -26,6 +26,7 @@ namespace Remotion.Text.Diagnostic
       // *) Is null
       // *) Type handler registered
       // *) Is string (Treat seperately to prevent from being treated as IEnumerable)
+      // *) Is primitive: To prevent them from being handled through reflection
       // *) Is rectangular array (Treat seperately to prevent from being treated as 1D-collection by IEnumerable)
       // *) Implements IToTextHandler
       // *) If !IsInterface: Base type handler registered (recursive)
@@ -58,6 +59,11 @@ namespace Remotion.Text.Diagnostic
       {
         toTextBuilder.AppendString ((string) o);
       }
+      else if (type.IsPrimitive)
+      {
+        // TODO: Make sure floating point numbers are emitted with '.' comma character (non-localized)
+        toTextBuilder.Append (o);
+      }
       else if (type.IsArray)
       {
         ArrayToText ((Array) o, toTextBuilder);
@@ -66,11 +72,6 @@ namespace Remotion.Text.Diagnostic
       {
         CollectionToText ((IEnumerable) o, toTextBuilder);
       }
-      //else if (type.IsPrimitive)
-      //{
-      //  // TODO: Make sure floating point numbers are emitted with '.' comma character (non-localized)
-      //  toTextBuilder.Append (o);
-      //}
       //else if (_automaticObjectToText)
       //{
       //  AutomaticObjectToText(o, toTextBuilder);
@@ -154,6 +155,12 @@ namespace Remotion.Text.Diagnostic
           Log("name=" + name);
           var value = type.GetProperty(memberInfo.Name).GetValue(o, null);
           Log ("value=" + value);
+
+          //if (type.IsPrimitive)
+          //{
+          //  toTextBuilder.Append (o);
+          //}
+
           string valueToText = ToText (value);
           Log ("valueToText=" + valueToText);
           //LogVariables ("\nname: {0}, value: {1}", name, valueString);
