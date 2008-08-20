@@ -198,9 +198,10 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       ToTextProvider toText = GetTextProvider ();
       var testSimple = new TestSimple();
-      var resultAutomaticObjectToText = ToText(toText, testSimple);
 
-      // default for UseAutomaticObjectToText is true
+      toText.UseAutomaticObjectToText = true;
+      var resultAutomaticObjectToText = ToText (toText, testSimple);
+
       Assert.That (resultAutomaticObjectToText, NUnit.Framework.SyntaxHelpers.Text.Contains ("ABC abc"));
       Assert.That (resultAutomaticObjectToText, NUnit.Framework.SyntaxHelpers.Text.Contains ("54321"));
 
@@ -350,6 +351,28 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
 
+    [Test]
+    public void AutomaticStringEnclosingTest ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+      var test = "ABC";
+      toText.UseAutomaticStringEnclosing = false;
+      Assert.That (ToText (toText, test), Is.EqualTo ("ABC"));
+      toText.UseAutomaticStringEnclosing = true;
+      Assert.That (ToText (toText, test), Is.EqualTo ("\"ABC\""));
+    }
+
+    [Test]
+    public void AutomaticCharEnclosingTest ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+      var test = 'A';
+      toText.UseAutomaticCharEnclosing = false;
+      Assert.That (ToText (toText, test), Is.EqualTo ("A"));
+      toText.UseAutomaticCharEnclosing = true;
+      Assert.That (ToText (toText, test), Is.EqualTo ("'A'"));
+    }
+
 
     [Test]
     [Ignore]
@@ -368,7 +391,11 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
     public static ToTextProvider GetTextProvider ()
     {
-      return new ToTextProvider ();
+      var toTextProvider = new ToTextProvider ();
+      toTextProvider.UseAutomaticObjectToText = false;
+      toTextProvider.UseAutomaticStringEnclosing = false;
+      toTextProvider.UseAutomaticCharEnclosing = false;
+      return toTextProvider;
     }
 
 

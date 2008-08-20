@@ -378,6 +378,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       var toTextProvider = new ToTextProvider();
       toTextProvider.UseAutomaticObjectToText = false;
+      toTextProvider.UseAutomaticStringEnclosing = false;
+      toTextProvider.UseAutomaticCharEnclosing = false;
       return new ToTextBuilder (toTextProvider);
     }
 

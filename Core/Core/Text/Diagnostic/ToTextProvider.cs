@@ -11,11 +11,25 @@ namespace Remotion.Text.Diagnostic
   {
     private Dictionary<Type, Delegate> _typeHandlerMap = new Dictionary<Type, Delegate> ();
     private bool _automaticObjectToText = true;
+    private bool _automaticStringEnclosing = true;
+    private bool _automaticCharEnclosing = true;
 
     public bool UseAutomaticObjectToText
     {
       get { return _automaticObjectToText; }
       set { _automaticObjectToText = value; }
+    }
+
+    public bool UseAutomaticStringEnclosing
+    {
+      get { return _automaticStringEnclosing; }
+      set { _automaticStringEnclosing = value; }
+    }
+
+    public bool UseAutomaticCharEnclosing
+    {
+      get { return _automaticCharEnclosing; }
+      set { _automaticCharEnclosing = value; }
     }
 
     private string ToText (object o)
@@ -64,7 +78,31 @@ namespace Remotion.Text.Diagnostic
       }
       else if (type == typeof (string))
       {
-        toTextBuilder.AppendString ((string) o);
+        string s= (string) o;
+        if (UseAutomaticStringEnclosing)
+        {
+          toTextBuilder.Append ('"');
+          toTextBuilder.AppendString (s);
+          toTextBuilder.Append ('"');
+        }
+        else
+        {
+          toTextBuilder.AppendString(s);
+        }
+      }
+      else if (type == typeof (char))
+      {
+        char c = (char) o;
+        if (UseAutomaticCharEnclosing)
+        {
+          toTextBuilder.Append ('\'');
+          toTextBuilder.Append (c);
+          toTextBuilder.Append ('\'');
+        }
+        else
+        {
+          toTextBuilder.Append (c);
+        }
       }
       else if (type.IsPrimitive)
       {
@@ -79,7 +117,7 @@ namespace Remotion.Text.Diagnostic
       {
         CollectionToText ((IEnumerable) o, toTextBuilder);
       }
-      else if (UseAutomaticObjectToText)
+      else if (_automaticObjectToText)
       {
         AutomaticObjectToText (o, toTextBuilder);
       }
