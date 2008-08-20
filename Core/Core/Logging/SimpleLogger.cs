@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using Remotion.Text.Diagnostic;
 using Remotion.Utilities;
 
@@ -54,6 +55,22 @@ namespace Remotion.Logging
       textWriter.WriteLine(format, parameters);
     }
 
+    public void Sequence (params object[] parameters)
+    {
+      // TODO: Implement AppendSequence in ToTextBuilder
+      bool firstArgument = true;
+      var sb = new StringBuilder();
+      foreach (var obj in parameters)
+      {
+        if(!firstArgument)
+        {
+          sb.Append(", ");
+        }
+        sb.Append(toText.ToTextString(obj));
+      }
+      textWriter.WriteLine(sb.ToString());
+    }
+
     public void Item (object obj)
     {
       textWriter.Write (toText.ToTextString (obj));
@@ -63,6 +80,7 @@ namespace Remotion.Logging
     {
       textWriter.Write (s);
     }
+
 
     public void Item (string format, params object[] parameters)
     {

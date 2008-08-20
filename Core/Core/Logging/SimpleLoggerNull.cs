@@ -31,5 +31,10 @@ namespace Remotion.Logging
     {
       // Does nothing on purpose
     }
+
+    public void Sequence (params object[] parameters)
+    {
+      // Does nothing on purpose
+    }
   }
 }

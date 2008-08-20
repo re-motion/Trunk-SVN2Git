@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 //using NUnit.Framework.Constraints;
@@ -75,6 +76,11 @@ namespace Remotion.UnitTests.Text.Diagnostic
       public Object[][][] Array3D { get; set; }
       public Object[,] RectangularArray2D { get; set; }
       public Object[, ,] RectangularArray3D { get; set; }
+
+      public override string ToString()
+      {
+        return String.Format("<Name->{0}><Int->{1}><ListListString->{2}>", Name, Int, ListListString);
+      }
     }
 
 
@@ -103,16 +109,19 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void FallbackToStringTest ()
     {
-      FallbackToStringTestSingleType ("abcd EFGH");
-      FallbackToStringTestSingleType (87971132);
-      FallbackToStringTestSingleType (4786.5323);
-      int i = 8723;
-      FallbackToStringTestSingleType (i);
+      FallbackToStringTestSingleType (new object());
+      FallbackToStringTestSingleType (new Test("xxx",123));
+
+      var test2 = new Test2("aBc", 789);
+      //log.It (test2);
+      FallbackToStringTestSingleType (test2);
     }
 
     private void FallbackToStringTestSingleType<T> (T t)
     {
       ToTextProvider toText = GetTextProvider ();
+      toText.UseAutomaticObjectToText = false;
+      //log.It (t.ToString());
       Assert.That (ToText (toText, t), Is.EqualTo (t.ToString ()));
     }
 
@@ -383,7 +392,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
     [Test]
-    //[Ignore]
     public void AutomaticObjectToTextTest ()
     {
       ToTextProvider toText = GetTextProvider ();
@@ -397,8 +405,37 @@ namespace Remotion.UnitTests.Text.Diagnostic
       log.It(toTextTest);
       string toTextTestExpected = "[Test   Name=\"That's not my name\"  Int=179  LinkedListString={}  ListListString={}  Array3D={{{91,82,73,64}}}  RectangularArray2D=null  RectangularArray3D=null  _privateFieldString=\"FieldString text\"  _privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}} ]";
       Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
+    }
 
-      //ToText: ToTextBuilder - AutomaticObjectToText basic version (always emit everything, no caching)
+
+    [Test]
+    public void TypeToTextTest ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+      toText.UseAutomaticObjectToText = true;
+      var type = typeof (object).GetType ();
+      string result = toText.ToTextString (type);
+      log.It (result);
+      //Console.WriteLine ("{0}, {1}", typeof (object).GetType (), typeof (System.Type));
+
+      // TODO: This test fails by leading to an endless recursion. Check how to assert for that condition (maximal runtime ?).
+    }
+
+    [Test]
+    public void FloatingPointToTextTest ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+
+      double d = 1.2345678901234567890;
+      Double D = d;
+      
+      float f = (float) d;
+      Single F = f;
+     
+      Assert.That (toText.ToTextString(d), Is.EqualTo ("1.23456789012346"));
+      Assert.That (toText.ToTextString (D), Is.EqualTo ("1.23456789012346"));
+      Assert.That (toText.ToTextString (f), Is.EqualTo ("1.234568"));
+      Assert.That (toText.ToTextString (F), Is.EqualTo ("1.234568"));
     }
 
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using Remotion.Utilities;
@@ -13,6 +14,9 @@ namespace Remotion.Text.Diagnostic
     private bool _automaticObjectToText = true;
     private bool _automaticStringEnclosing = true;
     private bool _automaticCharEnclosing = true;
+
+    private readonly NumberFormatInfo _numberFormatInfoUS = new CultureInfo ("en-US", false).NumberFormat;
+
 
     public bool UseAutomaticObjectToText
     {
@@ -96,24 +100,40 @@ namespace Remotion.Text.Diagnostic
           toTextBuilder.AppendString(s);
         }
       }
-      else if (type == typeof (char))
+      else if (type == typeof (object).GetType () || type == typeof (Type))
       {
-        char c = (char) obj;
-        if (UseAutomaticCharEnclosing)
-        {
-          toTextBuilder.Append ('\'');
-          toTextBuilder.Append (c);
-          toTextBuilder.Append ('\'');
-        }
-        else
-        {
-          toTextBuilder.Append (c);
-        }
+        // Catch type RuntimeType here to avoid endless recursion in AutomaticObjectToText below
+        toTextBuilder.AppendString (type.ToString ());
       }
       else if (type.IsPrimitive)
       {
-        // TODO: Make sure floating point numbers are emitted with '.' comma character (non-localized)
-        toTextBuilder.Append (obj);
+        if (type == typeof (char))
+        {
+          char c = (char) obj;
+          if (UseAutomaticCharEnclosing)
+          {
+            toTextBuilder.Append ('\'');
+            toTextBuilder.Append (c);
+            toTextBuilder.Append ('\'');
+          }
+          else
+          {
+            toTextBuilder.Append (c);
+          }
+        }
+        else if (type == typeof (Single)) 
+        {
+          toTextBuilder.AppendString (((Single) obj).ToString (_numberFormatInfoUS));
+        }
+        else if (type == typeof (Double))
+        {
+          toTextBuilder.AppendString (((Double) obj).ToString (_numberFormatInfoUS));
+        }
+        else
+        {
+          // TODO: Make sure floating point numbers are emitted with '.' comma character (non-localized)
+          toTextBuilder.Append (obj);
+        }
       }
       else if (type.IsArray)
       {
