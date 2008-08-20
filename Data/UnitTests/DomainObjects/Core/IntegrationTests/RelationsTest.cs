@@ -25,8 +25,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       OrderTicket orderTicket = order.OrderTicket;
 
-      DomainObjectRelationCheckEventReceiver orderEventReceiver = new DomainObjectRelationCheckEventReceiver (order);
-      DomainObjectRelationCheckEventReceiver orderTicketEventReceiver = new DomainObjectRelationCheckEventReceiver (orderTicket);
+      var orderEventReceiver = new DomainObjectRelationCheckEventReceiver (order);
+      var orderTicketEventReceiver = new DomainObjectRelationCheckEventReceiver (orderTicket);
 
       orderTicket.Order = null;
 
@@ -41,5 +41,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.AreSame (null, orderTicketEventReceiver.GetChangedRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
     }
 
+    [Test]
+    [Ignore ("TODO: Should throw with a sensible message - see COMMONS-731")]
+    public void LoadSecondRelationHalf_WithChangedRelationSinceFirstHalf_OneOne()
+    {
+      SetDatabaseModifyable ();
+
+      Employee employee = Employee.NewObject ();
+      ClientTransactionMock.Commit ();
+      Computer computer;
+
+      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      {
+        ClientTransaction.Current.EnlistDomainObject (employee);
+        computer = Computer.NewObject ();
+        computer.Employee = employee;
+        ClientTransaction.Current.Commit ();
+      }
+
+      ClientTransaction.Current.EnlistDomainObject (computer);
+      Console.WriteLine ("{0}.Computer = {1}", employee, employee.Computer);
+      Console.WriteLine ("{0}.Employee = {1}", computer, computer.Employee);
+    }
+
+    [Test]
+    [Ignore ("TODO: Should throw with a sensible message - see COMMONS-731")]
+    public void LoadSecondRelationHalf_WithChangedRelationSinceFirstHalf_OneMany ()
+    {
+      SetDatabaseModifyable ();
+
+      IndustrialSector industrialSector = IndustrialSector.NewObject ();
+      Company oldCompany = Company.NewObject ();
+      oldCompany.Ceo = Ceo.NewObject ();
+      industrialSector.Companies.Add (oldCompany);
+      ClientTransactionMock.Commit ();
+      Company company;
+
+      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      {
+        ClientTransaction.Current.EnlistDomainObject (industrialSector);
+        company = Company.NewObject ();
+        company.Ceo = Ceo.NewObject ();
+        industrialSector.Companies.Add (company);
+        ClientTransaction.Current.Commit ();
+      }
+
+      ClientTransaction.Current.EnlistDomainObject (company);
+      Console.WriteLine ("{0}.IndustrialSector = {1}", company, company.IndustrialSector);
+      Console.WriteLine ("{0}.Companies.Count = {1}", industrialSector, industrialSector.Companies.Count);
+    }
   }
 }
