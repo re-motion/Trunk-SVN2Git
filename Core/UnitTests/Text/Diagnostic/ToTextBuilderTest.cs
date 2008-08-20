@@ -108,7 +108,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       var toTextBuilder = GetTextBuilder ();
       toTextBuilder.s("START-").nl.tab.sf ("[{0};{1};{2}]", i, f, s).space.s("-END");
       var result = toTextBuilder.ToString ();
-      s_log.Info(result);
+      Log(result);
       Assert.That (result, Is.EqualTo ("START-" + Environment.NewLine + "\t[987654321;3,14;Text] -END"));
     }
 
@@ -374,6 +374,28 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
 
+    [Test]
+    public void beginInstanceTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      toTextBuilder.beginInstance(toTextBuilder.GetType());
+      var result = toTextBuilder.ToString();
+      Log(result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
+    }
+
+    [Test]
+    public void endInstanceTest ()
+    {
+      var toTextBuilder = GetTextBuilder ();
+      toTextBuilder.endInstance ();
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("]"));
+    }
+    
+
+
     public static ToTextBuilder GetTextBuilder ()
     {
       var toTextProvider = new ToTextProvider();
@@ -386,9 +408,10 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
 
     // Logging
-    private static readonly ILog s_log = LogManager.GetLogger (typeof(ToTextBuilderTest));
-    static ToTextBuilderTest() { LogManager.InitializeConsole (); }
-    public static void Log (string s) { s_log.Info (s); }
+    //private static readonly ILog s_log = LogManager.GetLogger (typeof (ToTextBuilderTest));
+    //static ToTextBuilderTest () { LogManager.InitializeConsole (); }
+    //public static void Log (string s) { s_log.Info (s); }
+    public static void Log (string s) { System.Console.WriteLine(s); }
 
   }
 

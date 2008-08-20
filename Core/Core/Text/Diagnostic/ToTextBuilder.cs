@@ -480,5 +480,31 @@ namespace Remotion.Text.Diagnostic
       return this;
     }
 
+
+    private ToTextBuilder AppendInstanceBegin (Type type)
+    {
+      this.AppendString("[");
+      this.AppendString (type.Name);
+      this.AppendString ("  ");
+      return this;
+    }
+
+    public ToTextBuilder beginInstance (Type type)
+    {
+      return AppendInstanceBegin(type);
+    }
+
+
+    private ToTextBuilder AppendInstanceEnd ()
+    {
+      this.AppendString ("]");
+      return this;
+    }
+
+    public ToTextBuilder endInstance ()
+    {
+      return AppendInstanceEnd ();
+    }
+
   }
 }

@@ -374,17 +374,29 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
 
+    private void ToTextProviderEnableAutomatics (ToTextProvider toTextProvider, bool enable)
+    {
+      toTextProvider.UseAutomaticObjectToText = enable;
+      toTextProvider.UseAutomaticStringEnclosing = enable;
+      toTextProvider.UseAutomaticCharEnclosing = enable;
+    }
+
     [Test]
-    [Ignore]
+    //[Ignore]
     public void AutomaticObjectToTextTest ()
     {
       ToTextProvider toText = GetTextProvider ();
+      //toText.UseAutomaticObjectToText = true;
+      ToTextProviderEnableAutomatics(toText, true);
       var test = new Test ("That's not my name", 179);
       test.Array3D = new Object[][][] { new Object[][] { new Object[] { 91, 82, 73, 64 } } };
       test.LinkedListString = new LinkedList<string> ();
       string toTextTest = ToText(toText,test);
       Log(toTextTest);
-     //Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
+      string toTextTestExpected = "[Test   Name=\"That's not my name\"  Int=179  LinkedListString={}  ListListString={}  Array3D={{{91,82,73,64}}}  RectangularArray2D=null  RectangularArray3D=null  _privateFieldString=\"FieldString text\"  _privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}} ]";
+      Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
+
+      //ToText: ToTextBuilder - AutomaticObjectToText basic version (always emit everything, no caching)
     }
 
 
@@ -400,10 +412,11 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
 
     // Logging
-    private static readonly ILog s_log = LogManager.GetLogger (typeof(ToTextBuilderTest));
-    static ToTextProviderTest() { LogManager.InitializeConsole (); }
-    public static void Log (string s) { s_log.Info (s); }
+    //private static readonly ILog s_log = LogManager.GetLogger (typeof(ToTextBuilderTest));
+    //static ToTextProviderTest() { LogManager.InitializeConsole (); }
+    //public static void Log (string s) { s_log.Info (s); }
 
+    public static void Log (string s) { System.Console.WriteLine (s); }
 
   }
 
