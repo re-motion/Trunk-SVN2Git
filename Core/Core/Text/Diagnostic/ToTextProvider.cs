@@ -139,11 +139,11 @@ namespace Remotion.Text.Diagnostic
     }
 
 
-    public void RegisterStringHandlers ()
-    {
-      RegisterHandler<String> ((x, ttb) => ttb.s ("\"").ts (x).s ("\""));
-      RegisterHandler<char> ((x, ttb) => ttb.s ("'").ts (x).s ("'"));
-    }
+    //public void RegisterStringHandlers ()
+    //{
+    //  RegisterHandler<String> ((x, ttb) => ttb.s ("\"").ts (x).s ("\""));
+    //  RegisterHandler<char> ((x, ttb) => ttb.s ("'").ts (x).s ("'"));
+    //}
 
 
     public void CollectionToText (IEnumerable collection, ToTextBuilder toTextBuilder)
@@ -180,19 +180,16 @@ namespace Remotion.Text.Diagnostic
 
 
 
-    private object GetValue (object o, Type type, MemberInfo memberInfo)
+    private object GetValue (object obj, Type type, MemberInfo memberInfo)
     {
       object value = null;
       if (memberInfo is PropertyInfo)
       {
-        value = ((PropertyInfo)memberInfo).GetValue (o, null);
+        value = ((PropertyInfo)memberInfo).GetValue (obj, null);
       }
       else if (memberInfo is FieldInfo)
       {
-        //var field = type.GetField (memberInfo.Name);
-        //Assertion.IsNotNull (field);
-        //value = field.GetValue (o);
-        value = ((FieldInfo) memberInfo).GetValue (o);
+        value = ((FieldInfo) memberInfo).GetValue (obj);
       }
       else
       {
@@ -204,20 +201,15 @@ namespace Remotion.Text.Diagnostic
     public void AutomaticObjectToTextProcessMemberInfos (string message, Object obj, BindingFlags bindingFlags, 
       MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
     {
-      Log ("---------------------------------------------------");
-      Log (message);
-      Log ("---------------------------------------------------");
       Type type = obj.GetType ();
       MemberInfo[] memberInfos = type.GetMembers (bindingFlags);
 
 
-      //toTextBuilder.nl.s ("Members:").nl.s ();
       foreach (var memberInfo in memberInfos)
       {
         if ((memberInfo.MemberType & memberTypeFlags) != 0)
         {
           string name = memberInfo.Name;
-          Log("name=" + name);
 
           // Skip backing fields
           bool processMember = !name.Contains("k__");
@@ -225,64 +217,27 @@ namespace Remotion.Text.Diagnostic
           if (processMember)
           {
             object value = GetValue(obj, type, memberInfo);
-
-            Log ("value=" + value);
-
-            string valueToText = ToText (value);
-            Log ("valueToText=" + valueToText);
-
-            //toTextBuilder.s("(").m(name, value).s(")");
-            toTextBuilder.m(name, value);
+            // AppendMember ToText|s value
+            toTextBuilder.AppendMember(name, value);
           }
         }
       }
-      Log ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
 
 
-    public void AutomaticObjectToText (object o, ToTextBuilder toTextBuilder)
+    public void AutomaticObjectToText (object obj, ToTextBuilder toTextBuilder)
     {
-      Log(">>>>>>>>>>> AUTOMATICOBJECTTOTEST: " + o + " " + o.GetType());
+      Type type = obj.GetType ();
 
-      Type type = o.GetType ();
       toTextBuilder.beginInstance(type);
 
-      AutomaticObjectToTextProcessMemberInfos ("Public Properties", o, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Property, toTextBuilder);
-      AutomaticObjectToTextProcessMemberInfos ("Public Fields", o, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Field, toTextBuilder);
-      AutomaticObjectToTextProcessMemberInfos ("Non Public Properties", o, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Property, toTextBuilder);
-      AutomaticObjectToTextProcessMemberInfos ("Non Public Fields", o, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Field, toTextBuilder);
+      AutomaticObjectToTextProcessMemberInfos ("Public Properties", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Property, toTextBuilder);
+      AutomaticObjectToTextProcessMemberInfos ("Public Fields", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Field, toTextBuilder);
+      AutomaticObjectToTextProcessMemberInfos ("Non Public Properties", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Property, toTextBuilder);
+      AutomaticObjectToTextProcessMemberInfos ("Non Public Fields", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Field, toTextBuilder);
 
       toTextBuilder.endInstance();
-
-      //Type type = o.GetType();
-
-      //toTextBuilder.nl.s ("Fields:").nl.s();
-      //foreach (var info in type.GetFields())
-      //{
-      //  toTextBuilder.AppendString(info.ToString());
-      //}
-
-      //toTextBuilder.nl.s ("Properties:").nl.s ();
-      //foreach (var info in type.GetProperties ())
-      //{
-      //  toTextBuilder.AppendString (info.ToString ());
-
-      //  Log( "!!!! " + type.GetProperty(info.Name).GetValue(o, null).ToString() );
-      //}
-
-      
-
-      //MemberInfo[] memberInfos =
-      //  type.GetMembers ( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
-
-      //toTextBuilder.nl.s ("Members:").nl.s();
-      //foreach (var memberInfo in memberInfos)
-      //{
-
-      //  toTextBuilder.nl.s(memberInfo.ToString()).comma.space.s(memberInfo.Name);
-      //  //memberInfo.GetType().Is
-      //}
     }
 
 

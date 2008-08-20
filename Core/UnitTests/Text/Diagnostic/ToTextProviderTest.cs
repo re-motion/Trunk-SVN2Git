@@ -184,14 +184,14 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (toTextTest, Is.EqualTo ("'x'"));
     }
 
-    [Test]
-    public void InitStandardHandlersTest ()
-    {
-      ToTextProvider toText = GetTextProvider ();
-      toText.RegisterStringHandlers ();
-      Assert.That (ToText(toText,"Some text"), Is.EqualTo ("\"Some text\""));
-      Assert.That (ToText(toText,'x'), Is.EqualTo ("'x'"));
-    }
+    //[Test]
+    //public void InitStandardHandlersTest ()
+    //{
+    //  ToTextProvider toText = GetTextProvider ();
+    //  toText.RegisterStringHandlers ();
+    //  Assert.That (ToText(toText,"Some text"), Is.EqualTo ("\"Some text\""));
+    //  Assert.That (ToText(toText,'x'), Is.EqualTo ("'x'"));
+    //}
 
     [Test]
     public void UseAutomaticObjectToTextTest ()
