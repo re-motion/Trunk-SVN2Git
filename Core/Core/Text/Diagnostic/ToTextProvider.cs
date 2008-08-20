@@ -12,6 +12,12 @@ namespace Remotion.Text.Diagnostic
     private Dictionary<Type, Delegate> _typeHandlerMap = new Dictionary<Type, Delegate> ();
     private bool _automaticObjectToText = true;
 
+    public bool UseAutomaticObjectToText
+    {
+      get { return _automaticObjectToText; }
+      set { _automaticObjectToText = value; }
+    }
+
     private string ToText (object o)
     {
       var toTextBuilder = new ToTextBuilder(this);
@@ -36,6 +42,7 @@ namespace Remotion.Text.Diagnostic
 
       // Functionality:
       // * Register handlers for interfaces, which can be called by ToText handlers of specific types.
+      // * Automatic call stack indentation
 
       if (o == null)
       {
@@ -72,10 +79,10 @@ namespace Remotion.Text.Diagnostic
       {
         CollectionToText ((IEnumerable) o, toTextBuilder);
       }
-      //else if (_automaticObjectToText)
-      //{
-      //  AutomaticObjectToText(o, toTextBuilder);
-      //}
+      else if (UseAutomaticObjectToText)
+      {
+        AutomaticObjectToText (o, toTextBuilder);
+      }
       else
       {
         toTextBuilder.AppendString (o.ToString ());
@@ -133,7 +140,8 @@ namespace Remotion.Text.Diagnostic
       }
     }
 
-    public void ProcessMemberInfos (string message, Object o, BindingFlags bindingFlags, MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
+    public void ProcessMemberInfos (string message, Object o, BindingFlags bindingFlags, 
+      MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
     {
       Log ("---------------------------------------------------");
       Log (message);
@@ -145,25 +153,25 @@ namespace Remotion.Text.Diagnostic
       toTextBuilder.nl.s ("Members:").nl.s ();
       foreach (var memberInfo in memberInfos)
       {
-        //toTextBuilder.nl.s (memberInfo.ToString ()).comma.space.s (memberInfo.Name);
-        //if ((memberInfo.MemberType & (MemberTypes.Field | MemberTypes.Property)) != 0)
         if ((memberInfo.MemberType & memberTypeFlags) != 0)
         {
-          //LogVariables ("\nname: {0}, value: {1}", memberInfo.Name, type.GetProperty (memberInfo.Name).GetValue (o, null));
-          //LogVariables ("name: {0}", memberInfo.Name);
           string name = memberInfo.Name;
           Log("name=" + name);
-          var value = type.GetProperty(memberInfo.Name).GetValue(o, null);
-          Log ("value=" + value);
 
-          //if (type.IsPrimitive)
-          //{
-          //  toTextBuilder.Append (o);
-          //}
+          // Skip backing fields
+          bool processMember = !name.Contains("k__");
 
-          string valueToText = ToText (value);
-          Log ("valueToText=" + valueToText);
-          //LogVariables ("\nname: {0}, value: {1}", name, valueString);
+          if (processMember)
+          {
+            var value = type.GetProperty(memberInfo.Name).GetValue(o, null);
+            Log ("value=" + value);
+
+            string valueToText = ToText (value);
+            Log ("valueToText=" + valueToText);
+
+            //toTextBuilder.s("(").m(name, value).s(")");
+            toTextBuilder.m(name, value);
+          }
         }
       }
       Log ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+//using NUnit.Framework.Constraints;
 using Remotion.Logging;
 using Remotion.Text.Diagnostic;
 
@@ -11,7 +12,18 @@ namespace Remotion.UnitTests.Text.Diagnostic
   [TestFixture]
   public class ToTextProviderTest
   {
-    //private ToTextProvider toText = new ToTextProvider();
+
+    public class TestSimple
+    {
+      public TestSimple ()
+      {
+        Name = "ABC abc";
+        Int = 54321;
+      }
+
+      public string Name { get; set; }
+      public int Int { get; set; }
+    }
 
     public class Test
     {
@@ -77,6 +89,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void ObjectTest ()
     {
       ToTextProvider toText = GetTextProvider ();
+
+      toText.UseAutomaticObjectToText = false;
+
       Object o = 5711;
       Assert.That (ToText(toText,o), Is.EqualTo (o.ToString ()));
 
@@ -178,11 +193,27 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (ToText(toText,'x'), Is.EqualTo ("'x'"));
     }
 
+    [Test]
+    public void UseAutomaticObjectToTextTest ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+      var testSimple = new TestSimple();
+      var resultAutomaticObjectToText = ToText(toText, testSimple);
+
+      // default for UseAutomaticObjectToText is true
+      Assert.That (resultAutomaticObjectToText, NUnit.Framework.SyntaxHelpers.Text.Contains ("ABC abc"));
+      Assert.That (resultAutomaticObjectToText, NUnit.Framework.SyntaxHelpers.Text.Contains ("54321"));
+
+      toText.UseAutomaticObjectToText = false;
+      Assert.That (ToText (toText, testSimple), Is.EqualTo (testSimple.ToString ()));
+    }
+
 
     [Test]
     public void ClearHandlersTest ()
     {
       ToTextProvider toText = GetTextProvider ();
+      toText.UseAutomaticObjectToText = false;
       toText.RegisterHandler<Object> ((x, ttb) => ttb.s ("[ClearHandlersTest]").ts (x));
       var o = new object ();
       string toTextTest = ToText(toText,o);

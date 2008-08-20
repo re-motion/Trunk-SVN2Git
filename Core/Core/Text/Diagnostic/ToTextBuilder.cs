@@ -198,9 +198,23 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder AppendMember (string name, Object o)
     {
+#if(false)
       _toTextStringBuilder.Append (name);
-      _toTextStringBuilder.Append (":");
+      _toTextStringBuilder.Append (": ");
       _toTextProvider.ToText (o, this);
+#elif(false)
+      _toTextStringBuilder.Append ("(");
+      _toTextStringBuilder.Append (name);
+      _toTextStringBuilder.Append (": ");
+      _toTextProvider.ToText (o, this);
+      _toTextStringBuilder.Append (")");
+#elif(true)
+      _toTextStringBuilder.Append (" ");
+      _toTextStringBuilder.Append (name);
+      _toTextStringBuilder.Append ("=");
+      _toTextProvider.ToText (o, this);
+      _toTextStringBuilder.Append (" ");
+#endif
       return this;
     }
 

@@ -152,7 +152,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
       var myList = New.List (5, 3, 1);
       toTextBuilder.m ("myList", myList);
       var result = toTextBuilder.ToString ();
-      Assert.That (result, Is.EqualTo ("myList:{5,3,1}"));
+      //Assert.That (result, Is.EqualTo ("myList:{5,3,1}"));
+      Assert.That (result, Is.EqualTo (" myList={5,3,1} "));
     }
 
     [Test]
@@ -375,7 +376,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
     public static ToTextBuilder GetTextBuilder ()
     {
-      var toTextProvider = new ToTextProvider(); 
+      var toTextProvider = new ToTextProvider();
+      toTextProvider.UseAutomaticObjectToText = false;
       return new ToTextBuilder (toTextProvider);
     }
 
