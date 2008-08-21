@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 //using NUnit.Framework.Constraints;
+using Remotion.Development.UnitTesting;
 using Remotion.Logging;
 using Remotion.Text.Diagnostic;
 
@@ -13,7 +15,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
   [TestFixture]
   public class ToTextProviderTest
   {
-    private ISimpleLogger log = SimpleLogger.Get (true);
+    private ISimpleLogger log = SimpleLogger.Create (false);
 
     public class TestSimple
     {
@@ -408,17 +410,39 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
 
-    [Test]
-    public void TypeToTextTest ()
+    private static void TypeToTextTestDo()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
       toText.UseAutomaticObjectToText = true;
-      var type = typeof (object).GetType ();
-      string result = toText.ToTextString (type);
-      log.It (result);
-      //Console.WriteLine ("{0}, {1}", typeof (object).GetType (), typeof (System.Type));
+      var type = typeof (object).GetType();
+      string result = toText.ToTextString(type);
+    }
 
-      // TODO: This test fails by leading to an endless recursion. Check how to assert for that condition (maximal runtime ?).
+    //private delegate void TimesOutTestMethodDelegate();
+
+    //private static bool TimesOut ()
+    //{
+    //  TimesOutTestMethodDelegate timeOutTestMethod = TypeToTextTestDo;
+    //  //ThreadStart ts;
+
+    //  ThreadStart threadDelegate = new ThreadStart (TypeToTextTestDo);
+
+    //  ThreadRunner.RunTimesOutAfterSeconds (threadDelegate);
+    //  return true;
+    //}
+
+    [Test]
+    public void RuntimeTypeIsTypeTest ()
+    {
+      Assert.That (typeof(Type).IsAssignableFrom(typeof (object).GetType()), Is.True);
+    }
+
+
+    [Test]
+    public void TypeToTextNoEndlessRecursionTest ()
+    {
+      bool timesOut = ThreadRunner.RunTimesOutAfterSeconds (TypeToTextTestDo, 0.1);
+      Assert.That (timesOut, Is.False);
     }
 
     [Test]
@@ -454,7 +478,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
     //static ToTextProviderTest() { LogManager.InitializeConsole (); }
     //public static void Log (string s) { s_log.Info (s); }
 
-    public static void Log (string s) { System.Console.WriteLine (s); }
+    //public static void Log (string s) { System.Console.WriteLine (s); }
+    public void Log (string s) { log.It(s); }
   }
 
 }

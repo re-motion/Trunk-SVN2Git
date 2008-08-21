@@ -10,6 +10,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
   [NUnit.Framework.TestFixture]
   public class ToTextBuilderTest
   {
+    private ISimpleLogger log = SimpleLogger.Create (false);
 
     [Test]
     public void StringTest ()
@@ -411,7 +412,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
     //private static readonly ILog s_log = LogManager.GetLogger (typeof (ToTextBuilderTest));
     //static ToTextBuilderTest () { LogManager.InitializeConsole (); }
     //public static void Log (string s) { s_log.Info (s); }
-    public static void Log (string s) { System.Console.WriteLine(s); }
+    //public static void Log (string s) { System.Console.WriteLine(s); }
+    public void Log (string s) { log.It (s); }
 
   }
 

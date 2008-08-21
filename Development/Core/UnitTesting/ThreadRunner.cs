@@ -65,18 +65,41 @@ namespace Remotion.Development.UnitTesting
     public static bool RunTimesOut (ThreadStart threadStart, TimeSpan timeoutTimeSpan)
     {
       // Preserve exceptions thrown in thread, to be able to rethrow them.
-      // TODO: To preserve also the callstack, rethrow new exception with thread exception as inner exception.
+      // TODO: To preserve the callstack, rethrow new exception with thread exception as inner exception.
       Exception lastException = null;
-      UnhandledExceptionEventHandler unhandledExceptionEventHandler = delegate (object sender, UnhandledExceptionEventArgs e)
-      {
-        lastException = (Exception) e.ExceptionObject;
-      };
+      //UnhandledExceptionEventHandler unhandledExceptionEventHandler = delegate (object sender, UnhandledExceptionEventArgs e)
+      //{
+      //  lastException = (Exception) e.ExceptionObject;
+      //};
 
-      AppDomain.CurrentDomain.UnhandledException += unhandledExceptionEventHandler;
+      //AppDomain.CurrentDomain.UnhandledException += unhandledExceptionEventHandler;
 
 
       //Thread otherThread = new Thread ((ThreadStart) delegate { ThreadStartThreadAbortExceptionWrapper (threadStart); });
-      Thread otherThread = new Thread ( () => ThreadStartThreadAbortExceptionWrapper (threadStart) );
+      //Thread otherThread = new Thread ( () => ThreadStartThreadAbortExceptionWrapper (threadStart) );
+
+      Thread otherThread =
+        new Thread ((ThreadStart)
+          delegate
+          {
+            try
+            {
+              threadStart ();
+            }
+            catch (System.Threading.ThreadAbortException e)
+            {
+              //Console.WriteLine (">>> ThreadStartThreadAbortExceptionWrapper <<<");
+              // Explicitely reset the ThreadAbortException
+              Thread.ResetAbort ();
+              // Do not report exception in lastException, since aborting is expected behavior.
+            }
+            catch (Exception e)
+            {
+              lastException = e;
+            }
+          }
+         );
+
 
       otherThread.Start ();
       bool timedOut = !otherThread.Join (timeoutTimeSpan);
@@ -85,26 +108,26 @@ namespace Remotion.Development.UnitTesting
         otherThread.Abort ();
       }
 
-      AppDomain.CurrentDomain.UnhandledException -= unhandledExceptionEventHandler;
+      //AppDomain.CurrentDomain.UnhandledException -= unhandledExceptionEventHandler;
       if (lastException != null)
         throw lastException;
         
       return timedOut;
     }
 
-    public static void ThreadStartThreadAbortExceptionWrapper (ThreadStart threadStart)
-    {
-      try
-      {
-        threadStart();
-      }
-      catch (System.Threading.ThreadAbortException e)
-      {
-        //Console.WriteLine (">>> ThreadStartThreadAbortExceptionWrapper <<<");
-        // Explicitely reset the ThreadAbortException
-        Thread.ResetAbort (); 
-      }
-    }
+    //public static void ThreadStartThreadAbortExceptionWrapper (ThreadStart threadStart)
+    //{
+    //  try
+    //  {
+    //    threadStart();
+    //  }
+    //  catch (System.Threading.ThreadAbortException e)
+    //  {
+    //    //Console.WriteLine (">>> ThreadStartThreadAbortExceptionWrapper <<<");
+    //    // Explicitely reset the ThreadAbortException
+    //    Thread.ResetAbort (); 
+    //  }
+    //}
 
   }
 }

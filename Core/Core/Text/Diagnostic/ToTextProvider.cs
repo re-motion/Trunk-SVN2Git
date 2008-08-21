@@ -100,10 +100,19 @@ namespace Remotion.Text.Diagnostic
           toTextBuilder.AppendString(s);
         }
       }
-      else if (type == typeof (object).GetType () || type == typeof (Type))
+      else if(false)
       {
-        // Catch type RuntimeType here to avoid endless recursion in AutomaticObjectToText below
-        toTextBuilder.AppendString (type.ToString ());
+        // The code below, while not completely equivalent to the "obj is Type" version performs much faster.
+        if (type == typeof (object).GetType () || type == typeof (Type))
+        {
+          // Catch type RuntimeType here to avoid endless recursion in AutomaticObjectToText below
+          toTextBuilder.AppendString (type.ToString ());
+        }
+      }
+      else if (obj is Type) 
+      {
+        // Catch Type|s here to avoid endless recursion in AutomaticObjectToText below.
+        toTextBuilder.AppendString (obj.ToString ());
       }
       else if (type.IsPrimitive)
       {

@@ -12,7 +12,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
   [TestFixture]
   public class ThreadRunnerTest
   {
-    private ISimpleLogger log = SimpleLogger.Create (true);
+    private ISimpleLogger log = SimpleLogger.Create (false);
 
     [Test]
     public void Run ()
@@ -34,6 +34,17 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     private static void RunTimesOutEndlessLoop ()
     {
       while (true) { }
+    }
+
+    private static void RunTimesOutEndlessRecursionDo (int i)
+    {
+      //Console.WriteLine ("RunTimesOutEndlessRecursionDo " + i);
+      RunTimesOutEndlessRecursionDo (i + 1);
+    }
+
+    private static void RunTimesOutEndlessRecursion ()
+    {
+      RunTimesOutEndlessRecursionDo (0);
     }
 
     private static void RunTimesOutVeryFastFunction ()
@@ -84,6 +95,18 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
       stopwatch.Stop ();
       Assert.That (timedOut, Is.True);
       Assert.That (IsInRelativeRangeAround (100, 0.5, stopwatch.ElapsedMilliseconds), Is.True);
+    }
+
+    [Test]
+    public void RunTimesOutAfterSecondsEndlessRecursion ()
+    {
+      var stopwatch = new Stopwatch ();
+      stopwatch.Start ();
+      bool timedOut = ThreadRunner.RunTimesOutAfterSeconds (RunTimesOutEndlessRecursion, 0.00001);
+      stopwatch.Stop ();
+      //Assert.That (timedOut, Is.True);
+      log.It (stopwatch.ElapsedTicks);
+      //Assert.That (IsInRelativeRangeAround (150000, 1, stopwatch.ElapsedTicks), Is.True);
     }
 
   }
