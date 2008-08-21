@@ -68,7 +68,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
       Assert.That (info.BindingFlags, Is.EqualTo (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
       Assert.That (info.Binder, Is.Null);
       Assert.That (info.CallingConvention, Is.EqualTo (CallingConventions.Any));
-      Assert.That (info.MemberName, Is.Null);
+      Assert.That (info.MemberName, Is.EqualTo (".ctor"));
       Assert.That (info.ParameterModifiers, Is.Null);
     }
 

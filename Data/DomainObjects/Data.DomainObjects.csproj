@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -67,7 +67,8 @@
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
-    <NoWarn>1591;419</NoWarn><WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592</WarningsAsErrors>
+    <NoWarn>1591;419</NoWarn>
+    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592</WarningsAsErrors>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -153,6 +154,7 @@
     <Compile Include="FullGraphTraversalStrategy.cs" />
     <Compile Include="Infrastructure\BindingClientTransaction.cs" />
     <Compile Include="Infrastructure\BindingClientTransactionListener.cs" />
+    <Compile Include="Infrastructure\Interception\DomainObjectConstructorLookupInfo.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedDeserializationInfo.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedSerializationReader.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedSerializableMarker.cs" />

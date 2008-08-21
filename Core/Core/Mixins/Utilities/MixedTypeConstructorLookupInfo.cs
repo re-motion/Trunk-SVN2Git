@@ -17,7 +17,7 @@ using Remotion.Text;
 
 namespace Remotion.Mixins.Utilities
 {
-  public class MixedTypeConstructorLookupInfo : TypesafeActivator.ConstructorLookupInfo
+  public class MixedTypeConstructorLookupInfo : ConstructorLookupInfo
   {
     private static readonly ConstructorInfo s_scopeCtor = typeof (MixedObjectInstantiationScope).GetConstructor (new Type[] { typeof (object[]) });
     private static readonly MethodInfo s_scopeDisposeMethod = typeof (MixedObjectInstantiationScope).GetMethod ("Dispose");
@@ -111,7 +111,7 @@ namespace Remotion.Mixins.Utilities
 
     private Type[] GetRealArgumentTypes (Type delegateType)
     {
-      Type[] argumentTypes = ConstructorWrapper.GetParameterTypes (delegateType);
+      Type[] argumentTypes = GetParameterTypes (delegateType);
       if (argumentTypes.Length == 0 || argumentTypes[0] != typeof (object[]))
       {
         string message = "The delegate type must have at least one argument, which must be of type object[]. This argument will be used to pass " 

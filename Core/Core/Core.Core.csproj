@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -103,6 +103,7 @@
     <Compile Include="BridgeImplementations\AssemblyFinderTypeDiscoveryServiceImplementation.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
+    <Compile Include="Logging\ISimpleLogger.cs" />
     <Compile Include="Logging\SimpleLogger.cs" />
     <Compile Include="Logging\SimpleLoggerNull.cs" />
     <Compile Include="Mixins\Definitions\IAttributeIntroductionSource.cs" />
@@ -113,6 +114,9 @@
     <Compile Include="Mixins\Validation\Rules\ContextStoreMemberIntroductionLookupUtility.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultSuppressedAttributeIntroductionRules.cs" />
     <Compile Include="Reflection\AssemblyLoader.cs" />
+    <Compile Include="Reflection\ConstructorLookupInfo.cs" />
+    <Compile Include="Reflection\MemberLookupInfo.cs" />
+    <Compile Include="Reflection\MethodLookupInfo.cs" />
     <Compile Include="SafeContextSingleton.cs" />
     <Compile Include="Collections\InterlockedDataStore.cs" />
     <Compile Include="Collections\NullDataStore.cs" />
@@ -392,7 +396,6 @@
     <Compile Include="Reflection\AssemblyFinder.cs" />
     <Compile Include="Reflection\AssemblyFinderTypeDiscoveryService.cs" />
     <Compile Include="Reflection\AttributeAssemblyFinderFilter.cs" />
-    <Compile Include="Reflection\ConstructorWrapper.cs" />
     <Compile Include="Reflection\FuncInvoker.generated.cs" />
     <Compile Include="Reflection\FuncInvoker.template.cs" />
     <Compile Include="Reflection\IAssemblyFinderFilter.cs" />
@@ -401,7 +404,7 @@
     <Compile Include="Reflection\ActionInvoker.template.cs" />
     <Compile Include="Reflection\RegexAssemblyFinderFilter.cs" />
     <Compile Include="Reflection\ApplicationAssemblyFinderFilter.cs" />
-    <Compile Include="Reflection\DelegateCreator.cs">
+    <Compile Include="Reflection\DelegateSelector.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Reflection\InvokerUtility.cs" />
