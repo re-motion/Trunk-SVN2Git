@@ -39,5 +39,61 @@ namespace Remotion.Development.UnitTesting
       if (lastException != null)
         throw lastException;
     }
+
+
+    public static bool RunTimesOutAfterMilliseconds (ThreadStart threadStart, int timeoutMilliseconds)
+    {
+      return RunTimesOut(threadStart, new TimeSpan((long) (10000*timeoutMilliseconds)));
+    }
+
+    public static bool RunTimesOutAfterSeconds (ThreadStart threadStart, double timeoutSeconds)
+    {
+      return RunTimesOut(threadStart, new TimeSpan((long) (10000000*timeoutSeconds)));
+    }
+
+    public static bool RunTimesOut (ThreadStart threadStart, TimeSpan timeoutTimeSpan)
+    {
+      // Preserve exceptions thrown in thread, to be able to rethrow them.
+      // TODO: To preserve also the callstack, rethrow new exception with thread exception as inner exception.
+      Exception lastException = null;
+      UnhandledExceptionEventHandler unhandledExceptionEventHandler = delegate (object sender, UnhandledExceptionEventArgs e)
+      {
+        lastException = (Exception) e.ExceptionObject;
+      };
+
+      AppDomain.CurrentDomain.UnhandledException += unhandledExceptionEventHandler;
+
+
+      //Thread otherThread = new Thread ((ThreadStart) delegate { ThreadStartThreadAbortExceptionWrapper (threadStart); });
+      Thread otherThread = new Thread ( () => ThreadStartThreadAbortExceptionWrapper (threadStart) );
+
+      otherThread.Start ();
+      bool timedOut = !otherThread.Join (timeoutTimeSpan);
+      if (timedOut)
+      {
+        otherThread.Abort ();
+      }
+
+      AppDomain.CurrentDomain.UnhandledException -= unhandledExceptionEventHandler;
+      if (lastException != null)
+        throw lastException;
+        
+      return timedOut;
+    }
+
+    public static void ThreadStartThreadAbortExceptionWrapper (ThreadStart threadStart)
+    {
+      try
+      {
+        threadStart();
+      }
+      catch (System.Threading.ThreadAbortException e)
+      {
+        // Explicitely reset the ThreadAbortException
+        //Console.WriteLine (">>> ThreadStartThreadAbortExceptionWrapper <<<");
+        Thread.ResetAbort (); 
+      }
+    }
+
   }
 }
