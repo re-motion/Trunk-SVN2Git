@@ -123,6 +123,10 @@ namespace Remotion.Text.Diagnostic
         }
         else if (type == typeof (Single)) 
         {
+          // Make sure floating point numbers are emitted with '.' comma character (non-localized)
+          // to avoid problems with comma as an e.g. sequence seperator character.
+          // Since ToText is to be used for debug output, localizing everything to the common
+          // IT norm of using US syntax (except for dates) makes sense.
           toTextBuilder.AppendString (((Single) obj).ToString (_numberFormatInfoUS));
         }
         else if (type == typeof (Double))
@@ -131,7 +135,7 @@ namespace Remotion.Text.Diagnostic
         }
         else
         {
-          // TODO: Make sure floating point numbers are emitted with '.' comma character (non-localized)
+          // Emit primitives who have no registered specific handler without further processing.
           toTextBuilder.Append (obj);
         }
       }
