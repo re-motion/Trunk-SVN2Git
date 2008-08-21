@@ -18,13 +18,23 @@ namespace Remotion.Development.UnitTesting
     public static void Run (ThreadStart threadStart)
     {
       Exception lastException = null;
-      UnhandledExceptionEventHandler unhandledExceptionEventHandler = delegate (object sender, UnhandledExceptionEventArgs e)
-          {
-            lastException = (Exception) e.ExceptionObject;
-          };
-      AppDomain.CurrentDomain.UnhandledException += unhandledExceptionEventHandler;
 
-      Thread otherThread = new Thread (threadStart);
+      // Use anonymous delegate to catch and store exceptions from the thread in the current scope.
+      Thread otherThread = 
+        new Thread ((ThreadStart)
+          delegate
+          {
+            try
+            {
+              threadStart();
+            }
+            catch (Exception e)
+            {
+              lastException = e;
+            }
+          }
+         );
+
 
       try
       {
@@ -35,10 +45,11 @@ namespace Remotion.Development.UnitTesting
       {
       }
 
-      AppDomain.CurrentDomain.UnhandledException -= unhandledExceptionEventHandler;
       if (lastException != null)
         throw lastException;
     }
+
+
 
 
     public static bool RunTimesOutAfterMilliseconds (ThreadStart threadStart, int timeoutMilliseconds)
@@ -89,8 +100,8 @@ namespace Remotion.Development.UnitTesting
       }
       catch (System.Threading.ThreadAbortException e)
       {
-        // Explicitely reset the ThreadAbortException
         //Console.WriteLine (">>> ThreadStartThreadAbortExceptionWrapper <<<");
+        // Explicitely reset the ThreadAbortException
         Thread.ResetAbort (); 
       }
     }
