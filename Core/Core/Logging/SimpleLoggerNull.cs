@@ -36,5 +36,10 @@ namespace Remotion.Logging
     {
       // Does nothing on purpose
     }
+
+    bool INullObject.IsNull
+    {
+      get { return true; }
+    }
   }
 }

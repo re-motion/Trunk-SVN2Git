@@ -1,6 +1,6 @@
 namespace Remotion.Logging
 {
-  public interface ISimpleLogger
+  public interface ISimpleLogger : INullObject
   {
     void It (object obj);
     void It (string s);
