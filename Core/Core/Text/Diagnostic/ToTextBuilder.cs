@@ -2,11 +2,32 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Remotion.Utilities;
 
 namespace Remotion.Text.Diagnostic
 {
   public class ToTextBuilder
   {
+
+    public class SequenceStateHolder
+    {
+      public SequenceStateHolder ()
+      {
+        Counter = 0;
+        Separator = ",";
+      }
+
+      public int Counter
+      {
+        get; set;
+      }
+
+      public string Separator
+      {
+        get; set;
+      }
+    }
+
     /* Planned Features:
      * Start-/End(class)
      * Start-/EndCollection(class)
@@ -23,11 +44,11 @@ namespace Remotion.Text.Diagnostic
      * XML: Support text to be added to be processed to become XML compatible ("<" -> "&lt;" etc). Use CDATA ?
     */
 
-    private class ToTextStringBuilder
+    private class StringBuilderToText
     {
       private StringBuilder _stringBuilder = new StringBuilder ();
 
-      public ToTextStringBuilder()
+      public StringBuilderToText()
       {
         Enabled = true;
       }
@@ -49,7 +70,7 @@ namespace Remotion.Text.Diagnostic
       }
     }
 
-    private ToTextStringBuilder _toTextStringBuilder = new ToTextStringBuilder ();
+    private StringBuilderToText _textStringBuilderToText = new StringBuilderToText ();
     private ToTextProvider _toTextProvider;
     
     private string _enumerableBegin = "{";
@@ -60,6 +81,7 @@ namespace Remotion.Text.Diagnostic
     private string _arrayEnd = "}";
     private bool _useMultiline = true;
     private OutputComplexityLevel _outputComplexity = OutputComplexityLevel.Basic;
+    public Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder>(16);
 
 
     public enum OutputComplexityLevel
@@ -71,6 +93,11 @@ namespace Remotion.Text.Diagnostic
       Complex,
       Full,
     };
+
+    public SequenceStateHolder SequenceState
+    {
+      get { return _sequenceStack.Peek (); }
+    }
 
     public OutputComplexityLevel OutputComplexity
     {
@@ -88,7 +115,7 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(OutputComplexityLevel complexityLevel)
     {
-      _toTextStringBuilder.Enabled = (_outputComplexity >= complexityLevel) ? true : false;
+      _textStringBuilderToText.Enabled = (_outputComplexity >= complexityLevel) ? true : false;
       return this; 
     }
 
@@ -139,7 +166,7 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder AppendString (string s)
     {
-      _toTextStringBuilder.Append (s);
+      _textStringBuilderToText.Append (s);
       return this;
     }
 
@@ -147,51 +174,51 @@ namespace Remotion.Text.Diagnostic
     {
       if (_useMultiline)
       {
-        _toTextStringBuilder.Append (System.Environment.NewLine);
+        _textStringBuilderToText.Append (System.Environment.NewLine);
       }
       return this;
     }
 
     public ToTextBuilder AppendSpace ()
     {
-      _toTextStringBuilder.Append (" ");
+      _textStringBuilderToText.Append (" ");
       return this;
     }
 
     public ToTextBuilder AppendTabulator ()
     {
-      _toTextStringBuilder.Append ("\t");
+      _textStringBuilderToText.Append ("\t");
       return this;
     }
 
     public ToTextBuilder AppendSeperator ()
     {
-      _toTextStringBuilder.Append (",");
+      _textStringBuilderToText.Append (",");
       return this;
     }
 
     public ToTextBuilder AppendComma ()
     {
-      _toTextStringBuilder.Append (",");
+      _textStringBuilderToText.Append (",");
       return this;
     }
 
     public ToTextBuilder AppendColon ()
     {
-      _toTextStringBuilder.Append (":");
+      _textStringBuilderToText.Append (":");
       return this;
     }
 
     public ToTextBuilder AppendSemiColon ()
     {
-      _toTextStringBuilder.Append (";");
+      _textStringBuilderToText.Append (";");
       return this;
     }
 
 
     private ToTextBuilder AppendObjectToString (object o)
     {
-      _toTextStringBuilder.Append (o.ToString());
+      _textStringBuilderToText.Append (o.ToString());
       return this;
     }
 
@@ -209,11 +236,11 @@ namespace Remotion.Text.Diagnostic
       _toTextProvider.ToText (o, this);
       _toTextStringBuilder.Append (")");
 #elif(true)
-      _toTextStringBuilder.Append (" ");
-      _toTextStringBuilder.Append (name);
-      _toTextStringBuilder.Append ("=");
+      _textStringBuilderToText.Append (" ");
+      _textStringBuilderToText.Append (name);
+      _textStringBuilderToText.Append ("=");
       _toTextProvider.ToText (o, this);
-      _toTextStringBuilder.Append (" ");
+      _textStringBuilderToText.Append (" ");
 #endif
       return this;
     }
@@ -350,7 +377,7 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder Append (Object o)
     {
-      _toTextStringBuilder.Append(o);
+      _textStringBuilderToText.Append(o);
       return this;
     }
 
@@ -369,8 +396,8 @@ namespace Remotion.Text.Diagnostic
 
     public bool Enabled
     {
-      get { return _toTextStringBuilder.Enabled;  } 
-      set { _toTextStringBuilder.Enabled = value;  } 
+      get { return _textStringBuilderToText.Enabled;  } 
+      set { _textStringBuilderToText.Enabled = value;  } 
     }
 
 
@@ -471,7 +498,7 @@ namespace Remotion.Text.Diagnostic
 
     public override string ToString ()
     {
-      return _toTextStringBuilder.ToString();
+      return _textStringBuilderToText.ToString();
     }
 
     public ToTextBuilder ToText (object o)
@@ -506,5 +533,66 @@ namespace Remotion.Text.Diagnostic
       return AppendInstanceEnd ();
     }
 
+    public ToTextBuilder SequenceBegin (string sequenceBeginString)
+    {
+      if (IsInSequence)
+      {
+        _textStringBuilderToText.Append (_sequenceStack.Peek ().Separator);
+      }
+      _textStringBuilderToText.Append (sequenceBeginString);
+      _sequenceStack.Push (new SequenceStateHolder());
+      return this;
+    }
+
+    public ToTextBuilder SequenceEnd (string sequenceEndString)
+    {
+      Assertion.IsTrue (IsInSequence);
+      _sequenceStack.Pop ();
+      _textStringBuilderToText.Append (sequenceEndString);
+      return this;
+    }
+
+    public ToTextBuilder AppendSequenceElement (object obj)
+    {
+      Assertion.IsTrue (IsInSequence);
+      var sequenceState = _sequenceStack.Peek ();
+      if (sequenceState.Counter > 0)
+      {
+        _textStringBuilderToText.Append (sequenceState.Separator);
+      }
+      _toTextProvider.ToText (obj, this);
+      ++sequenceState.Counter;
+      return this;
+    }
+    
+    public ToTextBuilder e (object obj)
+    {
+      return AppendSequenceElement (obj);
+    }
+
+    public ToTextBuilder sb (string sequenceBeginString)
+    {
+      return SequenceBegin(sequenceBeginString);
+    }
+
+    public ToTextBuilder se (string sequenceEndString)
+    {
+      return SequenceEnd (sequenceEndString);
+    }
+
+    public ToTextBuilder AppendSequenceElements (params object[] sequenceElements)
+    {
+      Assertion.IsTrue (IsInSequence);
+      foreach (var obj in sequenceElements)
+      {
+        AppendSequenceElement (obj);
+      }
+      return this;
+    }
+
+    public bool IsInSequence 
+    {
+      get { return _sequenceStack.Count > 0; }
+    }
   }
 }

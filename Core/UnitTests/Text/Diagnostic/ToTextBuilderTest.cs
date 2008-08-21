@@ -10,12 +10,12 @@ namespace Remotion.UnitTests.Text.Diagnostic
   [NUnit.Framework.TestFixture]
   public class ToTextBuilderTest
   {
-    private ISimpleLogger log = SimpleLogger.Create (false);
+    private ISimpleLogger log = SimpleLogger.Create (true);
 
     [Test]
     public void StringTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.s ("ABC defg");
       var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo("ABC defg"));
@@ -24,7 +24,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void ToTextStringTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.ToTextString ("XyZ !");
       var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("XyZ !"));
@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void sTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.s ("A");
       var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("A"));
@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void nlTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.nl.s("");
       var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo (System.Environment.NewLine));
@@ -51,7 +51,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void spaceTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.space.s ("");
       var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo (" "));
@@ -60,7 +60,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void tabTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.tab.s ("");
       var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("\t"));
@@ -70,7 +70,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void SeperatorTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.seperator.comma.colon.semicolon.s ("");
       var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo (",,:;"));
@@ -80,7 +80,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void StringConcatenationTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.s("A").s("B").s("C");
       var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("ABC"));
@@ -89,7 +89,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void StringFormattedTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       int i = 123;
       double f = 456.789;
       string s = "Text";
@@ -106,7 +106,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       double f = 3.14;
       string s = "Text";
 
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.s("START-").nl.tab.sf ("[{0};{1};{2}]", i, f, s).space.s("-END");
       var result = toTextBuilder.ToString ();
       Log(result);
@@ -117,7 +117,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void tsTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       var o = new Object();
       toTextBuilder.ts (o);
       var result = toTextBuilder.ToString ();
@@ -128,7 +128,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void ToTextTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       var o = new Object ();
       toTextBuilder.tt (o);
       var result = toTextBuilder.ToString ();
@@ -138,7 +138,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void MemberTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       var o = new Object ();
       toTextBuilder.m (o);
       var result = toTextBuilder.ToString ();
@@ -148,7 +148,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void MemberTest2 ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       //var list = new List<int> () { 5, 3, 1 };
       var myList = New.List (5, 3, 1);
       toTextBuilder.m ("myList", myList);
@@ -160,7 +160,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void AppendCollectionTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       var list = New.List (New.List (5, 3, 1), New.List(11,13,17));
       toTextBuilder.AppendEnumerable (list);
       var result = toTextBuilder.ToString ();
@@ -171,7 +171,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void collectionTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       var list = New.List(New.List(New.List("A", "B", "C")));
       toTextBuilder.collection (list);
       var result = toTextBuilder.ToString ();
@@ -182,7 +182,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void AppendArray2DTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       //var array = new int[][] {new int[] {1,2},new int[] {3,4},new int[] {5,6}};
       var array = New.Array (New.Array(1,2),New.Array(3,4),New.Array(5,6));
       toTextBuilder.AppendArray (array);
@@ -194,7 +194,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void AppendArray3DTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       var array = New.Array (New.Array (New.Array (1, 3), New.Array (5, 7)), New.Array (New.Array (11, 13), New.Array (17, 19)), New.Array (New.Array (23, 29), New.Array (31, 37)));
       toTextBuilder.AppendArray (array);
       var result = toTextBuilder.ToString ();
@@ -206,7 +206,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void arrayTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       var list = New.List (New.List (New.List ("A", "B", "C")));
       toTextBuilder.collection (list);
       var result = toTextBuilder.ToString ();
@@ -218,7 +218,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void EnumerableTagTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       var list = New.List (New.List (5, 3, 1), New.List (11, 13, 17));
       toTextBuilder.EnumerableBegin = "(";
       toTextBuilder.EnumerableSeparator = ";";
@@ -236,7 +236,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void ArrayTagTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       var array = New.Array (New.Array (New.Array (1, 3), New.Array (5, 7)), New.Array (New.Array (11, 13), New.Array (17, 19)), New.Array (New.Array (23, 29), New.Array (31, 37)));
       toTextBuilder.ArrayBegin = "<{[";
       toTextBuilder.ArraySeparator = "§|§";
@@ -255,7 +255,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
     [Test] public void SinglelineMultilineTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.UseMultiLine = false;
       toTextBuilder.s("Hello").nl.s (" world");
       var result = toTextBuilder.ToString ();
@@ -272,7 +272,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void EnabledTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.s ("test");
       Assert.That (toTextBuilder.ToString (), Is.EqualTo ("test"));
       toTextBuilder.Enabled = false;
@@ -286,7 +286,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void OutputComplexityTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.OutputComplex();
       Assert.That (toTextBuilder.OutputComplexity, Is.EqualTo (ToTextBuilder.OutputComplexityLevel.Complex));
     }
@@ -294,7 +294,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void ComplexityFilteringSettingTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
       toTextBuilder.OutputSkeleton();
       toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(ToTextBuilder.OutputComplexityLevel.Basic);
@@ -310,7 +310,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       if (toTextBuilder == null)
       {
-        toTextBuilder = GetTextBuilder ();
+        toTextBuilder = CreateTextBuilder ();
       }
       toTextBuilder.cBasic.s ("b").comma.cComplex.s ("c").comma.cFull.s ("f").comma.cMedium.s ("m").comma.cSkeleton.s ("s");
       var result = toTextBuilder.ToString ();
@@ -323,42 +323,42 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void ComplexityFilteringTest ()
     {
       {
-        var toTextBuilder = GetTextBuilder ();
+        var toTextBuilder = CreateTextBuilder ();
         toTextBuilder.OutputDisable();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo (""));
       }
 
       {
-        var toTextBuilder = GetTextBuilder ();
+        var toTextBuilder = CreateTextBuilder ();
         toTextBuilder.OutputSkeleton ();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("s"));
       }
 
       {
-        var toTextBuilder = GetTextBuilder ();
+        var toTextBuilder = CreateTextBuilder ();
         toTextBuilder.OutputBasic(); 
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,s"));
       }
 
       {
-        var toTextBuilder = GetTextBuilder ();
+        var toTextBuilder = CreateTextBuilder ();
         toTextBuilder.OutputMedium(); 
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,m,s"));
       }
 
       {
-        var toTextBuilder = GetTextBuilder ();
+        var toTextBuilder = CreateTextBuilder ();
         toTextBuilder.OutputComplex();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,c,m,s"));
       }
 
       {
-        var toTextBuilder = GetTextBuilder ();
+        var toTextBuilder = CreateTextBuilder ();
         toTextBuilder.OutputFull();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("b,c,f,m,s"));
@@ -369,7 +369,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void AppendObjectTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       var o = new Object();
       Assert.That (toTextBuilder.Append (o).ToString (), Is.EqualTo (o.ToString()));
     }
@@ -378,7 +378,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void beginInstanceTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.beginInstance(toTextBuilder.GetType());
       var result = toTextBuilder.ToString();
       Log(result);
@@ -388,16 +388,106 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void endInstanceTest ()
     {
-      var toTextBuilder = GetTextBuilder ();
+      var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.endInstance ();
       var result = toTextBuilder.ToString ();
       Log (result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("]"));
     }
-    
 
 
-    public static ToTextBuilder GetTextBuilder ()
+    [Test]
+    public void SequenceStateTest ()
+    {
+      var sequenceState = new ToTextBuilder.SequenceStateHolder();
+      Assert.That (sequenceState.Counter, Is.EqualTo(0));
+      Assert.That (sequenceState.Separator, Is.EqualTo (","));
+    }
+
+    [Test]
+    public void SequenceStackSequenceBeginTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.SequenceBegin ("");
+      Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void SequenceStackSequenceEndTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.SequenceBegin ("");
+      Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (1));
+      toTextBuilder.SequenceEnd ("");
+      Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void SequenceShorthandTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb("<{[").e("hello").e("world").e(1).e(2).e(3).se("]}>");
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("<{[hello,world,1,2,3]}>"));
+    }
+
+
+    [Test]
+    public void SequenceTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.SequenceBegin ("");
+      toTextBuilder.e ("1");
+      Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (1));
+      toTextBuilder.e (2);
+      Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (2));
+      toTextBuilder.e ("drei");
+      Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (3));
+      toTextBuilder.SequenceEnd ("");
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("1,2,drei"));
+    }
+
+    [Test]
+    public void NestedSequencesTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb("[").e ("hello").e (toTextBuilder.SequenceState.Counter);
+      toTextBuilder.sb("[").e ("hello").e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se("]");
+      toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se("]");
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("[hello,1,[hello,world,2,3,4],world,3,4]"));
+    }
+
+    [Test]
+    public void IsInSequenceTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb ("[");
+      Assert.That (toTextBuilder.IsInSequence, Is.True);
+      toTextBuilder.sb ("[");
+      Assert.That (toTextBuilder.IsInSequence, Is.True);
+      toTextBuilder.se ("]");
+      Assert.That (toTextBuilder.IsInSequence, Is.True);
+      toTextBuilder.se ("]");
+      Assert.That (toTextBuilder.IsInSequence, Is.False);
+    }
+
+    [Test]
+    public void AppendSequenceElementsTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb ("[").AppendSequenceElements("a",2,"b",3,"c").se ("]");
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("[a,2,b,3,c]"));
+    }
+
+
+    public static ToTextBuilder CreateTextBuilder ()
     {
       var toTextProvider = new ToTextProvider();
       toTextProvider.UseAutomaticObjectToText = false;
