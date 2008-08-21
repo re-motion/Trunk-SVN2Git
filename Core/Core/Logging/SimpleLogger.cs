@@ -7,8 +7,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Logging
 {
+  //TODO: Interface-assemblies are to be considered read-only for normal development purposes. They're only contain 'stable' interfaces that should be compatible accross multiple framework versions.
   public class SimpleLogger : ISimpleLogger
   {
+    //TODO MGI: Member fields alsways start with an underscore.
     private TextWriter textWriter;
     private ToTextProvider toText;
 
@@ -25,9 +27,11 @@ namespace Remotion.Logging
       InitToTextProvider ();
     }
 
+    //TODO: Check arguments using ArgumentUtility. Assertion is for invariant conditions in code, not for argument checking.
     public SimpleLogger (string fileName)
     {
       Assertion.IsNotNull(fileName);
+      //TODO MGI: Is this really threadsafe? -> Is the parallel Execution of FileStream in separate threads a problem?
       textWriter = TextWriter.Synchronized (new StreamWriter(new FileStream (fileName, FileMode.OpenOrCreate, FileAccess.Write)));
       InitToTextProvider();
     }
@@ -87,6 +91,8 @@ namespace Remotion.Logging
       textWriter.Write (format, parameters);
     }
 
+    //TODO MGI: Factroy methods are ususally named 'Create'. 'Get' does not create a new isntace each time.
+    //TODO MGI: Statics are at the top of the file. See style guide.
     //------------------------------------------------------------------------
     // Factories
     //------------------------------------------------------------------------
