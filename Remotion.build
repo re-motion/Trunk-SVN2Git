@@ -251,7 +251,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="Dms.Clients.Windows.Tray" depends="Dms.Tray">
+  <target name="Dms.Clients.Windows.Tray" depends="Dms.Tray,Dms.Clients.Windows.WebBrowserControl">
     <property name="project.name" value="Dms.Clients.Windows.Tray" />
     <property name="project.dir" value="Dms/Clients.Windows.Tray" />
     <property name="project.output" value="DmsTray" />
