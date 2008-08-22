@@ -250,9 +250,20 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (result, Is.EqualTo ("{{{1,3},{5,7}},{{11,13},{17,19}},{{23,29},{31,37}}}"));
     }
 
+    [Test]
+    public void AppendRectangularArrayTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      int[, ,] array = { { { 1, 3 }, { 5, 7 } }, { { 11, 13 }, { 17, 19 } }, { { 23, 29 }, { 31, 37 } } };
+      toTextBuilder.AppendArray (array);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{{{1,3},{5,7}},{{11,13},{17,19}},{{23,29},{31,37}}}"));
+    }
+
 
     [Test]
-    public void arrayTest ()
+    public void collectionTest2 ()
     {
       var toTextBuilder = CreateTextBuilder ();
       var list = New.List (New.List (New.List ("A", "B", "C")));

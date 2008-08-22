@@ -384,6 +384,52 @@ namespace Remotion.Text.Diagnostic
 
 
 
+    //private class ArrayToTextProcessor : OuterProduct.ProcessorBase
+    //{
+    //  protected readonly Array _array;
+    //  private readonly ToTextBuilder _toTextBuilder;
+
+    //  public ArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
+    //  {
+    //    _array = rectangularArray;
+    //    _toTextBuilder = toTextBuilder;
+    //  }
+
+    //  public override bool DoBeforeLoop ()
+    //  {
+    //    InsertSeperator ();
+
+    //    if (ProcessingState.IsInnermostLoop)
+    //    {
+    //      _toTextBuilder.ToText (_array.GetValue (ProcessingState.DimensionIndices));
+    //    }
+    //    else
+    //    {
+    //      _toTextBuilder.AppendString (_toTextBuilder.ArrayBegin);
+    //    }
+    //    return true;
+    //  }
+
+    //  public override bool DoAfterLoop ()
+    //  {
+    //    if (!ProcessingState.IsInnermostLoop)
+    //    {
+    //      _toTextBuilder.AppendString (_toTextBuilder.ArrayEnd);
+    //    }
+    //    return true;
+    //  }
+
+    //  protected void InsertSeperator ()
+    //  {
+    //    if (!ProcessingState.IsFirstLoopElement)
+    //    {
+    //      _toTextBuilder.AppendString (_toTextBuilder.ArraySeparator);
+    //    }
+    //  }
+    //}
+
+
+
     private class ArrayToTextProcessor : OuterProduct.ProcessorBase
     {
       protected readonly Array _array;
@@ -397,15 +443,17 @@ namespace Remotion.Text.Diagnostic
 
       public override bool DoBeforeLoop ()
       {
-        InsertSeperator ();
-
         if (ProcessingState.IsInnermostLoop)
         {
-          _toTextBuilder.ToText (_array.GetValue (ProcessingState.DimensionIndices));
+          _toTextBuilder.AppendToText (_array.GetValue (ProcessingState.DimensionIndices));
         }
         else
         {
-          _toTextBuilder.AppendString (_toTextBuilder.ArrayBegin);
+          if (!ProcessingState.IsFirstLoopElement)
+          {
+            _toTextBuilder.AppendString (_toTextBuilder.ArraySeparator);
+          }
+          _toTextBuilder._SequenceBegin (_toTextBuilder.ArrayBegin, "", _toTextBuilder.ArraySeparator, "", _toTextBuilder.ArrayEnd);
         }
         return true;
       }
@@ -414,28 +462,30 @@ namespace Remotion.Text.Diagnostic
       {
         if (!ProcessingState.IsInnermostLoop)
         {
-          _toTextBuilder.AppendString (_toTextBuilder.ArrayEnd);
+          _toTextBuilder._SequenceEnd ();
         }
         return true;
       }
 
-      protected void InsertSeperator ()
-      {
-        if (!ProcessingState.IsFirstLoopElement)
-        {
-          _toTextBuilder.AppendString (_toTextBuilder.ArraySeparator);
-        }
-      }
+
     }
 
 
     public ToTextBuilder AppendArray (Array array)
     {
+      //var outerProduct = new OuterProduct (array);
+      //AppendString (ArrayBegin); // outer opening bracket
+      //var processor = new ArrayToTextProcessor (array, this);
+      //outerProduct.ProcessOuterProduct (processor);
+      //AppendString (ArrayEnd); // outer closing bracket
+      //return this;
+
       var outerProduct = new OuterProduct (array);
-      AppendString (ArrayBegin); // outer opening bracket
+      _SequenceBegin (ArrayBegin, "", ArraySeparator, "", ArrayEnd);
       var processor = new ArrayToTextProcessor (array, this);
       outerProduct.ProcessOuterProduct (processor);
-      AppendString (ArrayEnd); // outer closing bracket
+      _SequenceEnd ();
+
       return this;
     }
 
