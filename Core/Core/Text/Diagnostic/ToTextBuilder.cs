@@ -449,8 +449,8 @@ namespace Remotion.Text.Diagnostic
         }
         else
         {
-          _toTextBuilder.AppendToText ("");
-          _toTextBuilder.SequenceBegin (_toTextBuilder.ArrayBegin, "", _toTextBuilder.ArraySeparator, "", _toTextBuilder.ArrayEnd);
+          //_toTextBuilder.AppendToText ("");
+          _toTextBuilder.AppendSequenceBegin (_toTextBuilder.ArrayBegin, "", _toTextBuilder.ArraySeparator, "", _toTextBuilder.ArrayEnd);
         }
         return true;
       }
@@ -459,7 +459,7 @@ namespace Remotion.Text.Diagnostic
       {
         if (!ProcessingState.IsInnermostLoop)
         {
-          _toTextBuilder.SequenceEnd ();
+          _toTextBuilder.AppendSequenceEnd ();
         }
         return true;
       }
