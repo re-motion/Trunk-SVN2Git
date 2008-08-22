@@ -479,6 +479,25 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
     [Test]
+    public void SequenceCounterUpdateTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      var dreiString = "drei";
+      toTextBuilder.SequenceBegin ("", "", ",", "", "");
+      Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (0));
+      toTextBuilder.tt ("1");
+      Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (1));
+      toTextBuilder.e (2);
+      Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (2));
+      toTextBuilder.m (dreiString);
+      Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (3));
+      toTextBuilder.SequenceEnd ();
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("1,2,drei"));
+    }
+
+    [Test]
     public void NestedSequencesTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
@@ -487,7 +506,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se ();
       var result = toTextBuilder.ToString ();
       Log (result);
-      Assert.That (result, Is.EqualTo ("[hello,1,<(hello);(world);(2);(3);(4)>,world,3,4]"));
+      Assert.That (result, Is.EqualTo ("[hello,1,<(hello);(world);(2);(3);(4)>,world,4,5]"));
     }
 
     [Test]
@@ -536,7 +555,33 @@ namespace Remotion.UnitTests.Text.Diagnostic
       toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se ();
       var result = toTextBuilder.ToString ();
       Log (result);
-      Assert.That (result, Is.EqualTo ("[hello,1,<(a variable);( simpleTest=((TestSimple) Name:ABC abc,Int:54321) );(was here and);( test=Remotion.UnitTests.Text.Diagnostic.ToTextProviderTest+Test );(here);(3)>,world,3,4]"));
+      Assert.That (result, Is.EqualTo ("[hello,1,<(a variable);( simpleTest=((TestSimple) Name:ABC abc,Int:54321) );(was here and);( test=Remotion.UnitTests.Text.Diagnostic.ToTextProviderTest+Test );(here);(5)>,world,4,5]"));
+    }
+
+    [Test]
+    public void SequencesWithAppendToTextTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      //toTextBuilder.ToTextProvider.UseAutomaticObjectToText = true;
+      toTextBuilder.sb ("[", "", ",", "", "]").tt ("ABC").tt (toTextBuilder.SequenceState.Counter).tt("DEFG").se();
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("[ABC,1,DEFG]"));
+    }
+
+    [Test]
+    public void NestedSequencesWithAppendToTextTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      //toTextBuilder.ToTextProvider.UseAutomaticObjectToText = true;
+      var simpleTest = new ToTextProviderTest.TestSimple ();
+      var test = new ToTextProviderTest.Test ("Test with class", 99999);
+      toTextBuilder.sb ("[", "", ",", "", "]").tt ("hello").tt (toTextBuilder.SequenceState.Counter);
+      toTextBuilder.sb ("<", "(", ";(", ")", ">").tt ("a variable").m ("simpleTest", simpleTest).tt ("was here and").m ("test", test).tt ("here").tt (toTextBuilder.SequenceState.Counter).se ();
+      toTextBuilder.tt ("world").tt (toTextBuilder.SequenceState.Counter).tt (toTextBuilder.SequenceState.Counter).se ();
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("[hello,1,<(a variable);( simpleTest=((TestSimple) Name:ABC abc,Int:54321) );(was here and);( test=Remotion.UnitTests.Text.Diagnostic.ToTextProviderTest+Test );(here);(5)>,world,4,5]"));
     }
 
 

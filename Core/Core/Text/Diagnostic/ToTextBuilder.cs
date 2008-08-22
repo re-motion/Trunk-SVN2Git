@@ -423,20 +423,42 @@ namespace Remotion.Text.Diagnostic
 
 
 
-    public ToTextBuilder AppendToText (Object o)
+    //public ToTextBuilder AppendToText (Object o)
+    //{
+    //  _toTextProvider.ToText (o, this);
+    //  return this;
+    //}
+
+    public ToTextBuilder AppendToText (Object obj)
     {
-      _toTextProvider.ToText (o, this);
+      BeforeAppendElement ();
+      _AppendToText (obj);
+      AfterAppendElement ();
       return this;
     }
+
+    public ToTextBuilder AppendToTextNonSequence (Object obj)
+    {
+      _AppendToText (obj);
+      return this;
+    }
+
+    private ToTextBuilder _AppendToText (Object obj)
+    {
+      _toTextProvider.ToText (obj, this);
+      return this;
+
+    }
+
 
     public ToTextBuilder Append (string s)
     {
       return AppendString (s);
     }
 
-    public ToTextBuilder Append (Object o)
+    public ToTextBuilder Append (Object obj)
     {
-      _textStringBuilderToText.Append(o);
+      _textStringBuilderToText.Append(obj);
       return this;
     }
 
@@ -522,30 +544,36 @@ namespace Remotion.Text.Diagnostic
     }
 
 
-    public ToTextBuilder tt (Object o)
+    public ToTextBuilder tt (Object obj)
     {
-      return AppendToText (o);
+      return AppendToText (obj);
     }
 
-    public ToTextBuilder m (Object o)
+    public ToTextBuilder tt ( Object obj, bool honorSequence)
     {
-      return AppendToText (o);
-    }
-
-    public ToTextBuilder m(string name, Object o, bool honorSequence)
-    {
-      return honorSequence ? AppendMember (name, o) : AppendMemberNonSequence (name, o);
-    }
-
-    public ToTextBuilder m (string name, Object o)
-    {
-      return AppendMember (name, o);
+      return honorSequence ? AppendToText (obj) : AppendToTextNonSequence (obj);
     }
 
 
-    public ToTextBuilder ts (object o)
+    public ToTextBuilder m (Object obj)
     {
-      return AppendObjectToString (o);
+      return AppendToText (obj);
+    }
+
+    public ToTextBuilder m(string name, Object obj, bool honorSequence)
+    {
+      return honorSequence ? AppendMember (name, obj) : AppendMemberNonSequence (name, obj);
+    }
+
+    public ToTextBuilder m (string name, Object obj)
+    {
+      return AppendMember (name, obj);
+    }
+
+
+    public ToTextBuilder ts (object obj)
+    {
+      return AppendObjectToString (obj);
     }
 
     public ToTextBuilder collection (IEnumerable collection)
@@ -566,9 +594,9 @@ namespace Remotion.Text.Diagnostic
       return _textStringBuilderToText.ToString();
     }
 
-    public ToTextBuilder ToText (object o)
+    public ToTextBuilder ToText (object obj)
     {
-      _toTextProvider.ToText (o, this);
+      _toTextProvider.ToText (obj, this);
       return this;
     }
 
@@ -629,6 +657,7 @@ namespace Remotion.Text.Diagnostic
       if (IsInSequence)
       {
         _textStringBuilderToText.Append (SequenceState.ElementPostfix);
+        SequenceState.IncreaseCounter ();
       }
     }
 
@@ -658,7 +687,7 @@ namespace Remotion.Text.Diagnostic
       //}
 
       _toTextProvider.ToText (obj, this);
-      SequenceState.IncreaseCounter();
+      //SequenceState.IncreaseCounter();
 
       AfterAppendElement ();
       
