@@ -10,6 +10,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
   [TestFixture]
   public class ToTest
   {
+    // TODO: Store & replace the ToTextProvider To.Text uses and restore it after the tests.
+
     public class Test
     {
       public Test ()

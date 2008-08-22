@@ -100,6 +100,10 @@ namespace Remotion.Text.Diagnostic
           toTextBuilder.AppendString(s);
         }
       }
+      else if (obj is IToTextHandler)
+      {
+        ((IToTextHandler) obj).ToText (toTextBuilder);
+      }
       else if(false)
       {
         // The code below, while not completely equivalent to the "obj is Type" version performs much faster.
