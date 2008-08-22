@@ -27,6 +27,11 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
       public string Name { get; set; }
       public int Int { get; set; }
+
+      public override string ToString ()
+      {
+        return String.Format("((TestSimple) Name:{0},Int:{1})",Name,Int);
+      }
     }
 
     public class Test

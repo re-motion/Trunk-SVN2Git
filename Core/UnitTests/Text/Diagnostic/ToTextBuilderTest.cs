@@ -448,6 +448,17 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (result, Is.EqualTo ("<(hello),(world),(1),(2),(3)>"));
     }
 
+    
+    [Test]
+    public void BraketTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb ("", "|", "|", ">", "").elementsNumbered ("a",1,5);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("|a1>|a2>|a3>|a4>|a5>"));
+    }
+
 
     [Test]
     public void SequenceTest ()
@@ -503,7 +514,30 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (result, Is.EqualTo ("[a,2,b,3,c]"));
     }
 
+    [Test]
+    public void elementsTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb ("[", "", ",", "", "]").elements ("a", 2, "b", 3, "c").se ();
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("[a,2,b,3,c]"));
+    }
 
+    [Test]
+    public void NestedSequencesWitMembersTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      //toTextBuilder.ToTextProvider.UseAutomaticObjectToText = true;
+      var simpleTest = new ToTextProviderTest.TestSimple();
+      var test = new ToTextProviderTest.Test ("Test with class",99999);
+      toTextBuilder.sb ("[", "", ",", "", "]").e ("hello").e (toTextBuilder.SequenceState.Counter);
+      toTextBuilder.sb ("<", "(", ";(", ")", ">").e ("a variable").m ("simpleTest", simpleTest). e("was here and").m("test",test).e("here").e (toTextBuilder.SequenceState.Counter).se ();
+      toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se ();
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("[hello,1,<(a variable);( simpleTest=((TestSimple) Name:ABC abc,Int:54321) );(was here and);( test=Remotion.UnitTests.Text.Diagnostic.ToTextProviderTest+Test );(here);(3)>,world,3,4]"));
+    }
 
 
     public static ToTextBuilder CreateTextBuilder ()

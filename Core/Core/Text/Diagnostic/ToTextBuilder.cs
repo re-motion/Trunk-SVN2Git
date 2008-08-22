@@ -204,9 +204,26 @@ namespace Remotion.Text.Diagnostic
     }
 
 
+    public bool IsInSequence
+    {
+      //get { return _sequenceStack.Count > 0; }
+      get { return _sequenceState != null; }
+      //get { return true; }
+    }
+
+    public ToTextProvider ToTextProvider
+    {
+      get { return _toTextProvider; }
+      set { _toTextProvider = value; }
+    }
+
+
+
     public ToTextBuilder AppendString (string s)
     {
+      //BeforeAppendElement ();
       _textStringBuilderToText.Append (s);
+      //AfterAppendElement();
       return this;
     }
 
@@ -256,32 +273,34 @@ namespace Remotion.Text.Diagnostic
     }
 
 
-    private ToTextBuilder AppendObjectToString (object o)
+    private ToTextBuilder AppendObjectToString (object obj)
     {
-      _textStringBuilderToText.Append (o.ToString());
+      _textStringBuilderToText.Append (obj.ToString());
       return this;
     }
 
 
-    public ToTextBuilder AppendMember (string name, Object o)
+    public ToTextBuilder AppendMember (string name, Object obj)
     {
-#if(false)
-      _toTextStringBuilder.Append (name);
-      _toTextStringBuilder.Append (": ");
-      _toTextProvider.ToText (o, this);
-#elif(false)
-      _toTextStringBuilder.Append ("(");
-      _toTextStringBuilder.Append (name);
-      _toTextStringBuilder.Append (": ");
-      _toTextProvider.ToText (o, this);
-      _toTextStringBuilder.Append (")");
-#elif(true)
+      BeforeAppendElement ();
+      _AppendMember (name, obj);
+      AfterAppendElement ();
+      return this;
+    }
+
+    public ToTextBuilder AppendMemberNonSequence (string name, Object obj)
+    {
+      _AppendMember (name, obj);
+      return this;
+    }
+
+    private ToTextBuilder _AppendMember (string name, Object obj)
+    {
       _textStringBuilderToText.Append (" ");
       _textStringBuilderToText.Append (name);
       _textStringBuilderToText.Append ("=");
-      _toTextProvider.ToText (o, this);
+      _toTextProvider.ToText (obj, this);
       _textStringBuilderToText.Append (" ");
-#endif
       return this;
     }
 
@@ -513,10 +532,16 @@ namespace Remotion.Text.Diagnostic
       return AppendToText (o);
     }
 
-    public ToTextBuilder m(string name, Object o)
+    public ToTextBuilder m(string name, Object o, bool honorSequence)
+    {
+      return honorSequence ? AppendMember (name, o) : AppendMemberNonSequence (name, o);
+    }
+
+    public ToTextBuilder m (string name, Object o)
     {
       return AppendMember (name, o);
     }
+
 
     public ToTextBuilder ts (object o)
     {
@@ -543,7 +568,7 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder ToText (object o)
     {
-      _toTextProvider.ToText(o, this);
+      _toTextProvider.ToText (o, this);
       return this;
     }
 
@@ -665,11 +690,18 @@ namespace Remotion.Text.Diagnostic
       return this;
     }
 
-    public bool IsInSequence 
+    public ToTextBuilder elements (params object[] sequenceElements)
     {
-      //get { return _sequenceStack.Count > 0; }
-      get { return _sequenceState != null; }
-      //get { return true; }
+      return AppendSequenceElements(sequenceElements);
+    }
+
+
+    public void elementsNumbered (string s1, int i0, int i1)
+    {
+      for (int i = i0; i <= i1; ++i)
+      {
+        AppendSequenceElement (s1 + i);
+      }
     }
   }
 }
