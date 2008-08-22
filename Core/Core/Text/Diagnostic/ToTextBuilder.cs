@@ -678,6 +678,7 @@ namespace Remotion.Text.Diagnostic
 
     public override string ToString ()
     {
+      Assertion.IsFalse(IsInSequence);
       return _textStringBuilderToText.ToString();
     }
 
@@ -808,12 +809,13 @@ namespace Remotion.Text.Diagnostic
     }
 
 
-    public void elementsNumbered (string s1, int i0, int i1)
+    public ToTextBuilder elementsNumbered (string s1, int i0, int i1)
     {
       for (int i = i0; i <= i1; ++i)
       {
         AppendSequenceElement (s1 + i);
       }
+      return this;
     }
   }
 }

@@ -574,7 +574,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void BraketTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.sb ("", "|", "|", ">", "").elementsNumbered ("a",1,5);
+      toTextBuilder.sb ("", "|", "|", ">", "").elementsNumbered ("a",1,5).se();
       var result = toTextBuilder.ToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("|a1>|a2>|a3>|a4>|a5>"));
@@ -703,6 +703,15 @@ namespace Remotion.UnitTests.Text.Diagnostic
       var result = toTextBuilder.ToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("[hello,1,<(a variable);( simpleTest=((TestSimple) Name:ABC abc,Int:54321) );(was here and);( test=Remotion.UnitTests.Text.Diagnostic.ToTextProviderTest+Test );(here);(5)>,world,4,5]"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (Remotion.Utilities.AssertionException), ExpectedMessage = "Assertion failed: Expression evaluates to true.")]
+    public void NotInSequenceTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb ("[", "", ",", "", "]").tt ("hello").tt (toTextBuilder.SequenceState.Counter); // missing se()
+      var result = toTextBuilder.ToString();
     }
 
 
