@@ -15,7 +15,7 @@ namespace Remotion.Text.Diagnostic
     private bool _automaticStringEnclosing = true;
     private bool _automaticCharEnclosing = true;
 
-    private readonly NumberFormatInfo _numberFormatInfoUS = new CultureInfo ("en-US", false).NumberFormat;
+    private static readonly NumberFormatInfo _numberFormatInfoUS = new CultureInfo ("en-US", false).NumberFormat;
 
 
     public bool UseAutomaticObjectToText
