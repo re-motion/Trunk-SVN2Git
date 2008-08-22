@@ -157,17 +157,16 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
     }
 
-    //[Test]
-    //public void MemberInSequenceTest ()
-    //{
-    //  var toTextBuilder = CreateTextBuilder ();
-    //  //var list = new List<int> () { 5, 3, 1 };
-    //  var myList = New.List (5, 3, 1);
-    //  toTextBuilder.sb().m ("myList", myList);
-    //  var result = toTextBuilder.ToString ();
-    //  //Assert.That (result, Is.EqualTo ("myList:{5,3,1}"));
-    //  Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
-    //}
+    [Test]
+    public void MemberInSequenceTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      var myList = New.List (5, 3, 1);
+      toTextBuilder.sb ().tt ("Abra").m ("myList", myList).m ("myList", myList).tt ("Kadabra").se ();
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("(Abra,myList={5,3,1},myList={5,3,1},Kadabra)"));
+    }
 
     [Test]
     public void AppendCollectionTest ()

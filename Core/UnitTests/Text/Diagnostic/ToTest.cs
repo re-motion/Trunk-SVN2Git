@@ -93,7 +93,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
 
     [Test]
-    [Ignore]
+    //[Ignore]
     public void RegisteredHandlerTest ()
     {
       To.ClearHandlers ();
@@ -106,7 +106,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       var test = new ToTest.Test ("That's not my name", 179);
       string toTextTest = To.Text (test);
       Log ("toTextTest=" + toTextTest);
-      Assert.That (toTextTest, Is.EqualTo ("<<Test: That's not my name;179>>"));
+      Assert.That (toTextTest, Is.EqualTo ("<<Test: Name=\"That's not my name\";Int=[Int32: 179]>>"));
     }
 
     [Test]

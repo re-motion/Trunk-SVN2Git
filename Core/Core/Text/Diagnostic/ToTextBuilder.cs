@@ -366,9 +366,16 @@ namespace Remotion.Text.Diagnostic
       //_toTextProvider.ToText (obj, this);
       //_textStringBuilderToText.Append (" ");
 
-      _textStringBuilderToText.Append (name);
-      _textStringBuilderToText.Append ("=");
+      //_textStringBuilderToText.Append (name);
+      //_textStringBuilderToText.Append ("=");
+      //_toTextProvider.ToText (obj, this);
+
+      SequenceBegin (name+ "=", "", "", "", "");
+      //_textStringBuilderToText. (name);
+      //_textStringBuilderToText.Append ("=");
       _toTextProvider.ToText (obj, this);
+      SequenceEnd();
+
       return this;
     }
 
