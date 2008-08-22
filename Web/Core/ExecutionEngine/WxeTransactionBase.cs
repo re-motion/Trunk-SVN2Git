@@ -31,7 +31,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </returns>
     public static bool HasWxeTransaction (WxeStep step)
     {
-      return WxeStep.GetStepByType (step, typeof (WxeTransactionBase<TTransaction>)) != null;
+      return WxeStep.GetStepByType<WxeTransactionBase<TTransaction>> (step) != null;
     }
 
     private readonly bool _autoCommit;
@@ -247,7 +247,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </value>
     protected WxeTransactionBase<TTransaction> GetParentTransaction()
     {
-      return (WxeTransactionBase<TTransaction>) WxeStep.GetStepByType (ParentStep, typeof (WxeTransactionBase<TTransaction>));
+      return WxeStep.GetStepByType<WxeTransactionBase<TTransaction>> (ParentStep);
     }
 
     /// <summary>

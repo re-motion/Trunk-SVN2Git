@@ -20,7 +20,8 @@
     div
     {
       border: solid 1px black;
-      margin-bottom: 1em;
+      margin-bottom: .5em;
+      padding: .5em;
     }
   </style>
 </head>
@@ -41,6 +42,12 @@
     </p>
   </div>
   <webTest:FirstControl ID="FirstControl" runat="server" />
+  <div>
+    Stack:
+    <p>
+      <asp:Label ID="StackLabel" runat="server" />
+    </p>
+  </div>
   </form>
 </body>
 </html>

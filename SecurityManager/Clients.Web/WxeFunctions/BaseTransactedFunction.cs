@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
           WxeTransactedFunction transactedFunction = this;
           while (currentTransaction == null && transactedFunction != null)
           {
-            transactedFunction = (WxeTransactedFunction) GetStepByType (transactedFunction.ParentFunction, typeof (WxeTransactedFunction));
+            transactedFunction = GetStepByType<WxeTransactedFunction> (transactedFunction.ParentFunction);
             if (transactedFunction != null)
               currentTransaction = transactedFunction.MyTransaction;
           }

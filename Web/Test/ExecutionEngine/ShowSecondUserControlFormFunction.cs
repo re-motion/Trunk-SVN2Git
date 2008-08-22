@@ -9,6 +9,6 @@ namespace Remotion.Web.Test.ExecutionEngine
 {
   public class ShowSecondUserControlFormFunction:WxeFunction
   {
-    private WxePageStep Step1 = new WxePageStep ("~/ExecutionEngine/UserControlForm.aspx");
+    private WxeUserControlStep Step1 = new WxeUserControlStep ("~/ExecutionEngine/SecondControl.ascx");
   }
 }

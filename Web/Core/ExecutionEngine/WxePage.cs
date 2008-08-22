@@ -227,6 +227,11 @@ namespace Remotion.Web.ExecutionEngine
     [Browsable (false)]
     public WxePageStep CurrentStep
     {
+      get { return _wxePageInfo.CurrentPageStep; }
+    }
+
+    WxeUIStep IWxeTemplateControl.CurrentStep
+    {
       get { return _wxePageInfo.CurrentStep; }
     }
 

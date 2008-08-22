@@ -10,6 +10,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Web;
 using Remotion.Collections;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Obsolete;
@@ -26,26 +27,7 @@ public abstract class WxeStep
   /// <include file='doc\include\ExecutionEngine\WxeStep.xml' path='WxeStep/GetFunction/*' />
   public static WxeFunction GetFunction (WxeStep step)
   {
-    return (WxeFunction) WxeStep.GetStepByType (step, typeof (WxeFunction));
-  }
-
-  /// <summary> Gets the first step of the specified <paramref name="type"/>. </summary>
-  /// <include file='doc\include\ExecutionEngine\WxeStep.xml' path='WxeStep/GetStepByType/*' />
-  protected static WxeStep GetStepByType (WxeStep step, Type type)
-  {
-    ArgumentUtility.CheckNotNull ("type", type);
-    Type expectedType = typeof (WxeStep);
-    if (! expectedType.IsAssignableFrom (type))
-      throw new ArgumentTypeException ("type", expectedType, type);
-
-    for (; 
-          step != null; 
-          step = step.ParentStep)
-    {
-      if (type.IsAssignableFrom (step.GetType()))
-        return step;
-    }
-    return null;
+    return WxeStep.GetStepByType<WxeFunction> (step);
   }
 
   /// <summary>
@@ -53,11 +35,22 @@ public abstract class WxeStep
   /// </summary>
   /// <typeparam name="T">The type of step to get.</typeparam>
   /// <param name="step">The step from which to start searching for the given step type <typeparamref name="T"/>.</param>
-  /// <returns>The first step of type in the list of <see cref="ParentStep">ParentSteps</see>, starting from <paramref name="step"/>.</returns>
+  /// <returns>
+  ///   The first <see cref="WxeStep"/> of the specified <typeparamref name="T"/> or <see langword="null"/> if the 
+  ///   neither the <paramref name="step"/> nor it's parent steps are of a matching type. 
+  /// </returns>
   protected static T GetStepByType<T> (WxeStep step)
       where T : WxeStep
   {
-    return (T) GetStepByType (step, typeof (T));
+    for (;
+          step != null;
+          step = step.ParentStep)
+    {
+      T expectedStep = step as T;
+      if (expectedStep != null)
+        return expectedStep;
+    }
+    return null;
   }
 
   /// <summary> Used to pass a variable by reference to a <see cref="WxeFunction"/>. </summary>
@@ -200,6 +193,16 @@ public abstract class WxeStep
   /// <include file='doc\include\ExecutionEngine\WxeStep.xml' path='WxeStep/AbortRecursive/*' />
   protected virtual void AbortRecursive()
   {
+  }
+
+  protected Exception GetUnwrappedExceptionFromHttpException (Exception e)
+  {
+    Exception unwrappedException = e as HttpException;
+    while (unwrappedException is HttpException)
+    {
+      unwrappedException = unwrappedException.InnerException;
+    }
+    return unwrappedException;
   }
 }
 

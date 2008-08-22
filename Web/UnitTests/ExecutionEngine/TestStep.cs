@@ -16,9 +16,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 
 public class TestStep: WxeStep
 {
-  public static new WxeStep GetStepByType (WxeStep step, Type type)
+  public static new T GetStepByType<T> (WxeStep step)
+    where T:WxeStep
   {
-    return WxeStep.GetStepByType (step, type);
+    return WxeStep.GetStepByType<T> (step);
   }
 
   private bool _isExecuteCalled;

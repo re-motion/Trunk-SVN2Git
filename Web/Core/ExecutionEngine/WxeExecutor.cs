@@ -63,7 +63,7 @@ namespace Remotion.Web.ExecutionEngine
       try
       {
         _httpContext.Handler = _wxePageInfo.WxeHandler;
-        _wxePageInfo.CurrentStep.ExecuteFunction (_page, function, permaUrlOptions);
+        _wxePageInfo.CurrentPageStep.ExecuteFunction (_page, function, permaUrlOptions);
       }
       finally
       {
@@ -80,7 +80,7 @@ namespace Remotion.Web.ExecutionEngine
       try
       {
         _httpContext.Handler = _wxePageInfo.WxeHandler;
-        _wxePageInfo.CurrentStep.ExecuteFunctionNoRepost (
+        _wxePageInfo.CurrentPageStep.ExecuteFunctionNoRepost (
             _page, function, sender, options.UsesEventTarget ?? UsesEventTarget, options.PermaUrlOptions);
       }
       finally
@@ -97,7 +97,7 @@ namespace Remotion.Web.ExecutionEngine
       try
       {
         _httpContext.Handler = _wxePageInfo.WxeHandler;
-        _wxePageInfo.CurrentStep.ExecuteFunctionExternalByRedirect (
+        _wxePageInfo.CurrentPageStep.ExecuteFunctionExternalByRedirect (
             _page, function, options.PermaUrlOptions, options.ReturnToCaller, options.CallerUrlParameters);
       }
       finally
@@ -112,9 +112,9 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("sender", sender);
       ArgumentUtility.CheckNotNull ("options", options);
 
-      string functionToken = _wxePageInfo.CurrentStep.GetFunctionTokenForExternalFunction (function, options.ReturningPostback);
+      string functionToken = _wxePageInfo.CurrentPageStep.GetFunctionTokenForExternalFunction (function, options.ReturningPostback);
 
-      string href = _wxePageInfo.CurrentStep.GetDestinationUrlForExternalFunction (
+      string href = _wxePageInfo.CurrentPageStep.GetDestinationUrlForExternalFunction (
           function,
           functionToken,
           options.PermaUrlOptions.UsePermaUrl,

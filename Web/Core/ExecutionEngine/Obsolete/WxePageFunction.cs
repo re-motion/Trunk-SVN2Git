@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Remotion.Web.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine.Obsolete
 {
   /// <summary>
   /// Specifies that a WXE function should automatically be created by the WXE function generator (wxegen.exe).

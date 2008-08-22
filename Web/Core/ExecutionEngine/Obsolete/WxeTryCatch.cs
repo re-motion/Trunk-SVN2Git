@@ -134,11 +134,7 @@ namespace Remotion.Web.ExecutionEngine.Obsolete
           if (e is System.Threading.ThreadAbortException)
             throw;
 
-          Exception unwrappedException = e as HttpException;
-          while (unwrappedException is HttpException)
-          {
-            unwrappedException = unwrappedException.InnerException;
-          } 
+          Exception unwrappedException = GetUnwrappedExceptionFromHttpException (e);
 
           for (int i = 0; i < _catchBlocks.Count; ++i)
           {

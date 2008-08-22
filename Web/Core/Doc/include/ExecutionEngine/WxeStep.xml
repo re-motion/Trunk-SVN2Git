@@ -98,18 +98,6 @@ public class MyFunction: WxeFunction
       is not part of a function or is <see langword="null"/> it self. 
     </returns>
   </GetFunction>
-  <GetStepByType>
-    <param name="step"> 
-      The first <see cref="WxeStep"/> to be tested. 
-    </param>
-    <param name="type"> 
-      The <see cref="Type"/> to look for. Must be of type <see cref="WxeStep"/> or derived from it.
-    </param>
-    <returns> 
-      The first <see cref="WxeStep"/> of the specified <paramref name="type"/> or <see langword="null"/> if the 
-      neither the <paramref name="step"/> nor it's parent steps are of a matching type. 
-    </returns>
-  </GetStepByType>
   <varref>
     <param name="localVariable"> The name of a variable in the scope's <see cref="Variables"/> collection. </param>
     <returns> A new instance of the <see cref="WxeVariableReference"/> type referencing the specified variable. </returns>

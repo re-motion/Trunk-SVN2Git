@@ -9,12 +9,8 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using System.Text;
 using Remotion.Collections;
-using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.Test.ExecutionEngine
@@ -38,10 +34,15 @@ namespace Remotion.Web.Test.ExecutionEngine
       base.OnLoad (e);
 
       ViewStateValue++;
-      ViewStateLabel.Text = ViewStateValue.ToString ();
+      ViewStateLabel.Text = ViewStateValue.ToString();
 
       ControlStateValue++;
-      ControlStateLabel.Text = ControlStateValue.ToString ();
+      ControlStateLabel.Text = ControlStateValue.ToString();
+
+      StringBuilder stringBuilder = new StringBuilder();
+      for (WxeStep step = CurrentStep; step != null; step = step.ParentStep)
+        stringBuilder.AppendFormat ("{0}<br>", step);
+      StackLabel.Text = stringBuilder.ToString();
     }
 
     protected override void LoadControlState (object savedState)
@@ -53,7 +54,7 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     protected override object SaveControlState ()
     {
-      return new Tuple<object, int> (base.SaveControlState (), ControlStateValue);
+      return new Tuple<object, int> (base.SaveControlState(), ControlStateValue);
     }
 
     private int ViewStateValue

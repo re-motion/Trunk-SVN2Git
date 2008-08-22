@@ -66,5 +66,14 @@ namespace Remotion.Web.Test.ExecutionEngine {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Remotion.Web.Test.ExecutionEngine.FirstControl FirstControl;
+        
+        /// <summary>
+        /// StackLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label StackLabel;
     }
 }

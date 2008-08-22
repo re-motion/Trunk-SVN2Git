@@ -302,13 +302,13 @@ namespace Remotion.Web.ExecutionEngine
     {
       if (!ExecutionStarted)
       {
-        s_log.Debug ("Initializing execution of " + this.GetType ().FullName + ".");
-        NameObjectCollection parentVariables = (ParentStep != null) ? ParentStep.Variables : null;
+        s_log.Debug ("Initializing execution of " + GetType ().FullName + ".");
+
         EnsureParametersInitialized (null);
       }
       else
       {
-        s_log.Debug (string.Format ("Resuming execution of " + this.GetType ().FullName + "."));
+        s_log.Debug (string.Format ("Resuming execution of " + GetType ().FullName + "."));
       }
 
       try
@@ -320,17 +320,17 @@ namespace Remotion.Web.ExecutionEngine
         if (e is ThreadAbortException)
           throw;
 
-        if (e is HttpException && e.InnerException != null)
-          e = e.InnerException;
-        if (e is HttpUnhandledException && e.InnerException != null)
-          e = e.InnerException;
+        if (e is WxeExecutionControlException)
+          throw;
+
+        Exception unwrappedException = GetUnwrappedExceptionFromHttpException (e) ?? e;
 
         bool match = false;
         if (_catchExceptions && _catchExceptionTypes != null)
         {
           foreach (Type exceptionType in _catchExceptionTypes)
           {
-            if (exceptionType.IsAssignableFrom (e.GetType ()))
+            if (exceptionType.IsAssignableFrom (unwrappedException.GetType ()))
             {
               match = true;
               break;
@@ -340,18 +340,18 @@ namespace Remotion.Web.ExecutionEngine
 
         if (!_catchExceptions || !match)
         {
-          if (e is WxeUnhandledException)
-            throw e;
-          throw new WxeUnhandledException (string.Format ("An unhandled exception ocured while executing WxeFunction  '{0}': {1}", GetType ().FullName, e.Message), e);
+          if (unwrappedException is WxeUnhandledException)
+            throw unwrappedException;
+          throw new WxeUnhandledException (string.Format ("An unhandled exception ocured while executing WxeFunction  '{0}': {1}", GetType ().FullName, unwrappedException.Message), unwrappedException);
         }
 
-        _exception = e;
+        _exception = unwrappedException;
       }
 
       if (_exception == null && ParentStep != null)
         ReturnParametersToCaller ();
 
-      s_log.Debug ("Ending execution of " + this.GetType ().FullName + ".");
+      s_log.Debug ("Ending execution of " + GetType ().FullName + ".");
     }
 
     public string ReturnUrl
@@ -392,7 +392,8 @@ namespace Remotion.Web.ExecutionEngine
     public override string ToString ()
     {
       StringBuilder sb = new StringBuilder ();
-      sb.Append (this.GetType ().Name);
+      sb.Append ("WxeFunction: ");
+      sb.Append (GetType ().Name);
       sb.Append (" (");
       for (int i = 0; i < _actualParameters.Length; ++i)
       {
@@ -574,76 +575,4 @@ namespace Remotion.Web.ExecutionEngine
       wxeSecurityAdapter.CheckAccess (this);
     }
   }
-
-  [AttributeUsage (AttributeTargets.Property, AllowMultiple = false)]
-  public class WxeParameterAttribute : Attribute
-  {
-    private int _index;
-    private bool? _required;
-    private WxeParameterDirection _direction;
-
-    public WxeParameterAttribute (int index, WxeParameterDirection direction)
-      : this (index, null, direction)
-    {
-    }
-
-    public WxeParameterAttribute (int index, bool required)
-      : this (index, required, WxeParameterDirection.In )
-    {
-    }
-
-    public WxeParameterAttribute (int index)
-      : this (index, null, WxeParameterDirection.In)
-    {
-    }
-
-    /// <summary>
-    /// Declares a property as WXE function parameter.
-    /// </summary>
-    /// <param name="index"> Index of the parameter within the function's parameter list. </param>
-    /// <param name="required"> Speficies whether this parameter must be specified (an not 
-    ///     be <see langword="null"/>). Default is <see langword="true"/> for value types
-    ///     and <see langword="false"/> for reference types. </param>
-    /// <param name="direction"> Declares the parameter as input or output parameter, or both. </param>
-    public WxeParameterAttribute (int index , bool required, WxeParameterDirection direction)
-      : this (index, (bool?) required, direction)
-    {
-    }
-
-    private WxeParameterAttribute (int index, bool? required, WxeParameterDirection direction)
-    {
-      _index = index;
-      _required = required;
-      _direction = direction;
-    }
-
-    public int Index
-    {
-      get { return _index; }
-    }
-
-    public bool Required
-    {
-      get { return _required.Value; }
-    }
-
-    public WxeParameterDirection Direction
-    {
-      get { return _direction; }
-    }
-
-    public static WxeParameterAttribute GetAttribute (PropertyInfo property)
-    {
-      ArgumentUtility.CheckNotNull ("property", property);
-      WxeParameterAttribute[] attributes = (WxeParameterAttribute[]) property.GetCustomAttributes (typeof (WxeParameterAttribute), false);
-      if (attributes == null || attributes.Length == 0)
-        return null;
-
-      WxeParameterAttribute attribute = attributes[0];
-      if (!attribute._required.HasValue)
-        attribute._required = property.PropertyType.IsValueType;
-      return attribute;
-    }
-  }
-
 }

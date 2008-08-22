@@ -54,6 +54,8 @@ namespace Remotion.Web.ExecutionEngine
 
     private readonly TWxePage _page;
     private WxeForm _wxeForm;
+    private WxePageStep _currentPageStep;
+    private WxeExecutor<TWxePage> _wxeExecutor;
     private bool _postbackCollectionInitialized = false;
     private bool _isPostDataHandled = false;
     private NameValueCollection _postbackCollection = null;
@@ -64,7 +66,6 @@ namespace Remotion.Web.ExecutionEngine
 
     private string _statusIsAbortingMessage = string.Empty;
     private string _statusIsCachedMessage = string.Empty;
-    private WxeExecutor<TWxePage> _wxeExecutor;
 
     /// <summary> Initializes a new instance of the <b>WxePageInfo</b> type. </summary>
     /// <param name="page"> 
@@ -102,29 +103,29 @@ namespace Remotion.Web.ExecutionEngine
 
       _wxeExecutor = new WxeExecutor<TWxePage> (context, _page, this);
 
-      if (!ControlHelper.IsDesignMode (_page, context))
-      {
-        _wxeForm = WxeForm.Replace (_page.HtmlForm);
-        _page.HtmlForm = _wxeForm;
-      }
+      if (ControlHelper.IsDesignMode (_page, context))
+        return;
 
-      if (_page.CurrentStep != null)
-        ScriptManager.RegisterHiddenField (_page, WxePageInfo<TWxePage>.PageTokenID, CurrentStep.PageToken);
+      _wxeForm = WxeForm.Replace (_page.HtmlForm);
+      _page.HtmlForm = _wxeForm;
+      if (CurrentStep != null)
+        _currentPageStep = CurrentStep.PageStep;
+
+
+      if (CurrentPageStep != null)
+        ScriptManager.RegisterHiddenField (_page, WxePageInfo<TWxePage>.PageTokenID, CurrentPageStep.PageToken);
 
       _wxeForm.LoadPostData += Form_LoadPostData;
 
-      if (!ControlHelper.IsDesignMode (_page, context))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo<>), ResourceType.Html, c_scriptFileUrl);
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
+      string url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo<>), ResourceType.Html, c_scriptFileUrl);
+      HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
 
-        url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo<>), ResourceType.Html, c_styleFileUrl);
-        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
+      url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo<>), ResourceType.Html, c_styleFileUrl);
+      HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
 
-        //      url = ResourceUrlResolver.GetResourceUrl (page, typeof (WxePageInfo), ResourceType.Html, c_styleFileUrlForIE);
-        //      HtmlHeadAppender.Current.RegisterStylesheetLingForInternetExplorerOnly
-        //          (s_styleFileKeyForIE, url, HtmlHeadAppender.Priority.Library);
-      }
+      //      url = ResourceUrlResolver.GetResourceUrl (page, typeof (WxePageInfo), ResourceType.Html, c_styleFileUrlForIE);
+      //      HtmlHeadAppender.Current.RegisterStylesheetLingForInternetExplorerOnly
+      //          (s_styleFileKeyForIE, url, HtmlHeadAppender.Priority.Library);
     }
 
 
@@ -169,6 +170,8 @@ namespace Remotion.Web.ExecutionEngine
 
     private void Form_LoadPostData (object sender, EventArgs e)
     {
+      _page.Visible = true;
+
       NameValueCollection postBackCollection = _page.GetPostBackCollection ();
       if (postBackCollection == null)
         throw new InvalidOperationException ("The IWxePage has no PostBackCollection even though this is a post back.");
@@ -412,14 +415,14 @@ namespace Remotion.Web.ExecutionEngine
     /// <param name="state"> An <b>ASP.NET</b> viewstate object. </param>
     public void SavePageStateToPersistenceMedium (object state)
     {
-      CurrentStep.SavePageStateToPersistenceMedium (state);
+      CurrentPageStep.SavePageStateToPersistenceMedium (state);
     }
 
     /// <summary> Returns the viewstate previously saved into the executing <see cref="WxePageStep"/>. </summary>
     /// <returns> An <b>ASP.NET</b> viewstate object. </returns>
     public object LoadPageStateFromPersistenceMedium ()
     {
-      return CurrentStep.LoadPageStateFromPersistenceMedium ();
+      return CurrentPageStep.LoadPageStateFromPersistenceMedium ();
     }
 
 
@@ -512,11 +515,12 @@ namespace Remotion.Web.ExecutionEngine
 
     public WxeExecutor<TWxePage> Executor
     {
-      get
-      {
-        return _wxeExecutor;
-      }
+      get { return _wxeExecutor; }
+    }
+
+    public WxePageStep CurrentPageStep
+    {
+      get { return _currentPageStep; }
     }
   }
-
 }

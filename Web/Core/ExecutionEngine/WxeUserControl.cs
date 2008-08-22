@@ -30,7 +30,7 @@ public class WxeUserControl: UserControl, IWxeTemplateControl
     base.OnInit (e);
   }
 
-  public WxePageStep CurrentStep
+  public WxeUIStep CurrentStep
   {
     get { return _wxeInfo.CurrentStep; }
   }
