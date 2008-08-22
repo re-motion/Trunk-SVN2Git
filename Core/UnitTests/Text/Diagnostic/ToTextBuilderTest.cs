@@ -472,11 +472,11 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.sb ("[","",",","","]").e ("hello").e (toTextBuilder.SequenceState.Counter);
-      toTextBuilder.sb ("[","",",","","]").e ("hello").e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se ();
+      toTextBuilder.sb ("<","(",";(",")",">").e ("hello").e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se ();
       toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se ();
       var result = toTextBuilder.ToString ();
       Log (result);
-      Assert.That (result, Is.EqualTo ("[hello,1,[hello,world,2,3,4],world,3,4]"));
+      Assert.That (result, Is.EqualTo ("[hello,1,<(hello);(world);(2);(3);(4)>,world,3,4]"));
     }
 
     [Test]
