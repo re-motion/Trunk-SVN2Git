@@ -261,6 +261,25 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (result, Is.EqualTo ("{{{1,3},{5,7}},{{11,13},{17,19}},{{23,29},{31,37}}}"));
     }
 
+    [Test]
+    public void AppendRectangularArrayTagTest ()
+    {
+      int[, ,] array = { { { 1, 3 }, { 5, 7 } }, { { 11, 13 }, { 17, 19 } }, { { 23, 29 }, { 31, 37 } } };
+
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.ArrayPrefix = "{";
+      //toTextBuilder.ArrayFirstElementPrefix = "(";
+      toTextBuilder.ArrayFirstElementPrefix = "(";
+      toTextBuilder.ArrayOtherElementPrefix = ",(";
+      toTextBuilder.ArrayElementPostfix = ")";
+      toTextBuilder.ArrayPostfix = "}";
+
+      toTextBuilder.AppendArray (array);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{({({(1),(3)}),({(5),(7)})}),({({(11),(13)}),({(17),(19)})}),({({(23),(29)}),({(31),(37)})})}"));
+    }
+
 
     [Test]
     public void collectionTest2 ()
@@ -292,6 +311,26 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (result, Is.EqualTo ("((5;3;1);(11;13;17))"));
     }
 
+    //[Test]
+    //public void EnumerableTagTest2 ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder ();
+    //  var list = New.List (New.List (5, 3, 1), New.List (11, 13, 17));
+    //  toTextBuilder.EnumerableBegin = "(";
+    //  toTextBuilder.EnumerableSeparator = ";";
+    //  toTextBuilder.EnumerableEnd = ")";
+    //  toTextBuilder.ArrayBegin = "X";
+    //  toTextBuilder.ArraySeparator = "Y";
+    //  toTextBuilder.ArrayEnd = "Z";
+
+    //  toTextBuilder.AppendEnumerable (list);
+    //  var result = toTextBuilder.ToString ();
+    //  Log (result);
+    //  Assert.That (result, Is.EqualTo ("((5;3;1);(11;13;17))"));
+    //}
+
+
+
     [Test]
     public void ArrayTagTest ()
     {
@@ -308,6 +347,29 @@ namespace Remotion.UnitTests.Text.Diagnostic
       var result = toTextBuilder.ToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("<{[<{[<{[1§|§3]}>§|§<{[5§|§7]}>]}>§|§<{[<{[11§|§13]}>§|§<{[17§|§19]}>]}>§|§<{[<{[23§|§29]}>§|§<{[31§|§37]}>]}>]}>"));
+    }
+
+    [Test]
+    public void ArrayTagTest2 ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      var array = New.Array (New.Array (New.Array (1, 3,5), New.Array (5, 7,11)) );
+      toTextBuilder.ArrayPrefix = "<";
+      //toTextBuilder.ArrayFirstElementPrefix = "(";
+      toTextBuilder.ArrayFirstElementPrefix = "[";
+      toTextBuilder.ArrayOtherElementPrefix = ";[";
+      toTextBuilder.ArrayElementPostfix = "]";
+      toTextBuilder.ArrayPostfix = ">";
+
+      toTextBuilder.EnumerablePrefix = "A";
+      toTextBuilder.EnumerableFirstElementPrefix = "B";
+      toTextBuilder.EnumerableOtherElementPrefix = "C";
+      toTextBuilder.EnumerablePostfix = "D";
+
+      toTextBuilder.AppendArray (array);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("<[<[1];[3];[5]>];[<[5];[7];[11]>]>"));
     }
 
 

@@ -111,16 +111,86 @@ namespace Remotion.Text.Diagnostic
     private StringBuilderToText _textStringBuilderToText = new StringBuilderToText ();
     private ToTextProvider _toTextProvider;
     
-    private string _enumerableBegin = "{";
-    private string _enumerableSeparator = ",";
-    private string _enumerableEnd = "}";
-    private string _arrayBegin = "{";
-    private string _arraySeparator = ",";
-    private string _arrayEnd = "}";
+    //private string _enumerableBegin = "{";
+    //private string _enumerableSeparator = ",";
+    //private string _enumerableEnd = "}";
+
+    private string _enumerablePrefix = "{";
+    private string _enumerableFirstElementPrefix = "";
+    private string _enumerableOtherElementPrefix = ",";
+    private string _enumerableElementPostfix = "";
+    private string _enumerablePostfix = "}";
+
+    private string _arrayPrefix = "{";
+    private string _arrayFirstElementPrefix = "";
+    private string _arrayOtherElementPrefix = ",";
+    private string _arrayElementPostfix = "";
+    private string _arrayPostfix = "}";
     private bool _useMultiline = true;
     private OutputComplexityLevel _outputComplexity = OutputComplexityLevel.Basic;
     public Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder>(16);
     private SequenceStateHolder _sequenceState = null;
+
+    public string ArrayPrefix
+    {
+      get { return _arrayPrefix; }
+      set { _arrayPrefix = value; }
+    }
+
+    public string ArrayFirstElementPrefix
+    {
+      get { return _arrayFirstElementPrefix; }
+      set { _arrayFirstElementPrefix = value; }
+    }
+
+    public string ArrayOtherElementPrefix
+    {
+      get { return _arrayOtherElementPrefix; }
+      set { _arrayOtherElementPrefix = value; }
+    }
+
+    public string ArrayElementPostfix
+    {
+      get { return _arrayElementPostfix; }
+      set { _arrayElementPostfix = value; }
+    }
+
+    public string ArrayPostfix
+    {
+      get { return _arrayPostfix; }
+      set { _arrayPostfix = value; }
+    }
+
+
+    public string EnumerablePrefix
+    {
+      get { return _enumerablePrefix; }
+      set { _enumerablePrefix = value; }
+    }
+
+    public string EnumerableFirstElementPrefix
+    {
+      get { return _enumerableFirstElementPrefix; }
+      set { _enumerableFirstElementPrefix = value; }
+    }
+
+    public string EnumerableOtherElementPrefix
+    {
+      get { return _enumerableOtherElementPrefix; }
+      set { _enumerableOtherElementPrefix = value; }
+    }
+
+    public string EnumerableElementPostfix
+    {
+      get { return _enumerableElementPostfix; }
+      set { _enumerableElementPostfix = value; }
+    }
+
+    public string EnumerablePostfix
+    {
+      get { return _enumerablePostfix; }
+      set { _enumerablePostfix = value; }
+    }
 
 
     public enum OutputComplexityLevel
@@ -307,39 +377,39 @@ namespace Remotion.Text.Diagnostic
 
     public string EnumerableBegin
     {
-      get { return _enumerableBegin; }
-      set { _enumerableBegin = value; }
+      get { return _enumerablePrefix; }
+      set { _enumerablePrefix = value; }
     }
 
     public string EnumerableSeparator
     {
-      get { return _enumerableSeparator; }
-      set { _enumerableSeparator = value; }
+      get { return _enumerableOtherElementPrefix; }
+      set { _enumerableOtherElementPrefix = value; }
     }
 
     public string EnumerableEnd
     {
-      get { return _enumerableEnd; }
-      set { _enumerableEnd = value; }
+      get { return _enumerablePostfix; }
+      set { _enumerablePostfix = value; }
     }
 
 
     public string ArrayBegin
     {
-      get { return _arrayBegin; }
-      set { _arrayBegin = value; }
+      get { return _arrayPrefix; }
+      set { _arrayPrefix = value; }
     }
 
     public string ArraySeparator
     {
-      get { return _arraySeparator; }
-      set { _arraySeparator = value; }
+      get { return _arrayOtherElementPrefix; }
+      set { _arrayOtherElementPrefix = value; }
     }
 
     public string ArrayEnd
     {
-      get { return _arrayEnd; }
-      set { _arrayEnd = value; }
+      get { return _arrayPostfix; }
+      set { _arrayPostfix = value; }
     }
 
 
@@ -368,7 +438,9 @@ namespace Remotion.Text.Diagnostic
       //AppendSequenceBegin ("<", "|", ",", ";", ">");
       //_SequenceBegin ("<", "|", ",", ";", ">");
       //_SequenceBegin ("{", "", ",", "", "}");
-      SequenceBegin (EnumerableBegin, "", EnumerableSeparator, "", EnumerableEnd);
+
+      //SequenceBegin (EnumerableBegin, "", EnumerableSeparator, "", EnumerableEnd);
+      SequenceBegin (_enumerablePrefix, _enumerableFirstElementPrefix, _enumerableOtherElementPrefix, _enumerableElementPostfix, _enumerablePostfix);
       foreach (Object element in collection)
       {
         AppendToText (element);
@@ -449,22 +521,40 @@ namespace Remotion.Text.Diagnostic
         }
         else
         {
-          //_toTextBuilder.AppendToText ("");
-          _toTextBuilder.AppendSequenceBegin (_toTextBuilder.ArrayBegin, "", _toTextBuilder.ArraySeparator, "", _toTextBuilder.ArrayEnd);
+          //_toTextBuilder.AppendSequenceBegin (_toTextBuilder.ArrayBegin, "", _toTextBuilder.ArraySeparator, "", _toTextBuilder.ArrayEnd);
+          _toTextBuilder.AppendSequenceBegin (_toTextBuilder._arrayPrefix, _toTextBuilder._arrayFirstElementPrefix, _toTextBuilder._arrayOtherElementPrefix, _toTextBuilder._arrayElementPostfix, _toTextBuilder._arrayPostfix);
+          //_toTextBuilder.AppendArrayBegin ();
         }
         return true;
       }
 
+
+
       public override bool DoAfterLoop ()
       {
+        //_toTextBuilder.Append (" DoAfterLoop ");
         if (!ProcessingState.IsInnermostLoop)
         {
           _toTextBuilder.AppendSequenceEnd ();
+          //_toTextBuilder.AppendArrayEnd ();
         }
         return true;
       }
     }
 
+    //private void AppendArrayBegin ()
+    //{
+    //  //AppendSequenceBegin ("{", "", ",", "","}");
+    //  //AppendSequenceBegin (_arrayPrefix, "", _arrayOtherElementPrefix, "", _arrayPostfix);
+    //  //AppendSequenceBegin (_arrayPrefix, _arrayFirstElementPrefix, _arrayOtherElementPrefix, _arrayElementPostfix, _arrayPostfix);
+    //  SequenceBegin (_arrayPrefix, _arrayFirstElementPrefix, _arrayOtherElementPrefix, _arrayElementPostfix, _arrayPostfix);
+    //}
+
+    private void AppendArrayEnd ()
+    {
+      //AppendSequenceEnd ();
+      AppendSequenceEnd ();
+    }
 
     public ToTextBuilder AppendArray (Array array)
     {
@@ -476,10 +566,14 @@ namespace Remotion.Text.Diagnostic
       //return this;
 
       var outerProduct = new OuterProduct (array);
-      SequenceBegin (ArrayBegin, "", ArraySeparator, "", ArrayEnd);
+      //SequenceBegin (ArrayBegin, "", ArraySeparator, "", ArrayEnd);
+      //AppendArrayBegin();
+      SequenceBegin (_arrayPrefix, _arrayFirstElementPrefix, _arrayOtherElementPrefix, _arrayElementPostfix, _arrayPostfix);
       var processor = new ArrayToTextProcessor (array, this);
       outerProduct.ProcessOuterProduct (processor);
       SequenceEnd ();
+      //AppendSequenceEnd();
+      //AppendArrayEnd();
 
       return this;
     }
