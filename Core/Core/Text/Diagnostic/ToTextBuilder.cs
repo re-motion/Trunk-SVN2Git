@@ -111,10 +111,6 @@ namespace Remotion.Text.Diagnostic
     private StringBuilderToText _textStringBuilderToText = new StringBuilderToText ();
     private ToTextProvider _toTextProvider;
     
-    //private string _enumerableBegin = "{";
-    //private string _enumerableSeparator = ",";
-    //private string _enumerableEnd = "}";
-
     private string _enumerablePrefix = "{";
     private string _enumerableFirstElementPrefix = "";
     private string _enumerableOtherElementPrefix = ",";
@@ -205,14 +201,12 @@ namespace Remotion.Text.Diagnostic
 
     public SequenceStateHolder SequenceState
     {
-      //get { return _sequenceStack.Peek (); }
       get { return _sequenceState; }
     }
 
     public OutputComplexityLevel OutputComplexity
     {
       get { return _outputComplexity; }
-      //set { _outputComplexity = value; }
     }
 
     public void OutputDisable () { _outputComplexity = OutputComplexityLevel.Disable; }
@@ -415,42 +409,12 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder AppendEnumerable (IEnumerable collection)
     {
-      //Append (EnumerableBegin);
-      //bool insertSeperator = false; // no seperator before first element
-      //foreach (Object element in collection)
-      //{
-      //  if (insertSeperator)
-      //  {
-      //    Append (EnumerableSeparator);
-      //  }
-      //  else
-      //  {
-      //    insertSeperator = true;
-      //  }
-
-      //  ToText (element);
-      //}
-      //Append (EnumerableEnd);
-
-      //BeforeAppendElement ();
-
-      //SequenceBegin (EnumerableBegin, "", EnumerableSeparator, "", EnumerableEnd);
-      //AppendSequenceBegin ("<", "|", ",", ";", ">");
-      //_SequenceBegin ("<", "|", ",", ";", ">");
-      //_SequenceBegin ("{", "", ",", "", "}");
-
-      //SequenceBegin (EnumerableBegin, "", EnumerableSeparator, "", EnumerableEnd);
       SequenceBegin (_enumerablePrefix, _enumerableFirstElementPrefix, _enumerableOtherElementPrefix, _enumerableElementPostfix, _enumerablePostfix);
       foreach (Object element in collection)
       {
         AppendToText (element);
-        //ToText (element);
       }
-      //AppendSequenceEnd();
       SequenceEnd ();
-
-      //AfterAppendElement ();
-
       return this;
     }
 
@@ -521,9 +485,7 @@ namespace Remotion.Text.Diagnostic
         }
         else
         {
-          //_toTextBuilder.AppendSequenceBegin (_toTextBuilder.ArrayBegin, "", _toTextBuilder.ArraySeparator, "", _toTextBuilder.ArrayEnd);
           _toTextBuilder.AppendSequenceBegin (_toTextBuilder._arrayPrefix, _toTextBuilder._arrayFirstElementPrefix, _toTextBuilder._arrayOtherElementPrefix, _toTextBuilder._arrayElementPostfix, _toTextBuilder._arrayPostfix);
-          //_toTextBuilder.AppendArrayBegin ();
         }
         return true;
       }
@@ -532,59 +494,27 @@ namespace Remotion.Text.Diagnostic
 
       public override bool DoAfterLoop ()
       {
-        //_toTextBuilder.Append (" DoAfterLoop ");
         if (!ProcessingState.IsInnermostLoop)
         {
           _toTextBuilder.AppendSequenceEnd ();
-          //_toTextBuilder.AppendArrayEnd ();
         }
         return true;
       }
     }
 
-    //private void AppendArrayBegin ()
-    //{
-    //  //AppendSequenceBegin ("{", "", ",", "","}");
-    //  //AppendSequenceBegin (_arrayPrefix, "", _arrayOtherElementPrefix, "", _arrayPostfix);
-    //  //AppendSequenceBegin (_arrayPrefix, _arrayFirstElementPrefix, _arrayOtherElementPrefix, _arrayElementPostfix, _arrayPostfix);
-    //  SequenceBegin (_arrayPrefix, _arrayFirstElementPrefix, _arrayOtherElementPrefix, _arrayElementPostfix, _arrayPostfix);
-    //}
-
-    private void AppendArrayEnd ()
-    {
-      //AppendSequenceEnd ();
-      AppendSequenceEnd ();
-    }
 
     public ToTextBuilder AppendArray (Array array)
     {
-      //var outerProduct = new OuterProduct (array);
-      //AppendString (ArrayBegin); // outer opening bracket
-      //var processor = new ArrayToTextProcessor (array, this);
-      //outerProduct.ProcessOuterProduct (processor);
-      //AppendString (ArrayEnd); // outer closing bracket
-      //return this;
-
       var outerProduct = new OuterProduct (array);
-      //SequenceBegin (ArrayBegin, "", ArraySeparator, "", ArrayEnd);
-      //AppendArrayBegin();
       SequenceBegin (_arrayPrefix, _arrayFirstElementPrefix, _arrayOtherElementPrefix, _arrayElementPostfix, _arrayPostfix);
       var processor = new ArrayToTextProcessor (array, this);
       outerProduct.ProcessOuterProduct (processor);
       SequenceEnd ();
-      //AppendSequenceEnd();
-      //AppendArrayEnd();
 
       return this;
     }
 
 
-
-    //public ToTextBuilder AppendToText (Object o)
-    //{
-    //  _toTextProvider.ToText (o, this);
-    //  return this;
-    //}
 
     public ToTextBuilder AppendToText (Object obj)
     {
@@ -783,10 +713,6 @@ namespace Remotion.Text.Diagnostic
       return AppendInstanceEnd ();
     }
 
-    //public ToTextBuilder SequenceBegin ()
-    //{
-    //  return SequenceBegin("","",",","");
-    //}
 
     private void BeforeAppendElement ()
     {
@@ -845,20 +771,9 @@ namespace Remotion.Text.Diagnostic
     public ToTextBuilder AppendSequenceElement (object obj)
     {
       Assertion.IsTrue (IsInSequence);
-
       BeforeAppendElement ();
-
-      //var sequenceState = _sequenceStack.Peek ();
-      //if (SequenceState.Counter > 0)
-      //{
-      //  _textStringBuilderToText.Append (sequenceState.Separator);
-      //}
-
       _toTextProvider.ToText (obj, this);
-      //SequenceState.IncreaseCounter();
-
       AfterAppendElement ();
-      
       return this;
     }
     
