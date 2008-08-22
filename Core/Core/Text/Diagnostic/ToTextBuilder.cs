@@ -368,14 +368,14 @@ namespace Remotion.Text.Diagnostic
       //AppendSequenceBegin ("<", "|", ",", ";", ">");
       //_SequenceBegin ("<", "|", ",", ";", ">");
       //_SequenceBegin ("{", "", ",", "", "}");
-      _SequenceBegin (EnumerableBegin, "", EnumerableSeparator, "", EnumerableEnd);
+      SequenceBegin (EnumerableBegin, "", EnumerableSeparator, "", EnumerableEnd);
       foreach (Object element in collection)
       {
         AppendToText (element);
         //ToText (element);
       }
       //AppendSequenceEnd();
-      _SequenceEnd ();
+      SequenceEnd ();
 
       //AfterAppendElement ();
 
@@ -449,11 +449,8 @@ namespace Remotion.Text.Diagnostic
         }
         else
         {
-          if (!ProcessingState.IsFirstLoopElement)
-          {
-            _toTextBuilder.AppendString (_toTextBuilder.ArraySeparator);
-          }
-          _toTextBuilder._SequenceBegin (_toTextBuilder.ArrayBegin, "", _toTextBuilder.ArraySeparator, "", _toTextBuilder.ArrayEnd);
+          _toTextBuilder.AppendToText ("");
+          _toTextBuilder.SequenceBegin (_toTextBuilder.ArrayBegin, "", _toTextBuilder.ArraySeparator, "", _toTextBuilder.ArrayEnd);
         }
         return true;
       }
@@ -462,12 +459,10 @@ namespace Remotion.Text.Diagnostic
       {
         if (!ProcessingState.IsInnermostLoop)
         {
-          _toTextBuilder._SequenceEnd ();
+          _toTextBuilder.SequenceEnd ();
         }
         return true;
       }
-
-
     }
 
 
@@ -481,10 +476,10 @@ namespace Remotion.Text.Diagnostic
       //return this;
 
       var outerProduct = new OuterProduct (array);
-      _SequenceBegin (ArrayBegin, "", ArraySeparator, "", ArrayEnd);
+      SequenceBegin (ArrayBegin, "", ArraySeparator, "", ArrayEnd);
       var processor = new ArrayToTextProcessor (array, this);
       outerProduct.ProcessOuterProduct (processor);
-      _SequenceEnd ();
+      SequenceEnd ();
 
       return this;
     }
@@ -721,10 +716,10 @@ namespace Remotion.Text.Diagnostic
     {
       BeforeAppendElement();
 
-      return _SequenceBegin(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+      return SequenceBegin(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
     }
 
-    private ToTextBuilder _SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    private ToTextBuilder SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
       //_sequenceStack.Push (new SequenceStateHolder(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix));
       _sequenceStack.Push (_sequenceState);
@@ -738,13 +733,13 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder AppendSequenceEnd ()
     {
-      _SequenceEnd();
+      SequenceEnd();
 
       AfterAppendElement();
       return this;
     }
 
-    private void _SequenceEnd ()
+    private void SequenceEnd ()
     {
       Assertion.IsTrue (IsInSequence);
       _textStringBuilderToText.Append (SequenceState.SequencePostfix);
