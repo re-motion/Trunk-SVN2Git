@@ -11,22 +11,60 @@ namespace Remotion.Text.Diagnostic
 
     public class SequenceStateHolder
     {
-      public SequenceStateHolder ()
+      private int _sequenceCounter;
+      private string _sequencePrefix;
+      private string _firstElementPrefix;
+      private string _otherElementPrefix;
+      private string _elementPostfix;
+      private string _sequencePostfix;
+
+
+      public SequenceStateHolder (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
       {
-        Counter = 0;
-        Separator = ",";
+        _sequenceCounter = 0;
+        _sequencePrefix = sequencePrefix;
+        _firstElementPrefix = firstElementPrefix;
+        _otherElementPrefix = otherElementPrefix;
+        _elementPostfix = elementPostfix;
+        _sequencePostfix = sequencePostfix;
+     }
+
+      public string SequencePrefix
+      {
+        get { return _sequencePrefix; }
       }
 
       public int Counter
       {
-        get; set;
+        get { return _sequenceCounter; }
       }
 
-      public string Separator
+      public string ElementPostfix
       {
-        get; set;
+        get { return _elementPostfix; }
+      }
+
+      public string OtherElementPrefix
+      {
+        get { return _otherElementPrefix; }
+      }
+
+      public string FirstElementPrefix
+      {
+        get { return _firstElementPrefix; }
+      }
+
+      public string SequencePostfix
+      {
+        get { return _sequencePostfix; }
+      }
+
+      public void IncreaseCounter ()
+      {
+        ++_sequenceCounter;
       }
     }
+
 
     /* Planned Features:
      * Start-/End(class)
@@ -82,6 +120,7 @@ namespace Remotion.Text.Diagnostic
     private bool _useMultiline = true;
     private OutputComplexityLevel _outputComplexity = OutputComplexityLevel.Basic;
     public Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder>(16);
+    private SequenceStateHolder _sequenceState = null;
 
 
     public enum OutputComplexityLevel
@@ -96,7 +135,8 @@ namespace Remotion.Text.Diagnostic
 
     public SequenceStateHolder SequenceState
     {
-      get { return _sequenceStack.Peek (); }
+      //get { return _sequenceStack.Peek (); }
+      get { return _sequenceState; }
     }
 
     public OutputComplexityLevel OutputComplexity
@@ -533,35 +573,70 @@ namespace Remotion.Text.Diagnostic
       return AppendInstanceEnd ();
     }
 
-    public ToTextBuilder SequenceBegin (string sequenceBeginString)
+    //public ToTextBuilder SequenceBegin ()
+    //{
+    //  return SequenceBegin("","",",","");
+    //}
+
+    public ToTextBuilder SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
-      if (IsInSequence)
-      {
-        _textStringBuilderToText.Append (_sequenceStack.Peek ().Separator);
-      }
-      _textStringBuilderToText.Append (sequenceBeginString);
-      _sequenceStack.Push (new SequenceStateHolder());
+      BeforeAppendElement();
+
+      //_sequenceStack.Push (new SequenceStateHolder(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix));
+      _sequenceStack.Push (_sequenceState);
+      _sequenceState = new SequenceStateHolder(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+      
+      _textStringBuilderToText.Append (SequenceState.SequencePrefix);
+
       return this;
     }
 
-    public ToTextBuilder SequenceEnd (string sequenceEndString)
+    private void BeforeAppendElement ()
+    {
+      if (IsInSequence)
+      {
+        _textStringBuilderToText.Append (SequenceState.Counter == 0 ? SequenceState.FirstElementPrefix : SequenceState.OtherElementPrefix);
+      }
+    }
+
+    private void AfterAppendElement ()
+    {
+      if (IsInSequence)
+      {
+        _textStringBuilderToText.Append (SequenceState.ElementPostfix);
+      }
+    }
+
+    public ToTextBuilder SequenceEnd ()
+    //public ToTextBuilder SequenceEnd ()
     {
       Assertion.IsTrue (IsInSequence);
-      _sequenceStack.Pop ();
-      _textStringBuilderToText.Append (sequenceEndString);
+      _textStringBuilderToText.Append (SequenceState.SequencePostfix);
+
+      //_sequenceStack.Pop ();
+      _sequenceState = _sequenceStack.Pop ();
+
+      AfterAppendElement();
       return this;
     }
 
     public ToTextBuilder AppendSequenceElement (object obj)
     {
       Assertion.IsTrue (IsInSequence);
-      var sequenceState = _sequenceStack.Peek ();
-      if (sequenceState.Counter > 0)
-      {
-        _textStringBuilderToText.Append (sequenceState.Separator);
-      }
+
+      BeforeAppendElement ();
+
+      //var sequenceState = _sequenceStack.Peek ();
+      //if (SequenceState.Counter > 0)
+      //{
+      //  _textStringBuilderToText.Append (sequenceState.Separator);
+      //}
+
       _toTextProvider.ToText (obj, this);
-      ++sequenceState.Counter;
+      SequenceState.IncreaseCounter();
+
+      AfterAppendElement ();
+      
       return this;
     }
     
@@ -570,14 +645,14 @@ namespace Remotion.Text.Diagnostic
       return AppendSequenceElement (obj);
     }
 
-    public ToTextBuilder sb (string sequenceBeginString)
+    public ToTextBuilder sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
-      return SequenceBegin(sequenceBeginString);
+      return SequenceBegin (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
     }
 
-    public ToTextBuilder se (string sequenceEndString)
+    public ToTextBuilder se ()
     {
-      return SequenceEnd (sequenceEndString);
+      return SequenceEnd ();
     }
 
     public ToTextBuilder AppendSequenceElements (params object[] sequenceElements)
@@ -592,7 +667,9 @@ namespace Remotion.Text.Diagnostic
 
     public bool IsInSequence 
     {
-      get { return _sequenceStack.Count > 0; }
+      //get { return _sequenceStack.Count > 0; }
+      get { return _sequenceState != null; }
+      //get { return true; }
     }
   }
 }

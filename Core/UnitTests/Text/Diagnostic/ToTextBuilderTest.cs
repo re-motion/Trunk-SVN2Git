@@ -396,19 +396,25 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
 
+
+
     [Test]
     public void SequenceStateTest ()
     {
-      var sequenceState = new ToTextBuilder.SequenceStateHolder();
-      Assert.That (sequenceState.Counter, Is.EqualTo(0));
-      Assert.That (sequenceState.Separator, Is.EqualTo (","));
+      var sequenceState = new ToTextBuilder.SequenceStateHolder ("Start","FirstPrefix","OtherPrefix","Postfix","End");
+      Assert.That (sequenceState.Counter, Is.EqualTo (0));
+      Assert.That (sequenceState.SequencePrefix, Is.EqualTo ("Start"));
+      Assert.That (sequenceState.FirstElementPrefix, Is.EqualTo ("FirstPrefix"));
+      Assert.That (sequenceState.OtherElementPrefix, Is.EqualTo ("OtherPrefix"));
+      Assert.That (sequenceState.ElementPostfix, Is.EqualTo ("Postfix"));
+      Assert.That (sequenceState.SequencePostfix, Is.EqualTo ("End"));
     }
 
     [Test]
     public void SequenceStackSequenceBeginTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.SequenceBegin ("");
+      toTextBuilder.SequenceBegin ("", "", ",", "", "");
       Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (1));
     }
 
@@ -416,9 +422,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void SequenceStackSequenceEndTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.SequenceBegin ("");
+      toTextBuilder.SequenceBegin ("", "", ",", "", "");
       Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (1));
-      toTextBuilder.SequenceEnd ("");
+      toTextBuilder.SequenceEnd ();
       Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (0));
     }
 
@@ -426,10 +432,20 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void SequenceShorthandTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.sb("<{[").e("hello").e("world").e(1).e(2).e(3).se("]}>");
+      toTextBuilder.sb ("<{[","",",","","]}>").e ("hello").e ("world").e (1).e (2).e (3).se ();
       var result = toTextBuilder.ToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("<{[hello,world,1,2,3]}>"));
+    }
+
+    [Test]
+    public void SequenceTest1 ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb ("<", "(", ",(", ")", ">").e ("hello").e ("world").e (1).e (2).e (3).se ();
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("<(hello),(world),(1),(2),(3)>"));
     }
 
 
@@ -437,14 +453,15 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void SequenceTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.SequenceBegin ("");
+      toTextBuilder.SequenceBegin ("", "", ",", "", "");
+      Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (0));
       toTextBuilder.e ("1");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (1));
       toTextBuilder.e (2);
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (2));
       toTextBuilder.e ("drei");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (3));
-      toTextBuilder.SequenceEnd ("");
+      toTextBuilder.SequenceEnd ();
       var result = toTextBuilder.ToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("1,2,drei"));
@@ -454,9 +471,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void NestedSequencesTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.sb("[").e ("hello").e (toTextBuilder.SequenceState.Counter);
-      toTextBuilder.sb("[").e ("hello").e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se("]");
-      toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se("]");
+      toTextBuilder.sb ("[","",",","","]").e ("hello").e (toTextBuilder.SequenceState.Counter);
+      toTextBuilder.sb ("[","",",","","]").e ("hello").e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se ();
+      toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se ();
       var result = toTextBuilder.ToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("[hello,1,[hello,world,2,3,4],world,3,4]"));
@@ -466,13 +483,13 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void IsInSequenceTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.sb ("[");
+      toTextBuilder.sb ("[","",",","","]");
       Assert.That (toTextBuilder.IsInSequence, Is.True);
-      toTextBuilder.sb ("[");
+      toTextBuilder.sb ("[","",",","","]");
       Assert.That (toTextBuilder.IsInSequence, Is.True);
-      toTextBuilder.se ("]");
+      toTextBuilder.se ();
       Assert.That (toTextBuilder.IsInSequence, Is.True);
-      toTextBuilder.se ("]");
+      toTextBuilder.se ();
       Assert.That (toTextBuilder.IsInSequence, Is.False);
     }
 
@@ -480,11 +497,13 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void AppendSequenceElementsTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.sb ("[").AppendSequenceElements("a",2,"b",3,"c").se ("]");
+      toTextBuilder.sb ("[","",",","","]").AppendSequenceElements ("a", 2, "b", 3, "c").se ();
       var result = toTextBuilder.ToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("[a,2,b,3,c]"));
     }
+
+
 
 
     public static ToTextBuilder CreateTextBuilder ()
