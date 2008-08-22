@@ -345,22 +345,40 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder AppendEnumerable (IEnumerable collection)
     {
-      Append (EnumerableBegin);
-      bool insertSeperator = false; // no seperator before first element
+      //Append (EnumerableBegin);
+      //bool insertSeperator = false; // no seperator before first element
+      //foreach (Object element in collection)
+      //{
+      //  if (insertSeperator)
+      //  {
+      //    Append (EnumerableSeparator);
+      //  }
+      //  else
+      //  {
+      //    insertSeperator = true;
+      //  }
+
+      //  ToText (element);
+      //}
+      //Append (EnumerableEnd);
+
+      //BeforeAppendElement ();
+
+      //SequenceBegin (EnumerableBegin, "", EnumerableSeparator, "", EnumerableEnd);
+      //AppendSequenceBegin ("<", "|", ",", ";", ">");
+      //_SequenceBegin ("<", "|", ",", ";", ">");
+      //_SequenceBegin ("{", "", ",", "", "}");
+      _SequenceBegin (EnumerableBegin, "", EnumerableSeparator, "", EnumerableEnd);
       foreach (Object element in collection)
       {
-        if (insertSeperator)
-        {
-          Append (EnumerableSeparator);
-        }
-        else
-        {
-          insertSeperator = true;
-        }
-
-        ToText (element);
+        AppendToText (element);
+        //ToText (element);
       }
-      Append (EnumerableEnd);
+      //AppendSequenceEnd();
+      _SequenceEnd ();
+
+      //AfterAppendElement ();
+
       return this;
     }
 
@@ -631,19 +649,6 @@ namespace Remotion.Text.Diagnostic
     //  return SequenceBegin("","",",","");
     //}
 
-    public ToTextBuilder SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
-    {
-      BeforeAppendElement();
-
-      //_sequenceStack.Push (new SequenceStateHolder(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix));
-      _sequenceStack.Push (_sequenceState);
-      _sequenceState = new SequenceStateHolder(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
-      
-      _textStringBuilderToText.Append (SequenceState.SequencePrefix);
-
-      return this;
-    }
-
     private void BeforeAppendElement ()
     {
       if (IsInSequence)
@@ -661,17 +666,41 @@ namespace Remotion.Text.Diagnostic
       }
     }
 
-    public ToTextBuilder SequenceEnd ()
-    //public ToTextBuilder SequenceEnd ()
+
+    public ToTextBuilder AppendSequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    {
+      BeforeAppendElement();
+
+      return _SequenceBegin(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+    }
+
+    private ToTextBuilder _SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    {
+      //_sequenceStack.Push (new SequenceStateHolder(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix));
+      _sequenceStack.Push (_sequenceState);
+      _sequenceState = new SequenceStateHolder(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+      
+      _textStringBuilderToText.Append (SequenceState.SequencePrefix);
+
+      return this;
+    }
+
+
+    public ToTextBuilder AppendSequenceEnd ()
+    {
+      _SequenceEnd();
+
+      AfterAppendElement();
+      return this;
+    }
+
+    private void _SequenceEnd ()
     {
       Assertion.IsTrue (IsInSequence);
       _textStringBuilderToText.Append (SequenceState.SequencePostfix);
 
       //_sequenceStack.Pop ();
       _sequenceState = _sequenceStack.Pop ();
-
-      AfterAppendElement();
-      return this;
     }
 
     public ToTextBuilder AppendSequenceElement (object obj)
@@ -701,12 +730,12 @@ namespace Remotion.Text.Diagnostic
 
     public ToTextBuilder sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
-      return SequenceBegin (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+      return AppendSequenceBegin (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
     }
 
     public ToTextBuilder se ()
     {
-      return SequenceEnd ();
+      return AppendSequenceEnd ();
     }
 
     public ToTextBuilder AppendSequenceElements (params object[] sequenceElements)

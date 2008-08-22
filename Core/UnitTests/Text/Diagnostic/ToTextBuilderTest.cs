@@ -161,11 +161,59 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void AppendCollectionTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
+      var list = New.List (5, 3, 1, 11, 13, 17);
+      toTextBuilder.AppendEnumerable (list);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{5,3,1,11,13,17}"));
+    }
+
+    [Test]
+    public void AppendNestedCollectionTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
       var list = New.List (New.List (5, 3, 1), New.List(11,13,17));
       toTextBuilder.AppendEnumerable (list);
       var result = toTextBuilder.ToString ();
       Log(result);
       Assert.That (result, Is.EqualTo ("{{5,3,1},{11,13,17}}"));
+    }
+
+    [Test]
+    public void AppendNestedCollectionTest2 ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      var list = New.List (New.List (5, 3, 1), New.List (11, 13, 17), New.List (19, 23, 29));
+      toTextBuilder.AppendEnumerable (list);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{{5,3,1},{11,13,17},{19,23,29}}"));
+    }
+
+    [Test]
+    public void AppendNestedCollectionTest3 ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      var list = New.List (New.List (New.List (5, 3, 1), New.List (11, 13, 17)), New.List (New.List (19, 23, 29), New.List (31, 37, 41)));
+      toTextBuilder.AppendEnumerable (list);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{{{5,3,1},{11,13,17}},{{19,23,29},{31,37,41}}}"));
+    }
+
+    [Test]
+    public void AppendNestedCollectionTest4 ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      var list = New.List (
+        New.List (New.List (1,2,3), New.List (4,5,6), New.List (7,8,9)),
+        New.List (New.List (10,11,12), New.List (13,14,15), New.List (16,17,18)),
+        New.List (New.List (19,20,21), New.List (22,23,24), New.List (25,26,27))
+      );
+      toTextBuilder.AppendEnumerable (list);
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{{{1,2,3},{4,5,6},{7,8,9}},{{10,11,12},{13,14,15},{16,17,18}},{{19,20,21},{22,23,24},{25,26,27}}}"));
     }
 
     [Test]
@@ -414,7 +462,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void SequenceStackSequenceBeginTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.SequenceBegin ("", "", ",", "", "");
+      toTextBuilder.AppendSequenceBegin ("", "", ",", "", "");
       Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (1));
     }
 
@@ -422,9 +470,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void SequenceStackSequenceEndTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.SequenceBegin ("", "", ",", "", "");
+      toTextBuilder.AppendSequenceBegin ("", "", ",", "", "");
       Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (1));
-      toTextBuilder.SequenceEnd ();
+      toTextBuilder.AppendSequenceEnd ();
       Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (0));
     }
 
@@ -464,7 +512,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void SequenceTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.SequenceBegin ("", "", ",", "", "");
+      toTextBuilder.AppendSequenceBegin ("", "", ",", "", "");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (0));
       toTextBuilder.e ("1");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (1));
@@ -472,7 +520,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (2));
       toTextBuilder.e ("drei");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (3));
-      toTextBuilder.SequenceEnd ();
+      toTextBuilder.AppendSequenceEnd ();
       var result = toTextBuilder.ToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("1,2,drei"));
@@ -483,7 +531,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       var toTextBuilder = CreateTextBuilder ();
       var dreiString = "drei";
-      toTextBuilder.SequenceBegin ("", "", ",", "", "");
+      toTextBuilder.AppendSequenceBegin ("", "", ",", "", "");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (0));
       toTextBuilder.tt ("1");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (1));
@@ -491,7 +539,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (2));
       toTextBuilder.m (dreiString);
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (3));
-      toTextBuilder.SequenceEnd ();
+      toTextBuilder.AppendSequenceEnd ();
       var result = toTextBuilder.ToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("1,2,drei"));
