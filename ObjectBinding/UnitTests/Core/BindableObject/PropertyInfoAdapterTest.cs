@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using NUnit.Framework.SyntaxHelpers;
@@ -24,6 +25,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
   {
     private PropertyInfoAdapter _adapter;
     private PropertyInfo _property;
+    private PropertyInfo _valueProperty;
 
     private PropertyInfoAdapter _explicitInterfaceAdapter;
 
@@ -31,11 +33,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void SetUp ()
     {
       _property = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("NotVisibleAttributeScalar");
-      _adapter = new PropertyInfoAdapter (_property);
-      _explicitInterfaceAdapter = new PropertyInfoAdapter (
-          typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
-              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
-              BindingFlags.NonPublic | BindingFlags.Instance));
+      _valueProperty = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Scalar");
+      _adapter = new PropertyInfoAdapter (_property, _valueProperty);
+      PropertyInfo propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
+          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar",
+          BindingFlags.NonPublic | BindingFlags.Instance);
+      _explicitInterfaceAdapter = new PropertyInfoAdapter (propertyInfo, propertyInfo);
     }
 
     [Test]
@@ -73,6 +76,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void Name ()
     {
       Assert.AreEqual (_property.Name, _adapter.Name);
+      Assert.AreNotEqual (_valueProperty.Name, _adapter.Name);
     }
 
     [Test]
@@ -84,23 +88,26 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void CanBeSetFromOutside ()
     {
-      PropertyInfoAdapter readWriteAdapter = new PropertyInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Scalar"));
+      PropertyInfo propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Scalar");
+      PropertyInfoAdapter readWriteAdapter = new PropertyInfoAdapter (propertyInfo, propertyInfo);
       Assert.IsTrue (readWriteAdapter.CanBeSetFromOutside);
+      PropertyInfo propertyInfo1 = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyScalar");
       PropertyInfoAdapter readOnlyAdapter =
-          new PropertyInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyScalar"));
+          new PropertyInfoAdapter (propertyInfo1, propertyInfo1);
       Assert.IsFalse (readOnlyAdapter.CanBeSetFromOutside);
 
+      PropertyInfo propertyInfo2 = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyNonPublicSetterScalar");
       PropertyInfoAdapter readOnlyNonPublicSetterAdapter =
-          new PropertyInfoAdapter (typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyNonPublicSetterScalar"));
+          new PropertyInfoAdapter (propertyInfo2, propertyInfo2);
       Assert.IsFalse (readOnlyNonPublicSetterAdapter.CanBeSetFromOutside);
 
       PropertyInfoAdapter readWriteExplicitAdapter = _explicitInterfaceAdapter;
       Assert.IsTrue (readWriteExplicitAdapter.CanBeSetFromOutside);
 
+      PropertyInfo propertyInfo3 = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
+          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar", BindingFlags.NonPublic | BindingFlags.Instance);
       PropertyInfoAdapter readOnlyExplicitAdapter =
-          new PropertyInfoAdapter (
-              typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
-                  "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar", BindingFlags.NonPublic | BindingFlags.Instance));
+          new PropertyInfoAdapter (propertyInfo3, propertyInfo3);
       Assert.IsFalse (readOnlyExplicitAdapter.CanBeSetFromOutside);
     }
 
@@ -108,7 +115,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetCustomAttribute ()
     {
       Assert.AreEqual (
-          AttributeUtility.GetCustomAttribute<ObjectBindingAttribute> (_property, true), _adapter.GetCustomAttribute<ObjectBindingAttribute> (true));
+        AttributeUtility.GetCustomAttribute<ObjectBindingAttribute> (_property, true), _adapter.GetCustomAttribute<ObjectBindingAttribute> (true));
     }
 
     [Test]
@@ -126,11 +133,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    public void GetValue ()
+    public void GetValue_UsesValueProperty ()
     {
       ClassWithReferenceType<SimpleReferenceType> instance = new ClassWithReferenceType<SimpleReferenceType> ();
-      instance.NotVisibleAttributeScalar = new SimpleReferenceType ();
-      Assert.AreEqual (_property.GetValue (instance, null), _adapter.GetValue (instance, null));
+      _valueProperty.SetValue (instance, new SimpleReferenceType (), null);
+      Assert.That (_adapter.GetValue (instance, null), Is.SameAs (_valueProperty.GetValue (instance, null)));
     }
 
     [Test]
@@ -142,12 +149,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
     
     [Test]
-    public void SetValue ()
+    public void SetValue_UsesValueProperty ()
     {
       ClassWithReferenceType<SimpleReferenceType> instance = new ClassWithReferenceType<SimpleReferenceType> ();
       SimpleReferenceType value = new SimpleReferenceType ();
       _adapter.SetValue (instance, value, null);
-      Assert.AreSame (value, instance.NotVisibleAttributeScalar);
+      Assert.AreSame (value, _valueProperty.GetValue (instance, null));
     }
 
     [Test]
@@ -162,14 +169,22 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void Equals_ChecksPropertyInfo ()
     {
-      Assert.AreEqual (new PropertyInfoAdapter (_property), _adapter);
+      Assert.AreEqual (new PropertyInfoAdapter (_property, _valueProperty), _adapter);
       Assert.AreNotEqual (_explicitInterfaceAdapter, _adapter);
+    }
+
+    [Test]
+    public void Equals_ChecksValuePropertyInfo ()
+    {
+      Assert.AreEqual (new PropertyInfoAdapter (_property, _valueProperty), _adapter);
+      Assert.AreNotEqual (new PropertyInfoAdapter (_property, _property), _adapter);
     }
 
     [Test]
     public void GetHashCode_UsesPropertyInfo ()
     {
-      Assert.AreEqual (new PropertyInfoAdapter (_property).GetHashCode (), _adapter.GetHashCode ());
+      Assert.AreEqual (new PropertyInfoAdapter (_property, _valueProperty).GetHashCode (), _adapter.GetHashCode ());
+      Assert.AreNotEqual (new PropertyInfoAdapter (_property, _property).GetHashCode (), _adapter.GetHashCode ());
       Assert.AreNotEqual (_explicitInterfaceAdapter.GetHashCode (), _adapter.GetHashCode ());
     }
 
@@ -187,8 +202,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetOriginalDeclaringType ()
     {
       Assert.AreEqual (_adapter.DeclaringType, _adapter.GetOriginalDeclaringType ());
-      
-      PropertyInfoAdapter overrideAdapter = new PropertyInfoAdapter (typeof (ClassWithOverridingProperty).GetProperty ("BaseProperty"));
+
+      PropertyInfo propertyInfo = typeof (ClassWithOverridingProperty).GetProperty ("BaseProperty");
+      PropertyInfoAdapter overrideAdapter = new PropertyInfoAdapter (propertyInfo, propertyInfo);
       Assert.AreNotEqual (overrideAdapter.DeclaringType, overrideAdapter.GetOriginalDeclaringType ());
       Assert.AreEqual (overrideAdapter.DeclaringType.BaseType, overrideAdapter.GetOriginalDeclaringType ());
       Assert.AreEqual (typeof (ClassWithBaseProperty), overrideAdapter.GetOriginalDeclaringType ());

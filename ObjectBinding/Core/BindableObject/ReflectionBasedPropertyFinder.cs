@@ -15,6 +15,7 @@ using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -56,10 +57,29 @@ namespace Remotion.ObjectBinding.BindableObject
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly, PropertyFilter, null))
         {
           if (!propertyInfos.Contains (propertyInfo.Name))
-            propertyInfos.Add (new PropertyInfoAdapter (propertyInfo));
+          {
+            PropertyInfo valuePropertyInfo = GetPropertyInfoOnRightType (propertyInfo);
+            propertyInfos.Add (new PropertyInfoAdapter (propertyInfo, valuePropertyInfo));
+          }
         }
       }
       return propertyInfos;
+    }
+
+    private PropertyInfo GetPropertyInfoOnRightType (PropertyInfo propertyInfo)
+    {
+      MethodInfo accessor = propertyInfo.GetGetMethod (true);
+      MethodInfo accessorOnInterface = _interfaceMethodImplementations[accessor].FirstOrDefault ();
+      if (accessorOnInterface != null)
+      {
+        PropertyInfo propertyOnInterface = 
+            (from p in accessorOnInterface.DeclaringType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            where p.GetGetMethod (true).Equals (accessorOnInterface)
+            select p).Single();
+        return propertyOnInterface;
+      }
+      else
+        return propertyInfo;
     }
 
     private IEnumerable<Type> GetInheritanceHierarchy ()
@@ -95,7 +115,7 @@ namespace Remotion.ObjectBinding.BindableObject
       MethodInfo accessor = propertyInfo.GetGetMethod (true);
       return accessor != null
           && _interfaceMethodImplementations.ContainsKey (accessor)
-          && !_interfaceMethodImplementations[accessor].TrueForAll (delegate (MethodInfo m) { return IsInfrastructureProperty (propertyInfo, m); });
+          && !_interfaceMethodImplementations[accessor].TrueForAll (m => IsInfrastructureProperty (propertyInfo, m));
     }
 
     protected virtual bool IsInfrastructureProperty (PropertyInfo propertyInfo, MethodInfo accessorDeclaration)

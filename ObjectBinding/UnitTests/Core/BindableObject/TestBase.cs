@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       PropertyInfo propertyInfo = type.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
       Assert.IsNotNull (propertyInfo, "Property '{0}' was not found on type '{1}'.", propertyName, type);
 
-      return new PropertyInfoAdapter (propertyInfo);
+      return new PropertyInfoAdapter (propertyInfo, propertyInfo);
     }
 
     protected Type GetUnderlyingType (PropertyReflector reflector)

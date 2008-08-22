@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
@@ -61,7 +62,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void CreatePropertyReflector ()
     {
-      IPropertyInformation property = new PropertyInfoAdapter (typeof (TestClass).GetProperty ("Property"));
+      PropertyInfo propertyInfo = typeof (TestClass).GetProperty ("Property");
+      IPropertyInformation property = new PropertyInfoAdapter (propertyInfo, propertyInfo);
       PropertyReflector propertyReflector =
           BindableObjectMetadataFactory.Create().CreatePropertyReflector (typeof (TestClass), property, new BindableObjectProvider());
       Assert.AreSame (typeof (PropertyReflector), propertyReflector.GetType());

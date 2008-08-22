@@ -20,7 +20,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     public static IEnumerable<IPropertyInformation> AdaptCollection (IEnumerable<PropertyInfo> infos)
     {
       foreach (PropertyInfo info in infos)
-        yield return new PropertyInfoAdapter (info);
+        yield return new PropertyInfoAdapter (info, info);
     }
 
     public static IEnumerable<PropertyInfo> UnwrapCollection (IEnumerable<IPropertyInformation> adapters)
@@ -31,17 +31,24 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private readonly PropertyInfo _propertyInfo;
     private readonly bool _isExplicitInterfaceProperty;
+    private readonly PropertyInfo _valuePropertyInfo;
 
-    public PropertyInfoAdapter (PropertyInfo propertyInfo)
+    public PropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo valuePropertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       _propertyInfo = propertyInfo;
+      _valuePropertyInfo = valuePropertyInfo;
       _isExplicitInterfaceProperty = ReflectionUtility.GuessIsExplicitInterfaceProperty (propertyInfo);
     }
 
     public PropertyInfo PropertyInfo
     {
       get { return _propertyInfo; }
+    }
+
+    public PropertyInfo ValuePropertyInfo
+    {
+      get { return _valuePropertyInfo; }
     }
 
     public Type PropertyType
@@ -92,23 +99,23 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public object GetValue (object instance, object[] indexParameters)
     {
-      return _propertyInfo.GetValue (instance, indexParameters);
+      return _valuePropertyInfo.GetValue (instance, indexParameters);
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
-      _propertyInfo.SetValue (instance, value, indexParameters);
+      _valuePropertyInfo.SetValue (instance, value, indexParameters);
     }
 
     public override bool Equals (object obj)
     {
-      PropertyInfoAdapter other = obj as PropertyInfoAdapter;
-      return other != null && _propertyInfo.Equals (other._propertyInfo);
+      var other = obj as PropertyInfoAdapter;
+      return other != null && _propertyInfo.Equals (other._propertyInfo) && _valuePropertyInfo.Equals (other._valuePropertyInfo);
     }
 
     public override int GetHashCode ()
     {
-      return _propertyInfo.GetHashCode ();
+      return _propertyInfo.GetHashCode () ^ _valuePropertyInfo.GetHashCode();
     }
   }
 }

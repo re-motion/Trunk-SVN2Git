@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Mixins;
 using Rhino.Mocks;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -24,6 +25,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     private BindableObjectProvider _businessObjectProvider;
     private Type _type;
     private IClassReflector _classReflector;
+    private BindableObjectMetadataFactory _metadataFactory;
 
     public override void SetUp ()
     {
@@ -31,7 +33,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       _type = typeof (DerivedBusinessObjectClass);
       _businessObjectProvider = new BindableObjectProvider();
-      _classReflector = new ClassReflector (_type, _businessObjectProvider, BindableObjectMetadataFactory.Create());
+      _metadataFactory = BindableObjectMetadataFactory.Create ();
+      _classReflector = new ClassReflector (_type, _businessObjectProvider, _metadataFactory);
     }
 
     [Test]
@@ -59,7 +62,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetMetadata_ForBindableObjectWithIdentity ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithIdentity), _businessObjectProvider, BindableObjectMetadataFactory.Create());
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithIdentity), _businessObjectProvider, _metadataFactory);
       BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
       Assert.That (bindableObjectClass, Is.InstanceOfType (typeof (IBusinessObjectClassWithIdentity)));
@@ -73,7 +76,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         + "BindableObject.BindableObjectMixinBase`1'.\r\nParameter name: concreteType")]
     public void GetMetadata_ForBindableObjectWithManualIdentity ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithManualIdentity), _businessObjectProvider, BindableObjectMetadataFactory.Create());
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithManualIdentity), _businessObjectProvider, _metadataFactory);
       classReflector.GetMetadata ();
     }
 
@@ -119,9 +122,63 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetMetadata_ForMixedPropertyWithSameName ()
     {
       ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedPropertyOfSameName), _businessObjectProvider,
-          BindableObjectMetadataFactory.Create());
+          _metadataFactory);
       classReflector.GetMetadata ();
     }
 
+    [Test]
+    public void ClassReflector_CreatesBaseClass_CompatibleWithDerivedInstances ()
+    {
+      var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
+      var bindableObjectClass = classReflector.GetMetadata ();
+      var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> ().With();
+
+      ((BaseBusinessObjectClass) derivedBusinessObject).Public = "p";
+      var propertyDefinition = bindableObjectClass.GetPropertyDefinition ("Public");
+      var businessObject = (IBusinessObject) derivedBusinessObject;
+      Assert.That (businessObject.GetProperty (propertyDefinition), Is.EqualTo ("p"));
+    }
+
+    [Test]
+    public void ClassReflector_CreatesBaseClass_CompatibleWithDerivedInstances_WithMixins ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass<BaseBusinessObjectClass> ().AddMixin<MixinAddingProperty> ()
+          .ForClass<BaseBusinessObjectClass> ().AddMixin<BindableObjectMixin> ()
+          .EnterScope ())
+      {
+        var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
+        var bindableObjectClass = classReflector.GetMetadata();
+        var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass>().With();
+
+        Assert.That (derivedBusinessObject, Is.InstanceOfType (typeof (IMixinAddingProperty)));
+
+        ((BaseBusinessObjectClass) derivedBusinessObject).Public = "p";
+        var propertyDefinition = bindableObjectClass.GetPropertyDefinition ("Public");
+        var businessObject = (IBusinessObject) derivedBusinessObject;
+        Assert.That (businessObject.GetProperty (propertyDefinition), Is.EqualTo ("p"));
+      }
+    }
+
+    [Test]
+    public void ClassReflector_CreatesBaseClass_CompatibleWithDerivedInstances_WithMixins_WithMixedProperty ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass<BaseBusinessObjectClass> ().AddMixin<MixinAddingProperty> ()
+          .ForClass<BaseBusinessObjectClass> ().AddMixin<BindableObjectMixin> ()
+          .EnterScope ())
+      {
+        var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
+        var bindableObjectClass = classReflector.GetMetadata ();
+        var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> ().With ();
+
+        ((IMixinAddingProperty) derivedBusinessObject).MixedProperty = "p";
+        var propertyDefinition = bindableObjectClass.GetPropertyDefinition ("MixedProperty");
+        Assert.That (propertyDefinition, Is.Not.Null);
+        
+        var businessObject = (IBusinessObject) derivedBusinessObject;
+        Assert.That (businessObject.GetProperty (propertyDefinition), Is.EqualTo ("p"));
+      }
+    }
   }
 }

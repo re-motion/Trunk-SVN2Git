@@ -10,12 +10,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReflectionBasedPropertyFinderTestDomain;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
@@ -23,29 +24,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
   [TestFixture]
   public class ReflectionBasedPropertyFinderTest
   {
-    public class BaseTestType
-    {
-      public static int BasePublicStaticProperty { get { return 0; } }
-      protected static int BaseProtectedStaticProperty { get { return 0; } }
-
-      public virtual int BasePublicInstanceProperty { get { return 0; } }
-      protected int BaseProtectedInstanceProperty { get { return 0; } }
-    }
-
-    public class TestType : BaseTestType
-    {
-      public static int PublicStaticProperty { get { return 0; } }
-      protected static int ProtectedStaticProperty { get { return 0; } }
-
-      public int PublicInstanceProperty { get { return 0; } }
-      protected int ProtectedInstanceProperty { get { return 0; } }
-    }
-
     [Test]
     public void ReturnsPublicInstancePropertiesFromThisAndBase ()
     {
-      ReflectionBasedPropertyFinder finder = new ReflectionBasedPropertyFinder (typeof (TestType));
-      List<PropertyInfo> properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
+      var finder = new ReflectionBasedPropertyFinder (typeof (TestType));
+      var properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
       Assert.That (
           properties,
           Is.EquivalentTo (
@@ -56,17 +39,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
                   }));
     }
 
-    public class TestTypeHidingProperties : TestType
-    {
-      public override int BasePublicInstanceProperty { get { return 1; } }
-      public new int PublicInstanceProperty { get { return 1; } }
-    }
-
     [Test]
     public void IgnoresBasePropertiesWithSameName ()
     {
-      ReflectionBasedPropertyFinder finder = new ReflectionBasedPropertyFinder (typeof (TestTypeHidingProperties));
-      List<PropertyInfo> properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
+      var finder = new ReflectionBasedPropertyFinder (typeof (TestTypeHidingProperties));
+      var properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
       Assert.That (
           properties,
           Is.EquivalentTo (
@@ -77,54 +54,33 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
                   }));
     }
 
-    public interface ITestInterface
-    {
-      int InterfaceProperty { get; }
-    }
-
-    public interface IExplicitTestInterface
-    {
-      int InterfaceProperty { get; }
-    }
-
-    public class TestTypeWithInterfaces : ITestInterface, IExplicitTestInterface
-    {
-      public int InterfaceProperty { get { return 0; } }
-      int IExplicitTestInterface.InterfaceProperty { get { return 0; } }
-    }
-
-    public class DerivedTypeWithInterfaces : TestTypeWithInterfaces
-    {
-    }
-
     [Test]
     public void FindsPropertiesFromImplicitInterfaceImplementations ()
     {
-      ReflectionBasedPropertyFinder finder = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces));
-      List<PropertyInfo> properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
-      Assert.That (properties,
-          List.Contains (typeof (TestTypeWithInterfaces).GetProperty ("InterfaceProperty", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)));
+      var finder = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces));
+      var properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
+      Assert.That (properties, 
+          List.Contains (typeof (TestTypeWithInterfaces).GetProperty ("InterfaceProperty", 
+          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)));
     }
-
+    
     [Test]
     public void FindsPropertiesFromExplicitInterfaceImplementations ()
     {
-      ReflectionBasedPropertyFinder finder = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces));
-      List<PropertyInfo> properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
+      var finder = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces));
+      var properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
       Assert.That (properties,
-          List.Contains (typeof (TestTypeWithInterfaces).GetProperty (
-          typeof (ReflectionBasedPropertyFinderTest).FullName + ".IExplicitTestInterface.InterfaceProperty",
+          List.Contains (typeof (TestTypeWithInterfaces).GetProperty (typeof (IExplicitTestInterface).FullName + ".InterfaceProperty",
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)));
     }
 
     [Test]
     public void FindsPropertiesFromExplicitInterfaceImplementationsOnBase ()
     {
-      ReflectionBasedPropertyFinder finder = new ReflectionBasedPropertyFinder (typeof (DerivedTypeWithInterfaces));
-      List<PropertyInfo> properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
+      var finder = new ReflectionBasedPropertyFinder (typeof (DerivedTypeWithInterfaces));
+      var properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
       Assert.That (properties,
-          List.Contains (typeof (TestTypeWithInterfaces).GetProperty (
-          typeof (ReflectionBasedPropertyFinderTest).FullName + ".IExplicitTestInterface.InterfaceProperty",
+          List.Contains (typeof (TestTypeWithInterfaces).GetProperty (typeof (IExplicitTestInterface).FullName + ".InterfaceProperty",
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)));
     }
 
@@ -134,36 +90,38 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Type targetType = typeof (ClassWithIdentity);
       Type concreteType = Mixins.TypeUtility.GetConcreteMixedType (targetType);
 
-      List<IPropertyInformation> targetTypeProperties = new List<IPropertyInformation> (new ReflectionBasedPropertyFinder (targetType).GetPropertyInfos ());
-      List<IPropertyInformation> concreteTypeProperties = new List<IPropertyInformation> (new ReflectionBasedPropertyFinder (concreteType).GetPropertyInfos ());
+      var targetTypeProperties = new List<IPropertyInformation> (new ReflectionBasedPropertyFinder (targetType).GetPropertyInfos ());
+      var concreteTypeProperties = new List<IPropertyInformation> (new ReflectionBasedPropertyFinder (concreteType).GetPropertyInfos ());
 
       Assert.That (concreteTypeProperties, Is.EquivalentTo (targetTypeProperties));
-    }
-
-    public interface I1
-    {
-      string DisplayName { get; }
-    }
-
-    public interface I2
-    {
-      string DisplayName { get; }
-    }
-
-    public class ClassWithDoubleInterfaceMethod : I1, I2
-    {
-      public string DisplayName
-      {
-        get { return ""; }
-      }
     }
 
     [Test]
     public void PropertyWithDoubleInterfaceMethod ()
     {
-      List<IPropertyInformation> propertyInfos = new List<IPropertyInformation> (new ReflectionBasedPropertyFinder (typeof (ClassWithDoubleInterfaceMethod)).GetPropertyInfos ());
+      var propertyInfos = new List<IPropertyInformation> (new ReflectionBasedPropertyFinder (typeof (ClassWithDoubleInterfaceProperty)).GetPropertyInfos ());
       Assert.AreEqual (1, propertyInfos.Count);
       Assert.AreEqual ("DisplayName", propertyInfos[0].Name);
+    }
+
+    [Test]
+    public void ImplicitInterfaceProperties_GetInterfaceBasedPropertyInfo()
+    {
+      var propertyInfos = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces)).GetPropertyInfos ().ToArray ();
+      var interfaceProperty = (PropertyInfoAdapter) (from p in propertyInfos
+                               where p.Name == "InterfaceProperty"
+                               select p).Single ();
+      Assert.That (interfaceProperty.ValuePropertyInfo, Is.SameAs (typeof (ITestInterface).GetProperty ("InterfaceProperty")));
+    }
+
+    [Test]
+    public void ExplicitInterfaceProperties_GetInterfaceBasedPropertyInfo ()
+    {
+      var propertyInfos = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces)).GetPropertyInfos ().ToArray ();
+      var interfaceProperty = (PropertyInfoAdapter) (from p in propertyInfos
+                               where p.Name == typeof (IExplicitTestInterface).FullName + ".InterfaceProperty"
+                               select p).Single ();
+      Assert.That (interfaceProperty.ValuePropertyInfo, Is.SameAs (typeof (IExplicitTestInterface).GetProperty ("InterfaceProperty")));
     }
   }
 }
