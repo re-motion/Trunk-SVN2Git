@@ -157,6 +157,18 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
     }
 
+    //[Test]
+    //public void MemberInSequenceTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder ();
+    //  //var list = new List<int> () { 5, 3, 1 };
+    //  var myList = New.List (5, 3, 1);
+    //  toTextBuilder.sb().m ("myList", myList);
+    //  var result = toTextBuilder.ToString ();
+    //  //Assert.That (result, Is.EqualTo ("myList:{5,3,1}"));
+    //  Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
+    //}
+
     [Test]
     public void AppendCollectionTest ()
     {
@@ -654,6 +666,36 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
     [Test]
+    public void SimpleSequenceTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb ("<", ">").tt ("ABC").tt (toTextBuilder.SequenceState.Counter).tt ("DEFG").se ();
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("<ABC,1,DEFG>"));
+    }
+
+    [Test]
+    public void SimpleSequenceTest2 ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb ("<", ";", ">").tt ("ABC").tt (toTextBuilder.SequenceState.Counter).tt ("DEFG").se ();
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("<ABC;1;DEFG>"));
+    }
+
+    [Test]
+    public void StandardSequenceTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb ().tt ("ABC").tt (toTextBuilder.SequenceState.Counter).tt ("DEFG").se ();
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("(ABC,1,DEFG)"));
+    }
+
+    [Test]
     public void elementsTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
@@ -662,6 +704,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Log (result);
       Assert.That (result, Is.EqualTo ("[a,2,b,3,c]"));
     }
+
+
+
 
     [Test]
     public void NestedSequencesWitMembersTest ()
@@ -712,6 +757,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
       toTextBuilder.sb ("[", "", ",", "", "]").tt ("hello").tt (toTextBuilder.SequenceState.Counter); // missing se()
       var result = toTextBuilder.ToString();
     }
+
+
 
 
     public static ToTextBuilder CreateTextBuilder ()

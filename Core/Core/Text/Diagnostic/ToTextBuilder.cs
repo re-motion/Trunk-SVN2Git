@@ -797,6 +797,21 @@ namespace Remotion.Text.Diagnostic
       return AppendSequenceBegin (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
     }
 
+    public ToTextBuilder sb (string sequencePrefix, string separator, string sequencePostfix)
+    {
+      return AppendSequenceBegin (sequencePrefix, "", separator, "", sequencePostfix);
+    }
+
+    public ToTextBuilder sb (string sequencePrefix, string sequencePostfix)
+    {
+      return AppendSequenceBegin (sequencePrefix, "", ",", "", sequencePostfix);
+    }
+
+    public ToTextBuilder sb ()
+    {
+      return AppendSequenceBegin ("(", "", ",", "", ")");
+    }
+
     public ToTextBuilder se ()
     {
       return AppendSequenceEnd ();
