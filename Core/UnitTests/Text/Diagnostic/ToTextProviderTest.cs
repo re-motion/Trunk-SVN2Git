@@ -410,7 +410,8 @@ namespace Remotion.UnitTests.Text.Diagnostic
       string toTextTest = ToText(toText,test);
       //Log(toTextTest);
       log.It(toTextTest);
-      string toTextTestExpected = "[Test   Name=\"That's not my name\"  Int=179  LinkedListString={}  ListListString={}  Array3D={{{91,82,73,64}}}  RectangularArray2D=null  RectangularArray3D=null  _privateFieldString=\"FieldString text\"  _privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}} ]";
+      //string toTextTestExpected = "[Test   Name=\"That's not my name\"  Int=179  LinkedListString={}  ListListString={}  Array3D={{{91,82,73,64}}}  RectangularArray2D=null  RectangularArray3D=null  _privateFieldString=\"FieldString text\"  _privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}} ]";
+      string toTextTestExpected = "[Test  Name=\"That's not my name\",Int=179,LinkedListString={},ListListString={},Array3D={{{91,82,73,64}}},RectangularArray2D=null,RectangularArray3D=null,_privateFieldString=\"FieldString text\",_privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}}]";
       Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
     }
 

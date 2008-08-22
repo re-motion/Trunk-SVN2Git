@@ -360,11 +360,15 @@ namespace Remotion.Text.Diagnostic
 
     private ToTextBuilder _AppendMember (string name, Object obj)
     {
-      _textStringBuilderToText.Append (" ");
+      //_textStringBuilderToText.Append (" ");
+      //_textStringBuilderToText.Append (name);
+      //_textStringBuilderToText.Append ("=");
+      //_toTextProvider.ToText (obj, this);
+      //_textStringBuilderToText.Append (" ");
+
       _textStringBuilderToText.Append (name);
       _textStringBuilderToText.Append ("=");
       _toTextProvider.ToText (obj, this);
-      _textStringBuilderToText.Append (" ");
       return this;
     }
 
@@ -682,6 +686,8 @@ namespace Remotion.Text.Diagnostic
       return _textStringBuilderToText.ToString();
     }
 
+
+
     public ToTextBuilder ToText (object obj)
     {
       _toTextProvider.ToText (obj, this);
@@ -691,9 +697,11 @@ namespace Remotion.Text.Diagnostic
 
     private ToTextBuilder AppendInstanceBegin (Type type)
     {
-      this.AppendString("[");
-      this.AppendString (type.Name);
-      this.AppendString ("  ");
+      //this.AppendString("[");
+      //this.AppendString (type.Name);
+      //this.AppendString ("  ");
+      //SequenceBegin ("[" + type.Name + "  ", "", ",", "", "]");
+      SequenceBegin ("[" + type.Name, "  ", ",", "", "]");
       return this;
     }
 
@@ -705,7 +713,8 @@ namespace Remotion.Text.Diagnostic
 
     private ToTextBuilder AppendInstanceEnd ()
     {
-      this.AppendString ("]");
+      //this.AppendString ("]");
+      SequenceEnd();
       return this;
     }
 

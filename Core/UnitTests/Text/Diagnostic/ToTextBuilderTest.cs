@@ -154,7 +154,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       toTextBuilder.m ("myList", myList);
       var result = toTextBuilder.ToString ();
       //Assert.That (result, Is.EqualTo ("myList:{5,3,1}"));
-      Assert.That (result, Is.EqualTo (" myList={5,3,1} "));
+      Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
     }
 
     [Test]
@@ -500,23 +500,22 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void beginInstanceTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.beginInstance(toTextBuilder.GetType());
+      var obj = new object();
+      toTextBuilder.beginInstance (obj.GetType()).endInstance ();
       var result = toTextBuilder.ToString();
       Log(result);
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
+      Assert.That (result, Is.EqualTo ("[Object]")); // NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
     }
 
-    [Test]
-    public void endInstanceTest ()
-    {
-      var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.endInstance ();
-      var result = toTextBuilder.ToString ();
-      Log (result);
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("]"));
-    }
-
-
+    //[Test]
+    //public void endInstanceTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder ();
+    //  toTextBuilder.endInstance ();
+    //  var result = toTextBuilder.ToString ();
+    //  Log (result);
+    //  Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("]"));
+    //}
 
 
     [Test]
@@ -676,7 +675,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se ();
       var result = toTextBuilder.ToString ();
       Log (result);
-      Assert.That (result, Is.EqualTo ("[hello,1,<(a variable);( simpleTest=((TestSimple) Name:ABC abc,Int:54321) );(was here and);( test=Remotion.UnitTests.Text.Diagnostic.ToTextProviderTest+Test );(here);(5)>,world,4,5]"));
+      Assert.That (result, Is.EqualTo ("[hello,1,<(a variable);(simpleTest=((TestSimple) Name:ABC abc,Int:54321));(was here and);(test=Remotion.UnitTests.Text.Diagnostic.ToTextProviderTest+Test);(here);(5)>,world,4,5]"));
     }
 
     [Test]
@@ -702,7 +701,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       toTextBuilder.tt ("world").tt (toTextBuilder.SequenceState.Counter).tt (toTextBuilder.SequenceState.Counter).se ();
       var result = toTextBuilder.ToString ();
       Log (result);
-      Assert.That (result, Is.EqualTo ("[hello,1,<(a variable);( simpleTest=((TestSimple) Name:ABC abc,Int:54321) );(was here and);( test=Remotion.UnitTests.Text.Diagnostic.ToTextProviderTest+Test );(here);(5)>,world,4,5]"));
+      Assert.That (result, Is.EqualTo ("[hello,1,<(a variable);(simpleTest=((TestSimple) Name:ABC abc,Int:54321));(was here and);(test=Remotion.UnitTests.Text.Diagnostic.ToTextProviderTest+Test);(here);(5)>,world,4,5]"));
     }
 
     [Test]
