@@ -52,8 +52,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return GetTypesafeConstructorInvoker<DomainObject> (type);
     }
 
-    private IFuncInvoker<TMinimal> GetTypesafeConstructorInvoker<TMinimal> (Type domainObjectType)
-        where TMinimal : DomainObject
+    private IFuncInvoker<TStaticType> GetTypesafeConstructorInvoker<TStaticType> (Type domainObjectType)
+        where TStaticType : DomainObject
     {
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
       
@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       IDomainObjectFactory factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
       Type concreteType = factory.GetConcreteDomainObjectType(domainObjectType);
-      return factory.GetTypesafeConstructorInvoker<TMinimal> (concreteType);
+      return factory.GetTypesafeConstructorInvoker<TStaticType> (concreteType);
     }
   }
 }

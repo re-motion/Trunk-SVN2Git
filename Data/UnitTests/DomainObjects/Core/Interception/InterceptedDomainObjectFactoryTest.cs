@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The type Remotion.Data.UnitTests.DomainObjects.TestDomain.Order was not "
-        + "created by InterceptedDomainObjectFactory.GetConcreteDomainObjectType.\r\nParameter name: type")]
+        + "created by InterceptedDomainObjectFactory.GetConcreteDomainObjectType.\r\nParameter name: dynamicType")]
     public void GetTypesafeConstructorInvokerThrowsOnTypeNotCreatedByFactory ()
     {
       _factory.GetTypesafeConstructorInvoker<Order> (typeof (Order));
@@ -195,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (ArgumentTypeException),
-        ExpectedMessage = "Argument type is a .*Order_WithInterception.* which cannot be assigned to type .*OrderTicket.",
+        ExpectedMessage = "Argument dynamicType is a .*Order_WithInterception.* which cannot be assigned to type .*OrderTicket.",
         MatchType = MessageMatch.Regex)]
     public void GetTypesafeConstructorInvokerThrowsOnInvalidTMinimimal ()
     {

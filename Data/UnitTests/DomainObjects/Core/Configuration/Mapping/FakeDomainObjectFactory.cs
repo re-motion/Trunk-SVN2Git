@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       throw new NotImplementedException ();
     }
 
-    public IFuncInvoker<TMinimal> GetTypesafeConstructorInvoker<TMinimal> (Type type) where TMinimal : DomainObject
+    public IFuncInvoker<TMinimal> GetTypesafeConstructorInvoker<TMinimal> (Type dynamicType) where TMinimal : DomainObject
     {
       throw new NotImplementedException ();
     }

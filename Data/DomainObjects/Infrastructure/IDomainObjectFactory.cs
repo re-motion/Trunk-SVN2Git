@@ -60,19 +60,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     bool WasCreatedByFactory (Type type);
 
     /// <summary>
-    /// Returns a construction object that can be used to instantiate objects of a given interceptable type.
+    /// Returns a construction object that can be used to instantiate objects of a given interceptable dynamicType.
     /// </summary>
-    /// <typeparam name="TMinimal">The type statically returned by the construction object.</typeparam>
-    /// <param name="type">The exatct interceptable type to be constructed; this must be a type returned by <see cref="GetConcreteDomainObjectType(Type)"/>.
-    /// <typeparamref name="TMinimal"/> must be assignable from this type.</param>
-    /// <returns>A construction object, which instantiates <paramref name="type"/> and returns <typeparamref name="TMinimal"/>.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="type"/> argument is null.</exception>
-    /// <exception cref="ArgumentException"><paramref name="type"/> is not the same or a subtype of <typeparamref name="TMinimal"/> or
-    /// <paramref name="type"/> wasn't created by this kind of factory.</exception>
-    IFuncInvoker<TMinimal> GetTypesafeConstructorInvoker<TMinimal> (Type type) where TMinimal : DomainObject;
+    /// <typeparam name="TStaticType">The type statically returned by the construction object.</typeparam>
+    /// <param name="dynamicType">The exatct interceptable type to be constructed; this must be a type returned by <see cref="GetConcreteDomainObjectType(Type)"/>.
+    /// <typeparamref name="TStaticType"/> must be assignable from this type.</param>
+    /// <returns>A construction object, which instantiates <paramref name="dynamicType"/> and returns <typeparamref name="TStaticType"/>.</returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="dynamicType"/> argument is null.</exception>
+    /// <exception cref="ArgumentException"><paramref name="dynamicType"/> is not the same or a subtype of <typeparamref name="TStaticType"/> or
+    /// <paramref name="dynamicType"/> wasn't created by this kind of factory.</exception>
+    IFuncInvoker<TStaticType> GetTypesafeConstructorInvoker<TStaticType> (Type dynamicType) where TStaticType : DomainObject;
 
     /// <summary>
-    /// Prepares an instance which has not been created via <see cref="GetTypesafeConstructorInvoker{TMinimal}"/> for use.
+    /// Prepares an instance which has not been created via <see cref="GetTypesafeConstructorInvoker{TStaticType}"/> for use.
     /// </summary>
     /// <param name="instance">The instance to be prepared</param>
     /// <remarks>
