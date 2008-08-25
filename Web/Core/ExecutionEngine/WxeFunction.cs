@@ -320,9 +320,6 @@ namespace Remotion.Web.ExecutionEngine
         if (e is ThreadAbortException)
           throw;
 
-        if (e is WxeExecutionControlException)
-          throw;
-
         Exception unwrappedException = GetUnwrappedExceptionFromHttpException (e) ?? e;
 
         bool match = false;

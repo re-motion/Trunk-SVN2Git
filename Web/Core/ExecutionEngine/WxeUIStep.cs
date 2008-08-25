@@ -56,16 +56,10 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("function", function);
 
       BackupPostBackCollection (userControl.WxePage);
-      
+
       PrepareExecuteFunction (function, true);
 
-      try
-      {
-        Execute ();
-      }
-      catch (WxeExecuteUserControlStepException)
-      {
-      }
+      Execute();
     }
 
     protected void PrepareExecuteFunction (WxeFunction function, bool isSubFunction)

@@ -25,7 +25,9 @@ namespace Remotion.Web.ExecutionEngine
       {
         //  This is the PageStep if it isn't executing a sub-function
 
-        ProcessCurrentFunction (context);
+        context.SetIsPostBack (true);
+        context.SetIsReturningPostBack (false);
+        context.PostBackCollection = PostBackCollection;
       }
       else
       {
@@ -43,13 +45,13 @@ namespace Remotion.Web.ExecutionEngine
       {
         _isExecutionStarted = true;
         _isPostBack = false;
-        throw new WxeExecuteUserControlStepException();
+   //     throw new WxeExecuteUserControlStepException();
       }
       else
       {
         _isPostBack = true;
-        ExecutePage (context);
       }
+        ExecutePage (context);
     }
 
     public bool IsPostBack
