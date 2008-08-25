@@ -107,6 +107,16 @@ namespace Remotion.Text.Diagnostic
       set { _emitPrivateFields = value; }
     }
 
+    public int ParentHandlerSearchDepth
+    {
+      get; set;
+    }
+
+    public bool ParentHandlerSearchUpToRoot
+    {
+      get; set;
+    }
+
     public void SetAutomaticObjectToTextEmit (bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
     {
       _emitPublicProperties = emitPublicProperties;
@@ -227,26 +237,37 @@ namespace Remotion.Text.Diagnostic
       {
         CollectionToText ((IEnumerable) obj, toTextBuilder);
       }
-      else if (_automaticObjectToText)
-      {
-        //AutomaticObjectToText (obj, toTextBuilder, true, true, true, true);
-        AutomaticObjectToText (obj, toTextBuilder, EmitPublicProperties, EmitPublicFields, EmitPrivateProperties, EmitPrivateFields);
-      }
       else
       {
-        toTextBuilder.AppendString (obj.ToString ());
+        handler = GetHandlerWithBaseClassFallback (type);
+        if (handler != null)
+        {
+          handler.ToText (obj, toTextBuilder);
+        }
+        else if (_automaticObjectToText)
+        {
+          AutomaticObjectToText (obj, toTextBuilder, EmitPublicProperties, EmitPublicFields, EmitPrivateProperties, EmitPrivateFields);
+        }
+        else
+        {
+          toTextBuilder.AppendString (obj.ToString ());
+        }
       }
     }
 
     private IToTextHandlerExternal GetHandler (Type type)
     {
-      IToTextHandlerExternal handler = GetHandlerWithBaseClassFallback(type, 0, 1);
-      return handler;
+      return GetHandlerWithBaseClassFallback(type);
     }
 
-    private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, int recursionDepth, int recursionDepthMax)
+    private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type)
     {
-      if (recursionDepth >= recursionDepthMax)
+      return GetHandlerWithBaseClassFallback (type, ParentHandlerSearchDepth, ParentHandlerSearchUpToRoot, 0);
+    }
+
+    private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, int recursionDepthMax, bool searchToRoot, int recursionDepth)
+    {
+      if (!searchToRoot && recursionDepth > recursionDepthMax)
       {
         return null;
       }
@@ -265,7 +286,7 @@ namespace Remotion.Text.Diagnostic
         return null;
       }
 
-      return GetHandlerWithBaseClassFallback (baseType, recursionDepth + 1, recursionDepthMax);
+      return GetHandlerWithBaseClassFallback (baseType, recursionDepthMax, searchToRoot, recursionDepth + 1);
     }
 
 

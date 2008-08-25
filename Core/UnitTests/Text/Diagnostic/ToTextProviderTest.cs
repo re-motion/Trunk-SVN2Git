@@ -76,6 +76,25 @@ namespace Remotion.UnitTests.Text.Diagnostic
       private List<List<string>> _privateFieldListList = New.List(New.List("private", "field"),New.List("list of", "list"));
     }
 
+    public class TestChild : Test
+    {
+      public TestChild ()
+      {
+        Name = "Child Name";
+        Int = 22222;
+      }
+    }
+
+    public class TestChildChild : TestChild
+    {
+      public TestChildChild ()
+      {
+        Name = "CHILD CHILD NAME";
+        Int = 333333333;
+      }
+    }
+
+
     public class Test2
     {
       public Test2 ()
@@ -513,6 +532,39 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (toText.ToTextString (F), Is.EqualTo ("1.234568"));
     }
 
+
+
+
+    [Test]
+    public void UseParentHandlerTest ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+      var testChildChild = new TestChildChild ();
+
+      toText.ParentHandlerSearchUpToRoot = false;
+      toText.ParentHandlerSearchDepth = 2;
+      toText.RegisterHandler<Test> ((o, ttb) => ttb.s ("Test"));
+      Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("Test"));
+      toText.ParentHandlerSearchDepth = 1;
+      Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString()));
+
+      toText.ParentHandlerSearchDepth = 1;
+      toText.RegisterHandler<TestChild> ((o, ttb) => ttb.s ("TestChild"));
+      toText.ParentHandlerSearchDepth = 0;
+      Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString ()));
+
+      toText.ParentHandlerSearchDepth = 10;
+      toText.RegisterHandler<TestChildChild> ((o, ttb) => ttb.s ("TestChildChild"));
+      Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("TestChildChild"));
+
+      toText.ClearHandlers();
+      toText.RegisterHandler<Test> ((o, ttb) => ttb.s ("Test"));
+      toText.ParentHandlerSearchDepth = 0;
+      toText.ParentHandlerSearchUpToRoot = true;
+      Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("Test"));
+      toText.ParentHandlerSearchUpToRoot = false;
+      Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString ()));
+    }
 
 
     public static ToTextProvider GetTextProvider ()
