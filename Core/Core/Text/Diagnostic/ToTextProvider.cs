@@ -10,7 +10,8 @@ namespace Remotion.Text.Diagnostic
 {
   public class ToTextProvider
   {
-    private Dictionary<Type, Delegate> _typeHandlerMap = new Dictionary<Type, Delegate> ();
+    //private readonly Dictionary<Type, Delegate> _typeHandlerMap = new Dictionary<Type, Delegate> ();
+    private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap = new Dictionary<Type, IToTextHandlerExternal> ();
     private bool _automaticObjectToText = true;
     private bool _automaticStringEnclosing = true;
     private bool _automaticCharEnclosing = true;
@@ -75,16 +76,21 @@ namespace Remotion.Text.Diagnostic
         return;
       }
 
-      Delegate handler = null;
       Type type = obj.GetType ();
 
       Log (type.ToString ());
 
+      //Delegate handler = null;
+      //_typeHandlerMap.TryGetValue (type, out handler);
+
+      IToTextHandlerExternal handler = null;
       _typeHandlerMap.TryGetValue (type, out handler);
+
 
       if (handler != null)
       {
-        handler.DynamicInvoke (obj, toTextBuilder);
+        //handler.DynamicInvoke (obj, toTextBuilder);
+        handler.ToText (obj, toTextBuilder);
       }
       else if (type == typeof (string))
       {
@@ -173,28 +179,32 @@ namespace Remotion.Text.Diagnostic
 
 
 
-    //private interface IToTextHandlerExternal
-    //{
-    //  void ToText (Object obj, ToTextBuilder toTextBuilder);
-    //}
+    private interface IToTextHandlerExternal
+    {
+      void ToText (Object obj, ToTextBuilder toTextBuilder);
+    }
 
-    //private class ToTextHandlerExternal<T> : IToTextHandlerExternal
-    //{
-    //  private Action<T, ToTextBuilder> handler;
+    private class ToTextHandlerExternal<T> : IToTextHandlerExternal
+    {
+      private readonly Action<T, ToTextBuilder> _handler;
 
+      public ToTextHandlerExternal (Action<T, ToTextBuilder> handler)
+      {
+        _handler = handler;
+      }
 
-    //  public void ToText (object o, ToTextBuilder toTextBuilder)
-    //  {
-    //    return handler.ToText (obj, toTextBuilder);
-    //    throw new System.NotImplementedException();
-    //  }
-    //}
+      public void ToText (object obj, ToTextBuilder toTextBuilder)
+      {
+        _handler((T) obj, toTextBuilder);
+      }
+    }
 
 
 
     public void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
     {
-      _typeHandlerMap.Add (typeof (T), handler);
+      //_typeHandlerMap.Add (typeof (T), handler);
+      _typeHandlerMap.Add (typeof (T),new ToTextHandlerExternal<T> (handler));
     }
 
     public void ClearHandlers ()
