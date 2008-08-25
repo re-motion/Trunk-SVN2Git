@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Text.Diagnostic
@@ -17,6 +18,9 @@ namespace Remotion.Text.Diagnostic
     private bool _automaticCharEnclosing = true;
 
     private static readonly NumberFormatInfo _numberFormatInfoUS = new CultureInfo ("en-US", false).NumberFormat;
+
+    // Define a cache instance (dictionary syntax)
+    private static readonly InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]> memberInfoCache = new InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]>();
 
 
     public bool UseAutomaticObjectToText
@@ -272,12 +276,16 @@ namespace Remotion.Text.Diagnostic
       return value;
     }
 
+
     public void AutomaticObjectToTextProcessMemberInfos (string message, Object obj, BindingFlags bindingFlags, 
       MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
     {
       Type type = obj.GetType ();
-      MemberInfo[] memberInfos = type.GetMembers (bindingFlags);
 
+      //MemberInfo[] memberInfos = type.GetMembers (bindingFlags);
+
+      // Cache the member info result
+      MemberInfo[] memberInfos = memberInfoCache.GetOrCreateValue (new Tuple<Type, BindingFlags> (type, bindingFlags), tuple => tuple.A.GetMembers (tuple.B));
 
       foreach (var memberInfo in memberInfos)
       {
