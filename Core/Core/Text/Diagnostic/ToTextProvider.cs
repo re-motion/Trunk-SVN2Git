@@ -11,7 +11,27 @@ namespace Remotion.Text.Diagnostic
 {
   public class ToTextProvider
   {
-    //private readonly Dictionary<Type, Delegate> _typeHandlerMap = new Dictionary<Type, Delegate> ();
+    private interface IToTextHandlerExternal
+    {
+      void ToText (Object obj, ToTextBuilder toTextBuilder);
+    }
+
+    private class ToTextHandlerExternal<T> : IToTextHandlerExternal
+    {
+      private readonly Action<T, ToTextBuilder> _handler;
+
+      public ToTextHandlerExternal (Action<T, ToTextBuilder> handler)
+      {
+        _handler = handler;
+      }
+
+      public void ToText (object obj, ToTextBuilder toTextBuilder)
+      {
+        _handler ((T) obj, toTextBuilder);
+      }
+    }
+
+
     private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap = new Dictionary<Type, IToTextHandlerExternal> ();
     private bool _automaticObjectToText = true;
     private bool _automaticStringEnclosing = true;
@@ -41,11 +61,6 @@ namespace Remotion.Text.Diagnostic
       set { _automaticCharEnclosing = value; }
     }
 
-    //private string ToText (object obj)
-    //{
-    //  var toTextBuilder = new ToTextBuilder(this);
-    //  return toTextBuilder.ToText(obj).ToString();
-    //}
 
     public string ToTextString (object obj)
     {
@@ -69,8 +84,7 @@ namespace Remotion.Text.Diagnostic
       // *) If enabled: Log properties through reflection
       // *) ToString()
 
-      // Functionality:
-      // * Register handlers for interfaces, which can be called by ToText handlers of specific types.
+      // TODO Functionality:
       // * Automatic call stack indentation
 
       if (obj == null)
@@ -83,9 +97,6 @@ namespace Remotion.Text.Diagnostic
       Type type = obj.GetType ();
 
       Log (type.ToString ());
-
-      //Delegate handler = null;
-      //_typeHandlerMap.TryGetValue (type, out handler);
 
       IToTextHandlerExternal handler = null;
       _typeHandlerMap.TryGetValue (type, out handler);
@@ -113,15 +124,6 @@ namespace Remotion.Text.Diagnostic
       else if (obj is IToTextHandler)
       {
         ((IToTextHandler) obj).ToText (toTextBuilder);
-      }
-      else if(false)
-      {
-        // The code below, while not completely equivalent to the "obj is Type" version performs much faster.
-        if (type == typeof (object).GetType () || type == typeof (Type))
-        {
-          // Catch type RuntimeType here to avoid endless recursion in AutomaticObjectToText below
-          toTextBuilder.AppendString (type.ToString ());
-        }
       }
       else if (obj is Type) 
       {
@@ -183,31 +185,12 @@ namespace Remotion.Text.Diagnostic
 
 
 
-    private interface IToTextHandlerExternal
-    {
-      void ToText (Object obj, ToTextBuilder toTextBuilder);
-    }
 
-    private class ToTextHandlerExternal<T> : IToTextHandlerExternal
-    {
-      private readonly Action<T, ToTextBuilder> _handler;
-
-      public ToTextHandlerExternal (Action<T, ToTextBuilder> handler)
-      {
-        _handler = handler;
-      }
-
-      public void ToText (object obj, ToTextBuilder toTextBuilder)
-      {
-        _handler((T) obj, toTextBuilder);
-      }
-    }
 
 
 
     public void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
     {
-      //_typeHandlerMap.Add (typeof (T), handler);
       _typeHandlerMap.Add (typeof (T),new ToTextHandlerExternal<T> (handler));
     }
 
@@ -217,48 +200,21 @@ namespace Remotion.Text.Diagnostic
     }
 
 
-    //public void RegisterStringHandlers ()
-    //{
-    //  RegisterHandler<String> ((x, ttb) => ttb.s ("\"").ts (x).s ("\""));
-    //  RegisterHandler<char> ((x, ttb) => ttb.s ("'").ts (x).s ("'"));
-    //}
 
-
-    public void CollectionToText (IEnumerable collection, ToTextBuilder toTextBuilder)
+    public static void CollectionToText (IEnumerable collection, ToTextBuilder toTextBuilder)
     {
       toTextBuilder.AppendEnumerable(collection);
     }
 
 
-    public void ArrayToText (Array array, ToTextBuilder toTextBuilder)
+    public static void ArrayToText (Array array, ToTextBuilder toTextBuilder)
     {
       toTextBuilder.AppendArray(array);
     }
 
 
-    // Outputs the names & values of all public fields and properties of the passed Object.
-    private static void ObjectFieldsAndPropertiesToString (object obj)
-    {
-      Type type = obj.GetType();
 
-      foreach (var fieldInfo in type.GetFields())
-      {
-        string fieldName = fieldInfo.Name;
-        var fieldValue = type.GetField(fieldName).GetValue(obj);
-        Console.WriteLine (String.Format ("\nField: name={0}, value={1}", fieldName, fieldValue));
-      }
-
-      foreach (var fieldInfo in type.GetProperties())
-      {
-        string propertyName = fieldInfo.Name;
-        var propertyValue = type.GetProperty(propertyName).GetValue(obj, null);
-        Console.WriteLine (String.Format ("\nProperty: name={0}, value={1}", propertyName, propertyValue));
-      }
-    }
-
-
-
-    private object GetValue (object obj, Type type, MemberInfo memberInfo)
+    private static object GetValue (object obj, Type type, MemberInfo memberInfo)
     {
       object value = null;
       if (memberInfo is PropertyInfo)
@@ -277,12 +233,10 @@ namespace Remotion.Text.Diagnostic
     }
 
 
-    public void AutomaticObjectToTextProcessMemberInfos (string message, Object obj, BindingFlags bindingFlags, 
+    private static void AutomaticObjectToTextProcessMemberInfos (string message, Object obj, BindingFlags bindingFlags, 
       MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
     {
       Type type = obj.GetType ();
-
-      //MemberInfo[] memberInfos = type.GetMembers (bindingFlags);
 
       // Cache the member info result
       MemberInfo[] memberInfos = memberInfoCache.GetOrCreateValue (new Tuple<Type, BindingFlags> (type, bindingFlags), tuple => tuple.A.GetMembers (tuple.B));
