@@ -124,7 +124,7 @@ namespace Remotion.Text.Diagnostic
     private string _arrayPostfix = "}";
     private bool _useMultiline = true;
     private OutputComplexityLevel _outputComplexity = OutputComplexityLevel.Basic;
-    public Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder>(16);
+    private Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder>(16);
     private SequenceStateHolder _sequenceState = null;
 
     public string ArrayPrefix

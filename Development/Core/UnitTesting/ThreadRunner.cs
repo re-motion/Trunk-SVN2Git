@@ -86,7 +86,7 @@ namespace Remotion.Development.UnitTesting
             {
               threadStart ();
             }
-            catch (System.Threading.ThreadAbortException e)
+            catch (System.Threading.ThreadAbortException)
             {
               //Console.WriteLine (">>> ThreadStartThreadAbortExceptionWrapper <<<");
               // Explicitely reset the ThreadAbortException

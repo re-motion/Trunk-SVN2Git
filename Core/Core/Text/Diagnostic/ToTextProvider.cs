@@ -171,6 +171,27 @@ namespace Remotion.Text.Diagnostic
     }
 
 
+
+
+    //private interface IToTextHandlerExternal
+    //{
+    //  void ToText (Object obj, ToTextBuilder toTextBuilder);
+    //}
+
+    //private class ToTextHandlerExternal<T> : IToTextHandlerExternal
+    //{
+    //  private Action<T, ToTextBuilder> handler;
+
+
+    //  public void ToText (object o, ToTextBuilder toTextBuilder)
+    //  {
+    //    return handler.ToText (obj, toTextBuilder);
+    //    throw new System.NotImplementedException();
+    //  }
+    //}
+
+
+
     public void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
     {
       _typeHandlerMap.Add (typeof (T), handler);

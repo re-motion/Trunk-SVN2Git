@@ -541,23 +541,23 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (sequenceState.SequencePostfix, Is.EqualTo ("End"));
     }
 
-    [Test]
-    public void SequenceStackSequenceBeginTest ()
-    {
-      var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.AppendSequenceBegin ("", "", ",", "", "");
-      Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (1));
-    }
+    //[Test]
+    //public void SequenceStackSequenceBeginTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder ();
+    //  toTextBuilder.AppendSequenceBegin ("", "", ",", "", "");
+    //  Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (1));
+    //}
 
-    [Test]
-    public void SequenceStackSequenceEndTest ()
-    {
-      var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.AppendSequenceBegin ("", "", ",", "", "");
-      Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (1));
-      toTextBuilder.AppendSequenceEnd ();
-      Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (0));
-    }
+    //[Test]
+    //public void SequenceStackSequenceEndTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder ();
+    //  toTextBuilder.AppendSequenceBegin ("", "", ",", "", "");
+    //  Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (1));
+    //  toTextBuilder.AppendSequenceEnd ();
+    //  Assert.That (toTextBuilder._sequenceStack.Count, Is.EqualTo (0));
+    //}
 
     [Test]
     public void SequenceShorthandTest ()
