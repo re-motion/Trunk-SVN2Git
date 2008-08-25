@@ -9,6 +9,23 @@ using Remotion.Utilities;
 
 namespace Remotion.Text.Diagnostic
 {
+  /// <summary>
+  /// Provides conversion of arbitray objects into human readable text form (<c>ToText</c> method) 
+  /// using a fallback cascade starting with registered external object-to-text-conversion-handlers.
+  /// 
+  /// The conversion is done through the following mechanisms, in order of precedence:
+  /// <list type="number">
+  /// <item>Handler for object type registered (see <see cref="RegisterHandler{T}"/>)</item>
+  /// <item>Implements <see cref="IToTextHandler"/> (i.e. object supplies <c>ToText</c> method)</item>
+  /// <item>Is a string or character (see <see cref="UseAutomaticStringEnclosing"/> and <see cref="UseAutomaticCharEnclosing"/> respectively)</item>
+  /// <item>Is a primitive: Floating point numbers are alway output formatted US style.</item>
+  /// <item>Is a (rectangular) array (arrays have are be treted seperately to prevent them from from being handled as IEnumerable)</item>
+  /// <item>Implements IEnumerable</item>
+  /// <item>Log instance members through reflection (see <see cref="UseAutomaticObjectToText"/>)</item>
+  /// <item>If all of the above fail, the object's <c>ToString</c> method is called</item>
+  /// </list>
+  /// 
+  /// </summary>
   public class ToTextProvider
   {
     private interface IToTextHandlerExternal
@@ -33,14 +50,19 @@ namespace Remotion.Text.Diagnostic
 
 
     private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap = new Dictionary<Type, IToTextHandlerExternal> ();
-    private bool _automaticObjectToText = true;
-    private bool _automaticStringEnclosing = true;
-    private bool _automaticCharEnclosing = true;
-
     private static readonly NumberFormatInfo _numberFormatInfoUS = new CultureInfo ("en-US", false).NumberFormat;
 
     // Define a cache instance (dictionary syntax)
     private static readonly InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]> memberInfoCache = new InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]>();
+    
+    private bool _automaticObjectToText = true;
+    private bool _automaticStringEnclosing = true;
+    private bool _automaticCharEnclosing = true;
+
+    private bool _emitPublicProperties = true;
+    private bool _emitPublicFields = true;
+    private bool _emitPrivateProperties = true;
+    private bool _emitPrivateFields = true;
 
 
     public bool UseAutomaticObjectToText
@@ -60,6 +82,39 @@ namespace Remotion.Text.Diagnostic
       get { return _automaticCharEnclosing; }
       set { _automaticCharEnclosing = value; }
     }
+
+    public bool EmitPublicProperties
+    {
+      get { return _emitPublicProperties; }
+      set { _emitPublicProperties = value; }
+    }
+
+    public bool EmitPublicFields
+    {
+      get { return _emitPublicFields; }
+      set { _emitPublicFields = value; }
+    }
+
+    public bool EmitPrivateProperties
+    {
+      get { return _emitPrivateProperties; }
+      set { _emitPrivateProperties = value; }
+    }
+
+    public bool EmitPrivateFields
+    {
+      get { return _emitPrivateFields; }
+      set { _emitPrivateFields = value; }
+    }
+
+    public void SetAutomaticObjectToTextEmit (bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
+    {
+      _emitPublicProperties = emitPublicProperties;
+      _emitPublicFields = emitPublicFields;
+      _emitPrivateProperties = emitPrivateProperties;
+      _emitPrivateFields = emitPrivateFields;
+    }
+
 
 
     public string ToTextString (object obj)
@@ -99,7 +154,7 @@ namespace Remotion.Text.Diagnostic
       Log (type.ToString ());
 
       IToTextHandlerExternal handler = null;
-      _typeHandlerMap.TryGetValue (type, out handler);
+      handler = GetHandler(type);
 
 
       if (handler != null)
@@ -174,7 +229,8 @@ namespace Remotion.Text.Diagnostic
       }
       else if (_automaticObjectToText)
       {
-        AutomaticObjectToText (obj, toTextBuilder);
+        //AutomaticObjectToText (obj, toTextBuilder, true, true, true, true);
+        AutomaticObjectToText (obj, toTextBuilder, EmitPublicProperties, EmitPublicFields, EmitPrivateProperties, EmitPrivateFields);
       }
       else
       {
@@ -182,11 +238,35 @@ namespace Remotion.Text.Diagnostic
       }
     }
 
+    private IToTextHandlerExternal GetHandler (Type type)
+    {
+      IToTextHandlerExternal handler = GetHandlerWithBaseClassFallback(type, 0, 1);
+      return handler;
+    }
 
+    private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, int recursionDepth, int recursionDepthMax)
+    {
+      if (recursionDepth >= recursionDepthMax)
+      {
+        return null;
+      }
 
+      IToTextHandlerExternal handler;
+      _typeHandlerMap.TryGetValue (type, out handler);
 
+      if (handler != null)
+      {
+        return handler;
+      }
 
+      Type baseType = type.BaseType;
+      if(baseType == null)
+      {
+        return null;
+      }
 
+      return GetHandlerWithBaseClassFallback (baseType, recursionDepth + 1, recursionDepthMax);
+    }
 
 
     public void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
@@ -262,17 +342,30 @@ namespace Remotion.Text.Diagnostic
 
 
 
-    public void AutomaticObjectToText (object obj, ToTextBuilder toTextBuilder)
+    public void AutomaticObjectToText (object obj, ToTextBuilder toTextBuilder, 
+      bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
     {
       Type type = obj.GetType ();
 
       toTextBuilder.beginInstance(type);
 
-      AutomaticObjectToTextProcessMemberInfos ("Public Properties", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Property, toTextBuilder);
-      AutomaticObjectToTextProcessMemberInfos ("Public Fields", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Field, toTextBuilder);
-      AutomaticObjectToTextProcessMemberInfos ("Non Public Properties", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Property, toTextBuilder);
-      AutomaticObjectToTextProcessMemberInfos ("Non Public Fields", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Field, toTextBuilder);
-
+      if (emitPublicProperties)
+      {
+        AutomaticObjectToTextProcessMemberInfos (
+            "Public Properties", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Property, toTextBuilder);
+      }
+      if (emitPublicFields)
+      {
+        AutomaticObjectToTextProcessMemberInfos ("Public Fields", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Field, toTextBuilder);
+      }
+      if (emitPrivateProperties)
+      {
+        AutomaticObjectToTextProcessMemberInfos ("Non Public Properties", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Property, toTextBuilder);
+      }
+      if (emitPrivateFields)
+      {
+        AutomaticObjectToTextProcessMemberInfos ("Non Public Fields", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Field, toTextBuilder);
+      }
       toTextBuilder.endInstance();
     }
 
@@ -291,3 +384,4 @@ namespace Remotion.Text.Diagnostic
  
   }
 }
+

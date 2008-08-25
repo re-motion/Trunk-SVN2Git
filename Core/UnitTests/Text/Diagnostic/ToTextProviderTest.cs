@@ -15,7 +15,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
   [TestFixture]
   public class ToTextProviderTest
   {
-    private ISimpleLogger log = SimpleLogger.Create (false);
+    private ISimpleLogger log = SimpleLogger.Create (true);
 
     public class TestSimple
     {
@@ -32,6 +32,21 @@ namespace Remotion.UnitTests.Text.Diagnostic
       {
         return String.Format("((TestSimple) Name:{0},Int:{1})",Name,Int);
       }
+    }
+
+    public class TestSimple2
+    {
+      public TestSimple2 ()
+      {
+        PubProp = "%public_property%";
+        PrivateProp = "*private*";
+      }
+
+      public string PubProp { get; set; }
+      private string PrivateProp { get; set; }
+
+      public string pubField = "%public_field%";
+      private string privateField = "*private_field*";
     }
 
     public class Test
@@ -218,12 +233,42 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
       toText.UseAutomaticObjectToText = true;
       var resultAutomaticObjectToText = ToText (toText, testSimple);
+      Log (resultAutomaticObjectToText);
 
       Assert.That (resultAutomaticObjectToText, NUnit.Framework.SyntaxHelpers.Text.Contains ("ABC abc"));
       Assert.That (resultAutomaticObjectToText, NUnit.Framework.SyntaxHelpers.Text.Contains ("54321"));
 
       toText.UseAutomaticObjectToText = false;
       Assert.That (ToText (toText, testSimple), Is.EqualTo (testSimple.ToString ()));
+    }
+
+
+
+    [Test]
+    public void AutomaticObjectToTextConfigureTest ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+      var testSimple2 = new TestSimple2 ();
+
+      toText.UseAutomaticObjectToText = true;
+      toText.SetAutomaticObjectToTextEmit (true, true, true, true);
+
+      toText.SetAutomaticObjectToTextEmit (true, true, true, true);
+      var resultAutomaticObjectToText = ToText (toText, testSimple2);
+      Log (resultAutomaticObjectToText);
+      Assert.That (resultAutomaticObjectToText, Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
+
+      toText.SetAutomaticObjectToTextEmit (true, true, true, false);
+      Assert.That (ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*]"));
+
+      toText.SetAutomaticObjectToTextEmit (true, true, false, true);
+      Assert.That (ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,privateField=*private_field*]"));
+
+      toText.SetAutomaticObjectToTextEmit (true, false, true, true);
+      Assert.That (ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,PrivateProp=*private*,privateField=*private_field*]"));
+
+      toText.SetAutomaticObjectToTextEmit (false, true, true, true);
+      Assert.That (ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
     }
 
 
