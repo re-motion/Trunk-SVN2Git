@@ -12,10 +12,11 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.Logging;
 using Remotion.Development.UnitTesting;
 using Remotion.Diagnostic;
-using Remotion.Logging;
-    //using NUnit.Framework.Constraints;
+
+//using NUnit.Framework.Constraints;
 
 namespace Remotion.UnitTests.Diagnostic
 {
