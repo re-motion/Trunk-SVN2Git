@@ -643,12 +643,12 @@
     <Compile Include="Text\CommandLine\CommandLineParserTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Text\Diagnostic\IToTextHandlerTest.cs" />
-    <Compile Include="Text\Diagnostic\NewTest.cs" />
-    <Compile Include="Text\Diagnostic\OuterProductTest.cs" />
-    <Compile Include="Text\Diagnostic\ToTest.cs" />
-    <Compile Include="Text\Diagnostic\ToTextBuilderTest.cs" />
-    <Compile Include="Text\Diagnostic\ToTextProviderTest.cs" />
+    <Compile Include="Diagnostic\IToTextHandlerTest.cs" />
+    <Compile Include="Diagnostic\NewTest.cs" />
+    <Compile Include="Diagnostic\OuterProductTest.cs" />
+    <Compile Include="Diagnostic\ToTest.cs" />
+    <Compile Include="Diagnostic\ToTextBuilderTest.cs" />
+    <Compile Include="Diagnostic\ToTextProviderTest.cs" />
     <Compile Include="Text\IdentifierGeneratorTest.cs">
       <SubType>Code</SubType>
     </Compile>

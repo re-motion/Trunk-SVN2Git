@@ -1,3 +1,13 @@
+/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ *
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the re:motion license agreement in license.txt. If you did not 
+ * receive it, please visit http://www.re-motion.org/licensing.
+ * 
+ * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,24 +15,27 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using Remotion.Collections;
+using Remotion.Diagnostic;
+using Remotion.Mixins;
 using Remotion.Utilities;
 
-namespace Remotion.Text.Diagnostic
+namespace Remotion.Diagnostic
 {
-  //TODO: summary too long
   /// <summary>
-  /// Provides conversion of arbitray objects into human readable text form (<c>ToText</c> method) 
+  /// Provides conversion of arbitray objects into human readable text form 
   /// using a fallback cascade starting with registered external object-to-text-conversion-handlers.
   /// 
-  /// The conversion is done through the following mechanisms, in order of precedence:
+  /// To convert a single object into its text form, call <c>ToTextString</c> 
+  /// 
+  /// The conversion is done in <c>ToText</c> method through the following mechanisms, in order of precedence:
   /// <list type="number">
   /// <item>Handler for object type registered (see <see cref="RegisterHandler{T}"/>)</item>
-  /// <item>Implements <see cref="IToTextHandler"/> (i.e. object supplies <c>ToText</c> method)</item>
-  /// <item>Is a string or character (see <see cref="UseAutomaticStringEnclosing"/> and <see cref="UseAutomaticCharEnclosing"/> respectively)</item>
+  /// <item>Implements <see cref="UseAutomaticStringEnclosing"/> (i.e. object supplies <c>ToText</c> method)</item>
+  /// <item>Is a string or character (see <see cref="UseAutomaticCharEnclosing"/> and <see cref="UseAutomaticObjectToText"/> respectively)</item>
   /// <item>Is a primitive: Floating point numbers are alway output formatted US style.</item>
   /// <item>Is a (rectangular) array (arrays have are be treted seperately to prevent them from from being handled as IEnumerable)</item>
   /// <item>Implements IEnumerable</item>
-  /// <item>Log instance members through reflection (see <see cref="UseAutomaticObjectToText"/>)</item>
+  /// <item>Log instance members through reflection (see <see cref="IToTextHandler"/>)</item>
   /// <item>If all of the above fail, the object's <c>ToString</c> method is called</item>
   /// </list>
   /// 
@@ -156,6 +169,8 @@ namespace Remotion.Text.Diagnostic
       // *) If enabled: Log properties through reflection
       // *) ToString()
 
+      //IMixinTarget
+
       // TODO Functionality:
       // * Automatic call stack indentation
 
@@ -240,7 +255,8 @@ namespace Remotion.Text.Diagnostic
       {
         ArrayToText ((Array) obj, toTextBuilder);
       }
-      else if (type.GetInterface ("IEnumerable") != null)
+          //else if (type.GetInterface ("IEnumerable") != null)
+      else if (obj is IEnumerable)
       {
         CollectionToText ((IEnumerable) obj, toTextBuilder);
       }
@@ -342,7 +358,7 @@ namespace Remotion.Text.Diagnostic
 
     //TODO: rename, NON static
     private static void AutomaticObjectToTextProcessMemberInfos (string message, Object obj, BindingFlags bindingFlags, 
-      MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
+                                                                 MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
     {
       Type type = obj.GetType ();
 
@@ -373,7 +389,7 @@ namespace Remotion.Text.Diagnostic
 
     //TODO: rename
     public void AutomaticObjectToText (object obj, ToTextBuilder toTextBuilder, 
-      bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
+                                       bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
     {
       Type type = obj.GetType ();
 
@@ -416,4 +432,3 @@ namespace Remotion.Text.Diagnostic
  
   }
 }
-

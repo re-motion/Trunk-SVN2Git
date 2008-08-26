@@ -1,19 +1,28 @@
+/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ *
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the re:motion license agreement in license.txt. If you did not 
+ * receive it, please visit http://www.re-motion.org/licensing.
+ * 
+ * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ */
+
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using System.Collections.Generic;
-using Remotion.Text.Diagnostic;
+using Remotion.Diagnostic;
 
-namespace Remotion.UnitTests.Text.Diagnostic
+namespace Remotion.UnitTests.Diagnostic
 {
   [NUnit.Framework.TestFixture]
   public class NewTest
   {
-
     [Test]
     public void NewArrayTest ()
     {
-      int[][] collection = New.Array (New.Array(7, 11),New.Array( 13, 17));
+      int[][] collection = New.Array (New.Array (7, 11), New.Array (13, 17));
       int[][] collectionExpected = new int[][] { new int[] { 7, 11 }, new int[] { 13, 17 } };
       Assert.That (collection, Is.EqualTo (collectionExpected));
     }
@@ -22,7 +31,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void NewArrayOfObjectTest ()
     {
       var o = new object();
-      object[][] collection = New.Array (New.Array (o,o), New.Array (o,o));
+      object[][] collection = New.Array (New.Array (o, o), New.Array (o, o));
       object[][] collectionExpected = new object[][] { new object[] { o, o }, new object[] { o, o } };
       Assert.That (collection, Is.EqualTo (collectionExpected));
     }
@@ -31,7 +40,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void NewArrayObjectTest ()
     {
       object[] collection = New.Objects (1, 2, 3);
-      var collectionExpected = new object[] { 1,2,3 };
+      var collectionExpected = new object[] { 1, 2, 3 };
       Assert.That (collection, Is.EqualTo (collectionExpected));
     }
 
@@ -46,16 +55,21 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void NewArrayObject3Test ()
     {
-      object[][][] collection = New.Objects (New.Objects (New.Objects (7, 11), New.Objects (7, 11)), New.Objects (New.Objects (7, 11), New.Objects (7, 11)));
-      object[][][] collectionExpected = new object[][][] { new object[][] { new object[] { 7, 11 }, new object[] { 7, 11 } }, new object[][] { new object[] { 7, 11 }, new object[] { 7, 11 } } };
+      object[][][] collection = New.Objects (
+          New.Objects (New.Objects (7, 11), New.Objects (7, 11)), New.Objects (New.Objects (7, 11), New.Objects (7, 11)));
+      object[][][] collectionExpected = new object[][][]
+                                        {
+                                            new object[][] { new object[] { 7, 11 }, new object[] { 7, 11 } },
+                                            new object[][] { new object[] { 7, 11 }, new object[] { 7, 11 } }
+                                        };
       Assert.That (collection, Is.EqualTo (collectionExpected));
     }
 
     [Test]
     public void NewListTest ()
     {
-      var collection = New.List(7, 11, 13, 17);
-      var collectionExpected = new List<int> {7, 11, 13, 17 };
+      var collection = New.List (7, 11, 13, 17);
+      var collectionExpected = new List<int> { 7, 11, 13, 17 };
       Assert.That (collection, Is.EqualTo (collectionExpected));
     }
 
@@ -68,7 +82,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       var collection = New.Queue (7, 11, 13, 17);
       //var collectionExpected = new Queue<int> { 7, 11, 13, 17 };
       var collectionExpected = new Queue<int>();
-      collectionExpected.Enqueue(7);
+      collectionExpected.Enqueue (7);
       collectionExpected.Enqueue (11);
       collectionExpected.Enqueue (13);
       collectionExpected.Enqueue (17);
@@ -80,7 +94,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void NewDictionary1Test ()
     {
       var collection = New.Dictionary ("B", 2);
-      var collectionExpected = new Dictionary<string, int> ();
+      var collectionExpected = new Dictionary<string, int>();
       collectionExpected["B"] = 2;
       Assert.That (collection, Is.EquivalentTo (collectionExpected));
     }
@@ -89,7 +103,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void NewDictionary2Test ()
     {
       var collection = New.Dictionary ("B", 2, "D", 4);
-      var collectionExpected = new Dictionary<string, int> ();
+      var collectionExpected = new Dictionary<string, int>();
       collectionExpected["B"] = 2;
       collectionExpected["D"] = 4;
       Assert.That (collection, Is.EquivalentTo (collectionExpected));
@@ -99,7 +113,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void NewDictionary3Test ()
     {
       var collection = New.Dictionary ("B", 2, "D", 4, "C", 3);
-      var collectionExpected = new Dictionary<string, int> ();
+      var collectionExpected = new Dictionary<string, int>();
       collectionExpected["B"] = 2;
       collectionExpected["C"] = 3;
       collectionExpected["D"] = 4;
@@ -111,7 +125,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       var collection = New.Dictionary ("B", 2, "D", 4, "C", 3, "A", 1);
       //var collectionExpected = new Queue<int> { 7, 11, 13, 17 };
-      var collectionExpected = new Dictionary<string, int> ();
+      var collectionExpected = new Dictionary<string, int>();
       collectionExpected["A"] = 1;
       collectionExpected["B"] = 2;
       collectionExpected["C"] = 3;
@@ -120,13 +134,12 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
 
-
     [Test]
     public void NewDictionaryKVTest ()
     {
       var collection = New.Dictionary (New.KV ("B", 2), New.KV ("D", 4), New.KV ("C", 3), New.KV ("A", 1), New.KV ("XYZ", 321));
       //var collectionExpected = new Queue<int> { 7, 11, 13, 17 };
-      var collectionExpected = new Dictionary<string, int> ();
+      var collectionExpected = new Dictionary<string, int>();
       collectionExpected["XYZ"] = 321;
       collectionExpected["A"] = 1;
       collectionExpected["B"] = 2;
@@ -138,9 +151,10 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void NewDictionaryKeyValueTest ()
     {
-      var collection = New.Dictionary (New.KeyValue ("B", 2), New.KeyValue ("D", 4), New.KeyValue ("C", 3), New.KeyValue ("A", 1), New.KeyValue ("XYZ", 321));
+      var collection = New.Dictionary (
+          New.KeyValue ("B", 2), New.KeyValue ("D", 4), New.KeyValue ("C", 3), New.KeyValue ("A", 1), New.KeyValue ("XYZ", 321));
       //var collectionExpected = new Queue<int> { 7, 11, 13, 17 };
-      var collectionExpected = new Dictionary<string, int> ();
+      var collectionExpected = new Dictionary<string, int>();
       collectionExpected["XYZ"] = 321;
       collectionExpected["A"] = 1;
       collectionExpected["B"] = 2;

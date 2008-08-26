@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using Remotion.Logging;
 
-namespace Remotion.Text.Diagnostic
+namespace Remotion.Diagnostic
 {
-  //TODO: rename and make extension method for object
   public static class To
   {
     private static readonly SimpleLogger log = new SimpleLogger (true);

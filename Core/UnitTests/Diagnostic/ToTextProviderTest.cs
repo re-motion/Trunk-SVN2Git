@@ -1,17 +1,24 @@
+/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ *
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the re:motion license agreement in license.txt. If you did not 
+ * receive it, please visit http://www.re-motion.org/licensing.
+ * 
+ * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ */
+
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-//using NUnit.Framework.Constraints;
 using Remotion.Development.UnitTesting;
+using Remotion.Diagnostic;
 using Remotion.Logging;
-using Remotion.Text.Diagnostic;
+    //using NUnit.Framework.Constraints;
 
-namespace Remotion.UnitTests.Text.Diagnostic
+namespace Remotion.UnitTests.Diagnostic
 {
-  //TODO: Move nested classes to outer scope
   [TestFixture]
   public class ToTextProviderTest
   {
@@ -30,7 +37,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
       public override string ToString ()
       {
-        return String.Format("((TestSimple) Name:{0},Int:{1})",Name,Int);
+        return String.Format ("((TestSimple) Name:{0},Int:{1})", Name, Int);
       }
     }
 
@@ -49,7 +56,11 @@ namespace Remotion.UnitTests.Text.Diagnostic
       private string privateField = "*private_field*";
     }
 
-    public class Test
+    public interface ITest
+    {
+    }
+
+    public class Test : ITest
     {
       public Test ()
       {
@@ -61,7 +72,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       {
         Name = name;
         Int = i0;
-        ListListString = new List<List<string>> ();
+        ListListString = new List<List<string>>();
       }
 
       public string Name { get; set; }
@@ -70,10 +81,10 @@ namespace Remotion.UnitTests.Text.Diagnostic
       public List<List<string>> ListListString { get; set; }
       public Object[][][] Array3D { get; set; }
       public Object[,] RectangularArray2D { get; set; }
-      public Object[, ,] RectangularArray3D { get; set; }
+      public Object[,,] RectangularArray3D { get; set; }
 
       private string _privateFieldString = "FieldString text";
-      private List<List<string>> _privateFieldListList = New.List(New.List("private", "field"),New.List("list of", "list"));
+      private List<List<string>> _privateFieldListList = New.List (New.List ("private", "field"), New.List ("list of", "list"));
     }
 
     public class TestChild : Test
@@ -107,7 +118,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       {
         Name = name;
         Int = i0;
-        ListListString = new List<List<string>> ();
+        ListListString = new List<List<string>>();
       }
 
       public string Name { get; set; }
@@ -116,19 +127,19 @@ namespace Remotion.UnitTests.Text.Diagnostic
       public List<List<string>> ListListString { get; set; }
       public Object[][][] Array3D { get; set; }
       public Object[,] RectangularArray2D { get; set; }
-      public Object[, ,] RectangularArray3D { get; set; }
+      public Object[,,] RectangularArray3D { get; set; }
 
-      public override string ToString()
+      public override string ToString ()
       {
-        return String.Format("<Name->{0}><Int->{1}><ListListString->{2}>", Name, Int, ListListString);
+        return String.Format ("<Name->{0}><Int->{1}><ListListString->{2}>", Name, Int, ListListString);
       }
     }
 
 
-    private static string ToText(ToTextProvider toTextProvider, object o)
+    private static string ToText (ToTextProvider toTextProvider, object o)
     {
       var toTextBuilder = new ToTextBuilder (toTextProvider);
-      toTextProvider.ToText(o, toTextBuilder);
+      toTextProvider.ToText (o, toTextBuilder);
       return toTextBuilder.ToString();
     }
 
@@ -136,64 +147,64 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void ObjectTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
 
       toText.UseAutomaticObjectToText = false;
 
       Object o = 5711;
-      Assert.That (ToText(toText,o), Is.EqualTo (o.ToString ()));
+      Assert.That (ToText (toText, o), Is.EqualTo (o.ToString()));
 
-      Object o2 = new object ();
-      Assert.That (ToText(toText,o2), Is.EqualTo (o2.ToString ()));
+      Object o2 = new object();
+      Assert.That (ToText (toText, o2), Is.EqualTo (o2.ToString()));
     }
 
     [Test]
     public void FallbackToStringTest ()
     {
       FallbackToStringTestSingleType (new object());
-      FallbackToStringTestSingleType (new Test("xxx",123));
+      FallbackToStringTestSingleType (new Test ("xxx", 123));
 
-      var test2 = new Test2("aBc", 789);
+      var test2 = new Test2 ("aBc", 789);
       //log.It (test2);
       FallbackToStringTestSingleType (test2);
     }
 
     private void FallbackToStringTestSingleType<T> (T t)
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
       toText.UseAutomaticObjectToText = false;
       //log.It (t.ToString());
-      Assert.That (ToText (toText, t), Is.EqualTo (t.ToString ()));
+      Assert.That (ToText (toText, t), Is.EqualTo (t.ToString()));
     }
 
     private void RegisterHandlers ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      toText.RegisterHandler<Object> ((x, ttb) => ttb.sf ("[Object: {0}]", x.ToString ()));
+      ToTextProvider toText = GetTextProvider();
+      toText.RegisterHandler<Object> ((x, ttb) => ttb.sf ("[Object: {0}]", x.ToString()));
       toText.RegisterHandler<Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
     }
 
     private void InitTestInstanceContainer (ToTextProviderTest.Test test)
     {
-      test.ListListString.Add (new List<string> () { "Aaa", "Bbb", "Ccc", "Ddd" });
-      test.ListListString.Add (new List<string> () { "R1 C0", "R1 C1" });
-      test.ListListString.Add (new List<string> () { "R2 C0", "R2 C1", "R2 C2", "R2 C3", "R2 C4" });
-      test.ListListString.Add (new List<string> () { "R3 C0", "R3 C1", "R3 C2" });
+      test.ListListString.Add (new List<string>() { "Aaa", "Bbb", "Ccc", "Ddd" });
+      test.ListListString.Add (new List<string>() { "R1 C0", "R1 C1" });
+      test.ListListString.Add (new List<string>() { "R2 C0", "R2 C1", "R2 C2", "R2 C3", "R2 C4" });
+      test.ListListString.Add (new List<string>() { "R3 C0", "R3 C1", "R3 C2" });
     }
 
     [Test]
     public void RegisteredHandlerTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      toText.RegisterHandler<Object> ((x, ttb) => ttb.sf ("[Object: {0}]", x.ToString ()));
-      Object o = new object ();
-      string toTextO = ToText(toText,o);
+      ToTextProvider toText = GetTextProvider();
+      toText.RegisterHandler<Object> ((x, ttb) => ttb.sf ("[Object: {0}]", x.ToString()));
+      Object o = new object();
+      string toTextO = ToText (toText, o);
       Log ("toTextO=" + toTextO);
-      Assert.That (toTextO, Is.EqualTo (String.Format ("[Object: {0}]", o.ToString ())));
+      Assert.That (toTextO, Is.EqualTo (String.Format ("[Object: {0}]", o.ToString())));
 
       toText.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
-      string toTextTest = ToText(toText,test);
+      string toTextTest = ToText (toText, test);
       Log ("toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179]"));
     }
@@ -201,26 +212,26 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void NullTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
       Object o = null;
-      Assert.That (ToText(toText,o), Is.EqualTo ("null"));
+      Assert.That (ToText (toText, o), Is.EqualTo ("null"));
     }
 
     [Test]
     public void IntToStringFallbackTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
       int i = 908;
-      Assert.That (ToText(toText,i), Is.EqualTo ("908"));
+      Assert.That (ToText (toText, i), Is.EqualTo ("908"));
     }
 
 
     [Test]
     public void StringHandlerTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      toText.RegisterHandler<String> ((x,ttb) => ttb.s("\"").ts(x).s("\""));
-      string toTextTest = ToText(toText,"Some text");
+      ToTextProvider toText = GetTextProvider();
+      toText.RegisterHandler<String> ((x, ttb) => ttb.s ("\"").ts (x).s ("\""));
+      string toTextTest = ToText (toText, "Some text");
       Log ("[StringHandlerTest] toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("\"Some text\""));
     }
@@ -228,9 +239,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void CharHandlerTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      toText.RegisterHandler<char> ((x,ttb) => ttb.s("'").ts(x).s("'"));
-      string toTextTest = ToText(toText,'x');
+      ToTextProvider toText = GetTextProvider();
+      toText.RegisterHandler<char> ((x, ttb) => ttb.s ("'").ts (x).s ("'"));
+      string toTextTest = ToText (toText, 'x');
       Log ("[CharHandlerTest] toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("'x'"));
     }
@@ -247,7 +258,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void UseAutomaticObjectToTextTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
       var testSimple = new TestSimple();
 
       toText.UseAutomaticObjectToText = true;
@@ -258,16 +269,15 @@ namespace Remotion.UnitTests.Text.Diagnostic
       Assert.That (resultAutomaticObjectToText, NUnit.Framework.SyntaxHelpers.Text.Contains ("54321"));
 
       toText.UseAutomaticObjectToText = false;
-      Assert.That (ToText (toText, testSimple), Is.EqualTo (testSimple.ToString ()));
+      Assert.That (ToText (toText, testSimple), Is.EqualTo (testSimple.ToString()));
     }
-
 
 
     [Test]
     public void AutomaticObjectToTextConfigureTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      var testSimple2 = new TestSimple2 ();
+      ToTextProvider toText = GetTextProvider();
+      var testSimple2 = new TestSimple2();
 
       toText.UseAutomaticObjectToText = true;
       toText.SetAutomaticObjectToTextEmit (true, true, true, true);
@@ -275,57 +285,62 @@ namespace Remotion.UnitTests.Text.Diagnostic
       toText.SetAutomaticObjectToTextEmit (true, true, true, true);
       var resultAutomaticObjectToText = ToText (toText, testSimple2);
       Log (resultAutomaticObjectToText);
-      Assert.That (resultAutomaticObjectToText, Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
+      Assert.That (
+          resultAutomaticObjectToText,
+          Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
 
       toText.SetAutomaticObjectToTextEmit (true, true, true, false);
-      Assert.That (ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*]"));
+      Assert.That (
+          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*]"));
 
       toText.SetAutomaticObjectToTextEmit (true, true, false, true);
-      Assert.That (ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,privateField=*private_field*]"));
+      Assert.That (
+          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,privateField=*private_field*]"));
 
       toText.SetAutomaticObjectToTextEmit (true, false, true, true);
-      Assert.That (ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,PrivateProp=*private*,privateField=*private_field*]"));
+      Assert.That (
+          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,PrivateProp=*private*,privateField=*private_field*]"));
 
       toText.SetAutomaticObjectToTextEmit (false, true, true, true);
-      Assert.That (ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
+      Assert.That (
+          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
     }
 
 
     [Test]
     public void ClearHandlersTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
       toText.UseAutomaticObjectToText = false;
       toText.RegisterHandler<Object> ((x, ttb) => ttb.s ("[ClearHandlersTest]").ts (x));
-      var o = new object ();
-      string toTextTest = ToText(toText,o);
+      var o = new object();
+      string toTextTest = ToText (toText, o);
       Log ("[ClearHandlersTest] toTextTest=" + toTextTest);
-      Assert.That (ToText(toText,o), Is.EqualTo ("[ClearHandlersTest]" + o));
+      Assert.That (ToText (toText, o), Is.EqualTo ("[ClearHandlersTest]" + o));
       toText.ClearHandlers();
-      Assert.That (ToText(toText,o), Is.EqualTo (o.ToString ()));
+      Assert.That (ToText (toText, o), Is.EqualTo (o.ToString()));
     }
 
     [Test]
     public void StringNotEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
       string s = "Wow look at the size of that thing";
-      string toTextTest = ToText(toText,s);
+      string toTextTest = ToText (toText, s);
       const string toTextTestExpected = "Wow look at the size of that thing";
       Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
     }
 
 
-
     [Test]
     public void NullEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
       //toText.RegisterHandler<Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name),ToText(toText,x.Int), ToText(toText,x.LinkedListString)));
       toText.RegisterHandler<Test> ((x, ttb) => ttb.s ("[Test: ").m (x.Name).semicolon.m (x.Int).semicolon.m (x.LinkedListString).s ("]"));
       var test = new Test ("That's not my name", 179);
       test.LinkedListString = null;
-      string toTextTest = ToText(toText,test);
+      string toTextTest = ToText (toText, test);
       const string toTextTestExpected = "[Test: That's not my name;179;null]";
       Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
     }
@@ -333,11 +348,12 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void EmptyEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      toText.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.ListListString)));
+      ToTextProvider toText = GetTextProvider();
+      toText.RegisterHandler<ToTextProviderTest.Test> (
+          (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.ListListString)));
       var test = new Test ("That's not my name", 179);
-      test.LinkedListString = new LinkedList<string> ();
-      string toTextTest = ToText(toText,test);
+      test.LinkedListString = new LinkedList<string>();
+      string toTextTest = ToText (toText, test);
       const string toTextTestExpected = "[Test: That's not my name;179;{}]";
       Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
     }
@@ -345,13 +361,14 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void OneDimensionalEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      toText.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.LinkedListString)));
+      ToTextProvider toText = GetTextProvider();
+      toText.RegisterHandler<ToTextProviderTest.Test> (
+          (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.LinkedListString)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
       string[] linkedListInit = { "A1", "A2", "A3", "A4", "A5" };
       test.LinkedListString = new LinkedList<string> (linkedListInit);
       //LogVariables ("LinkedListString.Count={0}", test.LinkedListString.Count);
-      string toTextTest = ToText(toText,test);
+      string toTextTest = ToText (toText, test);
       const string toTextTestExpected = "[Test: That's not my name;179;{A1,A2,A3,A4,A5}]";
       Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
     }
@@ -360,11 +377,12 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void TwoDimensionalEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      toText.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.ListListString)));
+      ToTextProvider toText = GetTextProvider();
+      toText.RegisterHandler<ToTextProviderTest.Test> (
+          (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.ListListString)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
-      test.ListListString = new List<List<string>> () { new List<string> () { "A1", "A2" }, new List<string> () { "B1", "B2", "B3" } };
-      string toTextTest = ToText(toText,test);
+      test.ListListString = new List<List<string>>() { new List<string>() { "A1", "A2" }, new List<string>() { "B1", "B2", "B3" } };
+      string toTextTest = ToText (toText, test);
       Log ("toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{{A1,A2},{B1,B2,B3}}]"));
     }
@@ -373,12 +391,13 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void ThreeDimensionalEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      toText.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.Array3D)));
+      ToTextProvider toText = GetTextProvider();
+      toText.RegisterHandler<ToTextProviderTest.Test> (
+          (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.Array3D)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
       //Object[,] aaa = { { 1 } };
       test.Array3D = new Object[][][] { new Object[][] { new Object[] { 91, 82, 73, 64 } } };
-      string toTextTest = ToText(toText,test);
+      string toTextTest = ToText (toText, test);
       Log ("toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{{{91,82,73,64}}}]"));
     }
@@ -387,11 +406,12 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void RectangularArrayTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      toText.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray2D)));
+      ToTextProvider toText = GetTextProvider();
+      toText.RegisterHandler<ToTextProviderTest.Test> (
+          (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray2D)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
       test.RectangularArray2D = new Object[,] { { 1, 3, 5 }, { 7, 11, 13 } };
-      string toTextTest = ToText(toText,test);
+      string toTextTest = ToText (toText, test);
       Log ("toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{{1,3,5},{7,11,13}}]"));
     }
@@ -399,11 +419,13 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void RectangularArrayTest2 ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      toText.RegisterHandler<Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray3D)));
-      toText.RegisterHandler<Test2> ((x, ttb) => ttb.sf ("[Test2: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray2D)));
+      ToTextProvider toText = GetTextProvider();
+      toText.RegisterHandler<Test> (
+          (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray3D)));
+      toText.RegisterHandler<Test2> (
+          (x, ttb) => ttb.sf ("[Test2: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray2D)));
       var test = new Test ("That's not my name", 179);
-      var at2 = new Test2[3, 3, 3];
+      var at2 = new Test2[3,3,3];
 
       for (int i0 = 0; i0 < 2; i0++)
       {
@@ -426,16 +448,19 @@ namespace Remotion.UnitTests.Text.Diagnostic
                                         { at2[1, 0, 0], at2[1, 0, 1] }, { at2[1, 1, 0], at2[1, 1, 1] },
                                     },
                                 };
-      string toTextTest = ToText(toText,test);
+      string toTextTest = ToText (toText, test);
       Log ("toTextTest=" + toTextTest);
-      Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179;{{{[Test2: 0-0-0;0;{{A0,B1},{C0,D}}],[Test2: 0-0-1;1;{{A0,B1},{C1,D}}]},{[Test2: 0-1-0;1;{{A0,B1},{C0,D}}],[Test2: 0-1-1;0;{{A0,B1},{C1,D}}]}},{{[Test2: 1-0-0;1;{{A1,B1},{C0,D}}],[Test2: 1-0-1;0;{{A1,B1},{C1,D}}]},{[Test2: 1-1-0;0;{{A1,B1},{C0,D}}],[Test2: 1-1-1;1;{{A1,B1},{C1,D}}]}}}]"));
+      Assert.That (
+          toTextTest,
+          Is.EqualTo (
+              "[Test: That's not my name;179;{{{[Test2: 0-0-0;0;{{A0,B1},{C0,D}}],[Test2: 0-0-1;1;{{A0,B1},{C1,D}}]},{[Test2: 0-1-0;1;{{A0,B1},{C0,D}}],[Test2: 0-1-1;0;{{A0,B1},{C1,D}}]}},{{[Test2: 1-0-0;1;{{A1,B1},{C0,D}}],[Test2: 1-0-1;0;{{A1,B1},{C1,D}}]},{[Test2: 1-1-0;0;{{A1,B1},{C0,D}}],[Test2: 1-1-1;1;{{A1,B1},{C1,D}}]}}}]"));
     }
 
 
     [Test]
     public void AutomaticStringEnclosingTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
       var test = "ABC";
       toText.UseAutomaticStringEnclosing = false;
       Assert.That (ToText (toText, test), Is.EqualTo ("ABC"));
@@ -446,7 +471,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void AutomaticCharEnclosingTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
       var test = 'A';
       toText.UseAutomaticCharEnclosing = false;
       Assert.That (ToText (toText, test), Is.EqualTo ("A"));
@@ -465,27 +490,28 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void AutomaticObjectToTextTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
       //toText.UseAutomaticObjectToText = true;
-      ToTextProviderEnableAutomatics(toText, true);
+      ToTextProviderEnableAutomatics (toText, true);
       var test = new Test ("That's not my name", 179);
       test.Array3D = new Object[][][] { new Object[][] { new Object[] { 91, 82, 73, 64 } } };
-      test.LinkedListString = new LinkedList<string> ();
-      string toTextTest = ToText(toText,test);
+      test.LinkedListString = new LinkedList<string>();
+      string toTextTest = ToText (toText, test);
       //Log(toTextTest);
-      log.It(toTextTest);
+      log.It (toTextTest);
       //string toTextTestExpected = "[Test   Name=\"That's not my name\"  Int=179  LinkedListString={}  ListListString={}  Array3D={{{91,82,73,64}}}  RectangularArray2D=null  RectangularArray3D=null  _privateFieldString=\"FieldString text\"  _privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}} ]";
-      string toTextTestExpected = "[Test  Name=\"That's not my name\",Int=179,LinkedListString={},ListListString={},Array3D={{{91,82,73,64}}},RectangularArray2D=null,RectangularArray3D=null,_privateFieldString=\"FieldString text\",_privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}}]";
+      string toTextTestExpected =
+          "[Test  Name=\"That's not my name\",Int=179,LinkedListString={},ListListString={},Array3D={{{91,82,73,64}}},RectangularArray2D=null,RectangularArray3D=null,_privateFieldString=\"FieldString text\",_privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}}]";
       Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
     }
 
 
-    private static void TypeToTextTestDo()
+    private static void TypeToTextTestDo ()
     {
       ToTextProvider toText = GetTextProvider();
       toText.UseAutomaticObjectToText = true;
       var type = typeof (object).GetType();
-      string result = toText.ToTextString(type);
+      string result = toText.ToTextString (type);
     }
 
     //private delegate void TimesOutTestMethodDelegate();
@@ -504,7 +530,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void RuntimeTypeIsTypeTest ()
     {
-      Assert.That (typeof(Type).IsAssignableFrom(typeof (object).GetType()), Is.True);
+      Assert.That (typeof (Type).IsAssignableFrom (typeof (object).GetType()), Is.True);
     }
 
 
@@ -518,28 +544,26 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void FloatingPointToTextTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = GetTextProvider();
 
       double d = 1.2345678901234567890;
       Double D = d;
-      
+
       float f = (float) d;
       Single F = f;
-     
-      Assert.That (toText.ToTextString(d), Is.EqualTo ("1.23456789012346"));
+
+      Assert.That (toText.ToTextString (d), Is.EqualTo ("1.23456789012346"));
       Assert.That (toText.ToTextString (D), Is.EqualTo ("1.23456789012346"));
       Assert.That (toText.ToTextString (f), Is.EqualTo ("1.234568"));
       Assert.That (toText.ToTextString (F), Is.EqualTo ("1.234568"));
     }
 
 
-
-
     [Test]
     public void UseParentHandlerTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
-      var testChildChild = new TestChildChild ();
+      ToTextProvider toText = GetTextProvider();
+      var testChildChild = new TestChildChild();
 
       toText.ParentHandlerSearchUpToRoot = false;
       toText.ParentHandlerSearchDepth = 2;
@@ -551,7 +575,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       toText.ParentHandlerSearchDepth = 1;
       toText.RegisterHandler<TestChild> ((o, ttb) => ttb.s ("TestChild"));
       toText.ParentHandlerSearchDepth = 0;
-      Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString ()));
+      Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString()));
 
       toText.ParentHandlerSearchDepth = 10;
       toText.RegisterHandler<TestChildChild> ((o, ttb) => ttb.s ("TestChildChild"));
@@ -563,13 +587,24 @@ namespace Remotion.UnitTests.Text.Diagnostic
       toText.ParentHandlerSearchUpToRoot = true;
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("Test"));
       toText.ParentHandlerSearchUpToRoot = false;
-      Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString ()));
+      Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString()));
     }
+
+
+    //[Test]
+    //public void InterfaceTest ()
+    //{
+    //  ToTextProvider toText = GetTextProvider ();
+    //  ITest testInterface = new Test();
+    //  var result = toText.ToTextString (testInterface);
+    //  Log (result);
+    //  Assert.That (result, Is.EqualTo ("[ITest]"));
+    //}
 
 
     public static ToTextProvider GetTextProvider ()
     {
-      var toTextProvider = new ToTextProvider ();
+      var toTextProvider = new ToTextProvider();
       toTextProvider.UseAutomaticObjectToText = false;
       toTextProvider.UseAutomaticStringEnclosing = false;
       toTextProvider.UseAutomaticCharEnclosing = false;
@@ -582,7 +617,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
     //public static void Log (string s) { s_log.Info (s); }
 
     //public static void Log (string s) { System.Console.WriteLine (s); }
-    public void Log (string s) { log.It(s); }
+    public void Log (string s)
+    {
+      log.It (s);
+    }
   }
-
 }

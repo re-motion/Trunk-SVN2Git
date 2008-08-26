@@ -1,6 +1,5 @@
-namespace Remotion.Text.Diagnostic
+namespace Remotion.Diagnostic
 {
-  //TODO: documetation
   public interface IToTextHandler
   {
     void ToText (ToTextBuilder toTextBuilder);

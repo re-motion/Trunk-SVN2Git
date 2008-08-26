@@ -1,12 +1,21 @@
-﻿using System;
+﻿/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ *
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the re:motion license agreement in license.txt. If you did not 
+ * receive it, please visit http://www.re-motion.org/licensing.
+ * 
+ * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ */
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Remotion.Text.Diagnostic
+namespace Remotion.Diagnostic
 {
-  //TODO: NULL CHECKS!!!!!!!!!!!!!!!!!!!!!!!!
   /// <summary>
   /// Allows a class implementing the IProcessor interface to visit each member of an outer product of a variable number of independently sized tuples.
   /// From a programmer's view the class supplies "variable number of nested for loops"-functionality.

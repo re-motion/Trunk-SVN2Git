@@ -443,12 +443,12 @@
     <Compile Include="Text\CommandLine\Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Text\Diagnostic\IToTextHandler.cs" />
-    <Compile Include="Text\Diagnostic\New.cs" />
-    <Compile Include="Text\Diagnostic\OuterProduct.cs" />
-    <Compile Include="Text\Diagnostic\To.cs" />
-    <Compile Include="Text\Diagnostic\ToTextProvider.cs" />
-    <Compile Include="Text\Diagnostic\ToTextBuilder.cs" />
+    <Compile Include="Diagnostic\IToTextHandler.cs" />
+    <Compile Include="Diagnostic\New.cs" />
+    <Compile Include="Diagnostic\OuterProduct.cs" />
+    <Compile Include="Diagnostic\To.cs" />
+    <Compile Include="Diagnostic\ToTextProvider.cs" />
+    <Compile Include="Diagnostic\ToTextBuilder.cs" />
     <Compile Include="Text\IdentifierGenerator.cs">
       <SubType>Code</SubType>
     </Compile>

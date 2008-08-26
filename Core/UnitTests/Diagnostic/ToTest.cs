@@ -1,12 +1,21 @@
+/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ *
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the re:motion license agreement in license.txt. If you did not 
+ * receive it, please visit http://www.re-motion.org/licensing.
+ * 
+ * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ */
+
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Text.Diagnostic;
+using Remotion.Diagnostic;
 
-namespace Remotion.UnitTests.Text.Diagnostic
+namespace Remotion.UnitTests.Diagnostic
 {
-
   [TestFixture]
   public class ToTest
   {
@@ -24,7 +33,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       {
         Name = name;
         Int = i0;
-        ListListString = new List<List<string>> ();
+        ListListString = new List<List<string>>();
       }
 
       public string Name { get; set; }
@@ -36,7 +45,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       public Object[,,] RectangularArray3D { get; set; }
     }
 
-    public class Test2 
+    public class Test2
     {
       public Test2 ()
       {
@@ -48,7 +57,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       {
         Name = name;
         Int = i0;
-        ListListString = new List<List<string>> ();
+        ListListString = new List<List<string>>();
       }
 
       public string Name { get; set; }
@@ -57,7 +66,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       public List<List<string>> ListListString { get; set; }
       public Object[][][] Array3D { get; set; }
       public Object[,] RectangularArray2D { get; set; }
-      public Object[, ,] RectangularArray3D { get; set; }
+      public Object[,,] RectangularArray3D { get; set; }
     }
 
 
@@ -66,10 +75,10 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void ObjectTest ()
     {
       Object o = 5711;
-      Assert.That (To.Text (o), Is.EqualTo(o.ToString()));
+      Assert.That (To.Text (o), Is.EqualTo (o.ToString()));
 
       Object o2 = new object();
-      Assert.That (To.Text (o2), Is.EqualTo (o2.ToString ()));
+      Assert.That (To.Text (o2), Is.EqualTo (o2.ToString()));
     }
 
     [Test]
@@ -84,13 +93,13 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
     private void FallbackToStringTestSingleType<T> (T t)
     {
-      Assert.That (To.Text (t), Is.EqualTo (t.ToString ()));
+      Assert.That (To.Text (t), Is.EqualTo (t.ToString()));
     }
 
     private void RegisterHandlers ()
     {
-      To.RegisterHandler<Int32> ((x, ttb) => ttb.sb ("[Int32: ", "", ",", "", "]").ts(x).se());
-      To.RegisterHandler<Test> ((x, ttb) => ttb.sb("<<Test: ","",";","",">>").m ("Name",x.Name).m("Int",x.Int).se());
+      To.RegisterHandler<Int32> ((x, ttb) => ttb.sb ("[Int32: ", "", ",", "", "]").ts (x).se());
+      To.RegisterHandler<Test> ((x, ttb) => ttb.sb ("<<Test: ", "", ";", "", ">>").m ("Name", x.Name).m ("Int", x.Int).se());
     }
 
 
@@ -98,7 +107,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     //[Ignore]
     public void RegisteredHandlerTest ()
     {
-      To.ClearHandlers ();
+      To.ClearHandlers();
       RegisterHandlers();
       //int i = 34567; 
       //string toTextO = To.Text (i); 
@@ -114,7 +123,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void NullTest ()
     {
-      To.ClearHandlers ();
+      To.ClearHandlers();
       Object o = null;
       Assert.That (To.Text (o), Is.EqualTo ("null"));
     }
@@ -122,7 +131,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void IntToStringFallbackTest ()
     {
-      To.ClearHandlers ();
+      To.ClearHandlers();
       int i = 908;
       Assert.That (To.Text (i), Is.EqualTo ("908"));
     }
@@ -131,7 +140,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     [Test]
     public void InitStandardHandlersTest ()
     {
-      To.ClearHandlers ();
+      To.ClearHandlers();
       To.TextEnableAutomatics (true);
       Assert.That (To.Text ("Some text"), Is.EqualTo ("\"Some text\""));
       Assert.That (To.Text ('x'), Is.EqualTo ("'x'"));
@@ -151,8 +160,6 @@ namespace Remotion.UnitTests.Text.Diagnostic
     //}
 
 
-
-
     public static void Log (string s)
     {
       Console.WriteLine (s);
@@ -162,7 +169,5 @@ namespace Remotion.UnitTests.Text.Diagnostic
     {
       Log (String.Format (format, parameterArray));
     }
-
   }
-
 }
