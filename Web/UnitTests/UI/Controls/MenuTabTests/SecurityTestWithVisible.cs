@@ -29,9 +29,9 @@ namespace Remotion.Web.UnitTests.UI.Controls.MenuTabTests
     public void Setup ()
     {
       _mocks = new MockRepository ();
-      _mockWebSecurityAdapter = _mocks.CreateMock<IWebSecurityAdapter> ();
-      _mockSecurableObject = _mocks.CreateMock<ISecurableObject> ();
-      _mockNavigationCommand = _mocks.CreateMock<NavigationCommand> ();
+      _mockWebSecurityAdapter = _mocks.StrictMock<IWebSecurityAdapter> ();
+      _mockSecurableObject = _mocks.StrictMock<ISecurableObject> ();
+      _mockNavigationCommand = _mocks.StrictMock<NavigationCommand> ();
 
       AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _mockWebSecurityAdapter);
     }

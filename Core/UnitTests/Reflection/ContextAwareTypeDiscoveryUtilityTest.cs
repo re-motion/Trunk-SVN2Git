@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Reflection
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _serviceMock = _mockRepository.CreateMock<ITypeDiscoveryService>();
+      _serviceMock = _mockRepository.StrictMock<ITypeDiscoveryService>();
       ContextAwareTypeDiscoveryUtility.SetDefaultService (null);
       DesignerUtility.ClearDesignMode ();
     }
@@ -79,7 +79,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void DesignModeContext ()
     {
-      IDesignerHost designerHostMock = _mockRepository.CreateMock<IDesignerHost>();
+      IDesignerHost designerHostMock = _mockRepository.StrictMock<IDesignerHost>();
       Expect.Call (designerHostMock.GetService (typeof (ITypeDiscoveryService))).Return (_serviceMock);
 
       _mockRepository.ReplayAll();
@@ -113,7 +113,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetType_DesignMode_Success ()
     {
-      IDesignerHost designerHostMock = _mockRepository.CreateMock<IDesignerHost> ();
+      IDesignerHost designerHostMock = _mockRepository.StrictMock<IDesignerHost> ();
       Expect.Call (designerHostMock.GetType("abc")).Return (typeof (int));
 
       _mockRepository.ReplayAll ();
@@ -127,7 +127,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetType_DesignMode_Failure_Null ()
     {
-      IDesignerHost designerHostMock = _mockRepository.CreateMock<IDesignerHost> ();
+      IDesignerHost designerHostMock = _mockRepository.StrictMock<IDesignerHost> ();
       Expect.Call (designerHostMock.GetType ("abc")).Return (null);
 
       _mockRepository.ReplayAll ();
@@ -142,7 +142,7 @@ namespace Remotion.UnitTests.Reflection
     [ExpectedException (typeof (TypeLoadException), ExpectedMessage = "Type 'abc' could not be loaded by the designer host.")]
     public void GetType_DesignMode_Failure_Exception ()
     {
-      IDesignerHost designerHostMock = _mockRepository.CreateMock<IDesignerHost> ();
+      IDesignerHost designerHostMock = _mockRepository.StrictMock<IDesignerHost> ();
       Expect.Call (designerHostMock.GetType ("abc")).Return (null);
 
       _mockRepository.ReplayAll ();

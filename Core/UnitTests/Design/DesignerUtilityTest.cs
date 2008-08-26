@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Design
     {
       MockRepository mockRepository = new MockRepository ();
       IDesignModeHelper helperStub = mockRepository.Stub<IDesignModeHelper>();
-      IDesignerHost hostMock = mockRepository.CreateMock<IDesignerHost> ();
+      IDesignerHost hostMock = mockRepository.StrictMock<IDesignerHost> ();
       SetupResult.For (helperStub.DesignerHost).Return (hostMock);
       DesignerUtility.SetDesignMode (helperStub);
 

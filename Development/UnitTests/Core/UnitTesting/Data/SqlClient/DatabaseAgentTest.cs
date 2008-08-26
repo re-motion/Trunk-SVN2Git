@@ -19,7 +19,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Data.SqlClient
       _mockRepository = new MockRepository ();
 
       _connectionStub = _mockRepository.Stub<IDbConnection> ();
-      _commandMock = _mockRepository.CreateMock<IDbCommand> ();
+      _commandMock = _mockRepository.StrictMock<IDbCommand> ();
 
       SetupResult.For (_connectionStub.CreateCommand ()).Return (_commandMock);
     }

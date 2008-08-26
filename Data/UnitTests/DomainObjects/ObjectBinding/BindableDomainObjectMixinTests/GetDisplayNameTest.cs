@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       base.SetUp();
 
       _mockRepository = new MockRepository();
-      _mockObjectSecurityAdapter = _mockRepository.CreateMock<IObjectSecurityAdapter>();
+      _mockObjectSecurityAdapter = _mockRepository.StrictMock<IObjectSecurityAdapter>();
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), _mockObjectSecurityAdapter);
     }
 

@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       IEnumerable<ObjectID> objectIDs = new ObjectID[] { DomainObjectIDs.Order1, DomainObjectIDs.OrderItem1, DomainObjectIDs.Order2,
           DomainObjectIDs.Company1, DomainObjectIDs.Company2, DomainObjectIDs.Order3, DomainObjectIDs.OrderItem2 };
 
-      IDataContainerLoaderHelper loaderHelperMock = _mockRepository.CreateMock<DataContainerLoaderHelper>();
+      IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper>();
 
       DataContainerLoader loader = new DataContainerLoader (loaderHelperMock, Provider);
 
@@ -300,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (DomainBase));
         Assert.IsNull (classDefinition.GetEntityName ());
 
-        IDataContainerLoaderHelper loaderHelperMock = _mockRepository.CreateMock<DataContainerLoaderHelper> ();
+        IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper> ();
 
         Expect.Call (loaderHelperMock.GetConcreteTableInheritanceRelationLoader (null, null, null, null)).IgnoreArguments ()
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);

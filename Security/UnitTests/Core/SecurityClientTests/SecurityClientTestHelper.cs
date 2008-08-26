@@ -46,11 +46,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _user = new GenericPrincipal (new GenericIdentity ("owner"), new string[0]);
 
       _mocks = new MockRepository ();
-      _mockSecurityProvider = _mocks.CreateMock<ISecurityProvider> ();
-      _mockPermissionReflector = _mocks.CreateMock<IPermissionProvider> ();
-      _mockObjectSecurityStrategy = _mocks.CreateMock<IObjectSecurityStrategy> ();
-      _mockFunctionalSecurityStrategy = _mocks.CreateMock<IFunctionalSecurityStrategy> ();
-      _stubUserProvider = _mocks.CreateMock<IUserProvider> ();
+      _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
+      _mockPermissionReflector = _mocks.StrictMock<IPermissionProvider> ();
+      _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy> ();
+      _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
+      _stubUserProvider = _mocks.StrictMock<IUserProvider> ();
       SetupResult.For (_stubUserProvider.GetUser ()).Return (_user);
 
       _securableObject = new SecurableObject (_mockObjectSecurityStrategy);

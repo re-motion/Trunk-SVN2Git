@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       BindableObjectClassWithIdentity bindableObjectClass =
           new BindableObjectClassWithIdentity (TypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)), _bindableObjectProvider);
-      IGetObjectService mockService = _mockRepository.CreateMock<IGetObjectService>();
+      IGetObjectService mockService = _mockRepository.StrictMock<IGetObjectService>();
       IBusinessObjectWithIdentity expected = _mockRepository.Stub<IBusinessObjectWithIdentity>();
 
       Expect.Call (mockService.GetObject (bindableObjectClass, "TheUniqueIdentifier")).Return (expected);
@@ -69,7 +69,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       BindableObjectClassWithIdentity bindableObjectClass = new BindableObjectClassWithIdentity (
           TypeUtility.GetConcreteMixedType (typeof (ClassWithIdentityAndGetObjectServiceAttribute)), _bindableObjectProvider);
-      ICustomGetObjectService mockService = _mockRepository.CreateMock<ICustomGetObjectService>();
+      ICustomGetObjectService mockService = _mockRepository.StrictMock<ICustomGetObjectService>();
       IBusinessObjectWithIdentity expected = _mockRepository.Stub<IBusinessObjectWithIdentity>();
 
       Expect.Call (mockService.GetObject (bindableObjectClass, "TheUniqueIdentifier")).Return (expected);

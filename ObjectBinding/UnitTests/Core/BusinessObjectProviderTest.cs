@@ -203,7 +203,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     public void GetService_FromServiceFactory ()
     {
       MockRepository mockRepository = new MockRepository();
-      IBusinessObjectServiceFactory serviceFactoryMock = mockRepository.CreateMock<IBusinessObjectServiceFactory>();
+      IBusinessObjectServiceFactory serviceFactoryMock = mockRepository.StrictMock<IBusinessObjectServiceFactory>();
       IBusinessObjectStringFormatterService serviceStub = MockRepository.GenerateStub<IBusinessObjectStringFormatterService>();
       BusinessObjectProvider provider = new StubBusinessObjectProvider (serviceFactoryMock);
 
@@ -224,7 +224,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     public void GetService_FromExplictValue ()
     {
       MockRepository mockRepository = new MockRepository();
-      IBusinessObjectServiceFactory serviceFactoryMock = mockRepository.CreateMock<IBusinessObjectServiceFactory>();
+      IBusinessObjectServiceFactory serviceFactoryMock = mockRepository.StrictMock<IBusinessObjectServiceFactory>();
       IBusinessObjectStringFormatterService serviceStub = MockRepository.GenerateStub<IBusinessObjectStringFormatterService>();
       BusinessObjectProvider provider = new StubBusinessObjectProvider (serviceFactoryMock);
 

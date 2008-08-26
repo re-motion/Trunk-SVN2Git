@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       MockRepository mockRepository = new MockRepository ();
 
       ClientTransactionMockEventReceiver clientTransactionMockEventReceiver = 
-          mockRepository.CreateMock<ClientTransactionMockEventReceiver> (ClientTransactionMock);
+          mockRepository.StrictMock<ClientTransactionMockEventReceiver> (ClientTransactionMock);
 
       using (mockRepository.Ordered ())
       {

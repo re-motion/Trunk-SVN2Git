@@ -31,8 +31,8 @@ namespace Remotion.Web.UnitTests.UI.Design
     public void SetUp()
     {
       _mockRepository = new MockRepository();
-      _mockDesignerHost = _mockRepository.CreateMock<IDesignerHost> ();
-      _mockWebApplication = _mockRepository.CreateMock<IWebApplication>();
+      _mockDesignerHost = _mockRepository.StrictMock<IDesignerHost> ();
+      _mockWebApplication = _mockRepository.StrictMock<IWebApplication>();
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.Web.UnitTests.UI.Design
     [Test]
     public void GetProjectPath()
     {
-      IProjectItem mockProjectItem = _mockRepository.CreateMock<IProjectItem>();
+      IProjectItem mockProjectItem = _mockRepository.StrictMock<IProjectItem>();
 
       Expect.Call (_mockDesignerHost.GetService (typeof (IWebApplication))).Return (_mockWebApplication);
       SetupResult.For (_mockWebApplication.RootProjectItem).Return (mockProjectItem);

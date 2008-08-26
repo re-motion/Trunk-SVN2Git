@@ -372,7 +372,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     public void SpecialStrategy ()
     {
       MockRepository repository = new MockRepository ();
-      IImportStrategy mockStrategy = repository.CreateMock<IImportStrategy> ();
+      IImportStrategy mockStrategy = repository.StrictMock<IImportStrategy> ();
       byte[] data = new byte[] { 1, 2, 3 };
       TransportItem[] items;
       using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())

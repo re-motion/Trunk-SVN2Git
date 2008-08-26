@@ -62,10 +62,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       _wxeTransactedFunction.RollingBack += delegate { _events += " rollingBack"; };
       _wxeTransactedFunction.RolledBack += delegate { _events += " rolledBack"; };
 
-      _mockTransaction = _mocks.CreateMock<ITransaction> ();
-      _mockPreviousTransaction = _mocks.CreateMock<ITransaction> ();
+      _mockTransaction = _mocks.StrictMock<ITransaction> ();
+      _mockPreviousTransaction = _mocks.StrictMock<ITransaction> ();
 
-      _mockEventSink = _mocks.CreateMock<IWxeTransactionFunctionEventSink> ();
+      _mockEventSink = _mocks.StrictMock<IWxeTransactionFunctionEventSink> ();
     }
 
     [Test]
@@ -219,8 +219,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void MyTransactionAndExecutionTransaction ()
     {
-      ProxyWxeTransaction outerTransaction = _mocks.CreateMock<ProxyWxeTransaction> ();
-      outerTransaction.Transaction = _mocks.CreateMock<ITransaction> ();
+      ProxyWxeTransaction outerTransaction = _mocks.StrictMock<ProxyWxeTransaction> ();
+      outerTransaction.Transaction = _mocks.StrictMock<ITransaction> ();
       Assert.IsNotNull (outerTransaction.Transaction);
       WxeTransactedFunctionMock outerFunction = new WxeTransactedFunctionMock (outerTransaction);
       outerFunction.InitiateCreateTransaction ();
@@ -229,8 +229,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       outerFunction.Add (middleNullFunction);
       middleNullFunction.InitiateCreateTransaction ();
 
-      ProxyWxeTransaction innerTransaction = _mocks.CreateMock<ProxyWxeTransaction> ();
-      innerTransaction.Transaction = _mocks.CreateMock<ITransaction> ();
+      ProxyWxeTransaction innerTransaction = _mocks.StrictMock<ProxyWxeTransaction> ();
+      innerTransaction.Transaction = _mocks.StrictMock<ITransaction> ();
       Assert.IsNotNull (innerTransaction.Transaction);
       WxeTransactedFunctionMock innerFunction = new WxeTransactedFunctionMock (innerTransaction);
       middleNullFunction.Add (innerFunction);

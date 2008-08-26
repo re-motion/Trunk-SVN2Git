@@ -429,10 +429,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       MockRepository mockRepository = new MockRepository();
 
       ClientTransaction subTransaction =
-          mockRepository.CreateMock<ClientTransaction> (new Dictionary<Enum, object>(), new ClientTransactionExtensionCollection());
+          mockRepository.StrictMock<ClientTransaction> (new Dictionary<Enum, object>(), new ClientTransactionExtensionCollection());
 
       Expect.Call (subTransaction.EnterScope(AutoRollbackBehavior.Discard))
-          .Return (PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransactionScope), subTransaction, AutoRollbackBehavior.Discard));
+          .Return ((ClientTransactionScope) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ClientTransactionScope), subTransaction, AutoRollbackBehavior.Discard));
       Expect.Call (subTransaction.Discard ()).Return (true);
 
       mockRepository.ReplayAll ();

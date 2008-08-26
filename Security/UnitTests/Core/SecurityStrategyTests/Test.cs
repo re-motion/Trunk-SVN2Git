@@ -35,8 +35,8 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
     public void SetUp ()
     {
       _mocks = new MockRepository ();
-      _mockSecurityProvider = _mocks.CreateMock<ISecurityProvider> ();
-      _stubContextFactory = _mocks.CreateMock<ISecurityContextFactory> ();
+      _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
+      _stubContextFactory = _mocks.StrictMock<ISecurityContextFactory> ();
 
       _user = new GenericPrincipal (new GenericIdentity ("user"), new string[0]);
       _context = SecurityContext.Create(typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum> (), new Enum[0]);

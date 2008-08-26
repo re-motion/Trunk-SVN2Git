@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _configurationBuilderMock = _mockRepository.CreateMock<MixinConfigurationBuilder>((MixinConfiguration) null);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration) null);
       _analyzer = new ExtendsAnalyzer(_configurationBuilderMock);
     }
 
@@ -178,7 +178,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     [Test]
     public void Analyze ()
     {
-      ExtendsAnalyzer analyzer = _mockRepository.CreateMock<ExtendsAnalyzer> (_configurationBuilderMock);
+      ExtendsAnalyzer analyzer = _mockRepository.StrictMock<ExtendsAnalyzer> (_configurationBuilderMock);
 
       analyzer.Analyze (typeof (ClassWithMultipleExtendsAttributes));
       LastCall.CallOriginalMethod (OriginalCallOptions.CreateExpectation);

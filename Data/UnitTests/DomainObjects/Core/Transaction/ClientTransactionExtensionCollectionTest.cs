@@ -37,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository = new MockRepository ();
       _collection = new ClientTransactionExtensionCollection ();
-      _extension1 = _mockRepository.CreateMock<IClientTransactionExtension> ();
-      _extension2 = _mockRepository.CreateMock<IClientTransactionExtension> ();
+      _extension1 = _mockRepository.StrictMock<IClientTransactionExtension> ();
+      _extension2 = _mockRepository.StrictMock<IClientTransactionExtension> ();
 
       _collectionWithExtensions = new ClientTransactionExtensionCollection ();
       _collectionWithExtensions.Add ("Name1", _extension1);

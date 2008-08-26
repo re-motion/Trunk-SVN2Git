@@ -46,12 +46,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     public SecurityClientTransactionExtensionTestHelper ()
     {
       _mocks = new MockRepository ();
-      _mockSecurityProvider = _mocks.CreateMock<ISecurityProvider> ();
+      _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
       _user = new GenericPrincipal (new GenericIdentity ("owner"), new string[0]);
-      _stubUserProvider = _mocks.CreateMock<IUserProvider> ();
+      _stubUserProvider = _mocks.StrictMock<IUserProvider> ();
       SetupResult.For (_stubUserProvider.GetUser ()).Return (_user);
-      _mockFunctionalSecurityStrategy = _mocks.CreateMock<IFunctionalSecurityStrategy> ();
-      _mockPermissionReflector = _mocks.CreateMock<IPermissionProvider> ();
+      _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
+      _mockPermissionReflector = _mocks.StrictMock<IPermissionProvider> ();
       _transaction = ClientTransaction.NewRootTransaction();
 
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
     public IObjectSecurityStrategy CreateObjectSecurityStrategy ()
     {
-      return _mocks.CreateMock<IObjectSecurityStrategy> ();
+      return _mocks.StrictMock<IObjectSecurityStrategy> ();
     }
 
     public void SetupSecurityConfiguration ()

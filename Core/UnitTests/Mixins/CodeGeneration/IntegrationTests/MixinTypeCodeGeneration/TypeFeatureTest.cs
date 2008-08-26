@@ -76,7 +76,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     public void NameProviderIsUsedWhenTypeIsGenerated ()
     {
       MockRepository repository = new MockRepository ();
-      INameProvider nameProviderMock = repository.CreateMock<INameProvider> ();
+      INameProvider nameProviderMock = repository.StrictMock<INameProvider> ();
       ConcreteTypeBuilder.Current.MixinTypeNameProvider = nameProviderMock;
 
       MixinDefinition mixinDefinition =
@@ -98,7 +98,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     public void NamesOfNestedTypesAreFlattened ()
     {
       MockRepository repository = new MockRepository ();
-      INameProvider nameProviderMock = repository.CreateMock<INameProvider> ();
+      INameProvider nameProviderMock = repository.StrictMock<INameProvider> ();
       ConcreteTypeBuilder.Current.MixinTypeNameProvider = nameProviderMock;
 
       MixinDefinition mixinDefinition =

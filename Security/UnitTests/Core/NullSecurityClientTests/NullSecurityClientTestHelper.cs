@@ -33,7 +33,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     private NullSecurityClientTestHelper()
     {
       _mocks = new MockRepository();
-      _mockObjectSecurityStrategy = _mocks.CreateMock<IObjectSecurityStrategy>();
+      _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy>();
 
       _securableObject = new SecurableObject (_mockObjectSecurityStrategy);
     }

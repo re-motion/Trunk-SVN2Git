@@ -29,7 +29,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       base.SetUp ();
 
       _mocks = new MockRepository ();
-      _mockWxeSecurityAdapter = _mocks.CreateMock<IWxeSecurityAdapter> ();
+      _mockWxeSecurityAdapter = _mocks.StrictMock<IWxeSecurityAdapter> ();
 
       AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _mockWxeSecurityAdapter);
     }

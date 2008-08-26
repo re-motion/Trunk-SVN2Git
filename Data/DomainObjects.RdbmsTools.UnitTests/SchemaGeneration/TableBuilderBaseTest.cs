@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration
       base.SetUp();
 
       _mocks = new MockRepository();
-      _stubTableBuilder = _mocks.CreateMock<TableBuilderBase>();
+      _stubTableBuilder = _mocks.StrictMock<TableBuilderBase>();
     }
 
     [Test]

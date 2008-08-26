@@ -40,9 +40,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     public void SetUp ()
     {
       _mockRepository = new MockRepository ();
-      _transactionMock = _mockRepository.CreateMock<ITransaction> ();
-      _scopeManagerMock = _mockRepository.CreateMock<ITransactionScopeManager<ITransaction, ITransactionScope<ITransaction>>> ();
-      _scopeMock = _mockRepository.CreateMock<ITransactionScope<ITransaction>> ();
+      _transactionMock = _mockRepository.StrictMock<ITransaction> ();
+      _scopeManagerMock = _mockRepository.StrictMock<ITransactionScopeManager<ITransaction, ITransactionScope<ITransaction>>> ();
+      _scopeMock = _mockRepository.StrictMock<ITransactionScope<ITransaction>> ();
       _enlister = new Enlister (_transactionMock, _scopeManagerMock);
       _parameter1 = new WxeParameterDeclaration ("one", false, WxeParameterDirection.In, typeof (object));
       _parameter2 = new WxeParameterDeclaration ("two", false, WxeParameterDirection.In, typeof (object));

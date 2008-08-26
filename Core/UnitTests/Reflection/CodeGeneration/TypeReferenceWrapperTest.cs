@@ -31,8 +31,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void TypeAndOwner ()
     {
-      Reference ownerReference = _mockRepository.CreateMock<Reference>();
-      Reference wrappedReference = _mockRepository.CreateMock<Reference> (ownerReference);
+      Reference ownerReference = _mockRepository.StrictMock<Reference>();
+      Reference wrappedReference = _mockRepository.StrictMock<Reference> (ownerReference);
 
       TypeReferenceWrapper tr = new TypeReferenceWrapper (wrappedReference, typeof (int));
       Assert.AreEqual (typeof (int), tr.Type);
@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void LoadReference ()
     {
-      Reference wrappedReference = _mockRepository.CreateMock<Reference> ();
+      Reference wrappedReference = _mockRepository.StrictMock<Reference> ();
       ILGenerator gen = new DynamicMethod ("Foo", typeof (void), Type.EmptyTypes, AssemblyBuilder.GetExecutingAssembly().ManifestModule).GetILGenerator();
 
       // expect
@@ -59,7 +59,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void StoreReference ()
     {
-      Reference wrappedReference = _mockRepository.CreateMock<Reference> ();
+      Reference wrappedReference = _mockRepository.StrictMock<Reference> ();
       ILGenerator gen = new DynamicMethod ("Foo", typeof (void), Type.EmptyTypes, AssemblyBuilder.GetExecutingAssembly ().ManifestModule).GetILGenerator ();
 
       // expect
@@ -76,7 +76,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void LoadAddressReference ()
     {
-      Reference wrappedReference = _mockRepository.CreateMock<Reference> ();
+      Reference wrappedReference = _mockRepository.StrictMock<Reference> ();
       ILGenerator gen = new DynamicMethod ("Foo", typeof (void), Type.EmptyTypes, AssemblyBuilder.GetExecutingAssembly ().ManifestModule).GetILGenerator ();
 
       // expect

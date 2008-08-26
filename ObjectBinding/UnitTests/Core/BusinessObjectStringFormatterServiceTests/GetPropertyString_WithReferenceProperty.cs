@@ -28,14 +28,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectStringFormatterSer
     {
       _stringFormatterService = new BusinessObjectStringFormatterService ();
       _mockRepository = new MockRepository ();
-      _mockBusinessObject = _mockRepository.CreateMock<IBusinessObject> ();
-      _mockProperty = _mockRepository.CreateMock<IBusinessObjectReferenceProperty> ();
+      _mockBusinessObject = _mockRepository.StrictMock<IBusinessObject> ();
+      _mockProperty = _mockRepository.StrictMock<IBusinessObjectReferenceProperty> ();
     }
 
     [Test]
     public void Scalar_WithBusinessObjectValue ()
     {
-      IBusinessObject mockValue = _mockRepository.CreateMock<IBusinessObject>();
+      IBusinessObject mockValue = _mockRepository.StrictMock<IBusinessObject>();
       Expect.Call (_mockProperty.IsList).Return (false);
       Expect.Call (_mockBusinessObject.GetProperty (_mockProperty)).Return (mockValue);
       Expect.Call (mockValue.DisplayName).Return ("ExpectedStringValue");
@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectStringFormatterSer
     [Test]
     public void Scalar_WithBusinessObjectWithIdentityValue ()
     {
-      IBusinessObjectWithIdentity mockValue = _mockRepository.CreateMock<IBusinessObjectWithIdentity> ();
+      IBusinessObjectWithIdentity mockValue = _mockRepository.StrictMock<IBusinessObjectWithIdentity> ();
       Expect.Call (_mockProperty.IsList).Return (false);
       Expect.Call (_mockBusinessObject.GetProperty (_mockProperty)).Return (mockValue);
       Expect.Call (mockValue.DisplayName).Return ("ExpectedStringValue");

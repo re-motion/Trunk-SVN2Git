@@ -37,9 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           DomainObjectIDs.Computer1,
           MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
 
-      _endPointMock = _mockRepository.CreateMock<ObjectEndPoint> (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
-      _oldEndPointMock = _mockRepository.CreateMock<IEndPoint>();
-      _newEndPointMock = _mockRepository.CreateMock<IEndPoint>();
+      _endPointMock = _mockRepository.StrictMock<ObjectEndPoint> (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
+      _oldEndPointMock = _mockRepository.StrictMock<IEndPoint>();
+      _newEndPointMock = _mockRepository.StrictMock<IEndPoint>();
 
       _modification = new ObjectEndPointModification (_endPointMock, _oldEndPointMock, _newEndPointMock);
     }
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void ExecuteAllSteps ()
     {
-      ObjectEndPointModification modificationMock = _mockRepository.CreateMock<ObjectEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
+      ObjectEndPointModification modificationMock = _mockRepository.StrictMock<ObjectEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
 
       modificationMock.NotifyClientTransactionOfBegin ();
       modificationMock.Begin ();

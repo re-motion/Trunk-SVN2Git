@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.Mixins.Context
     public void MembersDelegated ()
     {
       MockRepository repository = new MockRepository();
-      ReadOnlyContextCollection<string, int> innerMock = repository.CreateMock<ReadOnlyContextCollection<string, int>> (
+      ReadOnlyContextCollection<string, int> innerMock = repository.StrictMock<ReadOnlyContextCollection<string, int>> (
           (Func<int, string>) delegate { return ""; }, new int[0]);
       PrivateInvoke.SetNonPublicField (_collection, "_internalCollection", innerMock);
 

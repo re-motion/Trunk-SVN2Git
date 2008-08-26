@@ -26,7 +26,7 @@ namespace Remotion.UnitTests.Mixins.Globalization.MixedMultiLingualResourcesTest
 		public void SetUp()
 		{
 			_mockRepository = new MockRepository();
-			_resolverUtilityMock = _mockRepository.CreateMock<IResourceManagerResolverUtility>();
+			_resolverUtilityMock = _mockRepository.StrictMock<IResourceManagerResolverUtility>();
 		}
 
 		[TearDown]

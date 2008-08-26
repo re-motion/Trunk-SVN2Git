@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     [Test]
     public void SearchServiceFromType_AndRequiresIdentity ()
     {
-      ISearchServiceOnProperty mockService = _mockRepository.CreateMock<ISearchServiceOnProperty>();
+      ISearchServiceOnProperty mockService = _mockRepository.StrictMock<ISearchServiceOnProperty>();
       IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromPropertyWithIdentity");
 
       Expect.Call (mockService.SupportsIdentity (property)).Return (true);
@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     [Test]
     public void SearchServiceFromType_AndNotRequiresIdentity ()
     {
-      ISearchServiceOnType mockService = _mockRepository.CreateMock<ISearchServiceOnType>();
+      ISearchServiceOnType mockService = _mockRepository.StrictMock<ISearchServiceOnType>();
       IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromType");
 
       _mockRepository.ReplayAll();
@@ -67,8 +67,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     [Test]
     public void SearchServiceFromPropertyType ()
     {
-      ISearchServiceOnProperty mockService = _mockRepository.CreateMock<ISearchServiceOnProperty>();
-      ISearchServiceOnType stubSearchServiceOnType = _mockRepository.CreateMock<ISearchServiceOnType>();
+      ISearchServiceOnProperty mockService = _mockRepository.StrictMock<ISearchServiceOnProperty>();
+      ISearchServiceOnType stubSearchServiceOnType = _mockRepository.StrictMock<ISearchServiceOnType>();
       IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromPropertyWithIdentity");
 
       Expect.Call (mockService.SupportsIdentity (property)).Return (true);
@@ -93,9 +93,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     [Test]
     public void WithoutSearchServiceAttribute_AndDefaultSearchService ()
     {
-      ISearchAvailableObjectsService mockAvailableObjectsService = _mockRepository.CreateMock<ISearchAvailableObjectsService>();
-      IBusinessObjectClassService mockBusinessObjectClassService = _mockRepository.CreateMock<IBusinessObjectClassService>();
-      IBusinessObjectClassWithIdentity mockBusinessObjectClassWithIdentity = _mockRepository.CreateMock<IBusinessObjectClassWithIdentity>();
+      ISearchAvailableObjectsService mockAvailableObjectsService = _mockRepository.StrictMock<ISearchAvailableObjectsService>();
+      IBusinessObjectClassService mockBusinessObjectClassService = _mockRepository.StrictMock<IBusinessObjectClassService>();
+      IBusinessObjectClassWithIdentity mockBusinessObjectClassWithIdentity = _mockRepository.StrictMock<IBusinessObjectClassWithIdentity>();
       IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoSearchServiceWithIdentity");
 
       Expect.Call (mockBusinessObjectClassService.GetBusinessObjectClass (typeof (ClassWithIdentityFromOtherBusinessObjectImplementation)))

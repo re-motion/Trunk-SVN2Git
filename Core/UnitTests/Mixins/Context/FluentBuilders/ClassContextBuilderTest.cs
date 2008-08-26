@@ -35,10 +35,10 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _parentBuilderMock = _mockRepository.CreateMock<MixinConfigurationBuilder> ((MixinConfiguration)null);
+      _parentBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration)null);
       _classBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2), null);
-      _classBuilderMock = _mockRepository.CreateMock<ClassContextBuilder> (_parentBuilderMock, typeof (BaseType2), null);
-      _mixinBuilderMock = _mockRepository.CreateMock<MixinContextBuilder> (_classBuilderMock, typeof (BT2Mixin1));
+      _classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_parentBuilderMock, typeof (BaseType2), null);
+      _mixinBuilderMock = _mockRepository.StrictMock<MixinContextBuilder> (_classBuilderMock, typeof (BT2Mixin1));
     }
 
     private Type[] GetMixinTypes ()
@@ -630,7 +630,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
       
       ClassContextBuilder r1 = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (object), null);
       MixinConfiguration r2 = new MixinConfiguration (null);
-      IDisposable r3 = _mockRepository.CreateMock<IDisposable> ();
+      IDisposable r3 = _mockRepository.StrictMock<IDisposable> ();
 
       using (_mockRepository.Ordered ())
       {

@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetTypes_UsesAssemblyFinder ()
     {
-      AssemblyFinder finderMock = _mockRepository.CreateMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
+      AssemblyFinder finderMock = _mockRepository.StrictMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
           new Assembly[] { typeof (AssemblyFinderTypeDiscoveryServiceTest).Assembly });
 
       AssemblyFinderTypeDiscoveryService service = new AssemblyFinderTypeDiscoveryService (finderMock);
@@ -48,7 +48,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetTypes_ReturnsTypesFromFoundAssemblies ()
     {
-      AssemblyFinder finderMock = _mockRepository.CreateMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
+      AssemblyFinder finderMock = _mockRepository.StrictMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
           new Assembly[] { typeof (AssemblyFinderTypeDiscoveryServiceTest).Assembly });
 
       AssemblyFinderTypeDiscoveryService service = new AssemblyFinderTypeDiscoveryService (finderMock);
@@ -70,7 +70,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetTypes_WithGlobalTypes ()
     {
-      AssemblyFinder finderMock = _mockRepository.CreateMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
+      AssemblyFinder finderMock = _mockRepository.StrictMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
           new Assembly[] { typeof (AssemblyFinderTypeDiscoveryServiceTest).Assembly });
 
       AssemblyFinderTypeDiscoveryService service = new AssemblyFinderTypeDiscoveryService (finderMock);
@@ -92,7 +92,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetTypes_WithoutGlobalTypes ()
     {
-      AssemblyFinder finderMock = _mockRepository.CreateMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
+      AssemblyFinder finderMock = _mockRepository.StrictMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
           new Assembly[] { typeof (AssemblyFinderTypeDiscoveryServiceTest).Assembly });
 
       AssemblyFinderTypeDiscoveryService service = new AssemblyFinderTypeDiscoveryService (finderMock);
@@ -113,7 +113,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetTypes_WithoutSpecificBase ()
     {
-      AssemblyFinder finderMock = _mockRepository.CreateMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
+      AssemblyFinder finderMock = _mockRepository.StrictMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
           new Assembly[] { typeof (AssemblyFinderTypeDiscoveryServiceTest).Assembly });
 
       AssemblyFinderTypeDiscoveryService service = new AssemblyFinderTypeDiscoveryService (finderMock);
@@ -137,7 +137,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetTypes_WithSpecificBase ()
     {
-      AssemblyFinder finderMock = _mockRepository.CreateMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
+      AssemblyFinder finderMock = _mockRepository.StrictMock<AssemblyFinder> (ApplicationAssemblyFinderFilter.Instance,
           new Assembly[] { typeof (AssemblyFinderTypeDiscoveryServiceTest).Assembly });
 
       AssemblyFinderTypeDiscoveryService service = new AssemblyFinderTypeDiscoveryService (finderMock);

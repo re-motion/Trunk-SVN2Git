@@ -29,13 +29,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectStringFormatterSer
     {
       _stringFormatterService = new BusinessObjectStringFormatterService();
       _mockRepository = new MockRepository();
-      _mockBusinessObject = _mockRepository.CreateMock<IBusinessObject>();
-      _mockProperty = _mockRepository.CreateMock<IBusinessObjectNumericProperty>();
+      _mockBusinessObject = _mockRepository.StrictMock<IBusinessObject>();
+      _mockProperty = _mockRepository.StrictMock<IBusinessObjectNumericProperty>();
       _mockValues = new IFormattable[]
           {
-              _mockRepository.CreateMock<IFormattable>(),
-              _mockRepository.CreateMock<IFormattable>(),
-              _mockRepository.CreateMock<IFormattable>()
+              _mockRepository.StrictMock<IFormattable>(),
+              _mockRepository.StrictMock<IFormattable>(),
+              _mockRepository.StrictMock<IFormattable>()
           };
     }
 

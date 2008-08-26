@@ -756,7 +756,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void ReplaceOppositeCollection_UpdatesOppositeEndPointViaChangeDelegate ()
     {
       var mockRepository = new MockRepository ();
-      var changeDelegateMock = mockRepository.CreateMock<ICollectionEndPointChangeDelegate> ();
+      var changeDelegateMock = mockRepository.StrictMock<ICollectionEndPointChangeDelegate> ();
       var oldOpposites = new OrderCollection { _order1 };
       var endPoint = CreateCollectionEndPoint (_customerEndPointID, oldOpposites);
       endPoint.ChangeDelegate = changeDelegateMock;

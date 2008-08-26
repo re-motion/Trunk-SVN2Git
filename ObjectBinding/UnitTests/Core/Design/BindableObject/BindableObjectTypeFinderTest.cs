@@ -32,8 +32,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _serviceProvider = _mockRepository.CreateMock<IServiceProvider> ();
-      _typeDiscoveryService = _mockRepository.CreateMock<ITypeDiscoveryService> ();
+      _serviceProvider = _mockRepository.StrictMock<IServiceProvider> ();
+      _typeDiscoveryService = _mockRepository.StrictMock<ITypeDiscoveryService> ();
     }
 
     [Test]

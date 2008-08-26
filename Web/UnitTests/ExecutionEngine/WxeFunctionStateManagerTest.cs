@@ -37,7 +37,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     {
       _mockRepository = new MockRepository();
 
-      _mockSessionState = _mockRepository.CreateMock<IHttpSessionState>();
+      _mockSessionState = _mockRepository.StrictMock<IHttpSessionState>();
       _session = TypesafeActivator.CreateInstance<HttpSessionState> (BindingFlags.Instance | BindingFlags.NonPublic).With (_mockSessionState);
       Assert.IsNotNull (_session);
 
@@ -68,7 +68,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
           new Dictionary<string, WxeFunctionStateManager.WxeFunctionStateMetaData> ();
       functionStates.Add (functionStateMetaData.FunctionToken, functionStateMetaData);
 
-      IHttpSessionState mockSessionState = _mockRepository.CreateMock<IHttpSessionState>();
+      IHttpSessionState mockSessionState = _mockRepository.StrictMock<IHttpSessionState>();
       HttpSessionState session =
           TypesafeActivator.CreateInstance<HttpSessionState> (BindingFlags.Instance | BindingFlags.NonPublic).With (mockSessionState);
 

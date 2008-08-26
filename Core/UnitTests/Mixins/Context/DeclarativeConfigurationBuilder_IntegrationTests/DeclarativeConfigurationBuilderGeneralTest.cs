@@ -181,9 +181,9 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       Assert.IsInstanceOfType (typeof (AssemblyFinderTypeDiscoveryService), service);
 
       MockRepository repository = new MockRepository();
-      IDesignModeHelper designModeHelperMock = repository.CreateMock<IDesignModeHelper> ();
-      IDesignerHost designerHostMock = repository.CreateMock<IDesignerHost>();
-      ITypeDiscoveryService designerServiceMock = repository.CreateMock<ITypeDiscoveryService> ();
+      IDesignModeHelper designModeHelperMock = repository.StrictMock<IDesignModeHelper> ();
+      IDesignerHost designerHostMock = repository.StrictMock<IDesignerHost>();
+      ITypeDiscoveryService designerServiceMock = repository.StrictMock<ITypeDiscoveryService> ();
 
       Expect.Call (designModeHelperMock.DesignerHost).Return (designerHostMock);
       Expect.Call (designerHostMock.GetService (typeof (ITypeDiscoveryService))).Return (designerServiceMock);

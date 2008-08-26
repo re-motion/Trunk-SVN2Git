@@ -39,10 +39,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           DomainObjectIDs.Order1,
           MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderItems"));
 
-      _endPointMock = _mockRepository.CreateMock<CollectionEndPoint> (ClientTransactionMock, _id, new DomainObjectCollection());
+      _endPointMock = _mockRepository.StrictMock<CollectionEndPoint> (ClientTransactionMock, _id, new DomainObjectCollection());
       _oldEndPointMock = _mockRepository.Stub<IEndPoint>();
       _newEndPointMock = _mockRepository.Stub<IEndPoint>();
-      _changeAgentMock = _mockRepository.CreateMock<CollectionEndPointChangeAgent>(new DomainObjectCollection(), _oldEndPointMock, _newEndPointMock,
+      _changeAgentMock = _mockRepository.StrictMock<CollectionEndPointChangeAgent>(new DomainObjectCollection(), _oldEndPointMock, _newEndPointMock,
           CollectionEndPointChangeAgent.OperationType.Add, 0);
 
       _modification = new CollectionEndPointModification (_endPointMock, _changeAgentMock);
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void ExecuteAllSteps ()
     {
-      CollectionEndPointModification modificationMock = _mockRepository.CreateMock<CollectionEndPointModification> (_endPointMock, _changeAgentMock);
+      CollectionEndPointModification modificationMock = _mockRepository.StrictMock<CollectionEndPointModification> (_endPointMock, _changeAgentMock);
 
       modificationMock.NotifyClientTransactionOfBegin ();
       modificationMock.Begin ();

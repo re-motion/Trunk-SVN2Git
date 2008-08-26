@@ -49,7 +49,7 @@ namespace Remotion.UnitTests
     public void GetValueFromFactory()
     {
       SampleClass expected = new SampleClass();
-      IFactory mockFactory = _mocks.CreateMock<IFactory>();
+      IFactory mockFactory = _mocks.StrictMock<IFactory>();
       DoubleCheckedLockingContainer<SampleClass> container =
           new DoubleCheckedLockingContainer<SampleClass> (delegate { return mockFactory.Create(); });
       Expect.Call (mockFactory.Create()).Return (expected);
@@ -65,7 +65,7 @@ namespace Remotion.UnitTests
     public void SetNull()
     {
       SampleClass expected = new SampleClass ();
-      IFactory mockFactory = _mocks.CreateMock<IFactory> ();
+      IFactory mockFactory = _mocks.StrictMock<IFactory> ();
       DoubleCheckedLockingContainer<SampleClass> container =
           new DoubleCheckedLockingContainer<SampleClass> (delegate { return mockFactory.Create (); });
       _mocks.ReplayAll ();
@@ -89,7 +89,7 @@ namespace Remotion.UnitTests
     public void HasValue ()
     {
       SampleClass expected = new SampleClass ();
-      IFactory mockFactory = _mocks.CreateMock<IFactory> ();
+      IFactory mockFactory = _mocks.StrictMock<IFactory> ();
       DoubleCheckedLockingContainer<SampleClass> container =
           new DoubleCheckedLockingContainer<SampleClass> (delegate { return mockFactory.Create (); });
 

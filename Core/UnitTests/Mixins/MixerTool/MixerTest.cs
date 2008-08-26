@@ -204,7 +204,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       {
         MockRepository repository = new MockRepository ();
         ConcreteTypeBuilder builder = ConcreteTypeBuilder.Current;
-        IModuleManager scopeMock = repository.CreateMock<IModuleManager> ();
+        IModuleManager scopeMock = repository.StrictMock<IModuleManager> ();
         builder.Scope = scopeMock;
 
         // expect no calls on scope

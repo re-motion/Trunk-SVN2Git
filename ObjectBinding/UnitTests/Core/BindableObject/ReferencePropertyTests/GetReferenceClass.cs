@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     [Test]
     public void UseBusinessObjectClassService ()
     {
-      IBusinessObjectClassService mockService = _mockRepository.CreateMock<IBusinessObjectClassService>();
+      IBusinessObjectClassService mockService = _mockRepository.StrictMock<IBusinessObjectClassService>();
       IBusinessObjectClass expectedClass = _mockRepository.Stub<IBusinessObjectClass>();
       IBusinessObject businessObjectFromOtherBusinessObjectProvider = _mockRepository.Stub<IBusinessObject>();
       Type typeFromOtherBusinessObjectProvider = businessObjectFromOtherBusinessObjectProvider.GetType();

@@ -54,8 +54,8 @@ namespace Remotion.SecurityManager.UnitTests
       base.SetUp();
 
      _mocks = new MockRepository ();
-     _mockAclFinder = _mocks.CreateMock<IAccessControlListFinder> ();
-     _mockTokenBuilder = _mocks.CreateMock<ISecurityTokenBuilder> ();
+     _mockAclFinder = _mocks.StrictMock<IAccessControlListFinder> ();
+     _mockTokenBuilder = _mocks.StrictMock<ISecurityTokenBuilder> ();
 
      _service = new SecurityService (_mockAclFinder, _mockTokenBuilder);
      _context = SecurityContext.Create(typeof (Order), "Owner", "UID: OwnerGroup", "OwnerTenant", new Dictionary<string, Enum>(), new Enum[0]);

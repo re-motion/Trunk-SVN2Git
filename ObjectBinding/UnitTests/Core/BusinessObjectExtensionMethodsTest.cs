@@ -27,9 +27,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _businessObjectMock = _mockRepository.CreateMock<IBusinessObject>();
-      _classMock = _mockRepository.CreateMock<IBusinessObjectClass>();
-      _propertyMock = _mockRepository.CreateMock<IBusinessObjectProperty>();
+      _businessObjectMock = _mockRepository.StrictMock<IBusinessObject>();
+      _classMock = _mockRepository.StrictMock<IBusinessObjectClass>();
+      _propertyMock = _mockRepository.StrictMock<IBusinessObjectProperty>();
     }
 
     [Test]

@@ -38,8 +38,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository = new MockRepository ();
       
-      _listener1 = _mockRepository.CreateMock<IClientTransactionListener> ();
-      _listener2 = _mockRepository.CreateMock<IClientTransactionListener> ();
+      _listener1 = _mockRepository.StrictMock<IClientTransactionListener> ();
+      _listener2 = _mockRepository.StrictMock<IClientTransactionListener> ();
 
       _compoundListener = new CompoundClientTransactionListener ();
       _compoundListener.AddListener (_listener1);

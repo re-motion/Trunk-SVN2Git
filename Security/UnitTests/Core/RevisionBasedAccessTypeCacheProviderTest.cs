@@ -38,7 +38,7 @@ namespace Remotion.Security.UnitTests.Core
       _mocks = new MockRepository();
 
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
-      _mockSecurityProvider = _mocks.CreateMock<IRevisionBasedSecurityProvider>();
+      _mockSecurityProvider = _mocks.StrictMock<IRevisionBasedSecurityProvider>();
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
     }

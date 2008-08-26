@@ -29,8 +29,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectStringFormatterSer
     {
       _stringFormatterService = new BusinessObjectStringFormatterService ();
       _mockRepository = new MockRepository ();
-      _mockBusinessObject = _mockRepository.CreateMock<IBusinessObject> ();
-      _mockProperty = _mockRepository.CreateMock<IBusinessObjectEnumerationProperty> ();
+      _mockBusinessObject = _mockRepository.StrictMock<IBusinessObject> ();
+      _mockProperty = _mockRepository.StrictMock<IBusinessObjectEnumerationProperty> ();
     }
 
     [Test]

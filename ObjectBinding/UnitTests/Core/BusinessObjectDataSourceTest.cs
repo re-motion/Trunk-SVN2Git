@@ -133,8 +133,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     [Test]
     public void LoadValues ()
     {
-      IBusinessObjectBoundControl mockControl1 = _mockRepository.CreateMock<IBusinessObjectBoundControl> ();
-      IBusinessObjectBoundControl mockControl2 = _mockRepository.CreateMock<IBusinessObjectBoundControl> ();
+      IBusinessObjectBoundControl mockControl1 = _mockRepository.StrictMock<IBusinessObjectBoundControl> ();
+      IBusinessObjectBoundControl mockControl2 = _mockRepository.StrictMock<IBusinessObjectBoundControl> ();
 
       SetupResult.For (mockControl1.HasValidBinding).Return (true);
       SetupResult.For (mockControl2.HasValidBinding).Return (true);
@@ -152,8 +152,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     [Test]
     public void SaveValues ()
     {
-      IBusinessObjectBoundEditableControl mockControl1 = _mockRepository.CreateMock<IBusinessObjectBoundEditableControl> ();
-      IBusinessObjectBoundEditableControl mockControl2 = _mockRepository.CreateMock<IBusinessObjectBoundEditableControl> ();
+      IBusinessObjectBoundEditableControl mockControl1 = _mockRepository.StrictMock<IBusinessObjectBoundEditableControl> ();
+      IBusinessObjectBoundEditableControl mockControl2 = _mockRepository.StrictMock<IBusinessObjectBoundEditableControl> ();
 
       SetupResult.For (mockControl1.HasValidBinding).Return (true);
       SetupResult.For (mockControl2.HasValidBinding).Return (true);

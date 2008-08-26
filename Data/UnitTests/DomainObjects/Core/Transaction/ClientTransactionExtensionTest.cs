@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _mockRepository = new MockRepository ();
-      _extension = _mockRepository.CreateMock<IClientTransactionExtension> ();
+      _extension = _mockRepository.StrictMock<IClientTransactionExtension> ();
 
       ClientTransactionScope.CurrentTransaction.Extensions.Add ("TestExtension", _extension);
 
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void ObjectsLoadedWithEvents ()
     {
       ClientTransactionMockEventReceiver clientTransactionEventReceiver =
-          _mockRepository.CreateMock<ClientTransactionMockEventReceiver> (_newTransaction);
+          _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_newTransaction);
 
       using (_mockRepository.Ordered())
       {
@@ -332,7 +332,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         computer = Computer.GetObject (DomainObjectIDs.Computer4);
       }
 
-      DomainObjectMockEventReceiver computerEventReceiver = _mockRepository.CreateMock<DomainObjectMockEventReceiver> (computer);
+      DomainObjectMockEventReceiver computerEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (computer);
       _mockRepository.BackToRecord (_extension);
 
       using (_mockRepository.Ordered())
@@ -377,18 +377,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         preloadedOrder1 = orderTicket.Order;
       }
 
-      DomainObjectMockEventReceiver order1MockEventReceiver = _mockRepository.CreateMock<DomainObjectMockEventReceiver> (_order1);
-      DomainObjectMockEventReceiver orderItem1MockEventReceiver = _mockRepository.CreateMock<DomainObjectMockEventReceiver> (orderItem1);
-      DomainObjectMockEventReceiver orderItem2MockEventReceiver = _mockRepository.CreateMock<DomainObjectMockEventReceiver> (orderItem2);
-      DomainObjectMockEventReceiver orderTicketMockEventReceiver = _mockRepository.CreateMock<DomainObjectMockEventReceiver> (orderTicket);
-      DomainObjectMockEventReceiver officialMockEventReceiver = _mockRepository.CreateMock<DomainObjectMockEventReceiver> (official);
-      DomainObjectMockEventReceiver customerMockEventReceiver = _mockRepository.CreateMock<DomainObjectMockEventReceiver> (customer);
+      DomainObjectMockEventReceiver order1MockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
+      DomainObjectMockEventReceiver orderItem1MockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (orderItem1);
+      DomainObjectMockEventReceiver orderItem2MockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (orderItem2);
+      DomainObjectMockEventReceiver orderTicketMockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (orderTicket);
+      DomainObjectMockEventReceiver officialMockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (official);
+      DomainObjectMockEventReceiver customerMockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (customer);
 
       DomainObjectCollectionMockEventReceiver customerOrdersMockEventReceiver =
-          _mockRepository.CreateMock<DomainObjectCollectionMockEventReceiver> (customerOrders);
+          _mockRepository.StrictMock<DomainObjectCollectionMockEventReceiver> (customerOrders);
 
       DomainObjectCollectionMockEventReceiver officialOrdersMockEventReceiver =
-          _mockRepository.CreateMock<DomainObjectCollectionMockEventReceiver> (officialOrders);
+          _mockRepository.StrictMock<DomainObjectCollectionMockEventReceiver> (officialOrders);
 
       _mockRepository.BackToRecord (_extension);
 
@@ -417,7 +417,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           orderItem2MockEventReceiver.RelationChanging (orderItem2, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order", _order1, null);
           officialMockEventReceiver.RelationChanging (official, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Official.Orders", _order1, null);
           officialOrdersMockEventReceiver.Removing (officialOrders, _order1);
-          LastCall.Constraints (Mocks_Is.Same (officialOrders), Mocks_Property.Value ("DomainObject", _order1));
+          LastCall.IgnoreArguments ().Constraints (Mocks_Is.Same (officialOrders), Mocks_Property.Value ("DomainObject", _order1));
         }
 
         using (_mockRepository.Unordered())
@@ -745,11 +745,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       DataContainer order1DC = _order1.GetInternalDataContainerForTransaction (_newTransaction);
 
-      DomainObjectMockEventReceiver domainObjectMockEventReceiver = _mockRepository.CreateMock<DomainObjectMockEventReceiver> (_order1);
+      DomainObjectMockEventReceiver domainObjectMockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
       DataContainerMockEventReceiver dataContainerMockEventReceiver =
-          _mockRepository.CreateMock<DataContainerMockEventReceiver> (order1DC);
+          _mockRepository.StrictMock<DataContainerMockEventReceiver> (order1DC);
       PropertyValueCollectionMockEventReceiver propertyValueCollectionMockEventReceiver =
-          _mockRepository.CreateMock<PropertyValueCollectionMockEventReceiver> (order1DC.PropertyValues);
+          _mockRepository.StrictMock<PropertyValueCollectionMockEventReceiver> (order1DC.PropertyValues);
 
 
       using (_mockRepository.Ordered())
@@ -1155,9 +1155,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Query query = new Query ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer4);
-      IClientTransactionExtension filteringExtension = _mockRepository.CreateMock<ClientTransactionExtensionWithQueryFiltering>();
+      IClientTransactionExtension filteringExtension = _mockRepository.StrictMock<ClientTransactionExtensionWithQueryFiltering>();
       _newTransaction.Extensions.Add ("FilteringExtension", filteringExtension);
-      IClientTransactionExtension lastExtension = _mockRepository.CreateMock<IClientTransactionExtension>();
+      IClientTransactionExtension lastExtension = _mockRepository.StrictMock<IClientTransactionExtension>();
       _newTransaction.Extensions.Add ("LastExtension", lastExtension);
 
       using (_mockRepository.Ordered())
@@ -1306,9 +1306,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _mockRepository.BackToRecord (_extension);
 
       ClientTransactionMockEventReceiver clientTransactionMockEventReceiver =
-          _mockRepository.CreateMock<ClientTransactionMockEventReceiver> (_newTransaction);
+          _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_newTransaction);
 
-      DomainObjectMockEventReceiver computerEventReveiver = _mockRepository.CreateMock<DomainObjectMockEventReceiver> (computer);
+      DomainObjectMockEventReceiver computerEventReveiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (computer);
 
       using (_mockRepository.Ordered())
       {

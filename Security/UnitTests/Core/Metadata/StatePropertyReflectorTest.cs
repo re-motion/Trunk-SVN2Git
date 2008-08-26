@@ -44,7 +44,7 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     public void SetUp ()
     {
       _mocks = new MockRepository ();
-      _enumeratedTypeReflectorMock = _mocks.CreateMock<IEnumerationReflector> ();
+      _enumeratedTypeReflectorMock = _mocks.StrictMock<IEnumerationReflector> ();
       _statePropertyReflector = new StatePropertyReflector (_enumeratedTypeReflectorMock);
       _cache = new MetadataCache ();
     }

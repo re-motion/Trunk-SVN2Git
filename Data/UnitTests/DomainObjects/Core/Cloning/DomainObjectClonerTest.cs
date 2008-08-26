@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CreateClone_CallsStrategyForReferences ()
     {
-      ICloneStrategy strategyMock = _mockRepository.CreateMock<ICloneStrategy>();
+      ICloneStrategy strategyMock = _mockRepository.StrictMock<ICloneStrategy>();
       CloneContext contextMock = _mockRepository.Stub<CloneContext>(_cloner);
       Order clone = Order.NewObject();
       Queue<Tuple<DomainObject, DomainObject>> shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CreateClone_CallsStrategyForReferences_OnReferencedObjectsToo ()
     {
-      ICloneStrategy strategyMock = _mockRepository.CreateMock<ICloneStrategy> ();
+      ICloneStrategy strategyMock = _mockRepository.StrictMock<ICloneStrategy> ();
       CloneContext contextMock = _mockRepository.Stub<CloneContext> (_cloner);
       Order clone = Order.NewObject ();
       OrderItem clone2 = OrderItem.NewObject ();
@@ -260,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CreateClone_CallsStrategyForReferences_OnlyWhenNotTouched ()
     {
-      ICloneStrategy strategyMock = _mockRepository.CreateMock<ICloneStrategy> ();
+      ICloneStrategy strategyMock = _mockRepository.StrictMock<ICloneStrategy> ();
       CloneContext contextMock = _mockRepository.Stub<CloneContext> (_cloner);
       Order clone = Order.NewObject ();
       OrderItem clone2 = OrderItem.NewObject ();
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
 
       _cloner.CloneTransaction = cloneTransaction;
 
-      ICloneStrategy strategyMock = _mockRepository.CreateMock<ICloneStrategy> ();
+      ICloneStrategy strategyMock = _mockRepository.StrictMock<ICloneStrategy> ();
       CloneContext contextMock = _mockRepository.Stub<CloneContext> (_cloner);
       
       Order source;

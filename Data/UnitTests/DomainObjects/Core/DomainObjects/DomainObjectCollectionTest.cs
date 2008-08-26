@@ -1096,8 +1096,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void CopyEventHandlers ()
     {
       MockRepository mockRepository = new MockRepository ();
-      IEventHandlerReceiver eventReceiver1 = mockRepository.CreateMock<IEventHandlerReceiver> ();
-      IEventHandlerReceiver eventReceiver2 = mockRepository.CreateMock<IEventHandlerReceiver> ();
+      IEventHandlerReceiver eventReceiver1 = mockRepository.StrictMock<IEventHandlerReceiver> ();
+      IEventHandlerReceiver eventReceiver2 = mockRepository.StrictMock<IEventHandlerReceiver> ();
 
       DomainObjectCollection source = new DomainObjectCollection ();
       DomainObjectCollection destination = new DomainObjectCollection ();

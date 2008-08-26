@@ -25,7 +25,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void ReplicateAttribute ()
     {
       MockRepository mockRepository = new MockRepository ();
-      IAttributableEmitter emitter = mockRepository.CreateMock<IAttributableEmitter> ();
+      IAttributableEmitter emitter = mockRepository.StrictMock<IAttributableEmitter> ();
       
       // expect
       emitter.AddCustomAttribute (null);

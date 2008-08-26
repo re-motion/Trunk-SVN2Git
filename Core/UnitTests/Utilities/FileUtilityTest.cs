@@ -76,7 +76,7 @@ namespace Remotion.UnitTests.Utilities
     public void CopyStream_WriteAllAtOnce ()
     {
       MockRepository mockRepository = new MockRepository();
-      Stream inputMock = mockRepository.CreateMock<Stream>();
+      Stream inputMock = mockRepository.StrictMock<Stream>();
 
       Func<byte[], int, int, int> writeAllAtOnce = delegate (byte[] buffer, int offset, int count)
       {
@@ -88,9 +88,11 @@ namespace Remotion.UnitTests.Utilities
       using (mockRepository.Ordered ())
       {
         Expect.Call (inputMock.Read (null, 0, 0))
+            .IgnoreArguments()
             .Constraints (Mocks_Is.Anything(), Mocks_Is.Equal (0), Mocks_Is.Equal (FileUtility.CopyBufferSize))
             .Do (writeAllAtOnce);
         Expect.Call (inputMock.Read (null, 0, 0))
+            .IgnoreArguments ()
             .Constraints (Mocks_Is.Anything (), Mocks_Is.Equal (0), Mocks_Is.Equal (FileUtility.CopyBufferSize))
             .Return (0);
       }
@@ -108,7 +110,7 @@ namespace Remotion.UnitTests.Utilities
     public void CopyStream_WriteInSteps ()
     {
       MockRepository mockRepository = new MockRepository ();
-      Stream inputMock = mockRepository.CreateMock<Stream> ();
+      Stream inputMock = mockRepository.StrictMock<Stream> ();
       SetupResult.For (inputMock.Length).Return (10L);
       Func<byte[], int, int, int> writeStep1 = delegate (byte[] buffer, int offset, int count)
       {
@@ -134,15 +136,19 @@ namespace Remotion.UnitTests.Utilities
       using (mockRepository.Ordered ())
       {
         Expect.Call (inputMock.Read (null, 0, 0))
+            .IgnoreArguments ()
             .Constraints (Mocks_Is.Anything (), Mocks_Is.Equal (0), Mocks_Is.Equal (FileUtility.CopyBufferSize))
             .Do (writeStep1);
         Expect.Call (inputMock.Read (null, 0, 0))
+            .IgnoreArguments ()
             .Constraints (Mocks_Is.Anything (), Mocks_Is.Equal (0), Mocks_Is.Equal (FileUtility.CopyBufferSize))
             .Do (writeStep2);
         Expect.Call (inputMock.Read (null, 0, 0))
+            .IgnoreArguments ()
             .Constraints (Mocks_Is.Anything (), Mocks_Is.Equal (0), Mocks_Is.Equal (FileUtility.CopyBufferSize))
             .Do (writeStep3);
         Expect.Call (inputMock.Read (null, 0, 0))
+            .IgnoreArguments ()
             .Constraints (Mocks_Is.Anything (), Mocks_Is.Equal (0), Mocks_Is.Equal (FileUtility.CopyBufferSize))
             .Return (0);
       }

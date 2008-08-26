@@ -29,7 +29,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _mocks = new MockRepository();
       _configuration = new SecurityConfiguration ();
       SecurityConfigurationMock.SetCurrent (_configuration);
-      _provider = _mocks.CreateMock<ISecurityProvider>();
+      _provider = _mocks.StrictMock<ISecurityProvider>();
       _configuration.SecurityProvider = _provider;
     }
 

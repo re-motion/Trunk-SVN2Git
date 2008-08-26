@@ -38,12 +38,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       
       _mocks = new MockRepository ();
       _businessObjectProvider = new BindableObjectProvider();
-      _mockObjectSecurityAdapter = _mocks.CreateMock<IObjectSecurityAdapter>();
+      _mockObjectSecurityAdapter = _mocks.StrictMock<IObjectSecurityAdapter>();
 
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), _mockObjectSecurityAdapter);
 
       _securableObject = (IBusinessObject) ObjectFactory.Create<SecurableClassWithReferenceType<SimpleReferenceType>>()
-                                               .With (_mocks.CreateMock<IObjectSecurityStrategy>());
+                                               .With (_mocks.StrictMock<IObjectSecurityStrategy>());
 
       _nonSecurableObject = (IBusinessObject) ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>>().With();
 

@@ -39,13 +39,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           DomainObjectIDs.Computer1,
           MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
 
-      _endPointMock = _mockRepository.CreateMock<ObjectEndPoint> (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
-      _oldEndPointMock = _mockRepository.CreateMock<IEndPoint> ();
-      _newEndPointMock = _mockRepository.CreateMock<IEndPoint> ();
+      _endPointMock = _mockRepository.StrictMock<ObjectEndPoint> (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
+      _oldEndPointMock = _mockRepository.StrictMock<IEndPoint> ();
+      _newEndPointMock = _mockRepository.StrictMock<IEndPoint> ();
 
-      _modificationMock1 = _mockRepository.CreateMock<RelationEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
-      _modificationMock2 = _mockRepository.CreateMock<RelationEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
-      _modificationMock3 = _mockRepository.CreateMock<RelationEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
+      _modificationMock1 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
+      _modificationMock2 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
+      _modificationMock3 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
 
       _collection = new RelationEndPointModificationCollection (_modificationMock1, _modificationMock2, _modificationMock3);
     }

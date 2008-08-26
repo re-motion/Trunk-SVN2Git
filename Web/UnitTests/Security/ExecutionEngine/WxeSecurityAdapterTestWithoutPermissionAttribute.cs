@@ -49,10 +49,10 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
 
       _mocks = new MockRepository ();
 
-      _mockSecurityProvider = _mocks.CreateMock<ISecurityProvider> ();
+      _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
-      _mockUserProvider = _mocks.CreateMock<IUserProvider> ();
-      _mockFunctionalSecurityStrategy = _mocks.CreateMock<IFunctionalSecurityStrategy> ();
+      _mockUserProvider = _mocks.StrictMock<IUserProvider> ();
+      _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
 
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;

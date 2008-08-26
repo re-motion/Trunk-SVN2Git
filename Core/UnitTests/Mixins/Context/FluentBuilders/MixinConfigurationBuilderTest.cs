@@ -279,15 +279,15 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void AddMixinToClass ()
     {
       MockRepository mockRepository = new MockRepository();
-      MixinConfigurationBuilder builder = mockRepository.CreateMock<MixinConfigurationBuilder>((MixinConfiguration) null);
+      MixinConfigurationBuilder builder = mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration) null);
 
       Type targetType = typeof (object);
       Type mixinType = typeof (string);
       Type[] explicitDependencies = new Type[] { typeof (int) };
       Type[] suppressedMixins = new Type[] { typeof (double) };
 
-      ClassContextBuilder classBuilderMock = mockRepository.CreateMock<ClassContextBuilder> (builder, targetType, null);
-      MixinContextBuilder mixinBuilderMock = mockRepository.CreateMock<MixinContextBuilder> (classBuilderMock, mixinType);
+      ClassContextBuilder classBuilderMock = mockRepository.StrictMock<ClassContextBuilder> (builder, targetType, null);
+      MixinContextBuilder mixinBuilderMock = mockRepository.StrictMock<MixinContextBuilder> (classBuilderMock, mixinType);
 
       using (mockRepository.Ordered ())
       {
@@ -310,15 +310,15 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void AddMixinToClass_Used ()
     {
       MockRepository mockRepository = new MockRepository ();
-      MixinConfigurationBuilder builder = mockRepository.CreateMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      MixinConfigurationBuilder builder = mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
 
       Type targetType = typeof (object);
       Type mixinType = typeof (string);
       Type[] explicitDependencies = new Type[0];
       Type[] suppressedMixins = new Type[0];
 
-      ClassContextBuilder classBuilderMock = mockRepository.CreateMock<ClassContextBuilder> (builder, targetType, null);
-      MixinContextBuilder mixinBuilderMock = mockRepository.CreateMock<MixinContextBuilder> (classBuilderMock, mixinType);
+      ClassContextBuilder classBuilderMock = mockRepository.StrictMock<ClassContextBuilder> (builder, targetType, null);
+      MixinContextBuilder mixinBuilderMock = mockRepository.StrictMock<MixinContextBuilder> (classBuilderMock, mixinType);
 
       using (mockRepository.Ordered ())
       {
@@ -341,15 +341,15 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void AddMixinToClass_PublicMemberVisibility ()
     {
       MockRepository mockRepository = new MockRepository ();
-      MixinConfigurationBuilder builder = mockRepository.CreateMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      MixinConfigurationBuilder builder = mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
 
       Type targetType = typeof (object);
       Type mixinType = typeof (string);
       Type[] explicitDependencies = new Type[0];
       Type[] suppressedMixins = new Type[0];
 
-      ClassContextBuilder classBuilderMock = mockRepository.CreateMock<ClassContextBuilder> (builder, targetType, null);
-      MixinContextBuilder mixinBuilderMock = mockRepository.CreateMock<MixinContextBuilder> (classBuilderMock, mixinType);
+      ClassContextBuilder classBuilderMock = mockRepository.StrictMock<ClassContextBuilder> (builder, targetType, null);
+      MixinContextBuilder mixinBuilderMock = mockRepository.StrictMock<MixinContextBuilder> (classBuilderMock, mixinType);
 
       using (mockRepository.Ordered ())
       {

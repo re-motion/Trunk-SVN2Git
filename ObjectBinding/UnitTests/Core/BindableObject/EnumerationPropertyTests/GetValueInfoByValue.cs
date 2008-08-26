@@ -38,7 +38,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
       _businessObjectProvider = new BindableObjectProvider ();
 
       _mockRepository = new MockRepository ();
-      _mockBusinessObject = _mockRepository.CreateMock<IBusinessObject> ();
+      _mockBusinessObject = _mockRepository.StrictMock<IBusinessObject> ();
     }
 
     [Test]
@@ -105,7 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     public void GetDisplayNameFromGlobalizationSerivce ()
     {
       IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithValueType<TestEnum>), "Scalar");
-      IBindableObjectGlobalizationService mockGlobalizationService = _mockRepository.CreateMock<IBindableObjectGlobalizationService> ();
+      IBindableObjectGlobalizationService mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService> ();
       _businessObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
 
       Expect.Call (mockGlobalizationService.GetEnumerationValueDisplayName (TestEnum.Value1)).Return ("MockValue1");

@@ -35,9 +35,9 @@ namespace Remotion.Security.UnitTests.Core
     public void SetUp ()
     {
       _mocks = new MockRepository ();
-      _mockSecurityStrategy = _mocks.CreateMock<ISecurityStrategy> ();
-      _stubSecurityProvider = _mocks.CreateMock<ISecurityProvider> ();
-      _stubContextFactory = _mocks.CreateMock<ISecurityContextFactory> ();
+      _mockSecurityStrategy = _mocks.StrictMock<ISecurityStrategy> ();
+      _stubSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
+      _stubContextFactory = _mocks.StrictMock<ISecurityContextFactory> ();
 
       _user = new GenericPrincipal (new GenericIdentity ("owner"), new string[0]);
       _accessTypeResult = new AccessType[] { AccessType.Get (GeneralAccessTypes.Read), AccessType.Get (GeneralAccessTypes.Edit) };
@@ -63,7 +63,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void Initialize_WithDefaults ()
     {
-      IGlobalAccessTypeCacheProvider stubGlobalCacheProvider = _mocks.CreateMock<IGlobalAccessTypeCacheProvider> ();
+      IGlobalAccessTypeCacheProvider stubGlobalCacheProvider = _mocks.StrictMock<IGlobalAccessTypeCacheProvider> ();
       SecurityConfiguration.Current.GlobalAccessTypeCacheProvider = stubGlobalCacheProvider;
       ObjectSecurityStrategy strategy = new ObjectSecurityStrategy (_stubContextFactory);
 

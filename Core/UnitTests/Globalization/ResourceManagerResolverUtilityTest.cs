@@ -26,7 +26,7 @@ namespace Remotion.UnitTests.Globalization
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _resolverMock = _mockRepository.CreateMock<ResourceManagerResolver<MultiLingualResourcesAttribute>>();
+      _resolverMock = _mockRepository.StrictMock<ResourceManagerResolver<MultiLingualResourcesAttribute>>();
     }
 
 		[TearDown]
@@ -45,7 +45,7 @@ namespace Remotion.UnitTests.Globalization
   	[Test]
 		public void Current_Set ()
 		{
-			IResourceManagerResolverUtility mockUtility = _mockRepository.CreateMock<IResourceManagerResolverUtility>();
+			IResourceManagerResolverUtility mockUtility = _mockRepository.StrictMock<IResourceManagerResolverUtility>();
 			ResourceManagerResolverUtility.SetCurrent (mockUtility);
 			Assert.AreSame (mockUtility, ResourceManagerResolverUtility.Current);
 		}
@@ -60,7 +60,7 @@ namespace Remotion.UnitTests.Globalization
  	[Test]
     public void GetResourceText ()
     {
-      IResourceManager resourceManagerMock = _mockRepository.CreateMock<IResourceManager>();
+      IResourceManager resourceManagerMock = _mockRepository.StrictMock<IResourceManager>();
       Expect.Call (_resolverMock.GetResourceManager (typeof (ClassWithMultiLingualResourcesAttributes), false)).Return (resourceManagerMock);
       Expect.Call (resourceManagerMock.GetString ("Borg")).Return ("Resistance is futile");
       _mockRepository.ReplayAll ();
@@ -75,7 +75,7 @@ namespace Remotion.UnitTests.Globalization
     [Test]
     public void GetResourceText_Default ()
     {
-      IResourceManager resourceManagerMock = _mockRepository.CreateMock<IResourceManager> ();
+      IResourceManager resourceManagerMock = _mockRepository.StrictMock<IResourceManager> ();
       Expect.Call (_resolverMock.GetResourceManager (typeof (ClassWithMultiLingualResourcesAttributes), false)).Return (resourceManagerMock);
       Expect.Call (resourceManagerMock.GetString ("Grob")).Return ("Grob");
       _mockRepository.ReplayAll ();
@@ -100,7 +100,7 @@ namespace Remotion.UnitTests.Globalization
     [Test]
     public void ExistsResourceText_True ()
     {
-      IResourceManager resourceManagerMock = _mockRepository.CreateMock<IResourceManager> ();
+      IResourceManager resourceManagerMock = _mockRepository.StrictMock<IResourceManager> ();
       Expect.Call (_resolverMock.GetResourceManager (typeof (ClassWithMultiLingualResourcesAttributes), false)).Return (resourceManagerMock);
       Expect.Call (resourceManagerMock.GetString ("Borg")).Return ("Resistance is futile");
       _mockRepository.ReplayAll ();
@@ -115,7 +115,7 @@ namespace Remotion.UnitTests.Globalization
     [Test]
     public void ExistsResourceText_False ()
     {
-      IResourceManager resourceManagerMock = _mockRepository.CreateMock<IResourceManager> ();
+      IResourceManager resourceManagerMock = _mockRepository.StrictMock<IResourceManager> ();
       Expect.Call (_resolverMock.GetResourceManager (typeof (ClassWithMultiLingualResourcesAttributes), false)).Return (resourceManagerMock);
       Expect.Call (resourceManagerMock.GetString ("Borg")).Return ("Borg");
       _mockRepository.ReplayAll ();

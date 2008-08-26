@@ -42,8 +42,8 @@ namespace Remotion.UnitTests.Mixins
     {
       MockRepository repository = new MockRepository();
 
-      IBaseType31 thisMock = repository.CreateMock<IBaseType31>();
-      IBaseType31 baseMock = repository.CreateMock<IBaseType31>();
+      IBaseType31 thisMock = repository.StrictMock<IBaseType31>();
+      IBaseType31 baseMock = repository.StrictMock<IBaseType31>();
 
       BT3Mixin1 mixin = new BT3Mixin1();
 
@@ -58,7 +58,7 @@ namespace Remotion.UnitTests.Mixins
     {
       MockRepository repository = new MockRepository ();
 
-      IBaseType32 thisMock = repository.CreateMock<IBaseType32> ();
+      IBaseType32 thisMock = repository.StrictMock<IBaseType32> ();
       BT3Mixin2 mixin = new BT3Mixin2 ();
 
       MixinTargetMockUtility.MockMixinTarget (mixin, thisMock);
@@ -86,7 +86,7 @@ namespace Remotion.UnitTests.Mixins
     {
       MockRepository repository = new MockRepository ();
 
-      ClassOverridingMixinMembers thisMock = repository.CreateMock<ClassOverridingMixinMembers>();
+      ClassOverridingMixinMembers thisMock = repository.StrictMock<ClassOverridingMixinMembers>();
       object baseMock = new object();
 
       Expect.Call (thisMock.AbstractMethod (25)).Return ("Mocked!");
@@ -105,7 +105,7 @@ namespace Remotion.UnitTests.Mixins
     {
       MockRepository repository = new MockRepository ();
 
-      ClassOverridingSpecificMixinMember thisMock = repository.CreateMock<ClassOverridingSpecificMixinMember> ();
+      ClassOverridingSpecificMixinMember thisMock = repository.StrictMock<ClassOverridingSpecificMixinMember> ();
 
       Expect.Call (thisMock.VirtualMethod ()).Return ("Mocked, bastard!");
 
@@ -123,8 +123,8 @@ namespace Remotion.UnitTests.Mixins
     {
       MockRepository repository = new MockRepository ();
 
-      IBaseType31 thisMock = repository.CreateMock<IBaseType31> ();
-      IBaseType31 baseMock = repository.CreateMock<IBaseType31> ();
+      IBaseType31 thisMock = repository.StrictMock<IBaseType31> ();
+      IBaseType31 baseMock = repository.StrictMock<IBaseType31> ();
 
       BT3Mixin1 mixin =
           MixinTargetMockUtility.CreateMixinWithMockedTarget<BT3Mixin1, IBaseType31, IBaseType31> (thisMock, baseMock);
@@ -137,7 +137,7 @@ namespace Remotion.UnitTests.Mixins
     {
       MockRepository repository = new MockRepository ();
 
-      IBaseType32 thisMock = repository.CreateMock<IBaseType32> ();
+      IBaseType32 thisMock = repository.StrictMock<IBaseType32> ();
 
       BT3Mixin2 mixin =
           MixinTargetMockUtility.CreateMixinWithMockedTarget<BT3Mixin2, IBaseType32> (thisMock);

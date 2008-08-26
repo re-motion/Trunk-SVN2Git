@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       _nameResolver = new ReflectionBasedNameResolver ();
       _mockRepository = new MockRepository ();
-      _mockMappingLoader = _mockRepository.CreateMock<IMappingLoader>();
+      _mockMappingLoader = _mockRepository.StrictMock<IMappingLoader>();
     }
 
     [Test]

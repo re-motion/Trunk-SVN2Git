@@ -33,8 +33,8 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     public void SetUp ()
     {
       _mockRepository = new MockRepository ();
-      _configurationBuilderMock = _mockRepository.CreateMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
-      _classBuilderMock = _mockRepository.CreateMock<ClassContextBuilder> (_configurationBuilderMock, s_targetClassType, null);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      _classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_configurationBuilderMock, s_targetClassType, null);
       _analyzer = new IgnoresAnalyzer (_configurationBuilderMock);
     }
 
@@ -74,7 +74,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     [Test]
     public void Analyze ()
     {
-      IgnoresAnalyzer analyzer = _mockRepository.CreateMock<IgnoresAnalyzer> (_configurationBuilderMock);
+      IgnoresAnalyzer analyzer = _mockRepository.StrictMock<IgnoresAnalyzer> (_configurationBuilderMock);
 
       analyzer.Analyze (typeof (ClassWithMultipleIgnoresAttributes));
       LastCall.CallOriginalMethod (OriginalCallOptions.CreateExpectation);

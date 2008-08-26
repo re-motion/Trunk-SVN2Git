@@ -947,7 +947,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInOriginalTransaction ()
     {
       MockRepository mockRepository = new MockRepository ();
-      IClientTransactionListener listenerMock = mockRepository.CreateMock<IClientTransactionListener> ();
+      IClientTransactionListener listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
       // no calls are expected
       mockRepository.ReplayAll ();
 
@@ -972,7 +972,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInDestinationTransaction_IfNotRequiredTo ()
     {
       MockRepository mockRepository = new MockRepository ();
-      IClientTransactionListener listenerMock = mockRepository.CreateMock<IClientTransactionListener> ();
+      IClientTransactionListener listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
       // no calls are expected
       mockRepository.ReplayAll ();
 
@@ -997,7 +997,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void CopyCollectionEventHandlers_DoesLoadRelatedObjectsInDestinationTransaction_IfRequiredTo ()
     {
       MockRepository mockRepository = new MockRepository ();
-      IClientTransactionListener listenerMock = mockRepository.CreateMock<IClientTransactionListener> ();
+      IClientTransactionListener listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
 
       listenerMock.ObjectLoading (DomainObjectIDs.OrderItem1);
       listenerMock.ObjectLoading (DomainObjectIDs.OrderItem2);

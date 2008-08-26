@@ -45,18 +45,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPathTests
     {
       _mocks = new MockRepository ();
 
-      _mockProperty = _mocks.CreateMock<IBusinessObjectProperty> ();
-      _mockReferenceProperty = _mocks.CreateMock<IBusinessObjectReferenceProperty> ();
-      _mockReferenceListProperty = _mocks.CreateMock<IBusinessObjectReferenceProperty> ();
+      _mockProperty = _mocks.StrictMock<IBusinessObjectProperty> ();
+      _mockReferenceProperty = _mocks.StrictMock<IBusinessObjectReferenceProperty> ();
+      _mockReferenceListProperty = _mocks.StrictMock<IBusinessObjectReferenceProperty> ();
 
-      _mockBusinessObjectClass = _mocks.CreateMock<IBusinessObjectClass> ();
-      _mockBusinessObjectClassWithIdentity = _mocks.CreateMock<IBusinessObjectClassWithIdentity> ();
+      _mockBusinessObjectClass = _mocks.StrictMock<IBusinessObjectClass> ();
+      _mockBusinessObjectClassWithIdentity = _mocks.StrictMock<IBusinessObjectClassWithIdentity> ();
 
-      _mockBusinessObject = _mocks.CreateMock<IBusinessObject> ();
-      _mockBusinessObjectWithIdentity = _mocks.CreateMock<IBusinessObjectWithIdentity> ();
+      _mockBusinessObject = _mocks.StrictMock<IBusinessObject> ();
+      _mockBusinessObjectWithIdentity = _mocks.StrictMock<IBusinessObjectWithIdentity> ();
       _businessObjectWithIdentityList = new IBusinessObjectWithIdentity[] { _mockBusinessObjectWithIdentity };
 
-      _mockBusinessObjectProvider = _mocks.CreateMock<IBusinessObjectProvider> ();
+      _mockBusinessObjectProvider = _mocks.StrictMock<IBusinessObjectProvider> ();
 
       SetupResult.For (_mockBusinessObject.BusinessObjectClass).Return (_mockBusinessObjectClass);
       SetupResult.For (_mockBusinessObjectWithIdentity.BusinessObjectClass).Return (_mockBusinessObjectClassWithIdentity);

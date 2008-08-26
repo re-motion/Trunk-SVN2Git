@@ -67,10 +67,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       base.SetUp ();
 
       _mocks = new MockRepository ();
-      _mockSecurityProvider = (ISecurityProvider) _mocks.CreateMultiMock (typeof (ProviderBase), typeof (ISecurityProvider));
+      _mockSecurityProvider = (ISecurityProvider) _mocks.StrictMultiMock (typeof (ProviderBase), typeof (ISecurityProvider));
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
-      _mockUserProvider = (IUserProvider) _mocks.CreateMultiMock (typeof (ProviderBase), typeof (IUserProvider));
-      _stubFunctionalSecurityStrategy = _mocks.CreateMock<IFunctionalSecurityStrategy> ();
+      _mockUserProvider = (IUserProvider) _mocks.StrictMultiMock (typeof (ProviderBase), typeof (IUserProvider));
+      _stubFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
 
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;

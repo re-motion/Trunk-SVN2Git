@@ -133,7 +133,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       WxeStepList steps = new WxeStepList ();
       for (int i = 0; i < stepDelegates.Length; i++)
       {
-        WxeStep step = mockRepository.CreateMock<WxeStep> ();
+        WxeStep step = mockRepository.StrictMock<WxeStep> ();
         steps.Add (step);
       }
 

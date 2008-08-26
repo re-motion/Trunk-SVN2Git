@@ -27,7 +27,7 @@ namespace Remotion.UnitTests.Design
     public void SetUp()
     {
       _mockRepository = new MockRepository();
-      _mockDesignerHost = _mockRepository.CreateMock<IDesignerHost>();
+      _mockDesignerHost = _mockRepository.StrictMock<IDesignerHost>();
     }
 
     [Test]

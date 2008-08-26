@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetDisplayName_WithGlobalizationSerivce ()
     {
       IBusinessObjectBooleanProperty property = CreateProperty ("Scalar");
-      IBindableObjectGlobalizationService mockGlobalizationService = _mockRepository.CreateMock<IBindableObjectGlobalizationService>();
+      IBindableObjectGlobalizationService mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
       _businessObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
 
       Expect.Call (mockGlobalizationService.GetBooleanValueDisplayName (true)).Return ("MockTrue");

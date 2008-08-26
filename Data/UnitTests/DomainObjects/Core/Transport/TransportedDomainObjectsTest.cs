@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       TransportedDomainObjects transportedObjects = TransportAndDeleteObjects (DomainObjectIDs.ClassWithAllDataTypes1,
           DomainObjectIDs.ClassWithAllDataTypes2);
       MockRepository mockRepository = new MockRepository ();
-      IClientTransactionExtension mock = mockRepository.CreateMock<IClientTransactionExtension> ();
+      IClientTransactionExtension mock = mockRepository.StrictMock<IClientTransactionExtension> ();
 
       mock.Committing (null, null);
       LastCall.Constraints (Mocks_Is.Same (transportedObjects.DataTransaction), Mocks_List.Equal (GetTransportedObjects (transportedObjects)));

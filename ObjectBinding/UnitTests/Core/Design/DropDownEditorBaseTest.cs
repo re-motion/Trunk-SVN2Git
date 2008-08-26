@@ -34,9 +34,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design
     {
       _mockRepository = new MockRepository();
 
-      _mockTypeDescriptorContext = _mockRepository.CreateMock<ITypeDescriptorContext>();
-      _mockServiceProvider = _mockRepository.CreateMock<IServiceProvider>();
-      _mockWindowsFormsEditorService = _mockRepository.CreateMock<IWindowsFormsEditorService>();
+      _mockTypeDescriptorContext = _mockRepository.StrictMock<ITypeDescriptorContext>();
+      _mockServiceProvider = _mockRepository.StrictMock<IServiceProvider>();
+      _mockWindowsFormsEditorService = _mockRepository.StrictMock<IWindowsFormsEditorService>();
       _mockDropDownEditorBase = _mockRepository.PartialMock<MockDropDownEditorBase>();
       _mockEditorControlBase = _mockRepository.PartialMock<EditorControlBase> (_mockServiceProvider, _mockWindowsFormsEditorService);
     }

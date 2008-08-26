@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _configurationBuilderMock = _mockRepository.CreateMock<MixinConfigurationBuilder>((MixinConfiguration) null);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration) null);
       _analyzer = new CompleteInterfaceAnalyzer(_configurationBuilderMock);
     }
 
@@ -37,7 +37,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     public void AnalyzeCompleteInterfaceAttribute ()
     {
       CompleteInterfaceAttribute attribute = new CompleteInterfaceAttribute (typeof (string));
-      ClassContextBuilder classBuilderMock = _mockRepository.CreateMock<ClassContextBuilder> (_configurationBuilderMock, typeof (string), null);
+      ClassContextBuilder classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_configurationBuilderMock, typeof (string), null);
 
       using (_mockRepository.Ordered ())
       {
@@ -58,7 +58,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     [Test]
     public void Analyze ()
     {
-      CompleteInterfaceAnalyzer analyzer = _mockRepository.CreateMock<CompleteInterfaceAnalyzer> (_configurationBuilderMock);
+      CompleteInterfaceAnalyzer analyzer = _mockRepository.StrictMock<CompleteInterfaceAnalyzer> (_configurationBuilderMock);
 
       analyzer.Analyze (typeof (IInterfaceWithMultipleCompleteInterfaceAttributes));
       LastCall.CallOriginalMethod (OriginalCallOptions.CreateExpectation);

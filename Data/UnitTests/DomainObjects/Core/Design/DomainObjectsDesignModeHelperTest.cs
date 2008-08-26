@@ -37,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Design
             configFile, ResourceManager.GetDomainObjectsConfigurationWithFakeMappingLoader());
 
         MockRepository mockRepository = new MockRepository();
-        IDesignModeHelper mockDesignModeHelper = mockRepository.CreateMock<IDesignModeHelper>();
-        IDesignerHost stubDesignerHost = mockRepository.CreateMock<IDesignerHost> ();
+        IDesignModeHelper mockDesignModeHelper = mockRepository.StrictMock<IDesignModeHelper>();
+        IDesignerHost stubDesignerHost = mockRepository.StrictMock<IDesignerHost> ();
         Expect.Call (mockDesignModeHelper.GetConfiguration ()).Return (configuration);
         SetupResult.For (mockDesignModeHelper.DesignerHost).Return (stubDesignerHost);
 
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Design
     public void InitializeConfiguration_WithNoConfiguration ()
     {
         MockRepository mockRepository = new MockRepository ();
-        IDesignModeHelper mockDesignModeHelper = mockRepository.CreateMock<IDesignModeHelper> ();
+        IDesignModeHelper mockDesignModeHelper = mockRepository.StrictMock<IDesignModeHelper> ();
         Expect.Call (mockDesignModeHelper.GetConfiguration ()).Return (null);
 
         mockRepository.ReplayAll ();

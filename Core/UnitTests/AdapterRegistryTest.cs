@@ -37,7 +37,7 @@ namespace Remotion.UnitTests
     [Test]
     public void SetAndGetProvider ()
     {
-      IAdapter exptectedAdapter = _mocks.CreateMock<IAdapter> ();
+      IAdapter exptectedAdapter = _mocks.StrictMock<IAdapter> ();
       _mocks.ReplayAll ();
 
       _adapterRegistry.SetAdapter (typeof (IAdapter), exptectedAdapter);
@@ -54,7 +54,7 @@ namespace Remotion.UnitTests
     [Test]
     public void SetProviderNull ()
     {
-      IAdapter adapter = _mocks.CreateMock<IAdapter> ();
+      IAdapter adapter = _mocks.StrictMock<IAdapter> ();
       _mocks.ReplayAll ();
 
       _adapterRegistry.SetAdapter (typeof (IAdapter), adapter);

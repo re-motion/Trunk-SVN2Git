@@ -32,13 +32,13 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _configurationBuilderMock = _mockRepository.CreateMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
 
-      _extendsAnalyzerMock = _mockRepository.CreateMock<ExtendsAnalyzer> (_configurationBuilderMock);
-      _usesAnalyzerMock = _mockRepository.CreateMock<UsesAnalyzer> (_configurationBuilderMock);
-      _completeInterfaceAnalyzerMock = _mockRepository.CreateMock<CompleteInterfaceAnalyzer> (_configurationBuilderMock);
-      _mixAnalyzerMock = _mockRepository.CreateMock<MixAnalyzer> (_configurationBuilderMock);
-      _ignoresAnalyzerMock = _mockRepository.CreateMock<IgnoresAnalyzer> (_configurationBuilderMock);
+      _extendsAnalyzerMock = _mockRepository.StrictMock<ExtendsAnalyzer> (_configurationBuilderMock);
+      _usesAnalyzerMock = _mockRepository.StrictMock<UsesAnalyzer> (_configurationBuilderMock);
+      _completeInterfaceAnalyzerMock = _mockRepository.StrictMock<CompleteInterfaceAnalyzer> (_configurationBuilderMock);
+      _mixAnalyzerMock = _mockRepository.StrictMock<MixAnalyzer> (_configurationBuilderMock);
+      _ignoresAnalyzerMock = _mockRepository.StrictMock<IgnoresAnalyzer> (_configurationBuilderMock);
     }
 
     [Test]

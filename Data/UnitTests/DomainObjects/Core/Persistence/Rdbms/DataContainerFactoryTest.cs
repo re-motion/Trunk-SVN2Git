@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp();
 
       _mockRepository = new MockRepository();
-      _readerMock = _mockRepository.CreateMock<IDataReader>();
+      _readerMock = _mockRepository.StrictMock<IDataReader>();
       OppositeClassDefinitionRetriever.ResetCache ();
     }
 

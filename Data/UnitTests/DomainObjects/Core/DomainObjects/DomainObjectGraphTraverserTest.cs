@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       MockRepository repository = new MockRepository();
 
       Order order = GetDeepTestGraph();
-      IGraphTraversalStrategy strategy = repository.CreateMock<IGraphTraversalStrategy>();
+      IGraphTraversalStrategy strategy = repository.StrictMock<IGraphTraversalStrategy>();
 
       using (repository.Unordered())
       {

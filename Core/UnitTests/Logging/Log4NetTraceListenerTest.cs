@@ -45,7 +45,7 @@ namespace Remotion.UnitTests.Logging
       _filterListener = new Log4NetTraceListener ("FilterListener");
       
       _mocks = new MockRepository();
-      _mockFilter = _mocks.CreateMock<TraceFilter>();
+      _mockFilter = _mocks.StrictMock<TraceFilter>();
 
       _filterListener.Filter = _mockFilter;
 

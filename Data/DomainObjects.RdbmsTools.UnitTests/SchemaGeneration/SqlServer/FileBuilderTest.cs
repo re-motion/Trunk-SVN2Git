@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     public void BuildWithEmptyMappingConfiguration ()
     {
       MockRepository mockRepository = new MockRepository();
-      IMappingLoader mappingLoaderStub = mockRepository.CreateMock<IMappingLoader>();
+      IMappingLoader mappingLoaderStub = mockRepository.StrictMock<IMappingLoader>();
       ClassDefinitionCollection classDefinitionCollection = new ClassDefinitionCollection();
       SetupResult.For (mappingLoaderStub.ResolveTypes).Return (true);
       SetupResult.For (mappingLoaderStub.NameResolver).Return (new ReflectionBasedNameResolver());

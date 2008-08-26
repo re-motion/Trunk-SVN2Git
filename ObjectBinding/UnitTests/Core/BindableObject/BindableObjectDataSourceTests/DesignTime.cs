@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
       SetupResult.For (_stubSite.DesignMode).Return (true);
       _dataSource.Site = _stubSite;
 
-      _mockDesignerHost = _mockRepository.CreateMock<IDesignerHost>();
+      _mockDesignerHost = _mockRepository.StrictMock<IDesignerHost>();
       SetupResult.For (_stubSite.GetService (typeof (IDesignerHost))).Return (_mockDesignerHost);
 
       IDesignModeHelper helperStub = _mockRepository.Stub<IDesignModeHelper> ();

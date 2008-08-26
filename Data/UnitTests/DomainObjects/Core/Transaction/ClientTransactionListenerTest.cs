@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository = new MockRepository ();
       
-      _listener = _mockRepository.CreateMock<IClientTransactionListener> ();
+      _listener = _mockRepository.StrictMock<IClientTransactionListener> ();
 
       ClientTransactionMock.AddListener (_listener);
     }

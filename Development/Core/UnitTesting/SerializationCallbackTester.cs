@@ -34,7 +34,7 @@ namespace Remotion.Development.UnitTesting
       _receiverSetter (null);
       try
       {
-        ISerializationEventReceiver receiver = _mockRepository.CreateMock<ISerializationEventReceiver>();
+        ISerializationEventReceiver receiver = _mockRepository.StrictMock<ISerializationEventReceiver> ();
 
         _receiverSetter (receiver);
         CheckSerialization (receiver);
@@ -51,7 +51,7 @@ namespace Remotion.Development.UnitTesting
       try
       {
         byte[] bytes = Serializer.Serialize (_instance);
-        ISerializationEventReceiver receiver = _mockRepository.CreateMock<ISerializationEventReceiver>();
+        ISerializationEventReceiver receiver = _mockRepository.StrictMock<ISerializationEventReceiver> ();
         _receiverSetter (receiver);
 
         CheckDeserialization (bytes, receiver);

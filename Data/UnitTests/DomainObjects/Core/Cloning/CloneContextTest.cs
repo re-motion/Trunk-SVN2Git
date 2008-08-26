@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     {
       base.SetUp ();
       _mockRepository = new MockRepository();
-      _clonerMock = _mockRepository.CreateMock<DomainObjectCloner> ();
+      _clonerMock = _mockRepository.StrictMock<DomainObjectCloner> ();
     }
 
     [Test]

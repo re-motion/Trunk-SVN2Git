@@ -164,7 +164,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void NameProviderIsUsedWhenTypeIsGenerated ()
     {
       MockRepository repository = new MockRepository ();
-      INameProvider nameProviderMock = repository.CreateMock<INameProvider> ();
+      INameProvider nameProviderMock = repository.StrictMock<INameProvider> ();
       ConcreteTypeBuilder.Current.TypeNameProvider = nameProviderMock;
 
       TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
@@ -184,7 +184,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void NamesOfNestedTypesAreFlattened ()
     {
       MockRepository repository = new MockRepository ();
-      INameProvider nameProviderMock = repository.CreateMock<INameProvider> ();
+      INameProvider nameProviderMock = repository.StrictMock<INameProvider> ();
       ConcreteTypeBuilder.Current.TypeNameProvider = nameProviderMock;
 
       TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));

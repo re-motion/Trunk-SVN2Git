@@ -28,8 +28,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectStringFormatterSer
     {
       _stringFormatterService = new BusinessObjectStringFormatterService ();
       _mockRepository = new MockRepository ();
-      _mockBusinessObject = _mockRepository.CreateMock<IBusinessObject> ();
-      _mockProperty = _mockRepository.CreateMock<IBusinessObjectNumericProperty> ();
+      _mockBusinessObject = _mockRepository.StrictMock<IBusinessObject> ();
+      _mockProperty = _mockRepository.StrictMock<IBusinessObjectNumericProperty> ();
     }
 
     [Test]
@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectStringFormatterSer
     [Test]
     public void Scalar_WithFormattableValue ()
     {
-      IFormattable mockValue = _mockRepository.CreateMock<IFormattable>();
+      IFormattable mockValue = _mockRepository.StrictMock<IFormattable>();
       Expect.Call (_mockProperty.IsList).Return (false);
       Expect.Call (_mockBusinessObject.GetProperty (_mockProperty)).Return (mockValue);
       Expect.Call (mockValue.ToString ("FormatString", null)).Return ("ExpectedStringValue");

@@ -84,7 +84,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetMetadata_UsesFactory ()
     {
       MockRepository mockRepository = new MockRepository ();
-      IMetadataFactory factoryMock = mockRepository.CreateMock<IMetadataFactory> ();
+      IMetadataFactory factoryMock = mockRepository.StrictMock<IMetadataFactory> ();
 
       IPropertyInformation dummyProperty1 = GetPropertyInfo (typeof (DateTime), "Now");
       IPropertyInformation dummyProperty2 = GetPropertyInfo (typeof (Environment), "TickCount");
@@ -92,7 +92,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       PropertyReflector dummyReflector1 = PropertyReflector.Create(GetPropertyInfo (typeof (DateTime), "Ticks"), _businessObjectProvider);
       PropertyReflector dummyReflector2 = PropertyReflector.Create(GetPropertyInfo (typeof (Environment), "NewLine"), _businessObjectProvider);
 
-      IPropertyFinder propertyFinderMock = mockRepository.CreateMock<IPropertyFinder> ();
+      IPropertyFinder propertyFinderMock = mockRepository.StrictMock<IPropertyFinder> ();
 
       ClassReflector otherClassReflector = new ClassReflector (_type, _businessObjectProvider, factoryMock);
 

@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
       base.SetUp ();
 
       _mockRepository = new MockRepository();
-      _mockStringFormatterService = _mockRepository.CreateMock<IBusinessObjectStringFormatterService>();
+      _mockStringFormatterService = _mockRepository.StrictMock<IBusinessObjectStringFormatterService>();
       BindableObjectProvider provider = new BindableObjectProvider();
       provider.AddService (typeof (IBusinessObjectStringFormatterService), _mockStringFormatterService);
       BusinessObjectProvider.SetProvider(typeof (BindableObjectProviderAttribute), provider);

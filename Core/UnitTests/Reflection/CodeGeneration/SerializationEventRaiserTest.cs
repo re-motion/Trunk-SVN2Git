@@ -73,7 +73,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       StreamingContext context = new StreamingContext();
 
       MockRepository repository = new MockRepository();
-      SerializationEventRaiser eventRaiserMock = repository.CreateMock<SerializationEventRaiser>();
+      SerializationEventRaiser eventRaiserMock = repository.StrictMock<SerializationEventRaiser>();
 
       eventRaiserMock.InvokeAttributedMethod (instance, typeof (OnDeserializedAttribute), context);
       LastCall.CallOriginalMethod (OriginalCallOptions.CreateExpectation);

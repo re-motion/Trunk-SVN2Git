@@ -31,8 +31,8 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     public void SetUp ()
     {
       _mocks = new MockRepository ();
-      _localizationConverter = _mocks.CreateMock<IMetadataLocalizationConverter> ();
-      _metadataConverter = _mocks.CreateMock<IMetadataConverter> ();
+      _localizationConverter = _mocks.StrictMock<IMetadataLocalizationConverter> ();
+      _metadataConverter = _mocks.StrictMock<IMetadataConverter> ();
     }
 
     [Test]

@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
       _businessObjectProvider = new BindableObjectProvider();
 
       _mockRepository = new MockRepository();
-      _mockRepository.CreateMock<IBusinessObject>();
+      _mockRepository.StrictMock<IBusinessObject>();
     }
 
     [Test]

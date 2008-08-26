@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void GetAssemblyPath_FromNonLocalUri ()
     {
       MockRepository mockRepository = new MockRepository();
-      _Assembly assemblyMock = mockRepository.CreateMock<_Assembly>();
+      _Assembly assemblyMock = mockRepository.StrictMock<_Assembly>();
 
       SetupResult.For (assemblyMock.EscapedCodeBase).Return ("http://server/File.ext");
       mockRepository.ReplayAll();

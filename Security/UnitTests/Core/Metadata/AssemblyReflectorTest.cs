@@ -47,9 +47,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
     public void SetUp ()
     {
       _mocks = new MockRepository ();
-      _accessTypeReflectorMock = _mocks.CreateMock<IAccessTypeReflector> ();
-      _classReflectorMock = _mocks.CreateMock<IClassReflector> ();
-      _abstractRoleReflectorMock = _mocks.CreateMock<IAbstractRoleReflector> ();
+      _accessTypeReflectorMock = _mocks.StrictMock<IAccessTypeReflector> ();
+      _classReflectorMock = _mocks.StrictMock<IClassReflector> ();
+      _abstractRoleReflectorMock = _mocks.StrictMock<IAbstractRoleReflector> ();
       _assemblyReflector = new AssemblyReflector (_accessTypeReflectorMock, _classReflectorMock, _abstractRoleReflectorMock);
       _cache = new MetadataCache ();
     }

@@ -173,9 +173,9 @@
     <echo message="Target has executed."/>
   </target>
 
-  <target name="all-test" depends="prereq, Core.Mixins.Samples, Core.UnitTests, Dms.UnitTests, Development.UnitTests, Web.UnitTests, ObjectBinding.UnitTests, 
+  <target name="all-test" depends="prereq, Core.Mixins.Samples, Core.UnitTests, Development.UnitTests, Web.UnitTests, ObjectBinding.UnitTests, 
       Data.UnitTests, Data.DomainObjects.RdbmsTools.UnitTests, 
-      Security.UnitTests.TestDomain, Security.UnitTests, SecurityManager.Core.UnitTests">
+      Security.UnitTests.TestDomain, Security.UnitTests, SecurityManager.Core.UnitTests, Dms.UnitTests">
     <echo message="Target has executed."/>
   </target>
 

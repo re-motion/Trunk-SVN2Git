@@ -122,7 +122,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void CanSaveAndResetScope ()
     {
       var repository = new MockRepository();
-      var managerMock = repository.CreateMock<IModuleManager>();
+      var managerMock = repository.StrictMock<IModuleManager>();
 
       var builder = new ConcreteTypeBuilder {Scope = managerMock};
 
@@ -221,7 +221,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         Dev.Null = SafeContext.Instance;
 
         var repository = new MockRepository ();
-        var moduleManagerMock = repository.CreateMock<IModuleManager> ();
+        var moduleManagerMock = repository.StrictMock<IModuleManager> ();
         ConcreteTypeBuilder.Current.Scope = moduleManagerMock;
 
         Expect.Call (moduleManagerMock.SignedAssemblyName).Return ("FooS");
@@ -285,7 +285,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         Dev.Null = SafeContext.Instance;
 
         var repository = new MockRepository ();
-        var moduleManagerMock = repository.CreateMock<IModuleManager> ();
+        var moduleManagerMock = repository.StrictMock<IModuleManager> ();
         ConcreteTypeBuilder.Current.Scope = moduleManagerMock;
 
         Expect.Call (moduleManagerMock.SignedAssemblyName).Return ("FooS");
@@ -365,7 +365,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
         var repository = new MockRepository ();
 
-        var moduleManagerMock = repository.CreateMock<IModuleManager> ();
+        var moduleManagerMock = repository.StrictMock<IModuleManager> ();
         IModuleManager realScope = ConcreteTypeBuilder.Current.Scope;
         ConcreteTypeBuilder.Current.Scope = moduleManagerMock;
 
@@ -436,8 +436,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void InitializeUnconstructedInstanceDelegatesToScope ()
     {
       var mockRepository = new MockRepository();
-      var mockMixinTarget = mockRepository.CreateMock<IMixinTarget>();
-      var mockScope = mockRepository.CreateMock<IModuleManager> ();
+      var mockMixinTarget = mockRepository.StrictMock<IMixinTarget>();
+      var mockScope = mockRepository.StrictMock<IModuleManager> ();
       
       var builder = new ConcreteTypeBuilder {Scope = mockScope};
 
@@ -457,11 +457,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var mockRepository = new MockRepository ();
 
       Type deserializedType = typeof (object);
-      var objectReference = mockRepository.CreateMock<IObjectReference> ();
+      var objectReference = mockRepository.StrictMock<IObjectReference> ();
       var info = new SerializationInfo (deserializedType, new FormatterConverter ());
       var context = new StreamingContext ();
 
-      var mockScope = mockRepository.CreateMock<IModuleManager> ();
+      var mockScope = mockRepository.StrictMock<IModuleManager> ();
 
       var builder = new ConcreteTypeBuilder {Scope = mockScope};
 
@@ -481,8 +481,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var mockRepository = new MockRepository ();
 
-      var objectReference = mockRepository.CreateMock<IObjectReference> ();
-      var mockScope = mockRepository.CreateMock<IModuleManager> ();
+      var objectReference = mockRepository.StrictMock<IObjectReference> ();
+      var mockScope = mockRepository.StrictMock<IModuleManager> ();
 
       var builder = new ConcreteTypeBuilder {Scope = mockScope};
 

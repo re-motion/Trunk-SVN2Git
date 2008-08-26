@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       base.SetUp ();
 
       _mockRepository = new MockRepository ();
-      _readerMock = _mockRepository.CreateMock<IDataReader> ();
+      _readerMock = _mockRepository.StrictMock<IDataReader> ();
 
       _regionDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Region));
       _customerDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Customer));

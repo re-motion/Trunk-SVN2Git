@@ -54,9 +54,9 @@ namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
       _functionTypeName = WebTypeUtility.GetQualifiedName (_functionType);
 
       _mocks = new MockRepository ();
-      _mockWebSecurityAdapter = _mocks.CreateMock<IWebSecurityAdapter> ();
-      _mockWxeSecurityAdapter = _mocks.CreateMock<IWxeSecurityAdapter> ();
-      _mockSecurableObject = _mocks.CreateMock<ISecurableObject> ();
+      _mockWebSecurityAdapter = _mocks.StrictMock<IWebSecurityAdapter> ();
+      _mockWxeSecurityAdapter = _mocks.StrictMock<IWxeSecurityAdapter> ();
+      _mockSecurableObject = _mocks.StrictMock<ISecurableObject> ();
 
       _httpContext = HttpContextHelper.CreateHttpContext ("GET", "default.html", null);
       _httpContext.Response.ContentEncoding = System.Text.Encoding.UTF8;

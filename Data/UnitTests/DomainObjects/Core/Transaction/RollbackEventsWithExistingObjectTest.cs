@@ -60,12 +60,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository = new MockRepository ();
 
-      _clientTransactionMockEventReceiver = _mockRepository.CreateMock<ClientTransactionMockEventReceiver> (ClientTransactionMock);
-      _clientTransactionExtensionMock = _mockRepository.CreateMock<IClientTransactionExtension> ();
+      _clientTransactionMockEventReceiver = _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (ClientTransactionMock);
+      _clientTransactionExtensionMock = _mockRepository.StrictMock<IClientTransactionExtension> ();
       ClientTransactionMock.Extensions.Add ("MockExtension", _clientTransactionExtensionMock);
 
-      _order1MockEventReceiver = _mockRepository.CreateMock<DomainObjectMockEventReceiver> (_order1);
-      _customer1MockEventReceiver = _mockRepository.CreateMock<DomainObjectMockEventReceiver> (_customer1);
+      _order1MockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
+      _customer1MockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_customer1);
     }
 
     [Test]

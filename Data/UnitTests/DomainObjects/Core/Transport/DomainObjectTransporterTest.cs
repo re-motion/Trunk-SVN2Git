@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       DomainObject loadedObject2 = _transporter.Load (DomainObjectIDs.Order2);
 
       MockRepository repository = new MockRepository ();
-      IExportStrategy mockStrategy = repository.CreateMock<IExportStrategy> ();
+      IExportStrategy mockStrategy = repository.StrictMock<IExportStrategy> ();
       byte[] data = new byte[] { 1, 2, 3 };
 
       Expect.Call (mockStrategy.Export (null))

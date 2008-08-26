@@ -31,7 +31,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
     public void SetUp ()
     {
       _mockRepository = new MockRepository ();
-      _parentBuilderMock = _mockRepository.CreateMock<ClassContextBuilder> (new MixinConfigurationBuilder (null), typeof (object), null);
+      _parentBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (new MixinConfigurationBuilder (null), typeof (object), null);
       _mixinBuilder = new MixinContextBuilder (_parentBuilderMock, typeof (BT2Mixin1));
     }
 
@@ -176,7 +176,7 @@ namespace Remotion.UnitTests.Mixins.Context.FluentBuilders
 
       ClassContextBuilder r1 = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (object), null);
       MixinConfiguration r2 = new MixinConfiguration (null);
-      IDisposable r3 = _mockRepository.CreateMock<IDisposable> ();
+      IDisposable r3 = _mockRepository.StrictMock<IDisposable> ();
       MixinContextBuilder r4 = new MixinContextBuilder (r1, typeof (BT1Mixin1));
       ClassContext r5 = new ClassContext (typeof (object));
 

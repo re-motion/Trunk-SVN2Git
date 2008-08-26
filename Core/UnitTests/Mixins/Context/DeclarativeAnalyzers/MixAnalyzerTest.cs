@@ -31,7 +31,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _configurationBuilderMock = _mockRepository.CreateMock<MixinConfigurationBuilder>((MixinConfiguration) null);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration) null);
       _analyzer = new MixAnalyzer(_configurationBuilderMock);
     }
 
@@ -181,7 +181,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     [Test]
     public void Analyze ()
     {
-      MixAnalyzer analyzer = _mockRepository.CreateMock<MixAnalyzer> (_configurationBuilderMock);
+      MixAnalyzer analyzer = _mockRepository.StrictMock<MixAnalyzer> (_configurationBuilderMock);
 
       analyzer.Analyze (typeof (MixAnalyzerTest).Assembly);
       LastCall.CallOriginalMethod (OriginalCallOptions.CreateExpectation);
@@ -202,7 +202,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
     {
       var duplicateAttributes = new [] {new MixAttribute(typeof (object), typeof (string)), new MixAttribute (typeof (object), typeof (string))};
       
-      var analyzer = _mockRepository.CreateMock<MixAnalyzer> (_configurationBuilderMock);
+      var analyzer = _mockRepository.StrictMock<MixAnalyzer> (_configurationBuilderMock);
       var assemblyStub = _mockRepository.Stub<ICustomAttributeProvider> ();
 
       SetupResult.For (assemblyStub.GetCustomAttributes (typeof (MixAttribute), false)).Return (duplicateAttributes);
@@ -225,7 +225,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
         new MixAttribute (typeof (object), typeof (string)) { MixinKind = MixinKind.Used } 
       };
 
-      var analyzer = _mockRepository.CreateMock<MixAnalyzer> (_configurationBuilderMock);
+      var analyzer = _mockRepository.StrictMock<MixAnalyzer> (_configurationBuilderMock);
       var assemblyStub = _mockRepository.Stub<ICustomAttributeProvider> ();
 
       SetupResult.For (assemblyStub.GetCustomAttributes (typeof (MixAttribute), false)).Return (duplicateAttributes);

@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       base.SetUp ();
 
       _mockRepository = new MockRepository ();
-      _mockRepository.CreateMock<IBusinessObject> ();
+      _mockRepository.StrictMock<IBusinessObject> ();
     }
     
     [Test]
@@ -50,8 +50,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void IsEnabled_WithFalse ()
     {
-      IBusinessObject mockBusinessObject  =_mockRepository.CreateMock<IBusinessObject>();
-      IBusinessObjectEnumerationProperty mockProperty = _mockRepository.CreateMock<IBusinessObjectEnumerationProperty>();
+      IBusinessObject mockBusinessObject  =_mockRepository.StrictMock<IBusinessObject>();
+      IBusinessObjectEnumerationProperty mockProperty = _mockRepository.StrictMock<IBusinessObjectEnumerationProperty>();
 
       IEnumerationValueFilter filter = new ConstantEnumerationValueFilter (new Enum[] { TestEnum.Value1, TestEnum.Value4 });
 
@@ -66,8 +66,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void IsEnabled_WithTrue ()
     {
-      IBusinessObject mockBusinessObject = _mockRepository.CreateMock<IBusinessObject> ();
-      IBusinessObjectEnumerationProperty mockProperty = _mockRepository.CreateMock<IBusinessObjectEnumerationProperty> ();
+      IBusinessObject mockBusinessObject = _mockRepository.StrictMock<IBusinessObject> ();
+      IBusinessObjectEnumerationProperty mockProperty = _mockRepository.StrictMock<IBusinessObjectEnumerationProperty> ();
 
       IEnumerationValueFilter filter = new ConstantEnumerationValueFilter (new Enum[] { TestEnum.Value1, TestEnum.Value4 });
 

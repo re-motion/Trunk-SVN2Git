@@ -39,14 +39,14 @@ namespace Remotion.Web.UnitTests.Security.UI.WebSecurityAdapterTests
     {
       _mocks = new MockRepository ();
       
-      _mockSecurityProvider = _mocks.CreateMock<ISecurityProvider> ();
+      _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
-      _mockObjectSecurityStrategy = _mocks.CreateMock<IObjectSecurityStrategy> ();
-      _mockFunctionalSecurityStrategy = _mocks.CreateMock<IFunctionalSecurityStrategy> ();
-      _mockWxeSecurityAdapter = _mocks.CreateMock<IWxeSecurityAdapter> ();
+      _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy> ();
+      _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
+      _mockWxeSecurityAdapter = _mocks.StrictMock<IWxeSecurityAdapter> ();
 
       _user = new GenericPrincipal (new GenericIdentity ("owner"), new string[0]);
-      _mockUserProvider = _mocks.CreateMock<IUserProvider> ();
+      _mockUserProvider = _mocks.StrictMock<IUserProvider> ();
       SetupResult.For (_mockUserProvider.GetUser()).Return (_user);
     }
 

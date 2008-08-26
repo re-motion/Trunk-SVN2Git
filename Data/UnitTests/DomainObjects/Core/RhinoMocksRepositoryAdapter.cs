@@ -31,9 +31,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _mockRepository = mockRepository;
     }
 
-    public T CreateMock<T> (params object[] argumentsForConstructor)
+    public T StrictMock<T> (params object[] argumentsForConstructor)
     {
-      return _mockRepository.CreateMock<T> (argumentsForConstructor);
+      return _mockRepository.StrictMock<T> (argumentsForConstructor);
     }
 
     public void ReplayAll ()

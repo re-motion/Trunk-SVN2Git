@@ -112,8 +112,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetBindableObjectClass ()
     {
       MockRepository mockRepository = new MockRepository();
-      IMetadataFactory metadataFactoryMock = mockRepository.CreateMock<IMetadataFactory>();
-      IClassReflector classReflectorMock = mockRepository.CreateMock<IClassReflector>();
+      IMetadataFactory metadataFactoryMock = mockRepository.StrictMock<IMetadataFactory>();
+      IClassReflector classReflectorMock = mockRepository.StrictMock<IClassReflector>();
 
       BindableObjectProvider provider = new BindableObjectProvider (metadataFactoryMock, _serviceFactoryStub);
       Type targetType = typeof (SimpleBusinessObjectClass);

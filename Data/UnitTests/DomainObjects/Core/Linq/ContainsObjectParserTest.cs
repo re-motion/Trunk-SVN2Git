@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _mockRepository = new MockRepository ();
       _registryStub =  _mockRepository.Stub<WhereConditionParserRegistry>(StubDatabaseInfo.Instance);
-      _containsParserMock = _mockRepository.CreateMock<IWhereConditionParser> ();
+      _containsParserMock = _mockRepository.StrictMock<IWhereConditionParser> ();
 
       _orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       _query = GetQuery();

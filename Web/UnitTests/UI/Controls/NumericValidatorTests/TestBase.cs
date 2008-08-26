@@ -32,7 +32,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.NumericValidatorTests
       _mockRepository = new MockRepository();
       _textBox = new TextBox();
       _textBox.ID = "TextBox";
-      Control namingContainer = _mockRepository.CreateMultiMock<Control> (typeof (INamingContainer));
+      Control namingContainer = _mockRepository.StrictMultiMock<Control> (typeof (INamingContainer));
       SetupResult.For (namingContainer.FindControl ("TextBox")).Return (_textBox);
       _validator = new NumericValidatorMock (namingContainer);
       _validator.ControlToValidate = _textBox.ID;
