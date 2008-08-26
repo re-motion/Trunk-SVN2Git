@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Remotion.Text.Diagnostic
 {
+  //TODO: NULL CHECKS!!!!!!!!!!!!!!!!!!!!!!!!
   /// <summary>
   /// Allows a class implementing the IProcessor interface to visit each member of an outer product of a variable number of independently sized tuples.
   /// From a programmer's view the class supplies "variable number of nested for loops"-functionality.
@@ -13,22 +14,27 @@ namespace Remotion.Text.Diagnostic
   /// </summary>
   /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProduct/ClassExample1/*' />
   /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProduct/ClassExample2/*' />
-  
+  //TODO: rename. OuterProduct is only a result, sicne it is also a calculator, OuterProductBuilder is a better name
   public class OuterProduct 
   {
     /// <summary>
     /// Interface a "Processor" class which can be passed to OuterProduct.ProcessOuterProduct needs to implement.
     /// </summary>
+    //TODO: Rename to strategy, document intention
+    //TODO: move to outer scope, file
+    //TODO: use ndoc-syntax for keywords, references
     public interface IProcessor {
       /// <summary>
       /// Processor callback invoked before a nested for loop starts.
       /// </summary>
       /// <returns><c>true</c> to continue looping, <c>false</c> to break from the current loop.</returns>
+      //TODO: rename ProcessStateBeforeLoop?
       bool DoBeforeLoop ();
       /// <summary>
       /// Processor callback invoked after a nested for loop has finished.
       /// </summary>
       /// <returns><c>true</c> to continue looping, <c>false</c> to break from the current loop.</returns>
+      //TODO: rename ProcessStateAfterLoop?
       bool DoAfterLoop ();
       /// <summary>
       /// Before each callback to the processor the OuterProduct class sets the current <c>ProcessingState</c> through a
@@ -48,6 +54,7 @@ namespace Remotion.Text.Diagnostic
     /// <summary>
     /// Convenience class to derive OuterProduct-processors from. Already supplies ProcessingState-functionality.
     /// </summary>
+    //TODO: move to outer scope, file
     public class ProcessorBase : IProcessor 
     { 
       private OuterProduct.ProcessingState _processingState;
@@ -95,6 +102,8 @@ namespace Remotion.Text.Diagnostic
     /// DimensionIndex is the currently running for-loop; ElementIndex (=DimensionIndices[DimensionIndex]) is the value of the loop-variable of the currently running for-loop.
     /// IsInnermostLoop, IsOutermostLoop can be queried to treat the innermost and outermost loop differently, if so required.
     /// </summary>
+    //TODO: move to outer scope, file
+    //TODO: remove empty xml-commmets
     public struct ProcessingState
     {
       /// <summary>
@@ -224,6 +233,7 @@ namespace Remotion.Text.Diagnostic
 
 
 
+    //TODO: remove these comments since it isn't needed when the class is shorter
     //-------------------------------------------------------------------------------
     // Class members
     //-------------------------------------------------------------------------------
@@ -248,6 +258,7 @@ namespace Remotion.Text.Diagnostic
     public int[] NumberElementsPerDimension
     {
       get { return _numberElementsPerDimension; }
+      //TODO: remove unused setter
       private set { _numberElementsPerDimension = value; }
     }
 
@@ -273,6 +284,8 @@ namespace Remotion.Text.Diagnostic
     public int Length { get { return NumberElementsOverall; } }
 
 
+    //TODO: remove these comments since it isn't needed when the class is shorter
+    //TODO: ctor before property
     //-------------------------------------------------------------------------------
     // Ctors
     //-------------------------------------------------------------------------------
@@ -303,10 +316,12 @@ namespace Remotion.Text.Diagnostic
       Init (array);
     }
 
+    //TODO: to static, use from ctor-cascading
     private void Init (Array array)
     {
       int numberDimensions = array.Rank;
       int[] numberElementsPerDimension = new int[numberDimensions];
+      //TODO: rename
       for (int iDimension = 0; iDimension < numberDimensions; ++iDimension)
       {
         numberElementsPerDimension[iDimension] = array.GetLength (iDimension);
@@ -320,6 +335,7 @@ namespace Remotion.Text.Diagnostic
       InitProcessing();
     }
 
+    //TODO: inline
     private void InitProcessing ()
     {
       int rank = _numberElementsPerDimension.Length;
@@ -398,6 +414,7 @@ namespace Remotion.Text.Diagnostic
     public void ProcessOuterProduct (IProcessor outerProductProcessor)
     {
       //Init (_numberElementsPerDimension);
+      //TODO: NO reset in type, builders are one way
       InitProcessing();
       ProcessOuterProductRecursive (0, outerProductProcessor);
     }

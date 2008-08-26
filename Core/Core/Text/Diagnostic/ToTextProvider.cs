@@ -9,6 +9,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Text.Diagnostic
 {
+  //TODO: summary too long
   /// <summary>
   /// Provides conversion of arbitray objects into human readable text form (<c>ToText</c> method) 
   /// using a fallback cascade starting with registered external object-to-text-conversion-handlers.
@@ -26,13 +27,16 @@ namespace Remotion.Text.Diagnostic
   /// </list>
   /// 
   /// </summary>
+  //TODO: auto proeprties, properties on single line, check resharper settigns
   public class ToTextProvider
   {
+    //TODO: Change to abstract base class, move to outer scope
     private interface IToTextHandlerExternal
     {
       void ToText (Object obj, ToTextBuilder toTextBuilder);
     }
 
+    //TODO: Move outer scope
     private class ToTextHandlerExternal<T> : IToTextHandlerExternal
     {
       private readonly Action<T, ToTextBuilder> _handler;
@@ -50,6 +54,7 @@ namespace Remotion.Text.Diagnostic
 
 
     private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap = new Dictionary<Type, IToTextHandlerExternal> ();
+    //TODO: Change to CultureInfo.Invariant, naming convention!!!!
     private static readonly NumberFormatInfo _numberFormatInfoUS = new CultureInfo ("en-US", false).NumberFormat;
 
     // Define a cache instance (dictionary syntax)
@@ -133,6 +138,8 @@ namespace Remotion.Text.Diagnostic
       return toTextBuilder.ToText (obj).ToString ();
     }
 
+    //TODO: refactor and split to type based strategy (IToTextHandler?)
+    //TODO: use ArgumentUtility
     public void ToText (object obj, ToTextBuilder toTextBuilder)
     {
       Assertion.IsNotNull (toTextBuilder);
@@ -333,7 +340,7 @@ namespace Remotion.Text.Diagnostic
       return value;
     }
 
-
+    //TODO: rename, NON static
     private static void AutomaticObjectToTextProcessMemberInfos (string message, Object obj, BindingFlags bindingFlags, 
       MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
     {
@@ -349,6 +356,7 @@ namespace Remotion.Text.Diagnostic
           string name = memberInfo.Name;
 
           // Skip backing fields
+          //TODO: Test for CompilerGenerated, inline
           bool processMember = !name.Contains("k__");
 
           if (processMember)
@@ -363,6 +371,7 @@ namespace Remotion.Text.Diagnostic
 
 
 
+    //TODO: rename
     public void AutomaticObjectToText (object obj, ToTextBuilder toTextBuilder, 
       bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
     {
@@ -392,11 +401,13 @@ namespace Remotion.Text.Diagnostic
 
 
 
+    //TODO: NON static
     private static void Log (string s)
     {
       Console.WriteLine ("[To]: " + s);
     }
 
+    //TODO: NON static
     private static void LogVariables (string format, params object[] parameterArray)
     {
       Log (String.Format (format, parameterArray));

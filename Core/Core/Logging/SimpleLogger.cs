@@ -70,6 +70,7 @@ namespace Remotion.Logging
       _toText.UseAutomaticCharEnclosing = true;
     }
 
+    //TODO: rename
     public void It (object obj)
     {
       _textWriter.WriteLine(_toText.ToTextString(obj));
@@ -85,6 +86,7 @@ namespace Remotion.Logging
       _textWriter.WriteLine(format, parameters);
     }
 
+    //TODO: rename
     public void Sequence (params object[] parameters)
     {
       // TODO: Implement AppendSequence in ToTextBuilder
@@ -101,6 +103,7 @@ namespace Remotion.Logging
       _textWriter.WriteLine(sb.ToString());
     }
 
+    //TODO: rename
     public void Item (object obj)
     {
       _textWriter.Write (_toText.ToTextString (obj));

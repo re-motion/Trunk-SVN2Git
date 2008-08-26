@@ -14,30 +14,37 @@ namespace Remotion.Text.Diagnostic
   /// var d = New.Dictionary("A",1, "B",2, "C",3); // d["A"]=1, d["B"]=2,...
   /// ]]>
   /// </code></example>
+  //TODO: Move to Development
+  //TODO: Rename to ObjectMother
   public partial class New
   {
 
+    //TODO: remove
     public static T[] Array<T> (params T[] values)
     {
       return values;
     }
 
 
+    //TODO: remove
     public static object[] Objects (params object[] values)
     {
       return values;
     }
 
+    //TODO: remove
     public static object[][] Objects (params object[][] values)
     {
       return values;
     }
 
+    //TODO: remove
     public static object[][][] Objects (params object[][][] values)
     {
       return values;
     }
 
+    //TODO: remove
     public static object[][][][] Objects (params object[][][][] values)
     {
       return values;
@@ -59,12 +66,13 @@ namespace Remotion.Text.Diagnostic
     }
 
 
-
+    //TODO: rename KeyValuePair
     public static KeyValuePair<TKey, TValue> KeyValue<TKey, TValue> (TKey key, TValue value)
     {
       return new KeyValuePair<TKey, TValue> (key, value);
     }
 
+    //TODO: remove
     public static KeyValuePair<TKey, TValue> KV<TKey, TValue> (TKey key, TValue value)
     {
       return KeyValue<TKey, TValue> (key, value);

@@ -6,6 +6,7 @@ using Remotion.Text.Diagnostic;
 
 namespace Remotion.UnitTests.Text.Diagnostic
 {
+  //TODO: Integrate into ToTextProviderTest?
   [TestFixture]
   public class IToTextHandlerTest
   {

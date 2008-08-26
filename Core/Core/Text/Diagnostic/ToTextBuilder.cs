@@ -6,9 +6,11 @@ using Remotion.Utilities;
 
 namespace Remotion.Text.Diagnostic
 {
+  //TODO: auto proeprties for properies with get and set, unless null-check is required
+  //TODO: Extract enumerable processor
   public class ToTextBuilder
   {
-
+    //TODO: Move to outer scope
     public class SequenceStateHolder
     {
       private int _sequenceCounter;
@@ -18,7 +20,7 @@ namespace Remotion.Text.Diagnostic
       private string _elementPostfix;
       private string _sequencePostfix;
 
-
+      //TODO: Null-checks?
       public SequenceStateHolder (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
       {
         _sequenceCounter = 0;
@@ -59,6 +61,7 @@ namespace Remotion.Text.Diagnostic
         get { return _sequencePostfix; }
       }
 
+      //TODO: rename IncrementCounter, what is the purpose of this counter??
       public void IncreaseCounter ()
       {
         ++_sequenceCounter;
@@ -82,6 +85,7 @@ namespace Remotion.Text.Diagnostic
      * XML: Support text to be added to be processed to become XML compatible ("<" -> "&lt;" etc). Use CDATA ?
     */
 
+    //TODO: Document and rename, should be immutable?
     private class StringBuilderToText
     {
       private StringBuilder _stringBuilder = new StringBuilder ();
@@ -109,6 +113,7 @@ namespace Remotion.Text.Diagnostic
     }
 
     private StringBuilderToText _textStringBuilderToText = new StringBuilderToText ();
+    //TODO: make readonly
     private ToTextProvider _toTextProvider;
     
     private string _enumerablePrefix = "{";
@@ -127,6 +132,7 @@ namespace Remotion.Text.Diagnostic
     private Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder>(16);
     private SequenceStateHolder _sequenceState = null;
 
+    //TODO: Are setters really necessary?, Move to parameter object and keep them there
     public string ArrayPrefix
     {
       get { return _arrayPrefix; }
@@ -188,7 +194,7 @@ namespace Remotion.Text.Diagnostic
       set { _enumerablePostfix = value; }
     }
 
-
+    //TODO: move to outer scope
     public enum OutputComplexityLevel
     {
       Disable,
@@ -216,13 +222,14 @@ namespace Remotion.Text.Diagnostic
     public void OutputComplex () { _outputComplexity = OutputComplexityLevel.Complex; }
     public void OutputFull () { _outputComplexity = OutputComplexityLevel.Full; }
 
-
+    //TODO: rename, make factory method, don't toggle flag
     public ToTextBuilder AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(OutputComplexityLevel complexityLevel)
     {
       _textStringBuilderToText.Enabled = (_outputComplexity >= complexityLevel) ? true : false;
       return this; 
     }
 
+    //TODO: rename
     public ToTextBuilder cSkeleton
     {
       get
@@ -343,7 +350,7 @@ namespace Remotion.Text.Diagnostic
       return this;
     }
 
-
+    //TODO: arg check for name
     public ToTextBuilder AppendMember (string name, Object obj)
     {
       BeforeAppendElement ();
@@ -352,12 +359,14 @@ namespace Remotion.Text.Diagnostic
       return this;
     }
 
+    //TODO: arg check for name
     public ToTextBuilder AppendMemberNonSequence (string name, Object obj)
     {
       _AppendMember (name, obj);
       return this;
     }
 
+    //TODO: rename
     private ToTextBuilder _AppendMember (string name, Object obj)
     {
       //_textStringBuilderToText.Append (" ");
@@ -476,7 +485,7 @@ namespace Remotion.Text.Diagnostic
     //}
 
 
-
+    //TODO: move to outer scope
     private class ArrayToTextProcessor : OuterProduct.ProcessorBase
     {
       protected readonly Array _array;
@@ -580,6 +589,7 @@ namespace Remotion.Text.Diagnostic
     }
 
 
+    //TODO: Capitalize method and property names, no abbreviations
 
     //--------------------------------------------------------------------------
     // Shorthand notations
@@ -689,6 +699,7 @@ namespace Remotion.Text.Diagnostic
 
     public override string ToString ()
     {
+      //TODO: No exception at all, ToString should never throw
       Assertion.IsFalse(IsInSequence);
       return _textStringBuilderToText.ToString();
     }

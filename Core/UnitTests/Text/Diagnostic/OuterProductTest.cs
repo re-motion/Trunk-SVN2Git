@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 namespace Remotion.UnitTests.Text.Diagnostic
 {
+  //TODO: Move outer scope and use namespace (subfolder) for grouping
   [TestFixture]
   public class OuterProductTest
   {

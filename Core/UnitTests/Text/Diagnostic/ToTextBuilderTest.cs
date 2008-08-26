@@ -7,6 +7,7 @@ using Remotion.Text.Diagnostic;
 
 namespace Remotion.UnitTests.Text.Diagnostic
 {
+  //TODO: Testnaming conventions
   [NUnit.Framework.TestFixture]
   public class ToTextBuilderTest
   {

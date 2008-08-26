@@ -11,7 +11,7 @@ using Remotion.Text.Diagnostic;
 
 namespace Remotion.UnitTests.Text.Diagnostic
 {
-
+  //TODO: Move nested classes to outer scope
   [TestFixture]
   public class ToTextProviderTest
   {
