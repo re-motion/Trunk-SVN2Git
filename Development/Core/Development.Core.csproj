@@ -12,7 +12,8 @@
     </AssemblyKeyContainerName>
     <AssemblyName>Remotion.Development</AssemblyName>
     <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    </AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -27,7 +28,10 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -63,7 +67,8 @@
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
-    <NoWarn>1591</NoWarn><WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592</WarningsAsErrors>
+    <NoWarn>1591</NoWarn>
+    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592</WarningsAsErrors>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -120,10 +125,15 @@
     <Compile Include="UnitTesting\ThreadRunner.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Development.Core.build" />
-    <None Include="..\..\remotion.snk"><Link>remotion.snk</Link></None>
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logging\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

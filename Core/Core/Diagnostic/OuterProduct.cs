@@ -212,7 +212,7 @@ namespace Remotion.Diagnostic
       }
 
       /// <summary>
-      /// Used internally by OuterProduct.ProcessOuterProduct. 
+      /// Used internally by <see cref="OuterProduct"/>.<see cref="OuterProduct.ProcessOuterProduct"/>.
       /// </summary>
       /// <value>The element index to set.</value>
       public void SetCurrentElementIndex (int elementIndex)
@@ -230,9 +230,8 @@ namespace Remotion.Diagnostic
       }
 
       /// <summary>
-      /// Returns a copy of the current <c>DimensionIndices</c>-array. 
-      /// Use if you want to e.g. store the generated dimension indices permutations
-      /// in your own collection.
+      /// Returns a copy of the current <see cref="DimensionIndices"/>-array.
+      /// Use if you want to e.g. store the generated dimension indices permutations in your own collection.
       /// </summary>
       public int[] GetDimensionIndicesCopy ()
       {
@@ -394,6 +393,7 @@ namespace Remotion.Diagnostic
 
       for (int iCurrentForLoop = 0; iCurrentForLoop < _numberElementsPerDimension[dimensionIndex]; ++iCurrentForLoop)
       {
+        //DimensionIndices[dimensionIndex] = iCurrentForLoop;
         processingState.SetCurrentElementIndex (iCurrentForLoop);
         
         outerProductProcessor.SetProcessingState (processingState);

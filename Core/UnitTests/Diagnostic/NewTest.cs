@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Diagnostic
     {
       var o = new object();
       object[][] collection = New.Array (New.Array (o, o), New.Array (o, o));
-      object[][] collectionExpected = new object[][] { new object[] { o, o }, new object[] { o, o } };
+      object[][] collectionExpected = new[] { new[] { o, o }, new[] { o, o } };
       Assert.That (collection, Is.EqualTo (collectionExpected));
     }
 
@@ -56,11 +56,12 @@ namespace Remotion.UnitTests.Diagnostic
     public void NewArrayObject3Test ()
     {
       object[][][] collection = New.Objects (
-          New.Objects (New.Objects (7, 11), New.Objects (7, 11)), New.Objects (New.Objects (7, 11), New.Objects (7, 11)));
-      object[][][] collectionExpected = new object[][][]
+          New.Objects (New.Objects (7, 11), New.Objects (7, 11)),
+          New.Objects (New.Objects (7, 11), New.Objects (7, 11)));
+      object[][][] collectionExpected = new[]
                                         {
-                                            new object[][] { new object[] { 7, 11 }, new object[] { 7, 11 } },
-                                            new object[][] { new object[] { 7, 11 }, new object[] { 7, 11 } }
+                                            new[] { new object[] { 7, 11 }, new object[] { 7, 11 } },
+                                            new[] { new object[] { 7, 11 }, new object[] { 7, 11 } }
                                         };
       Assert.That (collection, Is.EqualTo (collectionExpected));
     }
