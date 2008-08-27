@@ -11,7 +11,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Diagnostic
@@ -50,7 +49,7 @@ namespace Remotion.Diagnostic
     private string _arrayPostfix = "}";
     private bool _useMultiline = true;
     private ToTextBuilderOutputComplexityLevel _outputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
-    private Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder>(16);
+    private readonly Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder>(16);
     private SequenceStateHolder _sequenceState = null;
 
     public string ArrayPrefix
@@ -337,94 +336,14 @@ namespace Remotion.Diagnostic
 
 
 
-    //private class ArrayToTextProcessor : OuterProductIndexGenerator.OuterProductProcessorBase
-    //{
-    //  protected readonly Array _array;
-    //  private readonly ToTextBuilder _toTextBuilder;
-
-    //  public ArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
-    //  {
-    //    _array = rectangularArray;
-    //    _toTextBuilder = toTextBuilder;
-    //  }
-
-    //  public override bool DoBeforeLoop ()
-    //  {
-    //    InsertSeperator ();
-
-    //    if (ProcessingState.IsInnermostLoop)
-    //    {
-    //      _toTextBuilder.ToText (_array.GetValue (ProcessingState.DimensionIndices));
-    //    }
-    //    else
-    //    {
-    //      _toTextBuilder.AppendString (_toTextBuilder.ArrayBegin);
-    //    }
-    //    return true;
-    //  }
-
-    //  public override bool DoAfterLoop ()
-    //  {
-    //    if (!ProcessingState.IsInnermostLoop)
-    //    {
-    //      _toTextBuilder.AppendString (_toTextBuilder.ArrayEnd);
-    //    }
-    //    return true;
-    //  }
-
-    //  protected void InsertSeperator ()
-    //  {
-    //    if (!ProcessingState.IsFirstLoopElement)
-    //    {
-    //      _toTextBuilder.AppendString (_toTextBuilder.ArraySeparator);
-    //    }
-    //  }
-    //}
-
-
     //TODO: move to outer scope
-    private class ArrayToTextProcessor : OuterProductProcessorBase
-    {
-      protected readonly Array _array;
-      private readonly ToTextBuilder _toTextBuilder;
-
-      public ArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
-      {
-        _array = rectangularArray;
-        _toTextBuilder = toTextBuilder;
-      }
-
-      public override bool DoBeforeLoop ()
-      {
-        if (ProcessingState.IsInnermostLoop)
-        {
-          _toTextBuilder.AppendToText (_array.GetValue (ProcessingState.DimensionIndices));
-        }
-        else
-        {
-          _toTextBuilder.AppendSequenceBegin (_toTextBuilder._arrayPrefix, _toTextBuilder._arrayFirstElementPrefix, _toTextBuilder._arrayOtherElementPrefix, _toTextBuilder._arrayElementPostfix, _toTextBuilder._arrayPostfix);
-        }
-        return true;
-      }
-
-
-
-      public override bool DoAfterLoop ()
-      {
-        if (!ProcessingState.IsInnermostLoop)
-        {
-          _toTextBuilder.AppendSequenceEnd ();
-        }
-        return true;
-      }
-    }
 
 
     public ToTextBuilder AppendArray (Array array)
     {
       var outerProduct = new OuterProductIndexGenerator (array);
       SequenceBegin (_arrayPrefix, _arrayFirstElementPrefix, _arrayOtherElementPrefix, _arrayElementPostfix, _arrayPostfix);
-      var processor = new ArrayToTextProcessor (array, this);
+      var processor = new ToTextBuilderArrayToTextProcessor (array, this);
       outerProduct.ProcessOuterProduct (processor);
       SequenceEnd ();
 
@@ -753,6 +672,42 @@ namespace Remotion.Diagnostic
     }
   }
 
+  internal class ToTextBuilderArrayToTextProcessor : OuterProductProcessorBase
+  {
+    protected readonly Array _array;
+    private readonly ToTextBuilder _toTextBuilder;
+
+    public ToTextBuilderArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
+    {
+      _array = rectangularArray;
+      _toTextBuilder = toTextBuilder;
+    }
+
+    public override bool DoBeforeLoop ()
+    {
+      if (ProcessingState.IsInnermostLoop)
+      {
+        _toTextBuilder.AppendToText (_array.GetValue (ProcessingState.DimensionIndices));
+      }
+      else
+      {
+        _toTextBuilder.AppendSequenceBegin (_toTextBuilder.ArrayPrefix, _toTextBuilder.ArrayFirstElementPrefix, _toTextBuilder.ArrayOtherElementPrefix, _toTextBuilder.ArrayElementPostfix, _toTextBuilder.ArrayPostfix);
+      }
+      return true;
+    }
+
+
+
+    public override bool DoAfterLoop ()
+    {
+      if (!ProcessingState.IsInnermostLoop)
+      {
+        _toTextBuilder.AppendSequenceEnd ();
+      }
+      return true;
+    }
+  }
+
   public enum ToTextBuilderOutputComplexityLevel
   {
     Disable,
@@ -762,30 +717,4 @@ namespace Remotion.Diagnostic
     Complex,
     Full,
   };
-
-  internal class StringBuilderToText
-  {
-    private StringBuilder _stringBuilder = new StringBuilder ();
-
-    public StringBuilderToText()
-    {
-      Enabled = true;
-    }
-
-    public bool Enabled { get; set; }
-
-    public StringBuilder Append<T> (T t)
-    {
-      if (Enabled)
-      {
-        _stringBuilder.Append (t);
-      }
-      return _stringBuilder;
-    }
-
-    public override string ToString ()
-    {
-      return _stringBuilder.ToString ();
-    }
-  }
 }
