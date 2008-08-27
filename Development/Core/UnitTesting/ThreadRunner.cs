@@ -67,16 +67,6 @@ namespace Remotion.Development.UnitTesting
       // Preserve exceptions thrown in thread, to be able to rethrow them.
       // TODO: To preserve the callstack, rethrow new exception with thread exception as inner exception.
       Exception lastException = null;
-      //UnhandledExceptionEventHandler unhandledExceptionEventHandler = delegate (object sender, UnhandledExceptionEventArgs e)
-      //{
-      //  lastException = (Exception) e.ExceptionObject;
-      //};
-
-      //AppDomain.CurrentDomain.UnhandledException += unhandledExceptionEventHandler;
-
-
-      //Thread otherThread = new Thread ((ThreadStart) delegate { ThreadStartThreadAbortExceptionWrapper (threadStart); });
-      //Thread otherThread = new Thread ( () => ThreadStartThreadAbortExceptionWrapper (threadStart) );
 
       Thread otherThread =
         new Thread ((ThreadStart)
@@ -88,7 +78,6 @@ namespace Remotion.Development.UnitTesting
             }
             catch (System.Threading.ThreadAbortException)
             {
-              //Console.WriteLine (">>> ThreadStartThreadAbortExceptionWrapper <<<");
               // Explicitely reset the ThreadAbortException
               Thread.ResetAbort ();
               // Do not report exception in lastException, since aborting is expected behavior.
@@ -108,26 +97,12 @@ namespace Remotion.Development.UnitTesting
         otherThread.Abort ();
       }
 
-      //AppDomain.CurrentDomain.UnhandledException -= unhandledExceptionEventHandler;
       if (lastException != null)
         throw lastException;
         
       return timedOut;
     }
 
-    //public static void ThreadStartThreadAbortExceptionWrapper (ThreadStart threadStart)
-    //{
-    //  try
-    //  {
-    //    threadStart();
-    //  }
-    //  catch (System.Threading.ThreadAbortException e)
-    //  {
-    //    //Console.WriteLine (">>> ThreadStartThreadAbortExceptionWrapper <<<");
-    //    // Explicitely reset the ThreadAbortException
-    //    Thread.ResetAbort (); 
-    //  }
-    //}
 
   }
 }

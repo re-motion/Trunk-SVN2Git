@@ -9,14 +9,17 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Logging;
 using Remotion.Development.UnitTesting;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostic;
+using System.Linq.Expressions;
 
-//using NUnit.Framework.Constraints;
+using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.UnitTests.Diagnostic
 {
@@ -31,6 +34,12 @@ namespace Remotion.UnitTests.Diagnostic
       {
         Name = "ABC abc";
         Int = 54321;
+      }
+
+      public TestSimple (string name, int i)
+      {
+        Name = name;
+        Int = i;
       }
 
       public string Name { get; set; }
@@ -85,7 +94,7 @@ namespace Remotion.UnitTests.Diagnostic
       public Object[,,] RectangularArray3D { get; set; }
 
       private string _privateFieldString = "FieldString text";
-      private List<List<string>> _privateFieldListList = New.List (New.List ("private", "field"), New.List ("list of", "list"));
+      private List<List<string>> _privateFieldListList = List.New (List.New ("private", "field"), List.New ("list of", "list"));
     }
 
     public class TestChild : Test

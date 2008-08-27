@@ -24,9 +24,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
   public class OuterProductTest
   {
     /// <summary>
-    /// OuterProduct.IProcessor implementations
+    /// OuterProductIndexGenerator.IProcessor implementations
     /// </summary>
-    private abstract class OuterProductProcessorBase : OuterProduct.ProcessorBase
+    private abstract class OuterProductProcessorBase : OuterProductIndexGenerator.ProcessorBase
     {
       protected Array _rectangularArray;
       protected StringBuilder _result = new StringBuilder();
@@ -183,9 +183,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
     /// <summary>
-    /// OuterProduct.IProcessor used in OuterProduct "pretty print rectangular arrays of arbitrary dimensions" code sample
+    /// OuterProductIndexGenerator.IProcessor used in OuterProductIndexGenerator "pretty print rectangular arrays of arbitrary dimensions" code sample
     /// </summary>
-    public class RectangularArrayToString : OuterProduct.ProcessorBase
+    public class RectangularArrayToString : OuterProductIndexGenerator.ProcessorBase
     {
       protected Array _rectangularArray;
       public readonly StringBuilder _result = new StringBuilder(); // To keep sample concise
@@ -220,9 +220,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
 
     /// <summary>
-    /// OuterProduct.IProcessor used in OuterProduct "create outer prodcut permutations" code sample
+    /// OuterProductIndexGenerator.IProcessor used in OuterProductIndexGenerator "create outer prodcut permutations" code sample
     /// </summary>
-    public class OuterProductPermutations : OuterProduct.ProcessorBase
+    public class OuterProductPermutations : OuterProductIndexGenerator.ProcessorBase
     {
       public readonly List<int[]> outerProductPermutations = new List<int[]>(); // To keep sample concise
 
@@ -268,13 +268,13 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
 
     /// <summary>
-    /// OuterProduct tests be here...
+    /// OuterProductIndexGenerator tests be here...
     /// </summary>
     [Test]
     public void NumberElementsPerDimensionCtorTest ()
     {
       int[] arrayDimensions = new int[] { 5, 7, 11 };
-      var outerProduct = new OuterProduct (arrayDimensions);
+      var outerProduct = new OuterProductIndexGenerator (arrayDimensions);
       Assert.That (outerProduct.Length, Is.EqualTo (5*7*11));
     }
 
@@ -283,7 +283,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void ArrayCtorTest ()
     {
       String[,] rectangularArray = new string[,] { { "A1", "A2" }, { "B1", "B2" }, { "C1", "C2" } };
-      var outerProduct = new OuterProduct (rectangularArray);
+      var outerProduct = new OuterProductIndexGenerator (rectangularArray);
       Assert.That (outerProduct.Length, Is.EqualTo (3*2));
     }
 
@@ -315,7 +315,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void VisitorNestedForTest ()
     {
       String[,] rectangularArray = new string[,] { { null, null, null }, { null, null, null } };
-      var outerProduct = new OuterProduct (rectangularArray);
+      var outerProduct = new OuterProductIndexGenerator (rectangularArray);
       var processor = new OuterProductProcessorOneLineString (rectangularArray);
       outerProduct.ProcessOuterProduct (processor);
       string s = processor.GetResult();
@@ -328,7 +328,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void PermutationVisitorTest ()
     {
       var dimensionArray = new int[] { 2, 3, 2 };
-      var outerProduct = new OuterProduct (dimensionArray);
+      var outerProduct = new OuterProductIndexGenerator (dimensionArray);
       var processor = new OuterProductProcessorOneLineString (null);
       outerProduct.ProcessOuterProduct (processor);
       string s = processor.GetResult();
@@ -341,7 +341,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void VisitorNestedForTest2 ()
     {
       var rectangularArray = new string[,,] { { { null, null }, { null, null }, { null, null } }, { { null, null }, { null, null }, { null, null } } };
-      var outerProduct = new OuterProduct (rectangularArray);
+      var outerProduct = new OuterProductIndexGenerator (rectangularArray);
       var processor = new OuterProductProcessorOneLineString (rectangularArray);
       outerProduct.ProcessOuterProduct (processor);
       string s = processor.GetResult();
@@ -353,7 +353,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void VisitorNestedForOuterProductProcessorPrettyPrinterTest ()
     {
       var rectangularArray = new string[,,] { { { null, null }, { null, null }, { null, null } }, { { null, null }, { null, null }, { null, null } } };
-      var outerProduct = new OuterProduct (rectangularArray);
+      var outerProduct = new OuterProductIndexGenerator (rectangularArray);
       var processor = new OuterProductProcessorPrettyPrinter (rectangularArray);
       outerProduct.ProcessOuterProduct (processor);
       string s = processor.GetResult();
@@ -396,7 +396,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void VisitorNestedForOuterProductProcessorArrayPrettyPrinterTest ()
     {
       var rectangularArray = new string[,,] { { { "A0", "A1" }, { "B0", "B1" }, { "C0", "C1" } }, { { "D0", "D1" }, { "E0", "E1" }, { "F0", "F1" } } };
-      var outerProduct = new OuterProduct (rectangularArray);
+      var outerProduct = new OuterProductIndexGenerator (rectangularArray);
       var processor = new OuterProductProcessorArrayPrettyPrinter (rectangularArray);
       outerProduct.ProcessOuterProduct (processor);
       string s = processor.GetResult();
@@ -439,7 +439,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void RectangularArrayVisitorTest ()
     {
       String[,] rectangularArray = new string[,] { { "A1", "A2", "A3" }, { "B1", "B2", "B3" }, { "C1", "C2", "C3" } };
-      var outerProduct = new OuterProduct (rectangularArray);
+      var outerProduct = new OuterProductIndexGenerator (rectangularArray);
       var processor = new OuterProductProcessorArrayPrinter (rectangularArray);
       outerProduct.ProcessOuterProduct (processor);
       string result = processor.GetResult();
@@ -451,7 +451,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void RectangularArrayTerminatingVisitorTest ()
     {
       String[,] rectangularArray = new string[,] { { "A1", "A2", "A3" }, { "B1", "B2", "B3" }, { "C1", "C2", "C3" } };
-      var outerProduct = new OuterProduct (rectangularArray);
+      var outerProduct = new OuterProductIndexGenerator (rectangularArray);
       var processor = new OuterProductProcessorArrayPrinter (rectangularArray);
       processor.NumberElementsToOutputInnermost = 2;
       outerProduct.ProcessOuterProduct (processor);
@@ -465,7 +465,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void RectangularArrayTerminatingVisitorTest2 ()
     {
       String[,] rectangularArray = new string[,] { { "A1", "A2", "A3" }, { "B1", "B2", "B3" }, { "C1", "C2", "C3" }, { "D1", "D2", "D3" } };
-      var outerProduct = new OuterProduct (rectangularArray);
+      var outerProduct = new OuterProductIndexGenerator (rectangularArray);
       var processor = new OuterProductProcessorArrayPrinter (rectangularArray);
       processor.NumberElementsToOutputInnermost = 2;
       processor.NumberElementsToOutputAllButInnermost = 3;
@@ -479,7 +479,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void RectangularArrayTerminatingVisitorTest3 ()
     {
       String[,] rectangularArray = new string[,] { { "A1", "A2", "A3" }, { "B1", "B2", "B3" }, { "C1", "C2", "C3" }, { "D1", "D2", "D3" } };
-      var outerProduct = new OuterProduct (rectangularArray);
+      var outerProduct = new OuterProductIndexGenerator (rectangularArray);
       var processor = new OuterProductProcessorArrayPrinter (rectangularArray);
       processor.NumberElementsToOutputInnermost = 2;
       processor.NumberElementsToOutputAllButInnermost = 3;
@@ -495,7 +495,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void ProcessSameOuterProductMultipleTimesTest ()
     {
       String[,] rectangularArray = new string[,] { { "A1", "A2", "A3" }, { "B1", "B2", "B3" }, { "C1", "C2", "C3" }, { "D1", "D2", "D3" } };
-      var outerProduct = new OuterProduct (rectangularArray);
+      var outerProduct = new OuterProductIndexGenerator (rectangularArray);
       OuterProductProcessorArrayPrinter processor = null;
       int i = 0;
       for (; i < 3; ++i)
@@ -521,7 +521,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
       var arrays = new List<Array>() { rectangularArray1D, rectangularArray2D, rectangularArray3D };
       foreach (var array in arrays)
       {
-        var outerProduct = new OuterProduct (array);
+        var outerProduct = new OuterProductIndexGenerator (array);
         var processor = new RectangularArrayToString (array);
         outerProduct.ProcessOuterProduct (processor);
         System.Console.WriteLine (processor._result.ToString());
@@ -537,7 +537,7 @@ namespace Remotion.UnitTests.Text.Diagnostic
     public void SamplePermutationVisitorTest ()
     {
       var dimensionArray = new int[] { 2, 3, 2 };
-      var outerProduct = new OuterProduct (dimensionArray);
+      var outerProduct = new OuterProductIndexGenerator (dimensionArray);
       var processor = new OuterProductPermutations();
       outerProduct.ProcessOuterProduct (processor);
       var result = processor.outerProductPermutations;

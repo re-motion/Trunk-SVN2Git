@@ -448,7 +448,7 @@ namespace Remotion.Diagnostic
 
 
 
-    //private class ArrayToTextProcessor : OuterProduct.ProcessorBase
+    //private class ArrayToTextProcessor : OuterProductIndexGenerator.ProcessorBase
     //{
     //  protected readonly Array _array;
     //  private readonly ToTextBuilder _toTextBuilder;
@@ -494,7 +494,7 @@ namespace Remotion.Diagnostic
 
 
     //TODO: move to outer scope
-    private class ArrayToTextProcessor : OuterProduct.ProcessorBase
+    private class ArrayToTextProcessor : OuterProductIndexGenerator.ProcessorBase
     {
       protected readonly Array _array;
       private readonly ToTextBuilder _toTextBuilder;
@@ -533,7 +533,7 @@ namespace Remotion.Diagnostic
 
     public ToTextBuilder AppendArray (Array array)
     {
-      var outerProduct = new OuterProduct (array);
+      var outerProduct = new OuterProductIndexGenerator (array);
       SequenceBegin (_arrayPrefix, _arrayFirstElementPrefix, _arrayOtherElementPrefix, _arrayElementPostfix, _arrayPostfix);
       var processor = new ArrayToTextProcessor (array, this);
       outerProduct.ProcessOuterProduct (processor);

@@ -117,6 +117,9 @@
     <Compile Include="UnitTesting\IMockRepository.cs" />
     <Compile Include="UnitTesting\IO\TempFile.cs" />
     <Compile Include="UnitTesting\ISerializationEventReceiver.cs" />
+    <Compile Include="UnitTesting\ObjectMother\Dictionary.cs" />
+    <Compile Include="UnitTesting\ObjectMother\List.cs" />
+    <Compile Include="UnitTesting\ObjectMother\Queue.cs" />
     <Compile Include="UnitTesting\PEVerifier.cs" />
     <Compile Include="UnitTesting\PEVerifyException.cs" />
     <Compile Include="UnitTesting\PrivateInvoke.cs">

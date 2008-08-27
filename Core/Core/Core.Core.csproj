@@ -86,6 +86,10 @@
       <Name>log4net</Name>
       <HintPath>..\..\prereq\Assemblies\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Development, Version=1.11.0.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Development\Core\bin\Debug\Remotion.Development.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -441,8 +445,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Diagnostic\IToTextHandler.cs" />
-    <Compile Include="Diagnostic\New.cs" />
-    <Compile Include="Diagnostic\OuterProduct.cs" />
+    <Compile Include="Diagnostic\OuterProductIndexGenerator.cs" />
     <Compile Include="Diagnostic\To.cs" />
     <Compile Include="Diagnostic\ToTextProvider.cs" />
     <Compile Include="Diagnostic\ToTextBuilder.cs" />

@@ -8,7 +8,6 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using Remotion.Development.Logging;
 
 namespace Remotion.Development.Logging
 {

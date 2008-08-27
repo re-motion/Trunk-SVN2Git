@@ -12,7 +12,11 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Logging;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostic;
+
+using List = Remotion.Development.UnitTesting.ObjectMother.List;
+
 
 namespace Remotion.UnitTests.Diagnostic
 {
@@ -159,7 +163,7 @@ namespace Remotion.UnitTests.Diagnostic
     {
       var toTextBuilder = CreateTextBuilder();
       //var list = new List<int> () { 5, 3, 1 };
-      var myList = New.List (5, 3, 1);
+      var myList = List.New (5, 3, 1);
       toTextBuilder.m ("myList", myList);
       var result = toTextBuilder.ToString();
       //Assert.That (result, Is.EqualTo ("myList:{5,3,1}"));
@@ -170,7 +174,7 @@ namespace Remotion.UnitTests.Diagnostic
     public void MemberInSequenceTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var myList = New.List (5, 3, 1);
+      var myList = List.New (5, 3, 1);
       toTextBuilder.sb().tt ("Abra").m ("myList", myList).m ("myList", myList).tt ("Kadabra").se();
       var result = toTextBuilder.ToString();
       Log (result);
@@ -181,7 +185,7 @@ namespace Remotion.UnitTests.Diagnostic
     public void AppendCollectionTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = New.List (5, 3, 1, 11, 13, 17);
+      var list = List.New (5, 3, 1, 11, 13, 17);
       toTextBuilder.AppendEnumerable (list);
       var result = toTextBuilder.ToString();
       Log (result);
@@ -192,7 +196,7 @@ namespace Remotion.UnitTests.Diagnostic
     public void AppendNestedCollectionTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = New.List (New.List (5, 3, 1), New.List (11, 13, 17));
+      var list = List.New (List.New (5, 3, 1), List.New (11, 13, 17));
       toTextBuilder.AppendEnumerable (list);
       var result = toTextBuilder.ToString();
       Log (result);
@@ -203,7 +207,7 @@ namespace Remotion.UnitTests.Diagnostic
     public void AppendNestedCollectionTest2 ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = New.List (New.List (5, 3, 1), New.List (11, 13, 17), New.List (19, 23, 29));
+      var list = List.New (List.New (5, 3, 1), List.New (11, 13, 17), List.New (19, 23, 29));
       toTextBuilder.AppendEnumerable (list);
       var result = toTextBuilder.ToString();
       Log (result);
@@ -214,7 +218,7 @@ namespace Remotion.UnitTests.Diagnostic
     public void AppendNestedCollectionTest3 ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = New.List (New.List (New.List (5, 3, 1), New.List (11, 13, 17)), New.List (New.List (19, 23, 29), New.List (31, 37, 41)));
+      var list = List.New (List.New (List.New (5, 3, 1), List.New (11, 13, 17)), List.New (List.New (19, 23, 29), List.New (31, 37, 41)));
       toTextBuilder.AppendEnumerable (list);
       var result = toTextBuilder.ToString();
       Log (result);
@@ -225,10 +229,10 @@ namespace Remotion.UnitTests.Diagnostic
     public void AppendNestedCollectionTest4 ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = New.List (
-          New.List (New.List (1, 2, 3), New.List (4, 5, 6), New.List (7, 8, 9)),
-          New.List (New.List (10, 11, 12), New.List (13, 14, 15), New.List (16, 17, 18)),
-          New.List (New.List (19, 20, 21), New.List (22, 23, 24), New.List (25, 26, 27))
+      var list = List.New (
+          List.New (List.New (1, 2, 3), List.New (4, 5, 6), List.New (7, 8, 9)),
+          List.New (List.New (10, 11, 12), List.New (13, 14, 15), List.New (16, 17, 18)),
+          List.New (List.New (19, 20, 21), List.New (22, 23, 24), List.New (25, 26, 27))
           );
       toTextBuilder.AppendEnumerable (list);
       var result = toTextBuilder.ToString();
@@ -240,7 +244,7 @@ namespace Remotion.UnitTests.Diagnostic
     public void collectionTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = New.List (New.List (New.List ("A", "B", "C")));
+      var list = List.New (List.New (List.New ("A", "B", "C")));
       toTextBuilder.collection (list);
       var result = toTextBuilder.ToString();
       Log (result);
@@ -252,7 +256,7 @@ namespace Remotion.UnitTests.Diagnostic
     {
       var toTextBuilder = CreateTextBuilder();
       //var array = new int[][] {new int[] {1,2},new int[] {3,4},new int[] {5,6}};
-      var array = New.Array (New.Array (1, 2), New.Array (3, 4), New.Array (5, 6));
+      var array = new[] {new[] {1, 2}, new[] {3, 4}, new[] {5, 6}};
       toTextBuilder.AppendArray (array);
       var result = toTextBuilder.ToString();
       Log (result);
@@ -263,10 +267,10 @@ namespace Remotion.UnitTests.Diagnostic
     public void AppendArray3DTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var array = New.Array (
-          New.Array (New.Array (1, 3), New.Array (5, 7)),
-          New.Array (New.Array (11, 13), New.Array (17, 19)),
-          New.Array (New.Array (23, 29), New.Array (31, 37)));
+      var array = new[] {
+          new[] {new[] {1, 3}, new[] {5, 7}},
+          new[] {new[] {11, 13}, new[] {17, 19}},
+          new[] {new[] {23, 29}, new[] {31, 37}}};
       toTextBuilder.AppendArray (array);
       var result = toTextBuilder.ToString();
       Log (result);
@@ -308,7 +312,7 @@ namespace Remotion.UnitTests.Diagnostic
     public void collectionTest2 ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = New.List (New.List (New.List ("A", "B", "C")));
+      var list = List.New (List.New (List.New ("A", "B", "C")));
       toTextBuilder.collection (list);
       var result = toTextBuilder.ToString();
       Log (result);
@@ -320,13 +324,10 @@ namespace Remotion.UnitTests.Diagnostic
     public void EnumerableTagTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = New.List (New.List (5, 3, 1), New.List (11, 13, 17));
+      var list = List.New (List.New (5, 3, 1), List.New (11, 13, 17));
       toTextBuilder.EnumerableBegin = "(";
       toTextBuilder.EnumerableSeparator = ";";
       toTextBuilder.EnumerableEnd = ")";
-      toTextBuilder.ArrayBegin = "X";
-      toTextBuilder.ArraySeparator = "Y";
-      toTextBuilder.ArrayEnd = "Z";
 
       toTextBuilder.AppendEnumerable (list);
       var result = toTextBuilder.ToString();
@@ -334,39 +335,18 @@ namespace Remotion.UnitTests.Diagnostic
       Assert.That (result, Is.EqualTo ("((5;3;1);(11;13;17))"));
     }
 
-    //[Test]
-    //public void EnumerableTagTest2 ()
-    //{
-    //  var toTextBuilder = CreateTextBuilder ();
-    //  var list = New.List (New.List (5, 3, 1), New.List (11, 13, 17));
-    //  toTextBuilder.EnumerableBegin = "(";
-    //  toTextBuilder.EnumerableSeparator = ";";
-    //  toTextBuilder.EnumerableEnd = ")";
-    //  toTextBuilder.ArrayBegin = "X";
-    //  toTextBuilder.ArraySeparator = "Y";
-    //  toTextBuilder.ArrayEnd = "Z";
-
-    //  toTextBuilder.AppendEnumerable (list);
-    //  var result = toTextBuilder.ToString ();
-    //  Log (result);
-    //  Assert.That (result, Is.EqualTo ("((5;3;1);(11;13;17))"));
-    //}
-
 
     [Test]
     public void ArrayTagTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var array = New.Array (
-          New.Array (New.Array (1, 3), New.Array (5, 7)),
-          New.Array (New.Array (11, 13), New.Array (17, 19)),
-          New.Array (New.Array (23, 29), New.Array (31, 37)));
+      var array = new[] {
+          new[] {new[] {1, 3}, new[] {5, 7}},
+          new[] {new[] {11, 13}, new[] {17, 19}},
+          new[] {new[] {23, 29}, new[] {31, 37}}};
       toTextBuilder.ArrayBegin = "<{[";
       toTextBuilder.ArraySeparator = "§|§";
       toTextBuilder.ArrayEnd = "]}>";
-      toTextBuilder.EnumerableBegin = "X";
-      toTextBuilder.EnumerableSeparator = "Y";
-      toTextBuilder.EnumerableEnd = "Z";
 
       toTextBuilder.AppendArray (array);
       var result = toTextBuilder.ToString();
@@ -379,23 +359,17 @@ namespace Remotion.UnitTests.Diagnostic
     public void ArrayTagTest2 ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var array = New.Array (New.Array (New.Array (1, 3, 5), New.Array (5, 7, 11)));
+      var array = new[] {new[] {new[] {1, 3, 5}, new[] {5, 7, 11}}};
       toTextBuilder.ArrayPrefix = "<";
-      //toTextBuilder.ArrayFirstElementPrefix = "(";
       toTextBuilder.ArrayFirstElementPrefix = "[";
       toTextBuilder.ArrayOtherElementPrefix = ";[";
       toTextBuilder.ArrayElementPostfix = "]";
       toTextBuilder.ArrayPostfix = ">";
 
-      toTextBuilder.EnumerablePrefix = "A";
-      toTextBuilder.EnumerableFirstElementPrefix = "B";
-      toTextBuilder.EnumerableOtherElementPrefix = "C";
-      toTextBuilder.EnumerablePostfix = "D";
-
       toTextBuilder.AppendArray (array);
       var result = toTextBuilder.ToString();
       Log (result);
-      Assert.That (result, Is.EqualTo ("<[<[1];[3];[5]>];[<[5];[7];[11]>]>"));
+      Assert.That (result, Is.EqualTo ("<[<[<[1];[3];[5]>];[<[5];[7];[11]>]>]>"));
     }
 
 
@@ -725,9 +699,10 @@ namespace Remotion.UnitTests.Diagnostic
       var toTextBuilder = CreateTextBuilder();
       //toTextBuilder.ToTextProvider.UseAutomaticObjectToText = true;
       var simpleTest = new ToTextProviderTest.TestSimple();
-      var test = new ToTextProviderTest.Test ("Test with class", 99999);
+      //var test = new ToTextProviderTest.Test ("Test with class", 99999);
+      var simpleTest2 = new ToTextProviderTest.TestSimple ("simple Test", 987654321);
       toTextBuilder.sb ("[", "", ",", "", "]").e ("hello").e (toTextBuilder.SequenceState.Counter);
-      toTextBuilder.sb ("<", "(", ";(", ")", ">").e ("a variable").m ("simpleTest", simpleTest).e ("was here and").m ("test", test).e ("here").e (
+      toTextBuilder.sb ("<", "(", ";(", ")", ">").e ("a variable").m ("simpleTest", simpleTest).e ("was here and").m ("simpleTest2", simpleTest2).e ("here").e (
           toTextBuilder.SequenceState.Counter).se();
       toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se();
       var result = toTextBuilder.ToString();
@@ -735,7 +710,8 @@ namespace Remotion.UnitTests.Diagnostic
       Assert.That (
           result,
           Is.EqualTo (
-              "[hello,1,<(a variable);(simpleTest=((TestSimple) Name:ABC abc,Int:54321));(was here and);(test=Remotion.UnitTests.Text.Diagnostic.ToTextProviderTest+Test);(here);(5)>,world,4,5]"));
+              "[hello,1,<(a variable);(simpleTest=((TestSimple) Name:ABC abc,Int:54321));(was here and);(simpleTest2=((TestSimple) Name:simple Test,Int:987654321));(here);(5)>,world,4,5]"
+      ));
     }
 
     [Test]
@@ -755,17 +731,18 @@ namespace Remotion.UnitTests.Diagnostic
       var toTextBuilder = CreateTextBuilder();
       //toTextBuilder.ToTextProvider.UseAutomaticObjectToText = true;
       var simpleTest = new ToTextProviderTest.TestSimple();
-      var test = new ToTextProviderTest.Test ("Test with class", 99999);
+      var simpleTest2 = new ToTextProviderTest.TestSimple ("simple Test",987654321);
+      //var test = new ToTextProviderTest.Test ("Test with class", 99999);
       toTextBuilder.sb ("[", "", ",", "", "]").tt ("hello").tt (toTextBuilder.SequenceState.Counter);
-      toTextBuilder.sb ("<", "(", ";(", ")", ">").tt ("a variable").m ("simpleTest", simpleTest).tt ("was here and").m ("test", test).tt ("here").tt (
+      toTextBuilder.sb ("<", "(", ";(", ")", ">").tt ("a variable").m ("simpleTest", simpleTest).tt ("was here and").m ("simpleTest2", simpleTest2).tt ("here").tt (
           toTextBuilder.SequenceState.Counter).se();
       toTextBuilder.tt ("world").tt (toTextBuilder.SequenceState.Counter).tt (toTextBuilder.SequenceState.Counter).se();
       var result = toTextBuilder.ToString();
       Log (result);
-      Assert.That (
-          result,
+      Assert.That (result,
           Is.EqualTo (
-              "[hello,1,<(a variable);(simpleTest=((TestSimple) Name:ABC abc,Int:54321));(was here and);(test=Remotion.UnitTests.Text.Diagnostic.ToTextProviderTest+Test);(here);(5)>,world,4,5]"));
+              "[hello,1,<(a variable);(simpleTest=((TestSimple) Name:ABC abc,Int:54321));(was here and);(simpleTest2=((TestSimple) Name:simple Test,Int:987654321));(here);(5)>,world,4,5]"
+      ));
     }
 
     [Test]

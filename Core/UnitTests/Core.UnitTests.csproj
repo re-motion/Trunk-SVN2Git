@@ -644,7 +644,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Diagnostic\IToTextHandlerTest.cs" />
-    <Compile Include="Diagnostic\NewTest.cs" />
     <Compile Include="Diagnostic\OuterProductTest.cs" />
     <Compile Include="Diagnostic\ToTest.cs" />
     <Compile Include="Diagnostic\ToTextBuilderTest.cs" />

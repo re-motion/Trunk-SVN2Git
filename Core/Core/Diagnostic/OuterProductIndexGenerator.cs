@@ -19,15 +19,14 @@ namespace Remotion.Diagnostic
   /// <summary>
   /// Allows a class implementing the IProcessor interface to visit each member of an outer product of a variable number of independently sized tuples.
   /// From a programmer's view the class supplies "variable number of nested for loops"-functionality.
-  /// For convenience derive you processor class from <see cref="OuterProduct.ProcessorBase"/> (see examples below).
+  /// For convenience derive you processor class from <see cref="OuterProductIndexGenerator.ProcessorBase"/> (see examples below).
   /// </summary>
-  /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProduct/ClassExample1/*' />
-  /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProduct/ClassExample2/*' />
-  //TODO: rename. OuterProduct is only a result, sicne it is also a calculator, OuterProductBuilder is a better name
-  public class OuterProduct 
+  /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProductIndexGenerator/ClassExample1/*' />
+  /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProductIndexGenerator/ClassExample2/*' />
+  public class OuterProductIndexGenerator 
   {
     /// <summary>
-    /// Interface a "Processor" class which can be passed to OuterProduct.ProcessOuterProduct needs to implement.
+    /// Interface a "Processor" class which can be passed to OuterProductIndexGenerator.ProcessOuterProduct needs to implement.
     /// </summary>
     //TODO: Rename to strategy, document intention
     //TODO: move to outer scope, file
@@ -46,7 +45,7 @@ namespace Remotion.Diagnostic
       //TODO: rename ProcessStateAfterLoop?
       bool DoAfterLoop ();
       /// <summary>
-      /// Before each callback to the processor the OuterProduct class sets the current <c>ProcessingState</c> through a
+      /// Before each callback to the processor the OuterProductIndexGenerator class sets the current <c>ProcessingState</c> through a
       /// call to this method. The processor class is expected to store the <c>ProcessingState</c> to be able to access
       /// it during the callbacks.
       /// </summary>
@@ -54,23 +53,23 @@ namespace Remotion.Diagnostic
       void SetProcessingState (ProcessingState processingState);
 
       /// <summary>
-      /// The current <c>ProcessingState</c> to be used during callbacks. Set by the OuterProduct class
+      /// The current <c>ProcessingState</c> to be used during callbacks. Set by the OuterProductIndexGenerator class
       /// in call to <see cref="SetProcessingState"></see>.
       /// </summary>
-      OuterProduct.ProcessingState ProcessingState { get; }
+      OuterProductIndexGenerator.ProcessingState ProcessingState { get; }
     }
 
     /// <summary>
-    /// Convenience class to derive OuterProduct-processors from. Already supplies ProcessingState-functionality.
+    /// Convenience class to derive OuterProductIndexGenerator-processors from. Already supplies ProcessingState-functionality.
     /// </summary>
     //TODO: move to outer scope, file
     public class ProcessorBase : IProcessor 
     { 
-      private OuterProduct.ProcessingState _processingState;
+      private OuterProductIndexGenerator.ProcessingState _processingState;
       /// <summary>
       /// The current <see cref="ProcessingState"/> to be used during callbacks.
       /// </summary>
-      public OuterProduct.ProcessingState ProcessingState
+      public OuterProductIndexGenerator.ProcessingState ProcessingState
       {
         get { return _processingState; }
       }
@@ -96,10 +95,10 @@ namespace Remotion.Diagnostic
       }
       
       /// <summary>
-      /// Internal use only: Used by OuterProduct class to set the current <see cref="ProcessingState"/> before invoking a callback.
+      /// Internal use only: Used by OuterProductIndexGenerator class to set the current <see cref="ProcessingState"/> before invoking a callback.
       /// </summary>
       /// <param name="processingState"></param>
-      public void SetProcessingState (OuterProduct.ProcessingState processingState)
+      public void SetProcessingState (OuterProductIndexGenerator.ProcessingState processingState)
       {
         _processingState = processingState;
       } 
@@ -116,18 +115,18 @@ namespace Remotion.Diagnostic
     public struct ProcessingState
     {
       /// <summary>
-      /// Initializes a ProcessingState with an OuterProduct reference and the current dimension index 
+      /// Initializes a ProcessingState with an OuterProductIndexGenerator reference and the current dimension index 
       /// (= nested-for-loop loop-variable index).
       /// </summary>
-      /// <param name="outerProduct"></param>
+      /// <param name="outerProductIndexGenerator"></param>
       /// <param name="dimensionIndex"></param>
-      public ProcessingState (OuterProduct outerProduct, int dimensionIndex)
+      public ProcessingState (OuterProductIndexGenerator outerProductIndexGenerator, int dimensionIndex)
       {
-        _outerProduct = outerProduct;
+        _outerProductIndexGenerator = outerProductIndexGenerator;
         _dimensionIndex = dimensionIndex;
       }
 
-      private readonly OuterProduct _outerProduct;
+      private readonly OuterProductIndexGenerator _outerProductIndexGenerator;
       private readonly int _dimensionIndex;
 
       /// <summary>
@@ -145,7 +144,7 @@ namespace Remotion.Diagnostic
       /// <value></value>
       public int[] NumberElementsPerDimension
       {
-        get { return _outerProduct.NumberElementsPerDimension; }
+        get { return _outerProductIndexGenerator.NumberElementsPerDimension; }
       }
 
       /// <summary>
@@ -155,7 +154,7 @@ namespace Remotion.Diagnostic
       /// <value></value>
       public int[] DimensionIndices
       {
-        get { return _outerProduct.DimensionIndices; }
+        get { return _outerProductIndexGenerator.DimensionIndices; }
       }
 
       /// <summary>
@@ -164,7 +163,7 @@ namespace Remotion.Diagnostic
       /// <value></value>
       public int NumberElementsOverall
       {
-        get { return _outerProduct.NumberElementsOverall; }
+        get { return _outerProductIndexGenerator.NumberElementsOverall; }
       }
 
       /// <summary>
@@ -173,7 +172,7 @@ namespace Remotion.Diagnostic
       /// <value></value>
       public int ElementIndex
       {
-        get { return _outerProduct.DimensionIndices[_dimensionIndex]; }
+        get { return _outerProductIndexGenerator.DimensionIndices[_dimensionIndex]; }
       }
 
       /// <summary>
@@ -212,7 +211,7 @@ namespace Remotion.Diagnostic
       }
 
       /// <summary>
-      /// Used internally by <see cref="OuterProduct"/>.<see cref="OuterProduct.ProcessOuterProduct"/>.
+      /// Used internally by <see cref="OuterProductIndexGenerator"/>.<see cref="OuterProductIndexGenerator.ProcessOuterProduct"/>.
       /// </summary>
       /// <value>The element index to set.</value>
       public void SetCurrentElementIndex (int elementIndex)
@@ -226,7 +225,7 @@ namespace Remotion.Diagnostic
       /// <value></value>
       public int NumberElementsProcessed
       {
-        get { return _outerProduct.NumberElementsProcessed; }
+        get { return _outerProductIndexGenerator.NumberElementsProcessed; }
       }
 
       /// <summary>
@@ -299,27 +298,27 @@ namespace Remotion.Diagnostic
     //-------------------------------------------------------------------------------
 
     ///<overloads>
-    ///OuterProduct can be initialized in a general way by passing the number of elements
+    ///OuterProductIndexGenerator can be initialized in a general way by passing the number of elements
     ///along each dimension in an integer array, or specialized by passing a rectangular array whose
     ///dimensions shall be used by the outer product.
     ///</overloads>
     /// <summary>
-    /// Initializes OuterProduct from an integer array, where each array entry gives the number of elements along its
+    /// Initializes OuterProductIndexGenerator from an integer array, where each array entry gives the number of elements along its
     /// corresponding dimension. In programers terms: The number of times each nested for-loop will loop.
     /// </summary>
     /// <param name="numberElementsPerDimension">"Number of loops for each for"-loop array</param>
-    public OuterProduct (int[] numberElementsPerDimension)
+    public OuterProductIndexGenerator (int[] numberElementsPerDimension)
     {
       Init ((int[]) numberElementsPerDimension.Clone () );
     }
 
     /// <summary>
-    /// Initializes OuterProduct from a (rectangular) array. Use to iterate over a rectangular array and access
+    /// Initializes OuterProductIndexGenerator from a (rectangular) array. Use to iterate over a rectangular array and access
     /// its members with <c>rectangularArray.GetValue (ProcessingState.DimensionIndices)</c> in the
-    /// OuterProduct.IProcessor implementation.
+    /// OuterProductIndexGenerator.IProcessor implementation.
     /// </summary>
     /// <param name="array">Array from whose dimensions the dimensions of the outer product will be initialized.</param>
-    public OuterProduct (Array array)
+    public OuterProductIndexGenerator (Array array)
     {
       Init (array);
     }
@@ -417,9 +416,9 @@ namespace Remotion.Diagnostic
     }
 
     /// <summary>
-    /// Call to start the processing of each OuterProduct-element.
+    /// Call to start the processing of each OuterProductIndexGenerator-element.
     /// </summary>
-    /// <param name="outerProductProcessor">An OuterProduct-processor which needs to implement the IProcessor interface.</param>
+    /// <param name="outerProductProcessor">An OuterProductIndexGenerator-processor which needs to implement the IProcessor interface.</param>
     public void ProcessOuterProduct (IProcessor outerProductProcessor)
     {
       //Init (_numberElementsPerDimension);
