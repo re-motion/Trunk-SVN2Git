@@ -99,7 +99,6 @@ namespace Remotion.Development.Logging
     //TODO: rename
     public void Sequence (params object[] parameters)
     {
-      // TODO: Implement AppendSequence in ToTextBuilder
       bool firstArgument = true;
       var sb = new StringBuilder();
       foreach (var obj in parameters)
@@ -109,6 +108,7 @@ namespace Remotion.Development.Logging
           sb.Append(", ");
         }
         sb.Append(_toText.ToTextString(obj));
+        firstArgument = false;
       }
       _textWriter.WriteLine(sb.ToString());
     }
