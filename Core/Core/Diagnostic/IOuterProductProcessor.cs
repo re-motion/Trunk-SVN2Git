@@ -19,16 +19,16 @@ namespace Remotion.Diagnostic
     //TODO: rename ProcessStateAfterLoop?
     bool DoAfterLoop ();
     /// <summary>
-    /// Before each callback to the processor the OuterProductIndexGenerator class sets the current <c>ProcessingState</c> through a
-    /// call to this method. The processor class is expected to store the <c>ProcessingState</c> to be able to access
+    /// Before each callback to the processor the OuterProductIndexGenerator class sets the current <see cref="OuterProductProcessingState"/> through a
+    /// call to this method. The processor class is expected to store the <see cref="OuterProductProcessingState"/> to be able to access
     /// it during the callbacks.
     /// </summary>
     /// <param name="processingState"></param>
     void SetProcessingState (OuterProductProcessingState processingState);
 
     /// <summary>
-    /// The current <c>ProcessingState</c> to be used during callbacks. Set by the OuterProductIndexGenerator class
-    /// in call to <see cref="SetProcessingState"></see>.
+    /// The current <see cref="OuterProductProcessingState"/> to be used during callbacks. Set by the OuterProductIndexGenerator class
+    /// in call to <see cref="SetProcessingState"/>.
     /// </summary>
     OuterProductProcessingState ProcessingState { get; }
   }

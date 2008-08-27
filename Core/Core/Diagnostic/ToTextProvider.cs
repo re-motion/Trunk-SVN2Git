@@ -13,10 +13,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-using System.Text;
+using System.Runtime.CompilerServices;
 using Remotion.Collections;
-using Remotion.Diagnostic;
-using Remotion.Mixins;
 using Remotion.Utilities;
 
 namespace Remotion.Diagnostic
@@ -25,9 +23,9 @@ namespace Remotion.Diagnostic
   /// Provides conversion of arbitray objects into human readable text form 
   /// using a fallback cascade starting with registered external object-to-text-conversion-handlers.
   /// 
-  /// To convert a single object into its text form, call <c>ToTextString</c> 
+  /// To convert a single object into its text form, call <see cref="ToTextString"/> 
   /// 
-  /// The conversion is done in <c>ToText</c> method through the following mechanisms, in order of precedence:
+  /// The conversion is done in <see cref="ToText"/> method through the following mechanisms, in order of precedence:
   /// <list type="number">
   /// <item>Handler for object type registered (see <see cref="RegisterHandler{T}"/>)</item>
   /// <item>Implements <see cref="UseAutomaticStringEnclosing"/> (i.e. object supplies <c>ToText</c> method)</item>
@@ -43,35 +41,11 @@ namespace Remotion.Diagnostic
   //TODO: auto proeprties, properties on single line, check resharper settigns
   public class ToTextProvider
   {
-    //TODO: Change to abstract base class, move to outer scope
-    private interface IToTextHandlerExternal
-    {
-      void ToText (Object obj, ToTextBuilder toTextBuilder);
-    }
-
-    //TODO: Move outer scope
-    private class ToTextHandlerExternal<T> : IToTextHandlerExternal
-    {
-      private readonly Action<T, ToTextBuilder> _handler;
-
-      public ToTextHandlerExternal (Action<T, ToTextBuilder> handler)
-      {
-        _handler = handler;
-      }
-
-      public void ToText (object obj, ToTextBuilder toTextBuilder)
-      {
-        _handler ((T) obj, toTextBuilder);
-      }
-    }
-
-
     private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap = new Dictionary<Type, IToTextHandlerExternal> ();
-    //TODO: Change to CultureInfo.Invariant, naming convention!!!!
-    private static readonly NumberFormatInfo _numberFormatInfoUS = new CultureInfo ("en-US", false).NumberFormat;
+    private static readonly NumberFormatInfo s_numberFormatInfoInvariant = CultureInfo.InvariantCulture.NumberFormat;
 
     // Define a cache instance (dictionary syntax)
-    private static readonly InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]> memberInfoCache = new InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]>();
+    private static readonly InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]> s_memberInfoCache = new InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]>();
     
     private bool _automaticObjectToText = true;
     private bool _automaticStringEnclosing = true;
@@ -152,10 +126,9 @@ namespace Remotion.Diagnostic
     }
 
     //TODO: refactor and split to type based strategy (IToTextHandler?)
-    //TODO: use ArgumentUtility
     public void ToText (object obj, ToTextBuilder toTextBuilder)
     {
-      Assertion.IsNotNull (toTextBuilder);
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
 
       // Handle Cascade:
       // *) Is null
@@ -239,11 +212,11 @@ namespace Remotion.Diagnostic
           // to avoid problems with comma as an e.g. sequence seperator character.
           // Since ToText is to be used for debug output, localizing everything to the common
           // IT norm of using US syntax (except for dates) makes sense.
-          toTextBuilder.AppendString (((Single) obj).ToString (_numberFormatInfoUS));
+          toTextBuilder.AppendString (((Single) obj).ToString (s_numberFormatInfoInvariant));
         }
         else if (type == typeof (Double))
         {
-          toTextBuilder.AppendString (((Double) obj).ToString (_numberFormatInfoUS));
+          toTextBuilder.AppendString (((Double) obj).ToString (s_numberFormatInfoInvariant));
         }
         else
         {
@@ -363,7 +336,7 @@ namespace Remotion.Diagnostic
       Type type = obj.GetType ();
 
       // Cache the member info result
-      MemberInfo[] memberInfos = memberInfoCache.GetOrCreateValue (new Tuple<Type, BindingFlags> (type, bindingFlags), tuple => tuple.A.GetMembers (tuple.B));
+      MemberInfo[] memberInfos = s_memberInfoCache.GetOrCreateValue (new Tuple<Type, BindingFlags> (type, bindingFlags), tuple => tuple.A.GetMembers (tuple.B));
 
       foreach (var memberInfo in memberInfos)
       {
@@ -372,19 +345,17 @@ namespace Remotion.Diagnostic
           string name = memberInfo.Name;
 
           // Skip backing fields
-          //TODO: Test for CompilerGenerated, inline
-          bool processMember = !name.Contains("k__");
-
-          if (processMember)
+          //bool isCompilerGenerated = name.Contains("k__");
+          bool isCompilerGenerated = memberInfo.IsDefined (typeof (CompilerGeneratedAttribute), false);
+          if (!isCompilerGenerated)
           {
             object value = GetValue(obj, type, memberInfo);
-            // AppendMember ToText|s value
+            // AppendMember ToText value
             toTextBuilder.AppendMember(name, value);
           }
         }
       }
     }
-
 
 
     //TODO: rename
@@ -417,14 +388,12 @@ namespace Remotion.Diagnostic
 
 
 
-    //TODO: NON static
-    private static void Log (string s)
+    private void Log (string s)
     {
       Console.WriteLine ("[To]: " + s);
     }
 
-    //TODO: NON static
-    private static void LogVariables (string format, params object[] parameterArray)
+    private void LogVariables (string format, params object[] parameterArray)
     {
       Log (String.Format (format, parameterArray));
     }

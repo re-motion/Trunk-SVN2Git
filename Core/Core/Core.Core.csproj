@@ -108,8 +108,10 @@
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Diagnostic\IOuterProductProcessor.cs" />
+    <Compile Include="Diagnostic\IToTextHandlerExternal.cs" />
     <Compile Include="Diagnostic\OuterProductProcessingState.cs" />
     <Compile Include="Diagnostic\OuterProductProcessorBase.cs" />
+    <Compile Include="Diagnostic\ToTextHandlerExternal.cs" />
     <Compile Include="Mixins\Definitions\IAttributeIntroductionSource.cs" />
     <Compile Include="Mixins\Definitions\NonAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\SuppressedAttributeIntroductionDefinition.cs" />

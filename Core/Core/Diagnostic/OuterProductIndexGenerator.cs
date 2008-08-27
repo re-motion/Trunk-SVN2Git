@@ -48,8 +48,8 @@ namespace Remotion.Diagnostic
 
     /// <summary>
     /// Initializes OuterProductIndexGenerator from a (rectangular) array. Use to iterate over a rectangular array and access
-    /// its members with <c>rectangularArray.GetValue (ProcessingState.DimensionIndices)</c> in the
-    /// OuterProductIndexGenerator.IOuterProductProcessor implementation.
+    /// its members with <c>rectangularArray.GetValue(ProcessingState.DimensionIndices)</c> in the
+    /// <see cref="IOuterProductProcessor"/> implementation.
     /// </summary>
     /// <param name="array">Array from whose dimensions the dimensions of the outer product will be initialized.</param>
     public OuterProductIndexGenerator (Array array)
@@ -172,7 +172,7 @@ namespace Remotion.Diagnostic
         {
           break;
         }
-
+        
         ProcessOuterProductRecursive (dimensionIndex + 1, outerProductProcessor);
 
         outerProductProcessor.SetProcessingState (processingState);
