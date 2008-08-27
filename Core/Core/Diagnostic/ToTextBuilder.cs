@@ -18,65 +18,6 @@ namespace Remotion.Diagnostic
 {
   public class ToTextBuilder
   {
-    //TODO: Move to outer scope
-    public class SequenceStateHolder
-    {
-      private int _sequenceCounter;
-      private string _sequencePrefix;
-      private string _firstElementPrefix;
-      private string _otherElementPrefix;
-      private string _elementPostfix;
-      private string _sequencePostfix;
-
-      //TODO: Null-checks?
-      public SequenceStateHolder (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
-      {
-        _sequenceCounter = 0;
-        _sequencePrefix = sequencePrefix;
-        _firstElementPrefix = firstElementPrefix;
-        _otherElementPrefix = otherElementPrefix;
-        _elementPostfix = elementPostfix;
-        _sequencePostfix = sequencePostfix;
-      }
-
-      public string SequencePrefix
-      {
-        get { return _sequencePrefix; }
-      }
-
-      public int Counter
-      {
-        get { return _sequenceCounter; }
-      }
-
-      public string ElementPostfix
-      {
-        get { return _elementPostfix; }
-      }
-
-      public string OtherElementPrefix
-      {
-        get { return _otherElementPrefix; }
-      }
-
-      public string FirstElementPrefix
-      {
-        get { return _firstElementPrefix; }
-      }
-
-      public string SequencePostfix
-      {
-        get { return _sequencePostfix; }
-      }
-
-      //TODO: rename IncrementCounter, what is the purpose of this counter??
-      public void IncreaseCounter ()
-      {
-        ++_sequenceCounter;
-      }
-    }
-
-
     /* Planned Features:
      * Start-/End(class)
      * Start-/EndCollection(class)
@@ -93,35 +34,7 @@ namespace Remotion.Diagnostic
      * XML: Support text to be added to be processed to become XML compatible ("<" -> "&lt;" etc). Use CDATA ?
     */
 
-    //TODO: Document and rename, should be immutable?
-    private class StringBuilderToText
-    {
-      private StringBuilder _stringBuilder = new StringBuilder ();
-
-      public StringBuilderToText()
-      {
-        Enabled = true;
-      }
-
-      public bool Enabled { get; set; }
-
-      public StringBuilder Append<T> (T t)
-      {
-        if (Enabled)
-        {
-          _stringBuilder.Append (t);
-        }
-        return _stringBuilder;
-      }
-
-      public override string ToString ()
-      {
-        return _stringBuilder.ToString ();
-      }
-    }
-
-    private StringBuilderToText _textStringBuilderToText = new StringBuilderToText ();
-    //TODO: make readonly
+    private readonly StringBuilderToText _textStringBuilderToText = new StringBuilderToText ();
     private ToTextProvider _toTextProvider;
     
     private string _enumerablePrefix = "{";
@@ -136,11 +49,10 @@ namespace Remotion.Diagnostic
     private string _arrayElementPostfix = "";
     private string _arrayPostfix = "}";
     private bool _useMultiline = true;
-    private OutputComplexityLevel _outputComplexity = OutputComplexityLevel.Basic;
+    private ToTextBuilderOutputComplexityLevel _outputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
     private Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder>(16);
     private SequenceStateHolder _sequenceState = null;
 
-    //TODO: Are setters really necessary?, Move to parameter object and keep them there
     public string ArrayPrefix
     {
       get { return _arrayPrefix; }
@@ -202,36 +114,25 @@ namespace Remotion.Diagnostic
       set { _enumerablePostfix = value; }
     }
 
-    //TODO: move to outer scope
-    public enum OutputComplexityLevel
-    {
-      Disable,
-      Skeleton,
-      Basic,
-      Medium,
-      Complex,
-      Full,
-    };
-
     public SequenceStateHolder SequenceState
     {
       get { return _sequenceState; }
     }
 
-    public OutputComplexityLevel OutputComplexity
+    public ToTextBuilderOutputComplexityLevel OutputComplexity
     {
       get { return _outputComplexity; }
     }
 
-    public void OutputDisable () { _outputComplexity = OutputComplexityLevel.Disable; }
-    public void OutputSkeleton () { _outputComplexity = OutputComplexityLevel.Skeleton; }
-    public void OutputBasic () { _outputComplexity = OutputComplexityLevel.Basic; }
-    public void OutputMedium () { _outputComplexity = OutputComplexityLevel.Medium; }
-    public void OutputComplex () { _outputComplexity = OutputComplexityLevel.Complex; }
-    public void OutputFull () { _outputComplexity = OutputComplexityLevel.Full; }
+    public void OutputDisable () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Disable; }
+    public void OutputSkeleton () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Skeleton; }
+    public void OutputBasic () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Basic; }
+    public void OutputMedium () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Medium; }
+    public void OutputComplex () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Complex; }
+    public void OutputFull () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Full; }
 
     //TODO: rename, make factory method, don't toggle flag
-    public ToTextBuilder AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(OutputComplexityLevel complexityLevel)
+    public ToTextBuilder AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(ToTextBuilderOutputComplexityLevel complexityLevel)
     {
       _textStringBuilderToText.Enabled = (_outputComplexity >= complexityLevel) ? true : false;
       return this; 
@@ -242,14 +143,14 @@ namespace Remotion.Diagnostic
     {
       get
       {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Skeleton);
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Skeleton);
       }
     }
 
     public ToTextBuilder cBasic
     {
       get {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Basic);
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Basic);
       }
     }
 
@@ -257,7 +158,7 @@ namespace Remotion.Diagnostic
     {
       get
       {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Medium);
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Medium);
       }
     }
 
@@ -265,7 +166,7 @@ namespace Remotion.Diagnostic
     {
       get
       {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Complex);
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Complex);
       }
     }
 
@@ -273,7 +174,7 @@ namespace Remotion.Diagnostic
     {
       get
       {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Full);
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Full);
       }
     }
 
@@ -361,35 +262,23 @@ namespace Remotion.Diagnostic
     //TODO: arg check for name
     public ToTextBuilder AppendMember (string name, Object obj)
     {
+      ArgumentUtility.CheckNotNull ("name", name);
       BeforeAppendElement ();
-      _AppendMember (name, obj);
+      AppendMemberRaw (name, obj);
       AfterAppendElement ();
       return this;
     }
 
-    //TODO: arg check for name
     public ToTextBuilder AppendMemberNonSequence (string name, Object obj)
     {
-      _AppendMember (name, obj);
+      ArgumentUtility.CheckNotNull ("name", name);
+      AppendMemberRaw (name, obj);
       return this;
     }
 
-    //TODO: rename
-    private ToTextBuilder _AppendMember (string name, Object obj)
+    private ToTextBuilder AppendMemberRaw (string name, Object obj)
     {
-      //_textStringBuilderToText.Append (" ");
-      //_textStringBuilderToText.Append (name);
-      //_textStringBuilderToText.Append ("=");
-      //_toTextProvider.ToText (obj, this);
-      //_textStringBuilderToText.Append (" ");
-
-      //_textStringBuilderToText.Append (name);
-      //_textStringBuilderToText.Append ("=");
-      //_toTextProvider.ToText (obj, this);
-
       SequenceBegin (name+ "=", "", "", "", "");
-      //_textStringBuilderToText. (name);
-      //_textStringBuilderToText.Append ("=");
       _toTextProvider.ToText (obj, this);
       SequenceEnd();
 
@@ -725,10 +614,6 @@ namespace Remotion.Diagnostic
 
     private ToTextBuilder AppendInstanceBegin (Type type)
     {
-      //this.AppendString("[");
-      //this.AppendString (type.Name);
-      //this.AppendString ("  ");
-      //SequenceBegin ("[" + type.Name + "  ", "", ",", "", "]");
       SequenceBegin ("[" + type.Name, "  ", ",", "", "]");
       return this;
     }
@@ -741,7 +626,6 @@ namespace Remotion.Diagnostic
 
     private ToTextBuilder AppendInstanceEnd ()
     {
-      //this.AppendString ("]");
       SequenceEnd();
       return this;
     }
@@ -765,7 +649,7 @@ namespace Remotion.Diagnostic
       if (IsInSequence)
       {
         _textStringBuilderToText.Append (SequenceState.ElementPostfix);
-        SequenceState.IncreaseCounter ();
+        SequenceState.IncrementCounter ();
       }
     }
 
@@ -779,7 +663,6 @@ namespace Remotion.Diagnostic
 
     private ToTextBuilder SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
-      //_sequenceStack.Push (new SequenceStateHolder(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix));
       _sequenceStack.Push (_sequenceState);
       _sequenceState = new SequenceStateHolder(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
       
@@ -802,7 +685,6 @@ namespace Remotion.Diagnostic
       Assertion.IsTrue (IsInSequence);
       _textStringBuilderToText.Append (SequenceState.SequencePostfix);
 
-      //_sequenceStack.Pop ();
       _sequenceState = _sequenceStack.Pop ();
     }
 
@@ -868,6 +750,42 @@ namespace Remotion.Diagnostic
         AppendSequenceElement (s1 + i);
       }
       return this;
+    }
+  }
+
+  public enum ToTextBuilderOutputComplexityLevel
+  {
+    Disable,
+    Skeleton,
+    Basic,
+    Medium,
+    Complex,
+    Full,
+  };
+
+  internal class StringBuilderToText
+  {
+    private StringBuilder _stringBuilder = new StringBuilder ();
+
+    public StringBuilderToText()
+    {
+      Enabled = true;
+    }
+
+    public bool Enabled { get; set; }
+
+    public StringBuilder Append<T> (T t)
+    {
+      if (Enabled)
+      {
+        _stringBuilder.Append (t);
+      }
+      return _stringBuilder;
+    }
+
+    public override string ToString ()
+    {
+      return _stringBuilder.ToString ();
     }
   }
 }

@@ -12,7 +12,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Logging;
-using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostic;
 
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
@@ -409,7 +408,7 @@ namespace Remotion.UnitTests.Diagnostic
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.OutputComplex();
-      Assert.That (toTextBuilder.OutputComplexity, Is.EqualTo (ToTextBuilder.OutputComplexityLevel.Complex));
+      Assert.That (toTextBuilder.OutputComplexity, Is.EqualTo (ToTextBuilderOutputComplexityLevel.Complex));
     }
 
     [Test]
@@ -418,11 +417,11 @@ namespace Remotion.UnitTests.Diagnostic
       var toTextBuilder = CreateTextBuilder();
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
       toTextBuilder.OutputSkeleton();
-      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Basic);
+      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (false));
 
       toTextBuilder.OutputBasic();
-      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.OutputComplexityLevel.Basic);
+      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
     }
 
@@ -508,7 +507,7 @@ namespace Remotion.UnitTests.Diagnostic
     [Test]
     public void SequenceStateTest ()
     {
-      var sequenceState = new ToTextBuilder.SequenceStateHolder ("Start", "FirstPrefix", "OtherPrefix", "Postfix", "End");
+      var sequenceState = new SequenceStateHolder ("Start", "FirstPrefix", "OtherPrefix", "Postfix", "End");
       Assert.That (sequenceState.Counter, Is.EqualTo (0));
       Assert.That (sequenceState.SequencePrefix, Is.EqualTo ("Start"));
       Assert.That (sequenceState.FirstElementPrefix, Is.EqualTo ("FirstPrefix"));
