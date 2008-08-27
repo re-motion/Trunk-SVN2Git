@@ -109,8 +109,10 @@
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Context\WebSafeContextMixin.cs" />
+    <Compile Include="ExecutionEngine\WxeExecuteUserControlNextStepException.cs" />
+    <Compile Include="ExecutionEngine\WxeExecuteUserControlStepException.cs" />
+    <Compile Include="ExecutionEngine\WxeExecutionControlExceptionBase.cs" />
     <Compile Include="ExecutionEngine\WxeParameterAttribute.cs" />
-    <Compile Include="ExecutionEngine\WxeUIStep.cs" />
     <Compile Include="ExecutionEngine\WxeUserControl2.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

@@ -300,7 +300,7 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> Take the actual parameters without any conversion. </summary>
     public override void Execute (WxeContext context)
     {
-      if (!ExecutionStarted)
+      if (!IsExecutionStarted)
       {
         s_log.Debug ("Initializing execution of " + GetType ().FullName + ".");
 
@@ -315,11 +315,19 @@ namespace Remotion.Web.ExecutionEngine
       {
         base.Execute (context);
       }
+      catch (ThreadAbortException)
+      {
+        throw;
+      }
+      catch (WxeExecuteUserControlStepException)
+      {
+        throw;
+      }
+      catch (WxeExecuteUserControlNextStepException)
+      {
+      }
       catch (Exception e)
       {
-        if (e is ThreadAbortException)
-          throw;
-
         Exception unwrappedException = GetUnwrappedExceptionFromHttpException (e) ?? e;
 
         bool match = false;

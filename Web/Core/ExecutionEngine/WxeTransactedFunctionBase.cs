@@ -86,7 +86,7 @@ namespace Remotion.Web.ExecutionEngine
 
     public override void Execute (WxeContext context)
     {
-      if (!ExecutionStarted)
+      if (!IsExecutionStarted)
       {
         _wxeTransaction = CreateWxeTransaction ();
 
@@ -113,7 +113,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </remarks>
     public virtual void ResetTransaction ()
     {
-      if (!ExecutionStarted)
+      if (!IsExecutionStarted)
         throw new InvalidOperationException ("Transaction cannot be reset before the function has started execution.");
 
       if (_wxeTransaction == null)

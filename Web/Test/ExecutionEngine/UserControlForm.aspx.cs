@@ -40,7 +40,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       ControlStateLabel.Text = ControlStateValue.ToString();
 
       StringBuilder stringBuilder = new StringBuilder();
-      for (WxeStep step = CurrentStep; step != null; step = step.ParentStep)
+      for (WxeStep step = CurrentPageStep; step != null; step = step.ParentStep)
         stringBuilder.AppendFormat ("{0}<br>", step);
       StackLabel.Text = stringBuilder.ToString();
     }

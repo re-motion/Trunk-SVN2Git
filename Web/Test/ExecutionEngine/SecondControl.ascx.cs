@@ -15,7 +15,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     protected void ExecuteNextStep_Click (object sender, EventArgs e)
     {
       ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss");
-      WxePage.ExecuteNextStep ();
+      ExecuteNextStep ();
     }
 
     protected override void OnInitComplete (EventArgs e)

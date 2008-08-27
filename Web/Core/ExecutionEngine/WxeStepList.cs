@@ -145,7 +145,7 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
-    public bool ExecutionStarted
+    public bool IsExecutionStarted
     {
       get { return _lastExecutedStep >= 0; }
     }

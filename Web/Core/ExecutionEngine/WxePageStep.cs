@@ -12,6 +12,7 @@ using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
+using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.UrlMapping;
@@ -22,13 +23,23 @@ namespace Remotion.Web.ExecutionEngine
   /// <summary> This step interrupts the server side execution to display a page to the user. </summary>
   /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Class/*' />
   [Serializable]
-  public class WxePageStep : WxeUIStep
+  public class WxePageStep : WxeStep
   {
     private string _page = null;
     private string _pageref = null;
     private string _pageRoot;
     private string _pageToken;
-    private string _state;
+    private string _pageState;
+    private WxeFunction _subFunction;
+    private NameValueCollection _postBackCollection;
+    
+    private WxeFunction _innerFunction;
+    private string _userControlID;
+    private string _userControlState;
+
+    [NonSerialized]
+    private WxeHandler _wxeHandler;
+
     private bool _isRedirectToPermanentUrlRequired = false;
     private bool _useParentPermaUrl = false;
     private NameValueCollection _permaUrlParameters;
@@ -38,8 +49,9 @@ namespace Remotion.Web.ExecutionEngine
     private bool _isRedirectedToPermanentUrl = false;
     private bool _hasReturnedFromRedirectToPermanentUrl = false;
     private string _resumeUrl;
-    private bool _isExecuteFunctionExternalRequired = false;
+    private bool _isExecuteSubFunctionExternalRequired = false;
     private bool _isExternalFunctionInvoked = false;
+    private bool _isReturningInnerFunction;
 
     /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
     /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Ctor/param[@name="page"]' />
@@ -112,44 +124,83 @@ namespace Remotion.Web.ExecutionEngine
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      if (Function == null)
+      if (_wxeHandler != null)
+      {
+        context.HttpContext.Handler = _wxeHandler;
+        _wxeHandler = null;
+      }
+
+      if (SubFunction == null)
       {
         //  This is the PageStep if it isn't executing a sub-function
 
-        ProcessCurrentFunction (context);
+        SetStateForCurrentFunction (context);
+
+        if (_innerFunction != null)
+        {
+          bool isPostBackBackUp = context.IsPostBack;
+          try
+          {
+            _innerFunction.Execute (context);
+          }
+          catch (WxeExecuteUserControlStepException)
+          {
+            context.SetIsPostBack (isPostBackBackUp);
+          }
+        }
       }
       else
       {
-        if (! _isExecuteFunctionExternalRequired)
+        if (!_isExecuteSubFunctionExternalRequired)
         {
           //  This is the PageStep currently executing a sub-function
 
           EnsureHasRedirectedToPermanentUrl (context);
-          Function.Execute (context);
+          SubFunction.Execute (context);
           //  This point is only reached after the sub-function has completed execution.
 
           //  This is the PageStep after the sub-function has completed execution
 
           EnsureHasReturnedFromRedirectToPermanentUrl (context);
 
-          ProcessExecutedFunction (context);
+          SetStateForExecutedSubFunction (context);
           CleanupAfterHavingReturnedFromRedirectToPermanentUrl();
         }
         else
         {
           //  This is the PageStep currently executing an external function
-          EnsureExternalFunctionInvoked (context);
+          EnsureExternalSubFunctionInvoked (context);
           //  This point is only reached after the external function has been started.
 
           //  This is the PageStep after the external function has completed execution 
           //  or a postback to the executing page has been received
-          ProcessExecutedExternalFunction (context);
-          CleanupAfterHavingInvokedExternalFunction();
+          SetStateForExecutedExternalSubFunction (context);
+          CleanupAfterHavingInvokedExternalSubFunction();
         }
       }
 
-      ExecutePage (context);
+      try
+      {
+        ExecutePage (context);
+      }
+      catch (WxeExecuteUserControlNextStepException)
+      {
+        _isReturningInnerFunction = true;
+
+        try
+        {
+          ExecutePage (context);
+        }
+        finally
+        {
+          _userControlID = null;
+          _innerFunction = null;
+          _userControlState = null;
+          _isReturningInnerFunction = false;
+        }
+      }
     }
+
 
     private void EnsureHasRedirectedToPermanentUrl (WxeContext context)
     {
@@ -162,7 +213,7 @@ namespace Remotion.Web.ExecutionEngine
         }
         catch (WxePermanentUrlTooLongException)
         {
-          ClearExecutingFunction ();
+          _subFunction = null;
           throw;
         }
 
@@ -196,36 +247,36 @@ namespace Remotion.Web.ExecutionEngine
     {
       NameValueCollection internalUrlParameters;
       if (_permaUrlParameters == null)
-        internalUrlParameters = Function.SerializeParametersForQueryString();
+        internalUrlParameters = SubFunction.SerializeParametersForQueryString();
       else
         internalUrlParameters = NameValueCollectionUtility.Clone (_permaUrlParameters);
 
       internalUrlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, context.FunctionToken);
 
-      return context.GetPermanentUrl (Function.GetType(), internalUrlParameters, _useParentPermaUrl);
+      return context.GetPermanentUrl (SubFunction.GetType(), internalUrlParameters, _useParentPermaUrl);
     }
 
-    private void EnsureExternalFunctionInvoked (WxeContext context)
+    private void EnsureExternalSubFunctionInvoked (WxeContext context)
     {
-      if (_isExecuteFunctionExternalRequired && ! _isExternalFunctionInvoked)
+      if (_isExecuteSubFunctionExternalRequired && ! _isExternalFunctionInvoked)
       {
-        string functionToken = GetFunctionTokenForExternalFunction (Function, _returnToCaller);
+        string functionToken = GetFunctionTokenForExternalFunction (SubFunction, _returnToCaller);
 
         string destinationUrl;
         try
         {
-          destinationUrl = GetDestinationUrlForExternalFunction (Function, functionToken, _createPermaUrl, _useParentPermaUrl, _permaUrlParameters);
+          destinationUrl = GetDestinationUrlForExternalFunction (SubFunction, functionToken, _createPermaUrl, _useParentPermaUrl, _permaUrlParameters);
         }
         catch (WxePermanentUrlTooLongException)
         {
-          ClearExecutingFunction ();
+          _subFunction = null;
           throw;
         }
 
         if (_returnToCaller)
         {
           _callerUrlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, context.FunctionToken);
-          Function.ReturnUrl = context.GetPermanentUrl (ParentFunction.GetType(), _callerUrlParameters);
+          SubFunction.ReturnUrl = context.GetPermanentUrl (ParentFunction.GetType(), _callerUrlParameters);
         }
 
         _permaUrlParameters = null;
@@ -235,11 +286,11 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
-    private void CleanupAfterHavingInvokedExternalFunction ()
+    private void CleanupAfterHavingInvokedExternalSubFunction ()
     {
-      if (_isExecuteFunctionExternalRequired && _isExternalFunctionInvoked)
+      if (_isExecuteSubFunctionExternalRequired && _isExternalFunctionInvoked)
       {
-        _isExecuteFunctionExternalRequired = false;
+        _isExecuteSubFunctionExternalRequired = false;
         _isExternalFunctionInvoked = false;
       }
     }
@@ -296,8 +347,8 @@ namespace Remotion.Web.ExecutionEngine
     {
       get
       {
-        if (Function != null)
-          return Function.ExecutingStep;
+        if (SubFunction != null)
+          return SubFunction.ExecutingStep;
         else
           return this;
       }
@@ -348,7 +399,8 @@ namespace Remotion.Web.ExecutionEngine
 
       ControlHelper.SaveAllState (page);
 
-      Execute();
+      _wxeHandler = page.WxeHandler;
+      Execute ();
     }
 
     internal void ExecuteFunctionExternalByRedirect<TWxePage> (
@@ -364,7 +416,7 @@ namespace Remotion.Web.ExecutionEngine
         TWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
         where TWxePage : Page, IWxePage
     {
-      _isExecuteFunctionExternalRequired = true;
+      _isExecuteSubFunctionExternalRequired = true;
       _isExternalFunctionInvoked = false;
       PrepareExecuteFunction (function, false);
       _createPermaUrl = permaUrlOptions.UsePermaUrl;
@@ -382,7 +434,8 @@ namespace Remotion.Web.ExecutionEngine
 
       ControlHelper.SaveAllState (page);
 
-      Execute();
+      _wxeHandler = page.WxeHandler;
+      Execute ();
     }
 
     /// <summary> Gets the token for this page step. </summary>
@@ -390,6 +443,16 @@ namespace Remotion.Web.ExecutionEngine
     public string PageToken
     {
       get { return _pageToken; }
+    }
+
+    protected WxeFunction SubFunction
+    {
+      get { return _subFunction; }
+    }
+
+    protected NameValueCollection PostBackCollection
+    {
+      get { return _postBackCollection; }
     }
 
     public override string ToString ()
@@ -404,7 +467,7 @@ namespace Remotion.Web.ExecutionEngine
       LosFormatter formatter = new LosFormatter();
       StringWriter writer = new StringWriter();
       formatter.Serialize (writer, state);
-      _state = writer.ToString();
+      _pageState = writer.ToString();
     }
 
     /// <summary> 
@@ -414,7 +477,7 @@ namespace Remotion.Web.ExecutionEngine
     public object LoadPageStateFromPersistenceMedium ()
     {
       LosFormatter formatter = new LosFormatter();
-      return formatter.Deserialize (_state);
+      return formatter.Deserialize (_pageState);
     }
 
     /// <summary> 
@@ -424,8 +487,174 @@ namespace Remotion.Web.ExecutionEngine
     protected override void AbortRecursive ()
     {
       base.AbortRecursive();
-      if (Function != null && Function.RootFunction == this.RootFunction)
-        Function.Abort();
+      if (SubFunction != null && SubFunction.RootFunction == this.RootFunction)
+        SubFunction.Abort();
+    }
+
+    private void ExecutePage (WxeContext context)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      string url = Page;
+      string queryString = context.HttpContext.Request.Url.Query;
+      if (!string.IsNullOrEmpty (queryString))
+      {
+        queryString = queryString.Replace (":", HttpUtility.UrlEncode (":"));
+        if (url.Contains ("?"))
+          url = url + "&" + queryString.TrimStart ('?');
+        else
+          url = url + queryString;
+      }
+
+      WxeHandler wxeHandlerBackUp = context.HttpContext.Handler as WxeHandler;
+      Assertion.IsNotNull (wxeHandlerBackUp, "The HttpHandler must be of type WxeHandler.");
+      try
+      {
+        context.HttpContext.Server.Transfer (url, context.IsPostBack);
+      }
+      catch (HttpException e)
+      {
+        Exception unwrappedException = GetUnwrappedExceptionFromHttpException (e);
+        if (unwrappedException is WxeExecuteNextStepException)
+          return;
+        if (unwrappedException is WxeExecuteUserControlNextStepException)
+          throw unwrappedException;
+        throw;
+      }
+      finally
+      {
+        context.HttpContext.Handler = wxeHandlerBackUp;
+      }
+    }
+
+    internal void ExecuteFunction (WxeUserControl2 userControl, WxeFunction function)
+    {
+      ArgumentUtility.CheckNotNull ("userControl", userControl);
+      ArgumentUtility.CheckNotNull ("function", function);
+
+      BackupPostBackCollection (userControl.WxePage);
+
+      _userControlState = userControl.SaveAllState ();
+      _innerFunction = function;
+      _userControlID = userControl.UniqueID;
+      function.SetParentStep (this);
+
+      _wxeHandler = userControl.WxePage.WxeHandler;
+      Execute ();
+    }
+
+    private void PrepareExecuteFunction (WxeFunction function, bool isSubFunction)
+    {
+      ArgumentUtility.CheckNotNull ("function", function);
+
+      if (_subFunction != null)
+        throw new InvalidOperationException ("Cannot execute function while another function executes.");
+
+      _subFunction = function;
+      if (isSubFunction)
+        _subFunction.SetParentStep (this);
+    }
+
+    private void BackupPostBackCollection (IWxePage page)
+    {
+      ArgumentUtility.CheckNotNull ("page", page);
+
+      _postBackCollection = new NameValueCollection (page.GetPostBackCollection ());
+    }
+
+    private void RemoveEventSource (Control sender, bool usesEventTarget)
+    {
+      Assertion.IsNotNull (_postBackCollection, "BackupPostBackCollection must be invoked before calling RemoveEventSource");
+
+      if (usesEventTarget)
+      {
+        _postBackCollection.Remove (ControlHelper.PostEventSourceID);
+        _postBackCollection.Remove (ControlHelper.PostEventArgumentID);
+      }
+      else
+      {
+        ArgumentUtility.CheckNotNull ("sender", sender);
+        if (!(sender is IPostBackEventHandler || sender is IPostBackDataHandler))
+        {
+          throw new ArgumentException (
+              "The sender must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.");
+        }
+        _postBackCollection.Remove (sender.UniqueID);
+      }
+    }
+
+    private void SetStateForCurrentFunction (WxeContext context)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      //  Use the Page's postback data
+      context.PostBackCollection = null;
+      context.SetIsReturningPostBack (false);
+    }
+
+    private void SetStateForExecutedSubFunction (WxeContext context)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      //  Provide the executed sub-function to the executing page
+      context.ReturningFunction = SubFunction;
+      _subFunction = null;
+
+      context.SetIsPostBack (true);
+
+      // Correct the PostBack-Sequence number
+      _postBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString();
+
+      //  Provide the backed up postback data to the executing page
+      context.PostBackCollection = _postBackCollection;
+      _postBackCollection = null;
+      context.SetIsReturningPostBack (true);
+    }
+
+    private void SetStateForExecutedExternalSubFunction (WxeContext context)
+    {
+      //  Provide the executed sub-function to the executing page
+      context.ReturningFunction = SubFunction;
+      _subFunction = null;
+
+      context.SetIsPostBack (true);
+
+      bool isPostRequest = string.Compare (context.HttpContext.Request.HttpMethod, "POST", true) == 0;
+      if (isPostRequest)
+      {
+        // Use original postback data
+        context.PostBackCollection = null;
+      }
+      else
+      {
+        // Correct the PostBack-Sequence number
+        PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString ();
+        //  Provide the backed up postback data to the executing page
+        context.PostBackCollection = PostBackCollection;
+        context.SetIsReturningPostBack (true);
+      }
+
+      _postBackCollection = null;
+    }
+
+    public string UserControlID
+    {
+      get { return _userControlID; }
+    }
+
+    public WxeFunction InnerFunction
+    {
+      get { return _innerFunction; }
+    }
+
+    public string UserControlState
+    {
+      get { return _userControlState; }
+    }
+
+    public bool IsReturningInnerFunction
+    {
+      get { return _isReturningInnerFunction; }
     }
   }
 }

@@ -60,15 +60,7 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
 
-      try
-      {
-        _httpContext.Handler = _wxePageInfo.WxeHandler;
-        _wxePageInfo.CurrentPageStep.ExecuteFunction (_page, function, permaUrlOptions);
-      }
-      finally
-      {
-        _httpContext.Handler = _page;
-      }
+      _wxePageInfo.CurrentPageStep.ExecuteFunction (_page, function, permaUrlOptions);
     }
 
     public void ExecuteFunctionNoRepost (WxeFunction function, Control sender, WxeCallOptionsNoRepost options)
@@ -77,16 +69,8 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("sender", sender);
       ArgumentUtility.CheckNotNull ("options", options);
 
-      try
-      {
-        _httpContext.Handler = _wxePageInfo.WxeHandler;
-        _wxePageInfo.CurrentPageStep.ExecuteFunctionNoRepost (
-            _page, function, sender, options.UsesEventTarget ?? UsesEventTarget, options.PermaUrlOptions);
-      }
-      finally
-      {
-        _httpContext.Handler = _page;
-      }
+      _wxePageInfo.CurrentPageStep.ExecuteFunctionNoRepost (
+          _page, function, sender, options.UsesEventTarget ?? UsesEventTarget, options.PermaUrlOptions);
     }
 
     public void ExecuteFunctionExternalByRedirect (WxeFunction function, WxeCallOptionsExternalByRedirect options)
@@ -94,16 +78,8 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("options", options);
 
-      try
-      {
-        _httpContext.Handler = _wxePageInfo.WxeHandler;
-        _wxePageInfo.CurrentPageStep.ExecuteFunctionExternalByRedirect (
-            _page, function, options.PermaUrlOptions, options.ReturnToCaller, options.CallerUrlParameters);
-      }
-      finally
-      {
-        _httpContext.Handler = _page;
-      }
+      _wxePageInfo.CurrentPageStep.ExecuteFunctionExternalByRedirect (
+          _page, function, options.PermaUrlOptions, options.ReturnToCaller, options.CallerUrlParameters);
     }
 
     public void ExecuteFunctionExternal (WxeFunction function, Control sender, WxeCallOptionsExternal options)
@@ -159,7 +135,7 @@ namespace Remotion.Web.ExecutionEngine
 
         string eventTarget = postBackCollection[ControlHelper.PostEventSourceID];
         string eventArgument = postBackCollection[ControlHelper.PostEventArgumentID];
-        return FormatDoPostBackClientScript (functionToken, _page.CurrentStep.PageToken, sender.ClientID, eventTarget, eventArgument);
+        return FormatDoPostBackClientScript (functionToken, _page.CurrentPageStep.PageToken, sender.ClientID, eventTarget, eventArgument);
       }
       else
       {
@@ -169,7 +145,7 @@ namespace Remotion.Web.ExecutionEngine
           throw new ArgumentException (
               "The sender must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.");
         }
-        return FormatDoSubmitClientScript (functionToken, _page.CurrentStep.PageToken, sender.ClientID);
+        return FormatDoSubmitClientScript (functionToken, _page.CurrentPageStep.PageToken, sender.ClientID);
       }
     }
 

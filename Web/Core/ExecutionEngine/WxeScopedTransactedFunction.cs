@@ -88,7 +88,7 @@ namespace Remotion.Web.ExecutionEngine
       {
         ArgumentUtility.CheckValidEnumValue ("transactionMode", value);
 
-        if (ExecutionStarted)
+        if (IsExecutionStarted)
           throw new InvalidOperationException ("TransactionMode must not be set after execution of this function has started.");
 
         _transactionMode = value;

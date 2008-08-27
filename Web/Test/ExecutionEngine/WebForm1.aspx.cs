@@ -67,7 +67,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     {
 
       System.Text.StringBuilder sb = new System.Text.StringBuilder();
-      for (WxeStep step = CurrentStep; step != null; step = step.ParentStep)
+      for (WxeStep step = CurrentPageStep; step != null; step = step.ParentStep)
         sb.AppendFormat ("{0}<br>", step.ToString());      
       StackLabel.Text = sb.ToString();
 
@@ -125,7 +125,7 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     private void Sub_Click (object sender, System.EventArgs e)
     {
-      // CurrentStep.ExecuteFunction ((Control)sender, this, new SubFunction("call var1", "call var2"));
+      // CurrentPageStep.ExecuteFunction ((Control)sender, this, new SubFunction("call var1", "call var2"));
       if (! IsReturningPostBack)
       {
         SubFunction subFunction = new SubFunction ("sub var 1", "vall var2");

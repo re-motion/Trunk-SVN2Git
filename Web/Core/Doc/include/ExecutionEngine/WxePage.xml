@@ -106,7 +106,7 @@
       
       <h4 class="dtH4">General Usage Notes</h4>
       <para>
-        The <b>WxePage</b> also provides access to the <see cref="CurrentStep"/>, the <see cref="CurrentFunction"/>
+        The <b>WxePage</b> also provides access to the <see cref="CurrentPageStep"/>, the <see cref="CurrentFunction"/>
         and the <see cref="Variables"/> collection.
       </para>
       <note type="inheritinfo">

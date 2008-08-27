@@ -17,7 +17,7 @@ namespace Remotion.Web.ExecutionEngine
 
 public class WxeUserControl: UserControl, IWxeTemplateControl
 {
-  WxeTemplateControlInfo _wxeInfo;
+  readonly WxeTemplateControlInfo _wxeInfo;
 
   public WxeUserControl ()
   {
@@ -30,9 +30,9 @@ public class WxeUserControl: UserControl, IWxeTemplateControl
     base.OnInit (e);
   }
 
-  public WxeUIStep CurrentStep
+  public WxePageStep CurrentPageStep
   {
-    get { return _wxeInfo.CurrentStep; }
+    get { return _wxeInfo.CurrentPageStep; }
   }
   
   public WxeFunction CurrentFunction

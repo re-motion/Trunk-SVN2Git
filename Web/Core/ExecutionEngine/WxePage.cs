@@ -225,19 +225,19 @@ namespace Remotion.Web.ExecutionEngine
 
     /// <summary> Gets the <see cref="WxePageStep"/> that called this <see cref="WxePage"/>. </summary>
     [Browsable (false)]
-    public WxePageStep CurrentStep
+    public WxePageStep CurrentPageStep
     {
       get { return _wxePageInfo.CurrentPageStep; }
     }
 
-    WxeUIStep IWxeTemplateControl.CurrentStep
+    WxePageStep IWxeTemplateControl.CurrentPageStep
     {
-      get { return _wxePageInfo.CurrentStep; }
+      get { return _wxePageInfo.CurrentPageStep; }
     }
 
-    /// <summary> Gets the <see cref="WxeFunction"/> of which the <see cref="CurrentStep"/> is a part. </summary>
+    /// <summary> Gets the <see cref="WxeFunction"/> of which the <see cref="CurrentPageStep"/> is a part. </summary>
     /// <value> 
-    ///   A <see cref="WxeFunction"/> or <see langwrpd="null"/> if the <see cref="CurrentStep"/> is not part of a
+    ///   A <see cref="WxeFunction"/> or <see langwrpd="null"/> if the <see cref="CurrentPageStep"/> is not part of a
     ///   <see cref="WxeFunction"/>.
     /// </value>
     [Browsable (false)]
@@ -246,7 +246,7 @@ namespace Remotion.Web.ExecutionEngine
       get { return _wxePageInfo.CurrentFunction; }
     }
 
-    /// <summary> Gets the <see cref="WxeStep.Variables"/> collection of the <see cref="CurrentStep"/>. </summary>
+    /// <summary> Gets the <see cref="WxeStep.Variables"/> collection of the <see cref="CurrentPageStep"/>. </summary>
     /// <value> 
     ///   A <see cref="NameObjectCollection"/> or <see langword="null"/> if the step is not part of a 
     ///   <see cref="WxeFunction"/>

@@ -258,7 +258,7 @@ namespace Remotion.Web.ExecutionEngine
     /// has already finished, or <see cref="Transaction"/> is not the <see cref="CurrentTransaction"/>.</exception>
     protected internal virtual void Reset ()
     {
-      if (!ExecutionStarted)
+      if (!IsExecutionStarted)
         throw new InvalidOperationException ("Transaction cannot be reset before its execution has started.");
 
       if (_transaction == null)
@@ -283,7 +283,7 @@ namespace Remotion.Web.ExecutionEngine
 
     public override void Execute (WxeContext context)
     {
-      if (!ExecutionStarted)
+      if (!IsExecutionStarted)
       {
         s_log.Debug ("Initializing execution of " + this.GetType ().FullName + ".");
         InitializeTransaction();
@@ -389,7 +389,7 @@ namespace Remotion.Web.ExecutionEngine
       s_log.Debug ("Aborting " + this.GetType ().Name);
       base.AbortRecursive ();
       
-      // TODO: ExecutionStarted might not be true here
+      // TODO: IsExecutionStarted might not be true here
       RollbackAndReleaseTransaction ();
       CheckAndRestorePreviousCurrentTransaction ();
     }

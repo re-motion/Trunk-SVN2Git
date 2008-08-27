@@ -23,7 +23,7 @@ namespace Remotion.Web.ExecutionEngine
   public class WxeTemplateControlInfo
   {
     private WxeHandler _wxeHandler;
-    private WxeUIStep _currentStep;
+    private WxePageStep _currentPageStep;
     private WxeFunction _currentFunction;
     private IWxeTemplateControl _control;
     /// <summary> Caches the <see cref="ResourceManagerSet"/> for this control. </summary>
@@ -59,8 +59,8 @@ namespace Remotion.Web.ExecutionEngine
             _control.Page.GetType ()));
       }
 
-      _currentStep = _wxeHandler.RootFunction.ExecutingStep as WxeUIStep;
-      _currentFunction = WxeStep.GetFunction (_currentStep);
+      _currentPageStep = _wxeHandler.RootFunction.ExecutingStep as WxePageStep;
+      _currentFunction = WxeStep.GetFunction (_currentPageStep);
     }
 
     public WxeHandler WxeHandler
@@ -68,9 +68,9 @@ namespace Remotion.Web.ExecutionEngine
       get { return _wxeHandler; }
     }
 
-    public WxeUIStep CurrentStep
+    public WxePageStep CurrentPageStep
     {
-      get { return _currentStep; }
+      get { return _currentPageStep; }
     }
 
     public WxeFunction CurrentFunction
@@ -80,7 +80,7 @@ namespace Remotion.Web.ExecutionEngine
 
     public NameObjectCollection Variables
     {
-      get { return (_currentStep == null) ? null : _currentStep.Variables; }
+      get { return (_currentPageStep == null) ? null : _currentPageStep.Variables; }
     }
 
     /// <summary> Find the <see cref="IResourceManager"/> for this control info. </summary>

@@ -161,6 +161,7 @@ namespace Remotion.Web.ExecutionEngine
     private ParentContainer _parentContainer;
     private bool _isInitComplete;
     private bool _isInOnInit;
+    private bool _executeNextStep;
 
     public WxeUserControl2 ()
     {
@@ -181,10 +182,9 @@ namespace Remotion.Web.ExecutionEngine
         WrapControlWithParentContainer ();
 
         string uniqueID = _parentContainer.UniqueID + IdSeparator + ID;
-        var userControlStep = _wxeInfo.WxeHandler.RootFunction.ExecutingStep as WxeUserControlStep;
-        if (userControlStep != null && (string)userControlStep.ParentFunction.Variables["UserControlID"] == uniqueID)
+        if (CurrentPageStep.UserControlID == uniqueID && !CurrentPageStep.IsReturningInnerFunction)
         {
-          bool clearState = !userControlStep.IsPostBack;
+          bool clearState = !CurrentUserControlStep.IsPostBack;
           AddReplacementUserControl (clearState);
         }
         else
@@ -204,8 +204,9 @@ namespace Remotion.Web.ExecutionEngine
     {
       _parentContainer = new ParentContainer ();
       _parentContainer.ID = ID + "_Parent";
-      string savedState = (string) CurrentFunction.Variables["UserControlState"];
-      CurrentFunction.Variables["UserControlState"] = null;
+      string savedState = null;
+      if (CurrentPageStep.IsReturningInnerFunction)
+        savedState = CurrentPageStep.UserControlState;
       if (savedState != null)
       {
         var formatter = new LosFormatter ();
@@ -239,8 +240,8 @@ namespace Remotion.Web.ExecutionEngine
     private void AddReplacementUserControl (bool clearState)
     {
       Assertion.IsNotNull (_parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
-      
-      var control = (WxeUserControl2) _parentContainer.Page.LoadControl (((WxeUserControlStep) _wxeInfo.WxeHandler.RootFunction.ExecutingStep).UserControl);
+
+      var control = (WxeUserControl2) _parentContainer.Page.LoadControl (CurrentUserControlStep.UserControl);
       control.ID = ID;
       control._parentContainer = _parentContainer;
       _parentContainer = null;
@@ -315,21 +316,10 @@ namespace Remotion.Web.ExecutionEngine
 
     public void ExecuteFunction (WxeFunction function)
     {
-      try
-      {
-        Context.Handler = _wxeInfo.WxeHandler;
-        CurrentFunction.Variables["UserControlState"] = SaveAllState ();
-        function.Variables["UserControlID"] = UniqueID;
-
-        CurrentStep.ExecuteFunction (this, function);
-      }
-      finally
-      {
-        Context.Handler = Page;
-      }
+      CurrentPageStep.ExecuteFunction (this, function);
     }
 
-    private string SaveAllState ()
+    internal string SaveAllState ()
     {
       Pair state = new Pair (ControlHelper.SaveChildControlState (_parentContainer), ControlHelper.SaveViewStateRecursive (_parentContainer));
       LosFormatter formatter = new LosFormatter();
@@ -338,9 +328,9 @@ namespace Remotion.Web.ExecutionEngine
       return writer.ToString();
     }
 
-    public WxeUIStep CurrentStep
+    public WxePageStep CurrentPageStep
     {
-      get { return _wxeInfo.CurrentStep; }
+      get { return _wxeInfo.CurrentPageStep; }
     }
 
     public WxeFunction CurrentFunction
@@ -356,6 +346,30 @@ namespace Remotion.Web.ExecutionEngine
     public IWxePage WxePage
     {
       get { return (IWxePage) base.Page; }
+    }
+
+    private WxeUserControlStep CurrentUserControlStep
+    {
+      get { return ((WxeUserControlStep) CurrentPageStep.InnerFunction.ExecutingStep); }
+    }
+
+    /// <summary> Implements <see cref="IWxePage.ExecuteNextStep">IWxePage.ExecuteNextStep</see>. </summary>
+    public void ExecuteNextStep ()
+    {
+      _executeNextStep = true;
+      Page.Visible = false; // suppress prerender and render events
+    }
+
+    public override void Dispose ()
+    {
+      base.Dispose ();
+
+      if (_executeNextStep)
+      {
+        if (Context != null)
+          Context.Response.Clear (); // throw away page trace output
+        throw new WxeExecuteUserControlNextStepException();
+      }
     }
   }
 }

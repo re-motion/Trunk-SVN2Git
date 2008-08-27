@@ -63,7 +63,7 @@ namespace OBWTest.IndividualControlTests
 
       StringBuilder sb = new StringBuilder();
       sb.Append ("<b>Stack:</b><br>");
-      for (WxeStep step = CurrentStep; step != null; step = step.ParentStep)
+      for (WxeStep step = CurrentPageStep; step != null; step = step.ParentStep)
         sb.AppendFormat ("{0}<br>", step.ToString());
       Stack.Text = sb.ToString();
     }

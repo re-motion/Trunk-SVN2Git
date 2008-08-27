@@ -1,15 +1,25 @@
-﻿using System;
+﻿/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ *
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the re:motion license agreement in license.txt. If you did not 
+ * receive it, please visit http://www.re-motion.org/licensing.
+ * 
+ * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ */
+
+using System;
 using System.Web;
 using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxeUserControlStep : WxeUIStep
+  public class WxeUserControlStep : WxeStep
   {
     private bool _isExecutionStarted;
     private bool _isPostBack;
     private string _userControl;
-    private string _userControlID;
+    private WxePageStep _pageStep;
 
     public WxeUserControlStep (string userControl)
     {
@@ -21,37 +31,17 @@ namespace Remotion.Web.ExecutionEngine
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      if (Function == null)
-      {
-        //  This is the PageStep if it isn't executing a sub-function
-
-        context.SetIsPostBack (true);
-        context.SetIsReturningPostBack (false);
-        context.PostBackCollection = PostBackCollection;
-      }
-      else
-      {
-        //  This is the PageStep currently executing a sub-function
-
-        Function.Execute (context);
-        //  This point is only reached after the sub-function has completed execution.
-
-        //  This is the PageStep after the sub-function has completed execution
-
-        ProcessExecutedFunction (context);
-      }
-
       if (!_isExecutionStarted)
       {
         _isExecutionStarted = true;
         _isPostBack = false;
-   //     throw new WxeExecuteUserControlStepException();
       }
       else
       {
         _isPostBack = true;
       }
-        ExecutePage (context);
+
+      throw new WxeExecuteUserControlStepException();
     }
 
     public bool IsPostBack
@@ -64,15 +54,19 @@ namespace Remotion.Web.ExecutionEngine
       get { return _userControl; }
     }
 
-    public string UserControlID
-    {
-      get { return _userControlID; }
-      set { _userControlID = value; }
-    }
-
     public override string ToString ()
     {
       return "WxeUserControlStep: " + UserControl;
+    }
+
+    public WxePageStep PageStep
+    {
+      get
+      {
+        if (_pageStep == null)
+          _pageStep = WxeStep.GetStepByType<WxePageStep> (this);
+        return _pageStep;
+      }
     }
   }
 }

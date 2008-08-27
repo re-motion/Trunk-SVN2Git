@@ -54,7 +54,6 @@ namespace Remotion.Web.ExecutionEngine
 
     private readonly TWxePage _page;
     private WxeForm _wxeForm;
-    private WxePageStep _currentPageStep;
     private WxeExecutor<TWxePage> _wxeExecutor;
     private bool _postbackCollectionInitialized = false;
     private bool _isPostDataHandled = false;
@@ -108,9 +107,6 @@ namespace Remotion.Web.ExecutionEngine
 
       _wxeForm = WxeForm.Replace (_page.HtmlForm);
       _page.HtmlForm = _wxeForm;
-      if (CurrentStep != null)
-        _currentPageStep = CurrentStep.PageStep;
-
 
       if (CurrentPageStep != null)
         ScriptManager.RegisterHiddenField (_page, WxePageInfo<TWxePage>.PageTokenID, CurrentPageStep.PageToken);
@@ -516,11 +512,6 @@ namespace Remotion.Web.ExecutionEngine
     public WxeExecutor<TWxePage> Executor
     {
       get { return _wxeExecutor; }
-    }
-
-    public WxePageStep CurrentPageStep
-    {
-      get { return _currentPageStep; }
     }
   }
 }
