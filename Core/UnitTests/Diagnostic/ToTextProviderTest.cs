@@ -146,7 +146,7 @@ namespace Remotion.UnitTests.Diagnostic
     {
       var toTextBuilder = new ToTextBuilder (toTextProvider);
       toTextProvider.ToText (o, toTextBuilder);
-      return toTextBuilder.ToString();
+      return toTextBuilder.CheckAndConvertToString ();
     }
 
 

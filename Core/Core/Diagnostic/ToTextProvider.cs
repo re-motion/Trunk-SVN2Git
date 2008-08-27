@@ -122,7 +122,7 @@ namespace Remotion.Diagnostic
     public string ToTextString (object obj)
     {
       var toTextBuilder = new ToTextBuilder (this);
-      return toTextBuilder.ToText (obj).ToString ();
+      return toTextBuilder.ToText (obj).CheckAndConvertToString ();
     }
 
     //TODO: refactor and split to type based strategy (IToTextHandler?)
@@ -344,7 +344,7 @@ namespace Remotion.Diagnostic
         {
           string name = memberInfo.Name;
 
-          // Skip backing fields
+          // Skip compiler generated backing fields
           //bool isCompilerGenerated = name.Contains("k__");
           bool isCompilerGenerated = memberInfo.IsDefined (typeof (CompilerGeneratedAttribute), false);
           if (!isCompilerGenerated)

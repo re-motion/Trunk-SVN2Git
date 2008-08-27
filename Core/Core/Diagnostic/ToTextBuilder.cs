@@ -703,14 +703,16 @@ namespace Remotion.Diagnostic
       return AppendArray (array);
     }
 
-
-
-    public override string ToString ()
+    public string CheckAndConvertToString ()
     {
-      //TODO: No exception at all, ToString should never throw
-      Assertion.IsFalse(IsInSequence);
-      return _textStringBuilderToText.ToString();
+      Assertion.IsFalse (IsInSequence);
+      return _textStringBuilderToText.ToString ();
     }
+
+    //public override string ToString ()
+    //{
+    //  return _textStringBuilderToText.ToString ();
+    //}
 
 
 
