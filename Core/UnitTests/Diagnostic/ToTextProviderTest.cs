@@ -124,7 +124,12 @@ namespace Remotion.UnitTests.Diagnostic
     }
 
 
-    public class Test2
+    public interface ITest2Name
+    {
+      string Name { get; }
+    }
+
+    public class Test2 : ITest2Name
     {
       public Test2 ()
       {
@@ -634,6 +639,38 @@ namespace Remotion.UnitTests.Diagnostic
       var result = toText.ToTextString (testInterface);
       Log (result);
       Assert.That (result, Is.EqualTo (testInterface.ToString()));
+    }
+
+    [Test]
+    public void InterfacePriorityTest ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+      toText.UseInterfaceHandlers = true;
+
+      toText.RegisterInterfaceHandlerAppendLast<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
+      toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+
+      Test testInterface = new Test ("Überbauer", 3589);
+      var result = toText.ToTextString (testInterface);
+      Log (result);
+      Assert.That (result, Is.EqualTo ("Int=3589"));
+    }
+
+    [Test]
+    public void InterfacePriority2Test ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+      toText.UseInterfaceHandlers = true;
+
+      toText.RegisterInterfaceHandlerAppendLast<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
+      toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+      toText.RegisterInterfaceHandlerAppendLast<ITest2Name> ((o, ttb) => ttb.m ("Name2", o.Name));
+      toText.RegisterInterfaceHandlerAppendLast<ITestListListString> ((o, ttb) => ttb.m ("ListListString", o.ListListString));
+
+      Test2 test2Interface = new Test2 ("Überbauer", 3589);
+      var result = toText.ToTextString (test2Interface);
+      Log (result);
+      Assert.That (result, Is.EqualTo ("Name2=Überbauer"));
     }
 
 
