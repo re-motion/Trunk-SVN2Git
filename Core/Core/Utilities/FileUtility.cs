@@ -48,7 +48,7 @@ namespace Remotion.Utilities
         Thread.Sleep (10);
     }
 
-    public const int CopyBufferSize = 1024 * 1024 * 64;
+    public const int CopyBufferSize = 1024 * 64;
     
     public static void CopyStream (Stream input, Stream output)
     {
