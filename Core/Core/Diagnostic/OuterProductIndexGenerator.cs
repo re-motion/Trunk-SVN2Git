@@ -165,8 +165,6 @@ namespace Remotion.Diagnostic
       for (int currentDimensionIndex = 0; currentDimensionIndex < _numberElementsPerDimension[dimensionIndex]; ++currentDimensionIndex)
       {
         DimensionIndices[dimensionIndex] = currentDimensionIndex;
-        //processingState.SetCurrentElementIndex (iCurrentForLoop);
-        //SetCurrentElementIndex (iCurrentForLoop);
         
         outerProductProcessor.SetProcessingState (processingState);
         bool continueProcessingBeforeLoop = outerProductProcessor.DoBeforeLoop ();
