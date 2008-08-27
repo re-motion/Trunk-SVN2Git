@@ -448,7 +448,7 @@ namespace Remotion.Diagnostic
 
 
 
-    //private class ArrayToTextProcessor : OuterProductIndexGenerator.ProcessorBase
+    //private class ArrayToTextProcessor : OuterProductIndexGenerator.OuterProductProcessorBase
     //{
     //  protected readonly Array _array;
     //  private readonly ToTextBuilder _toTextBuilder;
@@ -494,7 +494,7 @@ namespace Remotion.Diagnostic
 
 
     //TODO: move to outer scope
-    private class ArrayToTextProcessor : OuterProductIndexGenerator.ProcessorBase
+    private class ArrayToTextProcessor : OuterProductProcessorBase
     {
       protected readonly Array _array;
       private readonly ToTextBuilder _toTextBuilder;

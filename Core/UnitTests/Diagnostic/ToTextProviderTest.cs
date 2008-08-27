@@ -9,16 +9,12 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Logging;
 using Remotion.Development.UnitTesting;
-using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostic;
-using System.Linq.Expressions;
-
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.UnitTests.Diagnostic

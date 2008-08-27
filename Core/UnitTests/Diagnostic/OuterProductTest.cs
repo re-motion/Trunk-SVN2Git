@@ -17,16 +17,15 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostic;
 
 
-namespace Remotion.UnitTests.Text.Diagnostic
+namespace Remotion.UnitTests.Diagnostic
 {
-  //TODO: Move outer scope and use namespace (subfolder) for grouping
   [TestFixture]
   public class OuterProductTest
   {
     /// <summary>
-    /// OuterProductIndexGenerator.IProcessor implementations
+    /// OuterProductIndexGenerator.IOuterProductProcessor implementations
     /// </summary>
-    private abstract class OuterProductProcessorBase : OuterProductIndexGenerator.ProcessorBase
+    private abstract class OuterProductProcessorBase : Remotion.Diagnostic.OuterProductProcessorBase
     {
       protected Array _rectangularArray;
       protected StringBuilder _result = new StringBuilder();
@@ -183,9 +182,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
     }
 
     /// <summary>
-    /// OuterProductIndexGenerator.IProcessor used in OuterProductIndexGenerator "pretty print rectangular arrays of arbitrary dimensions" code sample
+    /// OuterProductIndexGenerator.IOuterProductProcessor used in OuterProductIndexGenerator "pretty print rectangular arrays of arbitrary dimensions" code sample
     /// </summary>
-    public class RectangularArrayToString : OuterProductIndexGenerator.ProcessorBase
+    public class RectangularArrayToString : Remotion.Diagnostic.OuterProductProcessorBase
     {
       protected Array _rectangularArray;
       public readonly StringBuilder _result = new StringBuilder(); // To keep sample concise
@@ -220,9 +219,9 @@ namespace Remotion.UnitTests.Text.Diagnostic
 
 
     /// <summary>
-    /// OuterProductIndexGenerator.IProcessor used in OuterProductIndexGenerator "create outer prodcut permutations" code sample
+    /// OuterProductIndexGenerator.IOuterProductProcessor used in OuterProductIndexGenerator "create outer prodcut permutations" code sample
     /// </summary>
-    public class OuterProductPermutations : OuterProductIndexGenerator.ProcessorBase
+    public class OuterProductPermutations : Remotion.Diagnostic.OuterProductProcessorBase
     {
       public readonly List<int[]> outerProductPermutations = new List<int[]>(); // To keep sample concise
 
