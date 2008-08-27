@@ -15,6 +15,7 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Context;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 
@@ -26,7 +27,6 @@ namespace Remotion.Web.ExecutionEngine
 /// </summary>
 public class WxeContext
 {
-
   /// <summary> The current <see cref="WxeContext"/>. </summary>
   /// <value> 
   ///   An instance of the <see cref="WxeContext"/> type 
@@ -138,7 +138,7 @@ public class WxeContext
     string href = GetExternalFunctionUrl (function, createPermaUrl, urlParameters);
     if (returnToCaller)
       function.ReturnUrl = page.Request.RawUrl;
-    PageUtility.Redirect (HttpContext.Current.Response, href);
+    System.Web.HttpContext.Current.Response.Redirect (href);
   }
 
   /// <summary> 
@@ -195,7 +195,7 @@ public class WxeContext
       internalUrlParameters = NameValueCollectionUtility.Clone (urlParameters);
     }
     internalUrlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, functionToken);
-    return WxeContext.GetPermanentUrl (HttpContext.Current, function.GetType(), internalUrlParameters);
+    return WxeContext.GetPermanentUrl (System.Web.HttpContext.Current, function.GetType(), internalUrlParameters);
   }
 
   /// <summary> 
@@ -212,21 +212,22 @@ public class WxeContext
   }
 
 
-  private HttpContext _httpContext;
-  private bool _isPostBack = false;
-  private bool _isReturningPostBack = false;
-  private bool _isOutOfSequencePostBack = false;
-  private NameValueCollection _postBackCollection = null;
-  private WxeFunction _returningFunction = null;
-  private WxeFunctionState _functionState;
-  private NameValueCollection _queryString;
+  private readonly IHttpContext _httpContext;
+  private bool _isPostBack;
+  private bool _isReturningPostBack;
+  private bool _isOutOfSequencePostBack;
+  private NameValueCollection _postBackCollection;
+  private WxeFunction _returningFunction;
+  private readonly WxeFunctionState _functionState;
+  private readonly NameValueCollection _queryString;
 
-  public WxeContext (HttpContext context, WxeFunctionState functionState, NameValueCollection queryString)
+  public WxeContext (IHttpContext context, WxeFunctionState functionState, NameValueCollection queryString)
   {
     ArgumentUtility.CheckNotNull ("context", context);
     ArgumentUtility.CheckNotNull ("functionState", functionState);
 
     _httpContext = context;
+
     _functionState = functionState;
 
     if (queryString == null)
@@ -240,7 +241,7 @@ public class WxeContext
     }
   }
 
-  public HttpContext HttpContext
+  public IHttpContext HttpContext
   {
     get { return _httpContext; }
   }
@@ -350,10 +351,10 @@ public class WxeContext
   public string GetResumeUrl (bool includeServer)
   {
     string pathPart = GetResumePath();
-    pathPart = HttpContext.Response.ApplyAppPathModifier (pathPart);
+    pathPart = _httpContext.Response.ApplyAppPathModifier (pathPart);
     if (includeServer)
     {
-      string serverPart = HttpContext.Request.Url.GetLeftPart (System.UriPartial.Authority);
+      string serverPart = _httpContext.Request.Url.GetLeftPart (System.UriPartial.Authority);
       return serverPart + pathPart;
     }
     else
@@ -375,7 +376,7 @@ public class WxeContext
     if (queryString == null)
       queryString = new NameValueCollection();
 
-    string path = WxeContext.Current.HttpContext.Response.ApplyAppPathModifier (_httpContext.Request.Url.AbsolutePath);
+    string path = _httpContext.Response.ApplyAppPathModifier (_httpContext.Request.Url.AbsolutePath);
     return UrlUtility.AddParameters (path, queryString);
   }
 
@@ -400,8 +401,6 @@ public class WxeContext
     ArgumentUtility.CheckNotNullOrEmpty ("path", path);
     ArgumentUtility.CheckNotNullOrEmpty ("functionToken", functionToken);
 
-    HttpResponse response = WxeContext.Current.HttpContext.Response;
-
     if (path.IndexOf ("?") != -1)
       throw new ArgumentException ("The path must be provided without a query string. Use the query string parameter instead.", "path");
 
@@ -412,13 +411,13 @@ public class WxeContext
     
     queryString.Set (WxeHandler.Parameters.WxeFunctionToken, functionToken);
     
-    path = response.ApplyAppPathModifier (path);
+    path = _httpContext.Response.ApplyAppPathModifier (path);
     return UrlUtility.AddParameters (path, queryString);
   }
 
   /// <summary> 
   ///   Gets the permanent URL for the <see cref="WxeFunction"/> of the specified <paramref name="functionType"/> 
-  ///   and using the <paramref name="queryString"/>.
+  ///   and using the <paramref name="urlParameters"/>.
   /// </summary>
   /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/GetPermanentUrl/param[@name="functionType" or @name="urlParameters"]' />
   public string GetPermanentUrl (Type functionType, NameValueCollection urlParameters)
@@ -428,14 +427,14 @@ public class WxeContext
 
   /// <summary> 
   ///   Gets the permanent URL for the <see cref="WxeFunction"/> of the specified <paramref name="functionType"/> 
-  ///   and using the <paramref name="queryString"/>.
+  ///   and using the <paramref name="urlParameters"/>.
   /// </summary>
   /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/GetPermanentUrl/param[@name="functionType" or @name="urlParameters" or @name="useParentPermanentUrl"]' />
   public string GetPermanentUrl (Type functionType, NameValueCollection urlParameters, bool useParentPermanentUrl)
   {
     ArgumentUtility.CheckNotNull ("urlParameters", urlParameters);
 
-    string permanentUrl = WxeContext.GetPermanentUrl (_httpContext, functionType, urlParameters, true);
+    string permanentUrl = WxeContext.GetPermanentUrl (_httpContext.WrappedInstance, functionType, urlParameters, true);
 
     if (useParentPermanentUrl)
     {
@@ -459,7 +458,6 @@ public class WxeContext
   private StringCollection ExtractReturnUrls (string url)
   {
     StringCollection returnUrls = new StringCollection();
-    System.Text.Encoding encoding = HttpContext.Current.Response.ContentEncoding;
     
     while (! StringUtility.IsNullOrEmpty (url))
     {

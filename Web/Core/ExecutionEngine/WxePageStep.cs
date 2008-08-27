@@ -40,17 +40,17 @@ namespace Remotion.Web.ExecutionEngine
     [NonSerialized]
     private WxeHandler _wxeHandler;
 
-    private bool _isRedirectToPermanentUrlRequired = false;
-    private bool _useParentPermaUrl = false;
+    private bool _isRedirectToPermanentUrlRequired;
+    private bool _useParentPermaUrl;
     private NameValueCollection _permaUrlParameters;
-    private bool _createPermaUrl = false;
-    private bool _returnToCaller = false;
-    private NameValueCollection _callerUrlParameters = null;
-    private bool _isRedirectedToPermanentUrl = false;
-    private bool _hasReturnedFromRedirectToPermanentUrl = false;
+    private bool _createPermaUrl;
+    private bool _returnToCaller;
+    private NameValueCollection _callerUrlParameters;
+    private bool _isRedirectedToPermanentUrl;
+    private bool _hasReturnedFromRedirectToPermanentUrl;
     private string _resumeUrl;
-    private bool _isExecuteSubFunctionExternalRequired = false;
-    private bool _isExternalFunctionInvoked = false;
+    private bool _isExecuteSubFunctionExternalRequired;
+    private bool _isExternalFunctionInvoked;
     private bool _isReturningInnerFunction;
 
     /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
@@ -110,7 +110,7 @@ namespace Remotion.Web.ExecutionEngine
         else if (_pageref != null && Variables[_pageref] != null)
           name = (string) Variables[_pageref];
         else
-          throw new WxeException ("No Page specified for " + this.GetType().FullName + ".");
+          throw new WxeException ("No Page specified for " + GetType().FullName + ".");
         return _pageRoot + name;
       }
     }
@@ -220,7 +220,7 @@ namespace Remotion.Web.ExecutionEngine
         _permaUrlParameters = null;
         _resumeUrl = context.GetResumePath();
         _isRedirectedToPermanentUrl = true;
-        PageUtility.Redirect (context.HttpContext.Response, destinationUrl);
+        context.HttpContext.Response.Redirect (destinationUrl);
       }
     }
 
@@ -229,7 +229,7 @@ namespace Remotion.Web.ExecutionEngine
       if (_isRedirectToPermanentUrlRequired && _isRedirectedToPermanentUrl && ! _hasReturnedFromRedirectToPermanentUrl)
       {
         _hasReturnedFromRedirectToPermanentUrl = true;
-        PageUtility.Redirect (context.HttpContext.Response, _resumeUrl);
+        context.HttpContext.Response.Redirect (_resumeUrl);
       }
     }
 
@@ -282,7 +282,7 @@ namespace Remotion.Web.ExecutionEngine
         _permaUrlParameters = null;
         _callerUrlParameters = null;
         _isExternalFunctionInvoked = true;
-        PageUtility.Redirect (context.HttpContext.Response, destinationUrl);
+        context.HttpContext.Response.Redirect (destinationUrl);
       }
     }
 

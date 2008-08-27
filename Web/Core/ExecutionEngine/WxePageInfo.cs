@@ -246,8 +246,7 @@ namespace Remotion.Web.ExecutionEngine
 
     private void SetCacheSettings ()
     {
-      HttpContext context = WxeContext.Current.HttpContext;
-      context.Response.Cache.SetCacheability (HttpCacheability.Private);
+      WxeContext.Current.HttpContext.Response.Cache.SetCacheability (HttpCacheability.Private);
     }
 
     private void RegisterWxeInitializationScript ()

@@ -24,7 +24,7 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     void Step1 (WxeContext context)
     {
-      PageUtility.Redirect (context.HttpContext.Response, "~/Start.aspx?Redirected");
+      context.HttpContext.Response.Redirect ("~/Start.aspx?Redirected");
     }
   }
 

@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.Web;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Development.Web.UnitTesting.ExecutionEngine
 {
@@ -37,12 +38,12 @@ namespace Remotion.Development.Web.UnitTesting.ExecutionEngine
     }
 
     public WxeContextMock (HttpContext context)
-        : base (context, new WxeFunctionState (new TestFunction(), false), null)
+      : base (new HttpContextWrapper (context), new WxeFunctionState (new TestFunction (), false), null)
     {
     }
 
     public WxeContextMock (HttpContext context, NameValueCollection queryString)
-        : base (context, new WxeFunctionState (new TestFunction(), false), queryString)
+        : base (new HttpContextWrapper (context), new WxeFunctionState (new TestFunction(), false), queryString)
     {
     }
   }

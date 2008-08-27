@@ -23,21 +23,6 @@ namespace Remotion.Web.Utilities
   /// </summary>
   public class PageUtility
   {
-    public static void Redirect (HttpResponse response, string destinationUrl)
-    {
-      destinationUrl = response.ApplyAppPathModifier (destinationUrl);
-      response.Clear();
-
-      response.StatusCode = 302;
-      response.AppendHeader ("location", destinationUrl);
-      response.Write ("<html><head><title>Object moved</title></head><body>\r\n");
-      response.Write ("<h2>Object moved to <a href='" + destinationUrl + "'>here</a>.</h2>\r\n");
-      response.Write ("</body></html>\r\n");
-
-      response.End();
-    }
-
-
     /// <summary>
     ///   Gets the form's postback data in a fashion that works for WxePages too. 
     ///   Otherwise simialar to <b>Page.Request.Form</b>.
