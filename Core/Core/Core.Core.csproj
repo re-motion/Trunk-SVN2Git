@@ -109,11 +109,13 @@
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Diagnostic\IOuterProductProcessor.cs" />
     <Compile Include="Diagnostic\IToTextHandlerExternal.cs" />
+    <Compile Include="Diagnostic\IToTextInterfaceHandlerExternal.cs" />
     <Compile Include="Diagnostic\OuterProductProcessingState.cs" />
     <Compile Include="Diagnostic\OuterProductProcessorBase.cs" />
     <Compile Include="Diagnostic\SequenceStateHolder.cs" />
     <Compile Include="Diagnostic\StringBuilderToText.cs" />
     <Compile Include="Diagnostic\ToTextHandlerExternal.cs" />
+    <Compile Include="Diagnostic\ToTextInterfaceHandlerExternal.cs" />
     <Compile Include="Mixins\Definitions\IAttributeIntroductionSource.cs" />
     <Compile Include="Mixins\Definitions\NonAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\SuppressedAttributeIntroductionDefinition.cs" />

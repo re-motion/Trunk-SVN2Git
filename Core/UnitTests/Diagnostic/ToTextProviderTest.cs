@@ -62,11 +62,23 @@ namespace Remotion.UnitTests.Diagnostic
       private string privateField = "*private_field*";
     }
 
-    public interface ITest
+    public interface ITestName
     {
+      string Name { get;  }
     }
 
-    public class Test : ITest
+    public interface ITestInt
+    {
+      int Int { get;  }
+    }
+
+    public interface ITestListListString
+    {
+      List<List<string>> ListListString { get;  }
+    }
+
+
+    public class Test : ITestName, ITestListListString, ITestInt
     {
       public Test ()
       {
@@ -597,15 +609,32 @@ namespace Remotion.UnitTests.Diagnostic
     }
 
 
-    //[Test]
-    //public void InterfaceTest ()
-    //{
-    //  ToTextProvider toText = GetTextProvider ();
-    //  ITest testInterface = new Test();
-    //  var result = toText.ToTextString (testInterface);
-    //  Log (result);
-    //  Assert.That (result, Is.EqualTo ("[ITest]"));
-    //}
+    [Test]
+    public void InterfaceTest ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+      toText.UseInterfaceHandlers = true;
+
+      toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+
+      Test testInterface = new Test ("Überbauer",3589);
+      var result = toText.ToTextString (testInterface);
+      Log (result);
+      Assert.That (result, Is.EqualTo ("Name=Überbauer"));
+    }
+
+    [Test]
+    public void InterfaceDisabledTest ()
+    {
+      ToTextProvider toText = GetTextProvider ();
+      toText.UseInterfaceHandlers = false;
+      toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+
+      Test testInterface = new Test ("Überbauer", 3589);
+      var result = toText.ToTextString (testInterface);
+      Log (result);
+      Assert.That (result, Is.EqualTo (testInterface.ToString()));
+    }
 
 
     public static ToTextProvider GetTextProvider ()
@@ -614,6 +643,7 @@ namespace Remotion.UnitTests.Diagnostic
       toTextProvider.UseAutomaticObjectToText = false;
       toTextProvider.UseAutomaticStringEnclosing = false;
       toTextProvider.UseAutomaticCharEnclosing = false;
+      toTextProvider.UseInterfaceHandlers = false;
       return toTextProvider;
     }
 

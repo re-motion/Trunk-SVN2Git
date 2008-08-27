@@ -42,6 +42,8 @@ namespace Remotion.Diagnostic
   public class ToTextProvider
   {
     private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap = new Dictionary<Type, IToTextHandlerExternal> ();
+    private readonly Dictionary<Type, IToTextInterfaceHandlerExternal> _interfaceTypeHandlerMap = new Dictionary<Type, IToTextInterfaceHandlerExternal> ();
+    
     private static readonly NumberFormatInfo s_numberFormatInfoInvariant = CultureInfo.InvariantCulture.NumberFormat;
 
     // Define a cache instance (dictionary syntax)
@@ -55,6 +57,9 @@ namespace Remotion.Diagnostic
     private bool _emitPublicFields = true;
     private bool _emitPrivateProperties = true;
     private bool _emitPrivateFields = true;
+    private int _interfaceHandlerPriorityMin = 0;
+    private int _interfaceHandlerPriorityMax = 0;
+    private bool _useInterfaceHandlers = true;
 
 
     public bool UseAutomaticObjectToText
@@ -107,6 +112,12 @@ namespace Remotion.Diagnostic
     public bool ParentHandlerSearchUpToRoot
     {
       get; set;
+    }
+
+    public bool UseInterfaceHandlers
+    {
+      get { return _useInterfaceHandlers;  }
+      set { _useInterfaceHandlers = value; }
     }
 
     public void SetAutomaticObjectToTextEmit (bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
@@ -240,6 +251,9 @@ namespace Remotion.Diagnostic
         {
           handler.ToText (obj, toTextBuilder);
         }
+        if (HandledByInterfaceHandler (obj, type, toTextBuilder))
+        {
+        }
         else if (_automaticObjectToText)
         {
           AutomaticObjectToText (obj, toTextBuilder, EmitPublicProperties, EmitPublicFields, EmitPrivateProperties, EmitPrivateFields);
@@ -249,6 +263,34 @@ namespace Remotion.Diagnostic
           toTextBuilder.AppendString (obj.ToString ());
         }
       }
+    }
+
+    private bool HandledByInterfaceHandler (object obj, Type type, ToTextBuilder toTextBuilder)
+    {
+      if (!_useInterfaceHandlers)
+      {
+        return false;
+      }
+
+      IToTextInterfaceHandlerExternal interfaceHandlerWithMaximumPriority = null;
+      foreach (var interfaceType in type.GetInterfaces())
+      {
+        IToTextInterfaceHandlerExternal  interfaceHandler;
+        _interfaceTypeHandlerMap.TryGetValue(interfaceType, out interfaceHandler);
+        if (interfaceHandler != null && 
+          (interfaceHandlerWithMaximumPriority == null || (interfaceHandler.Priority > interfaceHandlerWithMaximumPriority.Priority)))
+        {
+          interfaceHandlerWithMaximumPriority = interfaceHandler;
+        }
+      }
+
+      if (interfaceHandlerWithMaximumPriority == null)
+      {
+        return false;
+      }
+
+      interfaceHandlerWithMaximumPriority.ToText (obj, toTextBuilder);
+      return true;
     }
 
     private IToTextHandlerExternal GetHandler (Type type)
@@ -290,6 +332,13 @@ namespace Remotion.Diagnostic
     {
       _typeHandlerMap.Add (typeof (T),new ToTextHandlerExternal<T> (handler));
     }
+
+    public void RegisterInterfaceHandlerAppendLast<T> (Action<T, ToTextBuilder> handler)
+    {
+      --_interfaceHandlerPriorityMin;
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextInterfaceHandlerExternal<T> (handler,_interfaceHandlerPriorityMin));
+    }
+
 
     public void ClearHandlers ()
     {
@@ -398,6 +447,7 @@ namespace Remotion.Diagnostic
       Log (String.Format (format, parameterArray));
     }
 
- 
+
+
   }
 }
