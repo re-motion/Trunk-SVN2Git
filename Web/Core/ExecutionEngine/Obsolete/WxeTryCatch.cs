@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 using System.Web;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Obsolete
 {
@@ -134,7 +135,7 @@ namespace Remotion.Web.ExecutionEngine.Obsolete
           if (e is System.Threading.ThreadAbortException)
             throw;
 
-          Exception unwrappedException = GetUnwrappedExceptionFromHttpException (e);
+          Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (e);
 
           for (int i = 0; i < _catchBlocks.Count; ++i)
           {

@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Web;
@@ -20,11 +21,14 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  //TODO: refactor page, pageref into page-object
+  //TODO: refactor ctors
   /// <summary> This step interrupts the server side execution to display a page to the user. </summary>
   /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Class/*' />
   [Serializable]
   public class WxePageStep : WxeStep
   {
+    private IWxePageExecutor _pageExecutor = new WxePageExecutor();
     private string _page = null;
     private string _pageref = null;
     private string _pageRoot;
@@ -181,7 +185,7 @@ namespace Remotion.Web.ExecutionEngine
 
       try
       {
-        ExecutePage (context);
+        _pageExecutor.ExecutePage (context, Page);
       }
       catch (WxeExecuteUserControlNextStepException)
       {
@@ -189,7 +193,7 @@ namespace Remotion.Web.ExecutionEngine
 
         try
         {
-          ExecutePage (context);
+          _pageExecutor.ExecutePage (context, Page);
         }
         finally
         {
@@ -491,42 +495,6 @@ namespace Remotion.Web.ExecutionEngine
         SubFunction.Abort();
     }
 
-    private void ExecutePage (WxeContext context)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      string url = Page;
-      string queryString = context.HttpContext.Request.Url.Query;
-      if (!string.IsNullOrEmpty (queryString))
-      {
-        queryString = queryString.Replace (":", HttpUtility.UrlEncode (":"));
-        if (url.Contains ("?"))
-          url = url + "&" + queryString.TrimStart ('?');
-        else
-          url = url + queryString;
-      }
-
-      WxeHandler wxeHandlerBackUp = context.HttpContext.Handler as WxeHandler;
-      Assertion.IsNotNull (wxeHandlerBackUp, "The HttpHandler must be of type WxeHandler.");
-      try
-      {
-        context.HttpContext.Server.Transfer (url, context.IsPostBack);
-      }
-      catch (HttpException e)
-      {
-        Exception unwrappedException = GetUnwrappedExceptionFromHttpException (e);
-        if (unwrappedException is WxeExecuteNextStepException)
-          return;
-        if (unwrappedException is WxeExecuteUserControlNextStepException)
-          throw unwrappedException;
-        throw;
-      }
-      finally
-      {
-        context.HttpContext.Handler = wxeHandlerBackUp;
-      }
-    }
-
     internal void ExecuteFunction (WxeUserControl2 userControl, WxeFunction function)
     {
       ArgumentUtility.CheckNotNull ("userControl", userControl);
@@ -655,6 +623,18 @@ namespace Remotion.Web.ExecutionEngine
     public bool IsReturningInnerFunction
     {
       get { return _isReturningInnerFunction; }
+    }
+
+    public IWxePageExecutor PageExecutor
+    {
+      get { return _pageExecutor; }
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void SetPageExecutor (IWxePageExecutor pageExecutor)
+    {
+      ArgumentUtility.CheckNotNull ("pageExecutor", pageExecutor);
+      _pageExecutor = pageExecutor;
     }
   }
 }

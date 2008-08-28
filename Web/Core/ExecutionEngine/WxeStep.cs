@@ -194,16 +194,6 @@ public abstract class WxeStep
   protected virtual void AbortRecursive()
   {
   }
-
-  protected Exception GetUnwrappedExceptionFromHttpException (Exception e)
-  {
-    Exception unwrappedException = e as HttpException;
-    while (unwrappedException is HttpException)
-    {
-      unwrappedException = unwrappedException.InnerException;
-    }
-    return unwrappedException;
-  }
 }
 
 }

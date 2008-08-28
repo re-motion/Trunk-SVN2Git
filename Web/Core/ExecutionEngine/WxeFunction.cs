@@ -22,6 +22,7 @@ using Remotion.Logging;
 using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -328,7 +329,7 @@ namespace Remotion.Web.ExecutionEngine
       }
       catch (Exception e)
       {
-        Exception unwrappedException = GetUnwrappedExceptionFromHttpException (e) ?? e;
+        Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (e) ?? e;
 
         bool match = false;
         if (_catchExceptions && _catchExceptionTypes != null)
