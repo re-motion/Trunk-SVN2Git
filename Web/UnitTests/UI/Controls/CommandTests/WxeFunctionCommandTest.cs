@@ -16,6 +16,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using TestFunction=Remotion.Web.UnitTests.ExecutionEngine.TestFunctions.TestFunction;
 
 namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
 {
@@ -49,7 +50,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
       AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _testHelper.WebSecurityAdapter);
       AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _testHelper.WxeSecurityAdapter);
       Command command = _testHelper.CreateWxeFunctionCommand ();
-      _testHelper.ExpectWxeSecurityProviderHasStatelessAccess (typeof (ExecutionEngine.TestFunction), true);
+      _testHelper.ExpectWxeSecurityProviderHasStatelessAccess (typeof (TestFunction), true);
       _testHelper.ReplayAll ();
 
       bool hasAccess = command.HasAccess (null);
@@ -64,7 +65,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
       AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), _testHelper.WebSecurityAdapter);
       AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _testHelper.WxeSecurityAdapter);
       Command command = _testHelper.CreateWxeFunctionCommand ();
-      _testHelper.ExpectWxeSecurityProviderHasStatelessAccess (typeof (ExecutionEngine.TestFunction), false);
+      _testHelper.ExpectWxeSecurityProviderHasStatelessAccess (typeof (TestFunction), false);
       _testHelper.ReplayAll ();
 
       bool hasAccess = command.HasAccess (null);

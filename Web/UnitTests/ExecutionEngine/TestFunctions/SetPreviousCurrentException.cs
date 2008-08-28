@@ -10,10 +10,9 @@
 
 using System;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
-  public class SetCurrentException : Exception
+  public class SetPreviousCurrentException : Exception
   {
-    
   }
 }

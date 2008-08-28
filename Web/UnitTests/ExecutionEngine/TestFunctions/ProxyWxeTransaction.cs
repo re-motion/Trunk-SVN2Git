@@ -13,15 +13,14 @@ using Remotion.Data;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
-
   /// <summary> Provides a test implementation of the <see langword="abstract"/> <see cref="WxeTransactionBase{TTransaction}"/> type. </summary>
   [Serializable]
   public abstract class ProxyWxeTransaction : WxeTransactionBase<ITransaction>
   {
     public ProxyWxeTransaction ()
-      : base (null, true, false)
+        : base (null, true, false)
     {
     }
 
@@ -124,5 +123,4 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       base.OnTransactionRolledBack ();
     }
   }
-
 }

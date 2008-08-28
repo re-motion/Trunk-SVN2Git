@@ -12,6 +12,7 @@ using System;
 using Remotion.Data;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Development.UnitTesting;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {

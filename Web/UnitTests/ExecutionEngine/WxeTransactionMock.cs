@@ -15,6 +15,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 using NUnit.Framework;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {

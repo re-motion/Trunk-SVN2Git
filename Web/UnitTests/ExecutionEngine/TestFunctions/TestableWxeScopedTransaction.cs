@@ -11,8 +11,9 @@
 using System;
 using Remotion.Data;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
   public class TestableWxeScopedTransaction : WxeScopedTransaction<TestTransaction, TestTransactionScope, TestTransactionScopeManager>
   {

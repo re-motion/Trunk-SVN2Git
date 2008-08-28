@@ -11,7 +11,7 @@
 using System;
 using Remotion.Data;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
   public class TestTransactionScope : ITransactionScope<TestTransaction>
   {

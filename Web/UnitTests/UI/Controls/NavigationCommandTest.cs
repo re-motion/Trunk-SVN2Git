@@ -20,6 +20,8 @@ using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.UI.Controls;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.Utilities;
+using TestFunction=Remotion.Web.UnitTests.ExecutionEngine.TestFunctions.TestFunction;
+using TestFunctionWithNesting=Remotion.Web.UnitTests.ExecutionEngine.TestFunctions.TestFunctionWithNesting;
 
 namespace Remotion.Web.UnitTests.UI.Controls
 {
@@ -50,7 +52,7 @@ public class NavigationCommandTest
     _currentHttpContext.Response.ContentEncoding = System.Text.Encoding.UTF8;
     HttpContextHelper.SetCurrent (_currentHttpContext);
 
-    _functionType = typeof (ExecutionEngine.TestFunction);
+    _functionType = typeof (TestFunction);
     _functionTypeName = WebTypeUtility.GetQualifiedName (_functionType);
     _wxeFunctionParameter1Value = "Value1";
     _wxeFunctionParameters = "\"Value1\"";
@@ -197,7 +199,7 @@ public class NavigationCommandTest
   {
     string mappingID = "Test";
     string resource = "~/Test.wxe";
-    Type functionWithNestingType = typeof (ExecutionEngine.TestFunctionWithNesting);
+    Type functionWithNestingType = typeof (TestFunctionWithNesting);
     string functionWithNestingTypeName = WebTypeUtility.GetQualifiedName (functionWithNestingType);
     UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (mappingID, functionWithNestingType, resource));
     string parameter1 = "Value1";

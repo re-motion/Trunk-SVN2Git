@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
   public class TestWxeTransaction : WxeTransactionBase<TestTransaction>
   {
@@ -24,7 +24,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     }
 
     public TestWxeTransaction (bool forceRoot)
-      : base (null, false, forceRoot)
+        : base (null, false, forceRoot)
     {
     }
 

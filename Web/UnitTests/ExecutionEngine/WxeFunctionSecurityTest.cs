@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 using Remotion.Security;
 using Remotion.Web.ExecutionEngine;

@@ -15,6 +15,7 @@ using System.Threading;
 using System.Web.SessionState;
 using NUnit.Framework;
 using Remotion.Context;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;

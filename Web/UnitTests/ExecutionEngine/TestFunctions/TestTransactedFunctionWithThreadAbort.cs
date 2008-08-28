@@ -11,8 +11,9 @@
 using System.Threading;
 using NUnit.Framework;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
   public class TestTransactedFunctionWithThreadAbort : WxeTransactedFunctionBase<TestTransaction>
   {

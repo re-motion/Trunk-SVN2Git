@@ -14,6 +14,7 @@ using Remotion.Collections;
 using Remotion.Data;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {

@@ -8,11 +8,11 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System.Threading;
+using System;
 using NUnit.Framework;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
   public class TestTransactedFunctionWithReset : WxeTransactedFunctionBase<TestTransaction>
   {
@@ -35,7 +35,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     protected override TestTransaction CreateRootTransaction ()
     {
       _createRootTransactionCalled = true;
-      return new TestTransaction ();
+      return new TestTransaction();
     }
 
     private void Step1 ()
@@ -44,7 +44,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       Assert.AreSame (transactionBeforeReset, MyTransaction);
 
       Assert.IsTrue (_createWxeTransactionCalled);
-      
+
       if (_isRoot)
         Assert.IsTrue (_createRootTransactionCalled);
       else
@@ -53,7 +53,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       _createWxeTransactionCalled = false;
       _createRootTransactionCalled = false;
 
-      ResetTransaction ();
+      ResetTransaction();
 
       Assert.AreNotSame (transactionBeforeReset, TestTransaction.Current);
       Assert.AreSame (TestTransaction.Current, MyTransaction);
@@ -74,7 +74,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 
     public new void ResetTransaction ()
     {
-      base.ResetTransaction ();
+      base.ResetTransaction();
     }
   }
 }

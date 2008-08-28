@@ -18,6 +18,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.Utilities;
+using TestFunction=Remotion.Web.UnitTests.ExecutionEngine.TestFunctions.TestFunction;
 
 namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
 {
@@ -50,7 +51,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.CommandTests
 
     public CommandTestHelper ()
     {
-      _functionType = typeof (ExecutionEngine.TestFunction);
+      _functionType = typeof (TestFunction);
       _functionTypeName = WebTypeUtility.GetQualifiedName (_functionType);
 
       _mocks = new MockRepository ();

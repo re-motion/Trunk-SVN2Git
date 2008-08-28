@@ -17,6 +17,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {
@@ -442,7 +443,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       catch (WxeNonRecoverableTransactionException ex)
       {
         Assert.AreEqual ("An exception of type AuthenticationException caused a non-recoverable RollbackException.\r\nThe original exception message "
-            + "was: 'testo.'\r\nThe transaction error message was: 'Exception of type 'Remotion.Web.UnitTests.ExecutionEngine.RollbackException' was "
+            + "was: 'testo.'\r\nThe transaction error message was: 'Exception of type 'Remotion.Web.UnitTests.ExecutionEngine.TestFunctions.RollbackException' was "
             + "thrown.'", ex.Message);
         Assert.IsInstanceOfType (typeof (AuthenticationException), ex.InnerException);
         Assert.IsInstanceOfType (typeof (RollbackException), ex.TransactionException);
@@ -468,7 +469,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       catch (WxeNonRecoverableTransactionException ex)
       {
         Assert.AreEqual ("An exception of type AuthenticationException caused a non-recoverable ReleaseException.\r\nThe original exception message "
-            + "was: 'testo.'\r\nThe transaction error message was: 'Exception of type 'Remotion.Web.UnitTests.ExecutionEngine.ReleaseException' was "
+            + "was: 'testo.'\r\nThe transaction error message was: 'Exception of type 'Remotion.Web.UnitTests.ExecutionEngine.TestFunctions.ReleaseException' was "
             + "thrown.'", ex.Message);
         Assert.IsInstanceOfType (typeof (AuthenticationException), ex.InnerException);
         Assert.IsInstanceOfType (typeof (ReleaseException), ex.TransactionException);

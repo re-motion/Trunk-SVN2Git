@@ -10,9 +10,9 @@
 
 using System;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
-  public class RollbackException : Exception
+  public class ReleaseException : Exception
   {
   }
 }

@@ -9,11 +9,9 @@
  */
 
 using System;
-using NUnit.Framework;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Utilities;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
   public class TestFunction : WxeFunction
   {
@@ -62,7 +60,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 
     public void PublicStepMethod ()
     {
-      Step1 ();
+      Step1();
     }
 
     public void PublicStepMethodWithContext (WxeContext context)

@@ -8,10 +8,11 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using NUnit.Framework;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
   public class TestTransactedFunctionWithNestedFunction : WxeTransactedFunctionBase<TestTransaction>
   {
@@ -20,12 +21,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 
     protected override WxeTransactionBase<TestTransaction> CreateWxeTransaction ()
     {
-      return new TestWxeTransaction ();
+      return new TestWxeTransaction();
     }
 
     protected override TestTransaction CreateRootTransaction ()
     {
-      TestTransaction newTransaction = new TestTransaction ();
+      TestTransaction newTransaction = new TestTransaction();
       newTransaction.CanCreateChild = true;
       return newTransaction;
     }
@@ -38,7 +39,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     public TestTransactedFunctionWithNestedFunction (TestTransaction transactionBefore, WxeTransactedFunctionBase<TestTransaction> nestedFunction)
     {
       _transactionBeforeExecution = transactionBefore;
-      
+
       Add (new WxeMethodStep (CheckBeforeNestedFunction));
       Add (nestedFunction);
       Add (new WxeMethodStep (CheckAfterNestedFunction));

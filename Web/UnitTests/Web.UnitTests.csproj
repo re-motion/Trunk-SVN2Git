@@ -144,23 +144,23 @@
   <ItemGroup>
     <Compile Include="Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Context\WebSafeContextMixinTest.cs" />
-    <Compile Include="ExecutionEngine\CommitException.cs" />
-    <Compile Include="ExecutionEngine\ReleaseException.cs" />
-    <Compile Include="ExecutionEngine\RollbackException.cs" />
-    <Compile Include="ExecutionEngine\SetCurrentException.cs" />
-    <Compile Include="ExecutionEngine\SetPreviousCurrentException.cs" />
-    <Compile Include="ExecutionEngine\TestableScopedTransactedFunction.cs" />
-    <Compile Include="ExecutionEngine\TestableWxeScopedTransaction.cs" />
-    <Compile Include="ExecutionEngine\TestTransactedFunctionWithResetFailingMyTransactionValidation.cs" />
-    <Compile Include="ExecutionEngine\TestTransactionScope.cs" />
-    <Compile Include="ExecutionEngine\TestTransactionScopeManager.cs" />
-    <Compile Include="ExecutionEngine\TestWxeTransactionFailingResetValidation.cs" />
-    <Compile Include="ExecutionEngine\TestTransactedFunctionWithResetFailingSubclassValidation.cs" />
-    <Compile Include="ExecutionEngine\TestTransactedFunctionWithReset.cs" />
-    <Compile Include="ExecutionEngine\TestFunctionWithSpecificTransaction.cs" />
-    <Compile Include="ExecutionEngine\TestTransactedFunctionWithNestedFunction.cs" />
-    <Compile Include="ExecutionEngine\TestTransactedFunctionWithThreadAbort.cs" />
-    <Compile Include="ExecutionEngine\TestWxeTransaction.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\CommitException.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\ReleaseException.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\RollbackException.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\SetCurrentException.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\SetPreviousCurrentException.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestableScopedTransactedFunction.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestableWxeScopedTransaction.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithResetFailingMyTransactionValidation.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestTransactionScope.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestTransactionScopeManager.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestWxeTransactionFailingResetValidation.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithResetFailingSubclassValidation.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithReset.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestFunctionWithSpecificTransaction.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithNestedFunction.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithThreadAbort.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestWxeTransaction.cs" />
     <Compile Include="ExecutionEngine\WxeFunctionStateManagerTest.cs" />
     <Compile Include="ExecutionEngine\WxeScopedTransactedFunctionTest.cs" />
     <Compile Include="ExecutionEngine\WxeScopedTransactionTest.cs" />
@@ -169,28 +169,28 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\ProxyWxeTransaction.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\ProxyWxeTransaction.cs" />
     <Compile Include="ExecutionEngine\WxeTransactedFunctionBaseTest.cs" />
     <Compile Include="ExecutionEngine\WxeTransactedFunctionMock.cs" />
-    <Compile Include="ExecutionEngine\TestFunction.cs">
+    <Compile Include="ExecutionEngine\TestFunctions\TestFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\TestFunctionWithInvalidSteps.cs">
+    <Compile Include="ExecutionEngine\TestFunctions\TestFunctionWithInvalidSteps.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\TestFunctionWithNesting.cs">
+    <Compile Include="ExecutionEngine\TestFunctions\TestFunctionWithNesting.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\TestFunctionWithNonSerializableParameters.cs">
+    <Compile Include="ExecutionEngine\TestFunctions\TestFunctionWithNonSerializableParameters.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\TestFunctionWithSerializableParameters.cs">
+    <Compile Include="ExecutionEngine\TestFunctions\TestFunctionWithSerializableParameters.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\TestStep.cs">
+    <Compile Include="ExecutionEngine\TestFunctions\TestStep.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\TestTransaction.cs">
+    <Compile Include="ExecutionEngine\TestFunctions\TestTransaction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\UrlMapping\UrlMappedFunctions.cs">

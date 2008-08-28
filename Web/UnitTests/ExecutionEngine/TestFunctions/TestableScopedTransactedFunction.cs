@@ -10,8 +10,9 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
   [Serializable]
   public class TestableScopedTransactedFunction : WxeScopedTransactedFunction<TestTransaction, TestTransactionScope, TestTransactionScopeManager>
@@ -19,13 +20,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     private bool _autoCommit;
 
     public TestableScopedTransactedFunction (params object[] actualParameters)
-      : base (actualParameters)
+        : base (actualParameters)
     {
       _autoCommit = base.AutoCommit;
     }
 
     public TestableScopedTransactedFunction (WxeTransactionMode transactionMode, params object[] actualParameters)
-      : base (transactionMode, actualParameters)
+        : base (transactionMode, actualParameters)
     {
       _autoCommit = base.AutoCommit;
     }
@@ -35,10 +36,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       get 
       { 
         return new WxeParameterDeclaration[] { 
-          new WxeParameterDeclaration ("in", false, WxeParameterDirection.In, typeof (object)),
-          new WxeParameterDeclaration ("out", false, WxeParameterDirection.Out, typeof (object)),
-          new WxeParameterDeclaration ("inout", false, WxeParameterDirection.InOut, typeof (object))
-      }; }
+            new WxeParameterDeclaration ("in", false, WxeParameterDirection.In, typeof (object)),
+            new WxeParameterDeclaration ("out", false, WxeParameterDirection.Out, typeof (object)),
+            new WxeParameterDeclaration ("inout", false, WxeParameterDirection.InOut, typeof (object))
+        }; }
     }
 
     public new WxeTransactionBase<TestTransaction> CreateWxeTransaction ()

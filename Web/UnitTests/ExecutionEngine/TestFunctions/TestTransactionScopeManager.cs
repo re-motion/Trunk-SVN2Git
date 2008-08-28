@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
   public class TestTransactionScopeManager : ITransactionScopeManager<TestTransaction, TestTransactionScope>
   {
