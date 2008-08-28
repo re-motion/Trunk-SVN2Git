@@ -1,4 +1,4 @@
-namespace Remotion.Diagnostic
+namespace Remotion.Diagnostics
 {
   public interface IToTextHandler
   {

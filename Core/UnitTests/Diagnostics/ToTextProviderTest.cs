@@ -12,17 +12,17 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.Logging;
 using Remotion.Development.UnitTesting;
-using Remotion.Diagnostic;
+using Remotion.Development.UnitTesting.Logging;
+using Remotion.Diagnostics;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
-namespace Remotion.UnitTests.Diagnostic
+namespace Remotion.UnitTests.Diagnostics
 {
   [TestFixture]
   public class ToTextProviderTest
   {
-    private ISimpleLogger log = SimpleLogger.Create (true);
+    private ISimpleLogger log = SimpleLogger.CreateForConsole (true);
 
     public class TestSimple
     {

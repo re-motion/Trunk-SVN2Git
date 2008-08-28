@@ -14,15 +14,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Remotion.Diagnostic
+namespace Remotion.Diagnostics
 {
   /// <summary>
   /// Allows a class implementing the IOuterProductProcessor interface to visit each member of an outer product of a variable number of independently sized tuples.
   /// From a programmer's view the class supplies "variable number of nested for loops"-functionality.
   /// For convenience derive you processor class from <see cref="OuterProductProcessorBase"/> (see examples below).
   /// </summary>
-  /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProductIndexGenerator/ClassExample1/*' />
-  /// <include file='doc\include\Text\Diagnostic\OuterProduct.xml' path='OuterProductIndexGenerator/ClassExample2/*' />
+  /// <include file='doc\include\Diagnostics\OuterProduct.xml' path='OuterProductIndexGenerator/ClassExample1/*' />
+  /// <include file='doc\include\Diagnostics\OuterProduct.xml' path='OuterProductIndexGenerator/ClassExample2/*' />
   public class OuterProductIndexGenerator 
   {
     private int _numberElementsProcessed;

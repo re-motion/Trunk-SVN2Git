@@ -4,15 +4,15 @@ using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Development.Logging;
 using Remotion.Development.UnitTesting;
+using Remotion.Development.UnitTesting.Logging;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
   [TestFixture]
   public class ThreadRunnerTest
   {
-    private ISimpleLogger log = SimpleLogger.Create (false);
+    private ISimpleLogger log = SimpleLogger.CreateForConsole (false);
 
     [Test]
     public void Run ()

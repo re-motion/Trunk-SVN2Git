@@ -1,4 +1,4 @@
-namespace Remotion.Diagnostic
+namespace Remotion.Diagnostics
 {
   /// <summary>
   /// Interface to a class which can be passed to <see cref="OuterProductIndexGenerator.ProcessOuterProduct"/>.

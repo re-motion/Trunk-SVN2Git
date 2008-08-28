@@ -10,7 +10,7 @@
 
 using System.Text;
 
-namespace Remotion.Diagnostic
+namespace Remotion.Diagnostics
 {
   /// <summary>
   /// StringBuilder-like class which supports enabling/disabling of its <see cref="Append{T}"/> method 

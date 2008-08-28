@@ -9,7 +9,9 @@
  */
 
 
-namespace Remotion.Development.Logging
+using Remotion.Development.UnitTesting.Logging;
+
+namespace Remotion.Development.UnitTesting.Logging
 {
   public class SimpleLoggerNull : ISimpleLogger
   {

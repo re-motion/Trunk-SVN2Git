@@ -13,7 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
-namespace Remotion.Diagnostic
+namespace Remotion.Diagnostics
 {
   public class ToTextBuilder
   {

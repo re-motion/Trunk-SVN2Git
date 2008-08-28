@@ -12,9 +12,9 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostic;
+using Remotion.Diagnostics;
 
-namespace Remotion.UnitTests.Diagnostic
+namespace Remotion.UnitTests.Diagnostics
 {
   [TestFixture]
   public class ToTest

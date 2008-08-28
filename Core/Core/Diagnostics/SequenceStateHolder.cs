@@ -10,7 +10,7 @@
 
 using Remotion.Utilities;
 
-namespace Remotion.Diagnostic
+namespace Remotion.Diagnostics
 {
   public class SequenceStateHolder
   {

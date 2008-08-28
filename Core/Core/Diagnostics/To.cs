@@ -1,6 +1,6 @@
 using System;
 
-namespace Remotion.Diagnostic
+namespace Remotion.Diagnostics
 {
   public static class To
   {

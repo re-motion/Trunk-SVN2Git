@@ -1,4 +1,4 @@
-namespace Remotion.Diagnostic
+namespace Remotion.Diagnostics
 {
   /// <summary>
   /// Convenience class to derive OuterProductIndexGenerator-processors from. Already supplies ProcessingState-functionality,

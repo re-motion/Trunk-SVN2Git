@@ -15,10 +15,10 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostic;
+using Remotion.Diagnostics;
 
 
-namespace Remotion.UnitTests.Diagnostic
+namespace Remotion.UnitTests.Diagnostics
 {
   [TestFixture]
   public class OuterProductTest
@@ -26,7 +26,7 @@ namespace Remotion.UnitTests.Diagnostic
     /// <summary>
     /// OuterProductIndexGenerator.IOuterProductProcessor implementations
     /// </summary>
-    private abstract class OuterProductProcessorBase : Remotion.Diagnostic.OuterProductProcessorBase
+    private abstract class OuterProductProcessorBase : Remotion.Diagnostics.OuterProductProcessorBase
     {
       protected Array _rectangularArray;
       protected StringBuilder _result = new StringBuilder();
@@ -185,7 +185,7 @@ namespace Remotion.UnitTests.Diagnostic
     /// <summary>
     /// OuterProductIndexGenerator.IOuterProductProcessor used in OuterProductIndexGenerator "pretty print rectangular arrays of arbitrary dimensions" code sample
     /// </summary>
-    public class RectangularArrayToString : Remotion.Diagnostic.OuterProductProcessorBase
+    public class RectangularArrayToString : Remotion.Diagnostics.OuterProductProcessorBase
     {
       protected Array _rectangularArray;
       public readonly StringBuilder _result = new StringBuilder(); // To keep sample concise
@@ -222,7 +222,7 @@ namespace Remotion.UnitTests.Diagnostic
     /// <summary>
     /// OuterProductIndexGenerator.IOuterProductProcessor used in OuterProductIndexGenerator "create outer prodcut permutations" code sample
     /// </summary>
-    public class OuterProductPermutations : Remotion.Diagnostic.OuterProductProcessorBase
+    public class OuterProductPermutations : Remotion.Diagnostics.OuterProductProcessorBase
     {
       public readonly List<int[]> outerProductPermutations = new List<int[]>(); // To keep sample concise
 

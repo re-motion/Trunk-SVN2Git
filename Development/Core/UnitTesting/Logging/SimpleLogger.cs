@@ -11,69 +11,54 @@
 using System;
 using System.IO;
 using System.Text;
-using Remotion.Diagnostic;
+using Remotion.Diagnostics;
 using Remotion.Utilities;
 
 
-namespace Remotion.Development.Logging
+namespace Remotion.Development.UnitTesting.Logging
 {
+  //TODO: Why does CreateForConsole work differently than CreateForFile
   public class SimpleLogger : ISimpleLogger
   {
-    private TextWriter _textWriter;
-    private ToTextProvider _toText;
-
-
     //------------------------------------------------------------------------
     // Factories
     //------------------------------------------------------------------------
-    public static ISimpleLogger Create (bool enableConsole)
+    public static ISimpleLogger CreateForConsole (bool enableConsole)
     {
       if (enableConsole)
-      {
         return new SimpleLogger (enableConsole);
-      }
       else
-      {
-        return new SimpleLoggerNull ();
-      }
+        return new SimpleLoggerNull();
     }
 
-    public static ISimpleLogger Create (string fileName, bool enable)
+    public static ISimpleLogger CreateForFile (string fileName, bool enable)
     {
       if (enable)
-      {
         return new SimpleLogger (fileName);
-      }
       else
-      {
-        return new SimpleLoggerNull ();
-      }
+        return new SimpleLoggerNull();
     }
 
+    private readonly TextWriter _textWriter;
+    private readonly ToTextProvider _toText;
 
-    public SimpleLogger(bool enableConsole)
+    private SimpleLogger (bool enableConsole)
+        : this (enableConsole ? TextWriter.Synchronized (Console.Out) : new StreamWriter (Stream.Null))
     {
-      if(enableConsole)
-      {
-        _textWriter = TextWriter.Synchronized (Console.Out);
-      }
-      else
-      {
-        _textWriter = new StreamWriter(Stream.Null);
-      }
-      InitToTextProvider ();
     }
 
-    public SimpleLogger (string fileName)
+    private SimpleLogger (string fileName)
+        : this (TextWriter.Synchronized (
+                    new StreamWriter (
+                        // Ensure that usage of the SimpleLogger from different threads is synchronized.
+                        new FileStream (ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName), FileMode.OpenOrCreate, FileAccess.Write))))
     {
-      ArgumentUtility.CheckNotNull ("fileName",fileName);
-      // Ensure that usage of the SimpleLogger from different threads is synchronized.
-      _textWriter = TextWriter.Synchronized (new StreamWriter(new FileStream (fileName, FileMode.OpenOrCreate, FileAccess.Write)));
-      InitToTextProvider();
     }
 
-    protected void InitToTextProvider ()
+    private SimpleLogger (TextWriter textWriter)
     {
+      _textWriter = textWriter;
+
       _toText = new ToTextProvider();
       _toText.UseAutomaticObjectToText = true;
       _toText.UseAutomaticStringEnclosing = true;
@@ -83,7 +68,7 @@ namespace Remotion.Development.Logging
     //TODO: rename
     public void It (object obj)
     {
-      _textWriter.WriteLine(_toText.ToTextString(obj));
+      _textWriter.WriteLine (_toText.ToTextString (obj));
     }
 
     public void It (string s)
@@ -93,24 +78,23 @@ namespace Remotion.Development.Logging
 
     public void It (string format, params object[] parameters)
     {
-      _textWriter.WriteLine(format, parameters);
+      _textWriter.WriteLine (format, parameters);
     }
 
     //TODO: rename
+    //TODO: Use StringUtility
     public void Sequence (params object[] parameters)
     {
       bool firstArgument = true;
       var sb = new StringBuilder();
       foreach (var obj in parameters)
       {
-        if(!firstArgument)
-        {
-          sb.Append(", ");
-        }
-        sb.Append(_toText.ToTextString(obj));
+        if (!firstArgument)
+          sb.Append (", ");
+        sb.Append (_toText.ToTextString (obj));
         firstArgument = false;
       }
-      _textWriter.WriteLine(sb.ToString());
+      _textWriter.WriteLine (sb.ToString());
     }
 
     //TODO: rename
@@ -135,7 +119,5 @@ namespace Remotion.Development.Logging
     {
       get { return false; }
     }
-
-
   }
 }

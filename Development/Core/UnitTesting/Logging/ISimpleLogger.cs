@@ -8,12 +8,17 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
-
-namespace Remotion.Diagnostic
+namespace Remotion.Development.UnitTesting.Logging
 {
-  internal interface IToTextHandlerExternal
+  public interface ISimpleLogger : INullObject
   {
-    void ToText (Object obj, ToTextBuilder toTextBuilder);
+    void It (object obj);
+    void It (string s);
+    void It (string format, params object[] parameters);
+    void Item (object obj);
+    void Item (string s);
+    void Item (string format, params object[] parameters);
+
+    void Sequence(params object[] parameters);
   }
 }

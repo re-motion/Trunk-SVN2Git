@@ -17,7 +17,7 @@ using System.Runtime.CompilerServices;
 using Remotion.Collections;
 using Remotion.Utilities;
 
-namespace Remotion.Diagnostic
+namespace Remotion.Diagnostics
 {
   /// <summary>
   /// Provides conversion of arbitray objects into human readable text form 
@@ -58,7 +58,6 @@ namespace Remotion.Diagnostic
     private bool _emitPrivateProperties = true;
     private bool _emitPrivateFields = true;
     private int _interfaceHandlerPriorityMin = 0;
-    private int _interfaceHandlerPriorityMax = 0;
     private bool _useInterfaceHandlers = true;
 
 

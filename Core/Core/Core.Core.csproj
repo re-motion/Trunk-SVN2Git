@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -86,10 +86,6 @@
       <Name>log4net</Name>
       <HintPath>..\..\prereq\Assemblies\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Development, Version=1.11.0.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Development\Core\bin\Debug\Remotion.Development.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -107,15 +103,15 @@
     <Compile Include="BridgeImplementations\AssemblyFinderTypeDiscoveryServiceImplementation.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
-    <Compile Include="Diagnostic\IOuterProductProcessor.cs" />
-    <Compile Include="Diagnostic\IToTextHandlerExternal.cs" />
-    <Compile Include="Diagnostic\IToTextInterfaceHandlerExternal.cs" />
-    <Compile Include="Diagnostic\OuterProductProcessingState.cs" />
-    <Compile Include="Diagnostic\OuterProductProcessorBase.cs" />
-    <Compile Include="Diagnostic\SequenceStateHolder.cs" />
-    <Compile Include="Diagnostic\StringBuilderToText.cs" />
-    <Compile Include="Diagnostic\ToTextHandlerExternal.cs" />
-    <Compile Include="Diagnostic\ToTextInterfaceHandlerExternal.cs" />
+    <Compile Include="Diagnostics\IOuterProductProcessor.cs" />
+    <Compile Include="Diagnostics\IToTextHandlerExternal.cs" />
+    <Compile Include="Diagnostics\IToTextInterfaceHandlerExternal.cs" />
+    <Compile Include="Diagnostics\OuterProductProcessingState.cs" />
+    <Compile Include="Diagnostics\OuterProductProcessorBase.cs" />
+    <Compile Include="Diagnostics\SequenceStateHolder.cs" />
+    <Compile Include="Diagnostics\StringBuilderToText.cs" />
+    <Compile Include="Diagnostics\ToTextHandlerExternal.cs" />
+    <Compile Include="Diagnostics\ToTextInterfaceHandlerExternal.cs" />
     <Compile Include="Mixins\Definitions\IAttributeIntroductionSource.cs" />
     <Compile Include="Mixins\Definitions\NonAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\SuppressedAttributeIntroductionDefinition.cs" />
@@ -453,11 +449,11 @@
     <Compile Include="Text\CommandLine\Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Diagnostic\IToTextHandler.cs" />
-    <Compile Include="Diagnostic\OuterProductIndexGenerator.cs" />
-    <Compile Include="Diagnostic\To.cs" />
-    <Compile Include="Diagnostic\ToTextProvider.cs" />
-    <Compile Include="Diagnostic\ToTextBuilder.cs" />
+    <Compile Include="Diagnostics\IToTextHandler.cs" />
+    <Compile Include="Diagnostics\OuterProductIndexGenerator.cs" />
+    <Compile Include="Diagnostics\To.cs" />
+    <Compile Include="Diagnostics\ToTextProvider.cs" />
+    <Compile Include="Diagnostics\ToTextBuilder.cs" />
     <Compile Include="Text\IdentifierGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -546,7 +542,7 @@
     <Content Include="doc\include\NamespaceDoc.xml" />
     <Content Include="doc\include\Reflection\TypesafeInvoker.xml" />
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
-    <Content Include="doc\include\Text\Diagnostic\OuterProduct.xml" />
+    <Content Include="doc\include\Diagnostics\OuterProduct.xml" />
     <Content Include="doc\include\Utilities\EqualityUtility.xml" />
     <Content Include="doc\include\Utilities\WorkContext.xml" />
     <Content Include="doc\WhatsNew_Remotion.txt" />

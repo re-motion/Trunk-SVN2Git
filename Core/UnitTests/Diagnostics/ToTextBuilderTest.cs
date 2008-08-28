@@ -11,18 +11,18 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.Logging;
-using Remotion.Diagnostic;
+using Remotion.Development.UnitTesting.Logging;
+using Remotion.Diagnostics;
 
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 
-namespace Remotion.UnitTests.Diagnostic
+namespace Remotion.UnitTests.Diagnostics
 {
   [NUnit.Framework.TestFixture]
   public class ToTextBuilderTest
   {
-    private ISimpleLogger log = SimpleLogger.Create (true);
+    private ISimpleLogger log = SimpleLogger.CreateForConsole (true);
 
     [Test]
     public void StringTest ()

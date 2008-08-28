@@ -466,9 +466,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 
       WxeContext wxeContext = function.TestStep.WxeContext;
       Assert.AreSame (WxeContext.Current, wxeContext);
-      Assert.AreEqual (CurrentHttpContext, wxeContext.HttpContext);
+      Assert.AreEqual (CurrentHttpContext, wxeContext.HttpContext.WrappedInstance);
       Assert.AreEqual (_functionStateWithEnabledCleanUp.FunctionToken, wxeContext.FunctionToken);
-      Assert.AreEqual (CurrentHttpContext, wxeContext.HttpContext);
       Assert.AreEqual ("4", function.LastExecutedStepID);
     }
 

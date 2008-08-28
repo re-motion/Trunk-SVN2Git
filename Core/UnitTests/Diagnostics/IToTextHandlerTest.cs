@@ -11,15 +11,15 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.Logging;
-using Remotion.Diagnostic;
+using Remotion.Development.UnitTesting.Logging;
+using Remotion.Diagnostics;
 
-namespace Remotion.UnitTests.Diagnostic
+namespace Remotion.UnitTests.Diagnostics
 {
   [TestFixture]
   public class IToTextHandlerTest
   {
-    private ISimpleLogger log = SimpleLogger.Create (true);
+    private ISimpleLogger log = SimpleLogger.CreateForConsole (true);
 
     public class TestSimple : IToTextHandler
     {
