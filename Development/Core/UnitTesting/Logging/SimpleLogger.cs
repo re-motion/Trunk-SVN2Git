@@ -17,7 +17,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Logging
 {
-  //TODO: Why does CreateForConsole work differently than CreateForFile
   public class SimpleLogger : ISimpleLogger
   {
     //------------------------------------------------------------------------
@@ -26,15 +25,16 @@ namespace Remotion.Development.UnitTesting.Logging
     public static ISimpleLogger CreateForConsole (bool enableConsole)
     {
       if (enableConsole)
-        return new SimpleLogger (enableConsole);
+        return new SimpleLogger (Console.Out);
       else
         return new SimpleLoggerNull();
     }
 
     public static ISimpleLogger CreateForFile (string fileName, bool enable)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName);
       if (enable)
-        return new SimpleLogger (fileName);
+        return new SimpleLogger (new StreamWriter (new FileStream (fileName, FileMode.OpenOrCreate, FileAccess.Write)));
       else
         return new SimpleLoggerNull();
     }
@@ -42,22 +42,10 @@ namespace Remotion.Development.UnitTesting.Logging
     private readonly TextWriter _textWriter;
     private readonly ToTextProvider _toText;
 
-    private SimpleLogger (bool enableConsole)
-        : this (enableConsole ? TextWriter.Synchronized (Console.Out) : new StreamWriter (Stream.Null))
-    {
-    }
-
-    private SimpleLogger (string fileName)
-        : this (TextWriter.Synchronized (
-                    new StreamWriter (
-                        // Ensure that usage of the SimpleLogger from different threads is synchronized.
-                        new FileStream (ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName), FileMode.OpenOrCreate, FileAccess.Write))))
-    {
-    }
-
     private SimpleLogger (TextWriter textWriter)
     {
-      _textWriter = textWriter;
+      // Ensure that usage of the SimpleLogger from different threads is synchronized.
+      _textWriter = TextWriter.Synchronized (textWriter);
 
       _toText = new ToTextProvider();
       _toText.UseAutomaticObjectToText = true;
@@ -82,19 +70,9 @@ namespace Remotion.Development.UnitTesting.Logging
     }
 
     //TODO: rename
-    //TODO: Use StringUtility
     public void Sequence (params object[] parameters)
     {
-      bool firstArgument = true;
-      var sb = new StringBuilder();
-      foreach (var obj in parameters)
-      {
-        if (!firstArgument)
-          sb.Append (", ");
-        sb.Append (_toText.ToTextString (obj));
-        firstArgument = false;
-      }
-      _textWriter.WriteLine (sb.ToString());
+      _textWriter.WriteLine (StringUtility.Concat (parameters));
     }
 
     //TODO: rename

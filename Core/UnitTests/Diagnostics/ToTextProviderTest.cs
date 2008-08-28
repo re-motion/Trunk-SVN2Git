@@ -22,7 +22,7 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class ToTextProviderTest
   {
-    private ISimpleLogger log = SimpleLogger.CreateForConsole (true);
+    private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (true);
 
     public class TestSimple
     {
@@ -170,7 +170,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void ObjectTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
 
       toText.UseAutomaticObjectToText = false;
 
@@ -194,7 +194,7 @@ namespace Remotion.UnitTests.Diagnostics
 
     private void FallbackToStringTestSingleType<T> (T t)
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.UseAutomaticObjectToText = false;
       //log.It (t.ToString());
       Assert.That (ToText (toText, t), Is.EqualTo (t.ToString()));
@@ -202,7 +202,7 @@ namespace Remotion.UnitTests.Diagnostics
 
     private void RegisterHandlers ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.RegisterHandler<Object> ((x, ttb) => ttb.sf ("[Object: {0}]", x.ToString()));
       toText.RegisterHandler<Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
     }
@@ -218,7 +218,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void RegisteredHandlerTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.RegisterHandler<Object> ((x, ttb) => ttb.sf ("[Object: {0}]", x.ToString()));
       Object o = new object();
       string toTextO = ToText (toText, o);
@@ -235,7 +235,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void NullTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       Object o = null;
       Assert.That (ToText (toText, o), Is.EqualTo ("null"));
     }
@@ -243,7 +243,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void IntToStringFallbackTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       int i = 908;
       Assert.That (ToText (toText, i), Is.EqualTo ("908"));
     }
@@ -252,7 +252,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void StringHandlerTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.RegisterHandler<String> ((x, ttb) => ttb.s ("\"").ts (x).s ("\""));
       string toTextTest = ToText (toText, "Some text");
       Log ("[StringHandlerTest] toTextTest=" + toTextTest);
@@ -262,7 +262,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void CharHandlerTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.RegisterHandler<char> ((x, ttb) => ttb.s ("'").ts (x).s ("'"));
       string toTextTest = ToText (toText, 'x');
       Log ("[CharHandlerTest] toTextTest=" + toTextTest);
@@ -281,7 +281,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void UseAutomaticObjectToTextTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       var testSimple = new TestSimple();
 
       toText.UseAutomaticObjectToText = true;
@@ -299,7 +299,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void AutomaticObjectToTextConfigureTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       var testSimple2 = new TestSimple2();
 
       toText.UseAutomaticObjectToText = true;
@@ -333,7 +333,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void ClearHandlersTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.UseAutomaticObjectToText = false;
       toText.RegisterHandler<Object> ((x, ttb) => ttb.s ("[ClearHandlersTest]").ts (x));
       var o = new object();
@@ -347,7 +347,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void StringNotEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       string s = "Wow look at the size of that thing";
       string toTextTest = ToText (toText, s);
       const string toTextTestExpected = "Wow look at the size of that thing";
@@ -358,7 +358,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void NullEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       //toText.RegisterHandler<Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name),ToText(toText,x.Int), ToText(toText,x.LinkedListString)));
       toText.RegisterHandler<Test> ((x, ttb) => ttb.s ("[Test: ").m (x.Name).semicolon.m (x.Int).semicolon.m (x.LinkedListString).s ("]"));
       var test = new Test ("That's not my name", 179);
@@ -371,7 +371,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void EmptyEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.RegisterHandler<ToTextProviderTest.Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.ListListString)));
       var test = new Test ("That's not my name", 179);
@@ -384,7 +384,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void OneDimensionalEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.RegisterHandler<ToTextProviderTest.Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.LinkedListString)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
@@ -400,7 +400,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void TwoDimensionalEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.RegisterHandler<ToTextProviderTest.Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.ListListString)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
@@ -414,7 +414,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void ThreeDimensionalEnumerableTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.RegisterHandler<ToTextProviderTest.Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.Array3D)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
@@ -429,7 +429,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void RectangularArrayTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.RegisterHandler<ToTextProviderTest.Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray2D)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
@@ -442,7 +442,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void RectangularArrayTest2 ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.RegisterHandler<Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray3D)));
       toText.RegisterHandler<Test2> (
@@ -483,7 +483,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void AutomaticStringEnclosingTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       var test = "ABC";
       toText.UseAutomaticStringEnclosing = false;
       Assert.That (ToText (toText, test), Is.EqualTo ("ABC"));
@@ -494,7 +494,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void AutomaticCharEnclosingTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       var test = 'A';
       toText.UseAutomaticCharEnclosing = false;
       Assert.That (ToText (toText, test), Is.EqualTo ("A"));
@@ -513,7 +513,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void AutomaticObjectToTextTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       //toText.UseAutomaticObjectToText = true;
       ToTextProviderEnableAutomatics (toText, true);
       var test = new Test ("That's not my name", 179);
@@ -529,9 +529,9 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    private static void TypeToTextTestDo ()
+    private void TypeToTextTestDo ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       toText.UseAutomaticObjectToText = true;
       var type = typeof (object).GetType();
       string result = toText.ToTextString (type);
@@ -567,7 +567,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void FloatingPointToTextTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
 
       double d = 1.2345678901234567890;
       Double D = d;
@@ -585,7 +585,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void UseParentHandlerTest ()
     {
-      ToTextProvider toText = GetTextProvider();
+      ToTextProvider toText = CreateTextProvider();
       var testChildChild = new TestChildChild();
 
       toText.ParentHandlerSearchUpToRoot = false;
@@ -617,7 +617,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void InterfaceTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = CreateTextProvider ();
       toText.UseInterfaceHandlers = true;
 
       toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
@@ -631,7 +631,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void InterfaceDisabledTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = CreateTextProvider ();
       toText.UseInterfaceHandlers = false;
       toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
 
@@ -644,7 +644,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void InterfacePriorityTest ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = CreateTextProvider ();
       toText.UseInterfaceHandlers = true;
 
       toText.RegisterInterfaceHandlerAppendLast<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
@@ -659,7 +659,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void InterfacePriority2Test ()
     {
-      ToTextProvider toText = GetTextProvider ();
+      ToTextProvider toText = CreateTextProvider ();
       toText.UseInterfaceHandlers = true;
 
       toText.RegisterInterfaceHandlerAppendLast<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
@@ -674,7 +674,58 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    public static ToTextProvider GetTextProvider ()
+    [Test]
+    public void InterfaceAppendFirstPriorityTest ()
+    {
+      ToTextProvider toText = CreateTextProvider ();
+      toText.UseInterfaceHandlers = true;
+
+      toText.RegisterInterfaceHandlerAppendFirst<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+      toText.RegisterInterfaceHandlerAppendFirst<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
+
+      Test testInterface = new Test ("Überbauer", 3589);
+      var result = toText.ToTextString (testInterface);
+      Log (result);
+      Assert.That (result, Is.EqualTo ("Int=3589"));
+    }
+
+
+    [Test]
+    public void ToTextProviderNullHandlerTest ()
+    {
+      ToTextProvider toText = CreateTextProvider ();
+
+      var handler = new ToTextProviderNullHandler();
+      var parameters = CreateToTextParameters(null);
+      var feedback = new ToTextProviderHandlerFeedback();
+      handler.ToTextIfTypeMatches (parameters,feedback);
+      Assert.That (feedback.Handled, Is.EqualTo (true));
+      var result = parameters.ToTextBuilder.CheckAndConvertToString();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("null"));
+    }
+
+    [Test]
+    public void ToTextProviderRegisteredHandlerHandlerTest ()
+    {
+      ToTextProvider toText = CreateTextProvider ();
+
+      var handler = new ToTextProviderRegisteredHandlerWithBaseClassFallbackHandler ();
+      handler.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
+
+      var test = new ToTextProviderTest.Test ("That's not my name", 179);
+
+      var parameters = CreateToTextParameters (test);
+      var feedback = new ToTextProviderHandlerFeedback ();
+      handler.ToTextIfTypeMatches (parameters, feedback);
+      Assert.That (feedback.Handled, Is.EqualTo (true));
+
+      var result = parameters.ToTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("[Test: That's not my name;179]"));
+    }
+
+    private ToTextProvider CreateTextProvider ()
     {
       var toTextProvider = new ToTextProvider();
       toTextProvider.UseAutomaticObjectToText = false;
@@ -682,6 +733,16 @@ namespace Remotion.UnitTests.Diagnostics
       toTextProvider.UseAutomaticCharEnclosing = false;
       toTextProvider.UseInterfaceHandlers = false;
       return toTextProvider;
+    }
+
+    private ToTextParameters CreateToTextParameters (object obj)
+    {
+      var toTextProvider = CreateTextProvider();
+      var toTextBuilder = new ToTextBuilder (toTextProvider);
+      Type type = (obj != null) ? obj.GetType() : null;
+      var parameters = new ToTextParameters () { Object = obj, Type = type, ToTextProvider = toTextProvider, ToTextBuilder = toTextBuilder };
+      //LogVariables (parameters.Object, parameters.Type, parameters.ToTextProvider, parameters.ToTextBuilder);
+      return parameters;
     }
 
     // Logging
@@ -693,6 +754,14 @@ namespace Remotion.UnitTests.Diagnostics
     public void Log (string s)
     {
       log.It (s);
+    }
+
+    public void LogVariables (params object[] parameterArray)
+    {
+      foreach (var obj in parameterArray)
+      {
+        log.Item (" " + obj);
+      }
     }
   }
 }

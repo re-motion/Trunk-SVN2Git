@@ -200,9 +200,13 @@ namespace Remotion.Diagnostics
 
     public ToTextBuilder AppendString (string s)
     {
-      //BeforeAppendElement ();
       _textStringBuilderToText.Append (s);
-      //AfterAppendElement();
+      return this;
+    }
+
+    public ToTextBuilder AppendChar (char c)
+    {
+      _textStringBuilderToText.Append (c);
       return this;
     }
 
@@ -670,6 +674,8 @@ namespace Remotion.Diagnostics
       }
       return this;
     }
+
+
   }
 
   internal class ToTextBuilderArrayToTextProcessor : OuterProductProcessorBase

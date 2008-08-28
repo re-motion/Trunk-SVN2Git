@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Remotion.Collections;
@@ -59,6 +60,16 @@ namespace Remotion.Diagnostics
     private bool _emitPrivateFields = true;
     private int _interfaceHandlerPriorityMin = 0;
     private bool _useInterfaceHandlers = true;
+    private int _interfaceHandlerPriorityMax = 0;
+
+    private readonly List<IToTextProviderHandler> _toTextProviderHandlers = new List<IToTextProviderHandler> ();
+    private readonly Dictionary<Type, IToTextProviderHandler> _toTextProviderHandlerTypeToHandlerMap = new Dictionary<Type, IToTextProviderHandler> ();
+
+
+    public ToTextProvider ()
+    {
+      RegisterDefaultToTextProviderHandlers();
+    }
 
 
     public bool UseAutomaticObjectToText
@@ -127,6 +138,11 @@ namespace Remotion.Diagnostics
       _emitPrivateFields = emitPrivateFields;
     }
 
+    private void RegisterDefaultToTextProviderHandlers()
+    {
+      RegisterToTextProviderHandler (new ToTextProviderNullHandler());
+    }
+
 
 
     public string ToTextString (object obj)
@@ -156,6 +172,18 @@ namespace Remotion.Diagnostics
 
       // TODO Functionality:
       // * Automatic call stack indentation
+
+
+      //bool handled = ToTextUsingToTextProviderHandlers (obj, toTextBuilder);
+      //if (handled)
+      //{
+      //  return;
+      //}
+
+      //ToTextUsingToTextProviderHandlers (obj, toTextBuilder);
+      //return; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 
       if (obj == null)
       {
@@ -338,6 +366,14 @@ namespace Remotion.Diagnostics
       _interfaceTypeHandlerMap.Add (typeof (T), new ToTextInterfaceHandlerExternal<T> (handler,_interfaceHandlerPriorityMin));
     }
 
+    public void RegisterInterfaceHandlerAppendFirst<T> (Action<T, ToTextBuilder> handler)
+    {
+      ++_interfaceHandlerPriorityMax;
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextInterfaceHandlerExternal<T> (handler, _interfaceHandlerPriorityMax));
+    }
+
+
+
 
     public void ClearHandlers ()
     {
@@ -448,5 +484,583 @@ namespace Remotion.Diagnostics
 
 
 
+
+
+
+    public bool ToTextUsingToTextProviderHandlers (object obj, ToTextBuilder toTextBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
+      return false;
+    }
+
+    //public string ToTextStringUsingToTextProviderHandlers (object obj)
+    //{
+    //  var toTextBuilder = new ToTextBuilder (this);
+    //  return toTextBuilder.ToText (obj).CheckAndConvertToString ();
+    //}
+
+
+    //public void RegisterToTextProviderHandler<T> (IToTextProviderHandler toTextProviderHandler)
+    //{
+    //  _toTextProviderHandlers.Add (toTextProviderHandler);
+    //  _toTextProviderHandlerTypeToHandlerMap[typeof (T)] = toTextProviderHandler;
+    //}
+
+    public void RegisterToTextProviderHandler<T> (T toTextProviderHandler)  where T : IToTextProviderHandler
+    {
+      _toTextProviderHandlers.Add (toTextProviderHandler);
+      _toTextProviderHandlerTypeToHandlerMap[typeof (T)] = toTextProviderHandler;
+    }
+
+    public T GetToTextProviderHandler<T> ()
+    {
+      return (T) _toTextProviderHandlerTypeToHandlerMap[typeof (T)];
+    }
   }
+
+
+  public interface IToTextProviderHandler
+  {
+    void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback);
+  }
+
+  public abstract class ToTextProviderHandler : IToTextProviderHandler
+  {
+    protected void Log (string s)
+    {
+      Console.WriteLine ("[ToTextProviderHandler]: " + s);
+    }
+
+    public abstract void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback);
+  }
+
+  public class ToTextProviderHandlerFeedback
+  {
+    public ToTextProviderHandlerFeedback ()
+    {
+      Handled = false;
+    }
+    public bool Handled { get; set; }
+  }
+
+  public class ToTextParameters
+  {
+    public object Object { get; set; }
+    public Type Type { get; set; }
+    public ToTextProvider ToTextProvider { get; set; }
+    public ToTextBuilder ToTextBuilder { get; set; }
+  }
+
+
+  public class ToTextProviderNullHandler : ToTextProviderHandler
+  {
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      toTextProviderHandlerFeedback.Handled = false;
+      if (toTextParameters.Object == null)
+      {
+        Log ("null");
+        toTextParameters.ToTextBuilder.AppendString ("null");
+        toTextProviderHandlerFeedback.Handled = true;
+      }
+    }
+  }
+
+  // TODO: We actually want to call this handler twice: first without and later with base class fallback. For this we would need for them to share the
+  // registered type handlers.
+  public class ToTextProviderRegisteredHandlerWithBaseClassFallbackHandler : ToTextProviderHandler
+  {
+    private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap = new Dictionary<Type, IToTextHandlerExternal> ();
+
+    public int ParentHandlerSearchDepth
+    {
+      get;
+      set;
+    }
+
+    public bool ParentHandlerSearchUpToRoot
+    {
+      get;
+      set;
+    }
+
+    public void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
+    {
+      _typeHandlerMap.Add (typeof (T), new ToTextHandlerExternal<T> (handler));
+    }
+
+    private IToTextHandlerExternal GetHandler (Type type)
+    {
+      return GetHandlerWithBaseClassFallback (type);
+    }
+
+    private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type)
+    {
+      return GetHandlerWithBaseClassFallback (type, ParentHandlerSearchDepth, ParentHandlerSearchUpToRoot, 0);
+    }
+
+    private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, int recursionDepthMax, bool searchToRoot, int recursionDepth)
+    {
+      if (!searchToRoot && recursionDepth > recursionDepthMax)
+      {
+        return null;
+      }
+
+      IToTextHandlerExternal handler;
+      _typeHandlerMap.TryGetValue (type, out handler);
+
+      if (handler != null)
+      {
+        return handler;
+      }
+
+      Type baseType = type.BaseType;
+      if (baseType == null)
+      {
+        return null;
+      }
+
+      return GetHandlerWithBaseClassFallback (baseType, recursionDepthMax, searchToRoot, recursionDepth + 1);
+    }
+
+
+
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextProvider", toTextParameters.ToTextProvider);
+      toTextProviderHandlerFeedback.Handled = false;
+
+      //if (toTextParameters.Object == null || toTextParameters.Type == null)
+      //{
+      //  return;
+      //}
+
+      IToTextHandlerExternal handler = GetHandler (toTextParameters.Type);
+      if (handler != null)
+      {
+        handler.ToText (toTextParameters.Object, toTextParameters.ToTextBuilder);
+        toTextProviderHandlerFeedback.Handled = true;
+      }
+    }
+  }
+
+
+
+
+
+  public class ToTextProviderStringHandler : ToTextProviderHandler
+  {
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextProvider", toTextParameters.ToTextProvider);
+      toTextProviderHandlerFeedback.Handled = false;
+
+      Object obj = toTextParameters.Object;
+      Type type = toTextParameters.Type;
+      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+      if (type == typeof (string))
+      {
+        string s= (string) obj;
+        if (UseAutomaticStringEnclosing)
+        {
+          toTextBuilder.AppendChar ('"');
+          toTextBuilder.AppendString (s);
+          toTextBuilder.AppendChar ('"');
+        }
+        else
+        {
+          toTextBuilder.AppendString(s);
+        }
+        toTextProviderHandlerFeedback.Handled = true;
+      }
+
+    }
+
+    private bool UseAutomaticStringEnclosing
+    {
+      get { return true; }
+    }
+  }
+
+
+  public class ToTextProviderIToTextHandlerHandler : ToTextProviderHandler
+  {
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextProvider", toTextParameters.ToTextProvider);
+      toTextProviderHandlerFeedback.Handled = false;
+
+      Object obj = toTextParameters.Object;
+      Type type = toTextParameters.Type;
+      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+      if (obj is IToTextHandler)
+      {
+        ((IToTextHandler) obj).ToText (toTextBuilder);
+        toTextProviderHandlerFeedback.Handled = true;
+      }
+
+    }
+  }
+
+  public class ToTextProviderTypeHandler : ToTextProviderHandler
+  {
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextProvider", toTextParameters.ToTextProvider);
+      toTextProviderHandlerFeedback.Handled = false;
+
+      Object obj = toTextParameters.Object;
+      Type type = toTextParameters.Type;
+      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+      if (obj is Type) 
+      {
+        // Catch Type|s to avoid endless recursion. 
+        toTextBuilder.AppendString (obj.ToString ());
+      }
+
+      toTextProviderHandlerFeedback.Handled = true;
+    }
+  }
+
+  public class ToTextProviderPrimitiveHandler : ToTextProviderHandler
+  {
+    private static readonly NumberFormatInfo s_numberFormatInfoInvariant = CultureInfo.InvariantCulture.NumberFormat;
+
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextProvider", toTextParameters.ToTextProvider);
+      toTextProviderHandlerFeedback.Handled = false;
+
+      Object obj = toTextParameters.Object;
+      Type type = toTextParameters.Type;
+      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+      if (type.IsPrimitive)
+      {
+        if (type == typeof (char))
+        {
+          char c = (char) obj;
+          if (UseAutomaticCharEnclosing)
+          {
+            toTextBuilder.AppendChar ('\'');
+            toTextBuilder.AppendChar (c);
+            toTextBuilder.AppendChar ('\'');
+          }
+          else
+          {
+            toTextBuilder.Append (c);
+          }
+        }
+        else if (type == typeof (Single)) 
+        {
+          // Make sure floating point numbers are emitted with '.' comma character (non-localized)
+          // to avoid problems with comma as an e.g. sequence seperator character.
+          // Since ToText is to be used for debug output, localizing everything to the common
+          // IT norm of using US syntax (except for dates) makes sense.
+          toTextBuilder.AppendString (((Single) obj).ToString (s_numberFormatInfoInvariant));
+        }
+        else if (type == typeof (Double))
+        {
+          toTextBuilder.AppendString (((Double) obj).ToString (s_numberFormatInfoInvariant));
+        }
+        else
+        {
+          // Emit primitives who have no registered specific handler without further processing.
+          toTextBuilder.Append (obj);
+        }
+        toTextProviderHandlerFeedback.Handled = true;
+      }
+
+    }
+
+    private bool UseAutomaticCharEnclosing
+    {
+      get { return true; }
+    }
+  }
+
+  public class ToTextProviderArrayHandler : ToTextProviderHandler
+  {
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextProvider", toTextParameters.ToTextProvider);
+      toTextProviderHandlerFeedback.Handled = false;
+
+      Object obj = toTextParameters.Object;
+      Type type = toTextParameters.Type;
+      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+      if (type.IsArray)
+      {
+        toTextBuilder.AppendArray ((Array) obj);
+        toTextProviderHandlerFeedback.Handled = true;
+      }
+    }
+  }
+
+  public class ToTextProviderEnumerableHandler : ToTextProviderHandler
+  {
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextProvider", toTextParameters.ToTextProvider);
+      toTextProviderHandlerFeedback.Handled = false;
+
+      Object obj = toTextParameters.Object;
+      Type type = toTextParameters.Type;
+      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+      //if (type.GetInterface ("IEnumerable") != null)
+      if (obj is IEnumerable)
+      {
+        toTextBuilder.AppendEnumerable ((IEnumerable) obj);
+        toTextProviderHandlerFeedback.Handled = true;
+      }
+    }
+  }
+
+  public class ToTextProviderRegisteredInterfaceHandlerHandler : ToTextProviderHandler
+  {
+    private readonly Dictionary<Type, IToTextInterfaceHandlerExternal> _interfaceTypeHandlerMap = new Dictionary<Type, IToTextInterfaceHandlerExternal> ();
+    private int _interfaceHandlerPriorityMin = 0;
+    private int _interfaceHandlerPriorityMax = 0;
+
+    public void RegisterInterfaceHandlerAppendLast<T> (Action<T, ToTextBuilder> handler)
+    {
+      --_interfaceHandlerPriorityMin;
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextInterfaceHandlerExternal<T> (handler, _interfaceHandlerPriorityMin));
+    }
+
+    public void RegisterInterfaceHandlerAppendFirst<T> (Action<T, ToTextBuilder> handler)
+    {
+      ++_interfaceHandlerPriorityMax;
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextInterfaceHandlerExternal<T> (handler, _interfaceHandlerPriorityMax));
+    }
+    
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextProvider", toTextParameters.ToTextProvider);
+      toTextProviderHandlerFeedback.Handled = false;
+
+      Object obj = toTextParameters.Object;
+      Type type = toTextParameters.Type;
+      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+      if (HandledByInterfaceHandler (obj, type, toTextBuilder))
+      {
+        toTextProviderHandlerFeedback.Handled = true;
+      }
+
+    }
+
+    private bool HandledByInterfaceHandler (object obj, Type type, ToTextBuilder toTextBuilder)
+    {
+      if (!UseInterfaceHandlers)
+      {
+        return false;
+      }
+
+      IToTextInterfaceHandlerExternal interfaceHandlerWithMaximumPriority = null;
+      foreach (var interfaceType in type.GetInterfaces ())
+      {
+        IToTextInterfaceHandlerExternal interfaceHandler;
+        _interfaceTypeHandlerMap.TryGetValue (interfaceType, out interfaceHandler);
+        if (interfaceHandler != null &&
+          (interfaceHandlerWithMaximumPriority == null || (interfaceHandler.Priority > interfaceHandlerWithMaximumPriority.Priority)))
+        {
+          interfaceHandlerWithMaximumPriority = interfaceHandler;
+        }
+      }
+
+      if (interfaceHandlerWithMaximumPriority == null)
+      {
+        return false;
+      }
+
+      interfaceHandlerWithMaximumPriority.ToText (obj, toTextBuilder);
+      return true;
+    }
+
+    private bool UseInterfaceHandlers
+    {
+      get { return true; }
+    }
+  }
+
+
+
+  public class ToTextProviderAutomaticObjectToTextHandler : ToTextProviderHandler
+  {
+    // Define a cache instance (dictionary syntax)
+    private static readonly InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]> s_memberInfoCache = new InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]> ();
+
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextProvider", toTextParameters.ToTextProvider);
+      toTextProviderHandlerFeedback.Handled = false;
+
+      Object obj = toTextParameters.Object;
+      Type type = toTextParameters.Type;
+      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+      if (AutomaticObjectToText)
+      {
+        ObjectToText (obj, toTextBuilder, EmitPublicProperties, EmitPublicFields, EmitPrivateProperties, EmitPrivateFields);
+        toTextProviderHandlerFeedback.Handled = true;
+      }
+    }
+
+    private bool EmitPrivateFields
+    {
+      get { return true; }
+    }
+
+    private bool EmitPrivateProperties
+    {
+      get { return true; }
+    }
+
+    private bool EmitPublicFields
+    {
+      get { return true; }
+    }
+
+    private bool EmitPublicProperties
+    {
+      get { return true; }
+    }
+
+    private void ObjectToText (object obj, ToTextBuilder toTextBuilder,
+                                       bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
+    {
+      Type type = obj.GetType ();
+
+      toTextBuilder.beginInstance (type);
+
+      if (emitPublicProperties)
+      {
+        ObjectToTextProcessMemberInfos (
+            "Public Properties", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Property, toTextBuilder);
+      }
+      if (emitPublicFields)
+      {
+        ObjectToTextProcessMemberInfos ("Public Fields", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Field, toTextBuilder);
+      }
+      if (emitPrivateProperties)
+      {
+        ObjectToTextProcessMemberInfos ("Non Public Properties", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Property, toTextBuilder);
+      }
+      if (emitPrivateFields)
+      {
+        ObjectToTextProcessMemberInfos ("Non Public Fields", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Field, toTextBuilder);
+      }
+      toTextBuilder.endInstance ();
+    }
+
+    private void ObjectToTextProcessMemberInfos (string message, Object obj, BindingFlags bindingFlags,
+                                                                 MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
+    {
+      Type type = obj.GetType ();
+
+      // Cache the member info result
+      MemberInfo[] memberInfos = s_memberInfoCache.GetOrCreateValue (new Tuple<Type, BindingFlags> (type, bindingFlags), tuple => tuple.A.GetMembers (tuple.B));
+
+      foreach (var memberInfo in memberInfos)
+      {
+        if ((memberInfo.MemberType & memberTypeFlags) != 0)
+        {
+          string name = memberInfo.Name;
+
+          // Skip compiler generated backing fields
+          //bool isCompilerGenerated = name.Contains("k__");
+          bool isCompilerGenerated = memberInfo.IsDefined (typeof (CompilerGeneratedAttribute), false);
+          if (!isCompilerGenerated)
+          {
+            object value = GetValue (obj, type, memberInfo);
+            // AppendMember ToText value
+            toTextBuilder.AppendMember (name, value);
+          }
+        }
+      }
+    }
+
+    private object GetValue (object obj, Type type, MemberInfo memberInfo)
+    {
+      object value = null;
+      if (memberInfo is PropertyInfo)
+      {
+        value = ((PropertyInfo) memberInfo).GetValue (obj, null);
+      }
+      else if (memberInfo is FieldInfo)
+      {
+        value = ((FieldInfo) memberInfo).GetValue (obj);
+      }
+      else
+      {
+        throw new System.NotImplementedException ();
+      }
+      return value;
+    }
+
+    private bool AutomaticObjectToText
+    {
+      get { return true; }
+    }
+  }
+
+
+
+
+  public class ToTextProviderToStringHandler : ToTextProviderHandler
+  {
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextProvider", toTextParameters.ToTextProvider);
+      toTextProviderHandlerFeedback.Handled = false;
+
+      Object obj = toTextParameters.Object;
+      Type type = toTextParameters.Type;
+      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+      toTextBuilder.AppendString (obj.ToString ());
+
+      toTextProviderHandlerFeedback.Handled = true;
+    }
+  }
+
+
+
+
 }
