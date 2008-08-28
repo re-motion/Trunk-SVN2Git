@@ -531,7 +531,7 @@
     <Compile Include="Utilities\ScriptUtility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Infrastructure\HttpServerUtility.cs" />
+    <Compile Include="Infrastructure\HttpServerUtilityWrapper.cs" />
     <Compile Include="Utilities\UrlUtility.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -19,7 +19,7 @@ using System.Web.SessionState;
 namespace Remotion.Web.Infrastructure
 {
   /// <summary>
-  /// The <see cref="IHttpContext"/> interface is a wrapper for the <see cref="HttpContext"/> type.
+  /// The <see cref="IHttpContext"/> interface defines a wrapper for the <see cref="HttpContext"/> type.
   /// </summary>
   public interface IHttpContext : IServiceProvider
   {
@@ -177,18 +177,18 @@ namespace Remotion.Web.Infrastructure
     IHttpHandler CurrentHandler { get; }
 
     /// <summary>
-    /// Gets the <see cref="T:System.Web.HttpRequest" /> object for the current HTTP request.
+    /// Gets the <see cref="IHttpRequest" /> object for the current HTTP request.
     /// </summary>
     /// <returns>
-    /// The <see cref="T:System.Web.HttpRequest" /> for the current HTTP request.
+    /// The <see cref="IHttpRequest" /> for the current HTTP request.
     /// </returns>
     IHttpRequest Request { get; }
 
     /// <summary>
-    /// Gets the <see cref="T:System.Web.HttpResponse" /> object for the current HTTP response.
+    /// Gets the <see cref="IHttpResponse" /> object for the current HTTP response.
     /// </summary>
     /// <returns>
-    /// The <see cref="T:System.Web.HttpResponse" /> for the current HTTP response.
+    /// The <see cref="IHttpResponse" /> for the current HTTP response.
     /// </returns>
     IHttpResponse Response { get; }
 
@@ -209,10 +209,10 @@ namespace Remotion.Web.Infrastructure
     IDictionary Items { get; }
 
     /// <summary>
-    /// Gets the <see cref="T:System.Web.SessionState.IHttpSessionState" /> object for the current HTTP request.
+    /// Gets the <see cref="IHttpSessionState" /> object for the current HTTP request.
     /// </summary>
     /// <returns>
-    /// The <see cref="T:System.Web.SessionState.IHttpSessionState" /> object for the current HTTP request.
+    /// The <see cref="IHttpSessionState" /> object for the current HTTP request.
     /// </returns>
     IHttpSessionState Session { get; }
 

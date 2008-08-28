@@ -19,7 +19,7 @@ using System.Web.Caching;
 namespace Remotion.Web.Infrastructure
 {
   /// <summary>
-  /// The <see cref="IHttpResponse"/> interface is a wrapper for the <see cref="HttpResponse"/> type.
+  /// The <see cref="IHttpResponse"/> interface defines a wrapper for the <see cref="HttpResponse"/> type.
   /// </summary>
   public interface IHttpResponse
   {

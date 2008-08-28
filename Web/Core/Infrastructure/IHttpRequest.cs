@@ -18,7 +18,7 @@ using System.Web;
 namespace Remotion.Web.Infrastructure
 {
   /// <summary>
-  /// The <see cref="IHttpRequest"/> interface is a wrapper for the <see cref="HttpRequest"/> type.
+  /// The <see cref="IHttpRequest"/> interface defines a wrapper for the <see cref="HttpRequest"/> type.
   /// </summary>
   public interface IHttpRequest
   {

@@ -35,7 +35,7 @@ namespace Remotion.Web.Infrastructure
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
 
       _httpContext = httpContext;
-      _server = new HttpServerUtility (httpContext);
+      _server = new HttpServerUtilityWrapper (httpContext.Server);
       _request = new HttpRequestWrapper (httpContext.Request);
       _response = new HttpResponseWrapper (httpContext.Response);
       _session = new HttpSessionStateWrapper (httpContext.Session);

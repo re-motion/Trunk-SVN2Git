@@ -12,44 +12,32 @@ using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Web;
+using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.Infrastructure
 {
   /// <summary>
-  /// The <see cref="IHttpServerUtility"/> interface defines a wrapper for the <see cref="HttpServerUtility"/> type.
+  /// The <see cref="HttpServerUtilityWrapper"/> type is the default implementation of the <see cref="IHttpServerUtility"/> interface.
   /// </summary>
-  public interface IHttpServerUtility
+  public class HttpServerUtilityWrapper : IHttpServerUtility
   {
+    private readonly HttpServerUtility _serverUtility;
+
+    public HttpServerUtilityWrapper (HttpServerUtility serverUtility)
+    {
+      ArgumentUtility.CheckNotNull ("serverUtility", serverUtility);
+      _serverUtility = serverUtility;
+    }
+
     /// <summary>
     /// Gets the concrete instance wrapped by this <see cref="IHttpServerUtility"/> wrapper.
     /// </summary>
     /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="HttpServerUtility"/>. </exception>
-    HttpServerUtility WrappedInstance { get; }
-
-    /// <summary>
-    /// Gets the server's computer name.
-    /// </summary>
-    /// <returns>
-    /// The name of the local computer.
-    /// </returns>
-    /// <exception cref="T:System.Web.HttpException">
-    /// The computer name cannot be found.
-    /// </exception>
-    string MachineName { get; }
-
-    /// <summary>
-    /// Gets and sets the request time-out value in seconds.
-    /// </summary>
-    /// <returns>
-    /// The time-out value setting for requests.
-    /// </returns>
-    /// <exception cref="T:System.Web.HttpException">
-    /// The current <see cref="T:System.Web.HttpContext" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="T:System.ArgumentOutOfRangeException">
-    /// The time-out period is <see langword="null" /> or otherwise could not be set.
-    /// </exception>
-    int ScriptTimeout { get; set; }
+    public HttpServerUtility WrappedInstance
+    {
+      get { return _serverUtility; }
+    }
 
     /// <summary>
     /// Creates a server instance of a COM object identified by the object's programmatic identifier (ProgID).
@@ -63,7 +51,10 @@ namespace Remotion.Web.Infrastructure
     /// <exception cref="T:System.Web.HttpException">
     /// An instance of the object could not be created.
     /// </exception>
-    object CreateObject (string progID);
+    public object CreateObject (string progID)
+    {
+      return _serverUtility.CreateObject(progID);
+    }
 
     /// <summary>
     /// Creates a server instance of a COM object identified by the object's type.
@@ -74,7 +65,10 @@ namespace Remotion.Web.Infrastructure
     /// <param name="type">
     /// A <see cref="T:System.Type" /> representing the object to create.
     /// </param>
-    object CreateObject (Type type);
+    public object CreateObject (Type type)
+    {
+      return _serverUtility.CreateObject(type);
+    }
 
     /// <summary>
     /// Creates a server instance of a COM object identified by the object's class identifier (CLSID).
@@ -88,7 +82,10 @@ namespace Remotion.Web.Infrastructure
     /// <exception cref="T:System.Web.HttpException">
     /// An instance of the object could not be created.
     /// </exception>
-    object CreateObjectFromClsid (string clsid);
+    public object CreateObjectFromClsid (string clsid)
+    {
+      return _serverUtility.CreateObjectFromClsid(clsid);
+    }
 
     /// <summary>
     /// Returns the physical file path that corresponds to the specified virtual path on the Web server.
@@ -102,7 +99,10 @@ namespace Remotion.Web.Infrastructure
     /// <exception cref="T:System.Web.HttpException">
     /// The current <see cref="T:System.Web.HttpContext" /> is <see langword="null" />.
     /// </exception>
-    string MapPath (string path);
+    public string MapPath (string path)
+    {
+      return _serverUtility.MapPath(path);
+    }
 
     /// <summary>
     /// Returns the previous exception.
@@ -110,12 +110,18 @@ namespace Remotion.Web.Infrastructure
     /// <returns>
     /// The previous exception that was thrown.
     /// </returns>
-    Exception GetLastError ();
+    public Exception GetLastError ()
+    {
+      return _serverUtility.GetLastError();
+    }
 
     /// <summary>
     /// Clears the previous exception.
     /// </summary>
-    void ClearError ();
+    public void ClearError ()
+    {
+      _serverUtility.ClearError();
+    }
 
     /// <summary>
     /// Executes the handler for the specified virtual path in the context of the current request. 
@@ -132,7 +138,10 @@ namespace Remotion.Web.Infrastructure
     /// <para>- or -</para>
     /// <paramref name="path" /> is not a virtual path.
     /// </exception>
-    void Execute (string path);
+    public void Execute (string path)
+    {
+      _serverUtility.Execute(path);
+    }
 
     /// <summary>
     /// Executes the handler for the specified virtual path in the context of the current request. A <see cref="T:System.IO.TextWriter" /> captures output from the executed handler.
@@ -152,7 +161,10 @@ namespace Remotion.Web.Infrastructure
     /// <para>- or -</para>
     /// <paramref name="path" /> is not a virtual path. 
     /// </exception>
-    void Execute (string path, TextWriter writer);
+    public void Execute (string path, TextWriter writer)
+    {
+      _serverUtility.Execute(path, writer);
+    }
 
     /// <summary>
     /// Executes the handler for the specified virtual path in the context of the current request and specifies whether to clear the <see cref="P:System.Web.HttpRequest.QueryString" /> and <see cref="P:System.Web.HttpRequest.Form" /> collections.
@@ -171,7 +183,10 @@ namespace Remotion.Web.Infrastructure
     /// <para>- or -</para>
     /// <paramref name="path" /> is not a virtual path. 
     /// </exception>
-    void Execute (string path, bool preserveForm);
+    public void Execute (string path, bool preserveForm)
+    {
+      _serverUtility.Execute(path, preserveForm);
+    }
 
     /// <summary>
     /// Executes the handler for the specified virtual path in the context of the current request. A <see cref="T:System.IO.TextWriter" /> captures output from the page and a Boolean parameter specifies whether to clear the <see cref="P:System.Web.HttpRequest.QueryString" /> and <see cref="P:System.Web.HttpRequest.Form" /> collections.
@@ -195,7 +210,10 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     /// <exception cref="T:System.ArgumentException"><paramref name="path" /> is not a virtual path.
     /// </exception>
-    void Execute (string path, TextWriter writer, bool preserveForm);
+    public void Execute (string path, TextWriter writer, bool preserveForm)
+    {
+      _serverUtility.Execute(path, writer, preserveForm);
+    }
 
     /// <summary>
     /// Executes the handler for the specified virtual path in the context of the current request. A <see cref="T:System.IO.TextWriter" /> captures output from the executed handler and a Boolean parameter specifies whether to clear the <see cref="P:System.Web.HttpRequest.QueryString" /> and <see cref="P:System.Web.HttpRequest.Form" /> collections.
@@ -214,7 +232,10 @@ namespace Remotion.Web.Infrastructure
     /// <exception cref="T:System.ArgumentNullException">
     /// The <paramref name="handler" /> parameter is <see langword="null" />.
     /// </exception>
-    void Execute (IHttpHandler handler, TextWriter writer, bool preserveForm);
+    public void Execute (IHttpHandler handler, TextWriter writer, bool preserveForm)
+    {
+      _serverUtility.Execute(handler, writer, preserveForm);
+    }
 
     /// <summary>
     /// Terminates execution of the current page and starts execution of a new page by using the specified URL path of the page. Specifies whether to clear the <see cref="P:System.Web.HttpRequest.QueryString" /> and <see cref="P:System.Web.HttpRequest.Form" /> collections.
@@ -227,7 +248,10 @@ namespace Remotion.Web.Infrastructure
     /// <exception cref="T:System.ApplicationException">
     /// The current page request is a callback.
     /// </exception>
-    void Transfer (string path, bool preserveForm);
+    public void Transfer (string path, bool preserveForm)
+    {
+      _serverUtility.Transfer(path, preserveForm);
+    }
 
     /// <summary>
     /// For the current request, terminates execution of the current page and starts execution of a new page by using the specified URL path of the page.
@@ -235,7 +259,10 @@ namespace Remotion.Web.Infrastructure
     /// <param name="path">
     /// The URL path of the new page on the server to execute.
     /// </param>
-    void Transfer (string path);
+    public void Transfer (string path)
+    {
+      _serverUtility.Transfer(path);
+    }
 
     /// <summary>
     /// Terminates execution of the current page and starts execution of a new request by using a custom HTTP handler that implements the <see cref="T:System.Web.IHttpHandler" /> interface and specifies whether to clear the <see cref="P:System.Web.HttpRequest.QueryString" /> and <see cref="P:System.Web.HttpRequest.Form" /> collections.
@@ -248,7 +275,10 @@ namespace Remotion.Web.Infrastructure
     /// <exception cref="T:System.ApplicationException">
     /// The current page request is a callback.
     /// </exception>
-    void Transfer (IHttpHandler handler, bool preserveForm);
+    public void Transfer (IHttpHandler handler, bool preserveForm)
+    {
+      _serverUtility.Transfer(handler, preserveForm);
+    }
 
     /// <summary>
     /// Performs an asynchronous execution of the specified URL.
@@ -265,7 +295,10 @@ namespace Remotion.Web.Infrastructure
     /// <exception cref="T:System.ArgumentNullException">
     /// The <paramref name="path" /> parameter is <see langword="null" />.
     /// </exception>
-    void TransferRequest (string path);
+    public void TransferRequest (string path)
+    {
+      _serverUtility.TransferRequest(path);
+    }
 
     /// <summary>
     /// Performs an asynchronous execution of the specified URL and preserves query string parameters.
@@ -284,7 +317,10 @@ namespace Remotion.Web.Infrastructure
     /// <exception cref="T:System.ArgumentNullException">
     /// The <paramref name="path" /> parameter is <see langword="null" />.
     /// </exception>
-    void TransferRequest (string path, bool preserveForm);
+    public void TransferRequest (string path, bool preserveForm)
+    {
+      _serverUtility.TransferRequest(path, preserveForm);
+    }
 
     /// <summary>
     /// Performs an asynchronous execution of the specified URL using the specified HTTP method and headers.
@@ -309,7 +345,10 @@ namespace Remotion.Web.Infrastructure
     /// <exception cref="T:System.ArgumentNullException">
     /// The <paramref name="path" /> parameter is <see langword="null" />.
     /// </exception>
-    void TransferRequest (string path, bool preserveForm, string method, NameValueCollection headers);
+    public void TransferRequest (string path, bool preserveForm, string method, NameValueCollection headers)
+    {
+      _serverUtility.TransferRequest(path, preserveForm, method, headers);
+    }
 
     /// <summary>
     /// Decodes an HTML-encoded string and returns the decoded string.
@@ -320,7 +359,10 @@ namespace Remotion.Web.Infrastructure
     /// <param name="s">
     /// The HTML string to decode.
     /// </param>
-    string HtmlDecode (string s);
+    public string HtmlDecode (string s)
+    {
+      return _serverUtility.HtmlDecode(s);
+    }
 
     /// <summary>
     /// Decodes an HTML-encoded string and sends the resulting output to a <see cref="T:System.IO.TextWriter" /> output stream.
@@ -331,7 +373,10 @@ namespace Remotion.Web.Infrastructure
     /// <param name="output">
     /// The <see cref="T:System.IO.TextWriter" /> output stream that contains the decoded string.
     /// </param>
-    void HtmlDecode (string s, TextWriter output);
+    public void HtmlDecode (string s, TextWriter output)
+    {
+      _serverUtility.HtmlDecode(s, output);
+    }
 
     /// <summary>
     /// HTML-encodes a string and returns the encoded string.
@@ -342,7 +387,10 @@ namespace Remotion.Web.Infrastructure
     /// <param name="s">
     /// The text string to encode.
     /// </param>
-    string HtmlEncode (string s);
+    public string HtmlEncode (string s)
+    {
+      return _serverUtility.HtmlEncode(s);
+    }
 
     /// <summary>
     /// HTML-encodes a string and sends the resulting output to a <see cref="T:System.IO.TextWriter" /> output stream.
@@ -353,7 +401,10 @@ namespace Remotion.Web.Infrastructure
     /// <param name="output">
     /// The <see cref="T:System.IO.TextWriter" /> output stream that contains the encoded string.
     /// </param>
-    void HtmlEncode (string s, TextWriter output);
+    public void HtmlEncode (string s, TextWriter output)
+    {
+      _serverUtility.HtmlEncode(s, output);
+    }
 
     /// <summary>
     /// URL-encodes a string and returns the encoded string.
@@ -364,7 +415,10 @@ namespace Remotion.Web.Infrastructure
     /// <param name="s">
     /// The text to URL-encode.
     /// </param>
-    string UrlEncode (string s);
+    public string UrlEncode (string s)
+    {
+      return _serverUtility.UrlEncode(s);
+    }
 
     /// <summary>
     /// URL-encodes the path section of a URL string and returns the encoded string.
@@ -375,7 +429,10 @@ namespace Remotion.Web.Infrastructure
     /// <param name="s">
     /// The text to URL-encode.
     /// </param>
-    string UrlPathEncode (string s);
+    public string UrlPathEncode (string s)
+    {
+      return _serverUtility.UrlPathEncode(s);
+    }
 
     /// <summary>
     /// URL-encodes a string and sends the resulting output to a <see cref="T:System.IO.TextWriter" /> output stream.
@@ -386,7 +443,10 @@ namespace Remotion.Web.Infrastructure
     /// <param name="output">
     /// The <see cref="T:System.IO.TextWriter" /> output stream that contains the encoded string.
     /// </param>
-    void UrlEncode (string s, TextWriter output);
+    public void UrlEncode (string s, TextWriter output)
+    {
+      _serverUtility.UrlEncode(s, output);
+    }
 
     /// <summary>
     /// URL-decodes a string and returns the decoded string.
@@ -397,7 +457,10 @@ namespace Remotion.Web.Infrastructure
     /// <param name="s">
     /// The text string to decode.
     /// </param>
-    string UrlDecode (string s);
+    public string UrlDecode (string s)
+    {
+      return _serverUtility.UrlDecode(s);
+    }
 
     /// <summary>
     /// Decodes an HTML string received in a URL and sends the resulting output to a <see cref="T:System.IO.TextWriter" /> output stream.
@@ -408,6 +471,41 @@ namespace Remotion.Web.Infrastructure
     /// <param name="output">
     /// The <see cref="T:System.IO.TextWriter" /> output stream that contains the decoded string.
     /// </param>
-    void UrlDecode (string s, TextWriter output);
+    public void UrlDecode (string s, TextWriter output)
+    {
+      _serverUtility.UrlDecode(s, output);
+    }
+
+    /// <summary>
+    /// Gets the server's computer name.
+    /// </summary>
+    /// <returns>
+    /// The name of the local computer.
+    /// </returns>
+    /// <exception cref="T:System.Web.HttpException">
+    /// The computer name cannot be found.
+    /// </exception>
+    public string MachineName
+    {
+      get { return _serverUtility.MachineName; }
+    }
+
+    /// <summary>
+    /// Gets and sets the request time-out value in seconds.
+    /// </summary>
+    /// <returns>
+    /// The time-out value setting for requests.
+    /// </returns>
+    /// <exception cref="T:System.Web.HttpException">
+    /// The current <see cref="T:System.Web.HttpContext" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="T:System.ArgumentOutOfRangeException">
+    /// The time-out period is <see langword="null" /> or otherwise could not be set.
+    /// </exception>
+    public int ScriptTimeout
+    {
+      get { return _serverUtility.ScriptTimeout; }
+      set { _serverUtility.ScriptTimeout = value; }
+    }
   }
 }

@@ -19,6 +19,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.Infrastructure
 {
+  /// <summary>
+  /// The <see cref="HttpResponseWrapper"/> type is the default implementation of the <see cref="IHttpResponse"/> interface.
+  /// </summary>
   public class HttpResponseWrapper : IHttpResponse
   {
     private readonly HttpResponse _response;
