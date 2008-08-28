@@ -186,6 +186,10 @@ namespace Remotion.Web.ExecutionEngine
       return GetPostBackCollection ();
     }
 
+    void ISmartPage.SaveAllState ()
+    {
+      _wxePageInfo.SaveAllState ();
+    }
 
     /// <remarks> Uses <see cref="WxePageInfo{TWxePage}.SavePageStateToPersistenceMedium"/> to save the viewstate. </remarks>
     protected override void SavePageStateToPersistenceMedium (object viewState)

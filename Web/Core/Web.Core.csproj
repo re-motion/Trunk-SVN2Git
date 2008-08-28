@@ -363,6 +363,7 @@
     <Compile Include="UI\Controls\SubMenuTab.cs" />
     <Compile Include="UI\Controls\WebTreeViewMenuItemProvider.cs" />
     <Compile Include="UI\Design\WebDesginModeHelper.cs" />
+    <Compile Include="UI\ISmartPage.cs" />
     <Compile Include="UI\IWebSecurityAdapter.cs" />
     <Compile Include="UI\Controls\LazyContainer.cs">
       <SubType>Code</SubType>
@@ -505,12 +506,15 @@
     <Compile Include="UI\ISmartNavigablePage.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\IWindowStateManager.cs" />
     <Compile Include="UI\PostLoad.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\ShowAbortConfirmation.cs" />
     <Compile Include="UI\SmartPage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UI\SmartPageEvents.cs" />
     <Compile Include="UI\SmartPageInfo.cs">
       <SubType>Code</SubType>
     </Compile>

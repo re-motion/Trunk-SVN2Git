@@ -512,5 +512,10 @@ namespace Remotion.Web.ExecutionEngine
     {
       get { return _wxeExecutor; }
     }
+
+    public void SaveAllState ()
+    {
+      ControlHelper.SaveAllState (_page);
+    }
   }
 }

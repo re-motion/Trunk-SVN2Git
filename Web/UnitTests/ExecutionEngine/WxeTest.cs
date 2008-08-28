@@ -41,7 +41,7 @@ public class WxeTest
     HttpContextHelper.SetCurrent (_currentHttpContext);
 
     _currentWxeContext = new WxeContextMock (_currentHttpContext);
-    PrivateInvoke.InvokeNonPublicStaticMethod (typeof (WxeContext), "SetCurrent", _currentWxeContext);
+    WxeContext.SetCurrent (_currentWxeContext);
   }
 
   [TearDown]

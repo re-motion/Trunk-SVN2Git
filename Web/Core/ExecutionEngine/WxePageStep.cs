@@ -360,8 +360,8 @@ namespace Remotion.Web.ExecutionEngine
 
     /// <summary> Executes the specified <see cref="WxeFunction"/>, then returns to this page. </summary>
     /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/ExecuteFunction/*' />
-    internal void ExecuteFunction<TWxePage> (TWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
-        where TWxePage: Page, IWxePage
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void ExecuteFunction (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("function", function);
@@ -377,9 +377,9 @@ namespace Remotion.Web.ExecutionEngine
     ///   postback event after the user returns.
     /// </summary>
     /// <remarks> Invoke this method by calling <see cref="WxeExecutor{TWxePage}.ExecuteFunctionNoRepost"/>. </remarks>
-    internal void ExecuteFunctionNoRepost<TWxePage> (
-        TWxePage page, WxeFunction function, Control sender, bool usesEventTarget, WxePermaUrlOptions permaUrlOptions)
-        where TWxePage: Page, IWxePage
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void ExecuteFunctionNoRepost (
+        IWxePage page, WxeFunction function, Control sender, bool usesEventTarget, WxePermaUrlOptions permaUrlOptions)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("function", function);
@@ -393,32 +393,30 @@ namespace Remotion.Web.ExecutionEngine
 
     /// <summary> Executes the specified <see cref="WxeFunction"/>, then returns to this page. </summary>
     /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/InternalExecuteFunction/*' />
-    private void InternalExecuteFunction<TWxePage> (TWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
-        where TWxePage: Page, IWxePage
+    private void InternalExecuteFunction (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
     {
       PrepareExecuteFunction (function, true);
       _isRedirectToPermanentUrlRequired = permaUrlOptions.UsePermaUrl;
       _useParentPermaUrl = permaUrlOptions.UseParentPermaUrl;
       _permaUrlParameters = permaUrlOptions.UrlParameters;
 
-      ControlHelper.SaveAllState (page);
+      page.SaveAllState ();
 
       _wxeHandler = page.WxeHandler;
       Execute ();
     }
 
-    internal void ExecuteFunctionExternalByRedirect<TWxePage> (
-        TWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
-        where TWxePage: Page, IWxePage
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void ExecuteFunctionExternalByRedirect (
+        IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
     {
       BackupPostBackCollection (page);
 
       InternalExecuteFunctionExternalByRedirect (page, function, permaUrlOptions, returnToCaller, callerUrlParameters);
     }
 
-    private void InternalExecuteFunctionExternalByRedirect<TWxePage> (
-        TWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
-        where TWxePage : Page, IWxePage
+    private void InternalExecuteFunctionExternalByRedirect (
+        IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, bool returnToCaller, NameValueCollection callerUrlParameters)
     {
       _isExecuteSubFunctionExternalRequired = true;
       _isExternalFunctionInvoked = false;
@@ -436,7 +434,7 @@ namespace Remotion.Web.ExecutionEngine
           _callerUrlParameters = NameValueCollectionUtility.Clone (callerUrlParameters);
       }
 
-      ControlHelper.SaveAllState (page);
+      page.SaveAllState();
 
       _wxeHandler = page.WxeHandler;
       Execute ();
@@ -449,12 +447,14 @@ namespace Remotion.Web.ExecutionEngine
       get { return _pageToken; }
     }
 
-    protected WxeFunction SubFunction
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public WxeFunction SubFunction
     {
       get { return _subFunction; }
     }
 
-    protected NameValueCollection PostBackCollection
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public NameValueCollection PostBackCollection
     {
       get { return _postBackCollection; }
     }
@@ -495,7 +495,8 @@ namespace Remotion.Web.ExecutionEngine
         SubFunction.Abort();
     }
 
-    internal void ExecuteFunction (WxeUserControl2 userControl, WxeFunction function)
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void ExecuteFunction (WxeUserControl2 userControl, WxeFunction function)
     {
       ArgumentUtility.CheckNotNull ("userControl", userControl);
       ArgumentUtility.CheckNotNull ("function", function);

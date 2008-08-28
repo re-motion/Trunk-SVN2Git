@@ -37,7 +37,8 @@ public class WxeContext
     get { return SafeContext.Instance.GetData ("WxeContext") as WxeContext; }
   }
 
-  internal static void SetCurrent (WxeContext value)
+  [EditorBrowsable (EditorBrowsableState.Never)]
+  public static void SetCurrent (WxeContext value)
   {
     // _current = value; 
     SafeContext.Instance.SetData ("WxeContext", value);

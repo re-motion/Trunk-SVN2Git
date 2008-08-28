@@ -1,0 +1,108 @@
+/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ *
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the re:motion license agreement in license.txt. If you did not 
+ * receive it, please visit http://www.re-motion.org/licensing.
+ * 
+ * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ */
+
+using System;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using Remotion.Web.UI.Controls;
+
+namespace Remotion.Web.UI
+{
+  /// <summary>
+  ///   This interface represents a page that has a dirty-state and can prevent multiple postbacks.
+  /// </summary>
+  /// <include file='doc\include\UI\ISmartPage.xml' path='ISmartPage/Class/*' />
+  public interface ISmartPage: IPage
+  {
+    /// <summary> Gets the post back data for the page. </summary>
+    NameValueCollection GetPostBackCollection ();
+
+    /// <summary>
+    ///   Registers a control implementing <see cref="IEditableControl"/> for tracking of it's server- and client-side
+    ///   dirty state.
+    /// </summary>
+    /// <param name="control"> A control implementing <see cref="IEditableControl"/> that will be tracked. </param>
+    void RegisterControlForDirtyStateTracking (IEditableControl control);
+
+    /// <summary>
+    ///   Resgisters a <see cref="Control.ClientID"/> for the tracking of the controls client-side dirty state.
+    /// </summary>
+    /// <param name="clientID"> The ID of an HTML input/textarea/select element. </param>
+    void RegisterControlForClientSideDirtyStateTracking (string clientID);
+
+    /// <summary> 
+    ///   Evaluates whether any control regsitered using <see cref="RegisterControlForDirtyStateTracking"/>
+    ///   has values that must be persisted before the user leaves the page. 
+    /// </summary>
+    /// <returns> <see langword="true"/> if the page is dirty (i.e. has unpersisted changes). </returns>
+    bool EvaluateDirtyState();
+
+    /// <summary>
+    ///   Gets a flag that determines whether the dirty state will be taken into account when displaying the abort 
+    ///   confirmation dialog.
+    /// </summary>
+    /// <value> 
+    ///   <see langword="true"/> to invoke <see cref="EvaluateDirtyState"/> and track changes on the client. 
+    /// </value>
+    bool IsDirtyStateTrackingEnabled { get; }
+
+    /// <summary>
+    ///   Gets or sets a flag that determines whether to display a confirmation dialog before leaving the page. 
+    ///  </summary>
+    /// <value> <see langword="true"/> to display the confirmation dialog. </value>
+    /// <remarks> 
+    ///   If <see cref="IsDirtyStateTrackingEnabled"/> evaluates <see langword="true"/>, a confirmation will only be 
+    ///   displayed if the page is dirty.
+    /// </remarks>
+    bool IsAbortConfirmationEnabled { get; }
+
+    /// <summary> Gets the message displayed when the user attempts to abort the WXE Function. </summary>
+    /// <remarks> 
+    ///   In case of an empty <see cref="String"/>, the text is read from the resources for <see cref="SmartPageInfo"/>. 
+    /// </remarks>
+    string AbortMessage { get; }
+
+    /// <summary> Gets the message displayed when the user attempts to submit while the page is already submitting. </summary>
+    /// <remarks> 
+    ///   In case of an empty <see cref="String"/>, the text is read from the resources for <see cref="SmartPageInfo"/>. 
+    /// </remarks>
+    string StatusIsSubmittingMessage { get; }
+
+    /// <summary> 
+    ///   Gets a flag whether the is submitting status messages will be displayed when the user tries to postback while 
+    ///   a request is being processed.
+    /// </summary>
+    bool IsStatusIsSubmittingMessageEnabled { get; }
+
+    /// <summary> 
+    ///   Registers Java Script functions to be executed when the respective <paramref name="pageEvent"/> is raised.
+    /// </summary>
+    /// <include file='doc\include\UI\ISmartPage.xml' path='ISmartPage/RegisterClientSidePageEventHandler/*' />
+    void RegisterClientSidePageEventHandler (SmartPageEvents pageEvent, string key, string function);
+
+    /// <summary>
+    ///   Regisiters a Java Script function used to evaluate whether to continue with the submit.
+    ///   Signature: <c>bool Function (isAborting, hasSubmitted, hasUnloaded, isCached)</c>
+    /// </summary>
+    string CheckFormStateFunction { get; set; }
+
+    void RegisterCommandForSynchronousPostBack (Control control, string eventArguments);
+
+    /// <summary> Gets or sets the <see cref="HtmlForm"/> of the ASP.NET page. </summary>
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    HtmlForm HtmlForm { get; set; }
+
+    /// <summary> Saves the ControlState and the ViewState of the ASP.NET page. </summary>
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    void SaveAllState ();
+  }
+}
