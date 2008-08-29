@@ -48,7 +48,7 @@ public class WxeContextTest
     UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (_functionType, _resource));
 
     _currentWxeContext = new WxeContextMock (_currentHttpContext, queryString);
-    PrivateInvoke.InvokeNonPublicStaticMethod (typeof (WxeContext), "SetCurrent", _currentWxeContext);
+    WxeContext.SetCurrent(_currentWxeContext);
 
     WebConfigurationMock.Current = new Remotion.Web.Configuration.WebConfiguration();
     WebConfigurationMock.Current.ExecutionEngine.MaximumUrlLength = 100;
