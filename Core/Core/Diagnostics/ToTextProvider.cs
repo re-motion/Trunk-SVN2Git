@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Remotion.Collections;
+using Remotion.Diagnostics;
 using Remotion.Utilities;
 
 namespace Remotion.Diagnostics
@@ -153,7 +154,11 @@ namespace Remotion.Diagnostics
       RegisterToTextProviderHandler (new ToTextProviderStringHandler ());
       RegisterToTextProviderHandler (new ToTextProviderIToTextHandlerHandler ());
       RegisterToTextProviderHandler (new ToTextProviderTypeHandler ());
-      RegisterToTextProviderHandler (new ToTextProviderPrimitiveHandler ());
+
+      RegisterToTextProviderHandler (new ToTextProviderCharHandler ());
+      //RegisterToTextProviderHandler (new ToTextProviderPrimitiveHandler ());
+      RegisterToTextProviderHandler (new ToTextProviderFormattableHandler ());
+      
       RegisterToTextProviderHandler (new ToTextProviderArrayHandler ());
       RegisterToTextProviderHandler (new ToTextProviderEnumerableHandler ());
       RegisterToTextProviderHandler (new ToTextProviderRegisteredInterfaceHandlerHandler (_interfaceTypeHandlerMap));
@@ -164,7 +169,7 @@ namespace Remotion.Diagnostics
 
     }
 
-
+    //IFormattable
 
     public string ToTextString (object obj)
     {
@@ -773,9 +778,44 @@ namespace Remotion.Diagnostics
     }
   }
 
-  public class ToTextProviderPrimitiveHandler : ToTextProviderHandler
+
+
+  public class ToTextProviderCharHandler : ToTextProviderHandler
   {
-    private static readonly NumberFormatInfo s_numberFormatInfoInvariant = CultureInfo.InvariantCulture.NumberFormat;
+    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+
+      Object obj = toTextParameters.Object;
+      Type type = toTextParameters.Type;
+      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+      if (type == typeof (char))
+      {
+        char c = (char) obj;
+        if (toTextBuilder.ToTextProvider.UseAutomaticCharEnclosing)
+        {
+          toTextBuilder.AppendChar ('\'');
+          toTextBuilder.AppendChar (c);
+          toTextBuilder.AppendChar ('\'');
+        }
+        else
+        {
+          toTextBuilder.AppendChar (c);
+        }
+
+        toTextProviderHandlerFeedback.Handled = true;
+      }
+    }
+  }
+
+
+  public class ToTextProviderFormattableHandler : ToTextProviderHandler
+  {
+    //private static readonly NumberFormatInfo s_numberFormatInfoInvariant = CultureInfo.InvariantCulture.NumberFormat;
+    private static readonly CultureInfo s_cultureInfoInvariant = CultureInfo.InvariantCulture;
 
     public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
     {
@@ -788,44 +828,70 @@ namespace Remotion.Diagnostics
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
 
-
-      if (type.IsPrimitive)
+      if(obj is IFormattable)
       {
-        if (type == typeof (char))
-        {
-          char c = (char) obj;
-          if (toTextBuilder.ToTextProvider.UseAutomaticCharEnclosing)
-          {
-            toTextBuilder.AppendChar ('\'');
-            toTextBuilder.AppendChar (c);
-            toTextBuilder.AppendChar ('\'');
-          }
-          else
-          {
-            toTextBuilder.AppendChar (c);
-          }
-        }
-        else if (type == typeof (Single)) 
-        {
-          // Make sure floating point numbers are emitted with '.' comma character (non-localized)
-          // to avoid problems with comma as an e.g. sequence seperator character.
-          // Since ToText is to be used for debug output, localizing everything to the common
-          // IT norm of using US syntax (except for dates) makes sense.
-          toTextBuilder.AppendString (((Single) obj).ToString (s_numberFormatInfoInvariant));
-        }
-        else if (type == typeof (Double))
-        {
-          toTextBuilder.AppendString (((Double) obj).ToString (s_numberFormatInfoInvariant));
-        }
-        else
-        {
-          // Emit primitives who have no registered specific handler without further processing.
-          toTextBuilder.Append (obj);
-        }
+        IFormattable formattable = (IFormattable) obj;
+        //toTextBuilder.AppendString (StringUtility.Format (obj, s_cultureInfoInvariant));
+        toTextBuilder.AppendString (formattable.ToString (null, s_cultureInfoInvariant));
         toTextProviderHandlerFeedback.Handled = true;
       }
     }
   }
+
+
+  //public class ToTextProviderPrimitiveHandler : ToTextProviderHandler
+  //{
+  //  private static readonly NumberFormatInfo s_numberFormatInfoInvariant = CultureInfo.InvariantCulture.NumberFormat;
+
+  //  public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+  //  {
+  //    ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
+  //    ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
+  //    ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+
+
+  //    Object obj = toTextParameters.Object;
+  //    Type type = toTextParameters.Type;
+  //    ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+
+  //    if (type.IsPrimitive)
+  //    {
+  //      if (type == typeof (char))
+  //      {
+  //        char c = (char) obj;
+  //        if (toTextBuilder.ToTextProvider.UseAutomaticCharEnclosing)
+  //        {
+  //          toTextBuilder.AppendChar ('\'');
+  //          toTextBuilder.AppendChar (c);
+  //          toTextBuilder.AppendChar ('\'');
+  //        }
+  //        else
+  //        {
+  //          toTextBuilder.AppendChar (c);
+  //        }
+  //      }
+  //      else if (type == typeof (Single)) 
+  //      {
+  //        // Make sure floating point numbers are emitted with '.' comma character (non-localized)
+  //        // to avoid problems with comma as an e.g. sequence seperator character.
+  //        // Since ToText is to be used for debug output, localizing everything to the common
+  //        // IT norm of using US syntax (except for dates) makes sense.
+  //        toTextBuilder.AppendString (((Single) obj).ToString (s_numberFormatInfoInvariant));
+  //      }
+  //      else if (type == typeof (Double))
+  //      {
+  //        toTextBuilder.AppendString (((Double) obj).ToString (s_numberFormatInfoInvariant));
+  //      }
+  //      else
+  //      {
+  //        // Emit primitives who have no registered specific handler without further processing.
+  //        toTextBuilder.Append (obj);
+  //      }
+  //      toTextProviderHandlerFeedback.Handled = true;
+  //    }
+  //  }
+  //}
 
   public class ToTextProviderArrayHandler : ToTextProviderHandler
   {
