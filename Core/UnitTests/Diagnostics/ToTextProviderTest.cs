@@ -586,6 +586,9 @@ namespace Remotion.UnitTests.Diagnostics
     public void UseParentHandlerTest ()
     {
       ToTextProvider toText = CreateTextProvider();
+
+      toText.UseParentHandlers = true;
+      
       var testChildChild = new TestChildChild();
 
       toText.ParentHandlerSearchUpToRoot = false;
@@ -604,6 +607,7 @@ namespace Remotion.UnitTests.Diagnostics
       toText.RegisterHandler<TestChildChild> ((o, ttb) => ttb.s ("TestChildChild"));
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("TestChildChild"));
 
+
       toText.ClearHandlers();
       toText.RegisterHandler<Test> ((o, ttb) => ttb.s ("Test"));
       toText.ParentHandlerSearchDepth = 0;
@@ -611,6 +615,21 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("Test"));
       toText.ParentHandlerSearchUpToRoot = false;
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString()));
+    }
+
+    [Test]
+    public void UseParentHandlerSwitchTest ()
+    {
+      ToTextProvider toText = CreateTextProvider ();
+      var testChild = new TestChild ();
+
+      toText.RegisterHandler<Test> ((o, ttb) => ttb.s ("Test"));
+      toText.UseParentHandlers = true;
+      toText.ParentHandlerSearchUpToRoot = true;
+      toText.ParentHandlerSearchDepth = 1000;
+      Assert.That (toText.ToTextString (testChild), Is.EqualTo ("Test"));
+      toText.UseParentHandlers = false;
+      Assert.That (toText.ToTextString (testChild), Is.EqualTo (testChild.ToString ()));
     }
 
 

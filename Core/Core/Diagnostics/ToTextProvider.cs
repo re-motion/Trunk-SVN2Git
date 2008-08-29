@@ -124,6 +124,11 @@ namespace Remotion.Diagnostics
       get; set;
     }
 
+    public bool UseParentHandlers
+    {
+      get; set;
+    }
+
     public bool UseInterfaceHandlers
     {
       get { return _useInterfaceHandlers;  }
@@ -143,9 +148,8 @@ namespace Remotion.Diagnostics
       //RegisterToTextProviderHandler (new ToTextProviderNullHandler());
 
       RegisterToTextProviderHandler (new ToTextProviderNullHandler ());
-      // TODO: We actually want to call this handler twice: first without and later with base class fallback. For this we would need for them to share the registered type handlers.
-      // RegisterToTextProviderHandler (new ToTextProviderRegisteredHandlerHandler ());
-      RegisterToTextProviderHandler (new ToTextProviderRegisteredHandlerWithBaseClassFallbackHandler (_typeHandlerMap));
+      // We call this handler twice: first without and later with base class fallback. For this they need to share the registered type handlers in _typeHandlerMap.
+      RegisterToTextProviderHandler (new ToTextProviderRegisteredHandler (_typeHandlerMap,false));
       RegisterToTextProviderHandler (new ToTextProviderStringHandler ());
       RegisterToTextProviderHandler (new ToTextProviderIToTextHandlerHandler ());
       RegisterToTextProviderHandler (new ToTextProviderTypeHandler ());
@@ -153,7 +157,8 @@ namespace Remotion.Diagnostics
       RegisterToTextProviderHandler (new ToTextProviderArrayHandler ());
       RegisterToTextProviderHandler (new ToTextProviderEnumerableHandler ());
       RegisterToTextProviderHandler (new ToTextProviderRegisteredInterfaceHandlerHandler (_interfaceTypeHandlerMap));
-      // RegisterToTextProviderHandler (new ToTextProviderRegisteredHandlerWithBaseClassFallbackHandler ());
+      // Second call of registered handler, this time with base class fallback.
+      RegisterToTextProviderHandler (new ToTextProviderRegisteredHandler (_typeHandlerMap, true));
       RegisterToTextProviderHandler (new ToTextProviderAutomaticObjectToTextHandler ());
       RegisterToTextProviderHandler (new ToTextProviderToStringHandler ());
 
@@ -604,46 +609,34 @@ namespace Remotion.Diagnostics
 
   // TODO: We actually want to call this handler twice: first without and later with base class fallback. For this we would need for them to share the
   // registered type handlers.
-  public class ToTextProviderRegisteredHandlerWithBaseClassFallbackHandler : ToTextProviderHandler
+  public class ToTextProviderRegisteredHandler : ToTextProviderHandler
   {
-    //private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap = new Dictionary<Type, IToTextHandlerExternal> ();
     private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap;
+    private bool _searchForParentHandlers = false;
 
-    public ToTextProviderRegisteredHandlerWithBaseClassFallbackHandler (Dictionary<Type, IToTextHandlerExternal> typeHandlerMap)
+    public ToTextProviderRegisteredHandler (Dictionary<Type, IToTextHandlerExternal> typeHandlerMap, bool searchForParentHandlers)
     {
       _typeHandlerMap = typeHandlerMap;
+      _searchForParentHandlers = searchForParentHandlers;
     }
 
-    //public int ParentHandlerSearchDepth
-    //{
-    //  get;
-    //  set;
-    //}
-
-    //public bool ParentHandlerSearchUpToRoot
-    //{
-    //  get;
-    //  set;
-    //}
-
-    public void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
+    private IToTextHandlerExternal GetHandler (Type type)
     {
-      _typeHandlerMap.Add (typeof (T), new ToTextHandlerExternal<T> (handler));
+      return GetHandlerWithBaseClassFallback (type, 0, false, 0);
     }
-
-    //private IToTextHandlerExternal GetHandler (Type type)
-    //{
-    //  return GetHandlerWithBaseClassFallback (type);
-    //}
 
     private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, ToTextProvider toTextProvider)
     {
+      //if (!toTextProvider.UseParentHandlers)
+      //{
+      //  return null;
+      //}
       return GetHandlerWithBaseClassFallback (type, toTextProvider.ParentHandlerSearchDepth, toTextProvider.ParentHandlerSearchUpToRoot, 0);
     }
 
     private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, int recursionDepthMax, bool searchToRoot, int recursionDepth)
     {
-      if (!searchToRoot && recursionDepth > recursionDepthMax)
+      if ((type == null) || (!searchToRoot && recursionDepth > recursionDepthMax))
       {
         return null;
       }
@@ -656,19 +649,17 @@ namespace Remotion.Diagnostics
         return handler;
       }
 
-      Type baseType = type.BaseType;
-      if (baseType == null)
-      {
-        return null;
-      }
+      //Type baseType = type.BaseType;
+      //if (baseType == null)
+      //{
+      //  return null;
+      //}
 
-      return GetHandlerWithBaseClassFallback (baseType, recursionDepthMax, searchToRoot, recursionDepth + 1);
+      //return GetHandlerWithBaseClassFallback (baseType, recursionDepthMax, searchToRoot, recursionDepth + 1);
+
+      return GetHandlerWithBaseClassFallback (type.BaseType, recursionDepthMax, searchToRoot, recursionDepth + 1);
     }
 
-    public void ClearHandlers ()
-    {
-      _typeHandlerMap.Clear ();
-    }
 
     public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
     {
@@ -676,7 +667,22 @@ namespace Remotion.Diagnostics
       ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
       ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
 
-      IToTextHandlerExternal handler = GetHandlerWithBaseClassFallback (toTextParameters.Type, toTextParameters.ToTextBuilder.ToTextProvider);
+      Object obj = toTextParameters.Object;
+      Type type = toTextParameters.Type;
+      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+
+
+      IToTextHandlerExternal handler = null;
+      if (!_searchForParentHandlers || !toTextBuilder.ToTextProvider.UseParentHandlers)
+      {
+        handler = GetHandler (toTextParameters.Type);
+      }
+      else
+      {
+        handler = GetHandlerWithBaseClassFallback (toTextParameters.Type, toTextParameters.ToTextBuilder.ToTextProvider);
+      }
+
+
       if (handler != null)
       {
         handler.ToText (toTextParameters.Object, toTextParameters.ToTextBuilder);
@@ -892,22 +898,15 @@ namespace Remotion.Diagnostics
       ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
       ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
 
+      toTextProviderHandlerFeedback.Handled = false;
+
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
 
-      if (HandledByInterfaceHandler (obj, type, toTextBuilder))
-      {
-        toTextProviderHandlerFeedback.Handled = true;
-      }
-
-    }
-
-    private bool HandledByInterfaceHandler (object obj, Type type, ToTextBuilder toTextBuilder)
-    {
       if (!toTextBuilder.ToTextProvider.UseInterfaceHandlers)
       {
-        return false;
+        return;
       }
 
       IToTextInterfaceHandlerExternal interfaceHandlerWithMaximumPriority = null;
@@ -922,19 +921,12 @@ namespace Remotion.Diagnostics
         }
       }
 
-      if (interfaceHandlerWithMaximumPriority == null)
+      if (interfaceHandlerWithMaximumPriority != null)
       {
-        return false;
+        interfaceHandlerWithMaximumPriority.ToText (obj, toTextBuilder);
+        toTextProviderHandlerFeedback.Handled = true;
       }
-
-      interfaceHandlerWithMaximumPriority.ToText (obj, toTextBuilder);
-      return true;
     }
-
-    //private bool UseInterfaceHandlers
-    //{
-    //  get { return true; }
-    //}
   }
 
 
