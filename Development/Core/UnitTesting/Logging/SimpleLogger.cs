@@ -48,9 +48,9 @@ namespace Remotion.Development.UnitTesting.Logging
       _textWriter = TextWriter.Synchronized (textWriter);
 
       _toText = new ToTextProvider();
-      _toText.UseAutomaticObjectToText = true;
-      _toText.UseAutomaticStringEnclosing = true;
-      _toText.UseAutomaticCharEnclosing = true;
+      _toText.Settings.UseAutomaticObjectToText = true;
+      _toText.Settings.UseAutomaticStringEnclosing = true;
+      _toText.Settings.UseAutomaticCharEnclosing = true;
     }
 
     //TODO: rename

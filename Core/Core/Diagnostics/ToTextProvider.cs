@@ -31,8 +31,8 @@ namespace Remotion.Diagnostics
   /// The conversion is done in <see cref="ToText"/> method through the following mechanisms, in order of precedence:
   /// <list type="number">
   /// <item>Handler for object type registered (see <see cref="RegisterHandler{T}"/>)</item>
-  /// <item>Implements <see cref="UseAutomaticStringEnclosing"/> (i.e. object supplies <c>ToText</c> method)</item>
-  /// <item>Is a string or character (see <see cref="UseAutomaticCharEnclosing"/> and <see cref="UseAutomaticObjectToText"/> respectively)</item>
+  /// <item>Implements <see cref="ToTextProviderSettings.UseAutomaticStringEnclosing"/> (i.e. object supplies <c>ToText</c> method)</item>
+  /// <item>Is a string or character (see <see cref="ToTextProviderSettings.UseAutomaticCharEnclosing"/> and <see cref="ToTextProviderSettings.UseAutomaticStringEnclosing"/> respectively)</item>
   /// <item>Is a primitive: Floating point numbers are alway output formatted US style.</item>
   /// <item>Is a (rectangular) array (arrays have are be treted seperately to prevent them from from being handled as IEnumerable)</item>
   /// <item>Implements IEnumerable</item>
@@ -46,25 +46,34 @@ namespace Remotion.Diagnostics
     private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap = new Dictionary<Type, IToTextHandlerExternal> ();
     private readonly Dictionary<Type, IToTextInterfaceHandlerExternal> _interfaceTypeHandlerMap = new Dictionary<Type, IToTextInterfaceHandlerExternal> ();
     
-    private static readonly NumberFormatInfo s_numberFormatInfoInvariant = CultureInfo.InvariantCulture.NumberFormat;
+    //private static readonly NumberFormatInfo s_numberFormatInfoInvariant = CultureInfo.InvariantCulture.NumberFormat;
 
-    // Define a cache instance (dictionary syntax)
-    private static readonly InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]> s_memberInfoCache = new InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]>();
+    //// Define a cache instance (dictionary syntax)
+    //private static readonly InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]> s_memberInfoCache = new InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]>();
     
-    private bool _automaticObjectToText = true;
-    private bool _automaticStringEnclosing = true;
-    private bool _automaticCharEnclosing = true;
+    //private bool _automaticObjectToText = true;
+    //private bool _automaticStringEnclosing = true;
+    //private bool _automaticCharEnclosing = true;
 
-    private bool _emitPublicProperties = true;
-    private bool _emitPublicFields = true;
-    private bool _emitPrivateProperties = true;
-    private bool _emitPrivateFields = true;
+    //private bool _emitPublicProperties = true;
+    //private bool _emitPublicFields = true;
+    //private bool _emitPrivateProperties = true;
+    //private bool _emitPrivateFields = true;
+    //private bool _useInterfaceHandlers = true;
+    
+    
     private int _interfaceHandlerPriorityMin = 0;
-    private bool _useInterfaceHandlers = true;
     private int _interfaceHandlerPriorityMax = 0;
 
     private readonly List<IToTextProviderHandler> _toTextProviderHandlers = new List<IToTextProviderHandler> ();
     private readonly Dictionary<Type, IToTextProviderHandler> _toTextProviderHandlerTypeToHandlerMap = new Dictionary<Type, IToTextProviderHandler> ();
+
+    private readonly ToTextProviderSettings _toTextProviderSettings = new ToTextProviderSettings();
+    public ToTextProviderSettings Settings
+    {
+      get { return _toTextProviderSettings; }
+    }
+
 
 
     public ToTextProvider ()
@@ -73,81 +82,10 @@ namespace Remotion.Diagnostics
     }
 
 
-    public bool UseAutomaticObjectToText
-    {
-      get { return _automaticObjectToText; }
-      set { _automaticObjectToText = value; }
-    }
 
-    public bool UseAutomaticStringEnclosing
-    {
-      get { return _automaticStringEnclosing; }
-      set { _automaticStringEnclosing = value; }
-    }
-
-    public bool UseAutomaticCharEnclosing
-    {
-      get { return _automaticCharEnclosing; }
-      set { _automaticCharEnclosing = value; }
-    }
-
-    public bool EmitPublicProperties
-    {
-      get { return _emitPublicProperties; }
-      set { _emitPublicProperties = value; }
-    }
-
-    public bool EmitPublicFields
-    {
-      get { return _emitPublicFields; }
-      set { _emitPublicFields = value; }
-    }
-
-    public bool EmitPrivateProperties
-    {
-      get { return _emitPrivateProperties; }
-      set { _emitPrivateProperties = value; }
-    }
-
-    public bool EmitPrivateFields
-    {
-      get { return _emitPrivateFields; }
-      set { _emitPrivateFields = value; }
-    }
-
-    public int ParentHandlerSearchDepth
-    {
-      get; set;
-    }
-
-    public bool ParentHandlerSearchUpToRoot
-    {
-      get; set;
-    }
-
-    public bool UseParentHandlers
-    {
-      get; set;
-    }
-
-    public bool UseInterfaceHandlers
-    {
-      get { return _useInterfaceHandlers;  }
-      set { _useInterfaceHandlers = value; }
-    }
-
-    public void SetAutomaticObjectToTextEmit (bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
-    {
-      _emitPublicProperties = emitPublicProperties;
-      _emitPublicFields = emitPublicFields;
-      _emitPrivateProperties = emitPrivateProperties;
-      _emitPrivateFields = emitPrivateFields;
-    }
 
     private void RegisterDefaultToTextProviderHandlers()
     {
-      //RegisterToTextProviderHandler (new ToTextProviderNullHandler());
-
       RegisterToTextProviderHandler (new ToTextProviderNullHandler ());
       // We call this handler twice: first without and later with base class fallback. For this they need to share the registered type handlers in _typeHandlerMap.
       RegisterToTextProviderHandler (new ToTextProviderRegisteredHandler (_typeHandlerMap,false));
@@ -169,7 +107,6 @@ namespace Remotion.Diagnostics
 
     }
 
-    //IFormattable
 
     public string ToTextString (object obj)
     {
@@ -177,7 +114,6 @@ namespace Remotion.Diagnostics
       return toTextBuilder.ToText (obj).CheckAndConvertToString ();
     }
 
-    //TODO: refactor and split to type based strategy (IToTextHandler?)
     public void ToText (object obj, ToTextBuilder toTextBuilder)
     {
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
@@ -630,13 +566,13 @@ namespace Remotion.Diagnostics
       return GetHandlerWithBaseClassFallback (type, 0, false, 0);
     }
 
-    private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, ToTextProvider toTextProvider)
+    private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, ToTextProviderSettings settings)
     {
       //if (!toTextProvider.UseParentHandlers)
       //{
       //  return null;
       //}
-      return GetHandlerWithBaseClassFallback (type, toTextProvider.ParentHandlerSearchDepth, toTextProvider.ParentHandlerSearchUpToRoot, 0);
+      return GetHandlerWithBaseClassFallback (type, settings.ParentHandlerSearchDepth, settings.ParentHandlerSearchUpToRoot, 0);
     }
 
     private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, int recursionDepthMax, bool searchToRoot, int recursionDepth)
@@ -675,16 +611,17 @@ namespace Remotion.Diagnostics
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+      var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
 
 
       IToTextHandlerExternal handler = null;
-      if (!_searchForParentHandlers || !toTextBuilder.ToTextProvider.UseParentHandlers)
+      if (!_searchForParentHandlers || !toTextBuilder.ToTextProvider.Settings.UseParentHandlers)
       {
         handler = GetHandler (toTextParameters.Type);
       }
       else
       {
-        handler = GetHandlerWithBaseClassFallback (toTextParameters.Type, toTextParameters.ToTextBuilder.ToTextProvider);
+        handler = GetHandlerWithBaseClassFallback (toTextParameters.Type, settings);
       }
 
 
@@ -711,11 +648,12 @@ namespace Remotion.Diagnostics
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+      var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
 
       if (type == typeof (string))
       {
         string s= (string) obj;
-        if (toTextBuilder.ToTextProvider.UseAutomaticStringEnclosing)
+        if (settings.UseAutomaticStringEnclosing)
         {
           toTextBuilder.AppendChar ('"');
           toTextBuilder.AppendString (s);
@@ -791,11 +729,12 @@ namespace Remotion.Diagnostics
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+      var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
 
       if (type == typeof (char))
       {
         char c = (char) obj;
-        if (toTextBuilder.ToTextProvider.UseAutomaticCharEnclosing)
+        if (settings.UseAutomaticCharEnclosing)
         {
           toTextBuilder.AppendChar ('\'');
           toTextBuilder.AppendChar (c);
@@ -969,8 +908,9 @@ namespace Remotion.Diagnostics
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+      var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
 
-      if (!toTextBuilder.ToTextProvider.UseInterfaceHandlers)
+      if (!settings.UseInterfaceHandlers)
       {
         return;
       }
@@ -1011,11 +951,12 @@ namespace Remotion.Diagnostics
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
-      ToTextProvider toTextProvider = toTextBuilder.ToTextProvider;
+      //ToTextProvider toTextProvider = toTextBuilder.ToTextProvider;
+      var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
 
-      if (toTextProvider.UseAutomaticObjectToText)
+      if (settings.UseAutomaticObjectToText)
       {
-        ObjectToText (obj, toTextBuilder, toTextProvider.EmitPublicProperties, toTextProvider.EmitPublicFields, toTextProvider.EmitPrivateProperties, toTextProvider.EmitPrivateFields);
+        ObjectToText (obj, toTextBuilder, settings.EmitPublicProperties, settings.EmitPublicFields, settings.EmitPrivateProperties, settings.EmitPrivateFields);
         toTextProviderHandlerFeedback.Handled = true;
       }
     }
@@ -1140,6 +1081,49 @@ namespace Remotion.Diagnostics
   }
 
 
+  public class ToTextProviderSettings
+  {
+    public ToTextProviderSettings ()
+    {
+      UseAutomaticObjectToText = true;
+      EmitPublicProperties = true;
+      EmitPublicFields = true;
+      EmitPrivateProperties = true;
+      EmitPrivateFields = true;
+
+      UseAutomaticStringEnclosing = true;
+      UseAutomaticCharEnclosing = true;
+
+      UseInterfaceHandlers = true;
+
+      ParentHandlerSearchDepth = 0;
+      ParentHandlerSearchUpToRoot = true;
+      UseParentHandlers = false;
+    }
+
+    public bool UseAutomaticObjectToText { get; set; }
+    public bool EmitPublicProperties { get; set; }
+    public bool EmitPublicFields { get; set; }
+    public bool EmitPrivateProperties { get; set; }
+    public bool EmitPrivateFields { get; set; }
+
+    public bool UseAutomaticStringEnclosing { get; set; }
+    public bool UseAutomaticCharEnclosing { get; set; }
+
+    public int ParentHandlerSearchDepth { get; set; }
+    public bool ParentHandlerSearchUpToRoot { get; set; }
+    public bool UseParentHandlers { get; set; }
+
+    public bool UseInterfaceHandlers { get; set; }
+
+    public void SetAutomaticObjectToTextEmit (bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
+    {
+      EmitPublicProperties = emitPublicProperties;
+      EmitPublicFields = emitPublicFields;
+      EmitPrivateProperties = emitPrivateProperties;
+      EmitPrivateFields = emitPrivateFields;
+    }    
+  }
 
 
 }

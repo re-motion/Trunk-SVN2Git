@@ -728,9 +728,9 @@ namespace Remotion.UnitTests.Diagnostics
     public static ToTextBuilder CreateTextBuilder ()
     {
       var toTextProvider = new ToTextProvider();
-      toTextProvider.UseAutomaticObjectToText = false;
-      toTextProvider.UseAutomaticStringEnclosing = false;
-      toTextProvider.UseAutomaticCharEnclosing = false;
+      toTextProvider.Settings.UseAutomaticObjectToText = false;
+      toTextProvider.Settings.UseAutomaticStringEnclosing = false;
+      toTextProvider.Settings.UseAutomaticCharEnclosing = false;
       return new ToTextBuilder (toTextProvider);
     }
 

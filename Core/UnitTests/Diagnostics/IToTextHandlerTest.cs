@@ -67,9 +67,9 @@ namespace Remotion.UnitTests.Diagnostics
     public static ToTextProvider GetTextProvider ()
     {
       var toTextProvider = new ToTextProvider();
-      toTextProvider.UseAutomaticObjectToText = false;
-      toTextProvider.UseAutomaticStringEnclosing = true;
-      toTextProvider.UseAutomaticCharEnclosing = true;
+      toTextProvider.Settings.UseAutomaticObjectToText = false;
+      toTextProvider.Settings.UseAutomaticStringEnclosing = true;
+      toTextProvider.Settings.UseAutomaticCharEnclosing = true;
       return toTextProvider;
     }
   }

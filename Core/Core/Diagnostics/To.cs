@@ -25,9 +25,9 @@ namespace Remotion.Diagnostics
 
     public static void TextEnableAutomatics (bool enable)
     {
-      toTextProvider.UseAutomaticObjectToText = enable;
-      toTextProvider.UseAutomaticStringEnclosing = enable;
-      toTextProvider.UseAutomaticCharEnclosing = enable;
+      toTextProvider.Settings.UseAutomaticObjectToText = enable;
+      toTextProvider.Settings.UseAutomaticStringEnclosing = enable;
+      toTextProvider.Settings.UseAutomaticCharEnclosing = enable;
     }
   }
 }

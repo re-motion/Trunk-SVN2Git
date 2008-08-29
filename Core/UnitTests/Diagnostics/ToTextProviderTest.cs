@@ -159,10 +159,10 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    private static string ToText (ToTextProvider toTextProvider, object o)
+    private static string ToText (ToTextProvider toText, object o)
     {
-      var toTextBuilder = new ToTextBuilder (toTextProvider);
-      toTextProvider.ToText (o, toTextBuilder);
+      var toTextBuilder = new ToTextBuilder (toText);
+      toText.ToText (o, toTextBuilder);
       return toTextBuilder.CheckAndConvertToString ();
     }
 
@@ -172,7 +172,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       ToTextProvider toText = CreateTextProvider();
 
-      toText.UseAutomaticObjectToText = false;
+      toText.Settings.UseAutomaticObjectToText = false;
 
       Object o = 5711;
       Assert.That (ToText (toText, o), Is.EqualTo (o.ToString()));
@@ -195,7 +195,7 @@ namespace Remotion.UnitTests.Diagnostics
     private void FallbackToStringTestSingleType<T> (T t)
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.UseAutomaticObjectToText = false;
+      toText.Settings.UseAutomaticObjectToText = false;
       //log.It (t.ToString());
       Assert.That (ToText (toText, t), Is.EqualTo (t.ToString()));
     }
@@ -284,14 +284,14 @@ namespace Remotion.UnitTests.Diagnostics
       ToTextProvider toText = CreateTextProvider();
       var testSimple = new TestSimple();
 
-      toText.UseAutomaticObjectToText = true;
+      toText.Settings.UseAutomaticObjectToText = true;
       var resultAutomaticObjectToText = ToText (toText, testSimple);
       Log (resultAutomaticObjectToText);
 
       Assert.That (resultAutomaticObjectToText, NUnit.Framework.SyntaxHelpers.Text.Contains ("ABC abc"));
       Assert.That (resultAutomaticObjectToText, NUnit.Framework.SyntaxHelpers.Text.Contains ("54321"));
 
-      toText.UseAutomaticObjectToText = false;
+      toText.Settings.UseAutomaticObjectToText = false;
       Assert.That (ToText (toText, testSimple), Is.EqualTo (testSimple.ToString()));
     }
 
@@ -302,29 +302,29 @@ namespace Remotion.UnitTests.Diagnostics
       ToTextProvider toText = CreateTextProvider();
       var testSimple2 = new TestSimple2();
 
-      toText.UseAutomaticObjectToText = true;
-      toText.SetAutomaticObjectToTextEmit (true, true, true, true);
+      toText.Settings.UseAutomaticObjectToText = true;
+      toText.Settings.SetAutomaticObjectToTextEmit (true, true, true, true);
 
-      toText.SetAutomaticObjectToTextEmit (true, true, true, true);
+      toText.Settings.SetAutomaticObjectToTextEmit (true, true, true, true);
       var resultAutomaticObjectToText = ToText (toText, testSimple2);
       Log (resultAutomaticObjectToText);
       Assert.That (
           resultAutomaticObjectToText,
           Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
 
-      toText.SetAutomaticObjectToTextEmit (true, true, true, false);
+      toText.Settings.SetAutomaticObjectToTextEmit (true, true, true, false);
       Assert.That (
           ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*]"));
 
-      toText.SetAutomaticObjectToTextEmit (true, true, false, true);
+      toText.Settings.SetAutomaticObjectToTextEmit (true, true, false, true);
       Assert.That (
           ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,privateField=*private_field*]"));
 
-      toText.SetAutomaticObjectToTextEmit (true, false, true, true);
+      toText.Settings.SetAutomaticObjectToTextEmit (true, false, true, true);
       Assert.That (
           ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,PrivateProp=*private*,privateField=*private_field*]"));
 
-      toText.SetAutomaticObjectToTextEmit (false, true, true, true);
+      toText.Settings.SetAutomaticObjectToTextEmit (false, true, true, true);
       Assert.That (
           ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
     }
@@ -334,7 +334,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void ClearHandlersTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.UseAutomaticObjectToText = false;
+      toText.Settings.UseAutomaticObjectToText = false;
       toText.RegisterHandler<Object> ((x, ttb) => ttb.s ("[ClearHandlersTest]").ts (x));
       var o = new object();
       string toTextTest = ToText (toText, o);
@@ -485,9 +485,9 @@ namespace Remotion.UnitTests.Diagnostics
     {
       ToTextProvider toText = CreateTextProvider();
       var test = "ABC";
-      toText.UseAutomaticStringEnclosing = false;
+      toText.Settings.UseAutomaticStringEnclosing = false;
       Assert.That (ToText (toText, test), Is.EqualTo ("ABC"));
-      toText.UseAutomaticStringEnclosing = true;
+      toText.Settings.UseAutomaticStringEnclosing = true;
       Assert.That (ToText (toText, test), Is.EqualTo ("\"ABC\""));
     }
 
@@ -496,25 +496,25 @@ namespace Remotion.UnitTests.Diagnostics
     {
       ToTextProvider toText = CreateTextProvider();
       var test = 'A';
-      toText.UseAutomaticCharEnclosing = false;
+      toText.Settings.UseAutomaticCharEnclosing = false;
       Assert.That (ToText (toText, test), Is.EqualTo ("A"));
-      toText.UseAutomaticCharEnclosing = true;
+      toText.Settings.UseAutomaticCharEnclosing = true;
       Assert.That (ToText (toText, test), Is.EqualTo ("'A'"));
     }
 
 
-    private void ToTextProviderEnableAutomatics (ToTextProvider toTextProvider, bool enable)
+    private void ToTextProviderEnableAutomatics (ToTextProvider toText, bool enable)
     {
-      toTextProvider.UseAutomaticObjectToText = enable;
-      toTextProvider.UseAutomaticStringEnclosing = enable;
-      toTextProvider.UseAutomaticCharEnclosing = enable;
+      toText.Settings.UseAutomaticObjectToText = enable;
+      toText.Settings.UseAutomaticStringEnclosing = enable;
+      toText.Settings.UseAutomaticCharEnclosing = enable;
     }
 
     [Test]
     public void AutomaticObjectToTextTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      //toText.UseAutomaticObjectToText = true;
+      //toText.Settings.UseAutomaticObjectToText = true;
       ToTextProviderEnableAutomatics (toText, true);
       var test = new Test ("That's not my name", 179);
       test.Array3D = new Object[][][] { new Object[][] { new Object[] { 91, 82, 73, 64 } } };
@@ -532,7 +532,7 @@ namespace Remotion.UnitTests.Diagnostics
     private void TypeToTextTestDo ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.UseAutomaticObjectToText = true;
+      toText.Settings.UseAutomaticObjectToText = true;
       var type = typeof (object).GetType();
       string result = toText.ToTextString (type);
     }
@@ -587,33 +587,33 @@ namespace Remotion.UnitTests.Diagnostics
     {
       ToTextProvider toText = CreateTextProvider();
 
-      toText.UseParentHandlers = true;
+      toText.Settings.UseParentHandlers = true;
       
       var testChildChild = new TestChildChild();
 
-      toText.ParentHandlerSearchUpToRoot = false;
-      toText.ParentHandlerSearchDepth = 2;
+      toText.Settings.ParentHandlerSearchUpToRoot = false;
+      toText.Settings.ParentHandlerSearchDepth = 2;
       toText.RegisterHandler<Test> ((o, ttb) => ttb.s ("Test"));
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("Test"));
-      toText.ParentHandlerSearchDepth = 1;
+      toText.Settings.ParentHandlerSearchDepth = 1;
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString()));
 
-      toText.ParentHandlerSearchDepth = 1;
+      toText.Settings.ParentHandlerSearchDepth = 1;
       toText.RegisterHandler<TestChild> ((o, ttb) => ttb.s ("TestChild"));
-      toText.ParentHandlerSearchDepth = 0;
+      toText.Settings.ParentHandlerSearchDepth = 0;
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString()));
 
-      toText.ParentHandlerSearchDepth = 10;
+      toText.Settings.ParentHandlerSearchDepth = 10;
       toText.RegisterHandler<TestChildChild> ((o, ttb) => ttb.s ("TestChildChild"));
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("TestChildChild"));
 
 
       toText.ClearHandlers();
       toText.RegisterHandler<Test> ((o, ttb) => ttb.s ("Test"));
-      toText.ParentHandlerSearchDepth = 0;
-      toText.ParentHandlerSearchUpToRoot = true;
+      toText.Settings.ParentHandlerSearchDepth = 0;
+      toText.Settings.ParentHandlerSearchUpToRoot = true;
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("Test"));
-      toText.ParentHandlerSearchUpToRoot = false;
+      toText.Settings.ParentHandlerSearchUpToRoot = false;
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString()));
     }
 
@@ -624,11 +624,11 @@ namespace Remotion.UnitTests.Diagnostics
       var testChild = new TestChild ();
 
       toText.RegisterHandler<Test> ((o, ttb) => ttb.s ("Test"));
-      toText.UseParentHandlers = true;
-      toText.ParentHandlerSearchUpToRoot = true;
-      toText.ParentHandlerSearchDepth = 1000;
+      toText.Settings.UseParentHandlers = true;
+      toText.Settings.ParentHandlerSearchUpToRoot = true;
+      toText.Settings.ParentHandlerSearchDepth = 1000;
       Assert.That (toText.ToTextString (testChild), Is.EqualTo ("Test"));
-      toText.UseParentHandlers = false;
+      toText.Settings.UseParentHandlers = false;
       Assert.That (toText.ToTextString (testChild), Is.EqualTo (testChild.ToString ()));
     }
 
@@ -637,7 +637,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void InterfaceTest ()
     {
       ToTextProvider toText = CreateTextProvider ();
-      toText.UseInterfaceHandlers = true;
+      toText.Settings.UseInterfaceHandlers = true;
 
       toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
 
@@ -651,7 +651,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void InterfaceDisabledTest ()
     {
       ToTextProvider toText = CreateTextProvider ();
-      toText.UseInterfaceHandlers = false;
+      toText.Settings.UseInterfaceHandlers = false;
       toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
 
       Test testInterface = new Test ("Überbauer", 3589);
@@ -664,7 +664,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void InterfacePriorityTest ()
     {
       ToTextProvider toText = CreateTextProvider ();
-      toText.UseInterfaceHandlers = true;
+      toText.Settings.UseInterfaceHandlers = true;
 
       toText.RegisterInterfaceHandlerAppendLast<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
       toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
@@ -679,7 +679,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void InterfacePriority2Test ()
     {
       ToTextProvider toText = CreateTextProvider ();
-      toText.UseInterfaceHandlers = true;
+      toText.Settings.UseInterfaceHandlers = true;
 
       toText.RegisterInterfaceHandlerAppendLast<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
       toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
@@ -697,7 +697,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void InterfaceAppendFirstPriorityTest ()
     {
       ToTextProvider toText = CreateTextProvider ();
-      toText.UseInterfaceHandlers = true;
+      toText.Settings.UseInterfaceHandlers = true;
 
       toText.RegisterInterfaceHandlerAppendFirst<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
       toText.RegisterInterfaceHandlerAppendFirst<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
@@ -746,18 +746,18 @@ namespace Remotion.UnitTests.Diagnostics
 
     private ToTextProvider CreateTextProvider ()
     {
-      var toTextProvider = new ToTextProvider();
-      toTextProvider.UseAutomaticObjectToText = false;
-      toTextProvider.UseAutomaticStringEnclosing = false;
-      toTextProvider.UseAutomaticCharEnclosing = false;
-      toTextProvider.UseInterfaceHandlers = false;
-      return toTextProvider;
+      var toText = new ToTextProvider();
+      toText.Settings.UseAutomaticObjectToText = false;
+      toText.Settings.UseAutomaticStringEnclosing = false;
+      toText.Settings.UseAutomaticCharEnclosing = false;
+      toText.Settings.UseInterfaceHandlers = false;
+      return toText;
     }
 
     private ToTextParameters CreateToTextParameters (object obj)
     {
-      var toTextProvider = CreateTextProvider();
-      var toTextBuilder = new ToTextBuilder (toTextProvider);
+      var toText = CreateTextProvider();
+      var toTextBuilder = new ToTextBuilder (toText);
       Type type = (obj != null) ? obj.GetType() : null;
       var parameters = new ToTextParameters () { Object = obj, Type = type, ToTextBuilder = toTextBuilder };
       //LogVariables (parameters.Object, parameters.Type, parameters.ToTextProvider, parameters.ToTextBuilder);
