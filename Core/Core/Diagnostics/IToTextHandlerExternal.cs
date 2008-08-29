@@ -12,7 +12,7 @@ using System;
 
 namespace Remotion.Diagnostics
 {
-  internal interface IToTextHandlerExternal
+  public interface IToTextHandlerExternal
   {
     void ToText (Object obj, ToTextBuilder toTextBuilder);
   }

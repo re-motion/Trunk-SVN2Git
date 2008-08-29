@@ -705,25 +705,25 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (result, Is.EqualTo ("null"));
     }
 
-    [Test]
-    public void ToTextProviderRegisteredHandlerHandlerTest ()
-    {
-      ToTextProvider toText = CreateTextProvider ();
+    //[Test]
+    //public void ToTextProviderRegisteredHandlerHandlerTest ()
+    //{
+    //  ToTextProvider toText = CreateTextProvider ();
 
-      var handler = new ToTextProviderRegisteredHandlerWithBaseClassFallbackHandler ();
-      handler.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
+    //  var handler = new ToTextProviderRegisteredHandlerWithBaseClassFallbackHandler ();
+    //  handler.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
 
-      var test = new ToTextProviderTest.Test ("That's not my name", 179);
+    //  var test = new ToTextProviderTest.Test ("That's not my name", 179);
 
-      var parameters = CreateToTextParameters (test);
-      var feedback = new ToTextProviderHandlerFeedback ();
-      handler.ToTextIfTypeMatches (parameters, feedback);
-      Assert.That (feedback.Handled, Is.EqualTo (true));
+    //  var parameters = CreateToTextParameters (test);
+    //  var feedback = new ToTextProviderHandlerFeedback ();
+    //  handler.ToTextIfTypeMatches (parameters, feedback);
+    //  Assert.That (feedback.Handled, Is.EqualTo (true));
 
-      var result = parameters.ToTextBuilder.CheckAndConvertToString ();
-      Log (result);
-      Assert.That (result, Is.EqualTo ("[Test: That's not my name;179]"));
-    }
+    //  var result = parameters.ToTextBuilder.CheckAndConvertToString ();
+    //  Log (result);
+    //  Assert.That (result, Is.EqualTo ("[Test: That's not my name;179]"));
+    //}
 
     private ToTextProvider CreateTextProvider ()
     {
@@ -740,7 +740,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextProvider = CreateTextProvider();
       var toTextBuilder = new ToTextBuilder (toTextProvider);
       Type type = (obj != null) ? obj.GetType() : null;
-      var parameters = new ToTextParameters () { Object = obj, Type = type, ToTextProvider = toTextProvider, ToTextBuilder = toTextBuilder };
+      var parameters = new ToTextParameters () { Object = obj, Type = type, ToTextBuilder = toTextBuilder };
       //LogVariables (parameters.Object, parameters.Type, parameters.ToTextProvider, parameters.ToTextBuilder);
       return parameters;
     }

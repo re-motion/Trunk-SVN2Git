@@ -10,7 +10,7 @@
 
 namespace Remotion.Diagnostics
 {
-  internal interface IToTextInterfaceHandlerExternal
+  public interface IToTextInterfaceHandlerExternal
   {
     void ToText (object obj, ToTextBuilder toTextBuilder);
     int Priority { get; }
