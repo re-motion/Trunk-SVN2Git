@@ -16,7 +16,7 @@
   <form id="Form1" method="post" runat="server">
     <remotion:BocList ID="$DOMAIN_CLASSNAME$List" runat="server" DataSourceControl="$DOMAIN_CLASSNAME$SearchDataSource" OnListItemCommandClick="$DOMAIN_CLASSNAME$List_ListItemCommandClick">
       <FixedColumns>
-        <remotion:BocAllPropertiesPlacehoderColumnDefinition />
+        <remotion:BocAllPropertiesPlaceholderColumnDefinition />
         <remotion:BocCommandColumnDefinition ItemID="Edit" Text="$res:Edit">
           <PersistedCommand>
             <remotion:BocListItemCommand Type="Event" />
