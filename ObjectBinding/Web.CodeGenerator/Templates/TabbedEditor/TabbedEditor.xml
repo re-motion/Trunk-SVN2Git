@@ -84,7 +84,7 @@ TODO: <folder>
 	<properties ignore="ID;IsDiscarded;ClientTransaction;State"	>
 		<controlMappings>
       <mapping propertyType="Remotion.ObjectBinding.IBusinessObjectStringProperty" control="remotion:BocTextValue" />
-      <mapping propertyType="Remotion.ObjectBinding.IBusinessObjectInt32Property" control="remotion:BocTextValue" />
+      <mapping propertyType="Remotion.ObjectBinding.IBusinessObjectNumericProperty" control="remotion:BocTextValue" />
       <mapping propertyType="Remotion.ObjectBinding.IBusinessObjectDateTimeProperty" control="remotion:BocDateTimeValue" />
       <mapping propertyType="Remotion.ObjectBinding.IBusinessObjectEnumerationProperty" control="remotion:BocEnumValue" />
       <mapping propertyType="Remotion.ObjectBinding.IBusinessObjectStringProperty" isList="true" control="remotion:BocMultilineTextValue" />
