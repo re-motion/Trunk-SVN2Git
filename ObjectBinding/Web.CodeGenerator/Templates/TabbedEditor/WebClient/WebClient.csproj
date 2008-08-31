@@ -1,8 +1,8 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion = "3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>$WebClientGuid$</ProjectGuid>
 
@@ -201,4 +201,20 @@
       $RemotionAssembly$\wxegen UI\*.aspx.cs WxeFunctions.cs /prjfile:$WebClientName$.csproj /functionbase:$PROJECT_ROOTNAMESPACE$.Classes.BaseFunction
     </PreBuildEvent>
   </PropertyGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+    <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+    <WebProjectProperties>
+    <UseIIS>False</UseIIS>
+    <AutoAssignPort>True</AutoAssignPort>
+    <DevelopmentServerPort>22809</DevelopmentServerPort>
+    <DevelopmentServerVPath>/</DevelopmentServerVPath>
+    <IISUrl>
+    </IISUrl>
+    <NTLMAuthentication>False</NTLMAuthentication>
+    <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+    </WebProjectProperties>
+    </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
