@@ -71,7 +71,7 @@ namespace Remotion.Diagnostics
       // *) Is null
       // *) Type handler registered
       // *) Is string (Treat seperately to prevent from being treated as IEnumerable)
-      // *) Is primitive: To prevent them from being handled through reflection
+      // *) Primitives (Formattables): To prevent them from being handled through reflection
       // *) Is rectangular array (Treat seperately to prevent from being treated as 1D-collection by IEnumerable)
       // *) Implements IToTextHandler
       // *) If !IsInterface: Base type handler registered (recursive)

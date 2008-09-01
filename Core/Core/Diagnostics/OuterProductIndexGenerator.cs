@@ -119,7 +119,7 @@ namespace Remotion.Diagnostics
     {
       int rank = _numberElementsPerDimension.Length;
       _currentDimensionIndices = new int[rank];
-      _numberElementsOverall = CalcOuterProductNrElementsOverall (_numberElementsPerDimension);
+      _numberElementsOverall = CalculateOuterProductNumberElementsOverall (_numberElementsPerDimension);
       _numberElementsProcessed = 0;
     }
 
@@ -129,7 +129,7 @@ namespace Remotion.Diagnostics
     /// </summary>
     /// <param name="numberElementsPerDimension">The array giving the number of elements along each dimension of the outer product.</param>
     /// <returns>The product of the numbers in the passed array of integers.</returns>
-    public static int CalcOuterProductNrElementsOverall (int[] numberElementsPerDimension)
+    public static int CalculateOuterProductNumberElementsOverall (int[] numberElementsPerDimension)
     {
       if (numberElementsPerDimension.Length <= 0)
       {
