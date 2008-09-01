@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _securableClass = securableClass;
       _stateDefinitions = GetStateDefinitionsPerProperty ();
       _statePropertyCount = ClassDefinition.StateProperties.Count;
-      _stateCombinationCount = CalcOuterProductNrStateCombinations (securableClass);
+      _stateCombinationCount = CalculateOuterProductNumberStateCombinations (securableClass);
       //Console.WriteLine ("_stateCombinationCount=" + _stateCombinationCount);
     }
 
@@ -115,7 +115,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       var stateProperties = ClassDefinition.StateProperties;
 
-      int nrStateCombinations = CalcOuterProductNrStateCombinations (ClassDefinition);
+      int nrStateCombinations = CalculateOuterProductNumberStateCombinations (ClassDefinition);
       int numberStateProperties = stateProperties.Count;
       PropertyStateTuple[,] outerProductOfStateProperties = new PropertyStateTuple[numberStateProperties, nrStateCombinations];
 
@@ -163,7 +163,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       var stateProperties = ClassDefinition.StateProperties;
 
-      int nrStateCombinations = CalcOuterProductNrStateCombinations (ClassDefinition);
+      int nrStateCombinations = CalculateOuterProductNumberStateCombinations (ClassDefinition);
       int numberStateProperties = stateProperties.Count;
       PropertyStateTuple[,] outerProductOfStateProperties = new PropertyStateTuple[nrStateCombinations,numberStateProperties];
 
@@ -211,7 +211,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       var stateProperties = ClassDefinition.StateProperties;
 
-      int nrStateCombinations = CalcOuterProductNrStateCombinations (ClassDefinition);
+      int nrStateCombinations = CalculateOuterProductNumberStateCombinations (ClassDefinition);
       int numberStateProperties = stateProperties.Count;
       PropertyStateTuple[][] outerProductOfStateProperties = new PropertyStateTuple[nrStateCombinations][];
 
@@ -265,7 +265,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       int iStateCombinations = 0;
       var stateProperties = ClassDefinition.StateProperties;
 
-      PropertyStateTuple[][] outerProductOfStateProperties = new PropertyStateTuple[CalcOuterProductNrStateCombinations (ClassDefinition)][];
+      PropertyStateTuple[][] outerProductOfStateProperties = new PropertyStateTuple[CalculateOuterProductNumberStateCombinations (ClassDefinition)][];
 
       // To avoid using _stateOuterProductHasMore, the following line needs to be enabled.  
       // (Note however that this leads to less stable code due to a dependency on the order the processing of the _aStatePropertyDefinedStateIndex array):
@@ -273,7 +273,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // if (_aStatePropertyDefinedStateIndex[iStatePropertyLast] < stateProperties[iStatePropertyLast].DefinedStates.Count)
 
       _stateOuterProductHasMore = false;
-      int nStateCombinations = CalcOuterProductNrStateCombinations (ClassDefinition);
+      int nStateCombinations = CalculateOuterProductNumberStateCombinations (ClassDefinition);
       if (nStateCombinations > 0)
       {
         _aStatePropertyDefinedStateIndex = new int[ClassDefinition.StateProperties.Count];
@@ -329,7 +329,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // if (_aStatePropertyDefinedStateIndex[iStatePropertyLast] < stateProperties[iStatePropertyLast].DefinedStates.Count)
 
       _stateOuterProductHasMore = false;
-      int nStateCombinations = CalcOuterProductNrStateCombinations (ClassDefinition);
+      int nStateCombinations = CalculateOuterProductNumberStateCombinations (ClassDefinition);
       if (nStateCombinations > 0)
       {
         _aStatePropertyDefinedStateIndex = new int[ClassDefinition.StateProperties.Count];
@@ -387,7 +387,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     //}
 
 
-    public static int CalcOuterProductNrStateCombinations (SecurableClassDefinition classDefinition)
+    public static int CalculateOuterProductNumberStateCombinations (SecurableClassDefinition classDefinition)
     {
       var stateProperties = classDefinition.StateProperties;
       if (stateProperties.Count <= 0)
