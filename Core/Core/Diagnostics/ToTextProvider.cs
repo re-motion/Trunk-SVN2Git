@@ -33,7 +33,7 @@ namespace Remotion.Diagnostics
   /// <item>Is a primitive: Floating point numbers are alway output formatted US style.</item>
   /// <item>Is a (rectangular) array (arrays have are be treted seperately to prevent them from from being handled as IEnumerable)</item>
   /// <item>Implements IEnumerable</item>
-  /// <item>Log instance members through reflection (see <see cref="IToTextHandler"/>)</item>
+  /// <item>Log instance members through reflection (see <see cref="IToText"/>)</item>
   /// <item>If all of the above fail, the object's <c>ToString</c> method is called</item>
   /// </list>
   /// 
@@ -73,7 +73,7 @@ namespace Remotion.Diagnostics
       // *) Is string (Treat seperately to prevent from being treated as IEnumerable)
       // *) Primitives (Formattables): To prevent them from being handled through reflection
       // *) Is rectangular array (Treat seperately to prevent from being treated as 1D-collection by IEnumerable)
-      // *) Implements IToTextHandler
+      // *) Implements IToText
       // *) If !IsInterface: Base type handler registered (recursive)
       // *) Implements IEnumerable ("is container")
       // *) If enabled: Log properties through reflection
@@ -372,9 +372,9 @@ namespace Remotion.Diagnostics
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
 
-      if (obj is IToTextHandler)
+      if (obj is IToText)
       {
-        ((IToTextHandler) obj).ToText (toTextBuilder);
+        ((IToText) obj).ToText (toTextBuilder);
         toTextProviderHandlerFeedback.Handled = true;
       }
 

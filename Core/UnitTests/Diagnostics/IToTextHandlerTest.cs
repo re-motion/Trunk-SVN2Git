@@ -21,7 +21,7 @@ namespace Remotion.UnitTests.Diagnostics
   {
     private ISimpleLogger log = SimpleLogger.CreateForConsole (true);
 
-    public class TestSimple : IToTextHandler
+    public class TestSimple : IToText
     {
       public TestSimple ()
       {
