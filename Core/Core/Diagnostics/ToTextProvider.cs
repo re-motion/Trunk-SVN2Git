@@ -12,12 +12,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using Remotion.Collections;
-using Remotion.Diagnostics;
 using Remotion.Utilities;
 
 namespace Remotion.Diagnostics
@@ -46,22 +43,6 @@ namespace Remotion.Diagnostics
     private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap = new Dictionary<Type, IToTextHandlerExternal> ();
     private readonly Dictionary<Type, IToTextInterfaceHandlerExternal> _interfaceTypeHandlerMap = new Dictionary<Type, IToTextInterfaceHandlerExternal> ();
     
-    //private static readonly NumberFormatInfo s_numberFormatInfoInvariant = CultureInfo.InvariantCulture.NumberFormat;
-
-    //// Define a cache instance (dictionary syntax)
-    //private static readonly InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]> s_memberInfoCache = new InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]>();
-    
-    //private bool _automaticObjectToText = true;
-    //private bool _automaticStringEnclosing = true;
-    //private bool _automaticCharEnclosing = true;
-
-    //private bool _emitPublicProperties = true;
-    //private bool _emitPublicFields = true;
-    //private bool _emitPrivateProperties = true;
-    //private bool _emitPrivateFields = true;
-    //private bool _useInterfaceHandlers = true;
-    
-    
     private int _interfaceHandlerPriorityMin = 0;
     private int _interfaceHandlerPriorityMax = 0;
 
@@ -86,6 +67,18 @@ namespace Remotion.Diagnostics
 
     private void RegisterDefaultToTextProviderHandlers()
     {
+      // Handle Cascade:
+      // *) Is null
+      // *) Type handler registered
+      // *) Is string (Treat seperately to prevent from being treated as IEnumerable)
+      // *) Is primitive: To prevent them from being handled through reflection
+      // *) Is rectangular array (Treat seperately to prevent from being treated as 1D-collection by IEnumerable)
+      // *) Implements IToTextHandler
+      // *) If !IsInterface: Base type handler registered (recursive)
+      // *) Implements IEnumerable ("is container")
+      // *) If enabled: Log properties through reflection
+      // *) ToString()
+
       RegisterToTextProviderHandler (new ToTextProviderNullHandler ());
       // We call this handler twice: first without and later with base class fallback. For this they need to share the registered type handlers in _typeHandlerMap.
       RegisterToTextProviderHandler (new ToTextProviderRegisteredHandler (_typeHandlerMap,false));
@@ -117,211 +110,13 @@ namespace Remotion.Diagnostics
     public void ToText (object obj, ToTextBuilder toTextBuilder)
     {
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-
-      // Handle Cascade:
-      // *) Is null
-      // *) Type handler registered
-      // *) Is string (Treat seperately to prevent from being treated as IEnumerable)
-      // *) Is primitive: To prevent them from being handled through reflection
-      // *) Is rectangular array (Treat seperately to prevent from being treated as 1D-collection by IEnumerable)
-      // *) Implements IToTextHandler
-      // *) If !IsInterface: Base type handler registered (recursive)
-      // *) Implements IEnumerable ("is container")
-      // *) If enabled: Log properties through reflection
-      // *) ToString()
-
-      //IMixinTarget
-
-      // TODO Functionality:
-      // * Automatic call stack indentation
-
-
-      //bool handled = ToTextUsingToTextProviderHandlers (obj, toTextBuilder);
-      //if (handled)
-      //{
-      //  return;
-      //}
-
       ToTextUsingToTextProviderHandlers (obj, toTextBuilder);
-      return; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-#if(false)
-      if (obj == null)
-      {
-        Log ("null");
-        toTextBuilder.AppendString ("null");
-        return;
-      }
-
-      Type type = obj.GetType ();
-
-      Log (type.ToString ());
-
-      IToTextHandlerExternal handler = null;
-      handler = GetHandler(type);
-
-
-      if (handler != null)
-      {
-        //handler.DynamicInvoke (obj, toTextBuilder);
-        handler.ToText (obj, toTextBuilder);
-      }
-      else if (type == typeof (string))
-      {
-        string s= (string) obj;
-        if (UseAutomaticStringEnclosing)
-        {
-          toTextBuilder.Append ('"');
-          toTextBuilder.AppendString (s);
-          toTextBuilder.Append ('"');
-        }
-        else
-        {
-          toTextBuilder.AppendString(s);
-        }
-      }
-      else if (obj is IToTextHandler)
-      {
-        ((IToTextHandler) obj).ToText (toTextBuilder);
-      }
-      else if (obj is Type) 
-      {
-        // Catch Type|s here to avoid endless recursion in AutomaticObjectToText below.
-        toTextBuilder.AppendString (obj.ToString ());
-      }
-      else if (type.IsPrimitive)
-      {
-        if (type == typeof (char))
-        {
-          char c = (char) obj;
-          if (UseAutomaticCharEnclosing)
-          {
-            toTextBuilder.Append ('\'');
-            toTextBuilder.Append (c);
-            toTextBuilder.Append ('\'');
-          }
-          else
-          {
-            toTextBuilder.Append (c);
-          }
-        }
-        else if (type == typeof (Single)) 
-        {
-          // Make sure floating point numbers are emitted with '.' comma character (non-localized)
-          // to avoid problems with comma as an e.g. sequence seperator character.
-          // Since ToText is to be used for debug output, localizing everything to the common
-          // IT norm of using US syntax (except for dates) makes sense.
-          toTextBuilder.AppendString (((Single) obj).ToString (s_numberFormatInfoInvariant));
-        }
-        else if (type == typeof (Double))
-        {
-          toTextBuilder.AppendString (((Double) obj).ToString (s_numberFormatInfoInvariant));
-        }
-        else
-        {
-          // Emit primitives who have no registered specific handler without further processing.
-          toTextBuilder.Append (obj);
-        }
-      }
-      else if (type.IsArray)
-      {
-        ArrayToText ((Array) obj, toTextBuilder);
-      }
-          //else if (type.GetInterface ("IEnumerable") != null)
-      else if (obj is IEnumerable)
-      {
-        CollectionToText ((IEnumerable) obj, toTextBuilder);
-      }
-      else
-      {
-        handler = GetHandlerWithBaseClassFallback (type);
-        if (handler != null)
-        {
-          handler.ToText (obj, toTextBuilder);
-        }
-        if (HandledByInterfaceHandler (obj, type, toTextBuilder))
-        {
-        }
-        else if (_automaticObjectToText)
-        {
-          AutomaticObjectToText (obj, toTextBuilder, EmitPublicProperties, EmitPublicFields, EmitPrivateProperties, EmitPrivateFields);
-        }
-        else
-        {
-          toTextBuilder.AppendString (obj.ToString ());
-        }
-      }
-#endif
     }
-
-    //private bool HandledByInterfaceHandler (object obj, Type type, ToTextBuilder toTextBuilder)
-    //{
-    //  if (!_useInterfaceHandlers)
-    //  {
-    //    return false;
-    //  }
-
-    //  IToTextInterfaceHandlerExternal interfaceHandlerWithMaximumPriority = null;
-    //  foreach (var interfaceType in type.GetInterfaces())
-    //  {
-    //    IToTextInterfaceHandlerExternal  interfaceHandler;
-    //    _interfaceTypeHandlerMap.TryGetValue(interfaceType, out interfaceHandler);
-    //    if (interfaceHandler != null && 
-    //      (interfaceHandlerWithMaximumPriority == null || (interfaceHandler.Priority > interfaceHandlerWithMaximumPriority.Priority)))
-    //    {
-    //      interfaceHandlerWithMaximumPriority = interfaceHandler;
-    //    }
-    //  }
-
-    //  if (interfaceHandlerWithMaximumPriority == null)
-    //  {
-    //    return false;
-    //  }
-
-    //  interfaceHandlerWithMaximumPriority.ToText (obj, toTextBuilder);
-    //  return true;
-    //}
-
-    //private IToTextHandlerExternal GetHandler (Type type)
-    //{
-    //  return GetHandlerWithBaseClassFallback(type);
-    //}
-
-    //private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type)
-    //{
-    //  return GetHandlerWithBaseClassFallback (type, ParentHandlerSearchDepth, ParentHandlerSearchUpToRoot, 0);
-    //}
-
-    //private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, int recursionDepthMax, bool searchToRoot, int recursionDepth)
-    //{
-    //  if (!searchToRoot && recursionDepth > recursionDepthMax)
-    //  {
-    //    return null;
-    //  }
-
-    //  IToTextHandlerExternal handler;
-    //  _typeHandlerMap.TryGetValue (type, out handler);
-
-    //  if (handler != null)
-    //  {
-    //    return handler;
-    //  }
-
-    //  Type baseType = type.BaseType;
-    //  if(baseType == null)
-    //  {
-    //    return null;
-    //  }
-
-    //  return GetHandlerWithBaseClassFallback (baseType, recursionDepthMax, searchToRoot, recursionDepth + 1);
-    //}
 
 
     public void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
     {
       _typeHandlerMap.Add (typeof (T), new ToTextHandlerExternal<T> (handler));
-      //GetToTextProviderHandler<ToTextProviderRegisteredHandlerWithBaseClassFallbackHandler>().RegisterHandler<T>()
     }
 
     public void RegisterInterfaceHandlerAppendLast<T> (Action<T, ToTextBuilder> handler)
@@ -340,96 +135,6 @@ namespace Remotion.Diagnostics
     {
       _typeHandlerMap.Clear ();
     }
-
-
-
-    //public static void CollectionToText (IEnumerable collection, ToTextBuilder toTextBuilder)
-    //{
-    //  toTextBuilder.AppendEnumerable(collection);
-    //}
-
-
-    //public static void ArrayToText (Array array, ToTextBuilder toTextBuilder)
-    //{
-    //  toTextBuilder.AppendArray(array);
-    //}
-
-
-
-    //private static object GetValue (object obj, Type type, MemberInfo memberInfo)
-    //{
-    //  object value = null;
-    //  if (memberInfo is PropertyInfo)
-    //  {
-    //    value = ((PropertyInfo)memberInfo).GetValue (obj, null);
-    //  }
-    //  else if (memberInfo is FieldInfo)
-    //  {
-    //    value = ((FieldInfo) memberInfo).GetValue (obj);
-    //  }
-    //  else
-    //  {
-    //    throw new System.NotImplementedException ();
-    //  }
-    //  return value;
-    //}
-
-    ////TODO: rename, NON static
-    //private static void AutomaticObjectToTextProcessMemberInfos (string message, Object obj, BindingFlags bindingFlags, 
-    //                                                             MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
-    //{
-    //  Type type = obj.GetType ();
-
-    //  // Cache the member info result
-    //  MemberInfo[] memberInfos = s_memberInfoCache.GetOrCreateValue (new Tuple<Type, BindingFlags> (type, bindingFlags), tuple => tuple.A.GetMembers (tuple.B));
-
-    //  foreach (var memberInfo in memberInfos)
-    //  {
-    //    if ((memberInfo.MemberType & memberTypeFlags) != 0)
-    //    {
-    //      string name = memberInfo.Name;
-
-    //      // Skip compiler generated backing fields
-    //      //bool isCompilerGenerated = name.Contains("k__");
-    //      bool isCompilerGenerated = memberInfo.IsDefined (typeof (CompilerGeneratedAttribute), false);
-    //      if (!isCompilerGenerated)
-    //      {
-    //        object value = GetValue(obj, type, memberInfo);
-    //        // AppendMember ToText value
-    //        toTextBuilder.AppendMember(name, value);
-    //      }
-    //    }
-    //  }
-    //}
-
-
-    ////TODO: rename
-    //public void AutomaticObjectToText (object obj, ToTextBuilder toTextBuilder, 
-    //                                   bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
-    //{
-    //  Type type = obj.GetType ();
-
-    //  toTextBuilder.beginInstance(type);
-
-    //  if (emitPublicProperties)
-    //  {
-    //    AutomaticObjectToTextProcessMemberInfos (
-    //        "Public Properties", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Property, toTextBuilder);
-    //  }
-    //  if (emitPublicFields)
-    //  {
-    //    AutomaticObjectToTextProcessMemberInfos ("Public Fields", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Field, toTextBuilder);
-    //  }
-    //  if (emitPrivateProperties)
-    //  {
-    //    AutomaticObjectToTextProcessMemberInfos ("Non Public Properties", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Property, toTextBuilder);
-    //  }
-    //  if (emitPrivateFields)
-    //  {
-    //    AutomaticObjectToTextProcessMemberInfos ("Non Public Fields", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Field, toTextBuilder);
-    //  }
-    //  toTextBuilder.endInstance();
-    //}
 
 
 
@@ -778,59 +483,7 @@ namespace Remotion.Diagnostics
   }
 
 
-  //public class ToTextProviderPrimitiveHandler : ToTextProviderHandler
-  //{
-  //  private static readonly NumberFormatInfo s_numberFormatInfoInvariant = CultureInfo.InvariantCulture.NumberFormat;
 
-  //  public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
-  //  {
-  //    ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
-  //    ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
-  //    ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
-
-
-  //    Object obj = toTextParameters.Object;
-  //    Type type = toTextParameters.Type;
-  //    ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
-
-
-  //    if (type.IsPrimitive)
-  //    {
-  //      if (type == typeof (char))
-  //      {
-  //        char c = (char) obj;
-  //        if (toTextBuilder.ToTextProvider.UseAutomaticCharEnclosing)
-  //        {
-  //          toTextBuilder.AppendChar ('\'');
-  //          toTextBuilder.AppendChar (c);
-  //          toTextBuilder.AppendChar ('\'');
-  //        }
-  //        else
-  //        {
-  //          toTextBuilder.AppendChar (c);
-  //        }
-  //      }
-  //      else if (type == typeof (Single)) 
-  //      {
-  //        // Make sure floating point numbers are emitted with '.' comma character (non-localized)
-  //        // to avoid problems with comma as an e.g. sequence seperator character.
-  //        // Since ToText is to be used for debug output, localizing everything to the common
-  //        // IT norm of using US syntax (except for dates) makes sense.
-  //        toTextBuilder.AppendString (((Single) obj).ToString (s_numberFormatInfoInvariant));
-  //      }
-  //      else if (type == typeof (Double))
-  //      {
-  //        toTextBuilder.AppendString (((Double) obj).ToString (s_numberFormatInfoInvariant));
-  //      }
-  //      else
-  //      {
-  //        // Emit primitives who have no registered specific handler without further processing.
-  //        toTextBuilder.Append (obj);
-  //      }
-  //      toTextProviderHandlerFeedback.Handled = true;
-  //    }
-  //  }
-  //}
 
   public class ToTextProviderArrayHandler : ToTextProviderHandler
   {
@@ -875,7 +528,6 @@ namespace Remotion.Diagnostics
 
   public class ToTextProviderRegisteredInterfaceHandlerHandler : ToTextProviderHandler
   {
-    //private readonly Dictionary<Type, IToTextInterfaceHandlerExternal> _interfaceTypeHandlerMap = new Dictionary<Type, IToTextInterfaceHandlerExternal> ();
     private readonly Dictionary<Type, IToTextInterfaceHandlerExternal> _interfaceTypeHandlerMap;
     private int _interfaceHandlerPriorityMin = 0;
     private int _interfaceHandlerPriorityMax = 0;
@@ -951,7 +603,6 @@ namespace Remotion.Diagnostics
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
-      //ToTextProvider toTextProvider = toTextBuilder.ToTextProvider;
       var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
 
       if (settings.UseAutomaticObjectToText)
@@ -961,25 +612,6 @@ namespace Remotion.Diagnostics
       }
     }
 
-    //private bool EmitPrivateFields
-    //{
-    //  get { return true; }
-    //}
-
-    //private bool EmitPrivateProperties
-    //{
-    //  get { return true; }
-    //}
-
-    //private bool EmitPublicFields
-    //{
-    //  get { return true; }
-    //}
-
-    //private bool EmitPublicProperties
-    //{
-    //  get { return true; }
-    //}
 
     private void ObjectToText (object obj, ToTextBuilder toTextBuilder,
                                        bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
@@ -1023,7 +655,6 @@ namespace Remotion.Diagnostics
           string name = memberInfo.Name;
 
           // Skip compiler generated backing fields
-          //bool isCompilerGenerated = name.Contains("k__");
           bool isCompilerGenerated = memberInfo.IsDefined (typeof (CompilerGeneratedAttribute), false);
           if (!isCompilerGenerated)
           {
