@@ -15,6 +15,8 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Remotion.Collections;
+using Remotion.Diagnostics.ToText;
+using Remotion.Diagnostics.ToText.Handlers;
 using Remotion.Utilities;
 
 namespace Remotion.Diagnostics
@@ -40,8 +42,8 @@ namespace Remotion.Diagnostics
   /// </summary>
   public class ToTextProvider
   {
-    private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap = new Dictionary<Type, IToTextHandlerExternal> ();
-    private readonly Dictionary<Type, IToTextInterfaceHandlerExternal> _interfaceTypeHandlerMap = new Dictionary<Type, IToTextInterfaceHandlerExternal> ();
+    private readonly Dictionary<Type, IToTextSpecificTypeHandler> _typeHandlerMap = new Dictionary<Type, IToTextSpecificTypeHandler> ();
+    private readonly Dictionary<Type, IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap = new Dictionary<Type, IToTextSpecificInterfaceHandler> ();
     
     private int _interfaceHandlerPriorityMin = 0;
     private int _interfaceHandlerPriorityMax = 0;
@@ -115,19 +117,19 @@ namespace Remotion.Diagnostics
 
     public void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
     {
-      _typeHandlerMap.Add (typeof (T), new ToTextHandlerExternal<T> (handler));
+      _typeHandlerMap.Add (typeof (T), new ToTextSpecificTypeHandler<T> (handler));
     }
 
     public void RegisterInterfaceHandlerAppendLast<T> (Action<T, ToTextBuilder> handler)
     {
       --_interfaceHandlerPriorityMin;
-      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextInterfaceHandlerExternal<T> (handler, _interfaceHandlerPriorityMin));
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMin));
     }
 
     public void RegisterInterfaceHandlerAppendFirst<T> (Action<T, ToTextBuilder> handler)
     {
       ++_interfaceHandlerPriorityMax;
-      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextInterfaceHandlerExternal<T> (handler, _interfaceHandlerPriorityMax));
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMax));
     }
 
     public void ClearHandlers ()
@@ -205,22 +207,6 @@ namespace Remotion.Diagnostics
     bool Disabled { get; set; }
   }
 
-  public abstract class ToTextProviderHandler : IToTextProviderHandler
-  {
-    protected ToTextProviderHandler ()
-    {
-      Disabled = false;
-    }
-
-    protected void Log (string s)
-    {
-      Console.WriteLine ("[ToTextProviderHandler]: " + s);
-    }
-
-    public abstract void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback);
-    public bool Disabled { get; set; }
-  }
-
   public class ToTextProviderHandlerFeedback
   {
     public ToTextProviderHandlerFeedback ()  
@@ -254,38 +240,38 @@ namespace Remotion.Diagnostics
  
   public class ToTextProviderRegisteredHandler : ToTextProviderHandler
   {
-    private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap;
+    private readonly Dictionary<Type, IToTextSpecificTypeHandler> _typeHandlerMap;
     private readonly bool _searchForParentHandlers = false;
 
-    public ToTextProviderRegisteredHandler (Dictionary<Type, IToTextHandlerExternal> typeHandlerMap, bool searchForParentHandlers)
+    public ToTextProviderRegisteredHandler (Dictionary<Type, IToTextSpecificTypeHandler> typeHandlerMap, bool searchForParentHandlers)
     {
       _typeHandlerMap = typeHandlerMap;
       _searchForParentHandlers = searchForParentHandlers;
     }
 
-    private IToTextHandlerExternal GetHandler (Type type)
+    private IToTextSpecificTypeHandler GetHandler (Type type)
     {
       return GetHandlerWithBaseClassFallback (type, 0, false, 0);
     }
 
-    private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, ToTextProviderSettings settings)
+    private IToTextSpecificTypeHandler GetHandlerWithBaseClassFallback (Type type, ToTextProviderSettings settings)
     {
       return GetHandlerWithBaseClassFallback (type, settings.ParentHandlerSearchDepth, settings.ParentHandlerSearchUpToRoot, 0);
     }
 
-    private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, int recursionDepthMax, bool searchToRoot, int recursionDepth)
+    private IToTextSpecificTypeHandler GetHandlerWithBaseClassFallback (Type type, int recursionDepthMax, bool searchToRoot, int recursionDepth)
     {
       if ((type == null) || (!searchToRoot && recursionDepth > recursionDepthMax))
       {
         return null;
       }
 
-      IToTextHandlerExternal handler;
-      _typeHandlerMap.TryGetValue (type, out handler);
+      IToTextSpecificTypeHandler specificTypeHandler;
+      _typeHandlerMap.TryGetValue (type, out specificTypeHandler);
 
-      if (handler != null)
+      if (specificTypeHandler != null)
       {
-        return handler;
+        return specificTypeHandler;
       }
 
       return GetHandlerWithBaseClassFallback (type.BaseType, recursionDepthMax, searchToRoot, recursionDepth + 1);
@@ -304,20 +290,20 @@ namespace Remotion.Diagnostics
       var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
 
 
-      IToTextHandlerExternal handler = null;
+      IToTextSpecificTypeHandler specificTypeHandler = null;
       if (!_searchForParentHandlers || !toTextBuilder.ToTextProvider.Settings.UseParentHandlers)
       {
-        handler = GetHandler (toTextParameters.Type);
+        specificTypeHandler = GetHandler (toTextParameters.Type);
       }
       else
       {
-        handler = GetHandlerWithBaseClassFallback (toTextParameters.Type, settings);
+        specificTypeHandler = GetHandlerWithBaseClassFallback (toTextParameters.Type, settings);
       }
 
 
-      if (handler != null)
+      if (specificTypeHandler != null)
       {
-        handler.ToText (toTextParameters.Object, toTextParameters.ToTextBuilder);
+        specificTypeHandler.ToText (toTextParameters.Object, toTextParameters.ToTextBuilder);
         toTextProviderHandlerFeedback.Handled = true;
       }
     }
@@ -506,11 +492,11 @@ namespace Remotion.Diagnostics
 
   public class ToTextProviderRegisteredInterfaceHandlerHandler : ToTextProviderHandler
   {
-    private readonly Dictionary<Type, IToTextInterfaceHandlerExternal> _interfaceTypeHandlerMap;
+    private readonly Dictionary<Type, IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap;
     private int _interfaceHandlerPriorityMin = 0;
     private int _interfaceHandlerPriorityMax = 0;
 
-    public ToTextProviderRegisteredInterfaceHandlerHandler (Dictionary<Type, IToTextInterfaceHandlerExternal> interfaceTypeHandlerMap)
+    public ToTextProviderRegisteredInterfaceHandlerHandler (Dictionary<Type, IToTextSpecificInterfaceHandler> interfaceTypeHandlerMap)
     {
       _interfaceTypeHandlerMap = interfaceTypeHandlerMap;
     }
@@ -518,13 +504,13 @@ namespace Remotion.Diagnostics
     public void RegisterInterfaceHandlerAppendLast<T> (Action<T, ToTextBuilder> handler)
     {
       --_interfaceHandlerPriorityMin;
-      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextInterfaceHandlerExternal<T> (handler, _interfaceHandlerPriorityMin));
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMin));
     }
 
     public void RegisterInterfaceHandlerAppendFirst<T> (Action<T, ToTextBuilder> handler)
     {
       ++_interfaceHandlerPriorityMax;
-      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextInterfaceHandlerExternal<T> (handler, _interfaceHandlerPriorityMax));
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMax));
     }
     
     public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
@@ -545,10 +531,10 @@ namespace Remotion.Diagnostics
         return;
       }
 
-      IToTextInterfaceHandlerExternal interfaceHandlerWithMaximumPriority = null;
+      IToTextSpecificInterfaceHandler interfaceHandlerWithMaximumPriority = null;
       foreach (var interfaceType in type.GetInterfaces ())
       {
-        IToTextInterfaceHandlerExternal interfaceHandler;
+        IToTextSpecificInterfaceHandler interfaceHandler;
         _interfaceTypeHandlerMap.TryGetValue (interfaceType, out interfaceHandler);
         if (interfaceHandler != null &&
           (interfaceHandlerWithMaximumPriority == null || (interfaceHandler.Priority > interfaceHandlerWithMaximumPriority.Priority)))

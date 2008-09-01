@@ -13,6 +13,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics;
+using Remotion.Diagnostics.ToText;
 
 namespace Remotion.UnitTests.Diagnostics
 {

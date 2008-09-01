@@ -9,21 +9,28 @@
  */
 
 using System;
+using Remotion.Diagnostics.ToText;
 
-namespace Remotion.Diagnostics
+namespace Remotion.Diagnostics.ToText
 {
-  internal class ToTextHandlerExternal<T> : IToTextHandlerExternal
+  internal class ToTextSpecificInterfaceHandler<T> : IToTextSpecificInterfaceHandler
   {
-    private readonly Action<T, ToTextBuilder> _handler;
+    private readonly Action<T, ToTextBuilder> _interfaceHandler;
 
-    public ToTextHandlerExternal (Action<T, ToTextBuilder> handler)
+    public ToTextSpecificInterfaceHandler (Action<T, ToTextBuilder> interfaceHandler, int priority)
     {
-      _handler = handler;
+      _interfaceHandler = interfaceHandler;
+      Priority = priority;
+    }
+
+    public int Priority
+    {
+      get; private set;
     }
 
     public void ToText (object obj, ToTextBuilder toTextBuilder)
     {
-      _handler ((T) obj, toTextBuilder);
+      _interfaceHandler ((T) obj, toTextBuilder);
     }
   }
 }

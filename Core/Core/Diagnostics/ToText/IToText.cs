@@ -1,4 +1,4 @@
-namespace Remotion.Diagnostics
+namespace Remotion.Diagnostics.ToText
 {
   public interface IToText
   {

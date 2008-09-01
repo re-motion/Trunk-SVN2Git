@@ -1,4 +1,5 @@
 using System;
+using Remotion.Diagnostics.ToText;
 
 namespace Remotion.Diagnostics
 {

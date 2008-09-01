@@ -10,9 +10,9 @@
 
 using System;
 
-namespace Remotion.Diagnostics
+namespace Remotion.Diagnostics.ToText
 {
-  public interface IToTextHandlerExternal
+  public interface IToTextSpecificTypeHandler
   {
     void ToText (Object obj, ToTextBuilder toTextBuilder);
   }

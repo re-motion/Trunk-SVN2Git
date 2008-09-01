@@ -104,14 +104,15 @@
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Diagnostics\IOuterProductProcessor.cs" />
-    <Compile Include="Diagnostics\IToTextHandlerExternal.cs" />
-    <Compile Include="Diagnostics\IToTextInterfaceHandlerExternal.cs" />
+    <Compile Include="Diagnostics\ToText\IToTextSpecificTypeHandler.cs" />
+    <Compile Include="Diagnostics\ToText\IToTextSpecificInterfaceHandler.cs" />
     <Compile Include="Diagnostics\OuterProductProcessingState.cs" />
     <Compile Include="Diagnostics\OuterProductProcessorBase.cs" />
-    <Compile Include="Diagnostics\SequenceStateHolder.cs" />
-    <Compile Include="Diagnostics\StringBuilderToText.cs" />
-    <Compile Include="Diagnostics\ToTextHandlerExternal.cs" />
-    <Compile Include="Diagnostics\ToTextInterfaceHandlerExternal.cs" />
+    <Compile Include="Diagnostics\ToText\SequenceStateHolder.cs" />
+    <Compile Include="Diagnostics\ToText\StringBuilderToText.cs" />
+    <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderHandler.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextSpecificTypeHandler.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextSpecificInterfaceHandler.cs" />
     <Compile Include="Mixins\Definitions\IAttributeIntroductionSource.cs" />
     <Compile Include="Mixins\Definitions\NonAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\SuppressedAttributeIntroductionDefinition.cs" />
@@ -449,11 +450,11 @@
     <Compile Include="Text\CommandLine\Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Diagnostics\IToText.cs" />
+    <Compile Include="Diagnostics\ToText\IToText.cs" />
     <Compile Include="Diagnostics\OuterProductIndexGenerator.cs" />
     <Compile Include="Diagnostics\To.cs" />
-    <Compile Include="Diagnostics\ToTextProvider.cs" />
-    <Compile Include="Diagnostics\ToTextBuilder.cs" />
+    <Compile Include="Diagnostics\ToText\Handlers\ToTextProvider.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextBuilder.cs" />
     <Compile Include="Text\IdentifierGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
