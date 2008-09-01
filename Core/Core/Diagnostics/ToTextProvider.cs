@@ -87,7 +87,6 @@ namespace Remotion.Diagnostics
       RegisterToTextProviderHandler (new ToTextProviderTypeHandler ());
 
       RegisterToTextProviderHandler (new ToTextProviderCharHandler ());
-      //RegisterToTextProviderHandler (new ToTextProviderPrimitiveHandler ());
       RegisterToTextProviderHandler (new ToTextProviderFormattableHandler ());
       
       RegisterToTextProviderHandler (new ToTextProviderArrayHandler ());
@@ -235,7 +234,6 @@ namespace Remotion.Diagnostics
   {
     public object Object { get; set; }
     public Type Type { get; set; }
-    //public ToTextProvider ToTextProvider { get; set; }
     public ToTextBuilder ToTextBuilder { get; set; }
   }
 
@@ -253,12 +251,11 @@ namespace Remotion.Diagnostics
     }
   }
 
-  // TODO: We actually want to call this handler twice: first without and later with base class fallback. For this we would need for them to share the
-  // registered type handlers.
+ 
   public class ToTextProviderRegisteredHandler : ToTextProviderHandler
   {
     private readonly Dictionary<Type, IToTextHandlerExternal> _typeHandlerMap;
-    private bool _searchForParentHandlers = false;
+    private readonly bool _searchForParentHandlers = false;
 
     public ToTextProviderRegisteredHandler (Dictionary<Type, IToTextHandlerExternal> typeHandlerMap, bool searchForParentHandlers)
     {
@@ -273,10 +270,6 @@ namespace Remotion.Diagnostics
 
     private IToTextHandlerExternal GetHandlerWithBaseClassFallback (Type type, ToTextProviderSettings settings)
     {
-      //if (!toTextProvider.UseParentHandlers)
-      //{
-      //  return null;
-      //}
       return GetHandlerWithBaseClassFallback (type, settings.ParentHandlerSearchDepth, settings.ParentHandlerSearchUpToRoot, 0);
     }
 
@@ -294,14 +287,6 @@ namespace Remotion.Diagnostics
       {
         return handler;
       }
-
-      //Type baseType = type.BaseType;
-      //if (baseType == null)
-      //{
-      //  return null;
-      //}
-
-      //return GetHandlerWithBaseClassFallback (baseType, recursionDepthMax, searchToRoot, recursionDepth + 1);
 
       return GetHandlerWithBaseClassFallback (type.BaseType, recursionDepthMax, searchToRoot, recursionDepth + 1);
     }
@@ -372,11 +357,6 @@ namespace Remotion.Diagnostics
       }
 
     }
-
-    //private bool UseAutomaticStringEnclosing
-    //{
-    //  get { return true; }
-    //}
   }
 
 
@@ -458,7 +438,6 @@ namespace Remotion.Diagnostics
 
   public class ToTextProviderFormattableHandler : ToTextProviderHandler
   {
-    //private static readonly NumberFormatInfo s_numberFormatInfoInvariant = CultureInfo.InvariantCulture.NumberFormat;
     private static readonly CultureInfo s_cultureInfoInvariant = CultureInfo.InvariantCulture;
 
     public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
@@ -517,7 +496,6 @@ namespace Remotion.Diagnostics
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
 
-      //if (type.GetInterface ("IEnumerable") != null)
       if (obj is IEnumerable)
       {
         toTextBuilder.AppendEnumerable ((IEnumerable) obj);
