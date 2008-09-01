@@ -12,8 +12,8 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
-using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
+using Remotion.Diagnostics.ToText.Handlers;
 
 namespace Remotion.UnitTests.Diagnostics
 {
@@ -58,7 +58,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void RegisteredHandlerOverIToTextHandler ()
     {
       var toTextProvider = GetTextProvider();
-      toTextProvider.RegisterHandler<TestSimple> ((x, ttb) => ttb.s ("TestSimple...").tt (x.Int).comma.tt (x.Name).s ("and out!"));
+      toTextProvider.RegisterSpecificTypeHandler<TestSimple> ((x, ttb) => ttb.s ("TestSimple...").tt (x.Int).comma.tt (x.Name).s ("and out!"));
       var testSimple = new TestSimple();
       string result = toTextProvider.ToTextString (testSimple);
       log.It (result);

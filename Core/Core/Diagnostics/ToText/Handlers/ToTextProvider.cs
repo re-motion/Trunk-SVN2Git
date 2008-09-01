@@ -12,14 +12,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using Remotion.Collections;
-using Remotion.Diagnostics.ToText;
-using Remotion.Diagnostics.ToText.Handlers;
 using Remotion.Utilities;
 
-namespace Remotion.Diagnostics
+namespace Remotion.Diagnostics.ToText.Handlers
 {
   /// <summary>
   /// Provides conversion of arbitray objects into human readable text form 
@@ -29,7 +24,7 @@ namespace Remotion.Diagnostics
   /// 
   /// The conversion is done in <see cref="ToText"/> method through the following mechanisms, in order of precedence:
   /// <list type="number">
-  /// <item>Handler for object type registered (see <see cref="RegisterHandler{T}"/>)</item>
+  /// <item>Handler for object type registered (see <see cref="RegisterSpecificTypeHandler{T}"/>)</item>
   /// <item>Implements <see cref="ToTextProviderSettings.UseAutomaticStringEnclosing"/> (i.e. object supplies <c>ToText</c> method)</item>
   /// <item>Is a string or character (see <see cref="ToTextProviderSettings.UseAutomaticCharEnclosing"/> and <see cref="ToTextProviderSettings.UseAutomaticStringEnclosing"/> respectively)</item>
   /// <item>Is a primitive: Floating point numbers are alway output formatted US style.</item>
@@ -115,24 +110,24 @@ namespace Remotion.Diagnostics
     }
 
 
-    public void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
+    public void RegisterSpecificTypeHandler<T> (Action<T, ToTextBuilder> handler)
     {
       _typeHandlerMap.Add (typeof (T), new ToTextSpecificTypeHandler<T> (handler));
     }
 
-    public void RegisterInterfaceHandlerAppendLast<T> (Action<T, ToTextBuilder> handler)
+    public void RegisterSpecificInterfaceHandlerWithLowestPriority<T> (Action<T, ToTextBuilder> handler)
     {
       --_interfaceHandlerPriorityMin;
       _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMin));
     }
 
-    public void RegisterInterfaceHandlerAppendFirst<T> (Action<T, ToTextBuilder> handler)
+    public void RegisterSpecificInterfaceHandlerWithHighestPriority<T> (Action<T, ToTextBuilder> handler)
     {
       ++_interfaceHandlerPriorityMax;
       _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMax));
     }
 
-    public void ClearHandlers ()
+    public void ClearSpecificTypeHandlers ()
     {
       _typeHandlerMap.Clear ();
     }
@@ -200,44 +195,12 @@ namespace Remotion.Diagnostics
     }
   }
 
-
   public interface IToTextProviderHandler
   {
     void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback);
     bool Disabled { get; set; }
   }
 
-  public class ToTextProviderHandlerFeedback
-  {
-    public ToTextProviderHandlerFeedback ()  
-    {
-      Handled = false;
-    }
-    public bool Handled { get; set; }
-  }
-
-  public class ToTextParameters
-  {
-    public object Object { get; set; }
-    public Type Type { get; set; }
-    public ToTextBuilder ToTextBuilder { get; set; }
-  }
-
-
-  public class ToTextProviderNullHandler : ToTextProviderHandler
-  {
-    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
-    {
-      if (toTextParameters.Object == null)
-      {
-        Log ("null");
-        toTextParameters.ToTextBuilder.AppendString ("null");
-        toTextProviderHandlerFeedback.Handled = true;
-      }
-    }
-  }
-
- 
   public class ToTextProviderRegisteredHandler : ToTextProviderHandler
   {
     private readonly Dictionary<Type, IToTextSpecificTypeHandler> _typeHandlerMap;
@@ -309,10 +272,6 @@ namespace Remotion.Diagnostics
     }
   }
 
-
-
-
-
   public class ToTextProviderStringHandler : ToTextProviderHandler
   {
     public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
@@ -344,7 +303,6 @@ namespace Remotion.Diagnostics
 
     }
   }
-
 
   public class ToTextProviderIToTextHandlerHandler : ToTextProviderHandler
   {
@@ -387,8 +345,6 @@ namespace Remotion.Diagnostics
     }
   }
 
-
-
   public class ToTextProviderCharHandler : ToTextProviderHandler
   {
     public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
@@ -421,7 +377,6 @@ namespace Remotion.Diagnostics
     }
   }
 
-
   public class ToTextProviderFormattableHandler : ToTextProviderHandler
   {
     private static readonly CultureInfo s_cultureInfoInvariant = CultureInfo.InvariantCulture;
@@ -446,9 +401,6 @@ namespace Remotion.Diagnostics
       }
     }
   }
-
-
-
 
   public class ToTextProviderArrayHandler : ToTextProviderHandler
   {
@@ -489,236 +441,4 @@ namespace Remotion.Diagnostics
       }
     }
   }
-
-  public class ToTextProviderRegisteredInterfaceHandlerHandler : ToTextProviderHandler
-  {
-    private readonly Dictionary<Type, IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap;
-    private int _interfaceHandlerPriorityMin = 0;
-    private int _interfaceHandlerPriorityMax = 0;
-
-    public ToTextProviderRegisteredInterfaceHandlerHandler (Dictionary<Type, IToTextSpecificInterfaceHandler> interfaceTypeHandlerMap)
-    {
-      _interfaceTypeHandlerMap = interfaceTypeHandlerMap;
-    }
-
-    public void RegisterInterfaceHandlerAppendLast<T> (Action<T, ToTextBuilder> handler)
-    {
-      --_interfaceHandlerPriorityMin;
-      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMin));
-    }
-
-    public void RegisterInterfaceHandlerAppendFirst<T> (Action<T, ToTextBuilder> handler)
-    {
-      ++_interfaceHandlerPriorityMax;
-      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMax));
-    }
-    
-    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
-    {
-      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
-      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
-      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
-
-      toTextProviderHandlerFeedback.Handled = false;
-
-      Object obj = toTextParameters.Object;
-      Type type = toTextParameters.Type;
-      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
-      var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
-
-      if (!settings.UseInterfaceHandlers)
-      {
-        return;
-      }
-
-      IToTextSpecificInterfaceHandler interfaceHandlerWithMaximumPriority = null;
-      foreach (var interfaceType in type.GetInterfaces ())
-      {
-        IToTextSpecificInterfaceHandler interfaceHandler;
-        _interfaceTypeHandlerMap.TryGetValue (interfaceType, out interfaceHandler);
-        if (interfaceHandler != null &&
-          (interfaceHandlerWithMaximumPriority == null || (interfaceHandler.Priority > interfaceHandlerWithMaximumPriority.Priority)))
-        {
-          interfaceHandlerWithMaximumPriority = interfaceHandler;
-        }
-      }
-
-      if (interfaceHandlerWithMaximumPriority != null)
-      {
-        interfaceHandlerWithMaximumPriority.ToText (obj, toTextBuilder);
-        toTextProviderHandlerFeedback.Handled = true;
-      }
-    }
-  }
-
-
-
-  public class ToTextProviderAutomaticObjectToTextHandler : ToTextProviderHandler
-  {
-    // Define a cache instance (dictionary syntax)
-    private static readonly InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]> s_memberInfoCache = new InterlockedCache<Tuple<Type, BindingFlags>, MemberInfo[]> ();
-
-    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
-    {
-      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
-      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
-      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
-
-      Object obj = toTextParameters.Object;
-      Type type = toTextParameters.Type;
-      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
-      var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
-
-      if (settings.UseAutomaticObjectToText)
-      {
-        ObjectToText (obj, toTextBuilder, settings.EmitPublicProperties, settings.EmitPublicFields, settings.EmitPrivateProperties, settings.EmitPrivateFields);
-        toTextProviderHandlerFeedback.Handled = true;
-      }
-    }
-
-
-    private void ObjectToText (object obj, ToTextBuilder toTextBuilder,
-                                       bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
-    {
-      Type type = obj.GetType ();
-
-      toTextBuilder.beginInstance (type);
-
-      if (emitPublicProperties)
-      {
-        ObjectToTextProcessMemberInfos (
-            "Public Properties", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Property, toTextBuilder);
-      }
-      if (emitPublicFields)
-      {
-        ObjectToTextProcessMemberInfos ("Public Fields", obj, BindingFlags.Instance | BindingFlags.Public, MemberTypes.Field, toTextBuilder);
-      }
-      if (emitPrivateProperties)
-      {
-        ObjectToTextProcessMemberInfos ("Non Public Properties", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Property, toTextBuilder);
-      }
-      if (emitPrivateFields)
-      {
-        ObjectToTextProcessMemberInfos ("Non Public Fields", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Field, toTextBuilder);
-      }
-      toTextBuilder.endInstance ();
-    }
-
-    private void ObjectToTextProcessMemberInfos (string message, Object obj, BindingFlags bindingFlags,
-                                                                 MemberTypes memberTypeFlags, ToTextBuilder toTextBuilder)
-    {
-      Type type = obj.GetType ();
-
-      // Cache the member info result
-      MemberInfo[] memberInfos = s_memberInfoCache.GetOrCreateValue (new Tuple<Type, BindingFlags> (type, bindingFlags), tuple => tuple.A.GetMembers (tuple.B));
-
-      foreach (var memberInfo in memberInfos)
-      {
-        if ((memberInfo.MemberType & memberTypeFlags) != 0)
-        {
-          string name = memberInfo.Name;
-
-          // Skip compiler generated backing fields
-          bool isCompilerGenerated = memberInfo.IsDefined (typeof (CompilerGeneratedAttribute), false);
-          if (!isCompilerGenerated)
-          {
-            object value = GetValue (obj, type, memberInfo);
-            // AppendMember ToText value
-            toTextBuilder.AppendMember (name, value);
-          }
-        }
-      }
-    }
-
-    private object GetValue (object obj, Type type, MemberInfo memberInfo)
-    {
-      object value = null;
-      if (memberInfo is PropertyInfo)
-      {
-        value = ((PropertyInfo) memberInfo).GetValue (obj, null);
-      }
-      else if (memberInfo is FieldInfo)
-      {
-        value = ((FieldInfo) memberInfo).GetValue (obj);
-      }
-      else
-      {
-        throw new System.NotImplementedException ();
-      }
-      return value;
-    }
-
-    private bool AutomaticObjectToText
-    {
-      get { return true; }
-    }
-  }
-
-
-
-
-  public class ToTextProviderToStringHandler : ToTextProviderHandler
-  {
-    public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
-    {
-      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
-      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
-      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
-
-      Object obj = toTextParameters.Object;
-      Type type = toTextParameters.Type;
-      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
-
-      toTextBuilder.AppendString (obj.ToString ());
-
-      toTextProviderHandlerFeedback.Handled = true;
-    }
-  }
-
-
-  public class ToTextProviderSettings
-  {
-    public ToTextProviderSettings ()
-    {
-      UseAutomaticObjectToText = true;
-      EmitPublicProperties = true;
-      EmitPublicFields = true;
-      EmitPrivateProperties = true;
-      EmitPrivateFields = true;
-
-      UseAutomaticStringEnclosing = true;
-      UseAutomaticCharEnclosing = true;
-
-      UseInterfaceHandlers = true;
-
-      ParentHandlerSearchDepth = 0;
-      ParentHandlerSearchUpToRoot = true;
-      UseParentHandlers = false;
-    }
-
-    public bool UseAutomaticObjectToText { get; set; }
-    public bool EmitPublicProperties { get; set; }
-    public bool EmitPublicFields { get; set; }
-    public bool EmitPrivateProperties { get; set; }
-    public bool EmitPrivateFields { get; set; }
-
-    public bool UseAutomaticStringEnclosing { get; set; }
-    public bool UseAutomaticCharEnclosing { get; set; }
-
-    public int ParentHandlerSearchDepth { get; set; }
-    public bool ParentHandlerSearchUpToRoot { get; set; }
-    public bool UseParentHandlers { get; set; }
-
-    public bool UseInterfaceHandlers { get; set; }
-
-    public void SetAutomaticObjectToTextEmit (bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
-    {
-      EmitPublicProperties = emitPublicProperties;
-      EmitPublicFields = emitPublicFields;
-      EmitPrivateProperties = emitPrivateProperties;
-      EmitPrivateFields = emitPrivateFields;
-    }    
-  }
-
-
 }

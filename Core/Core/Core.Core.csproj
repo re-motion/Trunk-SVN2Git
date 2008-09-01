@@ -104,6 +104,13 @@
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Diagnostics\IOuterProductProcessor.cs" />
+    <Compile Include="Diagnostics\ToText\Handlers\ToTextParameters.cs" />
+    <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderAutomaticObjectToTextHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderHandlerFeedback.cs" />
+    <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderNullHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderRegisteredInterfaceHandlerHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderSettings.cs" />
+    <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderToStringHandler.cs" />
     <Compile Include="Diagnostics\ToText\IToTextSpecificTypeHandler.cs" />
     <Compile Include="Diagnostics\ToText\IToTextSpecificInterfaceHandler.cs" />
     <Compile Include="Diagnostics\OuterProductProcessingState.cs" />

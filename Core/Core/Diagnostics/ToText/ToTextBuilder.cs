@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Remotion.Diagnostics.ToText.Handlers;
 using Remotion.Utilities;
 
 namespace Remotion.Diagnostics.ToText

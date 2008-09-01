@@ -5,6 +5,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
 {
   /// <summary>
   /// Base class for all handlers which can be used by <see cref="ToTextProvider"/> in its ToText-fallback-cascade.
+  /// Handlers are registered in order of precedence with <see cref="ToTextProvider"/> by calling its (<see cref="ToTextProvider.RegisterToTextProviderHandler{T}"/>-method.
   /// </summary>
   public abstract class ToTextProviderHandler : IToTextProviderHandler
   {
@@ -20,7 +21,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
     /// <summary>
     /// Abstract method whose concrete implementations supply conversion into human readable text form (<see cref="ToTextProvider"/>'s <see cref="ToTextProvider.ToText"/> method) 
-    /// of the passed instance for specific classes of types (e.g. types implementing IFormattable).
+    /// of the passed instance for specific classes of types (e.g. types implementing IEnumerable or IFormattable, Strings, etc).
     /// </summary>
     /// <param name="toTextParameters">The instance to convert, type of the instance and <see cref="ToTextBuilder"/> to add the human readable text to.</param>
     /// <param name="toTextProviderHandlerFeedback">If the type was handled by the method, it must set 

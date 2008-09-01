@@ -1,5 +1,6 @@
 using System;
 using Remotion.Diagnostics.ToText;
+using Remotion.Diagnostics.ToText.Handlers;
 
 namespace Remotion.Diagnostics
 {
@@ -15,12 +16,12 @@ namespace Remotion.Diagnostics
 
     public static void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
     {
-      toTextProvider.RegisterHandler<T> (handler);
+      toTextProvider.RegisterSpecificTypeHandler<T> (handler);
     }
 
     public static void ClearHandlers ()
     {
-      toTextProvider.ClearHandlers();
+      toTextProvider.ClearSpecificTypeHandlers();
     }
 
 

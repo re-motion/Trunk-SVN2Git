@@ -14,8 +14,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Logging;
-using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
+using Remotion.Diagnostics.ToText.Handlers;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.UnitTests.Diagnostics
@@ -204,8 +204,8 @@ namespace Remotion.UnitTests.Diagnostics
     private void RegisterHandlers ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterHandler<Object> ((x, ttb) => ttb.sf ("[Object: {0}]", x.ToString()));
-      toText.RegisterHandler<Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
+      toText.RegisterSpecificTypeHandler<Object> ((x, ttb) => ttb.sf ("[Object: {0}]", x.ToString()));
+      toText.RegisterSpecificTypeHandler<Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
     }
 
     private void InitTestInstanceContainer (ToTextProviderTest.Test test)
@@ -220,13 +220,13 @@ namespace Remotion.UnitTests.Diagnostics
     public void RegisteredHandlerTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterHandler<Object> ((x, ttb) => ttb.sf ("[Object: {0}]", x.ToString()));
+      toText.RegisterSpecificTypeHandler<Object> ((x, ttb) => ttb.sf ("[Object: {0}]", x.ToString()));
       Object o = new object();
       string toTextO = ToText (toText, o);
       Log ("toTextO=" + toTextO);
       Assert.That (toTextO, Is.EqualTo (String.Format ("[Object: {0}]", o.ToString())));
 
-      toText.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
+      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
       string toTextTest = ToText (toText, test);
       Log ("toTextTest=" + toTextTest);
@@ -254,7 +254,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void StringHandlerTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterHandler<String> ((x, ttb) => ttb.s ("\"").ts (x).s ("\""));
+      toText.RegisterSpecificTypeHandler<String> ((x, ttb) => ttb.s ("\"").ts (x).s ("\""));
       string toTextTest = ToText (toText, "Some text");
       Log ("[StringHandlerTest] toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("\"Some text\""));
@@ -264,7 +264,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void CharHandlerTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterHandler<char> ((x, ttb) => ttb.s ("'").ts (x).s ("'"));
+      toText.RegisterSpecificTypeHandler<char> ((x, ttb) => ttb.s ("'").ts (x).s ("'"));
       string toTextTest = ToText (toText, 'x');
       Log ("[CharHandlerTest] toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("'x'"));
@@ -336,12 +336,12 @@ namespace Remotion.UnitTests.Diagnostics
     {
       ToTextProvider toText = CreateTextProvider();
       toText.Settings.UseAutomaticObjectToText = false;
-      toText.RegisterHandler<Object> ((x, ttb) => ttb.s ("[ClearHandlersTest]").ts (x));
+      toText.RegisterSpecificTypeHandler<Object> ((x, ttb) => ttb.s ("[ClearHandlersTest]").ts (x));
       var o = new object();
       string toTextTest = ToText (toText, o);
       Log ("[ClearHandlersTest] toTextTest=" + toTextTest);
       Assert.That (ToText (toText, o), Is.EqualTo ("[ClearHandlersTest]" + o));
-      toText.ClearHandlers();
+      toText.ClearSpecificTypeHandlers();
       Assert.That (ToText (toText, o), Is.EqualTo (o.ToString()));
     }
 
@@ -360,8 +360,8 @@ namespace Remotion.UnitTests.Diagnostics
     public void NullEnumerableTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      //toText.RegisterHandler<Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name),ToText(toText,x.Int), ToText(toText,x.LinkedListString)));
-      toText.RegisterHandler<Test> ((x, ttb) => ttb.s ("[Test: ").m (x.Name).semicolon.m (x.Int).semicolon.m (x.LinkedListString).s ("]"));
+      //toText.RegisterSpecificTypeHandler<Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name),ToText(toText,x.Int), ToText(toText,x.LinkedListString)));
+      toText.RegisterSpecificTypeHandler<Test> ((x, ttb) => ttb.s ("[Test: ").m (x.Name).semicolon.m (x.Int).semicolon.m (x.LinkedListString).s ("]"));
       var test = new Test ("That's not my name", 179);
       test.LinkedListString = null;
       string toTextTest = ToText (toText, test);
@@ -373,7 +373,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void EmptyEnumerableTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterHandler<ToTextProviderTest.Test> (
+      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.ListListString)));
       var test = new Test ("That's not my name", 179);
       test.LinkedListString = new LinkedList<string>();
@@ -386,7 +386,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void OneDimensionalEnumerableTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterHandler<ToTextProviderTest.Test> (
+      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.LinkedListString)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
       string[] linkedListInit = { "A1", "A2", "A3", "A4", "A5" };
@@ -402,7 +402,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void TwoDimensionalEnumerableTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterHandler<ToTextProviderTest.Test> (
+      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.ListListString)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
       test.ListListString = new List<List<string>>() { new List<string>() { "A1", "A2" }, new List<string>() { "B1", "B2", "B3" } };
@@ -416,7 +416,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void ThreeDimensionalEnumerableTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterHandler<ToTextProviderTest.Test> (
+      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.Array3D)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
       //Object[,] aaa = { { 1 } };
@@ -431,7 +431,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void RectangularArrayTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterHandler<ToTextProviderTest.Test> (
+      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray2D)));
       var test = new ToTextProviderTest.Test ("That's not my name", 179);
       test.RectangularArray2D = new Object[,] { { 1, 3, 5 }, { 7, 11, 13 } };
@@ -444,9 +444,9 @@ namespace Remotion.UnitTests.Diagnostics
     public void RectangularArrayTest2 ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterHandler<Test> (
+      toText.RegisterSpecificTypeHandler<Test> (
           (x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray3D)));
-      toText.RegisterHandler<Test2> (
+      toText.RegisterSpecificTypeHandler<Test2> (
           (x, ttb) => ttb.sf ("[Test2: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray2D)));
       var test = new Test ("That's not my name", 179);
       var at2 = new Test2[3,3,3];
@@ -594,23 +594,23 @@ namespace Remotion.UnitTests.Diagnostics
 
       toText.Settings.ParentHandlerSearchUpToRoot = false;
       toText.Settings.ParentHandlerSearchDepth = 2;
-      toText.RegisterHandler<Test> ((o, ttb) => ttb.s ("Test"));
+      toText.RegisterSpecificTypeHandler<Test> ((o, ttb) => ttb.s ("Test"));
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("Test"));
       toText.Settings.ParentHandlerSearchDepth = 1;
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString()));
 
       toText.Settings.ParentHandlerSearchDepth = 1;
-      toText.RegisterHandler<TestChild> ((o, ttb) => ttb.s ("TestChild"));
+      toText.RegisterSpecificTypeHandler<TestChild> ((o, ttb) => ttb.s ("TestChild"));
       toText.Settings.ParentHandlerSearchDepth = 0;
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo (testChildChild.ToString()));
 
       toText.Settings.ParentHandlerSearchDepth = 10;
-      toText.RegisterHandler<TestChildChild> ((o, ttb) => ttb.s ("TestChildChild"));
+      toText.RegisterSpecificTypeHandler<TestChildChild> ((o, ttb) => ttb.s ("TestChildChild"));
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("TestChildChild"));
 
 
-      toText.ClearHandlers();
-      toText.RegisterHandler<Test> ((o, ttb) => ttb.s ("Test"));
+      toText.ClearSpecificTypeHandlers();
+      toText.RegisterSpecificTypeHandler<Test> ((o, ttb) => ttb.s ("Test"));
       toText.Settings.ParentHandlerSearchDepth = 0;
       toText.Settings.ParentHandlerSearchUpToRoot = true;
       Assert.That (toText.ToTextString (testChildChild), Is.EqualTo ("Test"));
@@ -624,7 +624,7 @@ namespace Remotion.UnitTests.Diagnostics
       ToTextProvider toText = CreateTextProvider ();
       var testChild = new TestChild ();
 
-      toText.RegisterHandler<Test> ((o, ttb) => ttb.s ("Test"));
+      toText.RegisterSpecificTypeHandler<Test> ((o, ttb) => ttb.s ("Test"));
       toText.Settings.UseParentHandlers = true;
       toText.Settings.ParentHandlerSearchUpToRoot = true;
       toText.Settings.ParentHandlerSearchDepth = 1000;
@@ -640,7 +640,7 @@ namespace Remotion.UnitTests.Diagnostics
       ToTextProvider toText = CreateTextProvider ();
       toText.Settings.UseInterfaceHandlers = true;
 
-      toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
 
       Test testInterface = new Test ("Überbauer",3589);
       var result = toText.ToTextString (testInterface);
@@ -653,7 +653,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       ToTextProvider toText = CreateTextProvider ();
       toText.Settings.UseInterfaceHandlers = false;
-      toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
 
       Test testInterface = new Test ("Überbauer", 3589);
       var result = toText.ToTextString (testInterface);
@@ -667,8 +667,8 @@ namespace Remotion.UnitTests.Diagnostics
       ToTextProvider toText = CreateTextProvider ();
       toText.Settings.UseInterfaceHandlers = true;
 
-      toText.RegisterInterfaceHandlerAppendLast<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
-      toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
 
       Test testInterface = new Test ("Überbauer", 3589);
       var result = toText.ToTextString (testInterface);
@@ -682,10 +682,10 @@ namespace Remotion.UnitTests.Diagnostics
       ToTextProvider toText = CreateTextProvider ();
       toText.Settings.UseInterfaceHandlers = true;
 
-      toText.RegisterInterfaceHandlerAppendLast<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
-      toText.RegisterInterfaceHandlerAppendLast<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
-      toText.RegisterInterfaceHandlerAppendLast<ITest2Name> ((o, ttb) => ttb.m ("Name2", o.Name));
-      toText.RegisterInterfaceHandlerAppendLast<ITestListListString> ((o, ttb) => ttb.m ("ListListString", o.ListListString));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITest2Name> ((o, ttb) => ttb.m ("Name2", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestListListString> ((o, ttb) => ttb.m ("ListListString", o.ListListString));
 
       Test2 test2Interface = new Test2 ("Überbauer", 3589);
       var result = toText.ToTextString (test2Interface);
@@ -700,8 +700,8 @@ namespace Remotion.UnitTests.Diagnostics
       ToTextProvider toText = CreateTextProvider ();
       toText.Settings.UseInterfaceHandlers = true;
 
-      toText.RegisterInterfaceHandlerAppendFirst<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
-      toText.RegisterInterfaceHandlerAppendFirst<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
+      toText.RegisterSpecificInterfaceHandlerWithHighestPriority<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithHighestPriority<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
 
       Test testInterface = new Test ("Überbauer", 3589);
       var result = toText.ToTextString (testInterface);
@@ -731,7 +731,7 @@ namespace Remotion.UnitTests.Diagnostics
     //  ToTextProvider toText = CreateTextProvider ();
 
     //  var handler = new ToTextProviderRegisteredHandlerWithBaseClassFallbackHandler ();
-    //  handler.RegisterHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
+    //  handler.RegisterSpecificTypeHandler<ToTextProviderTest.Test> ((x, ttb) => ttb.sf ("[Test: {0};{1}]", x.Name, x.Int));
 
     //  var test = new ToTextProviderTest.Test ("That's not my name", 179);
 

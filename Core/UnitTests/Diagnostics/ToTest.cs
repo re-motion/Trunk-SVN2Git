@@ -150,12 +150,12 @@ namespace Remotion.UnitTests.Diagnostics
     //[Test]
     //public void ClearHandlersTest ()
     //{
-    //  To.RegisterHandler<Object> (x => "[ClearHandlersTest]" + x);
+    //  To.RegisterSpecificTypeHandler<Object> (x => "[ClearHandlersTest]" + x);
     //  Object o = new object ();
     //  string toTextTest = To.Text (o);
     //  Log ("[ClearHandlersTest] toTextTest=" + toTextTest);
     //  Assert.That (To.Text (o), Is.EqualTo ("[ClearHandlersTest]" + o));
-    //  To.ClearHandlers();
+    //  To.ClearSpecificTypeHandlers();
     //  Assert.That (To.Text (o), Is.EqualTo (o.ToString()));
     //}
 
