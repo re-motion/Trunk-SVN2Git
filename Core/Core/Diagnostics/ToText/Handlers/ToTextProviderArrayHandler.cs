@@ -4,12 +4,9 @@ using Remotion.Utilities;
 namespace Remotion.Diagnostics.ToText.Handlers
 {
   /// <summary>
-  /// Special type of handler which handles all instances in <see cref="ToTextProvider"/>'s <see cref="ToTextProvider.ToText"/> fallback cascade 
-  /// by calling their <see cref="Object.ToString"/> method.
-  /// Since it handles all incoming types, if it is used this should always the last handler in the fallback cascade.
-  /// 
+  /// Handles <see cref="Array"/> instances in <see cref="ToTextProvider"/>'s <see cref="ToTextProvider.ToText"/> fallback cascade.
   /// </summary>
-  public class ToTextProviderToStringHandler : ToTextProviderHandler
+  public class ToTextProviderArrayHandler : ToTextProviderHandler
   {
     public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
     {
@@ -21,9 +18,11 @@ namespace Remotion.Diagnostics.ToText.Handlers
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
 
-      toTextBuilder.AppendString (obj.ToString ());
-
-      toTextProviderHandlerFeedback.Handled = true;
+      if (type.IsArray)
+      {
+        toTextBuilder.AppendArray ((Array) obj);
+        toTextProviderHandlerFeedback.Handled = true;
+      }
     }
   }
 }

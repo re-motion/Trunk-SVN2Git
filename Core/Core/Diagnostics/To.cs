@@ -1,6 +1,5 @@
 using System;
 using Remotion.Diagnostics.ToText;
-using Remotion.Diagnostics.ToText.Handlers;
 
 namespace Remotion.Diagnostics
 {

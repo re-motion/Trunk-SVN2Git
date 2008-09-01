@@ -11,7 +11,7 @@
 using System;
 using System.IO;
 using System.Text;
-using Remotion.Diagnostics.ToText.Handlers;
+using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
 
