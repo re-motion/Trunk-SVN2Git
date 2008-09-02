@@ -20,6 +20,7 @@ namespace Remotion.Web.ExecutionEngine
   /// <remarks>
   /// <note type="inotes">Override the <see cref="Dispatch"/> method to control the execution of the <see cref="WxeFunction"/>.</note>
   /// </remarks>
+  [Serializable]
   public class WxeCallArgumentsBase : IWxeCallArguments
   {
     private readonly WxeCallOptions _options;

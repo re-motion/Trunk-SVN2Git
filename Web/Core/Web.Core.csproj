@@ -115,6 +115,7 @@
     <Compile Include="ExecutionEngine\WxeExecutionControlExceptionBase.cs" />
     <Compile Include="ExecutionEngine\WxePageExecutor.cs" />
     <Compile Include="ExecutionEngine\WxeParameterAttribute.cs" />
+    <Compile Include="ExecutionEngine\WxeReturnOptions.cs" />
     <Compile Include="ExecutionEngine\WxeUserControl2.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

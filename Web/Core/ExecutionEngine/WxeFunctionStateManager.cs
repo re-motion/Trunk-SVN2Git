@@ -17,6 +17,7 @@ using Remotion.Collections;
 using Remotion.Context;
 using Remotion.Logging;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -58,7 +59,7 @@ namespace Remotion.Web.ExecutionEngine
         WxeFunctionStateManager functionStateManager = (WxeFunctionStateManager) SafeContext.Instance.GetData (s_key);
         if (functionStateManager == null)
         {
-          functionStateManager = new WxeFunctionStateManager (HttpContext.Current.Session);
+          functionStateManager = new WxeFunctionStateManager (new HttpSessionStateWrapper(HttpContext.Current.Session));
           SafeContext.Instance.SetData (s_key, functionStateManager);
         }
         return functionStateManager;
@@ -71,9 +72,9 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     private readonly Dictionary<string, WxeFunctionStateMetaData> _functionStates;
-    private readonly HttpSessionState _session;
+    private readonly IHttpSessionState _session;
 
-    public WxeFunctionStateManager (HttpSessionState session)
+    public WxeFunctionStateManager (IHttpSessionState session)
     {
       ArgumentUtility.CheckNotNull ("session", session);
       _session = session;

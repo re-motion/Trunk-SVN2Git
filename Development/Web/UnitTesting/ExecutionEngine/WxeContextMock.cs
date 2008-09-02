@@ -12,6 +12,7 @@ using System;
 using System.Collections.Specialized;
 using System.Web;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.ExecutionEngine.TestFunctions;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
 

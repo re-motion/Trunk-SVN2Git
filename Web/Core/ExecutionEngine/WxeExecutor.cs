@@ -78,8 +78,13 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("options", options);
 
-      _wxePageInfo.CurrentPageStep.ExecuteFunctionExternalByRedirect (
-          _page, function, options.PermaUrlOptions, options.ReturnToCaller, options.CallerUrlParameters);
+      WxeReturnOptions returnOptions;
+      if (options.ReturnToCaller)
+        returnOptions = new WxeReturnOptions (options.CallerUrlParameters ?? _page.GetPermanentUrlParameters ());
+      else
+        returnOptions = WxeReturnOptions.Null;
+
+      _wxePageInfo.CurrentPageStep.ExecuteFunctionExternalByRedirect (_page, function, options.PermaUrlOptions, returnOptions);
     }
 
     public void ExecuteFunctionExternal (WxeFunction function, Control sender, WxeCallOptionsExternal options)
@@ -90,12 +95,7 @@ namespace Remotion.Web.ExecutionEngine
 
       string functionToken = _wxePageInfo.CurrentPageStep.GetFunctionTokenForExternalFunction (function, options.ReturningPostback);
 
-      string href = _wxePageInfo.CurrentPageStep.GetDestinationUrlForExternalFunction (
-          function,
-          functionToken,
-          options.PermaUrlOptions.UsePermaUrl,
-          options.PermaUrlOptions.UseParentPermaUrl,
-          options.PermaUrlOptions.UrlParameters);
+      string href = _wxePageInfo.CurrentPageStep.GetDestinationUrlForExternalFunction (function, functionToken, options.PermaUrlOptions);
 
       string openScript = string.Format ("window.open('{0}', '{1}', '{2}');", href, options.Target, StringUtility.NullToEmpty (options.Features));
       ScriptUtility.RegisterStartupScriptBlock (_page, "WxeExecuteFunction", openScript);

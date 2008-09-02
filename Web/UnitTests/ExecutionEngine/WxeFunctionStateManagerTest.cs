@@ -10,18 +10,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 using System.Web.SessionState;
 using NUnit.Framework;
 using Remotion.Context;
+using Remotion.Development.UnitTesting;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
-using Remotion.Collections;
-using Remotion.Development.UnitTesting;
-using Remotion.Reflection;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {
@@ -29,8 +26,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
   public class WxeFunctionStateManagerTest
   {
     private MockRepository _mockRepository;
-    private IHttpSessionState _mockSessionState;
-    private HttpSessionState _session;
+    private IHttpSessionState _sessionMock;
     private WxeFunctionState _functionState;
 
     [SetUp]
@@ -38,12 +34,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     {
       _mockRepository = new MockRepository();
 
-      _mockSessionState = _mockRepository.StrictMock<IHttpSessionState>();
-      _session = TypesafeActivator.CreateInstance<HttpSessionState> (BindingFlags.Instance | BindingFlags.NonPublic).With (_mockSessionState);
-      Assert.IsNotNull (_session);
+      _sessionMock = _mockRepository.StrictMock<IHttpSessionState>();
 
-      Expect.Call (_mockSessionState[GetSessionKeyForFunctionStates()]).Return (null);
-      _mockSessionState["key"] = null;
+      Expect.Call (_sessionMock[GetSessionKeyForFunctionStates()]).Return (null);
+      _sessionMock["key"] = null;
       LastCall.Constraints (
           Rhino.Mocks.Constraints.Is.Equal (GetSessionKeyForFunctionStates()),
           Rhino.Mocks.Constraints.Is.TypeOf (typeof (Dictionary<string, WxeFunctionStateManager.WxeFunctionStateMetaData>)));
@@ -66,14 +60,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       WxeFunctionStateManager.WxeFunctionStateMetaData functionStateMetaData =
           new WxeFunctionStateManager.WxeFunctionStateMetaData (Guid.NewGuid().ToString(), 1, lastAccess);
       Dictionary<string, WxeFunctionStateManager.WxeFunctionStateMetaData> functionStates =
-          new Dictionary<string, WxeFunctionStateManager.WxeFunctionStateMetaData> ();
+          new Dictionary<string, WxeFunctionStateManager.WxeFunctionStateMetaData>();
       functionStates.Add (functionStateMetaData.FunctionToken, functionStateMetaData);
 
-      IHttpSessionState mockSessionState = _mockRepository.StrictMock<IHttpSessionState>();
-      HttpSessionState session =
-          TypesafeActivator.CreateInstance<HttpSessionState> (BindingFlags.Instance | BindingFlags.NonPublic).With (mockSessionState);
+      IHttpSessionState session = _mockRepository.StrictMock<IHttpSessionState>();
 
-      Expect.Call (mockSessionState[GetSessionKeyForFunctionStates()]).Return (functionStates);
+      Expect.Call (session[GetSessionKeyForFunctionStates()]).Return (functionStates);
       _mockRepository.ReplayAll();
 
       WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (session);
@@ -85,10 +77,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void Add ()
     {
-      _mockSessionState[GetSessionKeyForFunctionState()] = _functionState;
+      _sessionMock.Add (GetSessionKeyForFunctionState(), _functionState);
       _mockRepository.ReplayAll();
 
-      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_session);
+      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_sessionMock);
       functionStateManager.Add (_functionState);
 
       _mockRepository.VerifyAll();
@@ -97,11 +89,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void GetItem ()
     {
-      Expect.Call (_mockSessionState.Mode).Return (SessionStateMode.InProc);
-      Expect.Call (_mockSessionState[GetSessionKeyForFunctionState ()]).Return (_functionState);
+      Expect.Call (_sessionMock.Mode).Return (SessionStateMode.InProc);
+      Expect.Call (_sessionMock[GetSessionKeyForFunctionState()]).Return (_functionState);
       _mockRepository.ReplayAll();
 
-      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_session);
+      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_sessionMock);
       WxeFunctionState actual = functionStateManager.GetItem (_functionState.FunctionToken);
 
       _mockRepository.VerifyAll();
@@ -111,10 +103,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void Abort ()
     {
-      _mockSessionState.Remove (GetSessionKeyForFunctionState());
+      _sessionMock.Remove (GetSessionKeyForFunctionState());
       _mockRepository.ReplayAll();
 
-      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_session);
+      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_sessionMock);
       functionStateManager.Abort (_functionState);
 
       _mockRepository.VerifyAll();
@@ -123,18 +115,18 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void Touch ()
     {
-      SetupResult.For (_mockSessionState[GetSessionKeyForFunctionState ()]).Return (_functionState);
-      _mockSessionState[GetSessionKeyForFunctionState (_functionState.FunctionToken)] = _functionState;
+      SetupResult.For (_sessionMock[GetSessionKeyForFunctionState()]).Return (_functionState);
+      _sessionMock.Add (GetSessionKeyForFunctionState (), _functionState);
       _mockRepository.ReplayAll ();
 
-      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_session);
+      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_sessionMock);
       functionStateManager.Add (_functionState);
       DateTime lastAccess = functionStateManager.GetLastAccess (_functionState.FunctionToken);
       Thread.Sleep (1000);
       functionStateManager.Touch (_functionState.FunctionToken);
       Assert.Greater (functionStateManager.GetLastAccess (_functionState.FunctionToken), lastAccess);
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
@@ -142,47 +134,47 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     public void IsExpired_DelaysForOneMinute ()
     {
       WxeFunctionState functionState = new WxeFunctionState (new TestFunction(), 1, true);
-      SetupResult.For (_mockSessionState[GetSessionKeyForFunctionState (functionState.FunctionToken)]).Return (functionState);
-      _mockSessionState[GetSessionKeyForFunctionState (functionState.FunctionToken)] = functionState;
-      _mockRepository.ReplayAll ();
+      SetupResult.For (_sessionMock[GetSessionKeyForFunctionState (functionState.FunctionToken)]).Return (functionState);
+      _sessionMock[GetSessionKeyForFunctionState (functionState.FunctionToken)] = functionState;
+      _mockRepository.ReplayAll();
 
-      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_session);
+      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_sessionMock);
       functionStateManager.Add (functionState);
       Assert.IsFalse (functionStateManager.IsExpired (functionState.FunctionToken));
       Thread.Sleep (61000);
       Assert.IsTrue (functionStateManager.IsExpired (functionState.FunctionToken));
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void IsExpired_WithUnknownFunctionToken ()
     {
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_session);
+      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_sessionMock);
       Assert.IsTrue (functionStateManager.IsExpired (Guid.NewGuid().ToString()));
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     [Explicit]
     public void CleanupExpired_DelaysForOneMinute ()
     {
-      WxeFunctionState functionStateExpired = new WxeFunctionState (new TestFunction (), 1, true);
-      SetupResult.For (_mockSessionState[GetSessionKeyForFunctionState (functionStateExpired.FunctionToken)]).Return (functionStateExpired);
-      _mockSessionState[GetSessionKeyForFunctionState (functionStateExpired.FunctionToken)] = functionStateExpired;
+      WxeFunctionState functionStateExpired = new WxeFunctionState (new TestFunction(), 1, true);
+      SetupResult.For (_sessionMock[GetSessionKeyForFunctionState (functionStateExpired.FunctionToken)]).Return (functionStateExpired);
+      _sessionMock[GetSessionKeyForFunctionState (functionStateExpired.FunctionToken)] = functionStateExpired;
 
-      WxeFunctionState functionStateNotExpired = new WxeFunctionState (new TestFunction (), 10, true);
-      SetupResult.For (_mockSessionState[GetSessionKeyForFunctionState (functionStateNotExpired.FunctionToken)]).Return (functionStateNotExpired);
-      _mockSessionState[GetSessionKeyForFunctionState (functionStateNotExpired.FunctionToken)] = functionStateNotExpired;
+      WxeFunctionState functionStateNotExpired = new WxeFunctionState (new TestFunction(), 10, true);
+      SetupResult.For (_sessionMock[GetSessionKeyForFunctionState (functionStateNotExpired.FunctionToken)]).Return (functionStateNotExpired);
+      _sessionMock[GetSessionKeyForFunctionState (functionStateNotExpired.FunctionToken)] = functionStateNotExpired;
 
-      _mockSessionState.Remove (GetSessionKeyForFunctionState (functionStateExpired.FunctionToken));
+      _sessionMock.Remove (GetSessionKeyForFunctionState (functionStateExpired.FunctionToken));
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_session);
+      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_sessionMock);
       functionStateManager.Add (functionStateExpired);
       functionStateManager.Add (functionStateNotExpired);
 
@@ -195,7 +187,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 
       Assert.IsFalse (functionStateManager.IsExpired (functionStateNotExpired.FunctionToken));
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
@@ -234,7 +226,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     private string GetSessionKeyForFunctionState ()
     {
       string functionToken = _functionState.FunctionToken;
-      return GetSessionKeyForFunctionState(functionToken);
+      return GetSessionKeyForFunctionState (functionToken);
     }
 
     private string GetSessionKeyForFunctionState (string functionToken)

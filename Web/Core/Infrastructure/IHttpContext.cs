@@ -19,7 +19,8 @@ using System.Web.SessionState;
 namespace Remotion.Web.Infrastructure
 {
   /// <summary>
-  /// The <see cref="IHttpContext"/> interface defines a wrapper for the <see cref="HttpContext"/> type.
+  /// The <see cref="IHttpContext"/> interface defines a wrapper for the <see cref="HttpContext"/> type. Use the default implementation of 
+  /// <see cref="HttpContextWrapper"/> to create a wrapper object that exposes this interface.
   /// </summary>
   public interface IHttpContext : IServiceProvider
   {
@@ -29,6 +30,7 @@ namespace Remotion.Web.Infrastructure
     /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="HttpContext"/>. </exception>
     HttpContext WrappedInstance { get; }
 
+    //TODO: DotNet 3.5 SP1
     ///// <summary>
     ///// Enables you to specify a handler for the request.
     ///// </summary>

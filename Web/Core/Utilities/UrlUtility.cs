@@ -15,6 +15,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.Utilities
 {
@@ -84,11 +85,11 @@ public class UrlUtility
   }
 
   /// <summary> Makes a relative URL absolute. </summary>
-  /// <param name="context"> The <see cref="HttpContext"/> to be used. Must not be <see langword="null"/>. </param>
+  /// <param name="context"> The <see cref="IHttpContext"/> to be used. Must not be <see langword="null"/>. </param>
   /// <param name="relativeUrl"> The relative URL. Must not be <see langword="null"/> or empty. </param>
   /// <param name="includeServer"><see langword="true"/> to include the server part. Defaults to <see langword="false"/>.</param>
   /// <returns> The absolute URL. </returns>
-  public static string GetAbsoluteUrl (HttpContext context, string relativeUrl, bool includeServer)
+  public static string GetAbsoluteUrl (IHttpContext context, string relativeUrl, bool includeServer)
   {
     ArgumentUtility.CheckNotNull ("context", context);
     ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
@@ -113,12 +114,22 @@ public class UrlUtility
   }
   
   /// <summary> Makes a relative URL absolute. </summary>
+  /// <param name="context"> The <see cref="IHttpContext"/> to be used. Must not be <see langword="null"/>. </param>
+  /// <param name="relativeUrl"> The relative URL. Must not be <see langword="null"/> or empty. </param>
+  /// <returns> The absolute URL. </returns>
+  public static string GetAbsoluteUrl (IHttpContext context, string relativeUrl)
+  {
+    return UrlUtility.GetAbsoluteUrl (context, relativeUrl, false);
+  }
+
+  /// <summary> Makes a relative URL absolute. </summary>
   /// <param name="context"> The <see cref="HttpContext"/> to be used. Must not be <see langword="null"/>. </param>
   /// <param name="relativeUrl"> The relative URL. Must not be <see langword="null"/> or empty. </param>
   /// <returns> The absolute URL. </returns>
   public static string GetAbsoluteUrl (HttpContext context, string relativeUrl)
   {
-    return UrlUtility.GetAbsoluteUrl (context, relativeUrl, false);
+    ArgumentUtility.CheckNotNull ("context", context);
+    return UrlUtility.GetAbsoluteUrl (new HttpContextWrapper(context), relativeUrl, false);
   }
 
   /// <summary> Resolves a URL. </summary>
@@ -130,7 +141,7 @@ public class UrlUtility
     if (HttpContext.Current == null)
       return url;
     if (url.StartsWith ("/") || url.StartsWith ("~/"))
-      return UrlUtility.GetAbsoluteUrl (HttpContext.Current, url, false);
+      return UrlUtility.GetAbsoluteUrl (new HttpContextWrapper (HttpContext.Current), url, false);
     return url;
 
   }

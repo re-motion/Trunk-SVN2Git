@@ -18,7 +18,7 @@ namespace Remotion.Utilities
   /// </summary>
   public static class NameValueCollectionUtility
   {
-    public static NameValueCollection Clone (NameValueCollection collection)
+    public static NameValueCollection Clone (this NameValueCollection collection)
     {
       return new NameValueCollection (collection);
     }

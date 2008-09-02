@@ -11,12 +11,12 @@
 using System;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Development.Web.UnitTesting.ExecutionEngine
+namespace Remotion.Development.Web.UnitTesting.ExecutionEngine.TestFunctions
 {
   public class TestStep: WxeStep
   {
     public static new T GetStepByType<T> (WxeStep step)
-      where T: WxeStep
+        where T: WxeStep
     {
       return WxeStep.GetStepByType<T> (step);
     }

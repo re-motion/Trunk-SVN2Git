@@ -20,6 +20,7 @@ using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.Web.Utilities;
 using TestFunction=Remotion.Web.UnitTests.ExecutionEngine.TestFunctions.TestFunction;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {
@@ -74,7 +75,7 @@ public class WxeContextTest
     expectedQueryString.Add (WxeHandler.Parameters.WxeFunctionType, _functionTypeName);
     expectedUrl += UrlUtility.FormatQueryString (expectedQueryString);
 
-    string permanentUrl = WxeContext.GetPermanentUrl (_currentHttpContext, _functionType, new NameValueCollection());
+    string permanentUrl = WxeContext.GetPermanentUrl (new HttpContextWrapper (_currentHttpContext), _functionType, new NameValueCollection ());
     Assert.IsNotNull (permanentUrl);
     Assert.AreEqual (expectedUrl, permanentUrl);
   }
@@ -86,7 +87,7 @@ public class WxeContextTest
 
     string wxeHandler = Remotion.Web.Configuration.WebConfiguration.Current.ExecutionEngine.DefaultWxeHandler;
     string expectedUrl = UrlUtility.GetAbsoluteUrl (_currentHttpContext, _resource);
-    string permanentUrl = WxeContext.GetPermanentUrl (_currentHttpContext, _functionType, new NameValueCollection());
+    string permanentUrl = WxeContext.GetPermanentUrl (new HttpContextWrapper (_currentHttpContext), _functionType, new NameValueCollection ());
     Assert.IsNotNull (permanentUrl);
     Assert.AreEqual (expectedUrl, permanentUrl);
   }
@@ -95,7 +96,7 @@ public class WxeContextTest
   public void GetStaticPermanentUrlWithEmptyQueryString()
   {
     string expectedUrl = UrlUtility.GetAbsoluteUrl (_currentHttpContext, _resource);
-    string permanentUrl = WxeContext.GetPermanentUrl (_currentHttpContext, _functionType, new NameValueCollection());
+    string permanentUrl = WxeContext.GetPermanentUrl (new HttpContextWrapper (_currentHttpContext), _functionType, new NameValueCollection ());
     Assert.IsNotNull (permanentUrl);
     Assert.AreEqual (expectedUrl, permanentUrl);
   }
@@ -114,7 +115,7 @@ public class WxeContextTest
     string expectedUrl = UrlUtility.GetAbsoluteUrl (_currentHttpContext, _resource);
     expectedUrl += UrlUtility.FormatQueryString (expectedQueryString);
 
-    string permanentUrl = WxeContext.GetPermanentUrl (_currentHttpContext, _functionType, queryString);
+    string permanentUrl = WxeContext.GetPermanentUrl (new HttpContextWrapper(_currentHttpContext), _functionType, queryString);
 
     Assert.IsNotNull (permanentUrl);
     Assert.AreEqual (expectedUrl, permanentUrl);
@@ -130,7 +131,7 @@ public class WxeContextTest
     NameValueCollection queryString = new NameValueCollection();
     queryString.Add (parameterName, parameterValue);
 
-    WxeContext.GetPermanentUrl (_currentHttpContext,_functionType, queryString);
+    WxeContext.GetPermanentUrl (new HttpContextWrapper (_currentHttpContext), _functionType, queryString);
   }
 
 	[Test]
@@ -139,7 +140,7 @@ public class WxeContextTest
   {
     WebConfigurationMock.Current = null;
     Remotion.Web.ExecutionEngine.UrlMapping.UrlMappingConfiguration.SetCurrent (null);
-    WxeContext.GetPermanentUrl (_currentHttpContext, _functionType, new NameValueCollection());
+    WxeContext.GetPermanentUrl (new HttpContextWrapper (_currentHttpContext), _functionType, new NameValueCollection ());
   }
 
 	[Test]

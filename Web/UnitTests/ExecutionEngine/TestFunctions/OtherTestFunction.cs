@@ -10,25 +10,22 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Utilities;
 
-namespace Remotion.Development.Web.UnitTesting.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
-  public class TestFunction : WxeFunction
+  public class OtherTestFunction : WxeFunction
   {
     public static readonly string Parameter1Name = "Parameter1";
-    public static readonly string ReturnUrlValue = "DefaultReturn.html";
+    public static readonly string ReturnUrlValue = "DefaultReturnFromOtherTestFunction.html";
 
-    private WxeContext _wxeContextStep2;
     private string _lastExecutedStepID;
-    private string _executionOrder = string.Empty;
 
-    public TestFunction ()
+    public OtherTestFunction ()
     {
       ReturnUrl = TestFunction.ReturnUrlValue;
     }
 
-    public TestFunction (params object[] args)
+    public OtherTestFunction (params object[] args)
         : base (args)
     {
       ReturnUrl = TestFunction.ReturnUrlValue;
@@ -46,47 +43,9 @@ namespace Remotion.Development.Web.UnitTesting.ExecutionEngine
       _lastExecutedStepID = "1";
     }
 
-    private void Step2 (WxeContext context)
-    {
-      _wxeContextStep2 = context;
-      _lastExecutedStepID = "2";
-    }
-
-    private TestStep Step3 = new TestStep();
-
-    private void Step4 ()
-    {
-      _lastExecutedStepID = "4";
-    }
-
-    public void PublicStepMethod ()
-    {
-      Step1 ();
-    }
-
-    public void PublicStepMethodWithContext (WxeContext context)
-    {
-      Step2 (context);
-    }
-
     public string LastExecutedStepID
     {
       get { return _lastExecutedStepID; }
-    }
-
-    public string ExecutionOrder
-    {
-      get { return _executionOrder; }
-    }
-
-    public TestStep TestStep
-    {
-      get { return Step3; }
-    }
-
-    public WxeContext WxeContextStep2
-    {
-      get { return _wxeContextStep2; }
     }
   }
 }

@@ -145,6 +145,7 @@
     <Compile Include="Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Context\WebSafeContextMixinTest.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\CommitException.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\OtherTestFunction.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\ReleaseException.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\RollbackException.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\SetCurrentException.cs" />
@@ -162,7 +163,11 @@
     <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithThreadAbort.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestWxeTransaction.cs" />
     <Compile Include="ExecutionEngine\WxeFunctionStateManagerTest.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepIntegrationTest.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\ExecuteFunctionExternalByRedirect.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\ExecuteFunction.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\Execute_Self.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\ExecuteFunctionNoRepost.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\TestBase.cs" />
     <Compile Include="ExecutionEngine\WxeScopedTransactedFunctionTest.cs" />
     <Compile Include="ExecutionEngine\WxeScopedTransactionTest.cs" />
     <Compile Include="ExecutionEngine\WxeTransactedFunctionParameterEnlisterTest.cs" />

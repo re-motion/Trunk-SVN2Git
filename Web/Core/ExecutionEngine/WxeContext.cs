@@ -54,7 +54,7 @@ public class WxeContext
   ///   <see cref="Remotion.Web.Configuration.ExecutionEngineConfiguration.DefaultWxeHandler"/> is not set. 
   /// </exception>
   /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/GetPermanentUrl/param[@name="httpContext" or @name="functionType" or @name="urlParameters"]' />
-  public static string GetPermanentUrl (HttpContext httpContext, Type functionType, NameValueCollection urlParameters)
+  public static string GetPermanentUrl (IHttpContext httpContext, Type functionType, NameValueCollection urlParameters)
   {
     return GetPermanentUrl (httpContext, functionType, urlParameters, false);
   }
@@ -64,12 +64,11 @@ public class WxeContext
   ///   and using the <paramref name="urlParameters"/>.
   /// </summary>
   /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/GetPermanentUrl/param[@name="httpContext" or @name="functionType" or @name="urlParameters" or @name="fallbackOnCurrentUrl"]' />
-  protected static string GetPermanentUrl (
-      HttpContext httpContext, Type functionType, NameValueCollection urlParameters, bool fallbackOnCurrentUrl)
+  protected static string GetPermanentUrl (IHttpContext httpContext, Type functionType, NameValueCollection urlParameters, bool fallbackOnCurrentUrl)
   {
     ArgumentUtility.CheckNotNull ("httpContext", httpContext);
     ArgumentUtility.CheckNotNull ("functionType", functionType);
-    if (! typeof (WxeFunction).IsAssignableFrom (functionType))
+    if (!typeof (WxeFunction).IsAssignableFrom (functionType))
       throw new ArgumentException (string.Format ("The functionType '{0}' must be derived from WxeFunction.", functionType), "functionType");
     ArgumentUtility.CheckNotNull ("urlParameters", urlParameters);
 
@@ -90,7 +89,10 @@ public class WxeContext
         if (fallbackOnCurrentUrl)
           path = httpContext.Request.Url.AbsolutePath;
         else
-          throw new WxeException (string.Format ("No URL mapping has been defined for WXE Function '{0}', nor has a default WxeHandler URL been specified in the application configuration (web.config).", functionType.FullName));
+          throw new WxeException (
+              string.Format (
+                  "No URL mapping has been defined for WXE Function '{0}', nor has a default WxeHandler URL been specified in the application configuration (web.config).",
+                  functionType.FullName));
       }
       else
       {
@@ -102,15 +104,19 @@ public class WxeContext
       path = httpContext.Response.ApplyAppPathModifier (mappingEntry.Resource);
     }
 
-    string permanentUrl = UrlUtility.GetAbsoluteUrl (httpContext, path) + UrlUtility.FormatQueryString (internalUrlParameters);
-    
+    string permanentUrl = UrlUtility.GetAbsoluteUrl (httpContext, path)
+                          + UrlUtility.FormatQueryString (internalUrlParameters, httpContext.Response.ContentEncoding);
+
     int maxLength = Configuration.WebConfiguration.Current.ExecutionEngine.MaximumUrlLength;
     if (permanentUrl.Length > maxLength)
     {
-      throw new WxePermanentUrlTooLongException (string.Format (
-          "Error while creating the permanent URL for WXE function '{0}'. "
-          + "The URL exceeds the maximum length of {1} bytes. Generated URL: {2}",
-          functionType.Name, maxLength, permanentUrl));
+      throw new WxePermanentUrlTooLongException (
+          string.Format (
+              "Error while creating the permanent URL for WXE function '{0}'. "
+              + "The URL exceeds the maximum length of {1} bytes. Generated URL: {2}",
+              functionType.Name,
+              maxLength,
+              permanentUrl));
     }
 
     return permanentUrl;
@@ -196,7 +202,7 @@ public class WxeContext
       internalUrlParameters = NameValueCollectionUtility.Clone (urlParameters);
     }
     internalUrlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, functionToken);
-    return WxeContext.GetPermanentUrl (System.Web.HttpContext.Current, function.GetType(), internalUrlParameters);
+    return WxeContext.GetPermanentUrl (new HttpContextWrapper (System.Web.HttpContext.Current), function.GetType (), internalUrlParameters);
   }
 
   /// <summary> 
@@ -378,7 +384,7 @@ public class WxeContext
       queryString = new NameValueCollection();
 
     string path = _httpContext.Response.ApplyAppPathModifier (_httpContext.Request.Url.AbsolutePath);
-    return UrlUtility.AddParameters (path, queryString);
+    return UrlUtility.AddParameters (path, queryString, _httpContext.Response.ContentEncoding);
   }
 
   /// <summary> Gets the absolute path that resumes the function with specified token. </summary>
@@ -413,7 +419,7 @@ public class WxeContext
     queryString.Set (WxeHandler.Parameters.WxeFunctionToken, functionToken);
     
     path = _httpContext.Response.ApplyAppPathModifier (path);
-    return UrlUtility.AddParameters (path, queryString);
+    return UrlUtility.AddParameters (path, queryString, _httpContext.Response.ContentEncoding);
   }
 
   /// <summary> 
@@ -435,7 +441,7 @@ public class WxeContext
   {
     ArgumentUtility.CheckNotNull ("urlParameters", urlParameters);
 
-    string permanentUrl = WxeContext.GetPermanentUrl (_httpContext.WrappedInstance, functionType, urlParameters, true);
+    string permanentUrl = WxeContext.GetPermanentUrl (_httpContext, functionType, urlParameters, true);
 
     if (useParentPermanentUrl)
     {
@@ -444,7 +450,7 @@ public class WxeContext
 
       int maxLength = Configuration.WebConfiguration.Current.ExecutionEngine.MaximumUrlLength;
 
-      string currentFunctionUrl = UrlUtility.AddParameters (_httpContext.Request.Url.AbsolutePath, _queryString);
+      string currentFunctionUrl = UrlUtility.AddParameters (_httpContext.Request.Url.AbsolutePath, _queryString, _httpContext.Response.ContentEncoding);
       StringCollection parentPermanentUrls = ExtractReturnUrls (currentFunctionUrl);
 
       int count = GetMergeablePermanentUrlCount (permanentUrl, parentPermanentUrls, maxLength);

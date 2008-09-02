@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{44924ED6-8C12-416D-972F-F1F10417E7EF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -23,7 +23,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1591;0419</NoWarn><WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592</WarningsAsErrors>
+    <NoWarn>1591;0419</NoWarn>
+    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592</WarningsAsErrors>
     <DocumentationFile>bin\Debug\Remotion.Development.Web.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -54,8 +55,8 @@
     </Compile>
     <Compile Include="UnitTesting\Configuration\WebConfigurationFactory.cs" />
     <Compile Include="UnitTesting\Configuration\WebConfigurationMock.cs" />
-    <Compile Include="UnitTesting\ExecutionEngine\TestFunction.cs" />
-    <Compile Include="UnitTesting\ExecutionEngine\TestStep.cs" />
+    <Compile Include="UnitTesting\ExecutionEngine\TestFunctions\TestFunction.cs" />
+    <Compile Include="UnitTesting\ExecutionEngine\TestFunctions\TestStep.cs" />
     <Compile Include="UnitTesting\ExecutionEngine\WxeContextMock.cs" />
     <Compile Include="UnitTesting\UI\Controls\ControlInvoker.cs" />
     <Compile Include="UnitTesting\UI\Controls\NamingContainerMock.cs" />

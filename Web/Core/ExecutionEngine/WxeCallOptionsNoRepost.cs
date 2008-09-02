@@ -17,6 +17,7 @@ namespace Remotion.Web.ExecutionEngine
   /// Use the <see cref="WxeCallOptionsNoRepost"/> type if you whish to execute a <see cref="WxeFunction"/> as a sub function and suppressing 
   /// the re-post to the postback-handler after the execution has returned to the caller function.
   /// </summary>
+  [Serializable]
   public class WxeCallOptionsNoRepost : WxeCallOptions
   {
     private readonly bool? _usesEventTarget;

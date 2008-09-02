@@ -15,6 +15,7 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -121,7 +122,7 @@ public class NavigationCommand: Command
     queryString.Set (WxeHandler.Parameters.WxeReturnToSelf, true.ToString());
     NameValueCollectionUtility.Append (queryString, additionalUrlParameters);
     
-    return WxeContext.GetPermanentUrl (HttpContext.Current, functionType, queryString);
+    return WxeContext.GetPermanentUrl (new HttpContextWrapper(HttpContext.Current), functionType, queryString);
   }
 
   /// <summary> 
