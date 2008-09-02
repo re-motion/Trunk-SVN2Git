@@ -18,7 +18,6 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
@@ -27,9 +26,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
   [TestFixture]
   public class RedirectingToSubFunctionStateTest : TestBase
   {
-    private IHttpResponse _responseMock;
-    private IHttpRequest _requestMock;
-
     public override void SetUp ()
     {
       base.SetUp();
@@ -39,19 +35,15 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       Uri uri = new Uri ("http://localhost/root.wxe");
 
-      _responseMock = MockRepository.StrictMock<IHttpResponse>();
-      _responseMock.Stub (stub => stub.ApplyAppPathModifier ("~/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
-      _responseMock.Stub (stub => stub.ApplyAppPathModifier ("~/session/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
-      _responseMock.Stub (stub => stub.ApplyAppPathModifier ("~/root.wxe")).Return ("~/session/root.wxe").Repeat.Any();
-      _responseMock.Stub (stub => stub.ApplyAppPathModifier ("/root.wxe")).Return ("/session/root.wxe").Repeat.Any();
-      _responseMock.Stub (stub => stub.ApplyAppPathModifier ("/session/root.wxe")).Return ("/session/root.wxe").Repeat.Any();
-      _responseMock.Stub (stub => stub.ContentEncoding).Return (Encoding.Default).Repeat.Any();
-      HttpContextMock.Stub (stub => stub.Response).Return (_responseMock).Repeat.Any();
-
-      _requestMock = MockRepository.StrictMock<IHttpRequest>();
-      _requestMock.Stub (stub => stub.Url).Return (uri).Repeat.Any();
-      _requestMock.Stub (stub => stub.ContentEncoding).Return (Encoding.Default).Repeat.Any();
-      HttpContextMock.Stub (stub => stub.Request).Return (_requestMock).Repeat.Any();
+      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
+      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/session/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
+      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/root.wxe")).Return ("~/session/root.wxe").Repeat.Any();
+      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("/root.wxe")).Return ("/session/root.wxe").Repeat.Any();
+      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("/session/root.wxe")).Return ("/session/root.wxe").Repeat.Any();
+      ResponseMock.Stub (stub => stub.ContentEncoding).Return (Encoding.Default).Repeat.Any();
+      
+      RequestMock.Stub (stub => stub.Url).Return (uri).Repeat.Any();
+      RequestMock.Stub (stub => stub.ContentEncoding).Return (Encoding.Default).Repeat.Any();
     }
 
     [Test]
@@ -62,7 +54,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       using (MockRepository.Ordered())
       {
-        _responseMock.Expect (mock => mock.Redirect ("~/session/sub.wxe?Parameter1=Value&WxeFunctionToken=" + WxeContext.FunctionToken))
+        ResponseMock.Expect (mock => mock.Redirect ("~/session/sub.wxe?Parameter1=Value&WxeFunctionToken=" + WxeContext.FunctionToken))
             .Do (invocation => Thread.CurrentThread.Abort());
         ExecutionStateContextMock.Expect (
             mock => mock.SetExecutionState (Arg<IWxePageStepExecutionState>.Is.NotNull))
@@ -86,10 +78,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       }
       catch (ThreadAbortException)
       {
-        Thread.ResetAbort ();
+        Thread.ResetAbort();
       }
 
-      MockRepository.VerifyAll ();
+      MockRepository.VerifyAll();
     }
 
     [Test]
@@ -100,7 +92,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       using (MockRepository.Ordered())
       {
-        _responseMock.Expect (mock => mock.Redirect ("~/session/sub.wxe?Key=Value&WxeFunctionToken=" + WxeContext.FunctionToken))
+        ResponseMock.Expect (mock => mock.Redirect ("~/session/sub.wxe?Key=Value&WxeFunctionToken=" + WxeContext.FunctionToken))
             .Do (invocation => Thread.CurrentThread.Abort());
         ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<IWxePageStepExecutionState>.Is.NotNull));
       }
@@ -110,14 +102,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       try
       {
         executionState.RedirectToSubFunction (WxeContext);
-        Assert.Fail ();
+        Assert.Fail();
       }
       catch (ThreadAbortException)
       {
-        Thread.ResetAbort ();
+        Thread.ResetAbort();
       }
 
-      MockRepository.VerifyAll ();
+      MockRepository.VerifyAll();
     }
 
     [Test]
@@ -140,7 +132,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       using (MockRepository.Ordered())
       {
-        _responseMock.Expect (mock => mock.Redirect (redirectUrl)).Do (invocation => Thread.CurrentThread.Abort());
+        ResponseMock.Expect (mock => mock.Redirect (redirectUrl)).Do (invocation => Thread.CurrentThread.Abort());
         ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<IWxePageStepExecutionState>.Is.NotNull));
       }
 
@@ -153,10 +145,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       }
       catch (ThreadAbortException)
       {
-        Thread.ResetAbort ();
+        Thread.ResetAbort();
       }
 
-      MockRepository.VerifyAll ();
+      MockRepository.VerifyAll();
     }
 
     [Test]

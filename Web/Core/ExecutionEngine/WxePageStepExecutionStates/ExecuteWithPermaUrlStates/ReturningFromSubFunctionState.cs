@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Threading;
 using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
@@ -27,27 +28,35 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
 
     public override void RedirectToSubFunction (WxeContext context)
     {
-      throw new NotImplementedException();
+      throw new InvalidOperationException ();
     }
 
     public override void ExecuteSubFunction (WxeContext context)
     {
-      throw new NotImplementedException();
+      throw new InvalidOperationException ();
     }
 
     public override void ReturnFromSubFunction (WxeContext context)
     {
-      throw new NotImplementedException();
+      try
+      {
+        context.HttpContext.Response.Redirect (_resumeUrl);
+      }
+      catch (ThreadAbortException)
+      {
+        ExecutionStateContext.SetExecutionState (new PostProcessingSubFunctionState (ExecutionStateContext, SubFunction));
+        throw;
+      }
     }
 
     public override void PostProcessSubFunction (WxeContext context)
     {
-      throw new NotImplementedException();
+      throw new InvalidOperationException ();
     }
 
     public override void Cleanup (WxeContext context)
     {
-      throw new NotImplementedException();
+      throw new InvalidOperationException();
     }
 
     public string ResumeUrl

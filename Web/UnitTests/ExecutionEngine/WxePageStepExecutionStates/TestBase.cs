@@ -20,19 +20,27 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
     protected IHttpContext _httpContextMock;
     protected WxeFunctionState _functionState;
     protected WxeContext _wxeContext;
+    private IHttpResponse _responseMock;
+    private IHttpRequest _requestMock;
 
     [SetUp]
     public virtual void SetUp ()
     {
-      _mockRepository = new MockRepository ();
-      _executionStateContextMock = MockRepository.StrictMock<IWxePageStepExecutionStateContext> ();
+      _mockRepository = new MockRepository();
+      _executionStateContextMock = MockRepository.StrictMock<IWxePageStepExecutionStateContext>();
 
-      _rootFunction = new TestFunction ();
+      _rootFunction = new TestFunction();
       _subFunction = CreateSubFunction();
 
-      _httpContextMock = MockRepository.DynamicMock<IHttpContext> ();
-      _functionState = new WxeFunctionState (RootFunction, true);
-      _wxeContext = new WxeContext (HttpContextMock, _functionState, new NameValueCollection ());
+      _httpContextMock = MockRepository.DynamicMock<IHttpContext>();
+      _functionState = new WxeFunctionState (_rootFunction, true);
+      _wxeContext = new WxeContext (_httpContextMock, _functionState, new NameValueCollection());
+
+      _responseMock = MockRepository.StrictMock<IHttpResponse>();
+      _httpContextMock.Stub (stub => stub.Response).Return (_responseMock).Repeat.Any();
+
+      _requestMock = MockRepository.StrictMock<IHttpRequest>();
+      _httpContextMock.Stub (stub => stub.Request).Return (_requestMock).Repeat.Any();
     }
 
     protected virtual OtherTestFunction CreateSubFunction ()
@@ -76,6 +84,16 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
     protected IHttpContext HttpContextMock
     {
       get { return _httpContextMock; }
+    }
+
+    protected IHttpRequest RequestMock
+    {
+      get { return _requestMock; }
+    }
+
+    protected IHttpResponse ResponseMock
+    {
+      get { return _responseMock; }
     }
   }
 }
