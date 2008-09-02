@@ -12,13 +12,18 @@ using System;
 
 namespace Remotion.Diagnostics.ToText
 {
-  public abstract class ToTextSpecificTypeHandler<T> : IToTextSpecificTypeHandler
+  public class ToTextSpecificTypeHandlerWrapper<T> : IToTextSpecificTypeHandler
   {
-    public abstract void ToText (T t, ToTextBuilder toTextBuilder);
+    private readonly Action<T, ToTextBuilder> _handler;
 
-    public virtual void ToText (object obj, ToTextBuilder toTextBuilder)
+    public ToTextSpecificTypeHandlerWrapper (Action<T, ToTextBuilder> handler)
     {
-      ToText ((T) obj, toTextBuilder);
+      _handler = handler;
+    }
+
+    public void ToText (object obj, ToTextBuilder toTextBuilder)
+    {
+      _handler ((T) obj, toTextBuilder);
     }
   }
 }

@@ -5,13 +5,25 @@ namespace Remotion.Diagnostics
 {
   public static class To
   {
+    [ThreadStatic]
     private static readonly ToTextProvider toTextProvider = new ToTextProvider();
+
+    static To ()
+    {
+      AutoRegisterHandlers();
+    }
 
     public static string Text (object obj)
     {
       return toTextProvider.ToTextString (obj);
     }
 
+
+    public static void AutoRegisterHandlers ()
+    {
+      var autoRegistrator = new ToTextSpecificHandlerAutoRegistrator ();
+      autoRegistrator.FindAndRegister (toTextProvider);
+    }
 
     public static void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
     {
@@ -22,6 +34,7 @@ namespace Remotion.Diagnostics
     {
       toTextProvider.ClearSpecificTypeHandlers();
     }
+
 
 
     public static void TextEnableAutomatics (bool enable)

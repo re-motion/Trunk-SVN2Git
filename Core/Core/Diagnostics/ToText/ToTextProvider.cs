@@ -107,7 +107,12 @@ namespace Remotion.Diagnostics.ToText
 
     public void RegisterSpecificTypeHandler<T> (Action<T, ToTextBuilder> handler)
     {
-      _typeHandlerMap.Add (typeof (T), new ToTextSpecificTypeHandler<T> (handler));
+      _typeHandlerMap.Add (typeof (T), new ToTextSpecificTypeHandlerWrapper<T> (handler));
+    }
+
+    public void RegisterSpecificTypeHandler (Type handledType, IToTextSpecificTypeHandler toTextSpecificTypeHandler)
+    {
+      _typeHandlerMap.Add (handledType, toTextSpecificTypeHandler);
     }
 
     public void RegisterSpecificInterfaceHandlerWithLowestPriority<T> (Action<T, ToTextBuilder> handler)
