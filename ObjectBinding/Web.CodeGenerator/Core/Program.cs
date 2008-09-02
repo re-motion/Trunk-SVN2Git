@@ -103,10 +103,12 @@ namespace Remotion.ObjectBinding.Web.CodeGenerator
 			{
 				System.Console.Error.WriteLine("UIGen error: {0}", e.Message);
 			}
+      /*
 			catch (Exception e)
-			{
+			{ Not meaningful enough, so RG commented it out. I want that exception raw.
 				System.Console.Error.WriteLine("Execution aborted: {0}", e.Message);
 			}
+       */
 
 			return 0;
 		 }
