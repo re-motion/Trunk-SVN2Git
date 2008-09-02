@@ -10,40 +10,56 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
 {
   [TestFixture][Ignore]
-  public class Template
+  public class Template:TestBase
   {
+    public override void SetUp ()
+    {
+      base.SetUp ();
+    }
+
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void RedirectToSubFunction ()
     {
+      IWxePageStepExecutionState executionState = new WxePageStepExecutionState();
+      executionState.ExecuteSubFunction (WxeContext);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void ExecuteSubFunction ()
     {
+      IWxePageStepExecutionState executionState = new WxePageStepExecutionState ();
+      executionState.ExecuteSubFunction (WxeContext);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void ReturnFromSubFunction ()
     {
+      IWxePageStepExecutionState executionState = new WxePageStepExecutionState ();
+      executionState.ReturnFromSubFunction (WxeContext);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void PostProcessSubFunction ()
     {
+      IWxePageStepExecutionState executionState = new WxePageStepExecutionState ();
+      executionState.PostProcessSubFunction (WxeContext);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
     public void Cleanup ()
     {
+      IWxePageStepExecutionState executionState = new WxePageStepExecutionState ();
+      executionState.Cleanup (WxeContext);
     }
   }
 }

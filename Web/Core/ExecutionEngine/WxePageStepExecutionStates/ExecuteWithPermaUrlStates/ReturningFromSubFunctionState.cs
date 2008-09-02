@@ -13,12 +13,12 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
 {
-  public class ExecutingSubFunctionState : ExecuteWithPermaUrlStateBase
+  public class ReturningFromSubFunctionState : ExecuteWithPermaUrlStateBase
   {
     private readonly string _resumeUrl;
 
-    public ExecutingSubFunctionState (IWxePageStepExecutionStateContext executionStateContext, WxeFunction subFunction, string resumeUrl)
-        : base (executionStateContext, subFunction)
+    public ReturningFromSubFunctionState (IWxePageStepExecutionStateContext executionStateContext, WxeFunction subFunction, string resumeUrl)
+      :base (executionStateContext, subFunction)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("resumeUrl", resumeUrl);
 
@@ -27,28 +27,27 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
 
     public override void RedirectToSubFunction (WxeContext context)
     {
-      throw new InvalidOperationException();
+      throw new NotImplementedException();
     }
 
     public override void ExecuteSubFunction (WxeContext context)
     {
-      SubFunction.Execute (context);
-      ExecutionStateContext.SetExecutionState (new ReturningFromSubFunctionState (ExecutionStateContext, SubFunction, _resumeUrl));
+      throw new NotImplementedException();
     }
 
     public override void ReturnFromSubFunction (WxeContext context)
     {
-      throw new InvalidOperationException();
+      throw new NotImplementedException();
     }
 
     public override void PostProcessSubFunction (WxeContext context)
     {
-      throw new InvalidOperationException();
+      throw new NotImplementedException();
     }
 
     public override void Cleanup (WxeContext context)
     {
-      throw new InvalidOperationException();
+      throw new NotImplementedException();
     }
 
     public string ResumeUrl

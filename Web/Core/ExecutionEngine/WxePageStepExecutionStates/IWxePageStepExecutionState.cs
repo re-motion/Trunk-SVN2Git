@@ -20,7 +20,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
     
   }
 
-  class WxePageStepExecutionState : IWxePageStepExecutionState
+  public class WxePageStepExecutionState : IWxePageStepExecutionState
   {
     public void RedirectToSubFunction (WxeContext context)
     {
