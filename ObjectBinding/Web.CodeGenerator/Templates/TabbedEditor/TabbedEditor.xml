@@ -95,7 +95,7 @@ TODO: <folder>
 				</additionalAttributes>
 				<additionalElements>
 <![CDATA[<FixedColumns>
-          <remotion:BocAllPropertiesPlacehoderColumnDefinition />
+          <remotion:BocAllPropertiesPlaceholderColumnDefinition />
           <remotion:BocRowEditModeColumnDefinition CancelText="$res:Cancel" EditText="$res:Edit" SaveText="$res:Save" />
         </FixedColumns>
         <ListMenuItems>
