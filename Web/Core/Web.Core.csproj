@@ -114,6 +114,18 @@
     <Compile Include="ExecutionEngine\WxeExecuteUserControlStepException.cs" />
     <Compile Include="ExecutionEngine\WxeExecutionControlExceptionBase.cs" />
     <Compile Include="ExecutionEngine\WxePageExecutor.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\ExecutingSubFunctionState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\RedirectingToSubFunctionState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\IWxePageStepExecutionState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\IWxePageStepExecutionStateContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ExecutionEngine\WxeParameterAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeReturnOptions.cs" />
     <Compile Include="ExecutionEngine\WxeUserControl2.cs">
@@ -693,6 +705,9 @@
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
       <Name>Security.Interfaces</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirectStates\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

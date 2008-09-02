@@ -163,6 +163,15 @@
     <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithThreadAbort.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestWxeTransaction.cs" />
     <Compile Include="ExecutionEngine\WxeFunctionStateManagerTest.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\RedirectToSubFunctionStateTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\Template.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\TestBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\ExecuteFunctionExternalByRedirect.cs" />
     <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\ExecuteFunction.cs" />
     <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\Execute_Self.cs" />
@@ -353,6 +362,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirectStates\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

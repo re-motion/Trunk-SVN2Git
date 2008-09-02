@@ -457,7 +457,7 @@ public class WxeContext
       string parentPermanentUrl = FormatParentPermanentUrl (parentPermanentUrls, count);
       
       if (! StringUtility.IsNullOrEmpty (parentPermanentUrl))
-        permanentUrl = UrlUtility.AddParameter (permanentUrl, WxeHandler.Parameters.ReturnUrl, parentPermanentUrl);
+        permanentUrl = UrlUtility.AddParameter (permanentUrl, WxeHandler.Parameters.ReturnUrl, parentPermanentUrl, _httpContext.Response.ContentEncoding);
     }
     return permanentUrl;
   }
@@ -469,7 +469,7 @@ public class WxeContext
     while (! StringUtility.IsNullOrEmpty (url))
     {
       string currentUrl = url;
-      url = UrlUtility.GetParameter (currentUrl, WxeHandler.Parameters.ReturnUrl);
+      url = UrlUtility.GetParameter (currentUrl, WxeHandler.Parameters.ReturnUrl, _httpContext.Request.ContentEncoding);
 
       if (! StringUtility.IsNullOrEmpty (url))
         currentUrl = UrlUtility.DeleteParameter (currentUrl, WxeHandler.Parameters.ReturnUrl);
@@ -494,7 +494,7 @@ public class WxeContext
       }
       else
       {
-        parentPermanentUrl = UrlUtility.AddParameter (temp, WxeHandler.Parameters.ReturnUrl, parentPermanentUrl);
+        parentPermanentUrl = UrlUtility.AddParameter (temp, WxeHandler.Parameters.ReturnUrl, parentPermanentUrl, _httpContext.Response.ContentEncoding);
       }
     }
     return parentPermanentUrl;
@@ -508,7 +508,7 @@ public class WxeContext
       string parentPermanentUrl = FormatParentPermanentUrl (parentPermanentUrls, i + 1);
       if (parentPermanentUrl.Length >= maxLength)
         break;
-      string url = UrlUtility.AddParameter (baseUrl, WxeHandler.Parameters.ReturnUrl, parentPermanentUrl);
+      string url = UrlUtility.AddParameter (baseUrl, WxeHandler.Parameters.ReturnUrl, parentPermanentUrl, _httpContext.Response.ContentEncoding);
       if (url.Length > maxLength)
         break;
     }
