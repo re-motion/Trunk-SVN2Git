@@ -99,7 +99,6 @@
     <Compile Include="Classes\BasePage.cs" />
     <Compile Include="Classes\BaseFunction.cs" />
     <Compile Include="Classes\EditFormPage.cs" />
-    <Compile Include="Classes\WxeExecuteFunctionOptions.cs" />
 
     <Compile Include="Properties\AssemblyInfo.cs" />
 
