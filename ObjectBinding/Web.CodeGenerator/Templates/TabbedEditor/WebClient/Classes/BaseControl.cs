@@ -16,7 +16,7 @@ using Remotion.Web.ExecutionEngine;
 namespace $PROJECT_ROOTNAMESPACE$.Classes
 {
   [WebMultiLingualResources ("$PROJECT_ROOTNAMESPACE$.Globalization.Global")]
-  public class BaseControl: DataEditUserControl
+  public abstract class BaseControl: DataEditUserControl
   {
     public IWxePage WxePage 
     {
