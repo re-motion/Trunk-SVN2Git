@@ -55,7 +55,8 @@ namespace Remotion.ObjectBinding.Web.CodeGenerator
 		ADDITIONALATTRIBUTES,
 		ADDITIONALELEMENTS,
 		ROOT_TEMPLATE_DIR,
-		ROOT_TARGET_DIR
+		ROOT_TARGET_DIR, 
+    WEB_CLIENT_GUID
 	}
 
 	public class Placeholder
