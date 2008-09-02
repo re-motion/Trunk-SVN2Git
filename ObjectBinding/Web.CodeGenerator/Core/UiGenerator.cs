@@ -449,6 +449,7 @@ namespace Remotion.ObjectBinding.Web.CodeGenerator
 
 			replacer.Replace(DefinedPlaceholder.ROOT_TEMPLATE_DIR, _configuration.TemplateRoot);
 			replacer.Replace(DefinedPlaceholder.ROOT_TARGET_DIR, _configuration.TargetRoot);
+		  replacer.Replace (DefinedPlaceholder.WEB_CLIENT_GUID, Guid.NewGuid().ToString());
 
 			replacer.Replace(_configuration.ProjectReplaceInfos);
 		}
