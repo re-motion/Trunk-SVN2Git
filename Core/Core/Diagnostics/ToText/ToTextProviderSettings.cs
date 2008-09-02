@@ -1,6 +1,6 @@
 using System;
 
-namespace Remotion.Diagnostics.ToText.Handlers
+namespace Remotion.Diagnostics.ToText
 {
   /// <summary>
   /// Settings class for the <see cref="ToTextProvider"/> class.
@@ -21,7 +21,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
       UseInterfaceHandlers = true;
 
       ParentHandlerSearchDepth = 0;
-      ParentHandlerSearchUpToRoot = true;
+      ParentHandlerSearchUpToRoot = false;
       UseParentHandlers = false;
     }
 

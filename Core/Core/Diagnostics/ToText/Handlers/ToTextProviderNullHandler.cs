@@ -1,4 +1,5 @@
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.Diagnostics.ToText.Handlers
 {
@@ -9,6 +10,9 @@ namespace Remotion.Diagnostics.ToText.Handlers
   {
     public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
     {
+      ArgumentUtility.CheckNotNull ("toTextParameters", toTextParameters);
+      ArgumentUtility.CheckNotNull ("toTextProviderHandlerFeedback", toTextProviderHandlerFeedback);
+
       if (toTextParameters.Object == null)
       {
         Log ("null");

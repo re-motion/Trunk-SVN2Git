@@ -11,9 +11,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
   {
     public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
     {
-      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
-      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
-      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ToTextProviderHandler.CheckNotNull (toTextParameters, toTextProviderHandlerFeedback);
 
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;

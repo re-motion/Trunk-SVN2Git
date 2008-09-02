@@ -1,4 +1,5 @@
 using System;
+using Remotion.Utilities;
 
 
 namespace Remotion.Diagnostics.ToText.Handlers
@@ -32,5 +33,12 @@ namespace Remotion.Diagnostics.ToText.Handlers
     /// Enables/disables the handler. Disabled handlers are skipped by the <see cref="ToTextProvider"/> fallback cascade).
     /// </summary>
     public bool Disabled { get; set; }
+
+
+    public static void CheckNotNull (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
+    {
+      ToTextParameters.CheckNotNull (toTextParameters);
+      ArgumentUtility.CheckNotNull ("toTextProviderHandlerFeedback", toTextProviderHandlerFeedback);
+    }
   }
 }

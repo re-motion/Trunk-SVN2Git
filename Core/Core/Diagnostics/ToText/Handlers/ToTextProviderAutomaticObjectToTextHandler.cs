@@ -17,14 +17,18 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
     public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)
     {
-      ArgumentUtility.CheckNotNull ("toTextParameters.Object", toTextParameters.Object);
-      ArgumentUtility.CheckNotNull ("toTextParameters.Type", toTextParameters.Type);
-      ArgumentUtility.CheckNotNull ("toTextParameters.ToTextBuilder", toTextParameters.ToTextBuilder);
+      ToTextProviderHandler.CheckNotNull (toTextParameters, toTextProviderHandlerFeedback);
 
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
       ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
       var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
+
+      // Primitives and Type|s lead to endless recursion when treating them with reflection, so this handler skips them.
+      if(type.IsPrimitive || (obj is Type))
+      {
+        return;
+      }
 
       if (settings.UseAutomaticObjectToText)
       {
