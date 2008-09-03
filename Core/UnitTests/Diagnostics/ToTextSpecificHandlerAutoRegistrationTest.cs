@@ -65,7 +65,7 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
     //[ToTextHandlerTargetType (typeof (TestSimple))]
-    [ToTextHandlerTargetType]
+    [ToTextSpecificHandler]
     class TestSimpleToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimple>
     {
       public override void ToText (TestSimple t, ToTextBuilder toTextBuilder)
@@ -74,7 +74,7 @@ namespace Remotion.UnitTests.Diagnostics
       }
     }
 
-    [ToTextHandlerTargetType]
+    [ToTextSpecificHandler]
     class TestSimpleSimpleToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimpleSimple>
     {
       public override void ToText (TestSimpleSimple t, ToTextBuilder toTextBuilder)
@@ -87,21 +87,21 @@ namespace Remotion.UnitTests.Diagnostics
 
 
 
-    private ToTextHandlerTargetTypeAttribute RetrieveTextHandlerAttribute<T> ()
+    private ToTextSpecificHandlerAttribute RetrieveTextHandlerAttribute<T> ()
     {
-      return AttributeUtility.GetCustomAttribute<ToTextHandlerTargetTypeAttribute> (typeof (T), false);
+      return AttributeUtility.GetCustomAttribute<ToTextSpecificHandlerAttribute> (typeof (T), false);
     }
 
-    private ToTextHandlerTargetTypeAttribute RetrieveTextHandlerAttribute (Type type)
+    private ToTextSpecificHandlerAttribute RetrieveTextHandlerAttribute (Type type)
     {
-      return AttributeUtility.GetCustomAttribute<ToTextHandlerTargetTypeAttribute> (type, false);
+      return AttributeUtility.GetCustomAttribute<ToTextSpecificHandlerAttribute> (type, false);
     }
 
 
     [Test]
     public void RetrieveTestSimpleToTextSpecificTypeHandlerAttributeTest ()
     {
-      ToTextHandlerTargetTypeAttribute attribute = RetrieveTextHandlerAttribute<TestSimpleToTextSpecificTypeHandler>();
+      ToTextSpecificHandlerAttribute attribute = RetrieveTextHandlerAttribute<TestSimpleToTextSpecificTypeHandler>();
       Assert.That (attribute, Is.Not.Null);
       //Assert.That (attribute.Type, Is.EqualTo (typeof (TestSimple)));
     }
@@ -148,7 +148,7 @@ namespace Remotion.UnitTests.Diagnostics
       var resultWithNoHandler = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimple, toTextProvider);
       Assert.That (resultWithNoHandler, Is.EqualTo (""));
 
-      var autoRegistrator = new ToTextSpecificHandlerAutoRegistrator ();
+      var autoRegistrator = new ToTextSpecificHandlerCollector ();
       autoRegistrator.FindAndRegister (toTextProvider);
       //var result = toTextProvider.ToTextString (testSimple);
       var resultWithHandler = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimple, toTextProvider);
@@ -164,7 +164,7 @@ namespace Remotion.UnitTests.Diagnostics
       var testSimple = new TestSimple ();
       var testSimpleSimple = new TestSimpleSimple ();
 
-      var autoRegistrator = new ToTextSpecificHandlerAutoRegistrator ();
+      var autoRegistrator = new ToTextSpecificHandlerCollector ();
       autoRegistrator.FindAndRegister (toTextProvider);
       var testSimpleResult = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimple, toTextProvider);
       var testSimpleSimpleResult = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimpleSimple, toTextProvider);
@@ -173,6 +173,29 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (testSimpleResult, Is.EqualTo ("[TestSimple,ABC abc,54321]"));
       Assert.That (testSimpleSimpleResult, Is.EqualTo ("[TestSimpleSimple,I like it]"));
     }
+
+
+    [Test]
+    [Ignore]
+    public void DiscoverMultipleHandlersTest ()
+    {
+      var toTextProvider = new ToTextProvider ();
+      var testSimple = new TestSimple ();
+      var testSimpleSimple = new TestSimpleSimple ();
+
+      var autoRegistrator = new ToTextSpecificHandlerCollector ();
+      //autoRegistrator.FindAndRegister (toTextProvider);
+
+      var handlerMap = autoRegistrator.DiscoverHandlers<IToTextSpecificTypeHandler>();
+
+      var testSimpleResult = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimple, toTextProvider);
+      var testSimpleSimpleResult = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimpleSimple, toTextProvider);
+      log.It ("testSimpleResult=" + testSimpleResult);
+      log.It ("testSimpleSimpleResult=" + testSimpleSimpleResult);
+      Assert.That (testSimpleResult, Is.EqualTo ("[TestSimple,ABC abc,54321]"));
+      Assert.That (testSimpleSimpleResult, Is.EqualTo ("[TestSimpleSimple,I like it]"));
+    }
+
 
 
     private string ToTextProviderHandlerToText<T> (object obj, ToTextProvider toTextProvider) where T : IToTextProviderHandler

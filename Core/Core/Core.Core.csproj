@@ -116,7 +116,7 @@
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderRegisteredInterfaceHandlerHandler.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderRegisteredTypeHandler.cs" />
     <Compile Include="Diagnostics\ToText\IToTextSpecificHandler.cs" />
-    <Compile Include="Diagnostics\ToText\ToTextHandlerTargetTypeAttribute.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextSpecificHandlerAttribute.cs" />
     <Compile Include="Diagnostics\ToText\ToTextProviderSettings.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderStringHandler.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderToStringHandler.cs" />
@@ -129,7 +129,7 @@
     <Compile Include="Diagnostics\ToText\SequenceStateHolder.cs" />
     <Compile Include="Diagnostics\ToText\StringBuilderToText.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderHandler.cs" />
-    <Compile Include="Diagnostics\ToText\ToTextSpecificHandlerAutoRegistrator.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextSpecificHandlerCollector.cs" />
     <Compile Include="Diagnostics\ToText\ToTextSpecificHandlerMap.cs" />
     <Compile Include="Diagnostics\ToText\ToTextSpecificTypeHandler.cs" />
     <Compile Include="Diagnostics\ToText\ToTextSpecificTypeHandlerWrapper.cs" />

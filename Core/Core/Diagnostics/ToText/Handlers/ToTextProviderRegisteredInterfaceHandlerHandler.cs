@@ -21,6 +21,8 @@ namespace Remotion.Diagnostics.ToText.Handlers
       _interfaceTypeHandlerMap = interfaceTypeHandlerMap;
     }
 
+
+
     public void RegisterInterfaceHandlerAppendLast<T> (Action<T, ToTextBuilder> handler)
     {
       --_interfaceHandlerPriorityMin;

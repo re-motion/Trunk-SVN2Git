@@ -20,9 +20,9 @@ namespace Remotion.Diagnostics.ToText
   /// Finds <see cref="ToTextProvider"/> type handlers that supply <see cref="ToTextProvider.ToText"/> functionality for
   /// a specific type through reflection and registers them with a <see cref="ToTextProvider"/>.
   /// Type handlers are classes which derive directly from <see cref="ToTextSpecificTypeHandler{T}"/> and carry the 
-  /// <see cref="ToTextHandlerTargetTypeAttribute"/> attribute.
+  /// <see cref="ToTextSpecificHandlerAttribute"/> attribute.
   /// </summary>
-  public class ToTextSpecificHandlerAutoRegistrator
+  public class ToTextSpecificHandlerCollector
   {
     public void FindAndRegister (ToTextProvider toTextProvider)
     {
@@ -46,10 +46,36 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    private ToTextHandlerTargetTypeAttribute RetrieveTextHandlerAttribute (Type type)
+    // ToTextSpecificHandlerMap
+
+    private ToTextSpecificHandlerAttribute RetrieveTextHandlerAttribute (Type type)
     {
-      return AttributeUtility.GetCustomAttribute<ToTextHandlerTargetTypeAttribute> (type, false);
+      return AttributeUtility.GetCustomAttribute<ToTextSpecificHandlerAttribute> (type, false);
     }
-    
+
+    public ToTextSpecificHandlerMap<T> DiscoverHandlers<T> () where T : IToTextSpecificHandler
+    {
+      var handlerMap = new ToTextSpecificHandlerMap<T> ();
+      const bool excludeGlobalTypes = true;
+      ITypeDiscoveryService _typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
+          new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, excludeGlobalTypes));
+
+      ICollection types = _typeDiscoveryService.GetTypes (typeof (IToTextSpecificTypeHandler), excludeGlobalTypes);
+
+      foreach (Type type in types)
+      {
+        if (RetrieveTextHandlerAttribute (type) != null)
+        {
+          Type baseType = type.BaseType;
+          Assertion.IsTrue (baseType.Name == "ToTextSpecificTypeHandler`1");
+          Type[] genericArguments = baseType.GetGenericArguments ();
+          Type handledType = genericArguments[0];
+
+          //toTextProvider.RegisterSpecificTypeHandler (handledType, (IToTextSpecificTypeHandler) Activator.CreateInstance (type));
+          handlerMap[handledType] = (T) Activator.CreateInstance (type);
+        }
+      }
+      return handlerMap;
+    }
   }
 }

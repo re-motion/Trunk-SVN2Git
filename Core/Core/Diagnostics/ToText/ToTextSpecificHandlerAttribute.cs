@@ -2,11 +2,11 @@ using System;
 
 namespace Remotion.Diagnostics.ToText
 {
-  public class ToTextHandlerTargetTypeAttribute : Attribute
+  public class ToTextSpecificHandlerAttribute : Attribute
   {
     //public Type Type { get; private set; }
 
-    //public ToTextHandlerTargetTypeAttribute (Type type)
+    //public ToTextSpecificHandlerAttribute (Type type)
     //{
     //  Type = type;
     //}
