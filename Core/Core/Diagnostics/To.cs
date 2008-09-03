@@ -9,16 +9,8 @@ namespace Remotion.Diagnostics
   {
     [ThreadStatic]
     private static ToTextProvider toTextProvider = new ToTextProvider(GetTypeHandlers());
-    //private static ToTextProvider toTextProvider = new ToTextProvider ();
 
-    //private static readonly Object _typeHandlerMapMutex = new Object ();
     private static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap;
-
-    //static To ()
-    //{
-    //  _typeHandlerMapMutex = new Object ();
-    //  toTextProvider = new ToTextProvider (GetTypeHandlers());
-    //}
 
     public static string Text (object obj)
     {
@@ -28,15 +20,6 @@ namespace Remotion.Diagnostics
 
     public static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> GetTypeHandlers()
     {
-      //lock (_typeHandlerMapMutex)
-      //{
-      //  if (_typeHandlerMap == null)
-      //  {
-      //    var handlerCollector = new ToTextSpecificHandlerCollector();
-      //    _typeHandlerMap = handlerCollector.CollectHandlers<IToTextSpecificTypeHandler> ();
-      //  }
-      //  return _typeHandlerMap;
-      //}
       if (_typeHandlerMap == null)
       {
         var handlerCollector = new ToTextSpecificHandlerCollector ();
