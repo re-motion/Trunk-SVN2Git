@@ -261,9 +261,25 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
         //Return from sub function
         responseMock.Expect (mock => mock.Redirect ("/session/root.wxe?WxeFunctionToken=" + _wxeContext.FunctionToken))
-            .Do (invocation => Thread.CurrentThread.Abort());
+            .Do (
+            invocation =>
+            {
+              PrivateInvoke.SetNonPublicField (_functionState, "_postBackID", 100);
+              _wxeContext.PostBackCollection = new NameValueCollection ();
+              Thread.CurrentThread.Abort();
+            });
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage(_wxeContext, "ThePage"));
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Do (
+            invocation =>
+            {
+              Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
+              Assert.That (_pageStep.SubFunction, Is.Null);
+              Assert.That (_wxeContext.IsPostBack, Is.True);
+              Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
+              Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
+              Assert.That (PrivateInvoke.GetNonPublicField (_pageStep, "_postBackCollection"), Is.Null);
+              Assert.That (_wxeContext.IsReturningPostBack, Is.True);
+            });
       }
 
       _mockRepository.ReplayAll();

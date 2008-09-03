@@ -13,21 +13,22 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
 {
   public class TestBase
   {
-    protected MockRepository _mockRepository;
-    protected IWxePageStepExecutionStateContext _executionStateContextMock;
-    protected TestFunction _rootFunction;
-    protected OtherTestFunction _subFunction;
-    protected IHttpContext _httpContextMock;
-    protected WxeFunctionState _functionState;
-    protected WxeContext _wxeContext;
+    private MockRepository _mockRepository;
+    private IExecutionStateContext _executionStateContextMock;
+    private TestFunction _rootFunction;
+    private OtherTestFunction _subFunction;
+    private IHttpContext _httpContextMock;
+    private WxeFunctionState _functionState;
+    private WxeContext _wxeContext;
     private IHttpResponse _responseMock;
     private IHttpRequest _requestMock;
+    private NameValueCollection _postBackCollection;
 
     [SetUp]
     public virtual void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _executionStateContextMock = MockRepository.StrictMock<IWxePageStepExecutionStateContext>();
+      _executionStateContextMock = MockRepository.StrictMock<IExecutionStateContext>();
 
       _rootFunction = new TestFunction();
       _subFunction = CreateSubFunction();
@@ -41,6 +42,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
 
       _requestMock = MockRepository.StrictMock<IHttpRequest>();
       _httpContextMock.Stub (stub => stub.Request).Return (_requestMock).Repeat.Any();
+
+      _postBackCollection = new NameValueCollection();
     }
 
     protected virtual OtherTestFunction CreateSubFunction ()
@@ -56,14 +59,19 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
       SafeContext.Instance.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, null);
     }
 
-    protected IWxePageStepExecutionStateContext ExecutionStateContextMock
-    {
-      get { return _executionStateContextMock; }
-    }
-
     protected MockRepository MockRepository
     {
       get { return _mockRepository; }
+    }
+
+    protected WxeFunctionState FunctionState
+    {
+      get { return _functionState; }
+    }
+
+    protected IExecutionStateContext ExecutionStateContextMock
+    {
+      get { return _executionStateContextMock; }
     }
 
     protected TestFunction RootFunction
@@ -94,6 +102,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
     protected IHttpResponse ResponseMock
     {
       get { return _responseMock; }
+    }
+
+    public NameValueCollection PostBackCollection
+    {
+      get { return _postBackCollection; }
     }
   }
 }

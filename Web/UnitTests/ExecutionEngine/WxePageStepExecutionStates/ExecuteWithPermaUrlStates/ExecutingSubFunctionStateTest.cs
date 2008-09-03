@@ -22,24 +22,17 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
   [TestFixture]
   public class ExecutionSubFunctionStateTest : TestBase
   {
-    private IWxePageStepExecutionState _executionState;
+    private IExecutionState _executionState;
 
     public override void SetUp ()
     {
       base.SetUp();
-      _executionState = new ExecutingSubFunctionState (ExecutionStateContextMock, SubFunction, "/resumeUrl.wxe");
+      _executionState = new ExecutingSubFunctionState (ExecutionStateContextMock, new ReturningFromSubFunctionStateParameters (SubFunction, PostBackCollection, "/resumeUrl.wxe"));
     }
 
     protected override OtherTestFunction CreateSubFunction ()
     {
       return MockRepository.StrictMock<OtherTestFunction>();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void RedirectToSubFunction ()
-    {
-      _executionState.RedirectToSubFunction (WxeContext);
     }
 
     [Test]
@@ -49,23 +42,24 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       {
         SubFunction.Expect (mock => mock.Execute (WxeContext));
         ExecutionStateContextMock.Expect (
-            mock => mock.SetExecutionState (Arg<IWxePageStepExecutionState>.Is.NotNull))
+            mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
             .Do (
             invocation =>
             {
               Assert.That (invocation.Arguments[0], Is.InstanceOfType (typeof (ReturningFromSubFunctionState)));
               var nextState = (ReturningFromSubFunctionState) invocation.Arguments[0];
               Assert.That (nextState.ExecutionStateContext, Is.SameAs (ExecutionStateContextMock));
-              Assert.That (nextState.SubFunction, Is.SameAs (SubFunction));
-              Assert.That (nextState.ResumeUrl, Is.EqualTo ("/resumeUrl.wxe"));
+              Assert.That (nextState.Parameters.SubFunction, Is.SameAs (SubFunction));
+              Assert.That (nextState.Parameters.ResumeUrl, Is.EqualTo ("/resumeUrl.wxe"));
             });
       }
 
       MockRepository.ReplayAll();
 
-      _executionState.ExecuteSubFunction (WxeContext);
+      bool isContinuing = _executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
+      Assert.That (isContinuing, Is.False);
     }
 
     [Test]
@@ -75,7 +69,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       {
         SubFunction.Expect (mock => mock.Execute (WxeContext)).Do (invocation => Thread.CurrentThread.Abort());
         SubFunction.Expect (mock => mock.Execute (WxeContext));
-        ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<IWxePageStepExecutionState>.Is.NotNull));
+        ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull));
       }
 
       MockRepository.ReplayAll();
@@ -97,23 +91,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException))]
-    public void ReturnFromSubFunction ()
-    {
-      _executionState.ReturnFromSubFunction (WxeContext);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
     public void PostProcessSubFunction ()
     {
       _executionState.PostProcessSubFunction (WxeContext);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void Cleanup ()
-    {
-      _executionState.Cleanup (WxeContext);
     }
   }
 }

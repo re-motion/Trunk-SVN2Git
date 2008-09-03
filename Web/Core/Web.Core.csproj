@@ -118,15 +118,18 @@
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\ExecutingSubFunctionState.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\ExecutionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\PostProcessingSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\PreparingSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\RedirectingToSubFunctionState.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\ReturningFromSubFunctionState.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\IWxePageStepExecutionState.cs">
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\ReturningFromSubFunctionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\IExecutionState.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\IWxePageStepExecutionStateContext.cs">
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\IExecutionStateContext.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxeParameterAttribute.cs" />

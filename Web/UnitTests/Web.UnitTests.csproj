@@ -168,7 +168,7 @@
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\RedirectingToSubFunctionStateTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\Template.cs">
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\PostProcessingSubFunctionTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\TestBase.cs">

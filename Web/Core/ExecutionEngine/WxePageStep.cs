@@ -53,7 +53,7 @@ namespace Remotion.Web.ExecutionEngine
     private bool _isExternalFunctionInvoked;
     private bool _isReturningInnerFunction;
     private WxePermaUrlOptions _permaUrlOptions;
-    private IWxePageStepExecutionState _executionState = new WxePageStepExecutionState();
+    private IExecutionState _executionState = new WxePageStepExecutionState();
 
     /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
     /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Ctor/param[@name="page"]' />
@@ -156,39 +156,34 @@ namespace Remotion.Web.ExecutionEngine
         if (!_isExecuteSubFunctionExternalRequired)
         {
           //  This is the PageStep currently executing a sub-function
-          _executionState.RedirectToSubFunction (context);
           EnsureHasRedirectedToPermanentUrl (context);
 
-          _executionState.ExecuteSubFunction (context);
+          while (_executionState.ExecuteSubFunction (context))
+          {
+            // Empty
+          }
           _subFunction.Execute (context);
           //  This point is only reached after the sub-function has completed execution.
 
           //  This is the PageStep after the sub-function has completed execution
-          _executionState.ReturnFromSubFunction (context);
           EnsureHasReturnedFromRedirectToPermanentUrl (context);
 
           _executionState.PostProcessSubFunction (context);
           SetStateForExecutedSubFunction (context);
-
-          _executionState.Cleanup (context);
           CleanupAfterHavingReturnedFromRedirectToPermanentUrl();
         }
         else
         {
           //  This is the PageStep currently executing an external function
-          _executionState.RedirectToSubFunction (context);
           EnsureExternalSubFunctionInvoked (context);
 
           _executionState.ExecuteSubFunction (context);
           //  This point is only reached after the external function has been started.
 
           //  This is the PageStep after the external function has completed execution or a postback to the executing page has been received
-          _executionState.ReturnFromSubFunction (context);
 
           _executionState.PostProcessSubFunction (context);
           SetStateForExecutedExternalSubFunction (context);
-
-          _executionState.Cleanup (context);
           CleanupAfterHavingInvokedExternalSubFunction();
         }
       }

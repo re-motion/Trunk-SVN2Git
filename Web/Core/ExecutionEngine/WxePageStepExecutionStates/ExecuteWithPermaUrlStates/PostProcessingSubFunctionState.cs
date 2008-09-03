@@ -8,38 +8,38 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
 {
-  public class PostProcessingSubFunctionState:ExecuteWithPermaUrlStateBase
+  [Serializable]
+  public class PostProcessingSubFunctionState : ExecuteWithPermaUrlStateBase<ExecutionStateParameters>
   {
-    public PostProcessingSubFunctionState (IWxePageStepExecutionStateContext executionStateContext, WxeFunction subFunction)
-        : base(executionStateContext, subFunction)
+    public PostProcessingSubFunctionState (IExecutionStateContext executionStateContext, ExecutionStateParameters parameters)
+        : base(executionStateContext, parameters)
     {
     }
 
-    public override void RedirectToSubFunction (WxeContext context)
+    public override bool ExecuteSubFunction (WxeContext context)
     {
-      throw new System.NotImplementedException();
-    }
-
-    public override void ExecuteSubFunction (WxeContext context)
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public override void ReturnFromSubFunction (WxeContext context)
-    {
-      throw new System.NotImplementedException();
+      return false;
     }
 
     public override void PostProcessSubFunction (WxeContext context)
     {
-      throw new System.NotImplementedException();
-    }
+      //  Provide the executed sub-function to the executing page
+      context.ReturningFunction = Parameters.SubFunction;
 
-    public override void Cleanup (WxeContext context)
-    {
-      throw new System.NotImplementedException();
+      // Correct the PostBack-Sequence number
+      Parameters.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString ();
+
+      //  Provide the backed up postback data to the executing page
+      context.PostBackCollection = Parameters.PostBackCollection;
+
+      context.SetIsPostBack (true);
+      context.SetIsReturningPostBack (true);
+
+      ExecutionStateContext.SetExecutionState (null);
     }
   }
 }

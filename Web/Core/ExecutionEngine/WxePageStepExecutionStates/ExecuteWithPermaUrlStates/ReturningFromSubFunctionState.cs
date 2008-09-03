@@ -10,58 +10,33 @@
 
 using System;
 using System.Threading;
-using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
 {
-  public class ReturningFromSubFunctionState : ExecuteWithPermaUrlStateBase
+  public class ReturningFromSubFunctionState : ExecuteWithPermaUrlStateBase<ReturningFromSubFunctionStateParameters>
   {
-    private readonly string _resumeUrl;
-
-    public ReturningFromSubFunctionState (IWxePageStepExecutionStateContext executionStateContext, WxeFunction subFunction, string resumeUrl)
-      :base (executionStateContext, subFunction)
+    public ReturningFromSubFunctionState (IExecutionStateContext executionStateContext, ReturningFromSubFunctionStateParameters parameters)
+        : base (executionStateContext, parameters)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("resumeUrl", resumeUrl);
-
-      _resumeUrl = resumeUrl;
     }
 
-    public override void RedirectToSubFunction (WxeContext context)
-    {
-      throw new InvalidOperationException ();
-    }
-
-    public override void ExecuteSubFunction (WxeContext context)
-    {
-      throw new InvalidOperationException ();
-    }
-
-    public override void ReturnFromSubFunction (WxeContext context)
+    public override bool ExecuteSubFunction (WxeContext context)
     {
       try
       {
-        context.HttpContext.Response.Redirect (_resumeUrl);
+        context.HttpContext.Response.Redirect (Parameters.ResumeUrl);
+        throw new InvalidOperationException (string.Format("Redirect to '{0}' failed.", Parameters.ResumeUrl));
       }
       catch (ThreadAbortException)
       {
-        ExecutionStateContext.SetExecutionState (new PostProcessingSubFunctionState (ExecutionStateContext, SubFunction));
+        ExecutionStateContext.SetExecutionState (new PostProcessingSubFunctionState (ExecutionStateContext, Parameters));
         throw;
       }
     }
 
     public override void PostProcessSubFunction (WxeContext context)
     {
-      throw new InvalidOperationException ();
-    }
-
-    public override void Cleanup (WxeContext context)
-    {
       throw new InvalidOperationException();
-    }
-
-    public string ResumeUrl
-    {
-      get { return _resumeUrl; }
     }
   }
 }

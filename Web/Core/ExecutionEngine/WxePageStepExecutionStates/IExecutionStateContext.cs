@@ -10,9 +10,9 @@
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
-  public interface IWxePageStepExecutionStateContext
+  public interface IExecutionStateContext
   {
-    IWxePageStepExecutionState ExecutionState { get; }
-    void SetExecutionState (IWxePageStepExecutionState executionState);
+    IExecutionState ExecutionState { get; }
+    void SetExecutionState (IExecutionState executionState);
   }
 }

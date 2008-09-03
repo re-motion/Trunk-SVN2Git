@@ -9,51 +9,27 @@
  */
 
 using System;
-using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
 {
-  public class ExecutingSubFunctionState : ExecuteWithPermaUrlStateBase
+  public class ExecutingSubFunctionState : ExecuteWithPermaUrlStateBase<ReturningFromSubFunctionStateParameters>
   {
-    private readonly string _resumeUrl;
-
-    public ExecutingSubFunctionState (IWxePageStepExecutionStateContext executionStateContext, WxeFunction subFunction, string resumeUrl)
-        : base (executionStateContext, subFunction)
+    public ExecutingSubFunctionState (IExecutionStateContext executionStateContext, ReturningFromSubFunctionStateParameters parameters)
+        : base (executionStateContext, parameters)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("resumeUrl", resumeUrl);
-
-      _resumeUrl = resumeUrl;
     }
 
-    public override void RedirectToSubFunction (WxeContext context)
+    public override bool ExecuteSubFunction (WxeContext context)
     {
-      throw new InvalidOperationException();
-    }
-
-    public override void ExecuteSubFunction (WxeContext context)
-    {
-      SubFunction.Execute (context);
-      ExecutionStateContext.SetExecutionState (new ReturningFromSubFunctionState (ExecutionStateContext, SubFunction, _resumeUrl));
-    }
-
-    public override void ReturnFromSubFunction (WxeContext context)
-    {
-      throw new InvalidOperationException();
+      Parameters.SubFunction.Execute (context);
+      ExecutionStateContext.SetExecutionState (new ReturningFromSubFunctionState (ExecutionStateContext, Parameters));
+      
+      return true;
     }
 
     public override void PostProcessSubFunction (WxeContext context)
     {
       throw new InvalidOperationException();
-    }
-
-    public override void Cleanup (WxeContext context)
-    {
-      throw new InvalidOperationException();
-    }
-
-    public string ResumeUrl
-    {
-      get { return _resumeUrl; }
     }
   }
 }

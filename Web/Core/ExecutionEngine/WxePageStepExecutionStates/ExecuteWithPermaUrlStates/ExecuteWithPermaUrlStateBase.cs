@@ -14,34 +14,32 @@ using Remotion.Utilities;
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
 {
   [Serializable]
-  public abstract class ExecuteWithPermaUrlStateBase : IWxePageStepExecutionState
+  public abstract class ExecuteWithPermaUrlStateBase<TParameters> : IExecutionState
+    where TParameters : ExecutionStateParameters
   {
-    private readonly IWxePageStepExecutionStateContext _executionStateContext;
-    private readonly WxeFunction _subFunction;
+    private readonly IExecutionStateContext _executionStateContext;
+    private readonly TParameters _parameters;
 
-    protected ExecuteWithPermaUrlStateBase (IWxePageStepExecutionStateContext executionStateContext, WxeFunction subFunction)
+    protected ExecuteWithPermaUrlStateBase (IExecutionStateContext executionStateContext, TParameters parameters)
     {
       ArgumentUtility.CheckNotNull ("executionStateContext", executionStateContext);
-      ArgumentUtility.CheckNotNull ("subFunction", subFunction);
+      ArgumentUtility.CheckNotNull ("parameters", parameters);
 
       _executionStateContext = executionStateContext;
-      _subFunction = subFunction;
+      _parameters = parameters;
     }
 
-    public abstract void RedirectToSubFunction (WxeContext context);
-    public abstract void ExecuteSubFunction (WxeContext context);
-    public abstract void ReturnFromSubFunction (WxeContext context);
+    public abstract bool ExecuteSubFunction (WxeContext context);
     public abstract void PostProcessSubFunction (WxeContext context);
-    public abstract void Cleanup (WxeContext context);
 
-    public IWxePageStepExecutionStateContext ExecutionStateContext
+    public IExecutionStateContext ExecutionStateContext
     {
       get { return _executionStateContext; }
     }
 
-    public WxeFunction SubFunction
+    public TParameters Parameters
     {
-      get { return _subFunction; }
+      get { return _parameters; }
     }
   }
 }
