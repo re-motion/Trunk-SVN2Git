@@ -9,11 +9,12 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace Remotion.Diagnostics.ToText
 {
-  public interface IToTextSpecificTypeHandler : IToTextSpecificHandler
+  public class ToTextSpecificHandlerMap<THandler> : Dictionary<Type, THandler> where THandler : IToTextSpecificHandler
   {
-    //void ToText (Object obj, ToTextBuilder toTextBuilder);
+    
   }
 }

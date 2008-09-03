@@ -12,11 +12,11 @@ namespace Remotion.Diagnostics.ToText.Handlers
   /// </summary>
   public class ToTextProviderRegisteredInterfaceHandlerHandler : ToTextProviderHandler
   {
-    private readonly Dictionary<Type, IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap;
+    private readonly ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap;
     private int _interfaceHandlerPriorityMin = 0;
     private int _interfaceHandlerPriorityMax = 0;
 
-    public ToTextProviderRegisteredInterfaceHandlerHandler (Dictionary<Type, IToTextSpecificInterfaceHandler> interfaceTypeHandlerMap)
+    public ToTextProviderRegisteredInterfaceHandlerHandler (ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> interfaceTypeHandlerMap)
     {
       _interfaceTypeHandlerMap = interfaceTypeHandlerMap;
     }

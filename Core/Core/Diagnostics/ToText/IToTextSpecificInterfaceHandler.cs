@@ -10,9 +10,9 @@
 
 namespace Remotion.Diagnostics.ToText
 {
-  public interface IToTextSpecificInterfaceHandler
+  public interface IToTextSpecificInterfaceHandler : IToTextSpecificHandler
   {
-    void ToText (object obj, ToTextBuilder toTextBuilder);
+    //void ToText (object obj, ToTextBuilder toTextBuilder);
     int Priority { get; }
   }
 }

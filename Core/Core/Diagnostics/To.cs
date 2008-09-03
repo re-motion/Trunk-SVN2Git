@@ -21,6 +21,7 @@ namespace Remotion.Diagnostics
 
     public static void AutoRegisterHandlers ()
     {
+      // TODO: This will be called for each new thread calling any method of the To class => synchronize, cache and share
       var autoRegistrator = new ToTextSpecificHandlerAutoRegistrator ();
       autoRegistrator.FindAndRegister (toTextProvider);
     }

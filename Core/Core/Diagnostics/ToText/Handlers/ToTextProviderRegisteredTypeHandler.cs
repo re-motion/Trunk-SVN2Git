@@ -11,7 +11,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
   /// </summary>
   public class ToTextProviderRegisteredTypeHandler : ToTextProviderHandler
   {
-    private readonly Dictionary<Type, IToTextSpecificTypeHandler> _typeHandlerMap;
+    private readonly ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap;
     private readonly bool _searchForParentHandlers = false;
 
 
@@ -23,7 +23,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
     /// <param name="searchForParentHandlers">If <c>false</c> only uses a handler if his type matches the type of the instance passed 
     /// to <see cref="ToTextIfTypeMatches"/>. If <c>true</c> recursively searches for the nearest registered base type handler, 
     /// if no exact match can be found.</param>
-    public ToTextProviderRegisteredTypeHandler (Dictionary<Type, IToTextSpecificTypeHandler> typeHandlerMap, bool searchForParentHandlers)
+    public ToTextProviderRegisteredTypeHandler (ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> typeHandlerMap, bool searchForParentHandlers)
     {
       _typeHandlerMap = typeHandlerMap;
       _searchForParentHandlers = searchForParentHandlers;

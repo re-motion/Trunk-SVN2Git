@@ -25,8 +25,11 @@ namespace Remotion.Diagnostics.ToText
   /// </summary>
   public class ToTextProvider
   {
-    private readonly Dictionary<Type, IToTextSpecificTypeHandler> _typeHandlerMap = new Dictionary<Type, IToTextSpecificTypeHandler> ();
-    private readonly Dictionary<Type, IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap = new Dictionary<Type, IToTextSpecificInterfaceHandler> ();
+    //private readonly ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
+    //private readonly ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> ();
+
+    private readonly ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
+    private readonly ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> ();
     
     private int _interfaceHandlerPriorityMin = 0;
     private int _interfaceHandlerPriorityMax = 0;
