@@ -59,7 +59,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       bool isContinuing = _executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
-      Assert.That (isContinuing, Is.False);
+      Assert.That (isContinuing, Is.True);
     }
 
     [Test]
