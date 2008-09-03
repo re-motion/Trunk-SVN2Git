@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.UnitTests.Diagnostics
 {
   [TestFixture]
-  public class ToTextSpecificHandlerAutoRegistrationTest
+  public class ToTextSpecificHandlerCollectorTest
   {
     private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (true);
 
@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Diagnostics
       }
     }
 
-    private class TestSimple
+    private class TestSimple : ITestSimpleName, ITestSimpleInt
     {
       public TestSimple ()
       {
@@ -64,6 +64,17 @@ namespace Remotion.UnitTests.Diagnostics
       }
     }
 
+    private interface ITestSimpleName
+    {
+      string Name { get; set; }
+    }
+
+    private interface ITestSimpleInt
+    {
+      int Int { get; set; }
+    }
+
+
     //[ToTextHandlerTargetType (typeof (TestSimple))]
     [ToTextSpecificHandler]
     class TestSimpleToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimple>
@@ -85,6 +96,25 @@ namespace Remotion.UnitTests.Diagnostics
       }
     }
 
+
+
+    [ToTextSpecificHandler]
+    class ITestSimpleIntToTextSpecificInterfaceHandler : ToTextSpecificInterfaceHandler<ITestSimpleInt>
+    {
+      public override void ToText (ITestSimpleInt t, ToTextBuilder toTextBuilder)
+      {
+        toTextBuilder.sb ("[", ",", "]").tt ("TestSimple").tt (t.Int).se ();
+      }
+    }
+
+    [ToTextSpecificHandler]
+    class ITestSimpleNameToTextSpecificInterfaceHandler : ToTextSpecificInterfaceHandler<ITestSimpleName>
+    {
+      public override void ToText (ITestSimpleName t, ToTextBuilder toTextBuilder)
+      {
+        toTextBuilder.sb ("[", ",", "]").tt ("TestSimple").tt (t.Name).se ();
+      }
+    }
 
 
     private ToTextSpecificHandlerAttribute RetrieveTextHandlerAttribute<T> ()
@@ -143,7 +173,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var handlerCollector = new ToTextSpecificHandlerCollector ();
 
-      var handlerMap = handlerCollector.CollectHandlers<IToTextSpecificTypeHandler>();
+      var handlerMap = handlerCollector.CollectTypeHandlers();
 
       IToTextSpecificTypeHandler simpleHandler;
       handlerMap.TryGetValue (typeof (TestSimple), out simpleHandler);
@@ -154,6 +184,31 @@ namespace Remotion.UnitTests.Diagnostics
       handlerMap.TryGetValue (typeof (TestSimpleSimple), out simpleSimpleHandler);
       Assert.That (simpleSimpleHandler, Is.Not.Null);
       Assert.That (simpleSimpleHandler is TestSimpleSimpleToTextSpecificTypeHandler, Is.True);
+    }
+
+    [Test]
+    public void DiscoverInterfaceHandlersTest ()
+    {
+      var handlerCollector = new ToTextSpecificHandlerCollector ();
+
+      var handlerMap = handlerCollector.CollectInterfaceHandlers ();
+
+      //foreach (var pair in handlerMap)
+      //{
+      //  Log (pair.Key + " " + pair.Value);
+      //}
+
+      Assert.That (handlerMap.Count, Is.GreaterThan (0));
+
+      IToTextSpecificInterfaceHandler iTestSimpleIntHandler;
+      handlerMap.TryGetValue (typeof (ITestSimpleInt), out iTestSimpleIntHandler);
+      Assert.That (iTestSimpleIntHandler, Is.Not.Null);
+      Assert.That (iTestSimpleIntHandler is ITestSimpleIntToTextSpecificInterfaceHandler, Is.True);
+
+      IToTextSpecificInterfaceHandler iTestSimpleNameHandler;
+      handlerMap.TryGetValue (typeof (ITestSimpleName), out iTestSimpleNameHandler);
+      Assert.That (iTestSimpleNameHandler, Is.Not.Null);
+      Assert.That (iTestSimpleNameHandler is ITestSimpleNameToTextSpecificInterfaceHandler, Is.True);
     }
 
 
@@ -171,6 +226,4 @@ namespace Remotion.UnitTests.Diagnostics
       log.It (s);
     }
   }
-
-
 }

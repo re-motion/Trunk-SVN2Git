@@ -23,7 +23,8 @@ namespace Remotion.Diagnostics
       if (_typeHandlerMap == null)
       {
         var handlerCollector = new ToTextSpecificHandlerCollector ();
-        _typeHandlerMap = handlerCollector.CollectHandlers<IToTextSpecificTypeHandler> ();
+        //_typeHandlerMap = handlerCollector.CollectHandlers<IToTextSpecificTypeHandler> ();
+        _typeHandlerMap = handlerCollector.CollectTypeHandlers ();
       }
       return _typeHandlerMap;
     }
@@ -33,7 +34,8 @@ namespace Remotion.Diagnostics
       if (_interfaceHandlerMap == null)
       {
         var handlerCollector = new ToTextSpecificHandlerCollector ();
-        _interfaceHandlerMap = handlerCollector.CollectHandlers<IToTextSpecificInterfaceHandler> ();
+       // _interfaceHandlerMap = handlerCollector.CollectHandlers<IToTextSpecificInterfaceHandler> ();
+        _interfaceHandlerMap = handlerCollector.CollectInterfaceHandlers();
       }
       return _interfaceHandlerMap;
     }

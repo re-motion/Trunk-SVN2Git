@@ -29,7 +29,17 @@ namespace Remotion.Diagnostics.ToText
       return AttributeUtility.GetCustomAttribute<ToTextSpecificHandlerAttribute> (type, false);
     }
 
-    public ToTextSpecificHandlerMap<T> CollectHandlers<T> () where T : IToTextSpecificHandler
+    public ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> CollectTypeHandlers()
+    {
+      return CollectHandlers <IToTextSpecificTypeHandler>("ToTextSpecificTypeHandler`1");
+    }
+
+    public ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> CollectInterfaceHandlers ()
+    {
+      return CollectHandlers<IToTextSpecificInterfaceHandler> ("ToTextSpecificInterfaceHandler`1");
+    }
+
+    public ToTextSpecificHandlerMap<T> CollectHandlers<T> (string baseTypeName) where T : IToTextSpecificHandler
     {
       var handlerMap = new ToTextSpecificHandlerMap<T> ();
       const bool excludeGlobalTypes = true;
@@ -43,7 +53,8 @@ namespace Remotion.Diagnostics.ToText
         if (RetrieveTextHandlerAttribute (type) != null)
         {
           Type baseType = type.BaseType;
-          Assertion.IsTrue (baseType.Name == "ToTextSpecificTypeHandler`1");
+          //Assertion.IsTrue (baseType.Name == "ToTextSpecificTypeHandler`1");
+          Assertion.IsTrue (baseType.Name == baseTypeName);
           Type[] genericArguments = baseType.GetGenericArguments ();
           Type handledType = genericArguments[0];
 
