@@ -1,17 +1,24 @@
 using System;
+using System.Runtime.Remoting.Contexts;
 using Remotion.Diagnostics.ToText;
 
 namespace Remotion.Diagnostics
 {
+  [Synchronization]
   public static class To
   {
     [ThreadStatic]
-    private static readonly ToTextProvider toTextProvider = new ToTextProvider();
+    private static ToTextProvider toTextProvider = new ToTextProvider(GetTypeHandlers());
+    //private static ToTextProvider toTextProvider = new ToTextProvider ();
 
-    static To ()
-    {
-      AutoRegisterHandlers();
-    }
+    //private static readonly Object _typeHandlerMapMutex = new Object ();
+    private static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap;
+
+    //static To ()
+    //{
+    //  _typeHandlerMapMutex = new Object ();
+    //  toTextProvider = new ToTextProvider (GetTypeHandlers());
+    //}
 
     public static string Text (object obj)
     {
@@ -19,11 +26,23 @@ namespace Remotion.Diagnostics
     }
 
 
-    public static void AutoRegisterHandlers ()
+    public static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> GetTypeHandlers()
     {
-      // TODO: This will be called for each new thread calling any method of the To class => synchronize, cache and share
-      var autoRegistrator = new ToTextSpecificHandlerCollector ();
-      autoRegistrator.FindAndRegister (toTextProvider);
+      //lock (_typeHandlerMapMutex)
+      //{
+      //  if (_typeHandlerMap == null)
+      //  {
+      //    var handlerCollector = new ToTextSpecificHandlerCollector();
+      //    _typeHandlerMap = handlerCollector.CollectHandlers<IToTextSpecificTypeHandler> ();
+      //  }
+      //  return _typeHandlerMap;
+      //}
+      if (_typeHandlerMap == null)
+      {
+        var handlerCollector = new ToTextSpecificHandlerCollector ();
+        _typeHandlerMap = handlerCollector.CollectHandlers<IToTextSpecificTypeHandler> ();
+      }
+      return _typeHandlerMap;
     }
 
     public static void RegisterHandler<T> (Action<T, ToTextBuilder> handler)

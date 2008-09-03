@@ -50,7 +50,12 @@ namespace Remotion.Diagnostics.ToText
       RegisterDefaultToTextProviderHandlers();
     }
 
-
+    public ToTextProvider (ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> typeHandlerMap)
+    {
+      RegisterDefaultToTextProviderHandlers();
+      //_typeHandlerMap = typeHandlerMap;
+      _typeHandlerMap.Add (typeHandlerMap);
+    }
 
 
     /// <summary>

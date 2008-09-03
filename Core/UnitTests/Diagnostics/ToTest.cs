@@ -160,6 +160,18 @@ namespace Remotion.UnitTests.Diagnostics
     //}
 
 
+    [Test]
+    public void GetTypeHandlersTest ()
+    {
+      var handlerMap = To.GetTypeHandlers();
+      foreach (var pair in handlerMap)
+      {
+        Log (pair.Key + " " + pair.Value);
+      }
+      //Assert.That (To.Text ('x'), Is.EqualTo ("'x'"));
+    }
+
+
     public static void Log (string s)
     {
       Console.WriteLine (s);

@@ -137,75 +137,67 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    //[Test]
+    //public void AutoregisterTest ()
+    //{
+    //  var toTextProvider = new ToTextProvider ();
+    //  var testSimple = new TestSimple ();
+    //  var resultWithNoHandler = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimple, toTextProvider);
+    //  Assert.That (resultWithNoHandler, Is.EqualTo (""));
+
+    //  var autoRegistrator = new ToTextSpecificHandlerCollector ();
+    //  autoRegistrator.FindAndRegister (toTextProvider);
+    //  var resultWithHandler = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimple, toTextProvider);
+    //  log.It ("testSimple=" + testSimple);
+    //  Assert.That (resultWithHandler, Is.EqualTo ("[TestSimple,ABC abc,54321]"));
+    //}
+
+    //[Test]
+    //public void AutoregisterMultipleHandlersTest ()
+    //{
+    //  var toTextProvider = new ToTextProvider ();
+    //  var testSimple = new TestSimple ();
+    //  var testSimpleSimple = new TestSimpleSimple ();
+
+    //  var autoRegistrator = new ToTextSpecificHandlerCollector ();
+    //  autoRegistrator.FindAndRegister (toTextProvider);
+    //  var testSimpleResult = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimple, toTextProvider);
+    //  var testSimpleSimpleResult = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimpleSimple, toTextProvider);
+    //  log.It ("testSimpleResult=" + testSimpleResult);
+    //  log.It ("testSimpleSimpleResult=" + testSimpleSimpleResult);
+    //  Assert.That (testSimpleResult, Is.EqualTo ("[TestSimple,ABC abc,54321]"));
+    //  Assert.That (testSimpleSimpleResult, Is.EqualTo ("[TestSimpleSimple,I like it]"));
+    //}
 
 
     [Test]
-    public void AutoregisterTest ()
-    {
-      var toTextProvider = new ToTextProvider ();
-      var testSimple = new TestSimple ();
-      //Assert.That (toTextProvider.ToTextString (testSimple), Is.EqualTo (testSimple.ToString()));
-      var resultWithNoHandler = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimple, toTextProvider);
-      Assert.That (resultWithNoHandler, Is.EqualTo (""));
-
-      var autoRegistrator = new ToTextSpecificHandlerCollector ();
-      autoRegistrator.FindAndRegister (toTextProvider);
-      //var result = toTextProvider.ToTextString (testSimple);
-      var resultWithHandler = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimple, toTextProvider);
-      log.It ("testSimple=" + testSimple);
-      //Assert.That (resultWithHandler, Is.EqualTo ("[TestSimple  The Name=ABC abc,The Number=54321]"));
-      Assert.That (resultWithHandler, Is.EqualTo ("[TestSimple,ABC abc,54321]"));
-    }
-
-    [Test]
-    public void AutoregisterMultipleHandlersTest ()
-    {
-      var toTextProvider = new ToTextProvider ();
-      var testSimple = new TestSimple ();
-      var testSimpleSimple = new TestSimpleSimple ();
-
-      var autoRegistrator = new ToTextSpecificHandlerCollector ();
-      autoRegistrator.FindAndRegister (toTextProvider);
-      var testSimpleResult = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimple, toTextProvider);
-      var testSimpleSimpleResult = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimpleSimple, toTextProvider);
-      log.It ("testSimpleResult=" + testSimpleResult);
-      log.It ("testSimpleSimpleResult=" + testSimpleSimpleResult);
-      Assert.That (testSimpleResult, Is.EqualTo ("[TestSimple,ABC abc,54321]"));
-      Assert.That (testSimpleSimpleResult, Is.EqualTo ("[TestSimpleSimple,I like it]"));
-    }
-
-
-    [Test]
-    [Ignore]
     public void DiscoverMultipleHandlersTest ()
     {
-      var toTextProvider = new ToTextProvider ();
-      var testSimple = new TestSimple ();
-      var testSimpleSimple = new TestSimpleSimple ();
+      var handlerCollector = new ToTextSpecificHandlerCollector ();
 
-      var autoRegistrator = new ToTextSpecificHandlerCollector ();
-      //autoRegistrator.FindAndRegister (toTextProvider);
+      var handlerMap = handlerCollector.CollectHandlers<IToTextSpecificTypeHandler>();
 
-      var handlerMap = autoRegistrator.DiscoverHandlers<IToTextSpecificTypeHandler>();
+      IToTextSpecificTypeHandler simpleHandler;
+      handlerMap.TryGetValue (typeof (TestSimple), out simpleHandler);
+      Assert.That (simpleHandler, Is.Not.Null);
+      Assert.That (simpleHandler is TestSimpleToTextSpecificTypeHandler, Is.True);
 
-      var testSimpleResult = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimple, toTextProvider);
-      var testSimpleSimpleResult = ToTextProviderHandlerToText<ToTextProviderRegisteredTypeHandler> (testSimpleSimple, toTextProvider);
-      log.It ("testSimpleResult=" + testSimpleResult);
-      log.It ("testSimpleSimpleResult=" + testSimpleSimpleResult);
-      Assert.That (testSimpleResult, Is.EqualTo ("[TestSimple,ABC abc,54321]"));
-      Assert.That (testSimpleSimpleResult, Is.EqualTo ("[TestSimpleSimple,I like it]"));
+      IToTextSpecificTypeHandler simpleSimpleHandler;
+      handlerMap.TryGetValue (typeof (TestSimpleSimple), out simpleSimpleHandler);
+      Assert.That (simpleSimpleHandler, Is.Not.Null);
+      Assert.That (simpleSimpleHandler is TestSimpleSimpleToTextSpecificTypeHandler, Is.True);
     }
 
 
 
-    private string ToTextProviderHandlerToText<T> (object obj, ToTextProvider toTextProvider) where T : IToTextProviderHandler
-    {
-      var toTextParameters = ToTextProviderTest.CreateToTextParameters (obj);
-      var feedback = new ToTextProviderHandlerFeedback ();
-      toTextProvider.GetToTextProviderHandler<T> ().ToTextIfTypeMatches (toTextParameters, feedback);
-      var result = toTextParameters.ToTextBuilder.CheckAndConvertToString();
-      return result;
-    }
+    //private string ToTextProviderHandlerToText<T> (object obj, ToTextProvider toTextProvider) where T : IToTextProviderHandler
+    //{
+    //  var toTextParameters = ToTextProviderTest.CreateToTextParameters (obj);
+    //  var feedback = new ToTextProviderHandlerFeedback ();
+    //  toTextProvider.GetToTextProviderHandler<T> ().ToTextIfTypeMatches (toTextParameters, feedback);
+    //  var result = toTextParameters.ToTextBuilder.CheckAndConvertToString();
+    //  return result;
+    //}
 
 
     // Logging

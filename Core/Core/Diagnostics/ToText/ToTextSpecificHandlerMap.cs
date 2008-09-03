@@ -13,8 +13,21 @@ using System.Collections.Generic;
 
 namespace Remotion.Diagnostics.ToText
 {
+  /// <summary>
+  /// A map mapping from types to  <see cref="IToTextSpecificHandler"/>s.
+  /// </summary>
+  /// <typeparam name="THandler"></typeparam>
   public class ToTextSpecificHandlerMap<THandler> : Dictionary<Type, THandler> where THandler : IToTextSpecificHandler
   {
-    
+    /// <summary>
+    /// Adds the entries from the passed <see cref="ToTextSpecificHandlerMap{THandler}"/> to the map.
+    /// </summary>
+    public void Add(ToTextSpecificHandlerMap<THandler> handlerMap)
+    {
+      foreach (var pair in handlerMap) 
+      {
+        Add (pair.Key, pair.Value);
+      }
+    }
   }
 }
