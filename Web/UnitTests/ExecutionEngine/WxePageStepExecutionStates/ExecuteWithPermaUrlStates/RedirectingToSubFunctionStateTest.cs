@@ -51,7 +51,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     {
       IExecutionState executionState = new RedirectingToSubFunctionState (
           ExecutionStateContextMock, new PreparingSubFunctionStateParameters (SubFunction, PostBackCollection, WxePermaUrlOptions.Null));
-      Assert.That (executionState.IsExecuting, Is.False);
+      Assert.That (executionState.IsExecuting, Is.True);
     }
 
     [Test]

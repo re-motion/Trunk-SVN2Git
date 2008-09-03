@@ -114,11 +114,13 @@
     <Compile Include="ExecutionEngine\WxeExecuteUserControlStepException.cs" />
     <Compile Include="ExecutionEngine\WxeExecutionControlExceptionBase.cs" />
     <Compile Include="ExecutionEngine\WxePageExecutor.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\ExecuteWithPermaUrlStateBase.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithoutPermaUrlStates\ExecutingSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithoutPermaUrlStates\PostProcessingSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecutionStateBase.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\ExecutingSubFunctionState.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\ExecutionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecutionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\PostProcessingSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\PreparingSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\RedirectingToSubFunctionState.cs">

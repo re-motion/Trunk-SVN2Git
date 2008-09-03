@@ -17,6 +17,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
@@ -26,7 +27,7 @@ namespace Remotion.Web.ExecutionEngine
   /// <summary> This step interrupts the server side execution to display a page to the user. </summary>
   /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Class/*' />
   [Serializable]
-  public class WxePageStep : WxeStep
+  public class WxePageStep : WxeStep, IExecutionStateContext
   {
     private IWxePageExecutor _pageExecutor = new WxePageExecutor();
     private readonly string _page;
@@ -44,16 +45,12 @@ namespace Remotion.Web.ExecutionEngine
     [NonSerialized]
     private WxeHandler _wxeHandler;
 
-    private bool _isRedirectToPermanentUrlRequired;
     private WxeReturnOptions _returnOptions;
-    private bool _isRedirectedToPermanentUrl;
-    private bool _hasReturnedFromRedirectToPermanentUrl;
-    private string _resumeUrl;
     private bool _isExecuteSubFunctionExternalRequired;
     private bool _isExternalFunctionInvoked;
     private bool _isReturningInnerFunction;
     private WxePermaUrlOptions _permaUrlOptions;
-    private IExecutionState _executionState = new WxePageStepExecutionState();
+    private IExecutionState _executionState;
 
     /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
     /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Ctor/param[@name="page"]' />
@@ -156,33 +153,27 @@ namespace Remotion.Web.ExecutionEngine
         if (!_isExecuteSubFunctionExternalRequired)
         {
           //  This is the PageStep currently executing a sub-function
-          EnsureHasRedirectedToPermanentUrl (context);
 
           while (_executionState.IsExecuting)
             _executionState.ExecuteSubFunction (context);
 
-          _subFunction.Execute (context);
           //  This point is only reached after the sub-function has completed execution.
 
-          //  This is the PageStep after the sub-function has completed execution
-          EnsureHasReturnedFromRedirectToPermanentUrl (context);
-
           _executionState.PostProcessSubFunction (context);
-          SetStateForExecutedSubFunction (context);
-          CleanupAfterHavingReturnedFromRedirectToPermanentUrl();
+          _subFunction = null;
         }
         else
         {
           //  This is the PageStep currently executing an external function
           EnsureExternalSubFunctionInvoked (context);
 
-          while (_executionState.IsExecuting)
-            _executionState.ExecuteSubFunction (context);
+          //while (_executionState.IsExecuting)
+          //  _executionState.ExecuteSubFunction (context);
           //  This point is only reached after the external function has been started.
 
           //  This is the PageStep after the external function has completed execution or a postback to the executing page has been received
 
-          _executionState.PostProcessSubFunction (context);
+          //_executionState.PostProcessSubFunction (context);
           SetStateForExecutedExternalSubFunction (context);
           CleanupAfterHavingInvokedExternalSubFunction();
         }
@@ -208,61 +199,6 @@ namespace Remotion.Web.ExecutionEngine
           _isReturningInnerFunction = false;
         }
       }
-    }
-
-
-    private void EnsureHasRedirectedToPermanentUrl (WxeContext context)
-    {
-      if (_isRedirectToPermanentUrlRequired && ! _isRedirectedToPermanentUrl)
-      {
-        string destinationUrl;
-        try
-        {
-          destinationUrl = GetDestinationPermanentUrl (context);
-        }
-        catch (WxePermanentUrlTooLongException)
-        {
-          _subFunction = null;
-          throw;
-        }
-
-        _permaUrlOptions = null;
-        _resumeUrl = context.GetResumePath();
-        _isRedirectedToPermanentUrl = true;
-        context.HttpContext.Response.Redirect (destinationUrl);
-      }
-    }
-
-    private void EnsureHasReturnedFromRedirectToPermanentUrl (WxeContext context)
-    {
-      if (_isRedirectToPermanentUrlRequired && _isRedirectedToPermanentUrl && ! _hasReturnedFromRedirectToPermanentUrl)
-      {
-        _hasReturnedFromRedirectToPermanentUrl = true;
-        context.HttpContext.Response.Redirect (_resumeUrl);
-      }
-    }
-
-    private void CleanupAfterHavingReturnedFromRedirectToPermanentUrl ()
-    {
-      if (_isRedirectToPermanentUrlRequired && _hasReturnedFromRedirectToPermanentUrl)
-      {
-        _isRedirectToPermanentUrlRequired = false;
-        _isRedirectedToPermanentUrl = false;
-        _hasReturnedFromRedirectToPermanentUrl = false;
-      }
-    }
-
-    private string GetDestinationPermanentUrl (WxeContext context)
-    {
-      NameValueCollection internalUrlParameters;
-      if (_permaUrlOptions.UrlParameters == null)
-        internalUrlParameters = _subFunction.SerializeParametersForQueryString();
-      else
-        internalUrlParameters = _permaUrlOptions.UrlParameters.Clone ();
-
-      internalUrlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, context.FunctionToken);
-
-      return context.GetPermanentUrl (_subFunction.GetType (), internalUrlParameters, _permaUrlOptions.UseParentPermaUrl);
     }
 
     private void EnsureExternalSubFunctionInvoked (WxeContext context)
@@ -330,7 +266,7 @@ namespace Remotion.Web.ExecutionEngine
         if (permaUrlOptions.UrlParameters == null)
           internalUrlParameters = function.SerializeParametersForQueryString();
         else
-          internalUrlParameters = NameValueCollectionUtility.Clone (permaUrlOptions.UrlParameters);
+          internalUrlParameters = permaUrlOptions.UrlParameters.Clone ();
         internalUrlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, functionToken);
 
         href = wxeContext.GetPermanentUrl (function.GetType (), internalUrlParameters, permaUrlOptions.UseParentPermaUrl);
@@ -396,13 +332,21 @@ namespace Remotion.Web.ExecutionEngine
     private void InternalExecuteFunction (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
     {
       PrepareExecuteFunction (function, true);
-      _isRedirectToPermanentUrlRequired = permaUrlOptions.UsePermaUrl;
-      _permaUrlOptions = permaUrlOptions;
+      if (permaUrlOptions.UsePermaUrl)
+      {
+        PreparingSubFunctionStateParameters parameters = new PreparingSubFunctionStateParameters (_subFunction, _postBackCollection, permaUrlOptions);
+        _executionState = new WxePageStepExecutionStates.ExecuteWithPermaUrlStates.RedirectingToSubFunctionState (this, parameters);
+      }
+      else
+      {
+        ExecutionStateParameters parameters = new ExecutionStateParameters (_subFunction, _postBackCollection);
+        _executionState = new WxePageStepExecutionStates.ExecuteWithoutPermaUrlStates.ExecutingSubFunctionState (this, parameters);
+      }
 
-      page.SaveAllState ();
+      page.SaveAllState();
 
       _wxeHandler = page.WxeHandler;
-      Execute ();
+      Execute();
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -549,25 +493,6 @@ namespace Remotion.Web.ExecutionEngine
       context.SetIsReturningPostBack (false);
     }
 
-    private void SetStateForExecutedSubFunction (WxeContext context)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      //  Provide the executed sub-function to the executing page
-      context.ReturningFunction = _subFunction;
-      _subFunction = null;
-
-      context.SetIsPostBack (true);
-
-      // Correct the PostBack-Sequence number
-      _postBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString();
-
-      //  Provide the backed up postback data to the executing page
-      context.PostBackCollection = _postBackCollection;
-      _postBackCollection = null;
-      context.SetIsReturningPostBack (true);
-    }
-
     private void SetStateForExecutedExternalSubFunction (WxeContext context)
     {
       //  Provide the executed sub-function to the executing page
@@ -624,6 +549,16 @@ namespace Remotion.Web.ExecutionEngine
     {
       ArgumentUtility.CheckNotNull ("pageExecutor", pageExecutor);
       _pageExecutor = pageExecutor;
+    }
+
+    IExecutionState IExecutionStateContext.ExecutionState
+    {
+      get { return _executionState; }
+    }
+
+    void IExecutionStateContext.SetExecutionState (IExecutionState executionState)
+    {
+      _executionState = executionState;
     }
   }
 }

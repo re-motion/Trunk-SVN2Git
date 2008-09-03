@@ -11,16 +11,16 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
   [Serializable]
-  public abstract class ExecuteWithPermaUrlStateBase<TParameters> : IExecutionState
-    where TParameters : ExecutionStateParameters
+  public abstract class ExecutionStateBase<TParameters> : IExecutionState
+      where TParameters : ExecutionStateParameters
   {
     private readonly IExecutionStateContext _executionStateContext;
     private readonly TParameters _parameters;
 
-    protected ExecuteWithPermaUrlStateBase (IExecutionStateContext executionStateContext, TParameters parameters)
+    protected ExecutionStateBase (IExecutionStateContext executionStateContext, TParameters parameters)
     {
       ArgumentUtility.CheckNotNull ("executionStateContext", executionStateContext);
       ArgumentUtility.CheckNotNull ("parameters", parameters);

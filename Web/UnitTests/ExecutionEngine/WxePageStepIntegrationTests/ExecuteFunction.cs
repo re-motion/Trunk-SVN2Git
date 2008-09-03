@@ -18,6 +18,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
@@ -113,11 +114,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
             {
               Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
               Assert.That (_pageStep.SubFunction, Is.Null);
-              Assert.That (_wxeContext.IsPostBack, Is.True);
               Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
               Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
-              Assert.That (PrivateInvoke.GetNonPublicField (_pageStep, "_postBackCollection"), Is.Null);
+              Assert.That (_wxeContext.IsPostBack, Is.True);
               Assert.That (_wxeContext.IsReturningPostBack, Is.True);
+              Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.Null);
             });
       }
 
@@ -165,7 +166,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
     {
       WxeContextMock.SetCurrent (_wxeContext);
 
-      using (_mockRepository.Ordered())
+      using (_mockRepository.Ordered ())
       {
         _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
         _pageMock.Expect (mock => mock.SaveAllState());
@@ -274,11 +275,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
             {
               Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
               Assert.That (_pageStep.SubFunction, Is.Null);
-              Assert.That (_wxeContext.IsPostBack, Is.True);
               Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
               Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
-              Assert.That (PrivateInvoke.GetNonPublicField (_pageStep, "_postBackCollection"), Is.Null);
               Assert.That (_wxeContext.IsReturningPostBack, Is.True);
+              Assert.That (_wxeContext.IsPostBack, Is.True);
+              Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.Null);
             });
       }
 

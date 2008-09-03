@@ -10,13 +10,12 @@
 
 using System;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrlStates
 {
-  [Serializable]
-  public class PostProcessingSubFunctionState : ExecutionStateBase<ExecutionStateParameters>
+  public class PostProcessingSubFunctionState:ExecutionStateBase<ExecutionStateParameters>
   {
     public PostProcessingSubFunctionState (IExecutionStateContext executionStateContext, ExecutionStateParameters parameters)
-        : base (executionStateContext, parameters)
+        : base(executionStateContext, parameters)
     {
     }
 
@@ -27,7 +26,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
 
     public override void ExecuteSubFunction (WxeContext context)
     {
-      throw new NotSupportedException ();
+      throw new NotSupportedException();
     }
 
     //TODO: CleanUp duplication with other PostProcessSubFunction-implemenations
@@ -37,7 +36,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
       context.ReturningFunction = Parameters.SubFunction;
 
       // Correct the PostBack-Sequence number
-      Parameters.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString();
+      Parameters.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString ();
 
       //  Provide the backed up postback data to the executing page
       context.PostBackCollection = Parameters.PostBackCollection;

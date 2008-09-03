@@ -13,7 +13,7 @@ using System.Threading;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
 {
-  public class ReturningFromSubFunctionState : ExecuteWithPermaUrlStateBase<ReturningFromSubFunctionStateParameters>
+  public class ReturningFromSubFunctionState : ExecutionStateBase<ReturningFromSubFunctionStateParameters>
   {
     public ReturningFromSubFunctionState (IExecutionStateContext executionStateContext, ReturningFromSubFunctionStateParameters parameters)
         : base (executionStateContext, parameters)
@@ -22,7 +22,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
 
     public override bool IsExecuting
     {
-      get { return false; }
+      get { return true; }
     }
 
     public override void ExecuteSubFunction (WxeContext context)
