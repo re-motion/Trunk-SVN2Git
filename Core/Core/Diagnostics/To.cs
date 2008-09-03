@@ -8,15 +8,15 @@ namespace Remotion.Diagnostics
   public static class To
   {
     [ThreadStatic]
-    private static ToTextProvider _toTextProvider = new ToTextProvider(GetTypeHandlers());
+    private static ToTextProvider _toTextProvider = new ToTextProvider (GetTypeHandlers(), GetInterfaceHandlers());
 
     private static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap;
+    private static ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceHandlerMap;
 
     public static string Text (object obj)
     {
       return _toTextProvider.ToTextString (obj);
     }
-
 
     public static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> GetTypeHandlers()
     {
@@ -26,6 +26,16 @@ namespace Remotion.Diagnostics
         _typeHandlerMap = handlerCollector.CollectHandlers<IToTextSpecificTypeHandler> ();
       }
       return _typeHandlerMap;
+    }
+
+    public static ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> GetInterfaceHandlers ()
+    {
+      if (_interfaceHandlerMap == null)
+      {
+        var handlerCollector = new ToTextSpecificHandlerCollector ();
+        _interfaceHandlerMap = handlerCollector.CollectHandlers<IToTextSpecificInterfaceHandler> ();
+      }
+      return _interfaceHandlerMap;
     }
 
     public static void RegisterHandler<T> (Action<T, ToTextBuilder> handler)

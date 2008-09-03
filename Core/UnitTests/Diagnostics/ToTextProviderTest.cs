@@ -725,17 +725,76 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    /*
+         public ToTextProvider (ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> typeHandlerMap, ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> interfaceTypeHandlerMap)
+    {
+      RegisterDefaultToTextProviderHandlers();
+      if (typeHandlerMap != null)
+      {
+        _typeHandlerMap.Add (typeHandlerMap);
+      }
+      if (interfaceTypeHandlerMap != null)
+      {
+        _interfaceTypeHandlerMap.Add (interfaceTypeHandlerMap);
+      }
+    }
+     */
+
+    [Test]
+    public void ToTextProviderExtendedCtorNullTest ()
+    {
+      var toTextProvider = new ToTextProvider (null,null);
+    }
+    
+    
+    [Test]
+    public void ToTextProviderExtendedCtorInterfaceOnlyTest ()
+    {
+      var test = new Test ();
+      var interfaceHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> ();
+      interfaceHandlerMap[typeof (ITestName)] = new ToTextSpecificInterfaceHandlerWrapper<ITestName> ((t, ttb) => ttb.s ("[ToTextProviderExtendedCtorTest:ITestName]"), 0);
+
+      var toTextProvider = new ToTextProvider (null, interfaceHandlerMap);
+      TextProviderSetAutomatics (toTextProvider, false);
+      toTextProvider.Settings.UseInterfaceHandlers = true;
+
+      Assert.That (toTextProvider.ToTextString (test), Is.EqualTo ("[ToTextProviderExtendedCtorTest:ITestName]"));
+    }
+
+    [Test]
+    public void ToTextProviderExtendedCtorTest ()
+    {
+      var typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
+      var test = new Test ();
+      typeHandlerMap[test.GetType ()] = new ToTextSpecificTypeHandlerWrapper<Test> ((t, ttb) => ttb.s ("[ToTextProviderExtendedCtorTest:Test]"));
+
+      var toTextProvider = new ToTextProvider (typeHandlerMap, null);
+      TextProviderSetAutomatics (toTextProvider, false);
+      toTextProvider.Settings.UseInterfaceHandlers = true;
+
+      Assert.That (toTextProvider.ToTextString (test), Is.EqualTo ("[ToTextProviderExtendedCtorTest:Test]"));
+
+    }
 
 
+
+    public static void TextProviderSetAutomatics (ToTextProvider toTextProvider, bool enable)
+    {
+      toTextProvider.Settings.UseAutomaticObjectToText = enable;
+      toTextProvider.Settings.UseAutomaticStringEnclosing = enable;
+      toTextProvider.Settings.UseAutomaticCharEnclosing = enable;
+      toTextProvider.Settings.UseInterfaceHandlers = enable;
+    }
 
     public static ToTextProvider CreateTextProvider ()
     {
-      var toText = new ToTextProvider();
-      toText.Settings.UseAutomaticObjectToText = false;
-      toText.Settings.UseAutomaticStringEnclosing = false;
-      toText.Settings.UseAutomaticCharEnclosing = false;
-      toText.Settings.UseInterfaceHandlers = false;
-      return toText;
+      var toTextProvider = new ToTextProvider ();
+      //toTextProvider.Settings.UseAutomaticObjectToText = false;
+      //toTextProvider.Settings.UseAutomaticStringEnclosing = false;
+      //toTextProvider.Settings.UseAutomaticCharEnclosing = false;
+      //toTextProvider.Settings.UseInterfaceHandlers = false;
+      TextProviderSetAutomatics (toTextProvider, false);
+      return toTextProvider;
     }
 
     public static ToTextParameters CreateToTextParameters (object obj)

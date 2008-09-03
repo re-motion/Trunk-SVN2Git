@@ -13,11 +13,11 @@ using Remotion.Diagnostics.ToText;
 
 namespace Remotion.Diagnostics.ToText
 {
-  internal class ToTextSpecificInterfaceHandler<T> : IToTextSpecificInterfaceHandler
+  public class ToTextSpecificInterfaceHandlerWrapper<T> : IToTextSpecificInterfaceHandler
   {
     private readonly Action<T, ToTextBuilder> _interfaceHandler;
 
-    public ToTextSpecificInterfaceHandler (Action<T, ToTextBuilder> interfaceHandler, int priority)
+    public ToTextSpecificInterfaceHandlerWrapper (Action<T, ToTextBuilder> interfaceHandler, int priority)
     {
       _interfaceHandler = interfaceHandler;
       Priority = priority;

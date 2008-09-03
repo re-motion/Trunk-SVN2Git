@@ -26,13 +26,13 @@ namespace Remotion.Diagnostics.ToText.Handlers
     public void RegisterInterfaceHandlerAppendLast<T> (Action<T, ToTextBuilder> handler)
     {
       --_interfaceHandlerPriorityMin;
-      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMin));
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandlerWrapper<T> (handler, _interfaceHandlerPriorityMin));
     }
 
     public void RegisterInterfaceHandlerAppendFirst<T> (Action<T, ToTextBuilder> handler)
     {
       ++_interfaceHandlerPriorityMax;
-      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMax));
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandlerWrapper<T> (handler, _interfaceHandlerPriorityMax));
     }
     
     public override void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback)

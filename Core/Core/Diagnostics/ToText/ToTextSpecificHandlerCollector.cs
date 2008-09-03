@@ -24,30 +24,6 @@ namespace Remotion.Diagnostics.ToText
   /// </summary>
   public class ToTextSpecificHandlerCollector
   {
-    //public void FindAndRegister (ToTextProvider toTextProvider)
-    //{
-    //  const bool excludeGlobalTypes = true;
-    //  ITypeDiscoveryService _typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-    //      new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, excludeGlobalTypes));
-
-    //  ICollection types = _typeDiscoveryService.GetTypes (typeof (IToTextSpecificTypeHandler), excludeGlobalTypes);
-
-    //  foreach (Type type in types)
-    //  {
-    //    if (RetrieveTextHandlerAttribute (type) != null)
-    //    {
-    //      Type baseType = type.BaseType;
-    //      Assertion.IsTrue (baseType.Name == "ToTextSpecificTypeHandler`1");
-    //      Type[] genericArguments = baseType.GetGenericArguments ();
-    //      Type handledType = genericArguments[0];
-
-    //      toTextProvider.RegisterSpecificTypeHandler (handledType, (IToTextSpecificTypeHandler) Activator.CreateInstance (type));
-    //    }
-    //  }
-    //}
-
-    // ToTextSpecificHandlerMap
-
     private ToTextSpecificHandlerAttribute RetrieveTextHandlerAttribute (Type type)
     {
       return AttributeUtility.GetCustomAttribute<ToTextSpecificHandlerAttribute> (type, false);
@@ -60,7 +36,7 @@ namespace Remotion.Diagnostics.ToText
       ITypeDiscoveryService _typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
           new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, excludeGlobalTypes));
 
-      ICollection types = _typeDiscoveryService.GetTypes (typeof (IToTextSpecificTypeHandler), excludeGlobalTypes);
+      ICollection types = _typeDiscoveryService.GetTypes (typeof (T), excludeGlobalTypes);
 
       foreach (Type type in types)
       {

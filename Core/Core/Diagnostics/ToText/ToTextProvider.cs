@@ -50,11 +50,17 @@ namespace Remotion.Diagnostics.ToText
       RegisterDefaultToTextProviderHandlers();
     }
 
-    public ToTextProvider (ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> typeHandlerMap)
+    public ToTextProvider (ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> typeHandlerMap, ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> interfaceTypeHandlerMap)
     {
       RegisterDefaultToTextProviderHandlers();
-      //_typeHandlerMap = typeHandlerMap;
-      _typeHandlerMap.Add (typeHandlerMap);
+      if (typeHandlerMap != null)
+      {
+        _typeHandlerMap.Add (typeHandlerMap);
+      }
+      if (interfaceTypeHandlerMap != null)
+      {
+        _interfaceTypeHandlerMap.Add (interfaceTypeHandlerMap);
+      }
     }
 
 
@@ -126,13 +132,13 @@ namespace Remotion.Diagnostics.ToText
     public void RegisterSpecificInterfaceHandlerWithLowestPriority<T> (Action<T, ToTextBuilder> handler)
     {
       --_interfaceHandlerPriorityMin;
-      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMin));
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandlerWrapper<T> (handler, _interfaceHandlerPriorityMin));
     }
 
     public void RegisterSpecificInterfaceHandlerWithHighestPriority<T> (Action<T, ToTextBuilder> handler)
     {
       ++_interfaceHandlerPriorityMax;
-      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandler<T> (handler, _interfaceHandlerPriorityMax));
+      _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandlerWrapper<T> (handler, _interfaceHandlerPriorityMax));
     }
 
     public void ClearSpecificTypeHandlers ()
