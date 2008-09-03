@@ -36,6 +36,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
+    public void IsExecuting ()
+    {
+      Assert.That (_executionState.IsExecuting, Is.True);
+    }
+
+    [Test]
     public void ExecuteSubFunction_GoesToReturningFromSubFunction ()
     {
       using (MockRepository.Ordered())
@@ -56,10 +62,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       MockRepository.ReplayAll();
 
-      bool isContinuing = _executionState.ExecuteSubFunction (WxeContext);
+      _executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
-      Assert.That (isContinuing, Is.True);
     }
 
     [Test]
@@ -90,7 +95,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
+    [ExpectedException (typeof (NotSupportedException))]
     public void PostProcessSubFunction ()
     {
       _executionState.PostProcessSubFunction (WxeContext);

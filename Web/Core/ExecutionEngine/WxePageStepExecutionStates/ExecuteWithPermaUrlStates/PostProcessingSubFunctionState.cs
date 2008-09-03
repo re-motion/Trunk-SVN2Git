@@ -16,13 +16,18 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
   public class PostProcessingSubFunctionState : ExecuteWithPermaUrlStateBase<ExecutionStateParameters>
   {
     public PostProcessingSubFunctionState (IExecutionStateContext executionStateContext, ExecutionStateParameters parameters)
-        : base(executionStateContext, parameters)
+        : base (executionStateContext, parameters)
     {
     }
 
-    public override bool ExecuteSubFunction (WxeContext context)
+    public override bool IsExecuting
     {
-      return false;
+      get { return false; }
+    }
+
+    public override void ExecuteSubFunction (WxeContext context)
+    {
+      throw new NotSupportedException ();
     }
 
     public override void PostProcessSubFunction (WxeContext context)
@@ -31,7 +36,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
       context.ReturningFunction = Parameters.SubFunction;
 
       // Correct the PostBack-Sequence number
-      Parameters.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString ();
+      Parameters.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString();
 
       //  Provide the backed up postback data to the executing page
       context.PostBackCollection = Parameters.PostBackCollection;

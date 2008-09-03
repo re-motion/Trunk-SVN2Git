@@ -47,6 +47,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
+    public void IsExecuting ()
+    {
+      IExecutionState executionState = new RedirectingToSubFunctionState (
+          ExecutionStateContextMock, new PreparingSubFunctionStateParameters (SubFunction, PostBackCollection, WxePermaUrlOptions.Null));
+      Assert.That (executionState.IsExecuting, Is.False);
+    }
+
+    [Test]
     public void ExecuteSubFunction_WithPermaUrl_GoesToExecutingSubFunction ()
     {
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions();
@@ -173,7 +181,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
+    [ExpectedException (typeof (NotSupportedException))]
     public void PostProcessSubFunction ()
     {
       IExecutionState executionState = new RedirectingToSubFunctionState (

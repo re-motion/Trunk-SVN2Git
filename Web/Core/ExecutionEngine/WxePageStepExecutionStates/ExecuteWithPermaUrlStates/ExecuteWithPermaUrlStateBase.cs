@@ -29,7 +29,8 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
       _parameters = parameters;
     }
 
-    public abstract bool ExecuteSubFunction (WxeContext context);
+    public abstract bool IsExecuting {get;}
+    public abstract void ExecuteSubFunction (WxeContext context);
     public abstract void PostProcessSubFunction (WxeContext context);
 
     public IExecutionStateContext ExecutionStateContext

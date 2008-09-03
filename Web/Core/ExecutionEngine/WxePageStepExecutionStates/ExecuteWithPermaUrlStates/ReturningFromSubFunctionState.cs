@@ -20,7 +20,12 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
     {
     }
 
-    public override bool ExecuteSubFunction (WxeContext context)
+    public override bool IsExecuting
+    {
+      get { return false; }
+    }
+
+    public override void ExecuteSubFunction (WxeContext context)
     {
       try
       {
@@ -36,7 +41,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
 
     public override void PostProcessSubFunction (WxeContext context)
     {
-      throw new InvalidOperationException();
+      throw new NotSupportedException ();
     }
   }
 }

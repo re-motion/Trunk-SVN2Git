@@ -31,9 +31,16 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
+    public void IsExecuting ()
+    {
+      Assert.That (_executionState.IsExecuting, Is.False);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
     public void ExecuteSubFunction ()
     {
-      Assert.That (_executionState.ExecuteSubFunction (WxeContext), Is.False);
+      _executionState.ExecuteSubFunction (WxeContext);
     }
 
     [Test]

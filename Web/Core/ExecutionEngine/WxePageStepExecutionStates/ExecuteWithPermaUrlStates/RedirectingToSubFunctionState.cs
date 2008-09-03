@@ -23,7 +23,12 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
     {
     }
 
-    public override bool ExecuteSubFunction (WxeContext context)
+    public override bool IsExecuting
+    {
+      get { return false; }
+    }
+
+    public override void ExecuteSubFunction (WxeContext context)
     {
       string destinationUrl = GetDestinationPermanentUrl (context);
       string resumeUrl = context.GetResumePath();
@@ -44,7 +49,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
 
     public override void PostProcessSubFunction (WxeContext context)
     {
-      throw new InvalidOperationException();
+      throw new NotSupportedException ();
     }
 
     private string GetDestinationPermanentUrl (WxeContext context)

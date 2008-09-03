@@ -8,19 +8,27 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
   public interface IExecutionState
   {
-    bool ExecuteSubFunction (WxeContext context);
+    bool IsExecuting { get; }
+    void ExecuteSubFunction (WxeContext context);
     void PostProcessSubFunction (WxeContext context);    
   }
 
   public class WxePageStepExecutionState : IExecutionState
   {
-    public bool ExecuteSubFunction (WxeContext context)
+    public bool IsExecuting
     {
-      return false;
+      get { return false; }
+    }
+
+    public void ExecuteSubFunction (WxeContext context)
+    {
+      throw new NotSupportedException();
     }
 
     public void PostProcessSubFunction (WxeContext context)

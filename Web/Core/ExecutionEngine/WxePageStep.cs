@@ -158,10 +158,9 @@ namespace Remotion.Web.ExecutionEngine
           //  This is the PageStep currently executing a sub-function
           EnsureHasRedirectedToPermanentUrl (context);
 
-          while (_executionState.ExecuteSubFunction (context))
-          {
-            // Empty
-          }
+          while (_executionState.IsExecuting)
+            _executionState.ExecuteSubFunction (context);
+
           _subFunction.Execute (context);
           //  This point is only reached after the sub-function has completed execution.
 
@@ -177,7 +176,8 @@ namespace Remotion.Web.ExecutionEngine
           //  This is the PageStep currently executing an external function
           EnsureExternalSubFunctionInvoked (context);
 
-          _executionState.ExecuteSubFunction (context);
+          while (_executionState.IsExecuting)
+            _executionState.ExecuteSubFunction (context);
           //  This point is only reached after the external function has been started.
 
           //  This is the PageStep after the external function has completed execution or a postback to the executing page has been received
