@@ -8,13 +8,13 @@ namespace Remotion.Diagnostics
   public static class To
   {
     [ThreadStatic]
-    private static ToTextProvider toTextProvider = new ToTextProvider(GetTypeHandlers());
+    private static ToTextProvider _toTextProvider = new ToTextProvider(GetTypeHandlers());
 
     private static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap;
 
     public static string Text (object obj)
     {
-      return toTextProvider.ToTextString (obj);
+      return _toTextProvider.ToTextString (obj);
     }
 
 
@@ -30,21 +30,20 @@ namespace Remotion.Diagnostics
 
     public static void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
     {
-      toTextProvider.RegisterSpecificTypeHandler<T> (handler);
+      _toTextProvider.RegisterSpecificTypeHandler<T> (handler);
     }
 
     public static void ClearHandlers ()
     {
-      toTextProvider.ClearSpecificTypeHandlers();
+      _toTextProvider.ClearSpecificTypeHandlers();
     }
-
 
 
     public static void TextEnableAutomatics (bool enable)
     {
-      toTextProvider.Settings.UseAutomaticObjectToText = enable;
-      toTextProvider.Settings.UseAutomaticStringEnclosing = enable;
-      toTextProvider.Settings.UseAutomaticCharEnclosing = enable;
+      _toTextProvider.Settings.UseAutomaticObjectToText = enable;
+      _toTextProvider.Settings.UseAutomaticStringEnclosing = enable;
+      _toTextProvider.Settings.UseAutomaticCharEnclosing = enable;
     }
   }
 }

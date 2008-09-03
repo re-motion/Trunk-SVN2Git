@@ -23,7 +23,7 @@ namespace Remotion.Diagnostics.ToText
   /// 
   /// <para>See <see cref="RegisterDefaultToTextProviderHandlers"/> for a description of the default ToText-handling-fallback-cascade.</para>
   /// </summary>
-  public class ToTextProvider
+  public class ToTextProvider 
   {
     //private readonly ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
     //private readonly ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> ();
@@ -201,5 +201,25 @@ namespace Remotion.Diagnostics.ToText
       }
       return (T) toTextProviderHandler;
     }
+
+
+    //public ToTextProvider CloneDeepCopy ()
+    //{
+    //  var ttp = new ToTextProvider();
+    //  ttp._typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
+    //  private readonly ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> ();
+      
+    //  private int _interfaceHandlerPriorityMin = 0;
+    //  private int _interfaceHandlerPriorityMax = 0;
+
+    //  private readonly List<IToTextProviderHandler> _toTextProviderHandlers = new List<IToTextProviderHandler> ();
+    //  private readonly Dictionary<Type, IToTextProviderHandler> _toTextProviderHandlerTypeToHandlerMap = new Dictionary<Type, IToTextProviderHandler> ();
+
+    //  private readonly ToTextProviderSettings _toTextProviderSettings = new ToTextProviderSettings();
+    //  public ToTextProviderSettings Settings
+    //  {
+    //    get { return _toTextProviderSettings; }
+    //  }    
+    //}
   }
 }

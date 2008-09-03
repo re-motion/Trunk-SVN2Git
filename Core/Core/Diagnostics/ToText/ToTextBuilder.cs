@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Remotion.Utilities;
 
 namespace Remotion.Diagnostics.ToText
@@ -262,7 +263,6 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    //TODO: arg check for name
     public ToTextBuilder AppendMember (string name, Object obj)
     {
       ArgumentUtility.CheckNotNull ("name", name);
@@ -270,6 +270,28 @@ namespace Remotion.Diagnostics.ToText
       AppendMemberRaw (name, obj);
       AfterAppendElement ();
       return this;
+    }
+
+    public ToTextBuilder AppendMember<T> (Expression<Func<object, T>> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      Assertion.IsTrue (expression.Parameters.Count == 1 && expression.Parameters[0].Name == "x");
+      var variableName = RightUntilChar (expression.Body.ToString(), '.');
+      var variableValue = expression.Compile().Invoke (null);
+      return AppendMember (variableName, variableValue);
+    }
+
+    private static string RightUntilChar (string s, char separator)
+    {
+      int iSeparator = s.LastIndexOf (separator);
+      if (iSeparator > 0)
+      {
+        return s.Substring (iSeparator + 1, s.Length - iSeparator - 1);
+      }
+      else
+      {
+        return s;
+      }
     }
 
     public ToTextBuilder AppendMemberNonSequence (string name, Object obj)
@@ -491,6 +513,11 @@ namespace Remotion.Diagnostics.ToText
     public ToTextBuilder m(string name, Object obj, bool honorSequence)
     {
       return honorSequence ? AppendMember (name, obj) : AppendMemberNonSequence (name, obj);
+    }
+
+    public ToTextBuilder m<T> (Expression<Func<object, T>> expression)
+    {
+      return AppendMember (expression);
     }
 
     public ToTextBuilder m (string name, Object obj)

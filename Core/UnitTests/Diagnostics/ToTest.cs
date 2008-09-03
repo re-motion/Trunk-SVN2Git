@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics;
@@ -160,16 +161,83 @@ namespace Remotion.UnitTests.Diagnostics
     //}
 
 
+    //[Test]
+    //public void GetTypeHandlersTest ()
+    //{
+    //  var handlerMap = To.GetTypeHandlers();
+    //  foreach (var pair in handlerMap)
+    //  {
+    //    Log (pair.Key + " " + pair.Value);
+    //  }
+    //  //Assert.That (To.Text ('x'), Is.EqualTo ("'x'"));
+    //}
+
     [Test]
-    public void GetTypeHandlersTest ()
+    public void LogStreamVariableTest ()
     {
-      var handlerMap = To.GetTypeHandlers();
-      foreach (var pair in handlerMap)
-      {
-        Log (pair.Key + " " + pair.Value);
-      }
-      //Assert.That (To.Text ('x'), Is.EqualTo ("'x'"));
+      var arbitraryVariableName = "Me be a string...";
+      var arbitraryVariableName2 = 123.456;
+      var obj = new Object();
+      LogStreamVariable (abrakadabra => arbitraryVariableName);
+      LogStreamVariable (abrakadabra => arbitraryVariableName2);
+      LogStreamVariable (abrakadabra => obj);
     }
+
+
+    [Test]
+    public void StreamVariableTest ()
+    {
+      var arbitraryVariableName = "Me be a string...";
+      var arbitraryVariableName2 = 123.456;
+      var obj = new Object ();
+      Log (StreamVariable (lambdamagic => arbitraryVariableName2));
+      Log (StreamVariable (abrakadabra => arbitraryVariableName));
+      Log (StreamVariable (x => obj));
+    }
+
+
+    public static string RightUntilChar (string s, char separator)
+    {
+      int iSeparator = s.LastIndexOf (separator);
+      if (iSeparator > 0)
+      {
+        return s.Substring (iSeparator + 1, s.Length - iSeparator - 1);
+      }
+      else
+      {
+        return s;
+      }
+    }
+
+
+    private void LogStreamVariable<T> (Expression<Func<object, T>> expression)
+    {
+      Log ("\nStreamVariable:" + typeof (T));
+      Log (expression.Body.ToString());
+      Log (RightUntilChar (expression.Body.ToString (), '.'));
+      Log (expression.NodeType.ToString ());
+      Log (expression.Type.ToString ());
+      Log (expression.Body.NodeType.ToString());
+      //Log (expression.Body.ToString().);
+      foreach (var parameter in expression.Parameters)
+      {
+        Log (parameter.Name);
+      }
+      //Log( ((T) ((ConstantExpression) expression.Body).Value).ToString());
+      Log (expression.Body.ToString());
+      //Log (expression.ToString());
+      Log (expression.Compile().Invoke(null).ToString ());
+    }
+
+    private string StreamVariable<T> (Expression<Func<object, T>> expression)
+    {
+      Assert.That (expression.Parameters.Count == 1);
+      var name = expression.Parameters[0].Name;
+      Assert.That(name == "x" || name == "abrakadabra" || name == "lambdamagic");
+      return RightUntilChar (expression.Body.ToString(), '.') + "=" + expression.Compile ().Invoke (null);
+    }
+
+
 
 
     public static void Log (string s)
