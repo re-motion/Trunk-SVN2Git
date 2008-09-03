@@ -22,130 +22,124 @@ namespace Remotion.UnitTests.Diagnostics
   {
     // TODO: Store & replace the ToTextProvider To.Text uses and restore it after the tests.
 
-    public class Test
-    {
-      public Test ()
-      {
-        Name = "DefaultName";
-        Int = 1234567;
-      }
+    //public class Test
+    //{
+    //  public Test ()
+    //  {
+    //    Name = "DefaultName";
+    //    Int = 1234567;
+    //  }
 
-      public Test (string name, int i0)
-      {
-        Name = name;
-        Int = i0;
-        ListListString = new List<List<string>>();
-      }
+    //  public Test (string name, int i0)
+    //  {
+    //    Name = name;
+    //    Int = i0;
+    //    ListListString = new List<List<string>>();
+    //  }
 
-      public string Name { get; set; }
-      public int Int { get; set; }
-      public LinkedList<string> LinkedListString { get; set; }
-      public List<List<string>> ListListString { get; set; }
-      public Object[][][] Array3D { get; set; }
-      public Object[,] RectangularArray2D { get; set; }
-      public Object[,,] RectangularArray3D { get; set; }
-    }
+    //  public string Name { get; set; }
+    //  public int Int { get; set; }
+    //  public LinkedList<string> LinkedListString { get; set; }
+    //  public List<List<string>> ListListString { get; set; }
+    //  public Object[][][] Array3D { get; set; }
+    //  public Object[,] RectangularArray2D { get; set; }
+    //  public Object[,,] RectangularArray3D { get; set; }
+    //}
 
-    public class Test2
-    {
-      public Test2 ()
-      {
-        Name = "DefaultName";
-        Int = 1234567;
-      }
+    //public class Test2
+    //{
+    //  public Test2 ()
+    //  {
+    //    Name = "DefaultName";
+    //    Int = 1234567;
+    //  }
 
-      public Test2 (string name, int i0)
-      {
-        Name = name;
-        Int = i0;
-        ListListString = new List<List<string>>();
-      }
+    //  public Test2 (string name, int i0)
+    //  {
+    //    Name = name;
+    //    Int = i0;
+    //    ListListString = new List<List<string>>();
+    //  }
 
-      public string Name { get; set; }
-      public int Int { get; set; }
-      public LinkedList<string> LinkedListString { get; set; }
-      public List<List<string>> ListListString { get; set; }
-      public Object[][][] Array3D { get; set; }
-      public Object[,] RectangularArray2D { get; set; }
-      public Object[,,] RectangularArray3D { get; set; }
-    }
-
-
-    [Test]
-    [Ignore]
-    public void ObjectTest ()
-    {
-      Object o = 5711;
-      Assert.That (To.Text (o), Is.EqualTo (o.ToString()));
-
-      Object o2 = new object();
-      Assert.That (To.Text (o2), Is.EqualTo (o2.ToString()));
-    }
-
-    [Test]
-    public void FallbackToStringTest ()
-    {
-      //FallbackToStringTestSingleType ("abcd EFGH");
-      FallbackToStringTestSingleType (87971132);
-      //FallbackToStringTestSingleType (4786.5323);
-      int i = 8723;
-      FallbackToStringTestSingleType (i);
-    }
-
-    private void FallbackToStringTestSingleType<T> (T t)
-    {
-      Assert.That (To.Text (t), Is.EqualTo (t.ToString()));
-    }
-
-    private void RegisterHandlers ()
-    {
-      To.RegisterHandler<Int32> ((x, ttb) => ttb.sb ("[Int32: ", "", ",", "", "]").ts (x).se());
-      To.RegisterHandler<Test> ((x, ttb) => ttb.sb ("<<Test: ", "", ";", "", ">>").m ("Name", x.Name).m ("Int", x.Int).se());
-    }
+    //  public string Name { get; set; }
+    //  public int Int { get; set; }
+    //  public LinkedList<string> LinkedListString { get; set; }
+    //  public List<List<string>> ListListString { get; set; }
+    //  public Object[][][] Array3D { get; set; }
+    //  public Object[,] RectangularArray2D { get; set; }
+    //  public Object[,,] RectangularArray3D { get; set; }
+    //}
 
 
-    [Test]
+    //[Test]
     //[Ignore]
-    public void RegisteredHandlerTest ()
-    {
-      To.ClearHandlers();
-      RegisterHandlers();
-      //int i = 34567; 
-      //string toTextO = To.Text (i); 
-      //Log ("toTextO=" + toTextO);
-      //Assert.That (toTextO, Is.EqualTo (String.Format ("<<Object: {0}>>", i.ToString ())));
+    //public void ObjectTest ()
+    //{
+    //  Object o = 5711;
+    //  Assert.That (To.Text (o), Is.EqualTo (o.ToString()));
 
-      var test = new ToTest.Test ("That's not my name", 179);
-      string toTextTest = To.Text (test);
-      Log ("toTextTest=" + toTextTest);
-      Assert.That (toTextTest, Is.EqualTo ("<<Test: Name=\"That's not my name\";Int=[Int32: 179]>>"));
-    }
+    //  Object o2 = new object();
+    //  Assert.That (To.Text (o2), Is.EqualTo (o2.ToString()));
+    //}
 
-    [Test]
-    public void NullTest ()
-    {
-      To.ClearHandlers();
-      Object o = null;
-      Assert.That (To.Text (o), Is.EqualTo ("null"));
-    }
+    //[Test]
+    //public void FallbackToStringTest ()
+    //{
+    //  //FallbackToStringTestSingleType ("abcd EFGH");
+    //  FallbackToStringTestSingleType (87971132);
+    //  //FallbackToStringTestSingleType (4786.5323);
+    //  int i = 8723;
+    //  FallbackToStringTestSingleType (i);
+    //}
 
-    [Test]
-    public void IntToStringFallbackTest ()
-    {
-      To.ClearHandlers();
-      int i = 908;
-      Assert.That (To.Text (i), Is.EqualTo ("908"));
-    }
+    //private void FallbackToStringTestSingleType<T> (T t)
+    //{
+    //  Assert.That (To.Text (t), Is.EqualTo (t.ToString()));
+    //}
+
+    //private void RegisterHandlers ()
+    //{
+    //  To.RegisterHandler<Int32> ((x, ttb) => ttb.sb ("[Int32: ", "", ",", "", "]").ts (x).se());
+    //  To.RegisterHandler<Test> ((x, ttb) => ttb.sb ("<<Test: ", "", ";", "", ">>").m ("Name", x.Name).m ("Int", x.Int).se());
+    //}
 
 
-    [Test]
-    public void InitStandardHandlersTest ()
-    {
-      To.ClearHandlers();
-      To.TextEnableAutomatics (true);
-      Assert.That (To.Text ("Some text"), Is.EqualTo ("\"Some text\""));
-      Assert.That (To.Text ('x'), Is.EqualTo ("'x'"));
-    }
+    //[Test]
+    //public void RegisteredHandlerTest ()
+    //{
+    //  To.ClearHandlers();
+    //  RegisterHandlers();
+    //  var test = new ToTest.Test ("That's not my name", 179);
+    //  string toTextTest = To.Text (test);
+    //  Log ("toTextTest=" + toTextTest);
+    //  Assert.That (toTextTest, Is.EqualTo ("<<Test: Name=\"That's not my name\";Int=[Int32: 179]>>"));
+    //}
+
+    //[Test]
+    //public void NullTest ()
+    //{
+    //  To.ClearHandlers();
+    //  Object o = null;
+    //  Assert.That (To.Text (o), Is.EqualTo ("null"));
+    //}
+
+    //[Test]
+    //public void IntToStringFallbackTest ()
+    //{
+    //  To.ClearHandlers();
+    //  int i = 908;
+    //  Assert.That (To.Text (i), Is.EqualTo ("908"));
+    //}
+
+
+    //[Test]
+    //public void InitStandardHandlersTest ()
+    //{
+    //  To.ClearHandlers();
+    //  To.TextEnableAutomatics (true);
+    //  Assert.That (To.Text ("Some text"), Is.EqualTo ("\"Some text\""));
+    //  Assert.That (To.Text ('x'), Is.EqualTo ("'x'"));
+    //}
 
 
     //[Test]
@@ -161,83 +155,16 @@ namespace Remotion.UnitTests.Diagnostics
     //}
 
 
-    //[Test]
-    //public void GetTypeHandlersTest ()
-    //{
-    //  var handlerMap = To.GetTypeHandlers();
-    //  foreach (var pair in handlerMap)
-    //  {
-    //    Log (pair.Key + " " + pair.Value);
-    //  }
-    //  //Assert.That (To.Text ('x'), Is.EqualTo ("'x'"));
-    //}
-
     [Test]
-    public void LogStreamVariableTest ()
+    public void GetTypeHandlersTest ()
     {
-      var arbitraryVariableName = "Me be a string...";
-      var arbitraryVariableName2 = 123.456;
-      var obj = new Object();
-      LogStreamVariable (abrakadabra => arbitraryVariableName);
-      LogStreamVariable (abrakadabra => arbitraryVariableName2);
-      LogStreamVariable (abrakadabra => obj);
+      var handlerMap = To.GetTypeHandlers ();
+      Assert.That (handlerMap.Count, Is.GreaterThan(1));
+      //foreach (var pair in handlerMap)
+      //{
+      //  Log (pair.Key + " " + pair.Value);
+      //}
     }
-
-
-    [Test]
-    public void StreamVariableTest ()
-    {
-      var arbitraryVariableName = "Me be a string...";
-      var arbitraryVariableName2 = 123.456;
-      var obj = new Object ();
-      Log (StreamVariable (lambdamagic => arbitraryVariableName2));
-      Log (StreamVariable (abrakadabra => arbitraryVariableName));
-      Log (StreamVariable (x => obj));
-    }
-
-
-    public static string RightUntilChar (string s, char separator)
-    {
-      int iSeparator = s.LastIndexOf (separator);
-      if (iSeparator > 0)
-      {
-        return s.Substring (iSeparator + 1, s.Length - iSeparator - 1);
-      }
-      else
-      {
-        return s;
-      }
-    }
-
-
-    private void LogStreamVariable<T> (Expression<Func<object, T>> expression)
-    {
-      Log ("\nStreamVariable:" + typeof (T));
-      Log (expression.Body.ToString());
-      Log (RightUntilChar (expression.Body.ToString (), '.'));
-      Log (expression.NodeType.ToString ());
-      Log (expression.Type.ToString ());
-      Log (expression.Body.NodeType.ToString());
-      //Log (expression.Body.ToString().);
-      foreach (var parameter in expression.Parameters)
-      {
-        Log (parameter.Name);
-      }
-      //Log( ((T) ((ConstantExpression) expression.Body).Value).ToString());
-      Log (expression.Body.ToString());
-      //Log (expression.ToString());
-      Log (expression.Compile().Invoke(null).ToString ());
-    }
-
-    private string StreamVariable<T> (Expression<Func<object, T>> expression)
-    {
-      Assert.That (expression.Parameters.Count == 1);
-      var name = expression.Parameters[0].Name;
-      Assert.That(name == "x" || name == "abrakadabra" || name == "lambdamagic");
-      return RightUntilChar (expression.Body.ToString(), '.') + "=" + expression.Compile ().Invoke (null);
-    }
-
-
 
 
     public static void Log (string s)
