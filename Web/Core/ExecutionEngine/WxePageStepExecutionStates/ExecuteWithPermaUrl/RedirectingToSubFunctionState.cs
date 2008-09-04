@@ -35,10 +35,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
       }
       catch (ThreadAbortException)
       {
-        ExecutionStateContext.SetExecutionState (
-            new ExecutingSubFunctionState (
-                ExecutionStateContext,
-                new ReturningFromSubFunctionStateParameters (Parameters.SubFunction, Parameters.PostBackCollection, Parameters.ResumeUrl)));
+        ExecutionStateContext.SetExecutionState (new ExecutingSubFunctionState (ExecutionStateContext, Parameters));
         throw;
       }
     }

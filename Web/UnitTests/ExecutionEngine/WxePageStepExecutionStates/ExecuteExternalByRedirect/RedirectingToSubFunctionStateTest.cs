@@ -48,11 +48,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
             .Do (
             invocation =>
             {
-              Assert.That (invocation.Arguments[0], Is.InstanceOfType (typeof (ExecutingSubFunctionState)));
-              var nextState = (ExecutingSubFunctionState) invocation.Arguments[0];
+              Assert.That (invocation.Arguments[0], Is.InstanceOfType (typeof (PostProcessingSubFunctionState)));
+              var nextState = (PostProcessingSubFunctionState) invocation.Arguments[0];
               Assert.That (nextState.ExecutionStateContext, Is.SameAs (ExecutionStateContextMock));
               Assert.That (nextState.Parameters.SubFunction, Is.SameAs (SubFunction));
-              Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("DefaultReturn.html"));
             });
       }
 

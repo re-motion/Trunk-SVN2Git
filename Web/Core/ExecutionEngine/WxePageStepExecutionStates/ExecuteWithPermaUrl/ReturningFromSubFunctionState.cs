@@ -14,9 +14,9 @@ using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUr
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
 {
-  public class ReturningFromSubFunctionState : ExecutionStateBase<ReturningFromSubFunctionStateParameters>
+  public class ReturningFromSubFunctionState : ExecutionStateBase<RedirectingToSubFunctionStateParameters>
   {
-    public ReturningFromSubFunctionState (IExecutionStateContext executionStateContext, ReturningFromSubFunctionStateParameters parameters)
+    public ReturningFromSubFunctionState (IExecutionStateContext executionStateContext, RedirectingToSubFunctionStateParameters parameters)
         : base (executionStateContext, parameters)
     {
     }
