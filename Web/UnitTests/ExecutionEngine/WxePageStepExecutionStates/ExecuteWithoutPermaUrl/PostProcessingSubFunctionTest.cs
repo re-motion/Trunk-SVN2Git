@@ -14,10 +14,10 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrl;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
+namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrl
 {
   [TestFixture]
   public class PostProcessingSubFunctionTest : TestBase

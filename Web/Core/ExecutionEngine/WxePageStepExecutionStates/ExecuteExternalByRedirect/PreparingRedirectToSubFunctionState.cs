@@ -12,7 +12,7 @@ using System;
 using System.Collections.Specialized;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
   [Serializable]
   public class PreparingRedirectToSubFunctionState : ExecutionStateBase<PreparingSubFunctionStateParameters>
@@ -34,31 +34,25 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
 
     public override void ExecuteSubFunction (WxeContext context)
     {
-      string destinationUrl = GetDestinationPermanentUrl (context);
-      string resumeUrl = context.GetResumePath();
+      string functionToken = context.GetFunctionTokenForExternalFunction (Parameters.SubFunction, Parameters.ReturnOptions.IsReturning);
+      string destinationUrl = context.GetDestinationUrlForExternalFunction (Parameters.SubFunction, functionToken, Parameters.PermaUrlOptions);
+
+      if (Parameters.ReturnOptions.IsReturning)
+      {
+        NameValueCollection permaUrlOptions = Parameters.ReturnOptions.CallerUrlParameters.Clone();
+        permaUrlOptions.Set (WxeHandler.Parameters.WxeFunctionToken, context.FunctionToken);
+        Parameters.SubFunction.ReturnUrl = context.GetPermanentUrl (ExecutionStateContext.ParentFunction.GetType(), permaUrlOptions);
+      }
 
       ExecutionStateContext.SetExecutionState (
           new RedirectingToSubFunctionState (
               ExecutionStateContext,
-              new RedirectingToSubFunctionStateParameters (Parameters.SubFunction, Parameters.PostBackCollection, destinationUrl, resumeUrl)));
+              new RedirectingToSubFunctionStateParameters (Parameters.SubFunction, Parameters.PostBackCollection, destinationUrl)));
     }
 
     public override void PostProcessSubFunction (WxeContext context)
     {
       throw new NotSupportedException();
-    }
-
-    private string GetDestinationPermanentUrl (WxeContext context)
-    {
-      NameValueCollection urlParameters;
-      if (Parameters.PermaUrlOptions.UrlParameters == null)
-        urlParameters = Parameters.SubFunction.SerializeParametersForQueryString();
-      else
-        urlParameters = Parameters.PermaUrlOptions.UrlParameters.Clone();
-
-      urlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, context.FunctionToken);
-
-      return context.GetPermanentUrl (Parameters.SubFunction.GetType(), urlParameters, Parameters.PermaUrlOptions.UseParentPermaUrl);
     }
   }
 }

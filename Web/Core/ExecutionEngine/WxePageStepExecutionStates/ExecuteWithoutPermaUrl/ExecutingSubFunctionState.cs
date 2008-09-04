@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrlStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrl
 {
   public class ExecutingSubFunctionState:ExecutionStateBase<ExecutionStateParameters>
   {

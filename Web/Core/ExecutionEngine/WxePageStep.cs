@@ -17,7 +17,6 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
@@ -334,13 +333,13 @@ namespace Remotion.Web.ExecutionEngine
       PrepareExecuteFunction (function, true);
       if (permaUrlOptions.UsePermaUrl)
       {
-        PreparingSubFunctionStateParameters parameters = new PreparingSubFunctionStateParameters (_subFunction, _postBackCollection, permaUrlOptions);
-        _executionState = new WxePageStepExecutionStates.ExecuteWithPermaUrlStates.PreparingRedirectToSubFunctionState(this, parameters);
+        var parameters = new WxePageStepExecutionStates.ExecuteWithPermaUrl.PreparingSubFunctionStateParameters (_subFunction, _postBackCollection, permaUrlOptions);
+        _executionState = new WxePageStepExecutionStates.ExecuteWithPermaUrl.PreparingRedirectToSubFunctionState(this, parameters);
       }
       else
       {
-        ExecutionStateParameters parameters = new ExecutionStateParameters (_subFunction, _postBackCollection);
-        _executionState = new WxePageStepExecutionStates.ExecuteWithoutPermaUrlStates.ExecutingSubFunctionState (this, parameters);
+        var parameters = new ExecutionStateParameters (_subFunction, _postBackCollection);
+        _executionState = new WxePageStepExecutionStates.ExecuteWithoutPermaUrl.ExecutingSubFunctionState (this, parameters);
       }
 
       page.SaveAllState();

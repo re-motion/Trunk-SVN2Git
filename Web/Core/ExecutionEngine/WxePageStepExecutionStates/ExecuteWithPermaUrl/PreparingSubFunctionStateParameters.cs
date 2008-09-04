@@ -11,7 +11,7 @@
 using System.Collections.Specialized;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
 {
   public class PreparingSubFunctionStateParameters:ExecutionStateParameters
   {

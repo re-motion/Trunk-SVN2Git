@@ -9,8 +9,9 @@
  */
 
 using System;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
 {
   public class ExecutingSubFunctionState : ExecutionStateBase<ReturningFromSubFunctionStateParameters>
   {

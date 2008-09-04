@@ -8,22 +8,29 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using System.Collections.Specialized;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirectStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
 {
-  public class ReturningFromSubFunctionStateParameters : ExecutionStateParameters
+  public class RedirectingToSubFunctionStateParameters:ExecutionStateParameters
   {
+    private readonly string _destinationUrl;
     private readonly string _resumeUrl;
 
-    public ReturningFromSubFunctionStateParameters (WxeFunction subFunction, NameValueCollection postBackCollection, string resumeUrl)
-        : base (subFunction, postBackCollection)
+    public RedirectingToSubFunctionStateParameters (WxeFunction subFunction, NameValueCollection postBackCollection, string destinationUrl, string resumeUrl)
+        : base(subFunction, postBackCollection)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("destinationUrl", destinationUrl);
       ArgumentUtility.CheckNotNullOrEmpty ("resumeUrl", resumeUrl);
 
+      _destinationUrl = destinationUrl;
       _resumeUrl = resumeUrl;
+    }
+
+    public string DestinationUrl
+    {
+      get { return _destinationUrl; }
     }
 
     public string ResumeUrl

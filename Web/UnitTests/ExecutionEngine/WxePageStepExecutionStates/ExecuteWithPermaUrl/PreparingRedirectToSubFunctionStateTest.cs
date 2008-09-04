@@ -16,11 +16,11 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
+namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
 {
   [TestFixture]
   public class PreparingRedirectToSubFunctionStateTest : TestBase

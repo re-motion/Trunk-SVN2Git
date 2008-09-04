@@ -11,7 +11,7 @@
 using System;
 using System.Threading;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
   [Serializable]
   public class RedirectingToSubFunctionState : ExecutionStateBase<RedirectingToSubFunctionStateParameters>
@@ -37,8 +37,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
       {
         ExecutionStateContext.SetExecutionState (
             new ExecutingSubFunctionState (
-                ExecutionStateContext,
-                new ReturningFromSubFunctionStateParameters (Parameters.SubFunction, Parameters.PostBackCollection, Parameters.ResumeUrl)));
+                ExecutionStateContext, new ExecutionStateParameters (Parameters.SubFunction, Parameters.PostBackCollection)));
         throw;
       }
     }

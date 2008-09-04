@@ -12,7 +12,7 @@ using System;
 using System.Collections.Specialized;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirectStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
   public class RedirectingToSubFunctionStateParameters : ExecutionStateParameters
   {

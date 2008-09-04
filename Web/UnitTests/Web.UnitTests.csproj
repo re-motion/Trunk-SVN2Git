@@ -163,17 +163,17 @@
     <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithThreadAbort.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestWxeTransaction.cs" />
     <Compile Include="ExecutionEngine\WxeFunctionStateManagerTest.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirectStates\PreparingRedirectToSubFunctionStateTest.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirectStates\RedirectingToSubFunctionStateTest.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithoutPermaUrlStates\ExecutingSubFunctionStateTest.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithoutPermaUrlStates\PostProcessingSubFunctionTest.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\PreparingRedirectToSubFunctionStateTest.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\ReturningFromSubFunctionStateTest.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\ExecutingSubFunctionStateTest.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\RedirectingToSubFunctionStateTest.cs">
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingRedirectToSubFunctionStateTest.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionStateTest.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithoutPermaUrl\ExecutingSubFunctionStateTest.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithoutPermaUrl\PostProcessingSubFunctionTest.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\PreparingRedirectToSubFunctionStateTest.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\ReturningFromSubFunctionStateTest.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\ExecutingSubFunctionStateTest.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\RedirectingToSubFunctionStateTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrlStates\PostProcessingSubFunctionTest.cs">
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\PostProcessingSubFunctionTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\TestBase.cs">

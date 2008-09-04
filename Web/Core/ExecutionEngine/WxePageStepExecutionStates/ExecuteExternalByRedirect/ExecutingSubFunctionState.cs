@@ -9,13 +9,12 @@
  */
 
 using System;
-using System.Threading;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
-  public class ReturningFromSubFunctionState : ExecutionStateBase<ReturningFromSubFunctionStateParameters>
+  public class ExecutingSubFunctionState : ExecutionStateBase<ExecutionStateParameters>
   {
-    public ReturningFromSubFunctionState (IExecutionStateContext executionStateContext, ReturningFromSubFunctionStateParameters parameters)
+    public ExecutingSubFunctionState (IExecutionStateContext executionStateContext, ExecutionStateParameters parameters)
         : base (executionStateContext, parameters)
     {
     }
@@ -27,16 +26,8 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
 
     public override void ExecuteSubFunction (WxeContext context)
     {
-      try
-      {
-        context.HttpContext.Response.Redirect (Parameters.ResumeUrl);
-        throw new InvalidOperationException (string.Format("Redirect to '{0}' failed.", Parameters.ResumeUrl));
-      }
-      catch (ThreadAbortException)
-      {
-        ExecutionStateContext.SetExecutionState (new PostProcessingSubFunctionState (ExecutionStateContext, Parameters));
-        throw;
-      }
+      //Parameters.SubFunction.Execute (context);
+      //ExecutionStateContext.SetExecutionState (new ReturningFromSubFunctionState (ExecutionStateContext, Parameters));
     }
 
     public override void PostProcessSubFunction (WxeContext context)

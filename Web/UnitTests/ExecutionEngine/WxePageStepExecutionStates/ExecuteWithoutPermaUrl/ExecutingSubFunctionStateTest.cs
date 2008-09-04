@@ -13,23 +13,26 @@ using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrl;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
+namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrl
 {
   [TestFixture]
-  public class RedirectingToSubFunctionStateTest : TestBase
+  public class ExecutionSubFunctionStateTest : TestBase
   {
     private IExecutionState _executionState;
 
     public override void SetUp ()
     {
       base.SetUp();
+      _executionState = new ExecutingSubFunctionState (ExecutionStateContextMock, new ExecutionStateParameters (SubFunction, PostBackCollection));
+    }
 
-      _executionState = new RedirectingToSubFunctionState (
-          ExecutionStateContextMock,
-          new RedirectingToSubFunctionStateParameters (SubFunction, PostBackCollection, "~/destination.wxe", "~/resume.wxe"));
+    protected override OtherTestFunction CreateSubFunction ()
+    {
+      return MockRepository.StrictMock<OtherTestFunction>();
     }
 
     [Test]
@@ -39,22 +42,38 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
-    public void ExecuteSubFunction_GoesToExecutingSubFunction ()
+    public void ExecuteSubFunction_GoesToPostProcessingSubFunction ()
     {
       using (MockRepository.Ordered())
       {
-        ResponseMock.Expect (mock => mock.Redirect ("~/destination.wxe")).Do (invocation => Thread.CurrentThread.Abort());
+        SubFunction.Expect (mock => mock.Execute (WxeContext));
         ExecutionStateContextMock.Expect (
             mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
             .Do (
             invocation =>
             {
-              Assert.That (invocation.Arguments[0], Is.InstanceOfType (typeof (ExecutingSubFunctionState)));
-              var nextState = (ExecutingSubFunctionState) invocation.Arguments[0];
+              Assert.That (invocation.Arguments[0], Is.InstanceOfType (typeof (PostProcessingSubFunctionState)));
+              var nextState = (PostProcessingSubFunctionState) invocation.Arguments[0];
               Assert.That (nextState.ExecutionStateContext, Is.SameAs (ExecutionStateContextMock));
               Assert.That (nextState.Parameters.SubFunction, Is.SameAs (SubFunction));
-              Assert.That (nextState.Parameters.ResumeUrl, Is.EqualTo ("~/resume.wxe"));
             });
+      }
+
+      MockRepository.ReplayAll();
+
+      _executionState.ExecuteSubFunction (WxeContext);
+
+      MockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void ExecuteSubFunction_ReEntrancy_GoesToPostProcessingSubFunction ()
+    {
+      using (MockRepository.Ordered())
+      {
+        SubFunction.Expect (mock => mock.Execute (WxeContext)).Do (invocation => Thread.CurrentThread.Abort());
+        SubFunction.Expect (mock => mock.Execute (WxeContext));
+        ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull));
       }
 
       MockRepository.ReplayAll();
@@ -69,20 +88,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
         Thread.ResetAbort();
       }
 
-      MockRepository.VerifyAll();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "Redirect to '~/destination.wxe' failed.",
-        MatchType = MessageMatch.Contains)]
-    public void ExecuteSubFunction_WithFailedRedirect ()
-    {
-      ResponseMock.Expect (mock => mock.Redirect ("~/destination.wxe"));
-
-      MockRepository.ReplayAll();
-
       _executionState.ExecuteSubFunction (WxeContext);
+      
+      MockRepository.VerifyAll();
     }
 
     [Test]

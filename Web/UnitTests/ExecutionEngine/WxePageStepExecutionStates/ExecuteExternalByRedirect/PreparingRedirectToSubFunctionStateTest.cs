@@ -16,11 +16,11 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirectStates;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirectStates
+namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
   [TestFixture]
   public class PreparingRedirectToSubFunctionStateTest : TestBase
