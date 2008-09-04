@@ -36,7 +36,7 @@ namespace Remotion.Diagnostics.ToText
 
     private readonly StringBuilderToText _textStringBuilderToText = new StringBuilderToText ();
     private ToTextProvider _toTextProvider;
-    
+
     private string _enumerablePrefix = "{";
     private string _enumerableFirstElementPrefix = "";
     private string _enumerableOtherElementPrefix = ",";
@@ -50,7 +50,7 @@ namespace Remotion.Diagnostics.ToText
     private string _arrayPostfix = "}";
     private bool _useMultiline = true;
     private ToTextBuilderOutputComplexityLevel _outputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
-    private readonly Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder>(16);
+    private readonly Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder> (16);
     private SequenceStateHolder _sequenceState = null;
 
     public enum ToTextBuilderOutputComplexityLevel
@@ -62,6 +62,13 @@ namespace Remotion.Diagnostics.ToText
       Complex,
       Full,
     };
+
+
+    public ToTextBuilder (ToTextProvider toTextProvider)
+    {
+      _toTextProvider = toTextProvider;
+    }
+
 
 
     public string ArrayPrefix
@@ -143,56 +150,12 @@ namespace Remotion.Diagnostics.ToText
     public void OutputFull () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Full; }
 
     //TODO: rename, make factory method, don't toggle flag
-    public ToTextBuilder AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo(ToTextBuilderOutputComplexityLevel complexityLevel)
+    public ToTextBuilder AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel)
     {
       _textStringBuilderToText.Enabled = (_outputComplexity >= complexityLevel) ? true : false;
-      return this; 
+      return this;
     }
 
-    //TODO: rename
-    public ToTextBuilder cSkeleton
-    {
-      get
-      {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Skeleton);
-      }
-    }
-
-    public ToTextBuilder cBasic
-    {
-      get {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Basic);
-      }
-    }
-
-    public ToTextBuilder cMedium
-    {
-      get
-      {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Medium);
-      }
-    }
-
-    public ToTextBuilder cComplex
-    {
-      get
-      {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Complex);
-      }
-    }
-
-    public ToTextBuilder cFull
-    {
-      get
-      {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Full);
-      }
-    }
-
-    public ToTextBuilder(ToTextProvider toTextProvider)
-    {
-      _toTextProvider = toTextProvider;
-    }
 
 
     public bool IsInSequence
@@ -206,11 +169,11 @@ namespace Remotion.Diagnostics.ToText
       set { _toTextProvider = value; }
     }
 
-
-
-
-
-
+    //--------------------------------------------------------------------------
+    // Settings Properties
+    //--------------------------------------------------------------------------
+    // TODO?: Move to Settings object 
+    
     public string EnumerableBegin
     {
       get { return _enumerablePrefix; }
@@ -248,9 +211,6 @@ namespace Remotion.Diagnostics.ToText
       set { _arrayPostfix = value; }
     }
 
-
-
-
     public bool UseMultiLine
     {
       get { return _useMultiline; }
@@ -259,29 +219,66 @@ namespace Remotion.Diagnostics.ToText
 
     public bool Enabled
     {
-      get { return _textStringBuilderToText.Enabled;  } 
-      set { _textStringBuilderToText.Enabled = value;  } 
+      get { return _textStringBuilderToText.Enabled; }
+      set { _textStringBuilderToText.Enabled = value; }
     }
 
 
-    //TODO: Capitalize method and property names, no abbreviations
+    //--------------------------------------------------------------------------
+    // Final Output Methods
+    //--------------------------------------------------------------------------
+
+    public string CheckAndConvertToString ()
+    {
+      Assertion.IsFalse (IsInSequence);
+      return _textStringBuilderToText.ToString ();
+    }
+
+    //public override string ToString ()
+    //{
+    //  return _textStringBuilderToText.ToString ();
+    //}
+
+
+
+    public ToTextBuilder ToText (object obj)
+    {
+      _toTextProvider.ToText (obj, this);
+      return this;
+    }
+
+
+    //--------------------------------------------------------------------------
+    // Before/After Element
+    //--------------------------------------------------------------------------
+
+    private void BeforeAppendElement ()
+    {
+      if (IsInSequence)
+      {
+        _textStringBuilderToText.Append (SequenceState.Counter == 0 ? SequenceState.FirstElementPrefix : SequenceState.OtherElementPrefix);
+      }
+    }
+
+    private void AfterAppendElement ()
+    {
+      if (IsInSequence)
+      {
+        _textStringBuilderToText.Append (SequenceState.ElementPostfix);
+        SequenceState.IncrementCounter ();
+      }
+    }
 
 
     //--------------------------------------------------------------------------
     // Lowlevel Emitters
     //--------------------------------------------------------------------------
 
-    //public ToTextBuilder AppendString (string s)
-    //{
-    //  _textStringBuilderToText.Append (s);
-    //  return this;
-    //}
+    public ToTextBuilder sf (string format, params object[] paramArray)
+    {
+      return AppendString (string.Format (format, paramArray));
+    }
 
-    //public ToTextBuilder AppendChar (char c)
-    //{
-    //  _textStringBuilderToText.Append (c);
-    //  return this;
-    //}
 
     public ToTextBuilder AppendNewLine ()
     {
@@ -292,17 +289,38 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public ToTextBuilder nl ()
+    {
+      AppendNewLine ();
+      return this;
+    }
+
+
     public ToTextBuilder AppendSpace ()
     {
       _textStringBuilderToText.Append (" ");
       return this;
     }
 
+    public ToTextBuilder space ()
+    {
+      AppendSpace ();
+      return this;
+    }
+
+    // TODO?: Introduce highlevel sibling "Indent" ?
     public ToTextBuilder AppendTabulator ()
     {
       _textStringBuilderToText.Append ("\t");
       return this;
     }
+
+    public ToTextBuilder tab ()
+    {
+      AppendTabulator ();
+      return this;
+    }
+
 
     public ToTextBuilder AppendSeperator ()
     {
@@ -310,11 +328,23 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public ToTextBuilder seperator
+    {
+      get { AppendSeperator (); return this; }
+    }
+
+
     public ToTextBuilder AppendComma ()
     {
       _textStringBuilderToText.Append (",");
       return this;
     }
+
+    public ToTextBuilder comma
+    {
+      get { AppendComma (); return this; }
+    }
+
 
     public ToTextBuilder AppendColon ()
     {
@@ -322,10 +352,21 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public ToTextBuilder colon
+    {
+      get { AppendColon (); return this; }
+    }
+
+
     public ToTextBuilder AppendSemiColon ()
     {
       _textStringBuilderToText.Append (";");
       return this;
+    }
+
+    public ToTextBuilder semicolon
+    {
+      get { AppendSemiColon (); return this; }
     }
 
 
@@ -335,104 +376,52 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    //public ToTextBuilder AppendMember (string name, Object obj)
-    //{
-    //  ArgumentUtility.CheckNotNull ("name", name);
-    //  BeforeAppendElement ();
-    //  AppendMemberRaw (name, obj);
-    //  AfterAppendElement ();
-    //  return this;
-    //}
-
-    //public ToTextBuilder AppendMember<T> (Expression<Func<object, T>> expression)
-    //{
-    //  ArgumentUtility.CheckNotNull ("expression", expression);
-    //  var variableName = RightUntilChar (expression.Body.ToString (), '.');
-    //  var variableValue = expression.Compile ().Invoke (null);
-    //  return AppendMember (variableName, variableValue);
-    //}
+    public ToTextBuilder ts (object obj)
+    {
+      return AppendObjectToString (obj);
+    }
 
 
+    //--------------------------------------------------------------------------
+    // Lowlevel Sequence Emitters
+    //--------------------------------------------------------------------------
 
-    //public ToTextBuilder AppendMemberNonSequence (string name, Object obj)
-    //{
-    //  ArgumentUtility.CheckNotNull ("name", name);
-    //  AppendMemberRaw (name, obj);
-    //  return this;
-    //}
+    public ToTextBuilder AppendSequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    {
+      BeforeAppendElement ();
 
-    //private ToTextBuilder AppendMemberRaw (string name, Object obj)
-    //{
-    //  SequenceBegin (name + "=", "", "", "", "");
-    //  _toTextProvider.ToText (obj, this);
-    //  SequenceEnd ();
+      return SequenceBegin (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+    }
 
-    //  return this;
-    //}
+    private ToTextBuilder SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    {
+      _sequenceStack.Push (_sequenceState);
+      _sequenceState = new SequenceStateHolder (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
 
-    //public ToTextBuilder AppendEnumerable (IEnumerable collection)
-    //{
-    //  SequenceBegin (_enumerablePrefix, _enumerableFirstElementPrefix, _enumerableOtherElementPrefix, _enumerableElementPostfix, _enumerablePostfix);
-    //  foreach (Object element in collection)
-    //  {
-    //    AppendToText (element);
-    //  }
-    //  SequenceEnd ();
-    //  return this;
-    //}
+      _textStringBuilderToText.Append (SequenceState.SequencePrefix);
 
+      return this;
+    }
 
-    //public ToTextBuilder AppendArray (Array array)
-    //{
-    //  var outerProduct = new OuterProductIndexGenerator (array);
-    //  SequenceBegin (_arrayPrefix, _arrayFirstElementPrefix, _arrayOtherElementPrefix, _arrayElementPostfix, _arrayPostfix);
-    //  var processor = new ToTextBuilderArrayToTextProcessor (array, this);
-    //  outerProduct.ProcessOuterProduct (processor);
-    //  SequenceEnd ();
+    public ToTextBuilder sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    {
+      return AppendSequenceBegin (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+    }
 
-    //  return this;
-    //}
+    public ToTextBuilder sb (string sequencePrefix, string separator, string sequencePostfix)
+    {
+      return AppendSequenceBegin (sequencePrefix, "", separator, "", sequencePostfix);
+    }
 
+    public ToTextBuilder sb (string sequencePrefix, string sequencePostfix)
+    {
+      return AppendSequenceBegin (sequencePrefix, "", ",", "", sequencePostfix);
+    }
 
-
-    //public ToTextBuilder AppendToText (Object obj)
-    //{
-    //  BeforeAppendElement ();
-    //  _AppendToText (obj);
-    //  AfterAppendElement ();
-    //  return this;
-    //}
-
-    //public ToTextBuilder AppendToTextNonSequence (Object obj)
-    //{
-    //  _AppendToText (obj);
-    //  return this;
-    //}
-
-    //private ToTextBuilder _AppendToText (Object obj)
-    //{
-    //  _toTextProvider.ToText (obj, this);
-    //  return this;
-
-    //}
-
-
-    //public ToTextBuilder Append (string s)
-    //{
-    //  return AppendString (s);
-    //}
-
-    //public ToTextBuilder Append (Object obj)
-    //{
-    //  _textStringBuilderToText.Append (obj);
-    //  return this;
-    //}
-
-
-    //public ToTextBuilder ToTextString (string s)
-    //{
-    //  return AppendString (s);
-    //}
+    public ToTextBuilder sb ()
+    {
+      return AppendSequenceBegin ("(", "", ",", "", ")");
+    }
 
 
 
@@ -446,63 +435,16 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public ToTextBuilder s (string s)
+    {
+      return AppendString (s);
+    }
+
     public ToTextBuilder AppendChar (char c)
     {
       _textStringBuilderToText.Append (c);
       return this;
     }
-
-    //public ToTextBuilder AppendNewLine ()
-    //{
-    //  if (_useMultiline)
-    //  {
-    //    _textStringBuilderToText.Append (System.Environment.NewLine);
-    //  }
-    //  return this;
-    //}
-
-    //public ToTextBuilder AppendSpace ()
-    //{
-    //  _textStringBuilderToText.Append (" ");
-    //  return this;
-    //}
-
-    //public ToTextBuilder AppendTabulator ()
-    //{
-    //  _textStringBuilderToText.Append ("\t");
-    //  return this;
-    //}
-
-    //public ToTextBuilder AppendSeperator ()
-    //{
-    //  _textStringBuilderToText.Append (",");
-    //  return this;
-    //}
-
-    //public ToTextBuilder AppendComma ()
-    //{
-    //  _textStringBuilderToText.Append (",");
-    //  return this;
-    //}
-
-    //public ToTextBuilder AppendColon ()
-    //{
-    //  _textStringBuilderToText.Append (":");
-    //  return this;
-    //}
-
-    //public ToTextBuilder AppendSemiColon ()
-    //{
-    //  _textStringBuilderToText.Append (";");
-    //  return this;
-    //}
-
-
-    //private ToTextBuilder AppendObjectToString (object obj)
-    //{
-    //  _textStringBuilderToText.Append (obj.ToString ());
-    //  return this;
-    //}
 
     public ToTextBuilder AppendMember (string name, Object obj)
     {
@@ -521,18 +463,7 @@ namespace Remotion.Diagnostics.ToText
       return AppendMember (variableName, variableValue);
     }
 
-    private static string RightUntilChar (string s, char separator)
-    {
-      int iSeparator = s.LastIndexOf (separator);
-      if (iSeparator > 0)
-      {
-        return s.Substring (iSeparator + 1, s.Length - iSeparator - 1);
-      }
-      else
-      {
-        return s;
-      }
-    }
+
 
     public ToTextBuilder AppendMemberNonSequence (string name, Object obj)
     {
@@ -550,6 +481,27 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public ToTextBuilder m (Object obj)
+    {
+      return AppendToText (obj);
+    }
+
+    public ToTextBuilder m (string name, Object obj, bool honorSequence)
+    {
+      return honorSequence ? AppendMember (name, obj) : AppendMemberNonSequence (name, obj);
+    }
+
+    public ToTextBuilder m<T> (Expression<Func<object, T>> expression)
+    {
+      return AppendMember (expression);
+    }
+
+    public ToTextBuilder m (string name, Object obj)
+    {
+      return AppendMember (name, obj);
+    }
+
+
     public ToTextBuilder AppendEnumerable (IEnumerable collection)
     {
       SequenceBegin (_enumerablePrefix, _enumerableFirstElementPrefix, _enumerableOtherElementPrefix, _enumerableElementPostfix, _enumerablePostfix);
@@ -561,9 +513,10 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-
-
-    //TODO: move to outer scope
+    public ToTextBuilder collection (IEnumerable collection)
+    {
+      return AppendEnumerable (collection);
+    }
 
 
     public ToTextBuilder AppendArray (Array array)
@@ -577,6 +530,10 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public ToTextBuilder array (Array array)
+    {
+      return AppendArray (array);
+    }
 
 
     public ToTextBuilder AppendToText (Object obj)
@@ -586,6 +543,18 @@ namespace Remotion.Diagnostics.ToText
       AfterAppendElement ();
       return this;
     }
+
+    public ToTextBuilder tt (Object obj)
+    {
+      return AppendToText (obj);
+    }
+
+    public ToTextBuilder tt (Object obj, bool honorSequence)
+    {
+      return honorSequence ? AppendToText (obj) : AppendToTextNonSequence (obj);
+    }
+
+
 
     public ToTextBuilder AppendToTextNonSequence (Object obj)
     {
@@ -619,138 +588,7 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    //--------------------------------------------------------------------------
-    // Shorthand notations
-    //--------------------------------------------------------------------------
-
-    public ToTextBuilder sf (string format, params object[] paramArray)
-    {
-      return AppendString (string.Format (format, paramArray));
-    }
-
-
-    public ToTextBuilder s (string s)
-    {
-      return AppendString (s);
-    }
-
-    public ToTextBuilder s ()
-    {
-      return this;
-    }
-
-    public ToTextBuilder nil ()
-    {
-      return this;
-    }
-
-    public ToTextBuilder nl ()
-    {
-      AppendNewLine();
-      return this;
-    }
-
-    public ToTextBuilder space ()
-    {
-      AppendSpace();
-      return this;
-    }
-
-    public ToTextBuilder tab ()
-    {
-      AppendTabulator();
-      return this;
-    }
-
-    public ToTextBuilder seperator
-    {
-      get { AppendSeperator (); return this; }
-    }
-
-    public ToTextBuilder comma
-    {
-      get { AppendComma (); return this; }
-    }
-
-    public ToTextBuilder colon
-    {
-      get { AppendColon (); return this; }
-    }
-
-    public ToTextBuilder semicolon
-    {
-      get { AppendSemiColon (); return this; }
-    }
-
-
-    public ToTextBuilder tt (Object obj)
-    {
-      return AppendToText (obj);
-    }
-
-    public ToTextBuilder tt ( Object obj, bool honorSequence)
-    {
-      return honorSequence ? AppendToText (obj) : AppendToTextNonSequence (obj);
-    }
-
-
-    public ToTextBuilder m (Object obj)
-    {
-      return AppendToText (obj);
-    }
-
-    public ToTextBuilder m(string name, Object obj, bool honorSequence)
-    {
-      return honorSequence ? AppendMember (name, obj) : AppendMemberNonSequence (name, obj);
-    }
-
-    public ToTextBuilder m<T> (Expression<Func<object, T>> expression)
-    {
-      return AppendMember (expression);
-    }
-
-    public ToTextBuilder m (string name, Object obj)
-    {
-      return AppendMember (name, obj);
-    }
-
-
-    public ToTextBuilder ts (object obj)
-    {
-      return AppendObjectToString (obj);
-    }
-
-    public ToTextBuilder collection (IEnumerable collection)
-    {
-      return AppendEnumerable (collection);
-    }
-
-
-    public ToTextBuilder array (Array array)
-    {
-      return AppendArray (array);
-    }
-
-    public string CheckAndConvertToString ()
-    {
-      Assertion.IsFalse (IsInSequence);
-      return _textStringBuilderToText.ToString ();
-    }
-
-    //public override string ToString ()
-    //{
-    //  return _textStringBuilderToText.ToString ();
-    //}
-
-
-
-    public ToTextBuilder ToText (object obj)
-    {
-      _toTextProvider.ToText (obj, this);
-      return this;
-    }
-
-
+ 
     private ToTextBuilder AppendInstanceBegin (Type type)
     {
       SequenceBegin ("[" + type.Name, "  ", ",", "", "]");
@@ -759,13 +597,13 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder beginInstance (Type type)
     {
-      return AppendInstanceBegin(type);
+      return AppendInstanceBegin (type);
     }
 
 
     private ToTextBuilder AppendInstanceEnd ()
     {
-      SequenceEnd();
+      SequenceEnd ();
       return this;
     }
 
@@ -775,47 +613,14 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    private void BeforeAppendElement ()
-    {
-      if (IsInSequence)
-      {
-        _textStringBuilderToText.Append (SequenceState.Counter == 0 ? SequenceState.FirstElementPrefix : SequenceState.OtherElementPrefix);
-      }
-    }
-
-    private void AfterAppendElement ()
-    {
-      if (IsInSequence)
-      {
-        _textStringBuilderToText.Append (SequenceState.ElementPostfix);
-        SequenceState.IncrementCounter ();
-      }
-    }
-
-
-    public ToTextBuilder AppendSequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
-    {
-      BeforeAppendElement();
-
-      return SequenceBegin(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
-    }
-
-    private ToTextBuilder SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
-    {
-      _sequenceStack.Push (_sequenceState);
-      _sequenceState = new SequenceStateHolder(sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
-      
-      _textStringBuilderToText.Append (SequenceState.SequencePrefix);
-
-      return this;
-    }
-
+    //--------------------------------------------------------------------------
+    // Highlevel Sequence Emitters
+    //--------------------------------------------------------------------------
 
     public ToTextBuilder AppendSequenceEnd ()
     {
-      SequenceEnd();
-
-      AfterAppendElement();
+      SequenceEnd ();
+      AfterAppendElement ();
       return this;
     }
 
@@ -827,6 +632,12 @@ namespace Remotion.Diagnostics.ToText
       _sequenceState = _sequenceStack.Pop ();
     }
 
+    public ToTextBuilder se ()
+    {
+      return AppendSequenceEnd ();
+    }
+
+
     public ToTextBuilder AppendSequenceElement (object obj)
     {
       Assertion.IsTrue (IsInSequence);
@@ -835,35 +646,10 @@ namespace Remotion.Diagnostics.ToText
       AfterAppendElement ();
       return this;
     }
-    
+
     public ToTextBuilder e (object obj)
     {
       return AppendSequenceElement (obj);
-    }
-
-    public ToTextBuilder sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
-    {
-      return AppendSequenceBegin (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
-    }
-
-    public ToTextBuilder sb (string sequencePrefix, string separator, string sequencePostfix)
-    {
-      return AppendSequenceBegin (sequencePrefix, "", separator, "", sequencePostfix);
-    }
-
-    public ToTextBuilder sb (string sequencePrefix, string sequencePostfix)
-    {
-      return AppendSequenceBegin (sequencePrefix, "", ",", "", sequencePostfix);
-    }
-
-    public ToTextBuilder sb ()
-    {
-      return AppendSequenceBegin ("(", "", ",", "", ")");
-    }
-
-    public ToTextBuilder se ()
-    {
-      return AppendSequenceEnd ();
     }
 
     public ToTextBuilder AppendSequenceElements (params object[] sequenceElements)
@@ -878,7 +664,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder elements (params object[] sequenceElements)
     {
-      return AppendSequenceElements(sequenceElements);
+      return AppendSequenceElements (sequenceElements);
     }
 
 
@@ -892,46 +678,56 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-  }
+    //--------------------------------------------------------------------------
+    // Highlevel Complexity Switching Emitters
+    //--------------------------------------------------------------------------
 
-  internal class ToTextBuilderArrayToTextProcessor : OuterProductProcessorBase
-  {
-    protected readonly Array _array;
-    private readonly ToTextBuilder _toTextBuilder;
-
-    public ToTextBuilderArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
+    public ToTextBuilder cSkeleton
     {
-      _array = rectangularArray;
-      _toTextBuilder = toTextBuilder;
+      get
+      {
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Skeleton);
+      }
     }
 
-    public override bool DoBeforeLoop ()
+    public ToTextBuilder cBasic
     {
-      if (ProcessingState.IsInnermostLoop)
+      get
       {
-        _toTextBuilder.AppendToText (_array.GetValue (ProcessingState.DimensionIndices));
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Basic);
       }
-      else
+    }
+
+    public ToTextBuilder cMedium
+    {
+      get
       {
-        _toTextBuilder.AppendSequenceBegin (_toTextBuilder.ArrayPrefix, _toTextBuilder.ArrayFirstElementPrefix, _toTextBuilder.ArrayOtherElementPrefix, _toTextBuilder.ArrayElementPostfix, _toTextBuilder.ArrayPostfix);
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Medium);
       }
-      return true;
+    }
+
+    public ToTextBuilder cComplex
+    {
+      get
+      {
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Complex);
+      }
+    }
+
+    public ToTextBuilder cFull
+    {
+      get
+      {
+        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Full);
+      }
     }
 
 
+    //--------------------------------------------------------------------------
+    // Helper Methods
+    //--------------------------------------------------------------------------
 
-    public override bool DoAfterLoop ()
-    {
-      if (!ProcessingState.IsInnermostLoop)
-      {
-        _toTextBuilder.AppendSequenceEnd ();
-      }
-      return true;
-    }
-  }
-
-
-
+    // TODO: Move to String Extension Class
     private static string RightUntilChar (string s, char separator)
     {
       int iSeparator = s.LastIndexOf (separator);
@@ -944,4 +740,6 @@ namespace Remotion.Diagnostics.ToText
         return s;
       }
     }
+
+  }
 }

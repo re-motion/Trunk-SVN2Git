@@ -438,7 +438,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.OutputComplex();
-      Assert.That (toTextBuilder.OutputComplexity, Is.EqualTo (ToTextBuilderOutputComplexityLevel.Complex));
+      Assert.That (toTextBuilder.OutputComplexity, Is.EqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Complex));
     }
 
     [Test]
@@ -447,11 +447,11 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
       toTextBuilder.OutputSkeleton();
-      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Basic);
+      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (false));
 
       toTextBuilder.OutputBasic();
-      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Basic);
+      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
     }
 

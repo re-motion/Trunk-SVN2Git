@@ -116,6 +116,7 @@
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderRegisteredInterfaceHandlerHandler.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderRegisteredTypeHandler.cs" />
     <Compile Include="Diagnostics\ToText\IToTextSpecificHandler.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextBuilderArrayToTextProcessor.cs" />
     <Compile Include="Diagnostics\ToText\ToTextSpecificHandlerAttribute.cs" />
     <Compile Include="Diagnostics\ToText\ToTextProviderSettings.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderStringHandler.cs" />
