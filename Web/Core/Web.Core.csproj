@@ -119,6 +119,7 @@
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\PreProcessingSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\PreProcessingSubFunctionStateBase.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\PreProcessingSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\PreparingRedirectToSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\RedirectingToSubFunctionStateParameters.cs" />
@@ -143,6 +144,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\IExecutionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\PreProcessingSubFunctionNoRepostState.cs" />
     <Compile Include="ExecutionEngine\WxeParameterAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeReturnOptions.cs" />
     <Compile Include="ExecutionEngine\WxeUserControl2.cs">

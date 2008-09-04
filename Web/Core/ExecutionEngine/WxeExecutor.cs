@@ -127,7 +127,10 @@ namespace Remotion.Web.ExecutionEngine
     {
       if (!returningPostback)
         return "window.close();";
-      else if (UsesEventTarget)
+
+      ArgumentUtility.CheckNotNull ("sender", sender);
+
+      if (UsesEventTarget)
       {
         NameValueCollection postBackCollection = _page.GetPostBackCollection();
         if (postBackCollection == null)
@@ -139,7 +142,6 @@ namespace Remotion.Web.ExecutionEngine
       }
       else
       {
-        ArgumentUtility.CheckNotNull ("sender", sender);
         if (!(sender is IPostBackEventHandler || sender is IPostBackDataHandler))
         {
           throw new ArgumentException (

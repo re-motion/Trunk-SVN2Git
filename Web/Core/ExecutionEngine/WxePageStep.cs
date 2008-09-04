@@ -243,7 +243,8 @@ namespace Remotion.Web.ExecutionEngine
       page.SaveAllState();
       _wxeHandler = page.WxeHandler;
 
-      _executionState = new PreProcessingSubFunctionState (this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions));
+      _executionState = new PreProcessingSubFunctionState (
+          this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions));
       _executionState.PreProcessSubFunction();
       Execute();
     }
@@ -261,25 +262,16 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
 
-      NameValueCollection postBackCollection = BackupPostBackCollection (page);
-      RemoveEventSource (postBackCollection, sender, usesEventTarget);
+      if (_executionState != null)
+        throw new InvalidOperationException ("Cannot execute function while another function executes.");
 
-      PrepareExecuteFunction (function, true);
-      if (permaUrlOptions.UsePermaUrl)
-      {
-        var parameters = new WxePageStepExecutionStates.ExecuteWithPermaUrl.PreparingSubFunctionStateParameters (function, postBackCollection, permaUrlOptions);
-        _executionState = new WxePageStepExecutionStates.ExecuteWithPermaUrl.PreparingRedirectToSubFunctionState (this, parameters);
-      }
-      else
-      {
-        var parameters = new ExecutionStateParameters (function, postBackCollection);
-        _executionState = new WxePageStepExecutionStates.ExecuteWithoutPermaUrl.ExecutingSubFunctionState (this, parameters);
-      }
-
-      page.SaveAllState ();
-
+      page.SaveAllState();
       _wxeHandler = page.WxeHandler;
-      Execute ();
+
+      _executionState = new PreProcessingSubFunctionNoRepostState (
+          this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions), sender, usesEventTarget);
+      _executionState.PreProcessSubFunction();
+      Execute();
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -393,25 +385,6 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("page", page);
 
       return page.GetPostBackCollection().Clone();
-    }
-
-    private void RemoveEventSource (NameValueCollection postBackCollection, Control sender, bool usesEventTarget)
-    {
-      if (usesEventTarget)
-      {
-        postBackCollection.Remove (ControlHelper.PostEventSourceID);
-        postBackCollection.Remove (ControlHelper.PostEventArgumentID);
-      }
-      else
-      {
-        ArgumentUtility.CheckNotNull ("sender", sender);
-        if (!(sender is IPostBackEventHandler || sender is IPostBackDataHandler))
-        {
-          throw new ArgumentException (
-              "The sender must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.");
-        }
-        postBackCollection.Remove (sender.UniqueID);
-      }
     }
 
     private void SetStateForCurrentFunction (WxeContext context)

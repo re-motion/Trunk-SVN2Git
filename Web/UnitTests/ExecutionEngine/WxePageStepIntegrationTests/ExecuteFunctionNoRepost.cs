@@ -75,10 +75,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       using (_mockRepository.Ordered())
       {
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        senderMock.Expect (mock => mock.UniqueID).Return ("TheUniqueID");
-        _pageMock.Expect (mock => mock.SaveAllState());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        using (_mockRepository.Unordered ())
+        {
+          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
+          senderMock.Expect (mock => mock.UniqueID).Return ("TheUniqueID");
+          _pageMock.Expect (mock => mock.SaveAllState());
+          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        }
         _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
             invocation =>
             {
@@ -107,10 +110,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       using (_mockRepository.Ordered())
       {
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        senderMock.Expect (mock => mock.UniqueID).Return ("TheUniqueID");
-        _pageMock.Expect (mock => mock.SaveAllState());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        using (_mockRepository.Unordered ())
+        {
+          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
+          senderMock.Expect (mock => mock.UniqueID).Return ("TheUniqueID");
+          _pageMock.Expect (mock => mock.SaveAllState());
+          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        }
         _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
             invocation =>
             {
@@ -130,36 +136,19 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The sender must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.")]
-    public void Test_PrepareOnly_SuppressSender_IsNot_IPostBackDataHandler_Or_IPostBackDataHandler ()
-    {
-      WxeContextMock.SetCurrent (_wxeContext);
-
-      _postBackCollection.Add ("TheUnqiueID", "Value");
-      Control senderMock = _mockRepository.PartialMock<Control>();
-
-      using (_mockRepository.Ordered())
-      {
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        senderMock.Expect (mock => mock.UniqueID).Return ("TheUniqueID");
-      }
-
-      _mockRepository.ReplayAll();
-
-      _pageStep.ExecuteFunctionNoRepost (_pageMock, _subFunction, senderMock, false, WxePermaUrlOptions.Null);
-    }
-
-    [Test]
     public void Test_PrepareOnly_UseEventTarget ()
     {
       WxeContextMock.SetCurrent (_wxeContext);
+      Control senderStub = _mockRepository.Stub<Control> ();
 
       using (_mockRepository.Ordered ())
       {
-        _pageMock.Expect (mock => mock.GetPostBackCollection ()).Return (_postBackCollection);
-        _pageMock.Expect (mock => mock.SaveAllState ());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        using (_mockRepository.Unordered ())
+        {
+          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
+          _pageMock.Expect (mock => mock.SaveAllState());
+          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        }
         _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
             invocation =>
             {
@@ -174,7 +163,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       _mockRepository.ReplayAll ();
 
-      _pageStep.ExecuteFunctionNoRepost (_pageMock, _subFunction, null, true, WxePermaUrlOptions.Null);
+      _pageStep.ExecuteFunctionNoRepost (_pageMock, _subFunction, senderStub, true, WxePermaUrlOptions.Null);
 
       _mockRepository.VerifyAll ();
     }

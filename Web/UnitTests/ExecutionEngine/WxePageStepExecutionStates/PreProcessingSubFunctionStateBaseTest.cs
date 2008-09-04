@@ -22,7 +22,7 @@ using ExecutingSubFunctionState_WithoutPermaUrl =
 namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
 {
   [TestFixture]
-  public class PreProcessingSubFunctionTest : TestBase
+  public class PreProcessingSubFunctionStateBaseTest : TestBase
   {
     private WxeStep _parentStep;
     private IWxePage _pageMock;
@@ -32,6 +32,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
       base.SetUp();
       _parentStep = new WxePageStep ("page.aspx");
       _pageMock = MockRepository.StrictMock<IWxePage>();
+      PostBackCollection.Add ("Key", "Value");
     }
 
     [Test]
@@ -53,7 +54,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
           invocation =>
           {
             var nextState = CheckExecutionState ((ExecutingSubFunctionState_WithoutPermaUrl) invocation.Arguments[0]);
-            Assert.That (nextState.Parameters.PostBackCollection, Is.EquivalentTo (PostBackCollection));
+            Assert.That (nextState.Parameters.PostBackCollection, Is.Not.SameAs (PostBackCollection));
+            Assert.That (nextState.Parameters.PostBackCollection.AllKeys, List.Contains ("Key"));
             Assert.That (nextState.Parameters.SubFunction.ParentStep, Is.SameAs (_parentStep));
           });
 
@@ -77,7 +79,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
           invocation =>
           {
             var nextState = CheckExecutionState ((PreparingRedirectToSubFunctionState_WithPermaUrl) invocation.Arguments[0]);
-            Assert.That (nextState.Parameters.PostBackCollection, Is.EquivalentTo (PostBackCollection));
+            Assert.That (nextState.Parameters.PostBackCollection, Is.Not.SameAs (PostBackCollection));
+            Assert.That (nextState.Parameters.PostBackCollection.AllKeys, List.Contains ("Key"));
             Assert.That (nextState.Parameters.SubFunction.ParentStep, Is.SameAs (_parentStep));
             Assert.That (nextState.Parameters.PermaUrlOptions, Is.SameAs (permaUrlOptions));
           });
