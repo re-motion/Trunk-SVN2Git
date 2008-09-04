@@ -435,15 +435,20 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public ToTextBuilder s (string s)
+    {
+      return AppendString (s);
+    }
+
     public ToTextBuilder AppendEscapedString (string s)
     {
       EscapeString(s,_textStringBuilderToText);
       return this;
     }
 
-    public ToTextBuilder s (string s)
+    public ToTextBuilder sEsc (string s)
     {
-      return AppendString (s);
+      return AppendEscapedString (s);
     }
 
     public ToTextBuilder AppendChar (char c)

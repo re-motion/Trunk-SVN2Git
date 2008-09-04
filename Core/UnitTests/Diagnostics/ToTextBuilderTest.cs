@@ -789,7 +789,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var testString = "abcdEFG\t\n\"\\ HIJklmn \t\t\n\n\"\"\\\\ \r \b\v\f";
       var toTextBuilder = CreateTextBuilder ();
-      toTextBuilder.AppendEscapedString (testString);
+      toTextBuilder.sEsc (testString);
       var result = toTextBuilder.CheckAndConvertToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("abcdEFG\\t\\n\\\"\\\\ HIJklmn \\t\\t\\n\\n\\\"\\\"\\\\\\\\ \\r \\b\\v\\f"));
