@@ -54,7 +54,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void nlTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.nl.s ("");
+      toTextBuilder.nl().s ("");
       var result = toTextBuilder.CheckAndConvertToString();
       Assert.That (result, Is.EqualTo (System.Environment.NewLine));
     }
@@ -63,7 +63,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void spaceTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.space.s ("");
+      toTextBuilder.space().s ("");
       var result = toTextBuilder.CheckAndConvertToString();
       Assert.That (result, Is.EqualTo (" "));
     }
@@ -72,7 +72,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void tabTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.tab.s ("");
+      toTextBuilder.tab().s ("");
       var result = toTextBuilder.CheckAndConvertToString();
       Assert.That (result, Is.EqualTo ("\t"));
     }
@@ -118,7 +118,7 @@ namespace Remotion.UnitTests.Diagnostics
       string s = "Text";
 
       var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.s ("START-").nl.tab.sf ("[{0};{1};{2}]", i, f, s).space.s ("-END");
+      toTextBuilder.s ("START-").nl().tab().sf ("[{0};{1};{2}]", i, f, s).space().s ("-END");
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("START-" + Environment.NewLine + "\t[987654321;3,14;Text] -END"));
@@ -407,13 +407,13 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.UseMultiLine = false;
-      toTextBuilder.s ("Hello").nl.s (" world");
+      toTextBuilder.s ("Hello").nl().s (" world");
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("Hello world"));
 
       toTextBuilder.UseMultiLine = true;
-      toTextBuilder.s (" here comes the").nl.s ("newline");
+      toTextBuilder.s (" here comes the").nl().s ("newline");
       var result2 = toTextBuilder.CheckAndConvertToString();
       Log (result2);
       Assert.That (result2, Is.EqualTo ("Hello world here comes the" + Environment.NewLine + "newline"));
