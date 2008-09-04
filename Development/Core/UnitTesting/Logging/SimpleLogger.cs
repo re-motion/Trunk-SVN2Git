@@ -10,7 +10,7 @@
 
 using System;
 using System.IO;
-using System.Text;
+using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
@@ -25,7 +25,7 @@ namespace Remotion.Development.UnitTesting.Logging
     public static ISimpleLogger CreateForConsole (bool enableConsole)
     {
       if (enableConsole)
-        return new SimpleLogger (Console.Out);
+        return new SimpleLogger (Console.Out, To.ToTextProvider);
       else
         return new SimpleLoggerNull();
     }
@@ -34,7 +34,7 @@ namespace Remotion.Development.UnitTesting.Logging
     {
       ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName);
       if (enable)
-        return new SimpleLogger (new StreamWriter (new FileStream (fileName, FileMode.OpenOrCreate, FileAccess.Write)));
+        return new SimpleLogger (new StreamWriter (new FileStream (fileName, FileMode.OpenOrCreate, FileAccess.Write)), To.ToTextProvider);
       else
         return new SimpleLoggerNull();
     }
@@ -42,12 +42,16 @@ namespace Remotion.Development.UnitTesting.Logging
     private readonly TextWriter _textWriter;
     private readonly ToTextProvider _toText;
 
-    private SimpleLogger (TextWriter textWriter)
+    private SimpleLogger (TextWriter textWriter, ToTextProvider toTextProvider)
     {
       // Ensure that usage of the SimpleLogger from different threads is synchronized.
       _textWriter = TextWriter.Synchronized (textWriter);
 
-      _toText = new ToTextProvider();
+      _toText = toTextProvider;
+      if (_toText == null)
+      {
+        _toText = new ToTextProvider();
+      }
       _toText.Settings.UseAutomaticObjectToText = true;
       _toText.Settings.UseAutomaticStringEnclosing = true;
       _toText.Settings.UseAutomaticCharEnclosing = true;
