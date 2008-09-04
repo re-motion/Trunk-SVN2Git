@@ -13,7 +13,9 @@ namespace Remotion.Diagnostics
     private static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap;
     private static ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceHandlerMap;
 
-    public static string Text (object obj)
+    public static ToTextProvider ToTextProvider { get { return _toTextProvider; } }
+
+      public static string Text (object obj)
     {
       return _toTextProvider.ToTextString (obj);
     }
@@ -53,9 +55,11 @@ namespace Remotion.Diagnostics
 
     public static void TextEnableAutomatics (bool enable)
     {
-      _toTextProvider.Settings.UseAutomaticObjectToText = enable;
-      _toTextProvider.Settings.UseAutomaticStringEnclosing = enable;
-      _toTextProvider.Settings.UseAutomaticCharEnclosing = enable;
+      var settings = _toTextProvider.Settings;
+      settings.UseAutomaticObjectToText = enable;
+      settings.UseAutomaticStringEnclosing = enable;
+      settings.UseAutomaticCharEnclosing = enable;
+      settings.UseInterfaceHandlers = enable;
     }
   }
 }

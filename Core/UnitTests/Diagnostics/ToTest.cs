@@ -14,6 +14,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics;
+using Remotion.Diagnostics.ToText;
 
 namespace Remotion.UnitTests.Diagnostics
 {
@@ -155,15 +156,65 @@ namespace Remotion.UnitTests.Diagnostics
     //}
 
 
+    public class ToTextTest {}
+    [ToTextSpecificHandler]
+    public class ToTextTestToTextSpecificTypeHandler : ToTextSpecificTypeHandler<ToTextTest>
+    {
+      public override void ToText (ToTextTest t, ToTextBuilder toTextBuilder)
+      {
+        toTextBuilder.s ("handled by ToTextTestToTextSpecificTypeHandler");
+      }
+    }
+
+    public interface IToTextInterfaceTest {}
+    public class ToTextInterfaceTest : IToTextInterfaceTest  { }
+    [ToTextSpecificHandler]
+    public class IToTextInterfaceTestToTextSpecificTypeHandler : ToTextSpecificInterfaceHandler<IToTextInterfaceTest>
+    {
+      public override void ToText (IToTextInterfaceTest t, ToTextBuilder toTextBuilder)
+      {
+        toTextBuilder.s ("handled by IToTextInterfaceTestToTextSpecificTypeHandler");
+      }
+    }
+
+
     [Test]
     public void GetTypeHandlersTest ()
     {
       var handlerMap = To.GetTypeHandlers ();
       Assert.That (handlerMap.Count, Is.GreaterThan(1));
+
+      IToTextSpecificTypeHandler simpleHandler;
+      handlerMap.TryGetValue (typeof (ToTextTest), out simpleHandler);
+      Assert.That (simpleHandler, Is.Not.Null);
+      Assert.That (simpleHandler is ToTextTestToTextSpecificTypeHandler, Is.True);
+
       //foreach (var pair in handlerMap)
       //{
       //  Log (pair.Key + " " + pair.Value);
       //}
+    }
+
+    [Test]
+    public void ToTextTestToTextSpecificTypeHandlerTest ()
+    {
+      Assert.That (To.Text (new ToTextTest ()), Is.EqualTo ("handled by ToTextTestToTextSpecificTypeHandler"));
+    }
+
+    [Test]
+    public void IToTextInterfaceTestToTextSpecificTypeHandlerTest ()
+    {
+      var toTextProviderSettings = To.ToTextProvider.Settings;
+      bool useInterfaceHandlers = toTextProviderSettings.UseInterfaceHandlers;
+      try
+      {
+        toTextProviderSettings.UseInterfaceHandlers = true;
+        Assert.That (To.Text (new ToTextInterfaceTest ()), Is.EqualTo ("handled by IToTextInterfaceTestToTextSpecificTypeHandler"));
+      }
+      finally
+      {
+        toTextProviderSettings.UseInterfaceHandlers = useInterfaceHandlers;
+      }
     }
 
 
