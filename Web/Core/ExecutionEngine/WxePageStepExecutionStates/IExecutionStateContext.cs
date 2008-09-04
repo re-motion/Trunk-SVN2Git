@@ -14,5 +14,6 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
   {
     IExecutionState ExecutionState { get; }
     void SetExecutionState (IExecutionState executionState);
+    WxeFunction ParentFunction { get; }
   }
 }

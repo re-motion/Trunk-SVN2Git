@@ -19,8 +19,13 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
   public class RedirectingToSubFunctionState : ExecutionStateBase<PreparingSubFunctionStateParameters>
   {
     public RedirectingToSubFunctionState (IExecutionStateContext executionStateContext, PreparingSubFunctionStateParameters parameters)
-        : base (executionStateContext, parameters)
+      : base (executionStateContext, parameters)
     {
+      if (!Parameters.PermaUrlOptions.UsePermaUrl)
+      {
+        throw new ArgumentException (
+            string.Format ("The '{0}' type only supports WxePermaUrlOptions with the UsePermaUrl-flag set to true.", GetType().Name), "parameters");
+      }
     }
 
     public override bool IsExecuting

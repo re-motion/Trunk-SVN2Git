@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using System.Web.SessionState;
 using NUnit.Framework;
 using Remotion.Context;
 using Remotion.Web.ExecutionEngine;
@@ -23,6 +24,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
     private IHttpResponse _responseMock;
     private IHttpRequest _requestMock;
     private NameValueCollection _postBackCollection;
+    private WxeFunctionStateManager _functionStateManager;
 
     [SetUp]
     public virtual void SetUp ()
@@ -30,7 +32,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
       _mockRepository = new MockRepository();
       _executionStateContextMock = MockRepository.StrictMock<IExecutionStateContext>();
 
-      _rootFunction = new TestFunction();
+      _rootFunction = new TestFunction("Value");
       _subFunction = CreateSubFunction();
 
       _httpContextMock = MockRepository.DynamicMock<IHttpContext>();
@@ -44,11 +46,17 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
       _httpContextMock.Stub (stub => stub.Request).Return (_requestMock).Repeat.Any();
 
       _postBackCollection = new NameValueCollection();
+
+      IHttpSessionState sessionStub = _mockRepository.DynamicMock<IHttpSessionState> ();
+      sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior ();
+
+      _functionStateManager = new WxeFunctionStateManager (sessionStub);
+      SafeContext.Instance.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, _functionStateManager);
     }
 
     protected virtual OtherTestFunction CreateSubFunction ()
     {
-      return new OtherTestFunction ("Value");
+      return new OtherTestFunction ("OtherValue");
     }
 
     [TearDown]

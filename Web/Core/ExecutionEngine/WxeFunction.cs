@@ -383,9 +383,9 @@ namespace Remotion.Web.ExecutionEngine
         if (_functionToken != null)
           return _functionToken;
         WxeFunction rootFunction = RootFunction;
-        if (rootFunction != null)
+        if (rootFunction != null && rootFunction != this)
           return rootFunction.FunctionToken;
-        throw new InvalidOperationException ("The WxeFunction does not have a RootFunction.");
+        throw new InvalidOperationException ("The WxeFunction does not have a RootFunction, i.e. the top-most WxeFunction does not have a FunctionToken.");
       }      
     }
 

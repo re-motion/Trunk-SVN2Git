@@ -49,8 +49,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     [Test]
     public void IsExecuting ()
     {
-      IExecutionState executionState = new RedirectingToSubFunctionState (
-          ExecutionStateContextMock, new PreparingSubFunctionStateParameters (SubFunction, PostBackCollection, WxePermaUrlOptions.Null));
+      IExecutionState executionState = CreateExecutionState(new WxePermaUrlOptions());
       Assert.That (executionState.IsExecuting, Is.True);
     }
 
@@ -58,12 +57,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     public void ExecuteSubFunction_WithPermaUrl_GoesToExecutingSubFunction ()
     {
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions();
-      IExecutionState executionState = new RedirectingToSubFunctionState (
-          ExecutionStateContextMock, new PreparingSubFunctionStateParameters (SubFunction, PostBackCollection, permaUrlOptions));
+      IExecutionState executionState = CreateExecutionState (permaUrlOptions);
 
       using (MockRepository.Ordered())
       {
-        ResponseMock.Expect (mock => mock.Redirect ("~/session/sub.wxe?Parameter1=Value&WxeFunctionToken=" + WxeContext.FunctionToken))
+        ResponseMock.Expect (mock => mock.Redirect ("~/session/sub.wxe?Parameter1=OtherValue&WxeFunctionToken=" + WxeContext.FunctionToken))
             .Do (invocation => Thread.CurrentThread.Abort());
         ExecutionStateContextMock.Expect (
             mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
@@ -97,8 +95,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     public void ExecuteSubFunction_WithPermaUrl_WithCustumUrlParamters_GoesToExecutingSubFunction ()
     {
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions (false, new NameValueCollection { { "Key", "Value" } });
-      IExecutionState executionState = new RedirectingToSubFunctionState (
-          ExecutionStateContextMock, new PreparingSubFunctionStateParameters (SubFunction, PostBackCollection, permaUrlOptions));
+      IExecutionState executionState = CreateExecutionState (permaUrlOptions);
 
       using (MockRepository.Ordered())
       {
@@ -128,8 +125,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       WxeContext.QueryString.Add ("Key", "Value");
 
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions (true);
-      IExecutionState executionState = new RedirectingToSubFunctionState (
-          ExecutionStateContextMock, new PreparingSubFunctionStateParameters (SubFunction, PostBackCollection, permaUrlOptions));
+      IExecutionState executionState = CreateExecutionState (permaUrlOptions);
 
       string redirectUrl = UrlUtility.AddParameters (
           "~/session/sub.wxe",
@@ -164,15 +160,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "Redirect to '~/session/sub.wxe?Parameter1=Value&WxeFunctionToken=",
+        ExpectedMessage = "Redirect to '~/session/sub.wxe?Parameter1=OtherValue&WxeFunctionToken=",
         MatchType = MessageMatch.Contains)]
     public void ExecuteSubFunction_WithFailedRedirect ()
     {
-      IExecutionState executionState = new RedirectingToSubFunctionState (
-          ExecutionStateContextMock, new PreparingSubFunctionStateParameters (SubFunction, PostBackCollection, WxePermaUrlOptions.Null));
+      IExecutionState executionState = CreateExecutionState (new WxePermaUrlOptions());
       using (MockRepository.Ordered())
       {
-        ResponseMock.Expect (mock => mock.Redirect ("~/session/sub.wxe?Parameter1=Value&WxeFunctionToken=" + WxeContext.FunctionToken));
+        ResponseMock.Expect (mock => mock.Redirect ("~/session/sub.wxe?Parameter1=OtherValue&WxeFunctionToken=" + WxeContext.FunctionToken));
       }
 
       MockRepository.ReplayAll();
@@ -184,9 +179,24 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     [ExpectedException (typeof (NotSupportedException))]
     public void PostProcessSubFunction ()
     {
-      IExecutionState executionState = new RedirectingToSubFunctionState (
-          ExecutionStateContextMock, new PreparingSubFunctionStateParameters (SubFunction, PostBackCollection, WxePermaUrlOptions.Null));
+      IExecutionState executionState = CreateExecutionState (new WxePermaUrlOptions());
       executionState.PostProcessSubFunction (WxeContext);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The 'RedirectingToSubFunctionState' type only supports WxePermaUrlOptions with the UsePermaUrl-flag set to true.\r\n"
+        +"Parameter name: parameters",
+        MatchType = MessageMatch.Contains)]
+    public void Initialize_WithoutPermaUrl ()
+    {
+      CreateExecutionState (WxePermaUrlOptions.Null);
+    }
+
+    private RedirectingToSubFunctionState CreateExecutionState (WxePermaUrlOptions permaUrlOptions)
+    {
+      return new RedirectingToSubFunctionState (
+          ExecutionStateContextMock, new PreparingSubFunctionStateParameters (SubFunction, PostBackCollection, permaUrlOptions));
     }
   }
 }

@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.Web;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
@@ -108,6 +109,36 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       Assert.AreEqual ("Hello World", function.StringValue);
       Assert.AreEqual (null, function.NaInt32Value);
       Assert.AreEqual (1, function.IntValue);
+    }
+
+    [Test]
+    public void GetFunctionToken_AsRootFunction ()
+    {
+      TestFunction rootFunction = new TestFunction();
+      PrivateInvoke.InvokeNonPublicMethod (rootFunction, "SetFunctionToken", "RootFunction");
+
+      Assert.That (rootFunction.FunctionToken, Is.EqualTo ("RootFunction"));
+    }
+
+    [Test]
+    public void GetFunctionToken_AsSubFunction ()
+    {
+      TestFunction rootFunction = new TestFunction();
+      TestFunction subFunction = new TestFunction ();
+      rootFunction.Add (subFunction);
+      PrivateInvoke.InvokeNonPublicMethod (rootFunction, "SetFunctionToken", "RootFunction");
+
+      Assert.That (subFunction.FunctionToken, Is.EqualTo ("RootFunction"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), 
+      ExpectedMessage = "The WxeFunction does not have a RootFunction, i.e. the top-most WxeFunction does not have a FunctionToken.")]
+    public void GetFunctionToken_MissingFunctionToken ()
+    {
+      TestFunction rootFunction = new TestFunction ();
+
+      Dev.Null = rootFunction.FunctionToken;
     }
   }
 }

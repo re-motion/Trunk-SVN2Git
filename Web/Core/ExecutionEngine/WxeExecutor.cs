@@ -93,9 +93,9 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("sender", sender);
       ArgumentUtility.CheckNotNull ("options", options);
 
-      string functionToken = _wxePageInfo.CurrentPageStep.GetFunctionTokenForExternalFunction (function, options.ReturningPostback);
+      string functionToken = WxeContext.Current.GetFunctionTokenForExternalFunction (function, options.ReturningPostback);
 
-      string href = _wxePageInfo.CurrentPageStep.GetDestinationUrlForExternalFunction (function, functionToken, options.PermaUrlOptions);
+      string href = WxeContext.Current.GetDestinationUrlForExternalFunction (function, functionToken, options.PermaUrlOptions);
 
       string openScript = string.Format ("window.open('{0}', '{1}', '{2}');", href, options.Target, StringUtility.NullToEmpty (options.Features));
       ScriptUtility.RegisterStartupScriptBlock (_page, "WxeExecuteFunction", openScript);
