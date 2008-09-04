@@ -42,5 +42,10 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
     {
       get { return _parameters; }
     }
+
+    ExecutionStateParameters IExecutionState.Parameters
+    {
+      get { return Parameters; }
+    }
   }
 }

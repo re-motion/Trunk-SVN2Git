@@ -144,12 +144,6 @@ public class MyFunction: WxeFunction
       <see cref="ExecuteFunctionNoRepost"/>.
     </remarks>
   </ExecuteFunction>
-  <InternalExecuteFunction>
-    <remarks> 
-      This method contains common execution code and is called by the <see cref="ExecuteFunction"/>
-      and <see cref="ExecuteFunctionNoRepost"/> methods.
-    </remarks>
-  </InternalExecuteFunction>
   <ExecutingStep>
     <value> 
       Either the current step or the <see cref="WxeStepList.ExecutingStep"/> of the <see cref="WxeFunction"/> 

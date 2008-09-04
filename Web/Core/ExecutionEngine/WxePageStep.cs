@@ -34,8 +34,6 @@ namespace Remotion.Web.ExecutionEngine
     private string _pageRoot;
     private string _pageToken;
     private string _pageState;
-    private WxeFunction _subFunction;
-    private NameValueCollection _postBackCollection;
     
     private WxeFunction _innerFunction;
     private string _userControlID;
@@ -44,11 +42,7 @@ namespace Remotion.Web.ExecutionEngine
     [NonSerialized]
     private WxeHandler _wxeHandler;
 
-    private WxeReturnOptions _returnOptions;
-    private bool _isExecuteSubFunctionExternalRequired;
-    private bool _isExternalFunctionInvoked;
     private bool _isReturningInnerFunction;
-    private WxePermaUrlOptions _permaUrlOptions;
     private IExecutionState _executionState;
 
     /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
@@ -128,7 +122,7 @@ namespace Remotion.Web.ExecutionEngine
         _wxeHandler = null;
       }
 
-      if (_subFunction == null)
+      if (_executionState == null)
       {
         //  This is the PageStep if it isn't executing a sub-function
 
@@ -149,33 +143,14 @@ namespace Remotion.Web.ExecutionEngine
       }
       else
       {
-        if (!_isExecuteSubFunctionExternalRequired)
-        {
-          //  This is the PageStep currently executing a sub-function
+        //  This is the PageStep currently executing a sub-function
 
-          while (_executionState.IsExecuting)
-            _executionState.ExecuteSubFunction (context);
+        while (_executionState.IsExecuting)
+          _executionState.ExecuteSubFunction (context);
 
-          //  This point is only reached after the sub-function has completed execution.
+        //  This point is only reached after the sub-function has completed execution or a function executing an external function has been post-backed to.
 
-          _executionState.PostProcessSubFunction (context);
-          _subFunction = null;
-        }
-        else
-        {
-          //  This is the PageStep currently executing an external function
-          EnsureExternalSubFunctionInvoked (context);
-
-          //while (_executionState.IsExecuting)
-          //  _executionState.ExecuteSubFunction (context);
-          //  This point is only reached after the external function has been started.
-
-          //  This is the PageStep after the external function has completed execution or a postback to the executing page has been received
-
-          //_executionState.PostProcessSubFunction (context);
-          SetStateForExecutedExternalSubFunction (context);
-          CleanupAfterHavingInvokedExternalSubFunction();
-        }
+        _executionState.PostProcessSubFunction (context);
       }
 
       try
@@ -197,46 +172,6 @@ namespace Remotion.Web.ExecutionEngine
           _userControlState = null;
           _isReturningInnerFunction = false;
         }
-      }
-    }
-
-    private void EnsureExternalSubFunctionInvoked (WxeContext context)
-    {
-      if (_isExecuteSubFunctionExternalRequired && ! _isExternalFunctionInvoked)
-      {
-        string functionToken = GetFunctionTokenForExternalFunction (_subFunction, _returnOptions.IsReturning);
-
-        string destinationUrl;
-        try
-        {
-          destinationUrl = GetDestinationUrlForExternalFunction (_subFunction, functionToken, _permaUrlOptions);
-        }
-        catch (WxePermanentUrlTooLongException)
-        {
-          _subFunction = null;
-          throw;
-        }
-
-        if (_returnOptions.IsReturning)
-        {
-          NameValueCollection permaUrlOptions = _returnOptions.CallerUrlParameters.Clone ();
-          permaUrlOptions.Set (WxeHandler.Parameters.WxeFunctionToken, context.FunctionToken);
-          _subFunction.ReturnUrl = context.GetPermanentUrl (ParentFunction.GetType (), permaUrlOptions);
-        }
-
-        _permaUrlOptions = null;
-        _returnOptions = null;
-        _isExternalFunctionInvoked = true;
-        context.HttpContext.Response.Redirect (destinationUrl);
-      }
-    }
-
-    private void CleanupAfterHavingInvokedExternalSubFunction ()
-    {
-      if (_isExecuteSubFunctionExternalRequired && _isExternalFunctionInvoked)
-      {
-        _isExecuteSubFunctionExternalRequired = false;
-        _isExternalFunctionInvoked = false;
       }
     }
 
@@ -286,8 +221,8 @@ namespace Remotion.Web.ExecutionEngine
     {
       get
       {
-        if (_subFunction != null)
-          return _subFunction.ExecutingStep;
+        if (_executionState != null)
+          return _executionState.Parameters.SubFunction.ExecutingStep;
         else
           return this;
       }
@@ -302,9 +237,9 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
 
-      BackupPostBackCollection (page);
+      NameValueCollection postBackCollection = BackupPostBackCollection (page);
 
-      InternalExecuteFunction (page, function, permaUrlOptions);
+      InternalExecuteFunction (page, function, permaUrlOptions, postBackCollection);
     }
 
     /// <summary>
@@ -320,25 +255,29 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
 
-      BackupPostBackCollection (page);
-      RemoveEventSource (sender, usesEventTarget);
+      NameValueCollection postBackCollection = BackupPostBackCollection (page);
+      RemoveEventSource (postBackCollection, sender, usesEventTarget);
 
-      InternalExecuteFunction (page, function, permaUrlOptions);
+      InternalExecuteFunction (page, function, permaUrlOptions, postBackCollection);
     }
 
     /// <summary> Executes the specified <see cref="WxeFunction"/>, then returns to this page. </summary>
-    /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/InternalExecuteFunction/*' />
-    private void InternalExecuteFunction (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
+    /// <remarks> 
+    ///   This method contains common execution code and is called by the <see cref="ExecuteFunction"/> 
+    ///   and <see cref="ExecuteFunctionNoRepost"/> methods.
+    /// </remarks>
+    private void InternalExecuteFunction (
+        IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, NameValueCollection postBackCollection)
     {
       PrepareExecuteFunction (function, true);
       if (permaUrlOptions.UsePermaUrl)
       {
-        var parameters = new WxePageStepExecutionStates.ExecuteWithPermaUrl.PreparingSubFunctionStateParameters (_subFunction, _postBackCollection, permaUrlOptions);
+        var parameters = new WxePageStepExecutionStates.ExecuteWithPermaUrl.PreparingSubFunctionStateParameters (function, postBackCollection, permaUrlOptions);
         _executionState = new WxePageStepExecutionStates.ExecuteWithPermaUrl.PreparingRedirectToSubFunctionState(this, parameters);
       }
       else
       {
-        var parameters = new ExecutionStateParameters (_subFunction, _postBackCollection);
+        var parameters = new ExecutionStateParameters (function, postBackCollection);
         _executionState = new WxePageStepExecutionStates.ExecuteWithoutPermaUrl.ExecutingSubFunctionState (this, parameters);
       }
 
@@ -357,13 +296,11 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
       ArgumentUtility.CheckNotNull ("returnOptions", returnOptions);
 
-      BackupPostBackCollection (page);
+      NameValueCollection postBackCollection = BackupPostBackCollection (page);
       PrepareExecuteFunction (function, false);
 
-      _isExecuteSubFunctionExternalRequired = true;
-      _isExternalFunctionInvoked = false;
-      _permaUrlOptions = permaUrlOptions;
-      _returnOptions = returnOptions;
+      var parameters = new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreparingSubFunctionStateParameters (function, postBackCollection, permaUrlOptions, returnOptions);
+      _executionState = new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreparingRedirectToSubFunctionState (this, parameters);
       
       page.SaveAllState();
 
@@ -378,16 +315,18 @@ namespace Remotion.Web.ExecutionEngine
       get { return _pageToken; }
     }
 
+    //TODO: Remove
     [EditorBrowsable (EditorBrowsableState.Never)]
     public WxeFunction SubFunction
     {
-      get { return _subFunction; }
+      get { return _executionState != null ? _executionState.Parameters.SubFunction : null; }
     }
 
+    //TODO: Remove
     [EditorBrowsable (EditorBrowsableState.Never)]
     public NameValueCollection PostBackCollection
     {
-      get { return _postBackCollection; }
+      get { return _executionState != null ? _executionState.Parameters.PostBackCollection : null; }
     }
 
     public override string ToString ()
@@ -422,8 +361,8 @@ namespace Remotion.Web.ExecutionEngine
     protected override void AbortRecursive ()
     {
       base.AbortRecursive();
-      if (_subFunction != null && _subFunction.RootFunction == this.RootFunction)
-        _subFunction.Abort();
+      if (_executionState != null && _executionState.Parameters.SubFunction.RootFunction == this.RootFunction)
+        _executionState.Parameters.SubFunction.Abort ();
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -447,29 +386,26 @@ namespace Remotion.Web.ExecutionEngine
     {
       ArgumentUtility.CheckNotNull ("function", function);
 
-      if (_subFunction != null)
+      if (_executionState != null)
         throw new InvalidOperationException ("Cannot execute function while another function executes.");
 
-      _subFunction = function;
       if (isSubFunction)
-        _subFunction.SetParentStep (this);
+        function.SetParentStep (this);
     }
 
-    private void BackupPostBackCollection (IWxePage page)
+    private NameValueCollection BackupPostBackCollection (IWxePage page)
     {
       ArgumentUtility.CheckNotNull ("page", page);
 
-      _postBackCollection = new NameValueCollection (page.GetPostBackCollection ());
+      return new NameValueCollection (page.GetPostBackCollection ());
     }
 
-    private void RemoveEventSource (Control sender, bool usesEventTarget)
+    private void RemoveEventSource (NameValueCollection postBackCollection, Control sender, bool usesEventTarget)
     {
-      Assertion.IsNotNull (_postBackCollection, "BackupPostBackCollection must be invoked before calling RemoveEventSource");
-
       if (usesEventTarget)
       {
-        _postBackCollection.Remove (ControlHelper.PostEventSourceID);
-        _postBackCollection.Remove (ControlHelper.PostEventArgumentID);
+        postBackCollection.Remove (ControlHelper.PostEventSourceID);
+        postBackCollection.Remove (ControlHelper.PostEventArgumentID);
       }
       else
       {
@@ -479,7 +415,7 @@ namespace Remotion.Web.ExecutionEngine
           throw new ArgumentException (
               "The sender must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.");
         }
-        _postBackCollection.Remove (sender.UniqueID);
+        postBackCollection.Remove (sender.UniqueID);
       }
     }
 
@@ -490,32 +426,6 @@ namespace Remotion.Web.ExecutionEngine
       //  Use the Page's postback data
       context.PostBackCollection = null;
       context.SetIsReturningPostBack (false);
-    }
-
-    private void SetStateForExecutedExternalSubFunction (WxeContext context)
-    {
-      //  Provide the executed sub-function to the executing page
-      context.ReturningFunction = _subFunction;
-      _subFunction = null;
-
-      context.SetIsPostBack (true);
-
-      bool isPostRequest = string.Equals(context.HttpContext.Request.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase);
-      if (isPostRequest)
-      {
-        // Use original postback data
-        context.PostBackCollection = null;
-      }
-      else
-      {
-        // Correct the PostBack-Sequence number
-        PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString ();
-        //  Provide the backed up postback data to the executing page
-        context.PostBackCollection = PostBackCollection;
-        context.SetIsReturningPostBack (true);
-      }
-
-      _postBackCollection = null;
     }
 
     public string UserControlID

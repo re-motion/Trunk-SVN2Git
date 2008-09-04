@@ -16,23 +16,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
   {
     bool IsExecuting { get; }
     void ExecuteSubFunction (WxeContext context);
-    void PostProcessSubFunction (WxeContext context);    
-  }
-
-  public class WxePageStepExecutionState : IExecutionState
-  {
-    public bool IsExecuting
-    {
-      get { return false; }
-    }
-
-    public void ExecuteSubFunction (WxeContext context)
-    {
-      throw new NotSupportedException();
-    }
-
-    public void PostProcessSubFunction (WxeContext context)
-    {
-    }
+    void PostProcessSubFunction (WxeContext context);
+    ExecutionStateParameters Parameters { get; }
   }
 }
