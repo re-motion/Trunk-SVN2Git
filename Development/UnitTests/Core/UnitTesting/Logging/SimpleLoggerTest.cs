@@ -61,5 +61,24 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Logging
       toTextProvider.AssertWasCalled (ttp => ttp.ToTextString (obj));
     }
 
+    [Test]
+    public void LogTest1NonAaa ()
+    {
+      MockRepository mocks = new MockRepository ();
+      
+      var textWriter = mocks.DynamicMock<TextWriter> ();
+      var toTextProvider = mocks.DynamicMock<ToTextProvider> ();
+      //Expect.Call (delegate { textWriter.WriteLine ("abc"); });
+      Expect.Call (() => textWriter.WriteLine ("abc"));
+      
+      mocks.ReplayAll ();
+
+      SimpleLogger log = TypesafeActivator.CreateInstance<SimpleLogger> (BindingFlags.NonPublic | BindingFlags.Instance).With (textWriter, toTextProvider);
+      log.It ("abc");
+      
+      mocks.VerifyAll ();
+    }
+
+
   }
 }
