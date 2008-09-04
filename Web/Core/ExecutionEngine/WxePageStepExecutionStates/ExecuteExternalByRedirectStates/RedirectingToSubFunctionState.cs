@@ -14,9 +14,9 @@ using System.Threading;
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirectStates
 {
   [Serializable]
-  public class RedirectingToSubFunctionState : ExecutionStateBase<RedirectingToSubFunctionExecutionStateParameters>
+  public class RedirectingToSubFunctionState : ExecutionStateBase<RedirectingToSubFunctionStateParameters>
   {
-    public RedirectingToSubFunctionState (IExecutionStateContext executionStateContext, RedirectingToSubFunctionExecutionStateParameters parameters)
+    public RedirectingToSubFunctionState (IExecutionStateContext executionStateContext, RedirectingToSubFunctionStateParameters parameters)
         : base (executionStateContext, parameters)
     {
     }

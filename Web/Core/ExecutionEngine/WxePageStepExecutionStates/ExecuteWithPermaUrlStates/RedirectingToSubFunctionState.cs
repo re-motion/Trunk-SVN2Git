@@ -9,23 +9,16 @@
  */
 
 using System;
-using System.Collections.Specialized;
 using System.Threading;
-using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrlStates
 {
   [Serializable]
-  public class RedirectingToSubFunctionState : ExecutionStateBase<PreparingSubFunctionStateParameters>
+  public class RedirectingToSubFunctionState : ExecutionStateBase<RedirectingToSubFunctionStateParameters>
   {
-    public RedirectingToSubFunctionState (IExecutionStateContext executionStateContext, PreparingSubFunctionStateParameters parameters)
-      : base (executionStateContext, parameters)
+    public RedirectingToSubFunctionState (IExecutionStateContext executionStateContext, RedirectingToSubFunctionStateParameters parameters)
+        : base (executionStateContext, parameters)
     {
-      if (!Parameters.PermaUrlOptions.UsePermaUrl)
-      {
-        throw new ArgumentException (
-            string.Format ("The '{0}' type only supports WxePermaUrlOptions with the UsePermaUrl-flag set to true.", GetType().Name), "parameters");
-      }
     }
 
     public override bool IsExecuting
@@ -35,39 +28,24 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
 
     public override void ExecuteSubFunction (WxeContext context)
     {
-      string destinationUrl = GetDestinationPermanentUrl (context);
-      string resumeUrl = context.GetResumePath();
       try
       {
-        context.HttpContext.Response.Redirect (destinationUrl);
-        throw new InvalidOperationException (string.Format ("Redirect to '{0}' failed.", destinationUrl));
+        context.HttpContext.Response.Redirect (Parameters.DestinationUrl);
+        throw new InvalidOperationException (string.Format ("Redirect to '{0}' failed.", Parameters.DestinationUrl));
       }
       catch (ThreadAbortException)
       {
         ExecutionStateContext.SetExecutionState (
             new ExecutingSubFunctionState (
                 ExecutionStateContext,
-                new ReturningFromSubFunctionStateParameters (Parameters.SubFunction, Parameters.PostBackCollection, resumeUrl)));
+                new ReturningFromSubFunctionStateParameters (Parameters.SubFunction, Parameters.PostBackCollection, Parameters.ResumeUrl)));
         throw;
       }
     }
 
     public override void PostProcessSubFunction (WxeContext context)
     {
-      throw new NotSupportedException ();
-    }
-
-    private string GetDestinationPermanentUrl (WxeContext context)
-    {
-      NameValueCollection urlParameters;
-      if (Parameters.PermaUrlOptions.UrlParameters == null)
-        urlParameters = Parameters.SubFunction.SerializeParametersForQueryString();
-      else
-        urlParameters = Parameters.PermaUrlOptions.UrlParameters.Clone ();
-
-      urlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, context.FunctionToken);
-
-      return context.GetPermanentUrl (Parameters.SubFunction.GetType (), urlParameters, Parameters.PermaUrlOptions.UseParentPermaUrl);
+      throw new NotSupportedException();
     }
   }
 }

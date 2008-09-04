@@ -9,17 +9,11 @@
  */
 
 using System;
-using System.Collections.Specialized;
-using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirectStates;
-using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirectStates
@@ -33,24 +27,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     {
       base.SetUp();
 
-      UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (RootFunction.GetType(), "~/root.wxe"));
-      UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (SubFunction.GetType(), "~/sub.wxe"));
-
-      Uri uri = new Uri ("http://localhost/root.wxe");
-
-      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
-      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/session/sub.wxe")).Return ("~/session/sub.wxe").Repeat.Any();
-      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/root.wxe")).Return ("~/session/root.wxe").Repeat.Any();
-      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("~/session/root.wxe")).Return ("~/session/root.wxe").Repeat.Any();
-      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("/root.wxe")).Return ("/session/root.wxe").Repeat.Any();
-      ResponseMock.Stub (stub => stub.ApplyAppPathModifier ("/session/root.wxe")).Return ("/session/root.wxe").Repeat.Any();
-      ResponseMock.Stub (stub => stub.ContentEncoding).Return (Encoding.Default).Repeat.Any();
-
-      RequestMock.Stub (stub => stub.Url).Return (uri).Repeat.Any();
-      RequestMock.Stub (stub => stub.ContentEncoding).Return (Encoding.Default).Repeat.Any();
-
       _executionState = new RedirectingToSubFunctionState (
-          ExecutionStateContextMock, new RedirectingToSubFunctionExecutionStateParameters (SubFunction, PostBackCollection, "~/destination.wxe"));
+          ExecutionStateContextMock, new RedirectingToSubFunctionStateParameters (SubFunction, PostBackCollection, "~/destination.wxe"));
     }
 
     [Test]
@@ -64,13 +42,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     {
       using (MockRepository.Ordered())
       {
-        ResponseMock.Expect (mock => mock.Redirect (Arg<string>.Is.NotNull))
-            .Do (
-            invocation =>
-            {
-              Assert.That (invocation.Arguments[0], Is.EqualTo ("~/destination.wxe"));
-              Thread.CurrentThread.Abort();
-            });
+        ResponseMock.Expect (mock => mock.Redirect ("~/destination.wxe")).Do (invocation => Thread.CurrentThread.Abort());
         ExecutionStateContextMock.Expect (
             mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
             .Do (
@@ -80,6 +52,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
               var nextState = (ExecutingSubFunctionState) invocation.Arguments[0];
               Assert.That (nextState.ExecutionStateContext, Is.SameAs (ExecutionStateContextMock));
               Assert.That (nextState.Parameters.SubFunction, Is.SameAs (SubFunction));
+              Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("DefaultReturn.html"));
             });
       }
 
@@ -99,15 +72,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), 
-        ExpectedMessage = "Redirect to '~/destination.wxe' failed.", 
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "Redirect to '~/destination.wxe' failed.",
         MatchType = MessageMatch.Contains)]
     public void ExecuteSubFunction_WithFailedRedirect ()
     {
-      using (MockRepository.Ordered())
-      {
-        ResponseMock.Expect (mock => mock.Redirect (Arg.Text.StartsWith ("~/destination.wxe")));
-      }
+      ResponseMock.Expect (mock => mock.Redirect ("~/destination.wxe"));
 
       MockRepository.ReplayAll();
 
