@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
@@ -753,6 +754,47 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.sb ("[", "", ",", "", "]").tt ("hello").tt (toTextBuilder.SequenceState.Counter); // missing se()
       var result = toTextBuilder.CheckAndConvertToString();
     }
+
+    private void EscapeString(string s, ToTextBuilder toTextBuilder)
+    {
+      var mapping = new Dictionary<char, string> () { { '"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\t', "\\t" }, { '\\', "\\\\" }, {'\b',"\\b"}, {'\v',"\\v"}, {'\f',"\\f"} };
+      foreach (char c in s)
+      {
+        string mappedString;
+        mapping.TryGetValue (c, out mappedString);
+        if (mappedString == null)
+        {
+          toTextBuilder.AppendChar (c);
+        }
+        else
+        {
+          toTextBuilder.AppendString (mappedString);
+        }
+      }
+    }
+
+    [Test]
+    public void AutoEscapeStringBaseTest ()
+    {
+      var testString = "abcdEFG\t\n\"\\ HIJklmn \t\t\n\n\"\"\\\\ \r \b\v\f";
+      var toTextBuilder = CreateTextBuilder ();
+      EscapeString (testString, toTextBuilder);
+      var result = toTextBuilder.CheckAndConvertToString();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("abcdEFG\\t\\n\\\"\\\\ HIJklmn \\t\\t\\n\\n\\\"\\\"\\\\\\\\ \\r \\b\\v\\f"));
+    }
+
+    [Test]
+    public void EscapeStringTest ()
+    {
+      var testString = "abcdEFG\t\n\"\\ HIJklmn \t\t\n\n\"\"\\\\ \r \b\v\f";
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.AppendEscapedString (testString);
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("abcdEFG\\t\\n\\\"\\\\ HIJklmn \\t\\t\\n\\n\\\"\\\"\\\\\\\\ \\r \\b\\v\\f"));
+    }
+
 
 
     public static ToTextBuilder CreateTextBuilder ()

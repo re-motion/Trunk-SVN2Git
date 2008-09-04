@@ -435,6 +435,12 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public ToTextBuilder AppendEscapedString (string s)
+    {
+      EscapeString(s,_textStringBuilderToText);
+      return this;
+    }
+
     public ToTextBuilder s (string s)
     {
       return AppendString (s);
@@ -726,6 +732,25 @@ namespace Remotion.Diagnostics.ToText
     //--------------------------------------------------------------------------
     // Helper Methods
     //--------------------------------------------------------------------------
+
+
+    private void EscapeString (string s, StringBuilderToText textStringBuilderToText)
+    {
+      var mapping = new Dictionary<char, string> () { { '"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\t', "\\t" }, { '\\', "\\\\" }, { '\b', "\\b" }, { '\v', "\\v" }, { '\f', "\\f" } };
+      foreach (char c in s)
+      {
+        string mappedString;
+        mapping.TryGetValue (c, out mappedString);
+        if (mappedString == null)
+        {
+          textStringBuilderToText.Append (c);
+        }
+        else
+        {
+          textStringBuilderToText.Append (mappedString);
+        }
+      }
+    }
 
     // TODO: Move to String Extension Class
     private static string RightUntilChar (string s, char separator)
