@@ -10,6 +10,7 @@
 
 using System;
 using System.Threading;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
@@ -26,8 +27,15 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPer
       get { return true; }
     }
 
+    public override void PreProcessSubFunction ()
+    {
+      throw new NotSupportedException ();
+    }
+
     public override void ExecuteSubFunction (WxeContext context)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+
       try
       {
         context.HttpContext.Response.Redirect (Parameters.ResumeUrl);

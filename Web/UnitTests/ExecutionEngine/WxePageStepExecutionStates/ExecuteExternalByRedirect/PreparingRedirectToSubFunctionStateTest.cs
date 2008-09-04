@@ -54,16 +54,23 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void PreProcessSubFunction ()
+    {
+      IExecutionState executionState = CreateExecutionState (new WxePermaUrlOptions (), WxeReturnOptions.Null);
+      executionState.PreProcessSubFunction ();
+    }
+
+    [Test]
     public void ExecuteSubFunction_WithPermaUrl_DoNotReturnToCaller_GoesToRedirectingToSubFunction ()
     {
       IExecutionState executionState = CreateExecutionState (new WxePermaUrlOptions(), WxeReturnOptions.Null);
 
-      ExecutionStateContextMock.Expect (
-          mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
+      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<RedirectingToSubFunctionState>.Is.NotNull))
           .Do (
           invocation =>
           {
-            RedirectingToSubFunctionState nextState = CheckAndGetExecutionState (invocation.Arguments[0]);
+            var nextState = CheckExecutionState ((RedirectingToSubFunctionState) invocation.Arguments[0]);
             Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("DefaultReturn.html"));
             Assert.That (
                 nextState.Parameters.DestinationUrl,
@@ -83,12 +90,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       IExecutionState executionState = CreateExecutionState (new WxePermaUrlOptions(), new WxeReturnOptions());
       ExecutionStateContextMock.Stub (stub => stub.ParentFunction).Return (RootFunction).Repeat.Any();
 
-      ExecutionStateContextMock.Expect (
-          mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
+      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<RedirectingToSubFunctionState>.Is.NotNull))
           .Do (
           invocation =>
           {
-            RedirectingToSubFunctionState nextState = CheckAndGetExecutionState (invocation.Arguments[0]);
+            var nextState = CheckExecutionState ((RedirectingToSubFunctionState) invocation.Arguments[0]);
             Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("~/session/root.wxe?WxeFunctionToken=" + WxeContext.FunctionToken));
             Assert.That (
                 nextState.Parameters.DestinationUrl,
@@ -109,12 +115,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       IExecutionState executionState = CreateExecutionState (permaUrlOptions, new WxeReturnOptions (new NameValueCollection { { "Key", "Value" } }));
       ExecutionStateContextMock.Stub (stub => stub.ParentFunction).Return (RootFunction).Repeat.Any();
 
-      ExecutionStateContextMock.Expect (
-          mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
+      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<RedirectingToSubFunctionState>.Is.NotNull))
           .Do (
           invocation =>
           {
-            RedirectingToSubFunctionState nextState = CheckAndGetExecutionState (invocation.Arguments[0]);
+            var nextState = CheckExecutionState ((RedirectingToSubFunctionState) invocation.Arguments[0]);
             Assert.That (
                 nextState.Parameters.SubFunction.ReturnUrl,
                 Is.EqualTo ("~/session/root.wxe?Key=Value&WxeFunctionToken=" + WxeContext.FunctionToken));
@@ -136,12 +141,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions (false, new NameValueCollection { { "Key", "NewValue" } });
       IExecutionState executionState = CreateExecutionState (permaUrlOptions, WxeReturnOptions.Null);
 
-      ExecutionStateContextMock.Expect (
-          mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
+      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<RedirectingToSubFunctionState>.Is.NotNull))
           .Do (
           invocation =>
           {
-            RedirectingToSubFunctionState nextState = CheckAndGetExecutionState (invocation.Arguments[0]);
+            var nextState = CheckExecutionState ((RedirectingToSubFunctionState) invocation.Arguments[0]);
             Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("DefaultReturn.html"));
             Assert.That (
                 nextState.Parameters.DestinationUrl,
@@ -163,12 +167,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions (true);
       IExecutionState executionState = CreateExecutionState (permaUrlOptions, WxeReturnOptions.Null);
 
-      ExecutionStateContextMock.Expect (
-          mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
+      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<RedirectingToSubFunctionState>.Is.NotNull))
           .Do (
           invocation =>
           {
-            RedirectingToSubFunctionState nextState = CheckAndGetExecutionState(invocation.Arguments[0]);
+            var nextState = CheckExecutionState ((RedirectingToSubFunctionState) invocation.Arguments[0]);
             Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("DefaultReturn.html"));
             
             string destinationUrl = UrlUtility.AddParameters (
@@ -212,16 +215,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     {
       return new PreparingRedirectToSubFunctionState (
           ExecutionStateContextMock, new PreparingSubFunctionStateParameters (SubFunction, PostBackCollection, permaUrlOptions, returnOptions));
-    }
-
-    private RedirectingToSubFunctionState CheckAndGetExecutionState (object executionStateAsObject)
-    {
-      Assert.That (executionStateAsObject, Is.InstanceOfType (typeof (RedirectingToSubFunctionState)));
-      var executionState = (RedirectingToSubFunctionState) executionStateAsObject;
-      Assert.That (executionState.ExecutionStateContext, Is.SameAs (ExecutionStateContextMock));
-      Assert.That (executionState.Parameters.SubFunction, Is.SameAs (SubFunction));
-
-      return executionState;
     }
   }
 }

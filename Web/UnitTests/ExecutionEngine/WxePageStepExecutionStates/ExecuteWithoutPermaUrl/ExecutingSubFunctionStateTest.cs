@@ -42,21 +42,20 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void PreProcessSubFunction ()
+    {
+      _executionState.PreProcessSubFunction ();
+    }
+
+    [Test]
     public void ExecuteSubFunction_GoesToPostProcessingSubFunction ()
     {
       using (MockRepository.Ordered())
       {
         SubFunction.Expect (mock => mock.Execute (WxeContext));
-        ExecutionStateContextMock.Expect (
-            mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
-            .Do (
-            invocation =>
-            {
-              Assert.That (invocation.Arguments[0], Is.InstanceOfType (typeof (PostProcessingSubFunctionState)));
-              var nextState = (PostProcessingSubFunctionState) invocation.Arguments[0];
-              Assert.That (nextState.ExecutionStateContext, Is.SameAs (ExecutionStateContextMock));
-              Assert.That (nextState.Parameters.SubFunction, Is.SameAs (SubFunction));
-            });
+        ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<PostProcessingSubFunctionState>.Is.NotNull))
+            .Do (invocation => CheckExecutionState ((PostProcessingSubFunctionState) invocation.Arguments[0]));
       }
 
       MockRepository.ReplayAll();
@@ -89,7 +88,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       }
 
       _executionState.ExecuteSubFunction (WxeContext);
-      
+
       MockRepository.VerifyAll();
     }
 

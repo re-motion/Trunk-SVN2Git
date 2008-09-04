@@ -9,6 +9,7 @@
  */
 
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrl
 {
@@ -24,6 +25,11 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithout
       get { return false; }
     }
 
+    public override void PreProcessSubFunction ()
+    {
+      throw new NotSupportedException ();
+    }
+
     public override void ExecuteSubFunction (WxeContext context)
     {
       throw new NotSupportedException();
@@ -32,6 +38,8 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithout
     //TODO: CleanUp duplication with other PostProcessSubFunction-implemenations
     public override void PostProcessSubFunction (WxeContext context)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+
       //  Provide the executed sub-function to the executing page
       context.ReturningFunction = Parameters.SubFunction;
 

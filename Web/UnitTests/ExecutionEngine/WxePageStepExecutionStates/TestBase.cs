@@ -2,6 +2,7 @@ using System;
 using System.Collections.Specialized;
 using System.Web.SessionState;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Context;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
@@ -32,7 +33,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
       _mockRepository = new MockRepository();
       _executionStateContextMock = MockRepository.StrictMock<IExecutionStateContext>();
 
-      _rootFunction = new TestFunction("Value");
+      _rootFunction = new TestFunction ("Value");
       _subFunction = CreateSubFunction();
 
       _httpContextMock = MockRepository.DynamicMock<IHttpContext>();
@@ -47,8 +48,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
 
       _postBackCollection = new NameValueCollection();
 
-      IHttpSessionState sessionStub = _mockRepository.DynamicMock<IHttpSessionState> ();
-      sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior ();
+      IHttpSessionState sessionStub = _mockRepository.DynamicMock<IHttpSessionState>();
+      sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior();
 
       _functionStateManager = new WxeFunctionStateManager (sessionStub);
       SafeContext.Instance.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, _functionStateManager);
@@ -115,6 +116,16 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
     public NameValueCollection PostBackCollection
     {
       get { return _postBackCollection; }
+    }
+
+    protected T CheckExecutionState<T> (T executionState)
+        where T: IExecutionState
+    {
+      Assert.That (executionState, Is.Not.Null);
+      Assert.That (executionState.ExecutionStateContext, Is.SameAs (ExecutionStateContextMock));
+      Assert.That (executionState.Parameters.SubFunction, Is.SameAs (SubFunction));
+
+      return executionState;
     }
   }
 }

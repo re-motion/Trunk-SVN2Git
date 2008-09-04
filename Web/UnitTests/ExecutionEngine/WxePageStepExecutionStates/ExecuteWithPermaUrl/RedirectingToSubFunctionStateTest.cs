@@ -39,20 +39,23 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void PreProcessSubFunction ()
+    {
+      _executionState.PreProcessSubFunction ();
+    }
+
+    [Test]
     public void ExecuteSubFunction_GoesToExecutingSubFunction ()
     {
       using (MockRepository.Ordered())
       {
         ResponseMock.Expect (mock => mock.Redirect ("~/destination.wxe")).Do (invocation => Thread.CurrentThread.Abort());
-        ExecutionStateContextMock.Expect (
-            mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
+        ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<ExecutingSubFunctionState>.Is.NotNull))
             .Do (
             invocation =>
             {
-              Assert.That (invocation.Arguments[0], Is.InstanceOfType (typeof (ExecutingSubFunctionState)));
-              var nextState = (ExecutingSubFunctionState) invocation.Arguments[0];
-              Assert.That (nextState.ExecutionStateContext, Is.SameAs (ExecutionStateContextMock));
-              Assert.That (nextState.Parameters.SubFunction, Is.SameAs (SubFunction));
+              var nextState = CheckExecutionState ((ExecutingSubFunctionState) invocation.Arguments[0]);
               Assert.That (nextState.Parameters.ResumeUrl, Is.EqualTo ("~/resume.wxe"));
             });
       }

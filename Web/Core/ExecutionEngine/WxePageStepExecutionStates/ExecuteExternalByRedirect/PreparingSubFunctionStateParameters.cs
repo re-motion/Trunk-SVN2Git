@@ -23,6 +23,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
     {
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
       ArgumentUtility.CheckNotNull ("returnOptions", returnOptions);
+    
       _permaUrlOptions = permaUrlOptions;
       _returnOptions = returnOptions;
     }

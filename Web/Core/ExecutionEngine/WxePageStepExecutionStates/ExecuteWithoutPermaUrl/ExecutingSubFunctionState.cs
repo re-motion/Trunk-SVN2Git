@@ -9,6 +9,7 @@
  */
 
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrl
 {
@@ -24,8 +25,15 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithout
       get { return true; }
     }
 
+    public override void PreProcessSubFunction ()
+    {
+      throw new NotSupportedException ();
+    }
+
     public override void ExecuteSubFunction (WxeContext context)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+
       Parameters.SubFunction.Execute (context);
       ExecutionStateContext.SetExecutionState (new PostProcessingSubFunctionState (ExecutionStateContext, Parameters));
     }

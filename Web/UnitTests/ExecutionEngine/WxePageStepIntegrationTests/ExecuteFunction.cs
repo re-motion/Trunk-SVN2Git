@@ -71,9 +71,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       using (_mockRepository.Ordered())
       {
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        _pageMock.Expect (mock => mock.SaveAllState());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        using (_mockRepository.Unordered ())
+        {
+          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
+          _pageMock.Expect (mock => mock.SaveAllState());
+          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        }
+
         _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
             invocation =>
             {
@@ -98,9 +102,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       using (_mockRepository.Ordered())
       {
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        _pageMock.Expect (mock => mock.SaveAllState());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        using (_mockRepository.Unordered ())
+        {
+          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
+          _pageMock.Expect (mock => mock.SaveAllState());
+          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        }
 
         _subFunction.Expect (mock => mock.Execute (_wxeContext)).Do (
             invocation =>
@@ -136,9 +143,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       using (_mockRepository.Ordered())
       {
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        _pageMock.Expect (mock => mock.SaveAllState());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        using (_mockRepository.Unordered ())
+        {
+          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
+          _pageMock.Expect (mock => mock.SaveAllState());
+          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        }
 
         _subFunction.Expect (mock => mock.Execute (_wxeContext)).Do (invocation => Thread.CurrentThread.Abort());
 
@@ -168,9 +178,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       using (_mockRepository.Ordered ())
       {
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        _pageMock.Expect (mock => mock.SaveAllState());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        using (_mockRepository.Unordered ())
+        {
+          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
+          _pageMock.Expect (mock => mock.SaveAllState());
+          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        }
 
         _subFunction.Expect (mock => mock.Execute (_wxeContext)).Do (invocation => Thread.CurrentThread.Abort());
 
@@ -203,9 +216,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       using (_mockRepository.Ordered())
       {
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        _pageMock.Expect (mock => mock.SaveAllState());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        using (_mockRepository.Unordered ())
+        {
+          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
+          _pageMock.Expect (mock => mock.SaveAllState());
+          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        }
 
         _subFunction.Expect (mock => mock.Execute (_wxeContext)).Throw (new ApplicationException());
 
@@ -224,7 +240,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       }
       _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null);
     }
-
 
     [Test]
     public void Test_SubFunction_RedirectToPermaUrl ()
@@ -246,9 +261,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       using (_mockRepository.Ordered())
       {
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        _pageMock.Expect (mock => mock.SaveAllState());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        using (_mockRepository.Unordered ())
+        {
+          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
+          _pageMock.Expect (mock => mock.SaveAllState());
+          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        }
 
         //Redirect to subfunction
         responseMock.Expect (mock => mock.Redirect ("~/session/sub.wxe?WxeFunctionToken=" + _wxeContext.FunctionToken))

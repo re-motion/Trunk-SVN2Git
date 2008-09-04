@@ -14,7 +14,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
-  public class ExecutionStateParameters
+  public class ExecutionStateParameters : IExecutionStateParameters
   {
     private readonly WxeFunction _subFunction;
     private readonly NameValueCollection _postBackCollection;

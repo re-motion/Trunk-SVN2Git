@@ -237,9 +237,15 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
 
-      NameValueCollection postBackCollection = BackupPostBackCollection (page);
+      if (_executionState != null)
+        throw new InvalidOperationException ("Cannot execute function while another function executes.");
 
-      InternalExecuteFunction (page, function, permaUrlOptions, postBackCollection);
+      page.SaveAllState();
+      _wxeHandler = page.WxeHandler;
+
+      _executionState = new PreProcessingSubFunctionState (this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions));
+      _executionState.PreProcessSubFunction();
+      Execute();
     }
 
     /// <summary>
@@ -258,22 +264,11 @@ namespace Remotion.Web.ExecutionEngine
       NameValueCollection postBackCollection = BackupPostBackCollection (page);
       RemoveEventSource (postBackCollection, sender, usesEventTarget);
 
-      InternalExecuteFunction (page, function, permaUrlOptions, postBackCollection);
-    }
-
-    /// <summary> Executes the specified <see cref="WxeFunction"/>, then returns to this page. </summary>
-    /// <remarks> 
-    ///   This method contains common execution code and is called by the <see cref="ExecuteFunction"/> 
-    ///   and <see cref="ExecuteFunctionNoRepost"/> methods.
-    /// </remarks>
-    private void InternalExecuteFunction (
-        IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, NameValueCollection postBackCollection)
-    {
       PrepareExecuteFunction (function, true);
       if (permaUrlOptions.UsePermaUrl)
       {
         var parameters = new WxePageStepExecutionStates.ExecuteWithPermaUrl.PreparingSubFunctionStateParameters (function, postBackCollection, permaUrlOptions);
-        _executionState = new WxePageStepExecutionStates.ExecuteWithPermaUrl.PreparingRedirectToSubFunctionState(this, parameters);
+        _executionState = new WxePageStepExecutionStates.ExecuteWithPermaUrl.PreparingRedirectToSubFunctionState (this, parameters);
       }
       else
       {
@@ -281,10 +276,10 @@ namespace Remotion.Web.ExecutionEngine
         _executionState = new WxePageStepExecutionStates.ExecuteWithoutPermaUrl.ExecutingSubFunctionState (this, parameters);
       }
 
-      page.SaveAllState();
+      page.SaveAllState ();
 
       _wxeHandler = page.WxeHandler;
-      Execute();
+      Execute ();
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -326,7 +321,7 @@ namespace Remotion.Web.ExecutionEngine
     [EditorBrowsable (EditorBrowsableState.Never)]
     public NameValueCollection PostBackCollection
     {
-      get { return _executionState != null ? _executionState.Parameters.PostBackCollection : null; }
+      get { return (_executionState != null && _executionState.Parameters is ExecutionStateParameters)? ((ExecutionStateParameters)_executionState.Parameters).PostBackCollection : null; }
     }
 
     public override string ToString ()
@@ -397,7 +392,7 @@ namespace Remotion.Web.ExecutionEngine
     {
       ArgumentUtility.CheckNotNull ("page", page);
 
-      return new NameValueCollection (page.GetPostBackCollection ());
+      return page.GetPostBackCollection().Clone();
     }
 
     private void RemoveEventSource (NameValueCollection postBackCollection, Control sender, bool usesEventTarget)

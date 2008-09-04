@@ -15,7 +15,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
   [Serializable]
   public abstract class ExecutionStateBase<TParameters> : IExecutionState
-      where TParameters : ExecutionStateParameters
+      where TParameters: IExecutionStateParameters
   {
     private readonly IExecutionStateContext _executionStateContext;
     private readonly TParameters _parameters;
@@ -29,7 +29,8 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
       _parameters = parameters;
     }
 
-    public abstract bool IsExecuting {get;}
+    public abstract bool IsExecuting { get; }
+    public abstract void PreProcessSubFunction ();
     public abstract void ExecuteSubFunction (WxeContext context);
     public abstract void PostProcessSubFunction (WxeContext context);
 
@@ -43,7 +44,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
       get { return _parameters; }
     }
 
-    ExecutionStateParameters IExecutionState.Parameters
+    IExecutionStateParameters IExecutionState.Parameters
     {
       get { return Parameters; }
     }

@@ -12,13 +12,8 @@ using System;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
-  public interface IExecutionState
+  public interface IExecutionStateParameters
   {
-    IExecutionStateContext ExecutionStateContext { get; }
-    IExecutionStateParameters Parameters { get; }
-    bool IsExecuting { get; }
-    void ExecuteSubFunction (WxeContext context);
-    void PostProcessSubFunction (WxeContext context);
-    void PreProcessSubFunction ();
+    WxeFunction SubFunction { get; }
   }
 }
