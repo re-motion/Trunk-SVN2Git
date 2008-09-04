@@ -275,7 +275,6 @@ namespace Remotion.Diagnostics.ToText
     public ToTextBuilder AppendMember<T> (Expression<Func<object, T>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      Assertion.IsTrue (expression.Parameters.Count == 1 && expression.Parameters[0].Name == "x");
       var variableName = RightUntilChar (expression.Body.ToString(), '.');
       var variableValue = expression.Compile().Invoke (null);
       return AppendMember (variableName, variableValue);

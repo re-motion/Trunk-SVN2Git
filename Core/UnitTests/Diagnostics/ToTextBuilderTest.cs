@@ -188,16 +188,16 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
     }
 
-    [Test]
-    [ExpectedException ("Remotion.Utilities.AssertionException")]
-    public void MemberVariableWrongParameterNameTest ()
-    {
-      var toTextBuilder = CreateTextBuilder ();
-      var myList = List.New (5, 3, 1);
-      toTextBuilder.m (n => myList);
-      var result = toTextBuilder.CheckAndConvertToString ();
-      Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
-    }
+    //[Test]
+    //[ExpectedException ("Remotion.Utilities.AssertionException")]
+    //public void MemberVariableWrongParameterNameTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder ();
+    //  var myList = List.New (5, 3, 1);
+    //  toTextBuilder.m (n => myList);
+    //  var result = toTextBuilder.CheckAndConvertToString ();
+    //  Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
+    //}
 
     [Test]
     public void MemberInSequenceTest ()
