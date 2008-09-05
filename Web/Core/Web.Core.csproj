@@ -131,7 +131,7 @@
     </Compile>
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecutionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PostProcessingSubFunctionState.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\PreparingSubFunctionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\PreparingRedirectToSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\RedirectingToSubFunctionState.cs">
       <SubType>Code</SubType>
     </Compile>

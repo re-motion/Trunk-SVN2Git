@@ -14,6 +14,11 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  /// <summary>
+  /// The <see cref="WxeRepostOptions"/> determine if and how the calling page is notified after a <see cref="WxeFunction"/> executed with the 
+  /// <see cref="IWxeExecutor"/>.<see cref="IWxeExecutor.ExecuteFunction"/> or <see cref="IWxeExecutor"/>.<see cref="IWxeExecutor.ExecuteFunctionNoRepost"/> 
+  /// methods has returned to the caller.
+  /// </summary>
   [Serializable]
   public class WxeRepostOptions:INullObject
   {

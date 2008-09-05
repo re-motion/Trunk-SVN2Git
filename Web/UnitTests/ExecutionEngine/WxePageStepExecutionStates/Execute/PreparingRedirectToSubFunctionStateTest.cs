@@ -148,7 +148,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     private PreparingRedirectToSubFunctionState CreateExecutionState (WxePermaUrlOptions permaUrlOptions)
     {
       return new PreparingRedirectToSubFunctionState (
-          ExecutionStateContextMock, new PreparingSubFunctionStateParameters (SubFunction, PostBackCollection, permaUrlOptions));
+          ExecutionStateContextMock, new PreparingRedirectToSubFunctionStateParameters (SubFunction, PostBackCollection, permaUrlOptions));
     }
   }
 }

@@ -14,12 +14,16 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
+  /// <summary>
+  /// The <see cref="PreparingRedirectToSubFunctionStateParameters"/> group the parameters necessary for setting up the the redirect to a sub-function URL.
+  /// </summary>
   [Serializable]
-  public class PreparingSubFunctionStateParameters : ExecutionStateParameters
+  public class PreparingRedirectToSubFunctionStateParameters : ExecutionStateParameters
   {
     private readonly WxePermaUrlOptions _permaUrlOptions;
 
-    public PreparingSubFunctionStateParameters (WxeFunction subFunction, NameValueCollection postBackCollection, WxePermaUrlOptions permaUrlOptions)
+    public PreparingRedirectToSubFunctionStateParameters (
+        WxeFunction subFunction, NameValueCollection postBackCollection, WxePermaUrlOptions permaUrlOptions)
         : base(subFunction, postBackCollection)
     {
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);

@@ -35,7 +35,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 
       if (Parameters.PermaUrlOptions.UsePermaUrl)
       {
-        var parameters = new PreparingSubFunctionStateParameters (Parameters.SubFunction, postBackCollection, Parameters.PermaUrlOptions);
+        var parameters = new PreparingRedirectToSubFunctionStateParameters (Parameters.SubFunction, postBackCollection, Parameters.PermaUrlOptions);
         ExecutionStateContext.SetExecutionState (new PreparingRedirectToSubFunctionState (ExecutionStateContext, parameters));
       }
       else

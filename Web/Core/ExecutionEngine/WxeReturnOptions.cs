@@ -16,7 +16,7 @@ namespace Remotion.Web.ExecutionEngine
 {
   /// <summary>
   /// The <see cref="WxeReturnOptions"/> determine whether a <see cref="WxeFunction"/> executed with the 
-  /// <see cref="IWxeExecutor"/>.<see cref="IWxeExecutor.ExecuteFunctionExternalByRedirect"/> method will return to it's calling 
+  /// <see cref="IWxeExecutor"/>.<see cref="IWxeExecutor.ExecuteFunctionExternalByRedirect"/> method will return to its calling 
   /// <see cref="WxeFunction"/>. Use the <see cref="Null"/> value if you do not wish to return to the caller.
   /// </summary>
   [Serializable]

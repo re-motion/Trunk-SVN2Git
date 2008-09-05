@@ -15,11 +15,11 @@ using Remotion.Utilities;
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
   [Serializable]
-  public class PreparingRedirectToSubFunctionState : ExecutionStateBase<PreparingSubFunctionStateParameters>
+  public class PreparingRedirectToSubFunctionState : ExecutionStateBase<PreparingRedirectToSubFunctionStateParameters>
   {
     private readonly WxeReturnOptions _returnOptions;
 
-    public PreparingRedirectToSubFunctionState (IExecutionStateContext executionStateContext, PreparingSubFunctionStateParameters parameters, WxeReturnOptions returnOptions)
+    public PreparingRedirectToSubFunctionState (IExecutionStateContext executionStateContext, PreparingRedirectToSubFunctionStateParameters parameters, WxeReturnOptions returnOptions)
         : base (executionStateContext, parameters)
     {
       ArgumentUtility.CheckNotNull ("returnOptions", returnOptions);

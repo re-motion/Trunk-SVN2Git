@@ -13,6 +13,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
+  /// <summary>
+  /// The <see cref="PreProcessingSubFunctionStateParameters"/> group the parameters necessary for setting up the execution of a sub-function.
+  /// </summary>
   [Serializable]
   public class PreProcessingSubFunctionStateParameters : IExecutionStateParameters
   {
@@ -20,8 +23,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
     private readonly WxeFunction _subFunction;
     private readonly WxePermaUrlOptions _permaUrlOptions;
 
-    public PreProcessingSubFunctionStateParameters (
-        IWxePage page, WxeFunction subFunction, WxePermaUrlOptions permaUrlOptions)
+    public PreProcessingSubFunctionStateParameters (IWxePage page, WxeFunction subFunction, WxePermaUrlOptions permaUrlOptions)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("subFunction", subFunction);
