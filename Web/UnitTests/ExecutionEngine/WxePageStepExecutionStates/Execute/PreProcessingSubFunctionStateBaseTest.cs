@@ -58,7 +58,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       MockRepository.ReplayAll();
 
-      executionState.PreProcessSubFunction ();
+      executionState.PreProcessSubFunction();
 
       MockRepository.VerifyAll();
     }
@@ -67,7 +67,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     public void PreProcessSubFunction_WithPermaUrl ()
     {
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions();
-      IExecutionState executionState = CreateExecutionState(permaUrlOptions);
+      IExecutionState executionState = CreateExecutionState (permaUrlOptions);
 
       _pageMock.Stub (stub => stub.GetPostBackCollection()).Return (PostBackCollection);
 
@@ -84,7 +84,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       MockRepository.ReplayAll();
 
-      executionState.PreProcessSubFunction ();
+      executionState.PreProcessSubFunction();
 
       MockRepository.VerifyAll();
     }
@@ -108,7 +108,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     private PreProcessingSubFunctionState CreateExecutionState (WxePermaUrlOptions permaUrlOptions)
     {
       return new PreProcessingSubFunctionState (
-          ExecutionStateContextMock, new PreProcessingSubFunctionStateParameters (_parentStep, _pageMock, SubFunction, permaUrlOptions));
+          ExecutionStateContextMock,
+          new PreProcessingSubFunctionStateParameters (_parentStep, _pageMock, SubFunction, permaUrlOptions, WxeRepostOptions.Null));
     }
   }
 }

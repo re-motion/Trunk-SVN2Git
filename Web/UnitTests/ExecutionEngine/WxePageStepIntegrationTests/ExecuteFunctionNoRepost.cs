@@ -95,7 +95,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       _mockRepository.ReplayAll();
 
-      _pageStep.ExecuteFunctionNoRepost (_pageMock, _subFunction, senderMock, false, WxePermaUrlOptions.Null);
+      _pageStep.ExecuteFunctionNoRepost (_pageMock, _subFunction, WxePermaUrlOptions.Null, new WxeRepostOptions (senderMock, false));
 
       _mockRepository.VerifyAll();
     }
@@ -130,7 +130,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       _mockRepository.ReplayAll();
 
-      _pageStep.ExecuteFunctionNoRepost (_pageMock, _subFunction, senderMock, false, WxePermaUrlOptions.Null);
+      _pageStep.ExecuteFunctionNoRepost (_pageMock, _subFunction, WxePermaUrlOptions.Null, new WxeRepostOptions (senderMock, false));
 
       _mockRepository.VerifyAll();
     }
@@ -163,7 +163,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       _mockRepository.ReplayAll ();
 
-      _pageStep.ExecuteFunctionNoRepost (_pageMock, _subFunction, senderStub, true, WxePermaUrlOptions.Null);
+      _pageStep.ExecuteFunctionNoRepost (_pageMock, _subFunction, WxePermaUrlOptions.Null, new WxeRepostOptions (senderStub, true));
 
       _mockRepository.VerifyAll ();
     }

@@ -203,7 +203,7 @@ namespace Remotion.Web.ExecutionEngine
       _wxeHandler = page.WxeHandler;
 
       _executionState = new PreProcessingSubFunctionState (
-          this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions));
+          this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions, WxeRepostOptions.Null));
       _executionState.PreProcessSubFunction();
       Execute();
     }
@@ -214,8 +214,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </summary>
     /// <remarks> Invoke this method by calling <see cref="WxeExecutor{TWxePage}.ExecuteFunctionNoRepost"/>. </remarks>
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void ExecuteFunctionNoRepost (
-        IWxePage page, WxeFunction function, Control sender, bool usesEventTarget, WxePermaUrlOptions permaUrlOptions)
+    public void ExecuteFunctionNoRepost (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, WxeRepostOptions repostOptions)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("function", function);
@@ -227,8 +226,7 @@ namespace Remotion.Web.ExecutionEngine
       page.SaveAllState();
       _wxeHandler = page.WxeHandler;
 
-      _executionState = new PreProcessingSubFunctionNoRepostState (
-          this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions), sender, usesEventTarget);
+      _executionState = new PreProcessingSubFunctionState (this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions, repostOptions));
       _executionState.PreProcessSubFunction();
       Execute();
     }

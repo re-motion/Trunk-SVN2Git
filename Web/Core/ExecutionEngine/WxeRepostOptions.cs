@@ -9,22 +9,21 @@
  */
 
 using System;
-using System.Collections.Specialized;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
+namespace Remotion.Web.ExecutionEngine
 {
   [Serializable]
-  public sealed class PreProcessingSubFunctionNoRepostState : PreProcessingSubFunctionStateBase<PreProcessingSubFunctionStateParameters>
+  public class WxeRepostOptions:INullObject
   {
+    public static readonly WxeRepostOptions Null = new WxeRepostOptions();
+   
     private readonly Control _sender;
     private readonly bool _usesEventTarget;
+    private readonly bool _suppressRepost;
 
-    public PreProcessingSubFunctionNoRepostState (
-        IExecutionStateContext executionStateContext, PreProcessingSubFunctionStateParameters parameters, Control sender, bool usesEventTarget)
-        : base (executionStateContext, parameters)
+    public WxeRepostOptions (Control sender, bool usesEventTarget)
     {
       ArgumentUtility.CheckNotNull ("sender", sender);
 
@@ -36,6 +35,12 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 
       _sender = sender;
       _usesEventTarget = usesEventTarget;
+      _suppressRepost = false;
+    }
+
+    private WxeRepostOptions ()
+    {
+      _suppressRepost = true;
     }
 
     public Control Sender
@@ -48,19 +53,14 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
       get { return _usesEventTarget; }
     }
 
-    protected override NameValueCollection BackupPostBackCollection ()
+    public bool SuppressRepost
     {
-      var postBackCollection = base.BackupPostBackCollection();
+      get { return _suppressRepost; }
+    }
 
-      if (_usesEventTarget)
-      {
-        postBackCollection.Remove (ControlHelper.PostEventSourceID);
-        postBackCollection.Remove (ControlHelper.PostEventArgumentID);
-      }
-      else
-        postBackCollection.Remove (_sender.UniqueID);
-
-      return postBackCollection;
+    bool INullObject.IsNull
+    {
+      get { return _suppressRepost; }
     }
   }
 }

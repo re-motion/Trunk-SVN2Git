@@ -9,15 +9,68 @@
  */
 
 using System;
+using System.Collections.Specialized;
+using Remotion.Utilities;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
   [Serializable]
-  public sealed class PreProcessingSubFunctionState : PreProcessingSubFunctionStateBase<PreProcessingSubFunctionStateParameters>
+  public class PreProcessingSubFunctionState : ExecutionStateBase<PreProcessingSubFunctionStateParameters>
   {
     public PreProcessingSubFunctionState (IExecutionStateContext executionStateContext, PreProcessingSubFunctionStateParameters parameters)
         : base (executionStateContext, parameters)
     {
+    }
+
+    public override bool IsExecuting
+    {
+      get { return false; }
+    }
+
+    public override void PreProcessSubFunction ()
+    {
+      Parameters.SubFunction.SetParentStep (Parameters.ParentStep);
+      NameValueCollection postBackCollection = BackupPostBackCollection ();
+
+      if (Parameters.PermaUrlOptions.UsePermaUrl)
+      {
+        var parameters = new PreparingSubFunctionStateParameters (Parameters.SubFunction, postBackCollection, Parameters.PermaUrlOptions);
+        ExecutionStateContext.SetExecutionState (new PreparingRedirectToSubFunctionState (ExecutionStateContext, parameters));
+      }
+      else
+      {
+        var parameters = new ExecutionStateParameters (Parameters.SubFunction, postBackCollection);
+        ExecutionStateContext.SetExecutionState (new ExecutingSubFunctionWithoutPermaUrlState (ExecutionStateContext, parameters));
+      }
+    }
+
+    public override void ExecuteSubFunction (WxeContext context)
+    {
+      throw new NotSupportedException ();
+    }
+
+    public override void PostProcessSubFunction (WxeContext context)
+    {
+      throw new NotSupportedException ();
+    }
+
+    private NameValueCollection BackupPostBackCollection ()
+    {
+      var postBackCollection = Parameters.Page.GetPostBackCollection ().Clone ();
+
+      if (!Parameters.RepostOptions.SuppressRepost)
+      {
+        if (Parameters.RepostOptions.UsesEventTarget)
+        {
+          postBackCollection.Remove (ControlHelper.PostEventSourceID);
+          postBackCollection.Remove (ControlHelper.PostEventArgumentID);
+        }
+        else
+          postBackCollection.Remove (Parameters.RepostOptions.Sender.UniqueID);
+      }
+
+      return postBackCollection;
     }
   }
 }

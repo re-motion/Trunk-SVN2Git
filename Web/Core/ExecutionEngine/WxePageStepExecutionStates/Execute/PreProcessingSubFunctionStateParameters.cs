@@ -20,18 +20,21 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
     private readonly IWxePage _page;
     private readonly WxeFunction _subFunction;
     private readonly WxePermaUrlOptions _permaUrlOptions;
+    private readonly WxeRepostOptions _repostOptions;
 
-    public PreProcessingSubFunctionStateParameters (WxeStep parentStep, IWxePage page, WxeFunction subFunction, WxePermaUrlOptions permaUrlOptions)
+    public PreProcessingSubFunctionStateParameters (WxeStep parentStep, IWxePage page, WxeFunction subFunction, WxePermaUrlOptions permaUrlOptions, WxeRepostOptions repostOptions)
     {
       ArgumentUtility.CheckNotNull ("parentStep", parentStep);
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("subFunction", subFunction);
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+      ArgumentUtility.CheckNotNull ("repostOptions", repostOptions);
 
       _parentStep = parentStep;
       _page = page;
       _subFunction = subFunction;
       _permaUrlOptions = permaUrlOptions;
+      _repostOptions = repostOptions;
     }
 
     public WxeStep ParentStep
@@ -52,6 +55,11 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
     public WxePermaUrlOptions PermaUrlOptions
     {
       get { return _permaUrlOptions; }
+    }
+
+    public WxeRepostOptions RepostOptions
+    {
+      get { return _repostOptions; }
     }
   }
 }

@@ -118,13 +118,12 @@
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingRedirectToSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionStateParameters.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionState.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionStateBase.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreparingRedirectToSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\RedirectingToSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\ExecutingSubFunctionWithoutPermaUrlState.cs" />
+    <Compile Include="ExecutionEngine\WxeRepostOptions.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecutionStateBase.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\ExecutingSubFunctionExecuteWithPermaUrlState.cs">
       <SubType>Code</SubType>
@@ -143,7 +142,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\IExecutionStateParameters.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionNoRepostState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxeParameterAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeReturnOptions.cs" />
     <Compile Include="ExecutionEngine\WxeUserControl2.cs">

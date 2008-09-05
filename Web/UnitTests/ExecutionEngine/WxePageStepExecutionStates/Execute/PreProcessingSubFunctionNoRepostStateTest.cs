@@ -26,7 +26,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     private const string c_senderUniqueID = "TheUnqiueID";
     private WxeStep _parentStep;
     private IWxePage _pageMock;
-    private PreProcessingSubFunctionStateParameters _parameters;
 
     public override void SetUp ()
     {
@@ -40,24 +39,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       PostBackCollection.Add (c_senderUniqueID, "Value");
       PostBackCollection.Add (ControlHelper.PostEventSourceID, "TheEventSource");
       PostBackCollection.Add (ControlHelper.PostEventArgumentID, "TheEventArgument");
-
-      _parameters = new PreProcessingSubFunctionStateParameters (_parentStep, _pageMock, SubFunction, WxePermaUrlOptions.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The 'sender' must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.")]
-    public void Inititalize_IsNot_IPostBackDataHandler_Or_IPostBackDataHandler ()
-    {
-      Control senderMock = MockRepository.PartialMock<Control>();
-      new PreProcessingSubFunctionNoRepostState (ExecutionStateContextMock, _parameters, senderMock, false);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentNullException), ExpectedMessage = "Parameter name: sender", MatchType = MessageMatch.Contains)]
-    public void Inititalize_NotUsesEventTarget_NotSuppressSender ()
-    {
-      new PreProcessingSubFunctionNoRepostState (ExecutionStateContextMock, _parameters, null, false);
     }
 
     [Test]
@@ -138,11 +119,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       Control senderMock = MockRepository.PartialMultiMock<Control> (typeof (IPostBackDataHandler));
       senderMock.Stub (stub => stub.UniqueID).Return (c_senderUniqueID).Repeat.Any();
 
-      IExecutionState executionState = new PreProcessingSubFunctionNoRepostState (
+      IExecutionState executionState = new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
-          new PreProcessingSubFunctionStateParameters (_parentStep, _pageMock, SubFunction, WxePermaUrlOptions.Null),
-          senderMock,
-          true);
+          new PreProcessingSubFunctionStateParameters (
+              _parentStep, _pageMock, SubFunction, WxePermaUrlOptions.Null, new WxeRepostOptions (senderMock, true)));
 
       ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<ExecutingSubFunctionWithoutPermaUrlState>.Is.NotNull))
           .Do (
@@ -159,15 +139,20 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       MockRepository.VerifyAll();
     }
 
-    private PreProcessingSubFunctionNoRepostState CreateExecutionState (Control sender)
+    private PreProcessingSubFunctionState CreateExecutionState (Control sender)
     {
-      return new PreProcessingSubFunctionNoRepostState (ExecutionStateContextMock, _parameters, sender, false);
+      return new PreProcessingSubFunctionState (
+          ExecutionStateContextMock,
+          new PreProcessingSubFunctionStateParameters (
+              _parentStep, _pageMock, SubFunction, WxePermaUrlOptions.Null, new WxeRepostOptions (sender, false)));
     }
 
-    private PreProcessingSubFunctionNoRepostState CreateExecutionState (bool usesEventTarget)
+    private PreProcessingSubFunctionState CreateExecutionState (bool usesEventTarget)
     {
-      return new PreProcessingSubFunctionNoRepostState (
-          ExecutionStateContextMock, _parameters, MockRepository.Stub<Control>(), usesEventTarget);
+      return new PreProcessingSubFunctionState (
+          ExecutionStateContextMock,
+          new PreProcessingSubFunctionStateParameters (
+              _parentStep, _pageMock, SubFunction, WxePermaUrlOptions.Null, new WxeRepostOptions (MockRepository.Stub<Control>(), usesEventTarget)));
     }
   }
 }

@@ -179,6 +179,7 @@
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PostProcessingSubFunctionTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ExecutionEngine\WxeRepostOptionsTest.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\TestBase.cs">
       <SubType>Code</SubType>
     </Compile>
