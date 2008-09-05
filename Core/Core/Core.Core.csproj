@@ -128,7 +128,7 @@
     <Compile Include="Diagnostics\OuterProductProcessingState.cs" />
     <Compile Include="Diagnostics\OuterProductProcessorBase.cs" />
     <Compile Include="Diagnostics\ToText\SequenceStateHolder.cs" />
-    <Compile Include="Diagnostics\ToText\StringBuilderToText.cs" />
+    <Compile Include="Diagnostics\ToText\DisableableWriter.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderHandler.cs" />
     <Compile Include="Diagnostics\ToText\ToTextSpecificHandlerCollector.cs" />
     <Compile Include="Diagnostics\ToText\ToTextSpecificHandlerMap.cs" />

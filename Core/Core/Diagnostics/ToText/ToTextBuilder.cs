@@ -34,7 +34,7 @@ namespace Remotion.Diagnostics.ToText
      * XML: Support text to be added to be processed to become XML compatible ("<" -> "&lt;" etc). Use CDATA ?
     */
 
-    private readonly StringBuilderToText _textStringBuilderToText = new StringBuilderToText ();
+    private readonly DisableableWriter _disableableWriter = new DisableableWriter ();
     private ToTextProvider _toTextProvider;
 
     private string _enumerablePrefix = "{";
@@ -152,7 +152,7 @@ namespace Remotion.Diagnostics.ToText
     //TODO: rename, make factory method, don't toggle flag
     public ToTextBuilder AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel)
     {
-      _textStringBuilderToText.Enabled = (_outputComplexity >= complexityLevel) ? true : false;
+      _disableableWriter.Enabled = (_outputComplexity >= complexityLevel) ? true : false;
       return this;
     }
 
@@ -219,8 +219,8 @@ namespace Remotion.Diagnostics.ToText
 
     public bool Enabled
     {
-      get { return _textStringBuilderToText.Enabled; }
-      set { _textStringBuilderToText.Enabled = value; }
+      get { return _disableableWriter.Enabled; }
+      set { _disableableWriter.Enabled = value; }
     }
 
 
@@ -231,12 +231,12 @@ namespace Remotion.Diagnostics.ToText
     public string CheckAndConvertToString ()
     {
       Assertion.IsFalse (IsInSequence);
-      return _textStringBuilderToText.ToString ();
+      return _disableableWriter.ToString ();
     }
 
     //public override string ToString ()
     //{
-    //  return _textStringBuilderToText.ToString ();
+    //  return _disableableWriter.ToString ();
     //}
 
 
@@ -256,7 +256,7 @@ namespace Remotion.Diagnostics.ToText
     {
       if (IsInSequence)
       {
-        _textStringBuilderToText.Append (SequenceState.Counter == 0 ? SequenceState.FirstElementPrefix : SequenceState.OtherElementPrefix);
+        _disableableWriter.Append (SequenceState.Counter == 0 ? SequenceState.FirstElementPrefix : SequenceState.OtherElementPrefix);
       }
     }
 
@@ -264,7 +264,7 @@ namespace Remotion.Diagnostics.ToText
     {
       if (IsInSequence)
       {
-        _textStringBuilderToText.Append (SequenceState.ElementPostfix);
+        _disableableWriter.Append (SequenceState.ElementPostfix);
         SequenceState.IncrementCounter ();
       }
     }
@@ -284,7 +284,7 @@ namespace Remotion.Diagnostics.ToText
     {
       if (_useMultiline)
       {
-        _textStringBuilderToText.Append (System.Environment.NewLine);
+        _disableableWriter.Append (System.Environment.NewLine);
       }
       return this;
     }
@@ -298,7 +298,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendSpace ()
     {
-      _textStringBuilderToText.Append (" ");
+      _disableableWriter.Append (" ");
       return this;
     }
 
@@ -311,7 +311,7 @@ namespace Remotion.Diagnostics.ToText
     // TODO?: Introduce highlevel sibling "Indent" ?
     public ToTextBuilder AppendTabulator ()
     {
-      _textStringBuilderToText.Append ("\t");
+      _disableableWriter.Append ("\t");
       return this;
     }
 
@@ -324,7 +324,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendSeperator ()
     {
-      _textStringBuilderToText.Append (",");
+      _disableableWriter.Append (",");
       return this;
     }
 
@@ -336,7 +336,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendComma ()
     {
-      _textStringBuilderToText.Append (",");
+      _disableableWriter.Append (",");
       return this;
     }
 
@@ -348,7 +348,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendColon ()
     {
-      _textStringBuilderToText.Append (":");
+      _disableableWriter.Append (":");
       return this;
     }
 
@@ -360,7 +360,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendSemiColon ()
     {
-      _textStringBuilderToText.Append (";");
+      _disableableWriter.Append (";");
       return this;
     }
 
@@ -372,7 +372,7 @@ namespace Remotion.Diagnostics.ToText
 
     private ToTextBuilder AppendObjectToString (object obj)
     {
-      _textStringBuilderToText.Append (obj.ToString ());
+      _disableableWriter.Append (obj.ToString ());
       return this;
     }
 
@@ -398,7 +398,7 @@ namespace Remotion.Diagnostics.ToText
       _sequenceStack.Push (_sequenceState);
       _sequenceState = new SequenceStateHolder (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
 
-      _textStringBuilderToText.Append (SequenceState.SequencePrefix);
+      _disableableWriter.Append (SequenceState.SequencePrefix);
 
       return this;
     }
@@ -431,7 +431,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendString (string s)
     {
-      _textStringBuilderToText.Append (s);
+      _disableableWriter.Append (s);
       return this;
     }
 
@@ -442,7 +442,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendEscapedString (string s)
     {
-      EscapeString(s,_textStringBuilderToText);
+      EscapeString(s,_disableableWriter);
       return this;
     }
 
@@ -453,7 +453,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendChar (char c)
     {
-      _textStringBuilderToText.Append (c);
+      _disableableWriter.Append (c);
       return this;
     }
 
@@ -588,7 +588,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder Append (Object obj)
     {
-      _textStringBuilderToText.Append (obj);
+      _disableableWriter.Append (obj);
       return this;
     }
 
@@ -638,7 +638,7 @@ namespace Remotion.Diagnostics.ToText
     private void SequenceEnd ()
     {
       Assertion.IsTrue (IsInSequence);
-      _textStringBuilderToText.Append (SequenceState.SequencePostfix);
+      _disableableWriter.Append (SequenceState.SequencePostfix);
 
       _sequenceState = _sequenceStack.Pop ();
     }
@@ -739,7 +739,7 @@ namespace Remotion.Diagnostics.ToText
     //--------------------------------------------------------------------------
 
 
-    private void EscapeString (string s, StringBuilderToText textStringBuilderToText)
+    private void EscapeString (string s, DisableableWriter disableableWriter)
     {
       var mapping = new Dictionary<char, string> () { { '"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\t', "\\t" }, { '\\', "\\\\" }, { '\b', "\\b" }, { '\v', "\\v" }, { '\f', "\\f" } };
       foreach (char c in s)
@@ -748,11 +748,11 @@ namespace Remotion.Diagnostics.ToText
         mapping.TryGetValue (c, out mappedString);
         if (mappedString == null)
         {
-          textStringBuilderToText.Append (c);
+          disableableWriter.Append (c);
         }
         else
         {
-          textStringBuilderToText.Append (mappedString);
+          disableableWriter.Append (mappedString);
         }
       }
     }

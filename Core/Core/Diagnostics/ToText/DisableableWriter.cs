@@ -16,11 +16,11 @@ namespace Remotion.Diagnostics.ToText
   /// StringBuilder-like class which supports enabling/disabling of its <see cref="Append{T}"/> method 
   /// through its <see cref="Enabled"/> property.
   /// </summary>
-  internal class StringBuilderToText
+  internal class DisableableWriter
   {
     private readonly StringBuilder _stringBuilder = new StringBuilder ();
 
-    public StringBuilderToText()
+    public DisableableWriter()
     {
       Enabled = true;
     }
