@@ -16,6 +16,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Remotion.Web.Utilities;
@@ -85,9 +86,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
         _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
             invocation =>
             {
-              Assert.That (_pageStep.PostBackCollection.AllKeys, List.Contains ("Key"));
-              Assert.That (_pageStep.PostBackCollection.AllKeys, List.Not.Contains ("TheUniqueID"));
-              Assert.That (_pageStep.SubFunction, Is.SameAs (_subFunction));
+              var parameters = (ExecutionStateParameters)((IExecutionStateContext) _pageStep).ExecutionState.Parameters;
+              Assert.That (parameters.PostBackCollection.AllKeys, List.Contains ("Key"));
+              Assert.That (parameters.PostBackCollection.AllKeys, List.Not.Contains ("TheUniqueID"));
+              Assert.That (parameters.SubFunction, Is.SameAs (_subFunction));
               Assert.That (_subFunction.ParentStep, Is.SameAs (_pageStep));
               Assert.That (PrivateInvoke.GetNonPublicField (_pageStep, "_wxeHandler"), Is.SameAs (_wxeHandler));
             });
@@ -120,9 +122,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
         _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
             invocation =>
             {
-              Assert.That (_pageStep.PostBackCollection.AllKeys, List.Contains ("Key"));
-              Assert.That (_pageStep.PostBackCollection.AllKeys, List.Not.Contains ("TheUniqueID"));
-              Assert.That (_pageStep.SubFunction, Is.SameAs (_subFunction));
+              var parameters = (ExecutionStateParameters) ((IExecutionStateContext) _pageStep).ExecutionState.Parameters;
+              Assert.That (parameters.PostBackCollection.AllKeys, List.Contains ("Key"));
+              Assert.That (parameters.PostBackCollection.AllKeys, List.Not.Contains ("TheUniqueID"));
+              Assert.That (parameters.SubFunction, Is.SameAs (_subFunction));
               Assert.That (_subFunction.ParentStep, Is.SameAs (_pageStep));
               Assert.That (PrivateInvoke.GetNonPublicField (_pageStep, "_wxeHandler"), Is.SameAs (_wxeHandler));
             });
@@ -152,10 +155,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
         _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
             invocation =>
             {
-              Assert.That (_pageStep.PostBackCollection.AllKeys, List.Contains ("Key"));
-              Assert.That (_pageStep.PostBackCollection.AllKeys, List.Not.Contains (ControlHelper.PostEventSourceID));
-              Assert.That (_pageStep.PostBackCollection.AllKeys, List.Not.Contains (ControlHelper.PostEventArgumentID));
-              Assert.That (_pageStep.SubFunction, Is.SameAs (_subFunction));
+              var parameters = (ExecutionStateParameters) ((IExecutionStateContext) _pageStep).ExecutionState.Parameters;
+              Assert.That (parameters.PostBackCollection.AllKeys, List.Contains ("Key"));
+              Assert.That (parameters.PostBackCollection.AllKeys, List.Not.Contains (ControlHelper.PostEventSourceID));
+              Assert.That (parameters.PostBackCollection.AllKeys, List.Not.Contains (ControlHelper.PostEventArgumentID));
+              Assert.That (parameters.SubFunction, Is.SameAs (_subFunction));
               Assert.That (_subFunction.ParentStep, Is.SameAs (_pageStep));
               Assert.That (PrivateInvoke.GetNonPublicField (_pageStep, "_wxeHandler"), Is.SameAs (_wxeHandler));
             });

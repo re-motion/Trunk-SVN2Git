@@ -20,6 +20,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
@@ -99,9 +100,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       using (_mockRepository.Ordered())
       {
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        _pageMock.Expect (mock => mock.SaveAllState());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        using (_mockRepository.Unordered())
+        {
+          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
+          _pageMock.Expect (mock => mock.SaveAllState());
+          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        }
 
         //Redirect to external subfunction
         _responseMock
@@ -125,7 +129,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
             invocation =>
             {
               Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
-              Assert.That (_pageStep.SubFunction, Is.Null);
+              Assert.That (((IExecutionStateContext)_pageStep).ExecutionState, Is.Null);
               Assert.That (_wxeContext.IsPostBack, Is.True);
               Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
               Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
@@ -181,10 +185,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
     {
       using (_mockRepository.Ordered())
       {
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        _pageMock.Expect (mock => mock.SaveAllState());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
-
+        using (_mockRepository.Unordered())
+        {
+          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
+          _pageMock.Expect (mock => mock.SaveAllState());
+          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        }
         //Redirect to external subfunction
         _responseMock
             .Expect (mock => mock.Redirect (Arg<string>.Matches (arg => arg == "~/session/sub.wxe?WxeFunctionToken=" + _subFunction.FunctionToken)))

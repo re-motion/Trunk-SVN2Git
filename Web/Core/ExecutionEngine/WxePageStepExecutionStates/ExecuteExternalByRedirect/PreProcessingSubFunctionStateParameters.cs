@@ -11,7 +11,7 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
   [Serializable]
   public class PreProcessingSubFunctionStateParameters : IExecutionStateParameters
@@ -20,22 +20,22 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
     private readonly IWxePage _page;
     private readonly WxeFunction _subFunction;
     private readonly WxePermaUrlOptions _permaUrlOptions;
-    private readonly WxeRepostOptions _repostOptions;
+    private readonly WxeReturnOptions _returnOptions;
 
     public PreProcessingSubFunctionStateParameters (
-        WxeStep parentStep, IWxePage page, WxeFunction subFunction, WxePermaUrlOptions permaUrlOptions, WxeRepostOptions repostOptions)
+        WxeStep parentStep, IWxePage page, WxeFunction subFunction, WxePermaUrlOptions permaUrlOptions, WxeReturnOptions returnOptions)
     {
       ArgumentUtility.CheckNotNull ("parentStep", parentStep);
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("subFunction", subFunction);
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
-      ArgumentUtility.CheckNotNull ("repostOptions", repostOptions);
+      ArgumentUtility.CheckNotNull ("returnOptions", returnOptions);
 
       _parentStep = parentStep;
+      _returnOptions = returnOptions;
       _page = page;
       _subFunction = subFunction;
       _permaUrlOptions = permaUrlOptions;
-      _repostOptions = repostOptions;
     }
 
     public WxeStep ParentStep
@@ -58,9 +58,9 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
       get { return _permaUrlOptions; }
     }
 
-    public WxeRepostOptions RepostOptions
+    public WxeReturnOptions ReturnOptions
     {
-      get { return _repostOptions; }
+      get { return _returnOptions; }
     }
   }
 }

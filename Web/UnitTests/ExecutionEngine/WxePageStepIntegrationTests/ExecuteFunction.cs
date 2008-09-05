@@ -81,8 +81,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
         _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
             invocation =>
             {
-              Assert.That (_pageStep.PostBackCollection, Is.EquivalentTo (_postBackCollection));
-              Assert.That (_pageStep.SubFunction, Is.SameAs (_subFunction));
+              var parameters = (ExecutionStateParameters) ((IExecutionStateContext) _pageStep).ExecutionState.Parameters;
+              Assert.That (parameters.PostBackCollection, Is.EquivalentTo (_postBackCollection));
+              Assert.That (parameters.SubFunction, Is.SameAs (_subFunction));
               Assert.That (_subFunction.ParentStep, Is.SameAs (_pageStep));
               Assert.That (PrivateInvoke.GetNonPublicField (_pageStep, "_wxeHandler"), Is.SameAs (_wxeHandler));
             });
@@ -120,7 +121,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
             invocation =>
             {
               Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
-              Assert.That (_pageStep.SubFunction, Is.Null);
+              Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.Null);
               Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
               Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
               Assert.That (_wxeContext.IsPostBack, Is.True);
@@ -292,7 +293,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
             invocation =>
             {
               Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
-              Assert.That (_pageStep.SubFunction, Is.Null);
+              Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.Null);
               Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
               Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
               Assert.That (_wxeContext.IsReturningPostBack, Is.True);

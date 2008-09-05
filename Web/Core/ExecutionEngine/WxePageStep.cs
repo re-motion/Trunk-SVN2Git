@@ -33,7 +33,7 @@ namespace Remotion.Web.ExecutionEngine
     private string _pageRoot;
     private string _pageToken;
     private string _pageState;
-    
+
     private WxeFunction _innerFunction;
     private string _userControlID;
     private string _userControlState;
@@ -226,7 +226,8 @@ namespace Remotion.Web.ExecutionEngine
       page.SaveAllState();
       _wxeHandler = page.WxeHandler;
 
-      _executionState = new PreProcessingSubFunctionState (this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions, repostOptions));
+      _executionState = new PreProcessingSubFunctionState (
+          this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions, repostOptions));
       _executionState.PreProcessSubFunction();
       Execute();
     }
@@ -240,15 +241,33 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
       ArgumentUtility.CheckNotNull ("returnOptions", returnOptions);
 
-      NameValueCollection postBackCollection = BackupPostBackCollection (page);
-      PrepareExecuteFunction (function, false);
+      if (_executionState != null)
+        throw new InvalidOperationException ("Cannot execute function while another function executes.");
 
-      var parameters = new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreparingSubFunctionStateParameters (function, postBackCollection, permaUrlOptions, returnOptions);
-      _executionState = new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreparingRedirectToSubFunctionState (this, parameters);
-      
       page.SaveAllState();
-
       _wxeHandler = page.WxeHandler;
+
+      _executionState = new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionState (
+          this,
+          new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionStateParameters (
+              this, page, function, permaUrlOptions, returnOptions));
+      _executionState.PreProcessSubFunction();
+
+      Execute();
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void ExecuteFunction (WxeUserControl2 userControl, WxeFunction function)
+    {
+      ArgumentUtility.CheckNotNull ("userControl", userControl);
+      ArgumentUtility.CheckNotNull ("function", function);
+
+      _userControlState = userControl.SaveAllState ();
+      _innerFunction = function;
+      _userControlID = userControl.UniqueID;
+      function.SetParentStep (this);
+
+      _wxeHandler = userControl.WxePage.WxeHandler;
       Execute ();
     }
 
@@ -257,20 +276,6 @@ namespace Remotion.Web.ExecutionEngine
     public string PageToken
     {
       get { return _pageToken; }
-    }
-
-    //TODO: Remove
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    public WxeFunction SubFunction
-    {
-      get { return _executionState != null ? _executionState.Parameters.SubFunction : null; }
-    }
-
-    //TODO: Remove
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    public NameValueCollection PostBackCollection
-    {
-      get { return (_executionState != null && _executionState.Parameters is ExecutionStateParameters)? ((ExecutionStateParameters)_executionState.Parameters).PostBackCollection : null; }
     }
 
     public override string ToString ()
@@ -306,42 +311,7 @@ namespace Remotion.Web.ExecutionEngine
     {
       base.AbortRecursive();
       if (_executionState != null && _executionState.Parameters.SubFunction.RootFunction == this.RootFunction)
-        _executionState.Parameters.SubFunction.Abort ();
-    }
-
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    public void ExecuteFunction (WxeUserControl2 userControl, WxeFunction function)
-    {
-      ArgumentUtility.CheckNotNull ("userControl", userControl);
-      ArgumentUtility.CheckNotNull ("function", function);
-
-      BackupPostBackCollection (userControl.WxePage);
-
-      _userControlState = userControl.SaveAllState ();
-      _innerFunction = function;
-      _userControlID = userControl.UniqueID;
-      function.SetParentStep (this);
-
-      _wxeHandler = userControl.WxePage.WxeHandler;
-      Execute ();
-    }
-
-    private void PrepareExecuteFunction (WxeFunction function, bool isSubFunction)
-    {
-      ArgumentUtility.CheckNotNull ("function", function);
-
-      if (_executionState != null)
-        throw new InvalidOperationException ("Cannot execute function while another function executes.");
-
-      if (isSubFunction)
-        function.SetParentStep (this);
-    }
-
-    private NameValueCollection BackupPostBackCollection (IWxePage page)
-    {
-      ArgumentUtility.CheckNotNull ("page", page);
-
-      return page.GetPostBackCollection().Clone();
+        _executionState.Parameters.SubFunction.Abort();
     }
 
     private void SetStateForCurrentFunction (WxeContext context)

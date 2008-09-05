@@ -163,10 +163,9 @@
     <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithThreadAbort.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestWxeTransaction.cs" />
     <Compile Include="ExecutionEngine\WxeFunctionStateManagerTest.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionStateBaseTest.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionNoRepostStateTest.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PostProcessingSubFunctionTest.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingRedirectToSubFunctionStateTest.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreProcessingSubFunctionStateTest.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionStateTest.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionStateTest.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\ExecutingSubFunctionWithoutPermaUrlStateTest.cs" />
