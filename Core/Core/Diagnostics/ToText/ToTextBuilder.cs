@@ -59,16 +59,6 @@ namespace Remotion.Diagnostics.ToText
       Settings = new ToTextBuilderSettings ();
       OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
       SequenceState = null;
-      //EnumerablePostfix = "}";
-      //EnumerableElementPostfix = "";
-      //EnumerableOtherElementPrefix = ",";
-      //EnumerableFirstElementPrefix = "";
-      //EnumerablePrefix = "{";
-      //ArrayPostfix = "}";
-      //ArrayElementPostfix = "";
-      //ArrayOtherElementPrefix = ",";
-      //ArrayFirstElementPrefix = "";
-      //ArrayPrefix = "{";
     }
 
     public ToTextBuilder (ToTextProvider toTextProvider)
@@ -77,18 +67,6 @@ namespace Remotion.Diagnostics.ToText
     }
 
     public ToTextBuilderSettings Settings { get; private set; }
-
-    //public string ArrayPrefix { get; set; }
-    //public string ArrayFirstElementPrefix { get; set; }
-    //public string ArrayOtherElementPrefix { get; set; }
-    //public string ArrayElementPostfix { get; set; }
-    //public string ArrayPostfix { get; set; }
-
-    //public string EnumerablePrefix { get; set; }
-    //public string EnumerableFirstElementPrefix { get; set; }
-    //public string EnumerableOtherElementPrefix { get; set; }
-    //public string EnumerableElementPostfix { get; set; }
-    //public string EnumerablePostfix { get; set; }
 
     public SequenceStateHolder SequenceState { get; private set; }
 
@@ -121,44 +99,7 @@ namespace Remotion.Diagnostics.ToText
     //--------------------------------------------------------------------------
     // Settings Properties
     //--------------------------------------------------------------------------
-    // TODO?: Move to Settings object 
-    
-    //public string EnumerableBegin
-    //{
-    //  get { return EnumerablePrefix; }
-    //  set { EnumerablePrefix = value; }
-    //}
 
-    //public string EnumerableSeparator
-    //{
-    //  get { return EnumerableOtherElementPrefix; }
-    //  set { EnumerableOtherElementPrefix = value; }
-    //}
-
-    //public string EnumerableEnd
-    //{
-    //  get { return EnumerablePostfix; }
-    //  set { EnumerablePostfix = value; }
-    //}
-
-
-    //public string ArrayBegin
-    //{
-    //  get { return ArrayPrefix; }
-    //  set { ArrayPrefix = value; }
-    //}
-
-    //public string ArraySeparator
-    //{
-    //  get { return ArrayOtherElementPrefix; }
-    //  set { ArrayOtherElementPrefix = value; }
-    //}
-
-    //public string ArrayEnd
-    //{
-    //  get { return ArrayPostfix; }
-    //  set { ArrayPostfix = value; }
-    //}
 
     public bool UseMultiLine
     {
