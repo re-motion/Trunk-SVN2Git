@@ -17,7 +17,6 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -173,46 +172,6 @@ namespace Remotion.Web.ExecutionEngine
           _isReturningInnerFunction = false;
         }
       }
-    }
-
-    /// <summary> 
-    ///   Initalizes a new <see cref="WxeFunctionState"/> with the passed <paramref name="function"/> and returns the associated function token.
-    /// </summary>
-    internal string GetFunctionTokenForExternalFunction (WxeFunction function, bool returnFromExecute)
-    {
-      bool enableCleanUp = ! returnFromExecute;
-      WxeFunctionState functionState = new WxeFunctionState (function, enableCleanUp);
-      WxeFunctionStateManager functionStates = WxeFunctionStateManager.Current;
-      functionStates.Add (functionState);
-      return functionState.FunctionToken;
-    }
-
-
-    /// <summary> Gets the URL to be used for transfering to the external function. </summary>
-    internal string GetDestinationUrlForExternalFunction (WxeFunction function, string functionToken, WxePermaUrlOptions permaUrlOptions)
-    {
-      WxeContext wxeContext = WxeContext.Current;
-
-      string href;
-      if (permaUrlOptions.UsePermaUrl)
-      {
-        NameValueCollection internalUrlParameters;
-        if (permaUrlOptions.UrlParameters == null)
-          internalUrlParameters = function.SerializeParametersForQueryString();
-        else
-          internalUrlParameters = permaUrlOptions.UrlParameters.Clone ();
-        internalUrlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, functionToken);
-
-        href = wxeContext.GetPermanentUrl (function.GetType (), internalUrlParameters, permaUrlOptions.UseParentPermaUrl);
-      }
-      else
-      {
-        UrlMappingEntry mappingEntry = UrlMappingConfiguration.Current.Mappings[function.GetType()];
-        string path = (mappingEntry != null) ? mappingEntry.Resource : wxeContext.HttpContext.Request.Url.AbsolutePath;
-        href = wxeContext.GetPath (path, functionToken, permaUrlOptions.UrlParameters);
-      }
-
-      return href;
     }
 
     /// <summary> Gets the currently executing <see cref="WxeStep"/>. </summary>

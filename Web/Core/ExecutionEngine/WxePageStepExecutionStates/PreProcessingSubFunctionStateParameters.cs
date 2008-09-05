@@ -13,6 +13,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
+  [Serializable]
   public class PreProcessingSubFunctionStateParameters : IExecutionStateParameters
   {
     private readonly WxeStep _parentStep;

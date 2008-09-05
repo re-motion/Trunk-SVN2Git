@@ -16,6 +16,7 @@ using ExecutingSubFunctionState=Remotion.Web.ExecutionEngine.WxePageStepExecutio
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
+  [Serializable]
   public abstract class PreProcessingSubFunctionStateBase<TParameters> : ExecutionStateBase<TParameters>
     where TParameters : PreProcessingSubFunctionStateParameters
   {

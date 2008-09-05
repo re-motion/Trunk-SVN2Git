@@ -8,12 +8,14 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using System.Collections.Specialized;
 using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
 {
-  public class PreparingSubFunctionStateParameters:ExecutionStateParameters
+  [Serializable]
+  public class PreparingSubFunctionStateParameters : ExecutionStateParameters
   {
     private readonly WxePermaUrlOptions _permaUrlOptions;
 

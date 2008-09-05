@@ -16,6 +16,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
+  [Serializable]
   public sealed class PreProcessingSubFunctionNoRepostState : PreProcessingSubFunctionStateBase<PreProcessingSubFunctionStateParameters>
   {
     private readonly Control _sender;

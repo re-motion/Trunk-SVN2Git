@@ -13,7 +13,8 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrl
 {
-  public class PostProcessingSubFunctionState:ExecutionStateBase<ExecutionStateParameters>
+  [Serializable]
+  public class PostProcessingSubFunctionState : ExecutionStateBase<ExecutionStateParameters>
   {
     public PostProcessingSubFunctionState (IExecutionStateContext executionStateContext, ExecutionStateParameters parameters)
         : base(executionStateContext, parameters)

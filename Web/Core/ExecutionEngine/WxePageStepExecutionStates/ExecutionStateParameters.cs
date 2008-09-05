@@ -14,6 +14,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
+  [Serializable]
   public class ExecutionStateParameters : IExecutionStateParameters
   {
     private readonly WxeFunction _subFunction;

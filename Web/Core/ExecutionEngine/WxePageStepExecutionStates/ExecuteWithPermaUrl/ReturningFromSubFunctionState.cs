@@ -11,10 +11,10 @@
 using System;
 using System.Threading;
 using Remotion.Utilities;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
 {
+  [Serializable]
   public class ReturningFromSubFunctionState : ExecutionStateBase<RedirectingToSubFunctionStateParameters>
   {
     public ReturningFromSubFunctionState (IExecutionStateContext executionStateContext, RedirectingToSubFunctionStateParameters parameters)

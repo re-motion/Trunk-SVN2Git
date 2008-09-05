@@ -14,6 +14,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
+  [Serializable]
   public class RedirectingToSubFunctionStateParameters : ExecutionStateParameters
   {
     private readonly string _destinationUrl;

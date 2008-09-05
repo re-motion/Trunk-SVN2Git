@@ -10,10 +10,10 @@
 
 using System;
 using Remotion.Utilities;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
 {
+  [Serializable]
   public class ExecutingSubFunctionState : ExecutionStateBase<RedirectingToSubFunctionStateParameters>
   {
     public ExecutingSubFunctionState (IExecutionStateContext executionStateContext, RedirectingToSubFunctionStateParameters parameters)
