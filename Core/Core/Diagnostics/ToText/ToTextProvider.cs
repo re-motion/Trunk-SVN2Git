@@ -112,14 +112,14 @@ namespace Remotion.Diagnostics.ToText
       return toTextBuilder.ToText (obj).CheckAndConvertToString ();
     }
 
-    public void ToText (object obj, ToTextBuilder toTextBuilder)
+    public void ToText (object obj, IToTextBuilderBase toTextBuilder)
     {
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
       ToTextUsingToTextProviderHandlers (obj, toTextBuilder);
     }
 
 
-    public void RegisterSpecificTypeHandler<T> (Action<T, ToTextBuilder> handler)
+    public void RegisterSpecificTypeHandler<T> (Action<T, IToTextBuilderBase> handler)
     {
       _typeHandlerMap.Add (typeof (T), new ToTextSpecificTypeHandlerWrapper<T> (handler));
     }
@@ -129,13 +129,13 @@ namespace Remotion.Diagnostics.ToText
       _typeHandlerMap.Add (handledType, toTextSpecificTypeHandler);
     }
 
-    public void RegisterSpecificInterfaceHandlerWithLowestPriority<T> (Action<T, ToTextBuilder> handler)
+    public void RegisterSpecificInterfaceHandlerWithLowestPriority<T> (Action<T, IToTextBuilderBase> handler)
     {
       --_interfaceHandlerPriorityMin;
       _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandlerWrapper<T> (handler, _interfaceHandlerPriorityMin));
     }
 
-    public void RegisterSpecificInterfaceHandlerWithHighestPriority<T> (Action<T, ToTextBuilder> handler)
+    public void RegisterSpecificInterfaceHandlerWithHighestPriority<T> (Action<T, IToTextBuilderBase> handler)
     {
       ++_interfaceHandlerPriorityMax;
       _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandlerWrapper<T> (handler, _interfaceHandlerPriorityMax));
@@ -163,7 +163,7 @@ namespace Remotion.Diagnostics.ToText
 
 
 
-    public bool ToTextUsingToTextProviderHandlers (object obj, ToTextBuilder toTextBuilder)
+    public bool ToTextUsingToTextProviderHandlers (object obj, IToTextBuilderBase toTextBuilder)
     {
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
       Assertion.IsTrue (toTextBuilder.ToTextProvider == this);

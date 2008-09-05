@@ -160,7 +160,7 @@ namespace Remotion.UnitTests.Diagnostics
     [ToTextSpecificHandler]
     public class ToTextTestToTextSpecificTypeHandler : ToTextSpecificTypeHandler<ToTextTest>
     {
-      public override void ToText (ToTextTest t, ToTextBuilder toTextBuilder)
+      public override void ToText (ToTextTest t, IToTextBuilderBase toTextBuilder)
       {
         toTextBuilder.s ("handled by ToTextTestToTextSpecificTypeHandler");
       }
@@ -171,7 +171,7 @@ namespace Remotion.UnitTests.Diagnostics
     [ToTextSpecificHandler]
     public class IToTextInterfaceTestToTextSpecificTypeHandler : ToTextSpecificInterfaceHandler<IToTextInterfaceTest>
     {
-      public override void ToText (IToTextInterfaceTest t, ToTextBuilder toTextBuilder)
+      public override void ToText (IToTextInterfaceTest t, IToTextBuilderBase toTextBuilder)
       {
         toTextBuilder.s ("handled by IToTextInterfaceTestToTextSpecificTypeHandler");
       }

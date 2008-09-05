@@ -14,14 +14,14 @@ namespace Remotion.Diagnostics.ToText
 {
   public class ToTextSpecificTypeHandlerWrapper<T> : IToTextSpecificTypeHandler
   {
-    private readonly Action<T, ToTextBuilder> _handler;
+    private readonly Action<T, IToTextBuilderBase> _handler;
 
-    public ToTextSpecificTypeHandlerWrapper (Action<T, ToTextBuilder> handler)
+    public ToTextSpecificTypeHandlerWrapper (Action<T, IToTextBuilderBase> handler)
     {
       _handler = handler;
     }
 
-    public void ToText (object obj, ToTextBuilder toTextBuilder)
+    public void ToText (object obj, IToTextBuilderBase toTextBuilder)
     {
       _handler ((T) obj, toTextBuilder);
     }

@@ -15,7 +15,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
-      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+      IToTextBuilderBase toTextBuilder = toTextParameters.ToTextBuilder;
       var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
 
       if (type == typeof (char))

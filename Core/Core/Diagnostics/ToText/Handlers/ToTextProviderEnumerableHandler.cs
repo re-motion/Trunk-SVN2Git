@@ -16,7 +16,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
-      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+      IToTextBuilderBase toTextBuilder = toTextParameters.ToTextBuilder;
 
       if (obj is IEnumerable)
       {

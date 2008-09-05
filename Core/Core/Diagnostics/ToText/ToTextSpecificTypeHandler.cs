@@ -14,9 +14,9 @@ namespace Remotion.Diagnostics.ToText
 {
   public abstract class ToTextSpecificTypeHandler<T> : IToTextSpecificTypeHandler
   {
-    public abstract void ToText (T t, ToTextBuilder toTextBuilder);
+    public abstract void ToText (T t, IToTextBuilderBase toTextBuilder);
 
-    public virtual void ToText (object obj, ToTextBuilder toTextBuilder)
+    public virtual void ToText (object obj, IToTextBuilderBase toTextBuilder)
     {
       ToText ((T) obj, toTextBuilder);
     }

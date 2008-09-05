@@ -115,8 +115,10 @@
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderNullHandler.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderRegisteredInterfaceHandlerHandler.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderRegisteredTypeHandler.cs" />
+    <Compile Include="Diagnostics\ToText\IToTextBuilderBase.cs" />
     <Compile Include="Diagnostics\ToText\IToTextSpecificHandler.cs" />
     <Compile Include="Diagnostics\ToText\ToTextBuilderArrayToTextProcessor.cs" />
+    <Compile Include="Diagnostics\ToText\ToTextBuilderBase.cs" />
     <Compile Include="Diagnostics\ToText\ToTextBuilderSettings.cs" />
     <Compile Include="Diagnostics\ToText\ToTextBuilderXml.cs" />
     <Compile Include="Diagnostics\ToText\ToTextSpecificHandlerAttribute.cs" />

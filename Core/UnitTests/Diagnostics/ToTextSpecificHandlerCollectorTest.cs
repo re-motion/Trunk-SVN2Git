@@ -79,7 +79,7 @@ namespace Remotion.UnitTests.Diagnostics
     [ToTextSpecificHandler]
     class TestSimpleToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimple>
     {
-      public override void ToText (TestSimple t, ToTextBuilder toTextBuilder)
+      public override void ToText (TestSimple t, IToTextBuilderBase toTextBuilder)
       {
         toTextBuilder.sb ("[", ",", "]").tt ("TestSimple").tt (t.Name).tt (t.Int).se ();
       }
@@ -88,7 +88,7 @@ namespace Remotion.UnitTests.Diagnostics
     [ToTextSpecificHandler]
     class TestSimpleSimpleToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimpleSimple>
     {
-      public override void ToText (TestSimpleSimple t, ToTextBuilder toTextBuilder)
+      public override void ToText (TestSimpleSimple t, IToTextBuilderBase toTextBuilder)
       {
         //toTextBuilder.beginInstance (typeof (TestSimple)).m ("name", t.Name).endInstance ();
         //toTextBuilder.sb ("[", ",", "]").s ("name=").tt (t.Name).se ();
@@ -101,7 +101,7 @@ namespace Remotion.UnitTests.Diagnostics
     [ToTextSpecificHandler]
     class ITestSimpleIntToTextSpecificInterfaceHandler : ToTextSpecificInterfaceHandler<ITestSimpleInt>
     {
-      public override void ToText (ITestSimpleInt t, ToTextBuilder toTextBuilder)
+      public override void ToText (ITestSimpleInt t, IToTextBuilderBase toTextBuilder)
       {
         toTextBuilder.sb ("[", ",", "]").tt ("TestSimple").tt (t.Int).se ();
       }
@@ -110,7 +110,7 @@ namespace Remotion.UnitTests.Diagnostics
     [ToTextSpecificHandler]
     class ITestSimpleNameToTextSpecificInterfaceHandler : ToTextSpecificInterfaceHandler<ITestSimpleName>
     {
-      public override void ToText (ITestSimpleName t, ToTextBuilder toTextBuilder)
+      public override void ToText (ITestSimpleName t, IToTextBuilderBase toTextBuilder)
       {
         toTextBuilder.sb ("[", ",", "]").tt ("TestSimple").tt (t.Name).se ();
       }

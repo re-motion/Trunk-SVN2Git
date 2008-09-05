@@ -72,7 +72,7 @@ namespace Remotion.Diagnostics
       return _interfaceHandlerMap;
     }
 
-    public static void RegisterHandler<T> (Action<T, ToTextBuilder> handler)
+    public static void RegisterHandler<T> (Action<T, IToTextBuilderBase> handler)
     {
       _toTextProvider.RegisterSpecificTypeHandler<T> (handler);
     }

@@ -37,7 +37,7 @@ namespace Remotion.UnitTests.Diagnostics
         return String.Format ("((TestSimple) Name:{0},Int:{1})", Name, Int);
       }
 
-      public void ToText (ToTextBuilder toTextBuilder)
+      public void ToText (IToTextBuilderBase toTextBuilder)
       {
         toTextBuilder.sb().m ("daInt", Int).m ("theName", Name).se();
       }

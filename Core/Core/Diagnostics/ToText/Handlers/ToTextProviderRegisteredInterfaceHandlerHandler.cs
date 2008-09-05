@@ -23,13 +23,13 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
 
 
-    public void RegisterInterfaceHandlerAppendLast<T> (Action<T, ToTextBuilder> handler)
+    public void RegisterInterfaceHandlerAppendLast<T> (Action<T, IToTextBuilderBase> handler)
     {
       --_interfaceHandlerPriorityMin;
       _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandlerWrapper<T> (handler, _interfaceHandlerPriorityMin));
     }
 
-    public void RegisterInterfaceHandlerAppendFirst<T> (Action<T, ToTextBuilder> handler)
+    public void RegisterInterfaceHandlerAppendFirst<T> (Action<T, IToTextBuilderBase> handler)
     {
       ++_interfaceHandlerPriorityMax;
       _interfaceTypeHandlerMap.Add (typeof (T), new ToTextSpecificInterfaceHandlerWrapper<T> (handler, _interfaceHandlerPriorityMax));
@@ -43,7 +43,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
-      ToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
+      IToTextBuilderBase toTextBuilder = toTextParameters.ToTextBuilder;
       var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
 
       if (!settings.UseInterfaceHandlers)

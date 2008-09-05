@@ -15,9 +15,9 @@ namespace Remotion.Diagnostics.ToText
 {
   public class ToTextSpecificInterfaceHandlerWrapper<T> : IToTextSpecificInterfaceHandler
   {
-    private readonly Action<T, ToTextBuilder> _interfaceHandler;
+    private readonly Action<T, IToTextBuilderBase> _interfaceHandler;
 
-    public ToTextSpecificInterfaceHandlerWrapper (Action<T, ToTextBuilder> interfaceHandler, int priority)
+    public ToTextSpecificInterfaceHandlerWrapper (Action<T, IToTextBuilderBase> interfaceHandler, int priority)
     {
       _interfaceHandler = interfaceHandler;
       Priority = priority;
@@ -28,7 +28,7 @@ namespace Remotion.Diagnostics.ToText
       get; private set;
     }
 
-    public void ToText (object obj, ToTextBuilder toTextBuilder)
+    public void ToText (object obj, IToTextBuilderBase toTextBuilder)
     {
       _interfaceHandler ((T) obj, toTextBuilder);
     }
