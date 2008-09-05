@@ -187,38 +187,18 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
-    /// <summary> Executes the specified <see cref="WxeFunction"/>, then returns to this page. </summary>
-    /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/ExecuteFunction/*' />
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    public void ExecuteFunction (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions)
-    {
-      ArgumentUtility.CheckNotNull ("page", page);
-      ArgumentUtility.CheckNotNull ("function", function);
-      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
-
-      if (_executionState != null)
-        throw new InvalidOperationException ("Cannot execute function while another function executes.");
-
-      page.SaveAllState();
-      _wxeHandler = page.WxeHandler;
-
-      _executionState = new PreProcessingSubFunctionState (
-          this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions, WxeRepostOptions.Null));
-      _executionState.PreProcessSubFunction();
-      Execute();
-    }
-
     /// <summary>
     ///   Executes the specified <see cref="WxeFunction"/>, then returns to this page without raising the 
     ///   postback event after the user returns.
     /// </summary>
     /// <remarks> Invoke this method by calling <see cref="WxeExecutor{TWxePage}.ExecuteFunctionNoRepost"/>. </remarks>
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void ExecuteFunctionNoRepost (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, WxeRepostOptions repostOptions)
+    public void ExecuteFunction (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, WxeRepostOptions repostOptions)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+      ArgumentUtility.CheckNotNull ("repostOptions", repostOptions);
 
       if (_executionState != null)
         throw new InvalidOperationException ("Cannot execute function while another function executes.");
@@ -228,7 +208,6 @@ namespace Remotion.Web.ExecutionEngine
 
       _executionState = new PreProcessingSubFunctionState (
           this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions, repostOptions));
-      _executionState.PreProcessSubFunction();
       Execute();
     }
 
@@ -251,7 +230,6 @@ namespace Remotion.Web.ExecutionEngine
           this,
           new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionStateParameters (
               this, page, function, permaUrlOptions, returnOptions));
-      _executionState.PreProcessSubFunction();
 
       Execute();
     }

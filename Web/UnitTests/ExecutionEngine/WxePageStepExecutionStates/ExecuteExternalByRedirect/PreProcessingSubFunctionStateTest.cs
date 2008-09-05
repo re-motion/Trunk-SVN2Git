@@ -43,11 +43,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     public void IsExecuting ()
     {
       IExecutionState executionState = CreateExecutionState (WxePermaUrlOptions.Null, WxeReturnOptions.Null);
-      Assert.That (executionState.IsExecuting, Is.False);
+      Assert.That (executionState.IsExecuting, Is.True);
     }
 
     [Test]
-    public void PreProcessSubFunction ()
+    public void ExecuteSubFunction ()
     {
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions();
       WxeReturnOptions returnOptions = new WxeReturnOptions();
@@ -71,17 +71,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       MockRepository.ReplayAll();
 
-      executionState.PreProcessSubFunction();
+      executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void ExecuteSubFunction ()
-    {
-      IExecutionState executionState = CreateExecutionState (WxePermaUrlOptions.Null, WxeReturnOptions.Null);
-      executionState.ExecuteSubFunction (WxeContext);
     }
 
     [Test]

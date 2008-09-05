@@ -65,38 +65,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
     }
 
     [Test]
-    public void Test_PrepareOnly ()
-    {
-      WxeContextMock.SetCurrent (_wxeContext);
-
-      using (_mockRepository.Ordered())
-      {
-        using (_mockRepository.Unordered ())
-        {
-          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-          _pageMock.Expect (mock => mock.SaveAllState());
-          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
-        }
-
-        _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
-            invocation =>
-            {
-              var parameters = (ExecutionStateParameters) ((IExecutionStateContext) _pageStep).ExecutionState.Parameters;
-              Assert.That (parameters.PostBackCollection, Is.EquivalentTo (_postBackCollection));
-              Assert.That (parameters.SubFunction, Is.SameAs (_subFunction));
-              Assert.That (_subFunction.ParentStep, Is.SameAs (_pageStep));
-              Assert.That (PrivateInvoke.GetNonPublicField (_pageStep, "_wxeHandler"), Is.SameAs (_wxeHandler));
-            });
-      }
-
-      _mockRepository.ReplayAll();
-
-      _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null);
-
-      _mockRepository.VerifyAll();
-    }
-
-    [Test]
     public void Test_SubFunction ()
     {
       WxeContextMock.SetCurrent (_wxeContext);
@@ -132,7 +100,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       _mockRepository.ReplayAll();
 
-      _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null);
+      _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null, WxeRepostOptions.Null);
 
       _mockRepository.VerifyAll();
     }
@@ -160,7 +128,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       try
       {
-        _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null);
+        _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null, WxeRepostOptions.Null);
         Assert.Fail();
       }
       catch (ThreadAbortException)
@@ -197,7 +165,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       try
       {
-        _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null);
+        _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null, WxeRepostOptions.Null);
         Assert.Fail();
       }
       catch (ThreadAbortException)
@@ -207,39 +175,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       _pageStep.Execute();
 
       _mockRepository.VerifyAll();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot execute function while another function executes.")]
-    public void Test_IsAlreadyExecutingSubFunction ()
-    {
-      WxeContextMock.SetCurrent (_wxeContext);
-
-      using (_mockRepository.Ordered())
-      {
-        using (_mockRepository.Unordered ())
-        {
-          _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-          _pageMock.Expect (mock => mock.SaveAllState());
-          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
-        }
-
-        _subFunction.Expect (mock => mock.Execute (_wxeContext)).Throw (new ApplicationException());
-
-        _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (_postBackCollection);
-        _pageMock.Expect (mock => mock.SaveAllState());
-        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
-      }
-      _mockRepository.ReplayAll();
-
-      try
-      {
-        _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null);
-      }
-      catch (ApplicationException)
-      {
-      }
-      _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null);
     }
 
     [Test]
@@ -308,7 +243,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       try
       {
         //Redirect to subfunction
-        _pageStep.ExecuteFunction (_pageMock, _subFunction, permaUrlOptions);
+        _pageStep.ExecuteFunction (_pageMock, _subFunction, permaUrlOptions, WxeRepostOptions.Null);
         Assert.Fail();
       }
       catch (ThreadAbortException)

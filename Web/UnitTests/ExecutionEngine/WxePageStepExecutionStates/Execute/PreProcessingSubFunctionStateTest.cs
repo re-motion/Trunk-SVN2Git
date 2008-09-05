@@ -44,11 +44,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     public void IsExecuting ()
     {
       IExecutionState executionState = CreateExecutionState (WxePermaUrlOptions.Null);
-      Assert.That (executionState.IsExecuting, Is.False);
+      Assert.That (executionState.IsExecuting, Is.True);
     }
 
     [Test]
-    public void PreProcessSubFunction_WithoutPermaUrl ()
+    public void ExecuteSubFunction_WithoutPermaUrl ()
     {
       IExecutionState executionState = CreateExecutionState (WxePermaUrlOptions.Null);
 
@@ -68,13 +68,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       MockRepository.ReplayAll();
 
-      executionState.PreProcessSubFunction();
+      executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
     }
 
     [Test]
-    public void PreProcessSubFunction_WithPermaUrl ()
+    public void ExecuteSubFunction_WithPermaUrl ()
     {
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions();
       IExecutionState executionState = CreateExecutionState (permaUrlOptions);
@@ -96,13 +96,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       MockRepository.ReplayAll();
 
-      executionState.PreProcessSubFunction();
+      executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
     }
 
     [Test]
-    public void PreProcessSubFunction_SuppressSender_IPostBackEventHandler ()
+    public void ExecuteSubFunction_SuppressSender_IPostBackEventHandler ()
     {
       Control senderMock = MockRepository.PartialMultiMock<Control> (typeof (IPostBackEventHandler));
       senderMock.Stub (stub => stub.UniqueID).Return (c_senderUniqueID).Repeat.Any();
@@ -122,13 +122,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       MockRepository.ReplayAll();
 
-      executionState.PreProcessSubFunction();
+      executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
     }
 
     [Test]
-    public void PreProcessSubFunction_SuppressSender_IPostBackDataHandler ()
+    public void ExecuteSubFunction_SuppressSender_IPostBackDataHandler ()
     {
       Control senderMock = MockRepository.PartialMultiMock<Control> (typeof (IPostBackDataHandler));
       senderMock.Stub (stub => stub.UniqueID).Return (c_senderUniqueID).Repeat.Any();
@@ -148,13 +148,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       MockRepository.ReplayAll();
 
-      executionState.PreProcessSubFunction();
+      executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
     }
 
     [Test]
-    public void PreProcessSubFunction_UsesEventTarget ()
+    public void ExecuteSubFunction_UsesEventTarget ()
     {
       IExecutionState executionState = CreateExecutionState (true);
 
@@ -168,13 +168,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       MockRepository.ReplayAll();
 
-      executionState.PreProcessSubFunction();
+      executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
     }
 
     [Test]
-    public void PreProcessSubFunction_UsesEventTarget_SuppressSender_SenderRemains ()
+    public void ExecuteSubFunction_UsesEventTarget_SuppressSender_SenderRemains ()
     {
       Control senderMock = MockRepository.PartialMultiMock<Control> (typeof (IPostBackDataHandler));
       senderMock.Stub (stub => stub.UniqueID).Return (c_senderUniqueID).Repeat.Any();
@@ -194,17 +194,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       MockRepository.ReplayAll();
 
-      executionState.PreProcessSubFunction();
+      executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void ExecuteSubFunction ()
-    {
-      IExecutionState executionState = CreateExecutionState (WxePermaUrlOptions.Null);
-      executionState.ExecuteSubFunction (WxeContext);
     }
 
     [Test]

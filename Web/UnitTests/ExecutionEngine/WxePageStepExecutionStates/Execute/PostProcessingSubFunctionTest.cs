@@ -38,13 +38,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
-    public void PreProcessSubFunction ()
-    {
-      _executionState.PreProcessSubFunction ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void ExecuteSubFunction ()
     {
       _executionState.ExecuteSubFunction (WxeContext);

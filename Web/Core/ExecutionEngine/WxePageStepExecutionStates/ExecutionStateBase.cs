@@ -30,7 +30,6 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
     }
 
     public abstract bool IsExecuting { get; }
-    public abstract void PreProcessSubFunction ();
     public abstract void ExecuteSubFunction (WxeContext context);
     public abstract void PostProcessSubFunction (WxeContext context);
 

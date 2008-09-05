@@ -26,11 +26,6 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
       get { return false; }
     }
 
-    public override void PreProcessSubFunction ()
-    {
-      throw new NotSupportedException ();
-    }
-
     public override void ExecuteSubFunction (WxeContext context)
     {
       throw new NotSupportedException ();

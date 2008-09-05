@@ -54,14 +54,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void PreProcessSubFunction ()
-    {
-      IExecutionState executionState = CreateExecutionState (new WxePermaUrlOptions (), WxeReturnOptions.Null);
-      executionState.PreProcessSubFunction ();
-    }
-
-    [Test]
     public void ExecuteSubFunction_WithPermaUrl_DoNotReturnToCaller_GoesToRedirectingToSubFunction ()
     {
       IExecutionState executionState = CreateExecutionState (new WxePermaUrlOptions(), WxeReturnOptions.Null);

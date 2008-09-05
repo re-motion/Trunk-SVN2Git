@@ -60,7 +60,7 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
 
-      _wxePageInfo.CurrentPageStep.ExecuteFunction (_page, function, permaUrlOptions);
+      _wxePageInfo.CurrentPageStep.ExecuteFunction (_page, function, permaUrlOptions, WxeRepostOptions.Null);
     }
 
     public void ExecuteFunctionNoRepost (WxeFunction function, Control sender, WxeCallOptionsNoRepost options)
@@ -70,7 +70,7 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("options", options);
 
       bool usesEventTarget = options.UsesEventTarget ?? UsesEventTarget;
-      _wxePageInfo.CurrentPageStep.ExecuteFunctionNoRepost (_page, function, options.PermaUrlOptions, new WxeRepostOptions (sender, usesEventTarget));
+      _wxePageInfo.CurrentPageStep.ExecuteFunction (_page, function, options.PermaUrlOptions, new WxeRepostOptions (sender, usesEventTarget));
     }
 
     public void ExecuteFunctionExternalByRedirect (WxeFunction function, WxeCallOptionsExternalByRedirect options)

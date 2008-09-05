@@ -24,21 +24,16 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
 
     public override bool IsExecuting
     {
-      get { return false; }
+      get { return true; }
     }
 
-    public override void PreProcessSubFunction ()
+    public override void ExecuteSubFunction (WxeContext context)
     {
       NameValueCollection postBackCollection = BackupPostBackCollection();
 
       var parameters = new PreparingSubFunctionStateParameters (
           Parameters.SubFunction, postBackCollection, Parameters.PermaUrlOptions, Parameters.ReturnOptions);
       ExecutionStateContext.SetExecutionState (new PreparingRedirectToSubFunctionState (ExecutionStateContext, parameters));
-    }
-
-    public override void ExecuteSubFunction (WxeContext context)
-    {
-      throw new NotSupportedException();
     }
 
     public override void PostProcessSubFunction (WxeContext context)

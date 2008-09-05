@@ -25,10 +25,10 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 
     public override bool IsExecuting
     {
-      get { return false; }
+      get { return true; }
     }
 
-    public override void PreProcessSubFunction ()
+    public override void ExecuteSubFunction (WxeContext context)
     {
       Parameters.SubFunction.SetParentStep (Parameters.ParentStep);
       NameValueCollection postBackCollection = BackupPostBackCollection ();
@@ -43,11 +43,6 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
         var parameters = new ExecutionStateParameters (Parameters.SubFunction, postBackCollection);
         ExecutionStateContext.SetExecutionState (new ExecutingSubFunctionWithoutPermaUrlState (ExecutionStateContext, parameters));
       }
-    }
-
-    public override void ExecuteSubFunction (WxeContext context)
-    {
-      throw new NotSupportedException ();
     }
 
     public override void PostProcessSubFunction (WxeContext context)

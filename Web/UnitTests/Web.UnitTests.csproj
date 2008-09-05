@@ -185,7 +185,7 @@
     <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\ExecuteFunctionExternalByRedirect.cs" />
     <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\ExecuteFunction.cs" />
     <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\Execute_Self.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\ExecuteFunctionNoRepost.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepTest.cs" />
     <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\TestBase.cs" />
     <Compile Include="ExecutionEngine\WxeScopedTransactedFunctionTest.cs" />
     <Compile Include="ExecutionEngine\WxeScopedTransactionTest.cs" />
