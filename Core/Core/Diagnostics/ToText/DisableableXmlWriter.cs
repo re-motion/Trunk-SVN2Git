@@ -9,52 +9,60 @@
  */
 
 using System.IO;
-using System.Text;
+using System.Xml;
 
 namespace Remotion.Diagnostics.ToText
 {
   /// <summary>
-  /// Wrapper around <see cref="TextWriter"/> class which supports enabling/disabling of its <see cref="Write{T}"/> method 
+  /// Wrapper around <see cref="XmlWriter"/> class which supports enabling/disabling of its <see cref="WriteStartElement"/>,etc methods
   /// through its <see cref="Enabled"/> property.
   /// </summary>
-  internal class DisableableWriter
+  internal class DisableableXmlWriter
   {
     //private readonly StringBuilder _stringBuilder = new StringBuilder ();
-    private readonly TextWriter _textWriter;
+    private readonly XmlWriter _xmlWriter;
 
 
-    public DisableableWriter (TextWriter textWriter)
+    public DisableableXmlWriter (XmlWriter xmlWriter)
     {
-      _textWriter = textWriter;
+      _xmlWriter = xmlWriter;
       Enabled = true;
     }
 
-    public DisableableWriter ()
-      : this (new StringWriter ())
-    {
-    }
+ public bool Enabled { get; set; }
 
-    public bool Enabled { get; set; }
-
-    public TextWriter Write<T> (T t)
+    public XmlWriter WriteStartElement (string tag)
     {
       if (Enabled)
       {
-        _textWriter.Write (t);
+        _xmlWriter.WriteStartElement (tag);
       }
-      return _textWriter;
+      return _xmlWriter;
     }
 
-    public override string ToString ()
+    public XmlWriter WriteEndElement ()
     {
-      return _textWriter.ToString ();
+      if (Enabled)
+      {
+        _xmlWriter.WriteEndElement ();
+      }
+      return _xmlWriter;
+    }
+
+    public XmlWriter WriteValue<T> (T t)
+    {
+      if (Enabled)
+      {
+        _xmlWriter.WriteValue (t);
+      }
+      return _xmlWriter;
     }
 
     public void Flush ()
     {
       if (Enabled)
       {
-        _textWriter.Flush();
+        _xmlWriter.Flush();
       }
     }
   }

@@ -277,10 +277,10 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override ToTextBuilder seperator
-    {
-      get { AppendSeperator (); return this; }
-    }
+    //public override ToTextBuilder seperator
+    //{
+    //  get { AppendSeperator (); return this; }
+    //}
 
 
     public override ToTextBuilder AppendComma ()
@@ -289,10 +289,10 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override ToTextBuilder comma
-    {
-      get { AppendComma (); return this; }
-    }
+    //public override ToTextBuilder comma
+    //{
+    //  get { AppendComma (); return this; }
+    //}
 
 
     public override ToTextBuilder AppendColon ()
@@ -301,10 +301,10 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override ToTextBuilder colon
-    {
-      get { AppendColon (); return this; }
-    }
+    //public override ToTextBuilder colon
+    //{
+    //  get { AppendColon (); return this; }
+    //}
 
 
     public override ToTextBuilder AppendSemiColon ()
@@ -313,10 +313,10 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override ToTextBuilder semicolon
-    {
-      get { AppendSemiColon (); return this; }
-    }
+    //public override ToTextBuilder semicolon
+    //{
+    //  get { AppendSemiColon (); return this; }
+    //}
 
 
     protected override ToTextBuilder AppendObjectToString (object obj)

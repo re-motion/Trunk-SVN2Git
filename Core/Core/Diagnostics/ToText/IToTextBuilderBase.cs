@@ -65,10 +65,10 @@ namespace Remotion.Diagnostics.ToText
     //ToTextBuilderSettings Settings { get; }
     bool UseMultiLine { get; set; }
     bool Enabled { get; set; }
-    ToTextBuilder seperator { get; }
-    ToTextBuilder comma { get; }
-    ToTextBuilder colon { get; }
-    ToTextBuilder semicolon { get; }
+    IToTextBuilderBase seperator { get; }
+    IToTextBuilderBase comma { get; }
+    IToTextBuilderBase colon { get; }
+    IToTextBuilderBase semicolon { get; }
     //SequenceStateHolder SequenceState { get; protected set; }
     ToTextBuilderBase.ToTextBuilderOutputComplexityLevel OutputComplexity { get; }
     bool IsInSequence { get; }

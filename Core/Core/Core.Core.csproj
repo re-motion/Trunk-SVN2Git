@@ -104,6 +104,7 @@
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Diagnostics\IOuterProductProcessor.cs" />
+    <Compile Include="Diagnostics\ToText\DisableableXmlWriter.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextParameters.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderArrayHandler.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderAutomaticObjectToTextHandler.cs" />
