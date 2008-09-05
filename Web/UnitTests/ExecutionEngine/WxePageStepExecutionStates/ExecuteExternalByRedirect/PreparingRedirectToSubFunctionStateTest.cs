@@ -80,7 +80,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     public void ExecuteSubFunction_WithPermaUrl_ReturnToCaller_GoesToRedirectingToSubFunction ()
     {
       IExecutionState executionState = CreateExecutionState (new WxePermaUrlOptions(), new WxeReturnOptions());
-      ExecutionStateContextMock.Stub (stub => stub.ParentFunction).Return (RootFunction).Repeat.Any();
+      ExecutionStateContextMock.Stub (stub => stub.CurrentFunction).Return (RootFunction).Repeat.Any();
 
       ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<RedirectingToSubFunctionState>.Is.NotNull))
           .Do (
@@ -105,7 +105,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     {
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions();
       IExecutionState executionState = CreateExecutionState (permaUrlOptions, new WxeReturnOptions (new NameValueCollection { { "Key", "Value" } }));
-      ExecutionStateContextMock.Stub (stub => stub.ParentFunction).Return (RootFunction).Repeat.Any();
+      ExecutionStateContextMock.Stub (stub => stub.CurrentFunction).Return (RootFunction).Repeat.Any();
 
       ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<RedirectingToSubFunctionState>.Is.NotNull))
           .Do (

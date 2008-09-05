@@ -25,7 +25,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 
     public override void ExecuteSubFunction (WxeContext context)
     {
-      Parameters.SubFunction.SetParentStep (Parameters.ParentStep);
+      Parameters.SubFunction.SetParentStep (ExecutionStateContext.CurrentStep);
       NameValueCollection postBackCollection = BackupPostBackCollection ();
 
       if (Parameters.PermaUrlOptions.UsePermaUrl)

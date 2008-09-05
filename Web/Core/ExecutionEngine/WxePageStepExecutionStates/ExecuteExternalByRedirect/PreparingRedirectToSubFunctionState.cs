@@ -38,7 +38,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
       {
         NameValueCollection permaUrlOptions = Parameters.ReturnOptions.CallerUrlParameters.Clone();
         permaUrlOptions.Set (WxeHandler.Parameters.WxeFunctionToken, context.FunctionToken);
-        Parameters.SubFunction.ReturnUrl = context.GetPermanentUrl (ExecutionStateContext.ParentFunction.GetType(), permaUrlOptions);
+        Parameters.SubFunction.ReturnUrl = context.GetPermanentUrl (ExecutionStateContext.CurrentFunction.GetType(), permaUrlOptions);
       }
 
       ExecutionStateContext.SetExecutionState (

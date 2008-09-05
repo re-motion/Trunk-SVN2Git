@@ -29,7 +29,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     public override void SetUp ()
     {
       base.SetUp();
+
       _parentStep = new WxePageStep ("page.aspx");
+      ExecutionStateContextMock.Stub (stub => stub.CurrentStep).Return (_parentStep).Repeat.Any ();
+
       _pageMock = MockRepository.StrictMock<IWxePage>();
       _pageMock.Stub (stub => stub.GetPostBackCollection()).Return (PostBackCollection);
 
@@ -79,7 +82,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     private PreProcessingSubFunctionState CreateExecutionState (WxePermaUrlOptions permaUrlOptions, WxeReturnOptions returnOptions)
     {
       return new PreProcessingSubFunctionState (
-          ExecutionStateContextMock, new PreProcessingSubFunctionStateParameters (_parentStep, _pageMock, SubFunction, permaUrlOptions, returnOptions));
+          ExecutionStateContextMock, new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, permaUrlOptions, returnOptions));
     }
   }
 }

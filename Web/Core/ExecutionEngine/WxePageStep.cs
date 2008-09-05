@@ -201,7 +201,7 @@ namespace Remotion.Web.ExecutionEngine
       _wxeHandler = page.WxeHandler;
 
       _executionState = new PreProcessingSubFunctionState (
-          this, new PreProcessingSubFunctionStateParameters (this, page, function, permaUrlOptions, repostOptions));
+          this, new PreProcessingSubFunctionStateParameters (page, function, permaUrlOptions, repostOptions));
       Execute();
     }
 
@@ -222,8 +222,7 @@ namespace Remotion.Web.ExecutionEngine
 
       _executionState = new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionState (
           this,
-          new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionStateParameters (
-              this, page, function, permaUrlOptions, returnOptions));
+          new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionStateParameters (page, function, permaUrlOptions, returnOptions));
 
       Execute();
     }
@@ -325,6 +324,16 @@ namespace Remotion.Web.ExecutionEngine
     {
       ArgumentUtility.CheckNotNull ("pageExecutor", pageExecutor);
       _pageExecutor = pageExecutor;
+    }
+
+    WxeStep IExecutionStateContext.CurrentStep
+    {
+      get { return this; }
+    }
+
+    WxeFunction IExecutionStateContext.CurrentFunction
+    {
+      get { return ParentFunction; }
     }
 
     IExecutionState IExecutionStateContext.ExecutionState
