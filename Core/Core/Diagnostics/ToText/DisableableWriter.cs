@@ -8,37 +8,46 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System.IO;
 using System.Text;
 
 namespace Remotion.Diagnostics.ToText
 {
   /// <summary>
-  /// StringBuilder-like class which supports enabling/disabling of its <see cref="Append{T}"/> method 
+  /// StringBuilder-like class which supports enabling/disabling of its <see cref="Write{T}"/> method 
   /// through its <see cref="Enabled"/> property.
   /// </summary>
   internal class DisableableWriter
   {
-    private readonly StringBuilder _stringBuilder = new StringBuilder ();
+    //private readonly StringBuilder _stringBuilder = new StringBuilder ();
+    private readonly TextWriter _textWriter;
 
-    public DisableableWriter()
+
+    public DisableableWriter (TextWriter textWriter)
     {
+      _textWriter = textWriter;
       Enabled = true;
+    }
+
+    public DisableableWriter ()
+      : this (new StringWriter ())
+    {
     }
 
     public bool Enabled { get; set; }
 
-    public StringBuilder Append<T> (T t)
+    public TextWriter Write<T> (T t)
     {
       if (Enabled)
       {
-        _stringBuilder.Append (t);
+        _textWriter.Write (t);
       }
-      return _stringBuilder;
+      return _textWriter;
     }
 
     public override string ToString ()
     {
-      return _stringBuilder.ToString ();
+      return _textWriter.ToString ();
     }
   }
 }

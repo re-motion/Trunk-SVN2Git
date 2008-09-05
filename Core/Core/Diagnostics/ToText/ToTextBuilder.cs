@@ -256,7 +256,7 @@ namespace Remotion.Diagnostics.ToText
     {
       if (IsInSequence)
       {
-        _disableableWriter.Append (SequenceState.Counter == 0 ? SequenceState.FirstElementPrefix : SequenceState.OtherElementPrefix);
+        _disableableWriter.Write (SequenceState.Counter == 0 ? SequenceState.FirstElementPrefix : SequenceState.OtherElementPrefix);
       }
     }
 
@@ -264,7 +264,7 @@ namespace Remotion.Diagnostics.ToText
     {
       if (IsInSequence)
       {
-        _disableableWriter.Append (SequenceState.ElementPostfix);
+        _disableableWriter.Write (SequenceState.ElementPostfix);
         SequenceState.IncrementCounter ();
       }
     }
@@ -284,7 +284,7 @@ namespace Remotion.Diagnostics.ToText
     {
       if (_useMultiline)
       {
-        _disableableWriter.Append (System.Environment.NewLine);
+        _disableableWriter.Write (System.Environment.NewLine);
       }
       return this;
     }
@@ -298,7 +298,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendSpace ()
     {
-      _disableableWriter.Append (" ");
+      _disableableWriter.Write (" ");
       return this;
     }
 
@@ -311,7 +311,7 @@ namespace Remotion.Diagnostics.ToText
     // TODO?: Introduce highlevel sibling "Indent" ?
     public ToTextBuilder AppendTabulator ()
     {
-      _disableableWriter.Append ("\t");
+      _disableableWriter.Write ("\t");
       return this;
     }
 
@@ -324,7 +324,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendSeperator ()
     {
-      _disableableWriter.Append (",");
+      _disableableWriter.Write (",");
       return this;
     }
 
@@ -336,7 +336,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendComma ()
     {
-      _disableableWriter.Append (",");
+      _disableableWriter.Write (",");
       return this;
     }
 
@@ -348,7 +348,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendColon ()
     {
-      _disableableWriter.Append (":");
+      _disableableWriter.Write (":");
       return this;
     }
 
@@ -360,7 +360,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendSemiColon ()
     {
-      _disableableWriter.Append (";");
+      _disableableWriter.Write (";");
       return this;
     }
 
@@ -372,7 +372,7 @@ namespace Remotion.Diagnostics.ToText
 
     private ToTextBuilder AppendObjectToString (object obj)
     {
-      _disableableWriter.Append (obj.ToString ());
+      _disableableWriter.Write (obj.ToString ());
       return this;
     }
 
@@ -398,7 +398,7 @@ namespace Remotion.Diagnostics.ToText
       _sequenceStack.Push (_sequenceState);
       _sequenceState = new SequenceStateHolder (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
 
-      _disableableWriter.Append (SequenceState.SequencePrefix);
+      _disableableWriter.Write (SequenceState.SequencePrefix);
 
       return this;
     }
@@ -431,7 +431,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendString (string s)
     {
-      _disableableWriter.Append (s);
+      _disableableWriter.Write (s);
       return this;
     }
 
@@ -453,7 +453,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendChar (char c)
     {
-      _disableableWriter.Append (c);
+      _disableableWriter.Write (c);
       return this;
     }
 
@@ -588,7 +588,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder Append (Object obj)
     {
-      _disableableWriter.Append (obj);
+      _disableableWriter.Write (obj);
       return this;
     }
 
@@ -638,7 +638,7 @@ namespace Remotion.Diagnostics.ToText
     private void SequenceEnd ()
     {
       Assertion.IsTrue (IsInSequence);
-      _disableableWriter.Append (SequenceState.SequencePostfix);
+      _disableableWriter.Write (SequenceState.SequencePostfix);
 
       _sequenceState = _sequenceStack.Pop ();
     }
@@ -748,11 +748,11 @@ namespace Remotion.Diagnostics.ToText
         mapping.TryGetValue (c, out mappedString);
         if (mappedString == null)
         {
-          disableableWriter.Append (c);
+          disableableWriter.Write (c);
         }
         else
         {
-          disableableWriter.Append (mappedString);
+          disableableWriter.Write (mappedString);
         }
       }
     }
