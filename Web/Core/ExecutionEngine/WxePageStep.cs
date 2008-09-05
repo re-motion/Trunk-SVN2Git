@@ -174,7 +174,7 @@ namespace Remotion.Web.ExecutionEngine
     {
       get
       {
-        if (_executionState != null)
+        if (_executionState.IsExecuting)
           return _executionState.Parameters.SubFunction.ExecutingStep;
         else
           return this;
@@ -282,7 +282,7 @@ namespace Remotion.Web.ExecutionEngine
     protected override void AbortRecursive ()
     {
       base.AbortRecursive();
-      if (_executionState != null && _executionState.Parameters.SubFunction.RootFunction == this.RootFunction)
+      if (_executionState.IsExecuting && _executionState.Parameters.SubFunction.RootFunction == this.RootFunction)
         _executionState.Parameters.SubFunction.Abort();
     }
 
