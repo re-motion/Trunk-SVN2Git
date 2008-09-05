@@ -362,7 +362,7 @@ namespace Remotion.Web.ExecutionEngine
       if (functionState.IsAborted)
         throw new ArgumentException ("The function state " + functionState.FunctionToken + " is aborted.");
 
-      WxeContext wxeContext = new WxeContext (new HttpContextWrapper (context), functionState, context.Request.QueryString);
+      WxeContext wxeContext = new WxeContext (new HttpContextWrapper (context), WxeFunctionStateManager.Current, functionState, context.Request.QueryString);
       WxeContext.SetCurrent (wxeContext);
 
       functionState.PostBackID++;

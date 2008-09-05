@@ -10,7 +10,9 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Text;
 using System.Web;
+using System.Web.SessionState;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine.TestFunctions;
 using Remotion.Web.ExecutionEngine;
@@ -24,7 +26,7 @@ namespace Remotion.Development.Web.UnitTesting.ExecutionEngine
     public static HttpContext CreateHttpContext (NameValueCollection queryString)
     {
       HttpContext context = HttpContextHelper.CreateHttpContext ("GET", "Other.wxe", null);
-      context.Response.ContentEncoding = System.Text.Encoding.UTF8;
+      context.Response.ContentEncoding = Encoding.UTF8;
       HttpContextHelper.SetQueryString (context, queryString);
       HttpContextHelper.SetCurrent (context);
       return context;
@@ -39,12 +41,20 @@ namespace Remotion.Development.Web.UnitTesting.ExecutionEngine
     }
 
     public WxeContextMock (HttpContext context)
-      : base (new HttpContextWrapper (context), new WxeFunctionState (new TestFunction (), false), null)
+        : base (
+            new HttpContextWrapper (context),
+            new WxeFunctionStateManager (new HttpSessionStateWrapper (context.Session)),
+            new WxeFunctionState (new TestFunction(), false),
+            null)
     {
     }
 
     public WxeContextMock (HttpContext context, NameValueCollection queryString)
-        : base (new HttpContextWrapper (context), new WxeFunctionState (new TestFunction(), false), queryString)
+        : base (
+            new HttpContextWrapper (context),
+            new WxeFunctionStateManager (new HttpSessionStateWrapper (context.Session)),
+            new WxeFunctionState (new TestFunction(), false),
+            queryString)
     {
     }
   }

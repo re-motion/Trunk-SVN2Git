@@ -38,7 +38,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
 
       _httpContextMock = MockRepository.DynamicMock<IHttpContext>();
       _functionState = new WxeFunctionState (_rootFunction, true);
-      _wxeContext = new WxeContext (_httpContextMock, _functionState, new NameValueCollection());
 
       _responseMock = MockRepository.StrictMock<IHttpResponse>();
       _httpContextMock.Stub (stub => stub.Response).Return (_responseMock).Repeat.Any();
@@ -52,7 +51,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
       sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior();
 
       _functionStateManager = new WxeFunctionStateManager (sessionStub);
-      SafeContext.Instance.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, _functionStateManager);
+      _wxeContext = new WxeContext (_httpContextMock, _functionStateManager, _functionState, new NameValueCollection ());
     }
 
     protected virtual OtherTestFunction CreateSubFunction ()
@@ -65,7 +64,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
     {
       WxeContext.SetCurrent (null);
       UrlMappingConfiguration.SetCurrent (null);
-      SafeContext.Instance.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, null);
     }
 
     protected MockRepository MockRepository

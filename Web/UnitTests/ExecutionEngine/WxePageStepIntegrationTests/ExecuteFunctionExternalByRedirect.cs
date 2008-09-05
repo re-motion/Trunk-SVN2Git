@@ -15,7 +15,6 @@ using System.Threading;
 using System.Web.SessionState;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Context;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
@@ -58,7 +57,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       _httpContextMock = _mockRepository.DynamicMock<IHttpContext>();
       _pageExecutorMock = _mockRepository.StrictMock<IWxePageExecutor>();
       _functionState = new WxeFunctionState (_rootFunction, true);
-      _wxeContext = new WxeContext (_httpContextMock, _functionState, new NameValueCollection());
 
       _pageStep = _mockRepository.PartialMock<WxePageStep> ("ThePage");
       _pageStep.SetPageExecutor (_pageExecutorMock);
@@ -71,13 +69,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (_rootFunction.GetType(), "~/root.wxe"));
       UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (_subFunction.GetType(), "~/sub.wxe"));
 
-
       IHttpSessionState sessionStub = _mockRepository.DynamicMock<IHttpSessionState>();
       sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior();
       _functionStateManager = new WxeFunctionStateManager (sessionStub);
-      SafeContext.Instance.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, _functionStateManager);
 
-      WxeContextMock.SetCurrent (_wxeContext);
       Uri uri = new Uri ("http://localhost/root.wxe");
 
       _responseMock = _mockRepository.StrictMock<IHttpResponse>();
@@ -91,6 +86,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       _requestMock = _mockRepository.StrictMock<IHttpRequest>();
       _requestMock.Stub (stub => stub.Url).Return (uri).Repeat.Any();
       _httpContextMock.Stub (stub => stub.Request).Return (_requestMock).Repeat.Any();
+
+      _wxeContext = new WxeContext (_httpContextMock, _functionStateManager, _functionState, new NameValueCollection ());
+      WxeContextMock.SetCurrent (_wxeContext);
     }
 
     [Test]

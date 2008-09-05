@@ -11,43 +11,40 @@
 using System;
 using System.Web;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Development.Web.UnitTesting.AspNetFramework;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {
-
-public class WxeTest
-{
-  private HttpContext _currentHttpContext;
-  private WxeContextMock _currentWxeContext;
-
-  public HttpContext CurrentHttpContext
+  public class WxeTest
   {
-    get { return _currentHttpContext; }
+    private HttpContext _currentHttpContext;
+    private WxeContextMock _currentWxeContext;
+
+    public HttpContext CurrentHttpContext
+    {
+      get { return _currentHttpContext; }
+    }
+
+    public WxeContextMock CurrentWxeContext
+    {
+      get { return _currentWxeContext; }
+    }
+
+    [SetUp]
+    public virtual void SetUp ()
+    {
+      _currentHttpContext = HttpContextHelper.CreateHttpContext ("GET", "default.html", null);
+      HttpContextHelper.SetCurrent (_currentHttpContext);
+
+      _currentWxeContext = new WxeContextMock (_currentHttpContext);
+      WxeContext.SetCurrent (_currentWxeContext);
+    }
+
+    [TearDown]
+    public virtual void TearDown ()
+    {
+    }
   }
-
-  public WxeContextMock CurrentWxeContext
-  {
-    get { return _currentWxeContext; }
-  }
-
-  [SetUp]
-  public virtual void SetUp()
-  {
-    _currentHttpContext = HttpContextHelper.CreateHttpContext ("GET", "default.html", null);
-    HttpContextHelper.SetCurrent (_currentHttpContext);
-
-    _currentWxeContext = new WxeContextMock (_currentHttpContext);
-    WxeContext.SetCurrent (_currentWxeContext);
-  }
-
-  [TearDown]
-  public virtual void TearDown()
-  {
-  }
-}
-
 }

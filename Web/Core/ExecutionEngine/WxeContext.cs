@@ -41,7 +41,6 @@ namespace Remotion.Web.ExecutionEngine
     [EditorBrowsable (EditorBrowsableState.Never)]
     public static void SetCurrent (WxeContext value)
     {
-      // _current = value; 
       SafeContext.Instance.SetData ("WxeContext", value);
     }
 
@@ -207,6 +206,7 @@ namespace Remotion.Web.ExecutionEngine
 
 
     private readonly IHttpContext _httpContext;
+    private readonly WxeFunctionStateManager _functionStateManager;
     private bool _isPostBack;
     private bool _isReturningPostBack;
     private bool _isOutOfSequencePostBack;
@@ -215,12 +215,14 @@ namespace Remotion.Web.ExecutionEngine
     private readonly WxeFunctionState _functionState;
     private readonly NameValueCollection _queryString;
 
-    public WxeContext (IHttpContext context, WxeFunctionState functionState, NameValueCollection queryString)
+    public WxeContext (IHttpContext context, WxeFunctionStateManager functionStateManager, WxeFunctionState functionState, NameValueCollection queryString)
     {
       ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("functionStateManager", functionStateManager);
       ArgumentUtility.CheckNotNull ("functionState", functionState);
 
       _httpContext = context;
+      _functionStateManager = functionStateManager;
 
       _functionState = functionState;
 
@@ -238,6 +240,11 @@ namespace Remotion.Web.ExecutionEngine
     public IHttpContext HttpContext
     {
       get { return _httpContext; }
+    }
+
+    public WxeFunctionStateManager FunctionStateManager
+    {
+      get { return _functionStateManager; }
     }
 
     /// <summary>
@@ -479,8 +486,7 @@ namespace Remotion.Web.ExecutionEngine
     {
       bool enableCleanUp = !returnFromExecute;
       WxeFunctionState functionState = new WxeFunctionState (function, enableCleanUp);
-      WxeFunctionStateManager functionStates = WxeFunctionStateManager.Current;
-      functionStates.Add (functionState);
+      _functionStateManager.Add (functionState);
       return functionState.FunctionToken;
     }
 

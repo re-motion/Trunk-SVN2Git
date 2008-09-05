@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Web.SessionState;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -31,6 +32,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
     private TestFunction _subFunction;
     private TestFunction _rootFunction;
     private WxeFunctionState _functionState;
+    private WxeFunctionStateManager _functionStateManager;
 
     [SetUp]
     public void SetUp ()
@@ -43,10 +45,15 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       _httpContextMock = _mockRepository.DynamicMock<IHttpContext>();
       _pageExecutorMock = _mockRepository.StrictMock<IWxePageExecutor>();
       _functionState = new WxeFunctionState (_rootFunction, true);
-      _wxeContext = new WxeContext (_httpContextMock, _functionState, new NameValueCollection());
 
       _pageStep = _mockRepository.PartialMock<WxePageStep> ("ThePage");
       _pageStep.SetPageExecutor (_pageExecutorMock);
+
+      IHttpSessionState sessionStub = _mockRepository.DynamicMock<IHttpSessionState> ();
+      sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior ();
+
+      _functionStateManager = new WxeFunctionStateManager (sessionStub);
+      _wxeContext = new WxeContext (_httpContextMock, _functionStateManager, _functionState, new NameValueCollection ());
     }
 
     [Test]
