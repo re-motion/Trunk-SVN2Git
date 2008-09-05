@@ -31,7 +31,8 @@ namespace Remotion.Diagnostics.ToText
       }
       else
       {
-        _toTextBuilder.AppendSequenceBegin (_toTextBuilder.ArrayPrefix, _toTextBuilder.ArrayFirstElementPrefix, _toTextBuilder.ArrayOtherElementPrefix, _toTextBuilder.ArrayElementPostfix, _toTextBuilder.ArrayPostfix);
+        _toTextBuilder.AppendSequenceBegin (_toTextBuilder.Settings.ArrayPrefix, _toTextBuilder.Settings.ArrayFirstElementPrefix,
+          _toTextBuilder.Settings.ArrayOtherElementPrefix, _toTextBuilder.Settings.ArrayElementPostfix, _toTextBuilder.Settings.ArrayPostfix);
       }
       return true;
     }

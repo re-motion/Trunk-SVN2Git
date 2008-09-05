@@ -324,12 +324,12 @@ namespace Remotion.UnitTests.Diagnostics
       int[,,] array = { { { 1, 3 }, { 5, 7 } }, { { 11, 13 }, { 17, 19 } }, { { 23, 29 }, { 31, 37 } } };
 
       var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.ArrayPrefix = "{";
+      toTextBuilder.Settings.ArrayPrefix = "{";
       //toTextBuilder.ArrayFirstElementPrefix = "(";
-      toTextBuilder.ArrayFirstElementPrefix = "(";
-      toTextBuilder.ArrayOtherElementPrefix = ",(";
-      toTextBuilder.ArrayElementPostfix = ")";
-      toTextBuilder.ArrayPostfix = "}";
+      toTextBuilder.Settings.ArrayFirstElementPrefix = "(";
+      toTextBuilder.Settings.ArrayOtherElementPrefix = ",(";
+      toTextBuilder.Settings.ArrayElementPostfix = ")";
+      toTextBuilder.Settings.ArrayPostfix = "}";
 
       toTextBuilder.AppendArray (array);
       var result = toTextBuilder.CheckAndConvertToString();
@@ -390,11 +390,11 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var array = new[] {new[] {new[] {1, 3, 5}, new[] {5, 7, 11}}};
-      toTextBuilder.ArrayPrefix = "<";
-      toTextBuilder.ArrayFirstElementPrefix = "[";
-      toTextBuilder.ArrayOtherElementPrefix = ";[";
-      toTextBuilder.ArrayElementPostfix = "]";
-      toTextBuilder.ArrayPostfix = ">";
+      toTextBuilder.Settings.ArrayPrefix = "<";
+      toTextBuilder.Settings.ArrayFirstElementPrefix = "[";
+      toTextBuilder.Settings.ArrayOtherElementPrefix = ";[";
+      toTextBuilder.Settings.ArrayElementPostfix = "]";
+      toTextBuilder.Settings.ArrayPostfix = ">";
 
       toTextBuilder.AppendArray (array);
       var result = toTextBuilder.CheckAndConvertToString();
