@@ -13,6 +13,13 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
+  /// <summary>
+  /// The <see cref="ExecutionStateBase{TParameters}"/> type is an abstract base class implementing the <see cref="IExecutionState"/> interface.
+  /// </summary>
+  /// <typeparam name="TParameters">The type of the <see cref="IExecutionStateParameters"/> required by the concrete type.</typeparam>
+  /// <remarks>
+  /// Derive from this type and provide an implementation for the <see cref="ExecuteSubFunction"/> method to define the behavior of this state type.
+  /// </remarks>
   [Serializable]
   public abstract class ExecutionStateBase<TParameters> : IExecutionState
       where TParameters: IExecutionStateParameters

@@ -12,8 +12,10 @@ using System;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
+  /// <summary> The <see cref="IExecutionStateParameters"/> defines a common set of parameters for <see cref="IExecutionState"/> implementations. </summary>
   public interface IExecutionStateParameters
   {
+    /// <summary> Gets the executing sub-function. </summary>
     WxeFunction SubFunction { get; }
   }
 }

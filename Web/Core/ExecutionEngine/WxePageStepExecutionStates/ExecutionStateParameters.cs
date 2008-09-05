@@ -14,6 +14,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
+  /// <summary> 
+  /// The <see cref="ExecutionStateParameters"/> type groups a basic set of parameters passed between the individual implementations of the
+  /// <see cref="IExecutionState"/> interface during the various state transistions. 
+  /// </summary>
   [Serializable]
   public class ExecutionStateParameters : IExecutionStateParameters
   {

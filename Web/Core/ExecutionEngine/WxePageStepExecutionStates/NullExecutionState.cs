@@ -9,13 +9,18 @@
  */
 
 using System;
+using System.Runtime.Serialization;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
+  /// <summary>
+  /// The <see cref="NullExecutionState"/> is the null-object implementation of the <see cref="IExecutionState"/> interface. This state always
+  /// returns <see langword="false" /> for the <see cref="IsExecuting"/> property.
+  /// </summary>
   [Serializable]
-  public class NullExecutionState : IExecutionState
+  public class NullExecutionState : IExecutionState, IObjectReference
   {
-    public static readonly NullExecutionState Null = new NullExecutionState ();
+    public static readonly NullExecutionState Null = new NullExecutionState();
 
     private NullExecutionState ()
     {
@@ -43,6 +48,11 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 
     public void ExecuteSubFunction (WxeContext context)
     {
+    }
+
+    public object GetRealObject (StreamingContext context)
+    {
+      return Null;
     }
   }
 }

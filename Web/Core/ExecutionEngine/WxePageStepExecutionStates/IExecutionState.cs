@@ -12,11 +12,24 @@ using System;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
-  public interface IExecutionState:INullObject
+  /// <summary>
+  /// The <see cref="IExecutionState"/> interface is defines the state-pattern for executing a sub-function within a <see cref="WxeStep"/>.
+  /// </summary>
+  public interface IExecutionState : INullObject
   {
+    /// <summary> Gets the context of the execution. Use this member to transistion the <see cref="WxeStep"/> into the next state. </summary>
     IExecutionStateContext ExecutionStateContext { get; }
+
+    /// <summary> Gets a set of parameters common for all execution states, such as the executing <see cref="WxeFunction"/>. </summary>
     IExecutionStateParameters Parameters { get; }
+
+    /// <summary> Gets a flag that informs the observer whether the state is executing. This value is typically constant for a state implementation. </summary>
     bool IsExecuting { get; }
+
+    /// <summary>
+    /// Executes the behavor of the current state and uses the <see cref="ExecutionStateContext"/> to transistion the <see cref="WxeStep"/>
+    /// into the next state. 
+    /// </summary>
     void ExecuteSubFunction (WxeContext context);
   }
 }
