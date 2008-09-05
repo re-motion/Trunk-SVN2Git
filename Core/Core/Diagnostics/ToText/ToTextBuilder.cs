@@ -130,42 +130,42 @@ namespace Remotion.Diagnostics.ToText
     //--------------------------------------------------------------------------
     // TODO?: Move to Settings object 
     
-    public string EnumerableBegin
-    {
-      get { return EnumerablePrefix; }
-      set { EnumerablePrefix = value; }
-    }
+    //public string EnumerableBegin
+    //{
+    //  get { return EnumerablePrefix; }
+    //  set { EnumerablePrefix = value; }
+    //}
 
-    public string EnumerableSeparator
-    {
-      get { return EnumerableOtherElementPrefix; }
-      set { EnumerableOtherElementPrefix = value; }
-    }
+    //public string EnumerableSeparator
+    //{
+    //  get { return EnumerableOtherElementPrefix; }
+    //  set { EnumerableOtherElementPrefix = value; }
+    //}
 
-    public string EnumerableEnd
-    {
-      get { return EnumerablePostfix; }
-      set { EnumerablePostfix = value; }
-    }
+    //public string EnumerableEnd
+    //{
+    //  get { return EnumerablePostfix; }
+    //  set { EnumerablePostfix = value; }
+    //}
 
 
-    public string ArrayBegin
-    {
-      get { return ArrayPrefix; }
-      set { ArrayPrefix = value; }
-    }
+    //public string ArrayBegin
+    //{
+    //  get { return ArrayPrefix; }
+    //  set { ArrayPrefix = value; }
+    //}
 
-    public string ArraySeparator
-    {
-      get { return ArrayOtherElementPrefix; }
-      set { ArrayOtherElementPrefix = value; }
-    }
+    //public string ArraySeparator
+    //{
+    //  get { return ArrayOtherElementPrefix; }
+    //  set { ArrayOtherElementPrefix = value; }
+    //}
 
-    public string ArrayEnd
-    {
-      get { return ArrayPostfix; }
-      set { ArrayPostfix = value; }
-    }
+    //public string ArrayEnd
+    //{
+    //  get { return ArrayPostfix; }
+    //  set { ArrayPostfix = value; }
+    //}
 
     public bool UseMultiLine
     {

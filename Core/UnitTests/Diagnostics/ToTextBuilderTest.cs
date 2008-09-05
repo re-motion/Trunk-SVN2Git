@@ -350,40 +350,40 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    [Test]
-    public void EnumerableTagTest ()
-    {
-      var toTextBuilder = CreateTextBuilder();
-      var list = List.New (List.New (5, 3, 1), List.New (11, 13, 17));
-      toTextBuilder.EnumerableBegin = "(";
-      toTextBuilder.EnumerableSeparator = ";";
-      toTextBuilder.EnumerableEnd = ")";
+    //[Test]
+    //public void EnumerableTagTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder();
+    //  var list = List.New (List.New (5, 3, 1), List.New (11, 13, 17));
+    //  toTextBuilder.EnumerableBegin = "(";
+    //  toTextBuilder.EnumerableSeparator = ";";
+    //  toTextBuilder.EnumerableEnd = ")";
 
-      toTextBuilder.AppendEnumerable (list);
-      var result = toTextBuilder.CheckAndConvertToString();
-      Log (result);
-      Assert.That (result, Is.EqualTo ("((5;3;1);(11;13;17))"));
-    }
+    //  toTextBuilder.AppendEnumerable (list);
+    //  var result = toTextBuilder.CheckAndConvertToString();
+    //  Log (result);
+    //  Assert.That (result, Is.EqualTo ("((5;3;1);(11;13;17))"));
+    //}
 
 
-    [Test]
-    public void ArrayTagTest ()
-    {
-      var toTextBuilder = CreateTextBuilder();
-      var array = new[] {
-          new[] {new[] {1, 3}, new[] {5, 7}},
-          new[] {new[] {11, 13}, new[] {17, 19}},
-          new[] {new[] {23, 29}, new[] {31, 37}}};
-      toTextBuilder.ArrayBegin = "<{[";
-      toTextBuilder.ArraySeparator = "§|§";
-      toTextBuilder.ArrayEnd = "]}>";
+    //[Test]
+    //public void ArrayTagTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder();
+    //  var array = new[] {
+    //      new[] {new[] {1, 3}, new[] {5, 7}},
+    //      new[] {new[] {11, 13}, new[] {17, 19}},
+    //      new[] {new[] {23, 29}, new[] {31, 37}}};
+    //  toTextBuilder.ArrayBegin = "<{[";
+    //  toTextBuilder.ArraySeparator = "§|§";
+    //  toTextBuilder.ArrayEnd = "]}>";
 
-      toTextBuilder.AppendArray (array);
-      var result = toTextBuilder.CheckAndConvertToString();
-      Log (result);
-      Assert.That (
-          result, Is.EqualTo ("<{[<{[<{[1§|§3]}>§|§<{[5§|§7]}>]}>§|§<{[<{[11§|§13]}>§|§<{[17§|§19]}>]}>§|§<{[<{[23§|§29]}>§|§<{[31§|§37]}>]}>]}>"));
-    }
+    //  toTextBuilder.AppendArray (array);
+    //  var result = toTextBuilder.CheckAndConvertToString();
+    //  Log (result);
+    //  Assert.That (
+    //      result, Is.EqualTo ("<{[<{[<{[1§|§3]}>§|§<{[5§|§7]}>]}>§|§<{[<{[11§|§13]}>§|§<{[17§|§19]}>]}>§|§<{[<{[23§|§29]}>§|§<{[31§|§37]}>]}>]}>"));
+    //}
 
     [Test]
     public void ArrayTagTest2 ()
