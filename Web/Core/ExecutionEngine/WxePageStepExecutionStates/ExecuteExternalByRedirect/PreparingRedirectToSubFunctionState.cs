@@ -17,34 +17,44 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
   [Serializable]
   public class PreparingRedirectToSubFunctionState : ExecutionStateBase<PreparingSubFunctionStateParameters>
   {
-    public PreparingRedirectToSubFunctionState (IExecutionStateContext executionStateContext, PreparingSubFunctionStateParameters parameters)
+    private readonly WxeReturnOptions _returnOptions;
+    public PreparingRedirectToSubFunctionState (IExecutionStateContext executionStateContext, PreparingSubFunctionStateParameters parameters, WxeReturnOptions returnOptions)
         : base (executionStateContext, parameters)
     {
+      ArgumentUtility.CheckNotNull ("returnOptions", returnOptions);
+      
       if (!Parameters.PermaUrlOptions.UsePermaUrl)
       {
         throw new ArgumentException (
             string.Format ("The '{0}' type only supports WxePermaUrlOptions with the UsePermaUrl-flag set to true.", GetType().Name), "parameters");
       }
+
+      _returnOptions = returnOptions;
     }
 
     public override void ExecuteSubFunction (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      string functionToken = context.GetFunctionTokenForExternalFunction (Parameters.SubFunction, Parameters.ReturnOptions.IsReturning);
+      string functionToken = context.GetFunctionTokenForExternalFunction (Parameters.SubFunction, _returnOptions.IsReturning);
       string destinationUrl = context.GetDestinationUrlForExternalFunction (Parameters.SubFunction, functionToken, Parameters.PermaUrlOptions);
 
-      if (Parameters.ReturnOptions.IsReturning)
+      if (_returnOptions.IsReturning)
       {
-        NameValueCollection permaUrlOptions = Parameters.ReturnOptions.CallerUrlParameters.Clone();
-        permaUrlOptions.Set (WxeHandler.Parameters.WxeFunctionToken, context.FunctionToken);
-        Parameters.SubFunction.ReturnUrl = context.GetPermanentUrl (ExecutionStateContext.CurrentFunction.GetType(), permaUrlOptions);
+        NameValueCollection callerUrlParameters = _returnOptions.CallerUrlParameters.Clone();
+        callerUrlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, context.FunctionToken);
+        Parameters.SubFunction.ReturnUrl = context.GetPermanentUrl (ExecutionStateContext.CurrentFunction.GetType (), callerUrlParameters);
       }
 
       ExecutionStateContext.SetExecutionState (
           new RedirectingToSubFunctionState (
               ExecutionStateContext,
               new RedirectingToSubFunctionStateParameters (Parameters.SubFunction, Parameters.PostBackCollection, destinationUrl)));
+    }
+
+    public WxeReturnOptions ReturnOptions
+    {
+      get { return _returnOptions; }
     }
   }
 }

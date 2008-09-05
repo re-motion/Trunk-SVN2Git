@@ -33,7 +33,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
       }
       catch (ThreadAbortException)
       {
-        ExecutionStateContext.SetExecutionState (new ExecutingSubFunctionExecuteWithPermaUrlState (ExecutionStateContext, Parameters));
+        ExecutionStateContext.SetExecutionState (new ExecutingSubFunctionWithPermaUrlState (ExecutionStateContext, Parameters));
         throw;
       }
     }

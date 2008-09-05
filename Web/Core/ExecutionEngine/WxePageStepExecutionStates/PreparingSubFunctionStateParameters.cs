@@ -12,7 +12,7 @@ using System;
 using System.Collections.Specialized;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
 {
   [Serializable]
   public class PreparingSubFunctionStateParameters : ExecutionStateParameters

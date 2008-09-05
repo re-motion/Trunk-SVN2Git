@@ -31,9 +31,8 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
     {
       NameValueCollection postBackCollection = BackupPostBackCollection();
 
-      var parameters = new PreparingSubFunctionStateParameters (
-          Parameters.SubFunction, postBackCollection, Parameters.PermaUrlOptions, _returnOptions);
-      ExecutionStateContext.SetExecutionState (new PreparingRedirectToSubFunctionState (ExecutionStateContext, parameters));
+      var parameters = new PreparingSubFunctionStateParameters (Parameters.SubFunction, postBackCollection, Parameters.PermaUrlOptions);
+      ExecutionStateContext.SetExecutionState (new PreparingRedirectToSubFunctionState (ExecutionStateContext, parameters, _returnOptions));
     }
 
     public WxeReturnOptions ReturnOptions

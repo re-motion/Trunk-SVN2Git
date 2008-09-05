@@ -69,7 +69,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
                 Is.EquivalentTo (new[] { "Key", c_senderUniqueID, ControlHelper.PostEventSourceID, ControlHelper.PostEventArgumentID }));
             Assert.That (nextState.Parameters.SubFunction.ParentStep, Is.Null);
             Assert.That (nextState.Parameters.PermaUrlOptions, Is.SameAs (permaUrlOptions));
-            Assert.That (nextState.Parameters.ReturnOptions, Is.SameAs (returnOptions));
+            Assert.That (nextState.ReturnOptions, Is.SameAs (returnOptions));
           });
 
       MockRepository.ReplayAll();

@@ -44,11 +44,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       using (MockRepository.Ordered())
       {
         ResponseMock.Expect (mock => mock.Redirect ("~/destination.wxe")).Do (invocation => Thread.CurrentThread.Abort());
-        ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<ExecutingSubFunctionExecuteWithPermaUrlState>.Is.NotNull))
+        ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<ExecutingSubFunctionWithPermaUrlState>.Is.NotNull))
             .Do (
             invocation =>
             {
-              var nextState = CheckExecutionState ((ExecutingSubFunctionExecuteWithPermaUrlState) invocation.Arguments[0]);
+              var nextState = CheckExecutionState ((ExecutingSubFunctionWithPermaUrlState) invocation.Arguments[0]);
               Assert.That (nextState.Parameters.ResumeUrl, Is.EqualTo ("~/resume.wxe"));
             });
       }

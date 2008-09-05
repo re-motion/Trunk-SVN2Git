@@ -27,7 +27,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     public override void SetUp ()
     {
       base.SetUp();
-      _executionState = new ExecutingSubFunctionExecuteWithPermaUrlState (
+      _executionState = new ExecutingSubFunctionWithPermaUrlState (
           ExecutionStateContextMock, new RedirectingToSubFunctionStateParameters (SubFunction, PostBackCollection, "dummy", "/resumeUrl.wxe"));
     }
 
