@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq.Expressions;
 using Remotion.Utilities;
 
@@ -34,7 +35,7 @@ namespace Remotion.Diagnostics.ToText
      * XML: Support text to be added to be processed to become XML compatible ("<" -> "&lt;" etc). Use CDATA ?
     */
 
-    private readonly DisableableWriter _disableableWriter = new DisableableWriter ();
+    private readonly DisableableWriter _disableableWriter;
     private ToTextProvider _toTextProvider;
 
     private string _enumerablePrefix = "{";
@@ -64,9 +65,15 @@ namespace Remotion.Diagnostics.ToText
     };
 
 
-    public ToTextBuilder (ToTextProvider toTextProvider)
+    public ToTextBuilder (ToTextProvider toTextProvider, TextWriter textWriter)
     {
       _toTextProvider = toTextProvider;
+      _disableableWriter = new DisableableWriter (textWriter);
+    }
+
+    public ToTextBuilder (ToTextProvider toTextProvider)
+      : this (toTextProvider, new StringWriter())
+    {
     }
 
 
