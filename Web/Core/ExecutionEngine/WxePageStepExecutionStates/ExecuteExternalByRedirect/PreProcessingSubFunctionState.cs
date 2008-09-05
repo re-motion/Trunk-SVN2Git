@@ -30,6 +30,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
     public override void ExecuteSubFunction (WxeContext context)
     {
       NameValueCollection postBackCollection = BackupPostBackCollection();
+      Parameters.Page.SaveAllState ();
 
       var parameters = new PreparingSubFunctionStateParameters (Parameters.SubFunction, postBackCollection, Parameters.PermaUrlOptions);
       ExecutionStateContext.SetExecutionState (new PreparingRedirectToSubFunctionState (ExecutionStateContext, parameters, _returnOptions));

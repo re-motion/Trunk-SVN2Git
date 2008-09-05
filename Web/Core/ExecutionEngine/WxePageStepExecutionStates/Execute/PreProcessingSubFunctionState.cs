@@ -31,6 +31,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
     {
       Parameters.SubFunction.SetParentStep (ExecutionStateContext.CurrentStep);
       NameValueCollection postBackCollection = BackupPostBackCollection();
+      Parameters.Page.SaveAllState ();
 
       if (Parameters.PermaUrlOptions.UsePermaUrl)
       {

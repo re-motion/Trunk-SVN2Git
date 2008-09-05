@@ -190,7 +190,6 @@ namespace Remotion.Web.ExecutionEngine
       if (_executionState.IsExecuting)
         throw new InvalidOperationException ("Cannot execute function while another function executes.");
 
-      parameters.Page.SaveAllState();
       _wxeHandler = parameters.Page.WxeHandler;
 
       _executionState = new PreProcessingSubFunctionState (this, parameters, repostOptions);
@@ -206,7 +205,6 @@ namespace Remotion.Web.ExecutionEngine
       if (_executionState.IsExecuting)
         throw new InvalidOperationException ("Cannot execute function while another function executes.");
 
-      parameters.Page.SaveAllState ();
       _wxeHandler = parameters.Page.WxeHandler;
 
       _executionState = new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionState (this, parameters, returnOptions);

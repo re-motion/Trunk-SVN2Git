@@ -73,11 +73,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
 
       using (_mockRepository.Ordered())
       {
-        using (_mockRepository.Unordered())
-        {
-          _pageMock.Expect (mock => mock.SaveAllState());
-          _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
-        }
+        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
         _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
             invocation =>
             {
