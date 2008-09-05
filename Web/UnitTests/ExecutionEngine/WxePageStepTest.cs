@@ -17,11 +17,14 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
+using PreProcessingSubFunctionState_WithRedirect =
+    Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionState;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
 {
@@ -55,17 +58,18 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       _pageMock = _mockRepository.DynamicMock<IWxePage>();
       _wxeHandler = new WxeHandler();
 
-      IHttpSessionState sessionStub = _mockRepository.DynamicMock<IHttpSessionState> ();
-      sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior ();
+      IHttpSessionState sessionStub = _mockRepository.DynamicMock<IHttpSessionState>();
+      sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior();
 
       _functionStateManager = new WxeFunctionStateManager (sessionStub);
-      _wxeContext = new WxeContext (_httpContextMock, _functionStateManager, _functionState, new NameValueCollection ());
+      _wxeContext = new WxeContext (_httpContextMock, _functionStateManager, _functionState, new NameValueCollection());
     }
 
     [TearDown]
     public virtual void TearDown ()
     {
       WxeContext.SetCurrent (null);
+      UrlMappingConfiguration.SetCurrent (null);
     }
 
     [Test]
@@ -121,6 +125,91 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       }
       _pageStep.ExecuteFunction (
           new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, WxePermaUrlOptions.Null), WxeRepostOptions.Null);
+    }
+
+    [Test]
+    public void ExecuteFunctionExternalByRedirect ()
+    {
+      WxeContextMock.SetCurrent (_wxeContext);
+
+      WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions();
+      WxeReturnOptions returnOptions = new WxeReturnOptions();
+
+      using (_mockRepository.Ordered())
+      {
+        _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
+        _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
+            invocation =>
+            {
+              var executionState = (PreProcessingSubFunctionState_WithRedirect) ((IExecutionStateContext) _pageStep).ExecutionState;
+              Assert.That (executionState.Parameters.SubFunction, Is.SameAs (_subFunction));
+              Assert.That (executionState.Parameters.PermaUrlOptions, Is.SameAs (permaUrlOptions));
+              Assert.That (executionState.ReturnOptions, Is.SameAs (returnOptions));
+              Assert.That (PrivateInvoke.GetNonPublicField (_pageStep, "_wxeHandler"), Is.SameAs (_wxeHandler));
+            });
+      }
+
+      _mockRepository.ReplayAll();
+
+      _pageStep.ExecuteFunctionExternalByRedirect (
+          new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), returnOptions);
+
+      _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot execute function while another function executes.")]
+    public void ExecuteFunctionExternalByRedirect_IsAlreadyExecutingSubFunction ()
+    {
+      WxeContextMock.SetCurrent (_wxeContext);
+
+      _pageMock.Stub (stub => stub.GetPostBackCollection()).Return (new NameValueCollection()).Repeat.Any();
+      _pageMock.Stub (stub => stub.SaveAllState()).Repeat.Any();
+      _pageMock.Stub (stub => stub.WxeHandler).Return (_wxeHandler).Repeat.Any();
+
+      _pageStep.Expect (mock => mock.Execute (_wxeContext)).Throw (new ApplicationException());
+
+      _mockRepository.ReplayAll();
+
+      try
+      {
+        _pageStep.ExecuteFunctionExternalByRedirect (
+            new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, WxePermaUrlOptions.Null), WxeReturnOptions.Null);
+      }
+      catch (ApplicationException)
+      {
+      }
+      _pageStep.ExecuteFunctionExternalByRedirect (
+          new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, WxePermaUrlOptions.Null), WxeReturnOptions.Null);
+    }
+
+    [Test]
+    public void IExecutionStateContext_GetAndSetExecutionState ()
+    {
+      IExecutionStateContext executionStateContext = _pageStep;
+      IExecutionState newExecutionState = MockRepository.GenerateStub<IExecutionState> ();
+      
+      Assert.That (executionStateContext.ExecutionState, Is.SameAs (NullExecutionState.Null));
+      
+      executionStateContext.SetExecutionState (newExecutionState);
+      
+      Assert.That (executionStateContext.ExecutionState, Is.SameAs (newExecutionState));
+    }
+
+    [Test]
+    public void IExecutionStateContext_GetCurrentStep ()
+    {
+      IExecutionStateContext executionStateContext = _pageStep;
+      Assert.That (executionStateContext.CurrentStep, Is.SameAs (_pageStep));
+    }
+
+    [Test]
+    public void IExecutionStateContext_GetCurrentFunction ()
+    {
+      _pageStep.SetParentStep (_rootFunction);
+      IExecutionStateContext executionStateContext = _pageStep;
+
+      Assert.That (executionStateContext.CurrentFunction, Is.SameAs (_rootFunction));
     }
   }
 }

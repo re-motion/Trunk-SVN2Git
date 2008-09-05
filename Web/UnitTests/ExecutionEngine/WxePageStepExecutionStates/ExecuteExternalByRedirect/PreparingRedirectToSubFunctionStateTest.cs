@@ -54,6 +54,29 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
+    public void ExecuteSubFunction_WithoutPermaUrl_DoNotReturnToCaller_GoesToRedirectingToSubFunction ()
+    {
+      IExecutionState executionState = CreateExecutionState (WxePermaUrlOptions.Null, WxeReturnOptions.Null);
+
+      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<RedirectingToSubFunctionState>.Is.NotNull))
+          .Do (
+          invocation =>
+          {
+            var nextState = CheckExecutionState ((RedirectingToSubFunctionState) invocation.Arguments[0]);
+            Assert.That (nextState.Parameters.SubFunction.ReturnUrl, Is.EqualTo ("DefaultReturn.html"));
+            Assert.That (
+                nextState.Parameters.DestinationUrl,
+                Is.EqualTo ("~/session/sub.wxe?WxeFunctionToken=" + SubFunction.FunctionToken));
+          });
+
+      MockRepository.ReplayAll ();
+
+      executionState.ExecuteSubFunction (WxeContext);
+
+      MockRepository.VerifyAll ();
+    }
+
+    [Test]
     public void ExecuteSubFunction_WithPermaUrl_DoNotReturnToCaller_GoesToRedirectingToSubFunction ()
     {
       IExecutionState executionState = CreateExecutionState (new WxePermaUrlOptions(), WxeReturnOptions.Null);
@@ -183,16 +206,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The 'PreparingRedirectToSubFunctionState' type only supports WxePermaUrlOptions with the UsePermaUrl-flag set to true.\r\n"
-        + "Parameter name: parameters",
-        MatchType = MessageMatch.Contains)]
-    public void Initialize_WithoutPermaUrl ()
-    {
-      CreateExecutionState (WxePermaUrlOptions.Null, WxeReturnOptions.Null);
     }
 
     private PreparingRedirectToSubFunctionState CreateExecutionState (WxePermaUrlOptions permaUrlOptions, WxeReturnOptions returnOptions)

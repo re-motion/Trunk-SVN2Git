@@ -18,17 +18,12 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
   public class PreparingRedirectToSubFunctionState : ExecutionStateBase<PreparingSubFunctionStateParameters>
   {
     private readonly WxeReturnOptions _returnOptions;
+
     public PreparingRedirectToSubFunctionState (IExecutionStateContext executionStateContext, PreparingSubFunctionStateParameters parameters, WxeReturnOptions returnOptions)
         : base (executionStateContext, parameters)
     {
       ArgumentUtility.CheckNotNull ("returnOptions", returnOptions);
       
-      if (!Parameters.PermaUrlOptions.UsePermaUrl)
-      {
-        throw new ArgumentException (
-            string.Format ("The '{0}' type only supports WxePermaUrlOptions with the UsePermaUrl-flag set to true.", GetType().Name), "parameters");
-      }
-
       _returnOptions = returnOptions;
     }
 
