@@ -118,25 +118,24 @@
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingRedirectToSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionStateParameters.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\PreProcessingSubFunctionState.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\PreProcessingSubFunctionStateBase.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\PreProcessingSubFunctionStateParameters.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\PreparingRedirectToSubFunctionState.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\RedirectingToSubFunctionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionStateBase.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreparingRedirectToSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\RedirectingToSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionState.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithoutPermaUrl\ExecutingSubFunctionState.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithoutPermaUrl\PostProcessingSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\ExecutingSubFunctionWithoutPermaUrlState.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecutionStateBase.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\ExecutingSubFunctionState.cs">
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\ExecutingSubFunctionExecuteWithPermaUrlState.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecutionStateParameters.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\PostProcessingSubFunctionState.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\PreparingSubFunctionStateParameters.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\RedirectingToSubFunctionState.cs">
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PostProcessingSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreparingSubFunctionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\RedirectingToSubFunctionState.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteWithPermaUrl\ReturningFromSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\ReturningFromSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\IExecutionState.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -144,7 +143,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\IExecutionStateParameters.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\PreProcessingSubFunctionNoRepostState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionNoRepostState.cs" />
     <Compile Include="ExecutionEngine\WxeParameterAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeReturnOptions.cs" />
     <Compile Include="ExecutionEngine\WxeUserControl2.cs">

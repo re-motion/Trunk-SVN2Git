@@ -11,7 +11,7 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
   [Serializable]
   public class PreProcessingSubFunctionStateParameters : IExecutionStateParameters

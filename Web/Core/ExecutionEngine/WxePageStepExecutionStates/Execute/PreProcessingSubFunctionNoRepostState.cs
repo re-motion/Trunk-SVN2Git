@@ -14,7 +14,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
   [Serializable]
   public sealed class PreProcessingSubFunctionNoRepostState : PreProcessingSubFunctionStateBase<PreProcessingSubFunctionStateParameters>

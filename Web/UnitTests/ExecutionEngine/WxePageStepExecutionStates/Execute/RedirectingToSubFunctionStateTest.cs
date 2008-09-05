@@ -13,10 +13,10 @@ using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
+namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
   [TestFixture]
   public class RedirectingToSubFunctionStateTest : TestBase
@@ -51,11 +51,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       using (MockRepository.Ordered())
       {
         ResponseMock.Expect (mock => mock.Redirect ("~/destination.wxe")).Do (invocation => Thread.CurrentThread.Abort());
-        ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<ExecutingSubFunctionState>.Is.NotNull))
+        ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<ExecutingSubFunctionExecuteWithPermaUrlState>.Is.NotNull))
             .Do (
             invocation =>
             {
-              var nextState = CheckExecutionState ((ExecutingSubFunctionState) invocation.Arguments[0]);
+              var nextState = CheckExecutionState ((ExecutingSubFunctionExecuteWithPermaUrlState) invocation.Arguments[0]);
               Assert.That (nextState.Parameters.ResumeUrl, Is.EqualTo ("~/resume.wxe"));
             });
       }

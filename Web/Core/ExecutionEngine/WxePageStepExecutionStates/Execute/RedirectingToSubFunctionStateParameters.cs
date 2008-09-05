@@ -12,7 +12,7 @@ using System;
 using System.Collections.Specialized;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
   [Serializable]
   public class RedirectingToSubFunctionStateParameters : ExecutionStateParameters

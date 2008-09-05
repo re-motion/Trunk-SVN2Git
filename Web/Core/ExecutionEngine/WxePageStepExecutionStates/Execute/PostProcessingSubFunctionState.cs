@@ -11,7 +11,7 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
   [Serializable]
   public class PostProcessingSubFunctionState : ExecutionStateBase<ExecutionStateParameters>

@@ -13,14 +13,11 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
-using PreparingRedirectToSubFunctionState_WithPermaUrl =
-    Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl.PreparingRedirectToSubFunctionState;
-using ExecutingSubFunctionState_WithoutPermaUrl =
-    Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrl.ExecutingSubFunctionState;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
+namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
   [TestFixture]
   public class PreProcessingSubFunctionStateTest : TestBase
@@ -46,11 +43,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates
 
       _pageMock.Stub (stub => stub.GetPostBackCollection()).Return (PostBackCollection);
 
-      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<ExecutingSubFunctionState_WithoutPermaUrl>.Is.NotNull))
+      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<ExecutingSubFunctionWithoutPermaUrlState>.Is.NotNull))
           .Do (
           invocation =>
           {
-            var nextState = CheckExecutionState ((ExecutingSubFunctionState_WithoutPermaUrl) invocation.Arguments[0]);
+            var nextState = CheckExecutionState ((ExecutingSubFunctionWithoutPermaUrlState) invocation.Arguments[0]);
             Assert.That (nextState.Parameters.PostBackCollection, Is.Not.SameAs (PostBackCollection));
             Assert.That (nextState.Parameters.PostBackCollection.AllKeys, List.Contains ("Key"));
           });

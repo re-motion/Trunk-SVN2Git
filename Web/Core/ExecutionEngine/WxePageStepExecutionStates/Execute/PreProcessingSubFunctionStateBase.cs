@@ -11,21 +11,19 @@
 using System;
 using System.Collections.Specialized;
 using Remotion.Utilities;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl;
-using ExecutingSubFunctionState=Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrl.ExecutingSubFunctionState;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
   [Serializable]
   public abstract class PreProcessingSubFunctionStateBase<TParameters> : ExecutionStateBase<TParameters>
-    where TParameters : PreProcessingSubFunctionStateParameters
+      where TParameters: PreProcessingSubFunctionStateParameters
   {
     protected PreProcessingSubFunctionStateBase (IExecutionStateContext executionStateContext, TParameters parameters)
         : base (executionStateContext, parameters)
     {
     }
 
-    public sealed override bool IsExecuting
+    public override sealed bool IsExecuting
     {
       get { return false; }
     }
@@ -43,23 +41,23 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
       else
       {
         var parameters = new ExecutionStateParameters (Parameters.SubFunction, postBackCollection);
-        ExecutionStateContext.SetExecutionState (new ExecutingSubFunctionState (ExecutionStateContext, parameters));
+        ExecutionStateContext.SetExecutionState (new ExecutingSubFunctionWithoutPermaUrlState (ExecutionStateContext, parameters));
       }
     }
 
-    public sealed override void ExecuteSubFunction (WxeContext context)
+    public override sealed void ExecuteSubFunction (WxeContext context)
     {
       throw new NotSupportedException();
     }
 
-    public sealed override void PostProcessSubFunction (WxeContext context)
+    public override sealed void PostProcessSubFunction (WxeContext context)
     {
       throw new NotSupportedException();
     }
 
     protected virtual NameValueCollection BackupPostBackCollection ()
     {
-      return Parameters.Page.GetPostBackCollection ().Clone ();
+      return Parameters.Page.GetPostBackCollection().Clone();
     }
   }
 }

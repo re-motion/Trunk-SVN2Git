@@ -13,11 +13,11 @@ using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithPermaUrl
+namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
   [TestFixture]
   public class ExecutionSubFunctionStateTest : TestBase
@@ -27,7 +27,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     public override void SetUp ()
     {
       base.SetUp();
-      _executionState = new ExecutingSubFunctionState (
+      _executionState = new ExecutingSubFunctionExecuteWithPermaUrlState (
           ExecutionStateContextMock, new RedirectingToSubFunctionStateParameters (SubFunction, PostBackCollection, "dummy", "/resumeUrl.wxe"));
     }
 

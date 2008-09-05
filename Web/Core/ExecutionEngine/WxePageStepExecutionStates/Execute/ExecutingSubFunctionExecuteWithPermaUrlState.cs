@@ -11,13 +11,13 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithoutPermaUrl
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
   [Serializable]
-  public class ExecutingSubFunctionState : ExecutionStateBase<ExecutionStateParameters>
+  public class ExecutingSubFunctionExecuteWithPermaUrlState : ExecutionStateBase<RedirectingToSubFunctionStateParameters>
   {
-    public ExecutingSubFunctionState (IExecutionStateContext executionStateContext, ExecutionStateParameters parameters)
-        : base(executionStateContext, parameters)
+    public ExecutingSubFunctionExecuteWithPermaUrlState (IExecutionStateContext executionStateContext, RedirectingToSubFunctionStateParameters parameters)
+        : base (executionStateContext, parameters)
     {
     }
 
@@ -36,12 +36,12 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteWithout
       ArgumentUtility.CheckNotNull ("context", context);
 
       Parameters.SubFunction.Execute (context);
-      ExecutionStateContext.SetExecutionState (new PostProcessingSubFunctionState (ExecutionStateContext, Parameters));
+      ExecutionStateContext.SetExecutionState (new ReturningFromSubFunctionState (ExecutionStateContext, Parameters));
     }
 
     public override void PostProcessSubFunction (WxeContext context)
     {
-      throw new NotSupportedException();
+      throw new NotSupportedException ();
     }
   }
 }

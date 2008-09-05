@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
+namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
   [Serializable]
   public sealed class PreProcessingSubFunctionState : PreProcessingSubFunctionStateBase<PreProcessingSubFunctionStateParameters>
