@@ -38,21 +38,8 @@ namespace Remotion.Diagnostics.ToText
     private readonly DisableableWriter _disableableWriter;
     private ToTextProvider _toTextProvider;
 
-    private string _enumerablePrefix = "{";
-    private string _enumerableFirstElementPrefix = "";
-    private string _enumerableOtherElementPrefix = ",";
-    private string _enumerableElementPostfix = "";
-    private string _enumerablePostfix = "}";
-
-    private string _arrayPrefix = "{";
-    private string _arrayFirstElementPrefix = "";
-    private string _arrayOtherElementPrefix = ",";
-    private string _arrayElementPostfix = "";
-    private string _arrayPostfix = "}";
     private bool _useMultiline = true;
-    private ToTextBuilderOutputComplexityLevel _outputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
     private readonly Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder> (16);
-    private SequenceStateHolder _sequenceState = null;
 
     public enum ToTextBuilderOutputComplexityLevel
     {
@@ -67,6 +54,18 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder (ToTextProvider toTextProvider, TextWriter textWriter)
     {
+      OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
+      SequenceState = null;
+      EnumerablePostfix = "}";
+      EnumerableElementPostfix = "";
+      EnumerableOtherElementPrefix = ",";
+      EnumerableFirstElementPrefix = "";
+      EnumerablePrefix = "{";
+      ArrayPostfix = "}";
+      ArrayElementPostfix = "";
+      ArrayOtherElementPrefix = ",";
+      ArrayFirstElementPrefix = "";
+      ArrayPrefix = "{";
       _toTextProvider = toTextProvider;
       _disableableWriter = new DisableableWriter (textWriter);
     }
@@ -77,97 +76,47 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
+    public string ArrayPrefix { get; set; }
 
-    public string ArrayPrefix
-    {
-      get { return _arrayPrefix; }
-      set { _arrayPrefix = value; }
-    }
+    public string ArrayFirstElementPrefix { get; set; }
 
-    public string ArrayFirstElementPrefix
-    {
-      get { return _arrayFirstElementPrefix; }
-      set { _arrayFirstElementPrefix = value; }
-    }
+    public string ArrayOtherElementPrefix { get; set; }
 
-    public string ArrayOtherElementPrefix
-    {
-      get { return _arrayOtherElementPrefix; }
-      set { _arrayOtherElementPrefix = value; }
-    }
+    public string ArrayElementPostfix { get; set; }
 
-    public string ArrayElementPostfix
-    {
-      get { return _arrayElementPostfix; }
-      set { _arrayElementPostfix = value; }
-    }
-
-    public string ArrayPostfix
-    {
-      get { return _arrayPostfix; }
-      set { _arrayPostfix = value; }
-    }
+    public string ArrayPostfix { get; set; }
 
 
-    public string EnumerablePrefix
-    {
-      get { return _enumerablePrefix; }
-      set { _enumerablePrefix = value; }
-    }
+    public string EnumerablePrefix { get; set; }
 
-    public string EnumerableFirstElementPrefix
-    {
-      get { return _enumerableFirstElementPrefix; }
-      set { _enumerableFirstElementPrefix = value; }
-    }
+    public string EnumerableFirstElementPrefix { get; set; }
 
-    public string EnumerableOtherElementPrefix
-    {
-      get { return _enumerableOtherElementPrefix; }
-      set { _enumerableOtherElementPrefix = value; }
-    }
+    public string EnumerableOtherElementPrefix { get; set; }
 
-    public string EnumerableElementPostfix
-    {
-      get { return _enumerableElementPostfix; }
-      set { _enumerableElementPostfix = value; }
-    }
+    public string EnumerableElementPostfix { get; set; }
 
-    public string EnumerablePostfix
-    {
-      get { return _enumerablePostfix; }
-      set { _enumerablePostfix = value; }
-    }
+    public string EnumerablePostfix { get; set; }
 
-    public SequenceStateHolder SequenceState
-    {
-      get { return _sequenceState; }
-    }
+    public SequenceStateHolder SequenceState { get; private set; }
 
-    public ToTextBuilderOutputComplexityLevel OutputComplexity
-    {
-      get { return _outputComplexity; }
-    }
+    public ToTextBuilderOutputComplexityLevel OutputComplexity { get; private set; }
 
-    public void OutputDisable () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Disable; }
-    public void OutputSkeleton () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Skeleton; }
-    public void OutputBasic () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Basic; }
-    public void OutputMedium () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Medium; }
-    public void OutputComplex () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Complex; }
-    public void OutputFull () { _outputComplexity = ToTextBuilderOutputComplexityLevel.Full; }
+    public void OutputDisable () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Disable; }
+    public void OutputSkeleton () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Skeleton; }
+    public void OutputBasic () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic; }
+    public void OutputMedium () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Medium; }
+    public void OutputComplex () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Complex; }
+    public void OutputFull () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Full; }
 
-    //TODO: rename, make factory method, don't toggle flag
     public ToTextBuilder AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel)
     {
-      _disableableWriter.Enabled = (_outputComplexity >= complexityLevel) ? true : false;
+      _disableableWriter.Enabled = (OutputComplexity >= complexityLevel) ? true : false;
       return this;
     }
 
-
-
     public bool IsInSequence
     {
-      get { return _sequenceState != null; }
+      get { return SequenceState != null; }
     }
 
     public ToTextProvider ToTextProvider
@@ -183,39 +132,39 @@ namespace Remotion.Diagnostics.ToText
     
     public string EnumerableBegin
     {
-      get { return _enumerablePrefix; }
-      set { _enumerablePrefix = value; }
+      get { return EnumerablePrefix; }
+      set { EnumerablePrefix = value; }
     }
 
     public string EnumerableSeparator
     {
-      get { return _enumerableOtherElementPrefix; }
-      set { _enumerableOtherElementPrefix = value; }
+      get { return EnumerableOtherElementPrefix; }
+      set { EnumerableOtherElementPrefix = value; }
     }
 
     public string EnumerableEnd
     {
-      get { return _enumerablePostfix; }
-      set { _enumerablePostfix = value; }
+      get { return EnumerablePostfix; }
+      set { EnumerablePostfix = value; }
     }
 
 
     public string ArrayBegin
     {
-      get { return _arrayPrefix; }
-      set { _arrayPrefix = value; }
+      get { return ArrayPrefix; }
+      set { ArrayPrefix = value; }
     }
 
     public string ArraySeparator
     {
-      get { return _arrayOtherElementPrefix; }
-      set { _arrayOtherElementPrefix = value; }
+      get { return ArrayOtherElementPrefix; }
+      set { ArrayOtherElementPrefix = value; }
     }
 
     public string ArrayEnd
     {
-      get { return _arrayPostfix; }
-      set { _arrayPostfix = value; }
+      get { return ArrayPostfix; }
+      set { ArrayPostfix = value; }
     }
 
     public bool UseMultiLine
@@ -291,7 +240,7 @@ namespace Remotion.Diagnostics.ToText
 
 
     //--------------------------------------------------------------------------
-    // Lowlevel Emitters
+    // Low Level Emitters
     //--------------------------------------------------------------------------
 
     public ToTextBuilder sf (string format, params object[] paramArray)
@@ -403,7 +352,7 @@ namespace Remotion.Diagnostics.ToText
 
 
     //--------------------------------------------------------------------------
-    // Lowlevel Sequence Emitters
+    // Low level Sequence Emitters
     //--------------------------------------------------------------------------
 
     public ToTextBuilder AppendSequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
@@ -415,8 +364,8 @@ namespace Remotion.Diagnostics.ToText
 
     private ToTextBuilder SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
-      _sequenceStack.Push (_sequenceState);
-      _sequenceState = new SequenceStateHolder (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+      _sequenceStack.Push (SequenceState);
+      SequenceState = new SequenceStateHolder (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
 
       _disableableWriter.Write (SequenceState.SequencePrefix);
 
@@ -446,7 +395,7 @@ namespace Remotion.Diagnostics.ToText
 
 
     //--------------------------------------------------------------------------
-    // Highlevel Emitters
+    // High Level Emitters
     //--------------------------------------------------------------------------
 
     public ToTextBuilder AppendString (string s)
@@ -535,7 +484,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilder AppendEnumerable (IEnumerable collection)
     {
-      SequenceBegin (_enumerablePrefix, _enumerableFirstElementPrefix, _enumerableOtherElementPrefix, _enumerableElementPostfix, _enumerablePostfix);
+      SequenceBegin (EnumerablePrefix, EnumerableFirstElementPrefix, EnumerableOtherElementPrefix, EnumerableElementPostfix, EnumerablePostfix);
       foreach (Object element in collection)
       {
         AppendToText (element);
@@ -553,7 +502,7 @@ namespace Remotion.Diagnostics.ToText
     public ToTextBuilder AppendArray (Array array)
     {
       var outerProduct = new OuterProductIndexGenerator (array);
-      SequenceBegin (_arrayPrefix, _arrayFirstElementPrefix, _arrayOtherElementPrefix, _arrayElementPostfix, _arrayPostfix);
+      SequenceBegin (ArrayPrefix, ArrayFirstElementPrefix, ArrayOtherElementPrefix, ArrayElementPostfix, ArrayPostfix);
       var processor = new ToTextBuilderArrayToTextProcessor (array, this);
       outerProduct.ProcessOuterProduct (processor);
       SequenceEnd ();
@@ -645,7 +594,7 @@ namespace Remotion.Diagnostics.ToText
 
 
     //--------------------------------------------------------------------------
-    // Highlevel Sequence Emitters
+    // High Level Sequence Emitters
     //--------------------------------------------------------------------------
 
     public ToTextBuilder AppendSequenceEnd ()
@@ -660,7 +609,7 @@ namespace Remotion.Diagnostics.ToText
       Assertion.IsTrue (IsInSequence);
       _disableableWriter.Write (SequenceState.SequencePostfix);
 
-      _sequenceState = _sequenceStack.Pop ();
+      SequenceState = _sequenceStack.Pop ();
     }
 
     public ToTextBuilder se ()
@@ -710,7 +659,7 @@ namespace Remotion.Diagnostics.ToText
 
 
     //--------------------------------------------------------------------------
-    // Highlevel Complexity Switching Emitters
+    // High Level Complexity Switching Emitters
     //--------------------------------------------------------------------------
 
     public ToTextBuilder cSkeleton
