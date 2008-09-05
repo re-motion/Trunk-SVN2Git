@@ -125,6 +125,7 @@
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\RedirectingToSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\ExecutingSubFunctionWithoutPermaUrlState.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\NullExecutionState.cs" />
     <Compile Include="ExecutionEngine\WxeRepostOptions.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecutionStateBase.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\ExecutingSubFunctionExecuteWithPermaUrlState.cs">

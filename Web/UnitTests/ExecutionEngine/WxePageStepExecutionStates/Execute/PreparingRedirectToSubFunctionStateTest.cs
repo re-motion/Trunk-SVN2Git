@@ -136,14 +136,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void PostProcessSubFunction ()
-    {
-      IExecutionState executionState = CreateExecutionState (new WxePermaUrlOptions());
-      executionState.PostProcessSubFunction (WxeContext);
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The 'PreparingRedirectToSubFunctionState' type only supports WxePermaUrlOptions with the UsePermaUrl-flag set to true.\r\n"
         + "Parameter name: parameters",

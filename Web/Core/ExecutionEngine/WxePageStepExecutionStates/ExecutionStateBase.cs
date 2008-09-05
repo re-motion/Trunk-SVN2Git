@@ -29,9 +29,12 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
       _parameters = parameters;
     }
 
-    public abstract bool IsExecuting { get; }
     public abstract void ExecuteSubFunction (WxeContext context);
-    public abstract void PostProcessSubFunction (WxeContext context);
+
+    public bool IsExecuting
+    {
+      get { return true; }
+    }
 
     public IExecutionStateContext ExecutionStateContext
     {
@@ -46,6 +49,11 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates
     IExecutionStateParameters IExecutionState.Parameters
     {
       get { return Parameters; }
+    }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
     }
   }
 }

@@ -73,14 +73,18 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       PrivateInvoke.SetNonPublicField (_pageStep, "_userControlID", "TheUserControlID");
       PrivateInvoke.SetNonPublicField (_pageStep, "_userControlState", "TheUserControlState");
 
-      _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException());
+      using (_mockRepository.Ordered ())
+      {
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException());
 
-      _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Do (
-          invocation => Assert.That (_pageStep.IsReturningInnerFunction, Is.True));
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Do (
+            invocation => Assert.That (_pageStep.IsReturningInnerFunction, Is.True));
+      }
 
       _mockRepository.ReplayAll();
 
       _pageStep.Execute (_wxeContext);
+
       _mockRepository.VerifyAll();
       Assert.That (_pageStep.IsReturningInnerFunction, Is.False);
       Assert.That (_pageStep.InnerFunction, Is.Null);
@@ -96,11 +100,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       PrivateInvoke.SetNonPublicField (_pageStep, "_innerFunction", _subFunction);
       PrivateInvoke.SetNonPublicField (_pageStep, "_userControlID", "TheUserControlID");
       PrivateInvoke.SetNonPublicField (_pageStep, "_userControlState", "TheUserControlState");
+     
+      using (_mockRepository.Ordered ())
+      {
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException());
 
-      _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException());
-
-      _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new ApplicationException());
-
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new ApplicationException());
+      }
       _mockRepository.ReplayAll();
 
       try

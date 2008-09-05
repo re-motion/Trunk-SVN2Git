@@ -94,12 +94,5 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       MockRepository.VerifyAll();
     }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void PostProcessSubFunction ()
-    {
-      _executionState.PostProcessSubFunction (WxeContext);
-    }
   }
 }

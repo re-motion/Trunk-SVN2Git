@@ -22,11 +22,6 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
     {
     }
 
-    public override bool IsExecuting
-    {
-      get { return true; }
-    }
-
     public override void ExecuteSubFunction (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -41,11 +36,6 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
         ExecutionStateContext.SetExecutionState (new PostProcessingSubFunctionState (ExecutionStateContext, Parameters));
         throw;
       }
-    }
-
-    public override void PostProcessSubFunction (WxeContext context)
-    {
-      throw new NotSupportedException ();
     }
   }
 }

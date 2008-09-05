@@ -27,11 +27,6 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
       }
     }
 
-    public override bool IsExecuting
-    {
-      get { return true; }
-    }
-
     public override void ExecuteSubFunction (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -50,11 +45,6 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
           new RedirectingToSubFunctionState (
               ExecutionStateContext,
               new RedirectingToSubFunctionStateParameters (Parameters.SubFunction, Parameters.PostBackCollection, destinationUrl)));
-    }
-
-    public override void PostProcessSubFunction (WxeContext context)
-    {
-      throw new NotSupportedException();
     }
   }
 }

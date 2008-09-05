@@ -33,29 +33,22 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     [Test]
     public void IsExecuting ()
     {
-      Assert.That (_executionState.IsExecuting, Is.False);
+      Assert.That (_executionState.IsExecuting, Is.True);
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void ExecuteSubFunction ()
-    {
-      _executionState.ExecuteSubFunction (WxeContext);
-    }
-
-    [Test]
-    public void PostProcessSubFunction ()
     {
       WxeContext.PostBackCollection = null;
       WxeContext.SetIsPostBack (false);
       WxeContext.SetIsReturningPostBack (false);
       PrivateInvoke.SetNonPublicField (FunctionState, "_postBackID", 100);
 
-      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (null));
+      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (NullExecutionState.Null));
 
       MockRepository.ReplayAll();
 
-      _executionState.PostProcessSubFunction (WxeContext);
+      _executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
 

@@ -42,7 +42,7 @@ namespace Remotion.Web.ExecutionEngine
     private WxeHandler _wxeHandler;
 
     private bool _isReturningInnerFunction;
-    private IExecutionState _executionState;
+    private IExecutionState _executionState = NullExecutionState.Null;
 
     /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
     /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Ctor/param[@name="page"]' />
@@ -121,7 +121,7 @@ namespace Remotion.Web.ExecutionEngine
         _wxeHandler = null;
       }
 
-      if (_executionState == null)
+      if (!_executionState.IsExecuting)
       {
         //  This is the PageStep if it isn't executing a sub-function
 
@@ -142,14 +142,8 @@ namespace Remotion.Web.ExecutionEngine
       }
       else
       {
-        //  This is the PageStep currently executing a sub-function
-
         while (_executionState.IsExecuting)
           _executionState.ExecuteSubFunction (context);
-
-        //  This point is only reached after the sub-function has completed execution or a function executing an external function has been post-backed to.
-
-        _executionState.PostProcessSubFunction (context);
       }
 
       try
@@ -200,7 +194,7 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
       ArgumentUtility.CheckNotNull ("repostOptions", repostOptions);
 
-      if (_executionState != null)
+      if (_executionState.IsExecuting)
         throw new InvalidOperationException ("Cannot execute function while another function executes.");
 
       page.SaveAllState();
@@ -220,7 +214,7 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
       ArgumentUtility.CheckNotNull ("returnOptions", returnOptions);
 
-      if (_executionState != null)
+      if (_executionState.IsExecuting)
         throw new InvalidOperationException ("Cannot execute function while another function executes.");
 
       page.SaveAllState();
@@ -340,6 +334,8 @@ namespace Remotion.Web.ExecutionEngine
 
     void IExecutionStateContext.SetExecutionState (IExecutionState executionState)
     {
+      ArgumentUtility.CheckNotNull ("executionState", executionState);
+
       _executionState = executionState;
     }
   }

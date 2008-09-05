@@ -74,12 +74,5 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       _executionState.ExecuteSubFunction (WxeContext);
     }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void PostProcessSubFunction ()
-    {
-      _executionState.PostProcessSubFunction (WxeContext);
-    }
   }
 }

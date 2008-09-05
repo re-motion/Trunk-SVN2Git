@@ -21,18 +21,8 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
     {
     }
 
-    public override bool IsExecuting
-    {
-      get { return false; }
-    }
-
-    public override void ExecuteSubFunction (WxeContext context)
-    {
-      throw new NotSupportedException ();
-    }
-
     //TODO: CleanUp duplication with other PostProcessSubFunction-implemenations
-    public override void PostProcessSubFunction (WxeContext context)
+    public override void ExecuteSubFunction (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
@@ -56,7 +46,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
         context.SetIsReturningPostBack (true);
       }
 
-      ExecutionStateContext.SetExecutionState (null);
+      ExecutionStateContext.SetExecutionState (NullExecutionState.Null);
     }
   }
 }

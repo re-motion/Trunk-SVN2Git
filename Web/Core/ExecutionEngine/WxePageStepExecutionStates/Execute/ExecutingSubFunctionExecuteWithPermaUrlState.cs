@@ -21,22 +21,12 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
     {
     }
 
-    public override bool IsExecuting
-    {
-      get { return true; }
-    }
-
     public override void ExecuteSubFunction (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
       Parameters.SubFunction.Execute (context);
       ExecutionStateContext.SetExecutionState (new ReturningFromSubFunctionState (ExecutionStateContext, Parameters));
-    }
-
-    public override void PostProcessSubFunction (WxeContext context)
-    {
-      throw new NotSupportedException ();
     }
   }
 }

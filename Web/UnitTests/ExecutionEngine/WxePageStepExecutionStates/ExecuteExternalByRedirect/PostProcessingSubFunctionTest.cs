@@ -33,18 +33,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     [Test]
     public void IsExecuting ()
     {
-      Assert.That (_executionState.IsExecuting, Is.False);
+      Assert.That (_executionState.IsExecuting, Is.True);
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void ExecuteSubFunction ()
-    {
-      _executionState.ExecuteSubFunction (WxeContext);
-    }
-
-    [Test]
-    public void PostProcessSubFunction_WithGetRequest ()
+    public void ExecuteSubFunction_WithGetRequest ()
     {
       WxeContext.PostBackCollection = null;
       WxeContext.SetIsPostBack (false);
@@ -52,11 +45,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       PrivateInvoke.SetNonPublicField (FunctionState, "_postBackID", 100);
       RequestMock.Stub (stub => stub.HttpMethod).Return ("GET").Repeat.Any();
 
-      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (null));
+      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (NullExecutionState.Null));
 
       MockRepository.ReplayAll();
 
-      _executionState.PostProcessSubFunction (WxeContext);
+      _executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
 
@@ -68,7 +61,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     }
 
     [Test]
-    public void PostProcessSubFunction_WithPostRequest ()
+    public void ExecuteSubFunction_WithPostRequest ()
     {
       WxeContext.PostBackCollection = null;
       WxeContext.SetIsPostBack (false);
@@ -76,11 +69,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       PrivateInvoke.SetNonPublicField (FunctionState, "_postBackID", 100);
       RequestMock.Stub (stub => stub.HttpMethod).Return ("POST").Repeat.Any ();
 
-      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (null));
+      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (NullExecutionState.Null));
 
       MockRepository.ReplayAll();
 
-      _executionState.PostProcessSubFunction (WxeContext);
+      _executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
 

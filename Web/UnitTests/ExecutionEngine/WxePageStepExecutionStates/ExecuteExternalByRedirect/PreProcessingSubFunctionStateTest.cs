@@ -76,14 +76,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       MockRepository.VerifyAll();
     }
 
-    [Test]
-    [ExpectedException (typeof (NotSupportedException))]
-    public void PostProcessSubFunction ()
-    {
-      IExecutionState executionState = CreateExecutionState (WxePermaUrlOptions.Null, WxeReturnOptions.Null);
-      executionState.PostProcessSubFunction (WxeContext);
-    }
-
     private PreProcessingSubFunctionState CreateExecutionState (WxePermaUrlOptions permaUrlOptions, WxeReturnOptions returnOptions)
     {
       return new PreProcessingSubFunctionState (

@@ -129,7 +129,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
             invocation =>
             {
               Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
-              Assert.That (((IExecutionStateContext)_pageStep).ExecutionState, Is.Null);
+              Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));
               Assert.That (_wxeContext.IsPostBack, Is.True);
               Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
               Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
