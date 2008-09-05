@@ -218,6 +218,29 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    [Test]
+    public void ToConsoleTest ()
+    {
+      To.Console.s ("ToConsoleTest");
+    }
+
+    [Test]
+    public void ToErrorTest ()
+    {
+      To.Error.s ("ToErrorTest");
+    }
+
+    [Test]
+    public void ToTempLogTest ()
+    {
+      var s = @"  line1
+line2   
+line3";
+      To.TempLog.s ("ToTempLogTest").AppendEscapedString (s).s(s).m(x => s).Flush();
+      Log (System.IO.Path.GetTempPath());
+    }
+
+
     public static void Log (string s)
     {
       Console.WriteLine (s);

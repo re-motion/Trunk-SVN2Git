@@ -278,6 +278,19 @@ namespace Remotion.Diagnostics.ToText
 
 
     //--------------------------------------------------------------------------
+    // Special Emitters
+    //--------------------------------------------------------------------------
+
+
+    public ToTextBuilder Flush ()
+    {
+      _disableableWriter.Flush ();
+      return this;
+    }
+ 
+
+
+    //--------------------------------------------------------------------------
     // Lowlevel Emitters
     //--------------------------------------------------------------------------
 
@@ -777,6 +790,7 @@ namespace Remotion.Diagnostics.ToText
         return s;
       }
     }
+
 
   }
 }

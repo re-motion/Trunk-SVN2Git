@@ -49,5 +49,13 @@ namespace Remotion.Diagnostics.ToText
     {
       return _textWriter.ToString ();
     }
+
+    public void Flush ()
+    {
+      if (Enabled)
+      {
+        _textWriter.Flush();
+      }
+    }
   }
 }
