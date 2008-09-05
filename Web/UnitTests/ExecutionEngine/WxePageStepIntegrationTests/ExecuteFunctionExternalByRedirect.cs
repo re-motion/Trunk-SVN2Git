@@ -143,7 +143,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       try
       {
         //Redirect to external subfunction
-        _pageStep.ExecuteFunctionExternalByRedirect (_pageMock, _subFunction, permaUrlOptions, new WxeReturnOptions (callerUrlParameters));
+        WxeReturnOptions returnOptions = new WxeReturnOptions (callerUrlParameters);
+        _pageStep.ExecuteFunctionExternalByRedirect (new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), returnOptions);
         Assert.Fail();
       }
       catch (ThreadAbortException)
@@ -209,7 +210,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       try
       {
         //Redirect to external subfunction
-        _pageStep.ExecuteFunctionExternalByRedirect (_pageMock, _subFunction, permaUrlOptions, WxeReturnOptions.Null);
+        WxeReturnOptions returnOptions = WxeReturnOptions.Null;
+        _pageStep.ExecuteFunctionExternalByRedirect (new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), returnOptions);
         Assert.Fail();
       }
       catch (ThreadAbortException)

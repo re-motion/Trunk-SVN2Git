@@ -118,9 +118,8 @@
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingRedirectToSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreProcessingSubFunctionState.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreProcessingSubFunctionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\PreProcessingSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionStateParameters.cs" />
-    <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\PreparingRedirectToSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\Execute\RedirectingToSubFunctionStateParameters.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionState.cs" />

@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
@@ -60,7 +61,8 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
 
-      _wxePageInfo.CurrentPageStep.ExecuteFunction (_page, function, permaUrlOptions, WxeRepostOptions.Null);
+      WxeRepostOptions repostOptions = WxeRepostOptions.Null;
+      _wxePageInfo.CurrentPageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_page, function, permaUrlOptions), repostOptions);
     }
 
     public void ExecuteFunctionNoRepost (WxeFunction function, Control sender, WxeCallOptionsNoRepost options)
@@ -70,7 +72,9 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("options", options);
 
       bool usesEventTarget = options.UsesEventTarget ?? UsesEventTarget;
-      _wxePageInfo.CurrentPageStep.ExecuteFunction (_page, function, options.PermaUrlOptions, new WxeRepostOptions (sender, usesEventTarget));
+      WxePermaUrlOptions permaUrlOptions = options.PermaUrlOptions;
+      WxeRepostOptions repostOptions = new WxeRepostOptions (sender, usesEventTarget);
+      _wxePageInfo.CurrentPageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_page, function, permaUrlOptions), repostOptions);
     }
 
     public void ExecuteFunctionExternalByRedirect (WxeFunction function, WxeCallOptionsExternalByRedirect options)
@@ -84,7 +88,8 @@ namespace Remotion.Web.ExecutionEngine
       else
         returnOptions = WxeReturnOptions.Null;
 
-      _wxePageInfo.CurrentPageStep.ExecuteFunctionExternalByRedirect (_page, function, options.PermaUrlOptions, returnOptions);
+      WxePermaUrlOptions permaUrlOptions = options.PermaUrlOptions;
+      _wxePageInfo.CurrentPageStep.ExecuteFunctionExternalByRedirect (new PreProcessingSubFunctionStateParameters (_page, function, permaUrlOptions), returnOptions);
     }
 
     public void ExecuteFunctionExternal (WxeFunction function, Control sender, WxeCallOptionsExternal options)

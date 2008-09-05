@@ -17,9 +17,14 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
   [Serializable]
   public class PreProcessingSubFunctionState : ExecutionStateBase<PreProcessingSubFunctionStateParameters>
   {
-    public PreProcessingSubFunctionState (IExecutionStateContext executionStateContext, PreProcessingSubFunctionStateParameters parameters)
+    private readonly WxeReturnOptions _returnOptions;
+
+    public PreProcessingSubFunctionState (
+        IExecutionStateContext executionStateContext, PreProcessingSubFunctionStateParameters parameters, WxeReturnOptions returnOptions)
         : base (executionStateContext, parameters)
     {
+      ArgumentUtility.CheckNotNull ("returnOptions", returnOptions);
+      _returnOptions = returnOptions;
     }
 
     public override void ExecuteSubFunction (WxeContext context)
@@ -27,8 +32,13 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExterna
       NameValueCollection postBackCollection = BackupPostBackCollection();
 
       var parameters = new PreparingSubFunctionStateParameters (
-          Parameters.SubFunction, postBackCollection, Parameters.PermaUrlOptions, Parameters.ReturnOptions);
+          Parameters.SubFunction, postBackCollection, Parameters.PermaUrlOptions, _returnOptions);
       ExecutionStateContext.SetExecutionState (new PreparingRedirectToSubFunctionState (ExecutionStateContext, parameters));
+    }
+
+    public WxeReturnOptions ReturnOptions
+    {
+      get { return _returnOptions; }
     }
 
     private NameValueCollection BackupPostBackCollection ()

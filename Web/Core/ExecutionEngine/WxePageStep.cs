@@ -16,7 +16,7 @@ using System.Reflection;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute;
+using PreProcessingSubFunctionState=Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute.PreProcessingSubFunctionState;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -181,48 +181,35 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
-    /// <summary>
-    ///   Executes the specified <see cref="WxeFunction"/>, then returns to this page without raising the 
-    ///   postback event after the user returns.
-    /// </summary>
-    /// <remarks> Invoke this method by calling <see cref="WxeExecutor{TWxePage}.ExecuteFunctionNoRepost"/>. </remarks>
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void ExecuteFunction (IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, WxeRepostOptions repostOptions)
+    public void ExecuteFunction (PreProcessingSubFunctionStateParameters parameters, WxeRepostOptions repostOptions)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
-      ArgumentUtility.CheckNotNull ("function", function);
-      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+      ArgumentUtility.CheckNotNull ("parameters", parameters);
       ArgumentUtility.CheckNotNull ("repostOptions", repostOptions);
 
       if (_executionState.IsExecuting)
         throw new InvalidOperationException ("Cannot execute function while another function executes.");
 
-      page.SaveAllState();
-      _wxeHandler = page.WxeHandler;
+      parameters.Page.SaveAllState();
+      _wxeHandler = parameters.Page.WxeHandler;
 
-      _executionState = new PreProcessingSubFunctionState (
-          this, new PreProcessingSubFunctionStateParameters (page, function, permaUrlOptions, repostOptions));
+      _executionState = new PreProcessingSubFunctionState (this, parameters, repostOptions);
       Execute();
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void ExecuteFunctionExternalByRedirect (
-        IWxePage page, WxeFunction function, WxePermaUrlOptions permaUrlOptions, WxeReturnOptions returnOptions)
+    public void ExecuteFunctionExternalByRedirect (PreProcessingSubFunctionStateParameters parameters, WxeReturnOptions returnOptions)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
-      ArgumentUtility.CheckNotNull ("function", function);
-      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+      ArgumentUtility.CheckNotNull ("parameters", parameters);
       ArgumentUtility.CheckNotNull ("returnOptions", returnOptions);
 
       if (_executionState.IsExecuting)
         throw new InvalidOperationException ("Cannot execute function while another function executes.");
 
-      page.SaveAllState();
-      _wxeHandler = page.WxeHandler;
+      parameters.Page.SaveAllState ();
+      _wxeHandler = parameters.Page.WxeHandler;
 
-      _executionState = new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionState (
-          this,
-          new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionStateParameters (page, function, permaUrlOptions, returnOptions));
+      _executionState = new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionState (this, parameters, returnOptions);
 
       Execute();
     }

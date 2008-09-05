@@ -84,14 +84,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
               var executionState = (PreProcessingSubFunctionState) ((IExecutionStateContext) _pageStep).ExecutionState;
               Assert.That (executionState.Parameters.SubFunction, Is.SameAs (_subFunction));
               Assert.That (executionState.Parameters.PermaUrlOptions, Is.SameAs (permaUrlOptions));
-              Assert.That (executionState.Parameters.RepostOptions, Is.SameAs (repostOptions));
+              Assert.That (executionState.RepostOptions, Is.SameAs (repostOptions));
               Assert.That (PrivateInvoke.GetNonPublicField (_pageStep, "_wxeHandler"), Is.SameAs (_wxeHandler));
             });
       }
 
       _mockRepository.ReplayAll();
 
-      _pageStep.ExecuteFunction (_pageMock, _subFunction, permaUrlOptions, repostOptions);
+      _pageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), repostOptions);
 
       _mockRepository.VerifyAll();
     }
@@ -102,22 +102,24 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     {
       WxeContextMock.SetCurrent (_wxeContext);
 
-      _pageMock.Stub (stub => stub.GetPostBackCollection ()).Return (new NameValueCollection ()).Repeat.Any ();
-      _pageMock.Stub (stub => stub.SaveAllState ()).Repeat.Any ();
-      _pageMock.Stub (stub => stub.WxeHandler).Return (_wxeHandler).Repeat.Any ();
+      _pageMock.Stub (stub => stub.GetPostBackCollection()).Return (new NameValueCollection()).Repeat.Any();
+      _pageMock.Stub (stub => stub.SaveAllState()).Repeat.Any();
+      _pageMock.Stub (stub => stub.WxeHandler).Return (_wxeHandler).Repeat.Any();
 
-      _subFunction.Expect (mock => mock.Execute (_wxeContext)).Throw (new ApplicationException ());
-      
-      _mockRepository.ReplayAll ();
+      _subFunction.Expect (mock => mock.Execute (_wxeContext)).Throw (new ApplicationException());
+
+      _mockRepository.ReplayAll();
 
       try
       {
-        _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null, WxeRepostOptions.Null);
+        _pageStep.ExecuteFunction (
+            new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, WxePermaUrlOptions.Null), WxeRepostOptions.Null);
       }
       catch (ApplicationException)
       {
       }
-      _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null, WxeRepostOptions.Null);
+      _pageStep.ExecuteFunction (
+          new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, WxePermaUrlOptions.Null), WxeRepostOptions.Null);
     }
   }
 }

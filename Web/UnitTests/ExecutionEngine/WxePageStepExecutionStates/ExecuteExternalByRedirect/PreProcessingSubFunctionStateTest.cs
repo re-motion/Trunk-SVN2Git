@@ -82,7 +82,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     private PreProcessingSubFunctionState CreateExecutionState (WxePermaUrlOptions permaUrlOptions, WxeReturnOptions returnOptions)
     {
       return new PreProcessingSubFunctionState (
-          ExecutionStateContextMock, new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, permaUrlOptions, returnOptions));
+          ExecutionStateContextMock, new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, permaUrlOptions), returnOptions);
     }
   }
 }

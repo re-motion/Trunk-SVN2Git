@@ -18,15 +18,19 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
   [Serializable]
   public class PreProcessingSubFunctionState : ExecutionStateBase<PreProcessingSubFunctionStateParameters>
   {
-    public PreProcessingSubFunctionState (IExecutionStateContext executionStateContext, PreProcessingSubFunctionStateParameters parameters)
+    private readonly WxeRepostOptions _repostOptions;
+
+    public PreProcessingSubFunctionState (
+        IExecutionStateContext executionStateContext, PreProcessingSubFunctionStateParameters parameters, WxeRepostOptions repostOptions)
         : base (executionStateContext, parameters)
     {
+      _repostOptions = repostOptions;
     }
 
     public override void ExecuteSubFunction (WxeContext context)
     {
       Parameters.SubFunction.SetParentStep (ExecutionStateContext.CurrentStep);
-      NameValueCollection postBackCollection = BackupPostBackCollection ();
+      NameValueCollection postBackCollection = BackupPostBackCollection();
 
       if (Parameters.PermaUrlOptions.UsePermaUrl)
       {
@@ -40,19 +44,24 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
       }
     }
 
+    public WxeRepostOptions RepostOptions
+    {
+      get { return _repostOptions; }
+    }
+
     private NameValueCollection BackupPostBackCollection ()
     {
-      var postBackCollection = Parameters.Page.GetPostBackCollection ().Clone ();
+      var postBackCollection = Parameters.Page.GetPostBackCollection().Clone();
 
-      if (!Parameters.RepostOptions.SuppressRepost)
+      if (!_repostOptions.SuppressRepost)
       {
-        if (Parameters.RepostOptions.UsesEventTarget)
+        if (_repostOptions.UsesEventTarget)
         {
           postBackCollection.Remove (ControlHelper.PostEventSourceID);
           postBackCollection.Remove (ControlHelper.PostEventArgumentID);
         }
         else
-          postBackCollection.Remove (Parameters.RepostOptions.Sender.UniqueID);
+          postBackCollection.Remove (_repostOptions.Sender.UniqueID);
       }
 
       return postBackCollection;

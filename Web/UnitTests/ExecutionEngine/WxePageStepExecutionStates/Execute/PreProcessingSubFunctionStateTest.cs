@@ -32,7 +32,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       base.SetUp();
 
       _parentStep = new WxePageStep ("page.aspx");
-      ExecutionStateContextMock.Stub (stub => stub.CurrentStep).Return (_parentStep).Repeat.Any ();
+      ExecutionStateContextMock.Stub (stub => stub.CurrentStep).Return (_parentStep).Repeat.Any();
 
       _pageMock = MockRepository.StrictMock<IWxePage>();
       _pageMock.Stub (stub => stub.GetPostBackCollection()).Return (PostBackCollection);
@@ -111,7 +111,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
       senderMock.Stub (stub => stub.UniqueID).Return (c_senderUniqueID).Repeat.Any();
 
       IExecutionState executionState = CreateExecutionState (senderMock);
-  
+
       ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<ExecutingSubFunctionWithoutPermaUrlState>.Is.NotNull))
           .Do (
           invocation =>
@@ -184,7 +184,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
 
       IExecutionState executionState = new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
-          new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null, new WxeRepostOptions (senderMock, true)));
+          new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null),
+          new WxeRepostOptions (senderMock, true));
 
       ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<ExecutingSubFunctionWithoutPermaUrlState>.Is.NotNull))
           .Do (
@@ -205,21 +206,24 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepExecutionStates.Exec
     {
       return new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
-          new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, permaUrlOptions, WxeRepostOptions.Null));
+          new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, permaUrlOptions),
+          WxeRepostOptions.Null);
     }
 
     private PreProcessingSubFunctionState CreateExecutionState (Control sender)
     {
       return new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
-          new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null, new WxeRepostOptions (sender, false)));
+          new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null),
+          new WxeRepostOptions (sender, false));
     }
 
     private PreProcessingSubFunctionState CreateExecutionState (bool usesEventTarget)
     {
       return new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
-          new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null, new WxeRepostOptions (MockRepository.Stub<Control>(), usesEventTarget)));
+          new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null),
+          new WxeRepostOptions (MockRepository.Stub<Control>(), usesEventTarget));
     }
   }
 }

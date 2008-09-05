@@ -19,6 +19,7 @@ using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
+using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
@@ -99,7 +100,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       _mockRepository.ReplayAll();
 
-      _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null, WxeRepostOptions.Null);
+      WxePermaUrlOptions permaUrlOptions = WxePermaUrlOptions.Null;
+      WxeRepostOptions repostOptions = WxeRepostOptions.Null;
+      _pageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), repostOptions);
 
       _mockRepository.VerifyAll();
     }
@@ -127,7 +130,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       try
       {
-        _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null, WxeRepostOptions.Null);
+        WxePermaUrlOptions permaUrlOptions = WxePermaUrlOptions.Null;
+        WxeRepostOptions repostOptions = WxeRepostOptions.Null;
+        _pageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), repostOptions);
         Assert.Fail();
       }
       catch (ThreadAbortException)
@@ -164,7 +169,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       try
       {
-        _pageStep.ExecuteFunction (_pageMock, _subFunction, WxePermaUrlOptions.Null, WxeRepostOptions.Null);
+        WxePermaUrlOptions permaUrlOptions = WxePermaUrlOptions.Null;
+        WxeRepostOptions repostOptions = WxeRepostOptions.Null;
+        _pageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), repostOptions);
         Assert.Fail();
       }
       catch (ThreadAbortException)
@@ -241,7 +248,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       try
       {
         //Redirect to subfunction
-        _pageStep.ExecuteFunction (_pageMock, _subFunction, permaUrlOptions, WxeRepostOptions.Null);
+        WxeRepostOptions repostOptions = WxeRepostOptions.Null;
+        _pageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), repostOptions);
         Assert.Fail();
       }
       catch (ThreadAbortException)
