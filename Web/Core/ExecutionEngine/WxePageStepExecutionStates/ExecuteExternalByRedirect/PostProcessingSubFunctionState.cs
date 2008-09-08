@@ -13,7 +13,11 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
-  //TODO: doc
+  /// <summary>
+  /// The <see cref="PostProcessingSubFunctionState"/> is responsible for setting the current <see cref="WxeStep"/>'s state after the sub-function
+  /// has completed execution. Executing this state will transition the <see cref="IExecutionStateContext"/> into the 
+  /// <see cref="NullExecutionState"/>.
+  /// </summary>
   [Serializable]
   public class PostProcessingSubFunctionState : ExecutionStateBase<ExecutionStateParameters>
   {

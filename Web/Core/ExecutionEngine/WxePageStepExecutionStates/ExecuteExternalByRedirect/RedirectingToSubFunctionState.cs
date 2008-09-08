@@ -14,10 +14,13 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
-  //TODO: doc
   [Serializable]
   public class RedirectingToSubFunctionState : ExecutionStateBase<RedirectingToSubFunctionStateParameters>
   {
+    /// <summary>
+    /// The <see cref="RedirectingToSubFunctionState"/> is responsible for redirecting the user's client to a sub-function's Perma-URL.
+    /// Executing this state will transition the <see cref="IExecutionStateContext"/> into the <see cref="PostProcessingSubFunctionState"/>.
+    /// </summary>
     public RedirectingToSubFunctionState (IExecutionStateContext executionStateContext, RedirectingToSubFunctionStateParameters parameters)
         : base (executionStateContext, parameters)
     {

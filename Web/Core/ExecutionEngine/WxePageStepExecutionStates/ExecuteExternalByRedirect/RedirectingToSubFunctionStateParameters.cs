@@ -14,7 +14,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.ExecuteExternalByRedirect
 {
-  //TODO: doc
+  /// <summary>
+  /// The <see cref="RedirectingToSubFunctionStateParameters"/> type provides all state required to redirect to a sub-function URL.
+  /// </summary>
   [Serializable]
   public class RedirectingToSubFunctionStateParameters : ExecutionStateParameters
   {
