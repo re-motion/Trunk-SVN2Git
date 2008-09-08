@@ -43,22 +43,22 @@ namespace Remotion.Diagnostics.ToText
       set { _disableableXmlWriter.Enabled = value; }
     }
 
-    //public override ToTextBuilder seperator
+    //public override IToTextBuilderBase seperator
     //{
     //  get { throw new System.NotImplementedException(); }
     //}
 
-    //public override ToTextBuilder comma
+    //public override IToTextBuilderBase comma
     //{
     //  get { throw new System.NotImplementedException(); }
     //}
 
-    //public override ToTextBuilder colon
+    //public override IToTextBuilderBase colon
     //{
     //  get { throw new System.NotImplementedException(); }
     //}
 
-    //public override ToTextBuilder semicolon
+    //public override IToTextBuilderBase semicolon
     //{
     //  get { throw new System.NotImplementedException(); }
     //}
@@ -79,10 +79,10 @@ namespace Remotion.Diagnostics.ToText
       SequenceState = _sequenceStack.Pop ();
     }
 
-    public override IToTextBuilderBase ToTextString (string s)
-    {
-      throw new System.NotImplementedException();
-    }
+    //public override IToTextBuilderBase ToTextString (string s)
+    //{
+    //  throw new System.NotImplementedException();
+    //}
 
     public override IToTextBuilderBase AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel)
     {
@@ -94,10 +94,10 @@ namespace Remotion.Diagnostics.ToText
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder ToText (object obj)
-    {
-      throw new System.NotImplementedException();
-    }
+    //public override IToTextBuilderBase EmitToText (object obj)
+    //{
+    //  throw new System.NotImplementedException();
+    //}
 
     public override IToTextBuilderBase Flush ()
     {
@@ -109,17 +109,17 @@ namespace Remotion.Diagnostics.ToText
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder AppendNewLine ()
+    public override IToTextBuilderBase AppendNewLine ()
     {
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder nl ()
+    public override IToTextBuilderBase nl ()
     {
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder AppendSpace ()
+    public override IToTextBuilderBase AppendSpace ()
     {
       throw new System.NotImplementedException();
     }
@@ -129,32 +129,32 @@ namespace Remotion.Diagnostics.ToText
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder AppendTabulator ()
+    public override IToTextBuilderBase AppendTabulator ()
     {
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder tab ()
+    public override IToTextBuilderBase tab ()
     {
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder AppendSeperator ()
+    public override IToTextBuilderBase AppendSeperator ()
     {
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder AppendComma ()
+    public override IToTextBuilderBase AppendComma ()
     {
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder AppendColon ()
+    public override IToTextBuilderBase AppendColon ()
     {
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder AppendSemiColon ()
+    public override IToTextBuilderBase AppendSemiColon ()
     {
       throw new System.NotImplementedException();
     }
@@ -169,12 +169,12 @@ namespace Remotion.Diagnostics.ToText
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder AppendEscapedString (string s)
+    public override IToTextBuilderBase AppendEscapedString (string s)
     {
       throw new System.NotImplementedException();
     }
 
-    public override ToTextBuilder sEsc (string s)
+    public override IToTextBuilderBase sEsc (string s)
     {
       throw new System.NotImplementedException();
     }
@@ -199,17 +199,17 @@ namespace Remotion.Diagnostics.ToText
       throw new System.NotImplementedException();
     }
 
-    protected override ToTextBuilder AppendMemberRaw (string name, object obj)
+    protected override IToTextBuilderBase AppendMemberRaw (string name, object obj)
     {
       throw new System.NotImplementedException();
     }
 
-    protected override ToTextBuilder AppendObjectToString (object obj)
+    protected override IToTextBuilderBase AppendObjectToString (object obj)
     {
       throw new System.NotImplementedException();
     }
 
-    protected override ToTextBuilder SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    protected override IToTextBuilderBase SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
       throw new System.NotImplementedException();
     }

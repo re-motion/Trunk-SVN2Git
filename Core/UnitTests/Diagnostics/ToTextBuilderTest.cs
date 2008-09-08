@@ -33,14 +33,14 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (result, Is.EqualTo ("ABC defg"));
     }
 
-    [Test]
-    public void ToTextStringTest ()
-    {
-      var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.ToTextString ("XyZ !");
-      var result = toTextBuilder.CheckAndConvertToString();
-      Assert.That (result, Is.EqualTo ("XyZ !"));
-    }
+    //[Test]
+    //public void ToTextStringTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder();
+    //  toTextBuilder.ToTextString ("XyZ !");
+    //  var result = toTextBuilder.CheckAndConvertToString();
+    //  Assert.That (result, Is.EqualTo ("XyZ !"));
+    //}
 
     [Test]
     public void sTest ()
@@ -143,6 +143,9 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var o = new Object();
       toTextBuilder.tt (o);
+
+      //toTextBuilder.E
+
       var result = toTextBuilder.CheckAndConvertToString();
       Assert.That (result, Is.EqualTo (o.ToString()));
     }

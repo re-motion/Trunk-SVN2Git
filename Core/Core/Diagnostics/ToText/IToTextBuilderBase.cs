@@ -80,29 +80,34 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase cFull { get; }
     IToTextBuilderBase AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderBase.ToTextBuilderOutputComplexityLevel complexityLevel);
     string CheckAndConvertToString ();
-    ToTextBuilder ToText (object obj);
+
+    /// <summary>
+    /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result to the TextBuilder.</para>
+    /// <para>Shorthand notation: <see cref="tt(object)"/>.</para>
+    /// </summary>
+    IToTextBuilderBase EmitToText (object obj);
     IToTextBuilderBase Flush ();
     IToTextBuilderBase sf (string format, params object[] paramArray);
-    ToTextBuilder AppendNewLine ();
-    ToTextBuilder nl ();
-    ToTextBuilder AppendSpace ();
+    IToTextBuilderBase AppendNewLine ();
+    IToTextBuilderBase nl ();
+    IToTextBuilderBase AppendSpace ();
     IToTextBuilderBase space ();
-    ToTextBuilder AppendTabulator ();
-    ToTextBuilder tab ();
-    ToTextBuilder AppendSeperator ();
-    ToTextBuilder AppendComma ();
-    ToTextBuilder AppendColon ();
-    ToTextBuilder AppendSemiColon ();
+    IToTextBuilderBase AppendTabulator ();
+    IToTextBuilderBase tab ();
+    IToTextBuilderBase AppendSeperator ();
+    IToTextBuilderBase AppendComma ();
+    IToTextBuilderBase AppendColon ();
+    IToTextBuilderBase AppendSemiColon ();
     IToTextBuilderBase AppendArray (Array array);
     IToTextBuilderBase AppendString (string s);
-    ToTextBuilder AppendEscapedString (string s);
-    ToTextBuilder sEsc (string s);
+    IToTextBuilderBase AppendEscapedString (string s);
+    IToTextBuilderBase sEsc (string s);
     IToTextBuilderBase AppendChar (char c);
     IToTextBuilderBase AppendMember (string name, Object obj);
     IToTextBuilderBase AppendEnumerable (IEnumerable collection);
     IToTextBuilderBase array (Array array);
     IToTextBuilderBase Append (Object obj);
-    IToTextBuilderBase ToTextString (string s);
+    //IToTextBuilderBase ToTextString (string s);
     void OutputDisable ();
     void OutputSkeleton ();
     void OutputBasic ();

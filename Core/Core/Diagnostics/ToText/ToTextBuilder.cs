@@ -176,14 +176,6 @@ namespace Remotion.Diagnostics.ToText
     //}
 
 
-
-    public override ToTextBuilder ToText (object obj)
-    {
-      _toTextProvider.ToText (obj, this);
-      return this;
-    }
-
-
     //--------------------------------------------------------------------------
     // Before/After Element
     //--------------------------------------------------------------------------
@@ -229,7 +221,7 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public override ToTextBuilder AppendNewLine ()
+    public override IToTextBuilderBase AppendNewLine ()
     {
       if (_useMultiline)
       {
@@ -238,14 +230,14 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override ToTextBuilder nl ()
+    public override IToTextBuilderBase nl ()
     {
       AppendNewLine ();
       return this;
     }
 
 
-    public override ToTextBuilder AppendSpace ()
+    public override IToTextBuilderBase AppendSpace ()
     {
       _disableableWriter.Write (" ");
       return this;
@@ -258,20 +250,20 @@ namespace Remotion.Diagnostics.ToText
     }
 
     // TODO?: Introduce highlevel sibling "Indent" ?
-    public override ToTextBuilder AppendTabulator ()
+    public override IToTextBuilderBase AppendTabulator ()
     {
       _disableableWriter.Write ("\t");
       return this;
     }
 
-    public override ToTextBuilder tab ()
+    public override IToTextBuilderBase tab ()
     {
       AppendTabulator ();
       return this;
     }
 
 
-    public override ToTextBuilder AppendSeperator ()
+    public override IToTextBuilderBase AppendSeperator ()
     {
       _disableableWriter.Write (",");
       return this;
@@ -283,7 +275,7 @@ namespace Remotion.Diagnostics.ToText
     //}
 
 
-    public override ToTextBuilder AppendComma ()
+    public override IToTextBuilderBase AppendComma ()
     {
       _disableableWriter.Write (",");
       return this;
@@ -295,7 +287,7 @@ namespace Remotion.Diagnostics.ToText
     //}
 
 
-    public override ToTextBuilder AppendColon ()
+    public override IToTextBuilderBase AppendColon ()
     {
       _disableableWriter.Write (":");
       return this;
@@ -307,7 +299,7 @@ namespace Remotion.Diagnostics.ToText
     //}
 
 
-    public override ToTextBuilder AppendSemiColon ()
+    public override IToTextBuilderBase AppendSemiColon ()
     {
       _disableableWriter.Write (";");
       return this;
@@ -319,7 +311,7 @@ namespace Remotion.Diagnostics.ToText
     //}
 
 
-    protected override ToTextBuilder AppendObjectToString (object obj)
+    protected override IToTextBuilderBase AppendObjectToString (object obj)
     {
       _disableableWriter.Write (obj.ToString ());
       return this;
@@ -330,7 +322,7 @@ namespace Remotion.Diagnostics.ToText
     // Low level Sequence Emitters
     //--------------------------------------------------------------------------
 
-    protected override ToTextBuilder SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    protected override IToTextBuilderBase SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
       _sequenceStack.Push (SequenceState);
       SequenceState = new SequenceStateHolder (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
@@ -378,13 +370,13 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override ToTextBuilder AppendEscapedString (string s)
+    public override IToTextBuilderBase AppendEscapedString (string s)
     {
       EscapeString(s,_disableableWriter);
       return this;
     }
 
-    public override ToTextBuilder sEsc (string s)
+    public override IToTextBuilderBase sEsc (string s)
     {
       return AppendEscapedString (s);
     }
@@ -405,7 +397,7 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    protected override ToTextBuilder AppendMemberRaw (string name, Object obj)
+    protected override IToTextBuilderBase AppendMemberRaw (string name, Object obj)
     {
       SequenceBegin (name + "=", "", "", "", "");
       _toTextProvider.ToText (obj, this);
@@ -460,10 +452,10 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public override IToTextBuilderBase ToTextString (string s)
-    {
-      return AppendString (s);
-    }
+    //public override IToTextBuilderBase ToTextString (string s)
+    //{
+    //  return AppendString (s);
+    //}
 
 
     //--------------------------------------------------------------------------
