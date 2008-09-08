@@ -14,15 +14,18 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
-  //TODO: doc
+  /// <summary>
+  /// The <see cref="RedirectingToSubFunctionStateParameters"/> type provides all state required to redirect to and return from a sub-function URL.
+  /// </summary>
   [Serializable]
   public class RedirectingToSubFunctionStateParameters : ExecutionStateParameters
   {
     private readonly string _destinationUrl;
     private readonly string _resumeUrl;
 
-    public RedirectingToSubFunctionStateParameters (WxeFunction subFunction, NameValueCollection postBackCollection, string destinationUrl, string resumeUrl)
-        : base(subFunction, postBackCollection)
+    public RedirectingToSubFunctionStateParameters (
+        WxeFunction subFunction, NameValueCollection postBackCollection, string destinationUrl, string resumeUrl)
+        : base (subFunction, postBackCollection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("destinationUrl", destinationUrl);
       ArgumentUtility.CheckNotNullOrEmpty ("resumeUrl", resumeUrl);

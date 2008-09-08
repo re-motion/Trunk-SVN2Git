@@ -14,7 +14,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
-  //TODO: doc
+  /// <summary>
+  /// The <see cref="PreparingRedirectToSubFunctionState"/> is responsible for evaluating the perma-URL information required for a sub-function.
+  /// Executing this state will transition the <see cref="IExecutionStateContext"/> into the <see cref="RedirectingToSubFunctionState"/>.
+  /// </summary>
   [Serializable]
   public class PreparingRedirectToSubFunctionState : ExecutionStateBase<PreparingRedirectToSubFunctionStateParameters>
   {

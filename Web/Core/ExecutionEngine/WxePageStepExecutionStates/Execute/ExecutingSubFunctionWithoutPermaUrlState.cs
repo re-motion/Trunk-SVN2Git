@@ -13,7 +13,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
-  //TODO: doc
+  /// <summary>
+  /// The <see cref="ExecutingSubFunctionWithoutPermaUrlState"/> is responsible for executing a sub-function.
+  /// Executing this state will transition the <see cref="IExecutionStateContext"/> into the <see cref="PostProcessingSubFunctionState"/>.
+  /// </summary>
   [Serializable]
   public class ExecutingSubFunctionWithoutPermaUrlState : ExecutionStateBase<ExecutionStateParameters>
   {

@@ -14,7 +14,11 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
-  //TODO: doc
+  /// <summary>
+  /// The <see cref="ReturningFromSubFunctionState"/> is responsible for redirecting the user's client back to main-function URL after the sub-function
+  /// has completed execution and a perma-URL was used. Executing this state will transition the <see cref="IExecutionStateContext"/> into the 
+  /// <see cref="PostProcessingSubFunctionState"/>.
+  /// </summary>
   [Serializable]
   public class ReturningFromSubFunctionState : ExecutionStateBase<RedirectingToSubFunctionStateParameters>
   {

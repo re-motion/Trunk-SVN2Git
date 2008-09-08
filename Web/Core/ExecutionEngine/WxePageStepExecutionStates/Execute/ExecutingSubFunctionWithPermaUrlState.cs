@@ -13,7 +13,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
 {
-  //TODO: doc
+  /// <summary>
+  /// The <see cref="RedirectingToSubFunctionState"/> is responsible for executing a sub-function.
+  /// Executing this state will transition the <see cref="IExecutionStateContext"/> into the <see cref="ReturningFromSubFunctionState"/>.
+  /// </summary>
   [Serializable]
   public class ExecutingSubFunctionWithPermaUrlState : ExecutionStateBase<RedirectingToSubFunctionStateParameters>
   {
