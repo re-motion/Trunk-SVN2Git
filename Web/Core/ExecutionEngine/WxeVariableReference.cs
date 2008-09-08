@@ -16,7 +16,7 @@ namespace Remotion.Web.ExecutionEngine
   [Serializable]
   public class WxeVariableReference
   {
-    private string _name;
+    private readonly string _name;
 
     public WxeVariableReference (string variableName)
     {

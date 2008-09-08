@@ -110,6 +110,9 @@
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Context\WebSafeContextMixin.cs" />
     <Compile Include="ExecutionEngine\IWxePageExecutor.cs" />
+    <Compile Include="ExecutionEngine\ResourceObject.cs" />
+    <Compile Include="ExecutionEngine\ResourceObjectBase.cs" />
+    <Compile Include="ExecutionEngine\ResourceObjectWithVarRef.cs" />
     <Compile Include="ExecutionEngine\WxeExecuteUserControlNextStepException.cs" />
     <Compile Include="ExecutionEngine\WxeExecuteUserControlStepException.cs" />
     <Compile Include="ExecutionEngine\WxeExecutionControlExceptionBase.cs" />
