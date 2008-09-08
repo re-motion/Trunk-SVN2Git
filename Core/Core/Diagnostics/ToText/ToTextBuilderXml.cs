@@ -104,11 +104,6 @@ namespace Remotion.Diagnostics.ToText
       throw new System.NotImplementedException();
     }
 
-    public override IToTextBuilderBase sf (string format, params object[] paramArray)
-    {
-      throw new System.NotImplementedException();
-    }
-
     public override IToTextBuilderBase AppendNewLine ()
     {
       throw new System.NotImplementedException();
@@ -209,7 +204,7 @@ namespace Remotion.Diagnostics.ToText
       throw new System.NotImplementedException();
     }
 
-    protected override IToTextBuilderBase SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
       throw new System.NotImplementedException();
     }

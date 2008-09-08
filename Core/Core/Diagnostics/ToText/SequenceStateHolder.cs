@@ -15,13 +15,14 @@ namespace Remotion.Diagnostics.ToText
   public class SequenceStateHolder
   {
     private int _sequenceCounter;
+    private readonly string _name;
     private readonly string _sequencePrefix;
     private readonly string _firstElementPrefix;
     private readonly string _otherElementPrefix;
     private readonly string _elementPostfix;
     private readonly string _sequencePostfix;
 
-    public SequenceStateHolder (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    public SequenceStateHolder (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
       ArgumentUtility.CheckNotNull ("sequencePrefix", sequencePrefix);
       ArgumentUtility.CheckNotNull ("firstElementPrefix", firstElementPrefix);
@@ -30,11 +31,18 @@ namespace Remotion.Diagnostics.ToText
       ArgumentUtility.CheckNotNull ("sequencePostfix", sequencePostfix);
 
       _sequenceCounter = 0;
+      _name = name;
       _sequencePrefix = sequencePrefix;
       _firstElementPrefix = firstElementPrefix;
       _otherElementPrefix = otherElementPrefix;
       _elementPostfix = elementPostfix;
       _sequencePostfix = sequencePostfix;
+    }
+
+
+    public string Name
+    {
+      get { return _name; }
     }
 
     public string SequencePrefix

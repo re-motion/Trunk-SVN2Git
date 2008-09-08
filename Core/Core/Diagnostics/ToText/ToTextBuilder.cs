@@ -215,7 +215,7 @@ namespace Remotion.Diagnostics.ToText
     // Low Level Emitters
     //--------------------------------------------------------------------------
 
-    public override IToTextBuilderBase sf (string format, params object[] paramArray)
+    public IToTextBuilderBase sf (string format, params object[] paramArray)
     {
       return AppendString (string.Format (format, paramArray));
     }
@@ -322,12 +322,18 @@ namespace Remotion.Diagnostics.ToText
     // Low level Sequence Emitters
     //--------------------------------------------------------------------------
 
-    protected override IToTextBuilderBase SequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
       _sequenceStack.Push (SequenceState);
-      SequenceState = new SequenceStateHolder (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+
+      SequenceState = new SequenceStateHolder (name, sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
 
       _disableableWriter.Write (SequenceState.SequencePrefix);
+      if (name.Length > 0)
+      {
+        _disableableWriter.Write (name);
+        _disableableWriter.Write (": ");
+      }
 
       return this;
     }
@@ -355,7 +361,7 @@ namespace Remotion.Diagnostics.ToText
     public override IToTextBuilderBase AppendArray (Array array)
     {
       var outerProduct = new OuterProductIndexGenerator (array);
-      SequenceBegin (Settings.ArrayPrefix, Settings.ArrayFirstElementPrefix,
+      SequenceBegin ("", Settings.ArrayPrefix, Settings.ArrayFirstElementPrefix,
                      Settings.ArrayOtherElementPrefix, Settings.ArrayElementPostfix, Settings.ArrayPostfix);
       var processor = new ToTextBuilderArrayToTextProcessor (array, this);
       outerProduct.ProcessOuterProduct (processor);
@@ -399,7 +405,7 @@ namespace Remotion.Diagnostics.ToText
 
     protected override IToTextBuilderBase AppendMemberRaw (string name, Object obj)
     {
-      SequenceBegin (name + "=", "", "", "", "");
+      SequenceBegin ("", name + "=", "", "", "", "");
       _toTextProvider.ToText (obj, this);
       SequenceEnd ();
 
@@ -409,7 +415,7 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase AppendEnumerable (IEnumerable collection)
     {
-      SequenceBegin (Settings.EnumerablePrefix, Settings.EnumerableFirstElementPrefix,
+      SequenceBegin ("", Settings.EnumerablePrefix, Settings.EnumerableFirstElementPrefix,
         Settings.EnumerableOtherElementPrefix, Settings.EnumerableElementPostfix, Settings.EnumerablePostfix);
       foreach (Object element in collection)
       {
@@ -469,6 +475,8 @@ namespace Remotion.Diagnostics.ToText
 
       SequenceState = _sequenceStack.Pop ();
     }
+
+
 
 
     //--------------------------------------------------------------------------

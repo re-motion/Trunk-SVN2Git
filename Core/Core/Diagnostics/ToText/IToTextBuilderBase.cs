@@ -87,7 +87,6 @@ namespace Remotion.Diagnostics.ToText
     /// </summary>
     IToTextBuilderBase EmitToText (object obj);
     IToTextBuilderBase Flush ();
-    IToTextBuilderBase sf (string format, params object[] paramArray);
     IToTextBuilderBase AppendNewLine ();
     IToTextBuilderBase nl ();
     IToTextBuilderBase AppendSpace ();
@@ -115,7 +114,7 @@ namespace Remotion.Diagnostics.ToText
     void OutputComplex ();
     void OutputFull ();
     IToTextBuilderBase ts (object obj);
-    IToTextBuilderBase AppendSequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
+    IToTextBuilderBase AppendSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
     IToTextBuilderBase sb ();
     IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
     IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix);
@@ -142,5 +141,9 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase AppendSequenceElements (params object[] sequenceElements);
     IToTextBuilderBase elements (params object[] sequenceElements);
     IToTextBuilderBase elementsNumbered (string s1, int i0, int i1);
+
+    //IToTextBuilderBase EmitNamedSequenceBegin ();
+    //IToTextBuilderBase EmitNamedSequenceEnd ();
+
   }
 }
