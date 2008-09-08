@@ -236,7 +236,8 @@ namespace Remotion.UnitTests.Diagnostics
       var s = @"  line1
 line2   
 line3";
-      To.TempLog.s ("ToTempLogTest").AppendEscapedString (s).s(s).m(x => s).Flush();
+      //To.TempLog.s ("ToTempLogTest").AppendRawEscapedString (s).s(s).m(x => s).Flush();
+      To.TempLog.s ("ToTempLogTest").sEsc (s).s (s).m (x => s).Flush ();
       Log (System.IO.Path.GetTempPath());
     }
 

@@ -27,12 +27,16 @@ namespace Remotion.Diagnostics.ToText
     {
       if (ProcessingState.IsInnermostLoop)
       {
-        _toTextBuilder.AppendToText (_array.GetValue (ProcessingState.DimensionIndices));
+        //_toTextBuilder.AppendToText (_array.GetValue (ProcessingState.DimensionIndices));
+        _toTextBuilder.AppendToTextNonSequence (_array.GetValue (ProcessingState.DimensionIndices));
       }
       else
       {
         _toTextBuilder.AppendSequenceBegin ("", _toTextBuilder.Settings.ArrayPrefix, _toTextBuilder.Settings.ArrayFirstElementPrefix,
           _toTextBuilder.Settings.ArrayOtherElementPrefix, _toTextBuilder.Settings.ArrayElementPostfix, _toTextBuilder.Settings.ArrayPostfix);
+
+        //_toTextBuilder.AppendSequenceBegin ("", "A2 ", "AE2 ", "~AE2 ", "_AE2 ", "_A2");  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
       }
       return true;
     }

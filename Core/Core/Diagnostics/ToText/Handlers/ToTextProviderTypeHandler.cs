@@ -16,10 +16,12 @@ namespace Remotion.Diagnostics.ToText.Handlers {
       Object obj = toTextParameters.Object;
       IToTextBuilderBase toTextBuilder = toTextParameters.ToTextBuilder;
 
+      // Catch Type|s to avoid endless recursion. 
       if (obj is Type) 
       {
-        // Catch Type|s to avoid endless recursion. 
-        toTextBuilder.AppendString (obj.ToString ());
+        toTextBuilder.AppendRawElementBegin ();
+        toTextBuilder.AppendRawString (obj.ToString ());
+        toTextBuilder.AppendRawElementEnd ();
         toTextProviderHandlerFeedback.Handled = true;
       }
     }

@@ -147,7 +147,7 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase AppendSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
-      BeforeAppendElement ();
+      //BeforeAppendElement ();
 
       return SequenceBegin (name, sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
     }
@@ -174,16 +174,58 @@ namespace Remotion.Diagnostics.ToText
       return AppendSequenceBegin ("", sequencePrefix, "", ",", "", sequencePostfix);
     }
 
-    public abstract IToTextBuilderBase AppendString (string s);
-    public abstract IToTextBuilderBase AppendEscapedString (string s);
+
+    public abstract IToTextBuilderBase AppendRawStringUnsafe (string s);
+
+    public IToTextBuilderBase AppendRawString (string s)
+    {
+      AssertIsInRawSequence ();
+      AppendRawStringUnsafe (s);
+      return this;
+    }
+
+    private void AssertIsInRawSequence ()
+    {
+      Assertion.IsTrue(IsInRawSequence);
+      //throw new NotImplementedException();
+    }
+
+    protected bool IsInRawSequence
+    {
+      get; set;
+    }
+
+
+    //public abstract IToTextBuilderBase AppendRawString (string s);
+
+    public abstract IToTextBuilderBase AppendRawEscapedStringUnsafe (string s);
+
+    public IToTextBuilderBase AppendRawEscapedString (string s) 
+    {
+      AssertIsInRawSequence ();
+      AppendRawEscapedStringUnsafe (s);
+      return this;
+    }
+
+    //public abstract IToTextBuilderBase AppendRawEscapedString (string s);
     public abstract IToTextBuilderBase sEsc (string s);
 
     public IToTextBuilderBase s (string s)
     {
-      return AppendString (s);
+      //return AppendRawString (s);
+      return AppendRawStringUnsafe (s); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
-    public abstract IToTextBuilderBase AppendChar (char c);
+    public abstract IToTextBuilderBase AppendRawCharUnsafe (char c);
+
+    public IToTextBuilderBase AppendRawChar (char c)
+    {
+      AssertIsInRawSequence ();
+      AppendRawCharUnsafe (c);
+      return this;
+    }
+
+    //public abstract IToTextBuilderBase AppendRawChar (char c);
     public abstract IToTextBuilderBase AppendMember (string name, Object obj);
 
     public IToTextBuilderBase AppendMember<T> (Expression<Func<object, T>> expression)
@@ -235,13 +277,13 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase AppendToText (Object obj)
     {
-      BeforeAppendElement ();
-      _AppendToText (obj);
-      AfterAppendElement ();
+      //BeforeAppendElement ();  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      AppendToTextRaw (obj);
+      //AfterAppendElement ();   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       return this;
     }
 
-    protected IToTextBuilderBase _AppendToText (Object obj)
+    protected IToTextBuilderBase AppendToTextRaw (Object obj)
     {
       _toTextProvider.ToText (obj, this);
       return this;
@@ -260,14 +302,14 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase AppendToTextNonSequence (Object obj)
     {
-      _AppendToText (obj);
+      AppendToTextRaw (obj);
       return this;
     }
 
 
     public IToTextBuilderBase Append (string s)
     {
-      return AppendString (s);
+      return AppendRawString (s);
     }
 
     public abstract IToTextBuilderBase Append (Object obj);
@@ -297,7 +339,7 @@ namespace Remotion.Diagnostics.ToText
     public IToTextBuilderBase AppendSequenceEnd ()
     {
       SequenceEnd ();
-      AfterAppendElement ();
+      //AfterAppendElement (); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       return this;
     }
 
@@ -311,9 +353,9 @@ namespace Remotion.Diagnostics.ToText
     public IToTextBuilderBase AppendSequenceElement (object obj)
     {
       Assertion.IsTrue (IsInSequence);
-      BeforeAppendElement ();
+      //BeforeAppendElement ();  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       _toTextProvider.ToText (obj, this);
-      AfterAppendElement ();
+      //AfterAppendElement ();  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       return this;
     }
 
@@ -344,6 +386,18 @@ namespace Remotion.Diagnostics.ToText
         AppendSequenceElement (s1 + i);
       }
       return this;
+    }
+
+    public void AppendRawElementBegin ()
+    {
+      IsInRawSequence = true;
+      BeforeAppendElement();
+    }
+
+    public void AppendRawElementEnd ()
+    {
+      AfterAppendElement ();
+      IsInRawSequence = false;
     }
 
     //public abstract IToTextBuilderBase EmitNamedSequenceBegin ();

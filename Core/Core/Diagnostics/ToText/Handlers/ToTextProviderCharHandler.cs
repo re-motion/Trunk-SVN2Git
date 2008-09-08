@@ -20,18 +20,19 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
       if (type == typeof (char))
       {
+        toTextBuilder.AppendRawElementBegin ();
         char c = (char) obj;
         if (settings.UseAutomaticCharEnclosing)
         {
-          toTextBuilder.AppendChar ('\'');
-          toTextBuilder.AppendChar (c);
-          toTextBuilder.AppendChar ('\'');
+          toTextBuilder.AppendRawChar ('\'');
+          toTextBuilder.AppendRawChar (c);
+          toTextBuilder.AppendRawChar ('\'');
         }
         else
         {
-          toTextBuilder.AppendChar (c);
+          toTextBuilder.AppendRawChar (c);
         }
-
+        toTextBuilder.AppendRawElementEnd ();
         toTextProviderHandlerFeedback.Handled = true;
       }
     }

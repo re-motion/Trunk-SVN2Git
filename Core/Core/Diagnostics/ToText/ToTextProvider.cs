@@ -150,7 +150,7 @@ namespace Remotion.Diagnostics.ToText
 
     private void Log (string s)
     {
-      Console.WriteLine ("[To]: " + s);
+      //Console.WriteLine ("[To]: " + s);
     }
 
     private void LogVariables (string format, params object[] parameterArray)

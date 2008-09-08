@@ -237,6 +237,18 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
     [Test]
+    public void AppendNestedCollectionStringMemberTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      var list = List.New (List.New ("5", "3", "1"), List.New ("11", "13", "17"));
+      toTextBuilder.AppendEnumerable (list);
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{{5,3,1},{11,13,17}}"));
+    }
+
+
+    [Test]
     public void AppendNestedCollectionTest2 ()
     {
       var toTextBuilder = CreateTextBuilder();
@@ -284,17 +296,7 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (result, Is.EqualTo ("{{{A,B,C}}}"));
     }
 
-    [Test]
-    public void AppendArray2DTest ()
-    {
-      var toTextBuilder = CreateTextBuilder();
-      //var array = new int[][] {new int[] {1,2},new int[] {3,4},new int[] {5,6}};
-      var array = new[] {new[] {1, 2}, new[] {3, 4}, new[] {5, 6}};
-      toTextBuilder.AppendArray (array);
-      var result = toTextBuilder.CheckAndConvertToString();
-      Log (result);
-      Assert.That (result, Is.EqualTo ("{{1,2},{3,4},{5,6}}"));
-    }
+
 
     [Test]
     public void AppendArray3DTest ()
@@ -762,19 +764,21 @@ namespace Remotion.UnitTests.Diagnostics
     private void EscapeString(string s, ToTextBuilder toTextBuilder)
     {
       var mapping = new Dictionary<char, string> () { { '"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\t', "\\t" }, { '\\', "\\\\" }, {'\b',"\\b"}, {'\v',"\\v"}, {'\f',"\\f"} };
+      toTextBuilder.AppendRawElementBegin();
       foreach (char c in s)
       {
         string mappedString;
         mapping.TryGetValue (c, out mappedString);
         if (mappedString == null)
         {
-          toTextBuilder.AppendChar (c);
+          toTextBuilder.AppendRawChar (c);
         }
         else
         {
-          toTextBuilder.AppendString (mappedString);
+          toTextBuilder.AppendRawString (mappedString);
         }
       }
+      toTextBuilder.AppendRawElementEnd ();
     }
 
     [Test]

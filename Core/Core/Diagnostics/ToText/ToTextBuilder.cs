@@ -217,7 +217,7 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase sf (string format, params object[] paramArray)
     {
-      return AppendString (string.Format (format, paramArray));
+      return AppendRawStringUnsafe (string.Format (format, paramArray)); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
 
@@ -324,6 +324,8 @@ namespace Remotion.Diagnostics.ToText
 
     protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
+      BeforeAppendElement(); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
       _sequenceStack.Push (SequenceState);
 
       SequenceState = new SequenceStateHolder (name, sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
@@ -361,8 +363,12 @@ namespace Remotion.Diagnostics.ToText
     public override IToTextBuilderBase AppendArray (Array array)
     {
       var outerProduct = new OuterProductIndexGenerator (array);
+
       SequenceBegin ("", Settings.ArrayPrefix, Settings.ArrayFirstElementPrefix,
                      Settings.ArrayOtherElementPrefix, Settings.ArrayElementPostfix, Settings.ArrayPostfix);
+
+      //SequenceBegin ("", "A ", "AE ", "~AE ","_AE ","_A");  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
       var processor = new ToTextBuilderArrayToTextProcessor (array, this);
       outerProduct.ProcessOuterProduct (processor);
       SequenceEnd ();
@@ -370,35 +376,58 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override IToTextBuilderBase AppendString (string s)
+
+    public override IToTextBuilderBase AppendRawStringUnsafe (string s)
     {
       _disableableWriter.Write (s);
       return this;
     }
 
-    public override IToTextBuilderBase AppendEscapedString (string s)
+    //public override IToTextBuilderBase AppendRawString (string s)
+    //{
+    //  AssertIsInRawSequence();
+    //  AppendRawStringUnsafe (s);
+    //  return this;
+    //}
+
+    public override IToTextBuilderBase AppendRawEscapedStringUnsafe (string s)
     {
-      EscapeString(s,_disableableWriter);
+      EscapeString (s, _disableableWriter);
       return this;
     }
 
+    //public override IToTextBuilderBase AppendRawEscapedString (string s)
+    //{
+    //  AppendRawEscapedStringUnsafe(s);
+    //  return this;
+    //}
+
     public override IToTextBuilderBase sEsc (string s)
     {
-      return AppendEscapedString (s);
+      //return AppendRawEscapedString (s);
+      return AppendRawEscapedStringUnsafe (s);  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      
     }
 
-    public override IToTextBuilderBase AppendChar (char c)
+    public override IToTextBuilderBase AppendRawCharUnsafe (char c)
     {
       _disableableWriter.Write (c);
       return this;
     }
 
+    //public override IToTextBuilderBase AppendRawChar (char c)
+    //{
+    //  AssertIsInRawSequence ();
+    //  AppendRawCharUnsafe (c);
+    //  return this;
+    //}
+
     public override IToTextBuilderBase AppendMember (string name, Object obj)
     {
       ArgumentUtility.CheckNotNull ("name", name);
-      BeforeAppendElement ();
+      //BeforeAppendElement ();   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       AppendMemberRaw (name, obj);
-      AfterAppendElement ();
+      //AfterAppendElement ();   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       return this;
     }
 
@@ -419,7 +448,8 @@ namespace Remotion.Diagnostics.ToText
         Settings.EnumerableOtherElementPrefix, Settings.EnumerableElementPostfix, Settings.EnumerablePostfix);
       foreach (Object element in collection)
       {
-        AppendToText (element);
+        //AppendToText (element);
+        AppendToTextNonSequence (element);
       }
       SequenceEnd ();
       return this;
@@ -474,6 +504,8 @@ namespace Remotion.Diagnostics.ToText
       _disableableWriter.Write (SequenceState.SequencePostfix);
 
       SequenceState = _sequenceStack.Pop ();
+
+      AfterAppendElement (); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
 

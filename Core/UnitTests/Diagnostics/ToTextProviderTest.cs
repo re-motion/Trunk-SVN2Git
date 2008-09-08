@@ -453,7 +453,53 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
     [Test]
-    [Ignore]
+    public void ComplexArrayTest ()
+    {
+      ToTextProvider toText = CreateTextProvider ();
+      var number = 123.456;
+      toText.RegisterSpecificTypeHandler<Test> (
+          //(x, ttb) => NamedSequenceBegin (ttb, "Test").e (x.Name).e (x.Int).e (x.RectangularArray3D).se ());
+          (x, ttb) => NamedSequenceBegin (ttb, "Test").e (x.RectangularArray3D).se ());
+      toText.RegisterSpecificTypeHandler<Test2> (
+          //(x, ttb) => NamedSequenceBegin (ttb, "Test2").e (x.Name).e (x.Int).e (x.RectangularArray2D).se ());
+          (x, ttb) => NamedSequenceBegin (ttb, "Test2").e (x.RectangularArray2D).se ());
+          //(x, ttb) => NamedSequenceBegin (ttb, "Test2").e (x.Name).se ());
+          //(x, ttb) => NamedSequenceBegin (ttb, "Test2").e (x.Int).se ());
+          //(x, ttb) => ttb.sb ().se ()); // err
+          //(x, ttb) => ttb.s("xxx")); // works
+          //(x, ttb) => ttb.AppendSequenceBegin ("seq","§","%","|%","%","§").se ()); // err
+          //(x, ttb) => ttb.AppendMember("number",number)); 
+          //(x, ttb) => ttb.s("text")); // works
+          //(x, ttb) => ttb.tt("toText")); // err
+      var test = new Test ("That's not my name", 179);
+      var at2 = new Test2[3, 3, 3];
+
+      for (int i0 = 0; i0 < 2; i0++)
+      {
+        for (int i1 = 0; i1 < 2; i1++)
+        {
+          for (int i2 = 0; i2 < 2; i2++)
+          {
+            var test2 = new Test2 (String.Format ("{0}-{1}-{2}", i0, i1, i2), i0 ^ i1 ^ i2);
+            test2.RectangularArray2D = new string[,] { { "A" + i0, "B" + 1 }, { "C" + i2, "D" } };
+            at2[i0, i1, i2] = test2;
+          }
+        }
+      }
+      test.RectangularArray3D = new Object[,,]
+                                {
+                                    {
+                                        { at2[0, 0, 0], at2[0, 0, 1] }
+                                        //{ 1, 2 }
+                                    },
+                                };
+      string toTextTest = ToText (toText, test);
+      Log ("toTextTest=" + toTextTest);
+    }
+
+
+    [Test]
+    //[Ignore]
     public void RectangularArrayTest2 ()
     {
       ToTextProvider toText = CreateTextProvider();

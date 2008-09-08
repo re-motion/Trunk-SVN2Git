@@ -98,10 +98,10 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase AppendColon ();
     IToTextBuilderBase AppendSemiColon ();
     IToTextBuilderBase AppendArray (Array array);
-    IToTextBuilderBase AppendString (string s);
-    IToTextBuilderBase AppendEscapedString (string s);
+    IToTextBuilderBase AppendRawString (string s);
+    IToTextBuilderBase AppendRawEscapedString (string s);
     IToTextBuilderBase sEsc (string s);
-    IToTextBuilderBase AppendChar (char c);
+    IToTextBuilderBase AppendRawChar (char c);
     IToTextBuilderBase AppendMember (string name, Object obj);
     IToTextBuilderBase AppendEnumerable (IEnumerable collection);
     IToTextBuilderBase array (Array array);
@@ -144,6 +144,12 @@ namespace Remotion.Diagnostics.ToText
 
     //IToTextBuilderBase EmitNamedSequenceBegin ();
     //IToTextBuilderBase EmitNamedSequenceEnd ();
+
+    //void HandlerBeforeAppendElement ();
+    //void HandlerAfterAppendElement ();
+
+    void AppendRawElementBegin ();
+    void AppendRawElementEnd ();
 
   }
 }

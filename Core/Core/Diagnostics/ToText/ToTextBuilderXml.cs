@@ -8,6 +8,7 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+#if(false)
 using System;
 using System.Collections;
 using System.IO;
@@ -159,12 +160,12 @@ namespace Remotion.Diagnostics.ToText
       throw new System.NotImplementedException();
     }
 
-    public override IToTextBuilderBase AppendString (string s)
+    public override IToTextBuilderBase AppendRawString (string s)
     {
       throw new System.NotImplementedException();
     }
 
-    public override IToTextBuilderBase AppendEscapedString (string s)
+    public override IToTextBuilderBase AppendRawEscapedString (string s)
     {
       throw new System.NotImplementedException();
     }
@@ -174,7 +175,7 @@ namespace Remotion.Diagnostics.ToText
       throw new System.NotImplementedException();
     }
 
-    public override IToTextBuilderBase AppendChar (char c)
+    public override IToTextBuilderBase AppendRawChar (char c)
     {
       throw new System.NotImplementedException();
     }
@@ -222,3 +223,4 @@ namespace Remotion.Diagnostics.ToText
     #endregion
   }
 }
+#endif
