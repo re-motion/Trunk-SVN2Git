@@ -96,8 +96,11 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase elements (params object[] sequenceElements);
     IToTextBuilderBase elementsNumbered (string s1, int i0, int i1);
 
-    IToTextBuilderBase beginInstance (Type type);
-    IToTextBuilderBase endInstance ();
+    IToTextBuilderBase WriteInstanceBegin (Type type);
+    IToTextBuilderBase ib (Type type);
+
+    IToTextBuilderBase WriteInstanceEnd ();
+    IToTextBuilderBase ie ();
 
 
     // TODO: Check that if ToTextprovider holds ToTextBuilderBase, exposing these through the interface is still necessary.

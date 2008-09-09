@@ -150,19 +150,18 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public abstract IToTextBuilderBase AppendRawStringUnsafe (string s);
+    public abstract IToTextBuilderBase WriteRawStringUnsafe (string s);
 
     public IToTextBuilderBase WriteRawString (string s)
     {
       AssertIsInRawSequence ();
-      AppendRawStringUnsafe (s);
+      WriteRawStringUnsafe (s);
       return this;
     }
 
     private void AssertIsInRawSequence ()
     {
       Assertion.IsTrue(IsInRawSequence);
-      //throw new NotImplementedException();
     }
 
     protected bool IsInRawSequence
@@ -173,12 +172,12 @@ namespace Remotion.Diagnostics.ToText
 
     //public abstract IToTextBuilderBase AppendRawString (string s);
 
-    public abstract IToTextBuilderBase AppendRawEscapedStringUnsafe (string s);
+    public abstract IToTextBuilderBase WriteRawStringEscapedUnsafe (string s);
 
     public IToTextBuilderBase WriteRawStringEscaped (string s) 
     {
       AssertIsInRawSequence ();
-      AppendRawEscapedStringUnsafe (s);
+      WriteRawStringEscapedUnsafe (s);
       return this;
     }
 
@@ -187,16 +186,15 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase s (string s)
     {
-      //return AppendRawString (s);
-      return AppendRawStringUnsafe (s); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      return WriteRawStringUnsafe (s);
     }
 
-    public abstract IToTextBuilderBase AppendRawCharUnsafe (char c);
+    public abstract IToTextBuilderBase WriteRawCharUnsafe (char c);
 
     public IToTextBuilderBase WriteRawChar (char c)
     {
       AssertIsInRawSequence ();
-      AppendRawCharUnsafe (c);
+      WriteRawCharUnsafe (c);
       return this;
     }
 
@@ -214,13 +212,13 @@ namespace Remotion.Diagnostics.ToText
     public IToTextBuilderBase WriteElement (string name, Object obj)
     {
       ArgumentUtility.CheckNotNull ("name", name);
-      AppendMemberRaw (name, obj);
+      WriteMemberRaw (name, obj);
       return this;
     }
 
-    //protected abstract IToTextBuilderBase AppendMemberRaw (string name, Object obj);
+    //protected abstract IToTextBuilderBase WriteMemberRaw (string name, Object obj);
 
-    protected IToTextBuilderBase AppendMemberRaw (string name, Object obj)
+    protected IToTextBuilderBase WriteMemberRaw (string name, Object obj)
     {
       SequenceBegin ("", name + "=", "", "", "", "");
       _toTextProvider.ToText (obj, this);
@@ -292,10 +290,17 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public IToTextBuilderBase beginInstance (Type type)
+    public IToTextBuilderBase WriteInstanceBegin (Type type)
     {
       return AppendInstanceBegin (type);
     }
+
+    public IToTextBuilderBase ib (Type type)
+    {
+      return WriteInstanceBegin (type);
+    }
+
+
 
     private IToTextBuilderBase AppendInstanceEnd ()
     {
@@ -303,10 +308,16 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public IToTextBuilderBase endInstance ()
+    public IToTextBuilderBase WriteInstanceEnd ()
     {
       return AppendInstanceEnd ();
     }
+
+    public IToTextBuilderBase ie ()
+    {
+      return WriteInstanceEnd ();
+    }
+
 
     public IToTextBuilderBase WriteSequenceEnd ()
     {

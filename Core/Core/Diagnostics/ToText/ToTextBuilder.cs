@@ -85,8 +85,8 @@ namespace Remotion.Diagnostics.ToText
   //  IToTextBuilderBase e (Object obj, bool honorSequence);
   //  IToTextBuilderBase WriteElement (Object obj);
   //  IToTextBuilderBase Append (string s);
-  //  IToTextBuilderBase beginInstance (Type type);
-  //  IToTextBuilderBase endInstance ();
+  //  IToTextBuilderBase WriteInstanceBegin (Type type);
+  //  IToTextBuilderBase WriteInstanceEnd ();
   //  IToTextBuilderBase WriteSequenceEnd ();
   //  IToTextBuilderBase se ();
   //  IToTextBuilderBase WriteElement (object obj);
@@ -217,7 +217,7 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase sf (string format, params object[] paramArray)
     {
-      return AppendRawStringUnsafe (string.Format (format, paramArray)); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      return WriteRawStringUnsafe (string.Format (format, paramArray)); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
 
@@ -359,7 +359,7 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public override IToTextBuilderBase AppendRawStringUnsafe (string s)
+    public override IToTextBuilderBase WriteRawStringUnsafe (string s)
     {
       _disableableWriter.Write (s);
       return this;
@@ -368,11 +368,11 @@ namespace Remotion.Diagnostics.ToText
     //public override IToTextBuilderBase AppendRawString (string s)
     //{
     //  AssertIsInRawSequence();
-    //  AppendRawStringUnsafe (s);
+    //  WriteRawStringUnsafe (s);
     //  return this;
     //}
 
-    public override IToTextBuilderBase AppendRawEscapedStringUnsafe (string s)
+    public override IToTextBuilderBase WriteRawStringEscapedUnsafe (string s)
     {
       EscapeString (s, _disableableWriter);
       return this;
@@ -380,18 +380,17 @@ namespace Remotion.Diagnostics.ToText
 
     //public override IToTextBuilderBase AppendRawEscapedString (string s)
     //{
-    //  AppendRawEscapedStringUnsafe(s);
+    //  WriteRawStringEscapedUnsafe(s);
     //  return this;
     //}
 
     public override IToTextBuilderBase sEsc (string s)
     {
-      //return AppendRawEscapedString (s);
-      return AppendRawEscapedStringUnsafe (s);  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      return WriteRawStringEscapedUnsafe (s); 
       
     }
 
-    public override IToTextBuilderBase AppendRawCharUnsafe (char c)
+    public override IToTextBuilderBase WriteRawCharUnsafe (char c)
     {
       _disableableWriter.Write (c);
       return this;
@@ -400,19 +399,19 @@ namespace Remotion.Diagnostics.ToText
     //public override IToTextBuilderBase AppendRawChar (char c)
     //{
     //  AssertIsInRawSequence ();
-    //  AppendRawCharUnsafe (c);
+    //  WriteRawCharUnsafe (c);
     //  return this;
     //}
 
     //public override IToTextBuilderBase WriteElement (string name, Object obj)
     //{
     //  ArgumentUtility.CheckNotNull ("name", name);
-    //  AppendMemberRaw (name, obj);
+    //  WriteMemberRaw (name, obj);
     //  return this;
     //}
 
 
-    //protected override IToTextBuilderBase AppendMemberRaw (string name, Object obj)
+    //protected override IToTextBuilderBase WriteMemberRaw (string name, Object obj)
     //{
     //  SequenceBegin ("", name + "=", "", "", "", "");
     //  _toTextProvider.ToText (obj, this);

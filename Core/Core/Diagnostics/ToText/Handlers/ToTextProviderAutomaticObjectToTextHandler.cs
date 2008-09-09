@@ -42,7 +42,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
     {
       Type type = obj.GetType ();
 
-      toTextBuilder.beginInstance (type);
+      toTextBuilder.WriteInstanceBegin (type);
 
       if (emitPublicProperties)
       {
@@ -61,7 +61,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
       {
         ObjectToTextProcessMemberInfos ("Non Public Fields", obj, BindingFlags.Instance | BindingFlags.NonPublic, MemberTypes.Field, toTextBuilder);
       }
-      toTextBuilder.endInstance ();
+      toTextBuilder.WriteInstanceEnd ();
     }
 
     private void ObjectToTextProcessMemberInfos (string message, object obj, BindingFlags bindingFlags, MemberTypes memberTypeFlags, IToTextBuilderBase toTextBuilder)

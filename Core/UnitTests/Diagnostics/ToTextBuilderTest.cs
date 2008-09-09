@@ -532,7 +532,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var obj = new object();
-      toTextBuilder.beginInstance (obj.GetType()).endInstance();
+      toTextBuilder.WriteInstanceBegin (obj.GetType()).WriteInstanceEnd();
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("[Object]")); // NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
