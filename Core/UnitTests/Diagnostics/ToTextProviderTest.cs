@@ -368,7 +368,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       ToTextProvider toText = CreateTextProvider();
       //toText.RegisterSpecificTypeHandler<Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name),ToText(toText,x.Int), ToText(toText,x.LinkedListString)));
-      toText.RegisterSpecificTypeHandler<Test> ((x, ttb) => ttb.s ("[Test: ").m (x.Name).semicolon.m (x.Int).semicolon.m (x.LinkedListString).s ("]"));
+      toText.RegisterSpecificTypeHandler<Test> ((x, ttb) => ttb.s ("[Test: ").m (x.Name).s(";").m (x.Int).s(";").m (x.LinkedListString).s ("]"));
       var test = new Test ("That's not my name", 179);
       test.LinkedListString = null;
       string toTextTest = ToText (toText, test);

@@ -44,19 +44,6 @@ namespace Remotion.Diagnostics.ToText
       get { AppendSeperator (); return this; }
     }
 
-    public IToTextBuilderBase colon
-    {
-      get { AppendColon (); return this; }
-    }
-
-    public IToTextBuilderBase semicolon
-    {
-      get { AppendSemiColon (); return this; }
-    }
-
-
-
-
 
     public ToTextBuilderOutputComplexityLevel OutputComplexity { get; protected set; }
 
