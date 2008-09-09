@@ -12,7 +12,7 @@ using System;
 using System.Reflection;
 using Remotion.Collections;
 
-namespace Remotion.Web.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   [Serializable]
   public abstract class ResourceObjectBase

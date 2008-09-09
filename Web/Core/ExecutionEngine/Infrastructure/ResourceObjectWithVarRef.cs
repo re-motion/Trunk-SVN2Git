@@ -13,7 +13,7 @@ using System.Reflection;
 using Remotion.Collections;
 using Remotion.Utilities;
 
-namespace Remotion.Web.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   [Serializable]
   public class ResourceObjectWithVarRef : ResourceObjectBase

@@ -14,8 +14,9 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 {
   [TestFixture]
   public class ResourceObjectWithVarRefTest

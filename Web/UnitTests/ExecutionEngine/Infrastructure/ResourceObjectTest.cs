@@ -9,13 +9,12 @@
  */
 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Web.ExecutionEngine;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 {
   [TestFixture]
   public class ResourceObjectTest
@@ -33,13 +32,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       ResourceObject resourceObject = new ResourceObject (null, "path.aspx");
 
       Assert.That (resourceObject.ResourceRoot, Is.Empty);
-      Assert.That (resourceObject.Path, Is.EqualTo("path.aspx"));
+      Assert.That (resourceObject.Path, Is.EqualTo ("path.aspx"));
     }
 
     [Test]
     public void InitializeWithResourceAssembly_WithAssembly ()
     {
-      ResourceObject resourceObject = new ResourceObject (GetType ().Assembly, "path.aspx");
+      ResourceObject resourceObject = new ResourceObject (GetType().Assembly, "path.aspx");
 
       Assert.That (resourceObject.ResourceRoot, Is.EqualTo ("/res/Remotion.Web.UnitTests/"));
       Assert.That (resourceObject.Path, Is.EqualTo ("path.aspx"));
@@ -56,7 +55,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void GetResourcePath_WithAssembly ()
     {
-      ResourceObject resourceObject = new ResourceObject (GetType ().Assembly, "path.aspx");
+      ResourceObject resourceObject = new ResourceObject (GetType().Assembly, "path.aspx");
 
       Assert.That (resourceObject.GetResourcePath (null), Is.EqualTo ("/res/Remotion.Web.UnitTests/path.aspx"));
     }

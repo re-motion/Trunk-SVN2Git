@@ -110,9 +110,9 @@
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Context\WebSafeContextMixin.cs" />
     <Compile Include="ExecutionEngine\IWxePageExecutor.cs" />
-    <Compile Include="ExecutionEngine\ResourceObject.cs" />
-    <Compile Include="ExecutionEngine\ResourceObjectBase.cs" />
-    <Compile Include="ExecutionEngine\ResourceObjectWithVarRef.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ResourceObject.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectBase.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectWithVarRef.cs" />
     <Compile Include="ExecutionEngine\WxeExecuteUserControlNextStepException.cs" />
     <Compile Include="ExecutionEngine\WxeExecuteUserControlStepException.cs" />
     <Compile Include="ExecutionEngine\WxeExecutionControlExceptionBase.cs" />
@@ -175,6 +175,7 @@
     <Compile Include="ExecutionEngine\WxeTransactedFunctionParameterEnlister.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionAlreadyReleasedException.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxeUserControlParentContainer.cs" />
     <Compile Include="ExecutionEngine\WxeUserControlStep.cs" />
     <Compile Include="ExecutionEngine\WxeVariableReference.cs" />
     <Compile Include="Infrastructure\HttpContextWrapper.cs" />
@@ -207,7 +208,7 @@
     <Compile Include="ExecutionEngine\WxeTransactionEventArgs.cs" />
     <Compile Include="ExecutionEngine\WxeUnhandledException.cs" />
     <Compile Include="ExecutionEngine\IWxeSecurityAdapter.cs" />
-    <Compile Include="ExecutionEngine\NumberedMemberFinder.cs">
+    <Compile Include="ExecutionEngine\Infrastructure\NumberedMemberFinder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\UrlMapping\ConfigurationBase.cs">

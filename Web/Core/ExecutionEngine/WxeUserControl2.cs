@@ -10,155 +10,23 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Collections;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
   public class WxeUserControl2 : UserControl, IWxeTemplateControl
   {
-    private sealed class ParentContainer : Control, INamingContainer
-    {
-      private bool _isControlStateLoaded;
-      private bool _isViewStateLoaded;
-      private bool _requiresClearChildControlState;
-      private bool _requiresClearChildViewState;
-      public object ViewStateBackup { get; set; }
-
-      public IDictionary ControlStateBackup { get; set; }
-
-      public bool HasChildState {  get  ;  set  ; }
-
-      protected override void OnInit (EventArgs e)
-      {
-        base.OnInit (e);
-        Page.RegisterRequiresControlState (this);
-      }
-
-      protected override void LoadControlState (object savedState)
-      {
-        _isControlStateLoaded = true;
-        
-        if (_requiresClearChildControlState)
-        {
-          _requiresClearChildControlState = false;
-          ClearChildControlState();
-        }
-        else if (ControlStateBackup != null)
-        {
-          IDictionary controlStateBackup = ControlStateBackup;
-          ControlStateBackup = null;
-          ControlHelper.SetChildControlState (this, controlStateBackup);
-        }
-      }
-
-      protected override object SaveControlState ()
-      {
-        return "value";
-      }
-
-      protected override void LoadViewState (object savedState)
-      {
-        _isViewStateLoaded = true;
-        
-        if (_requiresClearChildViewState)
-        {
-          _requiresClearChildViewState = false;
-
-          bool enableViewStateBackup = Controls[0].EnableViewState;
-          Controls[0].EnableViewState = false;
-          Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
-        }
-        else if (ViewStateBackup != null)
-        {
-          object viewStateBackup = ViewStateBackup;
-          ViewStateBackup = null;
-          bool enableViewStateBackup = Controls[0].EnableViewState;
-          Controls[0].EnableViewState = true;
-          ControlHelper.LoadViewStateRecursive (this, viewStateBackup);
-          Controls[0].EnableViewState = false;
-          Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
-        }
-      }
-
-      protected override object SaveViewState ()
-      {
-        return "value";
-      }
-
-      public new void ClearChildState ()
-      {
-        _requiresClearChildControlState = true;
-        _requiresClearChildViewState = true;
-      }
-
-      protected override void AddedControl (Control control, int index)
-      {
-        if (HasChildState)
-        {
-          if (_isControlStateLoaded)
-          {
-            if (_requiresClearChildControlState)
-            {
-              _requiresClearChildControlState = false;
-              ClearChildControlState();
-            }
-            IDictionary controlStateBackup = ControlStateBackup;
-            ControlStateBackup = null;
-            ControlHelper.SetChildControlState (this, controlStateBackup);
-          }
-
-          if (_isViewStateLoaded)
-          {
-            if (_requiresClearChildViewState)
-            {
-              _requiresClearChildViewState = false;
-              ClearChildViewState();
-            }
-            object viewStateBackup = ViewStateBackup;
-            ViewStateBackup = null;
-            ControlHelper.LoadViewStateRecursive (this, viewStateBackup);
-          }
-
-          HasChildState = false;
-
-          if (_isViewStateLoaded)
-          {
-            bool enableViewStateBackup = control.EnableViewState;
-            control.EnableViewState = false;
-            Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
-          }
-
-          base.AddedControl (control, index);
-        }
-        else
-        {
-          if (_isViewStateLoaded && _requiresClearChildViewState)
-          {
-            bool enableViewStateBackup = control.EnableViewState;
-            control.EnableViewState = false;
-            Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
-          }
-
-          base.AddedControl (control, index);
-        }
-      }
-    }
-
     private readonly WxeTemplateControlInfo _wxeInfo;
     private bool _isEnsured;
     private PlaceHolder _placeHolder;
-    private ParentContainer _parentContainer;
+    private WxeUserControlParentContainer _parentContainer;
     private bool _isInitComplete;
     private bool _isInOnInit;
     private bool _executeNextStep;
@@ -168,7 +36,7 @@ namespace Remotion.Web.ExecutionEngine
       _wxeInfo = new WxeTemplateControlInfo (this);
     }
 
-    protected sealed override void OnInit (EventArgs e)
+    protected override sealed void OnInit (EventArgs e)
     {
       if (_isInOnInit)
         return;
@@ -178,38 +46,31 @@ namespace Remotion.Web.ExecutionEngine
 
       if (_parentContainer == null)
       {
-        InitializeParentContainer ();
-        WrapControlWithParentContainer ();
+        InitializeParentContainer();
+        WrapControlWithParentContainer();
 
         string uniqueID = _parentContainer.UniqueID + IdSeparator + ID;
         if (CurrentPageStep.UserControlID == uniqueID && !CurrentPageStep.IsReturningInnerFunction)
-        {
-          bool clearState = !CurrentUserControlStep.IsPostBack;
-          AddReplacementUserControl (clearState);
-        }
+          AddReplacementUserControl ();
         else
-        {
-          CompleteInitialization ();
-        }
+          CompleteInitialization();
       }
       else
-      {
-        CompleteInitialization ();
-      }
+        CompleteInitialization();
 
       _isInOnInit = false;
     }
 
     private void InitializeParentContainer ()
     {
-      _parentContainer = new ParentContainer ();
+      _parentContainer = new WxeUserControlParentContainer();
       _parentContainer.ID = ID + "_Parent";
       string savedState = null;
       if (CurrentPageStep.IsReturningInnerFunction)
         savedState = CurrentPageStep.UserControlState;
       if (savedState != null)
       {
-        var formatter = new LosFormatter ();
+        var formatter = new LosFormatter();
         var state = (Pair) formatter.Deserialize (savedState);
 
         _parentContainer.HasChildState = true;
@@ -220,15 +81,18 @@ namespace Remotion.Web.ExecutionEngine
 
     private void WrapControlWithParentContainer ()
     {
-      Assertion.IsNotNull (_parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
-      
+      Assertion.IsNotNull (
+          _parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
+
       Control parent = Parent;
       int index = parent.Controls.IndexOf (this);
 
       //Mark parent collection as writeable
-      string errorMessage = MethodCaller.CallFunc<string> ("SetCollectionReadOnly", BindingFlags.Instance| BindingFlags.NonPublic).With (parent.Controls, (string) null);
+      string errorMessage =
+          MethodCaller.CallFunc<string> ("SetCollectionReadOnly", BindingFlags.Instance | BindingFlags.NonPublic).With (
+              parent.Controls, (string) null);
       Assertion.IsNotNull (errorMessage, "The parent's collection is readonly during the initialization phase of a control");
-        
+
       parent.Controls.RemoveAt (index);
       parent.Controls.AddAt (index, _parentContainer);
 
@@ -237,24 +101,26 @@ namespace Remotion.Web.ExecutionEngine
       MethodCaller.CallAction ("InitRecursive", BindingFlags.Instance | BindingFlags.NonPublic).With (_parentContainer, parent);
     }
 
-    private void AddReplacementUserControl (bool clearState)
+    private void AddReplacementUserControl ()
     {
-      Assertion.IsNotNull (_parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
+      Assertion.IsNotNull (
+          _parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
 
       var control = (WxeUserControl2) _parentContainer.Page.LoadControl (CurrentUserControlStep.UserControl);
       control.ID = ID;
       control._parentContainer = _parentContainer;
       _parentContainer = null;
 
-      if (clearState)
+      if (!CurrentUserControlStep.IsPostBack)
         control._parentContainer.ClearChildState();
-   
-      control.CompleteInitialization ();
+
+      control.CompleteInitialization();
     }
 
     private void CompleteInitialization ()
     {
-      Assertion.IsNotNull (_parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
+      Assertion.IsNotNull (
+          _parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
 
       if (Parent == null)
         _parentContainer.Controls.Add (this);
@@ -273,19 +139,17 @@ namespace Remotion.Web.ExecutionEngine
       base.OnInit (e);
     }
 
-    public sealed override ControlCollection Controls
+    public override sealed ControlCollection Controls
     {
       get
       {
-        EnsureChildControls ();
+        EnsureChildControls();
 
         if (_isEnsured)
-        {
           return base.Controls;
-        }
         else
         {
-          EnsurePlaceHolderCreated ();
+          EnsurePlaceHolderCreated();
           return _placeHolder.Controls;
         }
       }
@@ -298,20 +162,21 @@ namespace Remotion.Web.ExecutionEngine
 
       _isEnsured = true;
 
-      EnsurePlaceHolderCreated ();
-      Controls.Add (_placeHolder);
+      EnsurePlaceHolderCreated();
+      foreach (Control control in _parentContainer.Controls)
+        Controls.Add (control);
     }
 
     private void EnsurePlaceHolderCreated ()
     {
       if (_placeHolder == null)
-        _placeHolder = new PlaceHolder ();
+        _placeHolder = new PlaceHolder();
     }
 
-    protected sealed override void CreateChildControls ()
+    protected override sealed void CreateChildControls ()
     {
       if (ControlHelper.IsDesignMode (this, Context))
-        Ensure ();
+        Ensure();
     }
 
     public void ExecuteFunction (WxeFunction function)
@@ -362,12 +227,12 @@ namespace Remotion.Web.ExecutionEngine
 
     public override void Dispose ()
     {
-      base.Dispose ();
+      base.Dispose();
 
       if (_executeNextStep)
       {
         if (Context != null)
-          Context.Response.Clear (); // throw away page trace output
+          Context.Response.Clear(); // throw away page trace output
         throw new WxeExecuteUserControlNextStepException();
       }
     }

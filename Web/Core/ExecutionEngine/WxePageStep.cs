@@ -124,7 +124,9 @@ namespace Remotion.Web.ExecutionEngine
       {
         //  This is the PageStep if it isn't executing a sub-function
 
-        SetStateForCurrentFunction (context);
+        //  Use the Page's postback data
+        context.PostBackCollection = null;
+        context.SetIsReturningPostBack (false);
 
         if (_innerFunction != null)
         {
@@ -267,15 +269,6 @@ namespace Remotion.Web.ExecutionEngine
       base.AbortRecursive();
       if (_executionState.IsExecuting && _executionState.Parameters.SubFunction.RootFunction == this.RootFunction)
         _executionState.Parameters.SubFunction.Abort();
-    }
-
-    private void SetStateForCurrentFunction (WxeContext context)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      //  Use the Page's postback data
-      context.PostBackCollection = null;
-      context.SetIsReturningPostBack (false);
     }
 
     public string UserControlID

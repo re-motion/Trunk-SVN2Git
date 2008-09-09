@@ -12,8 +12,9 @@ using System;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
-namespace Remotion.Web.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   [Serializable]
   public class ResourceObject : ResourceObjectBase
