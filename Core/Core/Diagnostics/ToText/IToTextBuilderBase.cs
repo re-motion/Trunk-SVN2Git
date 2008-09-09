@@ -82,22 +82,23 @@ namespace Remotion.Diagnostics.ToText
     
 
 
-    IToTextBuilderBase AppendSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
+    IToTextBuilderBase WriteSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
     IToTextBuilderBase sb ();
     IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
     IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix);
     IToTextBuilderBase sb (string sequencePrefix, string sequencePostfix);
-    IToTextBuilderBase AppendSequenceEnd ();
+    IToTextBuilderBase WriteSequenceEnd ();
     IToTextBuilderBase se ();
     
-    IToTextBuilderBase AppendSequenceElement (object obj);
+    IToTextBuilderBase WriteSequenceElement (object obj);
 
-    IToTextBuilderBase AppendSequenceElements (params object[] sequenceElements);
+    IToTextBuilderBase WriteSequenceElements (params object[] sequenceElements);
     IToTextBuilderBase elements (params object[] sequenceElements);
     IToTextBuilderBase elementsNumbered (string s1, int i0, int i1);
 
     IToTextBuilderBase beginInstance (Type type);
     IToTextBuilderBase endInstance ();
+
 
     IToTextBuilderBase AppendArray (Array array);
     IToTextBuilderBase array (Array array);

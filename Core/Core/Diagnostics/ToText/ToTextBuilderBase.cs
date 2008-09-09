@@ -120,7 +120,7 @@ namespace Remotion.Diagnostics.ToText
       return AppendObjectToString (obj);
     }
 
-    public IToTextBuilderBase AppendSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    public IToTextBuilderBase WriteSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
       //BeforeAppendElement ();
 
@@ -131,22 +131,22 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase sb ()
     {
-      return AppendSequenceBegin ("", "(", "", ",", "", ")");
+      return WriteSequenceBegin ("", "(", "", ",", "", ")");
     }
 
     public IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
-      return AppendSequenceBegin ("", sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+      return WriteSequenceBegin ("", sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
     }
 
     public IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix)
     {
-      return AppendSequenceBegin ("", sequencePrefix, "", separator, "", sequencePostfix);
+      return WriteSequenceBegin ("", sequencePrefix, "", separator, "", sequencePostfix);
     }
 
     public IToTextBuilderBase sb (string sequencePrefix, string sequencePostfix)
     {
-      return AppendSequenceBegin ("", sequencePrefix, "", ",", "", sequencePostfix);
+      return WriteSequenceBegin ("", sequencePrefix, "", ",", "", sequencePostfix);
     }
 
 
@@ -308,7 +308,7 @@ namespace Remotion.Diagnostics.ToText
       return AppendInstanceEnd ();
     }
 
-    public IToTextBuilderBase AppendSequenceEnd ()
+    public IToTextBuilderBase WriteSequenceEnd ()
     {
       SequenceEnd ();
       return this;
@@ -318,10 +318,10 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase se ()
     {
-      return AppendSequenceEnd ();
+      return WriteSequenceEnd ();
     }
 
-    public IToTextBuilderBase AppendSequenceElement (object obj)
+    public IToTextBuilderBase WriteSequenceElement (object obj)
     {
       //Assertion.IsTrue (IsInSequence);
       _toTextProvider.ToText (obj, this);
@@ -330,29 +330,29 @@ namespace Remotion.Diagnostics.ToText
 
     //public IToTextBuilderBase e (object obj)
     //{
-    //  return AppendSequenceElement (obj);
+    //  return WriteSequenceElement (obj);
     //}
 
-    public IToTextBuilderBase AppendSequenceElements (params object[] sequenceElements)
+    public IToTextBuilderBase WriteSequenceElements (params object[] sequenceElements)
     {
       Assertion.IsTrue (IsInSequence);
       foreach (var obj in sequenceElements)
       {
-        AppendSequenceElement (obj);
+        WriteSequenceElement (obj);
       }
       return this;
     }
 
     public IToTextBuilderBase elements (params object[] sequenceElements)
     {
-      return AppendSequenceElements (sequenceElements);
+      return WriteSequenceElements (sequenceElements);
     }
 
     public IToTextBuilderBase elementsNumbered (string s1, int i0, int i1)
     {
       for (int i = i0; i <= i1; ++i)
       {
-        AppendSequenceElement (s1 + i);
+        WriteSequenceElement (s1 + i);
       }
       return this;
     }

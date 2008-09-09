@@ -204,7 +204,7 @@ namespace Remotion.UnitTests.Diagnostics
 
     private IToTextBuilderBase NamedSequenceBegin (IToTextBuilderBase toTextBuilder, string name)
     {
-      toTextBuilder.AppendSequenceBegin (name, "[", "", ";", "", "]");
+      toTextBuilder.WriteSequenceBegin (name, "[", "", ";", "", "]");
       return toTextBuilder;
     }
 
@@ -467,7 +467,7 @@ namespace Remotion.UnitTests.Diagnostics
           //(x, ttb) => NamedSequenceBegin (ttb, "Test2").e (x.Int).se ());
           //(x, ttb) => ttb.sb ().se ()); // err
           //(x, ttb) => ttb.s("xxx")); // works
-          //(x, ttb) => ttb.AppendSequenceBegin ("seq","§","%","|%","%","§").se ()); // err
+          //(x, ttb) => ttb.WriteSequenceBegin ("seq","§","%","|%","%","§").se ()); // err
           //(x, ttb) => ttb.WriteElement("number",number)); 
           //(x, ttb) => ttb.s("text")); // works
           //(x, ttb) => ttb.e("toText")); // err

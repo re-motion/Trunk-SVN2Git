@@ -587,7 +587,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void SequenceTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.AppendSequenceBegin ("", "", "", ",", "", "");
+      toTextBuilder.WriteSequenceBegin ("", "", "", ",", "", "");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (0));
       toTextBuilder.e ("1");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (1));
@@ -595,7 +595,7 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (2));
       toTextBuilder.e ("drei");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (3));
-      toTextBuilder.AppendSequenceEnd();
+      toTextBuilder.WriteSequenceEnd();
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("1,2,drei"));
@@ -606,7 +606,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var dreiString = "drei";
-      toTextBuilder.AppendSequenceBegin ("", "", "", ",", "", "");
+      toTextBuilder.WriteSequenceBegin ("", "", "", ",", "", "");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (0));
       toTextBuilder.e ("1");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (1));
@@ -614,7 +614,7 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (2));
       toTextBuilder.e (dreiString);
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (3));
-      toTextBuilder.AppendSequenceEnd();
+      toTextBuilder.WriteSequenceEnd();
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("1,2,drei"));
@@ -651,7 +651,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void AppendSequenceElementsTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.sb ("[", "", ",", "", "]").AppendSequenceElements ("a", 2, "b", 3, "c").se();
+      toTextBuilder.sb ("[", "", ",", "", "]").WriteSequenceElements ("a", 2, "b", 3, "c").se();
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("[a,2,b,3,c]"));

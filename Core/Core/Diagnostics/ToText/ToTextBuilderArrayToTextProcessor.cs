@@ -32,10 +32,10 @@ namespace Remotion.Diagnostics.ToText
       }
       else
       {
-        _toTextBuilder.AppendSequenceBegin ("", _toTextBuilder.Settings.ArrayPrefix, _toTextBuilder.Settings.ArrayFirstElementPrefix,
+        _toTextBuilder.WriteSequenceBegin ("", _toTextBuilder.Settings.ArrayPrefix, _toTextBuilder.Settings.ArrayFirstElementPrefix,
           _toTextBuilder.Settings.ArrayOtherElementPrefix, _toTextBuilder.Settings.ArrayElementPostfix, _toTextBuilder.Settings.ArrayPostfix);
 
-        //_toTextBuilder.AppendSequenceBegin ("", "A2 ", "AE2 ", "~AE2 ", "_AE2 ", "_A2");  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //_toTextBuilder.WriteSequenceBegin ("", "A2 ", "AE2 ", "~AE2 ", "_AE2 ", "_A2");  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
       }
       return true;
@@ -47,7 +47,7 @@ namespace Remotion.Diagnostics.ToText
     {
       if (!ProcessingState.IsInnermostLoop)
       {
-        _toTextBuilder.AppendSequenceEnd ();
+        _toTextBuilder.WriteSequenceEnd ();
       }
       return true;
     }

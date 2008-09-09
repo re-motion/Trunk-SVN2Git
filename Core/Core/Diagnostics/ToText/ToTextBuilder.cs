@@ -67,7 +67,7 @@ namespace Remotion.Diagnostics.ToText
   //  void OutputComplex ();
   //  void OutputFull ();
   //  IToTextBuilderBase ts (object obj);
-  //  IToTextBuilderBase AppendSequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
+  //  IToTextBuilderBase WriteSequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
   //  IToTextBuilderBase sb ();
   //  IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
   //  IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix);
@@ -87,11 +87,11 @@ namespace Remotion.Diagnostics.ToText
   //  IToTextBuilderBase Append (string s);
   //  IToTextBuilderBase beginInstance (Type type);
   //  IToTextBuilderBase endInstance ();
-  //  IToTextBuilderBase AppendSequenceEnd ();
+  //  IToTextBuilderBase WriteSequenceEnd ();
   //  IToTextBuilderBase se ();
-  //  IToTextBuilderBase AppendSequenceElement (object obj);
+  //  IToTextBuilderBase WriteSequenceElement (object obj);
   //  IToTextBuilderBase e (object obj);
-  //  IToTextBuilderBase AppendSequenceElements (params object[] sequenceElements);
+  //  IToTextBuilderBase WriteSequenceElements (params object[] sequenceElements);
   //  IToTextBuilderBase elements (params object[] sequenceElements);
   //  IToTextBuilderBase elementsNumbered (string s1, int i0, int i1);
   //}
@@ -324,17 +324,17 @@ namespace Remotion.Diagnostics.ToText
 
     //public IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     //{
-    //  return AppendSequenceBegin (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+    //  return WriteSequenceBegin (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
     //}
 
     //public IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix)
     //{
-    //  return AppendSequenceBegin (sequencePrefix, "", separator, "", sequencePostfix);
+    //  return WriteSequenceBegin (sequencePrefix, "", separator, "", sequencePostfix);
     //}
 
     //public IToTextBuilderBase sb (string sequencePrefix, string sequencePostfix)
     //{
-    //  return AppendSequenceBegin (sequencePrefix, "", ",", "", sequencePostfix);
+    //  return WriteSequenceBegin (sequencePrefix, "", ",", "", sequencePostfix);
     //}
 
 
