@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Diagnostics
     //public void RegisteredHandlerOverIToTextHandler ()
     //{
     //  var toTextProvider = GetTextProvider();
-    //  toTextProvider.RegisterSpecificTypeHandler<TestSimple> ((x, ttb) => ttb.s ("TestSimple...").tt (x.Int).comma.tt (x.Name).s ("and out!"));
+    //  toTextProvider.RegisterSpecificTypeHandler<TestSimple> ((x, ttb) => ttb.s ("TestSimple...").e (x.Int).comma.e (x.Name).s ("and out!"));
     //  var testSimple = new TestSimple();
     //  string result = toTextProvider.ToTextString (testSimple);
     //  log.It (result);

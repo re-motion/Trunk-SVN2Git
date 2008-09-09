@@ -262,12 +262,12 @@ namespace Remotion.Diagnostics.ToText
     //  return this;
     //}
 
-    public IToTextBuilderBase tt (Object obj)
-    {
-      return WriteElement (obj);
-    }
+    //public IToTextBuilderBase e (Object obj)
+    //{
+    //  return WriteElement (obj);
+    //}
 
-    public IToTextBuilderBase tt (Object obj, bool honorSequence)
+    public IToTextBuilderBase e (Object obj, bool honorSequence)
     {
       return honorSequence ? WriteElement (obj) : WriteElement (obj);
     }
@@ -323,7 +323,7 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase AppendSequenceElement (object obj)
     {
-      Assertion.IsTrue (IsInSequence);
+      //Assertion.IsTrue (IsInSequence);
       _toTextProvider.ToText (obj, this);
       return this;
     }

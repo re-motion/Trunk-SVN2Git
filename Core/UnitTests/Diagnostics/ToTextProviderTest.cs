@@ -470,7 +470,7 @@ namespace Remotion.UnitTests.Diagnostics
           //(x, ttb) => ttb.AppendSequenceBegin ("seq","§","%","|%","%","§").se ()); // err
           //(x, ttb) => ttb.AppendMember("number",number)); 
           //(x, ttb) => ttb.s("text")); // works
-          //(x, ttb) => ttb.tt("toText")); // err
+          //(x, ttb) => ttb.e("toText")); // err
       var test = new Test ("That's not my name", 179);
       var at2 = new Test2[3, 3, 3];
 

@@ -69,11 +69,10 @@ namespace Remotion.Diagnostics.ToText
 
     /// <summary>
     /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the TextBuilder.</para>
-    /// <para>Shorthand notation: <see cref="tt(object)"/>.</para>
+    /// <para>Shorthand notation: <see cref="e(object)"/>.</para>
     /// </summary>
     IToTextBuilderBase WriteElement (object obj);
-    IToTextBuilderBase tt (Object obj);
-    IToTextBuilderBase tt (Object obj, bool honorSequence);
+    IToTextBuilderBase e (Object obj, bool honorSequence);
 
 
 
