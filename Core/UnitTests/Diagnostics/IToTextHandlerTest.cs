@@ -53,16 +53,16 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (result, Is.EqualTo ("(daInt=2468,theName=\"Kal-El\")"));
     }
 
-    [Test]
-    public void RegisteredHandlerOverIToTextHandler ()
-    {
-      var toTextProvider = GetTextProvider();
-      toTextProvider.RegisterSpecificTypeHandler<TestSimple> ((x, ttb) => ttb.s ("TestSimple...").tt (x.Int).comma.tt (x.Name).s ("and out!"));
-      var testSimple = new TestSimple();
-      string result = toTextProvider.ToTextString (testSimple);
-      log.It (result);
-      Assert.That (result, Is.EqualTo ("TestSimple...2468,\"Kal-El\"and out!"));
-    }
+    //[Test]
+    //public void RegisteredHandlerOverIToTextHandler ()
+    //{
+    //  var toTextProvider = GetTextProvider();
+    //  toTextProvider.RegisterSpecificTypeHandler<TestSimple> ((x, ttb) => ttb.s ("TestSimple...").tt (x.Int).comma.tt (x.Name).s ("and out!"));
+    //  var testSimple = new TestSimple();
+    //  string result = toTextProvider.ToTextString (testSimple);
+    //  log.It (result);
+    //  Assert.That (result, Is.EqualTo ("TestSimple...2468,\"Kal-El\"and out!"));
+    //}
 
     public static ToTextProvider GetTextProvider ()
     {

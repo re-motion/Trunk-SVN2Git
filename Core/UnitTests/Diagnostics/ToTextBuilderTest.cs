@@ -79,14 +79,14 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    [Test]
-    public void SeperatorTest ()
-    {
-      var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.seperator.comma.colon.semicolon.s ("");
-      var result = toTextBuilder.CheckAndConvertToString();
-      Assert.That (result, Is.EqualTo (",,:;"));
-    }
+    //[Test]
+    //public void SeperatorTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder();
+    //  toTextBuilder.seperator.comma.colon.semicolon.s ("");
+    //  var result = toTextBuilder.CheckAndConvertToString();
+    //  Assert.That (result, Is.EqualTo (",,:;"));
+    //}
 
 
     [Test]
@@ -466,7 +466,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       if (toTextBuilder == null)
         toTextBuilder = CreateTextBuilder();
-      toTextBuilder.cBasic.s ("b").comma.cComplex.s ("c").comma.cFull.s ("f").comma.cMedium.s ("m").comma.cSkeleton.s ("s");
+      toTextBuilder.cBasic.s ("b").cComplex.s ("c").cFull.s ("f").cMedium.s ("m").cSkeleton.s ("s");
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       return toTextBuilder;
@@ -494,28 +494,28 @@ namespace Remotion.UnitTests.Diagnostics
         var toTextBuilder = CreateTextBuilder();
         toTextBuilder.OutputBasic();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
-        Assert.That (result, Is.EqualTo ("b,s"));
+        Assert.That (result, Is.EqualTo ("bs"));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
         toTextBuilder.OutputMedium();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
-        Assert.That (result, Is.EqualTo ("b,m,s"));
+        Assert.That (result, Is.EqualTo ("bms"));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
         toTextBuilder.OutputComplex();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
-        Assert.That (result, Is.EqualTo ("b,c,m,s"));
+        Assert.That (result, Is.EqualTo ("bcms"));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
         toTextBuilder.OutputFull();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
-        Assert.That (result, Is.EqualTo ("b,c,f,m,s"));
+        Assert.That (result, Is.EqualTo ("bcfms"));
       }
     }
 

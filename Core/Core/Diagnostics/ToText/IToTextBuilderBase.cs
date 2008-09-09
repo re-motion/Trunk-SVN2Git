@@ -65,8 +65,6 @@ namespace Remotion.Diagnostics.ToText
     //ToTextBuilderSettings Settings { get; }
     bool UseMultiLine { get; set; }
     bool Enabled { get; set; }
-    IToTextBuilderBase seperator { get; }
-    IToTextBuilderBase comma { get; }
     IToTextBuilderBase colon { get; }
     IToTextBuilderBase semicolon { get; }
     //SequenceStateHolder SequenceState { get; protected set; }

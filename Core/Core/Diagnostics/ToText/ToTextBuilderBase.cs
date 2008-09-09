@@ -44,11 +44,6 @@ namespace Remotion.Diagnostics.ToText
       get { AppendSeperator (); return this; }
     }
 
-    public IToTextBuilderBase comma
-    {
-      get { AppendComma (); return this; }
-    }
-
     public IToTextBuilderBase colon
     {
       get { AppendColon (); return this; }
