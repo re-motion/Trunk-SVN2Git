@@ -74,25 +74,36 @@ namespace Remotion.Diagnostics.ToText
     //  return this;
     //}
 
-    protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    //protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    //{
+    //  throw new System.NotImplementedException();
+    //}
+
+    protected override void SequenceBeginWritePart (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
-      throw new System.NotImplementedException();
+      _disableableWriter.WriteStartElement ("seq");
+      //_disableableWriter.Write (SequenceState.SequencePrefix);
+      if (name.Length > 0)
+      {
+        _disableableWriter.WriteAttribute ("name",name);
+      }
     }
 
     public override IToTextBuilderBase WriteRawStringUnsafe (string s)
     {
-      throw new System.NotImplementedException();
+      _disableableWriter.WriteValue (s);
+      return this;
     }
 
     public override IToTextBuilderBase WriteRawStringEscapedUnsafe (string s)
     {
-      throw new System.NotImplementedException();
+      return WriteRawStringUnsafe(s);
     }
 
-    public override IToTextBuilderBase sEsc (string s)
-    {
-      throw new System.NotImplementedException();
-    }
+    //public override IToTextBuilderBase sEsc (string s)
+    //{
+    //  throw new System.NotImplementedException();
+    //}
 
     public override IToTextBuilderBase WriteRawCharUnsafe (char c)
     {

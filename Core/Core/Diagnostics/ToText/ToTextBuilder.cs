@@ -153,22 +153,27 @@ namespace Remotion.Diagnostics.ToText
     // Low level Sequence Emitters
     //--------------------------------------------------------------------------
 
-    protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    //protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    //{
+    //  BeforeWriteElement();
+
+    //  sequenceStack.Push (SequenceState);
+
+    //  SequenceState = new SequenceStateHolder (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
+
+    //  SequenceBeginWritePart (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
+
+    //  return this;
+    //}
+
+    protected override void SequenceBeginWritePart (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
-      BeforeWriteElement();
-
-      sequenceStack.Push (SequenceState);
-
-      SequenceState = new SequenceStateHolder (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
-
       _disableableWriter.Write (SequenceState.SequencePrefix);
       if (name.Length > 0)
       {
         _disableableWriter.Write (name);
         _disableableWriter.Write (": ");
       }
-
-      return this;
     }
 
 
@@ -206,12 +211,6 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
- 
-    public override IToTextBuilderBase sEsc (string s)
-    {
-      return WriteRawStringEscapedUnsafe (s); 
-      
-    }
 
     public override IToTextBuilderBase WriteRawCharUnsafe (char c)
     {

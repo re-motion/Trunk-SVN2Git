@@ -134,7 +134,22 @@ namespace Remotion.Diagnostics.ToText
       return SequenceBegin (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
     }
 
-    protected abstract IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix);
+    //protected abstract IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix);
+
+    protected IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    {
+      BeforeWriteElement ();
+
+      sequenceStack.Push (SequenceState);
+      SequenceState = new SequenceStateHolder (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
+
+      SequenceBeginWritePart (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
+
+      return this;
+    }
+
+    protected abstract void SequenceBeginWritePart (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix);
+
 
     public IToTextBuilderBase sb ()
     {
@@ -195,7 +210,6 @@ namespace Remotion.Diagnostics.ToText
     }
 
     //public abstract IToTextBuilderBase AppendRawEscapedString (string s);
-    public abstract IToTextBuilderBase sEsc (string s);
 
     public IToTextBuilderBase s (string s)
     {
@@ -419,5 +433,10 @@ namespace Remotion.Diagnostics.ToText
     //  toTextProvider.ToText (obj, this);
     //  return this;
     //}
+    public virtual IToTextBuilderBase sEsc (string s)
+    {
+      return WriteRawStringEscapedUnsafe (s); 
+      
+    }
   }
 }

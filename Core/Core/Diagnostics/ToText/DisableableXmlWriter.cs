@@ -8,6 +8,7 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using System.IO;
 using System.Xml;
 
@@ -57,12 +58,20 @@ namespace Remotion.Diagnostics.ToText
       return _xmlWriter;
     }
 
-    public void Flush ()
+
+    public XmlWriter WriteAttribute (string name, string value)
     {
       if (Enabled)
       {
-        _xmlWriter.Flush();
+        _xmlWriter.WriteAttributeString (name, value);
       }
+      return _xmlWriter;
+    }
+
+
+    public void Flush ()
+    {
+      _xmlWriter.Flush ();
     }
   }
 }
