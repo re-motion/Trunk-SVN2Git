@@ -72,8 +72,6 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Shorthand notation: <see cref="e(object)"/>.</para>
     /// </summary>
     IToTextBuilderBase WriteElement (object obj);
-    IToTextBuilderBase e (Object obj, bool honorSequence);
-
 
 
     IToTextBuilderBase WriteElement (string name, Object obj);

@@ -278,11 +278,6 @@ namespace Remotion.Diagnostics.ToText
     //  return WriteElement (obj);
     //}
 
-    public IToTextBuilderBase e (Object obj, bool honorSequence)
-    {
-      return honorSequence ? WriteElement (obj) : WriteElement (obj);
-    }
-
     public IToTextBuilderBase WriteElement (Object obj)
     {
       _toTextProvider.ToText (obj, this);
