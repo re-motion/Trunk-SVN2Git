@@ -20,7 +20,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
       if (obj is IEnumerable)
       {
-        toTextBuilder.AppendEnumerable ((IEnumerable) obj);
+        toTextBuilder.WriteEnumerable ((IEnumerable) obj);
         toTextProviderHandlerFeedback.Handled = true;
       }
     }

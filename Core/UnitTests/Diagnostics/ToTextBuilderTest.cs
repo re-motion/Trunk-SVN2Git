@@ -217,7 +217,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var list = List.New (5, 3, 1, 11, 13, 17);
-      toTextBuilder.AppendEnumerable (list);
+      toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("{5,3,1,11,13,17}"));
@@ -228,7 +228,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var list = List.New (List.New (5, 3, 1), List.New (11, 13, 17));
-      toTextBuilder.AppendEnumerable (list);
+      toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("{{5,3,1},{11,13,17}}"));
@@ -239,7 +239,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder ();
       var list = List.New (List.New ("5", "3", "1"), List.New ("11", "13", "17"));
-      toTextBuilder.AppendEnumerable (list);
+      toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("{{5,3,1},{11,13,17}}"));
@@ -251,7 +251,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var list = List.New (List.New (5, 3, 1), List.New (11, 13, 17), List.New (19, 23, 29));
-      toTextBuilder.AppendEnumerable (list);
+      toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("{{5,3,1},{11,13,17},{19,23,29}}"));
@@ -262,7 +262,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var list = List.New (List.New (List.New (5, 3, 1), List.New (11, 13, 17)), List.New (List.New (19, 23, 29), List.New (31, 37, 41)));
-      toTextBuilder.AppendEnumerable (list);
+      toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("{{{5,3,1},{11,13,17}},{{19,23,29},{31,37,41}}}"));
@@ -277,7 +277,7 @@ namespace Remotion.UnitTests.Diagnostics
           List.New (List.New (10, 11, 12), List.New (13, 14, 15), List.New (16, 17, 18)),
           List.New (List.New (19, 20, 21), List.New (22, 23, 24), List.New (25, 26, 27))
           );
-      toTextBuilder.AppendEnumerable (list);
+      toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("{{{1,2,3},{4,5,6},{7,8,9}},{{10,11,12},{13,14,15},{16,17,18}},{{19,20,21},{22,23,24},{25,26,27}}}"));
@@ -304,7 +304,7 @@ namespace Remotion.UnitTests.Diagnostics
           new[] {new[] {1, 3}, new[] {5, 7}},
           new[] {new[] {11, 13}, new[] {17, 19}},
           new[] {new[] {23, 29}, new[] {31, 37}}};
-      toTextBuilder.AppendArray (array);
+      toTextBuilder.WriteArray (array);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("{{{1,3},{5,7}},{{11,13},{17,19}},{{23,29},{31,37}}}"));
@@ -315,7 +315,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       int[,,] array = { { { 1, 3 }, { 5, 7 } }, { { 11, 13 }, { 17, 19 } }, { { 23, 29 }, { 31, 37 } } };
-      toTextBuilder.AppendArray (array);
+      toTextBuilder.WriteArray (array);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("{{{1,3},{5,7}},{{11,13},{17,19}},{{23,29},{31,37}}}"));
@@ -334,7 +334,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.Settings.ArrayElementPostfix = ")";
       toTextBuilder.Settings.ArrayPostfix = "}";
 
-      toTextBuilder.AppendArray (array);
+      toTextBuilder.WriteArray (array);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("{({({(1),(3)}),({(5),(7)})}),({({(11),(13)}),({(17),(19)})}),({({(23),(29)}),({(31),(37)})})}"));
@@ -362,7 +362,7 @@ namespace Remotion.UnitTests.Diagnostics
     //  toTextBuilder.EnumerableSeparator = ";";
     //  toTextBuilder.EnumerableEnd = ")";
 
-    //  toTextBuilder.AppendEnumerable (list);
+    //  toTextBuilder.WriteEnumerable (list);
     //  var result = toTextBuilder.CheckAndConvertToString();
     //  Log (result);
     //  Assert.That (result, Is.EqualTo ("((5;3;1);(11;13;17))"));
@@ -381,7 +381,7 @@ namespace Remotion.UnitTests.Diagnostics
     //  toTextBuilder.ArraySeparator = "§|§";
     //  toTextBuilder.ArrayEnd = "]}>";
 
-    //  toTextBuilder.AppendArray (array);
+    //  toTextBuilder.WriteArray (array);
     //  var result = toTextBuilder.CheckAndConvertToString();
     //  Log (result);
     //  Assert.That (
@@ -399,7 +399,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.Settings.ArrayElementPostfix = "]";
       toTextBuilder.Settings.ArrayPostfix = ">";
 
-      toTextBuilder.AppendArray (array);
+      toTextBuilder.WriteArray (array);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("<[<[<[1];[3];[5]>];[<[5];[7];[11]>]>]>"));

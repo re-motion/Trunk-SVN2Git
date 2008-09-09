@@ -245,15 +245,15 @@ namespace Remotion.Diagnostics.ToText
       return WriteElement (name, obj);
     }
 
-    public abstract IToTextBuilderBase AppendEnumerable (IEnumerable collection);
+    public abstract IToTextBuilderBase WriteEnumerable (IEnumerable collection);
     public abstract IToTextBuilderBase array (Array array);
 
     public IToTextBuilderBase collection (IEnumerable collection)
     {
-      return AppendEnumerable (collection);
+      return WriteEnumerable (collection);
     }
 
-    public abstract IToTextBuilderBase AppendArray (Array array);
+    public abstract IToTextBuilderBase WriteArray (Array array);
 
     //public IToTextBuilderBase WriteElement (Object obj)
     //{
@@ -272,11 +272,11 @@ namespace Remotion.Diagnostics.ToText
     //  return WriteElement (obj);
     //}
 
-    public IToTextBuilderBase WriteElement (Object obj)
-    {
-      _toTextProvider.ToText (obj, this);
-      return this;
-    }
+    //public IToTextBuilderBase WriteElement (Object obj)
+    //{
+    //  _toTextProvider.ToText (obj, this);
+    //  return this;
+    //}
 
 
     public IToTextBuilderBase LowLevelWrite (string s)
@@ -321,7 +321,7 @@ namespace Remotion.Diagnostics.ToText
       return WriteSequenceEnd ();
     }
 
-    public IToTextBuilderBase WriteSequenceElement (object obj)
+    public IToTextBuilderBase WriteElement (object obj)
     {
       //Assertion.IsTrue (IsInSequence);
       _toTextProvider.ToText (obj, this);
@@ -330,7 +330,7 @@ namespace Remotion.Diagnostics.ToText
 
     //public IToTextBuilderBase e (object obj)
     //{
-    //  return WriteSequenceElement (obj);
+    //  return WriteElement (obj);
     //}
 
     public IToTextBuilderBase WriteSequenceElements (params object[] sequenceElements)
@@ -338,7 +338,7 @@ namespace Remotion.Diagnostics.ToText
       Assertion.IsTrue (IsInSequence);
       foreach (var obj in sequenceElements)
       {
-        WriteSequenceElement (obj);
+        WriteElement (obj);
       }
       return this;
     }
@@ -352,7 +352,7 @@ namespace Remotion.Diagnostics.ToText
     {
       for (int i = i0; i <= i1; ++i)
       {
-        WriteSequenceElement (s1 + i);
+        WriteElement (s1 + i);
       }
       return this;
     }

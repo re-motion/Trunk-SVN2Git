@@ -67,13 +67,19 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase LowLevelWrite (string s);
 
 
+
+    IToTextBuilderBase WriteSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
+    IToTextBuilderBase sb ();
+    IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
+    IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix);
+    IToTextBuilderBase sb (string sequencePrefix, string sequencePostfix);
+
+
     /// <summary>
     /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the TextBuilder.</para>
     /// <para>Shorthand notation: <see cref="e(object)"/>.</para>
     /// </summary>
     IToTextBuilderBase WriteElement (object obj);
-
-
     IToTextBuilderBase WriteElement (string name, Object obj);
     IToTextBuilderBase WriteElement<T> (Expression<Func<object, T>> expression);
     IToTextBuilderBase e (Object obj);
@@ -81,16 +87,10 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase e (string name, Object obj);
     
 
-
-    IToTextBuilderBase WriteSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
-    IToTextBuilderBase sb ();
-    IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
-    IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix);
-    IToTextBuilderBase sb (string sequencePrefix, string sequencePostfix);
     IToTextBuilderBase WriteSequenceEnd ();
     IToTextBuilderBase se ();
-    
-    IToTextBuilderBase WriteSequenceElement (object obj);
+
+   
 
     IToTextBuilderBase WriteSequenceElements (params object[] sequenceElements);
     IToTextBuilderBase elements (params object[] sequenceElements);
@@ -100,10 +100,11 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase endInstance ();
 
 
-    IToTextBuilderBase AppendArray (Array array);
+    // TODO: Check that if ToTextprovider holds ToTextBuilderBase, exposing these through the interface is still necessary.
+    IToTextBuilderBase WriteArray (Array array);
     IToTextBuilderBase array (Array array);
     
-    IToTextBuilderBase AppendEnumerable (IEnumerable collection);
+    IToTextBuilderBase WriteEnumerable (IEnumerable collection);
     IToTextBuilderBase collection (IEnumerable collection);
   }
 }

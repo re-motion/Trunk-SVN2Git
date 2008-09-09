@@ -18,7 +18,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
       if (type.IsArray)
       {
-        toTextBuilder.AppendArray ((Array) obj);
+        toTextBuilder.WriteArray ((Array) obj);
         toTextProviderHandlerFeedback.Handled = true;
       }
     }

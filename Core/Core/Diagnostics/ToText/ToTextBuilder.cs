@@ -50,13 +50,13 @@ namespace Remotion.Diagnostics.ToText
   //  ToTextBuilder AppendComma ();
   //  ToTextBuilder AppendColon ();
   //  ToTextBuilder AppendSemiColon ();
-  //  IToTextBuilderBase AppendArray (Array array);
+  //  IToTextBuilderBase WriteArray (Array array);
   //  IToTextBuilderBase AppendString (string s);
   //  ToTextBuilder AppendEscapedString (string s);
   //  ToTextBuilder sEsc (string s);
   //  IToTextBuilderBase AppendChar (char c);
   //  IToTextBuilderBase WriteElement (string name, Object obj);
-  //  IToTextBuilderBase AppendEnumerable (IEnumerable collection);
+  //  IToTextBuilderBase WriteEnumerable (IEnumerable collection);
   //  IToTextBuilderBase array (Array array);
   //  IToTextBuilderBase Append (Object obj);
   //  IToTextBuilderBase ToTextString (string s);
@@ -89,7 +89,7 @@ namespace Remotion.Diagnostics.ToText
   //  IToTextBuilderBase endInstance ();
   //  IToTextBuilderBase WriteSequenceEnd ();
   //  IToTextBuilderBase se ();
-  //  IToTextBuilderBase WriteSequenceElement (object obj);
+  //  IToTextBuilderBase WriteElement (object obj);
   //  IToTextBuilderBase e (object obj);
   //  IToTextBuilderBase WriteSequenceElements (params object[] sequenceElements);
   //  IToTextBuilderBase elements (params object[] sequenceElements);
@@ -342,14 +342,14 @@ namespace Remotion.Diagnostics.ToText
     // High Level Emitters
     //--------------------------------------------------------------------------
 
-    public override IToTextBuilderBase AppendArray (Array array)
+    public override IToTextBuilderBase WriteArray (Array array)
     {
       var outerProduct = new OuterProductIndexGenerator (array);
 
       SequenceBegin ("", Settings.ArrayPrefix, Settings.ArrayFirstElementPrefix,
                      Settings.ArrayOtherElementPrefix, Settings.ArrayElementPostfix, Settings.ArrayPostfix);
 
-      //SequenceBegin ("", "A ", "AE ", "~AE ","_AE ","_A");  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //SequenceBegin ("", "A ", "AE ", "~AE ","_AE ","_A"); 
 
       var processor = new ToTextBuilderArrayToTextProcessor (array, this);
       outerProduct.ProcessOuterProduct (processor);
@@ -422,7 +422,7 @@ namespace Remotion.Diagnostics.ToText
     //}
 
 
-    public override IToTextBuilderBase AppendEnumerable (IEnumerable collection)
+    public override IToTextBuilderBase WriteEnumerable (IEnumerable collection)
     {
       SequenceBegin ("", Settings.EnumerablePrefix, Settings.EnumerableFirstElementPrefix,
         Settings.EnumerableOtherElementPrefix, Settings.EnumerableElementPostfix, Settings.EnumerablePostfix);
@@ -438,7 +438,7 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase array (Array array)
     {
-      return AppendArray (array);
+      return WriteArray (array);
     }
 
 
