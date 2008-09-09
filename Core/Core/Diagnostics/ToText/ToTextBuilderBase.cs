@@ -301,16 +301,11 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-
-    private IToTextBuilderBase AppendInstanceEnd ()
-    {
-      SequenceEnd ();
-      return this;
-    }
-
     public IToTextBuilderBase WriteInstanceEnd ()
     {
-      return AppendInstanceEnd ();
+      //return AppendInstanceEnd ();
+      SequenceEnd ();
+      return this;
     }
 
     public IToTextBuilderBase ie ()
