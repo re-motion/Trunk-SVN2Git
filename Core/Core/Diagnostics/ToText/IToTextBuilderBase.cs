@@ -77,7 +77,6 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase WriteElement (string name, Object obj);
     IToTextBuilderBase WriteElement<T> (Expression<Func<object, T>> expression);
     IToTextBuilderBase e (Object obj);
-    IToTextBuilderBase e (string name, Object obj, bool honorSequence);
     IToTextBuilderBase e<T> (Expression<Func<object, T>> expression);
     IToTextBuilderBase e (string name, Object obj);
     

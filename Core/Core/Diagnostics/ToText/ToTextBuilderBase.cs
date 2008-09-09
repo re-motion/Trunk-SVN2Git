@@ -235,12 +235,6 @@ namespace Remotion.Diagnostics.ToText
       return WriteElement (obj);
     }
 
-    public IToTextBuilderBase e (string name, Object obj, bool honorSequence)
-    {
-      //return honorSequence ? WriteElement (name, obj) : AppendMemberNonSequence (name, obj);
-      return WriteElement (name, obj);
-    }
-
     public IToTextBuilderBase e<T> (Expression<Func<object, T>> expression)
     {
       return WriteElement (expression);
