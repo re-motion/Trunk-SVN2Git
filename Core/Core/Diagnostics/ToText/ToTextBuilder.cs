@@ -135,18 +135,18 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override IToTextBuilderBase nl ()
-    {
-      WriteNewLine ();
-      return this;
-    }
+    //public override IToTextBuilderBase nl ()
+    //{
+    //  WriteNewLine ();
+    //  return this;
+    //}
 
 
-    protected override IToTextBuilderBase WriteObjectToString (object obj)
-    {
-      _disableableWriter.Write (obj.ToString ());
-      return this;
-    }
+    //protected override IToTextBuilderBase WriteObjectToString (object obj)
+    //{
+    //  _disableableWriter.Write (obj.ToString ());
+    //  return this;
+    //}
 
 
     //--------------------------------------------------------------------------

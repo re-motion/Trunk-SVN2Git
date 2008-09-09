@@ -57,10 +57,10 @@ namespace Remotion.Diagnostics.ToText
     // raw string: guaranteed no processing ?
     //IToTextBuilderBase rs (string s);
 
-    /// <summary>
-    /// Applies <see cref="Object.ToString"/> to the passed <see cref="object"/> and writes the resulting string to the output stream.
-    /// </summary>
-    IToTextBuilderBase ts (object obj);
+    ///// <summary>
+    ///// Applies <see cref="Object.ToString"/> to the passed <see cref="object"/> and writes the resulting string to the output stream.
+    ///// </summary>
+    //IToTextBuilderBase ts (object obj);
 
     /// <summary>
     /// Passes the object argument to the stream writer to be written to the output stream, without any processing.

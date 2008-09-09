@@ -8,7 +8,6 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-#if(false)
 using System;
 using System.Collections;
 using System.IO;
@@ -20,17 +19,16 @@ namespace Remotion.Diagnostics.ToText
   public class ToTextBuilderXml : ToTextBuilderBase
   {
     //public DisableableXmlWriter XmlWriter { get; private set; }
-    private readonly DisableableXmlWriter _disableableXmlWriter;
+    private readonly DisableableXmlWriter _disableableWriter;
 
     public ToTextBuilderXml (ToTextProvider toTextProvider, XmlWriter xmlWriter)
       : base (toTextProvider)
     {
-      _disableableXmlWriter = new DisableableXmlWriter (xmlWriter);
+      _disableableWriter = new DisableableXmlWriter (xmlWriter);
     }
 
     // TODO: Implement 
 
-    #region Overrides of ToTextBuilderBase
 
     //public override bool UseMultiLine
     //{
@@ -40,9 +38,108 @@ namespace Remotion.Diagnostics.ToText
 
     public override bool Enabled
     {
-      get { return _disableableXmlWriter.Enabled; }
-      set { _disableableXmlWriter.Enabled = value; }
+      get { return _disableableWriter.Enabled; }
+      set { _disableableWriter.Enabled = value; }
     }
+
+    public override IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel)
+    {
+      // TODO: Derive DisableableWriter interface, move to base class
+      _disableableWriter.Enabled = (OutputComplexity >= complexityLevel) ? true : false;
+      return this;
+    }
+
+    public override string CheckAndConvertToString ()
+    {
+      Assertion.IsFalse (IsInSequence);
+      return _disableableWriter.ToString ();
+    }
+
+    public override IToTextBuilderBase Flush ()
+    {
+      _disableableWriter.Flush();
+      return this;
+    }
+
+    public override IToTextBuilderBase WriteNewLine ()
+    {
+      _disableableWriter.WriteStartElement ("br");
+      _disableableWriter.WriteEndElement();
+      return this;
+    }
+
+    //protected override IToTextBuilderBase WriteObjectToString (object obj)
+    //{
+    //  _disableableWriter.WriteValue (obj.ToString ());
+    //  return this;
+    //}
+
+    protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override IToTextBuilderBase WriteRawStringUnsafe (string s)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override IToTextBuilderBase WriteRawStringEscapedUnsafe (string s)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override IToTextBuilderBase sEsc (string s)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override IToTextBuilderBase WriteRawCharUnsafe (char c)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override IToTextBuilderBase WriteEnumerable (IEnumerable collection)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override IToTextBuilderBase WriteArray (Array array)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override IToTextBuilderBase LowLevelWrite (object obj)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override IToTextBuilderBase WriteInstanceBegin (Type type)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    protected override void SequenceEnd ()
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override IToTextBuilderBase array (Array array)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    protected override void BeforeWriteElement ()
+    {
+      throw new System.NotImplementedException();
+    }
+
+    protected override void AfterWriteElement ()
+    {
+      throw new System.NotImplementedException();
+    }
+
+#if(false)
 
     //public override IToTextBuilderBase seperator
     //{
@@ -219,8 +316,9 @@ namespace Remotion.Diagnostics.ToText
     {
       throw new System.NotImplementedException();
     }
+#endif
 
-    #endregion
+
+
   }
 }
-#endif

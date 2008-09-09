@@ -19,7 +19,6 @@ namespace Remotion.Diagnostics.ToText
   /// </summary>
   internal class DisableableXmlWriter
   {
-    //private readonly StringBuilder _stringBuilder = new StringBuilder ();
     private readonly XmlWriter _xmlWriter;
 
 

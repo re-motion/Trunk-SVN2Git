@@ -126,15 +126,15 @@ namespace Remotion.UnitTests.Diagnostics
     //}
 
 
-    [Test]
-    public void tsTest ()
-    {
-      var toTextBuilder = CreateTextBuilder();
-      var o = new Object();
-      toTextBuilder.ts (o);
-      var result = toTextBuilder.CheckAndConvertToString();
-      Assert.That (result, Is.EqualTo (o.ToString()));
-    }
+    //[Test]
+    //public void tsTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder();
+    //  var o = new Object();
+    //  toTextBuilder.ts (o);
+    //  var result = toTextBuilder.CheckAndConvertToString();
+    //  Assert.That (result, Is.EqualTo (o.ToString()));
+    //}
 
 
     [Test]

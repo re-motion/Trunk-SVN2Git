@@ -20,6 +20,17 @@ using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.UnitTests.Diagnostics
 {
+
+  static class ToTextTestExtensionMethods 
+  {
+    public static IToTextBuilderBase ts (this IToTextBuilderBase toTextBuilder, object obj)
+    {
+      toTextBuilder.s (obj.ToString ());
+      return toTextBuilder;
+    }
+  }
+
+
   [TestFixture]
   public class ToTextProviderTest
   {
@@ -257,10 +268,13 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+
+
     [Test]
     public void StringHandlerTest ()
     {
       ToTextProvider toText = CreateTextProvider();
+      //toText.RegisterSpecificTypeHandler<String> ((x, ttb) => ttb.s ("\"").ts (x).s ("\""));
       toText.RegisterSpecificTypeHandler<String> ((x, ttb) => ttb.s ("\"").ts (x).s ("\""));
       string toTextTest = ToText (toText, "Some text");
       Log ("[StringHandlerTest] toTextTest=" + toTextTest);

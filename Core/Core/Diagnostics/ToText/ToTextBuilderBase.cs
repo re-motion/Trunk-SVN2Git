@@ -111,14 +111,23 @@ namespace Remotion.Diagnostics.ToText
     protected abstract void AfterWriteElement ();
     public abstract IToTextBuilderBase Flush ();
     public abstract IToTextBuilderBase WriteNewLine ();
-    public abstract IToTextBuilderBase nl ();
-    //public abstract virtual IToTextBuilderBase AppendSeperator ();
-    protected abstract IToTextBuilderBase WriteObjectToString (object obj);
+    //public abstract IToTextBuilderBase nl ();
 
-    public IToTextBuilderBase ts (object obj)
+    public IToTextBuilderBase nl ()
     {
-      return WriteObjectToString (obj);
+      WriteNewLine ();
+      return this;
     }
+
+    //public abstract virtual IToTextBuilderBase AppendSeperator ();
+    
+
+    //protected abstract IToTextBuilderBase WriteObjectToString (object obj);
+
+    //public IToTextBuilderBase ts (object obj)
+    //{
+    //  return WriteObjectToString (obj);
+    //}
 
     public IToTextBuilderBase WriteSequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
