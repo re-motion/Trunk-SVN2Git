@@ -55,7 +55,7 @@ namespace Remotion.Diagnostics.ToText
   //  ToTextBuilder AppendEscapedString (string s);
   //  ToTextBuilder sEsc (string s);
   //  IToTextBuilderBase AppendChar (char c);
-  //  IToTextBuilderBase AppendMember (string name, Object obj);
+  //  IToTextBuilderBase WriteElement (string name, Object obj);
   //  IToTextBuilderBase AppendEnumerable (IEnumerable collection);
   //  IToTextBuilderBase array (Array array);
   //  IToTextBuilderBase Append (Object obj);
@@ -73,8 +73,8 @@ namespace Remotion.Diagnostics.ToText
   //  IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix);
   //  IToTextBuilderBase sb (string sequencePrefix, string sequencePostfix);
   //  IToTextBuilderBase s (string s);
-  //  IToTextBuilderBase AppendMember<T> (Expression<Func<object, T>> expression);
-  //  IToTextBuilderBase AppendMemberNonSequence (string name, Object obj);
+  //  IToTextBuilderBase WriteElement<T> (Expression<Func<object, T>> expression);
+  //  IToTextBuilderBase WriteElement (string name, Object obj);
   //  IToTextBuilderBase m (Object obj);
   //  IToTextBuilderBase m (string name, Object obj, bool honorSequence);
   //  IToTextBuilderBase m<T> (Expression<Func<object, T>> expression);
@@ -404,24 +404,22 @@ namespace Remotion.Diagnostics.ToText
     //  return this;
     //}
 
-    public override IToTextBuilderBase AppendMember (string name, Object obj)
-    {
-      ArgumentUtility.CheckNotNull ("name", name);
-      //BeforeAppendElement ();   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      AppendMemberRaw (name, obj);
-      //AfterAppendElement ();   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      return this;
-    }
+    //public override IToTextBuilderBase WriteElement (string name, Object obj)
+    //{
+    //  ArgumentUtility.CheckNotNull ("name", name);
+    //  AppendMemberRaw (name, obj);
+    //  return this;
+    //}
 
 
-    protected override IToTextBuilderBase AppendMemberRaw (string name, Object obj)
-    {
-      SequenceBegin ("", name + "=", "", "", "", "");
-      _toTextProvider.ToText (obj, this);
-      SequenceEnd ();
+    //protected override IToTextBuilderBase AppendMemberRaw (string name, Object obj)
+    //{
+    //  SequenceBegin ("", name + "=", "", "", "", "");
+    //  _toTextProvider.ToText (obj, this);
+    //  SequenceEnd ();
 
-      return this;
-    }
+    //  return this;
+    //}
 
 
     public override IToTextBuilderBase AppendEnumerable (IEnumerable collection)

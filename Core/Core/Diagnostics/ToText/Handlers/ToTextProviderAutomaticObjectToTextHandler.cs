@@ -82,8 +82,8 @@ namespace Remotion.Diagnostics.ToText.Handlers
           if (!isCompilerGenerated)
           {
             object value = GetValue (obj, type, memberInfo);
-            // AppendMember ToText value
-            toTextBuilder.AppendMember (name, value);
+            // WriteElement ToText value
+            toTextBuilder.WriteElement (name, value);
           }
         }
       }

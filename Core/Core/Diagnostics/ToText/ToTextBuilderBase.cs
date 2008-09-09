@@ -201,24 +201,34 @@ namespace Remotion.Diagnostics.ToText
     }
 
     //public abstract IToTextBuilderBase AppendRawChar (char c);
-    public abstract IToTextBuilderBase AppendMember (string name, Object obj);
+    //public abstract IToTextBuilderBase WriteElement (string name, Object obj);
 
-    public IToTextBuilderBase AppendMember<T> (Expression<Func<object, T>> expression)
+    public IToTextBuilderBase WriteElement<T> (Expression<Func<object, T>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       var variableName = RightUntilChar (expression.Body.ToString (), '.');
       var variableValue = expression.Compile ().Invoke (null);
-      return AppendMember (variableName, variableValue);
+      return WriteElement (variableName, variableValue);
     }
 
-    public IToTextBuilderBase AppendMemberNonSequence (string name, Object obj)
+    public IToTextBuilderBase WriteElement (string name, Object obj)
     {
       ArgumentUtility.CheckNotNull ("name", name);
       AppendMemberRaw (name, obj);
       return this;
     }
 
-    protected abstract IToTextBuilderBase AppendMemberRaw (string name, Object obj);
+    //protected abstract IToTextBuilderBase AppendMemberRaw (string name, Object obj);
+
+    protected IToTextBuilderBase AppendMemberRaw (string name, Object obj)
+    {
+      SequenceBegin ("", name + "=", "", "", "", "");
+      _toTextProvider.ToText (obj, this);
+      SequenceEnd ();
+
+      return this;
+    }
+
 
     public IToTextBuilderBase m (Object obj)
     {
@@ -227,17 +237,18 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase m (string name, Object obj, bool honorSequence)
     {
-      return honorSequence ? AppendMember (name, obj) : AppendMemberNonSequence (name, obj);
+      //return honorSequence ? WriteElement (name, obj) : AppendMemberNonSequence (name, obj);
+      return WriteElement (name, obj);
     }
 
     public IToTextBuilderBase m<T> (Expression<Func<object, T>> expression)
     {
-      return AppendMember (expression);
+      return WriteElement (expression);
     }
 
     public IToTextBuilderBase m (string name, Object obj)
     {
-      return AppendMember (name, obj);
+      return WriteElement (name, obj);
     }
 
     public abstract IToTextBuilderBase AppendEnumerable (IEnumerable collection);

@@ -76,9 +76,8 @@ namespace Remotion.Diagnostics.ToText
 
 
 
-    IToTextBuilderBase AppendMember (string name, Object obj);
-    IToTextBuilderBase AppendMemberNonSequence (string name, Object obj);
-    IToTextBuilderBase AppendMember<T> (Expression<Func<object, T>> expression);
+    IToTextBuilderBase WriteElement (string name, Object obj);
+    IToTextBuilderBase WriteElement<T> (Expression<Func<object, T>> expression);
     IToTextBuilderBase m (Object obj);
     IToTextBuilderBase m (string name, Object obj, bool honorSequence);
     IToTextBuilderBase m<T> (Expression<Func<object, T>> expression);
