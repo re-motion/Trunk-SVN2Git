@@ -13,7 +13,7 @@ namespace Remotion.Diagnostics
    
     private static readonly ToTextBuilder _toTextBuilderConsole = new ToTextBuilder (_toTextProvider, System.Console.Out);
     private static readonly ToTextBuilder _toTextBuilderError = new ToTextBuilder (_toTextProvider, System.Console.Error);
-    //private static readonly ToTextBuilder _toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter(Path.GetTempFileName()));
+    //private static readonly ToTextBuilder _toTextBuilderLog = new ToTextBuilder (toTextProvider, new StreamWriter(Path.GetTempFileName()));
     private static readonly ToTextBuilder _toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter (System.IO.Path.GetTempPath() + "\\remotion.log"));
 
     private static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap;

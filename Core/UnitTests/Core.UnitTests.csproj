@@ -139,6 +139,7 @@
     <Compile Include="Collections\EnumerableExtensionsTest.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Design\DesignerUtilityTest.cs" />
+    <Compile Include="Diagnostics\DisableableWriterTest.cs" />
     <Compile Include="Diagnostics\ToTextProviderHandlerTest.cs" />
     <Compile Include="Diagnostics\ToTextSpecificHandlerCollectorTest.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\TargetClassCallingIntroducedMethodFromCtor.cs" />

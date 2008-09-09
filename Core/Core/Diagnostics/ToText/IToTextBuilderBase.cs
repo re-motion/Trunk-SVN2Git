@@ -22,6 +22,14 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase cFull { get; }
     IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderBase.ToTextBuilderOutputComplexityLevel complexityLevel);
 
+    void OutputDisable ();
+    void OutputSkeleton ();
+    void OutputBasic ();
+    void OutputMedium ();
+    void OutputComplex ();
+    void OutputFull ();
+
+
 
     string CheckAndConvertToString ();
     //IToTextBuilderBase ToTextString (string s);
@@ -40,12 +48,6 @@ namespace Remotion.Diagnostics.ToText
 
     IToTextBuilderBase WriteRawChar (char c);
 
-    void OutputDisable ();
-    void OutputSkeleton ();
-    void OutputBasic ();
-    void OutputMedium ();
-    void OutputComplex ();
-    void OutputFull ();
 
     /// <summary>
     /// Writes the given string to the output stream.

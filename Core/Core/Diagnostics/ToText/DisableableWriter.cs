@@ -8,6 +8,7 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using System.IO;
 using System.Text;
 
@@ -17,15 +18,13 @@ namespace Remotion.Diagnostics.ToText
   /// Wrapper around <see cref="TextWriter"/> class which supports enabling/disabling of its <see cref="Write{T}"/> method 
   /// through its <see cref="Enabled"/> property.
   /// </summary>
-  internal class DisableableWriter
+  public class DisableableWriter
   {
-    //private readonly StringBuilder _stringBuilder = new StringBuilder ();
-    private readonly TextWriter _textWriter;
-
+    // private readonly TextWriter _textWriter;
 
     public DisableableWriter (TextWriter textWriter)
     {
-      _textWriter = textWriter;
+      TextWriter = textWriter;
       Enabled = true;
     }
 
@@ -34,28 +33,61 @@ namespace Remotion.Diagnostics.ToText
     {
     }
 
+
+    public string DelayedPrefix
+    {
+      get;
+      private set;
+    }
+
+    public TextWriter TextWriter
+    {
+      get;
+      private set;
+    }
+
     public bool Enabled { get; set; }
+
+
 
     public TextWriter Write<T> (T t)
     {
+      //Console.WriteLine ("TextWriter: Enabled=" + Enabled);
       if (Enabled)
       {
-        _textWriter.Write (t);
+        if (DelayedPrefix != null)
+        {
+          TextWriter.Write (DelayedPrefix);
+        }
+        TextWriter.Write (t);
+        //Console.WriteLine ("Wrote to: " + TextWriter.GetHashCode ());
       }
-      return _textWriter;
+      return TextWriter;
     }
 
     public override string ToString ()
     {
-      return _textWriter.ToString ();
+      return TextWriter.ToString ();
     }
 
     public void Flush ()
     {
       if (Enabled)
       {
-        _textWriter.Flush();
+        TextWriter.Flush();
       }
     }
+
+    public void WriteDelayedAsPrefix (string delayedPrefix)
+    {
+      DelayedPrefix = delayedPrefix;
+    }
+
+    public void ClearDelayedPrefix ()
+    {
+      DelayedPrefix = null;
+    }
+
+
   }
 }

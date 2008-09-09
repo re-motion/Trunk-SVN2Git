@@ -9,8 +9,8 @@ namespace Remotion.Diagnostics.ToText
 {
   public abstract class ToTextBuilderBase : IToTextBuilderBase
   {
-    protected ToTextProvider _toTextProvider;
-    protected readonly Stack<SequenceStateHolder> _sequenceStack = new Stack<SequenceStateHolder> (16);
+    protected ToTextProvider toTextProvider;
+    protected readonly Stack<SequenceStateHolder> sequenceStack = new Stack<SequenceStateHolder> (16);
 
     public enum ToTextBuilderOutputComplexityLevel
     {
@@ -25,7 +25,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilderBase (ToTextProvider toTextProvider)
     {
-      _toTextProvider = toTextProvider;
+      this.toTextProvider = toTextProvider;
       OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
       SequenceState = null;
     }
@@ -54,8 +54,8 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextProvider ToTextProvider
     {
-      get { return _toTextProvider; }
-      set { _toTextProvider = value; }
+      get { return toTextProvider; }
+      set { toTextProvider = value; }
     }
 
     public IToTextBuilderBase cSkeleton
@@ -221,7 +221,7 @@ namespace Remotion.Diagnostics.ToText
     protected IToTextBuilderBase WriteMemberRaw (string name, Object obj)
     {
       SequenceBegin ("", name + "=", "", "", "", "");
-      _toTextProvider.ToText (obj, this);
+      toTextProvider.ToText (obj, this);
       SequenceEnd ();
 
       return this;
@@ -255,13 +255,13 @@ namespace Remotion.Diagnostics.ToText
 
     //public IToTextBuilderBase WriteElement (Object obj)
     //{
-    //  _toTextProvider.ToText (obj, this);
+    //  toTextProvider.ToText (obj, this);
     //  return this;
     //}
 
     //protected IToTextBuilderBase AppendToTextRaw (Object obj)
     //{
-    //  _toTextProvider.ToText (obj, this);
+    //  toTextProvider.ToText (obj, this);
     //  return this;
     //}
 
@@ -272,7 +272,7 @@ namespace Remotion.Diagnostics.ToText
 
     //public IToTextBuilderBase WriteElement (Object obj)
     //{
-    //  _toTextProvider.ToText (obj, this);
+    //  toTextProvider.ToText (obj, this);
     //  return this;
     //}
 
@@ -326,7 +326,7 @@ namespace Remotion.Diagnostics.ToText
     public IToTextBuilderBase WriteElement (object obj)
     {
       //Assertion.IsTrue (IsInSequence);
-      _toTextProvider.ToText (obj, this);
+      toTextProvider.ToText (obj, this);
       return this;
     }
 
@@ -402,7 +402,7 @@ namespace Remotion.Diagnostics.ToText
 
     //public virtual IToTextBuilderBase WriteElement (object obj)
     //{
-    //  _toTextProvider.ToText (obj, this);
+    //  toTextProvider.ToText (obj, this);
     //  return this;
     //}
   }

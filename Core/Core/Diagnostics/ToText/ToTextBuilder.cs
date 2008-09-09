@@ -122,7 +122,7 @@ namespace Remotion.Diagnostics.ToText
     public ToTextBuilder (ToTextProvider toTextProvider, TextWriter textWriter)
       : base (toTextProvider)
     {
-      //_toTextProvider = toTextProvider;
+      //toTextProvider = toTextProvider;
       _disableableWriter = new DisableableWriter (textWriter);
       Settings = new ToTextBuilderSettings ();
       //OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
@@ -308,7 +308,7 @@ namespace Remotion.Diagnostics.ToText
     {
       BeforeWriteElement(); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-      _sequenceStack.Push (SequenceState);
+      sequenceStack.Push (SequenceState);
 
       SequenceState = new SequenceStateHolder (name, sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
 
@@ -414,7 +414,7 @@ namespace Remotion.Diagnostics.ToText
     //protected override IToTextBuilderBase WriteMemberRaw (string name, Object obj)
     //{
     //  SequenceBegin ("", name + "=", "", "", "", "");
-    //  _toTextProvider.ToText (obj, this);
+    //  toTextProvider.ToText (obj, this);
     //  SequenceEnd ();
 
     //  return this;
@@ -482,7 +482,7 @@ namespace Remotion.Diagnostics.ToText
       Assertion.IsTrue (IsInSequence);
       _disableableWriter.Write (SequenceState.SequencePostfix);
 
-      SequenceState = _sequenceStack.Pop ();
+      SequenceState = sequenceStack.Pop ();
 
       AfterWriteElement (); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
