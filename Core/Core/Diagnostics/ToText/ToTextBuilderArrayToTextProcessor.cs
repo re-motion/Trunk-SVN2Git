@@ -28,7 +28,7 @@ namespace Remotion.Diagnostics.ToText
       if (ProcessingState.IsInnermostLoop)
       {
         //_toTextBuilder.WriteElement (_array.GetValue (ProcessingState.DimensionIndices));
-        _toTextBuilder.AppendToTextNonSequence (_array.GetValue (ProcessingState.DimensionIndices));
+        _toTextBuilder.WriteElement (_array.GetValue (ProcessingState.DimensionIndices));
       }
       else
       {

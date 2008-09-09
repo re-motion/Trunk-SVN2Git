@@ -83,7 +83,7 @@ namespace Remotion.Diagnostics.ToText
   //  IToTextBuilderBase WriteElement (Object obj);
   //  IToTextBuilderBase tt (Object obj);
   //  IToTextBuilderBase tt (Object obj, bool honorSequence);
-  //  IToTextBuilderBase AppendToTextNonSequence (Object obj);
+  //  IToTextBuilderBase WriteElement (Object obj);
   //  IToTextBuilderBase Append (string s);
   //  IToTextBuilderBase beginInstance (Type type);
   //  IToTextBuilderBase endInstance ();
@@ -431,7 +431,7 @@ namespace Remotion.Diagnostics.ToText
       foreach (Object element in collection)
       {
         //WriteElement (element);
-        AppendToTextNonSequence (element);
+        WriteElement (element);
       }
       SequenceEnd ();
       return this;
@@ -451,12 +451,12 @@ namespace Remotion.Diagnostics.ToText
 
     //public IToTextBuilderBase tt (Object obj, bool honorSequence)
     //{
-    //  return honorSequence ? WriteElement (obj) : AppendToTextNonSequence (obj);
+    //  return honorSequence ? WriteElement (obj) : WriteElement (obj);
     //}
 
 
 
-    //public ToTextBuilder AppendToTextNonSequence (Object obj)
+    //public ToTextBuilder WriteElement (Object obj)
     //{
     //  _AppendToText (obj);
     //  return this;

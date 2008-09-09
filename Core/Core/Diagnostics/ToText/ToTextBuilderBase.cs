@@ -250,11 +250,11 @@ namespace Remotion.Diagnostics.ToText
 
     public abstract IToTextBuilderBase AppendArray (Array array);
 
-    public IToTextBuilderBase WriteElement (Object obj)
-    {
-      _toTextProvider.ToText (obj, this);
-      return this;
-    }
+    //public IToTextBuilderBase WriteElement (Object obj)
+    //{
+    //  _toTextProvider.ToText (obj, this);
+    //  return this;
+    //}
 
     //protected IToTextBuilderBase AppendToTextRaw (Object obj)
     //{
@@ -269,10 +269,10 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase tt (Object obj, bool honorSequence)
     {
-      return honorSequence ? WriteElement (obj) : AppendToTextNonSequence (obj);
+      return honorSequence ? WriteElement (obj) : WriteElement (obj);
     }
 
-    public IToTextBuilderBase AppendToTextNonSequence (Object obj)
+    public IToTextBuilderBase WriteElement (Object obj)
     {
       _toTextProvider.ToText (obj, this);
       return this;

@@ -74,7 +74,6 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase WriteElement (object obj);
     IToTextBuilderBase tt (Object obj);
     IToTextBuilderBase tt (Object obj, bool honorSequence);
-    IToTextBuilderBase AppendToTextNonSequence (Object obj);
 
 
 
