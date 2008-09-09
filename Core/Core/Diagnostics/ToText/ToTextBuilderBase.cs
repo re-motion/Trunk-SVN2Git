@@ -107,22 +107,22 @@ namespace Remotion.Diagnostics.ToText
     public void OutputFull () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Full; }
     public abstract IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel);
     public abstract string CheckAndConvertToString ();
-    protected abstract void BeforeAppendElement ();
-    protected abstract void AfterAppendElement ();
+    protected abstract void BeforeWriteElement ();
+    protected abstract void AfterWriteElement ();
     public abstract IToTextBuilderBase Flush ();
     public abstract IToTextBuilderBase WriteNewLine ();
     public abstract IToTextBuilderBase nl ();
     //public abstract virtual IToTextBuilderBase AppendSeperator ();
-    protected abstract IToTextBuilderBase AppendObjectToString (object obj);
+    protected abstract IToTextBuilderBase WriteObjectToString (object obj);
 
     public IToTextBuilderBase ts (object obj)
     {
-      return AppendObjectToString (obj);
+      return WriteObjectToString (obj);
     }
 
     public IToTextBuilderBase WriteSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
-      //BeforeAppendElement ();
+      //BeforeWriteElement ();
 
       return SequenceBegin (name, sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
     }
@@ -284,15 +284,11 @@ namespace Remotion.Diagnostics.ToText
 
     public abstract IToTextBuilderBase LowLevelWrite (Object obj);
 
-    private IToTextBuilderBase AppendInstanceBegin (Type type)
-    {
-      SequenceBegin ("", "[" + type.Name, "  ", ",", "", "]");
-      return this;
-    }
-
     public IToTextBuilderBase WriteInstanceBegin (Type type)
     {
-      return AppendInstanceBegin (type);
+      //return AppendInstanceBegin (type);
+      SequenceBegin ("", "[" + type.Name, "  ", ",", "", "]");
+      return this;
     }
 
     public IToTextBuilderBase ib (Type type)
@@ -366,12 +362,12 @@ namespace Remotion.Diagnostics.ToText
     public void WriteRawElementBegin ()
     {
       IsInRawSequence = true;
-      BeforeAppendElement();
+      BeforeWriteElement();
     }
 
     public void WriteRawElementEnd ()
     {
-      AfterAppendElement ();
+      AfterWriteElement ();
       IsInRawSequence = false;
     }
 
@@ -380,7 +376,7 @@ namespace Remotion.Diagnostics.ToText
 
     //public override IToTextBuilderBase EmitNamedSequenceBegin ()
     //{
-    //  BeforeAppendElement ();
+    //  BeforeWriteElement ();
     //  return SequenceBegin (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
     //}
 

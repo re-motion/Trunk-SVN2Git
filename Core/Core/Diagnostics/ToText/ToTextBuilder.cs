@@ -180,7 +180,7 @@ namespace Remotion.Diagnostics.ToText
     // Before/After Element
     //--------------------------------------------------------------------------
 
-    protected override void BeforeAppendElement ()
+    protected override void BeforeWriteElement ()
     {
       if (IsInSequence)
       {
@@ -188,7 +188,7 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    protected override void AfterAppendElement ()
+    protected override void AfterWriteElement ()
     {
       if (IsInSequence)
       {
@@ -293,7 +293,7 @@ namespace Remotion.Diagnostics.ToText
     //}
 
 
-    protected override IToTextBuilderBase AppendObjectToString (object obj)
+    protected override IToTextBuilderBase WriteObjectToString (object obj)
     {
       _disableableWriter.Write (obj.ToString ());
       return this;
@@ -306,7 +306,7 @@ namespace Remotion.Diagnostics.ToText
 
     protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
-      BeforeAppendElement(); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      BeforeWriteElement(); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
       _sequenceStack.Push (SequenceState);
 
@@ -484,7 +484,7 @@ namespace Remotion.Diagnostics.ToText
 
       SequenceState = _sequenceStack.Pop ();
 
-      AfterAppendElement (); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      AfterWriteElement (); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
 
