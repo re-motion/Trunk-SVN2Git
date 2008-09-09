@@ -17,103 +17,8 @@ using Remotion.Utilities;
 
 namespace Remotion.Diagnostics.ToText
 {
-  //public interface IToTextBuilder
-  //{
-  //  ToTextBuilderSettings Settings { get; }
-  //  bool UseMultiLine { get; set; }
-  //  bool Enabled { get; set; }
-  //  ToTextBuilder seperator { get; }
-  //  ToTextBuilder comma { get; }
-  //  ToTextBuilder colon { get; }
-  //  ToTextBuilder semicolon { get; }
-  //  SequenceStateHolder SequenceState { get; protected set; }
-  //  ToTextBuilderBase.ToTextBuilderOutputComplexityLevel OutputComplexity { get; protected set; }
-  //  bool IsInSequence { get; }
-  //  ToTextProvider ToTextProvider { get; set; }
-  //  IToTextBuilderBase cSkeleton { get; }
-  //  IToTextBuilderBase cBasic { get; }
-  //  IToTextBuilderBase cMedium { get; }
-  //  IToTextBuilderBase cComplex { get; }
-  //  IToTextBuilderBase cFull { get; }
-  //  IToTextBuilderBase AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderBase.ToTextBuilderOutputComplexityLevel complexityLevel);
-  //  string CheckAndConvertToString ();
-  //  ToTextBuilder ToText (object obj);
-  //  IToTextBuilderBase Flush ();
-  //  IToTextBuilderBase sf (string format, params object[] paramArray);
-  //  ToTextBuilder AppendNewLine ();
-  //  ToTextBuilder nl ();
-  //  ToTextBuilder AppendSpace ();
-  //  IToTextBuilderBase space ();
-  //  ToTextBuilder AppendTabulator ();
-  //  ToTextBuilder tab ();
-  //  ToTextBuilder AppendSeperator ();
-  //  ToTextBuilder AppendComma ();
-  //  ToTextBuilder AppendColon ();
-  //  ToTextBuilder AppendSemiColon ();
-  //  IToTextBuilderBase WriteArray (Array array);
-  //  IToTextBuilderBase AppendString (string s);
-  //  ToTextBuilder AppendEscapedString (string s);
-  //  ToTextBuilder sEsc (string s);
-  //  IToTextBuilderBase AppendChar (char c);
-  //  IToTextBuilderBase WriteElement (string name, Object obj);
-  //  IToTextBuilderBase WriteEnumerable (IEnumerable collection);
-  //  IToTextBuilderBase array (Array array);
-  //  IToTextBuilderBase Append (Object obj);
-  //  IToTextBuilderBase ToTextString (string s);
-  //  void OutputDisable ();
-  //  void OutputSkeleton ();
-  //  void OutputBasic ();
-  //  void OutputMedium ();
-  //  void OutputComplex ();
-  //  void OutputFull ();
-  //  IToTextBuilderBase ts (object obj);
-  //  IToTextBuilderBase WriteSequenceBegin (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
-  //  IToTextBuilderBase sb ();
-  //  IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
-  //  IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix);
-  //  IToTextBuilderBase sb (string sequencePrefix, string sequencePostfix);
-  //  IToTextBuilderBase s (string s);
-  //  IToTextBuilderBase WriteElement<T> (Expression<Func<object, T>> expression);
-  //  IToTextBuilderBase WriteElement (string name, Object obj);
-  //  IToTextBuilderBase e (Object obj);
-  //  IToTextBuilderBase e (string name, Object obj, bool honorSequence);
-  //  IToTextBuilderBase e<T> (Expression<Func<object, T>> expression);
-  //  IToTextBuilderBase e (string name, Object obj);
-  //  IToTextBuilderBase collection (IEnumerable collection);
-  //  IToTextBuilderBase WriteElement (Object obj);
-  //  IToTextBuilderBase e (Object obj);
-  //  IToTextBuilderBase e (Object obj, bool honorSequence);
-  //  IToTextBuilderBase WriteElement (Object obj);
-  //  IToTextBuilderBase Append (string s);
-  //  IToTextBuilderBase WriteInstanceBegin (Type type);
-  //  IToTextBuilderBase WriteInstanceEnd ();
-  //  IToTextBuilderBase WriteSequenceEnd ();
-  //  IToTextBuilderBase se ();
-  //  IToTextBuilderBase WriteElement (object obj);
-  //  IToTextBuilderBase e (object obj);
-  //  IToTextBuilderBase WriteSequenceElements (params object[] sequenceElements);
-  //  IToTextBuilderBase elements (params object[] sequenceElements);
-  //  IToTextBuilderBase elementsNumbered (string s1, int i0, int i1);
-  //}
-
   public class ToTextBuilder : ToTextBuilderBase
   {
-    /* Planned Features:
-     * Start-/End(class)
-     * Start-/EndCollection(class)
-     * Start-/EndCollectionDimension(class)
-     * Start-/EndCollectionEntry(class): seperator
-     * 
-     * s ... append string
-     * sf ... append formatted string
-     * nl ... append newline
-     * space, tab ... append whitespace
-     * m ... named class member
-     * c ... class
-     * 
-     * XML: Support text to be added to be processed to become XML compatible ("<" -> "&lt;" etc). Use CDATA ?
-    */
-
     private readonly DisableableWriter _disableableWriter;
 
     private bool _useMultiline = true;
@@ -122,11 +27,8 @@ namespace Remotion.Diagnostics.ToText
     public ToTextBuilder (ToTextProvider toTextProvider, TextWriter textWriter)
       : base (toTextProvider)
     {
-      //toTextProvider = toTextProvider;
       _disableableWriter = new DisableableWriter (textWriter);
       Settings = new ToTextBuilderSettings ();
-      //OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
-      //SequenceState = null;
     }
 
     public ToTextBuilder (ToTextProvider toTextProvider)
@@ -217,7 +119,7 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase sf (string format, params object[] paramArray)
     {
-      return WriteRawStringUnsafe (string.Format (format, paramArray)); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      return WriteRawStringUnsafe (string.Format (format, paramArray)); 
     }
 
 
@@ -237,62 +139,6 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    //private IToTextBuilderBase AppendSpace ()
-    //{
-    //  _disableableWriter.Write (" ");
-    //  return this;
-    //}
-
-    //public IToTextBuilderBase space ()
-    //{
-    //  AppendSpace ();
-    //  return this;
-    //}
-
-    //// TODO?: Introduce highlevel sibling "Indent" ?
-    //private IToTextBuilderBase AppendTabulator ()
-    //{
-    //  _disableableWriter.Write ("\t");
-    //  return this;
-    //}
-
-    //public IToTextBuilderBase tab ()
-    //{
-    //  AppendTabulator ();
-    //  return this;
-    //}
-
-
-    //public override IToTextBuilderBase AppendSeperator ()
-    //{
-    //  _disableableWriter.Write (",");
-    //  return this;
-    //}
-
-    //public override ToTextBuilder seperator
-    //{
-    //  get { AppendSeperator (); return this; }
-    //}
-
-
-    //public override ToTextBuilder comma
-    //{
-    //  get { AppendComma (); return this; }
-    //}
-
-
-    //public override ToTextBuilder colon
-    //{
-    //  get { AppendColon (); return this; }
-    //}
-
-
-    //public override ToTextBuilder semicolon
-    //{
-    //  get { AppendSemiColon (); return this; }
-    //}
-
-
     protected override IToTextBuilderBase WriteObjectToString (object obj)
     {
       _disableableWriter.Write (obj.ToString ());
@@ -306,7 +152,7 @@ namespace Remotion.Diagnostics.ToText
 
     protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
     {
-      BeforeWriteElement(); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      BeforeWriteElement();
 
       sequenceStack.Push (SequenceState);
 
@@ -321,21 +167,6 @@ namespace Remotion.Diagnostics.ToText
 
       return this;
     }
-
-    //public IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
-    //{
-    //  return WriteSequenceBegin (sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
-    //}
-
-    //public IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix)
-    //{
-    //  return WriteSequenceBegin (sequencePrefix, "", separator, "", sequencePostfix);
-    //}
-
-    //public IToTextBuilderBase sb (string sequencePrefix, string sequencePostfix)
-    //{
-    //  return WriteSequenceBegin (sequencePrefix, "", ",", "", sequencePostfix);
-    //}
 
 
     //--------------------------------------------------------------------------
@@ -365,12 +196,6 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    //public override IToTextBuilderBase AppendRawString (string s)
-    //{
-    //  AssertIsInRawSequence();
-    //  WriteRawStringUnsafe (s);
-    //  return this;
-    //}
 
     public override IToTextBuilderBase WriteRawStringEscapedUnsafe (string s)
     {
@@ -378,12 +203,7 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    //public override IToTextBuilderBase AppendRawEscapedString (string s)
-    //{
-    //  WriteRawStringEscapedUnsafe(s);
-    //  return this;
-    //}
-
+ 
     public override IToTextBuilderBase sEsc (string s)
     {
       return WriteRawStringEscapedUnsafe (s); 
@@ -396,30 +216,6 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    //public override IToTextBuilderBase AppendRawChar (char c)
-    //{
-    //  AssertIsInRawSequence ();
-    //  WriteRawCharUnsafe (c);
-    //  return this;
-    //}
-
-    //public override IToTextBuilderBase WriteElement (string name, Object obj)
-    //{
-    //  ArgumentUtility.CheckNotNull ("name", name);
-    //  WriteMemberRaw (name, obj);
-    //  return this;
-    //}
-
-
-    //protected override IToTextBuilderBase WriteMemberRaw (string name, Object obj)
-    //{
-    //  SequenceBegin ("", name + "=", "", "", "", "");
-    //  toTextProvider.ToText (obj, this);
-    //  SequenceEnd ();
-
-    //  return this;
-    //}
-
 
     public override IToTextBuilderBase WriteEnumerable (IEnumerable collection)
     {
@@ -427,7 +223,6 @@ namespace Remotion.Diagnostics.ToText
         Settings.EnumerableOtherElementPrefix, Settings.EnumerableElementPostfix, Settings.EnumerablePostfix);
       foreach (Object element in collection)
       {
-        //WriteElement (element);
         WriteElement (element);
       }
       SequenceEnd ();
@@ -441,36 +236,11 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    //public IToTextBuilderBase e (Object obj)
-    //{
-    //  return WriteElement (obj);
-    //}
-
-    //public IToTextBuilderBase e (Object obj, bool honorSequence)
-    //{
-    //  return honorSequence ? WriteElement (obj) : WriteElement (obj);
-    //}
-
-
-
-    //public ToTextBuilder WriteElement (Object obj)
-    //{
-    //  _AppendToText (obj);
-    //  return this;
-    //}
-
-
     public override IToTextBuilderBase LowLevelWrite (Object obj)
     {
       _disableableWriter.Write (obj);
       return this;
     }
-
-
-    //public override IToTextBuilderBase ToTextString (string s)
-    //{
-    //  return AppendString (s);
-    //}
 
 
     //--------------------------------------------------------------------------
@@ -484,7 +254,7 @@ namespace Remotion.Diagnostics.ToText
 
       SequenceState = sequenceStack.Pop ();
 
-      AfterWriteElement (); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      AfterWriteElement (); 
     }
 
 
@@ -500,6 +270,7 @@ namespace Remotion.Diagnostics.ToText
     //--------------------------------------------------------------------------
 
 
+    // TODO: Move to String Extension Class
     private void EscapeString (string s, DisableableWriter disableableWriter)
     {
       var mapping = new Dictionary<char, string> () { { '"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\t', "\\t" }, { '\\', "\\\\" }, { '\b', "\\b" }, { '\v', "\\v" }, { '\f', "\\f" } };
@@ -518,6 +289,5 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    // TODO: Move to String Extension Class
   }
 }
