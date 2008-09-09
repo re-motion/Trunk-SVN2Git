@@ -175,7 +175,7 @@ namespace Remotion.Diagnostics.ToText
 
     public abstract IToTextBuilderBase AppendRawEscapedStringUnsafe (string s);
 
-    public IToTextBuilderBase WriteRawEscapedString (string s) 
+    public IToTextBuilderBase WriteRawStringEscaped (string s) 
     {
       AssertIsInRawSequence ();
       AppendRawEscapedStringUnsafe (s);

@@ -35,7 +35,7 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase nl ();
 
     IToTextBuilderBase WriteRawString (string s);
-    IToTextBuilderBase WriteRawEscapedString (string s);
+    IToTextBuilderBase WriteRawStringEscaped (string s);
     IToTextBuilderBase sEsc (string s);
 
     IToTextBuilderBase WriteRawChar (char c);
