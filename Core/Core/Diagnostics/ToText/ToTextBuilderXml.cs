@@ -95,7 +95,7 @@ namespace Remotion.Diagnostics.ToText
       throw new System.NotImplementedException();
     }
 
-    //public override IToTextBuilderBase EmitToText (object obj)
+    //public override IToTextBuilderBase WriteElement (object obj)
     //{
     //  throw new System.NotImplementedException();
     //}

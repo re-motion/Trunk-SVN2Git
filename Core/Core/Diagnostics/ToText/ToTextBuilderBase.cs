@@ -222,7 +222,7 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase m (Object obj)
     {
-      return AppendToText (obj);
+      return WriteElement (obj);
     }
 
     public IToTextBuilderBase m (string name, Object obj, bool honorSequence)
@@ -250,7 +250,7 @@ namespace Remotion.Diagnostics.ToText
 
     public abstract IToTextBuilderBase AppendArray (Array array);
 
-    public IToTextBuilderBase AppendToText (Object obj)
+    public IToTextBuilderBase WriteElement (Object obj)
     {
       _toTextProvider.ToText (obj, this);
       return this;
@@ -264,12 +264,12 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase tt (Object obj)
     {
-      return AppendToText (obj);
+      return WriteElement (obj);
     }
 
     public IToTextBuilderBase tt (Object obj, bool honorSequence)
     {
-      return honorSequence ? AppendToText (obj) : AppendToTextNonSequence (obj);
+      return honorSequence ? WriteElement (obj) : AppendToTextNonSequence (obj);
     }
 
     public IToTextBuilderBase AppendToTextNonSequence (Object obj)
@@ -398,10 +398,10 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    public virtual IToTextBuilderBase EmitToText (object obj)
-    {
-      _toTextProvider.ToText (obj, this);
-      return this;
-    }
+    //public virtual IToTextBuilderBase WriteElement (object obj)
+    //{
+    //  _toTextProvider.ToText (obj, this);
+    //  return this;
+    //}
   }
 }

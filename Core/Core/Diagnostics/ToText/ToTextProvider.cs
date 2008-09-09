@@ -109,7 +109,7 @@ namespace Remotion.Diagnostics.ToText
     public virtual string ToTextString (object obj)
     {
       var toTextBuilder = new ToTextBuilder (this);
-      return toTextBuilder.EmitToText (obj).CheckAndConvertToString ();
+      return toTextBuilder.WriteElement (obj).CheckAndConvertToString ();
     }
 
     public void ToText (object obj, IToTextBuilderBase toTextBuilder)
