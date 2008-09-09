@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Web.UI;
@@ -18,6 +19,7 @@ using Remotion.Collections;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
+using System.Linq;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -163,8 +165,9 @@ namespace Remotion.Web.ExecutionEngine
       _isEnsured = true;
 
       EnsurePlaceHolderCreated();
-      foreach (Control control in _parentContainer.Controls)
-        Controls.Add (control);
+      List<Control> controls = new List<Control> (_placeHolder.Controls.Cast<Control>());
+      foreach (Control control in controls)
+        base.Controls.Add (control);
     }
 
     private void EnsurePlaceHolderCreated ()
