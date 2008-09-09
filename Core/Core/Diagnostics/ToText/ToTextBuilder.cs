@@ -75,10 +75,10 @@ namespace Remotion.Diagnostics.ToText
   //  IToTextBuilderBase s (string s);
   //  IToTextBuilderBase WriteElement<T> (Expression<Func<object, T>> expression);
   //  IToTextBuilderBase WriteElement (string name, Object obj);
-  //  IToTextBuilderBase m (Object obj);
-  //  IToTextBuilderBase m (string name, Object obj, bool honorSequence);
-  //  IToTextBuilderBase m<T> (Expression<Func<object, T>> expression);
-  //  IToTextBuilderBase m (string name, Object obj);
+  //  IToTextBuilderBase e (Object obj);
+  //  IToTextBuilderBase e (string name, Object obj, bool honorSequence);
+  //  IToTextBuilderBase e<T> (Expression<Func<object, T>> expression);
+  //  IToTextBuilderBase e (string name, Object obj);
   //  IToTextBuilderBase collection (IEnumerable collection);
   //  IToTextBuilderBase WriteElement (Object obj);
   //  IToTextBuilderBase e (Object obj);

@@ -153,7 +153,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var o = new Object();
-      toTextBuilder.m (o);
+      toTextBuilder.e (o);
       var result = toTextBuilder.CheckAndConvertToString();
       Assert.That (result, Is.EqualTo (o.ToString()));
     }
@@ -164,7 +164,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       //var list = new List<int> () { 5, 3, 1 };
       var myList = List.New (5, 3, 1);
-      toTextBuilder.m ("myList", myList);
+      toTextBuilder.e ("myList", myList);
       var result = toTextBuilder.CheckAndConvertToString();
       //Assert.That (result, Is.EqualTo ("myList:{5,3,1}"));
       Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
@@ -175,7 +175,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder ();
       var theAnswer = 42;
-      toTextBuilder.m (x => theAnswer);
+      toTextBuilder.e (x => theAnswer);
       var result = toTextBuilder.CheckAndConvertToString ();
       Assert.That (result, Is.EqualTo ("theAnswer=42"));
     }
@@ -185,7 +185,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder ();
       var myList = List.New (5, 3, 1);
-      toTextBuilder.m (x => myList);
+      toTextBuilder.e (x => myList);
       var result = toTextBuilder.CheckAndConvertToString ();
       Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
     }
@@ -196,7 +196,7 @@ namespace Remotion.UnitTests.Diagnostics
     //{
     //  var toTextBuilder = CreateTextBuilder ();
     //  var myList = List.New (5, 3, 1);
-    //  toTextBuilder.m (n => myList);
+    //  toTextBuilder.e (n => myList);
     //  var result = toTextBuilder.CheckAndConvertToString ();
     //  Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
     //}
@@ -206,7 +206,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var myList = List.New (5, 3, 1);
-      toTextBuilder.sb().e ("Abra").m ("myList", myList).m ("myList", myList).e ("Kadabra").se();
+      toTextBuilder.sb().e ("Abra").e ("myList", myList).e ("myList", myList).e ("Kadabra").se();
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("(Abra,myList={5,3,1},myList={5,3,1},Kadabra)"));
@@ -612,7 +612,7 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (1));
       toTextBuilder.e (2);
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (2));
-      toTextBuilder.m (dreiString);
+      toTextBuilder.e (dreiString);
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (3));
       toTextBuilder.AppendSequenceEnd();
       var result = toTextBuilder.CheckAndConvertToString();
@@ -707,7 +707,7 @@ namespace Remotion.UnitTests.Diagnostics
       //var test = new ToTextProviderTest.Test ("Test with class", 99999);
       var simpleTest2 = new ToTextProviderTest.TestSimple ("simple Test", 987654321);
       toTextBuilder.sb ("[", "", ",", "", "]").e ("hello").e (toTextBuilder.SequenceState.Counter);
-      toTextBuilder.sb ("<", "(", ";(", ")", ">").e ("a variable").m ("simpleTest", simpleTest).e ("was here and").m ("simpleTest2", simpleTest2).e ("here").e (
+      toTextBuilder.sb ("<", "(", ";(", ")", ">").e ("a variable").e ("simpleTest", simpleTest).e ("was here and").e ("simpleTest2", simpleTest2).e ("here").e (
           toTextBuilder.SequenceState.Counter).se();
       toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se();
       var result = toTextBuilder.CheckAndConvertToString();
@@ -739,7 +739,7 @@ namespace Remotion.UnitTests.Diagnostics
       var simpleTest2 = new ToTextProviderTest.TestSimple ("simple Test",987654321);
       //var test = new ToTextProviderTest.Test ("Test with class", 99999);
       toTextBuilder.sb ("[", "", ",", "", "]").e ("hello").e (toTextBuilder.SequenceState.Counter);
-      toTextBuilder.sb ("<", "(", ";(", ")", ">").e ("a variable").m ("simpleTest", simpleTest).e ("was here and").m ("simpleTest2", simpleTest2).e ("here").e (
+      toTextBuilder.sb ("<", "(", ";(", ")", ">").e ("a variable").e ("simpleTest", simpleTest).e ("was here and").e ("simpleTest2", simpleTest2).e ("here").e (
           toTextBuilder.SequenceState.Counter).se();
       toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se();
       var result = toTextBuilder.CheckAndConvertToString();

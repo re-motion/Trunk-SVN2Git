@@ -368,7 +368,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       ToTextProvider toText = CreateTextProvider();
       //toText.RegisterSpecificTypeHandler<Test> ((x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name),ToText(toText,x.Int), ToText(toText,x.LinkedListString)));
-      toText.RegisterSpecificTypeHandler<Test> ((x, ttb) => ttb.s ("[Test: ").m (x.Name).s(";").m (x.Int).s(";").m (x.LinkedListString).s ("]"));
+      toText.RegisterSpecificTypeHandler<Test> ((x, ttb) => ttb.s ("[Test: ").e (x.Name).s(";").e (x.Int).s(";").e (x.LinkedListString).s ("]"));
       var test = new Test ("That's not my name", 179);
       test.LinkedListString = null;
       string toTextTest = ToText (toText, test);
@@ -702,7 +702,7 @@ namespace Remotion.UnitTests.Diagnostics
       ToTextProvider toText = CreateTextProvider ();
       toText.Settings.UseInterfaceHandlers = true;
 
-      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.e ("Name", o.Name));
 
       Test testInterface = new Test ("Überbauer",3589);
       var result = toText.ToTextString (testInterface);
@@ -715,7 +715,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       ToTextProvider toText = CreateTextProvider ();
       toText.Settings.UseInterfaceHandlers = false;
-      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.e ("Name", o.Name));
 
       Test testInterface = new Test ("Überbauer", 3589);
       var result = toText.ToTextString (testInterface);
@@ -729,8 +729,8 @@ namespace Remotion.UnitTests.Diagnostics
       ToTextProvider toText = CreateTextProvider ();
       toText.Settings.UseInterfaceHandlers = true;
 
-      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
-      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestInt> ((o, ttb) => ttb.e ("Int", o.Int));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.e ("Name", o.Name));
 
       Test testInterface = new Test ("Überbauer", 3589);
       var result = toText.ToTextString (testInterface);
@@ -744,10 +744,10 @@ namespace Remotion.UnitTests.Diagnostics
       ToTextProvider toText = CreateTextProvider ();
       toText.Settings.UseInterfaceHandlers = true;
 
-      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
-      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
-      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITest2Name> ((o, ttb) => ttb.m ("Name2", o.Name));
-      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestListListString> ((o, ttb) => ttb.m ("ListListString", o.ListListString));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestInt> ((o, ttb) => ttb.e ("Int", o.Int));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestName> ((o, ttb) => ttb.e ("Name", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITest2Name> ((o, ttb) => ttb.e ("Name2", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithLowestPriority<ITestListListString> ((o, ttb) => ttb.e ("ListListString", o.ListListString));
 
       Test2 test2Interface = new Test2 ("Überbauer", 3589);
       var result = toText.ToTextString (test2Interface);
@@ -762,8 +762,8 @@ namespace Remotion.UnitTests.Diagnostics
       ToTextProvider toText = CreateTextProvider ();
       toText.Settings.UseInterfaceHandlers = true;
 
-      toText.RegisterSpecificInterfaceHandlerWithHighestPriority<ITestName> ((o, ttb) => ttb.m ("Name", o.Name));
-      toText.RegisterSpecificInterfaceHandlerWithHighestPriority<ITestInt> ((o, ttb) => ttb.m ("Int", o.Int));
+      toText.RegisterSpecificInterfaceHandlerWithHighestPriority<ITestName> ((o, ttb) => ttb.e ("Name", o.Name));
+      toText.RegisterSpecificInterfaceHandlerWithHighestPriority<ITestInt> ((o, ttb) => ttb.e ("Int", o.Int));
 
       Test testInterface = new Test ("Überbauer", 3589);
       var result = toText.ToTextString (testInterface);

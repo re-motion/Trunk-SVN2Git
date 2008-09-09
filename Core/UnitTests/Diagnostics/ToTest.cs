@@ -101,7 +101,7 @@ namespace Remotion.UnitTests.Diagnostics
     //private void RegisterHandlers ()
     //{
     //  To.RegisterHandler<Int32> ((x, ttb) => ttb.sb ("[Int32: ", "", ",", "", "]").ts (x).se());
-    //  To.RegisterHandler<Test> ((x, ttb) => ttb.sb ("<<Test: ", "", ";", "", ">>").m ("Name", x.Name).m ("Int", x.Int).se());
+    //  To.RegisterHandler<Test> ((x, ttb) => ttb.sb ("<<Test: ", "", ";", "", ">>").e ("Name", x.Name).e ("Int", x.Int).se());
     //}
 
 
@@ -236,8 +236,8 @@ namespace Remotion.UnitTests.Diagnostics
       var s = @"  line1
 line2   
 line3";
-      //To.TempLog.s ("ToTempLogTest").AppendRawEscapedString (s).s(s).m(x => s).Flush();
-      To.TempLog.s ("ToTempLogTest").sEsc (s).s (s).m (x => s).Flush ();
+      //To.TempLog.s ("ToTempLogTest").AppendRawEscapedString (s).s(s).e(x => s).Flush();
+      To.TempLog.s ("ToTempLogTest").sEsc (s).s (s).e (x => s).Flush ();
       Log (System.IO.Path.GetTempPath());
     }
 

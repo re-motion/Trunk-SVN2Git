@@ -230,23 +230,23 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public IToTextBuilderBase m (Object obj)
+    public IToTextBuilderBase e (Object obj)
     {
       return WriteElement (obj);
     }
 
-    public IToTextBuilderBase m (string name, Object obj, bool honorSequence)
+    public IToTextBuilderBase e (string name, Object obj, bool honorSequence)
     {
       //return honorSequence ? WriteElement (name, obj) : AppendMemberNonSequence (name, obj);
       return WriteElement (name, obj);
     }
 
-    public IToTextBuilderBase m<T> (Expression<Func<object, T>> expression)
+    public IToTextBuilderBase e<T> (Expression<Func<object, T>> expression)
     {
       return WriteElement (expression);
     }
 
-    public IToTextBuilderBase m (string name, Object obj)
+    public IToTextBuilderBase e (string name, Object obj)
     {
       return WriteElement (name, obj);
     }
@@ -339,10 +339,10 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public IToTextBuilderBase e (object obj)
-    {
-      return AppendSequenceElement (obj);
-    }
+    //public IToTextBuilderBase e (object obj)
+    //{
+    //  return AppendSequenceElement (obj);
+    //}
 
     public IToTextBuilderBase AppendSequenceElements (params object[] sequenceElements)
     {

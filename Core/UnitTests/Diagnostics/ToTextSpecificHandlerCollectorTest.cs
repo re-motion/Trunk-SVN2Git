@@ -90,7 +90,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       public override void ToText (TestSimpleSimple t, IToTextBuilderBase toTextBuilder)
       {
-        //toTextBuilder.beginInstance (typeof (TestSimple)).m ("name", t.Name).endInstance ();
+        //toTextBuilder.beginInstance (typeof (TestSimple)).e ("name", t.Name).endInstance ();
         //toTextBuilder.sb ("[", ",", "]").s ("name=").e (t.Name).se ();
         toTextBuilder.sb ("[", ",", "]").e ("TestSimpleSimple").e (t.Name).se ();
       }
