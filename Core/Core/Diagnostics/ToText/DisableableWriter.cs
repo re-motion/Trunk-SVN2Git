@@ -58,6 +58,7 @@ namespace Remotion.Diagnostics.ToText
         if (DelayedPrefix != null)
         {
           TextWriter.Write (DelayedPrefix);
+          DelayedPrefix = null;
         }
         TextWriter.Write (t);
         //Console.WriteLine ("Wrote to: " + TextWriter.GetHashCode ());

@@ -114,5 +114,21 @@ namespace Remotion.UnitTests.Diagnostics
       disableableWriter.Write ("nopqrst");
       Assert.That (disableableWriter.ToString (), Is.EqualTo ("abc;defghijklm-SEP>nopqrst"));
     }
+
+    [Test]
+    public void WriteDelayedAsPrefixClearedPrefixResultTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var disableableWriter = new DisableableWriter (stringWriter);
+      disableableWriter.Write ("abc");
+      Assert.That (disableableWriter.ToString (), Is.EqualTo ("abc"));
+      disableableWriter.WriteDelayedAsPrefix (";");
+      Assert.That (disableableWriter.ToString (), Is.EqualTo ("abc"));
+      disableableWriter.Write ("defg");
+      Assert.That (disableableWriter.ToString (), Is.EqualTo ("abc;defg"));
+      disableableWriter.Write ("hijklm");
+      // After having been written, the delayed prefix must be cleared
+      Assert.That (disableableWriter.ToString (), Is.EqualTo ("abc;defghijklm"));
+    }
   }
 }

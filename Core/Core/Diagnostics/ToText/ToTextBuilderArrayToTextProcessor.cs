@@ -32,8 +32,8 @@ namespace Remotion.Diagnostics.ToText
       }
       else
       {
-        _toTextBuilder.WriteSequenceBegin ("", _toTextBuilder.Settings.ArrayPrefix, _toTextBuilder.Settings.ArrayFirstElementPrefix,
-          _toTextBuilder.Settings.ArrayOtherElementPrefix, _toTextBuilder.Settings.ArrayElementPostfix, _toTextBuilder.Settings.ArrayPostfix);
+        _toTextBuilder.WriteSequenceBegin ("", _toTextBuilder.Settings.ArrayPrefix, _toTextBuilder.Settings.ArrayElementPrefix,
+          _toTextBuilder.Settings.ArrayElementPostfix, _toTextBuilder.Settings.ArraySeparator, _toTextBuilder.Settings.ArrayPostfix);
 
         //_toTextBuilder.WriteSequenceBegin ("", "A2 ", "AE2 ", "~AE2 ", "_AE2 ", "_A2");  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

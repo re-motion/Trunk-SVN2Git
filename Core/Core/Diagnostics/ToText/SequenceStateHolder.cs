@@ -17,25 +17,25 @@ namespace Remotion.Diagnostics.ToText
     private int _sequenceCounter;
     private readonly string _name;
     private readonly string _sequencePrefix;
-    private readonly string _firstElementPrefix;
-    private readonly string _otherElementPrefix;
+    private readonly string _elementPrefix;
     private readonly string _elementPostfix;
+    private readonly string _separator;
     private readonly string _sequencePostfix;
 
-    public SequenceStateHolder (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    public SequenceStateHolder (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
       ArgumentUtility.CheckNotNull ("sequencePrefix", sequencePrefix);
-      ArgumentUtility.CheckNotNull ("firstElementPrefix", firstElementPrefix);
-      ArgumentUtility.CheckNotNull ("otherElementPrefix", otherElementPrefix);
+      ArgumentUtility.CheckNotNull ("elementPrefix", elementPrefix);
       ArgumentUtility.CheckNotNull ("elementPostfix", elementPostfix);
+      ArgumentUtility.CheckNotNull ("separator", separator);
       ArgumentUtility.CheckNotNull ("sequencePostfix", sequencePostfix);
 
       _sequenceCounter = 0;
       _name = name;
       _sequencePrefix = sequencePrefix;
-      _firstElementPrefix = firstElementPrefix;
-      _otherElementPrefix = otherElementPrefix;
+      _elementPrefix = elementPrefix;
       _elementPostfix = elementPostfix;
+      _separator = separator;
       _sequencePostfix = sequencePostfix;
     }
 
@@ -55,14 +55,14 @@ namespace Remotion.Diagnostics.ToText
       get { return _elementPostfix; }
     }
 
-    public string OtherElementPrefix
+    public string Separator
     {
-      get { return _otherElementPrefix; }
+      get { return _separator; }
     }
 
-    public string FirstElementPrefix
+    public string ElementPrefix
     {
-      get { return _firstElementPrefix; }
+      get { return _elementPrefix; }
     }
 
     public string SequencePostfix

@@ -204,7 +204,7 @@ namespace Remotion.UnitTests.Diagnostics
 
     private IToTextBuilderBase NamedSequenceBegin (IToTextBuilderBase toTextBuilder, string name)
     {
-      toTextBuilder.WriteSequenceBegin (name, "[", "", ";", "", "]");
+      toTextBuilder.WriteSequenceBegin (name, "[", "", "", ";", "]");
       return toTextBuilder;
     }
 

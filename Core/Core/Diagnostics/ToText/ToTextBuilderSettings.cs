@@ -16,27 +16,27 @@ namespace Remotion.Diagnostics.ToText
     {
       EnumerablePostfix = "}";
       EnumerableElementPostfix = "";
-      EnumerableOtherElementPrefix = ",";
-      EnumerableFirstElementPrefix = "";
+      EnumerableElementPrefix = "";
+      EnumerableSeparator = ",";
       EnumerablePrefix = "{";
 
       ArrayPostfix = "}";
       ArrayElementPostfix = "";
-      ArrayOtherElementPrefix = ",";
-      ArrayFirstElementPrefix = "";
+      ArrayElementPrefix = "";
+      ArraySeparator = ",";
       ArrayPrefix = "{";
     }
 
     public string ArrayPrefix { get; set; }
-    public string ArrayFirstElementPrefix { get; set; }
-    public string ArrayOtherElementPrefix { get; set; }
+    public string ArrayElementPrefix { get; set; }
     public string ArrayElementPostfix { get; set; }
+    public string ArraySeparator { get; set; }
     public string ArrayPostfix { get; set; }
 
     public string EnumerablePrefix { get; set; }
-    public string EnumerableFirstElementPrefix { get; set; }
-    public string EnumerableOtherElementPrefix { get; set; }
+    public string EnumerableElementPrefix { get; set; }
     public string EnumerableElementPostfix { get; set; }
+    public string EnumerableSeparator { get; set; }
     public string EnumerablePostfix { get; set; }
   }
 }

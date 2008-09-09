@@ -120,34 +120,38 @@ namespace Remotion.Diagnostics.ToText
       return WriteObjectToString (obj);
     }
 
-    public IToTextBuilderBase WriteSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    public IToTextBuilderBase WriteSequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
-      //BeforeWriteElement ();
-
-      return SequenceBegin (name, sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+      return SequenceBegin (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
     }
 
-    protected abstract IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
+    protected abstract IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix);
 
     public IToTextBuilderBase sb ()
     {
-      return WriteSequenceBegin ("", "(", "", ",", "", ")");
+      return WriteSequenceBegin ("", "(", "", "", ",", ")");
     }
 
-    public IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
-    {
-      return WriteSequenceBegin ("", sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
-    }
+    //public IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    //{
+    //  return WriteSequenceBegin ("", sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+    //}
 
     public IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix)
     {
-      return WriteSequenceBegin ("", sequencePrefix, "", separator, "", sequencePostfix);
+      return WriteSequenceBegin ("", sequencePrefix, "", "", separator, sequencePostfix);
     }
 
     public IToTextBuilderBase sb (string sequencePrefix, string sequencePostfix)
     {
-      return WriteSequenceBegin ("", sequencePrefix, "", ",", "", sequencePostfix);
+      return WriteSequenceBegin ("", sequencePrefix, "", "", ",", sequencePostfix);
     }
+
+    public IToTextBuilderBase sb (string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    {
+      return WriteSequenceBegin ("", sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
+    }
+
 
 
     public abstract IToTextBuilderBase WriteRawStringUnsafe (string s);
@@ -284,12 +288,13 @@ namespace Remotion.Diagnostics.ToText
 
     public abstract IToTextBuilderBase LowLevelWrite (Object obj);
 
-    public IToTextBuilderBase WriteInstanceBegin (Type type)
-    {
-      //return AppendInstanceBegin (type);
-      SequenceBegin ("", "[" + type.Name, "  ", ",", "", "]");
-      return this;
-    }
+    //public IToTextBuilderBase WriteInstanceBegin (Type type)
+    //{
+    //  SequenceBegin ("", "[" + type.Name + "  ", "", "", ",", "]");
+    //  return this;
+    //}
+
+    public abstract IToTextBuilderBase WriteInstanceBegin (Type type);
 
     public IToTextBuilderBase ib (Type type)
     {

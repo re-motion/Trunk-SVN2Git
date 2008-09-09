@@ -72,9 +72,9 @@ namespace Remotion.Diagnostics.ToText
 
     IToTextBuilderBase WriteSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
     IToTextBuilderBase sb ();
-    IToTextBuilderBase sb (string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
-    IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix);
     IToTextBuilderBase sb (string sequencePrefix, string sequencePostfix);
+    IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix);
+    IToTextBuilderBase sb (string sequencePrefix, string elementPostfix, string elementPrefix, string separator, string sequencePostfix);
 
 
     /// <summary>

@@ -86,7 +86,8 @@ namespace Remotion.Diagnostics.ToText
     {
       if (IsInSequence)
       {
-        _disableableWriter.Write (SequenceState.Counter == 0 ? SequenceState.FirstElementPrefix : SequenceState.OtherElementPrefix);
+        //_disableableWriter.Write (SequenceState.Counter == 0 ? SequenceState.ElementPrefix : SequenceState.Separator);
+        _disableableWriter.Write (SequenceState.ElementPrefix);
       }
     }
 
@@ -94,7 +95,9 @@ namespace Remotion.Diagnostics.ToText
     {
       if (IsInSequence)
       {
+        //_disableableWriter.Write (SequenceState.ElementPostfix);
         _disableableWriter.Write (SequenceState.ElementPostfix);
+        _disableableWriter.WriteDelayedAsPrefix (SequenceState.Separator);
         SequenceState.IncrementCounter ();
       }
     }
@@ -150,13 +153,13 @@ namespace Remotion.Diagnostics.ToText
     // Low level Sequence Emitters
     //--------------------------------------------------------------------------
 
-    protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix)
+    protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
       BeforeWriteElement();
 
       sequenceStack.Push (SequenceState);
 
-      SequenceState = new SequenceStateHolder (name, sequencePrefix, firstElementPrefix, otherElementPrefix, elementPostfix, sequencePostfix);
+      SequenceState = new SequenceStateHolder (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
 
       _disableableWriter.Write (SequenceState.SequencePrefix);
       if (name.Length > 0)
@@ -177,8 +180,8 @@ namespace Remotion.Diagnostics.ToText
     {
       var outerProduct = new OuterProductIndexGenerator (array);
 
-      SequenceBegin ("", Settings.ArrayPrefix, Settings.ArrayFirstElementPrefix,
-                     Settings.ArrayOtherElementPrefix, Settings.ArrayElementPostfix, Settings.ArrayPostfix);
+      SequenceBegin ("", Settings.ArrayPrefix, Settings.ArrayElementPrefix,
+                     Settings.ArrayElementPostfix, Settings.ArraySeparator, Settings.ArrayPostfix);
 
       //SequenceBegin ("", "A ", "AE ", "~AE ","_AE ","_A"); 
 
@@ -219,8 +222,8 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteEnumerable (IEnumerable collection)
     {
-      SequenceBegin ("", Settings.EnumerablePrefix, Settings.EnumerableFirstElementPrefix,
-        Settings.EnumerableOtherElementPrefix, Settings.EnumerableElementPostfix, Settings.EnumerablePostfix);
+      SequenceBegin ("", Settings.EnumerablePrefix, Settings.EnumerableElementPrefix,
+        Settings.EnumerableElementPostfix, Settings.EnumerableSeparator, Settings.EnumerablePostfix);
       foreach (Object element in collection)
       {
         WriteElement (element);
@@ -242,6 +245,13 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public override IToTextBuilderBase WriteInstanceBegin (Type type)
+    {
+      //SequenceBegin ("", "[" + type.Name + "  ", "", "", ",", "]");
+      SequenceBegin ("", "[" + type.Name, "", "", ",", "]");
+      _disableableWriter.WriteDelayedAsPrefix ("  ");
+      return this;
+    }
 
     //--------------------------------------------------------------------------
     // High Level Sequence Emitters
@@ -250,6 +260,7 @@ namespace Remotion.Diagnostics.ToText
     protected override void SequenceEnd ()
     {
       Assertion.IsTrue (IsInSequence);
+      _disableableWriter.ClearDelayedPrefix(); // sequence closes = > clear delayed element separator 
       _disableableWriter.Write (SequenceState.SequencePostfix);
 
       SequenceState = sequenceStack.Pop ();
