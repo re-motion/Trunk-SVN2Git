@@ -18,9 +18,9 @@ namespace Remotion.Diagnostics.ToText.Handlers
         Log ("null");
 
         var toTextBuilder = toTextParameters.ToTextBuilder;
-        toTextBuilder.AppendRawElementBegin ();
-        toTextBuilder.AppendRawString ("null");
-        toTextBuilder.AppendRawElementEnd ();
+        toTextBuilder.WriteRawElementBegin ();
+        toTextBuilder.WriteRawString ("null");
+        toTextBuilder.WriteRawElementEnd ();
 
         toTextProviderHandlerFeedback.Handled = true;
       }

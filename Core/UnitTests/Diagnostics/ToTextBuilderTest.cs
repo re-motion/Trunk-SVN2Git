@@ -453,11 +453,11 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
       toTextBuilder.OutputSkeleton();
-      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Basic);
+      toTextBuilder.WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (false));
 
       toTextBuilder.OutputBasic();
-      toTextBuilder.AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Basic);
+      toTextBuilder.WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
     }
 
@@ -525,7 +525,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var o = new Object();
-      Assert.That (toTextBuilder.Append (o).CheckAndConvertToString (), Is.EqualTo (o.ToString ()));
+      Assert.That (toTextBuilder.LowLevelWrite (o).CheckAndConvertToString (), Is.EqualTo (o.ToString ()));
     }
 
 
@@ -764,21 +764,21 @@ namespace Remotion.UnitTests.Diagnostics
     private void EscapeString(string s, ToTextBuilder toTextBuilder)
     {
       var mapping = new Dictionary<char, string> () { { '"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\t', "\\t" }, { '\\', "\\\\" }, {'\b',"\\b"}, {'\v',"\\v"}, {'\f',"\\f"} };
-      toTextBuilder.AppendRawElementBegin();
+      toTextBuilder.WriteRawElementBegin();
       foreach (char c in s)
       {
         string mappedString;
         mapping.TryGetValue (c, out mappedString);
         if (mappedString == null)
         {
-          toTextBuilder.AppendRawChar (c);
+          toTextBuilder.WriteRawChar (c);
         }
         else
         {
-          toTextBuilder.AppendRawString (mappedString);
+          toTextBuilder.WriteRawString (mappedString);
         }
       }
-      toTextBuilder.AppendRawElementEnd ();
+      toTextBuilder.WriteRawElementEnd ();
     }
 
     [Test]

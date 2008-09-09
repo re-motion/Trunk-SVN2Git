@@ -24,12 +24,12 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
       if(obj is IFormattable)
       {
-        toTextBuilder.AppendRawElementBegin ();
+        toTextBuilder.WriteRawElementBegin ();
         IFormattable formattable = (IFormattable) obj;
         //toTextBuilder.AppendString (StringUtility.Format (obj, s_cultureInfoInvariant));
-        toTextBuilder.AppendRawString (formattable.ToString (null, s_cultureInfoInvariant));
+        toTextBuilder.WriteRawString (formattable.ToString (null, s_cultureInfoInvariant));
         toTextProviderHandlerFeedback.Handled = true;
-        toTextBuilder.AppendRawElementEnd ();
+        toTextBuilder.WriteRawElementEnd ();
       }
     }
   }

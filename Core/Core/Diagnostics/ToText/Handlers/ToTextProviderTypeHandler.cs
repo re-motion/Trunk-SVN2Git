@@ -19,9 +19,9 @@ namespace Remotion.Diagnostics.ToText.Handlers {
       // Catch Type|s to avoid endless recursion. 
       if (obj is Type) 
       {
-        toTextBuilder.AppendRawElementBegin ();
-        toTextBuilder.AppendRawString (obj.ToString ());
-        toTextBuilder.AppendRawElementEnd ();
+        toTextBuilder.WriteRawElementBegin ();
+        toTextBuilder.WriteRawString (obj.ToString ());
+        toTextBuilder.WriteRawElementEnd ();
         toTextProviderHandlerFeedback.Handled = true;
       }
     }

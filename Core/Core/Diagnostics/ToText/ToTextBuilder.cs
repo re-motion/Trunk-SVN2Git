@@ -136,7 +136,7 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextBuilderSettings Settings { get; private set; }
 
-    public override IToTextBuilderBase AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel)
+    public override IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel)
     {
       _disableableWriter.Enabled = (OutputComplexity >= complexityLevel) ? true : false;
       return this;
@@ -221,7 +221,7 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public override IToTextBuilderBase AppendNewLine ()
+    public override IToTextBuilderBase WriteNewLine ()
     {
       if (_useMultiline)
       {
@@ -232,7 +232,7 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase nl ()
     {
-      AppendNewLine ();
+      WriteNewLine ();
       return this;
     }
 
@@ -463,7 +463,7 @@ namespace Remotion.Diagnostics.ToText
     //}
 
 
-    public override IToTextBuilderBase Append (Object obj)
+    public override IToTextBuilderBase LowLevelWrite (Object obj)
     {
       _disableableWriter.Write (obj);
       return this;

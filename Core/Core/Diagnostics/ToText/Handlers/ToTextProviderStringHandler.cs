@@ -21,20 +21,20 @@ namespace Remotion.Diagnostics.ToText.Handlers
       if (type == typeof (string))
       {
         //toTextBuilder.HandlerBeforeAppendElement ();
-        toTextBuilder.AppendRawElementBegin();
+        toTextBuilder.WriteRawElementBegin();
         string s= (string) obj;
         if (settings.UseAutomaticStringEnclosing)
         {
-          toTextBuilder.AppendRawChar ('"');
-          toTextBuilder.AppendRawString (s);
-          toTextBuilder.AppendRawChar ('"');
+          toTextBuilder.WriteRawChar ('"');
+          toTextBuilder.WriteRawString (s);
+          toTextBuilder.WriteRawChar ('"');
         }
         else
         {
-          toTextBuilder.AppendRawString(s);
+          toTextBuilder.WriteRawString(s);
         }
         //toTextBuilder.HandlerAfterAppendElement ();
-        toTextBuilder.AppendRawElementEnd ();
+        toTextBuilder.WriteRawElementEnd ();
         toTextProviderHandlerFeedback.Handled = true;
       }
 

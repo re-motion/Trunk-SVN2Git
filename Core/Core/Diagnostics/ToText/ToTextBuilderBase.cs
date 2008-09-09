@@ -62,7 +62,7 @@ namespace Remotion.Diagnostics.ToText
     {
       get
       {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Skeleton);
+        return WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Skeleton);
       }
     }
 
@@ -70,7 +70,7 @@ namespace Remotion.Diagnostics.ToText
     {
       get
       {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Basic);
+        return WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Basic);
       }
     }
 
@@ -78,7 +78,7 @@ namespace Remotion.Diagnostics.ToText
     {
       get
       {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Medium);
+        return WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Medium);
       }
     }
 
@@ -86,7 +86,7 @@ namespace Remotion.Diagnostics.ToText
     {
       get
       {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Complex);
+        return WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Complex);
       }
     }
 
@@ -94,7 +94,7 @@ namespace Remotion.Diagnostics.ToText
     {
       get
       {
-        return AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Full);
+        return WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel.Full);
       }
     }
 
@@ -105,12 +105,12 @@ namespace Remotion.Diagnostics.ToText
     public void OutputMedium () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Medium; }
     public void OutputComplex () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Complex; }
     public void OutputFull () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Full; }
-    public abstract IToTextBuilderBase AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel);
+    public abstract IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel);
     public abstract string CheckAndConvertToString ();
     protected abstract void BeforeAppendElement ();
     protected abstract void AfterAppendElement ();
     public abstract IToTextBuilderBase Flush ();
-    public abstract IToTextBuilderBase AppendNewLine ();
+    public abstract IToTextBuilderBase WriteNewLine ();
     public abstract IToTextBuilderBase nl ();
     //public abstract virtual IToTextBuilderBase AppendSeperator ();
     protected abstract IToTextBuilderBase AppendObjectToString (object obj);
@@ -152,7 +152,7 @@ namespace Remotion.Diagnostics.ToText
 
     public abstract IToTextBuilderBase AppendRawStringUnsafe (string s);
 
-    public IToTextBuilderBase AppendRawString (string s)
+    public IToTextBuilderBase WriteRawString (string s)
     {
       AssertIsInRawSequence ();
       AppendRawStringUnsafe (s);
@@ -175,7 +175,7 @@ namespace Remotion.Diagnostics.ToText
 
     public abstract IToTextBuilderBase AppendRawEscapedStringUnsafe (string s);
 
-    public IToTextBuilderBase AppendRawEscapedString (string s) 
+    public IToTextBuilderBase WriteRawEscapedString (string s) 
     {
       AssertIsInRawSequence ();
       AppendRawEscapedStringUnsafe (s);
@@ -193,7 +193,7 @@ namespace Remotion.Diagnostics.ToText
 
     public abstract IToTextBuilderBase AppendRawCharUnsafe (char c);
 
-    public IToTextBuilderBase AppendRawChar (char c)
+    public IToTextBuilderBase WriteRawChar (char c)
     {
       AssertIsInRawSequence ();
       AppendRawCharUnsafe (c);
@@ -252,18 +252,15 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase AppendToText (Object obj)
     {
-      //BeforeAppendElement ();  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      AppendToTextRaw (obj);
-      //AfterAppendElement ();   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      return this;
-    }
-
-    protected IToTextBuilderBase AppendToTextRaw (Object obj)
-    {
       _toTextProvider.ToText (obj, this);
       return this;
-
     }
+
+    //protected IToTextBuilderBase AppendToTextRaw (Object obj)
+    //{
+    //  _toTextProvider.ToText (obj, this);
+    //  return this;
+    //}
 
     public IToTextBuilderBase tt (Object obj)
     {
@@ -277,17 +274,17 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase AppendToTextNonSequence (Object obj)
     {
-      AppendToTextRaw (obj);
+      _toTextProvider.ToText (obj, this);
       return this;
     }
 
 
-    public IToTextBuilderBase Append (string s)
+    public IToTextBuilderBase LowLevelWrite (string s)
     {
-      return AppendRawString (s);
+      return WriteRawString (s);
     }
 
-    public abstract IToTextBuilderBase Append (Object obj);
+    public abstract IToTextBuilderBase LowLevelWrite (Object obj);
 
     private IToTextBuilderBase AppendInstanceBegin (Type type)
     {
@@ -314,7 +311,6 @@ namespace Remotion.Diagnostics.ToText
     public IToTextBuilderBase AppendSequenceEnd ()
     {
       SequenceEnd ();
-      //AfterAppendElement (); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       return this;
     }
 
@@ -328,9 +324,7 @@ namespace Remotion.Diagnostics.ToText
     public IToTextBuilderBase AppendSequenceElement (object obj)
     {
       Assertion.IsTrue (IsInSequence);
-      //BeforeAppendElement ();  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       _toTextProvider.ToText (obj, this);
-      //AfterAppendElement ();  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       return this;
     }
 
@@ -363,13 +357,13 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public void AppendRawElementBegin ()
+    public void WriteRawElementBegin ()
     {
       IsInRawSequence = true;
       BeforeAppendElement();
     }
 
-    public void AppendRawElementEnd ()
+    public void WriteRawElementEnd ()
     {
       AfterAppendElement ();
       IsInRawSequence = false;

@@ -19,9 +19,9 @@ namespace Remotion.Diagnostics.ToText.Handlers
       Type type = toTextParameters.Type;
       IToTextBuilderBase toTextBuilder = toTextParameters.ToTextBuilder;
 
-      toTextBuilder.AppendRawElementBegin();
-      toTextBuilder.AppendRawString (obj.ToString ());
-      toTextBuilder.AppendRawElementEnd ();
+      toTextBuilder.WriteRawElementBegin();
+      toTextBuilder.WriteRawString (obj.ToString ());
+      toTextBuilder.WriteRawElementEnd ();
 
       toTextProviderHandlerFeedback.Handled = true;
     }

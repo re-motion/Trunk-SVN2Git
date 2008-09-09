@@ -20,26 +20,26 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase cMedium { get; }
     IToTextBuilderBase cComplex { get; }
     IToTextBuilderBase cFull { get; }
-    IToTextBuilderBase AppendTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderBase.ToTextBuilderOutputComplexityLevel complexityLevel);
+    IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderBase.ToTextBuilderOutputComplexityLevel complexityLevel);
 
 
     string CheckAndConvertToString ();
+    //IToTextBuilderBase ToTextString (string s);
     IToTextBuilderBase Flush ();
 
 
-    void AppendRawElementBegin ();
-    void AppendRawElementEnd ();
+    void WriteRawElementBegin ();
+    void WriteRawElementEnd ();
     
-    IToTextBuilderBase AppendNewLine ();
+    IToTextBuilderBase WriteNewLine ();
     IToTextBuilderBase nl ();
 
-    IToTextBuilderBase AppendRawString (string s);
-    IToTextBuilderBase AppendRawEscapedString (string s);
+    IToTextBuilderBase WriteRawString (string s);
+    IToTextBuilderBase WriteRawEscapedString (string s);
     IToTextBuilderBase sEsc (string s);
 
-    IToTextBuilderBase AppendRawChar (char c);
+    IToTextBuilderBase WriteRawChar (char c);
 
-    //IToTextBuilderBase ToTextString (string s);
     void OutputDisable ();
     void OutputSkeleton ();
     void OutputBasic ();
@@ -47,17 +47,28 @@ namespace Remotion.Diagnostics.ToText
     void OutputComplex ();
     void OutputFull ();
 
-
+    /// <summary>
+    /// Writes the given string to the output stream.
+    /// </summary>
     IToTextBuilderBase s (string s);
 
+    // raw string: guaranteed no processing ?
+    //IToTextBuilderBase rs (string s);
+
+    /// <summary>
+    /// Applies <see cref="Object.ToString"/> to the passed <see cref="object"/> and writes the resulting string to the output stream.
+    /// </summary>
     IToTextBuilderBase ts (object obj);
 
-    IToTextBuilderBase Append (Object obj);
-    IToTextBuilderBase Append (string s);
+    /// <summary>
+    /// Passes the object argument to the stream writer to be written to the output stream, without any processing.
+    /// </summary>
+    IToTextBuilderBase LowLevelWrite (Object obj);
+    IToTextBuilderBase LowLevelWrite (string s);
 
 
     /// <summary>
-    /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result to the TextBuilder.</para>
+    /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the TextBuilder.</para>
     /// <para>Shorthand notation: <see cref="tt(object)"/>.</para>
     /// </summary>
     IToTextBuilderBase EmitToText (object obj);
