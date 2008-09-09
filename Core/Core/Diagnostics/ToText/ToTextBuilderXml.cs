@@ -107,17 +107,32 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteRawCharUnsafe (char c)
     {
-      throw new System.NotImplementedException();
+      _disableableWriter.WriteValue (c);
+      return this;
     }
 
     public override IToTextBuilderBase WriteEnumerable (IEnumerable collection)
     {
-      throw new System.NotImplementedException();
+      SequenceBegin (collection.GetType().Name, "", "", "", "", "");
+      foreach (Object element in collection)
+      {
+        WriteElement (element);
+      }
+      SequenceEnd ();
+      return this;
     }
 
     public override IToTextBuilderBase WriteArray (Array array)
     {
-      throw new System.NotImplementedException();
+      throw new System.NotImplementedException ();
+      //  var outerProduct = new OuterProductIndexGenerator (array);
+
+      //  SequenceBegin ("array", "", "", "", "", "");
+      //  var processor = new ToTextBuilderArrayToTextProcessor (array, this);
+      //  outerProduct.ProcessOuterProduct (processor);
+      //  SequenceEnd ();
+
+      //  return this;
     }
 
     public override IToTextBuilderBase LowLevelWrite (object obj)
