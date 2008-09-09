@@ -86,23 +86,18 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase Flush ();
     IToTextBuilderBase AppendNewLine ();
     IToTextBuilderBase nl ();
-    IToTextBuilderBase AppendSpace ();
-    IToTextBuilderBase space ();
-    IToTextBuilderBase AppendTabulator ();
-    IToTextBuilderBase tab ();
-    IToTextBuilderBase AppendSeperator ();
-    IToTextBuilderBase AppendComma ();
-    IToTextBuilderBase AppendColon ();
-    IToTextBuilderBase AppendSemiColon ();
+
     IToTextBuilderBase AppendArray (Array array);
     IToTextBuilderBase AppendRawString (string s);
     IToTextBuilderBase AppendRawEscapedString (string s);
     IToTextBuilderBase sEsc (string s);
+
     IToTextBuilderBase AppendRawChar (char c);
     IToTextBuilderBase AppendMember (string name, Object obj);
     IToTextBuilderBase AppendEnumerable (IEnumerable collection);
     IToTextBuilderBase array (Array array);
     IToTextBuilderBase Append (Object obj);
+
     //IToTextBuilderBase ToTextString (string s);
     void OutputDisable ();
     void OutputSkeleton ();
@@ -110,6 +105,7 @@ namespace Remotion.Diagnostics.ToText
     void OutputMedium ();
     void OutputComplex ();
     void OutputFull ();
+
     IToTextBuilderBase ts (object obj);
     IToTextBuilderBase AppendSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
     IToTextBuilderBase sb ();

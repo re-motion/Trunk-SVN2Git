@@ -237,37 +237,37 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public override IToTextBuilderBase AppendSpace ()
-    {
-      _disableableWriter.Write (" ");
-      return this;
-    }
+    //private IToTextBuilderBase AppendSpace ()
+    //{
+    //  _disableableWriter.Write (" ");
+    //  return this;
+    //}
 
-    public override IToTextBuilderBase space ()
-    {
-      AppendSpace ();
-      return this;
-    }
+    //public IToTextBuilderBase space ()
+    //{
+    //  AppendSpace ();
+    //  return this;
+    //}
 
-    // TODO?: Introduce highlevel sibling "Indent" ?
-    public override IToTextBuilderBase AppendTabulator ()
-    {
-      _disableableWriter.Write ("\t");
-      return this;
-    }
+    //// TODO?: Introduce highlevel sibling "Indent" ?
+    //private IToTextBuilderBase AppendTabulator ()
+    //{
+    //  _disableableWriter.Write ("\t");
+    //  return this;
+    //}
 
-    public override IToTextBuilderBase tab ()
-    {
-      AppendTabulator ();
-      return this;
-    }
+    //public IToTextBuilderBase tab ()
+    //{
+    //  AppendTabulator ();
+    //  return this;
+    //}
 
 
-    public override IToTextBuilderBase AppendSeperator ()
-    {
-      _disableableWriter.Write (",");
-      return this;
-    }
+    //public override IToTextBuilderBase AppendSeperator ()
+    //{
+    //  _disableableWriter.Write (",");
+    //  return this;
+    //}
 
     //public override ToTextBuilder seperator
     //{
@@ -275,35 +275,17 @@ namespace Remotion.Diagnostics.ToText
     //}
 
 
-    public override IToTextBuilderBase AppendComma ()
-    {
-      _disableableWriter.Write (",");
-      return this;
-    }
-
     //public override ToTextBuilder comma
     //{
     //  get { AppendComma (); return this; }
     //}
 
 
-    public override IToTextBuilderBase AppendColon ()
-    {
-      _disableableWriter.Write (":");
-      return this;
-    }
-
     //public override ToTextBuilder colon
     //{
     //  get { AppendColon (); return this; }
     //}
 
-
-    public override IToTextBuilderBase AppendSemiColon ()
-    {
-      _disableableWriter.Write (";");
-      return this;
-    }
 
     //public override ToTextBuilder semicolon
     //{

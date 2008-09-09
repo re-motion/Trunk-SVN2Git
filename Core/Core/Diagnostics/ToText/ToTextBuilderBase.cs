@@ -39,10 +39,10 @@ namespace Remotion.Diagnostics.ToText
     //public abstract IToTextBuilderBase colon { get; }
     //public abstract IToTextBuilderBase semicolon { get; }
 
-    public IToTextBuilderBase seperator
-    {
-      get { AppendSeperator (); return this; }
-    }
+    //public IToTextBuilderBase seperator
+    //{
+    //  get { AppendSeperator (); return this; }
+    //}
 
 
     public ToTextBuilderOutputComplexityLevel OutputComplexity { get; protected set; }
@@ -112,14 +112,7 @@ namespace Remotion.Diagnostics.ToText
     public abstract IToTextBuilderBase Flush ();
     public abstract IToTextBuilderBase AppendNewLine ();
     public abstract IToTextBuilderBase nl ();
-    public abstract IToTextBuilderBase AppendSpace ();
-    public abstract IToTextBuilderBase space ();
-    public abstract IToTextBuilderBase AppendTabulator ();
-    public abstract IToTextBuilderBase tab ();
-    public abstract IToTextBuilderBase AppendSeperator ();
-    public abstract IToTextBuilderBase AppendComma ();
-    public abstract IToTextBuilderBase AppendColon ();
-    public abstract IToTextBuilderBase AppendSemiColon ();
+    //public abstract virtual IToTextBuilderBase AppendSeperator ();
     protected abstract IToTextBuilderBase AppendObjectToString (object obj);
 
     public IToTextBuilderBase ts (object obj)

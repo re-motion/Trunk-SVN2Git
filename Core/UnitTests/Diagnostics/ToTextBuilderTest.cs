@@ -60,23 +60,23 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (result, Is.EqualTo (System.Environment.NewLine));
     }
 
-    [Test]
-    public void spaceTest ()
-    {
-      var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.space().s ("");
-      var result = toTextBuilder.CheckAndConvertToString();
-      Assert.That (result, Is.EqualTo (" "));
-    }
+    //[Test]
+    //public void spaceTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder();
+    //  toTextBuilder.space().s ("");
+    //  var result = toTextBuilder.CheckAndConvertToString();
+    //  Assert.That (result, Is.EqualTo (" "));
+    //}
 
-    [Test]
-    public void tabTest ()
-    {
-      var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.tab().s ("");
-      var result = toTextBuilder.CheckAndConvertToString();
-      Assert.That (result, Is.EqualTo ("\t"));
-    }
+    //[Test]
+    //public void tabTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder();
+    //  toTextBuilder.tab().s ("");
+    //  var result = toTextBuilder.CheckAndConvertToString();
+    //  Assert.That (result, Is.EqualTo ("\t"));
+    //}
 
 
     //[Test]
