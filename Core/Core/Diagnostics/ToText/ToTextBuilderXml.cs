@@ -69,27 +69,15 @@ namespace Remotion.Diagnostics.ToText
       return SequenceXmlBegin(null,null, "seq", "e");
     }
 
+
+
     //protected override IToTextBuilderBase WriteObjectToString (object obj)
     //{
     //  _disableableWriter.WriteValue (obj.ToString ());
     //  return this;
     //}
 
-    //protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
-    //{
-    //  throw new System.NotImplementedException();
-    //}
 
-    protected IToTextBuilderBase SequenceXmlBegin (string name, string sequenceType, string sequenceTag, string elementTag)
-    {
-      // Note: All arguments can be null 
-      BeforeNewSequence ();
-      SequenceState = new SequenceStateHolder { Name = name, SequenceType = sequenceType, SequencePrefix = sequenceTag, ElementPrefix = elementTag };
-      _disableableWriter.WriteStartElement ("seq");
-      _disableableWriter.WriteAttributeIfNotEmpty ("name", SequenceState.Name);
-      _disableableWriter.WriteAttributeIfNotEmpty ("type", SequenceState.SequenceType);
-      return this;
-    }
 
 
     //protected override void SequenceBeginWritePart (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
@@ -133,7 +121,7 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteEnumerable (IEnumerable collection)
     {
-      SequenceXmlBegin (collection.GetType ().Name, "enumerable", "seq", "e");
+      SequenceXmlBegin (collection.GetType ().Name, "enumerable", "enumerable", "e");
       foreach (Object element in collection)
       {
         WriteElement (element);
@@ -173,52 +161,116 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+
+
+
     protected override void SequenceEnd ()
     {
       SequenceXmlEnd ();
     }
 
+    //protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    //{
+    //  throw new System.NotImplementedException();
+    //}
+
+    protected override void BeforeNewSequence () // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    {
+      //base.BeforeNewSequence();
+      PushSequenceState (SequenceState);
+    }
+
+    protected IToTextBuilderBase SequenceXmlBegin (string name, string sequenceType, string sequenceTag, string elementTag)
+    {
+      // Note: All arguments can be null 
+      //ArgumentUtility.CheckNotNull ("sequenceTag", sequenceTag);
+
+      BeforeNewSequence ();
+      SequenceState = new SequenceStateHolder { Name = name, SequenceType = sequenceType, SequenceTag = sequenceTag, ElementTag = elementTag };
+
+      //_disableableWriter.WriteStartElement ("e");
+      //string elementTag = SequenceState.ElementTag;
+      if (SequenceState.SequenceTag != null)
+      {
+        _disableableWriter.WriteStartElement (SequenceState.SequenceTag);
+        _disableableWriter.WriteAttributeIfNotEmpty ("name", SequenceState.Name);
+        _disableableWriter.WriteAttributeIfNotEmpty ("type", SequenceState.SequenceType);
+      }
+
+      //_disableableWriter.WriteStartElement ("seq");
+      return this;
+    }
+    
+    
     private void SequenceXmlEnd ()
     {
-      //throw new NotImplementedException();
       Assertion.IsTrue (IsInSequence);
-      _disableableWriter.WriteEndElement ();
+      
+      //_disableableWriter.WriteEndElement ();
+
+      if (SequenceState.SequenceTag != null)
+      {
+        _disableableWriter.WriteEndElement ();
+      }
 
       SequenceState = sequenceStack.Pop ();
-
-      AfterWriteElement ();
+      //AfterWriteElement (); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
 
     protected override void BeforeWriteElement ()
     {
-      _disableableWriter.WriteStartElement ("e");
+      ArgumentUtility.CheckNotNull ("SequenceState",SequenceState);
+      //_disableableWriter.WriteStartElement ("e");
+      string elementTag = SequenceState.ElementTag;
+      if (elementTag != null)
+      {
+        _disableableWriter.WriteStartElement (elementTag);
+      }
     }
 
     protected override void AfterWriteElement ()
     {
-      _disableableWriter.WriteEndElement ();
+      ArgumentUtility.CheckNotNull ("SequenceState", SequenceState);
+      if (SequenceState.ElementTag != null)
+      {
+        _disableableWriter.WriteEndElement ();
+      }
     }
 
 
     protected override IToTextBuilderBase WriteMemberRaw (string name, Object obj)
     {
-      _disableableWriter.WriteStartElement ("var");
+      //_disableableWriter.WriteStartElement ("var");
+      //_disableableWriter.WriteAttribute ("name", name);
+      //WriteElement (obj);
+      //_disableableWriter.WriteEndElement ();
+
+      SequenceXmlBegin (null, null, "var", null);
       _disableableWriter.WriteAttribute ("name", name);
       WriteElement (obj);
-      _disableableWriter.WriteEndElement ();
+      SequenceXmlEnd ();
+
       return this;
     }
 
 
     public void Begin ()
     {
-      _disableableWriter.WriteStartElement ("remotion");
+      PushSequenceState (new SequenceStateHolder());
+      SequenceState = new SequenceStateHolder { Name = null, SequenceType = null, SequenceTag = "remotion", ElementTag = null };
+      //sequenceStack.Push (SequenceState);
+      //PushSequenceState (SequenceState);
+      //PushSequenceState (null);
+      _disableableWriter.WriteStartElement (SequenceState.SequenceTag);
+      //SequenceXmlBegin (null, null, "remotion", null);
+
     }
 
     public void End ()
     {
-      _disableableWriter.WriteEndElement ();
+      //_disableableWriter.WriteEndElement ();
+      SequenceXmlEnd();
       Flush();
     }
   }

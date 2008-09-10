@@ -15,7 +15,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics.ToText;
-using Remotion.Utilities;
+
+using List = Remotion.Development.UnitTesting.ObjectMother.List;
+
 
 namespace Remotion.UnitTests.Diagnostics
 {
@@ -35,6 +37,25 @@ namespace Remotion.UnitTests.Diagnostics
 
     public string Name { get; set; }
     public int Int { get; set; }
+    public TestSimpleToTextBuilderXmlTestOwned Talk { get; set; }
+
+    //public override string ToString ()
+    //{
+    //  return String.Format ("((TestSimple) Name:{0},Int:{1})", Name, Int);
+    //}
+  }
+
+  internal class TestSimpleToTextBuilderXmlTestOwned
+  {
+    public TestSimpleToTextBuilderXmlTestOwned (string name)
+    {
+      Name = name;
+    }
+
+    public string Name { get; set; }
+    public string Short { get; set; }
+    public string Description { get; set; }
+    public System.Collections.Generic.List<String> Participants { get; set; }
 
     //public override string ToString ()
     //{
@@ -70,51 +91,55 @@ namespace Remotion.UnitTests.Diagnostics
     public void RawStringWithEntitiesXmlTest ()
     {
       var stringWriter = new StringWriter ();
-      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+      toTextBuilderXml.Begin();
       toTextBuilderXml.s (toXmlInputString);
-      toTextBuilderXml.Flush ();
+      toTextBuilderXml.End ();
       var result = stringWriter.ToString();
       log.It ("xml=" + result);
-      Assert.That (result, Is.EqualTo (toXmlresultString));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains (toXmlresultString));
     }
 
     [Test]
     public void ToTextXmlTest ()
     {
       var stringWriter = new StringWriter ();
-      var toTextBuilderXml =  CreateTextBuilderXml(stringWriter);
+      var toTextBuilderXml =  CreateTextBuilderXml(stringWriter, false);
+      toTextBuilderXml.Begin ();
       toTextBuilderXml.e (toXmlInputString);
-      toTextBuilderXml.Flush ();
+      toTextBuilderXml.End ();
       var result = stringWriter.ToString ();
       log.It ("xml=" + result);
-      Assert.That (result, Is.EqualTo ("<e>"+  toXmlresultString + "</e>"));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains (toXmlresultString));
     }
 
     [Test]
     public void ToTextXmlSequenceTest ()
     {
       var stringWriter = new StringWriter ();
-      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
-      toTextBuilderXml.sb().e (toXmlInputString).se();
-      toTextBuilderXml.Flush ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+      toTextBuilderXml.Begin ();
+      toTextBuilderXml.sb ().e (toXmlInputString).se ();
+      toTextBuilderXml.End ();
       var result = stringWriter.ToString ();
       log.It ("xml=" + result);
-      Assert.That (result, Is.EqualTo ("<e><seq><e>" + toXmlresultString + "</e></seq></e>"));
+      Assert.That (result, Is.EqualTo ("<remotion><seq><e>" + toXmlresultString  + "</e></seq></remotion>"));
     }
 
 
     [Test]
-    public void ToTextXmlSvTest ()
+    public void ToTextXmlVarTest ()
     {
       var stringWriter = new StringWriter ();
-      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+      toTextBuilderXml.Begin ();
 
       var x = 123.456;
       toTextBuilderXml.sb ().e(y => x).se ();
-      toTextBuilderXml.Flush ();
+      toTextBuilderXml.End ();
       var result = stringWriter.ToString ();
       log.It ("xml=" + result);
-      Assert.That (result, Is.EqualTo ("<e><seq><var name=\"x\"><e>123.456</e></var></seq></e>"));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<var name=\"x\">123.456</var>"));
     }
 
 
@@ -123,7 +148,8 @@ namespace Remotion.UnitTests.Diagnostics
     public void ToTextXmlInstanceTest ()
     {
       var stringWriter = new StringWriter ();
-      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, true);
+      toTextBuilderXml.Begin ();
       var toTextProvider = toTextBuilderXml.ToTextProvider;
       toTextProvider.Settings.UseAutomaticObjectToText = true;
       //toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>((t,tb) => tb.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ());
@@ -133,7 +159,7 @@ namespace Remotion.UnitTests.Diagnostics
       var simpleTest = new TestSimpleToTextBuilderXmlTest ("ToTextXmlInstanceTest", 333);
       var aNumber = 123.456;
       toTextBuilderXml.sb ().e (y => aNumber).e("ABC").e(simpleTest).se ();
-      toTextBuilderXml.Flush ();
+      toTextBuilderXml.End ();
       var result = stringWriter.ToString ();
       log.It ("xml=" + result);
       //Assert.That (result, Is.EqualTo ("<e><seq><var name=\"x\"><e>123.456</e></var></seq></e>"));
@@ -144,21 +170,22 @@ namespace Remotion.UnitTests.Diagnostics
     public void ToTextXmlBeginEndTest ()
     {
       var stringWriter = new StringWriter ();
-      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
 
       toTextBuilderXml.Begin ();
       toTextBuilderXml.End ();
       string result = stringWriter.ToString ();
       log.It (result);
-      Assert.That (result, Is.EqualTo ("<remotion />"));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<remotion />"));
     }
 
 
     [Test]
+    [Ignore]
     public void ToTextXmlMultiTest ()
     {
       var stringWriter = new StringWriter ();
-      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
 
       toTextBuilderXml.Begin();
 
@@ -178,10 +205,11 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
     [Test]
+    [Ignore]
     public void ToTextXmlLoopTest ()
     {
       var stringWriter = new StringWriter ();
-      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, true);
 
       toTextBuilderXml.Begin ();
 
@@ -207,15 +235,50 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-
-    [ToTextSpecificHandler]
-    class TestSimpleToTextBuilderXmlTestToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>
+    [Test]
+    [Ignore]
+    public void ToTextXmlLoopTest2 ()
     {
-      public override void ToText (TestSimpleToTextBuilderXmlTest t, IToTextBuilderBase toTextBuilder)
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, true);
+
+      toTextBuilderXml.Begin ();
+
+      var toTextProvider = toTextBuilderXml.ToTextProvider;
+      toTextProvider.Settings.UseAutomaticObjectToText = true;
+      //toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>((t,tb) => tb.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ());
+      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb ().e ("This is a sample specifc type handler - important members listed first:").e (x => t.Int).e (x => t.Name).e(x => t.Talk).se ());
+
+      //var simpleTest = new ToTextProviderTest.TestSimple ();
+      var simpleTest = new TestSimpleToTextBuilderXmlTest ("ToTextXmlInstanceTest", 333);
+      simpleTest.Talk = new TestSimpleToTextBuilderXmlTestOwned("Silverlight");
+      simpleTest.Talk.Short = "Interesting stuff about silver lines and  moonlighting.";
+      simpleTest.Talk.Participants = List.New("Markus","Fabian","Heinz","Peter");
+      for (int counter = 1; counter < 5; ++counter)
       {
-        toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ();
+        toTextBuilderXml.sb ().e (x => counter).e (simpleTest).se ();
+        simpleTest.Int += 13;
+        simpleTest.Name += ".";
       }
+
+      toTextBuilderXml.End ();
+
+      string result = stringWriter.ToString ();
+      log.It (result);
+      //Assert.That (result, Is.EqualTo ("<e><seq><var name=\"x\"><e>123.456</e></var></seq></e>"));
     }
+
+
+
+
+    //[ToTextSpecificHandler]
+    //class TestSimpleToTextBuilderXmlTestToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>
+    //{
+    //  public override void ToText (TestSimpleToTextBuilderXmlTest t, IToTextBuilderBase toTextBuilder)
+    //  {
+    //    toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ();
+    //  }
+    //}
 
     public static ToTextProvider CreateTextProvider ()
     {
@@ -227,12 +290,15 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    public static ToTextBuilderXml CreateTextBuilderXml (TextWriter textWriter)
+    public static ToTextBuilderXml CreateTextBuilderXml (TextWriter textWriter, bool indent)
     {
       XmlWriterSettings settings = new XmlWriterSettings ();
-      settings.Indent = true;
+
       settings.OmitXmlDeclaration = true;
+      settings.Indent = indent;
       settings.NewLineOnAttributes = false;
+      //settings.ConformanceLevel = ConformanceLevel.Fragment;
+
       var xmlWriter = XmlWriter.Create (textWriter, settings);
 
       return new ToTextBuilderXml (CreateTextProvider(), xmlWriter);

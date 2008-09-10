@@ -152,11 +152,23 @@ namespace Remotion.Diagnostics.ToText
 
     protected abstract IToTextBuilderBase SequenceBegin ();
 
-    protected void BeforeNewSequence ()
+    protected virtual void BeforeNewSequence ()
     {
-      BeforeWriteElement ();
-      sequenceStack.Push (SequenceState);
+      //if (!SequenceIsElement)
+      //{
+      //  BeforeWriteElement();
+      //}
+      
+      BeforeWriteElement();
+      //sequenceStack.Push (SequenceState);
+      PushSequenceState (SequenceState);
     }
+
+    protected void PushSequenceState (SequenceStateHolder sequenceState)
+    {
+      sequenceStack.Push (sequenceState);
+    }
+
 
     //protected abstract void SequenceBeginWritePart (SequenceStateHolder sequenceState);
 

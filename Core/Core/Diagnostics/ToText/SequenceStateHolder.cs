@@ -67,6 +67,12 @@ namespace Remotion.Diagnostics.ToText
     /// </summary>
     public int Counter { get; private set; }
 
+    // TODO: Split into base class and two child classes, one for each ToTextBuilder (?)
+    // (Might want to support SequencePrefix etc in XML in the future though, to
+    // store in tag attribute to be ableb to (XSLT) transform to pure text output)
+    public string ElementTag { get; set; }
+    public string SequenceTag { get; set; }
+
     /// <summary>
     /// Move to the next position in the sequence.
     /// </summary>
