@@ -71,10 +71,10 @@ namespace Remotion.SecurityManager.AclTools
         }
 
         //string s = To.Text (t);
-        //sb.Append (s);
+        //sbLiteral.Append (s);
         sb.Append (To.Text (t));
-        //sb.Append (" !!! ");
-        //sb.Append (t.ToString());
+        //sbLiteral.Append (" !!! ");
+        //sbLiteral.Append (t.ToString());
 
       }
       sb.Append (end);

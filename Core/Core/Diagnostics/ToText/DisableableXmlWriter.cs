@@ -31,47 +31,51 @@ namespace Remotion.Diagnostics.ToText
 
  public bool Enabled { get; set; }
 
-    public XmlWriter WriteStartElement (string tag)
+    public void WriteStartElement (string tag)
     {
       if (Enabled)
       {
         _xmlWriter.WriteStartElement (tag);
       }
-      return _xmlWriter;
     }
 
-    public XmlWriter WriteEndElement ()
+    public void WriteEndElement ()
     {
       if (Enabled)
       {
         _xmlWriter.WriteEndElement ();
       }
-      return _xmlWriter;
     }
 
-    public XmlWriter WriteValue<T> (T t)
+    public void WriteValue (object obj)
     {
       if (Enabled)
       {
-        _xmlWriter.WriteValue (t);
+        _xmlWriter.WriteValue (obj);
       }
-      return _xmlWriter;
     }
 
 
-    public XmlWriter WriteAttribute (string name, string value)
+    public void WriteAttribute (string name, string value)
     {
       if (Enabled)
       {
         _xmlWriter.WriteAttributeString (name, value);
       }
-      return _xmlWriter;
     }
 
 
     public void Flush ()
     {
       _xmlWriter.Flush ();
+    }
+
+    public void WriteAttributeIfNotEmpty (string name, string value)
+    {
+      if (!String.IsNullOrEmpty(value))
+      {
+        WriteAttribute (name, value);
+      }
     }
   }
 }

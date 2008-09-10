@@ -100,8 +100,8 @@ namespace Remotion.UnitTests.Diagnostics
 
     //private void RegisterHandlers ()
     //{
-    //  To.RegisterHandler<Int32> ((x, ttb) => ttb.sb ("[Int32: ", "", ",", "", "]").ts (x).se());
-    //  To.RegisterHandler<Test> ((x, ttb) => ttb.sb ("<<Test: ", "", ";", "", ">>").e ("Name", x.Name).e ("Int", x.Int).se());
+    //  To.RegisterHandler<Int32> ((x, ttb) => ttb.sbLiteral ("[Int32: ", "", ",", "", "]").ts (x).se());
+    //  To.RegisterHandler<Test> ((x, ttb) => ttb.sbLiteral ("<<Test: ", "", ";", "", ">>").e ("Name", x.Name).e ("Int", x.Int).se());
     //}
 
 

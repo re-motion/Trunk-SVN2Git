@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Diagnostics
 
       public void ToText (IToTextBuilderBase toTextBuilder)
       {
-        toTextBuilder.sb().e ("daInt", Int).e ("theName", Name).se();
+        toTextBuilder.sbLiteral().e ("daInt", Int).e ("theName", Name).se();
       }
     }
 

@@ -32,11 +32,12 @@ namespace Remotion.Diagnostics.ToText
       }
       else
       {
-        _toTextBuilder.WriteSequenceBegin ("", _toTextBuilder.Settings.ArrayPrefix, _toTextBuilder.Settings.ArrayElementPrefix,
-          _toTextBuilder.Settings.ArrayElementPostfix, _toTextBuilder.Settings.ArraySeparator, _toTextBuilder.Settings.ArrayPostfix);
+        //_toTextBuilder.WriteSequenceLiteralBegin ("", _toTextBuilder.Settings.ArrayPrefix, _toTextBuilder.Settings.ArrayElementPrefix,
+        //  _toTextBuilder.Settings.ArrayElementPostfix, _toTextBuilder.Settings.ArraySeparator, _toTextBuilder.Settings.ArrayPostfix);
 
-        //_toTextBuilder.WriteSequenceBegin ("", "A2 ", "AE2 ", "~AE2 ", "_AE2 ", "_A2");  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //_toTextBuilder.WriteSequenceLiteralBegin ("", "A2 ", "AE2 ", "~AE2 ", "_AE2 ", "_A2");  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+        _toTextBuilder.WriteSequenceArrayBegin ();
       }
       return true;
     }

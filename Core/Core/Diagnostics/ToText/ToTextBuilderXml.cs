@@ -68,6 +68,16 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public override IToTextBuilderBase WriteSequenceLiteralBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    {
+      throw new System.NotSupportedException ("ToTextBuilderXml does not support literal sequences.");
+    }
+
+    protected override IToTextBuilderBase SequenceBegin ()
+    {
+      return SequenceXmlBegin(null,null);
+    }
+
     //protected override IToTextBuilderBase WriteObjectToString (object obj)
     //{
     //  _disableableWriter.WriteValue (obj.ToString ());
@@ -79,14 +89,35 @@ namespace Remotion.Diagnostics.ToText
     //  throw new System.NotImplementedException();
     //}
 
-    protected override void SequenceBeginWritePart (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    protected IToTextBuilderBase SequenceXmlBegin (string name, string sequenceType)
     {
+      //ArgumentUtility.CheckNotNull ("name",name);
+      //ArgumentUtility.CheckNotNull ("sequenceType",sequenceType);
+      
+      BeforeNewSequence ();
+      SequenceState = new SequenceStateHolder () { Name = name, SequenceType = sequenceType };
       _disableableWriter.WriteStartElement ("seq");
-      //_disableableWriter.Write (SequenceState.SequencePrefix);
-      if (name.Length > 0)
-      {
-        _disableableWriter.WriteAttribute ("name",name);
-      }
+      _disableableWriter.WriteAttributeIfNotEmpty ("name", SequenceState.Name);
+      _disableableWriter.WriteAttributeIfNotEmpty ("type", SequenceState.SequenceType);
+      return this;
+    }
+
+
+    //protected override void SequenceBeginWritePart (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    //protected override void SequenceBeginWritePart (SequenceStateHolder sequenceState)
+    //{
+    //  _disableableWriter.WriteStartElement ("seq");
+    //  //_disableableWriter.Write (SequenceState.SequencePrefix);
+    //  string name = sequenceState.Name;
+    //  if (name.Length > 0)
+    //  {
+    //    _disableableWriter.WriteAttribute ("name",name);
+    //  }
+    //}
+
+    public override IToTextBuilderBase WriteSequenceBegin ()
+    {
+      return SequenceBegin();
     }
 
     public override IToTextBuilderBase WriteRawStringUnsafe (string s)
@@ -113,7 +144,7 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteEnumerable (IEnumerable collection)
     {
-      SequenceBegin (collection.GetType().Name, "", "", "", "", "");
+      SequenceXmlBegin (collection.GetType ().Name, "enumerable");
       foreach (Object element in collection)
       {
         WriteElement (element);
@@ -135,6 +166,11 @@ namespace Remotion.Diagnostics.ToText
       //  return this;
     }
 
+    public override IToTextBuilderBase WriteSequenceArrayBegin ()
+    {
+      throw new System.NotImplementedException();
+    }
+
     public override IToTextBuilderBase LowLevelWrite (object obj)
     {
       _disableableWriter.WriteValue (obj);
@@ -143,29 +179,36 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteInstanceBegin (Type type)
     {
-      throw new System.NotImplementedException ();
-      //SequenceBegin (type.Name, "", "", "", "", "");
+      //throw new System.NotImplementedException ();
+      SequenceXmlBegin (type.Name, "instance");
       return this;
     }
 
     protected override void SequenceEnd ()
     {
-      throw new System.NotImplementedException();
+      SequenceXmlEnd ();
     }
 
-    public override IToTextBuilderBase array (Array array)
+    private void SequenceXmlEnd ()
     {
-      throw new System.NotImplementedException();
+      //throw new NotImplementedException();
+      Assertion.IsTrue (IsInSequence);
+      _disableableWriter.WriteEndElement ();
+
+      SequenceState = sequenceStack.Pop ();
+
+      AfterWriteElement ();
     }
+
 
     protected override void BeforeWriteElement ()
     {
-      throw new System.NotImplementedException();
+      _disableableWriter.WriteStartElement ("e");
     }
 
     protected override void AfterWriteElement ()
     {
-      throw new System.NotImplementedException();
+      _disableableWriter.WriteEndElement ();
     }
 
 #if(false)
@@ -348,6 +391,13 @@ namespace Remotion.Diagnostics.ToText
 #endif
 
 
-
+    protected override IToTextBuilderBase WriteMemberRaw (string name, Object obj)
+    {
+      throw new System.NotImplementedException ();
+      //SequenceBegin ("", name + "=", "", "", "", "");
+      //toTextProvider.ToText (obj, this);
+      //SequenceEnd ();
+      //return this;
+    }
   }
 }

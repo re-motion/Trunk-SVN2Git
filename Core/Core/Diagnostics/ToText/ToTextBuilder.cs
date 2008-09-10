@@ -135,6 +135,24 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+
+
+
+    public override IToTextBuilderBase WriteSequenceLiteralBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    {
+      return SequenceLiteralBegin (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
+    }
+
+    protected override IToTextBuilderBase SequenceBegin ()
+    {
+      return SequenceLiteralBegin ("", "(", "", "", ",", ")");
+    }
+
+    //protected override void SequenceBeginWritePart (SequenceStateHolder sequenceState)
+    //{
+    //  throw new System.NotImplementedException();
+    //}
+
     //public override IToTextBuilderBase nl ()
     //{
     //  WriteNewLine ();
@@ -166,26 +184,50 @@ namespace Remotion.Diagnostics.ToText
     //  return this;
     //}
 
-    protected override void SequenceBeginWritePart (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    protected IToTextBuilderBase SequenceLiteralBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
+      BeforeNewSequence ();
+      SequenceState = new SequenceStateHolder (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
       _disableableWriter.Write (SequenceState.SequencePrefix);
+      //string name = SequenceState.Name;
       if (name.Length > 0)
       {
         _disableableWriter.Write (name);
         _disableableWriter.Write (": ");
       }
+      return this;
     }
+
+
+    //protected override void SequenceBeginWritePart (SequenceStateHolder sequenceState)
+    //{
+    //  _disableableWriter.Write (SequenceState.SequencePrefix);
+    //  string name = sequenceState.Name;
+    //  if (name.Length > 0)
+    //  {
+    //    _disableableWriter.Write (name);
+    //    _disableableWriter.Write (": ");
+    //  }
+    //}
 
 
     //--------------------------------------------------------------------------
     // High Level Emitters
     //--------------------------------------------------------------------------
 
+    public override IToTextBuilderBase WriteSequenceArrayBegin ()
+    {
+      WriteSequenceLiteralBegin ("", Settings.ArrayPrefix, Settings.ArrayElementPrefix,
+        Settings.ArrayElementPostfix, Settings.ArraySeparator, Settings.ArrayPostfix
+      );
+      return this;
+    }
+
     public override IToTextBuilderBase WriteArray (Array array)
     {
       var outerProduct = new OuterProductIndexGenerator (array);
 
-      SequenceBegin ("", Settings.ArrayPrefix, Settings.ArrayElementPrefix,
+      SequenceLiteralBegin ("", Settings.ArrayPrefix, Settings.ArrayElementPrefix,
                      Settings.ArrayElementPostfix, Settings.ArraySeparator, Settings.ArrayPostfix);
 
       //SequenceBegin ("", "A ", "AE ", "~AE ","_AE ","_A"); 
@@ -197,6 +239,11 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+
+    public override IToTextBuilderBase WriteSequenceBegin ()
+    {
+      throw new System.NotImplementedException();
+    }
 
     public override IToTextBuilderBase WriteRawStringUnsafe (string s)
     {
@@ -221,7 +268,7 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteEnumerable (IEnumerable collection)
     {
-      SequenceBegin ("", Settings.EnumerablePrefix, Settings.EnumerableElementPrefix,
+      SequenceLiteralBegin ("", Settings.EnumerablePrefix, Settings.EnumerableElementPrefix,
         Settings.EnumerableElementPostfix, Settings.EnumerableSeparator, Settings.EnumerablePostfix);
       foreach (Object element in collection)
       {
@@ -232,10 +279,10 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public override IToTextBuilderBase array (Array array)
-    {
-      return WriteArray (array);
-    }
+    //public override IToTextBuilderBase array (Array array)
+    //{
+    //  return WriteArray (array);
+    //}
 
 
     public override IToTextBuilderBase LowLevelWrite (Object obj)
@@ -247,7 +294,7 @@ namespace Remotion.Diagnostics.ToText
     public override IToTextBuilderBase WriteInstanceBegin (Type type)
     {
       //SequenceBegin ("", "[" + type.Name + "  ", "", "", ",", "]");
-      SequenceBegin ("", "[" + type.Name, "", "", ",", "]");
+      SequenceLiteralBegin ("", "[" + type.Name, "", "", ",", "]");
       _disableableWriter.WriteDelayedAsPrefix ("  ");
       return this;
     }
@@ -299,5 +346,13 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
+    protected override IToTextBuilderBase WriteMemberRaw (string name, Object obj)
+    {
+      SequenceLiteralBegin ("", name + "=", "", "", "", "");
+      toTextProvider.ToText (obj, this);
+      SequenceEnd ();
+
+      return this;
+    }
   }
 }

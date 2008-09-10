@@ -81,7 +81,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       public override void ToText (TestSimple t, IToTextBuilderBase toTextBuilder)
       {
-        toTextBuilder.sb ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ();
+        toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ();
       }
     }
 
@@ -91,8 +91,8 @@ namespace Remotion.UnitTests.Diagnostics
       public override void ToText (TestSimpleSimple t, IToTextBuilderBase toTextBuilder)
       {
         //toTextBuilder.WriteInstanceBegin (typeof (TestSimple)).e ("name", t.Name).WriteInstanceEnd ();
-        //toTextBuilder.sb ("[", ",", "]").s ("name=").e (t.Name).se ();
-        toTextBuilder.sb ("[", ",", "]").e ("TestSimpleSimple").e (t.Name).se ();
+        //toTextBuilder.sbLiteral ("[", ",", "]").s ("name=").e (t.Name).se ();
+        toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimpleSimple").e (t.Name).se ();
       }
     }
 
@@ -103,7 +103,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       public override void ToText (ITestSimpleInt t, IToTextBuilderBase toTextBuilder)
       {
-        toTextBuilder.sb ("[", ",", "]").e ("TestSimple").e (t.Int).se ();
+        toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Int).se ();
       }
     }
 
@@ -112,7 +112,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       public override void ToText (ITestSimpleName t, IToTextBuilderBase toTextBuilder)
       {
-        toTextBuilder.sb ("[", ",", "]").e ("TestSimple").e (t.Name).se ();
+        toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).se ();
       }
     }
 

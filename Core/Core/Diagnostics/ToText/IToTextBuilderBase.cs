@@ -70,11 +70,15 @@ namespace Remotion.Diagnostics.ToText
 
 
 
-    IToTextBuilderBase WriteSequenceBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
+    IToTextBuilderBase WriteSequenceLiteralBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
+    IToTextBuilderBase sbLiteral ();
+    IToTextBuilderBase sbLiteral (string sequencePrefix, string sequencePostfix);
+    IToTextBuilderBase sbLiteral (string sequencePrefix, string separator, string sequencePostfix);
+    IToTextBuilderBase sbLiteral (string sequencePrefix, string elementPostfix, string elementPrefix, string separator, string sequencePostfix);
+
+
+    IToTextBuilderBase WriteSequenceBegin ();
     IToTextBuilderBase sb ();
-    IToTextBuilderBase sb (string sequencePrefix, string sequencePostfix);
-    IToTextBuilderBase sb (string sequencePrefix, string separator, string sequencePostfix);
-    IToTextBuilderBase sb (string sequencePrefix, string elementPostfix, string elementPrefix, string separator, string sequencePostfix);
 
 
     /// <summary>
@@ -105,6 +109,7 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase ie ();
 
 
+    IToTextBuilderBase WriteSequenceArrayBegin ();
     // TODO: Check that if ToTextprovider holds ToTextBuilderBase, exposing these through the interface is still necessary.
     IToTextBuilderBase WriteArray (Array array);
     IToTextBuilderBase array (Array array);
