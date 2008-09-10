@@ -49,44 +49,23 @@ namespace Remotion.UnitTests.Diagnostics
 
 
     [Test]
-    [Ignore]
     public void WriteDelayedAsPrefixTest2 ()
     {
-      var textWriterMock = MockRepository.GenerateStub<TextWriter>();
-      //var textWriterMock = MockRepository.GenerateStub<StringWriter> ();
-
-      //var disableableWriter = new DisableableWriter (textWriterMock);
-      var disableableWriter = TypesafeActivator.CreateInstance<DisableableWriter> (BindingFlags.Public | BindingFlags.Instance).With (textWriterMock);
-
-
-      //Console.WriteLine ("AAAAAAAAAAAAAAAAAAAAAAAA: " + textWriterMock.GetHashCode());
-      //Assert.That (disableableWriter.Enabled, Is.True);
-      disableableWriter.Write ("abc");
-      //textWriterMock.Write ("abc");
-      textWriterMock.AssertWasCalled (tw => tw.Write ("abc"));
-      //disableableWriter.WriteDelayedAsPrefix (";");
-    }
-
-    [Test]
-    [Ignore]
-    public void WriteDelayedAsPrefixTest2a ()
-    {
-      var textWriterMock = MockRepository.GenerateStub<TextWriter> ();
+      var textWriterMock = MockRepository.GenerateMock<TextWriter> ();
       var disableableWriter = new DisableableWriter (textWriterMock);
       disableableWriter.Write ("abc");
-      textWriterMock.AssertWasCalled (tw => tw.Write ("abc"));
+      textWriterMock.AssertWasCalled (tw => tw.Write ((object) "abc"));
     }
 
 
     [Test]
-    [Ignore]
     public void WriteDelayedAsPrefixTest3 ()
     {
       MockRepository mocks = new MockRepository ();
 
       var textWriterMock = mocks.DynamicMock<TextWriter> ();
       var disableableWriter = new DisableableWriter (textWriterMock);
-      Expect.Call (() => textWriterMock.Write ("abc"));
+      Expect.Call (() => textWriterMock.Write ((object) "abc"));
 
       mocks.ReplayAll ();
 

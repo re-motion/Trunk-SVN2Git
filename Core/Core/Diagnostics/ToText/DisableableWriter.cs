@@ -15,7 +15,7 @@ using System.Text;
 namespace Remotion.Diagnostics.ToText
 {
   /// <summary>
-  /// Wrapper around <see cref="TextWriter"/> class which supports enabling/disabling of its <see cref="Write{T}"/> method 
+  /// Wrapper around <see cref="TextWriter"/> class which supports enabling/disabling of its <see cref="Write"/> method 
   /// through its <see cref="Enabled"/> property.
   /// </summary>
   public class DisableableWriter
@@ -50,9 +50,8 @@ namespace Remotion.Diagnostics.ToText
 
 
 
-    public TextWriter Write<T> (T t)
+    public TextWriter Write (object obj)
     {
-      //Console.WriteLine ("TextWriter: Enabled=" + Enabled);
       if (Enabled)
       {
         if (DelayedPrefix != null)
@@ -60,8 +59,7 @@ namespace Remotion.Diagnostics.ToText
           TextWriter.Write (DelayedPrefix);
           DelayedPrefix = null;
         }
-        TextWriter.Write (t);
-        //Console.WriteLine ("Wrote to: " + TextWriter.GetHashCode ());
+        TextWriter.Write (obj);
       }
       return TextWriter;
     }

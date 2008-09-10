@@ -137,12 +137,15 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase LowLevelWrite (object obj)
     {
-      throw new System.NotImplementedException();
+      _disableableWriter.WriteValue (obj);
+      return this;
     }
 
     public override IToTextBuilderBase WriteInstanceBegin (Type type)
     {
-      throw new System.NotImplementedException();
+      throw new System.NotImplementedException ();
+      //SequenceBegin (type.Name, "", "", "", "", "");
+      return this;
     }
 
     protected override void SequenceEnd ()
