@@ -109,16 +109,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       return "value";
     }
 
-    public new void ClearChildState ()
-    {
-      if (ViewStateBackup != null || ControlStateBackup != null)
-      {
-        throw new InvalidOperationException ("Cannot clear child state if a state has been injected.");
-      }
-      _requiresClearChildControlState = true;
-      _requiresClearChildViewState = true;
-    }
-
     protected override void AddedControl (Control control, int index)
     {
       if (HasChildState)
@@ -201,8 +191,18 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _memberCaller.InitRecursive (this, parent);
     }
 
-    public void EndWrapControlWithParentContainer (Control control)
+    public void EndWrapControlWithParentContainer (Control control, bool clearChildState)
     {
+      if (clearChildState)
+      {
+        if (ViewStateBackup != null || ControlStateBackup != null)
+        {
+          throw new InvalidOperationException ("Cannot clear child state if a state has been injected.");
+        }
+        _requiresClearChildControlState = true;
+        _requiresClearChildViewState = true;
+      }
+
       Controls.Add (control);
     }
   }

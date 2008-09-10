@@ -55,10 +55,10 @@ namespace Remotion.Web.ExecutionEngine
         if (CurrentPageStep.UserControlID == uniqueID && !CurrentPageStep.IsReturningInnerFunction)
           AddReplacementUserControl();
         else
-          CompleteInitialization();
+          CompleteInitialization (false);
       }
       else
-        CompleteInitialization();
+        CompleteInitialization (false);
 
       _isInOnInit = false;
     }
@@ -73,19 +73,16 @@ namespace Remotion.Web.ExecutionEngine
       control._parentContainer = _parentContainer;
       _parentContainer = null;
 
-      if (!CurrentUserControlStep.IsPostBack)
-        control._parentContainer.ClearChildState();
-
-      control.CompleteInitialization();
+      control.CompleteInitialization (!CurrentUserControlStep.IsPostBack);
     }
 
-    private void CompleteInitialization ()
+    private void CompleteInitialization (bool clearChildState)
     {
       Assertion.IsNotNull (
           _parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
 
       if (Parent == null)
-        _parentContainer.EndWrapControlWithParentContainer(this);
+        _parentContainer.EndWrapControlWithParentContainer (this, clearChildState);
 
       Ensure();
 
