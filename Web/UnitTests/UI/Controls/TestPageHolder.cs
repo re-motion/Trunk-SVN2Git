@@ -69,6 +69,8 @@ namespace Remotion.Web.UnitTests.UI.Controls
         _otherControl.ValueInViewState = "OtherValue";
         _otherControl.ValueInControlState = "OtherValue";
       }
+
+      Page.RegisterViewStateHandler ();
     }
 
     public PageMock Page

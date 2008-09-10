@@ -57,6 +57,9 @@ namespace Remotion.Web.UI.Controls
 
     protected override void LoadControlState (object savedState)
     {
+      if (_memberCaller.GetControlState (this) < ControlState.Initialized)
+        throw new InvalidOperationException ("Controls can only load state after OnInit phase.");
+
       _isControlStateLoaded = true;
 
       if (_requiresClearChildControlState)
@@ -79,6 +82,9 @@ namespace Remotion.Web.UI.Controls
 
     protected override void LoadViewState (object savedState)
     {
+      if (_memberCaller.GetControlState (this) < ControlState.Initialized)
+        throw new InvalidOperationException ("Controls can only load state after OnInit phase.");
+
       _isViewStateLoaded = true;
 
       if (_requiresClearChildViewState)
