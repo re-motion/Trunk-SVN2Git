@@ -8,29 +8,23 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using Remotion.Utilities;
 
 namespace Remotion.Diagnostics.ToText
 {
   public class SequenceStateHolder
   {
-    private int _sequenceCounter;
-    private readonly string _sequencePrefix;
-    private readonly string _elementPrefix;
-    private readonly string _elementPostfix;
-    private readonly string _separator;
-    private readonly string _sequencePostfix;
-
     public SequenceStateHolder ()
     {
-      _sequenceCounter = 0;
+      Counter = 0;
       Name = "";
       SequenceType = "";
-      _sequencePrefix = "";
-      _elementPrefix = "";
-      _elementPostfix = "";
-      _separator = "";
-      _sequencePostfix = "";
+      SequencePrefix = "";
+      ElementPrefix = "";
+      ElementPostfix = "";
+      Separator = "";
+      SequencePostfix = "";
     }
 
     public SequenceStateHolder (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
@@ -41,13 +35,13 @@ namespace Remotion.Diagnostics.ToText
       ArgumentUtility.CheckNotNull ("separator", separator);
       ArgumentUtility.CheckNotNull ("sequencePostfix", sequencePostfix);
 
-      _sequenceCounter = 0;
+      Counter = 0;
       Name = name;
-      _sequencePrefix = sequencePrefix;
-      _elementPrefix = elementPrefix;
-      _elementPostfix = elementPostfix;
-      _separator = separator;
-      _sequencePostfix = sequencePostfix;
+      SequencePrefix = sequencePrefix;
+      ElementPrefix = elementPrefix;
+      ElementPostfix = elementPostfix;
+      Separator = separator;
+      SequencePostfix = sequencePostfix;
     }
 
 
@@ -58,45 +52,27 @@ namespace Remotion.Diagnostics.ToText
       get; set;
     }
 
-    public string SequencePrefix
-    {
-      get { return _sequencePrefix; }
-    }
+    public string SequencePrefix { get; set; }
 
-    public string ElementPostfix
-    {
-      get { return _elementPostfix; }
-    }
+    public string ElementPostfix { get; private set; }
 
-    public string Separator
-    {
-      get { return _separator; }
-    }
+    public string Separator { get; private set; }
 
-    public string ElementPrefix
-    {
-      get { return _elementPrefix; }
-    }
+    public string ElementPrefix { get; set; }
 
-    public string SequencePostfix
-    {
-      get { return _sequencePostfix; }
-    }
+    public string SequencePostfix { get; private set; }
 
     /// <summary>
     /// The current position in the sequence.
     /// </summary>
-    public int Counter
-    {
-      get { return _sequenceCounter; }
-    }
+    public int Counter { get; private set; }
 
     /// <summary>
     /// Move to the next position in the sequence.
     /// </summary>
     public void IncrementCounter ()
     {
-      ++_sequenceCounter;
+      ++Counter;
     }
   }
 }

@@ -26,14 +26,6 @@ namespace Remotion.Diagnostics.ToText
       _disableableWriter = new DisableableXmlWriter (xmlWriter);
     }
 
-    // TODO: Implement 
-
-
-    //public override bool UseMultiLine
-    //{
-    //  get { throw new System.NotImplementedException(); }
-    //  set { throw new System.NotImplementedException(); }
-    //}
 
     public override bool Enabled
     {
@@ -74,7 +66,7 @@ namespace Remotion.Diagnostics.ToText
 
     protected override IToTextBuilderBase SequenceBegin ()
     {
-      return SequenceXmlBegin(null,null);
+      return SequenceXmlBegin(null,null, "seq", "e");
     }
 
     //protected override IToTextBuilderBase WriteObjectToString (object obj)
@@ -88,13 +80,11 @@ namespace Remotion.Diagnostics.ToText
     //  throw new System.NotImplementedException();
     //}
 
-    protected IToTextBuilderBase SequenceXmlBegin (string name, string sequenceType)
+    protected IToTextBuilderBase SequenceXmlBegin (string name, string sequenceType, string sequenceTag, string elementTag)
     {
-      //ArgumentUtility.CheckNotNull ("name",name);
-      //ArgumentUtility.CheckNotNull ("sequenceType",sequenceType);
-      
+      // Note: All arguments can be null 
       BeforeNewSequence ();
-      SequenceState = new SequenceStateHolder () { Name = name, SequenceType = sequenceType };
+      SequenceState = new SequenceStateHolder { Name = name, SequenceType = sequenceType, SequencePrefix = sequenceTag, ElementPrefix = elementTag };
       _disableableWriter.WriteStartElement ("seq");
       _disableableWriter.WriteAttributeIfNotEmpty ("name", SequenceState.Name);
       _disableableWriter.WriteAttributeIfNotEmpty ("type", SequenceState.SequenceType);
@@ -143,7 +133,7 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteEnumerable (IEnumerable collection)
     {
-      SequenceXmlBegin (collection.GetType ().Name, "enumerable");
+      SequenceXmlBegin (collection.GetType ().Name, "enumerable", "seq", "e");
       foreach (Object element in collection)
       {
         WriteElement (element);
@@ -179,7 +169,7 @@ namespace Remotion.Diagnostics.ToText
     public override IToTextBuilderBase WriteInstanceBegin (Type type)
     {
       //throw new System.NotImplementedException ();
-      SequenceXmlBegin (type.Name, "instance");
+      SequenceXmlBegin (type.Name, "instance", "seq", "e");
       return this;
     }
 
@@ -213,15 +203,23 @@ namespace Remotion.Diagnostics.ToText
 
     protected override IToTextBuilderBase WriteMemberRaw (string name, Object obj)
     {
-      //throw new System.NotImplementedException ();
-      //SequenceBegin ("", name + "=", "", "", "", "");
-      //toTextProvider.ToText (obj, this);
-      //SequenceEnd ();
       _disableableWriter.WriteStartElement ("var");
       _disableableWriter.WriteAttribute ("name", name);
       WriteElement (obj);
       _disableableWriter.WriteEndElement ();
       return this;
+    }
+
+
+    public void Begin ()
+    {
+      _disableableWriter.WriteStartElement ("remotion");
+    }
+
+    public void End ()
+    {
+      _disableableWriter.WriteEndElement ();
+      Flush();
     }
   }
 }

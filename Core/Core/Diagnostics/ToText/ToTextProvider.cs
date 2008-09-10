@@ -169,7 +169,7 @@ namespace Remotion.Diagnostics.ToText
       Assertion.IsTrue (toTextBuilder.ToTextProvider == this);
 
       Type type = (obj != null) ? obj.GetType () : null;
-      var parameters = new ToTextParameters () { Object = obj, Type = type, ToTextBuilder = toTextBuilder };
+      var parameters = new ToTextParameters { Object = obj, Type = type, ToTextBuilder = toTextBuilder };
 
       foreach (var toTextProviderHandler in _toTextProviderHandlers)
       {

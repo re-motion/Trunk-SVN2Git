@@ -15,9 +15,33 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics.ToText;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Diagnostics
 {
+  internal class TestSimpleToTextBuilderXmlTest
+  {
+    public TestSimpleToTextBuilderXmlTest ()
+    {
+      Name = "ABC abc";
+      Int = 54321;
+    }
+
+    public TestSimpleToTextBuilderXmlTest (string name, int i)
+    {
+      Name = name;
+      Int = i;
+    }
+
+    public string Name { get; set; }
+    public int Int { get; set; }
+
+    //public override string ToString ()
+    //{
+    //  return String.Format ("((TestSimple) Name:{0},Int:{1})", Name, Int);
+    //}
+  }
+  
   [TestFixture]
   public class ToTextBuilderXmlTest
   {
@@ -94,6 +118,105 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    [Test]
+    [Ignore]
+    public void ToTextXmlInstanceTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+      var toTextProvider = toTextBuilderXml.ToTextProvider;
+      toTextProvider.Settings.UseAutomaticObjectToText = true;
+      //toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>((t,tb) => tb.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ());
+      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb().e ("This is a sample specifc type handler - important members listed first:").e (x => t.Int).e (x => t.Name).se ());
+
+      //var simpleTest = new ToTextProviderTest.TestSimple ();
+      var simpleTest = new TestSimpleToTextBuilderXmlTest ("ToTextXmlInstanceTest", 333);
+      var aNumber = 123.456;
+      toTextBuilderXml.sb ().e (y => aNumber).e("ABC").e(simpleTest).se ();
+      toTextBuilderXml.Flush ();
+      var result = stringWriter.ToString ();
+      log.It ("xml=" + result);
+      //Assert.That (result, Is.EqualTo ("<e><seq><var name=\"x\"><e>123.456</e></var></seq></e>"));
+    }
+
+
+    [Test]
+    public void ToTextXmlBeginEndTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+
+      toTextBuilderXml.Begin ();
+      toTextBuilderXml.End ();
+      string result = stringWriter.ToString ();
+      log.It (result);
+      Assert.That (result, Is.EqualTo ("<remotion />"));
+    }
+
+
+    [Test]
+    public void ToTextXmlMultiTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+
+      toTextBuilderXml.Begin();
+
+      var toTextProvider = toTextBuilderXml.ToTextProvider;
+      toTextProvider.Settings.UseAutomaticObjectToText = true;
+      //toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>((t,tb) => tb.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ());
+      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb ().e ("This is a sample specifc type handler - important members listed first:").e (x => t.Int).e (x => t.Name).se ());
+
+      var simpleTest = new TestSimpleToTextBuilderXmlTest ("ToTextXmlInstanceTest", 333);
+      int counter = 1;
+      toTextBuilderXml.sb ().e (x => counter).e (simpleTest).se ();
+      toTextBuilderXml.sb ().e (x => counter).e (simpleTest).se ();
+      toTextBuilderXml.End ();
+      string result = stringWriter.ToString ();
+      log.It (result);
+      //Assert.That (result, Is.EqualTo ("<e><seq><var name=\"x\"><e>123.456</e></var></seq></e>"));
+    }
+
+    [Test]
+    public void ToTextXmlLoopTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+
+      toTextBuilderXml.Begin ();
+
+      var toTextProvider = toTextBuilderXml.ToTextProvider;
+      toTextProvider.Settings.UseAutomaticObjectToText = true;
+      //toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>((t,tb) => tb.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ());
+      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb ().e ("This is a sample specifc type handler - important members listed first:").e (x => t.Int).e (x => t.Name).se ());
+
+      //var simpleTest = new ToTextProviderTest.TestSimple ();
+      var simpleTest = new TestSimpleToTextBuilderXmlTest ("ToTextXmlInstanceTest", 333);
+      for (int counter = 1; counter < 20; ++counter)
+      {
+        toTextBuilderXml.sb ().e (x => counter).e (simpleTest).se ();
+        simpleTest.Int += 13;
+        simpleTest.Name += ".";
+      }
+
+      toTextBuilderXml.End ();
+
+      string result = stringWriter.ToString ();
+      log.It (result);
+      //Assert.That (result, Is.EqualTo ("<e><seq><var name=\"x\"><e>123.456</e></var></seq></e>"));
+    }
+
+
+
+    [ToTextSpecificHandler]
+    class TestSimpleToTextBuilderXmlTestToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>
+    {
+      public override void ToText (TestSimpleToTextBuilderXmlTest t, IToTextBuilderBase toTextBuilder)
+      {
+        toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ();
+      }
+    }
+
     public static ToTextProvider CreateTextProvider ()
     {
       var toTextProvider = new ToTextProvider();
@@ -106,8 +229,12 @@ namespace Remotion.UnitTests.Diagnostics
 
     public static ToTextBuilderXml CreateTextBuilderXml (TextWriter textWriter)
     {
-      //XmlWriter xmlWriter = XmlWriter.Create(textWriter);
-      XmlTextWriter xmlWriter = new XmlTextWriter (textWriter);
+      XmlWriterSettings settings = new XmlWriterSettings ();
+      settings.Indent = true;
+      settings.OmitXmlDeclaration = true;
+      settings.NewLineOnAttributes = false;
+      var xmlWriter = XmlWriter.Create (textWriter, settings);
+
       return new ToTextBuilderXml (CreateTextProvider(), xmlWriter);
     }
 
