@@ -172,10 +172,14 @@ namespace Remotion.Web.UI.Controls
 
     public void BeginWrapControlWithParentContainer (Control control)
     {
-      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNullAndType<INamingContainer> ("control", control);
+      ArgumentUtility.CheckNotNullAndType<ILazyInitializedControl> ("control", control);
 
       if (_memberCaller.GetControlState (control) != ControlState.ChildrenInitialized)
         throw new InvalidOperationException ("Controls can only be wrapped during OnInit phase.");
+
+      if (((ILazyInitializedControl)control).IsInitialized)
+        throw new InvalidOperationException ("Controls can only be wrapped before they are initialzied.");
 
       Control parent = control.Parent;
       int index = parent.Controls.IndexOf (control);

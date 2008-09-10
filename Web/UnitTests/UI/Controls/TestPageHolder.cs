@@ -14,12 +14,12 @@ using System.Web.UI;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
+namespace Remotion.Web.UnitTests.UI.Controls
 {
   public class TestPageHolder
   {
     private readonly PageMock _page;
-    private readonly NamingContainerMock _namingContainer;
+    private readonly LazyInitializedNamingContainerMock _namingContainer;
     private readonly ControlInvoker _pageInvoker;
     private readonly ControlMock _parent;
     private readonly ControlMock _child;
@@ -32,7 +32,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       _page = new PageMock ();
       _page.SetRequestValueCollection (new NameValueCollection ());
 
-      _namingContainer = new NamingContainerMock ();
+      _namingContainer = new LazyInitializedNamingContainerMock();
       _namingContainer.ID = "NamingContainer";
       _page.Controls.Add (_namingContainer);
 
@@ -76,7 +76,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       get { return _page; }
     }
 
-    public NamingContainerMock NamingContainer
+    public LazyInitializedNamingContainerMock NamingContainer
     {
       get { return _namingContainer; }
     }

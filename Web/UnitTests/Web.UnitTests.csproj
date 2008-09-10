@@ -144,7 +144,8 @@
   <ItemGroup>
     <Compile Include="Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Context\WebSafeContextMixinTest.cs" />
-    <Compile Include="ExecutionEngine\Infrastructure\TestPageHolder.cs" />
+    <Compile Include="UI\Controls\LazyInitializedNamingContainerMock.cs" />
+    <Compile Include="UI\Controls\TestPageHolder.cs" />
     <Compile Include="Utilities\InternalControlMemberCallerTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectWithVarRefTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectTest.cs" />

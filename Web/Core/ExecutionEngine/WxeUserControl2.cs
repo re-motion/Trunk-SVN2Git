@@ -21,11 +21,10 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxeUserControl2 : UserControl, IWxeTemplateControl
+  public class WxeUserControl2 : UserControl, IWxeTemplateControl, ILazyInitializedControl
   {
     private readonly WxeTemplateControlInfo _wxeInfo;
-    private bool _isEnsured;
-    private PlaceHolder _placeHolder;
+    private readonly LazyInitializationContainer _lazyContainer;
     private ControlReplacer _replacer;
     private bool _isInitComplete;
     private bool _isInOnInit;
@@ -34,6 +33,7 @@ namespace Remotion.Web.ExecutionEngine
     public WxeUserControl2 ()
     {
       _wxeInfo = new WxeTemplateControlInfo (this);
+      _lazyContainer = new LazyInitializationContainer ();
     }
 
     protected override sealed void OnInit (EventArgs e)
@@ -65,8 +65,7 @@ namespace Remotion.Web.ExecutionEngine
 
     private void AddReplacementUserControl ()
     {
-      Assertion.IsNotNull (
-          _replacer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
+      Assertion.IsNotNull (_replacer, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
 
       var control = (WxeUserControl2) _replacer.Page.LoadControl (CurrentUserControlStep.UserControl);
       control.ID = ID;
@@ -78,13 +77,12 @@ namespace Remotion.Web.ExecutionEngine
 
     private void CompleteInitialization (bool clearChildState)
     {
-      Assertion.IsNotNull (
-          _replacer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
+      Assertion.IsNotNull (_replacer, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
 
       if (Parent == null)
         _replacer.EndWrapControlWithParentContainer (this, clearChildState);
 
-      Ensure();
+      _lazyContainer.Ensure(base.Controls);
 
       if (!_isInitComplete)
       {
@@ -102,41 +100,16 @@ namespace Remotion.Web.ExecutionEngine
     {
       get
       {
-        EnsureChildControls();
+        EnsureChildControls ();
 
-        if (_isEnsured)
-          return base.Controls;
-        else
-        {
-          EnsurePlaceHolderCreated();
-          return _placeHolder.Controls;
-        }
+        return _lazyContainer.GetControls(base.Controls);
       }
-    }
-
-    private void Ensure ()
-    {
-      if (_isEnsured)
-        return;
-
-      _isEnsured = true;
-
-      EnsurePlaceHolderCreated();
-      List<Control> controls = new List<Control> (_placeHolder.Controls.Cast<Control>());
-      foreach (Control control in controls)
-        base.Controls.Add (control);
-    }
-
-    private void EnsurePlaceHolderCreated ()
-    {
-      if (_placeHolder == null)
-        _placeHolder = new PlaceHolder();
     }
 
     protected override sealed void CreateChildControls ()
     {
       if (ControlHelper.IsDesignMode (this, Context))
-        Ensure();
+        _lazyContainer.Ensure(base.Controls);
     }
 
     public void ExecuteFunction (WxeFunction function)
@@ -192,6 +165,11 @@ namespace Remotion.Web.ExecutionEngine
           Context.Response.Clear(); // throw away page trace output
         throw new WxeExecuteUserControlNextStepException();
       }
+    }
+
+    bool ILazyInitializedControl.IsInitialized
+    {
+      get { return _lazyContainer.IsInitialized; }
     }
   }
 }
