@@ -178,7 +178,7 @@
     <Compile Include="ExecutionEngine\WxeTransactedFunctionParameterEnlister.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionAlreadyReleasedException.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
-    <Compile Include="ExecutionEngine\Infrastructure\WxeUserControlParentContainer.cs" />
+    <Compile Include="UI\Controls\ControlReplacer.cs" />
     <Compile Include="ExecutionEngine\WxeUserControlStep.cs" />
     <Compile Include="ExecutionEngine\WxeVariableReference.cs" />
     <Compile Include="Infrastructure\HttpContextWrapper.cs" />

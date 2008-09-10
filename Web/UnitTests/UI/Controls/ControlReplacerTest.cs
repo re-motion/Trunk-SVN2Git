@@ -18,14 +18,15 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
-using Remotion.Web.ExecutionEngine.Infrastructure;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UnitTests.ExecutionEngine.Infrastructure;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
+namespace Remotion.Web.UnitTests.UI.Controls
 {
   [TestFixture]
-  public class WxeUserControlParentContainerTest
+  public class ControlReplacerTest
   {
     private HttpContext _httpContext;
     private IInternalControlMemberCaller _memberCallerMock;
@@ -48,6 +49,24 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 
 
     [Test]
+    public void SaveAllState_ViewState ()
+    {
+      var testPageHolder = new TestPageHolder (true);
+      ControlReplacer replacer = SetupParentContainerForIntegrationTest (testPageHolder.NamingContainer, null, false);
+      testPageHolder.PageInvoker.InitRecursive ();
+
+      var formatter = new LosFormatter ();
+      var state = (Pair) formatter.Deserialize (replacer.SaveAllState ());
+
+      Pair parentContainerViewState = (Pair) state.Second;
+      Assert.That (parentContainerViewState.First, Is.EqualTo ("value"));
+      var namingContainerViewState = (Pair) ((IList) (parentContainerViewState).Second)[1];
+      Assert.That (namingContainerViewState.First, Is.EqualTo ("NamingContainerValue"));
+      var parentViewState = (Pair) ((IList) (namingContainerViewState).Second)[1];
+      Assert.That (parentViewState.First, Is.EqualTo ("ParentValue"));
+    }
+
+    [Test]
     public void SaveViewStateRecursive ()
     {
       var testPageHolder = new TestPageHolder (true);
@@ -67,7 +86,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     }
 
     [Test]
-    public void LoadViewStateRecursive ()
+    public void LoadViewStateRecursive_RegularPostBack ()
     {
       object viewState = CreateViewState();
       var testPageHolderWithoutState = new TestPageHolder (false);
@@ -79,24 +98,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       Assert.That (testPageHolderWithoutState.OtherControl.ValueInViewState, Is.EqualTo ("OtherValue"));
       Assert.That (testPageHolderWithoutState.NamingContainer.ValueInViewState, Is.EqualTo ("NamingContainerValue"));
       Assert.That (testPageHolderWithoutState.Parent.ValueInViewState, Is.EqualTo ("ParentValue"));
-    }
-
-    [Test]
-    public void SaveAllState_ViewState ()
-    {
-      var testPageHolder = new TestPageHolder (true);
-      WxeUserControlParentContainer parentContainer = SetupParentContainerForIntegrationTest (testPageHolder.NamingContainer, null, false);
-      testPageHolder.PageInvoker.InitRecursive ();
-
-      var formatter = new LosFormatter ();
-      var state = (Pair) formatter.Deserialize (parentContainer.SaveAllState ());
-
-      Pair parentContainerViewState = (Pair)state.Second;
-      Assert.That (parentContainerViewState.First, Is.EqualTo ("value"));
-      var namingContainerViewState = (Pair) ((IList) (parentContainerViewState).Second)[1];
-      Assert.That (namingContainerViewState.First, Is.EqualTo ("NamingContainerValue"));
-      var parentViewState = (Pair) ((IList) (namingContainerViewState).Second)[1];
-      Assert.That (parentViewState.First, Is.EqualTo ("ParentValue"));
     }
 
     [Test]
@@ -144,18 +145,18 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void WrapControlWithParentContainer_ReplacesControl ()
     {
       var testPageHolder = new TestPageHolder (true);
-      WxeUserControlParentContainer parentContainer = new WxeUserControlParentContainer (_memberCallerMock, "TheContainer", null);
+      ControlReplacer replacer = new ControlReplacer (_memberCallerMock, "TheContainer", null);
       Control control = new Control();
       _memberCallerMock.Stub (stub => stub.GetControlState(control)).Return (ControlState.ChildrenInitialized);
 
       testPageHolder.Page.Controls.Add (control);
-      parentContainer.BeginWrapControlWithParentContainer (control);
-      parentContainer.EndWrapControlWithParentContainer (control, false);
+      replacer.BeginWrapControlWithParentContainer (control);
+      replacer.EndWrapControlWithParentContainer (control, false);
 
-      _memberCallerMock.AssertWasCalled (mock => mock.InitRecursive (parentContainer, testPageHolder.Page));
+      _memberCallerMock.AssertWasCalled (mock => mock.InitRecursive (replacer, testPageHolder.Page));
 
-      Assert.That (testPageHolder.Page.Controls, Is.EqualTo (new Control[] { testPageHolder.NamingContainer, testPageHolder.OtherNamingContainer, parentContainer }));
-      Assert.That (parentContainer.Controls, Is.EqualTo (new[] { control }));
+      Assert.That (testPageHolder.Page.Controls, Is.EqualTo (new Control[] { testPageHolder.NamingContainer, testPageHolder.OtherNamingContainer, replacer }));
+      Assert.That (replacer.Controls, Is.EqualTo (new[] { control }));
     }
 
     [Test]
@@ -163,28 +164,28 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void WrapControlWithParentContainer_ThrowsIfNotInOnInit ()
     {
       var testPageHolder = new TestPageHolder (true);
-      WxeUserControlParentContainer parentContainer = new WxeUserControlParentContainer (_memberCallerMock, "TheContainer", null);
+      ControlReplacer replacer = new ControlReplacer (_memberCallerMock, "TheContainer", null);
       Control control = new Control ();
       _memberCallerMock.Stub (stub => stub.GetControlState(control)).Return (ControlState.Initialized);
 
       testPageHolder.Page.Controls.Add (control);
-      parentContainer.BeginWrapControlWithParentContainer (control);
+      replacer.BeginWrapControlWithParentContainer (control);
     }
 
-    private WxeUserControlParentContainer SetupParentContainerForIntegrationTest (NamingContainerMock wrappedControl, string state, bool clearChildState)
+    private ControlReplacer SetupParentContainerForIntegrationTest (NamingContainerMock wrappedControl, string state, bool clearChildState)
     {
-      WxeUserControlParentContainer parentContainer = new WxeUserControlParentContainer (new InternalControlMemberCaller (), "TheContainer", state);
+      ControlReplacer replacer = new ControlReplacer (new InternalControlMemberCaller (), "TheContainer", state);
       bool isInitialized = false;
       wrappedControl.Init += delegate
       {
         if (isInitialized)
           return;
         isInitialized = true;
-        parentContainer.BeginWrapControlWithParentContainer (wrappedControl);
-        parentContainer.EndWrapControlWithParentContainer (wrappedControl, clearChildState);
+        replacer.BeginWrapControlWithParentContainer (wrappedControl);
+        replacer.EndWrapControlWithParentContainer (wrappedControl, clearChildState);
       };
 
-      return parentContainer;
+      return replacer;
     }
 
     private object CreateViewState (TestPageHolder testPageHolder)

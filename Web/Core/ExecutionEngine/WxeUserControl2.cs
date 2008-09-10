@@ -16,7 +16,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Collections;
 using Remotion.Utilities;
-using Remotion.Web.ExecutionEngine.Infrastructure;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
@@ -26,7 +26,7 @@ namespace Remotion.Web.ExecutionEngine
     private readonly WxeTemplateControlInfo _wxeInfo;
     private bool _isEnsured;
     private PlaceHolder _placeHolder;
-    private WxeUserControlParentContainer _parentContainer;
+    private ControlReplacer _replacer;
     private bool _isInitComplete;
     private bool _isInOnInit;
     private bool _executeNextStep;
@@ -44,14 +44,14 @@ namespace Remotion.Web.ExecutionEngine
 
       _wxeInfo.Initialize (Context);
 
-      if (_parentContainer == null)
+      if (_replacer == null)
       {
         string savedState = CurrentPageStep.IsReturningInnerFunction ? CurrentPageStep.UserControlState : null;
 
-        _parentContainer = new WxeUserControlParentContainer (new InternalControlMemberCaller(), ID + "_Parent", savedState);
-        _parentContainer.BeginWrapControlWithParentContainer (this);
+        _replacer = new ControlReplacer (new InternalControlMemberCaller(), ID + "_Parent", savedState);
+        _replacer.BeginWrapControlWithParentContainer (this);
 
-        string uniqueID = _parentContainer.UniqueID + IdSeparator + ID;
+        string uniqueID = _replacer.UniqueID + IdSeparator + ID;
         if (CurrentPageStep.UserControlID == uniqueID && !CurrentPageStep.IsReturningInnerFunction)
           AddReplacementUserControl();
         else
@@ -66,12 +66,12 @@ namespace Remotion.Web.ExecutionEngine
     private void AddReplacementUserControl ()
     {
       Assertion.IsNotNull (
-          _parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
+          _replacer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
 
-      var control = (WxeUserControl2) _parentContainer.Page.LoadControl (CurrentUserControlStep.UserControl);
+      var control = (WxeUserControl2) _replacer.Page.LoadControl (CurrentUserControlStep.UserControl);
       control.ID = ID;
-      control._parentContainer = _parentContainer;
-      _parentContainer = null;
+      control._replacer = _replacer;
+      _replacer = null;
 
       control.CompleteInitialization (!CurrentUserControlStep.IsPostBack);
     }
@@ -79,10 +79,10 @@ namespace Remotion.Web.ExecutionEngine
     private void CompleteInitialization (bool clearChildState)
     {
       Assertion.IsNotNull (
-          _parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
+          _replacer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
 
       if (Parent == null)
-        _parentContainer.EndWrapControlWithParentContainer (this, clearChildState);
+        _replacer.EndWrapControlWithParentContainer (this, clearChildState);
 
       Ensure();
 
@@ -147,7 +147,7 @@ namespace Remotion.Web.ExecutionEngine
     [EditorBrowsable (EditorBrowsableState.Never)]
     public string SaveAllState ()
     {
-      return _parentContainer.SaveAllState();
+      return _replacer.SaveAllState();
     }
 
     public WxePageStep CurrentPageStep

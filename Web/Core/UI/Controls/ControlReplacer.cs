@@ -15,9 +15,9 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.ExecutionEngine.Infrastructure
+namespace Remotion.Web.UI.Controls
 {
-  public sealed class WxeUserControlParentContainer : Control, INamingContainer
+  public sealed class ControlReplacer : Control, INamingContainer
   {
     private readonly IInternalControlMemberCaller _memberCaller;
     private bool _isControlStateLoaded;
@@ -25,7 +25,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     private bool _requiresClearChildControlState;
     private bool _requiresClearChildViewState;
 
-    public WxeUserControlParentContainer (IInternalControlMemberCaller memberCaller, string id, string savedState)
+    public ControlReplacer (IInternalControlMemberCaller memberCaller, string id, string savedState)
     {
       ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
