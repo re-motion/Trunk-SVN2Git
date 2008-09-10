@@ -66,6 +66,34 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (result, Is.EqualTo ("<e>"+  toXmlresultString + "</e>"));
     }
 
+    [Test]
+    public void ToTextXmlSequenceTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+      toTextBuilderXml.sb().e (toXmlInputString).se();
+      toTextBuilderXml.Flush ();
+      var result = stringWriter.ToString ();
+      log.It ("xml=" + result);
+      Assert.That (result, Is.EqualTo ("<e><seq><e>" + toXmlresultString + "</e></seq></e>"));
+    }
+
+
+    [Test]
+    public void ToTextXmlSvTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter);
+
+      var x = 123.456;
+      toTextBuilderXml.sb ().e(y => x).se ();
+      toTextBuilderXml.Flush ();
+      var result = stringWriter.ToString ();
+      log.It ("xml=" + result);
+      Assert.That (result, Is.EqualTo ("<e><seq><var name=\"x\"><e>123.456</e></var></seq></e>"));
+    }
+
+
     public static ToTextProvider CreateTextProvider ()
     {
       var toTextProvider = new ToTextProvider();
