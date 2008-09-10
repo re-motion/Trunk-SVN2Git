@@ -11,12 +11,11 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.Adapters;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.ExecutionEngine.Infrastructure;
