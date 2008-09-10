@@ -231,5 +231,30 @@ namespace Remotion.Web.UnitTests.Utilities
       Assert.That (_parent.ValueInControlState, Is.EqualTo ("ParentValue"));
       Assert.That (_child.ValueInControlState, Is.EqualTo ("ChildValue"));
     }
+
+    [Test]
+    public void SetCollectionReadOnly_SetReadOnly ()
+    {
+      ControlCollection controlCollection = new ControlCollection(new ControlMock());
+      Assert.That (controlCollection.IsReadOnly, Is.False);
+
+      string exceptionMessage = ControlHelper.SetCollectionReadOnly (controlCollection, "error");
+
+      Assert.That (exceptionMessage, Is.Null);
+      Assert.That (controlCollection.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    public void SetCollectionReadOnly_SetModifiable ()
+    {
+      ControlCollection controlCollection = new ControlCollection (new ControlMock ());
+      ControlHelper.SetCollectionReadOnly (controlCollection, "error");
+      Assert.That (controlCollection.IsReadOnly, Is.True);
+
+      string exceptionMessage = ControlHelper.SetCollectionReadOnly (controlCollection, null);
+
+      Assert.That (exceptionMessage, Is.EqualTo("error"));
+      Assert.That (controlCollection.IsReadOnly, Is.False);
+    }
   }
 }

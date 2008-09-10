@@ -10,22 +10,44 @@
 
 using System;
 using System.Collections;
+using System.IO;
 using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   public sealed class WxeUserControlParentContainer : Control, INamingContainer
   {
+    private readonly IInternalControlMemberCaller _memberCaller;
     private bool _isControlStateLoaded;
     private bool _isViewStateLoaded;
     private bool _requiresClearChildControlState;
     private bool _requiresClearChildViewState;
-    public object ViewStateBackup { get; set; }
 
-    public IDictionary ControlStateBackup { get; set; }
+    public WxeUserControlParentContainer (IInternalControlMemberCaller memberCaller, string id, string savedState)
+    {
+      ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
 
-    public bool HasChildState {  get  ;  set  ; }
+      _memberCaller = memberCaller;
+      ID = id;
+      if (savedState != null)
+      {
+        var formatter = new LosFormatter();
+        var state = (Pair) formatter.Deserialize (savedState);
+
+        HasChildState = true;
+        ControlStateBackup = (IDictionary) state.First;
+        ViewStateBackup = state.Second;
+      }
+    }
+
+    public object ViewStateBackup { get; private set; }
+
+    public IDictionary ControlStateBackup { get; private set; }
+
+    public bool HasChildState { get; private set; }
 
     protected override void OnInit (EventArgs e)
     {
@@ -36,7 +58,7 @@ namespace Remotion.Web.ExecutionEngine
     protected override void LoadControlState (object savedState)
     {
       _isControlStateLoaded = true;
-        
+
       if (_requiresClearChildControlState)
       {
         _requiresClearChildControlState = false;
@@ -58,17 +80,20 @@ namespace Remotion.Web.ExecutionEngine
     protected override void LoadViewState (object savedState)
     {
       _isViewStateLoaded = true;
-        
+
       if (_requiresClearChildViewState)
       {
+        Assertion.IsNull (ViewStateBackup);
         _requiresClearChildViewState = false;
 
         bool enableViewStateBackup = Controls[0].EnableViewState;
         Controls[0].EnableViewState = false;
         Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
       }
-      else if (ViewStateBackup != null)
+      
+      if (ViewStateBackup != null)
       {
+        Assertion.IsFalse (_requiresClearChildViewState);
         object viewStateBackup = ViewStateBackup;
         ViewStateBackup = null;
         bool enableViewStateBackup = Controls[0].EnableViewState;
@@ -86,6 +111,10 @@ namespace Remotion.Web.ExecutionEngine
 
     public new void ClearChildState ()
     {
+      if (ViewStateBackup != null || ControlStateBackup != null)
+      {
+        throw new InvalidOperationException ("Cannot clear child state if a state has been injected.");
+      }
       _requiresClearChildControlState = true;
       _requiresClearChildViewState = true;
     }
@@ -140,6 +169,41 @@ namespace Remotion.Web.ExecutionEngine
 
         base.AddedControl (control, index);
       }
+    }
+
+    public string SaveAllState ()
+    {
+      Pair state = new Pair (ControlHelper.SaveChildControlState (this), ControlHelper.SaveViewStateRecursive (this));
+      LosFormatter formatter = new LosFormatter();
+      StringWriter writer = new StringWriter();
+      formatter.Serialize (writer, state);
+      return writer.ToString();
+    }
+
+    public void BeginWrapControlWithParentContainer (Control control)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      if (_memberCaller.GetControlState (control) != ControlState.ChildrenInitialized)
+        throw new InvalidOperationException ("Controls can only be wrapped during OnInit phase.");
+
+      Control parent = control.Parent;
+      int index = parent.Controls.IndexOf (control);
+
+      //Mark parent collection as modifiable
+      string errorMessage = ControlHelper.SetCollectionReadOnly (parent.Controls, null);
+
+      parent.Controls.RemoveAt (index);
+      parent.Controls.AddAt (index, this);
+
+      //Mark parent collection as readonly
+      ControlHelper.SetCollectionReadOnly (parent.Controls, errorMessage);
+      _memberCaller.InitRecursive (this, parent);
+    }
+
+    public void EndWrapControlWithParentContainer (Control control)
+    {
+      Controls.Add (control);
     }
   }
 }

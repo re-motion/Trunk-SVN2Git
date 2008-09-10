@@ -338,6 +338,14 @@ namespace Remotion.Web.Utilities
       return (PageStatePersister) typeof (Page).InvokeMember ("PageStatePersister", bindingFlags, null, page, new object[0]);
     }
 
+    public static string SetCollectionReadOnly (ControlCollection collection, string exceptionMessage)
+    {
+      ArgumentUtility.CheckNotNull ("collection", collection);
+
+      const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
+      return MethodCaller.CallFunc<string> ("SetCollectionReadOnly", bindingFlags).With (collection, exceptionMessage);
+    }
+
     public static bool IsResponseTextXml (HttpContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);

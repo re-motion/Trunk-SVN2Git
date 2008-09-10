@@ -109,6 +109,9 @@
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Context\WebSafeContextMixin.cs" />
+    <Compile Include="Utilities\ControlState.cs" />
+    <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
+    <Compile Include="Utilities\InternalControlMemberCaller.cs" />
     <Compile Include="ExecutionEngine\IWxePageExecutor.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObject.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectBase.cs" />

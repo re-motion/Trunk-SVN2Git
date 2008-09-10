@@ -144,8 +144,11 @@
   <ItemGroup>
     <Compile Include="Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Context\WebSafeContextMixinTest.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\TestPageHolder.cs" />
+    <Compile Include="Utilities\InternalControlMemberCallerTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectWithVarRefTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectTest.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxeUserControlParentContainerTest.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\CommitException.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\OtherTestFunction.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\ReleaseException.cs" />

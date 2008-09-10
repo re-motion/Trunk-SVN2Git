@@ -9,17 +9,15 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Collections;
-using Remotion.Reflection;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.Utilities;
-using System.Linq;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -48,12 +46,14 @@ namespace Remotion.Web.ExecutionEngine
 
       if (_parentContainer == null)
       {
-        InitializeParentContainer();
-        WrapControlWithParentContainer();
+        string savedState = CurrentPageStep.IsReturningInnerFunction ? CurrentPageStep.UserControlState : null;
+
+        _parentContainer = new WxeUserControlParentContainer (new InternalControlMemberCaller(), ID + "_Parent", savedState);
+        _parentContainer.BeginWrapControlWithParentContainer (this);
 
         string uniqueID = _parentContainer.UniqueID + IdSeparator + ID;
         if (CurrentPageStep.UserControlID == uniqueID && !CurrentPageStep.IsReturningInnerFunction)
-          AddReplacementUserControl ();
+          AddReplacementUserControl();
         else
           CompleteInitialization();
       }
@@ -61,46 +61,6 @@ namespace Remotion.Web.ExecutionEngine
         CompleteInitialization();
 
       _isInOnInit = false;
-    }
-
-    private void InitializeParentContainer ()
-    {
-      _parentContainer = new WxeUserControlParentContainer();
-      _parentContainer.ID = ID + "_Parent";
-      string savedState = null;
-      if (CurrentPageStep.IsReturningInnerFunction)
-        savedState = CurrentPageStep.UserControlState;
-      if (savedState != null)
-      {
-        var formatter = new LosFormatter();
-        var state = (Pair) formatter.Deserialize (savedState);
-
-        _parentContainer.HasChildState = true;
-        _parentContainer.ControlStateBackup = (IDictionary) state.First;
-        _parentContainer.ViewStateBackup = state.Second;
-      }
-    }
-
-    private void WrapControlWithParentContainer ()
-    {
-      Assertion.IsNotNull (
-          _parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
-
-      Control parent = Parent;
-      int index = parent.Controls.IndexOf (this);
-
-      //Mark parent collection as writeable
-      string errorMessage =
-          MethodCaller.CallFunc<string> ("SetCollectionReadOnly", BindingFlags.Instance | BindingFlags.NonPublic).With (
-              parent.Controls, (string) null);
-      Assertion.IsNotNull (errorMessage, "The parent's collection is readonly during the initialization phase of a control");
-
-      parent.Controls.RemoveAt (index);
-      parent.Controls.AddAt (index, _parentContainer);
-
-      //Mark parent collection as readonly
-      MethodCaller.CallFunc<string> ("SetCollectionReadOnly", BindingFlags.Instance | BindingFlags.NonPublic).With (parent.Controls, errorMessage);
-      MethodCaller.CallAction ("InitRecursive", BindingFlags.Instance | BindingFlags.NonPublic).With (_parentContainer, parent);
     }
 
     private void AddReplacementUserControl ()
@@ -125,7 +85,7 @@ namespace Remotion.Web.ExecutionEngine
           _parentContainer, "The control has not been wrapped by a the parent container during initialization or control replacement.");
 
       if (Parent == null)
-        _parentContainer.Controls.Add (this);
+        _parentContainer.EndWrapControlWithParentContainer(this);
 
       Ensure();
 
@@ -187,13 +147,10 @@ namespace Remotion.Web.ExecutionEngine
       CurrentPageStep.ExecuteFunction (this, function);
     }
 
-    internal string SaveAllState ()
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public string SaveAllState ()
     {
-      Pair state = new Pair (ControlHelper.SaveChildControlState (_parentContainer), ControlHelper.SaveViewStateRecursive (_parentContainer));
-      LosFormatter formatter = new LosFormatter();
-      StringWriter writer = new StringWriter();
-      formatter.Serialize (writer, state);
-      return writer.ToString();
+      return _parentContainer.SaveAllState();
     }
 
     public WxePageStep CurrentPageStep
