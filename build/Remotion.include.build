@@ -177,6 +177,7 @@
       <include number="1589" />
       <include number="1590" />
       <include number="1592" />
+      <include number="3008" />
     </warnaserror>
 
     <mkdir dir="${build.outputdir}"/>
