@@ -19,7 +19,7 @@ namespace Remotion.Web.UnitTests.UI.Controls
   public class TestPageHolder
   {
     private readonly PageMock _page;
-    private readonly LazyInitializedNamingContainerMock _namingContainer;
+    private readonly ReplaceableControlMock _namingContainer;
     private readonly ControlInvoker _pageInvoker;
     private readonly ControlMock _parent;
     private readonly ControlMock _child;
@@ -40,7 +40,7 @@ namespace Remotion.Web.UnitTests.UI.Controls
       _otherControl.ID = "OtherControl";
       _otherNamingContainer.Controls.Add (_otherControl);
 
-      _namingContainer = new LazyInitializedNamingContainerMock();
+      _namingContainer = new ReplaceableControlMock();
       _namingContainer.ID = "NamingContainer";
       _page.Controls.Add (_namingContainer);
 
@@ -78,7 +78,7 @@ namespace Remotion.Web.UnitTests.UI.Controls
       get { return _page; }
     }
 
-    public LazyInitializedNamingContainerMock NamingContainer
+    public ReplaceableControlMock NamingContainer
     {
       get { return _namingContainer; }
     }

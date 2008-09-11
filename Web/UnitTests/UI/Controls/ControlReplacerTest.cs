@@ -418,55 +418,57 @@ namespace Remotion.Web.UnitTests.UI.Controls
     public void WrapControlWithParentContainer_ReplacesControl ()
     {
       var testPageHolder = new TestPageHolder (true);
-      ControlReplacer replacer = new ControlReplacer (_memberCallerMock, "TheContainer", null);
-      var control = new LazyInitializedNamingContainerMock();
-      _memberCallerMock.Stub (stub => stub.GetControlState (control)).Return (ControlState.ChildrenInitialized);
+      ControlReplacer replacer = new ControlReplacer (_memberCallerMock, "TheContainer");
+      var controlToReplace = new ReplaceableControlMock();
+      var controlToWrap = new ReplaceableControlMock ();
+      _memberCallerMock.Stub (stub => stub.GetControlState (controlToReplace)).Return (ControlState.ChildrenInitialized);
 
-      testPageHolder.Page.Controls.Add (control);
-      replacer.BeginWrapControlWithParentContainer (control);
-      replacer.EndWrapControlWithParentContainer (control, false);
+      testPageHolder.Page.Controls.Add (controlToReplace);
+      replacer.ReplaceAndWrap (controlToReplace, controlToWrap, false, null);
 
       _memberCallerMock.AssertWasCalled (mock => mock.InitRecursive (replacer, testPageHolder.Page));
 
       Assert.That (
-          testPageHolder.Page.Controls, Is.EqualTo (new Control[] { testPageHolder.OtherNamingContainer, testPageHolder.NamingContainer, replacer }));
-      Assert.That (replacer.Controls, Is.EqualTo (new[] { control }));
+        testPageHolder.Page.Controls, 
+        Is.EqualTo (new Control[] { testPageHolder.OtherNamingContainer, testPageHolder.NamingContainer, replacer }));
+      Assert.That (replacer.Controls, Is.EqualTo (new[] { controlToWrap }));
+      Assert.That (controlToReplace.Replacer, Is.Null);
+      Assert.That (controlToWrap.Replacer, Is.SameAs (replacer));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only be wrapped during OnInit phase.")]
     public void WrapControlWithParentContainer_ThrowsIfNotInOnInit ()
     {
-      ControlReplacer replacer = new ControlReplacer (_memberCallerMock, "TheContainer", null);
-      var control = new LazyInitializedNamingContainerMock();
+      ControlReplacer replacer = new ControlReplacer (_memberCallerMock, "TheContainer");
+      var control = new ReplaceableControlMock();
       _memberCallerMock.Stub (stub => stub.GetControlState (control)).Return (ControlState.Initialized);
 
-      replacer.BeginWrapControlWithParentContainer (control);
+      replacer.ReplaceAndWrap (control, control, false, null);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only be wrapped before they are initialized.")]
     public void WrapControlWithParentContainer_ThrowsIfAlreadyInitialized ()
     {
-      ControlReplacer replacer = new ControlReplacer (_memberCallerMock, "TheContainer", null);
-      var control = new LazyInitializedNamingContainerMock ();
+      ControlReplacer replacer = new ControlReplacer (_memberCallerMock, "TheContainer");
+      var control = new ReplaceableControlMock ();
       _memberCallerMock.Stub (stub => stub.GetControlState (control)).Return (ControlState.ChildrenInitialized);
       control.EnsureLazyInitializationContainer ();
 
-      replacer.BeginWrapControlWithParentContainer (control);
+      replacer.ReplaceAndWrap (control, control, false, null);
     }
 
-    private ControlReplacer SetupControlReplacerForIntegrationTest (LazyInitializedNamingContainerMock wrappedControl, string state, bool clearChildState)
+    private ControlReplacer SetupControlReplacerForIntegrationTest (ReplaceableControlMock wrappedControl, string state, bool clearChildState)
     {
-      ControlReplacer replacer = new ControlReplacer (new InternalControlMemberCaller(), "TheReplacer", state);
+      ControlReplacer replacer = new ControlReplacer (new InternalControlMemberCaller(), "TheReplacer");
       bool isInitialized = false;
       wrappedControl.Init += delegate
       {
         if (isInitialized)
           return;
         isInitialized = true;
-        replacer.BeginWrapControlWithParentContainer (wrappedControl);
-        replacer.EndWrapControlWithParentContainer (wrappedControl, clearChildState);
+        replacer.ReplaceAndWrap (wrappedControl, wrappedControl, clearChildState, state);
       };
 
       return replacer;

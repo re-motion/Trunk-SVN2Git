@@ -5,7 +5,7 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.UnitTests.UI.Controls
 {
-  public class LazyInitializedNamingContainerMock : ControlMock, INamingContainer, ILazyInitializedControl
+  public class ReplaceableControlMock : ControlMock, INamingContainer, IReplaceableControl
   {
     private readonly LazyInitializationContainer _lazyInitializationContainer = new LazyInitializationContainer();
 
@@ -30,5 +30,7 @@ namespace Remotion.Web.UnitTests.UI.Controls
     {
       get { return _lazyInitializationContainer.IsInitialized; }
     }
+
+    public ControlReplacer Replacer { get; set; }
   }
 }

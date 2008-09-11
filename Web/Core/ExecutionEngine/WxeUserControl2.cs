@@ -18,7 +18,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxeUserControl2 : UserControl, IWxeTemplateControl, ILazyInitializedControl
+  public class WxeUserControl2 : UserControl, IWxeTemplateControl, IReplaceableControl
   {
     private readonly WxeTemplateControlInfo _wxeInfo;
     private readonly LazyInitializationContainer _lazyContainer;
@@ -42,33 +42,22 @@ namespace Remotion.Web.ExecutionEngine
 
       if (_replacer == null)
       {
-        string savedState = CurrentPageStep.IsReturningInnerFunction ? CurrentPageStep.UserControlState : null;
+        var replacer = new ControlReplacer (new InternalControlMemberCaller (), ID + "_Parent");
 
-        _replacer = new ControlReplacer (new InternalControlMemberCaller (), ID + "_Parent", savedState);
-        _replacer.BeginWrapControlWithParentContainer (this);
+        string uniqueID = UniqueID.Insert (UniqueID.Length - ID.Length, replacer.ID + IdSeparator);
 
-        string uniqueID = _replacer.UniqueID + IdSeparator + ID;
         if (CurrentPageStep.UserControlID == uniqueID && !CurrentPageStep.IsReturningInnerFunction)
         {
-          Assertion.IsNotNull (_replacer, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
-
-          var control = (WxeUserControl2) _replacer.Page.LoadControl (CurrentUserControlStep.UserControl);
+          var control = (WxeUserControl2) Page.LoadControl (CurrentUserControlStep.UserControl);
           control.ID = ID;
-          control._replacer = _replacer;
-          _replacer = null;
 
-          Assertion.IsNotNull (control._replacer, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
-          Assertion.IsNull (control.Parent, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
-
-          control._replacer.EndWrapControlWithParentContainer (control, !CurrentUserControlStep.IsPostBack);
-
+          replacer.ReplaceAndWrap (this, control, !CurrentUserControlStep.IsPostBack, null);
         }
         else
         {
-          Assertion.IsNotNull (_replacer, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
-          Assertion.IsNull (Parent, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
-
-          _replacer.EndWrapControlWithParentContainer (this, false);
+          string savedState = CurrentPageStep.IsReturningInnerFunction ? CurrentPageStep.UserControlState : null;
+          
+          replacer.ReplaceAndWrap (this, this, false, savedState);
 
           CompleteInitialization ();
         }
@@ -166,9 +155,15 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
-    bool ILazyInitializedControl.IsInitialized
+    bool IReplaceableControl.IsInitialized
     {
       get { return _lazyContainer.IsInitialized; }
+    }
+
+    ControlReplacer IReplaceableControl.Replacer
+    {
+      get { return _replacer; }
+      set { _replacer = value; }
     }
   }
 }

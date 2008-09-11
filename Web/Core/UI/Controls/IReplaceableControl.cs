@@ -10,8 +10,9 @@
 
 namespace Remotion.Web.UI.Controls
 {
-  public interface ILazyInitializedControl
+  public interface IReplaceableControl
   {
     bool IsInitialized { get; }
+    ControlReplacer Replacer { get; set; }
   }
 }

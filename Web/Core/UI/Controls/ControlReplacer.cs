@@ -25,22 +25,13 @@ namespace Remotion.Web.UI.Controls
     private bool _requiresClearChildControlState;
     private bool _requiresClearChildViewState;
 
-    public ControlReplacer (IInternalControlMemberCaller memberCaller, string id, string savedState)
+    public ControlReplacer (IInternalControlMemberCaller memberCaller, string id)
     {
       ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
 
       _memberCaller = memberCaller;
       ID = id;
-      if (savedState != null)
-      {
-        var formatter = new LosFormatter();
-        var state = (Pair) formatter.Deserialize (savedState);
-
-        HasChildState = true;
-        ControlStateBackup = (IDictionary) state.First;
-        ViewStateBackup = state.Second;
-      }
     }
 
     public object ViewStateBackup { get; private set; }
@@ -128,19 +119,22 @@ namespace Remotion.Web.UI.Controls
       return writer.ToString();
     }
 
-    public void BeginWrapControlWithParentContainer<T> (T control)
-      where T: Control, INamingContainer, ILazyInitializedControl
+    public void ReplaceAndWrap<T> (T controlToReplace, T controlToWrap, bool clearChildState, string savedState)
+      where T: Control, INamingContainer, IReplaceableControl
     {
-      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("controlToReplace", controlToReplace);
+      ArgumentUtility.CheckNotNull ("controlToWrap", controlToWrap);
 
-      if (_memberCaller.GetControlState (control) != ControlState.ChildrenInitialized)
+      if (_memberCaller.GetControlState (controlToReplace) != ControlState.ChildrenInitialized)
         throw new InvalidOperationException ("Controls can only be wrapped during OnInit phase.");
 
-      if (control.IsInitialized)
+      if (controlToReplace.IsInitialized)
         throw new InvalidOperationException ("Controls can only be wrapped before they are initialized.");
 
-      Control parent = control.Parent;
-      int index = parent.Controls.IndexOf (control);
+      controlToWrap.Replacer = this;
+
+      Control parent = controlToReplace.Parent;
+      int index = parent.Controls.IndexOf (controlToReplace);
 
       //Mark parent collection as modifiable
       string errorMessage = ControlHelper.SetCollectionReadOnly (parent.Controls, null);
@@ -151,11 +145,17 @@ namespace Remotion.Web.UI.Controls
       //Mark parent collection as readonly
       ControlHelper.SetCollectionReadOnly (parent.Controls, errorMessage);
       _memberCaller.InitRecursive (this, parent);
-    }
 
-    public void EndWrapControlWithParentContainer<T> (T control, bool clearChildState)
-        where T: Control, INamingContainer, ILazyInitializedControl
-  {
+      if (savedState != null)
+      {
+        var formatter = new LosFormatter ();
+        var state = (Pair) formatter.Deserialize (savedState);
+
+        HasChildState = true;
+        ControlStateBackup = (IDictionary) state.First;
+        ViewStateBackup = state.Second;
+      }
+
       if (clearChildState)
       {
         if (ViewStateBackup != null || ControlStateBackup != null)
@@ -166,9 +166,9 @@ namespace Remotion.Web.UI.Controls
         _requiresClearChildViewState = true;
       }
 
-      Controls.Add (control);
+      Controls.Add (controlToWrap);
     }
- 
+
     //protected override void AddedControl (Control control, int index)
     //{
     //  if (HasChildState)
