@@ -9,11 +9,8 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Remotion.Collections;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
@@ -26,7 +23,6 @@ namespace Remotion.Web.ExecutionEngine
     private readonly WxeTemplateControlInfo _wxeInfo;
     private readonly LazyInitializationContainer _lazyContainer;
     private ControlReplacer _replacer;
-    private bool _isInitComplete;
     private bool _isInOnInit;
     private bool _executeNextStep;
 
@@ -48,47 +44,50 @@ namespace Remotion.Web.ExecutionEngine
       {
         string savedState = CurrentPageStep.IsReturningInnerFunction ? CurrentPageStep.UserControlState : null;
 
-        _replacer = new ControlReplacer (new InternalControlMemberCaller(), ID + "_Parent", savedState);
+        _replacer = new ControlReplacer (new InternalControlMemberCaller (), ID + "_Parent", savedState);
         _replacer.BeginWrapControlWithParentContainer (this);
 
         string uniqueID = _replacer.UniqueID + IdSeparator + ID;
         if (CurrentPageStep.UserControlID == uniqueID && !CurrentPageStep.IsReturningInnerFunction)
-          AddReplacementUserControl();
+        {
+          Assertion.IsNotNull (_replacer, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
+
+          var control = (WxeUserControl2) _replacer.Page.LoadControl (CurrentUserControlStep.UserControl);
+          control.ID = ID;
+          control._replacer = _replacer;
+          _replacer = null;
+
+          Assertion.IsNotNull (control._replacer, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
+          Assertion.IsNull (control.Parent, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
+
+          control._replacer.EndWrapControlWithParentContainer (control, !CurrentUserControlStep.IsPostBack);
+
+        }
         else
-          CompleteInitialization (false);
+        {
+          Assertion.IsNotNull (_replacer, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
+          Assertion.IsNull (Parent, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
+
+          _replacer.EndWrapControlWithParentContainer (this, false);
+
+          CompleteInitialization ();
+        }
       }
       else
-        CompleteInitialization (false);
+      {
+        Assertion.IsNotNull (Parent, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
+
+        CompleteInitialization ();
+      }
 
       _isInOnInit = false;
     }
 
-    private void AddReplacementUserControl ()
+    private void CompleteInitialization ()
     {
-      Assertion.IsNotNull (_replacer, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
-
-      var control = (WxeUserControl2) _replacer.Page.LoadControl (CurrentUserControlStep.UserControl);
-      control.ID = ID;
-      control._replacer = _replacer;
-      _replacer = null;
-
-      control.CompleteInitialization (!CurrentUserControlStep.IsPostBack);
-    }
-
-    private void CompleteInitialization (bool clearChildState)
-    {
-      Assertion.IsNotNull (_replacer, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
-
-      if (Parent == null)
-        _replacer.EndWrapControlWithParentContainer (this, clearChildState);
-
       _lazyContainer.Ensure(base.Controls);
 
-      if (!_isInitComplete)
-      {
-        _isInitComplete = true;
-        OnInitComplete (EventArgs.Empty);
-      }
+      OnInitComplete (EventArgs.Empty);
     }
 
     protected virtual void OnInitComplete (EventArgs e)
