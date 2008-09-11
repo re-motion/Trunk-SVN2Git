@@ -19,7 +19,7 @@ namespace Remotion.Diagnostics.ToText
 {
   public class ToTextBuilder : ToTextBuilderBase
   {
-    protected DisableableWriter _disableableWriter;
+    private readonly DisableableWriter _disableableWriter;
 
     public ToTextBuilder (ToTextProvider toTextProvider, TextWriter textWriter)
       : base (toTextProvider)
@@ -346,7 +346,7 @@ namespace Remotion.Diagnostics.ToText
     protected override IToTextBuilderBase WriteMemberRaw (string name, Object obj)
     {
       SequenceLiteralBegin ("", name + "=", "", "", "", "");
-      toTextProvider.ToText (obj, this);
+      ToTextProvider.ToText (obj, this);
       SequenceEnd ();
 
       return this;

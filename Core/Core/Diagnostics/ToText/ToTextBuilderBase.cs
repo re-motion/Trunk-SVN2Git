@@ -9,7 +9,7 @@ namespace Remotion.Diagnostics.ToText
 {
   public abstract class ToTextBuilderBase : IToTextBuilderBase
   {
-    protected ToTextProvider toTextProvider;
+    private ToTextProvider _toTextProvider;
     protected readonly Stack<SequenceStateHolder> sequenceStack = new Stack<SequenceStateHolder> (16);
     //protected DisableableWriter _disableableWriter;
     //protected bool _allowNewline = true;
@@ -27,7 +27,7 @@ namespace Remotion.Diagnostics.ToText
 
     protected ToTextBuilderBase (ToTextProvider toTextProvider)
     {
-      this.toTextProvider = toTextProvider;
+      _toTextProvider = toTextProvider;
       OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
       SequenceState = null;
       AllowNewline = true;
@@ -48,8 +48,8 @@ namespace Remotion.Diagnostics.ToText
 
     public ToTextProvider ToTextProvider
     {
-      get { return toTextProvider; }
-      set { toTextProvider = value; }
+      get { return _toTextProvider; }
+      set { _toTextProvider = value; }
     }
 
     public IToTextBuilderBase cSkeleton
@@ -378,7 +378,7 @@ namespace Remotion.Diagnostics.ToText
     public IToTextBuilderBase WriteElement (object obj)
     {
       //Assertion.IsTrue (IsInSequence);
-      toTextProvider.ToText (obj, this);
+      _toTextProvider.ToText (obj, this);
       return this;
     }
 
