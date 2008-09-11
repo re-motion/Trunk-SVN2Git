@@ -75,7 +75,7 @@ namespace Remotion.Web.UnitTests.UI.Controls
       object viewState = testPageHolder.PageInvoker.SaveViewStateRecursive();
 
       Assert.That (viewState, Is.InstanceOfType (typeof (Pair)));
-      var replacerViewState = (Pair) ((IList) ((Pair) viewState).Second)[1];
+      var replacerViewState = (Pair) ((IList) ((Pair) viewState).Second)[3];
       Assert.That (replacerViewState.First, Is.EqualTo ("value"));
       var namingContainerViewState = (Pair) ((IList) (replacerViewState).Second)[1];
       Assert.That (namingContainerViewState.First, Is.EqualTo ("NamingContainerValue"));
@@ -138,6 +138,85 @@ namespace Remotion.Web.UnitTests.UI.Controls
       Assert.That (testPageHolderWithoutState.NamingContainer.ValueInViewState, Is.Null);
       Assert.That (testPageHolderWithoutState.Parent.ValueInViewState, Is.Null);
     }
+
+
+    [Test]
+    [Ignore]
+    public void LoadViewStateRecursive_RegularPostBack_InitializedAfterLoadViewState ()
+    {
+      object viewState = CreateViewState ();
+      var testPageHolderWithoutState = new TestPageHolder (false);
+      SetupControlReplacerForIntegrationTest (testPageHolderWithoutState.NamingContainer, null, false);
+      testPageHolderWithoutState.Page.Controls.Remove (testPageHolderWithoutState.NamingContainer);
+
+      testPageHolderWithoutState.PageInvoker.InitRecursive ();
+      testPageHolderWithoutState.PageInvoker.LoadViewStateRecursive (viewState);
+
+      Assert.That (testPageHolderWithoutState.OtherControl.ValueInViewState, Is.EqualTo ("OtherValue"));
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInViewState, Is.Null);
+      Assert.That (testPageHolderWithoutState.Parent.ValueInViewState, Is.Null);
+
+      testPageHolderWithoutState.Page.Controls.Add (testPageHolderWithoutState.NamingContainer);
+
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInViewState, Is.EqualTo ("NamingContainerValue"));
+      Assert.That (testPageHolderWithoutState.Parent.ValueInViewState, Is.EqualTo ("ParentValue"));
+    }
+
+    [Test]
+    [Ignore]
+    public void LoadViewStateRecursive_ReplaceViewState_InitializedAfterLoadViewState ()
+    {
+      object originalViewState = CreateViewState ();
+
+      var testPageHolderWithChangedState = new TestPageHolder (false);
+      var replacerWithChangedState = SetupControlReplacerForIntegrationTest (testPageHolderWithChangedState.NamingContainer, null, false);
+      testPageHolderWithChangedState.PageInvoker.InitRecursive ();
+      testPageHolderWithChangedState.Parent.ValueInViewState = "NewParentValue";
+      testPageHolderWithChangedState.NamingContainer.ValueInViewState = "NewNamingContainerValue";
+      string backedUpState = replacerWithChangedState.SaveAllState ();
+
+      var testPageHolderWithoutState = new TestPageHolder (false);
+      SetupControlReplacerForIntegrationTest (testPageHolderWithoutState.NamingContainer, backedUpState, false);
+      testPageHolderWithoutState.Page.Controls.Remove (testPageHolderWithoutState.NamingContainer);
+
+      testPageHolderWithoutState.Page.SetRequestValueCollection (new NameValueCollection ());
+      testPageHolderWithoutState.PageInvoker.InitRecursive ();
+      testPageHolderWithoutState.PageInvoker.LoadViewStateRecursive (originalViewState);
+
+      Assert.That (testPageHolderWithoutState.OtherControl.ValueInViewState, Is.EqualTo ("OtherValue"));
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInViewState, Is.Null);
+      Assert.That (testPageHolderWithoutState.Parent.ValueInViewState, Is.Null);
+
+      testPageHolderWithoutState.Page.Controls.Add (testPageHolderWithoutState.NamingContainer);
+
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInViewState, Is.EqualTo ("NewNamingContainerValue"));
+      Assert.That (testPageHolderWithoutState.Parent.ValueInViewState, Is.EqualTo ("NewParentValue"));
+    }
+
+    [Test]
+    [Ignore]
+    public void LoadViewStateRecursive_ClearViewState_InitializedAfterLoadViewState ()
+    {
+      object originalViewState = CreateViewState ();
+
+      var testPageHolderWithoutState = new TestPageHolder (false);
+      SetupControlReplacerForIntegrationTest (testPageHolderWithoutState.NamingContainer, null, true);
+      testPageHolderWithoutState.Page.Controls.Remove (testPageHolderWithoutState.NamingContainer);
+
+      testPageHolderWithoutState.Page.SetRequestValueCollection (new NameValueCollection ());
+      testPageHolderWithoutState.PageInvoker.InitRecursive ();
+      testPageHolderWithoutState.PageInvoker.LoadViewStateRecursive (originalViewState);
+
+      Assert.That (testPageHolderWithoutState.OtherControl.ValueInViewState, Is.EqualTo ("OtherValue"));
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInViewState, Is.Null);
+      Assert.That (testPageHolderWithoutState.Parent.ValueInViewState, Is.Null);
+
+      testPageHolderWithoutState.Page.Controls.Add (testPageHolderWithoutState.NamingContainer);
+
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInViewState, Is.Null);
+      Assert.That (testPageHolderWithoutState.Parent.ValueInViewState, Is.Null);
+    }
+
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only load state after OnInit phase.")]
@@ -226,6 +305,87 @@ namespace Remotion.Web.UnitTests.UI.Controls
     }
 
     [Test]
+    [Ignore]
+    public void LoadControlStateRecursive_RegularPostBack_InitializedAfterLoadControlState ()
+    {
+      object controlState = CreateControlState ();
+      var testPageHolderWithoutState = new TestPageHolder (false);
+      SetupControlReplacerForIntegrationTest (testPageHolderWithoutState.NamingContainer, null, false);
+      testPageHolderWithoutState.Page.Controls.Remove (testPageHolderWithoutState.NamingContainer);
+
+      testPageHolderWithoutState.PageInvoker.InitRecursive ();
+      testPageHolderWithoutState.Page.SetPageStatePersister (
+          new HiddenFieldPageStatePersister (testPageHolderWithoutState.Page) { ControlState = controlState });
+      testPageHolderWithoutState.Page.LoadAllState ();
+
+      Assert.That (testPageHolderWithoutState.OtherControl.ValueInControlState, Is.EqualTo ("OtherValue"));
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInControlState, Is.Null);
+      Assert.That (testPageHolderWithoutState.Parent.ValueInControlState, Is.Null);
+
+      testPageHolderWithoutState.Page.Controls.Add (testPageHolderWithoutState.NamingContainer);
+
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInControlState, Is.EqualTo ("NamingContainerValue"));
+      Assert.That (testPageHolderWithoutState.Parent.ValueInControlState, Is.EqualTo ("ParentValue"));
+    }
+
+    [Test]
+    [Ignore]
+    public void LoadControlStateRecursive_ReplaceControlState_InitializedAfterLoadControlState ()
+    {
+      object originalControlState = CreateControlState ();
+
+      var testPageHolderWithChangedState = new TestPageHolder (false);
+      var replacerWithChangedState = SetupControlReplacerForIntegrationTest (testPageHolderWithChangedState.NamingContainer, null, false);
+      testPageHolderWithChangedState.PageInvoker.InitRecursive ();
+      testPageHolderWithChangedState.Parent.ValueInControlState = "NewParentValue";
+      testPageHolderWithChangedState.NamingContainer.ValueInControlState = "NewNamingContainerValue";
+      string backedUpState = replacerWithChangedState.SaveAllState ();
+
+      var testPageHolderWithoutState = new TestPageHolder (false);
+      SetupControlReplacerForIntegrationTest (testPageHolderWithoutState.NamingContainer, backedUpState, false);
+      testPageHolderWithoutState.Page.Controls.Remove (testPageHolderWithoutState.NamingContainer);
+
+      testPageHolderWithoutState.PageInvoker.InitRecursive ();
+      testPageHolderWithoutState.Page.SetPageStatePersister (
+          new HiddenFieldPageStatePersister (testPageHolderWithoutState.Page) { ControlState = originalControlState });
+      testPageHolderWithoutState.Page.LoadAllState ();
+
+      Assert.That (testPageHolderWithoutState.OtherControl.ValueInControlState, Is.EqualTo ("OtherValue"));
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInControlState, Is.Null);
+      Assert.That (testPageHolderWithoutState.Parent.ValueInControlState, Is.Null);
+
+      testPageHolderWithoutState.Page.Controls.Add (testPageHolderWithoutState.NamingContainer);
+
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInControlState, Is.EqualTo ("NewNamingContainerValue"));
+      Assert.That (testPageHolderWithoutState.Parent.ValueInControlState, Is.EqualTo ("NewParentValue"));
+    }
+
+    [Test]
+    [Ignore]
+    public void LoadControlStateRecursive_ClearControlState_InitializedAfterLoadControlState ()
+    {
+      object originalControlState = CreateControlState ();
+
+      var testPageHolderWithoutState = new TestPageHolder (false);
+      SetupControlReplacerForIntegrationTest (testPageHolderWithoutState.NamingContainer, null, true);
+      testPageHolderWithoutState.Page.Controls.Remove (testPageHolderWithoutState.NamingContainer);
+
+      testPageHolderWithoutState.PageInvoker.InitRecursive ();
+      testPageHolderWithoutState.Page.SetPageStatePersister (
+          new HiddenFieldPageStatePersister (testPageHolderWithoutState.Page) { ControlState = originalControlState });
+      testPageHolderWithoutState.Page.LoadAllState ();
+
+      Assert.That (testPageHolderWithoutState.OtherControl.ValueInControlState, Is.EqualTo ("OtherValue"));
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInControlState, Is.Null);
+      Assert.That (testPageHolderWithoutState.Parent.ValueInControlState, Is.Null);
+
+      testPageHolderWithoutState.Page.Controls.Add (testPageHolderWithoutState.NamingContainer);
+      
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInControlState, Is.Null);
+      Assert.That (testPageHolderWithoutState.Parent.ValueInControlState, Is.Null);
+    }
+
+    [Test]
     public void LoadControlStateRecursive_ClearControlState ()
     {
       object originalControlState = CreateControlState ();
@@ -269,7 +429,7 @@ namespace Remotion.Web.UnitTests.UI.Controls
       _memberCallerMock.AssertWasCalled (mock => mock.InitRecursive (replacer, testPageHolder.Page));
 
       Assert.That (
-          testPageHolder.Page.Controls, Is.EqualTo (new Control[] { testPageHolder.NamingContainer, testPageHolder.OtherNamingContainer, replacer }));
+          testPageHolder.Page.Controls, Is.EqualTo (new Control[] { testPageHolder.OtherNamingContainer, testPageHolder.NamingContainer, replacer }));
       Assert.That (replacer.Controls, Is.EqualTo (new[] { control }));
     }
 

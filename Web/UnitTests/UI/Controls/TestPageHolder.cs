@@ -32,6 +32,14 @@ namespace Remotion.Web.UnitTests.UI.Controls
       _page = new PageMock ();
       _page.SetRequestValueCollection (new NameValueCollection ());
 
+      _otherNamingContainer = new NamingContainerMock ();
+      _otherNamingContainer.ID = "OtherNamingContainer";
+      _page.Controls.Add (_otherNamingContainer);
+
+      _otherControl = new ControlMock ();
+      _otherControl.ID = "OtherControl";
+      _otherNamingContainer.Controls.Add (_otherControl);
+
       _namingContainer = new LazyInitializedNamingContainerMock();
       _namingContainer.ID = "NamingContainer";
       _page.Controls.Add (_namingContainer);
@@ -47,14 +55,6 @@ namespace Remotion.Web.UnitTests.UI.Controls
       _child2 = new Control ();
       _child2.ID = "Child2";
       _parent.Controls.Add (_child2);
-
-      _otherNamingContainer = new NamingContainerMock ();
-      _otherNamingContainer.ID = "OtherNamingContainer";
-      _page.Controls.Add (_otherNamingContainer);
-
-      _otherControl = new ControlMock ();
-      _otherControl.ID = "OtherControl";
-      _otherNamingContainer.Controls.Add (_otherControl);
 
       _pageInvoker = new ControlInvoker (_page);
 
