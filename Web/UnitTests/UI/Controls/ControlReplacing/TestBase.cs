@@ -42,7 +42,12 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 
     protected ControlReplacer SetupControlReplacerForIntegrationTest (ReplaceableControlMock wrappedControl, string state, bool clearChildState)
     {
-      ControlReplacer replacer = new ControlReplacer (new InternalControlMemberCaller(), "TheReplacer");
+      return SetupControlReplacer(new InternalControlMemberCaller(), wrappedControl, clearChildState, state);
+    }
+
+    protected ControlReplacer SetupControlReplacer (IInternalControlMemberCaller memberCaller, ReplaceableControlMock wrappedControl, bool clearChildState, string state)
+    {
+      ControlReplacer replacer = new ControlReplacer (memberCaller, "TheReplacer");
       bool isInitialized = false;
       wrappedControl.Init += delegate
       {
