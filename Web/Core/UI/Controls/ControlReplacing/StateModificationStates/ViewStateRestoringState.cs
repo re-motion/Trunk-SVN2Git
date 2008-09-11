@@ -10,8 +10,16 @@
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
 {
-  public interface IViewStateModificationState
+  public class ViewStateRestoringState:IViewStateModificationState
   {
-    void LoadViewState ();
+    public ViewStateRestoringState (ControlReplacer replacer)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public void LoadViewState ()
+    {
+      throw new System.NotImplementedException();
+    }
   }
 }

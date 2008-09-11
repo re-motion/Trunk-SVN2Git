@@ -361,7 +361,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Design\WebDesignModeHelperTest.cs" />
-    <Compile Include="Utilities\ControlHelperTest.cs" />
     <Compile Include="PairConstraint.cs" />
     <Compile Include="Utilities\UrlUtilityTest.cs">
       <SubType>Code</SubType>

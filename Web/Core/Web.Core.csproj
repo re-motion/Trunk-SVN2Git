@@ -112,6 +112,7 @@
     <Compile Include="UI\Controls\ControlReplacing\StateModificationStates\IViewStateModificationState.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateModificationStates\ViewStateClearingState.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateModificationStates\ViewStateCompletedState.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\StateModificationStates\ViewStateRestoringState.cs" />
     <Compile Include="UI\Controls\LazyInitializationContainer.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IReplaceableControl.cs" />
     <Compile Include="Utilities\ControlState.cs" />

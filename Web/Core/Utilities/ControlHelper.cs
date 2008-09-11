@@ -18,9 +18,7 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Utilities
@@ -28,6 +26,8 @@ namespace Remotion.Web.Utilities
 
   public static class ControlHelper
   {
+    private static readonly IInternalControlMemberCaller s_memberCaller = new InternalControlMemberCaller();
+
     public static string PostEventSourceID
     { get { return "__EVENTTARGET"; } }
 
@@ -216,12 +216,7 @@ namespace Remotion.Web.Utilities
     /// <param name="viewState"> The view state object used for restoring. </param>
     public static void LoadViewStateRecursive (Control target, object viewState)
     {
-      ArgumentUtility.CheckNotNull ("target", target);
-
-      //  HACK: Reflection on internal void Control.LoadViewStateRecursive (object)
-      //  internal void System.Web.UI.Control.LoadViewStateRecursive (object)
-      MethodCaller.CallAction ("LoadViewStateRecursive", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic)
-        .With (target, viewState);
+      s_memberCaller.LoadViewStateRecursive(target, viewState);
     }
 
     /// <summary> Encapsulates the invocation of <see cref="Control"/>'s SaveViewStateRecursive method. </summary>
@@ -229,121 +224,26 @@ namespace Remotion.Web.Utilities
     /// <returns> The view state object for <paramref name="target"/>. </returns>
     public static object SaveViewStateRecursive (Control target)
     {
-      ArgumentUtility.CheckNotNull ("target", target);
-
-      //  HACK: Reflection on internal object Control.SaveViewStateRecursive()
-      //  internal object System.Web.UI.Control.LoadViewStateRecursive()
-      return MethodCaller.CallFunc<object> ("SaveViewStateRecursive", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic)
-        .With (target);
+      return s_memberCaller.SaveViewStateRecursive(target);
     }
-    
+
     /// <summary>Encapsulates the invocation of <see cref="Page"/>'s SaveAllState method.</summary>
     /// <param name="page">The <see cref="Page"/> for which SaveAllState will be invoked. Must not be <see langword="null" />.</param>
     public static void SaveAllState (Page page)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
-
-      //  HACK: Reflection on protected void Page.SaveAllState()
-      //  private void System.Web.UI.Page.SaveAllState()
-      MethodCaller.CallAction ("SaveAllState", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic).With (page);
-    }
-
-    /// <summary>Encapsulates the invocation of <see cref="Control"/>'s SaveChildControlState method.</summary>
-    /// <param name="control">The <see cref="Control"/> for which SaveChildControlState will be invoked. Must not be <see langword="null" />.</param>
-    public static Dictionary<string, object> SaveChildControlState<TNamingContainer> (TNamingContainer control)
-        where TNamingContainer : Control, INamingContainer
-    {
-      ArgumentUtility.CheckNotNull ("control", control);
-
-      //  HACK: Reflection on private ControlSet Page._registeredControlsRequiringControlState
-      //  private ControlSet System.Web.UI.Page._registeredControlsRequiringControlState
-      var registeredControlsRequiringControlStateFieldInfo = typeof (Page).GetField ("_registeredControlsRequiringControlState", BindingFlags.Instance | BindingFlags.NonPublic);
-      var registeredControlsRequiringControlState = (ICollection) registeredControlsRequiringControlStateFieldInfo.GetValue (control.Page);
-      
-      Dictionary<string, object> dictionary = new Dictionary<string, object> ();
-      if (registeredControlsRequiringControlState != null)
-      {
-        foreach (Control registeredControl in registeredControlsRequiringControlState)
-        {
-          if (registeredControl.UniqueID.StartsWith (control.UniqueID) && registeredControl != control)
-          {
-            object controlState = SaveControlStateInternal (registeredControl);
-            if (controlState != null)
-              dictionary.Add (registeredControl.UniqueID, controlState);
-          }
-        }
-      }
-
-      if (dictionary.Count == 0)
-        return null;
-      return dictionary;
-    }
-
-    /// <summary>Encapsulates the invocation of <see cref="Control"/>'s SaveControlStateInternal method.</summary>
-    /// <param name="control">The <see cref="Control"/> for which SaveControlStateInternal will be invoked. Must not be <see langword="null" />.</param>
-    public static object SaveControlStateInternal (Control control)
-    {
-      //  HACK: Reflection on protected object Page.SaveControlStateInternal
-      //  protected object System.Web.UI.Page.SaveControlStateInternal
-      return MethodCaller.CallFunc<object> ("SaveControlStateInternal", BindingFlags.Instance | BindingFlags.NonPublic).With (control);
+      s_memberCaller.SaveAllState(page);
     }
 
     /// <summary>Returns the control states for all controls that are child-controls of the passed <see cref="Control"/>.</summary>
-    public static Dictionary<string, object> GetChildControlState<TNamingContainer> (TNamingContainer control)
-        where TNamingContainer : Control, INamingContainer
+    public static Dictionary<string, object> GetChildControlState<TNamingContainer> (TNamingContainer control) where TNamingContainer: Control, INamingContainer
     {
-      ArgumentUtility.CheckNotNull ("control", control);
-
-      var childControlState = new Dictionary<string, object> ();
-
-      var pageStatePersister = ControlHelper.GetPageStatePersister (control.Page);
-      var controlStates = (IDictionary) pageStatePersister.ControlState;
-
-      foreach (string key in controlStates.Keys)
-      {
-        if (key.StartsWith (control.UniqueID) && key != control.UniqueID)
-          childControlState.Add (key, controlStates[key]);
-      }
-
-      if (childControlState.Count == 0)
-        return null;
-      return childControlState;
+      return s_memberCaller.GetChildControlState(control);
     }
 
     /// <summary>Sets the control states for the child control of the passed <see cref="Control"/>.</summary>
-    public static void SetChildControlState<TNamingContainer> (TNamingContainer control, IDictionary newControlState)
-        where TNamingContainer : Control, INamingContainer
+    public static void SetChildControlState<TNamingContainer> (TNamingContainer control, IDictionary newControlState) where TNamingContainer: Control, INamingContainer
     {
-      ArgumentUtility.CheckNotNull ("control", control);
-
-      if (newControlState == null)
-        return;
-
-      var pageStatePersister = ControlHelper.GetPageStatePersister (control.Page);
-      var controlState = (IDictionary) pageStatePersister.ControlState;
-
-      foreach (string key in newControlState.Keys)
-        controlState[key] = newControlState[key];
-    }
-
-    /// <summary>Encapsulates the get-access the the <see cref="Page"/>'s PageStatePersister property.</summary>
-    public static PageStatePersister GetPageStatePersister (Page page)
-    {
-      ArgumentUtility.CheckNotNull ("target", page);
-
-      const BindingFlags bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetProperty;
-
-      //  HACK: Reflection on protected PageStatePersister Page.PageStatePersister
-      //  protected PageStatePersister System.Web.UI.Page.PageStatePersister
-      return (PageStatePersister) typeof (Page).InvokeMember ("PageStatePersister", bindingFlags, null, page, new object[0]);
-    }
-
-    public static string SetCollectionReadOnly (ControlCollection collection, string exceptionMessage)
-    {
-      ArgumentUtility.CheckNotNull ("collection", collection);
-
-      const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
-      return MethodCaller.CallFunc<string> ("SetCollectionReadOnly", bindingFlags).With (collection, exceptionMessage);
+      s_memberCaller.SetChildControlState(control, newControlState);
     }
 
     public static bool IsResponseTextXml (HttpContext context)

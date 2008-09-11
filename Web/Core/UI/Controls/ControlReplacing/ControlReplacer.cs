@@ -18,6 +18,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing
 {
+  //TODO: Refactor to use SingleChildControlCollection
   public sealed class ControlReplacer : Control, INamingContainer
   {
     private readonly IInternalControlMemberCaller _memberCaller;
@@ -42,6 +43,11 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     public bool HasChildState { get; private set; }
 
     public IViewStateModificationState State { get; set; }
+
+    public Control WrappedControl
+    {
+      get { return Controls[0]; }
+    }
 
     protected override void OnInit (EventArgs e)
     {
@@ -68,7 +74,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
         Assertion.IsFalse (_requiresClearChildControlState);
         IDictionary controlStateBackup = ControlStateBackup;
         ControlStateBackup = null;
-        ControlHelper.SetChildControlState (this, controlStateBackup);
+        _memberCaller.SetChildControlState (this, controlStateBackup);
       }
     }
 
@@ -101,7 +107,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
         ViewStateBackup = null;
         bool enableViewStateBackup = Controls[0].EnableViewState;
         Controls[0].EnableViewState = true;
-        ControlHelper.LoadViewStateRecursive (this, viewStateBackup);
+        _memberCaller.LoadViewStateRecursive (this, viewStateBackup);
         Controls[0].EnableViewState = false;
         Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
       }
@@ -115,7 +121,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
 
     public string SaveAllState ()
     {
-      Pair state = new Pair (ControlHelper.SaveChildControlState (this), ControlHelper.SaveViewStateRecursive (this));
+      Pair state = new Pair (_memberCaller.SaveChildControlState (this), _memberCaller.SaveViewStateRecursive (this));
       LosFormatter formatter = new LosFormatter();
       StringWriter writer = new StringWriter();
       formatter.Serialize (writer, state);
@@ -140,13 +146,13 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       int index = parent.Controls.IndexOf (controlToReplace);
 
       //Mark parent collection as modifiable
-      string errorMessage = ControlHelper.SetCollectionReadOnly (parent.Controls, null);
+      string errorMessage = _memberCaller.SetCollectionReadOnly (parent.Controls, null);
 
       parent.Controls.RemoveAt (index);
       parent.Controls.AddAt (index, this);
 
       //Mark parent collection as readonly
-      ControlHelper.SetCollectionReadOnly (parent.Controls, errorMessage);
+      _memberCaller.SetCollectionReadOnly (parent.Controls, errorMessage);
       _memberCaller.InitRecursive (this, parent);
 
       if (savedState != null)

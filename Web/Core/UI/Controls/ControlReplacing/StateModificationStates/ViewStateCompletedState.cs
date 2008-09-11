@@ -10,8 +10,11 @@
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
 {
-  public class ViewStateCompletedState
+  public class ViewStateCompletedState : IViewStateModificationState
   {
-    
+    public void LoadViewState ()
+    {
+      throw new System.NotImplementedException();
+    }
   }
 }

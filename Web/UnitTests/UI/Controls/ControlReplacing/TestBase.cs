@@ -40,7 +40,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
       HttpContextHelper.SetCurrent (null);
     }
 
-    protected ControlReplacer SetupControlReplacerTest (ReplaceableControlMock wrappedControl, string state, bool clearChildState)
+    protected ControlReplacer SetupControlReplacerForIntegrationTest (ReplaceableControlMock wrappedControl, string state, bool clearChildState)
     {
       ControlReplacer replacer = new ControlReplacer (new InternalControlMemberCaller(), "TheReplacer");
       bool isInitialized = false;
@@ -62,7 +62,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 
     protected object CreateViewState (TestPageHolder testPageHolder)
     {
-      SetupControlReplacerTest (testPageHolder.NamingContainer, null, false);
+      SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, null, false);
 
       testPageHolder.PageInvoker.InitRecursive();
 
@@ -76,7 +76,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 
     protected object CreateControlState (TestPageHolder testPageHolder)
     {
-      SetupControlReplacerTest (testPageHolder.NamingContainer, null, false);
+      SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, null, false);
       testPageHolder.PageInvoker.InitRecursive ();
 
       testPageHolder.Page.SaveAllState ();
