@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Runtime.Remoting.Contexts;
+using System.Xml;
 using Remotion.Diagnostics.ToText;
 
 namespace Remotion.Diagnostics
@@ -10,14 +11,32 @@ namespace Remotion.Diagnostics
   {
     [ThreadStatic]
     private static ToTextProvider _toTextProvider = new ToTextProvider (GetTypeHandlers(), GetInterfaceHandlers());
+
+    private static readonly string tempPath = System.IO.Path.GetTempPath ();
    
     private static readonly ToTextBuilder _toTextBuilderConsole = new ToTextBuilder (_toTextProvider, System.Console.Out);
     private static readonly ToTextBuilder _toTextBuilderError = new ToTextBuilder (_toTextProvider, System.Console.Error);
     //private static readonly ToTextBuilder _toTextBuilderLog = new ToTextBuilder (toTextProvider, new StreamWriter(Path.GetTempFileName()));
-    private static readonly ToTextBuilder _toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter (System.IO.Path.GetTempPath() + "\\remotion.log"));
+    private static readonly ToTextBuilder _toTextBuilderLog; // = new ToTextBuilder (_toTextProvider, new StreamWriter (System.IO.Path.GetTempPath() + "\\remotion.log"));
+    private static readonly ToTextBuilderXml _toTextBuilderLogXml; // = new ToTextBuilderXml (_toTextProvider, XmlWriter.Create new StreamWriter (System.IO.Path.GetTempPath () + "\\remotion.log.xml"));
+    private static readonly XmlWriterSettings _xmlWriterSettings;
 
     private static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap;
     private static ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceHandlerMap;
+
+
+    static To ()
+    {
+      _toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter (TempPath + "\\remotion.log"));
+      
+      _xmlWriterSettings = new XmlWriterSettings ();
+      _xmlWriterSettings.OmitXmlDeclaration = false;
+      _xmlWriterSettings.Indent = true;
+      _xmlWriterSettings.NewLineOnAttributes = false;
+
+      var xmlWriter = XmlWriter.Create (new StreamWriter (TempPath + "\\remotion.log.xml"), _xmlWriterSettings);
+      _toTextBuilderLogXml = new ToTextBuilderXml (_toTextProvider, xmlWriter);
+    }
 
     public static ToTextProvider ToTextProvider { get { return _toTextProvider; } }
 
@@ -45,6 +64,20 @@ namespace Remotion.Diagnostics
       }
     }
 
+    public static ToTextBuilderXml TempLogXml
+    {
+      // TODO: Must make sure ToTextBuilderXml.End is called. finalize ToTextBuilderXml ?
+      get
+      {
+        return _toTextBuilderLogXml;
+      }
+    }
+
+    public static string TempPath
+    {
+      get { return tempPath; }
+    }
+
     public static string Text (object obj)
     {
       return _toTextProvider.ToTextString (obj);
@@ -55,7 +88,6 @@ namespace Remotion.Diagnostics
       if (_typeHandlerMap == null)
       {
         var handlerCollector = new ToTextSpecificHandlerCollector ();
-        //_typeHandlerMap = handlerCollector.CollectHandlers<IToTextSpecificTypeHandler> ();
         _typeHandlerMap = handlerCollector.CollectTypeHandlers ();
       }
       return _typeHandlerMap;
@@ -66,7 +98,6 @@ namespace Remotion.Diagnostics
       if (_interfaceHandlerMap == null)
       {
         var handlerCollector = new ToTextSpecificHandlerCollector ();
-       // _interfaceHandlerMap = handlerCollector.CollectHandlers<IToTextSpecificInterfaceHandler> ();
         _interfaceHandlerMap = handlerCollector.CollectInterfaceHandlers();
       }
       return _interfaceHandlerMap;

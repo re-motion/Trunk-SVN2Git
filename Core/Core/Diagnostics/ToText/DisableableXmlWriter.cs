@@ -47,6 +47,15 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
+
+    public void WriteValue (char c)
+    {
+      if (Enabled)
+      {
+        _xmlWriter.WriteValue (Char.ToString(c));
+      }
+    }
+    
     public void WriteValue (object obj)
     {
       if (Enabled)

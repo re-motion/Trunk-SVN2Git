@@ -269,6 +269,20 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    [Test]
+    public void ToTextXmlCharTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+
+      toTextBuilderXml.Begin ();
+      toTextBuilderXml.e('x');
+      toTextBuilderXml.End ();
+      string result = stringWriter.ToString ();
+      log.It (result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<remotion>x</remotion>"));
+    }
+
 
 
     //[ToTextSpecificHandler]
