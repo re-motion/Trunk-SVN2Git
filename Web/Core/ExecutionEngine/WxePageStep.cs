@@ -11,26 +11,22 @@
 using System;
 using System.ComponentModel;
 using System.IO;
-using System.Reflection;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
 using PreProcessingSubFunctionState=Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute.PreProcessingSubFunctionState;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  //TODO: refactor page, pageref into page-object
-  //TODO: refactor ctors
   /// <summary> This step interrupts the server side execution to display a page to the user. </summary>
   /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Class/*' />
   [Serializable]
   public class WxePageStep : WxeStep, IExecutionStateContext
   {
     private IWxePageExecutor _pageExecutor = new WxePageExecutor();
-    private readonly string _page;
-    private readonly string _pageref;
-    private string _pageRoot;
-    private string _pageToken;
+    private readonly ResourceObjectBase _page;
+    private readonly string _pageToken;
     private string _pageState;
 
     private WxeFunction _innerFunction;
@@ -46,63 +42,29 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
     /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Ctor/param[@name="page"]' />
     public WxePageStep (string page)
-        : this (null, page)
+        : this (new ResourceObject(null, page))
     {
-    }
-
-    /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
-    /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Ctor/param[@name="page" or @name="resourceAssembly"]' />
-    protected WxePageStep (Assembly resourceAssembly, string page)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("page", page);
-
-      _page = page;
-      Initialize (resourceAssembly);
     }
 
     /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
     /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Ctor/param[@name="pageref"]' />
     public WxePageStep (WxeVariableReference pageref)
-        : this (null, pageref)
+        : this (new ResourceObjectWithVarRef (null, pageref))
     {
     }
 
-    /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
-    /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Ctor/param[@name="pageref" or @name="resourceAssembly"]' />
-    protected WxePageStep (Assembly resourceAssembly, WxeVariableReference pageref)
+    protected WxePageStep (ResourceObjectBase page)
     {
-      ArgumentUtility.CheckNotNull ("pageref", pageref);
+      ArgumentUtility.CheckNotNull ("page", page);
 
-      _pageref = pageref.Name;
-      Initialize (resourceAssembly);
-    }
-
-    /// <summary> Common initalization code for the <see cref="WxePageStep"/>. </summary>
-    /// <param name="resourceAssembly"> The (optional) <see cref="Assembly"/> containing the page. </param>
-    private void Initialize (Assembly resourceAssembly)
-    {
+      _page = page;
       _pageToken = Guid.NewGuid().ToString();
-
-      if (resourceAssembly == null)
-        _pageRoot = string.Empty;
-      else
-        _pageRoot = ResourceUrlResolver.GetAssemblyRoot (false, resourceAssembly);
-    }
+   }
 
     /// <summary> The URL of the page to be displayed by this <see cref="WxePageStep"/>. </summary>
     public string Page
     {
-      get
-      {
-        string name;
-        if (_page != null)
-          name = _page;
-        else if (_pageref != null && Variables[_pageref] != null)
-          name = (string) Variables[_pageref];
-        else
-          throw new WxeException ("No Page specified for " + GetType().FullName + ".");
-        return _pageRoot + name;
-      }
+      get { return _page.GetResourcePath (Variables); }
     }
 
     /// <summary> 

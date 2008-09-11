@@ -10,6 +10,7 @@
 
 using System;
 using System.Reflection;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -59,7 +60,7 @@ public class WxeResourcePageStep: WxePageStep
   ///   Calls the page using the assemby's resource directory.
   /// </summary>
   public WxeResourcePageStep (Assembly resourceAssembly, string pageName)
-    : base (resourceAssembly, pageName)
+    : base (new ResourceObject(resourceAssembly, pageName))
   {
   }
 
@@ -67,7 +68,7 @@ public class WxeResourcePageStep: WxePageStep
   ///   Calls the page using the assemby's resource directory.
   /// </summary>
   public WxeResourcePageStep (Assembly resourceAssembly, WxeVariableReference page)
-    : base (resourceAssembly, page)
+    : base (new ResourceObjectWithVarRef(resourceAssembly, page))
   {
   }
 }

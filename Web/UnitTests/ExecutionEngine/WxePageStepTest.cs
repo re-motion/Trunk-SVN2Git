@@ -73,6 +73,24 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     }
 
     [Test]
+    public void Initialize_WithPath ()
+    {
+      WxePageStep step = new WxePageStep ("page.aspx");
+      Assert.That (step.Page, Is.EqualTo("page.aspx"));
+    }
+
+    [Test]
+    public void Initialize_WithVariableReference ()
+    {
+      WxeFunction function = new TestFunction();
+      WxePageStep step = new WxePageStep (new WxeVariableReference("ThePage"));
+      function.Add (step);
+      function.Variables["ThePage"] = "page.aspx";
+
+      Assert.That (step.Page, Is.EqualTo ("page.aspx"));
+    }
+
+    [Test]
     public void ExecuteFunction ()
     {
       WxeContextMock.SetCurrent (_wxeContext);
