@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Diagnostics;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -15,33 +16,19 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     private readonly SortedDictionary<ClassStateTuple, AccessControlList> _classStateToAclMap = new SortedDictionary<ClassStateTuple, AccessControlList>();
 
+    public ClassStateDictionary () : this (SecurableClassDefinition.FindAll ()) { }
+
     public ClassStateDictionary (IEnumerable<SecurableClassDefinition> classes)
     {
-      _Init (classes);
-    }
+      ArgumentUtility.CheckNotNull ("classes", classes);
 
-    public ClassStateDictionary () : this(null) {}
-
-
-    /// <summary>
-    /// Initalizes the ClassStateDictionary with the access control lists (ACLs) for each 
-    /// (SecurableClassDefinition, StateCombination)-combination of the passed classes collection. 
-    /// After initialization use the GetACL-methods to retrieve
-    /// the ACL that applies to a given (SecurableClassDefinition, StateCombination)-combination.
-    /// </summary>
-    private void _Init (IEnumerable<SecurableClassDefinition> classes)
-    {
-      _classStateToAclMap.Clear ();
+      // Initalizes the ClassStateDictionary with the access control lists (ACLs) for each 
+      // (SecurableClassDefinition, StateCombination)-combination of the passed classes collection. 
+      // After initialization use the GetACL-methods to retrieve
+      // the ACL that applies to a given (SecurableClassDefinition, StateCombination)-combination.
 
       // Create an aclFinder to enable us to query for ACLs for a given (class,state)-combination
-      AccessControlListFinder aclFinder = new AccessControlListFinder();
-
-      // Retrieve all class definitions from the DB
-      //IEnumerable<SecurableClassDefinition> classes = SecurableClassDefinition.FindAll();
-      if (classes == null)
-      {
-        classes = SecurableClassDefinition.FindAll();
-      }
+      AccessControlListFinder aclFinder = new AccessControlListFinder ();
 
       // For each of the retrieved class definitions
       foreach (var secuarableClass in classes)
@@ -57,18 +44,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           // Create an AclSecurityContextHelper and initialize it with the StateDefinition|s of 
           // the current foreach StateCombination
           var aclSecurityContextHelper = new AclSecurityContextHelper (secuarableClass.Name);
-          aclSecurityContextHelper.SetStates (stateCombination.GetStates());
+          aclSecurityContextHelper.SetStates (stateCombination.GetStates ());
 
           // Retrieve the ACL for this (class,state)-combination
-          AccessControlList acl = 
-            aclFinder.Find (ClientTransactionScope.CurrentTransaction, secuarableClass, aclSecurityContextHelper);
+          AccessControlList acl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, secuarableClass, aclSecurityContextHelper);
 
           // Store the retrieved ACL in a map, indexed by (class, state-definition-list)
           _classStateToAclMap.Add (new ClassStateTuple (secuarableClass, aclSecurityContextHelper.GetStateDefinitionList ()), acl);
-        } 
+        }
       }
     }
-    
+
+
     /// <summary>
     /// ACL retrieval through ClassStateTuple-key (main funtionality of class).
     /// </summary>
@@ -77,7 +64,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public AccessControlList GetACL(ClassStateTuple classStateTuple)
     {
       ArgumentUtility.CheckNotNull ("classStateTuple", classStateTuple);
-      ArgumentUtility.CheckNotNull ("_classStateToAclMap", _classStateToAclMap);
+
       return _classStateToAclMap[classStateTuple];
     }
 
@@ -92,7 +79,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       ArgumentUtility.CheckNotNull ("class", securableClass);
       ArgumentUtility.CheckNotNull ("state", state);
-      ArgumentUtility.CheckNotNull ("_classStateToAclMap", _classStateToAclMap);
+
       return _classStateToAclMap[new ClassStateTuple(securableClass, new List<StateDefinition>(state.GetStates()))];
     }
 
