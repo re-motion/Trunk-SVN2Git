@@ -19,10 +19,7 @@ namespace Remotion.Diagnostics.ToText
 {
   public class ToTextBuilder : ToTextBuilderBase
   {
-    private readonly DisableableWriter _disableableWriter;
-
-    private bool _useMultiline = true;
-
+    protected DisableableWriter _disableableWriter;
 
     public ToTextBuilder (ToTextProvider toTextProvider, TextWriter textWriter)
       : base (toTextProvider)
@@ -49,11 +46,11 @@ namespace Remotion.Diagnostics.ToText
     //--------------------------------------------------------------------------
 
 
-    public override bool UseMultiLine
-    {
-      get { return _useMultiline; }
-      set { _useMultiline = value; }
-    }
+    //public override bool AllowNewline
+    //{
+    //  get { return _allowNewline; }
+    //  set { _allowNewline = value; }
+    //}
 
     public override bool Enabled
     {
@@ -128,7 +125,7 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteNewLine ()
     {
-      if (_useMultiline)
+      if (AllowNewline)
       {
         _disableableWriter.Write (System.Environment.NewLine);
       }

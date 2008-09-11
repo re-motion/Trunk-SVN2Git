@@ -6,8 +6,7 @@ namespace Remotion.Diagnostics.ToText
 {
   public interface IToTextBuilderBase
   {
-    //ToTextBuilderSettings Settings { get; }
-    bool UseMultiLine { get; set; }
+    bool AllowNewline { get; set; }
 
     bool Enabled { get; set; }
     bool IsInSequence { get; }

@@ -29,7 +29,7 @@ namespace Remotion.Diagnostics.ToText
       Enabled = true;
     }
 
- public bool Enabled { get; set; }
+    public bool Enabled { get; set; }
 
     public void WriteStartElement (string tag)
     {

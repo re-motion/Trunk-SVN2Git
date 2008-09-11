@@ -11,6 +11,8 @@ namespace Remotion.Diagnostics.ToText
   {
     protected ToTextProvider toTextProvider;
     protected readonly Stack<SequenceStateHolder> sequenceStack = new Stack<SequenceStateHolder> (16);
+    //protected DisableableWriter _disableableWriter;
+    //protected bool _allowNewline = true;
 
     public enum ToTextBuilderOutputComplexityLevel
     {
@@ -23,26 +25,18 @@ namespace Remotion.Diagnostics.ToText
     };
 
 
-    public ToTextBuilderBase (ToTextProvider toTextProvider)
+    protected ToTextBuilderBase (ToTextProvider toTextProvider)
     {
       this.toTextProvider = toTextProvider;
       OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
       SequenceState = null;
+      AllowNewline = true;
     }
 
 
     public SequenceStateHolder SequenceState { get; protected set; }
-    public virtual bool UseMultiLine { get; set; }
+    public bool AllowNewline { get; set; }
     public abstract bool Enabled { get; set; }
-    //public abstract IToTextBuilderBase seperator { get; }
-    //public abstract IToTextBuilderBase comma { get; }
-    //public abstract IToTextBuilderBase colon { get; }
-    //public abstract IToTextBuilderBase semicolon { get; }
-
-    //public IToTextBuilderBase seperator
-    //{
-    //  get { AppendSeperator (); return this; }
-    //}
 
 
     public ToTextBuilderOutputComplexityLevel OutputComplexity { get; protected set; }

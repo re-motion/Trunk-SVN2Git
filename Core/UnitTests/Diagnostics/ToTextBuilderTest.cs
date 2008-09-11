@@ -410,13 +410,13 @@ namespace Remotion.UnitTests.Diagnostics
     public void SinglelineMultilineTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.UseMultiLine = false;
+      toTextBuilder.AllowNewline = false;
       toTextBuilder.s ("Hello").nl().s (" world");
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("Hello world"));
 
-      toTextBuilder.UseMultiLine = true;
+      toTextBuilder.AllowNewline = true;
       toTextBuilder.s (" here comes the").nl().s ("newline");
       var result2 = toTextBuilder.CheckAndConvertToString();
       Log (result2);

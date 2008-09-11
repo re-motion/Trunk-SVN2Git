@@ -54,8 +54,11 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteNewLine ()
     {
-      _disableableWriter.WriteStartElement ("br");
-      _disableableWriter.WriteEndElement();
+      if (AllowNewline)
+      {
+        _disableableWriter.WriteStartElement ("br");
+        _disableableWriter.WriteEndElement ();
+      }
       return this;
     }
 
