@@ -284,6 +284,24 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    [Test]
+    public void ToTextXmlAllowNewlinesTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+
+      toTextBuilderXml.Begin ();
+      toTextBuilderXml.AllowNewline = false;
+      toTextBuilderXml.e ("abc").nl ().e ("defg");
+      toTextBuilderXml.AllowNewline = true;
+      toTextBuilderXml.e ("hij").nl ().e ("klm").nl().e("op");
+      toTextBuilderXml.End ();
+      string result = stringWriter.ToString ();
+      log.It (result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("abcdefghij<br />klm<br />op"));
+    }
+
+
 
     //[ToTextSpecificHandler]
     //class TestSimpleToTextBuilderXmlTestToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>
