@@ -64,11 +64,14 @@ namespace Remotion.Web.UI.Controls
 
       if (_requiresClearChildControlState)
       {
+        Assertion.IsNull (ControlStateBackup);
         _requiresClearChildControlState = false;
         ClearChildControlState();
       }
-      else if (ControlStateBackup != null)
+      
+      if (ControlStateBackup != null)
       {
+        Assertion.IsFalse (_requiresClearChildControlState);
         IDictionary controlStateBackup = ControlStateBackup;
         ControlStateBackup = null;
         ControlHelper.SetChildControlState (this, controlStateBackup);
@@ -125,16 +128,16 @@ namespace Remotion.Web.UI.Controls
       return writer.ToString();
     }
 
-    public void BeginWrapControlWithParentContainer (Control control)
+    public void BeginWrapControlWithParentContainer<T> (T control)
+      where T: Control, INamingContainer, ILazyInitializedControl
     {
-      ArgumentUtility.CheckNotNullAndType<INamingContainer> ("control", control);
-      ArgumentUtility.CheckNotNullAndType<ILazyInitializedControl> ("control", control);
+      ArgumentUtility.CheckNotNull ("control", control);
 
       if (_memberCaller.GetControlState (control) != ControlState.ChildrenInitialized)
         throw new InvalidOperationException ("Controls can only be wrapped during OnInit phase.");
 
-      if (((ILazyInitializedControl)control).IsInitialized)
-        throw new InvalidOperationException ("Controls can only be wrapped before they are initialzied.");
+      if (control.IsInitialized)
+        throw new InvalidOperationException ("Controls can only be wrapped before they are initialized.");
 
       Control parent = control.Parent;
       int index = parent.Controls.IndexOf (control);
@@ -150,8 +153,9 @@ namespace Remotion.Web.UI.Controls
       _memberCaller.InitRecursive (this, parent);
     }
 
-    public void EndWrapControlWithParentContainer (Control control, bool clearChildState)
-    {
+    public void EndWrapControlWithParentContainer<T> (T control, bool clearChildState)
+        where T: Control, INamingContainer, ILazyInitializedControl
+  {
       if (clearChildState)
       {
         if (ViewStateBackup != null || ControlStateBackup != null)

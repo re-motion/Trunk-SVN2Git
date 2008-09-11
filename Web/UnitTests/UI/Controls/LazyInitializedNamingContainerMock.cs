@@ -13,6 +13,11 @@ namespace Remotion.Web.UnitTests.UI.Controls
     {
       base.OnInit (e);
 
+      EnsureLazyInitializationContainer();
+    }
+
+    public void EnsureLazyInitializationContainer ()
+    {
       _lazyInitializationContainer.Ensure (base.Controls);
     }
 

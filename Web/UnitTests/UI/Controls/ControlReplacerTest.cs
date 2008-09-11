@@ -419,7 +419,7 @@ namespace Remotion.Web.UnitTests.UI.Controls
     {
       var testPageHolder = new TestPageHolder (true);
       ControlReplacer replacer = new ControlReplacer (_memberCallerMock, "TheContainer", null);
-      Control control = new LazyInitializedNamingContainerMock();
+      var control = new LazyInitializedNamingContainerMock();
       _memberCallerMock.Stub (stub => stub.GetControlState (control)).Return (ControlState.ChildrenInitialized);
 
       testPageHolder.Page.Controls.Add (control);
@@ -437,16 +437,26 @@ namespace Remotion.Web.UnitTests.UI.Controls
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only be wrapped during OnInit phase.")]
     public void WrapControlWithParentContainer_ThrowsIfNotInOnInit ()
     {
-      var testPageHolder = new TestPageHolder (true);
       ControlReplacer replacer = new ControlReplacer (_memberCallerMock, "TheContainer", null);
-      Control control = new LazyInitializedNamingContainerMock();
+      var control = new LazyInitializedNamingContainerMock();
       _memberCallerMock.Stub (stub => stub.GetControlState (control)).Return (ControlState.Initialized);
 
-      testPageHolder.Page.Controls.Add (control);
       replacer.BeginWrapControlWithParentContainer (control);
     }
 
-    private ControlReplacer SetupControlReplacerForIntegrationTest (Control wrappedControl, string state, bool clearChildState)
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only be wrapped before they are initialized.")]
+    public void WrapControlWithParentContainer_ThrowsIfAlreadyInitialized ()
+    {
+      ControlReplacer replacer = new ControlReplacer (_memberCallerMock, "TheContainer", null);
+      var control = new LazyInitializedNamingContainerMock ();
+      _memberCallerMock.Stub (stub => stub.GetControlState (control)).Return (ControlState.ChildrenInitialized);
+      control.EnsureLazyInitializationContainer ();
+
+      replacer.BeginWrapControlWithParentContainer (control);
+    }
+
+    private ControlReplacer SetupControlReplacerForIntegrationTest (LazyInitializedNamingContainerMock wrappedControl, string state, bool clearChildState)
     {
       ControlReplacer replacer = new ControlReplacer (new InternalControlMemberCaller(), "TheReplacer", state);
       bool isInitialized = false;
