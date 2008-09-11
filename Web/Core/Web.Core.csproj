@@ -109,8 +109,11 @@
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Context\WebSafeContextMixin.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\StateModificationStates\IViewStateModificationState.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\StateModificationStates\ViewStateClearingState.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\StateModificationStates\ViewStateCompletedState.cs" />
     <Compile Include="UI\Controls\LazyInitializationContainer.cs" />
-    <Compile Include="UI\Controls\IReplaceableControl.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\IReplaceableControl.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />
@@ -180,7 +183,7 @@
     <Compile Include="ExecutionEngine\WxeTransactedFunctionParameterEnlister.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionAlreadyReleasedException.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
-    <Compile Include="UI\Controls\ControlReplacer.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\ControlReplacer.cs" />
     <Compile Include="ExecutionEngine\WxeUserControlStep.cs" />
     <Compile Include="ExecutionEngine\WxeVariableReference.cs" />
     <Compile Include="Infrastructure\HttpContextWrapper.cs" />

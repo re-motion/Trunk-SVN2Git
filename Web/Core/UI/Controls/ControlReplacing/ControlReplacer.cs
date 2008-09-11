@@ -13,9 +13,10 @@ using System.Collections;
 using System.IO;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI.Controls
+namespace Remotion.Web.UI.Controls.ControlReplacing
 {
   public sealed class ControlReplacer : Control, INamingContainer
   {
@@ -39,6 +40,8 @@ namespace Remotion.Web.UI.Controls
     public IDictionary ControlStateBackup { get; private set; }
 
     public bool HasChildState { get; private set; }
+
+    public IViewStateModificationState State { get; set; }
 
     protected override void OnInit (EventArgs e)
     {
@@ -120,7 +123,7 @@ namespace Remotion.Web.UI.Controls
     }
 
     public void ReplaceAndWrap<T> (T controlToReplace, T controlToWrap, bool clearChildState, string savedState)
-      where T: Control, INamingContainer, IReplaceableControl
+        where T: Control, INamingContainer, IReplaceableControl
     {
       ArgumentUtility.CheckNotNull ("controlToReplace", controlToReplace);
       ArgumentUtility.CheckNotNull ("controlToWrap", controlToWrap);

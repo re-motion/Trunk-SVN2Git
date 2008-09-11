@@ -2,6 +2,7 @@
 using System.Web.UI;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.ControlReplacing;
 
 namespace Remotion.Web.UnitTests.UI.Controls
 {

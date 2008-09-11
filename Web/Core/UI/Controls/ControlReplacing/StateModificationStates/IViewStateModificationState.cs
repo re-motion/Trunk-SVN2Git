@@ -8,11 +8,10 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-namespace Remotion.Web.UI.Controls
+namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
 {
-  public interface IReplaceableControl
+  public interface IViewStateModificationState
   {
-    bool IsInitialized { get; }
-    ControlReplacer Replacer { get; set; }
+    
   }
 }

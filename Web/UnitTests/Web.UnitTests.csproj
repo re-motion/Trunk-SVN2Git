@@ -144,12 +144,15 @@
   <ItemGroup>
     <Compile Include="Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Context\WebSafeContextMixinTest.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\TestBase.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\StateModificationStates\ViewStateClearingStateTest.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\StateModificationStates\ViewStateRestoringStateTest.cs" />
     <Compile Include="UI\Controls\ReplaceableControlMock.cs" />
     <Compile Include="UI\Controls\TestPageHolder.cs" />
     <Compile Include="Utilities\InternalControlMemberCallerTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectWithVarRefTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectTest.cs" />
-    <Compile Include="UI\Controls\ControlReplacerTest.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\ControlReplacerTest.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\CommitException.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\OtherTestFunction.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\ReleaseException.cs" />

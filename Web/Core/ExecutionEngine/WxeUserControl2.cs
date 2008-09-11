@@ -14,6 +14,7 @@ using System.Web.UI;
 using Remotion.Collections;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
