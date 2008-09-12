@@ -106,7 +106,7 @@ namespace Remotion.UnitTests.Diagnostics
       var s = @"  line1
 line2   
 line3";
-      To.TempLog.s ("ToTempLogTest").sEsc (s).s (s).e (x => s).Flush ();
+      To.TempLog.s ("ToTempLogTest").sEsc (s).s (s).e (() => s).Flush ();
       Log (To.TempPath);
     }
 
@@ -118,7 +118,7 @@ line3";
       var age = 98765;
       var street = "Dampfschiffstraße 14";
       To.TempLogXml.Begin ();
-      To.TempLogXml.s ("ToTempLogXmlTest").e (x => magicNumber).e (x => age).e (x => street).Flush ();
+      To.TempLogXml.s ("ToTempLogXmlTest").e (() => magicNumber).e (() => age).e (() => street).Flush ();
       To.TempLogXml.End ();
       Log (To.TempPath);
     }

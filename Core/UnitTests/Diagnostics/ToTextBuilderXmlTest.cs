@@ -135,7 +135,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.Begin ();
 
       var x = 123.456;
-      toTextBuilderXml.sb ().e(y => x).se ();
+      toTextBuilderXml.sb ().e(() => x).se ();
       toTextBuilderXml.End ();
       var result = stringWriter.ToString ();
       log.It ("xml=" + result);
@@ -153,12 +153,12 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextProvider = toTextBuilderXml.ToTextProvider;
       toTextProvider.Settings.UseAutomaticObjectToText = true;
       //toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>((t,tb) => tb.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ());
-      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb().e ("This is a sample specifc type handler - important members listed first:").e (x => t.Int).e (x => t.Name).se ());
+      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb().e ("This is a sample specifc type handler - important members listed first:").e (() => t.Int).e (() => t.Name).se ());
 
       //var simpleTest = new ToTextProviderTest.TestSimple ();
       var simpleTest = new TestSimpleToTextBuilderXmlTest ("ToTextXmlInstanceTest", 333);
       var aNumber = 123.456;
-      toTextBuilderXml.sb ().e (y => aNumber).e("ABC").e(simpleTest).se ();
+      toTextBuilderXml.sb ().e (() => aNumber).e("ABC").e(simpleTest).se ();
       toTextBuilderXml.End ();
       var result = stringWriter.ToString ();
       log.It ("xml=" + result);
@@ -192,12 +192,12 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextProvider = toTextBuilderXml.ToTextProvider;
       toTextProvider.Settings.UseAutomaticObjectToText = true;
       //toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>((t,tb) => tb.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ());
-      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb ().e ("This is a sample specifc type handler - important members listed first:").e (x => t.Int).e (x => t.Name).se ());
+      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb ().e ("This is a sample specifc type handler - important members listed first:").e (() => t.Int).e (() => t.Name).se ());
 
       var simpleTest = new TestSimpleToTextBuilderXmlTest ("ToTextXmlInstanceTest", 333);
       int counter = 1;
-      toTextBuilderXml.sb ().e (x => counter).e (simpleTest).se ();
-      toTextBuilderXml.sb ().e (x => counter).e (simpleTest).se ();
+      toTextBuilderXml.sb ().e (() => counter).e (simpleTest).se ();
+      toTextBuilderXml.sb ().e (() => counter).e (simpleTest).se ();
       toTextBuilderXml.End ();
       string result = stringWriter.ToString ();
       log.It (result);
@@ -216,13 +216,13 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextProvider = toTextBuilderXml.ToTextProvider;
       toTextProvider.Settings.UseAutomaticObjectToText = true;
       //toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>((t,tb) => tb.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ());
-      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb ().e ("This is a sample specifc type handler - important members listed first:").e (x => t.Int).e (x => t.Name).se ());
+      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb ().e ("This is a sample specifc type handler - important members listed first:").e (() => t.Int).e (() => t.Name).se ());
 
       //var simpleTest = new ToTextProviderTest.TestSimple ();
       var simpleTest = new TestSimpleToTextBuilderXmlTest ("ToTextXmlInstanceTest", 333);
       for (int counter = 1; counter < 20; ++counter)
       {
-        toTextBuilderXml.sb ().e (x => counter).e (simpleTest).se ();
+        toTextBuilderXml.sb ().e (() => counter).e (simpleTest).se ();
         simpleTest.Int += 13;
         simpleTest.Name += ".";
       }
@@ -247,7 +247,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextProvider = toTextBuilderXml.ToTextProvider;
       toTextProvider.Settings.UseAutomaticObjectToText = true;
       //toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>((t,tb) => tb.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ());
-      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb ().e ("This is a sample specifc type handler - important members listed first:").e (x => t.Int).e (x => t.Name).e(x => t.Talk).se ());
+      toTextProvider.RegisterSpecificTypeHandler<TestSimpleToTextBuilderXmlTest> ((t, tb) => tb.sb ().e ("This is a sample specifc type handler - important members listed first:").e (() => t.Int).e (() => t.Name).e(() => t.Talk).se ());
 
       //var simpleTest = new ToTextProviderTest.TestSimple ();
       var simpleTest = new TestSimpleToTextBuilderXmlTest ("ToTextXmlInstanceTest", 333);
@@ -256,7 +256,7 @@ namespace Remotion.UnitTests.Diagnostics
       simpleTest.Talk.Participants = List.New("Markus","Fabian","Heinz","Peter");
       for (int counter = 1; counter < 5; ++counter)
       {
-        toTextBuilderXml.sb ().e (x => counter).e (simpleTest).se ();
+        toTextBuilderXml.sb ().e (() => counter).e (simpleTest).se ();
         simpleTest.Int += 13;
         simpleTest.Name += ".";
       }

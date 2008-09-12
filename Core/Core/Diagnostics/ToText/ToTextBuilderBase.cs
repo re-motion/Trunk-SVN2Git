@@ -285,7 +285,7 @@ namespace Remotion.Diagnostics.ToText
     // TODO: move up
     private static readonly ICache<GetValueFunctionKey, Func<object, object>> s_getValueFunctionCache = new InterlockedCache<GetValueFunctionKey, Func<object, object>> ();
 
-    public IToTextBuilderBase WriteElement<T> (Expression<Func<object, T>> expression)
+    public IToTextBuilderBase WriteElement<T> (Expression<Func<T>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
 
@@ -307,7 +307,7 @@ namespace Remotion.Diagnostics.ToText
             delegate 
             {
               //
-              // The following code builds the following expression:
+              // The following code builds this expression:
               // Expression<Func<object,object> = (object closure) => (object) ((TClosure) closure).<memberField>;
               //
               var param = Expression.Parameter (typeof (object), "closure");
@@ -327,7 +327,7 @@ namespace Remotion.Diagnostics.ToText
       }
 
       var variableName = RightUntilChar (expression.Body.ToString (), '.');
-      var variableValue = expression.Compile () (null);
+      var variableValue = expression.Compile () ();
       return WriteElement (variableName, variableValue);
     }
 
@@ -346,7 +346,7 @@ namespace Remotion.Diagnostics.ToText
       return WriteElement (obj);
     }
 
-    public IToTextBuilderBase e<T> (Expression<Func<object, T>> expression)
+    public IToTextBuilderBase e<T> (Expression<Func<T>> expression)
     {
       return WriteElement (expression);
     }

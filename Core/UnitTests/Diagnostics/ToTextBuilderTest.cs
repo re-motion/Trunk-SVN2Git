@@ -176,7 +176,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder ();
       var theAnswer = 42;
-      toTextBuilder.e (x => theAnswer);
+      toTextBuilder.e (() => theAnswer);
       var result = toTextBuilder.CheckAndConvertToString ();
       Assert.That (result, Is.EqualTo ("theAnswer=42"));
     }
@@ -186,7 +186,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder ();
       var myList = List.New (5, 3, 1);
-      toTextBuilder.e (x => myList);
+      toTextBuilder.e (() => myList);
       var result = toTextBuilder.CheckAndConvertToString ();
       Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
     }
