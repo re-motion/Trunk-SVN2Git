@@ -15,6 +15,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
+using Remotion.Logging;
+using System.IO;
 
 namespace Remotion.UnitTests.Diagnostics
 {
@@ -109,6 +111,34 @@ line3";
       To.TempLog.s ("ToTempLogTest").sEsc (s).s (s).e (() => s).Flush ();
       Log (To.TempPath);
     }
+
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (ToTest));
+
+//    [Test]
+//    [Ignore]
+//    public void ToTempLogTest2 ()
+//    {
+//      var s = @"  line1
+//line2   
+//line3";
+//      Log(s_log, LogLevel.Info, log => log.s ("ToTempLogTest").sEsc (s).s (s).e (() => s));
+      
+////      To.LogInfo (s_log, log => log.s ("ToTempLogTest").sEsc (s).s (s).e (() => s));
+
+      
+//    }
+
+//    public void Log (ILog log, LogLevel level, Action<ToTextBuilder> logAction)
+//    {
+//      // if (!log.Is...Enabled)
+//      //   return;
+
+//      StringWriter sw = new StringWriter ();
+//      ToTextBuilder builder = new ToTextBuilder (provider, sw);
+//      logAction (builder);
+//      string result = sw.ToString ();
+//      s_log.Log (level, result);
+//    }
 
     [Test]
     [Ignore]

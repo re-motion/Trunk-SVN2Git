@@ -291,9 +291,16 @@ namespace Remotion.Diagnostics.ToText
 
       try
       {
-        var memberExpression = (MemberExpression) expression.Body;
-        var memberField = (System.Reflection.FieldInfo) memberExpression.Member;
-        object closure = ((ConstantExpression) memberExpression.Expression).Value;
+        var memberExpression = expression.Body as MemberExpression;
+        Assertion.IsNotNull (memberExpression); // TODO: Use Check
+
+        var memberField = memberExpression.Member as FieldInfo;
+        Assertion.IsNotNull (memberField); // TODO: Use Check
+
+        var closureExpression = memberExpression.Expression as ConstantExpression;
+        Assertion.IsNotNull (closureExpression); // TODO: Use Check
+
+        object closure = closureExpression.Value;
         Assertion.DebugAssert (closure != null);
         Type closureType = closure.GetType();
 
