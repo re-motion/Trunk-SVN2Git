@@ -432,7 +432,7 @@ namespace Remotion.UnitTests.Diagnostics
 
       toTextBuilder.nl (3);
       string result = toTextBuilder.CheckAndConvertToString ();
-      var sExpected = Environment.NewLine + Environment.NewLine + Environment.NewLine;
+      string sExpected = ((Func<string, string>) (s => s + s + s)) (Environment.NewLine);
       To.Console.sEsc (result).s (",").sEsc (sExpected);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains (sExpected));
     }
