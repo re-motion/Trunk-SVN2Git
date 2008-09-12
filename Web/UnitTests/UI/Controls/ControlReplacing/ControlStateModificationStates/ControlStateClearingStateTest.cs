@@ -33,5 +33,13 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModifi
       Assert.That (replacer.ControlStateModificationState, Is.InstanceOfType (typeof (ControlStateCompletedState)));
       Assert.That (((ControlStateModificationStateBase) replacer.ControlStateModificationState).Replacer, Is.SameAs (replacer));
     }
+
+    //protected override void AddedControl (Control control, int index)
+    //{
+    //    if (_isControlStateLoaded)
+    //    {
+    //        ClearChildControlState ();
+    //    }
+    //}
   }
 }

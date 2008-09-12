@@ -23,8 +23,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
   public sealed class ControlReplacer : Control, INamingContainer
   {
     private readonly IInternalControlMemberCaller _memberCaller;
-    //private bool _isControlStateLoaded;
-    private bool _requiresClearChildControlState;
 
     public ControlReplacer (IInternalControlMemberCaller memberCaller)
     {
@@ -57,22 +55,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       if (_memberCaller.GetControlState (this) < ControlState.Initialized)
         throw new InvalidOperationException ("Controls can only load state after OnInit phase.");
 
-      //_isControlStateLoaded = true;
-
-      if (_requiresClearChildControlState)
-      {
-        Assertion.IsNull (ControlStateBackup);
-        _requiresClearChildControlState = false;
-        ClearChildControlState();
-      }
-
-      if (ControlStateBackup != null)
-      {
-        Assertion.IsFalse (_requiresClearChildControlState);
-        IDictionary controlStateBackup = ControlStateBackup;
-        ControlStateBackup = null;
-        _memberCaller.SetChildControlState (this, controlStateBackup);
-      }
+      ControlStateModificationState.LoadControlState (savedState);
     }
 
     protected override object SaveControlState ()
@@ -130,55 +113,29 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       _memberCaller.InitRecursive (this, parent);
 
       ViewStateModificationState = new ViewStateLoadingState (this);
-      //ControlStateModificationStateBase = new contr
+      ControlStateModificationState = new ControlStateLoadingState (this, _memberCaller);
 
       if (savedState != null)
       {
         var formatter = new LosFormatter();
         var state = (Pair) formatter.Deserialize (savedState);
 
-        HasChildState = true;
-        ControlStateBackup = (IDictionary) state.First;
+        ControlStateModificationState = new ControlStateReplacingState (this, _memberCaller, (IDictionary) state.First);
         ViewStateModificationState = new ViewStateReplacingState (this, _memberCaller, state.Second);
       }
 
       if (clearChildState)
       {
-        if (ControlStateBackup != null)
+        if (ControlStateModificationState is ControlStateReplacingState)
           throw new InvalidOperationException ("Cannot clear child state if a state has been injected.");
         if (ViewStateModificationState is ViewStateReplacingState)
           throw new InvalidOperationException ("Cannot clear child state if a state has been injected.");
-        _requiresClearChildControlState = true;
+        
+        ControlStateModificationState = new ControlStateClearingState (this, _memberCaller);
         ViewStateModificationState = new ViewStateClearingState (this);
       }
 
       Controls.Add (controlToWrap);
     }
-
-    //protected override void AddedControl (Control control, int index)
-    //{
-    //  if (HasChildState)
-    //  {
-    //    if (_isControlStateLoaded)
-    //    {
-    //      if (_requiresClearChildControlState)
-    //      {
-    //        _requiresClearChildControlState = false;
-    //        ClearChildControlState ();
-    //      }
-    //      IDictionary controlStateBackup = ControlStateBackup;
-    //      ControlStateBackup = null;
-    //      ControlHelper.SetChildControlState (this, controlStateBackup);
-    //    }
-
-    //    HasChildState = false;
-
-    //    base.AddedControl (control, index);
-    //  }
-    //  else
-    //  {
-    //    base.AddedControl (control, index);
-    //  }
-    //}
   }
 }

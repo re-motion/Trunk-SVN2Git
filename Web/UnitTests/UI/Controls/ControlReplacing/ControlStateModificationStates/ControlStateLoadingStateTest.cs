@@ -9,19 +9,15 @@
  */
 
 using System;
-using System.Collections.Specialized;
-using System.Web.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
-using Remotion.Web.Utilities;
-using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
   [TestFixture]
-  public class ControlStateLoadingStateTest:TestBase
+  public class ControlStateLoadingStateTest : TestBase
   {
     [Test]
     public void LoadViewState ()

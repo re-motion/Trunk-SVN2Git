@@ -49,12 +49,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
     //      object viewStateBackup = ViewStateBackup;
     //      ViewStateBackup = null;
     //      ControlHelper.LoadViewStateRecursive (this, viewStateBackup);
-    //    }
 
-    //    HasChildState = false;
-
-    //    if (_isViewStateLoaded)
-    //    {
     //      bool enableViewStateBackup = control.EnableViewState;
     //      control.EnableViewState = false;
     //      Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };

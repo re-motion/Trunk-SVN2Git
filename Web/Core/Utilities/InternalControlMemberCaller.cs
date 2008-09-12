@@ -158,7 +158,7 @@ namespace Remotion.Web.Utilities
       ArgumentUtility.CheckNotNull ("control", control);
 
       //  protected void System.Web.UI.Control.ClearChildControlState
-      MethodCaller.CallFunc<string> ("ClearChildControlState", c_bindingFlags).With (control);
+      MethodCaller.CallAction ("ClearChildControlState", c_bindingFlags).With (control);
     }
 
     /// <summary>Encapsulates the get-access the the <see cref="Page"/>'s PageStatePersister property.</summary>
