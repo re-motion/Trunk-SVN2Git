@@ -25,7 +25,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModifi
     public void LoadControlState ()
     {
       TestPageHolder testPageHolder = new TestPageHolder (false);
-      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, null, false);
+      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new LoadingStateSelectionStrategy ());
       var controlState = new Hashtable();
       ControlStateReplacingState state = new ControlStateReplacingState (replacer, MemberCallerMock, controlState);
 

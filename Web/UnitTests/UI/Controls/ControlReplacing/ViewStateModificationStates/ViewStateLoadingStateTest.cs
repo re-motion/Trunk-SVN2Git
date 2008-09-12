@@ -28,7 +28,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     {
       TestPageHolder testPageHolder = new TestPageHolder (false);
 
-      ControlReplacer replacer = SetupControlReplacer (MemberCallerMock, testPageHolder.NamingContainer, false, null);
+      ControlReplacer replacer = SetupControlReplacer (MemberCallerMock, testPageHolder.NamingContainer, new LoadingStateSelectionStrategy());
       ViewStateLoadingState state = new ViewStateLoadingState (replacer, MemberCallerMock);
 
       InternalControlMemberCaller memberCaller = new InternalControlMemberCaller ();

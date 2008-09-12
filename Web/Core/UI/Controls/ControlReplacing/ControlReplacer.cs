@@ -9,13 +9,12 @@
  */
 
 using System;
-using System.Collections;
 using System.IO;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
-using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing
 {
@@ -32,7 +31,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     }
 
     public IViewStateModificationState ViewStateModificationState { get; set; }
-  
+
     public IControlStateModificationState ControlStateModificationState { get; set; }
 
     public Control WrappedControl
@@ -81,11 +80,12 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       return writer.ToString();
     }
 
-    public void ReplaceAndWrap<T> (T controlToReplace, T controlToWrap, bool clearChildState, string savedState)
+    public void ReplaceAndWrap<T> (T controlToReplace, T controlToWrap, IModificationStateSelectionStrategy modificationStateSelectionStrategy)
         where T: Control, IReplaceableControl
     {
       ArgumentUtility.CheckNotNull ("controlToReplace", controlToReplace);
       ArgumentUtility.CheckNotNull ("controlToWrap", controlToWrap);
+      ArgumentUtility.CheckNotNull ("modificationStateSelectionStrategy", modificationStateSelectionStrategy);
 
       if (_memberCaller.GetControlState (controlToReplace) != ControlState.ChildrenInitialized)
         throw new InvalidOperationException ("Controls can only be wrapped during OnInit phase.");
@@ -108,28 +108,8 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       _memberCaller.SetCollectionReadOnly (parent.Controls, errorMessage);
       _memberCaller.InitRecursive (this, parent);
 
-      ViewStateModificationState = new ViewStateLoadingState (this, _memberCaller);
-      ControlStateModificationState = new ControlStateLoadingState (this, _memberCaller);
-
-      if (savedState != null)
-      {
-        var formatter = new LosFormatter();
-        var state = (Pair) formatter.Deserialize (savedState);
-
-        ControlStateModificationState = new ControlStateReplacingState (this, _memberCaller, (IDictionary) state.First);
-        ViewStateModificationState = new ViewStateReplacingState (this, _memberCaller, state.Second);
-      }
-
-      if (clearChildState)
-      {
-        if (ControlStateModificationState is ControlStateReplacingState)
-          throw new InvalidOperationException ("Cannot clear child state if a state has been injected.");
-        if (ViewStateModificationState is ViewStateReplacingState)
-          throw new InvalidOperationException ("Cannot clear child state if a state has been injected.");
-        
-        ControlStateModificationState = new ControlStateClearingState (this, _memberCaller);
-        ViewStateModificationState = new ViewStateClearingState (this, _memberCaller);
-      }
+      ViewStateModificationState = modificationStateSelectionStrategy.CreateViewStateModificationState (this, _memberCaller);
+      ControlStateModificationState = modificationStateSelectionStrategy.CreateControlStateModificationState (this, _memberCaller);
 
       Controls.Add (controlToWrap);
     }

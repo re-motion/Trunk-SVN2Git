@@ -53,13 +53,23 @@ namespace Remotion.Web.ExecutionEngine
           var control = (WxeUserControl2) Page.LoadControl (CurrentUserControlStep.UserControl);
           control.ID = ID;
 
-          replacer.ReplaceAndWrap (this, control, !CurrentUserControlStep.IsPostBack, null);
+          IModificationStateSelectionStrategy selectionStrategy;
+          if (!CurrentUserControlStep.IsPostBack)
+            selectionStrategy = new ClearingStateSelectionStrategy();
+          else
+            selectionStrategy = new LoadingStateSelectionStrategy();
+
+          replacer.ReplaceAndWrap (this, control, selectionStrategy);
         }
         else
         {
-          string savedState = CurrentPageStep.IsReturningInnerFunction ? CurrentPageStep.UserControlState : null;
-          
-          replacer.ReplaceAndWrap (this, this, false, savedState);
+          IModificationStateSelectionStrategy selectionStrategy;
+          if (CurrentPageStep.IsReturningInnerFunction)
+            selectionStrategy = new ReplacingStateSelectionStrategy (CurrentPageStep.UserControlState);
+          else
+            selectionStrategy = new LoadingStateSelectionStrategy();
+
+          replacer.ReplaceAndWrap (this, this, selectionStrategy);
 
           CompleteInitialization ();
         }
