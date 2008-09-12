@@ -999,7 +999,6 @@ function SmartPage_Context (
   // Event handler for the form-elements receiving the focus.
   this.OnElementFocus = function (evt)
   {
-    this.OnElementFocus (evt);
     var eventSource = GetEventSource (evt);
     if (eventSource != null)
 		  this.SetActiveElement (eventSource);
