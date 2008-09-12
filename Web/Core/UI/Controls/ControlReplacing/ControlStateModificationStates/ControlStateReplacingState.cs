@@ -23,6 +23,11 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStat
       _controlState = controlState;
     }
 
+    public IDictionary ControlState
+    {
+      get { return _controlState; }
+    }
+
     public override void LoadControlState (object savedState)
     {
       MemberCaller.SetChildControlState (Replacer, _controlState);

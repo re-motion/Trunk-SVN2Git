@@ -24,9 +24,9 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     public void CreateViewStateModificationState ()
     {
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-      IModificationStateSelectionStrategy state = new LoadingStateSelectionStrategy();
+      IModificationStateSelectionStrategy selectionStrategy = new LoadingStateSelectionStrategy();
 
-      IViewStateModificationState viewState = state.CreateViewStateModificationState (replacer, MemberCallerMock);
+      IViewStateModificationState viewState = selectionStrategy.CreateViewStateModificationState (replacer, MemberCallerMock);
 
       Assert.That (viewState, Is.InstanceOfType (typeof (ViewStateLoadingState)));
       Assert.That (((ViewStateLoadingState) viewState).Replacer, Is.SameAs (replacer));
@@ -37,9 +37,9 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     public void CreateControlStateModificationState ()
     {
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-      IModificationStateSelectionStrategy state = new LoadingStateSelectionStrategy ();
+      IModificationStateSelectionStrategy selectionStrategy = new LoadingStateSelectionStrategy ();
 
-      IControlStateModificationState viewState = state.CreateControlStateModificationState (replacer, MemberCallerMock);
+      IControlStateModificationState viewState = selectionStrategy.CreateControlStateModificationState (replacer, MemberCallerMock);
 
       Assert.That (viewState, Is.InstanceOfType (typeof (ControlStateLoadingState)));
       Assert.That (((ControlStateLoadingState) viewState).Replacer, Is.SameAs (replacer));
