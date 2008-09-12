@@ -16,12 +16,25 @@ namespace Remotion.Diagnostics.ToText
 {
   public interface IToTextBuilderBase
   {
+    /// <summary>
+    /// <para>Get/set whether the TextBuilder allows explicit emission of newlines (see <see cref="WriteNewLine()"/>, <see cref="WriteNewLine(int)"/>).</para>
+    /// </summary>
     bool AllowNewline { get; set; }
 
+    /// <summary>
+    /// <para>Get/set whether the TextBuilder writes to his underlying stream.</para>
+    /// </summary>
     bool Enabled { get; set; }
+ 
+    /// <summary>
+    /// <para>Get whether the TextBuilder is currently in a sequence; see <see cref="WriteSequenceBegin"/></para>
+    /// </summary>
     bool IsInSequence { get; }
 
-    //SequenceStateHolder SequenceState { get; protected set; }
+    /// <summary>
+    /// <para>Get The TextBuilder's current output detail level. The output detail level can be used by type/interface handlers
+    /// to </para>
+    /// </summary>
     ToTextBuilderBase.ToTextBuilderOutputComplexityLevel OutputComplexity { get; }
     ToTextProvider ToTextProvider { get; set; }
     IToTextBuilderBase cSkeleton { get; }

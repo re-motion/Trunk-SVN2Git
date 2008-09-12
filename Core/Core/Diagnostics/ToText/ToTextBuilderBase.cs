@@ -13,10 +13,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
+using Remotion.Collections;
 using Remotion.Utilities;
+using System.Reflection;
 
 namespace Remotion.Diagnostics.ToText
 {
+  using GetValueFunctionKey = Tuple<Type, FieldInfo>;
+
   public abstract class ToTextBuilderBase : IToTextBuilderBase
   {
     private ToTextProvider _toTextProvider;
@@ -278,11 +282,52 @@ namespace Remotion.Diagnostics.ToText
     //public abstract IToTextBuilderBase AppendRawChar (char c);
     //public abstract IToTextBuilderBase WriteElement (string name, Object obj);
 
+    // TODO: move up
+    private static readonly ICache<GetValueFunctionKey, Func<object, object>> s_getValueFunctionCache = new InterlockedCache<GetValueFunctionKey, Func<object, object>> ();
+
     public IToTextBuilderBase WriteElement<T> (Expression<Func<object, T>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
+
+      try
+      {
+        var memberExpression = (MemberExpression) expression.Body;
+        var memberField = (System.Reflection.FieldInfo) memberExpression.Member;
+        object closure = ((ConstantExpression) memberExpression.Expression).Value;
+        Assertion.DebugAssert (closure != null);
+        Type closureType = closure.GetType();
+
+        // memberField.GetValue (closure);
+
+        Func<object,object> getValueFunction;
+        var key = new Tuple<Type, FieldInfo> (closureType, memberField);
+        if (! s_getValueFunctionCache.TryGetValue (key, out getValueFunction))
+        {
+          getValueFunction = s_getValueFunctionCache.GetOrCreateValue (key, 
+            delegate 
+            {
+              //
+              // The following code builds the following expression:
+              // Expression<Func<object,object> = (object closure) => (object) ((TClosure) closure).<memberField>;
+              //
+              var param = Expression.Parameter (typeof (object), "closure");
+              var closureAccess = Expression.Convert (param, closureType);
+              var body = Expression.Field (closureAccess, memberField);
+              var bodyAsObject = Expression.Convert (body, typeof (object));
+              var newExpression = Expression.Lambda (bodyAsObject, param);
+              return (Func<object,object>) newExpression.Compile();
+            }
+          );
+        }
+        object value = getValueFunction (closure);
+      }
+      catch (InvalidCastException)
+      {
+        //throw ArgumentException...
+      }
+
       var variableName = RightUntilChar (expression.Body.ToString (), '.');
-      var variableValue = expression.Compile ().Invoke (null);
+      var variableValue = expression.Compile () (null);
       return WriteElement (variableName, variableValue);
     }
 
