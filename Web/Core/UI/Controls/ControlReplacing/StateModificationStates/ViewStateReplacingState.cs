@@ -8,38 +8,38 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
 {
-  public class ViewStateRestoringState:IViewStateModificationState
+  public class ViewStateReplacingState : ViewStateModificationStateBase
   {
-    private readonly ControlReplacer _replacer;
     private readonly object _viewState;
     private readonly IInternalControlMemberCaller _memberCaller;
 
-    public ViewStateRestoringState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller, object viewState)
+    public ViewStateReplacingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller, object viewState)
+        : base (replacer)
     {
-      ArgumentUtility.CheckNotNull ("replacer", replacer);
       ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
 
-      _replacer = replacer;
       _viewState = viewState;
       _memberCaller = memberCaller;
     }
 
-    public void LoadViewState ()
+    public override void LoadViewState ()
     {
-      bool enableViewStateBackup = _replacer.WrappedControl.EnableViewState;
-      _replacer.WrappedControl.EnableViewState = true;
+      bool enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
+      Replacer.WrappedControl.EnableViewState = true;
 
-      _replacer.State = new ViewStateCompletedState();
+      Replacer.State = new ViewStateLoadingState (Replacer);
 
-      _memberCaller.LoadViewStateRecursive (_replacer, _viewState);
-      
-      _replacer.WrappedControl.EnableViewState = false;
-      _replacer.WrappedControl.Load += delegate { _replacer.WrappedControl.EnableViewState = enableViewStateBackup; };
+      _memberCaller.LoadViewStateRecursive (Replacer, _viewState);
+      // Causes a nested call of LoadViewState, this time on ViewStateLoadingState.
+
+      Replacer.WrappedControl.EnableViewState = false;
+      Replacer.WrappedControl.Load += delegate { Replacer.WrappedControl.EnableViewState = enableViewStateBackup; };
     }
   }
 }

@@ -21,7 +21,7 @@ using Rhino.Mocks;
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.StateModificationStates
 {
   [TestFixture]
-  public class ViewStateRestoringStateTest : TestBase
+  public class ViewStateReplacingStateTest : TestBase
   {
     [Test]
     public void LoadViewState ()
@@ -29,7 +29,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.StateModificationS
       TestPageHolder testPageHolder = new TestPageHolder (false);
       object viewState = new object();
       ControlReplacer replacer = SetupControlReplacer (MemberCallerMock, testPageHolder.NamingContainer, false, null);
-      ViewStateRestoringState state = new ViewStateRestoringState (replacer, MemberCallerMock, viewState);
+      ViewStateReplacingState state = new ViewStateReplacingState (replacer, MemberCallerMock, viewState);
 
       InternalControlMemberCaller memberCaller = new InternalControlMemberCaller();
       MemberCallerMock.Stub (stub => stub.GetControlState (Arg<Control>.Is.Anything)).Do ((Func<Control, ControlState>) memberCaller.GetControlState).Repeat.Any();
@@ -40,7 +40,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.StateModificationS
           {
             Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
             Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
-            Assert.That (replacer.State, Is.InstanceOfType (typeof (ViewStateCompletedState)));
+            Assert.That (replacer.State, Is.InstanceOfType (typeof (ViewStateLoadingState)));
           });
       MemberCallerMock.Replay();
 
@@ -54,7 +54,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.StateModificationS
 
       MemberCallerMock.VerifyAllExpectations();
 
-      Assert.That (replacer.State, Is.InstanceOfType (typeof (ViewStateCompletedState)));
+      Assert.That (replacer.State, Is.InstanceOfType (typeof (ViewStateLoadingState)));
+      Assert.That (((ViewStateModificationStateBase) replacer.State).Replacer, Is.SameAs (replacer));
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.False);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 
