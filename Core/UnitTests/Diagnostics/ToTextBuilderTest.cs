@@ -455,7 +455,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void OutputComplexityTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.OutputComplex();
+      toTextBuilder.SetOutputComplexityToComplex();
       Assert.That (toTextBuilder.OutputComplexity, Is.EqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Complex));
     }
 
@@ -464,11 +464,11 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
-      toTextBuilder.OutputSkeleton();
+      toTextBuilder.SetOutputComplexityToSkeleton();
       toTextBuilder.WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (false));
 
-      toTextBuilder.OutputBasic();
+      toTextBuilder.SetOutputComplexityToBasic();
       toTextBuilder.WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Basic);
       Assert.That (toTextBuilder.Enabled, Is.EqualTo (true));
     }
@@ -478,7 +478,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       if (toTextBuilder == null)
         toTextBuilder = CreateTextBuilder();
-      toTextBuilder.cBasic.s ("b").cComplex.s ("c").cFull.s ("f").cMedium.s ("m").cSkeleton.s ("s");
+      toTextBuilder.writeIfBasicOrHigher.s ("b").writeIfComplexOrHigher.s ("c").writeIfFull.s ("f").writeIfMediumOrHigher.s ("m").writeIfSkeletonOrHigher.s ("s");
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       return toTextBuilder;
@@ -490,42 +490,42 @@ namespace Remotion.UnitTests.Diagnostics
     {
       {
         var toTextBuilder = CreateTextBuilder();
-        toTextBuilder.OutputDisable();
+        toTextBuilder.SetOutputComplexityToDisable();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
         Assert.That (result, Is.EqualTo (""));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
-        toTextBuilder.OutputSkeleton();
+        toTextBuilder.SetOutputComplexityToSkeleton();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
         Assert.That (result, Is.EqualTo ("s"));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
-        toTextBuilder.OutputBasic();
+        toTextBuilder.SetOutputComplexityToBasic();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
         Assert.That (result, Is.EqualTo ("bs"));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
-        toTextBuilder.OutputMedium();
+        toTextBuilder.SetOutputComplexityToMedium();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
         Assert.That (result, Is.EqualTo ("bms"));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
-        toTextBuilder.OutputComplex();
+        toTextBuilder.SetOutputComplexityToComplex();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
         Assert.That (result, Is.EqualTo ("bcms"));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
-        toTextBuilder.OutputFull();
+        toTextBuilder.SetOutputComplexityToFull();
         var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
         Assert.That (result, Is.EqualTo ("bcfms"));
       }

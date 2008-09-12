@@ -66,7 +66,7 @@ namespace Remotion.Diagnostics.ToText
       set { _toTextProvider = value; }
     }
 
-    public IToTextBuilderBase cSkeleton
+    public IToTextBuilderBase writeIfSkeletonOrHigher
     {
       get
       {
@@ -74,7 +74,7 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    public IToTextBuilderBase cBasic
+    public IToTextBuilderBase writeIfBasicOrHigher
     {
       get
       {
@@ -82,7 +82,7 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    public IToTextBuilderBase cMedium
+    public IToTextBuilderBase writeIfMediumOrHigher
     {
       get
       {
@@ -90,7 +90,7 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    public IToTextBuilderBase cComplex
+    public IToTextBuilderBase writeIfComplexOrHigher
     {
       get
       {
@@ -98,7 +98,7 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    public IToTextBuilderBase cFull
+    public IToTextBuilderBase writeIfFull
     {
       get
       {
@@ -107,12 +107,12 @@ namespace Remotion.Diagnostics.ToText
     }
 
     //public abstract IToTextBuilderBase ToTextString (string s);
-    public void OutputDisable () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Disable; }
-    public void OutputSkeleton () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Skeleton; }
-    public void OutputBasic () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic; }
-    public void OutputMedium () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Medium; }
-    public void OutputComplex () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Complex; }
-    public void OutputFull () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Full; }
+    public void SetOutputComplexityToDisable () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Disable; }
+    public void SetOutputComplexityToSkeleton () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Skeleton; }
+    public void SetOutputComplexityToBasic () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic; }
+    public void SetOutputComplexityToMedium () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Medium; }
+    public void SetOutputComplexityToComplex () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Complex; }
+    public void SetOutputComplexityToFull () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Full; }
     public abstract IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel);
     public abstract string CheckAndConvertToString ();
     protected abstract void BeforeWriteElement ();

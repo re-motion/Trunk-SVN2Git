@@ -147,12 +147,12 @@ line3";
       //var log = LogManager.GetLogger (typeof (ToTest));
       //log.Log (LogLevel.Debug, To.String.s ("ToILogTest"));
 
+      // TODO: Fix and reactivate test
+
       var iLoggerMock = MockRepository.GenerateMock<ILogger> ();
       var logMock = MockRepository.GenerateMock<Log4NetLog> (iLoggerMock);
       logMock.Log (LogLevel.Fatal, To.String.s ("ToILogTest"));
       logMock.AssertWasCalled (log => log.Log (LogLevel.Fatal, "ToILogTest"));
-
-      //Assert.That (result, Is.EqualTo ("ToStringTest"));
     }
 
 

@@ -37,20 +37,20 @@ namespace Remotion.Diagnostics.ToText
     /// </summary>
     ToTextBuilderBase.ToTextBuilderOutputComplexityLevel OutputComplexity { get; }
     ToTextProvider ToTextProvider { get; set; }
-    IToTextBuilderBase cSkeleton { get; }
-    IToTextBuilderBase cBasic { get; }
-    IToTextBuilderBase cMedium { get; }
-    IToTextBuilderBase cComplex { get; }
-    IToTextBuilderBase cFull { get; }
+    IToTextBuilderBase writeIfSkeletonOrHigher { get; }
+    IToTextBuilderBase writeIfBasicOrHigher { get; }
+    IToTextBuilderBase writeIfMediumOrHigher { get; }
+    IToTextBuilderBase writeIfComplexOrHigher { get; }
+    IToTextBuilderBase writeIfFull { get; }
     // TODO: Check if this needs to be in the interface
     IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderBase.ToTextBuilderOutputComplexityLevel complexityLevel);
 
-    void OutputDisable ();
-    void OutputSkeleton ();
-    void OutputBasic ();
-    void OutputMedium ();
-    void OutputComplex ();
-    void OutputFull ();
+    void SetOutputComplexityToDisable ();
+    void SetOutputComplexityToSkeleton ();
+    void SetOutputComplexityToBasic ();
+    void SetOutputComplexityToMedium ();
+    void SetOutputComplexityToComplex ();
+    void SetOutputComplexityToFull ();
 
 
 
