@@ -1,3 +1,13 @@
+/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ *
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the re:motion license agreement in license.txt. If you did not 
+ * receive it, please visit http://www.re-motion.org/licensing.
+ * 
+ * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ */
+
 using System;
 using System.Collections;
 using System.Linq.Expressions;
@@ -19,6 +29,7 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase cMedium { get; }
     IToTextBuilderBase cComplex { get; }
     IToTextBuilderBase cFull { get; }
+    // TODO: Check if this needs to be in the interface
     IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderBase.ToTextBuilderOutputComplexityLevel complexityLevel);
 
     void OutputDisable ();
@@ -37,10 +48,17 @@ namespace Remotion.Diagnostics.ToText
 
     void WriteRawElementBegin ();
     void WriteRawElementEnd ();
-    
+
+    IToTextBuilderBase WriteNewLine (int numberNewlines);
+    IToTextBuilderBase nl (int numberNewlines);
     IToTextBuilderBase WriteNewLine ();
     IToTextBuilderBase nl ();
 
+    /// <summary>
+    /// <para>Writes the given string to the output stream. The string is written directly to the output stream, 
+    /// without considering sequences etc.</para>
+    /// <para>Shorthand notation: <see cref="s"/></para>
+    /// </summary>
     IToTextBuilderBase WriteRawString (string s);
     IToTextBuilderBase WriteRawStringEscaped (string s);
     IToTextBuilderBase sEsc (string s);

@@ -285,6 +285,21 @@ namespace Remotion.UnitTests.Diagnostics
 
 
     [Test]
+    public void ToTextXmlMultipleNewlinesTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+      toTextBuilderXml.AllowNewline = true;
+
+      toTextBuilderXml.Begin ();
+      toTextBuilderXml.nl (3);
+      toTextBuilderXml.End ();
+      string result = stringWriter.ToString ();
+      log.It (result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<br /><br /><br />"));
+    }
+
+    [Test]
     public void ToTextXmlAllowNewlinesTest ()
     {
       var stringWriter = new StringWriter ();
@@ -294,7 +309,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilderXml.AllowNewline = false;
       toTextBuilderXml.e ("abc").nl ().e ("defg");
       toTextBuilderXml.AllowNewline = true;
-      toTextBuilderXml.e ("hij").nl ().e ("klm").nl().e("op");
+      toTextBuilderXml.e ("hij").nl ().e ("klm").nl ().e ("op");
       toTextBuilderXml.End ();
       string result = stringWriter.ToString ();
       log.It (result);

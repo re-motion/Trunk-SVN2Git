@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
+using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
@@ -421,6 +422,19 @@ namespace Remotion.UnitTests.Diagnostics
       var result2 = toTextBuilder.CheckAndConvertToString();
       Log (result2);
       Assert.That (result2, Is.EqualTo ("Hello world here comes the" + Environment.NewLine + "newline"));
+    }
+
+    [Test]
+    public void MultipleMultilineTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.AllowNewline = true;
+
+      toTextBuilder.nl (3);
+      string result = toTextBuilder.CheckAndConvertToString ();
+      var sExpected = Environment.NewLine + Environment.NewLine + Environment.NewLine;
+      To.Console.sEsc (result).s (",").sEsc (sExpected);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains (sExpected));
     }
 
     [Test]
