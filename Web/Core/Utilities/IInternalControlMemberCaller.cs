@@ -53,6 +53,10 @@ namespace Remotion.Web.Utilities
     void SetChildControlState<TNamingContainer> (TNamingContainer control, IDictionary newControlState)
         where TNamingContainer : Control, INamingContainer;
 
+    /// <summary>Sets the control states for the child control of the passed <see cref="Control"/>.</summary>
+    void ClearChildControlState<TNamingContainer> (TNamingContainer control)
+        where TNamingContainer : Control, INamingContainer;
+
     /// <summary>Encapsulates the get-access the the <see cref="Page"/>'s PageStatePersister property.</summary>
     PageStatePersister GetPageStatePersister (Page page);
 

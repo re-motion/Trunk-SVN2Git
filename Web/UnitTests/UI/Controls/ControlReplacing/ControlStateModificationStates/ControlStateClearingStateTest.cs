@@ -9,13 +9,11 @@
  */
 
 using System;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Web.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
+using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
@@ -25,22 +23,15 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModifi
     [Test]
     public void LoadControlState ()
     {
-      object originalControlState = CreateControlState();
       TestPageHolder testPageHolder = new TestPageHolder (false);
       ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, null, false);
-      ControlStateClearingState state = new ControlStateClearingState (replacer);
-      testPageHolder.Page.SetRequestValueCollection (new NameValueCollection());
-      testPageHolder.PageInvoker.InitRecursive();
-      testPageHolder.Page.SetPageStatePersister (new HiddenFieldPageStatePersister (testPageHolder.Page) { ControlState = originalControlState });
+      ControlStateClearingState state = new ControlStateClearingState (replacer, MemberCallerMock);
 
       state.LoadControlState (null);
 
+      MemberCallerMock.AssertWasCalled (mock => mock.ClearChildControlState (replacer));
       Assert.That (replacer.ControlStateModificationState, Is.InstanceOfType (typeof (ControlStateCompletedState)));
       Assert.That (((ControlStateModificationStateBase) replacer.ControlStateModificationState).Replacer, Is.SameAs (replacer));
-      IDictionary controlState = (IDictionary) testPageHolder.Page.GetPageStatePersister().ControlState;
-      Assert.That (controlState, List.Not.Contains (testPageHolder.OtherNamingContainer.UniqueID));
-      Assert.That (controlState, List.Not.Contains (testPageHolder.NamingContainer.UniqueID));
-      Assert.That (controlState, List.Not.Contains (testPageHolder.Parent.UniqueID));
     }
   }
 }

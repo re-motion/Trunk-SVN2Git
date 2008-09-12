@@ -9,19 +9,25 @@
  */
 
 using System;
+using Remotion.Utilities;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
   public class ControlStateClearingState : ControlStateModificationStateBase
   {
-    public ControlStateClearingState (ControlReplacer replacer)
+    private readonly IInternalControlMemberCaller _memberCaller;
+
+    public ControlStateClearingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
         : base (replacer)
     {
+      ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
+      _memberCaller = memberCaller;
     }
 
     public override void LoadControlState (object savedState)
     {
-      Replacer.ClearChildControlState();
+      _memberCaller.ClearChildControlState (Replacer);
 
       Replacer.ControlStateModificationState = new ControlStateCompletedState (Replacer);
     }

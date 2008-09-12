@@ -93,7 +93,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       return "value";
     }
 
-
     public string SaveAllState ()
     {
       Pair state = new Pair (_memberCaller.SaveChildControlState (this), _memberCaller.SaveViewStateRecursive (this));
@@ -101,11 +100,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       StringWriter writer = new StringWriter();
       formatter.Serialize (writer, state);
       return writer.ToString();
-    }
-
-    public new void ClearChildControlState ()
-    {
-      base.ClearChildControlState();
     }
 
     public void ReplaceAndWrap<T> (T controlToReplace, T controlToWrap, bool clearChildState, string savedState)
