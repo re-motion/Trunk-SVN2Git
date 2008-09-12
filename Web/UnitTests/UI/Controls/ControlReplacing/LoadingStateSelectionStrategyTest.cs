@@ -18,32 +18,32 @@ using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 {
   [TestFixture]
-  public class LoadingStateSelectionStrategyTest : TestBase
+  public class ClearingStateSelectionStrategyTest : TestBase
   {
     [Test]
     public void CreateViewStateModificationState ()
     {
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-      IModificationStateSelectionStrategy state = new LoadingStateSelectionStrategy();
+      IModificationStateSelectionStrategy state = new ClearingStateSelectionStrategy();
 
       IViewStateModificationState viewState = state.CreateViewStateModificationState (replacer, MemberCallerMock);
 
-      Assert.That (viewState, Is.InstanceOfType (typeof (ViewStateLoadingState)));
-      Assert.That (((ViewStateLoadingState) viewState).Replacer, Is.SameAs (replacer));
-      Assert.That (((ViewStateLoadingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
+      Assert.That (viewState, Is.InstanceOfType (typeof (ViewStateClearingState)));
+      Assert.That (((ViewStateClearingState) viewState).Replacer, Is.SameAs (replacer));
+      Assert.That (((ViewStateClearingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
     }
 
     [Test]
     public void CreateControlStateModificationState ()
     {
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-      IModificationStateSelectionStrategy state = new LoadingStateSelectionStrategy ();
+      IModificationStateSelectionStrategy state = new ClearingStateSelectionStrategy();
 
       IControlStateModificationState viewState = state.CreateControlStateModificationState (replacer, MemberCallerMock);
 
-      Assert.That (viewState, Is.InstanceOfType (typeof (ControlStateLoadingState)));
-      Assert.That (((ControlStateLoadingState) viewState).Replacer, Is.SameAs (replacer));
-      Assert.That (((ControlStateLoadingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
+      Assert.That (viewState, Is.InstanceOfType (typeof (ControlStateClearingState)));
+      Assert.That (((ControlStateClearingState) viewState).Replacer, Is.SameAs (replacer));
+      Assert.That (((ControlStateClearingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
     }
   }
 }
