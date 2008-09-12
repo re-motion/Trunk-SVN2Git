@@ -291,13 +291,16 @@ namespace Remotion.Diagnostics.ToText
 
       try
       {
-        var memberExpression = expression.Body as MemberExpression;
-        Assertion.IsNotNull (memberExpression); // TODO: Use Check
+        var memberExpression = (MemberExpression) expression.Body;
+        //var memberExpression = expression.Body as MemberExpression;
+        //Assertion.IsNotNull (memberExpression); // TODO: Use Check
 
-        var memberField = memberExpression.Member as FieldInfo;
-        Assertion.IsNotNull (memberField); // TODO: Use Check
+        var memberField = (FieldInfo) memberExpression.Member;
+        //var memberField = memberExpression.Member as FieldInfo;
+        //Assertion.IsNotNull (memberField); // TODO: Use Check
 
-        var closureExpression = memberExpression.Expression as ConstantExpression;
+        var closureExpression = (ConstantExpression) memberExpression.Expression;
+        //var closureExpression = memberExpression.Expression as ConstantExpression;
         Assertion.IsNotNull (closureExpression); // TODO: Use Check
 
         object closure = closureExpression.Value;
@@ -330,7 +333,7 @@ namespace Remotion.Diagnostics.ToText
       }
       catch (InvalidCastException)
       {
-        //throw ArgumentException...
+        throw new ArgumentException ("ToTextBuilder.WriteElement currently supports only expressions of the form () => varName. The expression: " + Environment.NewLine + expression.Body.ToString () + Environment.NewLine + " does not comply with this restriction.");
       }
 
       var variableName = RightUntilChar (expression.Body.ToString (), '.');
