@@ -214,8 +214,8 @@
   <target name="Core.Mixins.MixerTool.Console" depends="Core.Core">
     <property name="project.name" value="Core.Mixins.MixerTool.Console" />
     <property name="project.dir" value="Core/Mixins.MixerTool.Console" />
-    <property name="project.output" value="Remotion.Mixins.MixerTool.Console" />
-    <property name="project.extension" value="dll" />
+    <property name="project.output" value="TypeMixer" />
+    <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
   </target>
 
