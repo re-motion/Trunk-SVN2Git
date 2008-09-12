@@ -19,13 +19,13 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
     {
     }
 
-    public override void LoadViewState ()
+    public override void LoadViewState (object savedState)
     {
       bool enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
       Replacer.WrappedControl.EnableViewState = false;      
       Replacer.WrappedControl.Load += delegate { Replacer.WrappedControl.EnableViewState = enableViewStateBackup; };
 
-      Replacer.State = new ViewStateCompletedState(Replacer);
+      Replacer.ViewStateModificationState = new ViewStateCompletedState(Replacer);
     }
   }
 }

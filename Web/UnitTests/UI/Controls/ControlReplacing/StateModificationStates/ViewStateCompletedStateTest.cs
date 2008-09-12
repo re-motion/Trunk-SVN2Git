@@ -25,7 +25,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.StateModificationS
     {
       ViewStateCompletedState state = new ViewStateCompletedState (new ControlReplacer (MemberCallerMock, "TheReplacer"));
 
-      state.LoadViewState();
+      state.LoadViewState(null);
     }
   }
 }

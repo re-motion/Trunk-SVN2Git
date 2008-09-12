@@ -19,6 +19,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
       get { return _replacer; }
     }
 
-    public abstract void LoadViewState ();
+    public abstract void LoadViewState (object savedState);
   }
 }

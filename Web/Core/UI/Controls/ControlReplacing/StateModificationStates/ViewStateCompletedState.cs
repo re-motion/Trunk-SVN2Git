@@ -19,7 +19,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
     {
     }
 
-    public override void LoadViewState ()
+    public override void LoadViewState (object savedState)
     {
       throw new NotSupportedException();
     }

@@ -36,10 +36,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.StateModificationS
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 
-      state.LoadViewState();
+      state.LoadViewState(null);
 
-      Assert.That (replacer.State, Is.InstanceOfType (typeof (ViewStateCompletedState)));
-      Assert.That (((ViewStateModificationStateBase) replacer.State).Replacer, Is.SameAs (replacer));
+      Assert.That (replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateCompletedState)));
+      Assert.That (((ViewStateModificationStateBase) replacer.ViewStateModificationState).Replacer, Is.SameAs (replacer));
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.False);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 

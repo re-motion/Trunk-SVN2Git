@@ -12,6 +12,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
 {
   public interface IViewStateModificationState
   {
-    void LoadViewState ();
+    void LoadViewState (object savedState);
   }
 }

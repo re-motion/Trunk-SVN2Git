@@ -28,12 +28,12 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
       _memberCaller = memberCaller;
     }
 
-    public override void LoadViewState ()
+    public override void LoadViewState (object savedState)
     {
       bool enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
       Replacer.WrappedControl.EnableViewState = true;
 
-      Replacer.State = new ViewStateLoadingState (Replacer);
+      Replacer.ViewStateModificationState = new ViewStateLoadingState (Replacer);
 
       _memberCaller.LoadViewStateRecursive (Replacer, _viewState);
       // Causes a nested call of LoadViewState, this time on ViewStateLoadingState.

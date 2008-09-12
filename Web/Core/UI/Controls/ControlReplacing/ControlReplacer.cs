@@ -23,9 +23,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
   {
     private readonly IInternalControlMemberCaller _memberCaller;
     //private bool _isControlStateLoaded;
-    //private bool _isViewStateLoaded;
     private bool _requiresClearChildControlState;
-    private bool _requiresClearChildViewState;
 
     public ControlReplacer (IInternalControlMemberCaller memberCaller, string id)
     {
@@ -42,7 +40,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
 
     public bool HasChildState { get; private set; }
 
-    public IViewStateModificationState State { get; set; }
+    public IViewStateModificationState ViewStateModificationState { get; set; }
 
     public Control WrappedControl
     {
@@ -68,7 +66,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
         _requiresClearChildControlState = false;
         ClearChildControlState();
       }
-      
+
       if (ControlStateBackup != null)
       {
         Assertion.IsFalse (_requiresClearChildControlState);
@@ -88,29 +86,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       if (_memberCaller.GetControlState (this) < ControlState.Initialized)
         throw new InvalidOperationException ("Controls can only load state after OnInit phase.");
 
-      //_isViewStateLoaded = true;
-
-      if (_requiresClearChildViewState)
-      {
-        Assertion.IsNull (ViewStateBackup);
-        _requiresClearChildViewState = false;
-
-        bool enableViewStateBackup = Controls[0].EnableViewState;
-        Controls[0].EnableViewState = false;
-        Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
-      }
-      
-      if (ViewStateBackup != null)
-      {
-        Assertion.IsFalse (_requiresClearChildViewState);
-        object viewStateBackup = ViewStateBackup;
-        ViewStateBackup = null;
-        bool enableViewStateBackup = Controls[0].EnableViewState;
-        Controls[0].EnableViewState = true;
-        _memberCaller.LoadViewStateRecursive (this, viewStateBackup);
-        Controls[0].EnableViewState = false;
-        Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
-      }
+      ViewStateModificationState.LoadViewState (savedState);
     }
 
     protected override object SaveViewState ()
@@ -155,24 +131,26 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       _memberCaller.SetCollectionReadOnly (parent.Controls, errorMessage);
       _memberCaller.InitRecursive (this, parent);
 
+      ViewStateModificationState = new ViewStateLoadingState (this);
+
       if (savedState != null)
       {
-        var formatter = new LosFormatter ();
+        var formatter = new LosFormatter();
         var state = (Pair) formatter.Deserialize (savedState);
 
         HasChildState = true;
         ControlStateBackup = (IDictionary) state.First;
-        ViewStateBackup = state.Second;
+        ViewStateModificationState = new ViewStateReplacingState (this, _memberCaller, state.Second);
       }
 
       if (clearChildState)
       {
-        if (ViewStateBackup != null || ControlStateBackup != null)
-        {
+        if (ControlStateBackup != null)
           throw new InvalidOperationException ("Cannot clear child state if a state has been injected.");
-        }
+        if (ViewStateModificationState is ViewStateReplacingState)
+          throw new InvalidOperationException ("Cannot clear child state if a state has been injected.");
         _requiresClearChildControlState = true;
-        _requiresClearChildViewState = true;
+        ViewStateModificationState = new ViewStateClearingState (this);
       }
 
       Controls.Add (controlToWrap);

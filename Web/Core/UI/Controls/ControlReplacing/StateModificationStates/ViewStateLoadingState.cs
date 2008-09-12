@@ -17,9 +17,9 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
     {
     }
 
-    public override void LoadViewState ()
+    public override void LoadViewState (object savedState)
     {
-      Replacer.State = new ViewStateCompletedState (Replacer);
+      Replacer.ViewStateModificationState = new ViewStateCompletedState (Replacer);
     }
   }
 }

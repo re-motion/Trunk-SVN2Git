@@ -40,7 +40,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.StateModificationS
           {
             Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
             Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
-            Assert.That (replacer.State, Is.InstanceOfType (typeof (ViewStateLoadingState)));
+            Assert.That (replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateLoadingState)));
           });
       MemberCallerMock.Replay();
 
@@ -50,12 +50,12 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.StateModificationS
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 
-      state.LoadViewState();
+      state.LoadViewState(null);
 
       MemberCallerMock.VerifyAllExpectations();
 
-      Assert.That (replacer.State, Is.InstanceOfType (typeof (ViewStateLoadingState)));
-      Assert.That (((ViewStateModificationStateBase) replacer.State).Replacer, Is.SameAs (replacer));
+      Assert.That (replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateLoadingState)));
+      Assert.That (((ViewStateModificationStateBase) replacer.ViewStateModificationState).Replacer, Is.SameAs (replacer));
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.False);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 
