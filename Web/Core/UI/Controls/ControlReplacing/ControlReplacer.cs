@@ -25,16 +25,12 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     //private bool _isControlStateLoaded;
     private bool _requiresClearChildControlState;
 
-    public ControlReplacer (IInternalControlMemberCaller memberCaller, string id)
+    public ControlReplacer (IInternalControlMemberCaller memberCaller)
     {
       ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
-      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
 
       _memberCaller = memberCaller;
-      ID = id;
     }
-
-    public object ViewStateBackup { get; private set; }
 
     public IDictionary ControlStateBackup { get; private set; }
 
@@ -172,38 +168,12 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     //      ControlHelper.SetChildControlState (this, controlStateBackup);
     //    }
 
-    //    if (_isViewStateLoaded)
-    //    {
-    //      if (_requiresClearChildViewState)
-    //      {
-    //        _requiresClearChildViewState = false;
-    //        ClearChildViewState ();
-    //      }
-    //      object viewStateBackup = ViewStateBackup;
-    //      ViewStateBackup = null;
-    //      ControlHelper.LoadViewStateRecursive (this, viewStateBackup);
-    //    }
-
     //    HasChildState = false;
-
-    //    if (_isViewStateLoaded)
-    //    {
-    //      bool enableViewStateBackup = control.EnableViewState;
-    //      control.EnableViewState = false;
-    //      Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
-    //    }
 
     //    base.AddedControl (control, index);
     //  }
     //  else
     //  {
-    //    if (_isViewStateLoaded && _requiresClearChildViewState)
-    //    {
-    //      bool enableViewStateBackup = control.EnableViewState;
-    //      control.EnableViewState = false;
-    //      Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
-    //    }
-
     //    base.AddedControl (control, index);
     //  }
     //}

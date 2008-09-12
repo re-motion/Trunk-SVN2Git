@@ -395,7 +395,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     public void WrapControlWithParentContainer_ReplacesControl ()
     {
       var testPageHolder = new TestPageHolder (true);
-      ControlReplacer replacer = new ControlReplacer (MemberCallerMock, "TheContainer");
+      ControlReplacer replacer = new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" };
       var controlToReplace = new ReplaceableControlMock();
       var controlToWrap = new ReplaceableControlMock ();
       MemberCallerMock.Stub (stub => stub.GetControlState (controlToReplace)).Return (ControlState.ChildrenInitialized);
@@ -427,7 +427,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only be wrapped during OnInit phase.")]
     public void WrapControlWithParentContainer_ThrowsIfNotInOnInit ()
     {
-      ControlReplacer replacer = new ControlReplacer (MemberCallerMock, "TheContainer");
+      ControlReplacer replacer = new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" };
       var control = new ReplaceableControlMock();
       MemberCallerMock.Stub (stub => stub.GetControlState (control)).Return (ControlState.Initialized);
 
@@ -438,7 +438,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only be wrapped before they are initialized.")]
     public void WrapControlWithParentContainer_ThrowsIfAlreadyInitialized ()
     {
-      ControlReplacer replacer = new ControlReplacer (MemberCallerMock, "TheContainer");
+      ControlReplacer replacer = new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" };
       var control = new ReplaceableControlMock ();
       MemberCallerMock.Stub (stub => stub.GetControlState (control)).Return (ControlState.ChildrenInitialized);
       control.EnsureLazyInitializationContainer ();

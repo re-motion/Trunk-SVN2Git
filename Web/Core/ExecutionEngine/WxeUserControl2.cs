@@ -43,7 +43,8 @@ namespace Remotion.Web.ExecutionEngine
 
       if (_replacer == null)
       {
-        var replacer = new ControlReplacer (new InternalControlMemberCaller (), ID + "_Parent");
+        var replacer = new ControlReplacer (new InternalControlMemberCaller ());
+        replacer.ID = ID + "_Parent";
 
         string uniqueID = UniqueID.Insert (UniqueID.Length - ID.Length, replacer.ID + IdSeparator);
 

@@ -27,5 +27,17 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 
       Replacer.ViewStateModificationState = new ViewStateCompletedState(Replacer);
     }
+
+    //protected override void AddedControl (Control control, int index)
+    //{
+    //    if (_isViewStateLoaded && _requiresClearChildViewState)
+    //    {
+    //      bool enableViewStateBackup = control.EnableViewState;
+    //      control.EnableViewState = false;
+    //      Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
+    //    }
+
+    //    base.AddedControl (control, index);
+    //}
   }
 }
