@@ -15,6 +15,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
+using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing
 {
@@ -37,6 +38,8 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     public bool HasChildState { get; private set; }
 
     public IViewStateModificationState ViewStateModificationState { get; set; }
+  
+    public IControlStateModificationState ControlStateModificationState { get; set; }
 
     public Control WrappedControl
     {
@@ -98,6 +101,11 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       StringWriter writer = new StringWriter();
       formatter.Serialize (writer, state);
       return writer.ToString();
+    }
+
+    public new void ClearChildControlState ()
+    {
+      base.ClearChildControlState();
     }
 
     public void ReplaceAndWrap<T> (T controlToReplace, T controlToWrap, bool clearChildState, string savedState)
