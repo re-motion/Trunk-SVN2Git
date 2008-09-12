@@ -11,12 +11,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using log4net.Core;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
 using Remotion.Logging;
 using System.IO;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Diagnostics
 {
@@ -90,12 +92,14 @@ namespace Remotion.UnitTests.Diagnostics
 
 
     [Test]
+    [Ignore]
     public void ToConsoleTest ()
     {
       To.Console.s ("ToConsoleTest");
     }
 
     [Test]
+    [Ignore]
     public void ToErrorTest ()
     {
       To.Error.s ("ToErrorTest");
@@ -112,7 +116,47 @@ line3";
       Log (To.TempPath);
     }
 
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (ToTest));
+
+
+
+    //[Test]
+    //public void ToStreamTest ()
+    //{
+    //  var stringWriter = new StringWriter();
+    //  To.Stream (stringWriter).s ("ToStreamTest");
+    //  var result = stringWriter.ToString();
+    //  Assert.That (result, Is.EqualTo ("ToStreamTest"));
+    //}
+
+
+    [Test]
+    public void ToStringTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toStringToTextBuilder = To.String.s ("ToStringTest");
+      var result = toStringToTextBuilder.CheckAndConvertToString();
+      Assert.That (result, Is.EqualTo ("ToStringTest"));
+    }
+
+    //private static readonly ILog s_log = LogManager.GetLogger (typeof (ToTest));
+
+    [Test]
+    [Ignore]
+    public void ToILogTest ()
+    {
+      //var log = LogManager.GetLogger (typeof (ToTest));
+      //log.Log (LogLevel.Debug, To.String.s ("ToILogTest"));
+
+      var iLoggerMock = MockRepository.GenerateMock<ILogger> ();
+      var logMock = MockRepository.GenerateMock<Log4NetLog> (iLoggerMock);
+      logMock.Log (LogLevel.Fatal, To.String.s ("ToILogTest"));
+      logMock.AssertWasCalled (log => log.Log (LogLevel.Fatal, "ToILogTest"));
+
+      //Assert.That (result, Is.EqualTo ("ToStringTest"));
+    }
+
+
+   
 
 //    [Test]
 //    [Ignore]

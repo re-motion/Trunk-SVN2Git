@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.Remoting.Contexts;
 using System.Xml;
 using Remotion.Diagnostics.ToText;
+using Remotion.Logging;
 
 namespace Remotion.Diagnostics
 {
@@ -73,6 +74,20 @@ namespace Remotion.Diagnostics
       }
     }
 
+    //public static void Stream (TextWriter textWriter)
+    //{
+
+    //}
+
+    public static ToTextBuilder String
+    {
+      get
+      {
+        return new ToTextBuilder (_toTextProvider, new StringWriter ());
+      }
+    }
+
+
     public static string TempPath
     {
       get { return tempPath; }
@@ -121,6 +136,17 @@ namespace Remotion.Diagnostics
       settings.UseAutomaticStringEnclosing = enable;
       settings.UseAutomaticCharEnclosing = enable;
       settings.UseInterfaceHandlers = enable;
+    }
+
+ 
+  }
+
+
+  static class ToTextILogExtensionMethods
+  {
+    static void Log(this ILog log, LogLevel logLevel, ToTextBuilder toTextBuilder)
+    {
+      log.Log (logLevel, toTextBuilder.CheckAndConvertToString());
     }
   }
 }
