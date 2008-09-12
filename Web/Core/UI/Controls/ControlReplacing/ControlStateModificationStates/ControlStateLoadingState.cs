@@ -13,16 +13,16 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
-  public class ControlStateCompletedState:ControlStateModificationStateBase
+  public class ControlStateLoadingState : ControlStateModificationStateBase
   {
-    public ControlStateCompletedState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+    public ControlStateLoadingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
         : base(replacer, memberCaller)
     {
     }
 
     public override void LoadControlState (object savedState)
     {
-      throw new NotSupportedException ();
+      Replacer.ControlStateModificationState = new ControlStateCompletedState(Replacer, MemberCaller);
     }
   }
 }

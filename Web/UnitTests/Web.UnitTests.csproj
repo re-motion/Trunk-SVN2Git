@@ -146,6 +146,8 @@
     <Compile Include="Context\WebSafeContextMixinTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateCompletedStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateClearingStateTest.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateReplacingStateTest.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateLoadingStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateLoadingStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateCompletedStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\TestBase.cs" />

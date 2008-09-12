@@ -130,6 +130,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       _memberCaller.InitRecursive (this, parent);
 
       ViewStateModificationState = new ViewStateLoadingState (this);
+      //ControlStateModificationStateBase = new contr
 
       if (savedState != null)
       {

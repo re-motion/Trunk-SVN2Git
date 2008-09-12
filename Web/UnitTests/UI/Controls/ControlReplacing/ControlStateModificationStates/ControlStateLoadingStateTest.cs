@@ -9,23 +9,31 @@
  */
 
 using System;
+using System.Collections.Specialized;
+using System.Web.UI;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
+using Remotion.Web.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
   [TestFixture]
-  public class ControlStateCompletedStateTest : TestBase
+  public class ControlStateLoadingStateTest:TestBase
   {
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void LoadViewState ()
     {
-      ControlStateCompletedState state = new ControlStateCompletedState (
-          new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" }, MemberCallerMock);
+      TestPageHolder testPageHolder = new TestPageHolder (false);
+      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, null, false);
+      ControlStateLoadingState state = new ControlStateLoadingState (replacer, MemberCallerMock);
 
       state.LoadControlState (null);
+
+      Assert.That (replacer.ControlStateModificationState, Is.InstanceOfType (typeof (ControlStateCompletedState)));
+      Assert.That (((ControlStateModificationStateBase) replacer.ControlStateModificationState).Replacer, Is.SameAs (replacer));
     }
   }
 }
