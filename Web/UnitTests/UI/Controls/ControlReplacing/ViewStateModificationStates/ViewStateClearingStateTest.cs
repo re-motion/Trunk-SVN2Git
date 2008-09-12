@@ -10,44 +10,37 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Web.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
-using Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates;
-using Remotion.Web.Utilities;
-using Rhino.Mocks;
+using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 
-namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.StateModificationStates
+namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   [TestFixture]
-  public class ViewStateLoadingStateTest:TestBase
+  public class ViewStateClearingStateTest : TestBase
   {
     [Test]
     public void LoadViewState ()
     {
       TestPageHolder testPageHolder = new TestPageHolder (false);
-
-      ControlReplacer replacer = SetupControlReplacer (MemberCallerMock, testPageHolder.NamingContainer, false, null);
-      ViewStateLoadingState state = new ViewStateLoadingState (replacer);
-
-      InternalControlMemberCaller memberCaller = new InternalControlMemberCaller ();
-      MemberCallerMock.Stub (stub => stub.GetControlState (Arg<Control>.Is.Anything)).Do ((Func<Control, ControlState>) memberCaller.GetControlState).Repeat.Any ();
-      MemberCallerMock.Stub (stub => stub.SetCollectionReadOnly (Arg<ControlCollection>.Is.Anything, Arg<string>.Is.Anything)).Do ((Func<ControlCollection, string, string>) memberCaller.SetCollectionReadOnly).Repeat.Any ();
-      MemberCallerMock.Replay ();
-
-      testPageHolder.Page.SetRequestValueCollection (new NameValueCollection ());
-      testPageHolder.PageInvoker.InitRecursive ();
+      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, null, false);
+      ViewStateClearingState state = new ViewStateClearingState (replacer);
+      testPageHolder.Page.SetRequestValueCollection (new NameValueCollection());
+      testPageHolder.PageInvoker.InitRecursive();
 
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 
       state.LoadViewState (null);
 
-      MemberCallerMock.VerifyAllExpectations ();
-
       Assert.That (replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateCompletedState)));
       Assert.That (((ViewStateModificationStateBase) replacer.ViewStateModificationState).Replacer, Is.SameAs (replacer));
+      Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.False);
+      Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
+
+      testPageHolder.PageInvoker.LoadRecursive();
+
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
     }

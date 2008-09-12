@@ -1,7 +1,7 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
+namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   public abstract class ViewStateModificationStateBase : IViewStateModificationState
   {

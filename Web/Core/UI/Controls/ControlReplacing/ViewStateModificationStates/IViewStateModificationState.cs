@@ -8,18 +8,10 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
+namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
-  public class ViewStateLoadingState:ViewStateModificationStateBase
+  public interface IViewStateModificationState
   {
-    public ViewStateLoadingState (ControlReplacer replacer)
-        : base(replacer)
-    {
-    }
-
-    public override void LoadViewState (object savedState)
-    {
-      Replacer.ViewStateModificationState = new ViewStateCompletedState (Replacer);
-    }
+    void LoadViewState (object savedState);
   }
 }

@@ -12,7 +12,7 @@ using System;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates
+namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   public class ViewStateReplacingState : ViewStateModificationStateBase
   {

@@ -13,7 +13,7 @@ using System.Collections;
 using System.IO;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates;
+using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing

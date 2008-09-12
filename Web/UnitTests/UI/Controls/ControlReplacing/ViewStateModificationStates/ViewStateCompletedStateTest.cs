@@ -10,14 +10,13 @@
 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
-using Remotion.Web.UI.Controls.ControlReplacing.StateModificationStates;
+using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 
-namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.StateModificationStates
+namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   [TestFixture]
-  public class ViewStateCompletedStateTest:TestBase
+  public class ViewStateCompletedStateTest : TestBase
   {
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
@@ -25,7 +24,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.StateModificationS
     {
       ViewStateCompletedState state = new ViewStateCompletedState (new ControlReplacer (MemberCallerMock, "TheReplacer"));
 
-      state.LoadViewState(null);
+      state.LoadViewState (null);
     }
   }
 }
