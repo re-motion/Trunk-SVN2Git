@@ -9,7 +9,6 @@
  */
 
 using System;
-using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
@@ -17,15 +16,11 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
   public class ViewStateReplacingState : ViewStateModificationStateBase
   {
     private readonly object _viewState;
-    private readonly IInternalControlMemberCaller _memberCaller;
 
     public ViewStateReplacingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller, object viewState)
-        : base (replacer)
+      : base (replacer, memberCaller)
     {
-      ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
-
       _viewState = viewState;
-      _memberCaller = memberCaller;
     }
 
     public override void LoadViewState (object savedState)
@@ -33,9 +28,9 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
       bool enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
       Replacer.WrappedControl.EnableViewState = true;
 
-      Replacer.ViewStateModificationState = new ViewStateLoadingState (Replacer);
+      Replacer.ViewStateModificationState = new ViewStateLoadingState (Replacer, MemberCaller);
 
-      _memberCaller.LoadViewStateRecursive (Replacer, _viewState);
+      MemberCaller.LoadViewStateRecursive (Replacer, _viewState);
       // Causes a nested call of LoadViewState, this time on ViewStateLoadingState.
 
       Replacer.WrappedControl.EnableViewState = false;

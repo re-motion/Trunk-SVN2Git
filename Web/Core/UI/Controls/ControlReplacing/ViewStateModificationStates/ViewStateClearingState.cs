@@ -9,23 +9,24 @@
  */
 
 using System;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   public class ViewStateClearingState : ViewStateModificationStateBase
   {
-    public ViewStateClearingState (ControlReplacer replacer)
-        : base (replacer)
+    public ViewStateClearingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+        : base (replacer, memberCaller)
     {
     }
 
     public override void LoadViewState (object savedState)
     {
       bool enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
-      Replacer.WrappedControl.EnableViewState = false;      
+      Replacer.WrappedControl.EnableViewState = false;
       Replacer.WrappedControl.Load += delegate { Replacer.WrappedControl.EnableViewState = enableViewStateBackup; };
 
-      Replacer.ViewStateModificationState = new ViewStateCompletedState(Replacer);
+      Replacer.ViewStateModificationState = new ViewStateCompletedState (Replacer, MemberCaller);
     }
 
     //protected override void AddedControl (Control control, int index)

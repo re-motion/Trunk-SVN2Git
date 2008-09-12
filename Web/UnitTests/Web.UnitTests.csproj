@@ -144,6 +144,7 @@
   <ItemGroup>
     <Compile Include="Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Context\WebSafeContextMixinTest.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\ClearingStateSelectionStrategyTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateCompletedStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateClearingStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateReplacingStateTest.cs" />

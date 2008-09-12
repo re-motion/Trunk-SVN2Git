@@ -108,7 +108,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       _memberCaller.SetCollectionReadOnly (parent.Controls, errorMessage);
       _memberCaller.InitRecursive (this, parent);
 
-      ViewStateModificationState = new ViewStateLoadingState (this);
+      ViewStateModificationState = new ViewStateLoadingState (this, _memberCaller);
       ControlStateModificationState = new ControlStateLoadingState (this, _memberCaller);
 
       if (savedState != null)
@@ -128,7 +128,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
           throw new InvalidOperationException ("Cannot clear child state if a state has been injected.");
         
         ControlStateModificationState = new ControlStateClearingState (this, _memberCaller);
-        ViewStateModificationState = new ViewStateClearingState (this);
+        ViewStateModificationState = new ViewStateClearingState (this, _memberCaller);
       }
 
       Controls.Add (controlToWrap);

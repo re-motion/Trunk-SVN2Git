@@ -29,7 +29,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
       TestPageHolder testPageHolder = new TestPageHolder (false);
 
       ControlReplacer replacer = SetupControlReplacer (MemberCallerMock, testPageHolder.NamingContainer, false, null);
-      ViewStateLoadingState state = new ViewStateLoadingState (replacer);
+      ViewStateLoadingState state = new ViewStateLoadingState (replacer, MemberCallerMock);
 
       InternalControlMemberCaller memberCaller = new InternalControlMemberCaller ();
       MemberCallerMock.Stub (stub => stub.GetControlState (Arg<Control>.Is.Anything)).Do ((Func<Control, ControlState>) memberCaller.GetControlState).Repeat.Any ();

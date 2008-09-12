@@ -8,18 +8,21 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+using Remotion.Web.Utilities;
+
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
-  public class ViewStateLoadingState:ViewStateModificationStateBase
+  public class ViewStateLoadingState : ViewStateModificationStateBase
   {
-    public ViewStateLoadingState (ControlReplacer replacer)
-        : base(replacer)
+    public ViewStateLoadingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+        : base (replacer, memberCaller)
     {
     }
 
     public override void LoadViewState (object savedState)
     {
-      Replacer.ViewStateModificationState = new ViewStateCompletedState (Replacer);
+      Replacer.ViewStateModificationState = new ViewStateCompletedState (Replacer, MemberCaller);
     }
   }
 }

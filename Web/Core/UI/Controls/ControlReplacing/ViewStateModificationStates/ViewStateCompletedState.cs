@@ -9,13 +9,14 @@
  */
 
 using System;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   public class ViewStateCompletedState : ViewStateModificationStateBase
   {
-    public ViewStateCompletedState (ControlReplacer replacer)
-        : base(replacer)
+    public ViewStateCompletedState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+      : base (replacer, memberCaller)
     {
     }
 

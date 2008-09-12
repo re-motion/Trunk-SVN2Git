@@ -25,7 +25,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     {
       TestPageHolder testPageHolder = new TestPageHolder (false);
       ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, null, false);
-      ViewStateClearingState state = new ViewStateClearingState (replacer);
+      ViewStateClearingState state = new ViewStateClearingState (replacer, MemberCallerMock);
       testPageHolder.Page.SetRequestValueCollection (new NameValueCollection());
       testPageHolder.PageInvoker.InitRecursive();
 

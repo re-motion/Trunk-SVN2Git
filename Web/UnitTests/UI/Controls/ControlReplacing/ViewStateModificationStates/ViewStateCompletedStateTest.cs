@@ -22,7 +22,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     [ExpectedException (typeof (NotSupportedException))]
     public void LoadViewState ()
     {
-      ViewStateCompletedState state = new ViewStateCompletedState (new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" });
+      ViewStateCompletedState state = new ViewStateCompletedState (new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" }, MemberCallerMock);
 
       state.LoadViewState (null);
     }
