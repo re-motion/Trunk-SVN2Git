@@ -47,8 +47,8 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
 
     protected override void LoadControlState (object savedState)
     {
-      if (_memberCaller.GetControlState (this) < ControlState.Initialized)
-        throw new InvalidOperationException ("Controls can only load state after OnInit phase.");
+      //if (_memberCaller.GetControlState (this) < ControlState.Initialized)
+      //  throw new InvalidOperationException ("Controls can only load state after OnInit phase.");
 
       ControlStateModificationState.LoadControlState (savedState);
     }
@@ -95,6 +95,9 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
 
       controlToWrap.Replacer = this;
 
+      ViewStateModificationState = modificationStateSelectionStrategy.CreateViewStateModificationState (this, _memberCaller);
+      ControlStateModificationState = modificationStateSelectionStrategy.CreateControlStateModificationState (this, _memberCaller);
+
       Control parent = controlToReplace.Parent;
       int index = parent.Controls.IndexOf (controlToReplace);
 
@@ -106,10 +109,8 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
 
       //Mark parent collection as readonly
       _memberCaller.SetCollectionReadOnly (parent.Controls, errorMessage);
-      _memberCaller.InitRecursive (this, parent);
 
-      ViewStateModificationState = modificationStateSelectionStrategy.CreateViewStateModificationState (this, _memberCaller);
-      ControlStateModificationState = modificationStateSelectionStrategy.CreateControlStateModificationState (this, _memberCaller);
+      _memberCaller.InitRecursive (this, parent);
 
       Controls.Add (controlToWrap);
     }

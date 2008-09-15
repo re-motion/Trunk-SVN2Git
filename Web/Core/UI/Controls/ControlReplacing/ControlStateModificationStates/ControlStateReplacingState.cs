@@ -34,18 +34,5 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStat
 
       Replacer.ControlStateModificationState = new ControlStateCompletedState (Replacer, MemberCaller);
     }
-
-    //protected override void AddedControl (Control control, int index)
-    //{
-    //    if (_isControlStateLoaded)
-    //    {
-    //      ClearChildControlState ();
-    //      IDictionary controlStateBackup = ControlStateBackup;
-    //      ControlStateBackup = null;
-    //      ControlHelper.SetChildControlState (this, controlStateBackup);
-    //    }
-
-    //    base.AddedControl (control, index);
-    //}
   }
 }

@@ -118,7 +118,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 
 
     [Test]
-    [Ignore]
     public void LoadViewStateRecursive_RegularPostBack_InitializedAfterLoadViewState ()
     {
       object viewState = CreateViewState ();
@@ -282,7 +281,24 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     }
 
     [Test]
-    [Ignore]
+    public void LoadControlStateRecursive_ClearControlState ()
+    {
+      object originalControlState = CreateControlState ();
+
+      var testPageHolderWithoutState = new TestPageHolder (false);
+      SetupControlReplacerForIntegrationTest (testPageHolderWithoutState.NamingContainer, new ClearingStateSelectionStrategy ());
+
+      testPageHolderWithoutState.PageInvoker.InitRecursive ();
+      testPageHolderWithoutState.Page.SetPageStatePersister (
+          new HiddenFieldPageStatePersister (testPageHolderWithoutState.Page) { ControlState = originalControlState });
+      testPageHolderWithoutState.Page.LoadAllState ();
+
+      Assert.That (testPageHolderWithoutState.OtherControl.ValueInControlState, Is.EqualTo ("OtherValue"));
+      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInControlState, Is.Null);
+      Assert.That (testPageHolderWithoutState.Parent.ValueInControlState, Is.Null);
+    }
+
+    [Test]
     public void LoadControlStateRecursive_RegularPostBack_InitializedAfterLoadControlState ()
     {
       object controlState = CreateControlState ();
@@ -306,7 +322,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     }
 
     [Test]
-    [Ignore]
     public void LoadControlStateRecursive_ReplaceControlState_InitializedAfterLoadControlState ()
     {
       object originalControlState = CreateControlState ();
@@ -363,24 +378,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     }
 
     [Test]
-    public void LoadControlStateRecursive_ClearControlState ()
-    {
-      object originalControlState = CreateControlState ();
-
-      var testPageHolderWithoutState = new TestPageHolder (false);
-      SetupControlReplacerForIntegrationTest (testPageHolderWithoutState.NamingContainer, new ClearingStateSelectionStrategy());
-
-      testPageHolderWithoutState.PageInvoker.InitRecursive ();
-      testPageHolderWithoutState.Page.SetPageStatePersister (
-          new HiddenFieldPageStatePersister (testPageHolderWithoutState.Page) { ControlState = originalControlState });
-      testPageHolderWithoutState.Page.LoadAllState ();
-
-      Assert.That (testPageHolderWithoutState.OtherControl.ValueInControlState, Is.EqualTo ("OtherValue"));
-      Assert.That (testPageHolderWithoutState.NamingContainer.ValueInControlState, Is.Null);
-      Assert.That (testPageHolderWithoutState.Parent.ValueInControlState, Is.Null);
-    }
-
-    [Test]
+    [Ignore ("Obsolete")]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only load state after OnInit phase.")]
     public void LoadControlStateRecursive_ThrowsIfNotAfterOnInit ()
     {
