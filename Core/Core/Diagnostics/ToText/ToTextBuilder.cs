@@ -282,8 +282,9 @@ namespace Remotion.Diagnostics.ToText
     //}
 
 
-    public override IToTextBuilderBase LowLevelWrite (Object obj)
+    public override IToTextBuilderBase WriteRaw (Object obj)
     {
+      AssertIsInRawSequence ();
       _disableableWriter.Write (obj);
       return this;
     }

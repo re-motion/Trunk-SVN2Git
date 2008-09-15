@@ -151,8 +151,9 @@ namespace Remotion.Diagnostics.ToText
       throw new System.NotImplementedException();
     }
 
-    public override IToTextBuilderBase LowLevelWrite (object obj)
+    public override IToTextBuilderBase WriteRaw (object obj)
     {
+      AssertIsInRawSequence ();
       _disableableWriter.WriteValue (obj);
       return this;
     }

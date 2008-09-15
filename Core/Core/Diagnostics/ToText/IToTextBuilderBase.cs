@@ -109,11 +109,11 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Starts raw element writing. Until <see cref="WriteRawElementEnd"/> is called, calls which write directly to the underlying
     /// stream writer (e.g. <see cref="WriteRawString"/>, <see cref="WriteRawChar"/>) are permitted.</para> 
     /// </summary>
-    void WriteRawElementBegin ();
+    IToTextBuilderBase WriteRawElementBegin ();
     /// <summary>
     /// <para>Ends raw element writing started with a call to <see cref="WriteRawElementBegin"/>.</para> 
     /// </summary>
-    void WriteRawElementEnd ();
+    IToTextBuilderBase WriteRawElementEnd ();
 
     /// <summary>
     /// <para>Writes the number of newline-tokens passed as an argument. Note that for e.g. a ToTextBuilder/>
@@ -167,21 +167,46 @@ namespace Remotion.Diagnostics.ToText
 
 
     /// <summary>
-    /// Passes the object argument to the stream writer to be written to the output stream, without any processing.
+    /// <para>Writes the object argument directly to the underlying stream. A raw scope must be open for this call to be valid (see <see cref="WriteRawElementBegin"/>).</para>
     /// </summary>
-    IToTextBuilderBase LowLevelWrite (Object obj);
-    IToTextBuilderBase LowLevelWrite (string s);
+    IToTextBuilderBase WriteRaw (Object obj);
 
 
 
-    IToTextBuilderBase WriteSequenceLiteralBegin (string name, string sequencePrefix, string firstElementPrefix, string otherElementPrefix, string elementPostfix, string sequencePostfix);
+    /// <summary>
+    /// <para>Begins a sequence with a given literal set of sequence-begin/end and element-prefix/postifx and -seperarator strings.
+    /// Note that not all classes implementing <see cref="IToTextBuilderBase"/> are required to support this method.
+    /// Use semantic sequence-begin-calls (e.g. <see cref="WriteSequenceBegin"/>, <see cref="WriteInstanceBegin"/>, <see cref="WriteSequenceArrayBegin"/>)
+    /// to be compatible with all <see cref="IToTextBuilderBase"/> implementations.
+    /// </para>
+    /// <para>Shorthand notation: <see cref="sbLiteral(string,string,string,string,string)"/>.</para>
+    /// </summary>
+    IToTextBuilderBase WriteSequenceLiteralBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix);
     IToTextBuilderBase sbLiteral ();
+    /// <summary>
+    /// <para>Begins a sequence with a given literal set of sequence-begin and -end strings.
+    /// Note that not all classes implementing <see cref="IToTextBuilderBase"/> are required to support this method.
+    /// </para>
+    /// <para>Shorthand notation: <see cref="sbLiteral(string,string)"/>.</para>
+    /// </summary>
     IToTextBuilderBase sbLiteral (string sequencePrefix, string sequencePostfix);
     IToTextBuilderBase sbLiteral (string sequencePrefix, string separator, string sequencePostfix);
     IToTextBuilderBase sbLiteral (string sequencePrefix, string elementPostfix, string elementPrefix, string separator, string sequencePostfix);
 
 
+    /// <summary>
+    /// <para>Begins a new sequence, i.e. a number of consecutive elements clamped by the sequence which are automatically output in a seperated manner. 
+    /// Sequences can be nested: Each new sequence pushed the current sequence (if any) onto a sequence stack; ending the sequence with a call to <see cref="WriteSequenceEnd"/>
+    /// pops the previous sequence from the stack making it active again.
+    /// Within a sequence elements in the sequence can be emitted using calls to the WriteElement family of members
+    /// (<see cref="WriteElement(object)"/>, <see cref="WriteElement(string, Object)"/>, <see cref="WriteElement{T}"/>).
+    /// </para>
+    /// <para>Shorthand notation: <see cref="sb"/>.</para>
+    /// </summary>
     IToTextBuilderBase WriteSequenceBegin ();
+    /// <summary>
+    /// <para>Begins a new sequence. Shorthand notation for <see cref="WriteSequenceBegin"/>.</para>
+    /// </summary>
     IToTextBuilderBase sb ();
 
 
@@ -190,14 +215,49 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Shorthand notation: <see cref="e(object)"/>.</para>
     /// </summary>
     IToTextBuilderBase WriteElement (object obj);
+    /// <summary>
+    /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the TextBuilder as a name-value-pair.</para>
+    /// <para>Shorthand notation: <see cref="e(string,object)"/>.</para>
+    /// </summary>
     IToTextBuilderBase WriteElement (string name, Object obj);
+    /// <summary>
+    /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the TextBuilder
+    /// as a name-value-pair. Since the variable to write is passed in a lambda expression the name and value can be 
+    /// deduced from just one term, eliminating name-value-mismatch-errors.</para>
+    /// <para>Shorthand notation: <see cref="e{T}"/>.</para>
+    /// <example><code>
+    /// var myList = List.New(5,3,1);
+    /// toTextBuilder.e(() => myList);
+    /// var result = toTextBuilder.CheckAndConvertToString(); // returns: myList={5,3,1}
+    /// </code></example>
+    /// </summary>
     IToTextBuilderBase WriteElement<T> (Expression<Func<T>> expression);
+    /// <summary>
+    /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the TextBuilder.</para>
+    /// <para>Shorthand notation for <see cref="WriteElement(object)"/>.</para>
+    /// </summary>
     IToTextBuilderBase e (Object obj);
+    /// <summary>
+    /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the TextBuilder as a name-value-pair.</para>
+    /// <para>Shorthand notation for <see cref="WriteElement{T}"/>.</para>
+    /// </summary>
     IToTextBuilderBase e<T> (Expression<Func<T>> expression);
+    /// <summary>
+    /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the TextBuilder as a name-value-pair.</para>
+    /// <para>Shorthand notation for <see cref="WriteElement(string,object)"/>.</para>
+    /// </summary>
     IToTextBuilderBase e (string name, Object obj);
-    
 
+
+    /// <summary>
+    /// <para>Closes a sequence, activating the previously active sequence.</para>
+    /// <para>Shorthand notation: <see cref="se"/>.</para>
+    /// </summary>
     IToTextBuilderBase WriteSequenceEnd ();
+    /// <summary>
+    /// <para>Closes a sequence.</para>
+    /// <para>Shorthand notation for <see cref="WriteSequenceEnd"/>.</para>
+    /// </summary>
     IToTextBuilderBase se ();
 
    

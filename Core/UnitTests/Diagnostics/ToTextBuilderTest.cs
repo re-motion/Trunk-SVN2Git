@@ -537,7 +537,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var o = new Object();
-      Assert.That (toTextBuilder.LowLevelWrite (o).CheckAndConvertToString (), Is.EqualTo (o.ToString ()));
+      Assert.That (toTextBuilder.WriteRawElementBegin().WriteRaw (o).WriteRawElementEnd().CheckAndConvertToString (), Is.EqualTo (o.ToString ()));
     }
 
 

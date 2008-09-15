@@ -241,7 +241,7 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    private void AssertIsInRawSequence ()
+    protected void AssertIsInRawSequence ()
     {
       Assertion.IsTrue(IsInRawSequence);
     }
@@ -408,18 +408,13 @@ namespace Remotion.Diagnostics.ToText
     //}
 
 
-    public IToTextBuilderBase LowLevelWrite (string s)
+    public IToTextBuilderBase WriteRaw (string s)
     {
       return WriteRawString (s);
     }
 
-    public abstract IToTextBuilderBase LowLevelWrite (Object obj);
+    public abstract IToTextBuilderBase WriteRaw (Object obj);
 
-    //public IToTextBuilderBase WriteInstanceBegin (Type type)
-    //{
-    //  SequenceBegin ("", "[" + type.Name + "  ", "", "", ",", "]");
-    //  return this;
-    //}
 
     public abstract IToTextBuilderBase WriteInstanceBegin (Type type);
 
@@ -491,16 +486,18 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public void WriteRawElementBegin ()
+    public IToTextBuilderBase WriteRawElementBegin ()
     {
       IsInRawSequence = true;
       BeforeWriteElement();
+      return this;
     }
 
-    public void WriteRawElementEnd ()
+    public IToTextBuilderBase WriteRawElementEnd ()
     {
       AfterWriteElement ();
       IsInRawSequence = false;
+      return this;
     }
 
 
