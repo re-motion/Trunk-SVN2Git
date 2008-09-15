@@ -21,7 +21,7 @@ namespace Remotion.ObjectBinding.Sample
     {
     }
 
-    public bool SupportsIdentity (IBusinessObjectReferenceProperty property)
+    public bool SupportsProperty (IBusinessObjectReferenceProperty property)
     {
       return true;
     }

@@ -19,14 +19,14 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 {
   public class BindableDomainObjectSearchService : ISearchAvailableObjectsService
   {
-    public bool SupportsIdentity (IBusinessObjectReferenceProperty property)
+    public bool SupportsProperty (IBusinessObjectReferenceProperty property)
     {
       return true;
     }
 
     public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement)
     {
-      if (searchStatement == null || searchStatement == string.Empty)
+      if (string.IsNullOrEmpty (searchStatement))
         return new IBusinessObjectWithIdentity[] { };
 
       QueryDefinition definition = DomainObjectsConfiguration.Current.Query.QueryDefinitions.GetMandatory (searchStatement);

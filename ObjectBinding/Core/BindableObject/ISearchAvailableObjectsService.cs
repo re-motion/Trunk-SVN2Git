@@ -24,11 +24,11 @@ namespace Remotion.ObjectBinding.BindableObject
   public interface ISearchAvailableObjectsService : IBusinessObjectService
   {
     /// <summary>
-    /// Gets a flag that describes whether the serivce returns objects of type <see cref="IBusinessObjectWithIdentity"/> for the current property.
+    /// Gets a flag that describes whether the serivce can be used to retrieve the available objects for this property.
     /// </summary>
     /// <param name="property">The <see cref="IBusinessObjectReferenceProperty"/> to be tested.</param>
-    /// <returns><see langword="true" /> if the objects will implement <see cref="IBusinessObjectWithIdentity"/>.</returns>
-    bool SupportsIdentity (IBusinessObjectReferenceProperty property);
+    /// <returns><see langword="true" /> if the search service is compatible with this <paramref name="property"/>.</returns>
+    bool SupportsProperty (IBusinessObjectReferenceProperty property);
 
     /// <summary>
     /// Retrieves the list of <see cref="IBusinessObject"/> intances for the specified <paramref name="referencingObject"/>, 

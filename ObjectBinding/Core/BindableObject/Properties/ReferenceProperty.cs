@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <remarks>
     /// <para>Use the <see cref="SearchAvailableObjects"/> method to get the list of objects.</para>
     /// <para>If the <see cref="ReferenceClass"/> implements <see cref="IBusinessObjectClassWithIdentity"/>, 
-    /// the <see cref="ISearchAvailableObjectsService.SupportsIdentity"/> method of the <see cref="ISearchAvailableObjectsService"/> interface 
+    /// the <see cref="ISearchAvailableObjectsService.SupportsProperty"/> method of the <see cref="ISearchAvailableObjectsService"/> interface 
     /// is evaluated in order to determine the return value of this property.
     /// </para>
     /// </remarks>
@@ -55,10 +55,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
         if (searchService == null)
           return false;
 
-        if (ReferenceClass is IBusinessObjectClassWithIdentity)
-          return searchService.SupportsIdentity (this);
-
-        return true;
+        return searchService.SupportsProperty (this);
       }
     }
 

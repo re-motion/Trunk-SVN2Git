@@ -41,9 +41,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void SupportsIdentity_WithInvalidProperty ()
+    public void SupportsProperty_WithInvalidProperty ()
     {
-      Assert.That (_searchService.SupportsIdentity (_property), Is.False);
+      Assert.That (_searchService.SupportsProperty (_property), Is.False);
     }
 
     [Test]

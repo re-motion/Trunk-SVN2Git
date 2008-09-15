@@ -39,9 +39,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     }
 
     [Test]
-    public void SupportsIdentity_WithInvalidProperty ()
+    public void SupportsProperty_WithInvalidProperty ()
     {
-      Assert.That (_searchService.SupportsIdentity (_tenantProperty), Is.False);
+      Assert.That (_searchService.SupportsProperty (_tenantProperty), Is.False);
     }
 
     [Test]

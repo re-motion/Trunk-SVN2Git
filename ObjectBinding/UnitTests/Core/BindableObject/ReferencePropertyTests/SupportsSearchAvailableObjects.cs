@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       ISearchServiceOnProperty mockService = _mockRepository.StrictMock<ISearchServiceOnProperty>();
       IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromPropertyWithIdentity");
 
-      Expect.Call (mockService.SupportsIdentity (property)).Return (true);
+      Expect.Call (mockService.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
 
       _businessObjectProvider.AddService (mockService);
@@ -55,7 +55,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       ISearchServiceOnType mockService = _mockRepository.StrictMock<ISearchServiceOnType>();
       IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromType");
 
-      _mockRepository.ReplayAll();
+      Expect.Call (mockService.SupportsProperty (property)).Return (true);
+      _mockRepository.ReplayAll ();
 
       _businessObjectProvider.AddService (mockService);
       bool actual = property.SupportsSearchAvailableObjects;
@@ -71,7 +72,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       ISearchServiceOnType stubSearchServiceOnType = _mockRepository.StrictMock<ISearchServiceOnType>();
       IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromPropertyWithIdentity");
 
-      Expect.Call (mockService.SupportsIdentity (property)).Return (true);
+      Expect.Call (mockService.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
 
       _businessObjectProvider.AddService (stubSearchServiceOnType);
@@ -98,9 +99,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       IBusinessObjectClassWithIdentity mockBusinessObjectClassWithIdentity = _mockRepository.StrictMock<IBusinessObjectClassWithIdentity>();
       IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoSearchServiceWithIdentity");
 
-      Expect.Call (mockBusinessObjectClassService.GetBusinessObjectClass (typeof (ClassWithIdentityFromOtherBusinessObjectImplementation)))
-        .Return (mockBusinessObjectClassWithIdentity);
-      Expect.Call (mockAvailableObjectsService.SupportsIdentity (property)).Return (true);
+      Expect.Call (mockAvailableObjectsService.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
 
       _businessObjectProvider.AddService (mockAvailableObjectsService);

@@ -45,9 +45,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     }
 
     [Test]
-    public void SupportsIdentity ()
+    public void SupportsProperty ()
     {
-      Assert.That (_searchService.SupportsIdentity (_userProperty), Is.True);
+      Assert.That (_searchService.SupportsProperty (_userProperty), Is.True);
     }
 
     [Test]

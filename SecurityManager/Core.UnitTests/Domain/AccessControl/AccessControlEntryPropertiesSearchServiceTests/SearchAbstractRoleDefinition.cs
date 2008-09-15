@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void SupportsProperty ()
     {
-      Assert.That (_searchService.SupportsIdentity (_property), Is.True);
+      Assert.That (_searchService.SupportsProperty (_property), Is.True);
     }
 
     [Test]

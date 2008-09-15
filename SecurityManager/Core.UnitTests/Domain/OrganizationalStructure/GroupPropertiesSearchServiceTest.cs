@@ -64,15 +64,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     }
 
     [Test]
-    public void SupportsIdentity ()
+    public void SupportsProperty ()
     {
-      Assert.That (_searchService.SupportsIdentity (_parentGroupProperty), Is.True);
+      Assert.That (_searchService.SupportsProperty (_parentGroupProperty), Is.True);
     }
 
     [Test]
-    public void SupportsIdentity_WithInvalidProperty ()
+    public void SupportsProperty_WithInvalidProperty ()
     {
-      Assert.That (_searchService.SupportsIdentity (_tenantProperty), Is.False);
+      Assert.That (_searchService.SupportsProperty (_tenantProperty), Is.False);
     }
 
     [Test]

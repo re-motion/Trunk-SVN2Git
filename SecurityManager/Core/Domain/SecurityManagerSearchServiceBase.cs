@@ -24,7 +24,7 @@ namespace Remotion.SecurityManager.Domain
       _searchDelegates.Add (propertyName, searchDelegate);
     }
 
-    public bool SupportsIdentity (IBusinessObjectReferenceProperty property)
+    public bool SupportsProperty (IBusinessObjectReferenceProperty property)
     {
       ArgumentUtility.CheckNotNull ("property", property);
 

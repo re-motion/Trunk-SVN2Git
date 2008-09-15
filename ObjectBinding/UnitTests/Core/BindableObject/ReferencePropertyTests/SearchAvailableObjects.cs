@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
       using (_mockRepository.Ordered())
       {
-        Expect.Call (mockService.SupportsIdentity (property)).Return (true);
+        Expect.Call (mockService.SupportsProperty (property)).Return (true);
         Expect.Call (mockService.Search (stubBusinessObject, property, "*")).Return (expected);
       }
       _mockRepository.ReplayAll();
@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
       using (_mockRepository.Ordered ())
       {
-        Expect.Call (mockService.SupportsIdentity (property)).Return (true);
+        Expect.Call (mockService.SupportsProperty (property)).Return (true);
         Expect.Call (mockService.Search (null, property, "*")).Return (expected);
       }
       _mockRepository.ReplayAll ();
@@ -87,7 +87,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       ISearchServiceOnProperty mockService = _mockRepository.StrictMock<ISearchServiceOnProperty> ();
       IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromPropertyWithIdentity");
 
-      Expect.Call (mockService.SupportsIdentity (property)).Return (false);
+      Expect.Call (mockService.SupportsProperty (property)).Return (false);
       _mockRepository.ReplayAll();
 
       _businessObjectProvider.AddService (mockService);
