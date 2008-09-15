@@ -239,7 +239,7 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteSequenceBegin ()
     {
-      throw new System.NotImplementedException();
+      return SequenceLiteralBegin ("", "(", "", "", ",", ")");
     }
 
     public override IToTextBuilderBase WriteRawStringUnsafe (string s)

@@ -202,12 +202,13 @@ namespace Remotion.UnitTests.Diagnostics
     //  Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
     //}
 
+
     [Test]
     public void MemberInSequenceTest ()
     {
       var toTextBuilder = CreateTextBuilder();
       var myList = List.New (5, 3, 1);
-      toTextBuilder.sbLiteral().e ("Abra").e ("myList", myList).e ("myList", myList).e ("Kadabra").se();
+      toTextBuilder.sb().e ("Abra").e ("myList", myList).e ("myList", myList).e ("Kadabra").se();
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("(Abra,myList={5,3,1},myList={5,3,1},Kadabra)"));
@@ -695,7 +696,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void StandardSequenceTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.sbLiteral().e ("ABC").e (toTextBuilder.SequenceState.Counter).e ("DEFG").se();
+      toTextBuilder.sb().e ("ABC").e (toTextBuilder.SequenceState.Counter).e ("DEFG").se();
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("(ABC,1,DEFG)"));
