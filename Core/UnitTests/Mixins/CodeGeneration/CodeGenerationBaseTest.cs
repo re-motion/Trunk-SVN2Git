@@ -30,10 +30,21 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     private void ResetGeneratedAssemblies ()
     {
-      if (File.Exists (ModuleManager.DefaultWeakModulePath))
-        File.Delete (ModuleManager.DefaultWeakModulePath);
-      if (File.Exists (ModuleManager.DefaultStrongModulePath))
-        File.Delete (ModuleManager.DefaultStrongModulePath);
+      string weakModulePath = ModuleManager.DefaultWeakModulePath.Replace ("{counter}", "*");
+      string strongModulePath = ModuleManager.DefaultStrongModulePath.Replace ("{counter}", "*");
+      string weakPdbPath = Path.GetFileNameWithoutExtension (weakModulePath) + ".pdb";
+      string strongPdbPath = Path.GetFileNameWithoutExtension (strongModulePath) + ".pdb";
+
+      DeleteFiles (weakModulePath);
+      DeleteFiles (strongModulePath);
+      DeleteFiles (weakPdbPath);
+      DeleteFiles (strongPdbPath);
+    }
+
+    private void DeleteFiles (string searchPattern)
+    {
+      foreach (string file in Directory.GetFiles (Environment.CurrentDirectory, searchPattern))
+        File.Delete (file);
     }
 
     [TearDown]
@@ -55,8 +66,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       foreach (string path in paths)
         PEVerifier.VerifyPEFile (path);
 
-      ResetGeneratedAssemblies (); // delete assemblies if everything went fine
 #endif
+      ResetGeneratedAssemblies (); // delete assemblies if everything went fine
       ConcreteTypeBuilder.SetCurrent (null);
     }
 
