@@ -178,10 +178,10 @@ namespace Remotion.Diagnostics
 
 
     /// <summary>
-    /// <para>Returns all autoregistered specific type handlers (see <see cref="IToTextSpecificTypeHandler"/>) in the system. 
-    /// Handlers which carry the <see cref="ToTextSpecificHandlerAttribute"/> are autoregistered at 
+    /// <para>Returns all autoregistered type handlers (see <see cref="IToTextSpecificTypeHandler"/>) in the system. 
+    /// Type handlers which carry the <see cref="ToTextSpecificHandlerAttribute"/> are autoregistered at 
     /// the first call to <see cref="GetTypeHandlers"/> through reflection. 
-    /// Consecutive calls return the cached <see cref="ToTextSpecificHandlerMap{T}"/> of the autoregistered handlers.
+    /// Consecutive calls return the cached <see cref="ToTextSpecificHandlerMap{T}"/> of the autoregistered type handlers.
     /// </para>
     /// </summary>    
     public static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> GetTypeHandlers()
@@ -194,6 +194,13 @@ namespace Remotion.Diagnostics
       return _typeHandlerMap;
     }
 
+    /// <summary>
+    /// <para>Returns all autoregistered interface handlers (see <see cref="IToTextSpecificInterfaceHandler"/>) in the system. 
+    /// Interface handlers which carry the <see cref="ToTextSpecificHandlerAttribute"/> are autoregistered at 
+    /// the first call to <see cref="GetInterfaceHandlers"/> through reflection. 
+    /// Consecutive calls return the cached <see cref="ToTextSpecificHandlerMap{T}"/> of the autoregistered interface handlers.
+    /// </para>
+    /// </summary>  
     public static ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> GetInterfaceHandlers ()
     {
       if (_interfaceHandlerMap == null)
@@ -204,17 +211,30 @@ namespace Remotion.Diagnostics
       return _interfaceHandlerMap;
     }
 
-    public static void RegisterHandler<T> (Action<T, IToTextBuilderBase> handler)
-    {
-      _toTextProvider.RegisterSpecificTypeHandler<T> (handler);
-    }
+    ///// <summary>
+    ///// <para>Registers
+    ///// </para>
+    ///// </summary>  
+    //public static void RegisterHandler<T> (Action<T, IToTextBuilderBase> handler)
+    //{
+    //  _toTextProvider.RegisterSpecificTypeHandler (handler);
+    //}
 
-    public static void ClearHandlers ()
-    {
-      _toTextProvider.ClearSpecificTypeHandlers();
-    }
+    //public static void ClearHandlers ()
+    //{
+    //  _toTextProvider.ClearSpecificTypeHandlers();
+    //}
 
 
+    /// <summary>
+    /// <para>Enables/disables automatic settings in the <see cref="ToTextProvider"/>
+    /// (<see cref="ToTextProviderSettings.UseAutomaticObjectToText"/>,
+    /// <see cref="ToTextProviderSettings.UseAutomaticStringEnclosing"/>,
+    /// <see cref="ToTextProviderSettings.UseAutomaticCharEnclosing"/>,
+    /// <see cref="ToTextProviderSettings.UseInterfaceHandlers"/>),
+    /// according to the passed argument.
+    /// </para>
+    /// </summary>   
     public static void TextEnableAutomatics (bool enable)
     {
       var settings = _toTextProvider.Settings;
