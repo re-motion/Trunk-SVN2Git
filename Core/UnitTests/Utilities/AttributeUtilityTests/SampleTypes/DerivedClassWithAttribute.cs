@@ -16,6 +16,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
   [DerivedInheritedAttribute ("DerivedClass")]
   [BaseNonInheritedAttribute ("DerivedClass")]
   [DerivedNonInheritedAttribute ("DerivedClass")]
+  [InheritedNotMultipleAttribute ("DerivedClass")]
+  [SuppressAttributesAttribute (typeof (InheritedNotMultipleAttribute))]
   public class DerivedClassWithAttribute : BaseClassWithAttribute
   {
     

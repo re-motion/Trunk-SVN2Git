@@ -35,7 +35,9 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
         new BaseInheritedAttribute ("BaseClass"), 
         new DerivedInheritedAttribute ("BaseClass"), 
         new BaseNonInheritedAttribute ("BaseClass"), 
-        new DerivedNonInheritedAttribute ("BaseClass")}));
+        new DerivedNonInheritedAttribute ("BaseClass"),
+        new InheritedNotMultipleAttribute ("BaseClass"),
+      }));
     }
 
     [Test]
@@ -46,7 +48,9 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
         new BaseInheritedAttribute ("BaseClass"), 
         new DerivedInheritedAttribute ("BaseClass"), 
         new BaseNonInheritedAttribute ("BaseClass"), 
-        new DerivedNonInheritedAttribute ("BaseClass")}));
+        new DerivedNonInheritedAttribute ("BaseClass"),
+        new InheritedNotMultipleAttribute ("BaseClass"),
+      }));
     }
 
     [Test]
@@ -57,7 +61,9 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
         new BaseInheritedAttribute ("DerivedClass"), 
         new DerivedInheritedAttribute ("DerivedClass"), 
         new BaseNonInheritedAttribute ("DerivedClass"), 
-        new DerivedNonInheritedAttribute ("DerivedClass")}));
+        new DerivedNonInheritedAttribute ("DerivedClass"),
+        new InheritedNotMultipleAttribute ("DerivedClass"),
+      }));
     }
 
     [Test]
@@ -70,7 +76,9 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
         new BaseInheritedAttribute ("DerivedClass"), 
         new DerivedInheritedAttribute ("DerivedClass"), 
         new BaseNonInheritedAttribute ("DerivedClass"), 
-        new DerivedNonInheritedAttribute ("DerivedClass")}));
+        new DerivedNonInheritedAttribute ("DerivedClass"),
+        new InheritedNotMultipleAttribute ("DerivedClass"),
+      }));
     }
     
     
@@ -97,7 +105,9 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
       object[] attributes = AttributeUtility.GetCustomAttributes (typeof (BaseClassWithAttribute), typeof (ICustomAttribute), false);
       Assert.That (attributes, Is.EquivalentTo (new object[] {
         new BaseInheritedAttribute ("BaseClass"), 
-        new DerivedInheritedAttribute ("BaseClass")}));
+        new DerivedInheritedAttribute ("BaseClass"),
+        new InheritedNotMultipleAttribute ("BaseClass"),
+      }));
     }
 
     [Test]

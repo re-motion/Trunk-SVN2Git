@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes;
 using Remotion.Utilities;
 
@@ -123,6 +124,34 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void Test_FromOverrideWithInterfaceAndWithoutInherited ()
     {
       Assert.IsNull (AttributeUtility.GetCustomAttribute (_derivedPropertyWithSingleAttribute, typeof (ICustomAttribute), false));
+    }
+
+    [Test]
+    public void Test_FromBaseClass_InheritedFalse ()
+    {
+      object attribute = AttributeUtility.GetCustomAttribute (typeof (BaseClassWithAttribute), typeof (InheritedNotMultipleAttribute), false);
+      Assert.That (attribute, Is.EqualTo(new InheritedNotMultipleAttribute ("BaseClass")));
+    }
+
+    [Test]
+    public void Test_FromBaseClass_InheritedTrue ()
+    {
+      object attribute = AttributeUtility.GetCustomAttribute (typeof (BaseClassWithAttribute), typeof (InheritedNotMultipleAttribute), true);
+      Assert.That (attribute, Is.EqualTo (new InheritedNotMultipleAttribute ("BaseClass")));
+    }
+
+    [Test]
+    public void Test_FromDerivedClass_InheritedFalse ()
+    {
+      object attribute = AttributeUtility.GetCustomAttribute (typeof (DerivedClassWithAttribute), typeof (InheritedNotMultipleAttribute), false);
+      Assert.That (attribute, Is.EqualTo (new InheritedNotMultipleAttribute ("DerivedClass")));
+    }
+
+    [Test]
+    public void Test_FromDerivedClass_InheritedTrue ()
+    {
+      object attribute = AttributeUtility.GetCustomAttribute (typeof (DerivedClassWithAttribute), typeof (InheritedNotMultipleAttribute), true);
+      Assert.That (attribute, Is.EqualTo (new InheritedNotMultipleAttribute ("DerivedClass")));
     }
   }
 }

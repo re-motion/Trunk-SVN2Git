@@ -93,5 +93,10 @@ namespace Remotion.Utilities
 
       return attributeType.IsInstanceOfType (AttributeInstance);
     }
+
+    public override string ToString ()
+    {
+      return "AttributeMetadata: DeclaringType: " + _declaringType.FullName + "; Attibute: " + _attribute.ToString();
+    }
   }
 }

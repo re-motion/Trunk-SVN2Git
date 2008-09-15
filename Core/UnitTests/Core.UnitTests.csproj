@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C216DEC9-8820-4298-B10F-FB4131466B69}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -694,6 +694,7 @@
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromTypeTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\InstantiateCustomAttributeDataTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseNonInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\InheritedNotMultipleAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedDerivedDerivedSuppressed.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedDerivedWithAttributesForSuppressed.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedNonInheritedAttribute.cs" />
