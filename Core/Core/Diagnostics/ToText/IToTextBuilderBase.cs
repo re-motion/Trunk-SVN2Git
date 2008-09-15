@@ -136,29 +136,35 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase nl ();
 
     /// <summary>
-    /// <para>Writes the given string to the output stream. The string is written directly to the output stream, 
-    /// without considering sequences etc.</para>
+    /// <para>Writes the given string directly to the output stream. The string is written directly to the output stream, 
+    /// without considering sequences etc. A raw scope must be open for this call to be valid (see <see cref="WriteRawElementBegin"/>).</para>
     /// <para>Shorthand notation: <see cref="s"/></para>
     /// </summary>
     IToTextBuilderBase WriteRawString (string s);
+    /// <summary>
+    /// <para>Writes the given string directly to the output stream. Shorthand notation for <see cref="WriteRawString(string)"/>.</para>
+    /// </summary>
+    IToTextBuilderBase s (string s);
+    /// <summary>
+    /// <para>Writes the given string directly to the output stream, replacing newline, tabulator, etc characters with an escaped representation.
+    /// The string is written directly to the output stream, 
+    /// without considering sequences etc. A raw scope must be open for this call to be valid (see <see cref="WriteRawElementBegin"/>).</para>
+    /// <para>Shorthand notation: <see cref="sEsc"/></para>
+    /// </summary>
     IToTextBuilderBase WriteRawStringEscaped (string s);
+    /// <summary>
+    /// <para>Writes the given string directly to the output stream, replacing newline, tabulator, etc characters with 
+    /// an escaped representation. Shorthand notation for <see cref="WriteRawStringEscaped(string)"/>.</para>
+    /// </summary>
     IToTextBuilderBase sEsc (string s);
 
+    /// <summary>
+    /// <para>Writes the given character directly to the output stream. The string is written directly to the output stream, 
+    /// without considering sequences etc. A raw scope must be open for this call to be valid (see <see cref="WriteRawElementBegin"/>).</para>
+    /// </summary>
     IToTextBuilderBase WriteRawChar (char c);
 
 
-    /// <summary>
-    /// Writes the given string to the output stream.
-    /// </summary>
-    IToTextBuilderBase s (string s);
-
-    // raw string: guaranteed no processing ?
-    //IToTextBuilderBase rs (string s);
-
-    ///// <summary>
-    ///// Applies <see cref="Object.ToString"/> to the passed <see cref="object"/> and writes the resulting string to the output stream.
-    ///// </summary>
-    //IToTextBuilderBase ts (object obj);
 
     /// <summary>
     /// Passes the object argument to the stream writer to be written to the output stream, without any processing.
