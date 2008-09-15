@@ -13,23 +13,42 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
+using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
   [TestFixture]
   public class ControlStateLoadingStateTest : TestBase
   {
+    private TestPageHolder _testPageHolder;
+    private ControlReplacer _replacer;
+    private ControlStateLoadingState _state;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+      _testPageHolder = new TestPageHolder (false);
+      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy>();
+      _replacer = SetupControlReplacerForIntegrationTest (_testPageHolder.NamingContainer, modificationStateSelectionStrategy);
+      _state = new ControlStateLoadingState (_replacer, MemberCallerMock);
+    }
+
     [Test]
     public void LoadViewState ()
     {
-      TestPageHolder testPageHolder = new TestPageHolder (false);
-      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new LoadingStateSelectionStrategy());
-      ControlStateLoadingState state = new ControlStateLoadingState (replacer, MemberCallerMock);
+      _state.LoadControlState (null);
 
-      state.LoadControlState (null);
+      Assert.That (_replacer.ControlStateModificationState, Is.InstanceOfType (typeof (ControlStateCompletedState)));
+      Assert.That (((ControlStateModificationStateBase) _replacer.ControlStateModificationState).Replacer, Is.SameAs (_replacer));
+    }
 
-      Assert.That (replacer.ControlStateModificationState, Is.InstanceOfType (typeof (ControlStateCompletedState)));
-      Assert.That (((ControlStateModificationStateBase) replacer.ControlStateModificationState).Replacer, Is.SameAs (replacer));
+    [Test]
+    public void AdddedControl ()
+    {
+      _replacer.ControlStateModificationState = _state;
+      _state.AddedControl (_testPageHolder.NamingContainer);
+
+      Assert.That (_replacer.ControlStateModificationState, Is.SameAs (_state));
     }
   }
 }

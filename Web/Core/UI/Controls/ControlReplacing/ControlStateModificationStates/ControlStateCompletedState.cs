@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Web.UI;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
@@ -23,6 +24,10 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStat
     public override void LoadControlState (object savedState)
     {
       throw new NotSupportedException ();
+    }
+
+    public void AddedControl (Control control)
+    {
     }
   }
 }
