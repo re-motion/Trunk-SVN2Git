@@ -122,10 +122,10 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override IToTextBuilderBase WriteEnumerable (IEnumerable collection)
+    public override IToTextBuilderBase WriteEnumerable (IEnumerable enumerable)
     {
-      SequenceXmlBegin (collection.GetType ().Name, "enumerable", "enumerable", "e");
-      foreach (Object element in collection)
+      SequenceXmlBegin (enumerable.GetType ().Name, "enumerable", "enumerable", "e");
+      foreach (Object element in enumerable)
       {
         WriteElement (element);
       }

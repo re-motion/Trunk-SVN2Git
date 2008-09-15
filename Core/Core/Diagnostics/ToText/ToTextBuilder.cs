@@ -263,11 +263,11 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public override IToTextBuilderBase WriteEnumerable (IEnumerable collection)
+    public override IToTextBuilderBase WriteEnumerable (IEnumerable enumerable)
     {
       SequenceLiteralBegin ("", Settings.EnumerablePrefix, Settings.EnumerableElementPrefix,
         Settings.EnumerableElementPostfix, Settings.EnumerableSeparator, Settings.EnumerablePostfix);
-      foreach (Object element in collection)
+      foreach (Object element in enumerable)
       {
         WriteElement (element);
       }

@@ -290,7 +290,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var list = List.New (List.New (List.New ("A", "B", "C")));
-      toTextBuilder.collection (list);
+      toTextBuilder.enumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("{{{A,B,C}}}"));
@@ -348,7 +348,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var list = List.New (List.New (List.New ("A", "B", "C")));
-      toTextBuilder.collection (list);
+      toTextBuilder.enumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("{{{A,B,C}}}"));
@@ -547,7 +547,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var obj = new object();
-      toTextBuilder.WriteInstanceBegin (obj.GetType()).WriteInstanceEnd();
+      toTextBuilder.WriteInstanceBegin (obj.GetType ()).WriteSequenceEnd ();
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("[Object]")); // NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));

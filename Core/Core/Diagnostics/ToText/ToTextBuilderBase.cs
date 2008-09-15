@@ -366,7 +366,7 @@ namespace Remotion.Diagnostics.ToText
       return WriteElement (name, obj);
     }
 
-    public abstract IToTextBuilderBase WriteEnumerable (IEnumerable collection);
+    public abstract IToTextBuilderBase WriteEnumerable (IEnumerable enumerable);
     //public abstract IToTextBuilderBase array (Array array);
 
     public IToTextBuilderBase array (Array array)
@@ -375,9 +375,9 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public IToTextBuilderBase collection (IEnumerable collection)
+    public IToTextBuilderBase enumerable (IEnumerable enumerable)
     {
-      return WriteEnumerable (collection);
+      return WriteEnumerable (enumerable);
     }
 
     public abstract IToTextBuilderBase WriteArray (Array array);
@@ -424,17 +424,17 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public IToTextBuilderBase WriteInstanceEnd ()
-    {
-      //return AppendInstanceEnd ();
-      SequenceEnd ();
-      return this;
-    }
+    //public IToTextBuilderBase WriteInstanceEnd ()
+    //{
+    //  //return AppendInstanceEnd ();
+    //  SequenceEnd ();
+    //  return this;
+    //}
 
-    public IToTextBuilderBase ie ()
-    {
-      return WriteInstanceEnd ();
-    }
+    //public IToTextBuilderBase ie ()
+    //{
+    //  return WriteInstanceEnd ();
+    //}
 
 
     public IToTextBuilderBase WriteSequenceEnd ()

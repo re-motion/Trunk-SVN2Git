@@ -272,25 +272,76 @@ namespace Remotion.Diagnostics.ToText
     /// </summary>
     IToTextBuilderBase se ();
 
-   
 
+
+    /// <summary>
+    /// <para>Writes the passed parameters out as sequence elements.</para>
+    /// <example><code>
+    /// toTextBuilder.sb().WriteSequenceElements(x0,x1,x2,x3,x4).se(); 
+    /// // Is equivalent to:
+    /// toTextBuilder.sb().WriteElement(x0).WriteElement(x1).WriteElement(x2).WriteElement(x3).WriteElement(x4).se();
+    /// </code></example>
+    /// <para>Shorthand notation: <see cref="elements"/>.</para>
+    /// </summary>
     IToTextBuilderBase WriteSequenceElements (params object[] sequenceElements);
-    IToTextBuilderBase elements (params object[] sequenceElements);
-    IToTextBuilderBase elementsNumbered (string s1, int i0, int i1);
 
+    /// <summary>
+    /// <para>Writes the passed parameters out as sequence elements.</para>
+    /// <example><code>
+    /// toTextBuilder.sb().elements(x0,x1,x2,x3,x4).se(); 
+    /// // Is equivalent to:
+    /// toTextBuilder.sb().e(x0).e(x1).e(x2).e(x3).e(x4).se();
+    /// </code></example>
+    /// <para>Shorthand notation for <see cref="WriteSequenceElements"/>.</para>
+    /// </summary>    
+    IToTextBuilderBase elements (params object[] sequenceElements);
+    /// <summary>
+    /// <para>Writes out as sequence elements of the form <c>s+i0,s+i0+1,...,s+i1</c>.</para>
+    /// <example><code>
+    /// toTextBuilder.sbLiteral ("", "|", ">", "", "").elementsNumbered ("a", 1, 5).se();
+    /// var result = toTextBuilder.CheckAndConvertToString(); // returns: |a1>|a2>|a3>|a4>|a5>
+    /// </code></example>
+    /// </summary>    
+    IToTextBuilderBase elementsNumbered (string s, int i0, int i1);
+
+    /// <summary>
+    /// <para>Begins a new sequence for writing an instance of the passed Type.</para>
+    /// <para>Shorthand notation: <see cref="ib"/>.</para>
+    /// </summary>
     IToTextBuilderBase WriteInstanceBegin (Type type);
+    /// <summary>
+    /// <para>Begins a new sequence for writing an instance of the passed Type.</para>
+    /// <para>Shorthand notation for <see cref="WriteInstanceBegin"/>.</para>
+    /// </summary>
     IToTextBuilderBase ib (Type type);
 
-    IToTextBuilderBase WriteInstanceEnd ();
-    IToTextBuilderBase ie ();
 
-
+    /// <summary>
+    /// <para>Begins a new sequence for writing out the elements of an array. Note that arrays are handled automatically 
+    /// by the <see cref="WriteElement(object)"/>, etc methods, so normally there is no need to call this method explicitely.</para>
+    /// </summary>
     IToTextBuilderBase WriteSequenceArrayBegin ();
-    // TODO: Check that if ToTextprovider holds ToTextBuilderBase, exposing these through the interface is still necessary.
+    /// <summary>
+    /// <para>Writes out the passed array. Note that arrays are also handled automatically by <see cref="WriteElement(object)"/> so
+    /// normally there is no need to call this method explicitely.</para>
+    /// <para>Shorthand notation: <see cref="array"/>.</para>
+    /// </summary>
     IToTextBuilderBase WriteArray (Array array);
+    /// <summary>
+    /// <para>Writes out the passed array.</para>
+    /// <para>Shorthand notation for <see cref="WriteArray"/>.</para>
+    /// </summary>
     IToTextBuilderBase array (Array array);
-    
-    IToTextBuilderBase WriteEnumerable (IEnumerable collection);
-    IToTextBuilderBase collection (IEnumerable collection);
+
+    /// <summary>
+    /// <para>Writes out the passed enumerable. Note that enumerables are handled automatically 
+    /// by <see cref="WriteElement(object)"/>-methods, so normally there is no need to call this method explicitely.</para>
+    /// </summary>
+    IToTextBuilderBase WriteEnumerable (IEnumerable enumerable);
+    /// <summary>
+    /// <para>Writes out the passed enumerable.</para>
+    /// <para>Shorthand notation for <see cref="WriteEnumerable"/>.</para>
+    /// </summary>
+    IToTextBuilderBase enumerable (IEnumerable enumerable);
   }
 }
