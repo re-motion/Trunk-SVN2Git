@@ -116,6 +116,46 @@ namespace Remotion.UnitTests.Mixins.Globalization
     }
 
     [Test]
+    public void GetResourceDefinitions_SuccessOnType_SuccessOnMultipleMixins_WithDependency1 ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass<ClassWithMultiLingualResourcesAttributes> ()
+          .AddMixin<MixinAddingMultiLingualResourcesAttributes1> ()
+          .AddMixin<MixinAddingMultiLingualResourcesAttributes2> ().WithDependency<MixinAddingMultiLingualResourcesAttributes1>()
+          .EnterScope ())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+
+        CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes),
+            AttributesFor<ClassWithMultiLingualResourcesAttributes> (),
+            TupleFor<MixinAddingMultiLingualResourcesAttributes1> (),
+            TupleFor<MixinAddingMultiLingualResourcesAttributes2> ());
+      }
+    }
+
+    [Test]
+    public void GetResourceDefinitions_SuccessOnType_SuccessOnMultipleMixins_WithDependency2 ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass<ClassWithMultiLingualResourcesAttributes> ()
+          .AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().WithDependency<MixinAddingMultiLingualResourcesAttributes2> ()
+          .AddMixin<MixinAddingMultiLingualResourcesAttributes2> ()
+          .EnterScope ())
+      {
+        ResourceDefinition<MultiLingualResourcesAttribute>[] definitions =
+            EnumerableUtility.ToArray (_resolver.GetResourceDefinitionStream (typeof (ClassWithMultiLingualResourcesAttributes), false));
+        Assert.That (definitions.Length, Is.EqualTo (1));
+
+        CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes),
+            AttributesFor<ClassWithMultiLingualResourcesAttributes> (),
+            TupleFor<MixinAddingMultiLingualResourcesAttributes2> (),
+            TupleFor<MixinAddingMultiLingualResourcesAttributes1> ());
+      }
+    }
+
+    [Test]
     public void GetResourceDefinitions_SuccessOnBaseType_NoSuccessOnMixin ()
     {
       using (MixinConfiguration.BuildNew().ForClass<InheritedClassWithoutMultiLingualResourcesAttributes>().AddMixin<NullMixin>().EnterScope())

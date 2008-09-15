@@ -107,6 +107,59 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    [Ignore ("BindableObjectGlobalizationService currently does not support dynamic changes to the mixin configuration. (TODO: change that)")]
+    public void GetPropertyDisplayName_WithTwoMixins_WithDependency_IntegrationTest ()
+    {
+      using (MixinConfiguration.BuildFromActive ()
+          .ForClass<SimpleBusinessObjectClass> ()
+          .AddMixin<MixinAddingResources> ()
+          .AddMixin<MixinAddingResources2>().WithDependency<MixinAddingResources>()
+          .EnterScope ())
+      {
+        IPropertyInformation propertyInformation = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
+        Assert.That (_globalizationService.GetPropertyDisplayName (propertyInformation), Is.EqualTo ("Resource from mixin2"));
+      }
+
+      using (MixinConfiguration.BuildFromActive ()
+          .ForClass<SimpleBusinessObjectClass> ()
+          .AddMixin<MixinAddingResources> ().WithDependency<MixinAddingResources2> ()
+          .AddMixin<MixinAddingResources2> ()
+          .EnterScope ())
+      {
+        IPropertyInformation propertyInformation = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
+        Assert.That (_globalizationService.GetPropertyDisplayName (propertyInformation), Is.EqualTo ("Resource from mixin"));
+      }
+    }
+
+    [Test]
+    public void GetPropertyDisplayName_WithTwoMixins_WithDependency1_IntegrationTest ()
+    {
+      using (MixinConfiguration.BuildFromActive ()
+          .ForClass<SimpleBusinessObjectClass> ()
+          .AddMixin<MixinAddingResources> ()
+          .AddMixin<MixinAddingResources2> ().WithDependency<MixinAddingResources> ()
+          .EnterScope ())
+      {
+        IPropertyInformation propertyInformation = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
+        Assert.That (_globalizationService.GetPropertyDisplayName (propertyInformation), Is.EqualTo ("Resource from mixin2"));
+      }
+    }
+
+    [Test]
+    public void GetPropertyDisplayName_WithTwoMixins_WithDependency2_IntegrationTest ()
+    {
+      using (MixinConfiguration.BuildFromActive ()
+          .ForClass<SimpleBusinessObjectClass> ()
+          .AddMixin<MixinAddingResources> ().WithDependency<MixinAddingResources2> ()
+          .AddMixin<MixinAddingResources2> ()
+          .EnterScope ())
+      {
+        IPropertyInformation propertyInformation = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
+        Assert.That (_globalizationService.GetPropertyDisplayName (propertyInformation), Is.EqualTo ("Resource from mixin"));
+      }
+    }
+
+    [Test]
     public void GetPropertyDisplayName_WithPropertyAddedByMixin ()
     {
       BindableObjectClass bindableClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (ClassWithMixedPropertyAndResources));

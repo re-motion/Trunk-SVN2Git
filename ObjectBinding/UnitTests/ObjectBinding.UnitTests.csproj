@@ -82,7 +82,13 @@
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\TestTypeHidingProperties.cs" />
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\TestTypeWithInterfaces.cs" />
     <Compile Include="Core\BusinessObjectExtensionMethodsTest.cs" />
+    <Compile Include="Core\Globalization\MixinAddingResources2.Designer.cs">
+      <DependentUpon>MixinAddingResources2.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Core\TestDomain\ClassWithIdentityFromOtherBusinessObjectImplementation.cs" />
+    <Compile Include="Core\TestDomain\MixinAddingResources2.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttributeFromMixin.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttribute.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithoutAttributeAndWithSpecificBusinessObjectProviderAttribute.cs" />
@@ -314,6 +320,11 @@
     <EmbeddedResource Include="Core\Globalization\ClassWithMixedPropertyAndResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ClassWithMixedPropertyAndResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Globalization\MixinAddingResources2.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MixinAddingResources2.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Globalization\MixinAddingResources.resx">
