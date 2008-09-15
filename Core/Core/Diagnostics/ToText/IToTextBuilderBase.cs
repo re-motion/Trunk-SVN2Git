@@ -305,6 +305,28 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase elementsNumbered (string s, int i0, int i1);
 
     /// <summary>
+    /// <para>Writes the passed parameters out as a standard sequence.</para>
+    /// <example><code>
+    /// toTextBuilder.sequence(x0,x1,x2,x3,x4); 
+    /// // Is equivalent to:
+    /// toTextBuilder.sb().e(x0).e(x1).e(x2).e(x3).e(x4).se();
+    /// </code></example>
+    /// <para>Shorthand notation: <see cref="sequence"/>.</para>
+    /// </summary>
+    IToTextBuilderBase WriteSequence (params object[] sequenceElements);
+    /// <summary>
+    /// <para>Writes the passed parameters out as a standard sequence.</para>
+    /// <example><code>
+    /// toTextBuilder.sequence(x0,x1,x2,x3,x4); 
+    /// // Is equivalent to:
+    /// toTextBuilder.sb().e(x0).e(x1).e(x2).e(x3).e(x4).se();
+    /// </code></example>
+    /// <para>Shorthand notation for <see cref="WriteSequence"/>.</para>
+    /// </summary>    
+    IToTextBuilderBase sequence (params object[] sequenceElements);
+
+
+    /// <summary>
     /// <para>Begins a new sequence for writing an instance of the passed Type.</para>
     /// <para>Shorthand notation: <see cref="ib"/>.</para>
     /// </summary>

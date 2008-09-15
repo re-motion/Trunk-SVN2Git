@@ -479,12 +479,31 @@ namespace Remotion.Diagnostics.ToText
 
     public IToTextBuilderBase elementsNumbered (string s1, int i0, int i1)
     {
+      Assertion.IsTrue (IsInSequence);
       for (int i = i0; i <= i1; ++i)
       {
         WriteElement (s1 + i);
       }
       return this;
     }
+
+    public IToTextBuilderBase WriteSequence (params object[] sequenceElements)
+    {
+      WriteSequenceBegin ();
+      foreach (var obj in sequenceElements)
+      {
+        WriteElement (obj);
+      }
+      WriteSequenceEnd ();
+      return this;
+    }
+
+    public IToTextBuilderBase sequence (params object[] sequenceElements)
+    {
+      return WriteSequence (sequenceElements);
+    }
+
+
 
     public IToTextBuilderBase WriteRawElementBegin ()
     {

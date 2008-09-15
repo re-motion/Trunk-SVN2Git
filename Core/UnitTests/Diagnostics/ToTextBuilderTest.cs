@@ -712,6 +712,16 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (result, Is.EqualTo ("[a,2,b,3,c]"));
     }
 
+    [Test]
+    public void sequenceTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sequence("a", 2, "b", 3, "c");
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("(a,2,b,3,c)"));
+    }
+
 
     [Test]
     public void NestedSequencesWitMembersTest ()

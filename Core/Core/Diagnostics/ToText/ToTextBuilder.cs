@@ -352,5 +352,7 @@ namespace Remotion.Diagnostics.ToText
 
       return this;
     }
+
+
   }
 }
