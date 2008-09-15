@@ -113,7 +113,7 @@ namespace Remotion.UnitTests.Diagnostics
 line2   
 line3";
       To.TempLog.s ("ToTempLogTest").sEsc (s).s (s).e (() => s).Flush ();
-      Log (To.TempPath);
+      Log (To.LogFilePath);
     }
 
 
@@ -194,7 +194,7 @@ line3";
       To.TempLogXml.Begin ();
       To.TempLogXml.s ("ToTempLogXmlTest").e (() => magicNumber).e (() => age).e (() => street).Flush ();
       To.TempLogXml.End ();
-      Log (To.TempPath);
+      Log (To.LogFilePath);
     }
 
 
