@@ -39,11 +39,18 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
+
+    public void WriteEndElementAlways ()
+    {
+      _xmlWriter.WriteEndElement ();
+    }
+
     public void WriteEndElement ()
     {
       if (Enabled)
       {
-        _xmlWriter.WriteEndElement ();
+        //_xmlWriter.WriteEndElement ();
+        WriteEndElementAlways();
       }
     }
 

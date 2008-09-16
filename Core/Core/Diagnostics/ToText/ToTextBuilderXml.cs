@@ -190,7 +190,10 @@ namespace Remotion.Diagnostics.ToText
       //ArgumentUtility.CheckNotNull ("sequenceTag", sequenceTag);
 
       BeforeNewSequence ();
-      SequenceState = new SequenceStateHolder { Name = name, SequenceType = sequenceType, SequenceTag = sequenceTag, ElementTag = elementTag };
+      SequenceState = new SequenceStateHolder { 
+        Name = name, SequenceType = sequenceType, SequenceTag = sequenceTag, ElementTag = elementTag, 
+        SequenceStartWritten = Enabled
+      };
 
       //_disableableWriter.WriteStartElement ("e");
       //string elementTag = SequenceState.ElementTag;
@@ -212,7 +215,11 @@ namespace Remotion.Diagnostics.ToText
       
       if (SequenceState.SequenceTag != null)
       {
-        _disableableWriter.WriteEndElement ();
+        //_disableableWriter.WriteEndElement ();
+        if (SequenceState.SequenceStartWritten)
+        {
+          _disableableWriter.WriteEndElementAlways();
+        }
       }
 
       SequenceState = sequenceStack.Pop ();
@@ -259,7 +266,10 @@ namespace Remotion.Diagnostics.ToText
     public void Begin ()
     {
       PushSequenceState (new SequenceStateHolder());
-      SequenceState = new SequenceStateHolder { Name = null, SequenceType = null, SequenceTag = "remotion", ElementTag = null };
+      SequenceState = new SequenceStateHolder { 
+        Name = null, SequenceType = null, SequenceTag = "remotion", ElementTag = null,
+        SequenceStartWritten = Enabled
+      };
       //sequenceStack.Push (SequenceState);
       //PushSequenceState (SequenceState);
       //PushSequenceState (null);

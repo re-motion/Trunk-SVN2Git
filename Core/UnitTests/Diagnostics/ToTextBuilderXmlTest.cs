@@ -317,15 +317,37 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    public void SequenceAllFilterLevelsFilteredOutput (ToTextBuilderXml toTextBuilder)
+    {
+      toTextBuilder.Begin ();
+      toTextBuilder.sb ().e ("before");
+      toTextBuilder.sb ().e ("start");
+      toTextBuilder.writeIfMediumOrHigher.e ("m").writeIfSkeletonOrHigher.e ("s");
+      toTextBuilder.writeIfFull.sb ().e ("1").e ("2").e ("3").se ();
+      toTextBuilder.writeIfBasicOrHigher.e ("b").writeIfComplexOrHigher.e ("c").writeIfFull.e ("f");
+      toTextBuilder.e ("end").se ();
+      toTextBuilder.e ("after").se ();
+      toTextBuilder.End ();
+    }
 
-    //[ToTextSpecificHandler]
-    //class TestSimpleToTextBuilderXmlTestToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimpleToTextBuilderXmlTest>
-    //{
-    //  public override void ToText (TestSimpleToTextBuilderXmlTest t, IToTextBuilderBase toTextBuilder)
-    //  {
-    //    toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ();
-    //  }
-    //}
+
+    [Test]
+    public void SequenceComplexityFilteringTest ()
+    {
+      {
+        var stringWriter = new StringWriter ();
+        var toTextBuilder = CreateTextBuilderXml (stringWriter,false);
+        toTextBuilder.SetOutputComplexityToMedium ();
+        SequenceAllFilterLevelsFilteredOutput (toTextBuilder);
+        string result = stringWriter.ToString ();
+        log.It (result);
+
+        Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<remotion><seq><e>before</e><seq><e>start</e><e>m</e><e>s</e><e>b</e></seq></seq></remotion>"));
+      }
+    }
+
+
+
 
     public static ToTextProvider CreateTextProvider ()
     {

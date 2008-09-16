@@ -64,7 +64,7 @@ namespace Remotion.Diagnostics.ToText
 
     public string SequencePostfix { get; private set; }
 
-    public bool SequenceStartWritten { get; private set; }
+    public bool SequenceStartWritten { get; set; }
 
 
     /// <summary>
