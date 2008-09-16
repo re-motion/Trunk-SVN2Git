@@ -22,7 +22,7 @@ namespace Remotion.Configuration
   public abstract class ConfigurationWrapper
   {
     private static readonly DoubleCheckedLockingContainer<ConfigurationWrapper> s_current =
-        new DoubleCheckedLockingContainer<ConfigurationWrapper> (delegate { return CreateFromConfigurationManager (); });
+        new DoubleCheckedLockingContainer<ConfigurationWrapper> (CreateFromConfigurationManager);
 
     public static ConfigurationWrapper CreateFromConfigurationObject (System.Configuration.Configuration configuration)
     {

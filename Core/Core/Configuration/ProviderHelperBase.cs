@@ -53,8 +53,8 @@ namespace Remotion.Configuration
       ArgumentUtility.CheckNotNull ("configurationSection", configurationSection);
 
       _configurationSection = configurationSection;
-      _provider = new DoubleCheckedLockingContainer<TProvider> (delegate { return GetProviderFromConfiguration(); });
-      _providers = new DoubleCheckedLockingContainer<ProviderCollection<TProvider>> (delegate { return GetProvidersFromConfiguration(); });
+      _provider = new DoubleCheckedLockingContainer<TProvider> (GetProviderFromConfiguration);
+      _providers = new DoubleCheckedLockingContainer<ProviderCollection<TProvider>> (GetProvidersFromConfiguration);
     }
 
     protected abstract ConfigurationProperty CreateDefaultProviderNameProperty ();

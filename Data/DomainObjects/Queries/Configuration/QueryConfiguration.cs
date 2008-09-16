@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Queries.Configuration
 
     public QueryConfiguration ()
     {
-      _queries = new DoubleCheckedLockingContainer<QueryDefinitionCollection> (delegate { return LoadAllQueryDefinitions (); });
+      _queries = new DoubleCheckedLockingContainer<QueryDefinitionCollection> (LoadAllQueryDefinitions);
 
       _queryFilesProperty = new ConfigurationProperty (
           "queryFiles",

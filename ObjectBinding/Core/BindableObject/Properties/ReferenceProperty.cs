@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("concreteType", concreteType, typeof (IBusinessObject));
 
       _concreteType = concreteType;
-      _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (delegate { return GetReferenceClass(); });
+      _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (GetReferenceClass);
       _searchServiceType = GetSearchServiceType();
     }
 
