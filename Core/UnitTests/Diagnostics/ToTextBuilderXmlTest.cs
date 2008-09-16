@@ -317,17 +317,17 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    public void SequenceAllFilterLevelsFilteredOutput (ToTextBuilderXml toTextBuilder)
+    public void SequenceAllFilterLevelsFilteredOutput (ToTextBuilderXml toTextBuilderXml)
     {
-      toTextBuilder.Begin ();
-      toTextBuilder.sb ().e ("before");
-      toTextBuilder.sb ().e ("start");
-      toTextBuilder.writeIfMediumOrHigher.e ("m").writeIfSkeletonOrHigher.e ("s");
-      toTextBuilder.writeIfFull.sb ().e ("1").e ("2").e ("3").se ();
-      toTextBuilder.writeIfBasicOrHigher.e ("b").writeIfComplexOrHigher.e ("c").writeIfFull.e ("f");
-      toTextBuilder.e ("end").se ();
-      toTextBuilder.e ("after").se ();
-      toTextBuilder.End ();
+      toTextBuilderXml.Begin ();
+      toTextBuilderXml.sb ().e ("before");
+      toTextBuilderXml.sb ().e ("start");
+      toTextBuilderXml.writeIfMediumOrHigher.e ("m").writeIfSkeletonOrHigher.e ("s");
+      toTextBuilderXml.writeIfFull.sb ().e ("1").e ("2").e ("3").se ();
+      toTextBuilderXml.writeIfBasicOrHigher.e ("b").writeIfComplexOrHigher.e ("c").writeIfFull.e ("f");
+      toTextBuilderXml.e ("end").se ();
+      toTextBuilderXml.e ("after").se ();
+      toTextBuilderXml.End ();
     }
 
 
@@ -336,9 +336,9 @@ namespace Remotion.UnitTests.Diagnostics
     {
       {
         var stringWriter = new StringWriter ();
-        var toTextBuilder = CreateTextBuilderXml (stringWriter,false);
-        toTextBuilder.SetOutputComplexityToMedium ();
-        SequenceAllFilterLevelsFilteredOutput (toTextBuilder);
+        var toTextBuilderXml = CreateTextBuilderXml (stringWriter,false);
+        toTextBuilderXml.SetOutputComplexityToMedium ();
+        SequenceAllFilterLevelsFilteredOutput (toTextBuilderXml);
         string result = stringWriter.ToString ();
         log.It (result);
 
@@ -347,7 +347,26 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    [Test]
+    public void PartialXmlTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
 
+      //toTextBuilderXml.Begin ();
+      toTextBuilderXml.AllowNewline = false;
+      toTextBuilderXml.e ("first element");
+      toTextBuilderXml.sb ().e ("seq_begin");
+      toTextBuilderXml.sb ().e ("subseq_begin");
+      toTextBuilderXml.writeIfBasicOrHigher.e ("subseq_element");
+      toTextBuilderXml.e ("subseq_end").se ();
+      toTextBuilderXml.e ("seq_end").se ();
+      toTextBuilderXml.Flush();
+      //toTextBuilderXml.End ();
+      string result = stringWriter.ToString ();
+      log.It (result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<seq><e>before</e><seq><e>start</e><e>m</e><e>s</e><e>b</e></seq></seq>"));
+    }
 
     public static ToTextProvider CreateTextProvider ()
     {

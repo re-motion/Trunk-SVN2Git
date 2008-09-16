@@ -197,6 +197,17 @@ line3";
       Log (To.LogFilePath);
     }
 
+    [Test]
+    [Ignore]
+    public void ThankYouTest ()
+    {
+      var Thank = "You";
+      To.Console.e (() => Thank);
+    }
+
+
+
+
 
     public static void Log (string s)
     {

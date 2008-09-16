@@ -857,6 +857,18 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    [Test]
+    public void ElementOutsideSequenceTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      var someVar = 345.789;
+      toTextBuilder.e("xyz").e("abc");
+      toTextBuilder.e (() => someVar);
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("xyzabcsomeVar=345.789"));
+    }
+
 
     public static ToTextBuilder CreateTextBuilder ()
     {
