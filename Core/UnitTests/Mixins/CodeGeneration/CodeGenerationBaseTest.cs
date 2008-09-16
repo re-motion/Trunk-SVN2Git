@@ -16,6 +16,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
@@ -44,7 +45,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     private void DeleteFiles (string searchPattern)
     {
       foreach (string file in Directory.GetFiles (Environment.CurrentDirectory, searchPattern))
-        File.Delete (file);
+        FileUtility.DeleteAndWaitForCompletion (file);
     }
 
     [TearDown]

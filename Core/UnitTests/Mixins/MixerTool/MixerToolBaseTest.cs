@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -17,6 +18,7 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.MixerTool;
 using Remotion.Mixins.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Mixins.MixerTool
 {
@@ -28,7 +30,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [SetUp]
     public void SetUp ()
     {
-      _parameters = new MixerParameters();
+      _parameters = new MixerParameters ();
       ResetGeneratedFiles();
     }
 
@@ -56,9 +58,9 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     public void ResetGeneratedFiles ()
     {
       if (File.Exists (UnsignedAssemblyPath))
-        File.Delete (UnsignedAssemblyPath);
+        FileUtility.DeleteAndWaitForCompletion (UnsignedAssemblyPath);
       if (File.Exists (SignedAssemblyPath))
-        File.Delete (SignedAssemblyPath);
+        FileUtility.DeleteAndWaitForCompletion (SignedAssemblyPath);
     }
 
     public Type GetFirstMixedType (Assembly assembly)
