@@ -277,7 +277,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     public void SearchParentGroups ()
     {
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (GroupPropertiesSearchService), new GroupPropertiesSearchService ());
-      IBusinessObjectClass groupClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (Group));
+      IBusinessObjectClass groupClass = BindableObjectProvider.GetBindableObjectClass (typeof (Group));
       IBusinessObjectReferenceProperty parentGroupProperty = (IBusinessObjectReferenceProperty) groupClass.GetPropertyDefinition ("Parent");
       Assert.That (parentGroupProperty, Is.Not.Null);
 

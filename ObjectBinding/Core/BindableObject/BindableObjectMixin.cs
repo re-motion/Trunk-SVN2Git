@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.BindableObject
     protected override BindableObjectClass InitializeBindableObjectClass()
     {
       Type targetType = MixinReflector.GetMixinConfiguration (this, This).TargetClass.Type;
-      return BindableObjectProvider.GetBindableObjectClassFromProvider (targetType);
+      return BindableObjectProvider.GetBindableObjectClass (targetType);
     }
   }
 }

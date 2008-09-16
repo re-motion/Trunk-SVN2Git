@@ -33,7 +33,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       _testHelper.Transaction.EnterNonDiscardingScope();
 
       _searchService = new RolePropertiesSearchService();
-      IBusinessObjectClass userClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (User));
+      IBusinessObjectClass userClass = BindableObjectProvider.GetBindableObjectClass (typeof (User));
       _tenantProperty = (IBusinessObjectReferenceProperty) userClass.GetPropertyDefinition ("Tenant");
       Assert.That (_tenantProperty, Is.Not.Null);
     }

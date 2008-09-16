@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       _testHelper.Transaction.EnterNonDiscardingScope ();
 
       _searchService = new AccessControlEntryPropertiesSearchService ();
-      IBusinessObjectClass aceClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (AccessControlEntry));
+      IBusinessObjectClass aceClass = BindableObjectProvider.GetBindableObjectClass (typeof (AccessControlEntry));
       _property = (IBusinessObjectReferenceProperty) aceClass.GetPropertyDefinition ("SpecificAbstractRole");
       Assert.That (_property, Is.Not.Null);
     }

@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _valueBNull = (IBusinessObject) TypeWithReference.Create (TypeWithReference.Create ("B"), null);
 
 
-      _class = BindableObjectProvider.GetBindableObjectClassFromProvider(typeof (TypeWithReference));
+      _class = BindableObjectProvider.GetBindableObjectClass(typeof (TypeWithReference));
 
 
       _firstValuePath = BusinessObjectPropertyPath.Parse (_class, "FirstValue");

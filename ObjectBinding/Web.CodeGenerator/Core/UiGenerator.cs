@@ -157,7 +157,7 @@ namespace Remotion.ObjectBinding.Web.CodeGenerator
 					ClassInfo classInfo = new ClassInfo();
 
 					classInfo.type = classDefinition.ClassType;
-					classInfo.objectClass = BindableObjectProvider.GetBindableObjectClassFromProvider (classDefinition.ClassType);
+					classInfo.objectClass = BindableObjectProvider.GetBindableObjectClass (classDefinition.ClassType);
 					classInfo.properties = GetProperties(classInfo.objectClass.GetPropertyDefinitions());
 
 					classInfoList.Add(classInfo);

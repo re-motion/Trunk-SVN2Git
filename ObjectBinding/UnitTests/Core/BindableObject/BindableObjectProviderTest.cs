@@ -30,6 +30,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       base.SetUp();
 
       _provider = new BindableObjectProvider();
+      BindableObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), _provider);
       _metadataFactoryStub = MockRepository.GenerateStub<IMetadataFactory>();
       _serviceFactoryStub = MockRepository.GenerateStub<IBusinessObjectServiceFactory>();
     }
@@ -116,6 +117,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       IClassReflector classReflectorMock = mockRepository.StrictMock<IClassReflector>();
 
       BindableObjectProvider provider = new BindableObjectProvider (metadataFactoryMock, _serviceFactoryStub);
+      BindableObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), provider);
       Type targetType = typeof (SimpleBusinessObjectClass);
       Type concreteType = Mixins.TypeUtility.GetConcreteMixedType (targetType);
       BindableObjectClass expectedBindableObjectClass = new BindableObjectClass (concreteType, provider);
@@ -125,7 +127,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       mockRepository.ReplayAll();
 
-      BindableObjectClass actual = provider.GetBindableObjectClass (targetType);
+      BindableObjectClass actual = BindableObjectProvider.GetBindableObjectClass (targetType);
 
       mockRepository.VerifyAll();
 
@@ -136,8 +138,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetBindableObjectClass_SameTwice ()
     {
       Assert.That (
-          _provider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass)),
-          Is.SameAs (_provider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass))));
+          BindableObjectProvider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass)),
+          Is.SameAs (BindableObjectProvider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass))));
     }
 
     [Test]
@@ -148,21 +150,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
             + "Parameter name: concreteType")]
     public void GetBindableObjectClass_WithTypeNotUsingBindableObjectMixin ()
     {
-      _provider.GetBindableObjectClass (typeof (SimpleReferenceType));
-    }
-
-    [Test]
-    public void GetBindableObjectClassFromProvider ()
-    {
-      BindableObjectClass actual = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (SimpleBusinessObjectClass));
-
-      Assert.That (actual, Is.Not.Null);
-      Assert.That (actual.TargetType, Is.SameAs (typeof (SimpleBusinessObjectClass)));
-      Assert.That (
-          actual,
-          Is.SameAs (
-              BindableObjectProvider.GetProviderForBindableObjectType (typeof (SimpleBusinessObjectClass)).GetBindableObjectClass (
-                  typeof (SimpleBusinessObjectClass))));
+      BindableObjectProvider.GetBindableObjectClass (typeof (SimpleReferenceType));
     }
 
     [Test]

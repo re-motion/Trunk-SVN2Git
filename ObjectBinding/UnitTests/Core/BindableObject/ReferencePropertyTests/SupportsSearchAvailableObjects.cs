@@ -22,43 +22,32 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
   [TestFixture]
   public class SupportsSearchAvailableObjects : TestBase
   {
-    private BindableObjectProvider _businessObjectProvider;
     private MockRepository _mockRepository;
+    private BindableObjectProvider _bindableObjectProvider;
+    private BindableObjectProvider _bindableObjectWithIdentityProvider;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _businessObjectProvider = new BindableObjectProvider();
       _mockRepository = new MockRepository();
+      _bindableObjectProvider = new BindableObjectProvider ();
+      _bindableObjectWithIdentityProvider = new BindableObjectProvider ();
+
+      BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProvider);
+      BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectWithIdentityProvider);
     }
 
     [Test]
-    public void SearchServiceFromType_AndRequiresIdentity ()
+    public void SearchServiceFromType ()
     {
       ISearchServiceOnProperty mockService = _mockRepository.StrictMock<ISearchServiceOnProperty>();
-      IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromPropertyWithIdentity");
+      IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromProperty");
 
       Expect.Call (mockService.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
 
-      _businessObjectProvider.AddService (mockService);
-      bool actual = property.SupportsSearchAvailableObjects;
-
-      _mockRepository.VerifyAll();
-      Assert.That (actual, Is.True);
-    }
-
-    [Test]
-    public void SearchServiceFromType_AndNotRequiresIdentity ()
-    {
-      ISearchServiceOnType mockService = _mockRepository.StrictMock<ISearchServiceOnType>();
-      IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromType");
-
-      Expect.Call (mockService.SupportsProperty (property)).Return (true);
-      _mockRepository.ReplayAll ();
-
-      _businessObjectProvider.AddService (mockService);
+      _bindableObjectWithIdentityProvider.AddService (mockService);
       bool actual = property.SupportsSearchAvailableObjects;
 
       _mockRepository.VerifyAll();
@@ -70,13 +59,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     {
       ISearchServiceOnProperty mockService = _mockRepository.StrictMock<ISearchServiceOnProperty>();
       ISearchServiceOnType stubSearchServiceOnType = _mockRepository.StrictMock<ISearchServiceOnType>();
-      IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromPropertyWithIdentity");
+      IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromProperty");
 
       Expect.Call (mockService.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
 
-      _businessObjectProvider.AddService (stubSearchServiceOnType);
-      _businessObjectProvider.AddService (mockService);
+      _bindableObjectWithIdentityProvider.AddService (stubSearchServiceOnType);
+      _bindableObjectWithIdentityProvider.AddService (mockService);
       bool actual = property.SupportsSearchAvailableObjects;
 
       _mockRepository.VerifyAll();
@@ -96,14 +85,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     {
       ISearchAvailableObjectsService mockAvailableObjectsService = _mockRepository.StrictMock<ISearchAvailableObjectsService>();
       IBusinessObjectClassService mockBusinessObjectClassService = _mockRepository.StrictMock<IBusinessObjectClassService>();
+      IBusinessObjectProvider mockBusinessObjectProvider = _mockRepository.StrictMock<IBusinessObjectProvider>();
       IBusinessObjectClassWithIdentity mockBusinessObjectClassWithIdentity = _mockRepository.StrictMock<IBusinessObjectClassWithIdentity>();
-      IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoSearchServiceWithIdentity");
+      IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoSearchService");
 
+      Expect.Call (mockBusinessObjectClassWithIdentity.BusinessObjectProvider).Return (mockBusinessObjectProvider).Repeat.Any ();
+      Expect.Call (mockBusinessObjectProvider.GetService (typeof (ISearchAvailableObjectsService))).Return (mockAvailableObjectsService);
+      Expect.Call (mockBusinessObjectClassService.GetBusinessObjectClass (typeof (ClassFromOtherBusinessObjectImplementation)))
+          .Return (mockBusinessObjectClassWithIdentity);
       Expect.Call (mockAvailableObjectsService.SupportsProperty (property)).Return (true);
       _mockRepository.ReplayAll();
 
-      _businessObjectProvider.AddService (mockAvailableObjectsService);
-      _businessObjectProvider.AddService (mockBusinessObjectClassService);
+      _bindableObjectProvider.AddService (mockBusinessObjectClassService);
       bool actual = property.SupportsSearchAvailableObjects;
 
       _mockRepository.VerifyAll();
@@ -113,7 +106,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     [Test]
     public void WithoutSearchServiceAttribute_AndNoDefaultSearchService ()
     {
+      IBusinessObjectClassService mockBusinessObjectClassService = _mockRepository.StrictMock<IBusinessObjectClassService> ();
+      IBusinessObjectProvider mockBusinessObjectProvider = _mockRepository.StrictMock<IBusinessObjectProvider> ();
+      IBusinessObjectClassWithIdentity mockBusinessObjectClassWithIdentity = _mockRepository.StrictMock<IBusinessObjectClassWithIdentity> ();
       IBusinessObjectReferenceProperty property = CreatePropertyWithoutMixing ("NoSearchService");
+
+      Expect.Call (mockBusinessObjectClassWithIdentity.BusinessObjectProvider).Return (mockBusinessObjectProvider).Repeat.Any ();
+      Expect.Call (mockBusinessObjectProvider.GetService (typeof (ISearchAvailableObjectsService))).Return (null);
+      Expect.Call (mockBusinessObjectClassService.GetBusinessObjectClass (typeof (ClassFromOtherBusinessObjectImplementation)))
+          .Return (mockBusinessObjectClassWithIdentity);
+      _mockRepository.ReplayAll ();
+      
+      _bindableObjectProvider.AddService (mockBusinessObjectClassService);
 
       Assert.That (property.SupportsSearchAvailableObjects, Is.False);
     }
@@ -132,7 +136,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
     private PropertyBase.Parameters GetPropertyParameters (string propertyName)
     {
-      return GetPropertyParameters (GetPropertyInfo (typeof (ClassWithBusinessObjectProperties), propertyName), _businessObjectProvider);
+      return GetPropertyParameters (GetPropertyInfo (typeof (ClassWithBusinessObjectProperties), propertyName), _bindableObjectProvider);
     }
   }
 }

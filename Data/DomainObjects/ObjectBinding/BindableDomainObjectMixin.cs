@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     protected override BindableObjectClass InitializeBindableObjectClass ()
     {
-      return BindableObjectProvider.GetBindableObjectClassFromProvider (This.GetPublicDomainObjectType());
+      return BindableObjectProvider.GetBindableObjectClass (This.GetPublicDomainObjectType());
     }
 
     public string UniqueIdentifier

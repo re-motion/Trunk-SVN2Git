@@ -147,18 +147,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleReferenceType' does not have the "
+        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not have the "
         + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
     public void GetBusinessObjectClass_WithTypeNotUsingBindableObjectMixin ()
     {
       Expect.Call (
           _mockDesignerHost.GetType (
-              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleReferenceType, Remotion.ObjectBinding.UnitTests"))
-          .Return (typeof (SimpleReferenceType))
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject, Remotion.ObjectBinding.UnitTests"))
+          .Return (typeof (ManualBusinessObject))
           .Repeat.AtLeastOnce();
       _mockRepository.ReplayAll();
 
-      _dataSource.Type = typeof (SimpleReferenceType);
+      _dataSource.Type = typeof (ManualBusinessObject);
       Dev.Null = _dataSource.BusinessObjectClass;
 
       _mockRepository.VerifyAll();

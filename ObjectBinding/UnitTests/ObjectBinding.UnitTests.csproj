@@ -130,7 +130,7 @@
     <Compile Include="Core\TestDomain\ClassWithMixedProperty.cs" />
     <Compile Include="Core\TestDomain\ClassWithOverriddenDisplayName.cs" />
     <Compile Include="Core\TestDomain\ClassWithResources.cs" />
-    <Compile Include="Core\TestDomain\ClassWithSearchServiceTypeAttribute.cs" />
+    <Compile Include="Core\TestDomain\ClassWithIdentityAndSearchServiceTypeAttribute.cs" />
     <Compile Include="Core\TestDomain\ClassWithUndefinedEnumValue.cs" />
     <Compile Include="Core\TestDomain\ClassWithDisabledEnumValue.cs" />
     <Compile Include="Core\TestDomain\ClassWithManualIdentity.cs" />

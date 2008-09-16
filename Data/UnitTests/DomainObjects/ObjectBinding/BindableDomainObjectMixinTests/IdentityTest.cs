@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (IGetObjectService), new BindableDomainObjectGetObjectService());
       BindableSampleDomainObject original = BindableSampleDomainObject.NewObject ();
       BindableObjectClassWithIdentity boClass =
-          (BindableObjectClassWithIdentity) BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (BindableSampleDomainObject));
+          (BindableObjectClassWithIdentity) BindableObjectProvider.GetBindableObjectClass (typeof (BindableSampleDomainObject));
       Assert.AreSame (original, boClass.GetObject (original.ID.ToString ()));
     }
   }

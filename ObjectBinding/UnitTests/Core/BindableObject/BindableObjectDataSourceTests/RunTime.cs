@@ -73,17 +73,19 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
     public void GetBusinessObjectClass_WithValidType ()
     {
       _dataSource.Type = typeof (SimpleBusinessObjectClass);
-      Assert.That (_dataSource.BusinessObjectClass, Is.SameAs (_provider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass))));
+      Type type = typeof (SimpleBusinessObjectClass);
+      ArgumentUtility.CheckNotNull ("type", type);
+      Assert.That (_dataSource.BusinessObjectClass, Is.SameAs (BindableObjectProvider.GetBindableObjectClass (type)));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage =
-        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleReferenceType' does not have the "
+        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not have the "
         + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
     public void GetBusinessObjectClass_WithTypeNotUsingBindableObjectMixin ()
     {
-      _dataSource.Type = typeof (SimpleReferenceType);
+      _dataSource.Type = typeof (ManualBusinessObject);
       Dev.Null = _dataSource.BusinessObjectClass;
     }
   }

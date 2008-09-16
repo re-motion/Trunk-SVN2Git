@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Utilities;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
@@ -23,26 +24,43 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
   [TestFixture]
   public class GetReferenceClass : TestBase
   {
-    private BindableObjectProvider _businessObjectProvider;
     private MockRepository _mockRepository;
+    private BindableObjectProvider _bindableObjectProvider;
+    private BindableObjectProvider _bindableObjectWithIdentityProvider;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _businessObjectProvider = new BindableObjectProvider ();
       _mockRepository = new MockRepository();
+      _bindableObjectProvider = new BindableObjectProvider ();
+      _bindableObjectWithIdentityProvider = new BindableObjectProvider ();
+
+      BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProvider);
+      BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectWithIdentityProvider);
     }
 
     [Test]
     public void UseBindableObjectProvider ()
     {
       IBusinessObjectReferenceProperty property = new ReferenceProperty (
-          new PropertyBase.Parameters (_businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleBusinessObjectClass>), "Scalar"),
-          typeof (SimpleBusinessObjectClass), null, false, false),
-          TypeFactory.GetConcreteType (typeof (SimpleBusinessObjectClass)));
+          new PropertyBase.Parameters (
+              _bindableObjectProvider,
+              GetPropertyInfo (typeof (ClassWithReferenceType<ClassWithIdentity>), "Scalar"),
+              typeof (ClassWithIdentity),
+              null,
+              false,
+              false),
+          TypeFactory.GetConcreteType (typeof (ClassWithIdentity)));
 
-      Assert.That (property.ReferenceClass, Is.SameAs (_businessObjectProvider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass))));
+      Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProvider.GetBindableObjectClass (typeof (ClassWithIdentity))));
+      Assert.That (
+          property.BusinessObjectProvider,
+          Is.SameAs (BindableObjectProvider.GetProviderForBindableObjectType(typeof (ClassWithReferenceType<ClassWithIdentity>))));
+      Assert.That (
+          property.ReferenceClass.BusinessObjectProvider,
+          Is.SameAs (BindableObjectProvider.GetProviderForBindableObjectType (typeof (ClassWithIdentity))));
+      Assert.That (property.ReferenceClass.BusinessObjectProvider, Is.Not.SameAs (property.BusinessObjectProvider));
     }
 
     [Test]
@@ -57,7 +75,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       Expect.Call (mockService.GetBusinessObjectClass (typeFromOtherBusinessObjectProvider)).Return (expectedClass);
       _mockRepository.ReplayAll();
 
-      _businessObjectProvider.AddService (typeof (IBusinessObjectClassService), mockService);
+      _bindableObjectProvider.AddService (typeof (IBusinessObjectClassService), mockService);
       IBusinessObjectClass actualClass = property.ReferenceClass;
 
       _mockRepository.VerifyAll();
@@ -87,14 +105,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     {
       IBusinessObjectReferenceProperty property = CreateProperty ("Scalar", typeof (ClassFromOtherBusinessObjectImplementation));
 
-      _businessObjectProvider.AddService (typeof (IBusinessObjectClassService), new StubBusinessObjectClassService());
+      _bindableObjectProvider.AddService (typeof (IBusinessObjectClassService), new StubBusinessObjectClassService());
       Dev.Null = property.ReferenceClass;
     }
 
     private ReferenceProperty CreateProperty (string propertyName, Type propertyType)
     {
       return new ReferenceProperty (
-        GetPropertyParameters (GetPropertyInfo (typeof (ClassWithReferenceType<>).MakeGenericType (propertyType), propertyName), _businessObjectProvider),
+        GetPropertyParameters (GetPropertyInfo (typeof (ClassWithReferenceType<>).MakeGenericType (propertyType), propertyName), _bindableObjectProvider),
         propertyType);
     }
   }

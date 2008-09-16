@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [SetUp]
     public virtual void SetUp ()
     {
-      _stringValueClass = BindableObjectProvider.GetBindableObjectClassFromProvider(typeof (TypeWithString));
+      _stringValueClass = BindableObjectProvider.GetBindableObjectClass(typeof (TypeWithString));
 
       _stringValuePropertyPath = BusinessObjectPropertyPath.Parse (_stringValueClass, "FirstValue");
 

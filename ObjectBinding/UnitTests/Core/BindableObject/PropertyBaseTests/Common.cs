@@ -15,6 +15,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
@@ -30,7 +31,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       base.SetUp();
 
       _bindableObjectProvider = new BindableObjectProvider();
-      _mockRepository = new MockRepository();
+      BusinessObjectProvider.SetProvider<BindableObjectProviderAttribute> (_bindableObjectProvider);
+      BusinessObjectProvider.SetProvider<BindableObjectWithIdentityProviderAttribute> (_bindableObjectProvider);
+      _mockRepository = new MockRepository ();
     }
 
     [Test]
@@ -159,7 +162,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     [Test]
     public void SetAndGetReflectedClass ()
     {
-      BindableObjectClass bindableObjectClass = _bindableObjectProvider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
+      Type type = typeof (SimpleBusinessObjectClass);
+      ArgumentUtility.CheckNotNull ("type", type);
+      BindableObjectClass bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (type);
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
               _bindableObjectProvider,
@@ -184,11 +189,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     public void SetReflectedClass_FromDifferentProviders ()
     {
       BindableObjectProvider provider = new BindableObjectProvider();
-      BindableObjectClass bindableObjectClass = provider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
+      Type type = typeof (SimpleBusinessObjectClass);
+      ArgumentUtility.CheckNotNull ("type", type);
+      BindableObjectClass bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (type);
 
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
-              _bindableObjectProvider,
+              provider,
               GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
               typeof (string),
               null,
@@ -208,7 +215,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
         + "\r\nProperty 'String'")]
     public void SetReflectedClass_Twice ()
     {
-      BindableObjectClass bindableObjectClass = _bindableObjectProvider.GetBindableObjectClass (typeof (SimpleBusinessObjectClass));
+      Type type = typeof (SimpleBusinessObjectClass);
+      ArgumentUtility.CheckNotNull ("type", type);
+      BindableObjectClass bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (type);
 
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
@@ -220,7 +229,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               false));
 
       property.SetReflectedClass (bindableObjectClass);
-      property.SetReflectedClass (_bindableObjectProvider.GetBindableObjectClass (typeof (ClassWithIdentity)));
+      Type type1 = typeof (ClassWithIdentity);
+      ArgumentUtility.CheckNotNull ("type", type1);
+      property.SetReflectedClass (BindableObjectProvider.GetBindableObjectClass (type1));
     }
 
     [Test]

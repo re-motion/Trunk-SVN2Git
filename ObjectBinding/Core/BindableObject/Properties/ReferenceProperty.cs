@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       get
       {
-        ISearchAvailableObjectsService searchService = (ISearchAvailableObjectsService) BusinessObjectProvider.GetService (_searchServiceType);
+        ISearchAvailableObjectsService searchService = GetSearchService();
         if (searchService == null)
           return false;
 
@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 ReflectedClass.Identifier));
       }
 
-      ISearchAvailableObjectsService searchService = (ISearchAvailableObjectsService) BusinessObjectProvider.GetService (_searchServiceType);
+      ISearchAvailableObjectsService searchService = GetSearchService ();
       Assertion.IsNotNull (searchService, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceType.FullName);
 
       return searchService.Search (referencingObject, this, searchStatement);
@@ -110,7 +110,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private IBusinessObjectClass GetReferenceClass ()
     {
       if (IsBindableObjectImplementation())
-        return BusinessObjectProvider.GetBindableObjectClass (UnderlyingType);
+        return BindableObjectProvider.GetBindableObjectClass (UnderlyingType);
 
       return GetReferenceClassFromService();
     }
@@ -153,6 +153,11 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 typeof (BusinessObjectProvider).FullName));
       }
       return service;
+    }
+
+    private ISearchAvailableObjectsService GetSearchService ()
+    {
+      return (ISearchAvailableObjectsService) ReferenceClass.BusinessObjectProvider.GetService (_searchServiceType);
     }
 
     private Type GetSearchServiceType ()

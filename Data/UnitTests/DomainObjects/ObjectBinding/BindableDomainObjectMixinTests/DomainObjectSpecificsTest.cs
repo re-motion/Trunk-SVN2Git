@@ -29,8 +29,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public override void SetUp ()
     {
       base.SetUp ();
-      _businessObjectClassWithProperties = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (BindableDomainObjectWithProperties));
-      _businessObjectSampleClass = BindableObjectProvider.GetBindableObjectClassFromProvider (typeof (BindableSampleDomainObject));
+      _businessObjectClassWithProperties = BindableObjectProvider.GetBindableObjectClass (typeof (BindableDomainObjectWithProperties));
+      _businessObjectSampleClass = BindableObjectProvider.GetBindableObjectClass (typeof (BindableSampleDomainObject));
     }
 
     [Test]

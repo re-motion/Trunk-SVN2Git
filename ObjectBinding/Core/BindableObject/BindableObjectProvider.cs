@@ -84,16 +84,18 @@ namespace Remotion.ObjectBinding.BindableObject
     /// Use this method as a shortcut to retrieve the <see cref="BindableObjectClass"/> for a <see cref="Type"/> 
     /// that has the <see cref="BindableObjectMixinBase{T}"/> applied without first retrieving the matching provider.
     /// </summary>
-    /// <param name="type">The <see cref="Type"/> to retrieve the <see cref="BindableObjectClass"/> for.</param>
+    /// <param name="type">The type to get a <see cref="BindableObjectClass"/> for. This type must have a mixin derived from
+    /// <see cref="BindableObjectMixinBase{TBindableObject}"/> configured, and it is recommended to specify the simple target type rather then the
+    /// generated mixed type.</param>
     /// <returns>Returns the <see cref="BindableObjectClass"/> for the <paramref name="type"/>.</returns>
-    public static BindableObjectClass GetBindableObjectClassFromProvider (Type type)
+    public static BindableObjectClass GetBindableObjectClass (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
       BindableObjectProvider provider = GetProviderForBindableObjectType (type);
       Assertion.IsNotNull (provider, "No BindableObjectProvider associated with type '{0}'.", type.FullName);
 
-      return provider.GetBindableObjectClass (type);
+      return provider.GetBindableObjectClassInternal (type);
     }
 
     private readonly InterlockedDataStore<Type, BindableObjectClass> _businessObjectClassStore = new InterlockedDataStore<Type, BindableObjectClass>();
@@ -119,20 +121,6 @@ namespace Remotion.ObjectBinding.BindableObject
       _metadataFactory = metadataFactory;
     }
 
-    /// <summary>
-    /// Gets the <see cref="BindableObjectClass"/> for the specified <paramref name="type"/>.
-    /// </summary>
-    /// <param name="type">The type to get a <see cref="BindableObjectClass"/> for. This type must have a mixin derived from
-    /// <see cref="BindableObjectMixinBase{TBindableObject}"/> configured, and it is recommended to specify the simple target type rather then the
-    /// generated mixed type.</param>
-    /// <returns>A <see cref="BindableObjectClass"/> for the given <paramref name="type"/>.</returns>
-    public BindableObjectClass GetBindableObjectClass (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-
-      return _businessObjectClassStore.GetOrCreateValue (type, CreateBindableObjectClass);
-    }
-
     /// <summary>Gets the MetadataFactory for this <see cref="BindableObjectProvider"/></summary>
     public IMetadataFactory MetadataFactory
     {
@@ -143,6 +131,11 @@ namespace Remotion.ObjectBinding.BindableObject
     protected override IDataStore<Type, IBusinessObjectService> ServiceStore
     {
       get { return _serviceStore; }
+    }
+
+    private BindableObjectClass GetBindableObjectClassInternal (Type type)
+    {
+      return _businessObjectClassStore.GetOrCreateValue (type, CreateBindableObjectClass);
     }
 
     private BindableObjectClass CreateBindableObjectClass (Type type)

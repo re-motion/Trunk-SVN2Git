@@ -9,16 +9,20 @@
  */
 
 using System;
+using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
-  [BindableObject]
+  [BindableObjectWithIdentity]
   [SearchAvailableObjectsServiceType (typeof (ISearchServiceOnType))]
-  public class ClassWithSearchServiceTypeAttribute
+  public class ClassWithIdentityAndSearchServiceTypeAttribute
   {
-    public ClassWithSearchServiceTypeAttribute ()
+    public ClassWithIdentityAndSearchServiceTypeAttribute ()
     {
     }
+
+    [OverrideMixin]
+    public string UniqueIdentifier { get; private set; }
   }
 }
