@@ -210,15 +210,12 @@ namespace Remotion.Diagnostics.ToText
     {
       Assertion.IsTrue (IsInSequence);
       
-      //_disableableWriter.WriteEndElement ();
-
       if (SequenceState.SequenceTag != null)
       {
         _disableableWriter.WriteEndElement ();
       }
 
       SequenceState = sequenceStack.Pop ();
-      //AfterWriteElement (); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
 

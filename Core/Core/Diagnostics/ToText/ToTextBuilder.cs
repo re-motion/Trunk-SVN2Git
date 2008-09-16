@@ -184,9 +184,8 @@ namespace Remotion.Diagnostics.ToText
     protected IToTextBuilderBase SequenceLiteralBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
       BeforeNewSequence ();
-      SequenceState = new SequenceStateHolder (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
+      SequenceState = new SequenceStateHolder (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix, Enabled);
       _disableableWriter.Write (SequenceState.SequencePrefix);
-      //string name = SequenceState.Name;
       if (name.Length > 0)
       {
         _disableableWriter.Write (name);
@@ -305,7 +304,14 @@ namespace Remotion.Diagnostics.ToText
     {
       Assertion.IsTrue (IsInSequence);
       _disableableWriter.ClearDelayedPrefix(); // sequence closes = > clear delayed element separator 
-      _disableableWriter.Write (SequenceState.SequencePostfix);
+      
+      //_disableableWriter.Write (SequenceState.SequencePostfix);
+
+      // Always write the sequence end if the start was written
+      if (SequenceState.SequenceStartWritten)
+      {
+        _disableableWriter.WriteAlways (SequenceState.SequencePostfix);
+      }
 
       SequenceState = sequenceStack.Pop ();
 

@@ -467,6 +467,7 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
     [Test]
+    [Ignore]
     public void ComplexArrayTest ()
     {
       ToTextProvider toText = CreateTextProvider ();
@@ -852,6 +853,96 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (toTextProvider.ToTextString (test), Is.EqualTo ("[ToTextProviderExtendedCtorTest:Test]"));
 
     }
+
+
+
+
+    //[Test]
+    //public void OutputComplexitySequenceTest ()
+    //{
+    //  ToTextProvider toText = CreateTextProvider ();
+    //  toText.RegisterSpecificTypeHandler<Test> (
+    //    (x, ttb) => ttb.sb ().e (x.Name).nl ().e (x.Int).nl ().writeIfFull.e (x.RectangularArray3D).se ());
+    //  toText.RegisterSpecificTypeHandler<Test2> (
+    //    (x, ttb) => NamedSequenceBegin (ttb, "Test2").e (x.Name).e (x.Int).e (x.RectangularArray2D).se ());
+    //  var test = new Test ("That's not my name", 179);
+    //  var at2 = new Test2[3, 3, 3];
+
+    //  for (int i0 = 0; i0 < 2; i0++)
+    //  {
+    //    for (int i1 = 0; i1 < 2; i1++)
+    //    {
+    //      for (int i2 = 0; i2 < 2; i2++)
+    //      {
+    //        var test2 = new Test2 (String.Format ("{0}-{1}-{2}", i0, i1, i2), i0 ^ i1 ^ i2);
+    //        test2.RectangularArray2D = new string[,] { { "A" + i0, "B" + 1 }, { "C" + i2, "D" } };
+    //        at2[i0, i1, i2] = test2;
+    //      }
+    //    }
+    //  }
+    //  test.RectangularArray3D = new Object[,,]
+    //                            {
+    //                                {
+    //                                    { at2[0, 0, 0], at2[0, 0, 1] }, { at2[0, 1, 0], at2[0, 1, 1] },
+    //                                },
+    //                                {
+    //                                    { at2[1, 0, 0], at2[1, 0, 1] }, { at2[1, 1, 0], at2[1, 1, 1] },
+    //                                },
+    //                            };
+
+
+
+    //  var toTextBuilder = new ToTextBuilder (toText);
+    //  toTextBuilder.SetOutputComplexityToSkeleton ();
+    //  toText.ToText (test, toTextBuilder);
+    //  string toTextTest = toTextBuilder.CheckAndConvertToString ();
+    //  Log ("toTextTest=" + toTextTest);
+    //}
+
+
+
+    [Test]
+    public void BigBozoTest ()
+    {
+      ToTextProvider toText = CreateTextProvider ();
+      toText.RegisterSpecificTypeHandler<Test> (
+        (x, ttb) => ttb.sb().e (x.Name).nl().e (x.Int).nl().writeIfFull.e (x.RectangularArray3D).se ());
+      toText.RegisterSpecificTypeHandler<Test2> (
+        (x, ttb) => NamedSequenceBegin (ttb, "Test2").e (x.Name).e (x.Int).e (x.RectangularArray2D).se ());
+      var test = new Test ("That's not my name", 179);
+      var at2 = new Test2[3, 3, 3];
+
+      for (int i0 = 0; i0 < 2; i0++)
+      {
+        for (int i1 = 0; i1 < 2; i1++)
+        {
+          for (int i2 = 0; i2 < 2; i2++)
+          {
+            var test2 = new Test2 (String.Format ("{0}-{1}-{2}", i0, i1, i2), i0 ^ i1 ^ i2);
+            test2.RectangularArray2D = new string[,] { { "A" + i0, "B" + 1 }, { "C" + i2, "D" } };
+            at2[i0, i1, i2] = test2;
+          }
+        }
+      }
+      test.RectangularArray3D = new Object[,,]
+                                {
+                                    {
+                                        { at2[0, 0, 0], at2[0, 0, 1] }, { at2[0, 1, 0], at2[0, 1, 1] },
+                                    },
+                                    {
+                                        { at2[1, 0, 0], at2[1, 0, 1] }, { at2[1, 1, 0], at2[1, 1, 1] },
+                                    },
+                                };
+
+
+
+      var toTextBuilder = new ToTextBuilder (toText);
+      toTextBuilder.SetOutputComplexityToSkeleton();
+      toText.ToText (test, toTextBuilder);
+      string toTextTest = toTextBuilder.CheckAndConvertToString ();
+      Log ("toTextTest=" + toTextTest);
+    }
+
 
 
 

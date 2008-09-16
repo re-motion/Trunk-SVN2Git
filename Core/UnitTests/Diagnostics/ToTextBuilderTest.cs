@@ -458,6 +458,8 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.SetOutputComplexityToComplex();
       Assert.That (toTextBuilder.OutputComplexity, Is.EqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Complex));
+      toTextBuilder.SetOutputComplexityToBasic ();
+      Assert.That (toTextBuilder.OutputComplexity, Is.EqualTo (ToTextBuilder.ToTextBuilderOutputComplexityLevel.Basic));
     }
 
     [Test]
@@ -532,6 +534,33 @@ namespace Remotion.UnitTests.Diagnostics
       }
     }
 
+    public ToTextBuilder SequenceAllFilterLevelsFilteredOutput (ToTextBuilder toTextBuilder)
+    {
+      if (toTextBuilder == null)
+        toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.sb().e ("before");
+      toTextBuilder.sb().e ("start");
+      toTextBuilder.writeIfMediumOrHigher.e ("m").writeIfSkeletonOrHigher.e ("s");
+      toTextBuilder.writeIfFull.sb ().e ("1").e ("2").e ("3").se ();
+      toTextBuilder.writeIfBasicOrHigher.e ("b").writeIfComplexOrHigher.e ("c").writeIfFull.e ("f");
+      toTextBuilder.e ("end").se ();
+      toTextBuilder.e ("after").se ();
+
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      return toTextBuilder;
+    }
+
+    [Test]
+    public void SequenceComplexityFilteringTest ()
+    {
+      {
+        var toTextBuilder = CreateTextBuilder();
+        toTextBuilder.SetOutputComplexityToMedium ();
+        var result = SequenceAllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
+        Assert.That (result, Is.EqualTo ("(before,(start,m,s,b))"));
+      }
+    }
 
     [Test]
     public void AppendObjectTest ()
@@ -556,7 +585,7 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void SequenceStateTest ()
     {
-      var sequenceState = new SequenceStateHolder ("Name", "Start", "Prefix", "Postfix", "Separator", "End");
+      var sequenceState = new SequenceStateHolder ("Name", "Start", "Prefix", "Postfix", "Separator", "End",true);
       Assert.That (sequenceState.Counter, Is.EqualTo (0));
       Assert.That (sequenceState.Name, Is.EqualTo ("Name"));
       Assert.That (sequenceState.SequencePrefix, Is.EqualTo ("Start"));
@@ -564,6 +593,7 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (sequenceState.ElementPostfix, Is.EqualTo ("Postfix"));
       Assert.That (sequenceState.Separator, Is.EqualTo ("Separator"));
       Assert.That (sequenceState.SequencePostfix, Is.EqualTo ("End"));
+      Assert.That (sequenceState.SequenceStartWritten, Is.EqualTo (true));
     }
 
     [Test]

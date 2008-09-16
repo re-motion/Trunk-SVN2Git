@@ -49,17 +49,29 @@ namespace Remotion.Diagnostics.ToText
     public bool Enabled { get; set; }
 
 
+    public TextWriter WriteAlways (object obj)
+    {
+      if (DelayedPrefix != null)
+      {
+        TextWriter.Write (DelayedPrefix);
+        DelayedPrefix = null;
+      }
+      TextWriter.Write (obj);
+      return TextWriter;
+    }
+
 
     public TextWriter Write (object obj)
     {
       if (Enabled)
       {
-        if (DelayedPrefix != null)
-        {
-          TextWriter.Write (DelayedPrefix);
-          DelayedPrefix = null;
-        }
-        TextWriter.Write (obj);
+        //if (DelayedPrefix != null)
+        //{
+        //  TextWriter.Write (DelayedPrefix);
+        //  DelayedPrefix = null;
+        //}
+        //TextWriter.Write (obj);
+        WriteAlways (obj);
       }
       return TextWriter;
     }

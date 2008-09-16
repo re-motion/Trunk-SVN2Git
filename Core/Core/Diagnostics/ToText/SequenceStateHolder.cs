@@ -27,7 +27,8 @@ namespace Remotion.Diagnostics.ToText
       SequencePostfix = "";
     }
 
-    public SequenceStateHolder (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    public SequenceStateHolder (string name, string sequencePrefix, string elementPrefix, string elementPostfix,
+      string separator, string sequencePostfix, bool sequenceStartWritten)
     {
       ArgumentUtility.CheckNotNull ("sequencePrefix", sequencePrefix);
       ArgumentUtility.CheckNotNull ("elementPrefix", elementPrefix);
@@ -42,6 +43,7 @@ namespace Remotion.Diagnostics.ToText
       ElementPostfix = elementPostfix;
       Separator = separator;
       SequencePostfix = sequencePostfix;
+      SequenceStartWritten = sequenceStartWritten;
     }
 
 
@@ -61,6 +63,9 @@ namespace Remotion.Diagnostics.ToText
     public string ElementPrefix { get; set; }
 
     public string SequencePostfix { get; private set; }
+
+    public bool SequenceStartWritten { get; private set; }
+
 
     /// <summary>
     /// The current position in the sequence.
