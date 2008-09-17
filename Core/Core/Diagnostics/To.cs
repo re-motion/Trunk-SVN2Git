@@ -66,7 +66,7 @@ namespace Remotion.Diagnostics
     [ThreadStatic]
     private static ToTextProvider _toTextProvider = new ToTextProvider (GetTypeHandlers(), GetInterfaceHandlers());
 
-    private static readonly string s_LogFilePath = System.IO.Path.GetTempPath ();
+    private static readonly string s_LogFileDirectory = System.IO.Path.GetTempPath ();
    
     private static readonly ToTextBuilder _toTextBuilderConsole = new ToTextBuilder (_toTextProvider, System.Console.Out);
     private static readonly ToTextBuilder _toTextBuilderError = new ToTextBuilder (_toTextProvider, System.Console.Error);
@@ -80,14 +80,14 @@ namespace Remotion.Diagnostics
 
     static To ()
     {
-      _toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter (LogFilePath + "\\remotion.log"));
+      _toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter (LogFilePath));
       
       _xmlWriterSettings = new XmlWriterSettings ();
       _xmlWriterSettings.OmitXmlDeclaration = false;
       _xmlWriterSettings.Indent = true;
       _xmlWriterSettings.NewLineOnAttributes = false;
 
-      var xmlWriter = XmlWriter.Create (new StreamWriter (LogFilePath + "\\remotion.log.xml"), _xmlWriterSettings);
+      var xmlWriter = XmlWriter.Create (new StreamWriter (XmlLogFilePath), _xmlWriterSettings);
       _toTextBuilderLogXml = new ToTextBuilderXml (_toTextProvider, xmlWriter);
     }
 
@@ -171,10 +171,27 @@ namespace Remotion.Diagnostics
     /// <summary>
     /// <para>Returns the path to the logfiles written to by <see cref="TempLog"/> and <see cref="TempLogXml"/>.</para>
     /// </summary>    
+    public static string LogFileDirectory
+    {
+      get { return s_LogFileDirectory; }
+    }
+
+    /// <summary>
+    /// <para>Returns the path to the XML logfile written to by <see cref="TempLogXml"/>.</para>
+    /// </summary>    
     public static string LogFilePath
     {
-      get { return s_LogFilePath; }
+      get { return LogFileDirectory + "\\remotion.log"; }
     }
+
+    /// <summary>
+    /// <para>Returns the path to the plain text logfile written to by <see cref="TempLog"/>.</para>
+    /// </summary>    
+    public static string XmlLogFilePath
+    {
+      get { return LogFileDirectory + "\\remotion.log.xml"; }
+    }
+
 
 
     /// <summary>

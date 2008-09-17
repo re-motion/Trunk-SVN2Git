@@ -8,11 +8,11 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics.ToText;
+using Remotion.UnitTests.Diagnostics.TestDomain;
 
 namespace Remotion.UnitTests.Diagnostics
 {
@@ -21,33 +21,13 @@ namespace Remotion.UnitTests.Diagnostics
   {
     private ISimpleLogger log = SimpleLogger.CreateForConsole (true);
 
-    public class TestSimple : IToText
-    {
-      public TestSimple ()
-      {
-        Name = "Kal-El";
-        Int = 2468;
-      }
 
-      public string Name { get; set; }
-      public int Int { get; set; }
-
-      public override string ToString ()
-      {
-        return String.Format ("((TestSimple) Name:{0},Int:{1})", Name, Int);
-      }
-
-      public void ToText (IToTextBuilderBase toTextBuilder)
-      {
-        toTextBuilder.sb().e ("daInt", Int).e ("theName", Name).se();
-      }
-    }
 
     [Test]
     public void IToTextHandler ()
     {
       var toTextProvider = GetTextProvider();
-      var testSimple = new TestSimple();
+      var testSimple = new TestSimpleIToTextHandler();
       string result = toTextProvider.ToTextString (testSimple);
       log.It (result);
       Assert.That (result, Is.EqualTo ("(daInt=2468,theName=\"Kal-El\")"));

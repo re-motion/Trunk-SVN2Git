@@ -20,7 +20,7 @@ using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.UnitTests.Diagnostics
 {
-  [NUnit.Framework.TestFixture]
+  [TestFixture]
   public class ToTextBuilderTest
   {
     private ISimpleLogger log = SimpleLogger.CreateForConsole (true);

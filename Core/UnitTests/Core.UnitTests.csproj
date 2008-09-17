@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C216DEC9-8820-4298-B10F-FB4131466B69}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -139,10 +139,16 @@
     <Compile Include="Collections\EnumerableExtensionsTest.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Design\DesignerUtilityTest.cs" />
+    <Compile Include="Diagnostics\BugReportTest.cs" />
     <Compile Include="Diagnostics\DisableableWriterTest.cs" />
+    <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTest.cs" />
+    <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTestOwned.cs" />
+    <Compile Include="Diagnostics\TestDomain\TestSimpleIToTextHandler.cs" />
+    <Compile Include="Diagnostics\TestDomain\ToTextProviderHandlerTestTestClasses.cs" />
     <Compile Include="Diagnostics\ToTextBuilderXmlTest.cs" />
     <Compile Include="Diagnostics\ToTextProviderHandlerTest.cs" />
     <Compile Include="Diagnostics\ToTextSpecificHandlerCollectorTest.cs" />
+    <Compile Include="Diagnostics\ToTextTest.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\TargetClassCallingIntroducedMethodFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinIntroducingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinOverridingMethodCalledFromCtor.cs" />
