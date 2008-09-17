@@ -23,14 +23,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       base.TestFixtureSetUp ();
     
       DatabaseFixtures dbFixtures = new DatabaseFixtures ();
-      dbFixtures.CreateAndCommitSecurableClassDefinitionWithLocalizedNames (ClientTransaction.NewRootTransaction());
+      dbFixtures.CreateAndCommitSecurableClassDefinitionWithLocalizedNames (ClientTransaction.CreateRootTransaction());
     }
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ();
+      ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
     }
 
     [Test]

@@ -27,14 +27,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.AbstractRoleDefinit
       base.TestFixtureSetUp ();
     
       _dbFixtures = new DatabaseFixtures ();
-      _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.NewRootTransaction());
+      _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
     }
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ();
+      ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
     }
 
     [Test]

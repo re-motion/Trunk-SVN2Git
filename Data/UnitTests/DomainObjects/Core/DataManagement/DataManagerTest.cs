@@ -370,7 +370,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void DeleteWithOtherClientTransaction ()
     {
       Order order1;
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         order1 = Order.GetObject (DomainObjectIDs.Order1);
       }
@@ -381,7 +381,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void DeleteWithOtherClientTransaction_UsesStoredTransaction ()
     {
       Order order1 = Order.GetObject (DomainObjectIDs.Order1);
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         _dataManager.Delete (order1); // deletes in _dataManager's transaction, not in current transaction
       }

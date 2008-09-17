@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.Clients.Web
 
     protected override void OnLoad (EventArgs e)
     {
-      _clientTransaction = ClientTransaction.NewRootTransaction ();
+      _clientTransaction = ClientTransaction.CreateRootTransaction ();
       _clientTransaction.EnterDiscardingScope ();
       if (!IsPostBack)
       {

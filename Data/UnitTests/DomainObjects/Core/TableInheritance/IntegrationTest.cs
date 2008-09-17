@@ -167,13 +167,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       DerivedClassWithEntityWithHierarchy derivedClassWithEntity1 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity1ID);
       Assert.AreEqual (DomainObjectIDs.Client, derivedClassWithEntity1.ClientFromAbstractBaseClass.ID);
 
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         derivedClassWithEntity1 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity1ID);
         Assert.AreEqual (client2, derivedClassWithEntity1.ClientFromDerivedClassWithEntity.ID);
       }
 
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         DerivedClassWithEntityFromBaseClassWithHierarchy derivedClassWithEntityFromBaseClass1 =
             DerivedClassWithEntityFromBaseClassWithHierarchy.GetObject (_derivedClassWithEntityFromBaseClass1ID);
@@ -187,13 +187,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       DerivedClassWithEntityWithHierarchy derivedClassWithEntity1 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity1ID);
       Assert.AreEqual (_rootFolderID, derivedClassWithEntity1.FileSystemItemFromAbstractBaseClass.ID);
 
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         derivedClassWithEntity1 = DerivedClassWithEntityWithHierarchy.GetObject (_derivedClassWithEntity1ID);
         Assert.AreEqual (_fileInRootFolderID, derivedClassWithEntity1.FileSystemItemFromDerivedClassWithEntity.ID);
       }
 
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         DerivedClassWithEntityFromBaseClassWithHierarchy derivedClassWithEntityFromBaseClass1 =
             DerivedClassWithEntityFromBaseClassWithHierarchy.GetObject (_derivedClassWithEntityFromBaseClass1ID);

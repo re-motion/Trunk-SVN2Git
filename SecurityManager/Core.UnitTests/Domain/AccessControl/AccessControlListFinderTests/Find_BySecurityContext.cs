@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       base.TestFixtureSetUp ();
  
       DatabaseFixtures dbFixtures = new DatabaseFixtures ();
-      _currentClassDefinitionTransaction = ClientTransaction.NewRootTransaction ();
+      _currentClassDefinitionTransaction = ClientTransaction.CreateRootTransaction ();
       _currentClassDefinition = dbFixtures.CreateAndCommitSecurableClassDefinitionWithAccessControlLists (1, _currentClassDefinitionTransaction);
     }
 
@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       SecurityContext context = SecurityContext.CreateStateless(typeof (Order));
      
       AccessControlListFinder aclFinder = new AccessControlListFinder ();
-      AccessControlList foundAcl = aclFinder.Find (ClientTransaction.NewRootTransaction (), context);
+      AccessControlList foundAcl = aclFinder.Find (ClientTransaction.CreateRootTransaction (), context);
 
       Assert.AreEqual (expectedAccessControlList.ID, foundAcl.ID);
     }
@@ -63,7 +63,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       SecurityContext context = SecurityContext.CreateStateless(typeof (PremiumOrder));
 
       AccessControlListFinder aclFinder = new AccessControlListFinder ();
-      aclFinder.Find (ClientTransaction.NewRootTransaction (), context);
+      aclFinder.Find (ClientTransaction.CreateRootTransaction (), context);
     }
   }
 }

@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDataContainerUsesStoredTransaction ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         Assert.AreSame (ClientTransactionMock, _customerEndPoint.GetDataContainer ().ClientTransaction);
       }

@@ -26,7 +26,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       base.SetUp ();
 
       _factory = new OrganizationalStructureFactory();
-      ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ();
+      ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
     }
 
     [Test]

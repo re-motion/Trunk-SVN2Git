@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       ClientTransactionMock.Commit ();
 
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         client1 = Client.GetObject (clientID1);
         client2 = Client.GetObject (clientID2);
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       ClientTransactionMock.Commit ();
 
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         newClient1 = Client.GetObject (newClientID1);
         newClient2 = Client.GetObject (newClientID2);

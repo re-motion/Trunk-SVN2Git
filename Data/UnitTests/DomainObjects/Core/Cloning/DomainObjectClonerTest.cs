@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
 
-      using (ClientTransaction.NewBindingTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
         _boundSource = ClassWithAllDataTypes.NewObject ();
         _boundSource.Int32Property = 123;
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CloneTransaction_ManualSet ()
     {
-      ClientTransaction cloneTransaction = ClientTransaction.NewBindingTransaction ();
+      ClientTransaction cloneTransaction = ClientTransaction.CreateBindingTransaction ();
       _cloner.CloneTransaction = cloneTransaction;
       Assert.That (_cloner.CloneTransaction, Is.SameAs (cloneTransaction));
     }
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CloneTransaction_Reset ()
     {
-      ClientTransaction cloneTransaction = ClientTransaction.NewBindingTransaction ();
+      ClientTransaction cloneTransaction = ClientTransaction.CreateBindingTransaction ();
       _cloner.CloneTransaction = cloneTransaction;
       _cloner.CloneTransaction = null;
       Assert.That (_cloner.CloneTransaction, Is.SameAs (ClientTransactionMock));
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CreateCloneHull_CreatesNewObjectInCorrectTransaction ()
     {
-      ClientTransaction cloneTransaction = ClientTransaction.NewBindingTransaction ();
+      ClientTransaction cloneTransaction = ClientTransaction.CreateBindingTransaction ();
       _cloner.CloneTransaction = cloneTransaction;
       DomainObject clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
       Assert.That (clone.ClientTransaction, Is.SameAs (cloneTransaction));
@@ -293,8 +293,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CreateClone_CallsStrategy_WithCorrectTransactions ()
     {
-      ClientTransaction sourceTransaction = ClientTransaction.NewBindingTransaction ();
-      ClientTransaction cloneTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction sourceTransaction = ClientTransaction.CreateBindingTransaction ();
+      ClientTransaction cloneTransaction = ClientTransaction.CreateRootTransaction ();
 
       _cloner.CloneTransaction = cloneTransaction;
 

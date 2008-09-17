@@ -49,7 +49,7 @@ public abstract class ClientTransaction : ITransaction
   /// <remarks>The object returned by this method can be extended with <b>Mixins</b> by configuring the <see cref="MixinConfiguration.ActiveConfiguration"/>
   /// to include a mixin for type <see cref="RootClientTransaction"/>. Declaratively, this can be achieved by attaching an
   /// <see cref="ExtendsAttribute"/> instance for <see cref="ClientTransaction"/> or <see cref="RootClientTransaction"/> to a mixin class.</remarks>
-  public static ClientTransaction NewRootTransaction ()
+  public static ClientTransaction CreateRootTransaction ()
   {
     return ObjectFactory.Create<RootClientTransaction>().With();
   }
@@ -69,7 +69,7 @@ public abstract class ClientTransaction : ITransaction
   /// Binding transactions cannot have subtransactions.
   /// </para>
   /// </remarks>
-  public static ClientTransaction NewBindingTransaction ()
+  public static ClientTransaction CreateBindingTransaction ()
   {
     return ObjectFactory.Create<BindingClientTransaction> ().With ();
   }

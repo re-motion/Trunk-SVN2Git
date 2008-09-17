@@ -172,7 +172,7 @@ namespace Remotion.Mixins.MixerTool
       }
     }
 
-    private bool ShouldProcessContext (ClassContext context)
+    protected virtual bool ShouldProcessContext (ClassContext context)
     {
       if (context.Type.IsGenericTypeDefinition)
       {

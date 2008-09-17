@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SetupResult.For (_stubUserProvider.GetUser ()).Return (_user);
       _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
       _mockPermissionReflector = _mocks.StrictMock<IPermissionProvider> ();
-      _transaction = ClientTransaction.NewRootTransaction();
+      _transaction = ClientTransaction.CreateRootTransaction();
 
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
     }

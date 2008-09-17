@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     private void CheckDomainObjectSerializability<T> (Func<T> creator)
         where T: DomainObject
     {
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         T instance = creator ();
 

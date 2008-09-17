@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     [Test]
     public void EmptyTransport ()
     {
-      ClientTransaction dataTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction dataTransaction = ClientTransaction.CreateRootTransaction ();
       TransportedDomainObjects transportedObjects = new TransportedDomainObjects (dataTransaction, new List<DomainObject>());
 
       Assert.IsNotNull (transportedObjects.DataTransaction);
@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     [Test]
     public void TransportedObjectsStayConstant_WhenTransactionIsManipulated ()
     {
-      TransportedDomainObjects transportedObjects = new TransportedDomainObjects (ClientTransaction.NewRootTransaction (), new List<DomainObject> ());
+      TransportedDomainObjects transportedObjects = new TransportedDomainObjects (ClientTransaction.CreateRootTransaction (), new List<DomainObject> ());
 
       Assert.IsEmpty ((ICollection) GetTransportedObjects (transportedObjects));
 
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     [Test]
     public void NonEmptyTransport ()
     {
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       List<DomainObject> transportedObjectList = new List<DomainObject>  ();
       using (newTransaction.EnterNonDiscardingScope ())
       {
@@ -132,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
 
       transportedObjects.FinishTransport ();
 
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         ClassWithAllDataTypes c3 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
         ClassWithAllDataTypes c4 = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2);
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
         return ((ClassWithAllDataTypes) transportedObject).Int32Property < 0;
       });
 
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         try
         {
@@ -223,7 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     private void ModifyDatabase (Action changer)
     {
       SetDatabaseModifyable ();
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         changer ();
         ClientTransaction.Current.Commit ();

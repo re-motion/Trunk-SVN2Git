@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ProcessWhereParameter_Entity ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         Order order = Order.NewObject();
         object processed = _databaseInfo.ProcessWhereParameter (order);

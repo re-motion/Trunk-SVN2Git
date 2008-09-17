@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
         // succeed
       }
 
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClassWithUnidirectionalRelation reloadedObject =
             ClassWithUnidirectionalRelation.GetObject (DomainObjectIDs.ClassWithUnidirectionalRelation);

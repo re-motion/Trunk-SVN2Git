@@ -21,7 +21,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public override void SetUp ()
     {
       base.SetUp ();
-      ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ();
+      ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
     }
 
     [Test]

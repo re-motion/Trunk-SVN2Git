@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests
      _service = new SecurityService (_mockAclFinder, _mockTokenBuilder);
      _context = SecurityContext.Create(typeof (Order), "Owner", "UID: OwnerGroup", "OwnerTenant", new Dictionary<string, Enum>(), new Enum[0]);
 
-      _clientTransaction = ClientTransaction.NewRootTransaction ();
+      _clientTransaction = ClientTransaction.CreateRootTransaction ();
       using (_clientTransaction.EnterNonDiscardingScope ())
       {
         _ace = CreateAce();

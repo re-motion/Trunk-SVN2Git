@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void SetUp ()
     {
       ClientTransactionScope.ResetActiveScope ();
-      _outermostScope = ClientTransaction.NewRootTransaction().EnterNonDiscardingScope();
+      _outermostScope = ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
     }
 
     [TearDown]
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ScopeSetsAndResetsCurrentTransaction ()
     {
-      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction();
+      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction();
       Assert.AreNotSame (clientTransaction, ClientTransactionScope.CurrentTransaction);
       using (clientTransaction.EnterNonDiscardingScope ())
       {
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void EnterNullScopeSetsNullTransaction ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Assert.IsTrue (ClientTransactionScope.HasCurrentTransaction);
         using (ClientTransactionScope.EnterNullScope ())
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       _outermostScope.Leave();
       Assert.IsNull (ClientTransactionScope.ActiveScope);
-      using (ClientTransactionScope scope = ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Assert.IsNotNull (ClientTransactionScope.ActiveScope);
         Assert.AreSame (scope, ClientTransactionScope.ActiveScope);
@@ -82,8 +82,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void NestedScopes ()
     {
-      ClientTransaction clientTransaction1 = ClientTransaction.NewRootTransaction();
-      ClientTransaction clientTransaction2 = ClientTransaction.NewRootTransaction();
+      ClientTransaction clientTransaction1 = ClientTransaction.CreateRootTransaction();
+      ClientTransaction clientTransaction2 = ClientTransaction.CreateRootTransaction();
       ClientTransactionScope originalScope = ClientTransactionScope.ActiveScope;
       ClientTransaction original = ClientTransactionScope.CurrentTransaction;
       
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (ClientTransactionScope.EnterNullScope ())
       {
         Assert.IsFalse (ClientTransactionScope.HasCurrentTransaction);
-        using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+        using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
         {
           Assert.IsTrue (ClientTransactionScope.HasCurrentTransaction);
         }
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void ScopeCreatesTransactionWithDefaultCtor ()
     {
       ClientTransaction original = ClientTransactionScope.CurrentTransaction;
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Assert.IsNotNull (ClientTransactionScope.CurrentTransaction);
         Assert.AreNotSame (original, ClientTransactionScope.CurrentTransaction);
@@ -137,8 +137,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ScopeHasTransactionProperty ()
     {
-      ClientTransaction outerTransaction = ClientTransaction.NewRootTransaction();
-      ClientTransaction innerTransaction = ClientTransaction.NewRootTransaction();
+      ClientTransaction outerTransaction = ClientTransaction.CreateRootTransaction();
+      ClientTransaction innerTransaction = ClientTransaction.CreateRootTransaction();
       using (ClientTransactionScope outer = outerTransaction.EnterNonDiscardingScope ())
       {
         using (ClientTransactionScope inner = innerTransaction.EnterNonDiscardingScope ())
@@ -152,24 +152,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ScopeHasAutoRollbackBehavior ()
     {
-      using (ClientTransactionScope scope = ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         Assert.AreEqual (AutoRollbackBehavior.Discard, scope.AutoRollbackBehavior);
         scope.AutoRollbackBehavior = AutoRollbackBehavior.None;
         Assert.AreEqual (AutoRollbackBehavior.None, scope.AutoRollbackBehavior);
       }
 
-      using (ClientTransactionScope scope = ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         Assert.AreEqual (AutoRollbackBehavior.Discard, scope.AutoRollbackBehavior);
       }
 
-      using (ClientTransactionScope scope = ClientTransaction.NewRootTransaction().EnterScope (AutoRollbackBehavior.None))
+      using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterScope (AutoRollbackBehavior.None))
       {
         Assert.AreEqual (AutoRollbackBehavior.None, scope.AutoRollbackBehavior);
       }
 
-      using (ClientTransactionScope scope = ClientTransaction.NewRootTransaction ().EnterScope (AutoRollbackBehavior.Rollback))
+      using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction ().EnterScope (AutoRollbackBehavior.Rollback))
       {
         Assert.AreEqual (AutoRollbackBehavior.Rollback, scope.AutoRollbackBehavior);
       }
@@ -294,7 +294,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void CommitAndRollbackOnScope ()
     {
-      ClientTransaction transaction = ClientTransaction.NewRootTransaction();
+      ClientTransaction transaction = ClientTransaction.CreateRootTransaction();
       TransactionEventCounter eventCounter = new TransactionEventCounter (transaction);
       using (ClientTransactionScope scope = transaction.EnterNonDiscardingScope ())
       {
@@ -327,7 +327,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The ClientTransactionScope has already been left.")]
     public void LeaveTwiceThrows ()
     {
-      ClientTransactionScope scope = ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ();
+      ClientTransactionScope scope = ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
       scope.Leave ();
       scope.Leave ();
     }
@@ -336,7 +336,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The ClientTransactionScope has already been left.")]
     public void LeaveAndDisposeThrows ()
     {
-      using (ClientTransactionScope scope = ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         scope.Leave();
       }
@@ -347,7 +347,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order order = Order.GetObject (new DomainObjectIDs ().Order1);
       Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
-      using (ClientTransactionScope scope = ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Assert.IsFalse (scope.AutoEnlistDomainObjects);
         Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
@@ -361,7 +361,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order2 = Order.GetObject (new DomainObjectIDs ().Order2);
       
       Assert.IsTrue (order1.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
-      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction();
+      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction();
 
       using (ClientTransactionScope scope = clientTransaction.EnterNonDiscardingScope ())
       {
@@ -386,7 +386,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void InitialAutoEnlistValueIsInherited ()
     {
-      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction ();
 
       using (ClientTransactionScope scope1 = clientTransaction.EnterNonDiscardingScope ())
       {
@@ -415,7 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ResetScope ()
     {
-      ClientTransactionScope scope = ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ();
+      ClientTransactionScope scope = ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
       Assert.IsNotNull (ClientTransactionScope.ActiveScope);
       Assert.IsTrue (ClientTransactionScope.HasCurrentTransaction);
       ClientTransactionScope.ResetActiveScope ();
@@ -451,15 +451,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       try
       {
-        using (ClientTransaction.NewRootTransaction().EnterScope (AutoRollbackBehavior.Rollback))
+        using (ClientTransaction.CreateRootTransaction().EnterScope (AutoRollbackBehavior.Rollback))
         {
-          ClientTransaction.NewRootTransaction().EnterNonDiscardingScope();
+          ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
         }
       }
       finally
       {
         ClientTransactionScope.ResetActiveScope (); // for TearDown
       }
+    }
+
+    [Test]
+    public void name ()
+    {
+ClientTransaction tx1 = ClientTransaction.CreateRootTransaction();
+using (tx1.EnterDiscardingScope ())
+{
+
+  ClientTransaction tx2 = ClientTransaction.CreateRootTransaction();
+  using (tx2.EnterDiscardingScope ())
+  {
+
+
+  }
+
+}
     }
   }
 }

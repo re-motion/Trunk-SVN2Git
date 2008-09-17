@@ -33,7 +33,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test
     {
       base.OnLoad (e);
 
-      _clientTransaction = ClientTransaction.NewRootTransaction();
+      _clientTransaction = ClientTransaction.CreateRootTransaction();
       _clientTransaction.EnterDiscardingScope();
       if (!IsPostBack)
       {

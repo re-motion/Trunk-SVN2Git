@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void SearchAvailableObjectsUsesCurrentTransaction ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         IBusinessObject[] results = _property.SearchAvailableObjects (_orderItem, "QueryWithSpecificCollectionType");
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
@@ -19,7 +19,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
         BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
         
         _dbFixtures = new DatabaseFixtures ();
-        _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.NewRootTransaction());
+        _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
       }
       catch (Exception e)
       {

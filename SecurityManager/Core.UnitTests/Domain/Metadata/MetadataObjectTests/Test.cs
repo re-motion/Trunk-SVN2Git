@@ -32,7 +32,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.MetadataObjectTests
     {
       base.SetUp ();
 
-      ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ();
+      ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
 
       _metadataObject = SecurableClassDefinition.NewObject();
       _metadataObject.Name = "Technical Name";

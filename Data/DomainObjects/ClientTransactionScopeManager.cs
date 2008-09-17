@@ -49,7 +49,7 @@ namespace Remotion.Data.DomainObjects
     /// <returns>A new root transaction.</returns>
     public ClientTransaction CreateRootTransaction ()
     {
-      return ClientTransaction.NewRootTransaction ();
+      return ClientTransaction.CreateRootTransaction ();
     }
 
     /// <summary>

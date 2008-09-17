@@ -373,7 +373,7 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>
     /// <para>
     /// To bind a <see cref="DomainObject"/> to a transaction, instantiate or load it in the scope of a transaction created via
-    /// <see cref="DomainObjects.ClientTransaction.NewBindingTransaction"/>. Such a transaction will automatically bind all objects created or loaded
+    /// <see cref="DomainObjects.ClientTransaction.CreateBindingTransaction"/>. Such a transaction will automatically bind all objects created or loaded
     /// in its scope to itself.
     /// </para>
     /// <para>

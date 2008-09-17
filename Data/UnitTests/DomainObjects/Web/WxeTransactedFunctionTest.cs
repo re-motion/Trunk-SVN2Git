@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void WxeTransactedFunctionCreateRoot ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClientTransactionScope originalScope = ClientTransactionScope.ActiveScope;
         new CreateRootTestTransactedFunction (originalScope).Execute (Context);
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void WxeTransactedFunctionCreateChildIfParent ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClientTransactionScope originalScope = ClientTransactionScope.ActiveScope;
         new CreateRootWithChildTestTransactedFunction (originalScope.ScopedTransaction, new CreateChildIfParentTestTransactedFunction ()).Execute (Context);
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void WxeTransactedFunctionNone ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClientTransactionScope originalScope  = ClientTransactionScope.ActiveScope;
         new CreateNoneTestTransactedFunction (originalScope).Execute (Context);
@@ -66,15 +66,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     public void WxeTransactedFunctionCreateNewAutoCommit ()
     {
       SetDatabaseModifyable ();
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClientTransactionScope originalScope = ClientTransactionScope.ActiveScope;
-        SetInt32Property (5, ClientTransaction.NewRootTransaction ());
+        SetInt32Property (5, ClientTransaction.CreateRootTransaction ());
 
         new AutoCommitTestTransactedFunction (WxeTransactionMode.CreateRoot, DomainObjectIDs.ClassWithAllDataTypes1).Execute (Context);
         Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
 
-        Assert.AreEqual (10, GetInt32Property (ClientTransaction.NewRootTransaction ()));
+        Assert.AreEqual (10, GetInt32Property (ClientTransaction.CreateRootTransaction ()));
       }
     }
 
@@ -82,16 +82,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     public void WxeTransactedFunctionCreateNewNoAutoCommit()
     {
       SetDatabaseModifyable ();
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClientTransactionScope originalScope = ClientTransactionScope.ActiveScope;
-        SetInt32Property (5, ClientTransaction.NewRootTransaction ());
+        SetInt32Property (5, ClientTransaction.CreateRootTransaction ());
 
         new NoAutoCommitTestTransactedFunction (WxeTransactionMode.CreateRoot, DomainObjectIDs.ClassWithAllDataTypes1).Execute (Context);
 
         Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
 
-        Assert.AreEqual (5, GetInt32Property (ClientTransaction.NewRootTransaction ()));
+        Assert.AreEqual (5, GetInt32Property (ClientTransaction.CreateRootTransaction ()));
       }
     }
 
@@ -99,8 +99,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     public void WxeTransactedFunctionNoneAutoCommit ()
     {
       SetDatabaseModifyable ();
-      SetInt32Property (5, ClientTransaction.NewRootTransaction ());
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      SetInt32Property (5, ClientTransaction.CreateRootTransaction ());
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClientTransactionScope originalScope = ClientTransactionScope.ActiveScope;
 
@@ -111,15 +111,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         Assert.AreEqual (10, GetInt32Property (ClientTransactionScope.CurrentTransaction));
       }
 
-      Assert.AreEqual (5, GetInt32Property (ClientTransaction.NewRootTransaction ()));
+      Assert.AreEqual (5, GetInt32Property (ClientTransaction.CreateRootTransaction ()));
     }
 
     [Test]
     public void WxeTransactedFunctionNoneNoAutoCommit ()
     {
       SetDatabaseModifyable ();
-      SetInt32Property (5, ClientTransaction.NewRootTransaction ());
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      SetInt32Property (5, ClientTransaction.CreateRootTransaction ());
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClientTransactionScope originalScope = ClientTransactionScope.ActiveScope;
 
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         Assert.AreEqual (10, GetInt32Property (ClientTransactionScope.CurrentTransaction));
       }
 
-      Assert.AreEqual (5, GetInt32Property (ClientTransaction.NewRootTransaction ()));
+      Assert.AreEqual (5, GetInt32Property (ClientTransaction.CreateRootTransaction ()));
     }
 
     [Test]
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     {
       try
       {
-        ClientTransaction.NewRootTransaction().EnterDiscardingScope();
+        ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
         new RemoveCurrentTransactionScopeFunction ().Execute (Context);
       }
       catch (WxeUnhandledException ex)
@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void AutoEnlistingCreateNone ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClassWithAllDataTypes inParameter = ClassWithAllDataTypes.NewObject();
         ClassWithAllDataTypes[] inParameterArray = new ClassWithAllDataTypes[] { ClassWithAllDataTypes.NewObject () };
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     {
       SetDatabaseModifyable ();
 
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClassWithAllDataTypes inParameter = ClassWithAllDataTypes.NewObject ();
         inParameter.DateTimeProperty = DateTime.Now;
@@ -255,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
                                                                       + "function's transaction. Maybe it was newly created and has not yet been committed, or it was deleted.", MatchType =  MessageMatch.Regex)]
     public void AutoEnlistingCreateRootThrowsWhenInvalidInParameter ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClassWithAllDataTypes inParameter = ClassWithAllDataTypes.NewObject ();
         ClassWithAllDataTypes[] inParameterArray = new ClassWithAllDataTypes[] { ClassWithAllDataTypes.NewObject () };
@@ -286,7 +286,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
                                                                       + "function's transaction. Maybe it was newly created and has not yet been committed, or it was deleted.", MatchType = MessageMatch.Regex)]
     public void AutoEnlistingCreateRootThrowsWhenInvalidOutParameter ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         DomainObjectParameterInvalidOutTestTransactedFunction function =
             new DomainObjectParameterInvalidOutTestTransactedFunction (WxeTransactionMode.CreateRoot);
@@ -411,7 +411,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     public void ThreadAbortExceptionInNestedFunction ()
     {
       ThreadAbortTestTransactedFunction nestedFunction = new ThreadAbortTestTransactedFunction ();
-      ClientTransactionScope originalScope = ClientTransaction.NewRootTransaction().EnterDiscardingScope();
+      ClientTransactionScope originalScope = ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
       CreateRootWithChildTestTransactedFunction parentFunction =
           new CreateRootWithChildTestTransactedFunction (ClientTransactionScope.CurrentTransaction, nestedFunction);
 
@@ -444,7 +444,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     public void ThreadAbortExceptionInNestedFunctionWithThreadMigration ()
     {
       ThreadAbortTestTransactedFunction nestedFunction = new ThreadAbortTestTransactedFunction ();
-      ClientTransactionScope originalScope = ClientTransaction.NewRootTransaction().EnterDiscardingScope();
+      ClientTransactionScope originalScope = ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
       CreateRootWithChildTestTransactedFunction parentFunction =
           new CreateRootWithChildTestTransactedFunction (ClientTransactionScope.CurrentTransaction, nestedFunction);
 
@@ -480,7 +480,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void TransactionResettableWhenNotReadOnly ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> tx = new WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>();
         PrivateInvoke.InvokeNonPublicMethod (tx, "CheckCurrentTransactionResettable");
@@ -492,7 +492,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
                                                                               + "The reason might be an open child transaction.")]
     public void TransactionNotResettableWhenReadOnly ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransactionScope.CurrentTransaction.CreateSubTransaction ();
 
@@ -517,7 +517,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
                                                                               + "needs to be committed or rolled back.")]
     public void TransactionNotResettableWhenNewObject ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> tx = new WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>();
         Order.NewObject ();
@@ -530,7 +530,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
                                                                               + "needs to be committed or rolled back.")]
     public void TransactionNotResettableWhenChangedObject ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> tx = new WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>();
         ++Order.GetObject (DomainObjectIDs.Order1).OrderNumber;
@@ -543,7 +543,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
                                                                               + "needs to be committed or rolled back.")]
     public void TransactionNotResettableWhenChangedRelation ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> tx = new WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>();
         Order.GetObject (DomainObjectIDs.Order1).OrderItems.Clear();
@@ -563,7 +563,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void ResetWithChildTransaction ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         ResetTestTransactedFunction function = new ResetTestTransactedFunction (WxeTransactionMode.CreateChildIfParent);
         CreateRootWithChildTestTransactedFunction rootFunction = new CreateRootWithChildTestTransactedFunction (ClientTransaction.Current, function);

@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.NewObject ();
       Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
-      Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransaction.NewRootTransaction()));
+      Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransaction.CreateRootTransaction()));
     }
 
     [Test]
@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void ThrowsWhenCannotBeUsedInTransaction ()
     {
       Order order = Order.NewObject ();
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
         int i = order.OrderNumber;
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void ThrowsOnDeleteWhenCannotBeUsedInTransaction ()
     {
       Order order = Order.NewObject ();
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
         order.Delete();
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void LoadedObjectCanBeEnlistedInTransaction ()
     {
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
       Assert.IsFalse (order.CanBeUsedInTransaction (newTransaction));
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void NewObjectCanBeEnlistedInTransaction ()
     {
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
       Order order = Order.NewObject ();
       newTransaction.EnlistDomainObject (order);
       Assert.IsTrue (order.CanBeUsedInTransaction (newTransaction));
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         ExpectedMessage = "Object 'Order|fbab57e5-ba54-4d61-8bca-e8b9badc253a|System.Guid' could not be found.", MatchType = MessageMatch.Regex)]
     public void NewObjectCannotBeUsedInTransaction ()
     {
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       Order order = Order.NewObject ();
       newTransaction.EnlistDomainObject (order);
       using (newTransaction.EnterDiscardingScope ())
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void NewObjectCanBeEnlistedAndUsedInTransactionWhenCommitted ()
     {
       SetDatabaseModifyable ();
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
       Order order = Order.NewObject ();
       order.OrderNumber = 5;
       order.DeliveryDate = DateTime.Now;
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void EnlistedObjectCanBeUsedInTwoTransactions ()
     {
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       newTransaction.EnlistDomainObject (order);
       Assert.IsTrue (order.CanBeUsedInTransaction (newTransaction));
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       order.Delete ();
       ClientTransactionScope.CurrentTransaction.Commit ();
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
       newTransaction.EnlistDomainObject (order);
       Assert.IsTrue (order.CanBeUsedInTransaction (newTransaction));
     }
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       order.Delete ();
       ClientTransactionScope.CurrentTransaction.Commit ();
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       newTransaction.EnlistDomainObject (order);
 
       using (newTransaction.EnterDiscardingScope ())
@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       order.Delete ();
       Assert.AreEqual (StateType.Deleted, order.State);
       
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction();
       newTransaction.EnlistDomainObject (order);
       using (newTransaction.EnterDiscardingScope ())
       {
@@ -203,8 +203,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       SetDatabaseModifyable ();
 
-      ClientTransaction newTransaction1 = ClientTransaction.NewRootTransaction();
-      ClientTransaction newTransaction2 = ClientTransaction.NewRootTransaction();
+      ClientTransaction newTransaction1 = ClientTransaction.CreateRootTransaction();
+      ClientTransaction newTransaction2 = ClientTransaction.CreateRootTransaction();
       
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       newTransaction1.EnlistDomainObject (order);
@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetObjectAfterEnlistingReturnsEnlistedObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClientTransactionScope.CurrentTransaction.EnlistDomainObject (order);
         Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
@@ -257,7 +257,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void EnlistingAlthoughObjectHasAlreadyBeenLoadedThrows ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         Assert.AreNotSame (order, Order.GetObject (order.ID));
         ClientTransactionScope.CurrentTransaction.EnlistDomainObject (order);
@@ -269,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ClientTransactionScope.CurrentTransaction.EnlistDomainObject (order);
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         ClientTransactionScope.CurrentTransaction.EnlistDomainObject (order);
         ClientTransactionScope.CurrentTransaction.EnlistDomainObject (order);
@@ -286,7 +286,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void EnlistDomainObjectInSubTransaction ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ().CreateSubTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ().CreateSubTransaction ();
       newTransaction.EnlistDomainObject (order);
       Assert.IsTrue (order.CanBeUsedInTransaction (newTransaction));
     }
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       OrderItem orderItem1 = order.OrderItems[0];
       OrderItem orderItem2 = order.OrderItems[1];
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       newTransaction.EnlistDomainObjects (order, orderItem2);
 
       Assert.IsTrue (order.CanBeUsedInTransaction (newTransaction));
@@ -323,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionMock));
       Assert.IsTrue (orderItem.CanBeUsedInTransaction (ClientTransactionMock));
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ().CreateSubTransaction();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ().CreateSubTransaction();
 
       Assert.IsFalse (order.CanBeUsedInTransaction (newTransaction));
       Assert.IsFalse (orderItem.CanBeUsedInTransaction (newTransaction));
@@ -345,14 +345,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
       Assert.IsTrue (order.IsDiscarded);
 
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope ())
       {
         ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1).Delete ();
         SetDatabaseModifyable ();
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
 
       newTransaction.EnlistDomainObjects (order, cwadt);
 
@@ -364,7 +364,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void EnlistDomainObjectsIgnoresObjectsAlreadyEnlisted ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       
       newTransaction.EnlistDomainObject (order);
       Assert.IsTrue (order.CanBeUsedInTransaction (newTransaction));
@@ -380,13 +380,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       SetDatabaseModifyable ();
       ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
       
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope())
       {
         ClassWithAllDataTypes.GetObject (cwadt.ID).Delete ();
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
 
       newTransaction.EnlistDomainObjects (cwadt);
 
@@ -401,13 +401,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       SetDatabaseModifyable ();
       ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClassWithAllDataTypes.GetObject (cwadt.ID).Delete ();
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
 
       newTransaction.EnlistDomainObjects (cwadt);
 
@@ -424,7 +424,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void EnlistDomainObjectsThrowsOnObjectsAlreadyEnlistedWithDifferentReferences ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
 
       using (newTransaction.EnterDiscardingScope ())
       {
@@ -439,7 +439,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void OnLoadedCanAccessValuePropertiesInEnlistDomainObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       order.ProtectedLoaded += delegate (object sender, EventArgs e) { Assert.AreEqual (1, ((Order) sender).OrderNumber); };
 
       newTransaction.EnlistDomainObject (order);
@@ -454,7 +454,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionMock));
       Assert.IsTrue (orderItem.CanBeUsedInTransaction (ClientTransactionMock));
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
 
       Assert.IsFalse (order.CanBeUsedInTransaction (newTransaction));
       Assert.IsFalse (orderItem.CanBeUsedInTransaction (newTransaction));
@@ -475,7 +475,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsTrue (orderItem.CanBeUsedInTransaction (ClientTransactionMock));
 
       ClientTransactionMock.Discard ();
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
 
       Assert.IsFalse (order.CanBeUsedInTransaction (newTransaction));
       Assert.IsFalse (orderItem.CanBeUsedInTransaction (newTransaction));
@@ -495,7 +495,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionMock));
       Assert.IsTrue (orderItem.CanBeUsedInTransaction (ClientTransactionMock));
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ().CreateSubTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ().CreateSubTransaction ();
 
       Assert.IsFalse (order.CanBeUsedInTransaction (newTransaction));
       Assert.IsFalse (orderItem.CanBeUsedInTransaction (newTransaction));
@@ -513,7 +513,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void EnlistSameObjectsDoesntThrowOnNew ()
     {
       Order.NewObject ();
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       newTransaction.EnlistSameDomainObjects (ClientTransactionMock, false);
     }
 
@@ -523,16 +523,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       SetDatabaseModifyable ();
       ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClassWithAllDataTypes.GetObject (cwadt.ID).Delete ();
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       newTransaction.EnlistSameDomainObjects (ClientTransactionMock, false);
 
-      ClientTransaction newTransaction2 = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction2 = ClientTransaction.CreateRootTransaction ();
       newTransaction2.EnlistSameDomainObjects (newTransaction, false);
 
       Assert.IsTrue (cwadt.CanBeUsedInTransaction (newTransaction));
@@ -545,7 +545,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       OrderItem orderItem = order.OrderItems[0];
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       order.ProtectedLoaded += delegate (object sender, EventArgs e) { Assert.AreSame (sender, ((Order) sender).OrderItems[0].Order); };
 
       newTransaction.EnlistSameDomainObjects (ClientTransactionMock, false);
@@ -560,7 +560,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       OrderItem orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       Order order = orderItem.Order;
 
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       orderItem.ProtectedLoaded += delegate (object sender, EventArgs e) { Assert.Contains (sender, ((OrderItem) sender).Order.OrderItems); };
 
       newTransaction.EnlistSameDomainObjects (ClientTransactionMock, false);
@@ -579,7 +579,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       order.OrderItems.Add (OrderItem.NewObject ());
       Assert.IsTrue (orderItemAdded);
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         orderItemAdded = false;
         Assert.IsFalse (orderItemAdded);
@@ -601,7 +601,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       order.OrderItems.Add (OrderItem.NewObject ());
       Assert.IsTrue (orderItemAdded);
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         orderItemAdded = false;
         Assert.IsFalse (orderItemAdded);
@@ -624,7 +624,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       order.OrderItems.Add (OrderItem.NewObject ());
       Assert.IsTrue (orderItemAdded);
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistSameDomainObjects (ClientTransactionMock, false);
         orderItemAdded = false;
@@ -644,7 +644,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       order.OrderItems.Add (OrderItem.NewObject ());
       Assert.IsTrue (orderItemAdded);
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistSameDomainObjects (ClientTransactionMock, true);
         orderItemAdded = false;
@@ -666,7 +666,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       ClientTransactionMock.Discard ();
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistSameDomainObjects (ClientTransactionMock, true);
         orderItemAdded = false;
@@ -686,7 +686,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       order.OrderItems.Add (OrderItem.NewObject ());
       Assert.IsTrue (orderItemAdded);
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (order);
         ClientTransaction.Current.EnlistSameDomainObjects (ClientTransactionMock, true);

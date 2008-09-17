@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
     private void WxeTransactedFunctionCreateNewButton_Click (object sender, EventArgs e)
     {
       // TODO: cheange to Remember/CheckActiveClientTransactionScope
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         RememberCurrentClientTransaction();
 
@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
 
     private void WxeTransactedFunctionNoneButton_Click (object sender, EventArgs e)
     {
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         RememberCurrentClientTransaction();
 
@@ -99,15 +99,15 @@ namespace Remotion.Data.DomainObjects.Web.Test
 
     private void WxeTransactedFunctionCreateNewAutoCommitButton_Click (object sender, EventArgs e)
     {
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         RememberCurrentClientTransaction();
-        SetInt32Property (5, ClientTransaction.NewRootTransaction());
+        SetInt32Property (5, ClientTransaction.CreateRootTransaction());
 
         new AutoCommitTestTransactedFunction (WxeTransactionMode.CreateRoot, DomainObjectIDs.ObjectWithAllDataTypes1).Execute ();
         CheckCurrentClientTransactionRestored();
 
-        if (GetInt32Property (ClientTransaction.NewRootTransaction()) != 10)
+        if (GetInt32Property (ClientTransaction.CreateRootTransaction()) != 10)
           throw new TestFailureException ("The WxeTransactedFunction wrongly did not properly commit or set the property value.");
       }
 
@@ -116,16 +116,16 @@ namespace Remotion.Data.DomainObjects.Web.Test
 
     private void WxeTransactedFunctionCreateNewNoAutoCommitButton_Click (object sender, EventArgs e)
     {
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         RememberCurrentClientTransaction();
-        SetInt32Property (5, ClientTransaction.NewRootTransaction());
+        SetInt32Property (5, ClientTransaction.CreateRootTransaction());
 
         new NoAutoCommitTestTransactedFunction (WxeTransactionMode.CreateRoot, DomainObjectIDs.ObjectWithAllDataTypes1).Execute ();
 
         CheckCurrentClientTransactionRestored();
 
-        if (GetInt32Property (ClientTransaction.NewRootTransaction()) != 5)
+        if (GetInt32Property (ClientTransaction.CreateRootTransaction()) != 5)
           throw new TestFailureException ("The WxeTransactedFunction wrongly did set and commit the property value.");
       }
       ShowResultText ("Test WxeTransactedFunction (TransactionMode = CreateNew, AutoCommit = false) executed successfully.");
@@ -133,8 +133,8 @@ namespace Remotion.Data.DomainObjects.Web.Test
 
     private void WxeTransactedFunctionNoneAutoCommitButton_Click (object sender, EventArgs e)
     {
-      SetInt32Property (5, ClientTransaction.NewRootTransaction());
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      SetInt32Property (5, ClientTransaction.CreateRootTransaction());
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         RememberCurrentClientTransaction();
 
@@ -146,7 +146,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
           throw new TestFailureException ("The WxeTransactedFunction wrongly did not set property value.");
       }
 
-      if (GetInt32Property (ClientTransaction.NewRootTransaction()) != 5)
+      if (GetInt32Property (ClientTransaction.CreateRootTransaction()) != 5)
         throw new TestFailureException ("The WxeTransactedFunction wrongly committed the property value.");
 
       ShowResultText ("Test WxeTransactedFunction (TransactionMode = None, AutoCommit = true) executed successfully.");
@@ -154,8 +154,8 @@ namespace Remotion.Data.DomainObjects.Web.Test
 
     private void WxeTransactedFunctionNoneNoAutoCommitButton_Click (object sender, EventArgs e)
     {
-      SetInt32Property (5, ClientTransaction.NewRootTransaction());
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      SetInt32Property (5, ClientTransaction.CreateRootTransaction());
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         RememberCurrentClientTransaction();
 
@@ -167,7 +167,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
           throw new TestFailureException ("The WxeTransactedFunction wrongly did not set the property value.");
       }
 
-      if (GetInt32Property (ClientTransaction.NewRootTransaction()) != 5)
+      if (GetInt32Property (ClientTransaction.CreateRootTransaction()) != 5)
         throw new TestFailureException ("The WxeTransactedFunction wrongly committed the property value.");
 
       ShowResultText ("Test WxeTransactedFunction (TransactionMode = None, AutoCommit = false) executed successfully.");
@@ -177,7 +177,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
     {
       if (!IsReturningPostBack)
       {
-        using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+        using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
         {
           RememberCurrentClientTransaction();
           this.ExecuteFunction (new ParentPageStepTestTransactedFunction(), WxeCallArguments.Default);

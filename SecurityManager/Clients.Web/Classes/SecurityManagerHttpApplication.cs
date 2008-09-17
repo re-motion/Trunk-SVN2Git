@@ -142,7 +142,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     {
       if (HasSessionState)
       {
-        using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+        using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
         {
           SecurityManagerUser user = LoadUserFromSession ();
           if (user == null && Context.User.Identity.IsAuthenticated)

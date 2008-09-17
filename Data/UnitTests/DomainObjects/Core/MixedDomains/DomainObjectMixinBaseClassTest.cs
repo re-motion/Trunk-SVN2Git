@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, _loadedClassWithAllDataTypesMixin.OnDomainObjectLoadedLoadMode);
 
       _loadedClassWithAllDataTypesMixin.OnDomainObjectLoadedCalled = false;
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (_loadedClassWithAllDataTypes);
         ++_loadedClassWithAllDataTypes.Int32Property;

@@ -28,14 +28,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       base.TestFixtureSetUp ();
 
       DatabaseFixtures dbFixtures = new DatabaseFixtures ();
-      dbFixtures.CreateAndCommitSecurableClassDefinitionWithStates (ClientTransaction.NewRootTransaction());
+      dbFixtures.CreateAndCommitSecurableClassDefinitionWithStates (ClientTransaction.CreateRootTransaction());
     }
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _transaction = ClientTransaction.NewRootTransaction();
+      _transaction = ClientTransaction.CreateRootTransaction();
       _importer = new CultureImporter (_transaction);
     }
 

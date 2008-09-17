@@ -359,7 +359,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
           dbFixtures.CreateAndCommitAccessControlListWithAccessControlEntries (10, ClientTransactionScope.CurrentTransaction);
       ObjectList<AccessControlEntry> expectedAces = expectedAcl.AccessControlEntries;
 
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         AccessControlList actualAcl = AccessControlList.GetObject (expectedAcl.ID);
 
@@ -376,7 +376,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       AccessControlList expectedAcl = dbFixtures.CreateAndCommitAccessControlListWithStateCombinations (10, ClientTransactionScope.CurrentTransaction);
       ObjectList<StateCombination> expectedStateCombinations = expectedAcl.StateCombinations;
 
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         AccessControlList actualAcl = AccessControlList.GetObject (expectedAcl.ID);
 

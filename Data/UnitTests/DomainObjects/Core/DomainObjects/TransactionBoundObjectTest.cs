@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public override void SetUp ()
     {
       base.SetUp ();
-      _bindingTransaction = ClientTransaction.NewBindingTransaction ();
+      _bindingTransaction = ClientTransaction.CreateBindingTransaction ();
     }
 
     private T NewBound<T> (params object[] args)
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void UnboundObjects ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         Order newOrder = Order.NewObject();
         Assert.IsFalse (newOrder.IsBoundToSpecificTransaction);
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void UnboundObjects_NoCurrentTransaction ()
     {
       Order newOrder;
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         newOrder = Order.NewObject ();
       }
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetBoundObject_WithCurrentTransaction ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Order order = GetBound<Order> (DomainObjectIDs.Order1);
         Assert.IsTrue (order.IsBoundToSpecificTransaction);
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CanBeUsedInTransaction_WithCurrentTransaction ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Order order = GetBound<Order> (DomainObjectIDs.Order1);
         Assert.IsTrue (order.CanBeUsedInTransaction (_bindingTransaction));
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         + "c97f02b89c36|System.Guid' in this transaction, because it is already bound to another transaction.")]
     public void Enlist_InDifferentTransaction ()
     {
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
       newTransaction.EnlistDomainObject (order);
     }
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void SetRelatedObject_UnboundValue ()
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         order.OrderTicket = OrderTicket.NewObject();
       }
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void InsertRelatedObject_UnboundValue ()
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         order.OrderItems.Add (OrderItem.NewObject ());
       }

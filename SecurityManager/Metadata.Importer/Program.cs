@@ -75,7 +75,7 @@ namespace Remotion.SecurityManager.Metadata.Importer
             new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, typeof (BaseSecurityManagerObject).Assembly));
         MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
 
-        ClientTransaction transaction = ClientTransaction.NewRootTransaction();
+        ClientTransaction transaction = ClientTransaction.CreateRootTransaction();
         
         if (_arguments.ImportMetadata)
           ImportMetadata (transaction);

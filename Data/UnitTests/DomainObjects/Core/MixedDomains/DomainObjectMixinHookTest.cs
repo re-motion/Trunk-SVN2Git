@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         mixinInstance.OnLoadedCalled = false;
         mixinInstance.OnLoadedCount = 0;
 
-        ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+        ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
         newTransaction.EnlistDomainObject (order);
 
         Assert.IsFalse (mixinInstance.OnLoadedCalled);

@@ -26,8 +26,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     public void FindAll ()
     {
       DatabaseFixtures dbFixtures = new DatabaseFixtures ();
-      dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.NewRootTransaction());
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         DomainObjectCollection positions = Position.FindAll ();
 

@@ -33,7 +33,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public override void SetUp ()
     {
       base.SetUp();
-      ClientTransaction.NewRootTransaction().EnterDiscardingScope();
+      ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
       _orderClass = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID);
       _dummyClass = SecurableClassDefinition.NewObject ();
 

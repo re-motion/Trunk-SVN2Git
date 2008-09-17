@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Transport
 
     public DomainObjectTransporter ()
     {
-      _transportTransaction = ClientTransaction.NewBindingTransaction();
+      _transportTransaction = ClientTransaction.CreateBindingTransaction();
       _transportTransaction.AddListener (new TransportTransactionListener (this));
     }
 

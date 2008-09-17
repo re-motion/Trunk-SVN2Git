@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Order order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
 
       OrderTicket orderTicket2;
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         orderTicket2 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
       }
@@ -199,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Order order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
       OrderItem orderItem3;
 
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
       }
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Order order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
       OrderItem orderItem3;
 
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
       }
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Order order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
 
       OrderItem orderItem1;
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       }
@@ -247,7 +247,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Order order1 = (Order) ClientTransactionMock.GetObject (DomainObjectIDs.Order1);
 
       OrderItem orderItem3;
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
       }
@@ -275,7 +275,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void PerformDeletionWithOtherClientTransaction ()
     {
       Order order1;
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         order1 = Order.GetObject (DomainObjectIDs.Order1);
       }

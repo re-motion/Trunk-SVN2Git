@@ -87,8 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (ConcurrencyViolationException))]
     public void ConcurrentDeleteWithForeignKey ()
     {
-      ClientTransaction clientTransaction1 = ClientTransaction.NewRootTransaction();
-      ClientTransaction clientTransaction2 = ClientTransaction.NewRootTransaction();
+      ClientTransaction clientTransaction1 = ClientTransaction.CreateRootTransaction();
+      ClientTransaction clientTransaction2 = ClientTransaction.CreateRootTransaction();
 
       OrderTicket changedOrderTicket;
       DataContainer changedDataContainer;
@@ -117,8 +117,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (ConcurrencyViolationException))]
     public void ConcurrentDeleteWithoutForeignKey ()
     {
-      ClientTransaction clientTransaction1 = ClientTransaction.NewRootTransaction();
-      ClientTransaction clientTransaction2 = ClientTransaction.NewRootTransaction();
+      ClientTransaction clientTransaction1 = ClientTransaction.CreateRootTransaction();
+      ClientTransaction clientTransaction2 = ClientTransaction.CreateRootTransaction();
 
       DataContainer changedDataContainer;
       ClassWithAllDataTypes changedObject;

@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       customers.Add (customer);
 
       Customer copy;
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         copy = Customer.GetObject (customer.ID);
       }

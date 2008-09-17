@@ -22,7 +22,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       base.SetUp ();
 
-      ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ();
+      ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
     }
 
     [Test]

@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       ClientTransactionMock.Commit ();
       Computer computer;
 
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (employee);
         computer = Computer.NewObject ();
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       ClientTransactionMock.Commit ();
       Company company;
 
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (industrialSector);
         company = Company.NewObject ();

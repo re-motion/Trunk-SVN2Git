@@ -856,7 +856,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       existingCustomer.Orders[0].Delete();
 
       ClientTransactionScope.CurrentTransaction.Commit();
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         newCustomer = Customer.GetObject (newCustomer.ID);
         existingCustomer = Customer.GetObject (DomainObjectIDs.Customer3);

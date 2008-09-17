@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     [Test]
     public void AddAccessType_TwoNewAccessTypes ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         AccessTypeDefinition accessType0 = AccessTypeDefinition.NewObject();
         AccessTypeDefinition accessType1 = AccessTypeDefinition.NewObject();
@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     [Test]
     public void AddStateProperty ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         StatePropertyDefinition stateProperty = StatePropertyDefinition.NewObject();
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
@@ -232,7 +232,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         testHelper.Transaction.Commit();
       }
 
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         SecurableClassDefinition foundClass = SecurableClassDefinition.FindByName ("Remotion.SecurityManager.UnitTests.TestDomain.Invoice");
 
@@ -254,7 +254,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         testHelper.Transaction.Commit();
       }
 
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         SecurableClassDefinition foundClass = SecurableClassDefinition.FindByName ("Invce");
 
@@ -268,7 +268,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
       dbFixtures.CreateEmptyDomain();
 
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         DomainObjectCollection result = SecurableClassDefinition.FindAll();
 
@@ -281,12 +281,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     {
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
       SecurableClassDefinition[] expectedClassDefinitions;
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         expectedClassDefinitions = dbFixtures.CreateAndCommitSecurableClassDefinitions (10, ClientTransactionScope.CurrentTransaction);
       }
 
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         DomainObjectCollection result = SecurableClassDefinition.FindAll();
 
@@ -301,13 +301,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     {
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
       SecurableClassDefinition[] expectedClassDefinitions;
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         expectedClassDefinitions =
             dbFixtures.CreateAndCommitSecurableClassDefinitionsWithSubClassesEach (10, 10, ClientTransactionScope.CurrentTransaction);
       }
 
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         DomainObjectCollection result = SecurableClassDefinition.FindAllBaseClasses();
 
@@ -323,7 +323,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
       SecurableClassDefinition expectedBaseClassDefinition;
       ObjectList<SecurableClassDefinition> expectedDerivedClasses;
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         SecurableClassDefinition[] expectedBaseClassDefinitions =
             dbFixtures.CreateAndCommitSecurableClassDefinitionsWithSubClassesEach (10, 10, ClientTransactionScope.CurrentTransaction);
@@ -331,7 +331,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         expectedDerivedClasses = expectedBaseClassDefinition.DerivedClasses;
       }
 
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         SecurableClassDefinition actualBaseClassDefinition = SecurableClassDefinition.GetObject (expectedBaseClassDefinition.ID);
 
@@ -344,7 +344,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     [Test]
     public void CreateAccessControlList ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
         using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
@@ -364,7 +364,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     [Test]
     public void CreateAccessControlList_TwoNewAcls ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
         using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
@@ -390,13 +390,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
       SecurableClassDefinition expectedClassDefinition;
       ObjectList<AccessTypeDefinition> expectedAccessTypes;
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         expectedClassDefinition = dbFixtures.CreateAndCommitSecurableClassDefinitionWithAccessTypes (10, ClientTransactionScope.CurrentTransaction);
         expectedAccessTypes = expectedClassDefinition.AccessTypes;
       }
 
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         SecurableClassDefinition actualClassDefinition = SecurableClassDefinition.GetObject (expectedClassDefinition.ID);
 
@@ -413,14 +413,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       SecurableClassDefinition expectedClassDefinition;
       ObjectList<AccessControlList> expectedAcls;
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         expectedClassDefinition =
             dbFixtures.CreateAndCommitSecurableClassDefinitionWithAccessControlLists (10, ClientTransactionScope.CurrentTransaction);
         expectedAcls = expectedClassDefinition.AccessControlLists;
       }
 
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         SecurableClassDefinition actualClassDefinition = SecurableClassDefinition.GetObject (expectedClassDefinition.ID);
 
@@ -433,7 +433,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     [Test]
     public void GetChangedAt_AfterCreation ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
 
@@ -444,7 +444,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     [Test]
     public void Touch_AfterCreation ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
 

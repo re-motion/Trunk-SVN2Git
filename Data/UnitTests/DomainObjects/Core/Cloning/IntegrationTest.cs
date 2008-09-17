@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     public void CompleteCloneStrategy ()
     {
       DomainObjectCloner cloner = new DomainObjectCloner ();
-      ClientTransaction bindingTransaction = ClientTransaction.NewBindingTransaction ();
+      ClientTransaction bindingTransaction = ClientTransaction.CreateBindingTransaction ();
       cloner.CloneTransaction = bindingTransaction;
 
       Order source = Order.GetObject (DomainObjectIDs.Order1);

@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       _collection = CreateCustomerCollection ();
 
-      _secondClientTransaction = ClientTransaction.NewRootTransaction();
+      _secondClientTransaction = ClientTransaction.CreateRootTransaction();
       _secondCollection = new DomainObjectCollection ();
       using (_secondClientTransaction.EnterDiscardingScope ())
       {

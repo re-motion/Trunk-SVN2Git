@@ -364,7 +364,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (8, cwadt.Int16Property);
       ClientTransactionMock.Commit ();
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (cwadt);
         Assert.AreEqual (7, cwadt.Int32Property);

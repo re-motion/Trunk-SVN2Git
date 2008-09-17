@@ -375,7 +375,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       IImportStrategy mockStrategy = repository.StrictMock<IImportStrategy> ();
       byte[] data = new byte[] { 1, 2, 3 };
       TransportItem[] items;
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         items = new TransportItem[] { TransportItem.PackageDataContainer (Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer) };
       }
@@ -429,7 +429,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     private void ModifyDatabase (Action changer)
     {
       SetDatabaseModifyable ();
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope())
       {
         changer();
         ClientTransaction.Current.Commit ();

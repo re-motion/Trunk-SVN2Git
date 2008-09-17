@@ -130,7 +130,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void Get_PermissionsFromDatabase ()
     {
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
-      ObjectID aceID = dbFixtures.CreateAndCommitAccessControlEntryWithPermissions (10, ClientTransaction.NewRootTransaction());
+      ObjectID aceID = dbFixtures.CreateAndCommitAccessControlEntryWithPermissions (10, ClientTransaction.CreateRootTransaction());
 
       AccessControlEntry ace = AccessControlEntry.GetObject (aceID);
 
@@ -172,7 +172,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void ClearSpecificTenantOnCommit ()
     {
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
-      ObjectID aceID = dbFixtures.CreateAndCommitAccessControlEntryWithPermissions (0, ClientTransaction.NewRootTransaction());
+      ObjectID aceID = dbFixtures.CreateAndCommitAccessControlEntryWithPermissions (0, ClientTransaction.CreateRootTransaction());
       AccessControlEntry ace = AccessControlEntry.GetObject (aceID);
       ace.Tenant = TenantSelection.OwningTenant;
       ace.SpecificTenant = _testHelper.CreateTenant ("TestTenant");
@@ -186,12 +186,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void ClearSpecificTenantOnCommitWhenObjectIsDeleted ()
     {
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
-      ObjectID aceID = dbFixtures.CreateAndCommitAccessControlEntryWithPermissions (0, ClientTransaction.NewRootTransaction());
+      ObjectID aceID = dbFixtures.CreateAndCommitAccessControlEntryWithPermissions (0, ClientTransaction.CreateRootTransaction());
       AccessControlEntry ace = AccessControlEntry.GetObject (aceID);
       ace.Tenant = TenantSelection.SpecificTenant;
       ace.SpecificTenant = _testHelper.CreateTenant ("TestTenant");
       ClientTransactionScope.CurrentTransaction.Commit();
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         AccessControlEntry aceActual = AccessControlEntry.GetObject (aceID);
         aceActual.Tenant = TenantSelection.OwningTenant;

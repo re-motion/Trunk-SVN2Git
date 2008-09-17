@@ -350,7 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void HasChangedTx ()
     {
       IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
-      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction ();
       using (clientTransaction.EnterNonDiscardingScope ())
       {
         Assert.That (sector.Properties[typeof (IndustrialSector), "Name"].HasChangedTx (ClientTransactionMock), Is.False);
@@ -369,7 +369,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void HasChangedTx_InvalidTransaction ()
     {
       IndustrialSector sector = IndustrialSector.GetObject(DomainObjectIDs.IndustrialSector1);
-      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction ();
       sector.Properties[typeof (IndustrialSector), "Name"].HasChangedTx (clientTransaction);
     }
 
@@ -377,7 +377,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void HasBeenTouchedTx ()
     {
       IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
-      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction ();
       using (clientTransaction.EnterNonDiscardingScope ())
       {
         Assert.That (sector.Properties[typeof (IndustrialSector), "Name"].HasBeenTouchedTx (ClientTransactionMock), Is.False);
@@ -396,7 +396,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void HasBeenTouchedTx_InvalidTransaction ()
     {
       IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
-      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction ();
       sector.Properties[typeof (IndustrialSector), "Name"].HasBeenTouchedTx (clientTransaction);
     }
 
@@ -695,7 +695,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.NewObject ();
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.GetValueTx<int> (ClientTransactionScope.CurrentTransaction);
       }
@@ -707,7 +707,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.GetObject (DomainObjectIDs.Order1);
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.GetValueTx<int> (ClientTransactionScope.CurrentTransaction);
       }
@@ -764,7 +764,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.NewObject ();
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.GetValueWithoutTypeCheckTx (ClientTransactionScope.CurrentTransaction);
       }
@@ -776,7 +776,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.GetObject (DomainObjectIDs.Order1);
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.GetValueWithoutTypeCheckTx (ClientTransactionScope.CurrentTransaction);
       }
@@ -834,7 +834,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.NewObject ();
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.GetOriginalValueTx<int> (ClientTransactionScope.CurrentTransaction);
       }
@@ -846,7 +846,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.GetObject (DomainObjectIDs.Order1);
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.GetOriginalValueTx<int> (ClientTransactionScope.CurrentTransaction);
       }
@@ -904,7 +904,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.NewObject ();
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.GetOriginalValueWithoutTypeCheckTx (ClientTransactionScope.CurrentTransaction);
       }
@@ -916,7 +916,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.GetObject (DomainObjectIDs.Order1);
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.GetOriginalValueWithoutTypeCheckTx (ClientTransactionScope.CurrentTransaction);
       }
@@ -928,7 +928,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.GetObject(DomainObjectIDs.Order1);
       OrderTicket orderTicket2 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransactionScope.CurrentTransaction.EnlistDomainObject (order);
         OrderTicket orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
@@ -964,7 +964,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.NewObject ();
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.SetValueTx (ClientTransactionScope.CurrentTransaction, 1);
       }
@@ -976,7 +976,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.GetObject (DomainObjectIDs.Order1);
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.SetValueTx (ClientTransactionScope.CurrentTransaction, 2);
       }
@@ -988,7 +988,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       OrderTicket orderTicket2 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransactionScope.CurrentTransaction.EnlistDomainObject (order);
         OrderTicket orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
@@ -1024,7 +1024,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.NewObject ();
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.SetValueWithoutTypeCheckTx (ClientTransactionScope.CurrentTransaction, 1);
       }
@@ -1036,7 +1036,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.GetObject (DomainObjectIDs.Order1);
       PropertyAccessor accessor = newOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         accessor.SetValueWithoutTypeCheckTx (ClientTransactionScope.CurrentTransaction, 2);
       }
@@ -1259,7 +1259,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void DiscardCheck_Tx ()
     {
       ClassWithAllDataTypes instance = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      ClientTransaction otherTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction otherTransaction = ClientTransaction.CreateRootTransaction ();
       using (otherTransaction.EnterNonDiscardingScope ())
       {
         otherTransaction.EnlistDomainObject (instance);

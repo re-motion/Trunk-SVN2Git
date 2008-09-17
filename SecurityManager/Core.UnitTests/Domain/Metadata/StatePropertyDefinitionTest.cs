@@ -140,7 +140,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       ObjectList<StateDefinition> expectedStateDefinitions = expectdPropertyDefinition.DefinedStates;
       _testHelper.Transaction.Commit();
 
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         StatePropertyDefinition actualStatePropertyDefinition = StatePropertyDefinition.GetObject (expectdPropertyDefinition.ID);
 

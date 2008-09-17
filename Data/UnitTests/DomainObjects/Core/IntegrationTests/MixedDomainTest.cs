@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       RelationTargetForPersistentMixin relationTarget4;
       RelationTargetForPersistentMixin relationTarget5;
 
-      using (ClientTransaction.NewBindingTransaction ().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope())
       {
         mixedInstance = TargetClassForPersistentMixin.NewObject();
         mixin = Mixin.Get<MixinAddingPersistentProperties> (mixedInstance);
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       TargetClassForPersistentMixin loadedInstance;
       MixinAddingPersistentProperties loadedMixin;
-      using (ClientTransaction.NewBindingTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
         loadedInstance = TargetClassForPersistentMixin.GetObject (mixedInstance.ID);
         loadedMixin = Mixin.Get<MixinAddingPersistentProperties> (loadedInstance);
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Computer relationTarget1;
       Computer relationTarget2;
 
-      using (ClientTransaction.NewBindingTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
         mixedInstance = TargetClassWithTwoUnidirectionalMixins.NewObject ().With ();
         mixin1 = Mixin.Get<MixinAddingUnidirectionalRelation1> (mixedInstance);
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       MixinAddingUnidirectionalRelation1 loadedMixin1;
       MixinAddingUnidirectionalRelation2 loadedMixin2;
 
-      using (ClientTransaction.NewBindingTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
         loadedInstance = TargetClassWithTwoUnidirectionalMixins.GetObject (mixedInstance.ID);
         loadedMixin1 = Mixin.Get<MixinAddingUnidirectionalRelation1> (loadedInstance);
@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Computer relationTarget1;
       Computer relationTarget2;
 
-      using (ClientTransaction.NewBindingTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
         mixedInstance1 = TargetClassWithUnidirectionalMixin1.NewObject ().With ();
         mixin1 = Mixin.Get<MixinAddingUnidirectionalRelation1> (mixedInstance1);
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       MixinAddingUnidirectionalRelation1 loadedMixin1;
       MixinAddingUnidirectionalRelation1 loadedMixin2;
 
-      using (ClientTransaction.NewBindingTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
         loadedInstance1 = TargetClassWithUnidirectionalMixin1.GetObject (mixedInstance1.ID);
         loadedMixin1 = Mixin.Get<MixinAddingUnidirectionalRelation1> (loadedInstance1);

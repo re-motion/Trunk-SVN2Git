@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
     public MetadataTestHelper ()
     {
-      _transaction = ClientTransaction.NewRootTransaction();
+      _transaction = ClientTransaction.CreateRootTransaction();
     }
 
     public ClientTransaction Transaction

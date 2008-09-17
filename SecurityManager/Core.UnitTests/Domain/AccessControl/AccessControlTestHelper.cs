@@ -28,7 +28,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     public AccessControlTestHelper ()
     {
-      _transaction = ClientTransaction.NewRootTransaction ();
+      _transaction = ClientTransaction.CreateRootTransaction ();
       _factory = new OrganizationalStructureFactory ();
     }
 

@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void ClientTransactionSerializationTest ()
     {
-      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction();
+      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction();
 
       ClientTransaction deserializedClientTransaction = (ClientTransaction) SerializeAndDeserialize (clientTransaction);
 
@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void SubClientTransactionSerializationTest ()
     {
-      ClientTransaction clientTransaction = ClientTransaction.NewRootTransaction ().CreateSubTransaction();
+      ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction ().CreateSubTransaction();
 
       ClientTransaction deserializedClientTransaction = (ClientTransaction) SerializeAndDeserialize (clientTransaction);
 

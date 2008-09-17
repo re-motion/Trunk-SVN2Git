@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     {
       PerformSerializationTests (nameOfTest, serExpectedMS, deserExpectedMS, delegate
       {
-        using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+        using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
         {
           for (int i = 0; i < count; ++i)
             objectCreator ();

@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       PropertyAccessor orderNumberAccessor = order.Properties[typeof (Order), "OrderNumber"];
 
-      ClientTransaction secondTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction secondTransaction = ClientTransaction.CreateRootTransaction ();
       secondTransaction.EnlistDomainObject (order);
 
       orderNumberAccessor.SetValue (12);
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       PropertyAccessor orderNumberAccessor = order.Properties[typeof (Order), "OrderNumber"];
 
-      ClientTransaction secondTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction secondTransaction = ClientTransaction.CreateRootTransaction ();
       secondTransaction.EnlistDomainObject (order);
 
       TransactionalAccessor<int> orderNumberTx = CreateTransactionalAccessor<int> (orderNumberAccessor);
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
-      ClientTransaction secondTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction secondTransaction = ClientTransaction.CreateRootTransaction ();
       secondTransaction.EnlistDomainObject (order);
 
       order.OrderNumberTx[ClientTransactionMock] = 7;

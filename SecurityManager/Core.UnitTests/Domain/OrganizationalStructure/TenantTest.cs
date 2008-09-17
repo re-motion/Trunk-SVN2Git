@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       base.TestFixtureSetUp ();
 
       _dbFixtures = new DatabaseFixtures ();
-      Tenant tenant = _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.NewRootTransaction());
+      Tenant tenant = _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
       _expectedTenantID = tenant.ID;
     }
 
@@ -110,7 +110,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Tenant.Current = tenant;
       Assert.AreSame (tenant, Tenant.Current);
 
-      using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Assert.AreEqual(tenant.ID, Tenant.Current.ID);
         Assert.AreNotSame (tenant, Tenant.Current);

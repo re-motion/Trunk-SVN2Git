@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       ClassWithAllDataTypes instance;
       
-      using (ClientTransaction.NewBindingTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
         instance = ClassWithAllDataTypes.NewObject();
       }
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       {
         ClassWithAllDataTypes deserializedInstance = deserializedData.B;
         Assert.IsFalse (deserializedInstance.OnLoadedHasBeenCalled);
-        using (ClientTransaction.NewRootTransaction ().EnterNonDiscardingScope ())
+        using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
         {
           ClientTransaction.Current.EnlistDomainObject (deserializedInstance);
           deserializedInstance.Int32Property = 15;

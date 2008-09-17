@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
       classWithAllDataTypes.OnLoadedHasBeenCalled = false;
       classWithAllDataTypes.OnLoadedCallCount = 0;
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
 
       newTransaction.EnlistDomainObject (classWithAllDataTypes);
 
@@ -181,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
       classWithAllDataTypes.OnLoadedHasBeenCalled = false;
       classWithAllDataTypes.OnLoadedCallCount = 0;
-      ClientTransaction newTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
 
       newTransaction.EnlistDomainObject (classWithAllDataTypes);
 
@@ -361,13 +361,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
       customer.Name = "New name";
 
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (customer);
         Assert.AreEqual (StateType.Unchanged, customer.GetStateForTransaction (ClientTransaction.Current));
         Assert.AreEqual (StateType.Changed, customer.GetStateForTransaction (ClientTransactionMock));
 
-        using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+        using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
         {
           Assert.AreEqual (StateType.Changed, customer.GetStateForTransaction (ClientTransactionMock)); // must not throw a ClientTransactionDiffersException
         }
@@ -401,7 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void IsDiscardedInTransaction ()
     {
-      ClientTransaction otherTransaction = ClientTransaction.NewRootTransaction ();
+      ClientTransaction otherTransaction = ClientTransaction.CreateRootTransaction ();
       ClassWithAllDataTypes loadedObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
       using (otherTransaction.EnterNonDiscardingScope ())
       {

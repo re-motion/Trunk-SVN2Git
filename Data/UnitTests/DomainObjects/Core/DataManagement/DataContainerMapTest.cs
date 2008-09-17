@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         MatchType = MessageMatch.Regex)]
     public void PerformDeleteWithOtherClientTransaction ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         Order order1 = Order.GetObject (DomainObjectIDs.Order1);
 

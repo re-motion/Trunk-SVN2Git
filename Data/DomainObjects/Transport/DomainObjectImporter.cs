@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Transport
 
     public TransportedDomainObjects GetImportedObjects ()
     {
-      ClientTransaction targetTransaction = ClientTransaction.NewBindingTransaction ();
+      ClientTransaction targetTransaction = ClientTransaction.CreateBindingTransaction ();
       List<Tuple<TransportItem, DataContainer>> dataContainerMapping = GetTargetDataContainersForSourceObjects (targetTransaction);
 
       // grab enlisted objects _before_ properties are synchronized, as synchronizing might load some additional objects

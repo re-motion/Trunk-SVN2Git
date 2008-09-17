@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     public void ManyToOneRelationToConcreteSingle ()
     {
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         Order order = Order.GetObject (DomainObjectIDs.Order);
         Assert.AreEqual (DomainObjectIDs.Customer, order.Customer.ID);
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       expectedCustomer.Region = expectedNewRegion;
 
       ClientTransactionScope.CurrentTransaction.Commit ();
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         Customer actualCustomer = Customer.GetObject (expectedCustomer.ID);
         Assert.AreEqual ("NewLastName", actualCustomer.LastName);
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       expectedAddress.Person = expectedCustomer;
 
       ClientTransactionScope.CurrentTransaction.Commit ();
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         Customer actualCustomer = Customer.GetObject (expectedCustomer.ID);
         Assert.IsNotNull (actualCustomer);
@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       
 
       ClientTransactionScope.CurrentTransaction.Commit ();
-      using (ClientTransaction.NewRootTransaction().EnterDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         try
         {

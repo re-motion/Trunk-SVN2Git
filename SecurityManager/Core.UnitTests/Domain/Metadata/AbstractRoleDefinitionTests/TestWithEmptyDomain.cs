@@ -22,7 +22,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.AbstractRoleDefinit
     {
       base.SetUp();
 
-      ClientTransaction.NewRootTransaction().EnterNonDiscardingScope();
+      ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
       dbFixtures.CreateEmptyDomain();
     }

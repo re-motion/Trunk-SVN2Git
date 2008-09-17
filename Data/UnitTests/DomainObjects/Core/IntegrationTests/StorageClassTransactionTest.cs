@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
     private void CheckValueInParallelRootTransaction (Computer computer, Employee referenceEmployee)
     {
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         Computer sameComputer = Computer.GetObject (computer.ID);
         Employee sameReferenceEmployee = Employee.GetObject (referenceEmployee.ID);

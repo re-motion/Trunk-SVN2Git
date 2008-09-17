@@ -16,13 +16,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class BindingClientTransaction : RootClientTransaction
   {
     /// <summary>
-    /// Do not use this method, use <see>ClientTransaction.NewRootTransaction</see> instead.
+    /// Do not use this method, use <see>ClientTransaction.CreateRootTransaction</see> instead.
     /// </summary>
     /// <returns></returns>
-    [Obsolete ("Use ClientTransaction.NewRootTransaction for clarity.")]
+    [Obsolete ("Use ClientTransaction.CreateRootTransaction for clarity.")]
     public static new ClientTransaction NewRootTransaction ()
     {
-      return ClientTransaction.NewRootTransaction();
+      return ClientTransaction.CreateRootTransaction();
     }
 
     public BindingClientTransaction ()

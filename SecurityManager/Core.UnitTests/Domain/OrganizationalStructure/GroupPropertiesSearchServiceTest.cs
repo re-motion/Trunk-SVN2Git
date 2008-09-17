@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
       
       _dbFixtures = new DatabaseFixtures();
-      _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.NewRootTransaction());
+      _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
     }
 
     public override void SetUp ()

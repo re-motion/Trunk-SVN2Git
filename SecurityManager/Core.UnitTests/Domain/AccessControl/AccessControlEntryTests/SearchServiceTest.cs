@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (AccessControlEntryPropertiesSearchService), new AccessControlEntryPropertiesSearchService ());
   
       _dbFixtures = new DatabaseFixtures ();
-      _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.NewRootTransaction ());
+      _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction ());
     }
 
     public override void SetUp ()

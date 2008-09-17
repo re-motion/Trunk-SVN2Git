@@ -36,8 +36,8 @@ namespace Remotion.Data.DomainObjects
   /// 
   ///   public static void Test (MyDomainObject obj)
   ///   {
-  ///     ClientTransaction transaction1 = ClientTransaction.NewRootTransaction();
-  ///     ClientTransaction transaction2 = ClientTransaction.NewRootTransaction();
+  ///     ClientTransaction transaction1 = ClientTransaction.CreateRootTransaction();
+  ///     ClientTransaction transaction2 = ClientTransaction.CreateRootTransaction();
   ///   
   ///     transaction1.EnlistDomainObject (obj);
   ///     transaction2.EnlistDomainObject (obj);

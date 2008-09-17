@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetDataContainerUsesStoredTransaction ()
     {
       AnonymousEndPoint endPoint = new AnonymousEndPoint (ClientTransactionMock, _client, _clientToLocationDefinition);
-      using (ClientTransaction.NewRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         Assert.AreSame (ClientTransactionMock, endPoint.GetDataContainer ().ClientTransaction);
       }

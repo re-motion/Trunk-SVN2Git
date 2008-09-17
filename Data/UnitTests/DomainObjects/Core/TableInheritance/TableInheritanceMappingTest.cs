@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       DomainObjectsConfiguration.SetCurrent (TableInheritanceConfiguration.Instance.GetDomainObjectsConfiguration ());
       MappingConfiguration.SetCurrent (TableInheritanceConfiguration.Instance.GetMappingConfiguration ());
       ConfigurationWrapper.SetCurrent (null);
-      _transactionScope = ClientTransaction.NewRootTransaction().EnterDiscardingScope();
+      _transactionScope = ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
     }
 
     public override void TearDown ()

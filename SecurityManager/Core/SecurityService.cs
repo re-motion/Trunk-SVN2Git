@@ -58,7 +58,7 @@ namespace Remotion.SecurityManager
 
     public AccessType[] GetAccess (ISecurityContext context, IPrincipal user)
     {
-      return GetAccess (ClientTransaction.NewRootTransaction(), context, user);
+      return GetAccess (ClientTransaction.CreateRootTransaction(), context, user);
     }
 
     public AccessType[] GetAccess (ClientTransaction transaction, ISecurityContext context, IPrincipal user)
@@ -89,7 +89,7 @@ namespace Remotion.SecurityManager
 
     public int GetRevision ()
     {
-      using (ClientTransaction.NewRootTransaction().EnterNonDiscardingScope())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         return Revision.GetRevision ();
       }
