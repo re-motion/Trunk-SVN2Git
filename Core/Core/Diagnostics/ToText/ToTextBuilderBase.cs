@@ -350,6 +350,15 @@ namespace Remotion.Diagnostics.ToText
       return WriteInstanceBegin (type);
     }
 
+    public IToTextBuilderBase  ib<T>()
+    {
+      return WriteInstanceBegin (typeof(T));
+    }
+
+    public IToTextBuilderBase ie ()
+    {
+      return WriteSequenceEnd ();
+    }
 
 
     public IToTextBuilderBase WriteSequenceEnd ()

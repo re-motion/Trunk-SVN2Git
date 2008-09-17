@@ -336,7 +336,14 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Shorthand notation for <see cref="WriteInstanceBegin"/>.</para>
     /// </summary>
     IToTextBuilderBase ib (Type type);
-
+    /// <summary>
+    /// <para>Begins a new sequence for writing an instance of the Type of the generic argument.</para>
+    /// </summary>
+    IToTextBuilderBase ib<T> ();
+    /// <summary>
+    /// <para>Closes an instance sequence.</para>
+    /// </summary>
+    IToTextBuilderBase ie();
 
     /// <summary>
     /// <para>Begins a new sequence for writing out the elements of an array. Note that arrays are handled automatically 

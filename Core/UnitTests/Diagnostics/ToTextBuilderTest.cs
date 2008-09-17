@@ -15,6 +15,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
+using Remotion.UnitTests.Diagnostics.TestDomain;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 
@@ -580,6 +581,16 @@ namespace Remotion.UnitTests.Diagnostics
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("[Object]")); // NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
+    }
+
+    [Test]
+    public void ibGenericTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.ib<Test>().ie();
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("[Test]")); // NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
     }
 
     [Test]

@@ -1,3 +1,13 @@
+/* Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+ *
+ * This program is free software: you can redistribute it and/or modify it under 
+ * the terms of the re:motion license agreement in license.txt. If you did not 
+ * receive it, please visit http://www.re-motion.org/licensing.
+ * 
+ * Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ */
+
 using System;
 using System.IO;
 using System.Runtime.Remoting.Contexts;
@@ -12,7 +22,7 @@ namespace Remotion.Diagnostics
   /// Gives convenient access to the transformation of arbitrary objects into human readable text form through the following:
   /// <list type="number">
   /// <item>Provides convenient access to a <see cref="Remotion.Diagnostics.ToText.ToTextProvider"/> instance through <see cref="Text"/>.</item> 
-  /// <item>Automatically registers type and interface handlers for use by <see cref="ToTextProvider"/> (see examples below)</item>
+  /// <item>Automatically registers type and interface handlers for use by <see cref="ToText.ToTextProvider"/> (see examples below)</item>
   /// <item>Supplies several <see cref="Remotion.Diagnostics.ToText.ToTextBuilder"/> instances preconfigured for specific usage scenarios.</item>
   /// </list>
   /// </para>

@@ -11,23 +11,51 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics;
+using Remotion.Diagnostics.ToText;
 
 namespace Remotion.UnitTests.Diagnostics
 {
   [TestFixture]
   public class ToTextTest
   {
-    public class MyClass
-    {
+    // ToTextProvider
+    // ToTextProviderSettings
 
+    public class ToTextProviderTypeHandler : ToTextSpecificTypeHandler<ToTextProvider>
+    {
+      public override void ToText (ToTextProvider t, IToTextBuilderBase ttb)
+      {
+        ttb.ib<ToTextProvider> ().e (t.Settings).ie ();
+      }
     }
+
+
 
     [Test]
     public void SomeTest ()
     {
-      
+      To.ToTextProvider.RegisterSpecificTypeHandler<ToTextProviderSettings> (
+        (s, tb) => {
+          tb.ib<ToTextProviderSettings>();
+          tb.ie(); 
+        }
+      );
 
+      To.ToTextProvider.RegisterSpecificTypeHandler (typeof (ToTextProvider), new ToTextProviderTypeHandler());
+
+      var someToTextProvider = To.ToTextProvider;
+      var someToTextProviderSettings = someToTextProvider.Settings;
+      var resultSettings = To.String.e (() => someToTextProviderSettings);
+      To.Console.nl().s (resultSettings.CheckAndConvertToString ());
+
+      var resultProvider = To.String.e (() => someToTextProvider);
+      To.Console.nl().s (resultProvider.CheckAndConvertToString ());
+    
     }
+
+
+
   }
 
 
