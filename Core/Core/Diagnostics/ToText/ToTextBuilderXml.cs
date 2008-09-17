@@ -133,6 +133,28 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public override IToTextBuilderBase WriteDictionary (IDictionary dictionary)
+    {
+      SequenceXmlBegin (dictionary.GetType ().Name, "dictionary", "dictionary", null);
+      foreach (DictionaryEntry de in dictionary)
+      {
+        _disableableWriter.WriteStartElement ("de");
+        
+        SequenceXmlBegin (null, null, "key", null);
+        WriteElement (de.Key);
+        SequenceEnd ();
+
+        SequenceXmlBegin (null, null, "val", null);
+        WriteElement (de.Value);
+        SequenceEnd ();
+
+        _disableableWriter.WriteEndElement ();
+      }
+      SequenceEnd ();
+      return this;
+    }
+
+
     public override IToTextBuilderBase WriteArray (Array array)
     {
       throw new System.NotImplementedException ();
@@ -173,12 +195,8 @@ namespace Remotion.Diagnostics.ToText
       SequenceXmlEnd ();
     }
 
-    //protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
-    //{
-    //  throw new System.NotImplementedException();
-    //}
 
-    protected override void BeforeNewSequence () // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    protected override void BeforeNewSequence ()
     {
       //base.BeforeNewSequence();
       PushSequenceState (SequenceState);

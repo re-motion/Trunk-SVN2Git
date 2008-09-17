@@ -23,7 +23,7 @@ namespace Remotion.Diagnostics.ToText
   /// 
   /// <para>See <see cref="RegisterDefaultToTextProviderHandlers"/> for a description of the default ToText-handling-fallback-cascade.</para>
   /// </summary>
-  public class ToTextProvider 
+  public class ToTextProvider : IToText
   {
     private readonly ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
     private readonly ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> ();
@@ -172,6 +172,7 @@ namespace Remotion.Diagnostics.ToText
       {
         if (!toTextProviderHandler.Disabled)
         {
+          Log ("[ToTextUsingToTextProviderHandlers] trying handler: " + toTextProviderHandler);
           var feedback = new ToTextProviderHandlerFeedback ();
           toTextProviderHandler.ToTextIfTypeMatches (parameters, feedback);
           if (feedback.Handled)
@@ -206,23 +207,21 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    //public ToTextProvider CloneDeepCopy ()
-    //{
-    //  var ttp = new ToTextProvider();
-    //  ttp._typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
-    //  private readonly ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> ();
-      
-    //  private int _interfaceHandlerPriorityMin = 0;
-    //  private int _interfaceHandlerPriorityMax = 0;
+    public void ToText (IToTextBuilderBase ttb)
+    {
+      //private readonly ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
+      //private readonly ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> ();
 
-    //  private readonly List<IToTextProviderHandler> _toTextProviderHandlers = new List<IToTextProviderHandler> ();
-    //  private readonly Dictionary<Type, IToTextProviderHandler> _toTextProviderHandlerTypeToHandlerMap = new Dictionary<Type, IToTextProviderHandler> ();
+      //private int _interfaceHandlerPriorityMin = 0;
+      //private int _interfaceHandlerPriorityMax = 0;
 
-    //  private readonly ToTextProviderSettings _toTextProviderSettings = new ToTextProviderSettings();
-    //  public ToTextProviderSettings Settings
-    //  {
-    //    get { return _toTextProviderSettings; }
-    //  }    
-    //}
+      //private readonly List<IToTextProviderHandler> _toTextProviderHandlers = new List<IToTextProviderHandler> ();
+      //private readonly Dictionary<Type, IToTextProviderHandler> _toTextProviderHandlerTypeToHandlerMap = new Dictionary<Type, IToTextProviderHandler> ();
+
+      //ttb.ib<ToTextProvider> ().nl ().e (Settings).nl ().ie ();
+      ttb.ib<ToTextProvider> ().nl ().e (Settings);
+      //ttb.nl ().e (_typeHandlerMap);
+      ttb.ie ();
+    }
   }
 }

@@ -372,5 +372,16 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Shorthand notation for <see cref="WriteEnumerable"/>.</para>
     /// </summary>
     IToTextBuilderBase enumerable (IEnumerable enumerable);
+
+    /// <summary>
+    /// <para>Writes out the passed dictionary. Note that dictionaries are handled automatically 
+    /// by <see cref="WriteElement(object)"/>-methods, so normally there is no need to call this method explicitely.</para>
+    /// </summary>
+    IToTextBuilderBase WriteDictionary (IDictionary dictionary);
+    /// <summary>
+    /// <para>Writes out the passed dictionary.</para>
+    /// <para>Shorthand notation for <see cref="WriteDictionary"/>.</para>
+    /// </summary>
+    IToTextBuilderBase dictionary (IDictionary dictionary);
   }
 }

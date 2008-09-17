@@ -52,7 +52,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>    
+    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -108,6 +108,7 @@
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderArrayHandler.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderAutomaticObjectToTextHandler.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderCharHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderDictionaryHandler.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderEnumerableHandler.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderFormattableHandler.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderHandlerFeedback.cs" />

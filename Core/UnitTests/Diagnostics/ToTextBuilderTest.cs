@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
 using Remotion.UnitTests.Diagnostics.TestDomain;
@@ -225,6 +226,20 @@ namespace Remotion.UnitTests.Diagnostics
       Log (result);
       Assert.That (result, Is.EqualTo ("{5,3,1,11,13,17}"));
     }
+
+    [Test]
+    public void WriteDictionaryTest ()
+    {
+      var toTextBuilder = CreateTextBuilder();
+      var dictionary = Dictionary.New ("a",11,"b",22,"C",33);
+      toTextBuilder.WriteDictionary (dictionary);
+      var result = toTextBuilder.CheckAndConvertToString();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("{a:11,b:22,C:33}"));
+    }
+
+
+
 
     [Test]
     public void AppendNestedCollectionTest ()

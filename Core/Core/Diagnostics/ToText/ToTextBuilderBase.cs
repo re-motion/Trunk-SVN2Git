@@ -239,54 +239,55 @@ namespace Remotion.Diagnostics.ToText
     public IToTextBuilderBase WriteElement<T> (Expression<Func<T>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-
-      try
-      {
-        var memberExpression = (MemberExpression) expression.Body;
-        //var memberExpression = expression.Body as MemberExpression;
-        //Assertion.IsNotNull (memberExpression); // TODO: Use Check
-
-        var memberField = (FieldInfo) memberExpression.Member;
-        //var memberField = memberExpression.Member as FieldInfo;
-        //Assertion.IsNotNull (memberField); // TODO: Use Check
-
-        var closureExpression = (ConstantExpression) memberExpression.Expression;
-        //var closureExpression = memberExpression.Expression as ConstantExpression;
-        //Assertion.IsNotNull (closureExpression); // TODO: Use Check
-
-        object closure = closureExpression.Value;
-        Assertion.DebugAssert (closure != null);
-        Type closureType = closure.GetType();
-
-        // memberField.GetValue (closure);
-
-        Func<object,object> getValueFunction;
-        var key = new Tuple<Type, FieldInfo> (closureType, memberField);
-        if (! s_getValueFunctionCache.TryGetValue (key, out getValueFunction))
+      #if(false)
+        try
         {
-          getValueFunction = s_getValueFunctionCache.GetOrCreateValue (key, 
-            delegate 
-            {
-              //
-              // The following code builds this expression:
-              // Expression<Func<object,object> = (object closure) => (object) ((TClosure) closure).<memberField>;
-              //
-              var param = Expression.Parameter (typeof (object), "closure");
-              var closureAccess = Expression.Convert (param, closureType);
-              var body = Expression.Field (closureAccess, memberField);
-              var bodyAsObject = Expression.Convert (body, typeof (object));
-              var newExpression = Expression.Lambda (bodyAsObject, param);
-              return (Func<object,object>) newExpression.Compile();
-            }
-          );
-        }
-        object value = getValueFunction (closure);
-      }
-      catch (InvalidCastException)
-      {
-        throw new ArgumentException ("ToTextBuilder.WriteElement currently supports only expressions of the form () => varName. The expression: " + Environment.NewLine + expression.Body.ToString () + Environment.NewLine + " does not comply with this restriction.");
-      }
+          var memberExpression = (MemberExpression) expression.Body;
+          //var memberExpression = expression.Body as MemberExpression;
+          //Assertion.IsNotNull (memberExpression); // TODO: Use Check
 
+          var memberField = (FieldInfo) memberExpression.Member;
+          //var memberField = memberExpression.Member as FieldInfo;
+          //Assertion.IsNotNull (memberField); // TODO: Use Check
+
+          var closureExpression = (ConstantExpression) memberExpression.Expression;
+          //var closureExpression = memberExpression.Expression as ConstantExpression;
+          //Assertion.IsNotNull (closureExpression); // TODO: Use Check
+
+          object closure = closureExpression.Value;
+          Assertion.DebugAssert (closure != null);
+          Type closureType = closure.GetType();
+
+          // memberField.GetValue (closure);
+
+          Func<object,object> getValueFunction;
+          var key = new Tuple<Type, FieldInfo> (closureType, memberField);
+          if (! s_getValueFunctionCache.TryGetValue (key, out getValueFunction))
+          {
+            getValueFunction = s_getValueFunctionCache.GetOrCreateValue (key, 
+              delegate 
+              {
+                //
+                // The following code builds this expression:
+                // Expression<Func<object,object> = (object closure) => (object) ((TClosure) closure).<memberField>;
+                //
+                var param = Expression.Parameter (typeof (object), "closure");
+                var closureAccess = Expression.Convert (param, closureType);
+                var body = Expression.Field (closureAccess, memberField);
+                var bodyAsObject = Expression.Convert (body, typeof (object));
+                var newExpression = Expression.Lambda (bodyAsObject, param);
+                return (Func<object,object>) newExpression.Compile();
+              }
+            );
+          }
+          object value = getValueFunction (closure);
+        }
+        catch (InvalidCastException)
+        {
+          throw new ArgumentException ("ToTextBuilder.WriteElement currently supports only expressions of the form () => varName. The expression: " + Environment.NewLine + expression.Body.ToString () + Environment.NewLine + " does not comply with this restriction.");
+        }
+      #endif
+      // TODO: Finish and use caching version
       var variableName = RightUntilChar (expression.Body.ToString (), '.');
       var variableValue = expression.Compile () ();
       return WriteElement (variableName, variableValue);
@@ -330,9 +331,20 @@ namespace Remotion.Diagnostics.ToText
       return WriteEnumerable (enumerable);
     }
 
+
+
+    public abstract IToTextBuilderBase WriteDictionary (IDictionary dictionary);
+
+    public IToTextBuilderBase dictionary (IDictionary dictionary)
+    {
+      return WriteDictionary (dictionary);
+    }
+
+
+
     public abstract IToTextBuilderBase WriteArray (Array array);
     public abstract IToTextBuilderBase WriteSequenceArrayBegin ();
-
+    
 
 
     public IToTextBuilderBase WriteRaw (string s)

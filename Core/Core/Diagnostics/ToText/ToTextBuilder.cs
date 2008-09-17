@@ -145,41 +145,11 @@ namespace Remotion.Diagnostics.ToText
       return SequenceLiteralBegin ("", "(", "", "", ",", ")");
     }
 
-    //protected override void SequenceBeginWritePart (SequenceStateHolder sequenceState)
-    //{
-    //  throw new System.NotImplementedException();
-    //}
-
-    //public override IToTextBuilderBase nl ()
-    //{
-    //  WriteNewLine ();
-    //  return this;
-    //}
-
-
-    //protected override IToTextBuilderBase WriteObjectToString (object obj)
-    //{
-    //  _disableableWriter.Write (obj.ToString ());
-    //  return this;
-    //}
-
 
     //--------------------------------------------------------------------------
     // Low level Sequence Emitters
     //--------------------------------------------------------------------------
 
-    //protected override IToTextBuilderBase SequenceBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
-    //{
-    //  BeforeWriteElement();
-
-    //  sequenceStack.Push (SequenceState);
-
-    //  SequenceState = new SequenceStateHolder (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
-
-    //  SequenceBeginWritePart (name, sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
-
-    //  return this;
-    //}
 
     protected IToTextBuilderBase SequenceLiteralBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
@@ -194,17 +164,6 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-
-    //protected override void SequenceBeginWritePart (SequenceStateHolder sequenceState)
-    //{
-    //  _disableableWriter.Write (SequenceState.SequencePrefix);
-    //  string name = sequenceState.Name;
-    //  if (name.Length > 0)
-    //  {
-    //    _disableableWriter.Write (name);
-    //    _disableableWriter.Write (": ");
-    //  }
-    //}
 
 
     //--------------------------------------------------------------------------
@@ -274,6 +233,22 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+
+    public override IToTextBuilderBase WriteDictionary (IDictionary dictionary)
+    {
+      SequenceLiteralBegin ("", Settings.EnumerablePrefix, Settings.EnumerableElementPrefix,
+        Settings.EnumerableElementPostfix, Settings.EnumerableSeparator, Settings.EnumerablePostfix);
+      foreach (DictionaryEntry de in dictionary)
+      {
+        //dictionary.
+        SequenceLiteralBegin ("", "", "", "", ":", "");
+        WriteElement (de.Key);
+        WriteElement (de.Value);
+        SequenceEnd ();
+      }
+      SequenceEnd ();
+      return this;
+    }
 
     //public override IToTextBuilderBase array (Array array)
     //{

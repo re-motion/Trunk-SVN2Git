@@ -14,6 +14,7 @@ using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
@@ -348,7 +349,7 @@ namespace Remotion.UnitTests.Diagnostics
 
 
     [Test]
-    [Ignore ("TODO FS: Fix ArgumentNullException")]
+    [Ignore]
     public void PartialXmlTest ()
     {
       var stringWriter = new StringWriter ();
@@ -356,7 +357,7 @@ namespace Remotion.UnitTests.Diagnostics
 
       //toTextBuilderXml.Begin ();
       toTextBuilderXml.AllowNewline = false;
-      toTextBuilderXml.e ("first element");
+      //toTextBuilderXml.e ("first element");
       toTextBuilderXml.sb ().e ("seq_begin");
       toTextBuilderXml.sb ().e ("subseq_begin");
       toTextBuilderXml.writeIfBasicOrHigher.e ("subseq_element");
@@ -367,6 +368,20 @@ namespace Remotion.UnitTests.Diagnostics
       string result = stringWriter.ToString ();
       log.It (result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<seq><e>before</e><seq><e>start</e><e>m</e><e>s</e><e>b</e></seq></seq>"));
+    }
+
+
+    [Test]
+    public void WriteDictionaryTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+      var dictionary = Dictionary.New ("a", 11, "b", 22, "C", 33);
+      toTextBuilderXml.WriteDictionary (dictionary);
+      toTextBuilderXml.Flush ();
+      string result = stringWriter.ToString ();
+      log.It (result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<dictionary name=\"Dictionary`2\" type=\"dictionary\"><de><key>a</key><val>11</val></de><de><key>b</key><val>22</val></de><de><key>C</key><val>33</val></de></dictionary>"));
     }
 
     public static ToTextProvider CreateTextProvider ()

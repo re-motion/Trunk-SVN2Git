@@ -19,17 +19,14 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class ToTextTest
   {
-    // ToTextProvider
-    // ToTextProviderSettings
 
-    public class ToTextProviderTypeHandler : ToTextSpecificTypeHandler<ToTextProvider>
-    {
-      public override void ToText (ToTextProvider t, IToTextBuilderBase ttb)
-      {
-        ttb.ib<ToTextProvider> ().e (t.Settings).ie ();
-      }
-    }
-
+    //public class ToTextProviderTypeHandler : ToTextSpecificTypeHandler<ToTextProvider>
+    //{
+    //  public override void ToText (ToTextProvider t, IToTextBuilderBase ttb)
+    //  {
+    //    ttb.ib<ToTextProvider> ().nl ().e (t.Settings).nl ().e (t._typeHandlerMap).ie ();
+    //  }
+    //}
 
 
     [Test]
@@ -37,12 +34,19 @@ namespace Remotion.UnitTests.Diagnostics
     {
       To.ToTextProvider.RegisterSpecificTypeHandler<ToTextProviderSettings> (
         (s, tb) => {
+          tb.AllowNewline = false;
           tb.ib<ToTextProviderSettings>();
+          tb.e (() => s.UseAutomaticObjectToText).nl().e (() => s.EmitPublicProperties).nl().e (() => s.EmitPublicFields).nl().e (
+            () => s.EmitPrivateProperties).nl().e (() => s.EmitPrivateFields).nl().e (() => s.UseAutomaticStringEnclosing).nl().e (
+            () => s.UseAutomaticCharEnclosing).nl().e (() => s.UseInterfaceHandlers).nl().e (() => s.ParentHandlerSearchDepth).nl().e (
+            () => s.ParentHandlerSearchUpToRoot).nl().e (() => s.UseParentHandlers);
           tb.ie(); 
         }
       );
 
-      To.ToTextProvider.RegisterSpecificTypeHandler (typeof (ToTextProvider), new ToTextProviderTypeHandler());
+      //To.ToTextProvider.RegisterSpecificTypeHandler (typeof (ToTextProvider), new ToTextProviderTypeHandler());
+
+      //To.ToTextProvider.Settings.UseAutomaticObjectToText = true;
 
       var someToTextProvider = To.ToTextProvider;
       var someToTextProviderSettings = someToTextProvider.Settings;
