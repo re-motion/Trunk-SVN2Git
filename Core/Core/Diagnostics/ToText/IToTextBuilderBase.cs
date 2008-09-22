@@ -98,7 +98,7 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Check if e.g. all open sequences have been closed and return a string which represents the current <see cref="ToTextBuilder"/> text.</para> 
     /// </summary>
     string CheckAndConvertToString ();
-    //IToTextBuilderBase ToTextString (string s);
+    
     /// <summary>
     /// <para>Flushes the underlying stream writer.</para> 
     /// </summary>
@@ -110,26 +110,34 @@ namespace Remotion.Diagnostics.ToText
     /// stream writer (e.g. <see cref="WriteRawString"/>, <see cref="WriteRawChar"/>) are permitted.</para> 
     /// </summary>
     IToTextBuilderBase WriteRawElementBegin ();
+
     /// <summary>
     /// <para>Ends raw element writing started with a call to <see cref="WriteRawElementBegin"/>.</para> 
     /// </summary>
     IToTextBuilderBase WriteRawElementEnd ();
 
+    
     /// <summary>
-    /// <para>Writes the number of newline-tokens passed as an argument. Note that for e.g. a ToTextBuilder/>
-    /// writing an XML stream a newline will be expressed as an XML-tag, not as carriage return/linefeed characters.</para> 
+    /// <para>Writes the number of newline-tokens passed as an argument.</para>
     /// <para>Shorthand notation: <see cref="nl(int)"/></para>
     /// </summary>
+    /// <remarks>
+    /// <para>Note that for e.g. a <see cref="ToTextBuilder"/>
+    /// writing an XML stream a newline will be expressed as an XML-tag, not as carriage return/linefeed characters.</para>
+    /// </remarks>
     IToTextBuilderBase WriteNewLine (int numberNewlines);
+    
     /// <summary>
     /// <para>Writes the passed number of newline-tokens. Shorthand notation for <see cref="WriteNewLine(int)"/></para>
     /// </summary>   
     IToTextBuilderBase nl (int numberNewlines);
+    
     /// <summary>
     /// <para>Writes one newline-token. Equivalent to <see cref="WriteNewLine(int)"/> with an argument of 1.</para> 
     /// <para>Shorthand notation: <see cref="nl()"/></para>
     /// </summary>
     IToTextBuilderBase WriteNewLine ();
+    
     /// <summary>
     /// <para>Writes one newline-token. Shorthand notation for <see cref="WriteNewLine()"/></para>
     /// </summary>   
@@ -141,10 +149,12 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Shorthand notation: <see cref="s"/></para>
     /// </summary>
     IToTextBuilderBase WriteRawString (string s);
+    
     /// <summary>
     /// <para>Writes the given string directly to the output stream. Shorthand notation for <see cref="WriteRawString(string)"/>.</para>
     /// </summary>
     IToTextBuilderBase s (string s);
+    
     /// <summary>
     /// <para>Writes the given string directly to the output stream, replacing newline, tabulator, etc characters with an escaped representation.
     /// The string is written directly to the output stream, 
@@ -152,6 +162,7 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Shorthand notation: <see cref="sEsc"/></para>
     /// </summary>
     IToTextBuilderBase WriteRawStringEscaped (string s);
+    
     /// <summary>
     /// <para>Writes the given string directly to the output stream, replacing newline, tabulator, etc characters with 
     /// an escaped representation. Shorthand notation for <see cref="WriteRawStringEscaped(string)"/>.</para>
@@ -289,13 +300,7 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase se ();
 
 
-    /// <summary>
-    /// <para></para>
-    /// <para></para>
-    /// </summary>
-    /// <remarks>
-    /// <para></para>
-    /// </remarks>
+
 
 
     /// <summary>
@@ -324,25 +329,32 @@ namespace Remotion.Diagnostics.ToText
     /// </code></example>
     /// </remarks>
     IToTextBuilderBase elements (params object[] sequenceElements);
+    
     /// <summary>
     /// <para>Writes out as sequence elements of the form <c>s+i0,s+i0+1,...,s+i1</c>.</para>
+    /// </summary>
+    /// <remarks>
     /// <example><code>
     /// toTextBuilder.sbLiteral ("", "|", ">", "", "").elementsNumbered ("a", 1, 5).se();
     /// var result = toTextBuilder.CheckAndConvertToString(); // returns: |a1>|a2>|a3>|a4>|a5>
     /// </code></example>
-    /// </summary>    
+    /// </remarks>    
     IToTextBuilderBase elementsNumbered (string s, int i0, int i1);
+
 
     /// <summary>
     /// <para>Writes the passed parameters out as a standard sequence.</para>
+    /// <para>Shorthand notation: <see cref="sequence"/>.</para>
+    /// </summary>
+    /// <remarks>
     /// <example><code>
     /// toTextBuilder.sequence(x0,x1,x2,x3,x4); 
     /// // Is equivalent to:
     /// toTextBuilder.sb().e(x0).e(x1).e(x2).e(x3).e(x4).se();
     /// </code></example>
-    /// <para>Shorthand notation: <see cref="sequence"/>.</para>
-    /// </summary>
+    /// </remarks>
     IToTextBuilderBase WriteSequence (params object[] sequenceElements);
+    
     /// <summary>
     /// <para>Writes the passed parameters out as a standard sequence.</para>
     /// <example><code>
@@ -360,15 +372,18 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Shorthand notation: <see cref="ib"/>.</para>
     /// </summary>
     IToTextBuilderBase WriteInstanceBegin (Type type);
+    
     /// <summary>
     /// <para>Begins a new sequence for writing an instance of the passed Type.</para>
     /// <para>Shorthand notation for <see cref="WriteInstanceBegin"/>.</para>
     /// </summary>
     IToTextBuilderBase ib (Type type);
+    
     /// <summary>
     /// <para>Begins a new sequence for writing an instance of the Type of the generic argument.</para>
     /// </summary>
     IToTextBuilderBase ib<T> ();
+    
     /// <summary>
     /// <para>Closes an instance sequence.</para>
     /// </summary>
@@ -379,12 +394,14 @@ namespace Remotion.Diagnostics.ToText
     /// by the <see cref="WriteElement(object)"/>, etc methods, so normally there is no need to call this method explicitely.</para>
     /// </summary>
     IToTextBuilderBase WriteSequenceArrayBegin ();
+    
     /// <summary>
     /// <para>Writes out the passed array. Note that arrays are also handled automatically by <see cref="WriteElement(object)"/> so
     /// normally there is no need to call this method explicitely.</para>
     /// <para>Shorthand notation: <see cref="array"/>.</para>
     /// </summary>
     IToTextBuilderBase WriteArray (Array array);
+    
     /// <summary>
     /// <para>Writes out the passed array.</para>
     /// <para>Shorthand notation for <see cref="WriteArray"/>.</para>
@@ -396,6 +413,7 @@ namespace Remotion.Diagnostics.ToText
     /// by <see cref="WriteElement(object)"/>-methods, so normally there is no need to call this method explicitely.</para>
     /// </summary>
     IToTextBuilderBase WriteEnumerable (IEnumerable enumerable);
+    
     /// <summary>
     /// <para>Writes out the passed enumerable.</para>
     /// <para>Shorthand notation for <see cref="WriteEnumerable"/>.</para>
@@ -407,6 +425,7 @@ namespace Remotion.Diagnostics.ToText
     /// by <see cref="WriteElement(object)"/>-methods, so normally there is no need to call this method explicitely.</para>
     /// </summary>
     IToTextBuilderBase WriteDictionary (IDictionary dictionary);
+    
     /// <summary>
     /// <para>Writes out the passed dictionary.</para>
     /// <para>Shorthand notation for <see cref="WriteDictionary"/>.</para>
