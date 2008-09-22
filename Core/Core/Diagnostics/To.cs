@@ -119,7 +119,7 @@ namespace Remotion.Diagnostics
 
     /// <summary>
     /// <para>The thread-static <see cref="ToText.ToTextProvider"/>. 
-    /// See <see cref="Text"/> for convenient way to call <see cref="ToText.ToTextProvider.ToTextString"/> for the <see cref="ToTextProvider"/> </para>
+    /// See <see cref="To"/>.<see cref="Text"/> for convenient way to call <see cref="ToText.ToTextProvider.ToTextString"/> for the <see cref="ToTextProvider"/> </para>
     /// </summary>
     public static ToTextProvider ToTextProvider { get { return _toTextProvider; } }
 
