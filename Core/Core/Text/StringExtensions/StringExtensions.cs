@@ -1,7 +1,6 @@
 ﻿using System;
-using Remotion.SecurityManager.Domain.Metadata;
 
-namespace Remotion.SecurityManager.AclTools
+namespace Remotion.Text.StringExtensions
 {
   public static class StringExtensions
   {
@@ -37,9 +36,6 @@ namespace Remotion.SecurityManager.AclTools
       }
     }
 
-    public static string ShortName (this StateDefinition stateDefinition)
-    {
-      return stateDefinition.Name.LeftUntilChar ('|');
-    }
+
   }
 }

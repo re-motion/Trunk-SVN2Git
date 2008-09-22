@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.Text.StringExtensions;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
@@ -158,6 +159,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
   }
 
-
-
+  static class StateDefinitionExtensions
+  {
+    public static string ShortName (this StateDefinition stateDefinition)
+    {
+      return stateDefinition.Name.LeftUntilChar ('|');
+    }
+  }
 }
