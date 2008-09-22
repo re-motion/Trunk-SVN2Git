@@ -10,7 +10,7 @@ namespace Remotion.Text.StringExtensions
     public static string LeftUntilChar (this string s, char separator)
     {
       int iSeparator = s.IndexOf (separator);
-      if (iSeparator > 0)
+      if (iSeparator >= 0)
       {
         return s.Substring (0, iSeparator);
       }
@@ -26,7 +26,7 @@ namespace Remotion.Text.StringExtensions
     public static string RightUntilChar (this string s, char separator)
     {
       int iSeparator = s.LastIndexOf (separator);
-      if (iSeparator > 0)
+      if (iSeparator >= 0)
       {
         return s.Substring (iSeparator + 1, s.Length - iSeparator - 1);
       }
