@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
+namespace Remotion.UnitTests.Utilities.CustomAttributeUtilityTestDomain
 {
   public class ComplexAttribute : Attribute
   {

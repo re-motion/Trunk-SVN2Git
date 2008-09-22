@@ -59,7 +59,7 @@ namespace Remotion.Mixins.Definitions.Building
       string sourceName = GetFullMemberName (attributeSource);
 
       CopyCustomAttributesAttribute copyAttribute =
-          (CopyCustomAttributesAttribute) AttributeUtility.InstantiateCustomAttributeData (copyAttributeData);
+          (CopyCustomAttributesAttribute) CustomAttributeDataUtility.InstantiateCustomAttributeData (copyAttributeData);
 
       MemberInfo copySource;
       try

@@ -694,14 +694,14 @@
     <Compile Include="Utilities\AttributeUtilityTests\IsDefined_WithSuppressTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromType_WithSuppresTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesWithMetadataTest.cs" />
+    <Compile Include="Utilities\CustomAttributeDataUtilityTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseInheritedAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseClassWithAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseWithAttributesForSuppressed.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ClassWithNonInheritedAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ClassWithoutAttributes.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ComplexAttributeTarget.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\ComplexAttributeTarget.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromTypeTest.cs" />
-    <Compile Include="Utilities\AttributeUtilityTests\InstantiateCustomAttributeDataTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseNonInheritedAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\InheritedNotMultipleAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedDerivedDerivedSuppressed.cs" />
@@ -723,10 +723,13 @@
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ICustomAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\InheritedAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\SampleClass.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\AttributeWithFieldParams.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\AttributeWithPropertyAndFieldParams.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\AttributeWithPropertyParams.cs" />
     <Compile Include="Utilities\BidirectionalStringConverterTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ComplexAttribute.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\ComplexAttribute.cs" />
     <Compile Include="Utilities\ConsoleUtilityTest.cs" />
     <Compile Include="Utilities\EnumDescriptionTest.cs">
       <SubType>Code</SubType>
@@ -744,7 +747,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\NullableTypeUtilityTest.cs" />
-    <Compile Include="Utilities\ReflectionEmitUtilityTests.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericClass.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericInterface.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericClass.cs" />
@@ -765,6 +767,9 @@
     <Compile Include="Utilities\StubTypeConversionProvider.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\TestAttributeApplicationWithCtorArgumentsAndNamedFields.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\TestAttributeApplicationWithCtorArgumentsAndNamedProperties.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\TestAttributeApplicationWithCtorArgumentsNamedPropertiesAndNamedFields.cs" />
     <Compile Include="Utilities\TypeConversionProviderTest.cs">
       <SubType>Code</SubType>
     </Compile>

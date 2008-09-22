@@ -9,10 +9,12 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.Text;
 
 namespace Remotion.Utilities
 {
@@ -171,46 +173,6 @@ namespace Remotion.Utilities
       newInstance.AllowMultiple = cachedInstance.AllowMultiple;
       newInstance.Inherited = cachedInstance.Inherited;
       return newInstance;
-    }
-
-    public static Attribute InstantiateCustomAttributeData (CustomAttributeData data)
-    {
-      ArgumentUtility.CheckNotNull ("data", data);
-      object[] constructorArguments = new object[data.ConstructorArguments.Count];
-      for (int i = 0; i < data.ConstructorArguments.Count; ++i)
-        constructorArguments[i] = ExtractValueFromAttributeArgument (data.ConstructorArguments[i]);
-      Attribute attribute = (Attribute) data.Constructor.Invoke (constructorArguments);
-
-      foreach (CustomAttributeNamedArgument namedArgument in data.NamedArguments)
-      {
-        object value = ExtractValueFromAttributeArgument (namedArgument.TypedValue);
-        FieldInfo fieldInfo = namedArgument.MemberInfo as FieldInfo;
-        if (fieldInfo != null)
-          fieldInfo.SetValue (attribute, value);
-        else
-          ((PropertyInfo) namedArgument.MemberInfo).SetValue (attribute, value, null);
-      }
-
-      return attribute;
-    }
-
-    private static object ExtractValueFromAttributeArgument (CustomAttributeTypedArgument typedArgument)
-    {
-      if (typedArgument.ArgumentType.IsArray)
-      {
-        IList<CustomAttributeTypedArgument> typedArgumentValue = (IList<CustomAttributeTypedArgument>) typedArgument.Value;
-        Array array = Array.CreateInstance (typedArgument.ArgumentType.GetElementType (), typedArgumentValue.Count);
-        for (int i = 0; i < typedArgumentValue.Count; i++)
-        {
-          CustomAttributeTypedArgument arrayElement = typedArgumentValue[i];
-          array.SetValue (ExtractValueFromAttributeArgument (arrayElement), i);
-        }
-        return array;
-      }
-      else if (typedArgument.ArgumentType.IsEnum)
-        return Enum.ToObject (typedArgument.ArgumentType, typedArgument.Value);
-      else
-        return typedArgument.Value;
     }
   }
 }

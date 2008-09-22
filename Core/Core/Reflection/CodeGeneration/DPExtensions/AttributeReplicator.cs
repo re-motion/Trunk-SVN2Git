@@ -22,8 +22,15 @@ namespace Remotion.Reflection.CodeGeneration.DPExtensions
       ArgumentUtility.CheckNotNull ("target", target);
       ArgumentUtility.CheckNotNull ("attributeData", attributeData);
 
-      CustomAttributeBuilder builder = ReflectionEmitUtility.CreateAttributeBuilderFromData (attributeData);
+      CustomAttributeBuilder builder = CreateAttributeBuilderFromData (attributeData);
       target.AddCustomAttribute (builder);
+    }
+
+    private static CustomAttributeBuilder CreateAttributeBuilderFromData (CustomAttributeData attributeData)
+    {
+      CustomAttributeArguments arguments = CustomAttributeDataUtility.ParseCustomAttributeArguments (attributeData);
+      return new CustomAttributeBuilder (attributeData.Constructor, arguments.ConstructorArgs, arguments.NamedProperties,
+          arguments.PropertyValues, arguments.NamedFields, arguments.FieldValues);
     }
   }
 }

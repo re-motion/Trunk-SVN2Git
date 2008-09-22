@@ -9,8 +9,9 @@
  */
 
 using System;
+using Remotion.UnitTests.Utilities.CustomAttributeUtilityTestDomain;
 
-namespace Remotion.UnitTests.Utilities.AttributeUtilityTests.SampleTypes
+namespace Remotion.UnitTests.Utilities.CustomAttributeUtilityTestDomain
 {
   public class ComplexAttributeTarget
   {

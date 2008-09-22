@@ -28,7 +28,7 @@ namespace Remotion.Mixins.Definitions
       _declaringDefinition = declaringDefinition;
       _data = data;
       _isCopyTemplate = isCopyTemplate;
-      _instance = AttributeUtility.InstantiateCustomAttributeData (data);
+      _instance = CustomAttributeDataUtility.InstantiateCustomAttributeData (data);
     }
 
     public CustomAttributeData Data
