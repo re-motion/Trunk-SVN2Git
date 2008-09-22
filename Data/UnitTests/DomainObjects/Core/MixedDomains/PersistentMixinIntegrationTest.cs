@@ -287,5 +287,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       mixin.PersistentRelationProperty = relationTarget;
       Assert.That (mixin.PersistentRelationProperty, Is.SameAs (relationTarget));
     }
+
+    [Test]
+    public void BaseClassReceivingReferenceToDerivedClass ()
+    {
+      var tc = TargetClassReceivingReferenceToDerivedClass.NewObject();
+      var mixin = Mixin.Get<MixinAddingReferenceToDerivedClass> (tc);
+      var relationTarget = DerivedClassWithBaseReferenceViaMixin.NewObject();
+      mixin.MyDerived.Add (relationTarget);
+      Assert.That (relationTarget.MyBase, Is.SameAs (tc));
+      relationTarget.MyBase = null;
+      Assert.That (mixin.MyDerived, Is.Empty);
+    }
   }
 }

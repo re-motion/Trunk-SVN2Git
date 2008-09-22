@@ -240,11 +240,14 @@
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\DOWithAutomaticProperties.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExtensionMethodsTest.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\BaseForMixinAddingPersistentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedClassWithBaseReferenceViaMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingPersistentPropertiesAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\InheritanceRootInheritingPersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingReferenceToDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingSimplePersistentProperties.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\RelationTargetForPersistentMixinAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassAboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassReceivingReferenceToDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ContainsObjectParserTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DatabaseInfoTest.cs" />
