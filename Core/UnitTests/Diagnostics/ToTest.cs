@@ -209,6 +209,19 @@ line3";
 
     [Test]
     [Ignore]
+    public void ToTempLogXmlCloseTest ()
+    {
+      // Note: AppDomain.ProcessExit does not get called when executing a test =>
+      // functionality has been tested in console app.
+      var magicNumber = 123.456;
+      var age = 98765;
+      var street = "Dampfschiffstraße 14";
+      To.TempLogXml.s ("ToTempLogXmlTest").e (() => magicNumber).e (() => age).e (() => street);
+      Log (To.LogFileDirectory);
+    }
+
+    [Test]
+    [Ignore]
     public void ThankYouTest ()
     {
       var Thank = "You";

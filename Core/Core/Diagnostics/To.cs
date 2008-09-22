@@ -12,6 +12,7 @@ using System;
 using System.IO;
 using System.Linq.Expressions;
 using System.Runtime.Remoting.Contexts;
+using System.Threading;
 using System.Xml;
 using Remotion.Diagnostics.ToText;
 using Remotion.Logging;
@@ -100,7 +101,15 @@ namespace Remotion.Diagnostics
 
       var xmlWriter = XmlWriter.Create (new StreamWriter (XmlLogFilePath), _xmlWriterSettings);
       _toTextBuilderLogXml = new ToTextBuilderXml (_toTextProvider, xmlWriter);
+      _toTextBuilderLogXml.Open();
+      Thread.GetDomain ().ProcessExit += DisposeAtShutdown;
     }
+
+    private static void DisposeAtShutdown (object sender, EventArgs e)
+    {
+      _toTextBuilderLogXml.Close ();
+    }
+
 
     /// <summary>
     /// <para>The thread-static <see cref="ToText.ToTextProvider"/>. 
@@ -272,6 +281,8 @@ namespace Remotion.Diagnostics
       settings.UseInterfaceHandlers = enable;
     }
 
+
+
   }
 
 
@@ -335,5 +346,7 @@ namespace Remotion.Diagnostics
         log.Log (logLevel, logMessage);
       }
     }
+
+
   }
 }

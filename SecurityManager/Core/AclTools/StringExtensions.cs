@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.Metadata;
-using System.Collections;
 
 namespace Remotion.SecurityManager.AclTools
 {
-  public static class ExtensionMethods
+  public static class StringExtensions
   {
     /// <summary>
     /// Returns the substring of the passed string starting at the first character and ending at the passed seperator character, excluding the seperator character.
