@@ -36,6 +36,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Logging
     }
 
     [Test]
+    [Ignore] // Changed SimpleLogger.It to not use ToTextProvider.ToTextString (inefficient, use TextBuilder-log-stream)
     public void LogTest2 ()
     {
       var textWriter = MockRepository.GenerateStub<TextWriter> ();
@@ -49,6 +50,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Logging
     }
 
     [Test]
+    [Ignore]  // Changed SimpleLogger.It to not use ToTextProvider.ToTextString (inefficient, use TextBuilder-log-stream)
     public void LogTest3 ()
     {
       var textWriter = MockRepository.GenerateStub<TextWriter> ();
@@ -68,7 +70,6 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Logging
       
       var textWriter = mocks.DynamicMock<TextWriter> ();
       var toTextProvider = mocks.DynamicMock<ToTextProvider> ();
-      //Expect.Call (delegate { textWriter.WriteLine ("abc"); });
       Expect.Call (() => textWriter.WriteLine ("abc"));
       
       mocks.ReplayAll ();

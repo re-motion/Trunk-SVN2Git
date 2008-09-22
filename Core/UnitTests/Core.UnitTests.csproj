@@ -671,6 +671,7 @@
     <Compile Include="Text\SimpleParserTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Text\StringExtensions\StringExtensionsTest.cs" />
     <Compile Include="Utilities\AdvancedEnumConverterTest.cs">
       <SubType>Code</SubType>
     </Compile>
