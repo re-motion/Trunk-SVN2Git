@@ -174,14 +174,17 @@ namespace Remotion.Diagnostics.ToText
 
 
     /// <summary>
-    /// <para>Begins a sequence with a given name, literal set of sequence-begin/end and element-prefix/postifx and -seperarator strings.
+    /// <para>Begins a sequence with a given name, literal set of sequence-begin/end and element-prefix/postifx and -seperarator strings.</para>
+    /// <para>Shorthand notation: <see cref="sbLiteral(string,string,string,string,string)"/>.</para>
+    /// </summary>
+    /// <remarks><para>
     /// Note that not all classes implementing <see cref="IToTextBuilderBase"/> are required to support this method.
     /// Use semantic sequence-begin-calls (e.g. <see cref="WriteSequenceBegin"/>, <see cref="WriteInstanceBegin"/>, <see cref="WriteSequenceArrayBegin"/>)
     /// to be compatible with all <see cref="IToTextBuilderBase"/> implementations.
     /// </para>
-    /// <para>Shorthand notation: <see cref="sbLiteral(string,string,string,string,string)"/>.</para>
-    /// </summary>
+    /// </remarks>remarks>
     IToTextBuilderBase WriteSequenceLiteralBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix);
+
     /// <summary>
     /// <para>Begins a sequence with a given literal pair of sequence-begin and -end strings.
     /// See <see cref="WriteSequenceLiteralBegin"/>.
@@ -206,16 +209,20 @@ namespace Remotion.Diagnostics.ToText
 
     /// <summary>
     /// <para>Begins a new sequence, i.e. a number of consecutive elements bracketed by the sequence 
-    /// which are automatically output in a seperated manner. How the sequence begin and end and the sequence elements are output and 
+    /// which are automatically output in a seperated manner. </para>
+    /// <para>Shorthand notation: <see cref="sb"/>.</para>
+    /// </summary>
+    /// <remarks><para>
+    /// The way the sequence begin and end and the sequence elements are output and 
     /// separated is decided by the <see cref="ToTextBuilder"/>.</para>
     /// <para>Sequences can be nested: Each new sequence pushed the current sequence (if any) onto a sequence stack; ending the sequence with a call to <see cref="WriteSequenceEnd"/>
     /// pops the previous sequence from the stack making it active again.</para>
     /// <para>Within a sequence elements in the sequence can be emitted using calls to the WriteElement family of members
     /// (<see cref="WriteElement(object)"/>, <see cref="WriteElement(string, Object)"/>, <see cref="WriteElement{T}"/>).
     /// </para>
-    /// <para>Shorthand notation: <see cref="sb"/>.</para>
-    /// </summary>
+    /// </remarks>
     IToTextBuilderBase WriteSequenceBegin ();
+    
     /// <summary>
     /// <para>Begins a new sequence. Shorthand notation for <see cref="WriteSequenceBegin"/>.</para>
     /// </summary>
@@ -227,33 +234,42 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Shorthand notation: <see cref="e(object)"/>.</para>
     /// </summary>
     IToTextBuilderBase WriteElement (object obj);
+    
     /// <summary>
     /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the <see cref="ToTextBuilder"/> as a name-value-pair.</para>
     /// <para>Shorthand notation: <see cref="e(string,object)"/>.</para>
     /// </summary>
     IToTextBuilderBase WriteElement (string name, Object obj);
+
     /// <summary>
-    /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the <see cref="ToTextBuilder"/>
-    /// as a name-value-pair. Since the variable to write is passed in a lambda expression the name and value can be 
-    /// deduced from just one term, eliminating name-value-mismatch-errors.</para>
+    /// <para>Applies <see cref="ToText"/> to the passed variable and emits the result through the <see cref="ToTextBuilder"/>
+    /// as a name-value-pair. Usage: <c>ttb.e(() => myVar);</c>.
+    /// </para>
     /// <para>Shorthand notation: <see cref="e{T}"/>.</para>
+    /// </summary>
+    /// <remarks><para>
+    /// Since the variable to write is passed in a lambda expression the name and value can be 
+    /// deduced from just one term, eliminating name-value-mismatch-errors.</para>
     /// <example><code>
     /// var myList = List.New(5,3,1);
     /// toTextBuilder.e(() => myList);
     /// var result = toTextBuilder.CheckAndConvertToString(); // returns: myList={5,3,1}
     /// </code></example>
-    /// </summary>
+    /// </remarks>
     IToTextBuilderBase WriteElement<T> (Expression<Func<T>> expression);
+    
     /// <summary>
     /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the <see cref="ToTextBuilder"/>.</para>
     /// <para>Shorthand notation for <see cref="WriteElement(object)"/>.</para>
     /// </summary>
     IToTextBuilderBase e (Object obj);
+    
     /// <summary>
     /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the <see cref="ToTextBuilder"/> as a name-value-pair.</para>
     /// <para>Shorthand notation for <see cref="WriteElement{T}"/>.</para>
     /// </summary>
     IToTextBuilderBase e<T> (Expression<Func<T>> expression);
+    
     /// <summary>
     /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the <see cref="ToTextBuilder"/> as a name-value-pair.</para>
     /// <para>Shorthand notation for <see cref="WriteElement(string,object)"/>.</para>
@@ -273,27 +289,40 @@ namespace Remotion.Diagnostics.ToText
     IToTextBuilderBase se ();
 
 
+    /// <summary>
+    /// <para></para>
+    /// <para></para>
+    /// </summary>
+    /// <remarks>
+    /// <para></para>
+    /// </remarks>
+
 
     /// <summary>
     /// <para>Writes the passed parameters out as sequence elements.</para>
+    /// <para>Shorthand notation: <see cref="elements"/>.</para>
+    /// </summary>
+    /// <remarks>
     /// <example><code>
     /// toTextBuilder.sb().WriteSequenceElements(x0,x1,x2,x3,x4).se(); 
     /// // Is equivalent to:
     /// toTextBuilder.sb().WriteElement(x0).WriteElement(x1).WriteElement(x2).WriteElement(x3).WriteElement(x4).se();
     /// </code></example>
-    /// <para>Shorthand notation: <see cref="elements"/>.</para>
-    /// </summary>
+    /// </remarks>
     IToTextBuilderBase WriteSequenceElements (params object[] sequenceElements);
+
 
     /// <summary>
     /// <para>Writes the passed parameters out as sequence elements.</para>
+    /// <para>Shorthand notation for <see cref="WriteSequenceElements"/>.</para>
+    /// </summary>
+    /// <remarks>
     /// <example><code>
     /// toTextBuilder.sb().elements(x0,x1,x2,x3,x4).se(); 
     /// // Is equivalent to:
     /// toTextBuilder.sb().e(x0).e(x1).e(x2).e(x3).e(x4).se();
     /// </code></example>
-    /// <para>Shorthand notation for <see cref="WriteSequenceElements"/>.</para>
-    /// </summary>    
+    /// </remarks>
     IToTextBuilderBase elements (params object[] sequenceElements);
     /// <summary>
     /// <para>Writes out as sequence elements of the form <c>s+i0,s+i0+1,...,s+i1</c>.</para>

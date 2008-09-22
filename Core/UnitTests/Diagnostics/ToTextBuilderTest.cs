@@ -114,32 +114,6 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    //[Test]
-    //public void MultiTest ()
-    //{
-    //  int i = 987654321;
-    //  double f = 3.14;
-    //  string s = "Text";
-
-    //  var toTextBuilder = CreateTextBuilder();
-    //  toTextBuilder.s ("START-").nl().tab().sf ("[{0};{1};{2}]", i, f, s).space().s ("-END");
-    //  var result = toTextBuilder.CheckAndConvertToString();
-    //  Log (result);
-    //  Assert.That (result, Is.EqualTo ("START-" + Environment.NewLine + "\t[987654321;3,14;Text] -END"));
-    //}
-
-
-    //[Test]
-    //public void tsTest ()
-    //{
-    //  var toTextBuilder = CreateTextBuilder();
-    //  var o = new Object();
-    //  toTextBuilder.ts (o);
-    //  var result = toTextBuilder.CheckAndConvertToString();
-    //  Assert.That (result, Is.EqualTo (o.ToString()));
-    //}
-
-
     [Test]
     public void ToTextTest ()
     {
@@ -346,6 +320,7 @@ namespace Remotion.UnitTests.Diagnostics
 
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.Settings.ArrayPrefix = "{";
+      //toTextBuilder.
       //toTextBuilder.ArrayElementPrefix = "(";
       toTextBuilder.Settings.ArrayElementPrefix = "(";
       toTextBuilder.Settings.ArrayElementPostfix = ")";
