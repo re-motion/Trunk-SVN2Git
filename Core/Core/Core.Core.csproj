@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -102,7 +102,9 @@
     <Compile Include="BridgeImplementations\AssemblyFinderTypeDiscoveryServiceImplementation.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
+    <Compile Include="Diagnostics\ByteValue.cs" />
     <Compile Include="Diagnostics\IOuterProductProcessor.cs" />
+    <Compile Include="Diagnostics\MemoryUsageInfo.cs" />
     <Compile Include="Diagnostics\ToText\DisableableXmlWriter.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextParameters.cs" />
     <Compile Include="Diagnostics\ToText\Handlers\ToTextProviderArrayHandler.cs" />
@@ -145,6 +147,7 @@
     <Compile Include="Mixins\Definitions\NonAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\SuppressedAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\IMemberIntroductionDefinition.cs" />
+    <Compile Include="Mixins\Utilities\CodeGenerationStatistics.cs" />
     <Compile Include="Mixins\Validation\Rules\ContextStoreMemberLookupUtility.cs" />
     <Compile Include="Mixins\Validation\Rules\ContextStoreMemberIntroductionLookupUtility.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultSuppressedAttributeIntroductionRules.cs" />

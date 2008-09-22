@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C216DEC9-8820-4298-B10F-FB4131466B69}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -139,8 +139,10 @@
     <Compile Include="Collections\EnumerableExtensionsTest.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Design\DesignerUtilityTest.cs" />
+    <Compile Include="Diagnostics\ByteValueTest.cs" />
     <Compile Include="Diagnostics\BugReportTest.cs" />
     <Compile Include="Diagnostics\DisableableWriterTest.cs" />
+    <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
     <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTest.cs" />
     <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTestOwned.cs" />
     <Compile Include="Diagnostics\TestDomain\TestSimpleIToTextHandler.cs" />
@@ -154,6 +156,7 @@
     <Compile Include="Mixins\CodeGeneration\SampleTypes\MixinOverridingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\SampleTypes\TargetClassCallingOverriddenMethodFromCtor.cs" />
     <Compile Include="Mixins\MixAttributeTest.cs" />
+    <Compile Include="Mixins\CodeGenerationStatisticsTest.cs" />
     <Compile Include="Mixins\SampleTypes\MixinNonIntroducingSimpleAttribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinSuppressingAndAddingBT1Attribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinSuppressingBT1Attribute.cs" />

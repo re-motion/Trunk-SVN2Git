@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Reflection.Emit;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -335,6 +336,49 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       Assert.That (scope1.UnsignedModulePath, Is.Not.EqualTo ("xyz{counter}"));
       Assert.That (scope2.UnsignedAssemblyName, Is.Not.EqualTo (scope1.UnsignedAssemblyName));
       Assert.That (scope2.UnsignedModulePath, Is.Not.EqualTo (scope1.UnsignedModulePath));
+    }
+
+    [Test]
+    public void SignedModule_Null ()
+    {
+      var scope1 = new ModuleManager { UnsignedAssemblyName = "abc{counter}", UnsignedModulePath = "xyz{counter}" };
+      Assert.That (scope1.SignedModule, Is.Null);
+    }
+
+    [Test]
+    public void UnsignedModule_Null ()
+    {
+      var scope1 = new ModuleManager { UnsignedAssemblyName = "abc{counter}", UnsignedModulePath = "xyz{counter}" };
+      Assert.That (scope1.UnsignedModule, Is.Null);
+    }
+
+    [Test]
+    public void SignedModule_NonNull ()
+    {
+      var scope1 = new ModuleManager { SignedModulePath = "xyz{counter}.dll" };
+      scope1.CreateTypeGenerator (
+          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (object), GenerationPolicy.ForceGeneration), GuidNameProvider.Instance, GuidNameProvider.Instance);
+      Assert.That (scope1.SignedModule, Is.Not.Null);
+      Assert.That (scope1.SignedModule.FullyQualifiedName, Is.EqualTo (Path.GetFullPath (scope1.SignedModulePath)));
+    }
+
+    [Test]
+    public void UnsignedModule_NonNull ()
+    {
+      var scope1 = new ModuleManager { UnsignedModulePath = "xyz{counter}.dll" };
+      scope1.CreateTypeGenerator (
+          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)), GuidNameProvider.Instance, GuidNameProvider.Instance);
+      Assert.That (scope1.UnsignedModule, Is.Not.Null);
+      Assert.That (scope1.UnsignedModule.FullyQualifiedName, Is.EqualTo (Path.GetFullPath (scope1.UnsignedModulePath)));
+    }
+
+    [Test]
+    public void CreatedAssemblyBuilders ()
+    {
+      var scope1 = new ModuleManager { UnsignedModulePath = "xyz{counter}.dll" };
+      Type t = scope1.CreateTypeGenerator (
+          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)), GuidNameProvider.Instance, GuidNameProvider.Instance).GetBuiltType();
+      Assert.That (ModuleManager.CreatedAssemblies.Contains (t.Assembly), Is.True);
     }
 
     private Type GetUnsignedConcreteType ()

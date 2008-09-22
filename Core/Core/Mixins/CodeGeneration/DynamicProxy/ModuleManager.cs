@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -29,6 +30,22 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   {
     public const string DefaultWeakModulePath = "Remotion.Mixins.Generated.Unsigned.{counter}.dll";
     public const string DefaultStrongModulePath = "Remotion.Mixins.Generated.Signed.{counter}.dll";
+
+    private static readonly HashSet<Assembly> s_createdAssemblies = new HashSet<Assembly> ();
+    private static readonly object s_lockObject = new object();
+
+    public static HashSet<Assembly> CreatedAssemblies
+    {
+      get { return s_createdAssemblies; }
+    }
+
+    private static void EnsureAssemblyRegistered (Assembly assembly)
+    {
+      lock (s_lockObject)
+      {
+        s_createdAssemblies.Add (assembly);
+      }
+    }
 
     private static int s_counter = 0; // we count the instances of this class so that we can generate unique assembly names
 
@@ -71,6 +88,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ArgumentUtility.CheckNotNull ("typeBuilder", typeBuilder);
 
       EnsureAttributes (typeBuilder.Module);
+      EnsureAssemblyRegistered (generatedType.Assembly);
     }
 
     private void EnsureAttributes (Module module)
@@ -78,9 +96,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       if (module != Scope.StrongNamedModule && module != Scope.WeakNamedModule)
         throw new ArgumentException ("The module specified is not from this ModuleManager's Scope.");
 
-      if (!module.Assembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false))
+      AssemblyBuilder assemblyBuilder = (AssemblyBuilder) module.Assembly;
+      if (!assemblyBuilder.IsDefined (typeof (NonApplicationAssemblyAttribute), false))
       {
-        AssemblyBuilder assemblyBuilder = (AssemblyBuilder) module.Assembly;
         assemblyBuilder.SetCustomAttribute (new CustomAttributeBuilder (typeof (NonApplicationAssemblyAttribute).GetConstructor(Type.EmptyTypes),
             new object[0]));
       }
@@ -132,6 +150,16 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           throw new InvalidOperationException ("The module path can only be set before the first type is built.");
         _weakModulePath = FormatModuleOrAssemblyName (value);
       }
+    }
+
+    public ModuleBuilder SignedModule
+    {
+      get { return Scope.StrongNamedModule; }
+    }
+
+    public ModuleBuilder UnsignedModule
+    {
+      get { return Scope.WeakNamedModule; }
     }
 
     public ModuleScope Scope

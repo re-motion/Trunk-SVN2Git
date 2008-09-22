@@ -129,7 +129,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\UnitTesting\Logging\SimpleLoggerTest.cs" />
-    <Compile Include="Core\UnitTesting\MemoryUsageInfoTest.cs" />
     <Compile Include="Core\UnitTesting\ThreadRunnerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\Linq\ExpressionTreeComparerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\SetUpFixture.cs" />
