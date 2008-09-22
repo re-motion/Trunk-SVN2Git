@@ -25,7 +25,7 @@ namespace Remotion.Diagnostics.ToText
   /// </summary>
   public class ToTextProvider : IToText
   {
-    private readonly ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
+    public readonly ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
     private readonly ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> ();
     
     private int _interfaceHandlerPriorityMin = 0;
@@ -52,7 +52,7 @@ namespace Remotion.Diagnostics.ToText
       RegisterDefaultToTextProviderHandlers();
       if (typeHandlerMap != null)
       {
-        _typeHandlerMap.Add (typeHandlerMap);
+        this.typeHandlerMap.Add (typeHandlerMap);
       }
       if (interfaceTypeHandlerMap != null)
       {
@@ -84,19 +84,20 @@ namespace Remotion.Diagnostics.ToText
     {
       RegisterToTextProviderHandler (new ToTextProviderNullHandler ());
       // We call this handler twice: first without and later with base class fallback. For this they need to share the registered type handlers in _typeHandlerMap.
-      RegisterToTextProviderHandler (new ToTextProviderRegisteredTypeHandler (_typeHandlerMap,false));
+      RegisterToTextProviderHandler (new ToTextProviderRegisteredTypeHandler (typeHandlerMap,false));
       RegisterToTextProviderHandler (new ToTextProviderStringHandler ());
       RegisterToTextProviderHandler (new ToTextProviderIToTextHandlerHandler ());
       RegisterToTextProviderHandler (new ToTextProviderTypeHandler ());
 
       RegisterToTextProviderHandler (new ToTextProviderCharHandler ());
       RegisterToTextProviderHandler (new ToTextProviderFormattableHandler ());
-      
+
+      RegisterToTextProviderHandler (new ToTextProviderDictionaryHandler ());
       RegisterToTextProviderHandler (new ToTextProviderArrayHandler ());
       RegisterToTextProviderHandler (new ToTextProviderEnumerableHandler ());
       RegisterToTextProviderHandler (new ToTextProviderRegisteredInterfaceHandlerHandler (_interfaceTypeHandlerMap));
       // Second call of registered handler, this time with base class fallback.
-      RegisterToTextProviderHandler (new ToTextProviderRegisteredTypeHandler (_typeHandlerMap, true));
+      RegisterToTextProviderHandler (new ToTextProviderRegisteredTypeHandler (typeHandlerMap, true));
       RegisterToTextProviderHandler (new ToTextProviderAutomaticObjectToTextHandler ());
       RegisterToTextProviderHandler (new ToTextProviderToStringHandler ());
 
@@ -118,12 +119,12 @@ namespace Remotion.Diagnostics.ToText
 
     public void RegisterSpecificTypeHandler<T> (Action<T, IToTextBuilderBase> handler)
     {
-      _typeHandlerMap.Add (typeof (T), new ToTextSpecificTypeHandlerWrapper<T> (handler));
+      typeHandlerMap.Add (typeof (T), new ToTextSpecificTypeHandlerWrapper<T> (handler));
     }
 
     public void RegisterSpecificTypeHandler (Type handledType, IToTextSpecificTypeHandler toTextSpecificTypeHandler)
     {
-      _typeHandlerMap.Add (handledType, toTextSpecificTypeHandler);
+      typeHandlerMap.Add (handledType, toTextSpecificTypeHandler);
     }
 
     public void RegisterSpecificInterfaceHandlerWithLowestPriority<T> (Action<T, IToTextBuilderBase> handler)
@@ -140,14 +141,14 @@ namespace Remotion.Diagnostics.ToText
 
     public void ClearSpecificTypeHandlers ()
     {
-      _typeHandlerMap.Clear ();
+      typeHandlerMap.Clear ();
     }
 
 
 
     private void Log (string s)
     {
-      //Console.WriteLine ("[To]: " + s);
+      //Console.WriteLine ("[ToTextProvider]: " + s);
     }
 
     private void LogVariables (string format, params object[] parameterArray)
@@ -172,12 +173,12 @@ namespace Remotion.Diagnostics.ToText
       {
         if (!toTextProviderHandler.Disabled)
         {
-          Log ("[ToTextUsingToTextProviderHandlers] trying handler: " + toTextProviderHandler);
+          //Log ("[ToTextUsingToTextProviderHandlers] trying handler: " + toTextProviderHandler);
           var feedback = new ToTextProviderHandlerFeedback ();
           toTextProviderHandler.ToTextIfTypeMatches (parameters, feedback);
           if (feedback.Handled)
           {
-            Log ("[ToTextUsingToTextProviderHandlers] handled by: " + toTextProviderHandler);
+            Log ("[ToTextUsingToTextProviderHandlers] handled by: " + toTextProviderHandler + ", obj=" + obj);
             break;
           }
         }
@@ -219,9 +220,13 @@ namespace Remotion.Diagnostics.ToText
       //private readonly Dictionary<Type, IToTextProviderHandler> _toTextProviderHandlerTypeToHandlerMap = new Dictionary<Type, IToTextProviderHandler> ();
 
       //ttb.ib<ToTextProvider> ().nl ().e (Settings).nl ().ie ();
-      ttb.ib<ToTextProvider> ().nl ().e (Settings);
+      
+      //ttb.ib<ToTextProvider> ().nl ().e (Settings);
       //ttb.nl ().e (_typeHandlerMap);
-      ttb.ie ();
+      //ttb.ie ();
+
+      ttb.e (typeHandlerMap);
+      //ttb.s ("ToTextProvider.ToText !!!!!!!!!!!!!!!!!");
     }
   }
 }

@@ -1927,7 +1927,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
     if (_cachedFormGridRowProvider != null)
       return _cachedFormGridRowProvider;
 
-    //  End of hierarchy and not found -> no IformGridRowProvider defined.
+    //  Close of hierarchy and not found -> no IformGridRowProvider defined.
     if (control.Parent == null)
       _isFormGridRowProviderUndefined = true;
 

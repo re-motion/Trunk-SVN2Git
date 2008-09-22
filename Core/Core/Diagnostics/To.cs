@@ -10,6 +10,7 @@
 
 using System;
 using System.IO;
+using System.Linq.Expressions;
 using System.Runtime.Remoting.Contexts;
 using System.Xml;
 using Remotion.Diagnostics.ToText;
@@ -155,7 +156,7 @@ namespace Remotion.Diagnostics
     /// </summary>    
     public static ToTextBuilderXml TempLogXml
     {
-      // TODO: Must make sure ToTextBuilderXml.End is called. finalize ToTextBuilderXml ?
+      // TODO: Must make sure ToTextBuilderXml.Close is called. finalize ToTextBuilderXml ?
       get
       {
         return _toTextBuilderLogXml;
@@ -271,15 +272,68 @@ namespace Remotion.Diagnostics
       settings.UseInterfaceHandlers = enable;
     }
 
- 
   }
 
 
-  static class ToTextILogExtensionMethods
+
+
+
+
+  public static class ToTextILogExtensionMethods
   {
-    static void Log(this ILog log, LogLevel logLevel, ToTextBuilder toTextBuilder)
+    //public static void Log (this ILog log, LogLevel logLevel, ToTextBuilder toTextBuilder)
+    //{
+    //  if (log.IsLogLevelEnabled (logLevel))
+    //  {
+    //    log.Log (logLevel, toTextBuilder.CheckAndConvertToString ());
+    //  }
+    //}
+
+
+    /// <summary>
+    /// Returns true if the passed <see cref="LogLevel"/>  is enabled in the <see cref="ILog"/>.
+    /// </summary>
+    public static bool IsLogLevelEnabled (this ILog log, LogLevel logLevel)
     {
-      log.Log (logLevel, toTextBuilder.CheckAndConvertToString());
+      switch (logLevel)
+      {
+        case LogLevel.Debug:
+          return log.IsDebugEnabled;
+        case LogLevel.Info:
+          return log.IsInfoEnabled;
+        case LogLevel.Warn:
+          return log.IsWarnEnabled;
+        case LogLevel.Error:
+          return log.IsErrorEnabled;
+        case LogLevel.Fatal:
+          return log.IsFatalEnabled;
+        default:
+          return false;
+      }
+    }
+
+
+    /// <summary>
+    /// Delayed execution Logging through a passed <see cref="IToTextBuilderBase"/>  <c> =&gt; </c>  <see cref="IToTextBuilderBase"/> lambda expression.
+    /// </summary>
+    /// <remarks>
+    /// Delayed execution Logging through lambda expression mapping a <see cref="IToTextBuilderBase"/> to 
+    /// a  <see cref="IToTextBuilderBase"/> on which the required  <see cref="IToTextBuilderBase"/> 
+    /// write calls are executed.
+    /// <example><code><![CDATA[
+    /// var log = LogManager.GetLogger (typeof (ToTest));
+    /// log.Log (LogLevel.Debug, ttb => ttb.sb ().e(myVariable).e ("Some text").se ());
+    /// ]]></code></example>
+    /// </remarks>
+    public static void Log (this ILog log, LogLevel logLevel, Func<ToTextBuilder, IToTextBuilderBase> toTextBuilderFunc)
+    {
+      if (log.IsLogLevelEnabled (logLevel))
+      {
+        var toTextBuilderString = To.String;
+        toTextBuilderFunc (toTextBuilderString);
+        var logMessage = toTextBuilderString.CheckAndConvertToString();
+        log.Log (logLevel, logMessage);
+      }
     }
   }
 }

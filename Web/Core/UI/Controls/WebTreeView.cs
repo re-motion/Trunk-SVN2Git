@@ -550,7 +550,7 @@ namespace Remotion.Web.UI.Controls
         if (hasChildren && node.IsExpanded)
           RenderNodeChildren (writer, node, isLastNode, hasExpander);
 
-        writer.RenderEndTag(); // End node block
+        writer.RenderEndTag(); // Close node block
       }
     }
 
@@ -681,7 +681,7 @@ namespace Remotion.Web.UI.Controls
 
       RenderNodes (writer, node.Children, false);
 
-      writer.RenderEndTag(); // End child nodes
+      writer.RenderEndTag(); // Close child nodes
     }
 
     /// <summary> Renders a dummy tree for design mode. </summary>

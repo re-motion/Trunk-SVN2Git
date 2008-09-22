@@ -700,7 +700,7 @@ public class BocReferenceValue:
       writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
       _optionsMenu.Width = _optionsMenuWidth;
       _optionsMenu.RenderControl (writer);
-      writer.RenderEndTag();  //  End td
+      writer.RenderEndTag();  //  Close td
     }
 
     //HACK: Opera has problems with inline tables and may collapse contents unless a cell with width 0% is present
@@ -710,7 +710,7 @@ public class BocReferenceValue:
       writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
       writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
       writer.Write ("&nbsp;");
-      writer.RenderEndTag(); // End td
+      writer.RenderEndTag(); // Close td
     }
 
     writer.RenderEndTag();
@@ -813,7 +813,7 @@ public class BocReferenceValue:
     if (isCommandEnabled)
       Command.RenderEnd (writer);
 
-    writer.RenderEndTag();  //  End td
+    writer.RenderEndTag();  //  Close td
   }
 
   private void RenderReadOnlyValue (
@@ -838,7 +838,7 @@ public class BocReferenceValue:
     if (isCommandEnabled)
       Command.RenderEnd (writer);
     
-    writer.RenderEndTag();  //  End td
+    writer.RenderEndTag();  //  Close td
   }
 
   private void RenderEditModeValue (
@@ -857,7 +857,7 @@ public class BocReferenceValue:
       writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
     _dropDownList.RenderControl (writer);
     
-    writer.RenderEndTag();  //  End td
+    writer.RenderEndTag();  //  Close td
 
     RenderEditModeValueExtension (writer);
   }

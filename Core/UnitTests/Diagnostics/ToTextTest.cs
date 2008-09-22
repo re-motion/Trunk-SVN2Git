@@ -30,17 +30,19 @@ namespace Remotion.UnitTests.Diagnostics
 
 
     [Test]
+    [Ignore]
     public void SomeTest ()
     {
       To.ToTextProvider.RegisterSpecificTypeHandler<ToTextProviderSettings> (
-        (s, tb) => {
+        (s, tb) =>
+        {
           tb.AllowNewline = false;
-          tb.ib<ToTextProviderSettings>();
-          tb.e (() => s.UseAutomaticObjectToText).nl().e (() => s.EmitPublicProperties).nl().e (() => s.EmitPublicFields).nl().e (
-            () => s.EmitPrivateProperties).nl().e (() => s.EmitPrivateFields).nl().e (() => s.UseAutomaticStringEnclosing).nl().e (
-            () => s.UseAutomaticCharEnclosing).nl().e (() => s.UseInterfaceHandlers).nl().e (() => s.ParentHandlerSearchDepth).nl().e (
-            () => s.ParentHandlerSearchUpToRoot).nl().e (() => s.UseParentHandlers);
-          tb.ie(); 
+          tb.ib<ToTextProviderSettings> ();
+          tb.e (() => s.UseAutomaticObjectToText).nl ().e (() => s.EmitPublicProperties).nl ().e (() => s.EmitPublicFields).nl ().e (
+            () => s.EmitPrivateProperties).nl ().e (() => s.EmitPrivateFields).nl ().e (() => s.UseAutomaticStringEnclosing).nl ().e (
+            () => s.UseAutomaticCharEnclosing).nl ().e (() => s.UseInterfaceHandlers).nl ().e (() => s.ParentHandlerSearchDepth).nl ().e (
+            () => s.ParentHandlerSearchUpToRoot).nl ().e (() => s.UseParentHandlers);
+          tb.ie ();
         }
       );
 
@@ -50,11 +52,14 @@ namespace Remotion.UnitTests.Diagnostics
 
       var someToTextProvider = To.ToTextProvider;
       var someToTextProviderSettings = someToTextProvider.Settings;
-      var resultSettings = To.String.e (() => someToTextProviderSettings);
-      To.Console.nl().s (resultSettings.CheckAndConvertToString ());
+      //var resultSettings = To.String.e (() => someToTextProviderSettings);
+      //To.Console.nl().s (resultSettings.CheckAndConvertToString ());
 
-      var resultProvider = To.String.e (() => someToTextProvider);
-      To.Console.nl().s (resultProvider.CheckAndConvertToString ());
+
+      //var resultProvider = To.String.e (() => someToTextProvider);
+      var resultProvider = To.String.e (someToTextProvider);
+      //throw new ArgumentException ();
+      To.Console.nl ().s (resultProvider.CheckAndConvertToString ());
     
     }
 

@@ -494,7 +494,7 @@ public class BocDateTimeValue: BusinessObjectBoundEditableWebControl, IPostBackD
           writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
         _dateTextBox.RenderControl (writer);  
       
-        writer.RenderEndTag(); // End td
+        writer.RenderEndTag(); // Close td
       }
 
       if (hasDatePicker)
@@ -503,7 +503,7 @@ public class BocDateTimeValue: BusinessObjectBoundEditableWebControl, IPostBackD
         writer.AddStyleAttribute ("padding-left", "0.3em");
         writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
         _datePickerButton.RenderControl (writer);  
-        writer.RenderEndTag(); // End td
+        writer.RenderEndTag(); // Close td
       }
 
       //HACK: Opera has problems with inline tables and may collapse contents unless a cell with width 0% is present
@@ -512,7 +512,7 @@ public class BocDateTimeValue: BusinessObjectBoundEditableWebControl, IPostBackD
         writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
         writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
         writer.Write ("&nbsp;");
-        writer.RenderEndTag(); // End td
+        writer.RenderEndTag(); // Close td
       }
 
       if (hasTimeField)
@@ -531,11 +531,11 @@ public class BocDateTimeValue: BusinessObjectBoundEditableWebControl, IPostBackD
           writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
         _timeTextBox.RenderControl (writer);  
       
-        writer.RenderEndTag(); // End td
+        writer.RenderEndTag(); // Close td
       }
 
-      writer.RenderEndTag(); // End tr
-      writer.RenderEndTag(); // End table
+      writer.RenderEndTag(); // Close tr
+      writer.RenderEndTag(); // Close table
     }
   }
 

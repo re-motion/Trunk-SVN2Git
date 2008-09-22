@@ -1375,7 +1375,7 @@ public class BocList:
     //    writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
     //    writer.RenderBeginTag (HtmlTextWriterTag.Div); //  Begin table-cell
     //    RenderTableBlock (writer);
-    //    writer.RenderEndTag();  //  End table-cell
+    //    writer.RenderEndTag();  //  Close table-cell
     //
     //    if (HasMenuBlock)
     //    {
@@ -1394,9 +1394,9 @@ public class BocList:
     //      writer.AddStyleAttribute ("padding-left", menuBlockOffset);
     //      writer.RenderBeginTag (HtmlTextWriterTag.Div);  //  Begin table-cell
     //      RenderMenuBlock (writer);
-    //      writer.RenderEndTag();  //  End table-cell
+    //      writer.RenderEndTag();  //  Close table-cell
     //    }
-    //    writer.RenderEndTag();  //  End table-row
+    //    writer.RenderEndTag();  //  Close table-row
     //
     //    if (hasNavigator)
     //    {
@@ -1405,14 +1405,14 @@ public class BocList:
     //
     //      writer.RenderBeginTag (HtmlTextWriterTag.Div); //  Begin table-cell
     //      RenderNavigator (writer);
-    //      writer.RenderEndTag();  //  End table-cell
+    //      writer.RenderEndTag();  //  Close table-cell
     //      writer.RenderBeginTag (HtmlTextWriterTag.Div); //  Begin table-cell
-    //      writer.RenderEndTag();  //  End table-cell
+    //      writer.RenderEndTag();  //  Close table-cell
     //
-    //      writer.RenderEndTag();  //  End table-row
+    //      writer.RenderEndTag();  //  Close table-row
     //    }
     //
-    //    writer.RenderEndTag();  //  End table
+    //    writer.RenderEndTag();  //  Close table
   }
 
   /// <remarks> Use display:table, display:table-row, ... for opera and mozilla/firefox </remarks>
@@ -1460,7 +1460,7 @@ public class BocList:
         writer.Write (">");
     }
 
-    writer.RenderEndTag();  //  End ColGroup
+    writer.RenderEndTag();  //  Close ColGroup
 
     writer.RenderBeginTag (HtmlTextWriterTag.Tr);
     
@@ -2662,12 +2662,12 @@ public class BocList:
       }
 
       if (isCommandEnabled)
-        RenderEndTagDataCellCommand (writer, commandEnabledColumn); // End Command
+        RenderEndTagDataCellCommand (writer, commandEnabledColumn); // Close Command
       else
-        writer.RenderEndTag(); // End Span
+        writer.RenderEndTag(); // Close Span
 
       if (enforceWidth)
-        writer.RenderEndTag(); // End Span
+        writer.RenderEndTag(); // Close Span
     }
     else if (rowEditModeColumn != null)
     {
@@ -2932,7 +2932,7 @@ public class BocList:
     dropDownMenu.TitleIcon = column.MenuTitleIcon;
     dropDownMenu.RenderControl (writer);
     
-    writer.RenderEndTag(); // End div
+    writer.RenderEndTag(); // Close div
   }
 
   private void RenderCommandColumnCell (HtmlTextWriter writer, BocCommandColumnDefinition column)
@@ -2977,7 +2977,7 @@ public class BocList:
         _editModeController.ShowEditModeValidationMarkers, 
         _editModeController.DisableEditModeValidationMessages);
     
-    writer.RenderEndTag(); // End span
+    writer.RenderEndTag(); // Close span
   }
  
   private bool RenderBeginTagDataCellCommand (
@@ -3823,7 +3823,7 @@ public class BocList:
         }
         control.RenderControl (writer);
       
-        writer.RenderEndTag(); // End span
+        writer.RenderEndTag(); // Close span
       }
     }
   }

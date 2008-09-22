@@ -18,7 +18,9 @@ using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
 using Remotion.Logging;
 using System.IO;
-using Rhino.Mocks;
+//using Rhino.Mocks;
+
+//using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Diagnostics
 {
@@ -147,15 +149,23 @@ line3";
       //var log = LogManager.GetLogger (typeof (ToTest));
       //log.Log (LogLevel.Debug, To.String.s ("ToILogTest"));
 
-      // TODO: Fix and reactivate test
+      // TODO: Implement test
 
-      var iLoggerMock = MockRepository.GenerateMock<ILogger> ();
-      var logMock = MockRepository.GenerateMock<Log4NetLog> (iLoggerMock);
-      logMock.Log (LogLevel.Fatal, To.String.s ("ToILogTest"));
-      logMock.AssertWasCalled (log => log.Log (LogLevel.Fatal, "ToILogTest"));
+      //var iLoggerMock = MockRepository.GenerateMock<ILogger> ();
+      //var logMock = MockRepository.GenerateMock<Log4NetLog> (iLoggerMock);
+      //logMock.Log (LogLevel.Fatal, To.String.s ("ToILogTest"));
+      //logMock.AssertWasCalled (log => log.Log (LogLevel.Fatal, "ToILogTest"));
     }
 
-
+    [Test]
+    [Ignore]
+    public void ToILogTest2 ()
+    {
+      // TODO: Implement test
+      var log = LogManager.GetLogger (typeof (ToTest));
+      //log.Log (LogLevel.Debug, log.IsDebugEnabled ? "" : To.String.s ("ToILogTest").CheckAndConvertToString());
+      log.Log (LogLevel.Debug, ttb => ttb.sb ().e ("ToILogTest2").se ());
+    }
    
 
 //    [Test]
@@ -191,9 +201,9 @@ line3";
       var magicNumber = 123.456;
       var age = 98765;
       var street = "Dampfschiffstraße 14";
-      To.TempLogXml.Begin ();
+      To.TempLogXml.Open ();
       To.TempLogXml.s ("ToTempLogXmlTest").e (() => magicNumber).e (() => age).e (() => street).Flush ();
-      To.TempLogXml.End ();
+      To.TempLogXml.Close ();
       Log (To.LogFileDirectory);
     }
 

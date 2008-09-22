@@ -23,7 +23,7 @@ namespace Remotion.Web.ExecutionEngine
   /// <include file='doc\include\ExecutionEngine\IWxePage.xml' path='IWxePage/Class/*' />
   public interface IWxePage: ISmartPage, IWxeTemplateControl
   {
-    /// <summary> End this page step and continue with the WXE function. </summary>
+    /// <summary> Close this page step and continue with the WXE function. </summary>
     void ExecuteNextStep ();
 
     /// <summary>Executes the <paramref name="function"/> using the specified <paramref name="callArguments"/>.</summary>

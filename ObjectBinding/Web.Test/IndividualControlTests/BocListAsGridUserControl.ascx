@@ -73,7 +73,7 @@
 </ros:TestBocList></td></tr>
 
 </table>
-<p><remotion:WebButton id="SwitchToEditModeButton" runat="server" Text="Switch to Edit Mode"></remotion:WebButton><remotion:WebButton id="EndEditModeButton" runat="server" Text="End Edit Mode"></remotion:WebButton><remotion:WebButton id="CancelEditModeButton" runat="server" Text="Cancel Edit Mode"></remotion:WebButton></p>
+<p><remotion:WebButton id="SwitchToEditModeButton" runat="server" Text="Switch to Edit Mode"></remotion:WebButton><remotion:WebButton id="EndEditModeButton" runat="server" Text="Close Edit Mode"></remotion:WebButton><remotion:WebButton id="CancelEditModeButton" runat="server" Text="Cancel Edit Mode"></remotion:WebButton></p>
 <p><remotion:WebButton id="AddRowButton" runat="server" Text="Add Row"></remotion:WebButton><remotion:BocTextValue id="NumberOfNewRowsField" runat="server" ValueType="Integer" Width="2em" Required="True">
 <textboxstyle textmode="SingleLine">
 </TextBoxStyle>

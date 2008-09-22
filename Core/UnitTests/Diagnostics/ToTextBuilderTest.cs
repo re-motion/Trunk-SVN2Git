@@ -611,14 +611,14 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void SequenceStateTest ()
     {
-      var sequenceState = new SequenceStateHolder ("Name", "Start", "Prefix", "Postfix", "Separator", "End",true);
+      var sequenceState = new SequenceStateHolder ("Name", "Start", "Prefix", "Postfix", "Separator", "Close",true);
       Assert.That (sequenceState.Counter, Is.EqualTo (0));
       Assert.That (sequenceState.Name, Is.EqualTo ("Name"));
       Assert.That (sequenceState.SequencePrefix, Is.EqualTo ("Start"));
       Assert.That (sequenceState.ElementPrefix, Is.EqualTo ("Prefix"));
       Assert.That (sequenceState.ElementPostfix, Is.EqualTo ("Postfix"));
       Assert.That (sequenceState.Separator, Is.EqualTo ("Separator"));
-      Assert.That (sequenceState.SequencePostfix, Is.EqualTo ("End"));
+      Assert.That (sequenceState.SequencePostfix, Is.EqualTo ("Close"));
       Assert.That (sequenceState.SequenceStartWritten, Is.EqualTo (true));
     }
 
@@ -893,6 +893,32 @@ namespace Remotion.UnitTests.Diagnostics
       var result = toTextBuilder.CheckAndConvertToString ();
       Log (result);
       Assert.That (result, Is.EqualTo ("xyzabcsomeVar=345.789"));
+    }
+
+    public class TestTypeHandler : ToTextSpecificTypeHandler<Test>
+    {
+      public override void ToText (Test t, IToTextBuilderBase ttb)
+      {
+        ttb.ib<Test> ().s ("handled by TestTypeHandler").ie ();
+      }
+    }
+
+    [Test]
+    [Ignore]
+    public void ToTextSpecificHandlerMapTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.ToTextProvider.Settings.UseAutomaticObjectToText = true;
+      toTextBuilder.ToTextProvider.Settings.EmitPublicFields = true;
+      toTextBuilder.ToTextProvider.Settings.EmitPublicProperties = true;
+      toTextBuilder.ToTextProvider.Settings.EmitPrivateFields = true;
+      toTextBuilder.ToTextProvider.Settings.EmitPrivateProperties = true;
+      var typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
+      typeHandlerMap.Add (typeof (Test), new TestTypeHandler());
+      //toTextBuilder.e (typeHandlerMap);
+      toTextBuilder.e (To.ToTextProvider.typeHandlerMap);
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
     }
 
 

@@ -60,7 +60,8 @@ namespace Remotion.Development.UnitTesting.Logging
     //TODO: rename
     public void It (object obj)
     {
-      _textWriter.WriteLine (_toText.ToTextString (obj));
+      //_textWriter.WriteLine (_toText.ToTextString (obj));
+      _textWriter.WriteLine (obj);
     }
 
     public void It (string s)

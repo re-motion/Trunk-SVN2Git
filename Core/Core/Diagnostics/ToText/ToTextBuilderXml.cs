@@ -15,15 +15,28 @@ using Remotion.Utilities;
 
 namespace Remotion.Diagnostics.ToText
 {
-  public class ToTextBuilderXml : ToTextBuilderBase
+  public class ToTextBuilderXml : ToTextBuilderBase, IDisposable
   {
-    //public DisableableXmlWriter XmlWriter { get; private set; }
     private readonly DisableableXmlWriter _disableableWriter;
+    private readonly bool _allowPartialXml = false;
+    private bool _openingTagWritten = false;
 
-    public ToTextBuilderXml (ToTextProvider toTextProvider, XmlWriter xmlWriter)
+    public ToTextBuilderXml (ToTextProvider toTextProvider, XmlWriter xmlWriter, bool writePartialXml)
       : base (toTextProvider)
     {
+      _allowPartialXml = writePartialXml;
+      //if (_allowPartialXml)
       _disableableWriter = new DisableableXmlWriter (xmlWriter);
+      //if (!_allowPartialXml)
+      //{
+      //  Open();
+      //}
+    }
+
+    public ToTextBuilderXml (ToTextProvider toTextProvider, XmlWriter xmlWriter)
+      : this (toTextProvider, xmlWriter, false)
+    {
+      //_disableableWriter = new DisableableXmlWriter (xmlWriter);
     }
 
 
@@ -281,26 +294,28 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public void Begin ()
+    public void Open ()
     {
       PushSequenceState (new SequenceStateHolder());
       SequenceState = new SequenceStateHolder { 
         Name = null, SequenceType = null, SequenceTag = "remotion", ElementTag = null,
         SequenceStartWritten = Enabled
       };
-      //sequenceStack.Push (SequenceState);
-      //PushSequenceState (SequenceState);
-      //PushSequenceState (null);
       _disableableWriter.WriteStartElement (SequenceState.SequenceTag);
-      //SequenceXmlBegin (null, null, "remotion", null);
-
+      _openingTagWritten = true;
     }
 
-    public void End ()
+    public void Close ()
     {
-      //_disableableWriter.WriteEndElement ();
+      Assertion.IsTrue (_openingTagWritten);
       SequenceXmlEnd();
       Flush();
+    }
+
+    public void Dispose ()
+    {
+      //throw new System.NotImplementedException();
+
     }
   }
 }

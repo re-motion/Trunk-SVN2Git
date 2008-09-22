@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
         Assert.IsNotNull (
             actualEndPointDefinition,
-            "End point definition was not found (relation definition: '{0}', class: '{1}', property name: '{2}'.",
+            "Close point definition was not found (relation definition: '{0}', class: '{1}', property name: '{2}'.",
             expectedRelationDefinition.ID,
             expectedEndPointDefinition.ClassDefinition.ID,
             expectedEndPointDefinition.PropertyName);
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       RelationDefinition relationDefinition)
     {
       Assert.AreEqual (expectedEndPointDefinition.GetType (), actualEndPointDefinition.GetType (), 
-        "End point definitions (relation definition: '{0}', property name: '{1}') are not of same type.", 
+        "Close point definitions (relation definition: '{0}', property name: '{1}') are not of same type.", 
         relationDefinition.ID,  
         expectedEndPointDefinition.PropertyName);
 

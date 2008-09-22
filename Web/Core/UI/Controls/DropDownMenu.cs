@@ -307,7 +307,7 @@ namespace Remotion.Web.UI.Controls
 
       RenderHead (writer);
 
-      writer.RenderEndTag (); // End Menu-Div
+      writer.RenderEndTag (); // Close Menu-Div
     }
 
     public string GetOpenDropDownMenuEventReference (string eventReference)
@@ -340,7 +340,7 @@ namespace Remotion.Web.UI.Controls
       RenderHeadButton (writer);
 
       writer.RenderEndTag ();
-      writer.RenderEndTag (); // End Drop Down Button table
+      writer.RenderEndTag (); // Close Drop Down Button table
 
       ////  Options Drop Down Button 
       //writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
@@ -358,7 +358,7 @@ namespace Remotion.Web.UI.Controls
       //writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
       //writer.RenderBeginTag (HtmlTextWriterTag.Input);
       //writer.RenderEndTag();
-      //writer.RenderEndTag();  // End Drop Down Button-Span
+      //writer.RenderEndTag();  // Close Drop Down Button-Span
       //
       ////  TODO: IE 5.01 has trouble with height
       ////  Options Drop Down Titel
@@ -367,7 +367,7 @@ namespace Remotion.Web.UI.Controls
       //writer.Write (_titleText);
       //writer.RenderEndTag();
 
-      writer.RenderEndTag ();  // End Drop Down Head-Div
+      writer.RenderEndTag ();  // Close Drop Down Head-Div
     }
 
     /// <summary> Only used by control developers. </summary>
@@ -402,9 +402,9 @@ namespace Remotion.Web.UI.Controls
           }
           RenderIcon (writer, _titleIcon);
           writer.Write (_titleText);
-          writer.RenderEndTag (); // End title tag
+          writer.RenderEndTag (); // Close title tag
 
-          writer.RenderEndTag (); // End td
+          writer.RenderEndTag (); // Close td
         }
       }
       else
@@ -457,11 +457,11 @@ namespace Remotion.Web.UI.Controls
       writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
       writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
       writer.RenderBeginTag (HtmlTextWriterTag.Img);
-      writer.RenderEndTag (); // End img
+      writer.RenderEndTag (); // Close img
 
-      writer.RenderEndTag (); // End anchor
+      writer.RenderEndTag (); // Close anchor
 
-      writer.RenderEndTag (); // End td
+      writer.RenderEndTag (); // Close td
     }
 
     /// <remarks>
