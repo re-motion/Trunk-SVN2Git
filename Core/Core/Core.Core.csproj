@@ -495,6 +495,7 @@
     <Compile Include="Text\SeparatedStringBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Text\StringExtensions\StringExtensions.cs" />
     <Compile Include="Utilities\AppDomainAssemblyResolver.cs" />
     <Compile Include="Utilities\AppDomainRunnerBase.cs" />
     <Compile Include="Utilities\AttributeUtility.cs" />
@@ -589,9 +590,6 @@
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Text\StringExtensions\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -63,7 +63,6 @@
     <Compile Include="AclTools\Expansion\ClassStateDictionary.cs" />
     <Compile Include="AclTools\Expansion\ClassStateTuple.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilderFast.cs" />
-    <Compile Include="AclTools\StringExtensions.cs" />
     <Compile Include="Configuration\SecurityManagerConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
