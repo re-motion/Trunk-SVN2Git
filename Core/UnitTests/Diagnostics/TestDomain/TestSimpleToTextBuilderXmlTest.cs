@@ -12,8 +12,7 @@ using System;
 
 namespace Remotion.UnitTests.Diagnostics.TestDomain
 {
-#if(false)
-  public class TestSimpleToTextBuilderXmlTest
+  internal class TestSimpleToTextBuilderXmlTest
   {
     public TestSimpleToTextBuilderXmlTest ()
     {
@@ -36,5 +35,8 @@ namespace Remotion.UnitTests.Diagnostics.TestDomain
     //  return String.Format ("((TestSimple) Name:{0},Int:{1})", Name, Int);
     //}
   }
-#endif
+
+
+
+
 }

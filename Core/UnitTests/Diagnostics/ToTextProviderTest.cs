@@ -17,7 +17,7 @@ using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Handlers;
-using List = Remotion.Development.UnitTesting.ObjectMother.List;
+using Remotion.UnitTests.Diagnostics.TestDomain.ToTextProvider;
 
 namespace Remotion.UnitTests.Diagnostics
 {
@@ -37,143 +37,7 @@ namespace Remotion.UnitTests.Diagnostics
   {
     private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (true);
 
-    public class TestSimple
-    {
-      public TestSimple ()
-      {
-        Name = "ABC abc";
-        Int = 54321;
-      }
 
-      public TestSimple (string name, int i)
-      {
-        Name = name;
-        Int = i;
-      }
-
-      public string Name { get; set; }
-      public int Int { get; set; }
-
-      public override string ToString ()
-      {
-        return String.Format ("((TestSimple) Name:{0},Int:{1})", Name, Int);
-      }
-    }
-
-    public class TestSimple2
-    {
-      public TestSimple2 ()
-      {
-        PubProp = "%public_property%";
-        PrivateProp = "*private*";
-        Dev.Null = privateField; // get rid of warning
-      }
-
-      public string PubProp { get; set; }
-      private string PrivateProp { get; set; }
-
-      public string pubField = "%public_field%";
-      private string privateField = "*private_field*";
-    }
-
-    public interface ITestName
-    {
-      string Name { get;  }
-    }
-
-    public interface ITestInt
-    {
-      int Int { get;  }
-    }
-
-    public interface ITestListListString
-    {
-      List<List<string>> ListListString { get;  }
-    }
-
-
-    public class Test : ITestName, ITestListListString, ITestInt
-    {
-      public Test ()
-      {
-        Name = "DefaultName";
-        Int = 1234567;
-      }
-
-      public Test (string name, int i0)
-      {
-        Name = name;
-        Int = i0;
-        ListListString = new List<List<string>>();
-
-        Dev.Null = _privateFieldString;
-        Dev.Null = _privateFieldListList;
-      }
-
-      public string Name { get; set; }
-      public int Int { get; set; }
-      public LinkedList<string> LinkedListString { get; set; }
-      public List<List<string>> ListListString { get; set; }
-      public Object[][][] Array3D { get; set; }
-      public Object[,] RectangularArray2D { get; set; }
-      public Object[,,] RectangularArray3D { get; set; }
-
-      private string _privateFieldString = "FieldString text";
-      private List<List<string>> _privateFieldListList = List.New (List.New ("private", "field"), List.New ("list of", "list"));
-    }
-
-    public class TestChild : Test
-    {
-      public TestChild ()
-      {
-        Name = "Child Name";
-        Int = 22222;
-      }
-    }
-
-    public class TestChildChild : TestChild
-    {
-      public TestChildChild ()
-      {
-        Name = "CHILD CHILD NAME";
-        Int = 333333333;
-      }
-    }
-
-
-    public interface ITest2Name
-    {
-      string Name { get; }
-    }
-
-    public class Test2 : ITest2Name
-    {
-      public Test2 ()
-      {
-        Name = "DefaultName";
-        Int = 1234567;
-      }
-
-      public Test2 (string name, int i0)
-      {
-        Name = name;
-        Int = i0;
-        ListListString = new List<List<string>>();
-      }
-
-      public string Name { get; set; }
-      public int Int { get; set; }
-      public LinkedList<string> LinkedListString { get; set; }
-      public List<List<string>> ListListString { get; set; }
-      public Object[][][] Array3D { get; set; }
-      public Object[,] RectangularArray2D { get; set; }
-      public Object[,,] RectangularArray3D { get; set; }
-
-      public override string ToString ()
-      {
-        return String.Format ("<Name->{0}><Int->{1}><ListListString->{2}>", Name, Int, ListListString);
-      }
-    }
 
 
     private static string ToText (ToTextProvider toText, object o)
@@ -231,7 +95,7 @@ namespace Remotion.UnitTests.Diagnostics
       toText.RegisterSpecificTypeHandler<Test> ((x, ttb) => NamedSequenceBegin (ttb, "Test").e (x.Name).e (x.Int).se ());
     }
 
-    private void InitTestInstanceContainer (ToTextProviderTest.Test test)
+    private void InitTestInstanceContainer (Test test)
     {
       test.ListListString.Add (new List<string>() { "Aaa", "Bbb", "Ccc", "Ddd" });
       test.ListListString.Add (new List<string>() { "R1 C0", "R1 C1" });
@@ -249,8 +113,8 @@ namespace Remotion.UnitTests.Diagnostics
       Log ("toTextO=" + toTextO);
       Assert.That (toTextO, Is.EqualTo (String.Format ("[Object: {0}]", o.ToString())));
 
-      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> ((x, ttb) => NamedSequenceBegin (ttb, "Test").e (x.Name).e (x.Int).se ());
-      var test = new ToTextProviderTest.Test ("That's not my name", 179);
+      toText.RegisterSpecificTypeHandler<Test> ((x, ttb) => NamedSequenceBegin (ttb, "Test").e (x.Name).e (x.Int).se ());
+      var test = new Test ("That's not my name", 179);
       string toTextTest = ToText (toText, test);
       Log ("toTextTest=" + toTextTest);
       Assert.That (toTextTest, Is.EqualTo ("[Test: That's not my name;179]"));
@@ -399,7 +263,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void EmptyEnumerableTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> (
+      toText.RegisterSpecificTypeHandler<Test> (
           (x, ttb) => NamedSequenceBegin (ttb, "Test").e (ToText (toText, x.Name)).e (ToText (toText, x.Int)).e (ToText (toText, x.ListListString)).se ());
       var test = new Test ("That's not my name", 179);
       test.LinkedListString = new LinkedList<string>();
@@ -412,10 +276,10 @@ namespace Remotion.UnitTests.Diagnostics
     public void OneDimensionalEnumerableTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> (
+      toText.RegisterSpecificTypeHandler<Test> (
           (x, ttb) => NamedSequenceBegin(ttb,"Test").e(ToText (toText, x.Name)).e(ToText (toText, x.Int)).e(ToText (toText, x.LinkedListString)).se());
           //(x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.LinkedListString)));
-      var test = new ToTextProviderTest.Test ("That's not my name", 179);
+      var test = new Test ("That's not my name", 179);
       string[] linkedListInit = { "A1", "A2", "A3", "A4", "A5" };
       test.LinkedListString = new LinkedList<string> (linkedListInit);
       //LogVariables ("LinkedListString.Count={0}", test.LinkedListString.Count);
@@ -430,10 +294,10 @@ namespace Remotion.UnitTests.Diagnostics
     public void TwoDimensionalEnumerableTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> (
+      toText.RegisterSpecificTypeHandler<Test> (
           (x, ttb) => NamedSequenceBegin (ttb, "Test").e (ToText (toText, x.Name)).e (ToText (toText, x.Int)).e (ToText (toText, x.ListListString)).se ());
           //(x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.ListListString)));
-      var test = new ToTextProviderTest.Test ("That's not my name", 179);
+      var test = new Test ("That's not my name", 179);
       test.ListListString = new List<List<string>>() { new List<string>() { "A1", "A2" }, new List<string>() { "B1", "B2", "B3" } };
       string toTextTest = ToText (toText, test);
       Log ("toTextTest=" + toTextTest);
@@ -445,10 +309,10 @@ namespace Remotion.UnitTests.Diagnostics
     public void ThreeDimensionalEnumerableTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> (
+      toText.RegisterSpecificTypeHandler<Test> (
           (x, ttb) => NamedSequenceBegin (ttb, "Test").e (ToText (toText, x.Name)).e (ToText (toText, x.Int)).e (ToText (toText, x.Array3D)).se ());
           //(x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.Array3D)));
-      var test = new ToTextProviderTest.Test ("That's not my name", 179);
+      var test = new Test ("That's not my name", 179);
       //Object[,] aaa = { { 1 } };
       test.Array3D = new Object[][][] { new Object[][] { new Object[] { 91, 82, 73, 64 } } };
       string toTextTest = ToText (toText, test);
@@ -461,10 +325,10 @@ namespace Remotion.UnitTests.Diagnostics
     public void RectangularArrayTest ()
     {
       ToTextProvider toText = CreateTextProvider();
-      toText.RegisterSpecificTypeHandler<ToTextProviderTest.Test> (
+      toText.RegisterSpecificTypeHandler<Test> (
           (x, ttb) => NamedSequenceBegin (ttb, "Test").e (ToText (toText, x.Name)).e (ToText (toText, x.Int)).e (ToText (toText, x.RectangularArray2D)).se ());
           //(x, ttb) => ttb.sf ("[Test: {0};{1};{2}]", ToText (toText, x.Name), ToText (toText, x.Int), ToText (toText, x.RectangularArray2D)));
-      var test = new ToTextProviderTest.Test ("That's not my name", 179);
+      var test = new Test ("That's not my name", 179);
       test.RectangularArray2D = new Object[,] { { 1, 3, 5 }, { 7, 11, 13 } };
       string toTextTest = ToText (toText, test);
       Log ("toTextTest=" + toTextTest);
@@ -1004,4 +868,144 @@ namespace Remotion.UnitTests.Diagnostics
       }
     }
   }
+
+
+  //public class TestSimple
+  //{
+  //  public TestSimple ()
+  //  {
+  //    Name = "ABC abc";
+  //    Int = 54321;
+  //  }
+
+  //  public TestSimple (string name, int i)
+  //  {
+  //    Name = name;
+  //    Int = i;
+  //  }
+
+  //  public string Name { get; set; }
+  //  public int Int { get; set; }
+
+  //  public override string ToString ()
+  //  {
+  //    return String.Format ("((TestSimple) Name:{0},Int:{1})", Name, Int);
+  //  }
+  //}
+
+  //public class TestSimple2
+  //{
+  //  public TestSimple2 ()
+  //  {
+  //    PubProp = "%public_property%";
+  //    PrivateProp = "*private*";
+  //    Dev.Null = privateField; // get rid of warning
+  //  }
+
+  //  public string PubProp { get; set; }
+  //  private string PrivateProp { get; set; }
+
+  //  public string pubField = "%public_field%";
+  //  private string privateField = "*private_field*";
+  //}
+
+  //public interface ITestName
+  //{
+  //  string Name { get; }
+  //}
+
+  //public interface ITestInt
+  //{
+  //  int Int { get; }
+  //}
+
+  //public interface ITestListListString
+  //{
+  //  List<List<string>> ListListString { get; }
+  //}
+
+
+  //public class Test : ITestName, ITestListListString, ITestInt
+  //{
+  //  public Test ()
+  //  {
+  //    Name = "DefaultName";
+  //    Int = 1234567;
+  //  }
+
+  //  public Test (string name, int i0)
+  //  {
+  //    Name = name;
+  //    Int = i0;
+  //    ListListString = new List<List<string>> ();
+
+  //    Dev.Null = _privateFieldString;
+  //    Dev.Null = _privateFieldListList;
+  //  }
+
+  //  public string Name { get; set; }
+  //  public int Int { get; set; }
+  //  public LinkedList<string> LinkedListString { get; set; }
+  //  public List<List<string>> ListListString { get; set; }
+  //  public Object[][][] Array3D { get; set; }
+  //  public Object[,] RectangularArray2D { get; set; }
+  //  public Object[, ,] RectangularArray3D { get; set; }
+
+  //  private string _privateFieldString = "FieldString text";
+  //  private List<List<string>> _privateFieldListList = List.New (List.New ("private", "field"), List.New ("list of", "list"));
+  //}
+
+  //public class TestChild : Test
+  //{
+  //  public TestChild ()
+  //  {
+  //    Name = "Child Name";
+  //    Int = 22222;
+  //  }
+  //}
+
+  //public class TestChildChild : TestChild
+  //{
+  //  public TestChildChild ()
+  //  {
+  //    Name = "CHILD CHILD NAME";
+  //    Int = 333333333;
+  //  }
+  //}
+
+
+  //public interface ITest2Name
+  //{
+  //  string Name { get; }
+  //}
+
+  //public class Test2 : ITest2Name
+  //{
+  //  public Test2 ()
+  //  {
+  //    Name = "DefaultName";
+  //    Int = 1234567;
+  //  }
+
+  //  public Test2 (string name, int i0)
+  //  {
+  //    Name = name;
+  //    Int = i0;
+  //    ListListString = new List<List<string>> ();
+  //  }
+
+  //  public string Name { get; set; }
+  //  public int Int { get; set; }
+  //  public LinkedList<string> LinkedListString { get; set; }
+  //  public List<List<string>> ListListString { get; set; }
+  //  public Object[][][] Array3D { get; set; }
+  //  public Object[,] RectangularArray2D { get; set; }
+  //  public Object[, ,] RectangularArray3D { get; set; }
+
+  //  public override string ToString ()
+  //  {
+  //    return String.Format ("<Name->{0}><Int->{1}><ListListString->{2}>", Name, Int, ListListString);
+  //  }
+  //}
+
 }

@@ -16,53 +16,14 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
-
+using Remotion.UnitTests.Diagnostics.TestDomain;
+using Rhino.Mocks;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 
 namespace Remotion.UnitTests.Diagnostics
 {
-  internal class TestSimpleToTextBuilderXmlTest
-  {
-    public TestSimpleToTextBuilderXmlTest ()
-    {
-      Name = "ABC abc";
-      Int = 54321;
-    }
 
-    public TestSimpleToTextBuilderXmlTest (string name, int i)
-    {
-      Name = name;
-      Int = i;
-    }
-
-    public string Name { get; set; }
-    public int Int { get; set; }
-    public TestSimpleToTextBuilderXmlTestOwned Talk { get; set; }
-
-    //public override string ToString ()
-    //{
-    //  return String.Format ("((TestSimple) Name:{0},Int:{1})", Name, Int);
-    //}
-  }
-
-  internal class TestSimpleToTextBuilderXmlTestOwned
-  {
-    public TestSimpleToTextBuilderXmlTestOwned (string name)
-    {
-      Name = name;
-    }
-
-    public string Name { get; set; }
-    public string Short { get; set; }
-    public string Description { get; set; }
-    public System.Collections.Generic.List<String> Participants { get; set; }
-
-    //public override string ToString ()
-    //{
-    //  return String.Format ("((TestSimple) Name:{0},Int:{1})", Name, Int);
-    //}
-  }
   
   [TestFixture]
   public class ToTextBuilderXmlTest
@@ -384,6 +345,43 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<dictionary name=\"Dictionary`2\" type=\"dictionary\"><de><key>a</key><val>11</val></de><de><key>b</key><val>22</val></de><de><key>C</key><val>33</val></de></dictionary>"));
     }
 
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void CloseWithoutOpenExceptionTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+      toTextBuilderXml.Close();
+    }
+
+    [Test]
+    public void OpenCloseTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+      toTextBuilderXml.Open ();
+      toTextBuilderXml.Close ();
+      string result = stringWriter.ToString ();
+      log.It (result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<remotion />"));
+    }
+
+    [Test]
+    public void DisposeTest ()
+    {
+      var stringWriter = new StringWriter ();
+      using (var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false))
+      {
+        toTextBuilderXml.Open();
+        toTextBuilderXml.s ("DisposeTest");
+      }
+      string result = stringWriter.ToString ();
+      log.It (result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("<remotion>DisposeTest</remotion>"));
+    }
+
+
     public static ToTextProvider CreateTextProvider ()
     {
       var toTextProvider = new ToTextProvider();
@@ -407,6 +405,7 @@ namespace Remotion.UnitTests.Diagnostics
 
       return new ToTextBuilderXml (CreateTextProvider(), xmlWriter);
     }
+
 
 
   }

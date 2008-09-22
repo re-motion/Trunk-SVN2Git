@@ -784,9 +784,9 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       //toTextBuilder.ToTextProvider.UseAutomaticObjectToText = true;
-      var simpleTest = new ToTextProviderTest.TestSimple();
+      var simpleTest = new TestSimple();
       //var test = new ToTextProviderTest.Test ("Test with class", 99999);
-      var simpleTest2 = new ToTextProviderTest.TestSimple ("simple Test", 987654321);
+      var simpleTest2 = new TestSimple ("simple Test", 987654321);
       toTextBuilder.sbLiteral ("[", "", "", ",", "]").e ("hello").e (toTextBuilder.SequenceState.Counter);
       toTextBuilder.sbLiteral ("<", "(", ")", ";", ">").e ("a variable").e ("simpleTest", simpleTest).e ("was here and").e ("simpleTest2", simpleTest2).e ("here").e (
           toTextBuilder.SequenceState.Counter).se();
@@ -816,8 +816,8 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       //toTextBuilder.ToTextProvider.UseAutomaticObjectToText = true;
-      var simpleTest = new ToTextProviderTest.TestSimple();
-      var simpleTest2 = new ToTextProviderTest.TestSimple ("simple Test",987654321);
+      var simpleTest = new TestSimple();
+      var simpleTest2 = new TestSimple ("simple Test",987654321);
       //var test = new ToTextProviderTest.Test ("Test with class", 99999);
       toTextBuilder.sbLiteral ("[", "", "", ",", "]").e ("hello").e (toTextBuilder.SequenceState.Counter);
       toTextBuilder.sbLiteral ("<", "(", ")", ";", ">").e ("a variable").e ("simpleTest", simpleTest).e ("was here and").e ("simpleTest2", simpleTest2).e ("here").e (

@@ -24,29 +24,6 @@ namespace Remotion.UnitTests.Diagnostics
   {
     private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (true);
 
-
-
-
-    private static string ToText (ToTextProvider toText, object o)
-    {
-      var toTextBuilder = new ToTextBuilder (toText);
-      toText.ToText (o, toTextBuilder);
-      return toTextBuilder.CheckAndConvertToString ();
-    }
-
-
-
-    public void AssertToTextHandledStatus (IToTextProviderHandler handler, Object obj, bool handled)
-    {
-      var parameters = ToTextProviderTest.CreateToTextParameters (obj); // TODO: Derive tests from common base class instead
-      parameters.Settings.UseAutomaticObjectToText = true;
-      var feedback = new ToTextProviderHandlerFeedback ();
-      handler.ToTextIfTypeMatches (parameters, feedback);
-      Assert.That (feedback.Handled, Is.EqualTo (handled));
-    }
-
-
-
     [Test]
     [Ignore]
     public void ToTextProviderTypeHandlerNoPrimitivesAndTypesTest ()
@@ -69,6 +46,25 @@ namespace Remotion.UnitTests.Diagnostics
 
     }
 
+
+
+    private static string ToText (ToTextProvider toText, object o)
+    {
+      var toTextBuilder = new ToTextBuilder (toText);
+      toText.ToText (o, toTextBuilder);
+      return toTextBuilder.CheckAndConvertToString ();
+    }
+
+
+
+    public void AssertToTextHandledStatus (IToTextProviderHandler handler, Object obj, bool handled)
+    {
+      var parameters = ToTextProviderTest.CreateToTextParameters (obj); // TODO: Derive tests from common base class instead
+      parameters.Settings.UseAutomaticObjectToText = true;
+      var feedback = new ToTextProviderHandlerFeedback ();
+      handler.ToTextIfTypeMatches (parameters, feedback);
+      Assert.That (feedback.Handled, Is.EqualTo (handled));
+    }
 
     // Logging
     //private static readonly ILog s_log = LogManager.GetLogger (typeof(ToTextBuilderTest));

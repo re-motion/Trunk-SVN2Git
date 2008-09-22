@@ -18,25 +18,21 @@ namespace Remotion.Diagnostics.ToText
   public class ToTextBuilderXml : ToTextBuilderBase, IDisposable
   {
     private readonly DisableableXmlWriter _disableableWriter;
-    private readonly bool _allowPartialXml = false;
+    //private readonly bool _allowPartialXml = false;
     private bool _openingTagWritten = false;
 
-    public ToTextBuilderXml (ToTextProvider toTextProvider, XmlWriter xmlWriter, bool writePartialXml)
-      : base (toTextProvider)
-    {
-      _allowPartialXml = writePartialXml;
-      //if (_allowPartialXml)
-      _disableableWriter = new DisableableXmlWriter (xmlWriter);
-      //if (!_allowPartialXml)
-      //{
-      //  Open();
-      //}
-    }
+    //public ToTextBuilderXml (ToTextProvider toTextProvider, XmlWriter xmlWriter, bool writePartialXml)
+    //  : base (toTextProvider)
+    //{
+    //  _allowPartialXml = writePartialXml;
+    //  _disableableWriter = new DisableableXmlWriter (xmlWriter);
+    //}
 
     public ToTextBuilderXml (ToTextProvider toTextProvider, XmlWriter xmlWriter)
-      : this (toTextProvider, xmlWriter, false)
+      //: this (toTextProvider, xmlWriter, false)
+      : base (toTextProvider)
     {
-      //_disableableWriter = new DisableableXmlWriter (xmlWriter);
+      _disableableWriter = new DisableableXmlWriter (xmlWriter);
     }
 
 
@@ -48,7 +44,6 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel)
     {
-      // TODO: Derive DisableableWriter interface, move to base class
       _disableableWriter.Enabled = (OutputComplexity >= complexityLevel) ? true : false;
       return this;
     }
@@ -87,27 +82,6 @@ namespace Remotion.Diagnostics.ToText
 
 
 
-    //protected override IToTextBuilderBase WriteObjectToString (object obj)
-    //{
-    //  _disableableWriter.WriteValue (obj.ToString ());
-    //  return this;
-    //}
-
-
-
-
-    //protected override void SequenceBeginWritePart (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
-    //protected override void SequenceBeginWritePart (SequenceStateHolder sequenceState)
-    //{
-    //  _disableableWriter.WriteStartElement ("seq");
-    //  //_disableableWriter.Write (SequenceState.SequencePrefix);
-    //  string name = sequenceState.Name;
-    //  if (name.Length > 0)
-    //  {
-    //    _disableableWriter.WriteAttribute ("name",name);
-    //  }
-    //}
-
     public override IToTextBuilderBase WriteSequenceBegin ()
     {
       return SequenceBegin();
@@ -124,10 +98,6 @@ namespace Remotion.Diagnostics.ToText
       return WriteRawStringUnsafe(s);
     }
 
-    //public override IToTextBuilderBase sEsc (string s)
-    //{
-    //  throw new System.NotImplementedException();
-    //}
 
     public override IToTextBuilderBase WriteRawCharUnsafe (char c)
     {
@@ -195,7 +165,6 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteInstanceBegin (Type type)
     {
-      //throw new System.NotImplementedException ();
       SequenceXmlBegin (type.Name, "instance", "seq", "e");
       return this;
     }
@@ -307,14 +276,16 @@ namespace Remotion.Diagnostics.ToText
 
     public void Close ()
     {
-      Assertion.IsTrue (_openingTagWritten);
+      if (!_openingTagWritten)
+      {
+        throw new InvalidOperationException ("ToTextBuilderXml.Close() was called without a prior call to Open().");
+      }
       SequenceXmlEnd();
       Flush();
     }
 
     public void Dispose ()
     {
-      //throw new System.NotImplementedException();
       Close();
     }
   }
