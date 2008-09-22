@@ -10,13 +10,17 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  [DBTable]
-  public class RelationTargetForPersistentMixinAboveInheritanceRoot : SimpleDomainObject<RelationTargetForPersistentMixinAboveInheritanceRoot>
+  public class MixinAddingUnidirectionalRelation2 : DomainObjectMixin<DomainObject>
   {
-    [DBBidirectionalRelation("PersistentRelationProperty", ContainsForeignKey = false)]
-    public virtual InheritanceRootInheritingPersistentMixin RelationProperty1 { get; set; }
+    [DBColumn("Computer2ID")]
+    public Computer Computer
+    {
+      get { return Properties[typeof (MixinAddingUnidirectionalRelation2), "Computer"].GetValue<Computer>(); }
+      set { Properties[typeof (MixinAddingUnidirectionalRelation2), "Computer"].SetValue (value); }
+    }
   }
 }

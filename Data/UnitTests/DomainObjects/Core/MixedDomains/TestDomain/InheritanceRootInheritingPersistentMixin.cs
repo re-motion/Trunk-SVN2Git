@@ -10,15 +10,19 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public class MixinAddingSimplePersistentProperties : DomainObjectMixin<DomainObject>
+  [DBTable]
+  [TestDomain]
+  public class InheritanceRootInheritingPersistentMixin : TargetClassAboveInheritanceRoot
   {
-    public int PersistentProperty
+    public static IFuncInvoker<InheritanceRootInheritingPersistentMixin> NewObject ()
     {
-      get { return Properties[typeof (MixinAddingSimplePersistentProperties), "PersistentProperty"].GetValue<int> (); }
-      set { Properties[typeof (MixinAddingSimplePersistentProperties), "PersistentProperty"].SetValue (value); }
+      return NewObject<InheritanceRootInheritingPersistentMixin> ();
     }
   }
 }

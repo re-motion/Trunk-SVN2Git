@@ -10,19 +10,13 @@
 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public interface IMixinAddingPeristentProperties
+  [DBTable]
+  public class RelationTargetForPersistentMixinAboveInheritanceRoot : SimpleDomainObject<RelationTargetForPersistentMixinAboveInheritanceRoot>
   {
-    int PersistentProperty { get; set; }
-
-    [StorageClass (StorageClass.Persistent)]
-    int ExtraPersistentProperty { get; set; }
-
-    [StorageClassNone]
-    int NonPersistentProperty { get; set; }
+    [DBBidirectionalRelation("PersistentRelationProperty", ContainsForeignKey = false)]
+    public virtual InheritanceRootInheritingPersistentMixin RelationProperty1 { get; set; }
   }
 }

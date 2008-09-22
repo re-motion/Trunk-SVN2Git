@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6DEF9C11-1D5A-4B14-A4EB-F4C7E7CC3E7B}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -70,7 +70,8 @@
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
     <NoWarn>
-    </NoWarn><WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592;3008</WarningsAsErrors>
+    </NoWarn>
+    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592;3008</WarningsAsErrors>
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
@@ -238,12 +239,12 @@
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\ClassWithNonVirtualManualPropertyAccessors.cs" />
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\DOWithAutomaticProperties.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExtensionMethodsTest.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\BaseForMixinAddingPersistentProperties.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinAddingPersistentPropertiesAboveInheritanceRoot.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\InheritanceRootInheritingPersistentMixin.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinAddingSimplePersistentProperties.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\RelationTargetForPersistentMixinAboveInheritanceRoot.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\TargetClassAboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\BaseForMixinAddingPersistentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingPersistentPropertiesAboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\InheritanceRootInheritingPersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingSimplePersistentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\RelationTargetForPersistentMixinAboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ContainsObjectParserTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DatabaseInfoTest.cs" />
@@ -366,28 +367,28 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\TargetClass2ForMixinAddingBidirectionalRelationTwice.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\MixinAddingBidirectionalRelationTwice.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\RelationTargetForMixinAddingBidirectionalRelationTwice.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\DerivedMixinAddingPersistentProperties.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\StubStoragePersistentMixin.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\StubStorageTargetClassForPersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedMixinAddingPersistentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\StubStoragePersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\StubStorageTargetClassForPersistentMixin.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\TargetClass1ForMixinAddingBidirectionalRelationTwice.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\TargetClassForDerivedPersistentMixin.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\TargetClassWithUnidirectionalMixin1.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinAddingUnidirectionalRelation2.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\DOWithVirtualPropertiesAndMethods.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\HookedDomainObjectMixin.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\IInterfaceAddedByMixin.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\IMixinAddingPeristentProperties.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinAddingPersistentProperties.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinAddingUnidirectionalRelation1.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinWithAccessToDomainObjectProperties.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinAddingInterface.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinOverridingPropertiesAndMethods.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\MixinWithState.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\NullMixin.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\RelationTargetForPersistentMixin.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\TargetClassForPersistentMixin.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\TargetClassWithTwoUnidirectionalMixins.cs" />
-    <Compile Include="DomainObjects\Core\MixedDomains\SampleTypes\TargetClassWithUnidirectionalMixin2.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassForDerivedPersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassWithUnidirectionalMixin1.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingUnidirectionalRelation2.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DOWithVirtualPropertiesAndMethods.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\HookedDomainObjectMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\IInterfaceAddedByMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\IMixinAddingPeristentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingPersistentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingUnidirectionalRelation1.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinWithAccessToDomainObjectProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingInterface.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinOverridingPropertiesAndMethods.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinWithState.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\NullMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\RelationTargetForPersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassForPersistentMixin.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassWithTwoUnidirectionalMixins.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassWithUnidirectionalMixin2.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\SerializationCallbackTest.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\SerializationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\CommonTest.cs" />

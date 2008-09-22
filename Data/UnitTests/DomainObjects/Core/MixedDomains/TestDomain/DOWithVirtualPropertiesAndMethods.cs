@@ -10,16 +10,21 @@
 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  [Serializable]
-  public class MixinAddingInterface : Mixin<DomainObject>, IInterfaceAddedByMixin
+  [DBTable]
+  public class DOWithVirtualPropertiesAndMethods : DomainObject
   {
-    public string GetGreetings ()
+    public virtual string Property
     {
-      return "Hello, my ID is " + This.ID;
+      get { return CurrentProperty.GetValue<string>(); }
+      set { CurrentProperty.SetValue (value); }
+    }
+
+    public virtual string GetSomething ()
+    {
+      return "Something";
     }
   }
 }

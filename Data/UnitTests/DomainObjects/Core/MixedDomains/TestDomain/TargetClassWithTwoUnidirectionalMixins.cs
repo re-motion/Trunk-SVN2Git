@@ -10,11 +10,16 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public class StubStoragePersistentMixin : DomainObjectMixin<DomainObject>
+  [Uses (typeof (MixinAddingUnidirectionalRelation1))]
+  [Uses (typeof (MixinAddingUnidirectionalRelation2))]
+  [DBTable ("MixedDomains_TargetWithTwoUnidirectionalMixins")]
+  [TestDomain]
+  public class TargetClassWithTwoUnidirectionalMixins : SimpleDomainObject<TargetClassWithTwoUnidirectionalMixins>
   {
-    
   }
 }

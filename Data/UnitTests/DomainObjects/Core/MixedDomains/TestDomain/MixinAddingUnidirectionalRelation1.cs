@@ -10,15 +10,16 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public class DerivedMixinAddingPersistentProperties : MixinAddingSimplePersistentProperties
+  public class MixinAddingUnidirectionalRelation1 : DomainObjectMixin<DomainObject>
   {
-    public int AdditionalPersistentProperty
+    public Computer Computer
     {
-      get { return Properties[typeof (DerivedMixinAddingPersistentProperties), "AdditionalPersistentProperty"].GetValue<int> (); }
-      set { Properties[typeof (DerivedMixinAddingPersistentProperties), "AdditionalPersistentProperty"].SetValue (value); }
+      get { return Properties[typeof (MixinAddingUnidirectionalRelation1), "Computer"].GetValue<Computer>(); }
+      set { Properties[typeof (MixinAddingUnidirectionalRelation1), "Computer"].SetValue (value); }
     }
   }
 }

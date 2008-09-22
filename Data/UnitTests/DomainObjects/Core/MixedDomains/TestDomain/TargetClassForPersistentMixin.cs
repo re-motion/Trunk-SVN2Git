@@ -13,13 +13,22 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  [Uses (typeof (MixinAddingUnidirectionalRelation1))]
-  [DBTable ("MixedDomains_TargetWithUnidirectionalMixin1")]
+  [Uses (typeof (MixinAddingPersistentProperties))]
+  [Uses (typeof (NullMixin))]
+  [DBTable ("MixedDomains_Target")]
   [TestDomain]
-  public class TargetClassWithUnidirectionalMixin1 : SimpleDomainObject<TargetClassWithUnidirectionalMixin1>
+  public class TargetClassForPersistentMixin : DomainObject
   {
-    
+    public static TargetClassForPersistentMixin NewObject ()
+    {
+      return NewObject<TargetClassForPersistentMixin> ().With ();
+    }
+
+    public static TargetClassForPersistentMixin GetObject (ObjectID id)
+    {
+      return GetObject<TargetClassForPersistentMixin> (id);
+    }
   }
 }

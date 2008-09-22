@@ -12,7 +12,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 using NUnit.Framework.SyntaxHelpers;
@@ -163,8 +163,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "A persistence-related mixin was removed from the domain object type "
-       + "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes.StubStorageTargetClassForPersistentMixin after the mapping information was built: "
-       + "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes.StubStoragePersistentMixin.")]
+       + "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.StubStorageTargetClassForPersistentMixin after the mapping information was built: "
+       + "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.StubStoragePersistentMixin.")]
     public void DynamicChangeInPersistentMixinConfigurationThrowsInNewObject ()
     {
       using (MixinConfiguration.BuildNew().EnterScope())
@@ -175,8 +175,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "A persistence-related mixin was removed from the domain object type "
-       + "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes.StubStorageTargetClassForPersistentMixin after the mapping information was built: "
-        + "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes.StubStoragePersistentMixin.")]
+       + "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.StubStorageTargetClassForPersistentMixin after the mapping information was built: "
+        + "Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.StubStoragePersistentMixin.")]
     public void DynamicChangeInPersistentMixinConfigurationThrowsInGetObject ()
     {
       using (MixinConfiguration.BuildNew().EnterScope())

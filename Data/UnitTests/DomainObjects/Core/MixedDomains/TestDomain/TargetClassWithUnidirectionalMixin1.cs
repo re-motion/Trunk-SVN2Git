@@ -10,21 +10,16 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  [DBTable]
-  public class DOWithVirtualPropertiesAndMethods : DomainObject
+  [Uses (typeof (MixinAddingUnidirectionalRelation1))]
+  [DBTable ("MixedDomains_TargetWithUnidirectionalMixin1")]
+  [TestDomain]
+  public class TargetClassWithUnidirectionalMixin1 : SimpleDomainObject<TargetClassWithUnidirectionalMixin1>
   {
-    public virtual string Property
-    {
-      get { return CurrentProperty.GetValue<string>(); }
-      set { CurrentProperty.SetValue (value); }
-    }
-
-    public virtual string GetSomething ()
-    {
-      return "Something";
-    }
+    
   }
 }

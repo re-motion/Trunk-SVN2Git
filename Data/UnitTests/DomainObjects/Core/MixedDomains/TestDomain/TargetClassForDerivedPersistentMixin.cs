@@ -10,11 +10,13 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public interface IInterfaceAddedByMixin
+  [DBTable]
+  [Uses (typeof (DerivedMixinAddingPersistentProperties))]
+  public class TargetClassForDerivedPersistentMixin : SimpleDomainObject<TargetClassForDerivedPersistentMixin>
   {
-    string GetGreetings ();
   }
 }

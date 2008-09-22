@@ -11,18 +11,12 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Reflection;
+using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  [DBTable]
-  [TestDomain]
-  public class InheritanceRootInheritingPersistentMixin : TargetClassAboveInheritanceRoot
+  [Uses (typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot))]
+  public class TargetClassAboveInheritanceRoot : DomainObject
   {
-    public static IFuncInvoker<InheritanceRootInheritingPersistentMixin> NewObject ()
-    {
-      return NewObject<InheritanceRootInheritingPersistentMixin> ();
-    }
   }
 }

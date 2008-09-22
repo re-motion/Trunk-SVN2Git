@@ -10,13 +10,15 @@
 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Mixins;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  [Uses (typeof (MixinAddingPersistentPropertiesAboveInheritanceRoot))]
-  public class TargetClassAboveInheritanceRoot : DomainObject
+  public class MixinAddingSimplePersistentProperties : DomainObjectMixin<DomainObject>
   {
+    public int PersistentProperty
+    {
+      get { return Properties[typeof (MixinAddingSimplePersistentProperties), "PersistentProperty"].GetValue<int> (); }
+      set { Properties[typeof (MixinAddingSimplePersistentProperties), "PersistentProperty"].SetValue (value); }
+    }
   }
 }

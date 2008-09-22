@@ -10,16 +10,12 @@
 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public class MixinAddingUnidirectionalRelation1 : DomainObjectMixin<DomainObject>
+  [Serializable]
+  public class MixinWithState
   {
-    public Computer Computer
-    {
-      get { return Properties[typeof (MixinAddingUnidirectionalRelation1), "Computer"].GetValue<Computer>(); }
-      set { Properties[typeof (MixinAddingUnidirectionalRelation1), "Computer"].SetValue (value); }
-    }
+    public string State;
   }
 }

@@ -10,12 +10,19 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.SampleTypes
+namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  [Serializable]
-  public class MixinWithState
+  public interface IMixinAddingPeristentProperties
   {
-    public string State;
+    int PersistentProperty { get; set; }
+
+    [StorageClass (StorageClass.Persistent)]
+    int ExtraPersistentProperty { get; set; }
+
+    [StorageClassNone]
+    int NonPersistentProperty { get; set; }
   }
 }
