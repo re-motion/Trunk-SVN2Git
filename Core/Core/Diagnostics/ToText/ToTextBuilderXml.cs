@@ -315,7 +315,7 @@ namespace Remotion.Diagnostics.ToText
     public void Dispose ()
     {
       //throw new System.NotImplementedException();
-
+      Close();
     }
   }
 }
