@@ -357,13 +357,15 @@ namespace Remotion.Diagnostics.ToText
     
     /// <summary>
     /// <para>Writes the passed parameters out as a standard sequence.</para>
+    /// <para>Shorthand notation for <see cref="WriteSequence"/>.</para>
+    /// </summary>
+    /// <remarks>
     /// <example><code>
     /// toTextBuilder.sequence(x0,x1,x2,x3,x4); 
     /// // Is equivalent to:
     /// toTextBuilder.sb().e(x0).e(x1).e(x2).e(x3).e(x4).se();
     /// </code></example>
-    /// <para>Shorthand notation for <see cref="WriteSequence"/>.</para>
-    /// </summary>    
+    /// </remarks>
     IToTextBuilderBase sequence (params object[] sequenceElements);
 
 
