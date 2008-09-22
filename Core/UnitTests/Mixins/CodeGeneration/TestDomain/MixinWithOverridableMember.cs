@@ -8,12 +8,14 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
+using Remotion.Mixins;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
-  [AttributeUsage (AttributeTargets.Class, Inherited = false)]
-  public class SampleCopyTemplateAttribute : Attribute
+  public class MixinWithOverridableMember : Mixin<object>
   {
+    protected virtual void Foo ()
+    {
+    }
   }
 }

@@ -10,13 +10,16 @@
 
 using System;
 using Remotion.Mixins;
+using Remotion.UnitTests.Mixins.SampleTypes;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
-  [CopyCustomAttributes (typeof (CopyTemplate))]
-  public class ClassWithCopyCustomAttributes
+  public class MixinWithThisAsBase : Mixin<BaseType3, IBaseType31>
   {
-    [SampleCopyTemplate]
-    public class CopyTemplate { }
+    [OverrideTarget]
+    public string IfcMethod()
+    {
+      return "MixinWithThisAsBase.IfcMethod-" + Base.IfcMethod();
+    }
   }
 }

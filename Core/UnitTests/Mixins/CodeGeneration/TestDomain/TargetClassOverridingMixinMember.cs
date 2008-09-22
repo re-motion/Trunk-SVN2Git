@@ -10,11 +10,12 @@
 
 using Remotion.Mixins;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
-  public class MixinWithOverridableMember : Mixin<object>
+  public class TargetClassOverridingMixinMember
   {
-    protected virtual void Foo ()
+    [OverrideMixin]
+    protected void Foo ()
     {
     }
   }

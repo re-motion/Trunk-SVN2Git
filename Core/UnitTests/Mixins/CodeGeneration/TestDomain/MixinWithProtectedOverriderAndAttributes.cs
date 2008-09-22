@@ -11,7 +11,7 @@
 using System;
 using Remotion.Mixins;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
   [AttributeUsage (AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
   public class InheritableAttribute : Attribute

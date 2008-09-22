@@ -9,21 +9,23 @@
  */
 
 using System;
+using Remotion.Mixins;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
+#pragma warning disable 0693
+
+namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
-  public class TargetClassCallingOverriddenMethodFromCtor
+  public interface IGeneric<T>
   {
-    public object Result;
+    string Generic<T> (T t);
+  }
 
-    public TargetClassCallingOverriddenMethodFromCtor ()
+  public class MixinIntroducingGenericInterface<T> : Mixin<T>, IGeneric<T>
+    where T : class
+  {
+    public string Generic<T> (T t)
     {
-      Result = VirtualMethod ();
-    }
-
-    public virtual object VirtualMethod ()
-    {
-      return this;
+      return "Generic";
     }
   }
 }

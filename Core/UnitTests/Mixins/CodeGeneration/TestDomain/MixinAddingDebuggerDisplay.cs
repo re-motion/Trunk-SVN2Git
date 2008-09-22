@@ -8,15 +8,16 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+using System.Diagnostics;
 using Remotion.Mixins;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
-  public class TargetClassOverridingMixinMember
+  [CopyCustomAttributes(typeof (AttributeSource))]
+  public class MixinAddingDebuggerDisplay
   {
-    [OverrideMixin]
-    protected void Foo ()
-    {
-    }
+    [DebuggerDisplay("Y")]
+    private class AttributeSource { }
   }
 }

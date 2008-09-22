@@ -12,7 +12,7 @@ using System;
 using Remotion.Mixins;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
   public interface IVeryGenericMixin
   {

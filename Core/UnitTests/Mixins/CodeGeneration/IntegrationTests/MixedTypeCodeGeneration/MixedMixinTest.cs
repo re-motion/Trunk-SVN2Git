@@ -34,5 +34,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 
       Assert.AreEqual ("MixinMixingMixin-MixinMixingClass-ClassWithMixedMixin.StringMethod (3)", instance.StringMethod (3));
     }
+
+    [Test]
+    [Ignore ("TODO: FS")]
+    public void MixedMixin_OverriddenByTargetClass ()
+    {
+      
+    }
   }
 }

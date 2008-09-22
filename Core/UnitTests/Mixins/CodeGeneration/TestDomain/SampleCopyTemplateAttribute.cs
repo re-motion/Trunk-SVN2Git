@@ -9,22 +9,11 @@
  */
 
 using System;
-using Remotion.Mixins;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
-  public class MixinOverridingMethodCalledFromCtor : Mixin<object, object>
+  [AttributeUsage (AttributeTargets.Class, Inherited = false)]
+  public class SampleCopyTemplateAttribute : Attribute
   {
-    public object MyThis;
-    public object MyBase;
-
-    [OverrideTarget]
-    public virtual object VirtualMethod ()
-    {
-      MyThis = This;
-      MyBase = Base;
-
-      return this;
-    }
   }
 }

@@ -9,16 +9,22 @@
  */
 
 using System;
+using Remotion.Mixins;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
-  public class TargetClassCallingIntroducedMethodFromCtor
+  public class MixinOverridingMethodCalledFromCtor : Mixin<object, object>
   {
-    public object Result;
+    public object MyThis;
+    public object MyBase;
 
-    public TargetClassCallingIntroducedMethodFromCtor ()
+    [OverrideTarget]
+    public virtual object VirtualMethod ()
     {
-      Result = ((IIntroducedMethodCalledFromCtor) this).IfcMethod ();
+      MyThis = This;
+      MyBase = Base;
+
+      return this;
     }
   }
 }

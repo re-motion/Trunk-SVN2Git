@@ -19,7 +19,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Definitions;
-using Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes;
+using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
 using Remotion.Context;
@@ -421,7 +421,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "No concrete mixin type is required for the given configuration "
-        + "(mixin Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes.MixinWithOverridableMember and target class "
+        + "(mixin Remotion.UnitTests.Mixins.CodeGeneration.TestDomain.MixinWithOverridableMember and target class "
             + "Remotion.UnitTests.Mixins.SampleTypes.NullTarget).",
         MatchType = MessageMatch.Contains)]
     public void GetConcreteMixinTypeThrowsIfNoMixinTypeGenerated ()

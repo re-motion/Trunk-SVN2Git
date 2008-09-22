@@ -11,24 +11,12 @@
 using System;
 using Remotion.Mixins;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.SampleTypes
+namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
-  public interface IIntroducedMethodCalledFromCtor
+  [CopyCustomAttributes (typeof (CopyTemplate))]
+  public class ClassWithCopyCustomAttributes
   {
-    object IfcMethod ();
-  }
-
-  public class MixinIntroducingMethodCalledFromCtor : Mixin<object, object>, IIntroducedMethodCalledFromCtor
-  {
-    public object MyThis;
-    public object MyBase;
-
-    public object IfcMethod ()
-    {
-      MyThis = This;
-      MyBase = Base;
-
-      return this;
-    }
+    [SampleCopyTemplate]
+    public class CopyTemplate { }
   }
 }
