@@ -21,7 +21,14 @@ namespace Remotion.Diagnostics
 {
   /// <summary>
   /// <para>
-  /// Gives convenient access to the transformation of arbitrary objects into human readable text form through the following:
+  /// Gives convenient access to the transformation of arbitrary objects into human readable text form using 
+  /// <see cref="Remotion.Diagnostics.ToText.ToTextBuilder"/> and <see cref="Remotion.Diagnostics.ToText.ToTextProvider"/>.
+  /// </para>
+  /// </summary>
+  /// 
+  /// <remarks>
+  /// <para>
+  /// The <see cref="To"/> class supplies the following functionality:
   /// <list type="number">
   /// <item>Provides convenient access to a <see cref="Remotion.Diagnostics.ToText.ToTextProvider"/> instance through <see cref="Text"/>.</item> 
   /// <item>Automatically registers type and interface handlers for use by <see cref="ToText.ToTextProvider"/> (see examples below)</item>
@@ -70,8 +77,7 @@ namespace Remotion.Diagnostics
   /// </code>
   /// </para>
   /// </example>
-  /// 
-  /// </summary>
+  /// </remarks>
   [Synchronization]
   public static class To
   {
