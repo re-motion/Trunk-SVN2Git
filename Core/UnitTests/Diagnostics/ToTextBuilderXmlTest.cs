@@ -382,6 +382,32 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    [Test]
+    public void AppendRectangularArrayTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+      string[,] array = { { "The", "Shadow" }, { "of", "the" } };
+      toTextBuilderXml.WriteArray (array).Flush();
+      string result = stringWriter.ToString ();
+      log.It (result);
+      Assert.That (result, Is.EqualTo ("<array><array><e>The</e><e>Shadow</e></array><array><e>of</e><e>the</e></array></array>"));
+    }
+
+
+    [Test]
+    public void AppendRectangularArrayTest2 ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+      int[, ,] array = { { { 1, 3 }, { 5, 7 } }, { { 11, 13 }, { 17, 19 } }, { { 23, 29 }, { 31, 37 } } };
+      toTextBuilderXml.WriteArray (array).Flush();
+      string result = stringWriter.ToString ();
+      log.It (result);
+      Assert.That (result, Is.EqualTo ("<array><array><array><e>1</e><e>3</e></array><array><e>5</e><e>7</e></array></array><array><array><e>11</e><e>13</e></array><array><e>17</e><e>19</e></array></array><array><array><e>23</e><e>29</e></array><array><e>31</e><e>37</e></array></array></array>"));
+    }
+
+
     public static ToTextProvider CreateTextProvider ()
     {
       var toTextProvider = new ToTextProvider();

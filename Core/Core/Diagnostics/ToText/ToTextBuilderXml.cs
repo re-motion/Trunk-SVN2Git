@@ -140,20 +140,25 @@ namespace Remotion.Diagnostics.ToText
 
     public override IToTextBuilderBase WriteArray (Array array)
     {
-      throw new System.NotImplementedException ();
-      //  var outerProduct = new OuterProductIndexGenerator (array);
+      //throw new System.NotImplementedException ();
 
-      //  SequenceBegin ("array", "", "", "", "", "");
-      //  var processor = new ToTextBuilderArrayToTextProcessor (array, this);
-      //  outerProduct.ProcessOuterProduct (processor);
-      //  SequenceEnd ();
+      var outerProduct = new OuterProductIndexGenerator (array);
 
-      //  return this;
+      WriteSequenceArrayBegin();
+      //SequenceBegin ("", "A ", "AE ", "~AE ","_AE ","_A"); 
+
+      var processor = new ToTextBuilderArrayToTextProcessor (array, this);
+      outerProduct.ProcessOuterProduct (processor);
+      SequenceEnd ();
+
+      return this;    
     }
 
     public override IToTextBuilderBase WriteSequenceArrayBegin ()
     {
-      throw new System.NotImplementedException();
+      //throw new System.NotImplementedException();
+      SequenceXmlBegin (null, null, "array", "e");
+      return this;
     }
 
     public override IToTextBuilderBase WriteRaw (object obj)

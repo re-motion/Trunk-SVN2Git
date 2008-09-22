@@ -15,9 +15,9 @@ namespace Remotion.Diagnostics.ToText
   internal class ToTextBuilderArrayToTextProcessor : OuterProductProcessorBase
   {
     protected readonly Array _array;
-    private readonly ToTextBuilder _toTextBuilder;
+    private readonly IToTextBuilderBase _toTextBuilder;
 
-    public ToTextBuilderArrayToTextProcessor (Array rectangularArray, ToTextBuilder toTextBuilder)
+    public ToTextBuilderArrayToTextProcessor (Array rectangularArray, IToTextBuilderBase toTextBuilder)
     {
       _array = rectangularArray;
       _toTextBuilder = toTextBuilder;
