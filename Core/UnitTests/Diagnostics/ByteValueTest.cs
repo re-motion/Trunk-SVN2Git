@@ -34,7 +34,7 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
     [Test]
-    public void ToString ()
+    public new void ToString ()
     {
       var onePointFiveMB = new ByteValue (1024 * 1024 * 3 / 2);
       Assert.That (onePointFiveMB.ToString (), Is.EqualTo (1.5m.ToString ("N2") + " MB"));

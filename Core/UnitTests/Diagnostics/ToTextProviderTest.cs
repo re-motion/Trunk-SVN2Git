@@ -66,6 +66,7 @@ namespace Remotion.UnitTests.Diagnostics
       {
         PubProp = "%public_property%";
         PrivateProp = "*private*";
+        Dev.Null = privateField; // get rid of warning
       }
 
       public string PubProp { get; set; }
@@ -104,6 +105,9 @@ namespace Remotion.UnitTests.Diagnostics
         Name = name;
         Int = i0;
         ListListString = new List<List<string>>();
+
+        Dev.Null = _privateFieldString;
+        Dev.Null = _privateFieldListList;
       }
 
       public string Name { get; set; }
@@ -472,7 +476,6 @@ namespace Remotion.UnitTests.Diagnostics
     public void ComplexArrayTest ()
     {
       ToTextProvider toText = CreateTextProvider ();
-      var number = 123.456;
       toText.RegisterSpecificTypeHandler<Test> (
           //(x, ttb) => NamedSequenceBegin (ttb, "Test").e (x.Name).e (x.Int).e (x.RectangularArray3D).se ());
           (x, ttb) => NamedSequenceBegin (ttb, "Test").e (x.RectangularArray3D).se ());

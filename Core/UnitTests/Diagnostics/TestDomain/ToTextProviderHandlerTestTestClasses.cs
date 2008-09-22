@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Development.UnitTesting.ObjectMother;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.UnitTests.Diagnostics.TestDomain
 {
@@ -43,6 +44,8 @@ namespace Remotion.UnitTests.Diagnostics.TestDomain
     {
       PubProp = "%public_property%";
       PrivateProp = "*private*";
+
+      Dev.Null = privateField; // get rid of warning
     }
 
     public string PubProp { get; set; }
@@ -81,6 +84,8 @@ namespace Remotion.UnitTests.Diagnostics.TestDomain
       Name = name;
       Int = i0;
       ListListString = new List<List<string>> ();
+      Dev.Null = _privateFieldString; // get rid of warning
+      Dev.Null = _privateFieldListList; // get rid of warning
     }
 
     public string Name { get; set; }
