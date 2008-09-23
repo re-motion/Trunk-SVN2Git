@@ -29,7 +29,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
-      IToTextBuilderBase toTextBuilder = toTextParameters.ToTextBuilder;
+      IToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
 
       if(obj is IFormattable)
       {

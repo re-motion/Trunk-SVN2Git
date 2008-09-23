@@ -20,7 +20,7 @@ namespace Remotion.Diagnostics.ToText
 {
   using GetValueFunctionKey = Tuple<Type, FieldInfo>;
 
-  public abstract class ToTextBuilderBase : IToTextBuilderBase
+  public abstract class ToTextBuilderBase : IToTextBuilder
   {
     private static readonly ICache<GetValueFunctionKey, Func<object, object>> s_getValueFunctionCache = new InterlockedCache<GetValueFunctionKey, Func<object, object>> ();
     private ToTextProvider _toTextProvider;
@@ -64,7 +64,7 @@ namespace Remotion.Diagnostics.ToText
       set { _toTextProvider = value; }
     }
 
-    public IToTextBuilderBase writeIfSkeletonOrHigher
+    public IToTextBuilder writeIfSkeletonOrHigher
     {
       get
       {
@@ -72,7 +72,7 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    public IToTextBuilderBase writeIfBasicOrHigher
+    public IToTextBuilder writeIfBasicOrHigher
     {
       get
       {
@@ -80,7 +80,7 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    public IToTextBuilderBase writeIfMediumOrHigher
+    public IToTextBuilder writeIfMediumOrHigher
     {
       get
       {
@@ -88,7 +88,7 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    public IToTextBuilderBase writeIfComplexOrHigher
+    public IToTextBuilder writeIfComplexOrHigher
     {
       get
       {
@@ -96,7 +96,7 @@ namespace Remotion.Diagnostics.ToText
       }
     }
 
-    public IToTextBuilderBase writeIfFull
+    public IToTextBuilder writeIfFull
     {
       get
       {
@@ -110,16 +110,16 @@ namespace Remotion.Diagnostics.ToText
     public void SetOutputComplexityToMedium () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Medium; }
     public void SetOutputComplexityToComplex () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Complex; }
     public void SetOutputComplexityToFull () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Full; }
-    public abstract IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel);
+    public abstract IToTextBuilder WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel);
     public abstract string CheckAndConvertToString ();
     protected abstract void BeforeWriteElement ();
     protected abstract void AfterWriteElement ();
-    public abstract IToTextBuilderBase Flush ();
+    public abstract IToTextBuilder Flush ();
 
 
-    public abstract IToTextBuilderBase WriteNewLine ();
+    public abstract IToTextBuilder WriteNewLine ();
 
-    public IToTextBuilderBase WriteNewLine (int numberNewlines)
+    public IToTextBuilder WriteNewLine (int numberNewlines)
     {
       for (int i = 0; i < numberNewlines; ++i)
       {
@@ -128,24 +128,24 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public IToTextBuilderBase nl ()
+    public IToTextBuilder nl ()
     {
       WriteNewLine ();
       return this;
     }
 
-    public IToTextBuilderBase nl (int numberNewlines)
+    public IToTextBuilder nl (int numberNewlines)
     {
       return WriteNewLine (numberNewlines);
     }
 
 
-    public abstract IToTextBuilderBase WriteSequenceLiteralBegin (
+    public abstract IToTextBuilder WriteSequenceLiteralBegin (
         string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix
     );
 
 
-    protected abstract IToTextBuilderBase SequenceBegin ();
+    protected abstract IToTextBuilder SequenceBegin ();
 
     protected virtual void BeforeNewSequence ()
     {
@@ -160,40 +160,40 @@ namespace Remotion.Diagnostics.ToText
 
 
 
-    public IToTextBuilderBase sbLiteral ()
+    public IToTextBuilder sbLiteral ()
     {
       return WriteSequenceLiteralBegin ("", "(", "", "", ",", ")");
     }
 
-    public IToTextBuilderBase sbLiteral (string sequencePrefix, string separator, string sequencePostfix)
+    public IToTextBuilder sbLiteral (string sequencePrefix, string separator, string sequencePostfix)
     {
       return WriteSequenceLiteralBegin ("", sequencePrefix, "", "", separator, sequencePostfix);
     }
 
-    public IToTextBuilderBase sbLiteral (string sequencePrefix, string sequencePostfix)
+    public IToTextBuilder sbLiteral (string sequencePrefix, string sequencePostfix)
     {
       return WriteSequenceLiteralBegin ("", sequencePrefix, "", "", ",", sequencePostfix);
     }
 
-    public IToTextBuilderBase sbLiteral (string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    public IToTextBuilder sbLiteral (string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
       return WriteSequenceLiteralBegin ("", sequencePrefix, elementPrefix, elementPostfix, separator, sequencePostfix);
     }
 
     
     
-    public abstract IToTextBuilderBase WriteSequenceBegin ();
+    public abstract IToTextBuilder WriteSequenceBegin ();
 
-    public IToTextBuilderBase sb ()
+    public IToTextBuilder sb ()
     {
       return WriteSequenceBegin();
     }
 
 
 
-    public abstract IToTextBuilderBase WriteRawStringUnsafe (string s);
+    public abstract IToTextBuilder WriteRawStringUnsafe (string s);
 
-    public IToTextBuilderBase WriteRawString (string s)
+    public IToTextBuilder WriteRawString (string s)
     {
       AssertIsInRawSequence ();
       WriteRawStringUnsafe (s);
@@ -211,23 +211,23 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public abstract IToTextBuilderBase WriteRawStringEscapedUnsafe (string s);
+    public abstract IToTextBuilder WriteRawStringEscapedUnsafe (string s);
 
-    public IToTextBuilderBase WriteRawStringEscaped (string s) 
+    public IToTextBuilder WriteRawStringEscaped (string s) 
     {
       AssertIsInRawSequence ();
       WriteRawStringEscapedUnsafe (s);
       return this;
     }
 
-    public IToTextBuilderBase s (string s)
+    public IToTextBuilder s (string s)
     {
       return WriteRawStringUnsafe (s);
     }
 
-    public abstract IToTextBuilderBase WriteRawCharUnsafe (char c);
+    public abstract IToTextBuilder WriteRawCharUnsafe (char c);
 
-    public IToTextBuilderBase WriteRawChar (char c)
+    public IToTextBuilder WriteRawChar (char c)
     {
       AssertIsInRawSequence ();
       WriteRawCharUnsafe (c);
@@ -239,7 +239,7 @@ namespace Remotion.Diagnostics.ToText
     // Note: The creation of the passed lambda expression (()=>varName) for WriteElement takes around 4 microseconds.
     // Overall performance is around 11 microseconds for the evaluation of the cached lambda and call to 
     // WriteElement (variableName, variableValue).
-    public IToTextBuilderBase WriteElement<T> (Expression<Func<T>> expression)
+    public IToTextBuilder WriteElement<T> (Expression<Func<T>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       try
@@ -285,87 +285,87 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public IToTextBuilderBase WriteElement (string name, Object obj)
+    public IToTextBuilder WriteElement (string name, Object obj)
     {
       ArgumentUtility.CheckNotNull ("name", name);
       WriteMemberRaw (name, obj);
       return this;
     }
 
-    protected abstract IToTextBuilderBase WriteMemberRaw (string name, Object obj);
+    protected abstract IToTextBuilder WriteMemberRaw (string name, Object obj);
 
 
-    public IToTextBuilderBase e (Object obj)
+    public IToTextBuilder e (Object obj)
     {
       return WriteElement (obj);
     }
 
-    public IToTextBuilderBase e<T> (Expression<Func<T>> expression)
+    public IToTextBuilder e<T> (Expression<Func<T>> expression)
     {
       return WriteElement (expression);
     }
 
-    public IToTextBuilderBase e (string name, Object obj)
+    public IToTextBuilder e (string name, Object obj)
     {
       return WriteElement (name, obj);
     }
 
-    public abstract IToTextBuilderBase WriteEnumerable (IEnumerable enumerable);
+    public abstract IToTextBuilder WriteEnumerable (IEnumerable enumerable);
 
-    public IToTextBuilderBase array (Array array)
+    public IToTextBuilder array (Array array)
     {
       return WriteArray (array);
     }
 
 
-    public IToTextBuilderBase enumerable (IEnumerable enumerable)
+    public IToTextBuilder enumerable (IEnumerable enumerable)
     {
       return WriteEnumerable (enumerable);
     }
 
 
 
-    public abstract IToTextBuilderBase WriteDictionary (IDictionary dictionary);
+    public abstract IToTextBuilder WriteDictionary (IDictionary dictionary);
 
-    public IToTextBuilderBase dictionary (IDictionary dictionary)
+    public IToTextBuilder dictionary (IDictionary dictionary)
     {
       return WriteDictionary (dictionary);
     }
 
 
 
-    public abstract IToTextBuilderBase WriteArray (Array array);
-    public abstract IToTextBuilderBase WriteSequenceArrayBegin ();
+    public abstract IToTextBuilder WriteArray (Array array);
+    public abstract IToTextBuilder WriteSequenceArrayBegin ();
     
 
 
-    public IToTextBuilderBase WriteRaw (string s)
+    public IToTextBuilder WriteRaw (string s)
     {
       return WriteRawString (s);
     }
 
-    public abstract IToTextBuilderBase WriteRaw (Object obj);
+    public abstract IToTextBuilder WriteRaw (Object obj);
 
 
-    public abstract IToTextBuilderBase WriteInstanceBegin (Type type);
+    public abstract IToTextBuilder WriteInstanceBegin (Type type);
 
-    public IToTextBuilderBase ib (Type type)
+    public IToTextBuilder ib (Type type)
     {
       return WriteInstanceBegin (type);
     }
 
-    public IToTextBuilderBase  ib<T>()
+    public IToTextBuilder  ib<T>()
     {
       return WriteInstanceBegin (typeof(T));
     }
 
-    public IToTextBuilderBase ie ()
+    public IToTextBuilder ie ()
     {
       return WriteSequenceEnd ();
     }
 
 
-    public IToTextBuilderBase WriteSequenceEnd ()
+    public IToTextBuilder WriteSequenceEnd ()
     {
       SequenceEnd ();
       return this;
@@ -373,18 +373,18 @@ namespace Remotion.Diagnostics.ToText
 
     protected abstract void SequenceEnd ();
 
-    public IToTextBuilderBase se ()
+    public IToTextBuilder se ()
     {
       return WriteSequenceEnd ();
     }
 
-    public IToTextBuilderBase WriteElement (object obj)
+    public IToTextBuilder WriteElement (object obj)
     {
       _toTextProvider.ToText (obj, this);
       return this;
     }
 
-    public IToTextBuilderBase WriteSequenceElements (params object[] sequenceElements)
+    public IToTextBuilder WriteSequenceElements (params object[] sequenceElements)
     {
       Assertion.IsTrue (IsInSequence);
       foreach (var obj in sequenceElements)
@@ -394,12 +394,12 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public IToTextBuilderBase elements (params object[] sequenceElements)
+    public IToTextBuilder elements (params object[] sequenceElements)
     {
       return WriteSequenceElements (sequenceElements);
     }
 
-    public IToTextBuilderBase elementsNumbered (string s1, int i0, int i1)
+    public IToTextBuilder elementsNumbered (string s1, int i0, int i1)
     {
       Assertion.IsTrue (IsInSequence);
       for (int i = i0; i <= i1; ++i)
@@ -409,7 +409,7 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public IToTextBuilderBase WriteSequence (params object[] sequenceElements)
+    public IToTextBuilder WriteSequence (params object[] sequenceElements)
     {
       WriteSequenceBegin ();
       foreach (var obj in sequenceElements)
@@ -420,21 +420,21 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public IToTextBuilderBase sequence (params object[] sequenceElements)
+    public IToTextBuilder sequence (params object[] sequenceElements)
     {
       return WriteSequence (sequenceElements);
     }
 
 
 
-    public IToTextBuilderBase WriteRawElementBegin ()
+    public IToTextBuilder WriteRawElementBegin ()
     {
       IsInRawSequence = true;
       BeforeWriteElement();
       return this;
     }
 
-    public IToTextBuilderBase WriteRawElementEnd ()
+    public IToTextBuilder WriteRawElementEnd ()
     {
       AfterWriteElement ();
       IsInRawSequence = false;
@@ -456,7 +456,7 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public virtual IToTextBuilderBase sEsc (string s)
+    public virtual IToTextBuilder sEsc (string s)
     {
       return WriteRawStringEscapedUnsafe (s); 
       

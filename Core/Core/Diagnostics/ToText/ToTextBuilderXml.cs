@@ -42,7 +42,7 @@ namespace Remotion.Diagnostics.ToText
       set { _disableableWriter.Enabled = value; }
     }
 
-    public override IToTextBuilderBase WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel)
+    public override IToTextBuilder WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel)
     {
       _disableableWriter.Enabled = (OutputComplexity >= complexityLevel) ? true : false;
       return this;
@@ -54,13 +54,13 @@ namespace Remotion.Diagnostics.ToText
       return _disableableWriter.ToString ();
     }
 
-    public override IToTextBuilderBase Flush ()
+    public override IToTextBuilder Flush ()
     {
       _disableableWriter.Flush();
       return this;
     }
 
-    public override IToTextBuilderBase WriteNewLine ()
+    public override IToTextBuilder WriteNewLine ()
     {
       if (AllowNewline)
       {
@@ -70,42 +70,42 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override IToTextBuilderBase WriteSequenceLiteralBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
+    public override IToTextBuilder WriteSequenceLiteralBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
       throw new System.NotSupportedException ("ToTextBuilderXml does not support literal sequences.");
     }
 
-    protected override IToTextBuilderBase SequenceBegin ()
+    protected override IToTextBuilder SequenceBegin ()
     {
       return SequenceXmlBegin(null,null, "seq", "e");
     }
 
 
 
-    public override IToTextBuilderBase WriteSequenceBegin ()
+    public override IToTextBuilder WriteSequenceBegin ()
     {
       return SequenceBegin();
     }
 
-    public override IToTextBuilderBase WriteRawStringUnsafe (string s)
+    public override IToTextBuilder WriteRawStringUnsafe (string s)
     {
       _disableableWriter.WriteValue (s);
       return this;
     }
 
-    public override IToTextBuilderBase WriteRawStringEscapedUnsafe (string s)
+    public override IToTextBuilder WriteRawStringEscapedUnsafe (string s)
     {
       return WriteRawStringUnsafe(s);
     }
 
 
-    public override IToTextBuilderBase WriteRawCharUnsafe (char c)
+    public override IToTextBuilder WriteRawCharUnsafe (char c)
     {
       _disableableWriter.WriteValue (c);
       return this;
     }
 
-    public override IToTextBuilderBase WriteEnumerable (IEnumerable enumerable)
+    public override IToTextBuilder WriteEnumerable (IEnumerable enumerable)
     {
       SequenceXmlBegin (enumerable.GetType ().Name, "enumerable", "enumerable", "e");
       foreach (Object element in enumerable)
@@ -116,7 +116,7 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override IToTextBuilderBase WriteDictionary (IDictionary dictionary)
+    public override IToTextBuilder WriteDictionary (IDictionary dictionary)
     {
       SequenceXmlBegin (dictionary.GetType ().Name, "dictionary", "dictionary", null);
       foreach (DictionaryEntry de in dictionary)
@@ -138,7 +138,7 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    public override IToTextBuilderBase WriteArray (Array array)
+    public override IToTextBuilder WriteArray (Array array)
     {
       //throw new System.NotImplementedException ();
 
@@ -154,21 +154,21 @@ namespace Remotion.Diagnostics.ToText
       return this;    
     }
 
-    public override IToTextBuilderBase WriteSequenceArrayBegin ()
+    public override IToTextBuilder WriteSequenceArrayBegin ()
     {
       //throw new System.NotImplementedException();
       SequenceXmlBegin (null, null, "array", "e");
       return this;
     }
 
-    public override IToTextBuilderBase WriteRaw (object obj)
+    public override IToTextBuilder WriteRaw (object obj)
     {
       AssertIsInRawSequence ();
       _disableableWriter.WriteValue (obj);
       return this;
     }
 
-    public override IToTextBuilderBase WriteInstanceBegin (Type type)
+    public override IToTextBuilder WriteInstanceBegin (Type type)
     {
       SequenceXmlBegin (type.Name, "instance", "seq", "e");
       return this;
@@ -191,7 +191,7 @@ namespace Remotion.Diagnostics.ToText
       PushSequenceState (SequenceState);
     }
 
-    protected IToTextBuilderBase SequenceXmlBegin (string name, string sequenceType, string sequenceTag, string elementTag)
+    protected IToTextBuilder SequenceXmlBegin (string name, string sequenceType, string sequenceTag, string elementTag)
     {
       // Note: All arguments can be null 
       //ArgumentUtility.CheckNotNull ("sequenceTag", sequenceTag);
@@ -254,7 +254,7 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    protected override IToTextBuilderBase WriteMemberRaw (string name, Object obj)
+    protected override IToTextBuilder WriteMemberRaw (string name, Object obj)
     {
       //_disableableWriter.WriteStartElement ("var");
       //_disableableWriter.WriteAttribute ("name", name);

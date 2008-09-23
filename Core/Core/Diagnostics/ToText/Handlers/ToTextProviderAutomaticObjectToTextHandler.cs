@@ -30,7 +30,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
       Object obj = toTextParameters.Object;
       Type type = toTextParameters.Type;
-      IToTextBuilderBase toTextBuilder = toTextParameters.ToTextBuilder;
+      IToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
       var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
 
       // Primitives and Type|s lead to endless recursion when treating them with reflection, so this handler skips them.
@@ -47,7 +47,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
     }
 
 
-    private void ObjectToText (object obj, IToTextBuilderBase toTextBuilder, bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
+    private void ObjectToText (object obj, IToTextBuilder toTextBuilder, bool emitPublicProperties, bool emitPublicFields, bool emitPrivateProperties, bool emitPrivateFields)
     {
       Type type = obj.GetType ();
 
@@ -73,7 +73,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
       toTextBuilder.WriteSequenceEnd ();
     }
 
-    private void ObjectToTextProcessMemberInfos (string message, object obj, BindingFlags bindingFlags, MemberTypes memberTypeFlags, IToTextBuilderBase toTextBuilder)
+    private void ObjectToTextProcessMemberInfos (string message, object obj, BindingFlags bindingFlags, MemberTypes memberTypeFlags, IToTextBuilder toTextBuilder)
     {
       Type type = obj.GetType ();
 

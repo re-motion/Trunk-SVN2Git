@@ -47,7 +47,7 @@ namespace Remotion.Diagnostics
   /// [ToTextSpecificHandler]
   /// public class ToTextTestToTextSpecificTypeHandler : ToTextSpecificTypeHandler<ToTextTest>
   /// {
-  ///   public override void ToText (ToTextTest t, IToTextBuilderBase toTextBuilder)
+  ///   public override void ToText (ToTextTest t, IToTextBuilder toTextBuilder)
   ///   {
   ///     toTextBuilder.s ("handled by ToTextTestToTextSpecificTypeHandler");
   ///   }
@@ -68,7 +68,7 @@ namespace Remotion.Diagnostics
   /// [ToTextSpecificHandler]
   /// class ITestSimpleNameToTextSpecificInterfaceHandler : ToTextSpecificInterfaceHandler<ITestSimpleName>
   /// {
-  ///   public override void ToText (ITestSimpleName t, IToTextBuilderBase toTextBuilder)
+  ///   public override void ToText (ITestSimpleName t, IToTextBuilder toTextBuilder)
   ///   {
   ///     toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).se ();
   ///   }
@@ -258,7 +258,7 @@ namespace Remotion.Diagnostics
     ///// <para>Registers
     ///// </para>
     ///// </summary>  
-    //public static void RegisterHandler<T> (Action<T, IToTextBuilderBase> handler)
+    //public static void RegisterHandler<T> (Action<T, IToTextBuilder> handler)
     //{
     //  _toTextProvider.RegisterSpecificTypeHandler (handler);
     //}
@@ -331,18 +331,18 @@ namespace Remotion.Diagnostics
 
 
     /// <summary>
-    /// Delayed execution Logging through a passed <see cref="IToTextBuilderBase"/>  <c> =&gt; </c>  <see cref="IToTextBuilderBase"/> lambda expression.
+    /// Delayed execution Logging through a passed <see cref="IToTextBuilder"/>  <c> =&gt; </c>  <see cref="IToTextBuilder"/> lambda expression.
     /// </summary>
     /// <remarks>
-    /// Delayed execution Logging through lambda expression mapping a <see cref="IToTextBuilderBase"/> to 
-    /// a  <see cref="IToTextBuilderBase"/> on which the required  <see cref="IToTextBuilderBase"/> 
+    /// Delayed execution Logging through lambda expression mapping a <see cref="IToTextBuilder"/> to 
+    /// a  <see cref="IToTextBuilder"/> on which the required  <see cref="IToTextBuilder"/> 
     /// write calls are executed.
     /// <example><code><![CDATA[
     /// var log = LogManager.GetLogger (typeof (ToTest));
     /// log.Log (LogLevel.Debug, ttb => ttb.sb ().e(myVariable).e ("Some text").se ());
     /// ]]></code></example>
     /// </remarks>
-    public static void Log (this ILog log, LogLevel logLevel, Func<ToTextBuilder, IToTextBuilderBase> toTextBuilderFunc)
+    public static void Log (this ILog log, LogLevel logLevel, Func<ToTextBuilder, IToTextBuilder> toTextBuilderFunc)
     {
       if (log.IsLogLevelEnabled (logLevel))
       {

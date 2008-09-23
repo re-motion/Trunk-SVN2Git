@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Diagnostics.TestDomain
       return String.Format ("((TestSimple) Name:{0},Int:{1})", Name, Int);
     }
 
-    public void ToText (IToTextBuilderBase toTextBuilder)
+    public void ToText (IToTextBuilder toTextBuilder)
     {
       toTextBuilder.sb ().e ("daInt", Int).e ("theName", Name).se ();
     }

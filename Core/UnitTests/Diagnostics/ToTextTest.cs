@@ -22,7 +22,7 @@ namespace Remotion.UnitTests.Diagnostics
 
     //public class ToTextProviderTypeHandler : ToTextSpecificTypeHandler<ToTextProvider>
     //{
-    //  public override void ToText (ToTextProvider t, IToTextBuilderBase ttb)
+    //  public override void ToText (ToTextProvider t, IToTextBuilder ttb)
     //  {
     //    ttb.ib<ToTextProvider> ().nl ().e (t.Settings).nl ().e (t._typeHandlerMap).ie ();
     //  }

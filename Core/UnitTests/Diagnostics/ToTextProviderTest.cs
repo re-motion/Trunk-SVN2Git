@@ -72,7 +72,7 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    private IToTextBuilderBase NamedSequenceBegin (IToTextBuilderBase toTextBuilder, string name)
+    private IToTextBuilder NamedSequenceBegin (IToTextBuilder toTextBuilder, string name)
     {
       toTextBuilder.WriteSequenceLiteralBegin (name, "[", "", "", ";", "]");
       return toTextBuilder;
@@ -866,7 +866,7 @@ namespace Remotion.UnitTests.Diagnostics
 
   static class ToTextTestExtensionMethods
   {
-    public static IToTextBuilderBase ts (this IToTextBuilderBase toTextBuilder, object obj)
+    public static IToTextBuilder ts (this IToTextBuilder toTextBuilder, object obj)
     {
       toTextBuilder.s (obj.ToString ());
       return toTextBuilder;

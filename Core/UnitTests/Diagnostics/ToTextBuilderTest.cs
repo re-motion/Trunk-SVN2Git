@@ -879,7 +879,7 @@ namespace Remotion.UnitTests.Diagnostics
 
     public class TestTypeHandler : ToTextSpecificTypeHandler<Test>
     {
-      public override void ToText (Test t, IToTextBuilderBase ttb)
+      public override void ToText (Test t, IToTextBuilder ttb)
       {
         ttb.ib<Test> ().s ("handled by TestTypeHandler").ie ();
       }

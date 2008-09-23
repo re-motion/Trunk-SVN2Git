@@ -20,7 +20,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
   {
     public object Object { get; set; }
     public Type Type { get; set; }
-    public IToTextBuilderBase ToTextBuilder { get; set; }
+    public IToTextBuilder ToTextBuilder { get; set; }
 
     public ToTextProvider ToTextProvider
     {

@@ -4,6 +4,6 @@ namespace Remotion.Diagnostics.ToText
 {
   public interface IToTextSpecificHandler
   {
-    void ToText (Object obj, IToTextBuilderBase toTextBuilder);
+    void ToText (Object obj, IToTextBuilder toTextBuilder);
   }
 }

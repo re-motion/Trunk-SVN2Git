@@ -21,7 +21,7 @@ namespace Remotion.Diagnostics.ToText.Handlers {
       ToTextProviderHandler.CheckNotNull (toTextParameters, toTextProviderHandlerFeedback);
 
       Object obj = toTextParameters.Object;
-      IToTextBuilderBase toTextBuilder = toTextParameters.ToTextBuilder;
+      IToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
 
       // Catch Type|s to avoid endless recursion. 
       if (obj is Type) 

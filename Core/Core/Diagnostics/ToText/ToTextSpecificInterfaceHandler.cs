@@ -22,9 +22,9 @@ namespace Remotion.Diagnostics.ToText
       Priority = priority;
     }
 
-    public abstract void ToText (T t, IToTextBuilderBase toTextBuilder);
+    public abstract void ToText (T t, IToTextBuilder toTextBuilder);
 
-    public virtual void ToText (object obj, IToTextBuilderBase toTextBuilder)
+    public virtual void ToText (object obj, IToTextBuilder toTextBuilder)
     {
       ToText ((T) obj, toTextBuilder);
     }
