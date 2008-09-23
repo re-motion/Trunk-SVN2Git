@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -116,26 +117,33 @@ namespace Remotion.UnitTests.Mixins
       AppDomainRunner.Run (
           delegate
           {
-            Assert.That (CodeGenerationStatistics.CreatedAssemblyCount, Is.EqualTo (0));
-            TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
-            Assert.That (CodeGenerationStatistics.CreatedAssemblyCount, Is.EqualTo (1));
-            TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
-            Assert.That (CodeGenerationStatistics.CreatedAssemblyCount, Is.EqualTo (2));
+            using (MixinConfiguration.BuildNew ().EnterScope ())
+            {
+              ConcreteTypeBuilder.SetCurrent (null);
+              int countBefore = CodeGenerationStatistics.CreatedAssemblyCount;
+              TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
+              Assert.That (CodeGenerationStatistics.CreatedAssemblyCount, Is.EqualTo (countBefore + 1));
+              TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
+              Assert.That (CodeGenerationStatistics.CreatedAssemblyCount, Is.EqualTo (countBefore + 2));
+            }
           });
     }
 
     [Test]
-    [Ignore ("Build failes in build-script.")]
     public void GetBuiltTypeCount ()
     {
       AppDomainRunner.Run (
           delegate
           {
-            Assert.That (CodeGenerationStatistics.GetBuiltTypeCount(), Is.EqualTo (0));
-            TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
-            Assert.That (CodeGenerationStatistics.GetBuiltTypeCount (), Is.EqualTo (2)); // generated type + base call proxy
-            TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
-            Assert.That (CodeGenerationStatistics.GetBuiltTypeCount (), Is.EqualTo (4)); // generated type + base call proxy
+            using (MixinConfiguration.BuildNew ().EnterScope ())
+            {
+              ConcreteTypeBuilder.SetCurrent (null);
+              int countBefore = CodeGenerationStatistics.GetBuiltTypeCount();
+              TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
+              Assert.That (CodeGenerationStatistics.GetBuiltTypeCount (), Is.EqualTo (countBefore + 2)); // generated type + base call proxy
+              TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
+              Assert.That (CodeGenerationStatistics.GetBuiltTypeCount (), Is.EqualTo (countBefore + 4)); // generated type + base call proxy
+            }
           });
     }
   }
