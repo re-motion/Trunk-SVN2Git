@@ -903,28 +903,15 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    [Test]
-    public void WriteElementFastTest ()
-    {
-      var toTextBuilder = CreateTextBuilder ();
-      string MY_VERY_LONG_VARIABLE_NAME = "ABCDEFGHIJKLMNOPQRST";
-      toTextBuilder.sb ().WriteElementFast (() => MY_VERY_LONG_VARIABLE_NAME).se ();
-      var result = toTextBuilder.CheckAndConvertToString ();
-      Log (result);
-      //Assert.That (result, Is.EqualTo ("<(hello),(world),(1),(2),(3)>"));
-    }
 
     // Timings: WriteElementBasicPerformanceTest = 270ms, WriteElementFastPerformanceTest = 1100ms
-    private const int _nrWriteElementPerformanceTestLoops = 1000000;
+    // Basically same timings for one-char-variable-name holding 3 char string.
+    private const int _nrWriteElementPerformanceTestLoops = 100000;
     private string _myVeryLongVariableName = "ABCDEFGHIJKLMNOPQRST";
 
-    // Timings: WriteElementBasicPerformanceTest = 250ms, WriteElementFastPerformanceTest = 1000ms
-    //private const int _nrWriteElementPerformanceTestLoops = 100000;
-    //private string _s = "abc";
-
     [Test]
-    [Ignore]
-    public void WriteElementBasicPerformanceTest ()
+    [Explicit ("performance test")]
+    public void WriteElementPerformanceTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
 
@@ -932,7 +919,6 @@ namespace Remotion.UnitTests.Diagnostics
       stopwatch.Start ();
       for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
       {
-        //toTextBuilder.WriteElement ("_myVeryLongVariableName", _s);
         toTextBuilder.WriteElement ("_myVeryLongVariableName", _myVeryLongVariableName);
       }
       stopwatch.Stop ();
@@ -940,11 +926,9 @@ namespace Remotion.UnitTests.Diagnostics
       To.Console.e (() => milliSeconds);
     }
 
-
-
     [Test]
-    [Ignore]
-    public void WriteElementPerformanceTest ()
+    [Explicit ("performance test")]
+    public void WriteElementWithLambdaExpressionPerformanceTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
       Stopwatch stopwatch = new Stopwatch ();
@@ -958,38 +942,45 @@ namespace Remotion.UnitTests.Diagnostics
       To.Console.e (() => milliSeconds);
     }
 
-    [Test]
-    [Ignore]
-    public void WriteElementFastPerformanceTest ()
-    {
-      var toTextBuilder = CreateTextBuilder ();
+    //[Test]
+    //[Explicit ("performance test")]
+    //public void WriteElementFastPerformanceTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder ();
 
-      Stopwatch stopwatch = new Stopwatch ();
-      stopwatch.Start ();
-      for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
-      {
-        toTextBuilder.WriteElementFast (() => _myVeryLongVariableName);
-      }
-      stopwatch.Stop ();
-      double milliSeconds = stopwatch.ElapsedMilliseconds;
-      To.Console.e (() => milliSeconds);
-    }
+    //  Stopwatch stopwatch = new Stopwatch ();
+    //  stopwatch.Start ();
+    //  for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
+    //  {
+    //    Expression<Func<string>> expression = () => _myVeryLongVariableName;
+    //    toTextBuilder.WriteElementFast (expression);
+    //  }
+    //  stopwatch.Stop ();
+    //  double milliSeconds = stopwatch.ElapsedMilliseconds;
+    //  To.Console.e (() => milliSeconds);
+    //}
+
+    //[Test]
+    //[Explicit("performance test")]
+    //public void WriteElementFast2PerformanceTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder ();
+
+    //  Stopwatch stopwatch = new Stopwatch ();
+    //  stopwatch.Start ();
+    //  for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
+    //  {
+    //    Expression<Func<string>> expression = () => _myVeryLongVariableName;
+    //    toTextBuilder.WriteElementFast2 (expression);
+    //  }
+    //  stopwatch.Stop ();
+    //  double milliSeconds = stopwatch.ElapsedMilliseconds;
+    //  To.Console.e (() => milliSeconds);
+    //  To.Console.s(toTextBuilder.CheckAndConvertToString())
+    //  ;
+    //}
 
 
-    [Test]
-    [Ignore]
-    public void ArgumentUtilityFancyPerformanceTest ()
-    {
-      Stopwatch stopwatch = new Stopwatch ();
-      stopwatch.Start ();
-      for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
-      {
-        ToTextBuilderBase.ArgumentUtilityFancyTest (() => _myVeryLongVariableName);
-      }
-      stopwatch.Stop ();
-      double milliSeconds = stopwatch.ElapsedMilliseconds;
-      To.Console.e (() => milliSeconds);
-    }
 
     [Test]
     [Ignore]
