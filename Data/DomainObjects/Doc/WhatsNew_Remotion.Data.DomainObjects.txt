@@ -1,3 +1,8 @@
+1.11.4
+======
+- Enum-Property (ObjectBinding): Fixed issue with UndefinedEnumValue-attributed enums behaving differently than nullable enums. 
+  Now both enum-types will be treated as not required if they are nullable or have an undefined value.
+
 1.11.3
 ======
 - DomainObjectCollection: Dropped ICollection<DomainObject> from DomainObjectCollection to avoid conflicts with type inferencing in Linq-queries

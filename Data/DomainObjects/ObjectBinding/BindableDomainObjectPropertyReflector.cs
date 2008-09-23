@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     {
       if (_relationEndPointDefinition != null)
         return _relationEndPointDefinition.IsMandatory;
-      else if (_propertyDefinition != null)
+      else if (_propertyDefinition != null && !_propertyDefinition.PropertyType.IsValueType)
         return !_propertyDefinition.IsNullable;
       else
         return base.GetIsRequired();

@@ -13,7 +13,9 @@
 
 <%@ Control Language="c#" AutoEventWireup="false" Codebehind="BocEnumValueUserControl.ascx.cs" Inherits="OBWTest.IndividualControlTests.BocEnumValueUserControl" TargetSchema="http://schemas.microsoft.com/intellisense/ie5"%>
 <div style="BORDER-RIGHT: black thin solid; BORDER-TOP: black thin solid; BORDER-LEFT: black thin solid; BORDER-BOTTOM: black thin solid; BACKGROUND-COLOR: #ffff99" runat="server" visible="false" ID="NonVisualControls">
-<remotion:formgridmanager id=FormGridManager runat="server"/><remotion:BindableObjectDataSourceControl id=CurrentObject runat="server" Type="Remotion.ObjectBinding.Sample::Person"/></div>
+<remotion:formgridmanager id=FormGridManager runat="server"/>
+<remotion:BindableObjectDataSourceControl id=CurrentObject runat="server" Type="Remotion.ObjectBinding.Sample::Person"/>
+<remotion:BindableObjectDataSourceControl id=EnumObject runat="server" Type="Remotion.ObjectBinding.Sample::ClassWithEnums"/></div>
 <table id=FormGrid runat="server">
   <tr>
     <td colSpan=4><remotion:boctextvalue id=FirstNameField runat="server" PropertyIdentifier="FirstName" datasourcecontrol="CurrentObject" readonly="True"></remotion:boctextvalue>&nbsp;<remotion:boctextvalue id=LastNameField runat="server" PropertyIdentifier="LastName" datasourcecontrol="CurrentObject" readonly="True"></remotion:boctextvalue></td></tr>
@@ -118,8 +120,74 @@
     <td><remotion:bocenumvalue id="InstanceEnumField" runat="server">
             </remotion:bocenumvalue></td>
     <td>
-      <p> unboud</p></td>
+      <p> unbound</p></td>
     <td style="WIDTH: 20%"><asp:label id="InstanceEnumFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
+  <tr>
+    <td>EnumNotNullable</td>
+    <td><remotion:bocenumvalue id="EnumNotNullableDropDownField" runat="server" DataSourceControl="EnumObject" PropertyIdentifier="EnumNotNullable"></remotion:bocenumvalue></td>
+    <td>
+      <p> bound, drop-down</p></td>
+    <td style="WIDTH: 20%"><asp:label id="EnumNotNullableDropDownLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
+  <tr>
+    <td>EnumNullable</td>
+    <td><remotion:bocenumvalue id="EnumNullableDropDownField" runat="server" DataSourceControl="EnumObject" PropertyIdentifier="EnumNullable"></remotion:bocenumvalue></td>
+    <td>
+      <p> bound, drop-down</p></td>
+    <td style="WIDTH: 20%"><asp:label id="EnumNullableDropDownLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
+  <tr>
+    <td>EnumUndefined</td>
+    <td><remotion:bocenumvalue id="EnumUndefinedDropDownField" runat="server" DataSourceControl="EnumObject" PropertyIdentifier="EnumUndefined"></remotion:bocenumvalue></td>
+    <td>
+      <p> bound, drop-down</p></td>
+    <td style="WIDTH: 20%"><asp:label id="EnumUndefinedDropDownLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
+  <tr>
+    <td>EnumNotNullable</td>
+    <td><remotion:bocenumvalue id="EnumNotNullableRadioButtonField" runat="server" DataSourceControl="EnumObject" PropertyIdentifier="EnumNotNullable" 
+        style="font-weight: 700">
+      <ListControlStyle ControlType="RadioButtonList" RadioButtonListRepeatDirection="Horizontal" />
+      </remotion:bocenumvalue></td>
+    <td>
+      <p> bound, radio buttons</p></td>
+    <td style="WIDTH: 20%"><asp:label id="EnumNotNullableRadioButtonLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
+  <tr>
+    <td>EnumNullable</td>
+    <td><remotion:bocenumvalue id="EnumNullableRadioButtonField" runat="server" DataSourceControl="EnumObject" PropertyIdentifier="EnumNullable">
+      <ListControlStyle ControlType="RadioButtonList" RadioButtonListRepeatDirection="Horizontal" />
+      </remotion:bocenumvalue></td>
+    <td>
+      <p> bound, radio buttons</p></td>
+    <td style="WIDTH: 20%"><asp:label id="EnumNullableRadioButtonLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
+  <tr>
+    <td>EnumUndefined</td>
+    <td><remotion:bocenumvalue id="EnumUndefinedRadioButtonField" runat="server" DataSourceControl="EnumObject" PropertyIdentifier="EnumUndefined">
+      <ListControlStyle ControlType="RadioButtonList" RadioButtonListRepeatDirection="Horizontal"  /></remotion:bocenumvalue></td>
+    <td>
+      <p> bound, radio buttons</p></td>
+    <td style="WIDTH: 20%"><asp:label id="EnumUndefinedRadioButtonLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
+  <tr>
+    <td>EnumNotNullable</td>
+    <td><remotion:bocenumvalue id="EnumNotNullableRadioButtonWithoutNullvalueField" runat="server" DataSourceControl="EnumObject" PropertyIdentifier="EnumNotNullable" 
+        style="font-weight: 700">
+      <ListControlStyle ControlType="RadioButtonList" RadioButtonListRepeatDirection="Horizontal" RadioButtonListNullValueVisible="False" />
+      </remotion:bocenumvalue></td>
+    <td>
+      <p> bound, radio buttons, nullvalue not visible</p></td>
+    <td style="WIDTH: 20%"><asp:label id="EnumNotNullableRadioButtonWithoutNullvalueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
+  <tr>
+    <td>EnumNullable</td>
+    <td><remotion:bocenumvalue id="EnumNullableRadioButtonWithoutNullvalueField" runat="server" DataSourceControl="EnumObject" PropertyIdentifier="EnumNullable">
+      <ListControlStyle ControlType="RadioButtonList" RadioButtonListRepeatDirection="Horizontal" RadioButtonListNullValueVisible="False" />
+      </remotion:bocenumvalue></td>
+    <td>
+      <p> bound, radio buttons, nullvalue not visible</p></td>
+    <td style="WIDTH: 20%"><asp:label id="EnumNullableRadioButtonWithoutNullvalueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
+  <tr>
+    <td>EnumUndefined</td>
+    <td><remotion:bocenumvalue id="EnumUndefinedRadioButtonWithoutNullvalueField" runat="server" DataSourceControl="EnumObject" PropertyIdentifier="EnumUndefined">
+      <ListControlStyle ControlType="RadioButtonList" RadioButtonListRepeatDirection="Horizontal" RadioButtonListNullValueVisible="False"  /></remotion:bocenumvalue></td>
+    <td>
+      <p> bound, radio buttons, nullvalue not visible</p></td>
+    <td style="WIDTH: 20%"><asp:label id="EnumUndefinedRadioButtonWithoutNullvalueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
     </table>
 <p><br>Gender Selection Changed: <asp:label id=GenderFieldSelectionChangedLabel runat="server" EnableViewState="False">#</asp:label></p>
 <p><remotion:webbutton id=GenderTestSetNullButton runat="server" Text="Gender Set Null" width="165px"/><remotion:webbutton id=GenderTestSetDisabledGenderButton runat="server" Text="Gender Set Disabled Gender" width="165px"/><remotion:webbutton id=GenderTestSetMarriedButton runat="server" Text="Gender Set Married" width="165px"/></p>

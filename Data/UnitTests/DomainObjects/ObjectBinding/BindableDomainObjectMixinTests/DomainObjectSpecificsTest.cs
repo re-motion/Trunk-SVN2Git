@@ -86,6 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredPropertyNotInMapping").IsRequired);
       Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringProperty").IsRequired);
       Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredValueProperty").IsRequired);
+      Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredEnumProperty").IsRequired);
       Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredRelatedObjectProperty").IsRequired);
       Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredBidirectionalRelatedObjectProperty").IsRequired);
       Assert.IsTrue (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredBidirectionalRelatedObjectsProperty").IsRequired);
@@ -93,6 +94,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredPropertyNotInMapping").IsRequired);
       Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredStringProperty").IsRequired);
       Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredValueProperty").IsRequired);
+      Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredEnumProperty").IsRequired);
+      Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredUndefinedEnumProperty").IsRequired);
       Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredRelatedObjectProperty").IsRequired);
       Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredBidirectionalRelatedObjectProperty").IsRequired);
       Assert.IsFalse (_businessObjectClassWithProperties.GetPropertyDefinition ("NonRequiredBidirectionalRelatedObjectsProperty").IsRequired);

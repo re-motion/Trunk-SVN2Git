@@ -25,14 +25,14 @@
       <TABLE id="SearchFormGrid" cellSpacing="0" cellPadding="0" width="300" border="0" runat="server">
         <TR>
           <TD style="WIDTH: 214px">Neues Objekt (1):</TD>
-          <TD style="WIDTH: 403px"><remotion:bocenumvalue id="NewObjectEnumProperty" runat="server" DataSourceControl="NewObjectWithUndefinedEnumDataSource" PropertyIdentifier="UndefinedEnum">
+          <TD style="WIDTH: 403px"><remotion:bocenumvalue id="NewObjectEnumProperty" runat="server" DataSourceControl="NewObjectWithUndefinedEnumDataSource" PropertyIdentifier="UndefinedEnum" Required="true">
 <ListControlStyle>
 </ListControlStyle>
             </remotion:bocenumvalue></TD>
         </TR>
         <TR>
           <TD style="WIDTH: 214px"> Bestehendes Objekt (2):</TD>
-          <TD style="WIDTH: 403px"><remotion:bocenumvalue id="ExistingObjectEnumProperty" runat="server" DataSourceControl="ExistingObjectWithUndefinedEnumDataSource" PropertyIdentifier="UndefinedEnum">
+          <TD style="WIDTH: 403px"><remotion:bocenumvalue id="ExistingObjectEnumProperty" runat="server" DataSourceControl="ExistingObjectWithUndefinedEnumDataSource" PropertyIdentifier="UndefinedEnum" Required="true">
 <ListControlStyle>
 </ListControlStyle>
             </remotion:bocenumvalue></TD>
@@ -40,7 +40,7 @@
         <TR>
           <TD style="WIDTH: 214px">
       <P>Search Objekt (3):</P></TD>
-          <TD style="WIDTH: 403px"><remotion:bocenumvalue id="SearchObjectEnumProperty" runat="server" DataSourceControl="SearchObjectWithUndefinedEnumDataSource" PropertyIdentifier="UndefinedEnum" Required="False">
+          <TD style="WIDTH: 403px"><remotion:bocenumvalue id="SearchObjectEnumProperty" runat="server" DataSourceControl="SearchObjectWithUndefinedEnumDataSource" PropertyIdentifier="UndefinedEnum">
 <ListControlStyle>
 </ListControlStyle>
             </remotion:bocenumvalue></TD>

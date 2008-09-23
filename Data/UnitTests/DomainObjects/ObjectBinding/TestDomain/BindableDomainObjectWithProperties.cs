@@ -11,12 +11,27 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
+using Remotion.ObjectBinding;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 {
   [Instantiable]
   public abstract class BindableDomainObjectWithProperties : BindableBaseDomainObject
   {
+    public enum Enum
+    {
+      First,
+      Second
+    }
+
+    [UndefinedEnumValue (Undefined)]
+    public enum UndefinedEnum
+    {
+      Undefined,
+      First,
+      Second
+    }
+
     [StorageClassNone]
     public bool RequiredPropertyNotInMapping { get { return true; } }
     [StorageClassNone]
@@ -32,6 +47,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 
     public abstract int RequiredValueProperty { get; set; }
     public abstract int? NonRequiredValueProperty { get; set; }
+
+    public abstract Enum RequiredEnumProperty { get; set; }
+    public abstract Enum? NonRequiredEnumProperty { get; set; }
+    public abstract UndefinedEnum NonRequiredUndefinedEnumProperty { get; set; }
 
     [Mandatory]
     public abstract OppositeAnonymousBindableDomainObject RequiredRelatedObjectProperty { get; set; }

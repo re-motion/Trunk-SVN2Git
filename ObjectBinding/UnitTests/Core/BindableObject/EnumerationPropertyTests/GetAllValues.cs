@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     [Test]
     public void NullableEnum ()
     {
-      IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithValueType<TestEnum>), "Scalar");
+      IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithValueType<TestEnum>), "NullableScalar");
       EnumerationValueInfo[] expected = new EnumerationValueInfo[]
           {
               new EnumerationValueInfo (TestEnum.Value1, "Value1", "Value1", true),

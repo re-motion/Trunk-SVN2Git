@@ -25,6 +25,7 @@ public class BocEnumValueUserControl : BaseUserControl
   protected HtmlGenericControl NonVisualControls;
   protected FormGridManager FormGridManager;
   protected BindableObjectDataSourceControl CurrentObject;
+  protected BindableObjectDataSourceControl EnumObject;
   protected BocTextValue FirstNameField;
   protected BocTextValue LastNameField;
   protected BocEnumValue GenderField;
@@ -106,6 +107,15 @@ public class BocEnumValueUserControl : BaseUserControl
       if (Page is ISmartNavigablePage)
         ((ISmartNavigablePage) Page).SetFocus (MarriageStatusField);
     }
+
+    EnumObject.BusinessObject = (IBusinessObject) ClassWithEnums.CreateObject();
+  }
+  public override bool Validate ()
+  {
+    if (!base.Validate ())
+      return false;
+
+    return EnumObject.Validate();
   }
 
   override protected void OnPreRender (EventArgs e)
