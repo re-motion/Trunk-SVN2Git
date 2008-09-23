@@ -206,8 +206,8 @@
     <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     <remarks>
       <para>
-        Loads the <see cref="Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/> 
-        if <paramref name="interim"/> is <see langword="false"/>. 
+        Populates the <see cref="Value"/> with the provided <paramref name="value"/> if <paramref name="interim"/>
+        is <see langword="false"/>.
       </para><para>
         <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> is <see langword="false"/> after invoking
         <see cref="LoadValue"/> with <paramref name="interim"/> <see langword="false"/>.
