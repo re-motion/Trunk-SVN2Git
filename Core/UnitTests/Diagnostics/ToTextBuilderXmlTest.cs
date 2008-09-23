@@ -408,6 +408,43 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    [Test]
+    [ExpectedException (typeof (System.InvalidOperationException))]
+    public void AlreadyClosedTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+      toTextBuilderXml.Open ();
+      toTextBuilderXml.Close ();
+      // ToTextBuilder is disposed => Write attempt throws
+      toTextBuilderXml.s ("Sorry, we're alredy closed !");
+    }
+
+
+    [Test]
+    [ExpectedException (typeof (System.InvalidOperationException))]
+    public void DisposableTest ()
+    {
+      XmlWriterSettings settings = new XmlWriterSettings ();
+      settings.OmitXmlDeclaration = true;
+      settings.Indent = false;
+      settings.NewLineOnAttributes = false;
+      settings.ConformanceLevel = ConformanceLevel.Fragment;
+
+      var stringWriter = new StringWriter ();
+      var xmlWriter = XmlWriter.Create (stringWriter, settings);
+      var toTextProvider = new ToTextProvider ();
+      using (var toTextBuilderXml = new ToTextBuilderXml (toTextProvider, xmlWriter))
+      {
+        toTextBuilderXml.s ("Using ToTextBuilderXml");
+      }
+      Assert.That (stringWriter.ToString (), Is.EqualTo ("Using ToTextBuilderXml"));
+      // XmlWriter should be closed when ToTextBuilder is disposed => Write attempt throws
+      stringWriter.Write ("Sorry, we're alredy closed !");
+    }
+
+
+
     public static ToTextProvider CreateTextProvider ()
     {
       var toTextProvider = new ToTextProvider();

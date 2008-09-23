@@ -14,7 +14,7 @@ using System.Linq.Expressions;
 
 namespace Remotion.Diagnostics.ToText
 {
-  public interface IToTextBuilderBase
+  public interface IToTextBuilderBase : IDisposable
   {
     /// <summary>
     /// <para>Get/set whether the TextBuilder allows explicit emission of newlines (see <see cref="WriteNewLine()"/>, <see cref="WriteNewLine(int)"/>).</para>
@@ -434,5 +434,7 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Shorthand notation for <see cref="WriteDictionary"/>.</para>
     /// </summary>
     IToTextBuilderBase dictionary (IDictionary dictionary);
+
+    void Close ();
   }
 }

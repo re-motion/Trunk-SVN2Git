@@ -293,7 +293,10 @@ namespace Remotion.Diagnostics.ToText
       AfterWriteElement (); 
     }
 
-
+    public override void Close ()
+    {
+      _disableableWriter.Close ();
+    }
 
 
     //--------------------------------------------------------------------------
@@ -309,7 +312,7 @@ namespace Remotion.Diagnostics.ToText
     // TODO: Move to String Extension Class
     private void EscapeString (string s, DisableableWriter disableableWriter)
     {
-      var mapping = new Dictionary<char, string> () { { '"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\t', "\\t" }, { '\\', "\\\\" }, { '\b', "\\b" }, { '\v', "\\v" }, { '\f', "\\f" } };
+      var mapping = new Dictionary<char, string> { { '"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\t', "\\t" }, { '\\', "\\\\" }, { '\b', "\\b" }, { '\v', "\\v" }, { '\f', "\\f" } };
       foreach (char c in s)
       {
         string mappedString;
@@ -333,6 +336,9 @@ namespace Remotion.Diagnostics.ToText
 
       return this;
     }
+
+
+
 
 
   }

@@ -18,7 +18,7 @@ namespace Remotion.Diagnostics.ToText
   /// Wrapper around <see cref="XmlWriter"/> class which supports enabling/disabling of its <see cref="WriteStartElement"/>,etc methods
   /// through its <see cref="Enabled"/> property.
   /// </summary>
-  internal class DisableableXmlWriter
+  internal class DisableableXmlWriter : IDisposable
   {
     private readonly XmlWriter _xmlWriter;
 
@@ -92,6 +92,16 @@ namespace Remotion.Diagnostics.ToText
       {
         WriteAttribute (name, value);
       }
+    }
+
+    public void Close ()
+    {
+      _xmlWriter.Close();
+    }
+
+    void IDisposable.Dispose ()
+    {
+      Close();
     }
   }
 }

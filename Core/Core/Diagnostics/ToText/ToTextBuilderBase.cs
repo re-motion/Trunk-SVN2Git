@@ -461,5 +461,12 @@ namespace Remotion.Diagnostics.ToText
       return WriteRawStringEscapedUnsafe (s); 
       
     }
+
+    void IDisposable.Dispose ()
+    {
+      Close();
+    }
+
+    public abstract void Close ();
   }
 }

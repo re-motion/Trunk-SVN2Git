@@ -18,7 +18,7 @@ namespace Remotion.Diagnostics.ToText
   /// Wrapper around <see cref="TextWriter"/> class which supports enabling/disabling of its <see cref="Write"/> method 
   /// through its <see cref="Enabled"/> property.
   /// </summary>
-  public class DisableableWriter
+  public class DisableableWriter : IDisposable
   {
     // private readonly TextWriter _textWriter;
 
@@ -99,6 +99,14 @@ namespace Remotion.Diagnostics.ToText
       DelayedPrefix = null;
     }
 
+    public void Close ()
+    {
+      TextWriter.Close ();
+    }
 
+    void IDisposable.Dispose ()
+    {
+      Close ();
+    }
   }
 }

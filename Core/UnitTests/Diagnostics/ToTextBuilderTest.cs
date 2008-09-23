@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
@@ -982,21 +983,32 @@ namespace Remotion.UnitTests.Diagnostics
 
 
 
-    [Test]
-    [Ignore]
-    public void ArgumentUtilityPerformanceTest ()
-    {
-      Stopwatch stopwatch = new Stopwatch ();
-      stopwatch.Start ();
-      for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
-      {
-        ArgumentUtility.CheckNotNull ("_myVeryLongVariableName", _myVeryLongVariableName);
-      }
-      stopwatch.Stop ();
-      double milliSeconds = stopwatch.ElapsedMilliseconds;
-      To.Console.e (() => milliSeconds);
-    }  
 
+    [Test]
+    [ExpectedException (typeof (System.ObjectDisposedException))]
+    public void AlreadyClosedTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.Close();
+      // ToTextBuilder is disposed => Write attempt throws
+      toTextBuilder.s ("Sorry, we're alredy closed !");
+    }
+
+
+    [Test]
+    [ExpectedException (typeof (System.ObjectDisposedException))]
+    public void DisposableTest ()
+    {
+      var toTextProvider = new ToTextProvider ();
+      var stringWriter = new StringWriter();
+      using (var toTextBuilder = new ToTextBuilder (toTextProvider, stringWriter))
+      {
+        toTextBuilder.s ("Using ToTextBuilder");
+      }
+      Assert.That (stringWriter.ToString(), Is.EqualTo ("Using ToTextBuilder"));
+      // StringWriter should be closed when ToTextBuilder is disposed => Write attempt throws
+      stringWriter.Write ("Sorry, we're alredy closed !");
+    }
 
 
     public static ToTextBuilder CreateTextBuilder ()
@@ -1009,11 +1021,6 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
-    // Logging
-    //private static readonly ILog s_log = LogManager.GetLogger (typeof (ToTextBuilderTest));
-    //static ToTextBuilderTest () { LogManager.InitializeConsole (); }
-    //public static void Log (string s) { s_log.Info (s); }
-    //public static void Log (string s) { System.Console.WriteLine(s); }
     public void Log (string s)
     {
       log.It (s);

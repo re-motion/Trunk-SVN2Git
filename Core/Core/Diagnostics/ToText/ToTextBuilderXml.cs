@@ -15,7 +15,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Diagnostics.ToText
 {
-  public class ToTextBuilderXml : ToTextBuilderBase, IDisposable
+  public class ToTextBuilderXml : ToTextBuilderBase , IDisposable
   {
     private readonly DisableableXmlWriter _disableableWriter;
     //private readonly bool _allowPartialXml = false;
@@ -183,6 +183,8 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
+
+
     protected override void BeforeNewSequence ()
     {
       //base.BeforeNewSequence();
@@ -279,7 +281,7 @@ namespace Remotion.Diagnostics.ToText
       _openingTagWritten = true;
     }
 
-    public void Close ()
+    public override void Close ()
     {
       if (!_openingTagWritten)
       {
@@ -287,11 +289,14 @@ namespace Remotion.Diagnostics.ToText
       }
       SequenceXmlEnd();
       Flush();
+      _disableableWriter.Close();
     }
 
-    public void Dispose ()
+    void IDisposable.Dispose ()
     {
       Close();
     }
+
+
   }
 }
