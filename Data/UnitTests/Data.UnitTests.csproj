@@ -263,6 +263,9 @@
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectProviderTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectServiceFactoryMixinTest.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectWithMixedPersistentPropertiesTest.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectWithMixedPersistentProperties.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinStub.cs" />
     <Compile Include="DomainObjects\Security\DomainObjectSecurityStrategyTest.cs" />
     <Compile Include="DomainObjects\Security\SecurityClientTransactionExtensionTests\FilterQueryResultTest.cs" />
