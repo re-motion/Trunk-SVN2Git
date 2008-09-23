@@ -44,12 +44,12 @@ namespace Remotion.Text.StringExtensions
     }
 
 
-  /// <summary>
-  /// Appends the passed string to the passed <see cref="StringBuilder"/>, replacing all tabs,newlines, linefeeds, etc 
-  /// with their escaped C# string representation. E.g. tabulator => \t .
-  /// See also <see cref="EscapeString(string)"/>.
-  /// </summary>
-  public static void EscapeString (this string s, StringBuilder stringBuilder)
+    /// <summary>
+    /// Appends the passed string to the passed <see cref="StringBuilder"/>, replacing all tabs,newlines, linefeeds, etc 
+    /// with their escaped C# string representation. E.g. tabulator => \t .
+    /// See also <see cref="EscapeString(string)"/>.
+    /// </summary>
+    public static void EscapeString (this string s, StringBuilder stringBuilder)
     {
       foreach (char c in s)
       {
