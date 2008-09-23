@@ -233,8 +233,6 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    // TODO: move up
-    private static readonly ICache<GetValueFunctionKey, Func<object, object>> s_getValueFunctionCache = new InterlockedCache<GetValueFunctionKey, Func<object, object>> ();
 
     public IToTextBuilderBase WriteElement<T> (Expression<Func<T>> expression)
     {
@@ -292,6 +290,117 @@ namespace Remotion.Diagnostics.ToText
       var variableValue = expression.Compile () ();
       return WriteElement (variableName, variableValue);
     }
+
+
+    // TODO: move up
+    private static readonly ICache<GetValueFunctionKey, Func<object, object>> s_getValueFunctionCache = new InterlockedCache<GetValueFunctionKey, Func<object, object>> ();
+
+    public IToTextBuilderBase WriteElementFast<T> (Expression<Func<T>> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      try
+      {
+        var memberExpression = (MemberExpression) expression.Body;
+        //var memberExpression = expression.Body as MemberExpression;
+        //Assertion.IsNotNull (memberExpression); // TODO: Use Check
+
+        var memberField = (FieldInfo) memberExpression.Member;
+        //var memberField = memberExpression.Member as FieldInfo;
+        //Assertion.IsNotNull (memberField); // TODO: Use Check
+
+        var closureExpression = (ConstantExpression) memberExpression.Expression;
+        //var closureExpression = memberExpression.Expression as ConstantExpression;
+        //Assertion.IsNotNull (closureExpression); // TODO: Use Check
+
+        object closure = closureExpression.Value;
+
+        Assertion.DebugAssert (closure != null);
+        Type closureType = closure.GetType();
+
+        // memberField.GetValue (closure);
+
+        Func<object,object> getValueFunction;
+        var key = new Tuple<Type, FieldInfo> (closureType, memberField);
+        if (! s_getValueFunctionCache.TryGetValue (key, out getValueFunction))
+        {
+          getValueFunction = s_getValueFunctionCache.GetOrCreateValue (key, 
+            delegate 
+            {
+              //
+              // The following code builds this expression:
+              // Expression<Func<object,object> = (object closure) => (object) ((TClosure) closure).<memberField>;
+              //
+              var param = Expression.Parameter (typeof (object), "closure");
+              var closureAccess = Expression.Convert (param, closureType);
+              var body = Expression.Field (closureAccess, memberField);
+              var bodyAsObject = Expression.Convert (body, typeof (object));
+              var newExpression = Expression.Lambda (bodyAsObject, param);
+              return (Func<object,object>) newExpression.Compile();
+            }
+          );
+        }
+        object variableValue = getValueFunction (closure);
+        string variableName = memberExpression.Member.Name;
+        return WriteElement (variableName, variableValue);
+      }
+      catch (InvalidCastException)
+      {
+        throw new ArgumentException ("ToTextBuilder.WriteElement currently supports only expressions of the form () => varName. The expression: " + Environment.NewLine + expression.Body.ToString () + Environment.NewLine + " does not comply with this restriction.");
+      }
+    }
+
+
+
+    public static void ArgumentUtilityFancyTest<T> (Expression<Func<T>> expression)
+    {
+      try
+      {
+        var memberExpression = (MemberExpression) expression.Body;
+        var memberField = (FieldInfo) memberExpression.Member;
+        var closureExpression = (ConstantExpression) memberExpression.Expression;
+
+        object closure = closureExpression.Value;
+
+        Assertion.DebugAssert (closure != null);
+        Type closureType = closure.GetType ();
+
+        // memberField.GetValue (closure);
+
+        Func<object, object> getValueFunction;
+        var key = new Tuple<Type, FieldInfo> (closureType, memberField);
+        if (!s_getValueFunctionCache.TryGetValue (key, out getValueFunction))
+        {
+          getValueFunction = s_getValueFunctionCache.GetOrCreateValue (key,
+            delegate
+            {
+              //
+              // The following code builds this expression:
+              // Expression<Func<object,object> = (object closure) => (object) ((TClosure) closure).<memberField>;
+              //
+              var param = Expression.Parameter (typeof (object), "closure");
+              var closureAccess = Expression.Convert (param, closureType);
+              var body = Expression.Field (closureAccess, memberField);
+              var bodyAsObject = Expression.Convert (body, typeof (object));
+              var newExpression = Expression.Lambda (bodyAsObject, param);
+              return (Func<object, object>) newExpression.Compile ();
+            }
+          );
+        }
+        // Can this be sped up for the special case of testing for null ?
+        object variableValue = getValueFunction (closure); 
+        if (variableValue != null)
+        {
+          return;
+        }
+        string variableName = memberExpression.Member.Name;
+      }
+      catch (InvalidCastException)
+      {
+        throw new ArgumentException ("AssertUtilityTest currently supports only expressions of the form () => varName. The expression: " + Environment.NewLine + expression.Body.ToString () + Environment.NewLine + " does not comply with this restriction.");
+      }
+    }
+
+
 
     public IToTextBuilderBase WriteElement (string name, Object obj)
     {

@@ -113,14 +113,14 @@ namespace Remotion.Diagnostics.ToText
  
 
 
-    //--------------------------------------------------------------------------
-    // Low Level Emitters
-    //--------------------------------------------------------------------------
+    ////--------------------------------------------------------------------------
+    //// Low Level Emitters
+    ////--------------------------------------------------------------------------
 
-    public IToTextBuilderBase sf (string format, params object[] paramArray)
-    {
-      return WriteRawStringUnsafe (string.Format (format, paramArray)); 
-    }
+    //public IToTextBuilderBase sf (string format, params object[] paramArray)
+    //{
+    //  return WriteRawStringUnsafe (string.Format (format, paramArray)); 
+    //}
 
 
     public override IToTextBuilderBase WriteNewLine ()

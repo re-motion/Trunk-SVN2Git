@@ -268,6 +268,7 @@ namespace Remotion.Diagnostics.ToText
     /// </code></example>
     /// </remarks>
     IToTextBuilderBase WriteElement<T> (Expression<Func<T>> expression);
+    IToTextBuilderBase WriteElementFast<T> (Expression<Func<T>> expression);
     
     /// <summary>
     /// <para>Applies <see cref="ToText"/> to the passed argument and emits the result through the <see cref="ToTextBuilder"/>.</para>

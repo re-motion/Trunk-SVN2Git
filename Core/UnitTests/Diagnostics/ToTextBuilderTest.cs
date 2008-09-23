@@ -10,13 +10,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 using Remotion.Development.UnitTesting.Logging;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
 using Remotion.UnitTests.Diagnostics.TestDomain;
+using Remotion.Utilities;
+using Assertion=NUnit.Framework.Assertion;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 
@@ -101,17 +107,17 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (result, Is.EqualTo ("ABC"));
     }
 
-    [Test]
-    public void StringFormattedTest ()
-    {
-      var toTextBuilder = CreateTextBuilder();
-      int i = 123;
-      double f = 456.789;
-      string s = "Text";
-      toTextBuilder.sf ("[{0},{1},{2}]", i, f, s);
-      var result = toTextBuilder.CheckAndConvertToString();
-      Assert.That (result, Is.EqualTo ("[123,456,789,Text]"));
-    }
+    //[Test]
+    //public void StringFormattedTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder();
+    //  int i = 123;
+    //  double f = 456.789;
+    //  string s = "Text";
+    //  toTextBuilder.sf ("[{0},{1},{2}]", i, f, s);
+    //  var result = toTextBuilder.CheckAndConvertToString();
+    //  Assert.That (result, Is.EqualTo ("[123,456,789,Text]"));
+    //}
 
 
     [Test]
@@ -895,6 +901,111 @@ namespace Remotion.UnitTests.Diagnostics
       var result = toTextBuilder.CheckAndConvertToString ();
       Log (result);
     }
+
+
+    [Test]
+    public void WriteElementFastTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      string MY_VERY_LONG_VARIABLE_NAME = "ABCDEFGHIJKLMNOPQRST";
+      toTextBuilder.sb ().WriteElementFast (() => MY_VERY_LONG_VARIABLE_NAME).se ();
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      //Assert.That (result, Is.EqualTo ("<(hello),(world),(1),(2),(3)>"));
+    }
+
+    // Timings: WriteElementBasicPerformanceTest = 270ms, WriteElementFastPerformanceTest = 1100ms
+    private const int _nrWriteElementPerformanceTestLoops = 1000000;
+    private string _myVeryLongVariableName = "ABCDEFGHIJKLMNOPQRST";
+
+    // Timings: WriteElementBasicPerformanceTest = 250ms, WriteElementFastPerformanceTest = 1000ms
+    //private const int _nrWriteElementPerformanceTestLoops = 100000;
+    //private string _s = "abc";
+
+    [Test]
+    [Ignore]
+    public void WriteElementBasicPerformanceTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+
+      Stopwatch stopwatch = new Stopwatch ();
+      stopwatch.Start ();
+      for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
+      {
+        //toTextBuilder.WriteElement ("_myVeryLongVariableName", _s);
+        toTextBuilder.WriteElement ("_myVeryLongVariableName", _myVeryLongVariableName);
+      }
+      stopwatch.Stop ();
+      double milliSeconds = stopwatch.ElapsedMilliseconds;
+      To.Console.e (() => milliSeconds);
+    }
+
+
+
+    [Test]
+    [Ignore]
+    public void WriteElementPerformanceTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      Stopwatch stopwatch = new Stopwatch ();
+      stopwatch.Start ();
+      for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
+      {
+        toTextBuilder.WriteElement (() => _myVeryLongVariableName);
+      }
+      stopwatch.Stop ();
+      double milliSeconds = stopwatch.ElapsedMilliseconds;
+      To.Console.e (() => milliSeconds);
+    }
+
+    [Test]
+    [Ignore]
+    public void WriteElementFastPerformanceTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+
+      Stopwatch stopwatch = new Stopwatch ();
+      stopwatch.Start ();
+      for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
+      {
+        toTextBuilder.WriteElementFast (() => _myVeryLongVariableName);
+      }
+      stopwatch.Stop ();
+      double milliSeconds = stopwatch.ElapsedMilliseconds;
+      To.Console.e (() => milliSeconds);
+    }
+
+
+    [Test]
+    [Ignore]
+    public void ArgumentUtilityFancyPerformanceTest ()
+    {
+      Stopwatch stopwatch = new Stopwatch ();
+      stopwatch.Start ();
+      for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
+      {
+        ToTextBuilderBase.ArgumentUtilityFancyTest (() => _myVeryLongVariableName);
+      }
+      stopwatch.Stop ();
+      double milliSeconds = stopwatch.ElapsedMilliseconds;
+      To.Console.e (() => milliSeconds);
+    }
+
+    [Test]
+    [Ignore]
+    public void ArgumentUtilityPerformanceTest ()
+    {
+      Stopwatch stopwatch = new Stopwatch ();
+      stopwatch.Start ();
+      for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
+      {
+        ArgumentUtility.CheckNotNull ("_myVeryLongVariableName", _myVeryLongVariableName);
+      }
+      stopwatch.Stop ();
+      double milliSeconds = stopwatch.ElapsedMilliseconds;
+      To.Console.e (() => milliSeconds);
+    }  
+
 
 
     public static ToTextBuilder CreateTextBuilder ()
