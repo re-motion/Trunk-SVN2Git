@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Text.StringExtensions;
@@ -60,5 +61,24 @@ namespace Remotion.UnitTests.Text.StringExtensions
       Assert.That ("SaBcd".RightUntilChar ('s'), Is.EqualTo ("SaBcd"));
       Assert.That ("sAbCD".RightUntilChar ('S'), Is.EqualTo ("sAbCD"));
     }
+
+    [Test]
+    public void EscapeStringTest ()
+    {
+      var testString = "abcdEFG\t\n\"\\ HIJklmn \t\t\n\n\"\"\\\\ \r \b\v\f";
+      var result = testString.EscapeString();
+      Assert.That (result, Is.EqualTo ("abcdEFG\\t\\n\\\"\\\\ HIJklmn \\t\\t\\n\\n\\\"\\\"\\\\\\\\ \\r \\b\\v\\f"));
+    }
+
+    [Test]
+    public void EscapeStringTest2 ()
+    {
+      var testString = "\t\n\"\\ HIJklmn \t\t\n\n\"\"\\\\ \r \b\v\f";
+      var stringBuilder = new StringBuilder ();
+      testString.EscapeString (stringBuilder);
+      var result = stringBuilder.ToString();
+      Assert.That (result, Is.EqualTo ("\\t\\n\\\"\\\\ HIJklmn \\t\\t\\n\\n\\\"\\\"\\\\\\\\ \\r \\b\\v\\f"));
+    }
+
   }
 }

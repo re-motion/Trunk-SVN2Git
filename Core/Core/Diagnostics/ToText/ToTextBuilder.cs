@@ -309,8 +309,7 @@ namespace Remotion.Diagnostics.ToText
     //--------------------------------------------------------------------------
 
 
-    // TODO: Move to String Extension Class
-    private void EscapeString (string s, DisableableWriter disableableWriter)
+    private static void EscapeString (string s, DisableableWriter disableableWriter)
     {
       var mapping = new Dictionary<char, string> { { '"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\t', "\\t" }, { '\\', "\\\\" }, { '\b', "\\b" }, { '\v', "\\v" }, { '\f', "\\f" } };
       foreach (char c in s)
