@@ -97,7 +97,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("Extend fallback behavior to include property type.")]
     public void WithoutSearchServiceAttribute_AndDefaultSearchService_FromPropertyType ()
     {
       ISearchAvailableObjectsService mockAvailableObjectsService = _mockRepository.StrictMock<ISearchAvailableObjectsService> ();
@@ -134,7 +134,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("Extend fallback behavior to include property type.")]
     public void WithoutSearchServiceAttribute_AndNoDefaultSearchService_FromPropertyType ()
     {
       IBusinessObjectClassService mockBusinessObjectClassService = _mockRepository.StrictMock<IBusinessObjectClassService> ();

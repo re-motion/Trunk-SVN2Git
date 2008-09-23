@@ -124,7 +124,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private bool IsBindableObjectImplementation ()
     {
-      return TypeUtility.HasAscribableMixin (_concreteType, typeof (BindableObjectMixinBase<>));
+      return TypeUtility.HasAscribableMixin (UnderlyingType, typeof (BindableObjectMixinBase<>));
     }
 
     private IBusinessObjectClass GetReferenceClassFromService ()
