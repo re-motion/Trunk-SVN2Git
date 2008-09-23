@@ -14,35 +14,54 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
+using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   [TestFixture]
   public class ViewStateClearingStateTest : TestBase
   {
+    private TestPageHolder _testPageHolder;
+    private ControlReplacer _replacer;
+    private ViewStateClearingState _state;
+
+    [SetUp]
+    public override void SetUp ()
+    {
+      base.SetUp();
+
+      _testPageHolder = new TestPageHolder (false);
+      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy> ();
+      _replacer = SetupControlReplacerForIntegrationTest (_testPageHolder.NamingContainer, modificationStateSelectionStrategy);
+      _state = new ViewStateClearingState (_replacer, MemberCallerMock);
+      modificationStateSelectionStrategy.Stub (stub => stub.CreateViewStateModificationState (_replacer, MemberCallerMock)).Return (_state);
+    }
+
     [Test]
     public void LoadViewState ()
     {
-      TestPageHolder testPageHolder = new TestPageHolder (false);
-      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new LoadingStateSelectionStrategy ());
-      ViewStateClearingState state = new ViewStateClearingState (replacer, MemberCallerMock);
-      testPageHolder.Page.SetRequestValueCollection (new NameValueCollection());
-      testPageHolder.PageInvoker.InitRecursive();
+      _testPageHolder.Page.SetRequestValueCollection (new NameValueCollection());
+      _testPageHolder.PageInvoker.InitRecursive();
 
-      Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
-      Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
+      Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.True);
+      Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
 
-      state.LoadViewState (null);
+      _state.LoadViewState (null);
 
-      Assert.That (replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateCompletedState)));
-      Assert.That (((ViewStateModificationStateBase) replacer.ViewStateModificationState).Replacer, Is.SameAs (replacer));
-      Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.False);
-      Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
+      Assert.That (_replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateCompletedState)));
+      Assert.That (((ViewStateModificationStateBase) _replacer.ViewStateModificationState).Replacer, Is.SameAs (_replacer));
+      Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.False);
+      Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
 
-      testPageHolder.PageInvoker.LoadRecursive();
+      _testPageHolder.PageInvoker.LoadRecursive();
 
-      Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
-      Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
+      Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.True);
+      Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
+    }
+
+    [Test]
+    public void AdddedControl ()
+    {
     }
   }
 }
