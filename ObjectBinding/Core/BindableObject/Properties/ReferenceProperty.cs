@@ -9,6 +9,7 @@
  */
 
 using System;
+using Remotion.Collections;
 using Remotion.Utilities;
 using TypeUtility=Remotion.Mixins.TypeUtility;
 
@@ -16,9 +17,15 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 {
   public class ReferenceProperty : PropertyBase, IBusinessObjectReferenceProperty
   {
+    private enum SearchServiceProvider
+    {
+      PropertyType,
+      DeclaringType
+    }
+
     private readonly Type _concreteType;
     private readonly DoubleCheckedLockingContainer<IBusinessObjectClass> _referenceClass;
-    private readonly Type _searchServiceType;
+    private readonly Tuple<SearchServiceProvider, Type> _searchServiceDefinition;
 
     public ReferenceProperty (Parameters parameters, Type concreteType)
         : base (parameters)
@@ -28,7 +35,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
       _concreteType = concreteType;
       _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (GetReferenceClass);
-      _searchServiceType = GetSearchServiceType();
+      _searchServiceDefinition = GetSearchServiceType();
     }
 
     /// <summary> Gets the class information for elements of this property. </summary>
@@ -78,7 +85,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       }
 
       ISearchAvailableObjectsService searchService = GetSearchService ();
-      Assertion.IsNotNull (searchService, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceType.FullName);
+      Assertion.IsNotNull (searchService, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceDefinition.B.FullName);
 
       return searchService.Search (referencingObject, this, searchStatement);
     }
@@ -157,18 +164,33 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private ISearchAvailableObjectsService GetSearchService ()
     {
-      return (ISearchAvailableObjectsService) ReferenceClass.BusinessObjectProvider.GetService (_searchServiceType);
+      IBusinessObjectProvider provider;
+      switch (_searchServiceDefinition.A)
+      {
+        case SearchServiceProvider.DeclaringType:
+          provider = BusinessObjectProvider;
+          break;
+        case SearchServiceProvider.PropertyType:
+          provider = ReferenceClass.BusinessObjectProvider;
+          break;
+        default:
+          throw new InvalidOperationException();
+      }
+
+      return (ISearchAvailableObjectsService) provider.GetService (_searchServiceDefinition.B);
     }
 
-    private Type GetSearchServiceType ()
+    private Tuple<SearchServiceProvider, Type> GetSearchServiceType ()
     {
-      SearchAvailableObjectsServiceTypeAttribute attribute;
-      attribute = PropertyInfo.GetCustomAttribute<SearchAvailableObjectsServiceTypeAttribute> (true);
-      if (attribute == null)
-        attribute = AttributeUtility.GetCustomAttribute<SearchAvailableObjectsServiceTypeAttribute> (_concreteType, true);
-      if (attribute == null)
-        return typeof (ISearchAvailableObjectsService);
-      return attribute.Type;
+      var attributeFromDeclaringType = PropertyInfo.GetCustomAttribute<SearchAvailableObjectsServiceTypeAttribute> (true);
+      if (attributeFromDeclaringType != null)
+        return new Tuple<SearchServiceProvider, Type> (SearchServiceProvider.DeclaringType, attributeFromDeclaringType.Type);
+
+      var attributeFromPropertyType = AttributeUtility.GetCustomAttribute<SearchAvailableObjectsServiceTypeAttribute> (_concreteType, true);
+      if (attributeFromPropertyType != null)
+        return new Tuple<SearchServiceProvider, Type> (SearchServiceProvider.PropertyType, attributeFromPropertyType.Type);
+
+      return new Tuple<SearchServiceProvider, Type> (SearchServiceProvider.DeclaringType, typeof (ISearchAvailableObjectsService));
     }
   }
 }
