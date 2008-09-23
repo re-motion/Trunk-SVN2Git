@@ -28,18 +28,4 @@
       Update [Revision] SET [Value] = [Value] + 1;
     </statement>
   </query>
-
-  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.User.FindByTenantID" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [UserView] WHERE TenantID = @tenantID ORDER BY LastName ASC, FirstName ASC;
-    </statement>
-  </query>
-
-  <query id="Remotion.SecurityManager.Domain.OrganizationalStructure.Group.FindByTenantID" type="collection">
-    <storageProviderID>SecurityManager</storageProviderID>
-    <statement>
-      SELECT * FROM [GroupView] WHERE TenantID = @tenantID ORDER BY ShortName ASC, Name ASC;
-    </statement>
-  </query>
 </queries>

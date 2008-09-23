@@ -83,17 +83,12 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
 
-      //var result = from u in DataContext.Entity<User>()
-      //             where u.Tenant.ID == tenantID
-      //             orderby u.LastName, u.FirstName
-      //             select u;
+      var result = from u in DataContext.Entity<User> ()
+                   where u.Tenant.ID == tenantID
+                   orderby u.LastName, u.FirstName
+                   select u;
 
-      //return result.ToObjectList();
-
-      Query query = new Query ("Remotion.SecurityManager.Domain.OrganizationalStructure.User.FindByTenantID");
-      query.Parameters.Add ("@tenantID", tenantID);
-
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection<User> (query);
+      return result.ToObjectList ();
     }
 
     //[DemandMethodPermission (GeneralAccessTypes.Create)]

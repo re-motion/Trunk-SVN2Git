@@ -80,15 +80,12 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
 
-      //var result = from g in DataContext.Entity<Group>()
-      //             where g.Tenant.ID == tenantID
-      //             orderby g.ShortName
-      //             select g;
+      var result = from g in DataContext.Entity<Group> ()
+                   where g.Tenant.ID == tenantID
+                   orderby g.Name, g.ShortName
+                   select g;
       
-      Query query = new Query ("Remotion.SecurityManager.Domain.OrganizationalStructure.Group.FindByTenantID");
-      query.Parameters.Add ("@tenantID", tenantID);
-
-      return ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection<Group> (query);
+      return result.ToObjectList();
     }
 
     public static Group FindByUnqiueIdentifier (string uniqueIdentifier)
