@@ -240,6 +240,10 @@
     <Compile Include="DomainObjects\Core\Interception\SampleTypes\DOWithAutomaticProperties.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExtensionMethodsTest.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\BaseForMixinAddingPersistentProperties.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingTwoReferencesToDerivedClass2.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingTwoReferencesToDerivedClass1.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedClassWithTwoBaseReferencesViaMixins.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassReceivingTwoReferencesToDerivedClass.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedClassWithBaseReferenceViaMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingPersistentPropertiesAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\InheritanceRootInheritingPersistentMixin.cs" />

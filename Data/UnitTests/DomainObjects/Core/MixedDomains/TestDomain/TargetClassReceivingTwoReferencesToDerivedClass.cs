@@ -8,17 +8,16 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public class DerivedClassWithBaseReferenceViaMixin : TargetClassReceivingReferenceToDerivedClass
+  [DBTable]
+  public class TargetClassReceivingTwoReferencesToDerivedClass : DomainObject
   {
-    public new static DerivedClassWithBaseReferenceViaMixin NewObject ()
+    public static TargetClassReceivingTwoReferencesToDerivedClass NewObject ()
     {
-      return NewObject<DerivedClassWithBaseReferenceViaMixin> ().With ();
+      return NewObject<TargetClassReceivingTwoReferencesToDerivedClass>().With();
     }
-
-    [DBBidirectionalRelation ("MyDerived")]
-    public virtual TargetClassReceivingReferenceToDerivedClass MyBase { get; set; }
   }
 }

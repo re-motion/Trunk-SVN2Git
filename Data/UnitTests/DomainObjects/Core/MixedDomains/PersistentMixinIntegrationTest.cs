@@ -299,5 +299,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       relationTarget.MyBase = null;
       Assert.That (mixin.MyDerived, Is.Empty);
     }
+
+    [Test]
+    public void BaseClassReceivingTwoReferencesToDerivedClass ()
+    {
+      var tc = TargetClassReceivingTwoReferencesToDerivedClass.NewObject ();
+      var mixin1 = Mixin.Get<MixinAddingTwoReferencesToDerivedClass1> (tc);
+      var mixin2 = Mixin.Get<MixinAddingTwoReferencesToDerivedClass2> (tc);
+      var relationTarget = DerivedClassWithTwoBaseReferencesViaMixins.NewObject ();
+      mixin1.MyDerived1.Add (relationTarget);
+      mixin2.MyDerived2.Add (relationTarget);
+      Assert.That (relationTarget.MyBase1, Is.SameAs (tc));
+      Assert.That (relationTarget.MyBase2, Is.SameAs (tc));
+      relationTarget.MyBase1 = null;
+      relationTarget.MyBase2 = null;
+      Assert.That (mixin1.MyDerived1, Is.Empty);
+      Assert.That (mixin2.MyDerived2, Is.Empty);
+    }
   }
 }

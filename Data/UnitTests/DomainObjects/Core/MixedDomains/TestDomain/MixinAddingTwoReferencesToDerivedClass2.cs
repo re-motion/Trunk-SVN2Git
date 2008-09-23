@@ -8,17 +8,20 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 using Remotion.Data.DomainObjects;
+using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
-  public class DerivedClassWithBaseReferenceViaMixin : TargetClassReceivingReferenceToDerivedClass
+  [Extends (typeof (TargetClassReceivingTwoReferencesToDerivedClass))]
+  public class MixinAddingTwoReferencesToDerivedClass2 : DomainObjectMixin<TargetClassReceivingTwoReferencesToDerivedClass>
   {
-    public new static DerivedClassWithBaseReferenceViaMixin NewObject ()
+    [DBBidirectionalRelation ("MyBase2")]
+    public virtual ObjectList<DerivedClassWithTwoBaseReferencesViaMixins> MyDerived2
     {
-      return NewObject<DerivedClassWithBaseReferenceViaMixin> ().With ();
+      get
+      {
+        return Properties[typeof (MixinAddingTwoReferencesToDerivedClass2), "MyDerived2"].GetValue<ObjectList<DerivedClassWithTwoBaseReferencesViaMixins>> ();
+      }
     }
-
-    [DBBidirectionalRelation ("MyDerived")]
-    public virtual TargetClassReceivingReferenceToDerivedClass MyBase { get; set; }
   }
 }

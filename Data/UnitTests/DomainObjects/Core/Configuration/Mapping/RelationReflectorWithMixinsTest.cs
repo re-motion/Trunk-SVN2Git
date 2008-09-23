@@ -26,6 +26,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
   public class RelationReflectorWithMixinsTest : StandardMappingTest
   {
     private ReflectionBasedClassDefinition _mixinTargetClassDefinition;
+    private ReflectionBasedClassDefinition _multiMixinTargetClassDefinition;
+    private ReflectionBasedClassDefinition _multiMixinRelatedClassDefinition;
     private ReflectionBasedClassDefinition _relatedClassDefinition;
     private ReflectionBasedClassDefinition _inheritanceRootInheritingMixinClassDefinition;
 
@@ -38,13 +40,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       _mixinTargetClassDefinition = 
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties));
+      _multiMixinTargetClassDefinition =
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (TargetClassReceivingTwoReferencesToDerivedClass), typeof (MixinAddingTwoReferencesToDerivedClass1), typeof (MixinAddingTwoReferencesToDerivedClass2));
+      _multiMixinRelatedClassDefinition =
+          ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (DerivedClassWithTwoBaseReferencesViaMixins));
       _relatedClassDefinition = 
           ClassDefinitionFactory.CreateReflectionBasedClassDefinition (typeof (RelationTargetForPersistentMixin), typeof (MixinAddingPersistentProperties));
       _inheritanceRootInheritingMixinClassDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition("InheritanceRootInheritingPersistentMixin", 
           "InheritanceRootInheritingPersistentMixin", "TestDomain", typeof (InheritanceRootInheritingPersistentMixin), false, 
           new PersistentMixinFinder(typeof (InheritanceRootInheritingPersistentMixin), true));
 
-      _classDefinitions = new ClassDefinitionCollection {_mixinTargetClassDefinition, _relatedClassDefinition};
+      _classDefinitions = new ClassDefinitionCollection {_mixinTargetClassDefinition, _relatedClassDefinition, _multiMixinTargetClassDefinition};
       _relationDefinitions = new RelationDefinitionCollection();
     }
 
@@ -262,6 +268,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.That (relationReflector.GetMetadata (_classDefinitions, _relationDefinitions), Is.Not.Null);
       Assert.That (_relationDefinitions.Count, Is.EqualTo (1));
       Assert.That (_relationDefinitions[0].ID, NUnit.Framework.SyntaxHelpers.Text.Contains (relationReflector.PropertyInfo.Name));
+    }
+
+    [Test]
+    public void GetMetadata_Mixed_TwoMixins ()
+    {
+      var relationReflector1 = CreateRelationReflectorForProperty (_multiMixinRelatedClassDefinition,
+          typeof (DerivedClassWithTwoBaseReferencesViaMixins), "MyBase1");
+      var relationReflector2 = CreateRelationReflectorForProperty (_multiMixinRelatedClassDefinition,
+          typeof (DerivedClassWithTwoBaseReferencesViaMixins), "MyBase2");
+
+      var metadata1 = relationReflector1.GetMetadata (_classDefinitions, _relationDefinitions);
+      Assert.That (metadata1, Is.Not.Null);
+      var metadata2 = relationReflector2.GetMetadata (_classDefinitions, _relationDefinitions);
+      Assert.That (metadata2, Is.Not.Null);
+      Assert.That (_relationDefinitions.Count, Is.EqualTo (2));
     }
 
     [Test]

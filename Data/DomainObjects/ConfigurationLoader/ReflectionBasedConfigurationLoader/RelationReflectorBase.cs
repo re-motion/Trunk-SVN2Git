@@ -93,11 +93,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       foreach (var mixinType in new PersistentMixinFinder (type, true).GetPersistentMixins ())
       {
-        var oppositePropertyInfo = GetOppositePropertyInfo (mixinType);
+        var oppositePropertyInfo = GetOppositePropertyInfo (mixinType) ?? GetOppositePropertyInfoFromBaseTypes (mixinType);
         if (oppositePropertyInfo != null)
           return oppositePropertyInfo;
-        else
-          return GetOppositePropertyInfoFromBaseTypes (mixinType); // property defined on mixin's base type?
       }
       return null;
     }
