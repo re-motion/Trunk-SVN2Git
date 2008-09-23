@@ -319,8 +319,8 @@ public class WebTabStrip :
 
   private void RenderEndTabsPane (HtmlTextWriter writer)
   {
-    writer.RenderEndTag(); // Close List
-    writer.RenderEndTag(); // Close Div
+    writer.RenderEndTag(); // End List
+    writer.RenderEndTag(); // End Div
   }
 
   private void RenderTab (HtmlTextWriter writer, WebTab tab, bool isLast)
@@ -359,12 +359,12 @@ public class WebTabStrip :
 
     tab.RenderContents (writer);
 
-    writer.RenderEndTag (); // Close anchor body span
+    writer.RenderEndTag (); // End anchor body span
     tab.RenderEndTagForCommand (writer);
 
-    writer.RenderEndTag(); // Close tab span
+    writer.RenderEndTag(); // End tab span
 
-    writer.RenderEndTag(); // Close tab wrapper span
+    writer.RenderEndTag(); // End tab wrapper span
 
     if (isLast)
     {
@@ -373,7 +373,7 @@ public class WebTabStrip :
       writer.RenderEndTag();
     }
 
-    writer.RenderEndTag(); // Close list item
+    writer.RenderEndTag(); // End list item
     writer.WriteLine();
   }
 

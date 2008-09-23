@@ -286,7 +286,7 @@ namespace Remotion.Web.UI.Controls
           writer.Write (text); // Do not HTML enocde
       }
 
-      writer.RenderEndTag (); // Close acnhorBody span
+      writer.RenderEndTag (); // End acnhorBody span
     }
 
     /// <summary> Gets or sets the icon displayed in this menu item. </summary>

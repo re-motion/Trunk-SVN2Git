@@ -203,7 +203,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
 
     [Test]
     [ExpectedException (typeof (TransportationException),
-        ExpectedMessage = "Invalid data specified: Close of Stream encountered before parsing was completed.")]
+        ExpectedMessage = "Invalid data specified: End of Stream encountered before parsing was completed.")]
     public void LoadTransportData_InvalidData ()
     {
       byte[] data = new byte[] {1, 2, 3};

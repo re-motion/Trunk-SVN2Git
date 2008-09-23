@@ -234,9 +234,9 @@ namespace Remotion.Web.UI.Controls
       _mainMenuTabStrip.CssClass = CssClassMainMenu;
       _mainMenuTabStrip.Width = Unit.Percentage (100);
       _mainMenuTabStrip.RenderControl (writer);
-      writer.RenderEndTag (); // Close main menu cell
+      writer.RenderEndTag (); // End main menu cell
 
-      writer.RenderEndTag (); // Close main menu row
+      writer.RenderEndTag (); // End main menu row
 
       writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin sub menu row
 
@@ -250,7 +250,7 @@ namespace Remotion.Web.UI.Controls
       _subMenuTabStrip.Style["width"] = "auto";
       _subMenuTabStrip.CssClass = CssClassSubMenu;
       _subMenuTabStrip.RenderControl (writer);
-      writer.RenderEndTag (); // Close sub menu cell
+      writer.RenderEndTag (); // End sub menu cell
 
       _statusStyle.AddAttributesToRender (writer);
       if (StringUtility.IsNullOrEmpty (_statusStyle.CssClass))
@@ -262,9 +262,9 @@ namespace Remotion.Web.UI.Controls
       else
         writer.Write (_statusText); // Do not HTML encode
 
-      writer.RenderEndTag (); // Close status cell
+      writer.RenderEndTag (); // End status cell
 
-      writer.RenderEndTag (); // Close sub menu row
+      writer.RenderEndTag (); // End sub menu row
     }
 
     /// <summary> Overrides the <see cref="Control.Controls"/> property. </summary>

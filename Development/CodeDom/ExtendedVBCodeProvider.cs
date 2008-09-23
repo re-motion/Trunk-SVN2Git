@@ -70,7 +70,7 @@ public class ExtendedVBCodeProvider: ExtendedCodeProvider
     CodeTypeMember dummyCtor = new CodeSnippetTypeMember (
         "' WORKAROUND: this dummy constructor can be called to avoid that CodeDOM generates an illegal call to the base class constructor"
         + "\n        Public Sub New (ByVal dummy1 as System.Int32, ByVal dummy2 as System.Double)"
-        + "\n        Close Sub"
+        + "\n        End Sub"
         + "\n");
     type.Members.Add (dummyCtor);
     return type;

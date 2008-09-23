@@ -28,7 +28,7 @@ namespace Remotion.Web.ExecutionEngine
   {
     #region IWxePage Impleplementation
 
-    /// <summary> Close this page step and continue with the WXE function. </summary>
+    /// <summary> End this page step and continue with the WXE function. </summary>
     public void ExecuteNextStep ()
     {
       _wxePageInfo.ExecuteNextStep ();

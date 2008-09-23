@@ -496,7 +496,7 @@ namespace Remotion.Web.Infrastructure
     /// Sends all currently buffered output to the client, stops execution of the page, and raises the <see cref="E:System.Web.HttpApplication.EndRequest" /> event.
     /// </summary>
     /// <exception cref="T:System.Threading.ThreadAbortException">
-    /// The call to <see cref="M:System.Web.HttpResponse.Close" /> has terminated the current request.
+    /// The call to <see cref="M:System.Web.HttpResponse.End" /> has terminated the current request.
     /// </exception>
     public void End ()
     {
