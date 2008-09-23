@@ -442,19 +442,6 @@ namespace Remotion.Diagnostics.ToText
     }
 
 
-    private static string RightUntilChar (string s, char separator)
-    {
-      int iSeparator = s.LastIndexOf (separator);
-      if (iSeparator > 0)
-      {
-        return s.Substring (iSeparator + 1, s.Length - iSeparator - 1);
-      }
-      else
-      {
-        return s;
-      }
-    }
-
 
     public virtual IToTextBuilder sEsc (string s)
     {
