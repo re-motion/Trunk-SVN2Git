@@ -10,13 +10,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading;
 using Remotion.Collections;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities.Singleton;
 using Remotion.Utilities;
+using Remotion.Logging;
 
 namespace Remotion.Mixins.CodeGeneration
 {
@@ -39,6 +42,8 @@ namespace Remotion.Mixins.CodeGeneration
   /// </remarks>
   public class ConcreteTypeBuilder : ThreadSafeSingletonBase<ConcreteTypeBuilder, DefaultInstanceCreator<ConcreteTypeBuilder>>
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (ConcreteTypeBuilder));
+
     private IModuleManager _scope;
     // Use a pessimistic cache - a ModuleBuilder cannot be used by multiple threads at the same time anyway, so using a lazy cache could actually 
     // cause errors (depending on how it was implemented)
@@ -149,16 +154,22 @@ namespace Remotion.Mixins.CodeGeneration
           configuration,
           delegate (ClassDefinitionBase classConfiguration)
           {
-            lock (_scopeLockObject)
+            s_log.InfoFormat ("Generating type for {0}.", configuration.ConfigurationContext);
+            using (new CodeGenerationTimer ())
             {
-              ITypeGenerator generator = Scope.CreateTypeGenerator ((TargetClassDefinition) classConfiguration, _typeNameProvider,
-                _mixinTypeNameProvider);
+              lock (_scopeLockObject)
+              {
+                ITypeGenerator generator = Scope.CreateTypeGenerator (
+                    (TargetClassDefinition) classConfiguration,
+                    _typeNameProvider,
+                    _mixinTypeNameProvider);
 
-              foreach (Tuple<MixinDefinition, Type> finishedMixinTypes in generator.GetBuiltMixinTypes ())
-                _typeCache.GetOrCreateValue (finishedMixinTypes.A, delegate { return finishedMixinTypes.B; });
+                foreach (Tuple<MixinDefinition, Type> finishedMixinTypes in generator.GetBuiltMixinTypes())
+                  _typeCache.GetOrCreateValue (finishedMixinTypes.A, delegate { return finishedMixinTypes.B; });
 
-              Type finishedType = generator.GetBuiltType();
-              return finishedType;
+                Type finishedType = generator.GetBuiltType();
+                return finishedType;
+              }
             }
           });
     }

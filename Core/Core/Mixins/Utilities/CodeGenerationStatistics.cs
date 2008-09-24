@@ -60,6 +60,11 @@ namespace Remotion.Mixins.Utilities
       get { return ModuleManager.CreatedAssemblies.Count; }
     }
 
+    public static TimeSpan TimeSpentInCodeGeneration
+    {
+      get { return CodeGenerationTimer.CodeGenerationTime; }
+    }
+
     public static int GetBuiltTypeCount ()
     {
       int count = 0;
@@ -78,20 +83,23 @@ namespace Remotion.Mixins.Utilities
       return string.Format (
           "Code generation statistics{0}--------------------------{0}{1}{0}"
           + "Number of assemblies generated: {2}{0}"
-          + "Total number of types generated: {3}",
+          + "Total number of types generated: {3}{0}"
+          + "Time spent in code generation: {4}",
           Environment.NewLine,
           GetCurrentProcessMemoryUsage(),
           CreatedAssemblyCount,
-          GetBuiltTypeCount());
+          GetBuiltTypeCount(),
+          TimeSpentInCodeGeneration);
     }
 
-    // Working set;Managed before GC;Managed after GC;Assembly count;Type count;Estimated CG WS;Estimated Process CG WS
+    // Working set;Managed before GC;Managed after GC;Assembly count;Type count;Time spent in code generation
     public static string GetCSVStatisticsString ()
     {
-      return string.Format ("{0};{1};{2}", 
+      return string.Format ("{0};{1};{2};{3}", 
           GetCurrentProcessMemoryUsage ().ToCSVString(),
           CreatedAssemblyCount,
-          GetBuiltTypeCount ());
+          GetBuiltTypeCount (),
+          TimeSpentInCodeGeneration);
     }
   }
 }

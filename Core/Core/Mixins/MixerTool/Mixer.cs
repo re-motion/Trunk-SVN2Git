@@ -17,6 +17,7 @@ using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Utilities;
 using Remotion.Mixins.Validation;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -83,6 +84,7 @@ namespace Remotion.Mixins.MixerTool
         Configure();
         Generate ();
         Save();
+        LogStatistics();
       }
       finally
       {
@@ -152,13 +154,13 @@ namespace Remotion.Mixins.MixerTool
       {
         ClassContextBeingProcessed (this, new ClassContextEventArgs (context));
         Type concreteType = TypeFactory.GetConcreteType (context.Type);
-        s_log.InfoFormat ("{0} : {1}", context.ToString(), concreteType.FullName);
+        s_log.InfoFormat ("Created type: {0}.", concreteType.FullName);
         _finishedTypes.Add (context.Type, concreteType);
       }
       catch (ValidationException validationException)
       {
         _errors.Add (new Tuple<ClassContext, Exception> (context, validationException));
-        s_log.ErrorFormat (validationException, "{0} : Validation error when generating type", context.ToString());
+        s_log.ErrorFormat (validationException, "{0} : Validation problem when generating type", context.ToString());
         ConsoleDumper.DumpValidationResults (validationException.ValidationLog.GetResults());
       }
       catch (Exception ex)
@@ -199,6 +201,11 @@ namespace Remotion.Mixins.MixerTool
         foreach (string path in paths)
           s_log.InfoFormat ("Generated assembly file {0}.", path);
       }
+    }
+
+    private void LogStatistics ()
+    {
+      s_log.Info (CodeGenerationStatistics.GetStatisticsString());
     }
   }
 }
