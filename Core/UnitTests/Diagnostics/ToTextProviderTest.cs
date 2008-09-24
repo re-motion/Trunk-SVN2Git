@@ -496,7 +496,8 @@ namespace Remotion.UnitTests.Diagnostics
     [Test]
     public void TypeToTextNoEndlessRecursionTest ()
     {
-      bool timesOut = ThreadRunner.RunTimesOutAfterSeconds (TypeToTextTestDo, 0.1);
+      //bool timesOut = ThreadRunner.RunTimesOutAfterSeconds (TypeToTextTestDo, 0.1);
+      bool timesOut = ThreadRunner.WithSecondsTimeout (TypeToTextTestDo, 0.1).Run();
       Assert.That (timesOut, Is.False);
     }
 

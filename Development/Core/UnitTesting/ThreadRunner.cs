@@ -10,12 +10,54 @@
 
 using System;
 using System.Threading;
+using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting
 {
-  public static class ThreadRunner
+  public class ThreadRunner
   {
     public static void Run (ThreadStart threadStart)
+    {
+      ArgumentUtility.CheckNotNull ("threadStart", threadStart);
+      new ThreadRunner (threadStart).Run();
+    }
+
+    public static ThreadRunner WithMillisecondsTimeout (ThreadStart threadStart, double timeoutMilliseconds)
+    {
+      return new ThreadRunner (threadStart, TimeSpan.FromMilliseconds (timeoutMilliseconds));
+    }
+
+    public static ThreadRunner WithSecondsTimeout (ThreadStart threadStart, double timeoutSeconds)
+    {
+      return new ThreadRunner (threadStart, TimeSpan.FromSeconds (timeoutSeconds));
+    }
+
+    public static ThreadRunner WithTimeout (ThreadStart threadStart, TimeSpan timeout)
+    {
+      return new ThreadRunner (threadStart, timeout);
+    }
+    
+    private readonly ThreadStart _threadStart;
+    private readonly TimeSpan _timeoutTimeSpan;
+
+    public ThreadRunner (ThreadStart threadStart)
+      : this (threadStart, TimeSpan.FromMilliseconds (System.Threading.Timeout.Infinite))
+    {
+    }
+
+    public ThreadRunner (ThreadStart threadStart, TimeSpan timeoutTimeSpan)
+    {
+      ArgumentUtility.CheckNotNull ("threadStart", threadStart);
+      _threadStart = threadStart;
+      _timeoutTimeSpan = timeoutTimeSpan;
+    }
+
+    public TimeSpan Timeout
+    {
+      get { return _timeoutTimeSpan; }
+    }
+
+    public bool Run ()
     {
       Exception lastException = null;
 
@@ -26,57 +68,9 @@ namespace Remotion.Development.UnitTesting
           {
             try
             {
-              threadStart();
+              _threadStart();
             }
-            catch (Exception e)
-            {
-              lastException = e;
-            }
-          }
-         );
-
-
-      try
-      {
-        otherThread.Start ();
-        otherThread.Join ();
-      }
-      catch
-      {
-      }
-
-      if (lastException != null)
-        throw lastException;
-    }
-
-
-
-
-    public static bool RunTimesOutAfterMilliseconds (ThreadStart threadStart, int timeoutMilliseconds)
-    {
-      return RunTimesOut(threadStart, new TimeSpan((long) (10000*timeoutMilliseconds)));
-    }
-
-    public static bool RunTimesOutAfterSeconds (ThreadStart threadStart, double timeoutSeconds)
-    {
-      return RunTimesOut(threadStart, new TimeSpan((long) (10000000*timeoutSeconds)));
-    }
-
-    public static bool RunTimesOut (ThreadStart threadStart, TimeSpan timeoutTimeSpan)
-    {
-      // Preserve exceptions thrown in thread, to be able to rethrow them.
-      // TODO: To preserve the callstack, rethrow new exception with thread exception as inner exception.
-      Exception lastException = null;
-
-      Thread otherThread =
-        new Thread ((ThreadStart)
-          delegate
-          {
-            try
-            {
-              threadStart ();
-            }
-            catch (System.Threading.ThreadAbortException)
+            catch (ThreadAbortException)
             {
               // Explicitely reset the ThreadAbortException
               Thread.ResetAbort ();
@@ -91,18 +85,24 @@ namespace Remotion.Development.UnitTesting
 
 
       otherThread.Start ();
-      bool timedOut = !otherThread.Join (timeoutTimeSpan);
+      bool timedOut = !JoinThread(otherThread);
       if (timedOut)
-      {
-        otherThread.Abort ();
-      }
+        AbortThread(otherThread);
 
       if (lastException != null)
-        throw lastException;
-        
+        throw lastException; // TODO: wrap exception to preserve stack trace
+      
       return timedOut;
     }
 
+    protected virtual bool JoinThread (Thread otherThread)
+    {
+      return otherThread.Join (_timeoutTimeSpan);
+    }
 
+    protected virtual void AbortThread (Thread otherThread)
+    {
+      otherThread.Abort ();
+    }
   }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Remotion.Collections;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -50,7 +51,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         return comparedClass;
       }
-
+      Thread.CurrentThread.Abort();
       int comparedNumberOfStates = StateList.Count.CompareTo (other.StateList.Count);
       if (comparedNumberOfStates != 0)
       {

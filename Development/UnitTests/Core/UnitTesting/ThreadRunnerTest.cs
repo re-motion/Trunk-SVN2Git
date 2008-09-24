@@ -6,6 +6,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Logging;
+using Rhino.Mocks;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
@@ -24,6 +25,123 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     }
 
     [Test]
+    public void Ctor_WithTimeout ()
+    {
+      ThreadRunner threadRunner = new ThreadRunner (delegate { }, TimeSpan.FromSeconds (1.0));
+      Assert.That (threadRunner.Timeout, Is.EqualTo (TimeSpan.FromSeconds (1.0)));
+    }
+
+    [Test]
+    public void Ctor_WithoutTimeout_HasInfiniteTimeout ()
+    {
+      ThreadRunner threadRunner = new ThreadRunner (delegate { });
+      Assert.That (threadRunner.Timeout.TotalMilliseconds, Is.EqualTo (Timeout.Infinite));
+    }
+
+    [Test]
+    public void Run_CallsJoin ()
+    {
+      TimeSpan timeout = TimeSpan.FromSeconds (1.0);
+      ThreadRunner threadRunnerMock = new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
+      threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).Return (true);
+
+      threadRunnerMock.Replay ();
+      threadRunnerMock.Run();
+      threadRunnerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Run_CallsJoin_WithRightThread ()
+    {
+      TimeSpan timeout = TimeSpan.FromSeconds (1.0);
+      Thread threadRunnerThread = null;
+      ThreadRunner threadRunnerMock = 
+          new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { threadRunnerThread = Thread.CurrentThread; }, timeout);
+      threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).
+          Do ( // when this expectation is reached, assert that the threadRunnerThread was passed to the method
+          invocation => Assert.That (invocation.Arguments[0], Is.SameAs (threadRunnerThread))).Return (true);
+
+      threadRunnerMock.Replay ();
+      threadRunnerMock.Run ();
+      threadRunnerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Run_UsesJoinResult_ToIndicateTimedOut_False ()
+    {
+      TimeSpan timeout = TimeSpan.FromSeconds (1.0);
+      ThreadRunner threadRunnerMock = new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
+      threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).Return (true);
+
+      threadRunnerMock.Replay ();
+      Assert.That (threadRunnerMock.Run (), Is.False);
+      threadRunnerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Run_UsesJoinResult_ToIndicateTimedOut_True ()
+    {
+      TimeSpan timeout = TimeSpan.FromSeconds (1.0);
+      ThreadRunner threadRunnerMock = new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
+      threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).Return (false);
+
+      threadRunnerMock.Replay ();
+      Assert.That (threadRunnerMock.Run (), Is.True);
+      threadRunnerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Run_WithTimedOutThread_CallsAbort ()
+    {
+      TimeSpan timeout = TimeSpan.FromSeconds (1.0);
+      ThreadRunner threadRunnerMock = new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
+      threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).Return (false);
+      threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "AbortThread", Arg<Thread>.Is.Anything));
+
+      threadRunnerMock.Replay ();
+      threadRunnerMock.Run ();
+      threadRunnerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Run_WithTimedOutThread_CallsAbort_WithRightThread ()
+    {
+      TimeSpan timeout = TimeSpan.FromSeconds (1.0);
+      Thread threadRunnerThread = null;
+      ThreadRunner threadRunnerMock =
+          new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { threadRunnerThread = Thread.CurrentThread; }, timeout);
+      threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).Return (false);
+      threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "AbortThread", Arg<Thread>.Is.Anything)).
+          Do ( // when this expectation is reached, assert that the threadRunnerThread was passed to the method
+          invocation => Assert.That (invocation.Arguments[0], Is.SameAs (threadRunnerThread)));
+
+      threadRunnerMock.Replay ();
+      threadRunnerMock.Run ();
+      threadRunnerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void WithMillisecondsTimeout ()
+    {
+      ThreadRunner threadRunner = ThreadRunner.WithMillisecondsTimeout (delegate { }, 250);
+      Assert.That (threadRunner.Timeout, Is.EqualTo (TimeSpan.FromMilliseconds (250)));
+    }
+
+    [Test]
+    public void WithSecondsTimeout ()
+    {
+      ThreadRunner threadRunner = ThreadRunner.WithSecondsTimeout (delegate { }, 250);
+      Assert.That (threadRunner.Timeout, Is.EqualTo (TimeSpan.FromSeconds (250)));
+    }
+
+    [Test]
+    public void WithTimeout ()
+    {
+      ThreadRunner threadRunner = ThreadRunner.WithTimeout (delegate { }, TimeSpan.FromMinutes (250));
+      Assert.That (threadRunner.Timeout, Is.EqualTo (TimeSpan.FromMinutes (250)));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "xy")]
     public void Run_WithException ()
     {
@@ -36,83 +154,22 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
       while (true) { }
     }
 
-    private static void RunTimesOutEndlessRecursionDo (int i)
-    {
-      //Console.WriteLine ("RunTimesOutEndlessRecursionDo " + i);
-      RunTimesOutEndlessRecursionDo (i + 1);
-    }
-
-    private static void RunTimesOutEndlessRecursion ()
-    {
-      RunTimesOutEndlessRecursionDo (0);
-    }
-
     private static void RunTimesOutVeryFastFunction ()
     {
-      //Console.WriteLine ("RunTimesOutVeryFastFunction");
     }
-
-    private static bool IsInRelativeRangeAround (double center, double relativeDelta, double test)
-    {
-      return (center*(1.0 - relativeDelta) <= test) && (center*(1.0 + relativeDelta) >= test);
-    }
-
+  
     [Test]
-    [Ignore ("Fails in Build-machine.")]
-    public void RunTimesOut ()
+    public void RunWithTimeout ()
     {
-      var stopwatch = new Stopwatch ();
-      stopwatch.Start ();
-      bool timedOut = ThreadRunner.RunTimesOut (RunTimesOutEndlessLoop, new TimeSpan (0, 0, 0, 0, 100));
-      stopwatch.Stop ();
+      bool timedOut = ThreadRunner.WithTimeout (RunTimesOutEndlessLoop, TimeSpan.FromSeconds (0.1)).Run();
       Assert.That (timedOut, Is.True);
-      Assert.That (IsInRelativeRangeAround (100, 0.5, stopwatch.ElapsedMilliseconds), Is.True);
     }
 
     [Test]
-    [Ignore ("Fails in Build-machine.")]
-    public void RunTimesOut2 ()
+    public void RunWithoutTimeout ()
     {
-      bool timedOut = ThreadRunner.RunTimesOut (RunTimesOutVeryFastFunction, new TimeSpan (0, 0, 0,100));
+      bool timedOut = ThreadRunner.WithTimeout(RunTimesOutVeryFastFunction, TimeSpan.FromDays (365)).Run();
       Assert.That (timedOut, Is.False);
     }
-
-    [Test]
-    [Ignore ("Fails in Build-machine.")]
-    public void RunTimesOutAfterMilliseconds ()
-    {
-      var stopwatch = new Stopwatch ();
-      stopwatch.Start ();
-      bool timedOut = ThreadRunner.RunTimesOutAfterMilliseconds (RunTimesOutEndlessLoop, 100);
-      stopwatch.Stop ();
-      Assert.That (timedOut, Is.True);
-      Assert.That (IsInRelativeRangeAround (100, 0.5, stopwatch.ElapsedMilliseconds), Is.True);
-    }
-
-    [Test]
-    [Ignore ("Fails in Build-machine.")]
-    public void RunTimesOutAfterSeconds ()
-    {
-      var stopwatch = new Stopwatch ();
-      stopwatch.Start ();
-      bool timedOut = ThreadRunner.RunTimesOutAfterSeconds (RunTimesOutEndlessLoop, 0.1);
-      stopwatch.Stop ();
-      Assert.That (timedOut, Is.True);
-      Assert.That (IsInRelativeRangeAround (100, 0.5, stopwatch.ElapsedMilliseconds), Is.True);
-    }
-
-    [Test]
-    [Ignore ("StackOverflow in build.")]
-    public void RunTimesOutAfterSecondsEndlessRecursion ()
-    {
-      var stopwatch = new Stopwatch ();
-      stopwatch.Start ();
-      bool timedOut = ThreadRunner.RunTimesOutAfterSeconds (RunTimesOutEndlessRecursion, 0.00001);
-      stopwatch.Stop ();
-      //Assert.That (timedOut, Is.True);
-      _log.It (stopwatch.ElapsedTicks);
-      //Assert.That (IsInRelativeRangeAround (150000, 1, stopwatch.ElapsedTicks), Is.True);
-    }
-
   }
 }
