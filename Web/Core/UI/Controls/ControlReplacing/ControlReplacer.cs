@@ -36,7 +36,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
 
     public Control WrappedControl
     {
-      get { return Controls[0]; }
+      get { return Controls.Count == 1 ? Controls[0] : null; }
     }
 
     protected override void OnInit (EventArgs e)
@@ -51,6 +51,19 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       //  throw new InvalidOperationException ("Controls can only load state after OnInit phase.");
 
       ControlStateModificationState.LoadControlState (savedState);
+    }
+
+    protected override void AddedControl (Control control, int index)
+    {
+      Assertion.IsTrue (object.ReferenceEquals (WrappedControl, control), "The added control is not the same as the wrapped control.");
+      
+      // ControlStateModificationState.AddedControlBegin (control, index);
+      ViewStateModificationState.AddedControlBegin ();
+
+      base.AddedControl (control, index);
+
+      ViewStateModificationState.AddedControlCompleted ();
+      // ControlStateModificationState.AddedControlCompleted (control, index);
     }
 
     protected override object SaveControlState ()

@@ -8,10 +8,15 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   public interface IViewStateModificationState
   {
     void LoadViewState (object savedState);
+    // void AddedControl (Action baseCall);
+    void AddedControlBegin ();
+    void AddedControlCompleted ();
   }
 }

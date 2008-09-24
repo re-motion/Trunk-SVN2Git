@@ -47,7 +47,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModifi
     {
       _replacer.ControlStateModificationState = _state;
      
-      _state.AddedControl (_testPageHolder.NamingContainer);
+      _state.AddedControl ();
 
       Assert.That (_replacer.ControlStateModificationState, Is.SameAs (_state));
     }

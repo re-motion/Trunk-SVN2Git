@@ -26,9 +26,13 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
       Replacer.ViewStateModificationState = new ViewStateCompletedState (Replacer, MemberCaller);
     }
 
-    public void AddedControl (Control control)
+    public override void AddedControlBegin ()
     {
       // NOP
+    }
+
+    public override void AddedControlCompleted ()
+    {
     }
   }
 }

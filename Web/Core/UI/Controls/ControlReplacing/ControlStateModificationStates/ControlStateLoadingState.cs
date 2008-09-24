@@ -26,9 +26,9 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStat
       Replacer.ControlStateModificationState = new ControlStateCompletedState(Replacer, MemberCaller);
     }
 
-    public void AddedControl (Control control)
+    public override void AddedControl ()
     {
-      // NOP
+      //NOP
     }
   }
 }

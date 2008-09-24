@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Web.UI;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
@@ -16,6 +17,8 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
   public class ViewStateReplacingState : ViewStateModificationStateBase
   {
     private readonly object _viewState;
+    private bool _isViewStateLoaded;
+    private bool _enableViewStateBackup;
 
     public ViewStateReplacingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller, object viewState)
       : base (replacer, memberCaller)
@@ -30,32 +33,42 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 
     public override void LoadViewState (object savedState)
     {
-      bool enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
-      Replacer.WrappedControl.EnableViewState = true;
+      if (Replacer.WrappedControl != null)
+      {
+        bool enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
+        Replacer.WrappedControl.EnableViewState = true;
+        Replacer.ViewStateModificationState = new ViewStateLoadingState (Replacer, MemberCaller);
 
-      Replacer.ViewStateModificationState = new ViewStateLoadingState (Replacer, MemberCaller);
+        MemberCaller.LoadViewStateRecursive (Replacer, _viewState);
+        // Causes a nested call of LoadViewState, this time on ViewStateLoadingState.
 
-      MemberCaller.LoadViewStateRecursive (Replacer, _viewState);
-      // Causes a nested call of LoadViewState, this time on ViewStateLoadingState.
+        Replacer.WrappedControl.EnableViewState = false;
+        Replacer.WrappedControl.Load += delegate { Replacer.WrappedControl.EnableViewState = enableViewStateBackup; };
+      }
 
-      Replacer.WrappedControl.EnableViewState = false;
-      Replacer.WrappedControl.Load += delegate { Replacer.WrappedControl.EnableViewState = enableViewStateBackup; };
+      _isViewStateLoaded = true;
     }
 
-    //protected override void AddedControl (Control control, int index)
-    //{
-    //    if (_isViewStateLoaded)
-    //    {
-    //      object viewStateBackup = ViewStateBackup;
-    //      ViewStateBackup = null;
-    //      ControlHelper.LoadViewStateRecursive (this, viewStateBackup);
+    public override void AddedControlBegin ()
+    {
+      if (_isViewStateLoaded)
+      {
+        _enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
+        Replacer.WrappedControl.EnableViewState = false;
+      }
+    }
 
-    //      bool enableViewStateBackup = control.EnableViewState;
-    //      control.EnableViewState = false;
-    //      Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
-    //    }
+    public override void AddedControlCompleted ()
+    {
+      if (_isViewStateLoaded)
+      {
+        Replacer.WrappedControl.EnableViewState = _enableViewStateBackup;
 
-    //    base.AddedControl (control, index);
-    //}
+        Replacer.ViewStateModificationState = new ViewStateLoadingState (Replacer, MemberCaller);
+
+        MemberCaller.LoadViewStateRecursive (Replacer, _viewState);
+        // Causes a nested call of LoadViewState, this time on ViewStateLoadingState.
+      }
+    }
   }
 }

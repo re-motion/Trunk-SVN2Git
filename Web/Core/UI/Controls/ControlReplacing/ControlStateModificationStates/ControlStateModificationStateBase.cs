@@ -1,4 +1,5 @@
 using System;
+using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -19,6 +20,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStat
     }
 
     public abstract void LoadControlState (object savedState);
+    public abstract void AddedControl ();
 
     public ControlReplacer Replacer
     {

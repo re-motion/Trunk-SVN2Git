@@ -9,12 +9,16 @@
  */
 
 using System;
+using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   public class ViewStateClearingState : ViewStateModificationStateBase
   {
+    private bool _isViewStateLoaded;
+
     public ViewStateClearingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
         : base (replacer, memberCaller)
     {
@@ -22,23 +26,32 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 
     public override void LoadViewState (object savedState)
     {
-      bool enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
-      Replacer.WrappedControl.EnableViewState = false;
-      Replacer.WrappedControl.Load += delegate { Replacer.WrappedControl.EnableViewState = enableViewStateBackup; };
+      if (Replacer.WrappedControl != null)
+        ClearViewState ();
 
-      Replacer.ViewStateModificationState = new ViewStateCompletedState (Replacer, MemberCaller);
+      _isViewStateLoaded = true;
     }
 
-    //protected override void AddedControl (Control control, int index)
-    //{
-    //    if (_isViewStateLoaded && _requiresClearChildViewState)
-    //    {
-    //      bool enableViewStateBackup = control.EnableViewState;
-    //      control.EnableViewState = false;
-    //      Controls[0].Load += delegate { Controls[0].EnableViewState = enableViewStateBackup; };
-    //    }
+    public override void AddedControlBegin ()
+    {
+      if (_isViewStateLoaded)
+        ClearViewState ();
+    }
 
-    //    base.AddedControl (control, index);
-    //}
+    public override void AddedControlCompleted ()
+    {
+    }
+
+    private void ClearViewState ()
+    {
+      var wrappedControl = Replacer.WrappedControl;
+      Assertion.IsNotNull (wrappedControl);
+
+      bool enableViewStateBackup = wrappedControl.EnableViewState;
+      wrappedControl.EnableViewState = false;
+      wrappedControl.Load += delegate { wrappedControl.EnableViewState = enableViewStateBackup; };
+       
+      Replacer.ViewStateModificationState = new ViewStateCompletedState (Replacer, MemberCaller);
+    }
   }
 }

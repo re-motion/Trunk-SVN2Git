@@ -16,6 +16,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
+using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
+using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
@@ -139,7 +141,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     }
 
     [Test]
-    [Ignore]
     public void LoadViewStateRecursive_ReplaceViewState_InitializedAfterLoadViewState ()
     {
       object originalViewState = CreateViewState ();
@@ -170,7 +171,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     }
 
     [Test]
-    [Ignore]
     public void LoadViewStateRecursive_ClearViewState_InitializedAfterLoadViewState ()
     {
       object originalViewState = CreateViewState ();
@@ -450,6 +450,21 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     public void GetWrappedControl_BeforeReplaceAndWrap ()
     {
       
+    }
+
+    [Test]
+    public void GetWrappedControl ()
+    {
+      ControlReplacer replacer = new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" };
+      replacer.ViewStateModificationState = new ViewStateLoadingState (replacer, MemberCallerMock);
+      replacer.ControlStateModificationState = new ControlStateLoadingState (replacer, MemberCallerMock);
+      Control control = new Control ();
+
+      Assert.That (replacer.WrappedControl, Is.Null);
+
+      replacer.Controls.Add (control);
+
+      Assert.That (replacer.WrappedControl, Is.SameAs (control));
     }
   }
 }

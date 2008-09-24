@@ -26,8 +26,9 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStat
       throw new NotSupportedException ();
     }
 
-    public void AddedControl (Control control)
+    public override void AddedControl ()
     {
+      //NOP
     }
   }
 }

@@ -8,10 +8,13 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System.Web.UI;
+
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
   public interface IControlStateModificationState
   {
     void LoadControlState (object savedState);
+    void AddedControl ();
   }
 }

@@ -51,7 +51,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     {
       _replacer.ViewStateModificationState = _state;
 
-      _state.AddedControl (_testPageHolder.NamingContainer);
+      _state.AddedControlBegin ();
 
       Assert.That (_replacer.ViewStateModificationState, Is.SameAs (_state));
     }
