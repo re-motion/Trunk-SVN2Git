@@ -168,7 +168,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     [Test]
     public void RunWithoutTimeout ()
     {
-      bool timedOut = ThreadRunner.WithTimeout(RunTimesOutVeryFastFunction, TimeSpan.FromDays (365)).Run();
+      bool timedOut = ThreadRunner.WithTimeout (RunTimesOutVeryFastFunction, TimeSpan.FromDays (24.8551)).Run ();
       Assert.That (timedOut, Is.False);
     }
   }
