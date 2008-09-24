@@ -40,7 +40,23 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       PropertyInfo propertyInfo = type.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
       Assert.IsNotNull (propertyInfo, "Property '{0}' was not found on type '{1}'.", propertyName, type);
 
-      return new PropertyInfoAdapter (propertyInfo, propertyInfo);
+      return new PropertyInfoAdapter (propertyInfo);
+    }
+
+    protected IPropertyInformation GetPropertyInfo (Type type, Type interfaceType, string propertyName)
+    {
+      PropertyInfo interfacePropertyInfo = interfaceType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+      Assert.IsNotNull (interfacePropertyInfo, "Property '{0}' was not found on type '{1}'.", propertyName, interfaceType);
+      PropertyInfo propertyInfo = type.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+      if (propertyInfo == null)
+      {
+        Type interfaceTypeDefinition = interfaceType.IsGenericType ? interfaceType.GetGenericTypeDefinition() : interfaceType;
+        string explicitName = interfaceTypeDefinition.FullName.Replace ("`1", "<T>") + "." + interfacePropertyInfo.Name;
+        propertyInfo = type.GetProperty (explicitName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+        Assert.IsNotNull (propertyInfo, "Property '{0}' (or '{1}') was not found on type '{2}'.", propertyName, explicitName, type);
+      }
+
+      return new PropertyInfoAdapter (propertyInfo, interfacePropertyInfo);
     }
 
     protected Type GetUnderlyingType (PropertyReflector reflector)

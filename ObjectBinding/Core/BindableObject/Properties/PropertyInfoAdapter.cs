@@ -17,28 +17,24 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 {
   public class PropertyInfoAdapter : IPropertyInformation
   {
-    public static IEnumerable<IPropertyInformation> AdaptCollection (IEnumerable<PropertyInfo> infos)
-    {
-      foreach (PropertyInfo info in infos)
-        yield return new PropertyInfoAdapter (info, info);
-    }
-
-    public static IEnumerable<PropertyInfo> UnwrapCollection (IEnumerable<IPropertyInformation> adapters)
-    {
-      foreach (PropertyInfoAdapter adapter in adapters)
-        yield return adapter.PropertyInfo;
-    }
-
     private readonly PropertyInfo _propertyInfo;
     private readonly bool _isExplicitInterfaceProperty;
-    private readonly PropertyInfo _valuePropertyInfo;
+    private readonly PropertyInfo _interfacePropertyInfo;
 
-    public PropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo valuePropertyInfo)
+    public PropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo interfacePropertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      if (interfacePropertyInfo != null && !interfacePropertyInfo.DeclaringType.IsInterface)
+        throw new ArgumentException ("Parameter must be a property declared on an interface.", "interfacePropertyInfo");
+
       _propertyInfo = propertyInfo;
-      _valuePropertyInfo = valuePropertyInfo;
-      _isExplicitInterfaceProperty = ReflectionUtility.GuessIsExplicitInterfaceProperty (propertyInfo);
+      _interfacePropertyInfo = interfacePropertyInfo;
+      _isExplicitInterfaceProperty = _interfacePropertyInfo != null && ReflectionUtility.GuessIsExplicitInterfaceProperty (propertyInfo);
+    }
+
+    public PropertyInfoAdapter (PropertyInfo propertyInfo)
+      : this (propertyInfo, null)
+    {
     }
 
     public PropertyInfo PropertyInfo
@@ -46,9 +42,14 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       get { return _propertyInfo; }
     }
 
-    public PropertyInfo ValuePropertyInfo
+    public PropertyInfo InterfacePropertyInfo
     {
-      get { return _valuePropertyInfo; }
+      get { return _interfacePropertyInfo; }
+    }
+
+    private PropertyInfo ValuePropertyInfo
+    {
+      get { return InterfacePropertyInfo ?? PropertyInfo; }
     }
 
     public Type PropertyType
@@ -64,6 +65,11 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     public Type DeclaringType
     {
       get { return _propertyInfo.DeclaringType; }
+    }
+
+    public Type DeclaringInterfaceType
+    {
+      get { return _interfacePropertyInfo != null ? _interfacePropertyInfo.DeclaringType : null; }
     }
 
     public Type GetOriginalDeclaringType ()
@@ -99,23 +105,23 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public object GetValue (object instance, object[] indexParameters)
     {
-      return _valuePropertyInfo.GetValue (instance, indexParameters);
+      return ValuePropertyInfo.GetValue (instance, indexParameters);
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
-      _valuePropertyInfo.SetValue (instance, value, indexParameters);
+      ValuePropertyInfo.SetValue (instance, value, indexParameters);
     }
 
     public override bool Equals (object obj)
     {
       var other = obj as PropertyInfoAdapter;
-      return other != null && _propertyInfo.Equals (other._propertyInfo) && _valuePropertyInfo.Equals (other._valuePropertyInfo);
+      return other != null && _propertyInfo.Equals (other._propertyInfo) && object.Equals (_interfacePropertyInfo, other._interfacePropertyInfo);
     }
 
     public override int GetHashCode ()
     {
-      return _propertyInfo.GetHashCode () ^ _valuePropertyInfo.GetHashCode();
+      return EqualityUtility.GetRotatedHashCode (_propertyInfo, _interfacePropertyInfo);
     }
   }
 }

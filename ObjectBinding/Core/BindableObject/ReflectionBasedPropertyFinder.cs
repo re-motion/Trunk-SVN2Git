@@ -58,15 +58,15 @@ namespace Remotion.ObjectBinding.BindableObject
         {
           if (!propertyInfos.Contains (propertyInfo.Name))
           {
-            PropertyInfo valuePropertyInfo = GetPropertyInfoOnRightType (propertyInfo);
-            propertyInfos.Add (new PropertyInfoAdapter (propertyInfo, valuePropertyInfo));
+            PropertyInfo interfacePropertyInfo = GetPropertyInfoOnInterface (propertyInfo);
+            propertyInfos.Add (new PropertyInfoAdapter (propertyInfo, interfacePropertyInfo));
           }
         }
       }
       return propertyInfos;
     }
 
-    private PropertyInfo GetPropertyInfoOnRightType (PropertyInfo propertyInfo)
+    private PropertyInfo GetPropertyInfoOnInterface (PropertyInfo propertyInfo)
     {
       MethodInfo accessor = propertyInfo.GetGetMethod (true);
       MethodInfo accessorOnInterface = _interfaceMethodImplementations[accessor].FirstOrDefault ();
@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.BindableObject
         return propertyOnInterface;
       }
       else
-        return propertyInfo;
+        return null;
     }
 
     private IEnumerable<Type> GetInheritanceHierarchy ()

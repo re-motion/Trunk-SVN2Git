@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void ReturnsPublicInstancePropertiesFromThisAndBase ()
     {
       var finder = new ReflectionBasedPropertyFinder (typeof (TestType));
-      var properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
+      var properties = new List<PropertyInfo> (UnwrapCollection (finder.GetPropertyInfos ()));
       Assert.That (
           properties,
           Is.EquivalentTo (
@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void IgnoresBasePropertiesWithSameName ()
     {
       var finder = new ReflectionBasedPropertyFinder (typeof (TestTypeHidingProperties));
-      var properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
+      var properties = new List<PropertyInfo> (UnwrapCollection (finder.GetPropertyInfos ()));
       Assert.That (
           properties,
           Is.EquivalentTo (
@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void FindsPropertiesFromImplicitInterfaceImplementations ()
     {
       var finder = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces));
-      var properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
+      var properties = new List<PropertyInfo> (UnwrapCollection (finder.GetPropertyInfos ()));
       Assert.That (properties, 
           List.Contains (typeof (TestTypeWithInterfaces).GetProperty ("InterfaceProperty", 
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)));
@@ -68,7 +68,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void FindsPropertiesFromExplicitInterfaceImplementations ()
     {
       var finder = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces));
-      var properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
+      var properties = new List<PropertyInfo> (UnwrapCollection (finder.GetPropertyInfos ()));
       Assert.That (properties,
           List.Contains (typeof (TestTypeWithInterfaces).GetProperty (typeof (IExplicitTestInterface).FullName + ".InterfaceProperty",
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)));
@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void FindsPropertiesFromExplicitInterfaceImplementationsOnBase ()
     {
       var finder = new ReflectionBasedPropertyFinder (typeof (DerivedTypeWithInterfaces));
-      var properties = new List<PropertyInfo> (PropertyInfoAdapter.UnwrapCollection (finder.GetPropertyInfos ()));
+      var properties = new List<PropertyInfo> (UnwrapCollection (finder.GetPropertyInfos ()));
       Assert.That (properties,
           List.Contains (typeof (TestTypeWithInterfaces).GetProperty (typeof (IExplicitTestInterface).FullName + ".InterfaceProperty",
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)));
@@ -111,7 +111,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var interfaceProperty = (PropertyInfoAdapter) (from p in propertyInfos
                                where p.Name == "InterfaceProperty"
                                select p).Single ();
-      Assert.That (interfaceProperty.ValuePropertyInfo, Is.SameAs (typeof (ITestInterface).GetProperty ("InterfaceProperty")));
+      Assert.That (interfaceProperty.InterfacePropertyInfo, Is.SameAs (typeof (ITestInterface).GetProperty ("InterfaceProperty")));
     }
 
     [Test]
@@ -121,7 +121,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var interfaceProperty = (PropertyInfoAdapter) (from p in propertyInfos
                                where p.Name == typeof (IExplicitTestInterface).FullName + ".InterfaceProperty"
                                select p).Single ();
-      Assert.That (interfaceProperty.ValuePropertyInfo, Is.SameAs (typeof (IExplicitTestInterface).GetProperty ("InterfaceProperty")));
+      Assert.That (interfaceProperty.InterfacePropertyInfo, Is.SameAs (typeof (IExplicitTestInterface).GetProperty ("InterfaceProperty")));
+    }
+
+    private IEnumerable<PropertyInfo> UnwrapCollection (IEnumerable<IPropertyInformation> properties)
+    {
+      foreach (PropertyInfoAdapter adapter in properties)
+        yield return adapter.PropertyInfo;
     }
   }
 }

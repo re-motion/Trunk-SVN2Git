@@ -55,6 +55,8 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\BindableObject\PropertyInfoAdapterTestDomain\ClassWithBaseProperty.cs" />
+    <Compile Include="Core\BindableObject\PropertyInfoAdapterTestDomain\ClassWithOverridingProperty.cs" />
     <Compile Include="Core\BindableObject\ReflectionBasedPropertyFinderTestDomain\BaseTestType.cs" />
     <Compile Include="Core\BindableObject\BindableObjectClassTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectClassWithIdentityTest.cs" />

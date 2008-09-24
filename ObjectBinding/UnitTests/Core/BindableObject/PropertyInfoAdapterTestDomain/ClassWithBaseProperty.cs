@@ -8,13 +8,10 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
+namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyInfoAdapterTestDomain
 {
-  public interface IInterfaceWithReferenceType<T>
-      where T : class
+  public class ClassWithBaseProperty
   {
-    T ExplicitInterfaceScalar { get; set; }
-    T ExplicitInterfaceReadOnlyScalar { get; }
-    T ImplicitInterfaceScalar { get; set; }
+    public virtual int BaseProperty { get { return 0; } }
   }
 }

@@ -36,6 +36,8 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <value>The declaring type of the property.</value>
     Type DeclaringType { get; }
 
+    // TODO: DeclaringInterface, NameInInterface
+
     /// <summary>
     /// Gets the type the property was originally declared on.
     /// </summary>

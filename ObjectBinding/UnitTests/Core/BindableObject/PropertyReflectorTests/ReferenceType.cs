@@ -131,8 +131,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     [Test]
     public void GetMetadata_WithReadWriteExplicitInterfaceScalar ()
     {
-      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
-          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar");
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), 
+          typeof (IInterfaceWithReferenceType<SimpleReferenceType>), "ExplicitInterfaceScalar");
       PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
@@ -151,8 +151,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     [Test]
     public void GetMetadata_WithReadOnlyExplicitInterfaceScalar ()
     {
-      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
-          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar");
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), 
+          typeof (IInterfaceWithReferenceType<SimpleReferenceType>), "ExplicitInterfaceReadOnlyScalar");
       PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
@@ -172,7 +172,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     public void GetMetadata_WithReadWriteMixedProperty ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (TypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
-          typeof (IMixinAddingProperty).FullName + ".MixedProperty");
+          typeof (IMixinAddingProperty), "MixedProperty");
       PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       Assert.AreSame (typeof (string), GetUnderlyingType (propertyReflector));
