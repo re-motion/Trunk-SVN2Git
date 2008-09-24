@@ -58,6 +58,7 @@
     <None Include="Database\SecurityManagerSetupDB.sql">
     </None>
     <None Include="SecurityManager.Core.build" />
+    <Compile Include="AclTools\Expansion\AclExpansion.cs" />
     <Compile Include="AclTools\Expansion\AccessControlListFinder2.cs" />
     <Compile Include="AclTools\Expansion\AclSecurityContextHelper.cs" />
     <Compile Include="AclTools\Expansion\ClassStateDictionary.cs" />
