@@ -264,11 +264,14 @@
     <Compile Include="DomainObjects\Core\Linq\MethodExtensions.cs" />
     <Compile Include="DomainObjects\Core\Linq\QueryExecutorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\QueryProviderTest.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\ObjectBindingToMappingTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectProviderTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectServiceFactoryMixinTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectWithMixedPersistentPropertiesTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectWithMixedPersistentProperties.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\TestDomain\IBindableDomainObjectWithProperties.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\TestDomain\IMixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinStub.cs" />
     <Compile Include="DomainObjects\Security\DomainObjectSecurityStrategyTest.cs" />

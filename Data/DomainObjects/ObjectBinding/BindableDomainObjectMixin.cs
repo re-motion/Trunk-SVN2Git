@@ -15,6 +15,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Mixins;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
@@ -62,12 +63,35 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         return false;
       else
       {
-        string propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (property.PropertyInfo.GetOriginalDeclaringType(), property.PropertyInfo.Name);
+        string propertyIdentifier = GetMappingPropertyIdentifier(property);
         if (This.Properties.Contains (propertyIdentifier))
           return !This.Properties[propertyIdentifier].HasBeenTouched;
         else
           return base.IsDefaultValue (property, nativeValue);
       }
+    }
+
+    public virtual string GetMappingPropertyIdentifier (PropertyBase property)
+    {
+      Type originalDeclaringType = property.PropertyInfo.GetOriginalDeclaringType();
+      var interfacePropertyInfo = property.PropertyInfo.InterfacePropertyInfo;
+
+      if (interfacePropertyInfo != null && Mixins.TypeUtility.IsGeneratedConcreteMixedType (originalDeclaringType))
+      {
+        // this property was added by a mixin, associate it with the respective mixin type for the mapping
+
+        IMixinTarget mixinTarget = (IMixinTarget) This;
+        var interfaceIntroduction = mixinTarget.Configuration.ReceivedInterfaces[interfacePropertyInfo.DeclaringType];
+        if (interfaceIntroduction != null)
+        {
+          var propertyIntroduction = interfaceIntroduction.IntroducedProperties[interfacePropertyInfo];
+          Assertion.IsNotNull (propertyIntroduction, "If the interface is introduced via a mixin, its properties are introduced as well.");
+          return MappingConfiguration.Current.NameResolver.GetPropertyName (interfaceIntroduction.Implementer.Type, 
+              propertyIntroduction.ImplementingMember.Name);
+        }
+      }
+
+      return MappingConfiguration.Current.NameResolver.GetPropertyName (originalDeclaringType, property.PropertyInfo.Name);
     }
   }
 }

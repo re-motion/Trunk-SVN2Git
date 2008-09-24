@@ -269,23 +269,23 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    public void InterfaceType_Null ()
+    public void InterfaceProperty_Null ()
     {
-      Assert.That (_adapter.DeclaringInterfaceType, Is.Null);
+      Assert.That (_adapter.InterfacePropertyInfo, Is.Null);
     }
 
     [Test]
     public void DeclaringInterfaceType_NonNull_ExplicitInterface ()
     {
-      Assert.That (_explicitInterfaceAdapter.DeclaringInterfaceType, Is.Not.Null);
-      Assert.That (_explicitInterfaceAdapter.DeclaringInterfaceType, Is.SameAs (typeof (IInterfaceWithReferenceType<SimpleReferenceType>)));
+      Assert.That (_explicitInterfaceAdapter.InterfacePropertyInfo, Is.Not.Null);
+      Assert.That (_explicitInterfaceAdapter.InterfacePropertyInfo, Is.SameAs (_explicitInterfaceDeclarationProperty));
     }
 
     [Test]
     public void DeclaringInterfaceType_NonNull_ImplicitInterface ()
     {
-      Assert.That (_implicitInterfaceAdapter.DeclaringInterfaceType, Is.Not.Null);
-      Assert.That (_implicitInterfaceAdapter.DeclaringInterfaceType, Is.SameAs (typeof (IInterfaceWithReferenceType<SimpleReferenceType>)));
+      Assert.That (_implicitInterfaceAdapter.InterfacePropertyInfo, Is.Not.Null);
+      Assert.That (_implicitInterfaceAdapter.InterfacePropertyInfo, Is.SameAs (_implicitInterfaceDeclarationProperty));
     }
   }
 }

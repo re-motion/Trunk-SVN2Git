@@ -32,7 +32,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     }
 
     [Test]
-    [Ignore ("TODO: http://at-vie-svn/jira/browse/COMMONS-734")]
     public void MixedProperty_DefaultValue ()
     {
       var instance = BindableDomainObjectWithMixedPersistentProperties.NewObject ();

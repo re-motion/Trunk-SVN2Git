@@ -10,13 +10,15 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 {
   [Instantiable]
-  public abstract class BindableDomainObjectWithProperties : BindableBaseDomainObject
+  public abstract class BindableDomainObjectWithProperties : BindableBaseDomainObject, IBindableDomainObjectWithProperties
   {
     public enum Enum
     {
@@ -32,6 +34,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
       Second
     }
 
+    public static BindableDomainObjectWithProperties NewObject ()
+    {
+      return NewObject<BindableDomainObjectWithProperties>().With();
+    }
+
     [StorageClassNone]
     public bool RequiredPropertyNotInMapping { get { return true; } }
     [StorageClassNone]
@@ -42,6 +49,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 
     [StringProperty (IsNullable = false)]
     public abstract string RequiredStringProperty { get; set; }
+    [StringProperty (IsNullable = false)]
+    public abstract string RequiredStringPropertyInInterface { get; set; }
+
+    [StorageClass (StorageClass.Persistent)]
+    string IBindableDomainObjectWithProperties.RequiredStringPropertyExplicitInInterface
+    {
+      get 
+      { 
+        return Properties[typeof (BindableDomainObjectWithProperties),
+            typeof (IBindableDomainObjectWithProperties).FullName + ".RequiredStringPropertyExplicitInInterface"].GetValue<string>(); 
+      }
+      set 
+      {
+        Properties[typeof (BindableDomainObjectWithProperties), 
+            typeof (IBindableDomainObjectWithProperties).FullName + ".RequiredStringPropertyExplicitInInterface"].SetValue (value);
+      }
+    }
+
     [StringProperty (IsNullable = true)]
     public abstract string NonRequiredStringProperty { get; set; }
 

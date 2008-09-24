@@ -10,20 +10,39 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 {
-  public interface IMixinAddingPersistentProperties
-  {
-    DateTime MixedProperty { get; set; }
-  }
-
   public class MixinAddingPersistentProperties : DomainObjectMixin<BindableDomainObjectWithMixedPersistentProperties>, IMixinAddingPersistentProperties
   {
     public DateTime MixedProperty
     {
       get { return Properties[typeof (MixinAddingPersistentProperties), "MixedProperty"].GetValue<DateTime>(); }
       set { Properties[typeof (MixinAddingPersistentProperties), "MixedProperty"].SetValue (value); }
+    }
+
+    [MemberVisibility (MemberVisibility.Public)]
+    public DateTime PublicMixedProperty
+    {
+      get { return Properties[typeof (MixinAddingPersistentProperties), "PublicMixedProperty"].GetValue<DateTime> (); }
+      set { Properties[typeof (MixinAddingPersistentProperties), "PublicMixedProperty"].SetValue (value); }
+    }
+
+    [MemberVisibility (MemberVisibility.Private)]
+    public DateTime PrivateMixedProperty
+    {
+      get { return Properties[typeof (MixinAddingPersistentProperties), "PrivateMixedProperty"].GetValue<DateTime> (); }
+      set { Properties[typeof (MixinAddingPersistentProperties), "PrivateMixedProperty"].SetValue (value); }
+    }
+
+    [StorageClass(StorageClass.Persistent)]
+    DateTime IMixinAddingPersistentProperties.ExplicitMixedProperty
+    {
+      get { return Properties[typeof (MixinAddingPersistentProperties), typeof (IMixinAddingPersistentProperties) + ".PrivateMixedProperty"].GetValue<DateTime> (); }
+      set { Properties[typeof (MixinAddingPersistentProperties), typeof (IMixinAddingPersistentProperties) +  ".PrivateMixedProperty"].SetValue (value); }
     }
   }
 }

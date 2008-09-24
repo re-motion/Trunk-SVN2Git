@@ -42,11 +42,6 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       get { return _propertyInfo; }
     }
 
-    public PropertyInfo InterfacePropertyInfo
-    {
-      get { return _interfacePropertyInfo; }
-    }
-
     private PropertyInfo ValuePropertyInfo
     {
       get { return InterfacePropertyInfo ?? PropertyInfo; }
@@ -67,9 +62,9 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       get { return _propertyInfo.DeclaringType; }
     }
 
-    public Type DeclaringInterfaceType
+    public PropertyInfo InterfacePropertyInfo
     {
-      get { return _interfacePropertyInfo != null ? _interfacePropertyInfo.DeclaringType : null; }
+      get { return _interfacePropertyInfo; }
     }
 
     public Type GetOriginalDeclaringType ()
