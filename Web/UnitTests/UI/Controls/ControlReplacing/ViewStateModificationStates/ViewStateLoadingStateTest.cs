@@ -65,15 +65,5 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
       Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.True);
       Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
     }
-
-    [Test]
-    public void AdddedControl ()
-    {
-      _replacer.ViewStateModificationState = _state;
-
-      _state.AddedControlBegin ();
-
-      Assert.That (_replacer.ViewStateModificationState, Is.SameAs (_state));
-    }
   }
 }

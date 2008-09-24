@@ -39,7 +39,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     }
 
     [Test]
-    public void LoadViewState ()
+    public void LoadViewState_BeforeParentLoaded ()
     {
       _testPageHolder.Page.SetRequestValueCollection (new NameValueCollection());
       _testPageHolder.PageInvoker.InitRecursive();
@@ -61,8 +61,15 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     }
 
     [Test]
-    public void AdddedControl ()
+    public void LoadViewState_AfterParentLoaded ()
     {
+      ControlReplacer replacer = new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" };
+      ViewStateClearingState state = new ViewStateClearingState (replacer, MemberCallerMock);
+
+      state.LoadViewState (null);
+
+      Assert.That (replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateClearingAfterParentLoadedState)));
+      Assert.That (((ViewStateModificationStateBase) replacer.ViewStateModificationState).Replacer, Is.SameAs (replacer));
     }
   }
 }

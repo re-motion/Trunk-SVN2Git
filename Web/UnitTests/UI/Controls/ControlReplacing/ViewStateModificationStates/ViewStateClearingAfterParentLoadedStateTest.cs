@@ -9,32 +9,33 @@
  */
 
 using System;
+using System.Collections.Specialized;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
+using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   [TestFixture]
-  public class ViewStateCompletedStateTest : TestBase
+  public class ViewStateClearingAfterParentLoadedStateTest : TestBase
   {
     private TestPageHolder _testPageHolder;
     private ControlReplacer _replacer;
-    private ViewStateCompletedState _state;
+    private ViewStateClearingAfterParentLoadedState _state;
 
     [SetUp]
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       _testPageHolder = new TestPageHolder (false);
-
       var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy> ();
-      _replacer = SetupControlReplacer (MemberCallerMock, _testPageHolder.NamingContainer, modificationStateSelectionStrategy);
-      _state = new ViewStateCompletedState (_replacer, MemberCallerMock);
-      modificationStateSelectionStrategy.Stub (stub => stub.CreateViewStateModificationState (_replacer, MemberCallerMock)).Return (_state);
+      _replacer = SetupControlReplacerForIntegrationTest (_testPageHolder.NamingContainer, modificationStateSelectionStrategy);
+      _state = new ViewStateClearingAfterParentLoadedState (_replacer, MemberCallerMock);
+      modificationStateSelectionStrategy.Stub (stub => stub.CreateViewStateModificationState (Arg.Is (_replacer), Arg<IInternalControlMemberCaller>.Is.NotNull)).Return (_state);
     }
 
     [Test]
@@ -42,8 +43,13 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     public void LoadViewState ()
     {
       _replacer.ViewStateModificationState = _state;
- 
+
       _state.LoadViewState (null);
+    }
+
+    [Test]
+    public void AdddedControl ()
+    {
     }
   }
 }

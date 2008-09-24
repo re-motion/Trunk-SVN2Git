@@ -9,20 +9,12 @@
  */
 
 using System;
-using Remotion.Web.Utilities;
+using System.Web.UI;
 
-namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
+namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 {
-  public class ViewStateCompletedState : ViewStateModificationStateBase
+  public interface IAddedControl
   {
-    public ViewStateCompletedState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
-      : base (replacer, memberCaller)
-    {
-    }
-
-    public override void LoadViewState (object savedState)
-    {
-      throw new NotSupportedException();
-    }
+    void AddedControl (Control control, int index);
   }
 }

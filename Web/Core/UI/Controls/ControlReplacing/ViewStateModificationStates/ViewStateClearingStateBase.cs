@@ -15,19 +15,22 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
-  public class ViewStateClearingState : ViewStateClearingStateBase
+  public abstract class ViewStateClearingStateBase : ViewStateModificationStateBase
   {
-    public ViewStateClearingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
-        : base (replacer, memberCaller)
+    protected ViewStateClearingStateBase (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+        : base(replacer, memberCaller)
     {
     }
 
-    public override void LoadViewState (object savedState)
+    protected void ClearViewState (Control control)
     {
-      if (Replacer.WrappedControl != null)
-        ClearViewState (Replacer.WrappedControl);
-      else
-        Replacer.ViewStateModificationState = new ViewStateClearingAfterParentLoadedState (Replacer, MemberCaller);
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      bool enableViewStateBackup = control.EnableViewState;
+      control.EnableViewState = false;
+      control.Load += delegate { control.EnableViewState = enableViewStateBackup; };
+       
+      Replacer.ViewStateModificationState = new ViewStateCompletedState (Replacer, MemberCaller);
     }
   }
 }

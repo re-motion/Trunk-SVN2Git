@@ -149,8 +149,11 @@
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateClearingStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateReplacingStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateLoadingStateTest.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\IAddedControl.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ReplacingStateSelectionStrategyTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\LoadingStateSelectionStrategyTest.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateModificationStateBaseTest.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateClearingAfterParentLoadedStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateLoadingStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateCompletedStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\TestBase.cs" />

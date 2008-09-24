@@ -9,20 +9,32 @@
  */
 
 using System;
+using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
-  public class ViewStateCompletedState : ViewStateModificationStateBase
+  public class ViewStateClearingAfterParentLoadedState : ViewStateClearingStateBase
   {
-    public ViewStateCompletedState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
-      : base (replacer, memberCaller)
+    public ViewStateClearingAfterParentLoadedState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+        : base (replacer, memberCaller)
     {
     }
 
     public override void LoadViewState (object savedState)
     {
       throw new NotSupportedException();
+    }
+
+    public override void AddedControl (Control control, int index, Action<Control, int> baseCall)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("baseCall", baseCall);
+
+      ClearViewState (control);
+
+      baseCall (control, index);
     }
   }
 }

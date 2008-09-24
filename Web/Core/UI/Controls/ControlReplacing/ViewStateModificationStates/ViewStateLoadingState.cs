@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Web.UI;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
@@ -24,15 +23,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
     public override void LoadViewState (object savedState)
     {
       Replacer.ViewStateModificationState = new ViewStateCompletedState (Replacer, MemberCaller);
-    }
-
-    public override void AddedControlBegin ()
-    {
-      // NOP
-    }
-
-    public override void AddedControlCompleted ()
-    {
     }
   }
 }

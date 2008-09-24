@@ -10,6 +10,7 @@
 
 using System;
 using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
@@ -18,7 +19,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
   {
     private readonly object _viewState;
     private bool _isViewStateLoaded;
-    private bool _enableViewStateBackup;
 
     public ViewStateReplacingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller, object viewState)
       : base (replacer, memberCaller)
@@ -49,20 +49,22 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
       _isViewStateLoaded = true;
     }
 
-    public override void AddedControlBegin ()
+    public override void AddedControl (Control control, int index, Action<Control, int> baseCall)
     {
+      ArgumentUtility.CheckNotNull ("baseCall", baseCall);
+
+      bool enableViewStateBackup = false;
       if (_isViewStateLoaded)
       {
-        _enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
+        enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
         Replacer.WrappedControl.EnableViewState = false;
       }
-    }
 
-    public override void AddedControlCompleted ()
-    {
+      baseCall (control, index);
+
       if (_isViewStateLoaded)
       {
-        Replacer.WrappedControl.EnableViewState = _enableViewStateBackup;
+        Replacer.WrappedControl.EnableViewState = enableViewStateBackup;
 
         Replacer.ViewStateModificationState = new ViewStateLoadingState (Replacer, MemberCaller);
 

@@ -9,14 +9,13 @@
  */
 
 using System;
+using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   public interface IViewStateModificationState
   {
     void LoadViewState (object savedState);
-    // void AddedControl (Action baseCall);
-    void AddedControlBegin ();
-    void AddedControlCompleted ();
+    void AddedControl (Control control, int index, Action<Control, int> baseCall);
   }
 }
