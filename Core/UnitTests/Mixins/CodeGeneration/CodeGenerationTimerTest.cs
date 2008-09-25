@@ -23,7 +23,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void Time ()
     {
       TimeSpan timeBefore = CodeGenerationTimer.CodeGenerationTime;
-      DateTime start = DateTime.Now;
       using (new CodeGenerationTimer ())
       {
         Stopwatch sw = new Stopwatch();
