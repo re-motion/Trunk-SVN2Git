@@ -24,12 +24,9 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModifi
     [Test]
     public void LoadControlState ()
     {
-      TestPageHolder testPageHolder = new TestPageHolder (false);
-      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy> ();
-      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, modificationStateSelectionStrategy);
+      ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
       var controlState = new Hashtable();
       ControlStateReplacingState state = new ControlStateReplacingState (replacer, MemberCallerMock, controlState);
-      modificationStateSelectionStrategy.Stub (stub => stub.CreateControlStateModificationState (replacer, MemberCallerMock)).Return (state);
 
       state.LoadControlState (null);
 

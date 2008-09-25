@@ -8,23 +8,23 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
-  public class ControlStateClearingState : ControlStateClearingStateBase
+  public abstract class ControlStateClearingStateBase : ControlStateModificationStateBase
   {
-    public ControlStateClearingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
-        : base (replacer, memberCaller)
+    protected ControlStateClearingStateBase (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+        : base(replacer, memberCaller)
     {
     }
 
-    public override void LoadControlState (object savedState)
+    protected void ClearChildState ()
     {
-      if (Replacer.WrappedControl != null)
-        ClearChildState();
-      else
-        Replacer.ControlStateModificationState = new ControlStateClearingAfterParentLoadedState (Replacer, MemberCaller);
+      MemberCaller.ClearChildControlState (Replacer);
+
+      Replacer.ControlStateModificationState = new ControlStateCompletedState (Replacer, MemberCaller);
     }
   }
 }

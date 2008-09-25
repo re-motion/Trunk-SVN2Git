@@ -19,39 +19,42 @@ using Rhino.Mocks;
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
   [TestFixture]
-  public class ControlStateClearingStateTest : TestBase
+  public class ControlStateClearingAfterParentLoadedStateTest : TestBase
   {
     [Test]
-    public void LoadControlState_BeforeParentLoaded ()
+    [ExpectedException (typeof (NotSupportedException))]
+    public void LoadControlState ()
     {
-      TestPageHolder testPageHolder = new TestPageHolder (false);
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-      replacer.ViewStateModificationState = new ViewStateLoadingState (replacer,MemberCallerMock);
-      replacer.ControlStateModificationState = MockRepository.GenerateStub<ControlStateModificationStateBase> (replacer, MemberCallerMock);
-      replacer.Controls.Add (testPageHolder.NamingContainer);
 
-      ControlStateClearingState state = new ControlStateClearingState (replacer, MemberCallerMock);
+      var state = new ControlStateClearingAfterParentLoadedState (replacer, MemberCallerMock);
       replacer.ControlStateModificationState = state;
 
       state.LoadControlState (null);
+    }
+
+    [Test]
+    public void AddedControl ()
+    {
+      TestPageHolder testPageHolder = new TestPageHolder (false);
+      ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
+      replacer.ViewStateModificationState = new ViewStateLoadingState (replacer, MemberCallerMock);
+      replacer.ControlStateModificationState = MockRepository.GenerateStub<ControlStateModificationStateBase> (replacer, MemberCallerMock);
+      replacer.Controls.Add (testPageHolder.NamingContainer);
+
+      IAddedControl addedControlMock = MockRepository.GenerateMock<IAddedControl> ();
+
+      var state = new ControlStateClearingAfterParentLoadedState (replacer, MemberCallerMock);
+      replacer.ControlStateModificationState = state;
+
+      state.AddedControl (testPageHolder.NamingContainer, 0, addedControlMock.AddedControl);
 
       MemberCallerMock.AssertWasCalled (mock => mock.ClearChildControlState (replacer));
+      addedControlMock.AssertWasCalled (mock => mock.AddedControl (testPageHolder.NamingContainer, 0));
+
       Assert.That (replacer.ControlStateModificationState, Is.InstanceOfType (typeof (ControlStateCompletedState)));
       Assert.That (((ControlStateModificationStateBase) replacer.ControlStateModificationState).Replacer, Is.SameAs (replacer));
     }
 
-    [Test]
-    public void LoadControlState_AfterParentLoaded ()
-    {
-      ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-
-      ControlStateClearingState state = new ControlStateClearingState (replacer, MemberCallerMock);
-      replacer.ControlStateModificationState = state;
-
-      state.LoadControlState (null);
-
-      Assert.That (replacer.ControlStateModificationState, Is.InstanceOfType (typeof (ControlStateClearingAfterParentLoadedState)));
-      Assert.That (((ControlStateModificationStateBase) replacer.ControlStateModificationState).Replacer, Is.SameAs (replacer));
-    }
   }
 }

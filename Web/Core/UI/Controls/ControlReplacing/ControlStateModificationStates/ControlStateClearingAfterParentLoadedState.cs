@@ -8,23 +8,33 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
-  public class ControlStateClearingState : ControlStateClearingStateBase
+  public class ControlStateClearingAfterParentLoadedState : ControlStateClearingStateBase
   {
-    public ControlStateClearingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+    public ControlStateClearingAfterParentLoadedState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
         : base (replacer, memberCaller)
     {
     }
 
     public override void LoadControlState (object savedState)
     {
-      if (Replacer.WrappedControl != null)
-        ClearChildState();
-      else
-        Replacer.ControlStateModificationState = new ControlStateClearingAfterParentLoadedState (Replacer, MemberCaller);
+      throw new NotSupportedException();
+    }
+
+    public override void AddedControl (Control control, int index, Action<Control, int> baseCall)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("baseCall", baseCall);
+
+      ClearChildState();
+
+      baseCall (control, index);
     }
   }
 }

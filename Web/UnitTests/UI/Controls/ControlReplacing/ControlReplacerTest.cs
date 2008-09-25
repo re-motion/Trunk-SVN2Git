@@ -353,7 +353,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     }
 
     [Test]
-    [Ignore]
     public void LoadControlStateRecursive_ClearControlState_InitializedAfterLoadControlState ()
     {
       object originalControlState = CreateControlState ();

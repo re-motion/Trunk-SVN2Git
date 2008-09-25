@@ -13,6 +13,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
+using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Rhino.Mocks;
 
@@ -31,8 +32,14 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
       base.SetUp();
 
       _testPageHolder = new TestPageHolder (false);
+
       _replacer = new ControlReplacer (MemberCallerMock);
+      _replacer.ViewStateModificationState = MockRepository.GenerateStub<ViewStateModificationStateBase> (_replacer, MemberCallerMock);
+      _replacer.ControlStateModificationState = new ControlStateLoadingState (_replacer, MemberCallerMock);
+      _replacer.Controls.Add (_testPageHolder.NamingContainer);
+      
       _state = new ViewStateClearingAfterParentLoadedState (_replacer, MemberCallerMock);
+      _replacer.ViewStateModificationState = _state;
     }
 
     [Test]

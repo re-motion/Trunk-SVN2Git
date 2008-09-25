@@ -32,7 +32,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("baseCall", baseCall);
 
-      ClearViewState (control);
+      ClearChildState ();
 
       baseCall (control, index);
     }

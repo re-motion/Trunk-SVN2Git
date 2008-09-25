@@ -23,7 +23,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
     public override void LoadViewState (object savedState)
     {
       if (Replacer.WrappedControl != null)
-        ClearViewState (Replacer.WrappedControl);
+        ClearChildState ();
       else
         Replacer.ViewStateModificationState = new ViewStateClearingAfterParentLoadedState (Replacer, MemberCaller);
     }

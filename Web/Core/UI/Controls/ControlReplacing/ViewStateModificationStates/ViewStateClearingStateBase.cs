@@ -9,8 +9,6 @@
  */
 
 using System;
-using System.Web.UI;
-using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
@@ -18,18 +16,16 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
   public abstract class ViewStateClearingStateBase : ViewStateModificationStateBase
   {
     protected ViewStateClearingStateBase (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
-        : base(replacer, memberCaller)
+        : base (replacer, memberCaller)
     {
     }
 
-    protected void ClearViewState (Control control)
+    protected void ClearChildState ()
     {
-      ArgumentUtility.CheckNotNull ("control", control);
+      bool enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
+      Replacer.WrappedControl.EnableViewState = false;
+      Replacer.WrappedControl.Load += delegate { Replacer.WrappedControl.EnableViewState = enableViewStateBackup; };
 
-      bool enableViewStateBackup = control.EnableViewState;
-      control.EnableViewState = false;
-      control.Load += delegate { control.EnableViewState = enableViewStateBackup; };
-       
       Replacer.ViewStateModificationState = new ViewStateCompletedState (Replacer, MemberCaller);
     }
   }
