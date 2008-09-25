@@ -20,11 +20,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     interface IWxeTransactionStrategyPublicApi
     {
       // Commit, Rollback, Reset
-      // MyTransaction
-      // AutoCommit
+      // ITransaction MyTransaction { get; }
+      bool AutoCommit { get; set; }
     }
 
-    interface IWxeTransactionStrategyInternalApi // create tx in ctor
+    interface IWxeExecutionListener // create tx in ctor
     {
       void OnExecutionPlay (); // make transaction current; must only throw WxeFatalTransactionException
       void OnExecutionStop (); // autocommit, restore previous, release; can throw WxeFatalTransactionException or user transactions from Commit
@@ -32,40 +32,139 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       void OnExecutionPause (); // restore previous; must only throw WxeFatalTransactionException
     }
 
-    interface IWxeTransactionStrategy : IWxeTransactionStrategyPublicApi, IWxeTransactionStrategyInternalApi { }
+    interface IWxeTransactionStrategy : IWxeTransactionStrategyPublicApi, IWxeExecutionListener { }
 
-    class NullTransactionStrategy : IWxeTransactionStrategy { }
-    class RootTransactionStrategy : IWxeTransactionStrategy { }
-    class ChildTransactionStrategy : IWxeTransactionStrategy { }
+    #region Transaction strategies
+    class NullTransactionStrategy : IWxeTransactionStrategy {
+      private readonly IWxeExecutionListener _nextListener;
 
-    #region Transaction Mode
+      public NullTransactionStrategy (IWxeExecutionListener nextListener)
+      {
+        _nextListener = nextListener;
+      }
+
+      public void OnExecutionPlay ()
+      {
+        _nextListener.OnExecutionPlay();
+      }
+
+      public void OnExecutionStop ()
+      {
+        _nextListener.OnExecutionStop ();
+      }
+
+      public void OnExecutionFail ()
+      {
+        _nextListener.OnExecutionFail ();
+      }
+
+      public void OnExecutionPause ()
+      {
+        _nextListener.OnExecutionPause ();
+      }
+    }
+
+    class RootTransactionStrategy : IWxeTransactionStrategy {
+      private readonly IWxeExecutionListener _nextListener;
+
+      public RootTransactionStrategy (IWxeExecutionListener nextListener)
+      {
+        _nextListener = nextListener;
+      }
+
+      public void OnExecutionPlay ()
+      {
+        // ensure transaction created
+        // make transaction current
+        _nextListener.OnExecutionPlay (); // not executed on fatal exception
+      }
+
+      public void OnExecutionStop ()
+      {
+        try
+        {
+          _nextListener.OnExecutionStop ();
+        }
+        finally
+        {
+          // if one of these throws an exception and _nextListener also threw, throw fatal exception and wrap both
+          // consider using lambdas for exception handling rather than try-catches
+
+          // autocommit
+          // make previous transaction current
+          // release transaction
+        }
+      }
+
+      public void OnExecutionFail ()
+      {
+        try
+        {
+          _nextListener.OnExecutionFail ();
+        }
+        finally
+        {
+          // if one of these throws an exception and _nextListener also threw, throw fatal exception and wrap both
+          // consider using lambdas for exception handling rather than try-catches
+
+          // make previous transaction current
+          // release transaction
+        }
+      }
+
+      public void OnExecutionPause ()
+      {
+        try
+        {
+          _nextListener.OnExecutionPause ();
+        }
+        finally
+        {
+          // if one of these throws an exception and _nextListener also threw, throw fatal exception and wrap both
+          // consider using lambdas for exception handling rather than try-catches
+
+          // make previous transaction current
+        }
+      }
+    }
+    
+    class ChildTransactionStrategy : RootTransactionStrategy {
+      public ChildTransactionStrategy (IWxeExecutionListener nextListener)
+          : base(nextListener)
+      {
+      }
+    }
+
+    #endregion 
+
     abstract class WxeTransactionMode
     {
       public static readonly WxeTransactionMode Null = new NullWxeTransactionMode ();
       public static readonly WxeTransactionMode CreateRoot = new CreateRootWxeTransactionMode ();
       public static readonly WxeTransactionMode CreateChildIfParent = new CreateChildIfParentWxeTransactionMode ();
-      public abstract IWxeTransactionStrategy GetStrategy (WxeFunction function);
+      public abstract IWxeTransactionStrategy GetStrategy (WxeFunction function, IWxeExecutionListener executionListener);
     }
 
+    #region Transaction Mode
     class NullWxeTransactionMode : WxeTransactionMode
     {
-      public override IWxeTransactionStrategy GetStrategy (WxeFunction function)
+      public override IWxeTransactionStrategy GetStrategy (WxeFunction function, IWxeExecutionListener executionListener)
       {
-        return new NullTransactionStrategy();
+        return new NullTransactionStrategy (executionListener);
       }
     }
 
     class CreateRootWxeTransactionMode : WxeTransactionMode
     {
-      public override IWxeTransactionStrategy GetStrategy (WxeFunction function)
+      public override IWxeTransactionStrategy GetStrategy (WxeFunction function, IWxeExecutionListener executionListener)
       {
-        return new RootTransactionStrategy();
+        return new RootTransactionStrategy (executionListener);
       }
     }
 
     class CreateChildIfParentWxeTransactionMode : WxeTransactionMode
     {
-      public override IWxeTransactionStrategy GetStrategy (WxeFunction function)
+      public override IWxeTransactionStrategy GetStrategy (WxeFunction function, IWxeExecutionListener executionListener)
       {
         // search function parents for existing transaction
         // if found, return new ChildTransactionStrategy (parent := existingTransaction);
@@ -107,9 +206,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       {
         try
         {
-          _function.InternalTransactionApi.OnExecutionPlay (); // fatal exception => goes to WxeFatalTransactionException
+          _function.ExecutionListener.OnExecutionPlay (); // fatal exception => goes to WxeFatalTransactionException
           _function.BaseExecute (context);
-          _function.InternalTransactionApi.OnExecutionStop (); // fatal exception  => goes to WxeFatalTransactionException, commit exception => goes to general catch block
+          _function.ExecutionListener.OnExecutionStop (); // fatal exception  => goes to WxeFatalTransactionException, commit exception => goes to general catch block
           _function.SetCurrentExecutionState (new ExecutionFinishedFunctionState ());
         }
         catch (WxeFatalTransactionException) // bubble up
@@ -118,17 +217,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         }
         catch (ThreadAbortException)
         {
-          _function.InternalTransactionApi.OnExecutionPause (); // fatal exception => let it bubble up
+          _function.ExecutionListener.OnExecutionPause (); // fatal exception => let it bubble up
           throw;
         }
         catch (WxeExecuteUserControlStepException)
         {
-          _function.InternalTransactionApi.OnExecutionPause (); // fatal exception => let it bubble up
+          _function.ExecutionListener.OnExecutionPause (); // fatal exception => let it bubble up
           throw;
         }
         catch (WxeExecuteUserControlNextStepException)
         {
-          _function.InternalTransactionApi.OnExecutionStop (); // fatal exception, commit exception
+          _function.ExecutionListener.OnExecutionStop (); // fatal exception, commit exception
           _function.SetCurrentExecutionState (new ExecutionFinishedFunctionState ());
         }
         catch (Exception e)
@@ -139,7 +238,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
           {
             try
             {
-              _function.InternalTransactionApi.OnExecutionFail();
+              _function.ExecutionListener.OnExecutionFail();
             }
             catch (WxeFatalTransactionException fatalException)
             {
@@ -155,7 +254,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
           try
           {
-            _function.InternalTransactionApi.OnExecutionFail ();
+            _function.ExecutionListener.OnExecutionFail ();
           }
           catch (WxeFatalTransactionException fatalException)
           {
@@ -187,6 +286,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       private readonly WxeTransactionMode _mode;
       private IWxeTransactionStrategy _strategy;
+      private IWxeExecutionListener _executionListener;
       private IWxeFunctionState _executionState;
 
       public WxeFunction (WxeTransactionMode mode)
@@ -224,13 +324,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         }
       }
 
-      public IWxeTransactionStrategyInternalApi InternalTransactionApi
+      public IWxeExecutionListener ExecutionListener
       {
         get
         {
-          if (_strategy == null)
+          if (_executionListener == null)
             throw new InvalidOperationException ();
-          return _strategy;
+          return _executionListener;
+        }
+        set 
+        {
+          _executionListener = value;
         }
       }
 
@@ -242,7 +346,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       public void InitializeTransactionStrategy ()
       {
         // if (_strategy != null) throw;
-        _strategy = _mode.GetStrategy (this);
+        _strategy = _mode.GetStrategy (this, _executionListener);
+        _executionListener = _strategy;
       }
 
       public override void Execute (WxeContext context)
@@ -296,6 +401,18 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       public void BaseExecute (WxeContext context)
       {
         base.Execute (context);
+      }
+    }
+
+    class UserCode
+    {
+      public static void Main ()
+      {
+        var wxeFunctionWithoutTx = new WxeFunction ();
+        var wxeFunctionWithRootTx = new WxeFunction (WxeTransactionMode.CreateRoot);
+        var wxeFunctionWithChildTx = new WxeFunction (WxeTransactionMode.CreateChildIfParent);
+
+        wxeFunctionWithRootTx.Transaction.AutoCommit = false; // default is true
       }
     }
   }
