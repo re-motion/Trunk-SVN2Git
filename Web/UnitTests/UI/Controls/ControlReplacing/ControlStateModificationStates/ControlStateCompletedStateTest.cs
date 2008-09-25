@@ -10,7 +10,6 @@
 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 using Rhino.Mocks;
@@ -26,30 +25,20 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModifi
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
       _testPageHolder = new TestPageHolder (false);
-      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy> ();
+      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy>();
       _replacer = SetupControlReplacerForIntegrationTest (_testPageHolder.NamingContainer, modificationStateSelectionStrategy);
       _state = new ControlStateCompletedState (_replacer, MemberCallerMock);
     }
-    
+
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void LoadViewState ()
     {
       _replacer.ControlStateModificationState = _state;
-      
+
       _state.LoadControlState (null);
-    }
-
-    [Test]
-    public void AdddedControl ()
-    {
-      _replacer.ControlStateModificationState = _state;
-     
-      _state.AddedControl ();
-
-      Assert.That (_replacer.ControlStateModificationState, Is.SameAs (_state));
     }
   }
 }

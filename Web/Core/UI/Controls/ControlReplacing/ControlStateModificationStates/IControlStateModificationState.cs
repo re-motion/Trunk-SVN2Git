@@ -8,6 +8,7 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
@@ -15,6 +16,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStat
   public interface IControlStateModificationState
   {
     void LoadControlState (object savedState);
-    void AddedControl ();
+    void AddedControl (Control control1, int index, Action<Control, int> baseCall);
   }
 }

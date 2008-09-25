@@ -20,7 +20,14 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStat
     }
 
     public abstract void LoadControlState (object savedState);
-    public abstract void AddedControl ();
+
+    public virtual void AddedControl (Control control, int index, Action<Control, int> baseCall)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("baseCall", baseCall);
+
+      baseCall (control, index);
+    }
 
     public ControlReplacer Replacer
     {

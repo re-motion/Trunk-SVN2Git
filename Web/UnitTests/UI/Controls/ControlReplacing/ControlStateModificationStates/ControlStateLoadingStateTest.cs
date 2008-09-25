@@ -41,14 +41,5 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModifi
       Assert.That (_replacer.ControlStateModificationState, Is.InstanceOfType (typeof (ControlStateCompletedState)));
       Assert.That (((ControlStateModificationStateBase) _replacer.ControlStateModificationState).Replacer, Is.SameAs (_replacer));
     }
-
-    [Test]
-    public void AdddedControl ()
-    {
-      _replacer.ControlStateModificationState = _state;
-      _state.AddedControl ();
-
-      Assert.That (_replacer.ControlStateModificationState, Is.SameAs (_state));
-    }
   }
 }

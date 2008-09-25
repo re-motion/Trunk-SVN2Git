@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Web.UI;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
@@ -26,11 +25,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStat
       MemberCaller.ClearChildControlState (Replacer);
 
       Replacer.ControlStateModificationState = new ControlStateCompletedState (Replacer, MemberCaller);
-    }
-
-    public override void AddedControl ()
-    {
-      throw new System.NotImplementedException();
     }
   }
 }

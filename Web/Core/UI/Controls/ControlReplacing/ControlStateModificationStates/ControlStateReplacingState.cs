@@ -8,18 +8,18 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using System.Collections;
-using System.Web.UI;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
-  public class ControlStateReplacingState:ControlStateModificationStateBase
+  public class ControlStateReplacingState : ControlStateModificationStateBase
   {
     private readonly IDictionary _controlState;
 
     public ControlStateReplacingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller, IDictionary controlState)
-        : base(replacer, memberCaller)
+        : base (replacer, memberCaller)
     {
       _controlState = controlState;
     }
@@ -34,11 +34,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStat
       MemberCaller.SetChildControlState (Replacer, _controlState);
 
       Replacer.ControlStateModificationState = new ControlStateCompletedState (Replacer, MemberCaller);
-    }
-
-    public override void AddedControl ()
-    {
-      throw new System.NotImplementedException();
     }
   }
 }

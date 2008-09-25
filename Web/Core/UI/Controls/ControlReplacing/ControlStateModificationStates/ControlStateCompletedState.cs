@@ -9,26 +9,20 @@
  */
 
 using System;
-using System.Web.UI;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
-  public class ControlStateCompletedState:ControlStateModificationStateBase
+  public class ControlStateCompletedState : ControlStateModificationStateBase
   {
     public ControlStateCompletedState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
-        : base(replacer, memberCaller)
+        : base (replacer, memberCaller)
     {
     }
 
     public override void LoadControlState (object savedState)
     {
-      throw new NotSupportedException ();
-    }
-
-    public override void AddedControl ()
-    {
-      //NOP
+      throw new NotSupportedException();
     }
   }
 }

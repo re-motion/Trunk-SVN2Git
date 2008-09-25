@@ -377,17 +377,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
       Assert.That (testPageHolderWithoutState.Parent.ValueInControlState, Is.Null);
     }
 
-    [Test]
-    [Ignore ("Obsolete")]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only load state after OnInit phase.")]
-    public void LoadControlStateRecursive_ThrowsIfNotAfterOnInit ()
-    {
-      var testPageHolder = new TestPageHolder (false);
-      var replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new LoadingStateSelectionStrategy ());
-      var controlInvoker = new ControlInvoker (replacer);
-      controlInvoker.LoadControlState (null);
-    }
-
 
     [Test]
     public void WrapControlWithParentContainer_ReplacesControl ()
