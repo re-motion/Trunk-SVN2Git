@@ -236,7 +236,7 @@ namespace Remotion.Web.ExecutionEngine
       WxeFunctionState functionState = new WxeFunctionState (function, true);
       functionStates.Add (functionState);
 
-      function.InitializeParameters (context.Request.QueryString);
+      function.VariablesContainer.InitializeParameters (context.Request.QueryString);
 
       string returnUrlArg = context.Request.QueryString[Parameters.ReturnUrl];
       string returnToSelfArg = context.Request.QueryString[Parameters.WxeReturnToSelf];

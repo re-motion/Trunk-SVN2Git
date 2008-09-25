@@ -21,14 +21,11 @@ public class ViewPersonDetailsWxeFunction: WxeFunction
       new WxeParameterDeclaration ("id", false, WxeParameterDirection.In, typeof (string))};
 
   public ViewPersonDetailsWxeFunction()
+    :base (s_parameters)
   {
   }
 
   // parameters and local variables
-  public override WxeParameterDeclaration[] ParameterDeclarations
-  {
-    get { return s_parameters; }
-  }
 
   [WxeParameter (1, false, WxeParameterDirection.In)]
   public string ID

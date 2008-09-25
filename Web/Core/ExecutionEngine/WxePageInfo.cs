@@ -343,7 +343,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </summary>
     public NameValueCollection GetPermanentUrlParameters ()
     {
-      NameValueCollection urlParameters = CurrentFunction.SerializeParametersForQueryString ();
+      NameValueCollection urlParameters = CurrentFunction.VariablesContainer.SerializeParametersForQueryString ();
 
       ISmartNavigablePage smartNavigablePage = _page as ISmartNavigablePage;
       if (smartNavigablePage != null)

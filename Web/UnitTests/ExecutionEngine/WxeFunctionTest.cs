@@ -32,9 +32,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void SerializeParameters ()
     {
-      TestFunctionWithSerializableParameters function =
-          new TestFunctionWithSerializableParameters ("Hello World", null, 1);
-      NameValueCollection parameters = function.SerializeParametersForQueryString();
+      TestFunctionWithSerializableParameters function = new TestFunctionWithSerializableParameters ("Hello World", null, 1);
+      NameValueCollection parameters = function.VariablesContainer.SerializeParametersForQueryString();
       Assert.AreEqual (3, parameters.Count);
       Assert.AreEqual ("Hello World", parameters["StringValue"]);
       Assert.AreEqual ("", parameters["NaInt32Value"]);
@@ -49,7 +48,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       function.Variables["NaInt32Value"] = 1;
       function.Variables["Int32Value"] = null;
 
-      NameValueCollection parameters = function.SerializeParametersForQueryString();
+      NameValueCollection parameters = function.VariablesContainer.SerializeParametersForQueryString ();
 
       Assert.AreEqual (2, parameters.Count);
       Assert.AreEqual ("Hello World", parameters["StringValue"]);
@@ -59,11 +58,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void InitializeParametersThroughQueryStringWithEmptyString ()
     {
-      HttpContext context = HttpContextHelper.CreateHttpContext (
-          "GET", "default.html", "StringValue=&NaInt32Value=2&IntValue=1");
+      HttpContext context = HttpContextHelper.CreateHttpContext ("GET", "default.html", "StringValue=&NaInt32Value=2&IntValue=1");
 
       TestFunctionWithSerializableParameters function = new TestFunctionWithSerializableParameters();
-      function.InitializeParameters (context.Request.Params);
+      function.VariablesContainer.InitializeParameters (context.Request.Params);
 
       Assert.AreEqual ("", function.StringValue);
       Assert.AreEqual (2, function.NaInt32Value);
@@ -73,11 +71,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void InitializeParametersThroughQueryStringWithNaInt32BeingEmpty ()
     {
-      HttpContext context = HttpContextHelper.CreateHttpContext (
-          "GET", "default.html", "StringValue=Hello+World&NaInt32Value=&IntValue=1");
+      HttpContext context = HttpContextHelper.CreateHttpContext ("GET", "default.html", "StringValue=Hello+World&NaInt32Value=&IntValue=1");
 
       TestFunctionWithSerializableParameters function = new TestFunctionWithSerializableParameters();
-      function.InitializeParameters (context.Request.Params);
+      function.VariablesContainer.InitializeParameters (context.Request.Params);
 
       Assert.AreEqual ("Hello World", function.StringValue);
       Assert.AreEqual (null, function.NaInt32Value);
@@ -88,11 +85,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [ExpectedException (typeof (ApplicationException))]
     public void InitializeParametersThroughQueryStringWitInt32BeingEmpty ()
     {
-      HttpContext context = HttpContextHelper.CreateHttpContext (
-          "GET", "default.html", "StringValue=Hello+World&NaInt32Value=1&IntValue=");
+      HttpContext context = HttpContextHelper.CreateHttpContext ("GET", "default.html", "StringValue=Hello+World&NaInt32Value=1&IntValue=");
 
       TestFunctionWithSerializableParameters function = new TestFunctionWithSerializableParameters();
-      function.InitializeParameters (context.Request.Params);
+      function.VariablesContainer.InitializeParameters (context.Request.Params);
     }
 
     [Test]
@@ -104,7 +100,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       parameters.Add ("NaInt32Value", "");
       parameters.Add ("IntValue", "1");
 
-      function.InitializeParameters (parameters);
+      function.VariablesContainer.InitializeParameters (parameters);
 
       Assert.AreEqual ("Hello World", function.StringValue);
       Assert.AreEqual (null, function.NaInt32Value);

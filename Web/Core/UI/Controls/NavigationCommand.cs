@@ -15,6 +15,7 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
@@ -115,10 +116,10 @@ public class NavigationCommand: Command
       throw new InvalidOperationException ("Call to ExecuteWxeFunction not allowed unless Type is set to CommandType.WxeFunction.");
 
     Type functionType = WxeFunctionCommand.ResolveFunctionType();
-    WxeParameterDeclaration[] parameterDeclarations = WxeFunction.GetParameterDeclarations (functionType);
-    object[] parameterValues = WxeFunction.ParseActualParameters (parameterDeclarations, WxeFunctionCommand.Parameters, CultureInfo.InvariantCulture);   
-    
-    NameValueCollection queryString = WxeFunction.SerializeParametersForQueryString (parameterDeclarations, parameterValues);
+    WxeParameterDeclaration[] parameterDeclarations = WxeVariablesContainer.GetParameterDeclarations (functionType);
+    object[] parameterValues = WxeVariablesContainer.ParseActualParameters (parameterDeclarations, WxeFunctionCommand.Parameters, CultureInfo.InvariantCulture);
+
+    NameValueCollection queryString = WxeVariablesContainer.SerializeParametersForQueryString (parameterDeclarations, parameterValues);
     queryString.Set (WxeHandler.Parameters.WxeReturnToSelf, true.ToString());
     NameValueCollectionUtility.Append (queryString, additionalUrlParameters);
     

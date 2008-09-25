@@ -157,7 +157,7 @@ namespace Remotion.Web.ExecutionEngine
           new WxeTransactedFunctionParameterEnlister<TTransaction, TScope, TTransactionScopeManager> (transaction, ScopeManager);
 
       IEnumerable<WxeParameterDeclaration> inParameters =
-          EnumerableUtility.Where (ParameterDeclarations, delegate (WxeParameterDeclaration p) { return p.IsIn; });
+          EnumerableUtility.Where (VariablesContainer.ParameterDeclarations, delegate (WxeParameterDeclaration p) { return p.IsIn; });
 
       enlister.EnlistParameters (inParameters, Variables);
       enlister.LoadAllEnlistedObjects ();
@@ -183,7 +183,7 @@ namespace Remotion.Web.ExecutionEngine
             new WxeTransactedFunctionParameterEnlister<TTransaction, TScope, TTransactionScopeManager> (ScopeManager.ActiveScope.ScopedTransaction, ScopeManager);
 
         IEnumerable<WxeParameterDeclaration> outParameters =
-            EnumerableUtility.Where (ParameterDeclarations, delegate (WxeParameterDeclaration p) { return p.IsOut; });
+            EnumerableUtility.Where (VariablesContainer.ParameterDeclarations, delegate (WxeParameterDeclaration p) { return p.IsOut; });
 
         enlister.EnlistParameters (outParameters, Variables);
         enlister.LoadAllEnlistedObjects ();

@@ -301,7 +301,7 @@ namespace Remotion.Web.UI.Controls
         Type functionType = ResolveFunctionType ();
         WxeFunction function = (WxeFunction) Activator.CreateInstance (functionType);
 
-        function.InitializeParameters (_parameters, additionalWxeParameters);
+        function.VariablesContainer.InitializeParameters (_parameters, additionalWxeParameters);
 
         return function;
       }

@@ -12,6 +12,7 @@ using System;
 using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.Security.ExecutionEngine
 {
@@ -75,7 +76,7 @@ namespace Remotion.Web.Security.ExecutionEngine
 
     public Type GetTypeOfSecurableObject ()
     {
-      WxeParameterDeclaration[] parameterDeclarations = WxeFunction.GetParameterDeclarations (_functionType);
+      WxeParameterDeclaration[] parameterDeclarations = WxeVariablesContainer.GetParameterDeclarations (_functionType);
       WxeParameterDeclaration parameterDeclaration = GetParameterDeclaration (parameterDeclarations);
       if (!typeof (ISecurableObject).IsAssignableFrom (parameterDeclaration.Type))
       {
@@ -101,7 +102,7 @@ namespace Remotion.Web.Security.ExecutionEngine
     {
       ArgumentUtility.CheckNotNullAndType ("function", function, _functionType);
       
-      WxeParameterDeclaration parameterDeclaration = GetParameterDeclaration (function.ParameterDeclarations);
+      WxeParameterDeclaration parameterDeclaration = GetParameterDeclaration (function.VariablesContainer.ParameterDeclarations);
       object parameterValue = function.Variables[parameterDeclaration.Name];
       if (parameterValue == null)
       {

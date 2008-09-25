@@ -22,14 +22,11 @@ public class ViewPersonsWxeFunction: WxeFunction
       new WxeParameterDeclaration ("objects", true, WxeParameterDirection.In, typeof (IBusinessObject[]))};
 
   public ViewPersonsWxeFunction()
+    : base (s_parameters)
   {
   }
 
   // parameters and local variables
-  public override WxeParameterDeclaration[] ParameterDeclarations
-  {
-    get { return s_parameters; }
-  }
 
   [WxeParameter (1, true, WxeParameterDirection.In)]
   public IBusinessObject[] Objects

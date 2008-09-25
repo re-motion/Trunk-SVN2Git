@@ -48,7 +48,7 @@ namespace Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute
     {
       NameValueCollection urlParameters;
       if (Parameters.PermaUrlOptions.UrlParameters == null)
-        urlParameters = Parameters.SubFunction.SerializeParametersForQueryString();
+        urlParameters = Parameters.SubFunction.VariablesContainer.SerializeParametersForQueryString();
       else
         urlParameters = Parameters.PermaUrlOptions.UrlParameters.Clone();
 

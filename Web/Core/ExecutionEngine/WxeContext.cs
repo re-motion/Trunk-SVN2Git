@@ -192,7 +192,7 @@ namespace Remotion.Web.ExecutionEngine
       if (urlParameters == null)
       {
         if (createPermaUrl)
-          internalUrlParameters = function.SerializeParametersForQueryString ();
+          internalUrlParameters = function.VariablesContainer.SerializeParametersForQueryString ();
         else
           internalUrlParameters = new NameValueCollection ();
       }
@@ -464,7 +464,7 @@ namespace Remotion.Web.ExecutionEngine
       {
         NameValueCollection internalUrlParameters;
         if (permaUrlOptions.UrlParameters == null)
-          internalUrlParameters = function.SerializeParametersForQueryString ();
+          internalUrlParameters = function.VariablesContainer.SerializeParametersForQueryString ();
         else
           internalUrlParameters = permaUrlOptions.UrlParameters.Clone ();
         internalUrlParameters.Set (WxeHandler.Parameters.WxeFunctionToken, functionToken);

@@ -11,7 +11,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Collections;
-using Remotion.Data;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
@@ -149,9 +148,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void OnTransactionCreated_EnlistsInParameters ()
     {
-      _function.Variables["in"] = "i";
-      _function.Variables["inout"] = "io";
-      _function.Variables["out"] = "o";
+      _function.Variables["In"] = "i";
+      _function.Variables["Inout"] = "io";
+      _function.Variables["Out"] = "o";
 
       TestTransaction transaction = GetScopeManager ().RootTransactionToCreate;
       _function.OnTransactionCreated (transaction);
@@ -163,9 +162,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void OnTransactionCreated_LoadsInParameters ()
     {
-      _function.Variables["in"] = "i";
-      _function.Variables["inout"] = "io";
-      _function.Variables["out"] = "o";
+      _function.Variables["In"] = "i";
+      _function.Variables["Inout"] = "io";
+      _function.Variables["Out"] = "o";
 
       TestTransaction transaction = GetScopeManager ().RootTransactionToCreate;
       _function.OnTransactionCreated (transaction);
@@ -179,9 +178,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     {
       TestTransaction transaction = new TestTransaction ();
 
-      _function.Variables["in"] = "i";
-      _function.Variables["inout"] = "io";
-      _function.Variables["out"] = "o";
+      _function.Variables["In"] = "i";
+      _function.Variables["Inout"] = "io";
+      _function.Variables["Out"] = "o";
 
       new TestTransactionScope (transaction);
       _function.OnExecutionFinished ();
@@ -195,9 +194,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     {
       TestTransaction transaction = new TestTransaction ();
 
-      _function.Variables["in"] = "i";
-      _function.Variables["inout"] = "io";
-      _function.Variables["out"] = "o";
+      _function.Variables["In"] = "i";
+      _function.Variables["Inout"] = "io";
+      _function.Variables["Out"] = "o";
 
       new TestTransactionScope (transaction);
       _function.OnExecutionFinished ();
@@ -209,9 +208,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void OnExecuteFinished_DoesntHandleOutParameters_WithNullTransaction ()
     {
-      _function.Variables["in"] = "i";
-      _function.Variables["inout"] = "io";
-      _function.Variables["out"] = "o";
+      _function.Variables["In"] = "i";
+      _function.Variables["Inout"] = "io";
+      _function.Variables["Out"] = "o";
 
       new TestTransactionScope (null);
       _function.OnExecutionFinished ();
@@ -223,9 +222,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void OnExecuteFinished_DoesntHandleOutParameters_WithoutOuterScope ()
     {
-      _function.Variables["in"] = "i";
-      _function.Variables["inout"] = "io";
-      _function.Variables["out"] = "o";
+      _function.Variables["In"] = "i";
+      _function.Variables["Inout"] = "io";
+      _function.Variables["Out"] = "o";
 
       _function.OnExecutionFinished ();
 

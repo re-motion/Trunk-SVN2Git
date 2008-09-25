@@ -30,10 +30,10 @@ public enum WxeParameterDirection
 [Serializable]
 public class WxeParameterDeclaration
 {
-  private string _name;
-  private bool _required;
-  private WxeParameterDirection _direction;
-  private Type _type;
+  private readonly string _name;
+  private readonly bool _required;
+  private readonly WxeParameterDirection _direction;
+  private readonly Type _type;
   [NonSerialized]
   private WxeParameterConverter _converter;
 

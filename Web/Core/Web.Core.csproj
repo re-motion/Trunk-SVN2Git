@@ -110,6 +110,7 @@
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Context\WebSafeContextMixin.cs" />
     <None Include="ExecutionEngine\Infrastructure\TxStrategyDoc.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxeVariablesContainer.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ClearingStateSelectionStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateClearingState.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateCompletedState.cs" />

@@ -10,7 +10,6 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
@@ -31,16 +30,27 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
       _autoCommit = base.AutoCommit;
     }
 
-    public override WxeParameterDeclaration[] ParameterDeclarations
+    [WxeParameter (1, false, WxeParameterDirection.In)]
+    public object In
     {
-      get 
-      { 
-        return new WxeParameterDeclaration[] { 
-            new WxeParameterDeclaration ("in", false, WxeParameterDirection.In, typeof (object)),
-            new WxeParameterDeclaration ("out", false, WxeParameterDirection.Out, typeof (object)),
-            new WxeParameterDeclaration ("inout", false, WxeParameterDirection.InOut, typeof (object))
-        }; }
+      get { return Variables["In"]; }
+      set { Variables["In"] = value; }
     }
+
+    [WxeParameter (2, false, WxeParameterDirection.Out)]
+    public object Out
+    {
+      get { return Variables["Out"]; }
+      set { Variables["Out"] = value; }
+    }
+
+    [WxeParameter (3, false, WxeParameterDirection.InOut)]
+    public object Inout
+    {
+      get { return Variables["Inout"]; }
+      set { Variables["Inout"] = value; }
+    }
+
 
     public new WxeTransactionBase<TestTransaction> CreateWxeTransaction ()
     {
