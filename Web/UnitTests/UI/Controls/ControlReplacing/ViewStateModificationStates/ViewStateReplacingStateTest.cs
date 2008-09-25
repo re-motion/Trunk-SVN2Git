@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.Web.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
@@ -24,10 +25,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
   public class ViewStateReplacingStateTest : TestBase
   {
     [Test]
-    public void LoadViewState ()
+    public void LoadViewState_BeforeParentLoaded ()
     {
       TestPageHolder testPageHolder = new TestPageHolder (false);
-      object viewState = new object();
+      object viewState = new object ();
       var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy> ();
       ControlReplacer replacer = SetupControlReplacer (MemberCallerMock, testPageHolder.NamingContainer, modificationStateSelectionStrategy);
       ViewStateReplacingState state = new ViewStateReplacingState (replacer, MemberCallerMock, viewState);
@@ -44,7 +45,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
             Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
             Assert.That (replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateLoadingState)));
           });
-      MemberCallerMock.Replay();
 
       testPageHolder.Page.SetRequestValueCollection (new NameValueCollection());
       testPageHolder.PageInvoker.InitRecursive();
@@ -61,10 +61,25 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.False);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 
-      testPageHolder.PageInvoker.LoadRecursive();
+      ControlInvoker namingContainerInvoker = new ControlInvoker (testPageHolder.NamingContainer);
+      namingContainerInvoker.LoadRecursive ();
 
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
+    }
+
+    [Test]
+    public void LoadViewState_AfterParentLoaded ()
+    {
+      ControlReplacer replacer = new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" };
+      object viewState = new object();
+      ViewStateReplacingState state = new ViewStateReplacingState (replacer, MemberCallerMock, viewState);
+
+      state.LoadViewState (null);
+
+      Assert.That (replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateReplacingAfterParentLoadedState)));
+      Assert.That (((ViewStateModificationStateBase) replacer.ViewStateModificationState).Replacer, Is.SameAs (replacer));
+      Assert.That (((ViewStateReplacingAfterParentLoadedState) replacer.ViewStateModificationState).ViewState, Is.SameAs (viewState));
     }
   }
 }

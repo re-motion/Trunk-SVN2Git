@@ -9,8 +9,6 @@
  */
 
 using System;
-using System.Web.UI;
-using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
@@ -18,7 +16,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
   public class ViewStateReplacingState : ViewStateModificationStateBase
   {
     private readonly object _viewState;
-    private bool _isViewStateLoaded;
 
     public ViewStateReplacingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller, object viewState)
       : base (replacer, memberCaller)
@@ -45,32 +42,11 @@ namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
         Replacer.WrappedControl.EnableViewState = false;
         Replacer.WrappedControl.Load += delegate { Replacer.WrappedControl.EnableViewState = enableViewStateBackup; };
       }
-
-      _isViewStateLoaded = true;
-    }
-
-    public override void AddedControl (Control control, int index, Action<Control, int> baseCall)
-    {
-      ArgumentUtility.CheckNotNull ("baseCall", baseCall);
-
-      bool enableViewStateBackup = false;
-      if (_isViewStateLoaded)
+      else
       {
-        enableViewStateBackup = Replacer.WrappedControl.EnableViewState;
-        Replacer.WrappedControl.EnableViewState = false;
+        Replacer.ViewStateModificationState = new ViewStateReplacingAfterParentLoadedState (Replacer, MemberCaller, _viewState);
       }
-
-      baseCall (control, index);
-
-      if (_isViewStateLoaded)
-      {
-        Replacer.WrappedControl.EnableViewState = enableViewStateBackup;
-
-        Replacer.ViewStateModificationState = new ViewStateLoadingState (Replacer, MemberCaller);
-
-        MemberCaller.LoadViewStateRecursive (Replacer, _viewState);
-        // Causes a nested call of LoadViewState, this time on ViewStateLoadingState.
-      }
+      
     }
   }
 }

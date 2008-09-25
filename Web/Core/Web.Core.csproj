@@ -120,6 +120,7 @@
     <Compile Include="UI\Controls\ControlReplacing\IModificationStateSelectionStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\LoadingStateSelectionStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ReplacingStateSelectionStrategy.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateReplacingAfterParentLoadedState.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\IViewStateModificationState.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateClearingAfterParentLoadedState.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateClearingState.cs" />

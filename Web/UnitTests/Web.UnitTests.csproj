@@ -152,6 +152,7 @@
     <Compile Include="UI\Controls\ControlReplacing\IAddedControl.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ReplacingStateSelectionStrategyTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\LoadingStateSelectionStrategyTest.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateReplacingAfterParentLoadedStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateModificationStateBaseTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateClearingAfterParentLoadedStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateLoadingStateTest.cs" />

@@ -23,43 +23,33 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
   [TestFixture]
   public class ViewStateClearingStateTest : TestBase
   {
-    private TestPageHolder _testPageHolder;
-    private ControlReplacer _replacer;
-    private ViewStateClearingState _state;
-
-    [SetUp]
-    public override void SetUp ()
-    {
-      base.SetUp();
-
-      _testPageHolder = new TestPageHolder (false);
-      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy> ();
-      _replacer = SetupControlReplacerForIntegrationTest (_testPageHolder.NamingContainer, modificationStateSelectionStrategy);
-      _state = new ViewStateClearingState (_replacer, MemberCallerMock);
-      modificationStateSelectionStrategy.Stub (stub => stub.CreateViewStateModificationState (Arg.Is (_replacer), Arg<IInternalControlMemberCaller>.Is.NotNull)).Return (_state);
-    }
-
     [Test]
     public void LoadViewState_BeforeParentLoaded ()
     {
-      _testPageHolder.Page.SetRequestValueCollection (new NameValueCollection());
-      _testPageHolder.PageInvoker.InitRecursive();
+      TestPageHolder testPageHolder = new TestPageHolder (false);
+      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy> ();
+      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, modificationStateSelectionStrategy);
+      ViewStateClearingState state = new ViewStateClearingState (replacer, MemberCallerMock);
+      modificationStateSelectionStrategy.Stub (stub => stub.CreateViewStateModificationState (Arg.Is (replacer), Arg<IInternalControlMemberCaller>.Is.NotNull)).Return (state);
+      
+      testPageHolder.Page.SetRequestValueCollection (new NameValueCollection ());
+      testPageHolder.PageInvoker.InitRecursive();
 
-      Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.True);
-      Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
+      Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
+      Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 
-      _state.LoadViewState (null);
+      state.LoadViewState (null);
 
-      Assert.That (_replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateCompletedState)));
-      Assert.That (((ViewStateModificationStateBase) _replacer.ViewStateModificationState).Replacer, Is.SameAs (_replacer));
-      Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.False);
-      Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
+      Assert.That (replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateCompletedState)));
+      Assert.That (((ViewStateModificationStateBase) replacer.ViewStateModificationState).Replacer, Is.SameAs (replacer));
+      Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.False);
+      Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 
-      ControlInvoker namingContainerInvoker = new ControlInvoker (_testPageHolder.NamingContainer);
+      ControlInvoker namingContainerInvoker = new ControlInvoker (testPageHolder.NamingContainer);
       namingContainerInvoker.LoadRecursive();
 
-      Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.True);
-      Assert.That (_testPageHolder.Parent.ValueInViewState, Is.Null);
+      Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
+      Assert.That (testPageHolder.Parent.ValueInViewState, Is.Null);
     }
 
     [Test]
