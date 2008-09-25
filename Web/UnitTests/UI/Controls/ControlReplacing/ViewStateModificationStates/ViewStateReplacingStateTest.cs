@@ -9,15 +9,12 @@
  */
 
 using System;
-using System.Collections.Specialized;
-using System.Web.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
-using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificationStates
@@ -29,18 +26,15 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     public void LoadViewState_BeforeParentLoaded ()
     {
       TestPageHolder testPageHolder = new TestPageHolder (false);
-      object viewState = new object ();
-      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy> ();
-      ControlReplacer replacer = SetupControlReplacer (MemberCallerMock, testPageHolder.NamingContainer, modificationStateSelectionStrategy);
-      ViewStateReplacingState state = new ViewStateReplacingState (replacer, MemberCallerMock, viewState);
-      modificationStateSelectionStrategy.Stub (stub => stub.CreateViewStateModificationState (replacer, MemberCallerMock)).Return (state);
-      modificationStateSelectionStrategy
-          .Stub (stub => stub.CreateControlStateModificationState (replacer, MemberCallerMock))
-          .Return (new ControlStateLoadingState(replacer, MemberCallerMock));
+      object viewState = new object();
+      ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
+      replacer.ViewStateModificationState = new ViewStateLoadingState (replacer, MemberCallerMock);
+      replacer.ControlStateModificationState = new ControlStateLoadingState (replacer, MemberCallerMock);
+      replacer.Controls.Add (testPageHolder.NamingContainer);
 
-      InternalControlMemberCaller memberCaller = new InternalControlMemberCaller();
-      MemberCallerMock.Stub (stub => stub.GetControlState (Arg<Control>.Is.Anything)).Do ((Func<Control, ControlState>) memberCaller.GetControlState).Repeat.Any();
-      MemberCallerMock.Stub (stub => stub.SetCollectionReadOnly (Arg<ControlCollection>.Is.Anything, Arg<string>.Is.Anything)).Do ((Func<ControlCollection, string, string>) memberCaller.SetCollectionReadOnly).Repeat.Any ();
+      ViewStateReplacingState state = new ViewStateReplacingState (replacer, MemberCallerMock, viewState);
+      replacer.ViewStateModificationState = state;
+
       MemberCallerMock.Expect (mock => mock.LoadViewStateRecursive (replacer, viewState))
           .Do (
           invocation =>
@@ -50,13 +44,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
             Assert.That (replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateLoadingState)));
           });
 
-      testPageHolder.Page.SetRequestValueCollection (new NameValueCollection());
-      testPageHolder.PageInvoker.InitRecursive();
-
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 
-      state.LoadViewState(null);
+      state.LoadViewState (null);
 
       MemberCallerMock.VerifyAllExpectations();
 
@@ -66,7 +57,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 
       ControlInvoker namingContainerInvoker = new ControlInvoker (testPageHolder.NamingContainer);
-      namingContainerInvoker.LoadRecursive ();
+      namingContainerInvoker.LoadRecursive();
 
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
@@ -75,7 +66,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     [Test]
     public void LoadViewState_AfterParentLoaded ()
     {
-      ControlReplacer replacer = new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" };
+      ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
       object viewState = new object();
       ViewStateReplacingState state = new ViewStateReplacingState (replacer, MemberCallerMock, viewState);
 

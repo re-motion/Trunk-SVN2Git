@@ -20,37 +20,25 @@ using Rhino.Mocks.Interfaces;
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   [TestFixture]
-  public class ViewStateModificationStateTest : TestBase
+  public class ViewStateModificationStateBaseTest : TestBase
   {
-    private TestPageHolder _testPageHolder;
-    private ControlReplacer _replacer;
-    private ViewStateModificationStateBase _state;
-
-    [SetUp]
-    public override void SetUp ()
-    {
-      base.SetUp();
-
-      _testPageHolder = new TestPageHolder (false);
-
-      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy>();
-      _replacer = SetupControlReplacer (MemberCallerMock, _testPageHolder.NamingContainer, modificationStateSelectionStrategy);
-      _state = MockRepository.GenerateStub<ViewStateModificationStateBase> (_replacer, MemberCallerMock);
-      modificationStateSelectionStrategy.Stub (stub => stub.CreateViewStateModificationState (_replacer, MemberCallerMock)).Return (_state);
-    }
-
     [Test]
     public void AdddedControl ()
     {
-      _state.Stub (stub => stub.AddedControl (Arg<Control>.Is.Anything, Arg<int>.Is.Anything, Arg<Action<Control, int>>.Is.Anything))
+      TestPageHolder testPageHolder = new TestPageHolder (false);
+      ControlReplacer replacer = new ControlReplacer  (MemberCallerMock);
+      IAddedControl addedControlMock = MockRepository.GenerateMock<IAddedControl> ();
+      
+      ViewStateModificationStateBase state = MockRepository.GenerateStub<ViewStateModificationStateBase> (replacer, MemberCallerMock);
+      state.Stub (stub => stub.AddedControl (Arg<Control>.Is.Anything, Arg<int>.Is.Anything, Arg<Action<Control, int>>.Is.Anything))
           .CallOriginalMethod (OriginalCallOptions.NoExpectation);
-      IAddedControl addedControlMock = MockRepository.GenerateMock<IAddedControl>();
-      _replacer.ViewStateModificationState = _state;
 
-      _state.AddedControl (_testPageHolder.NamingContainer, 0, addedControlMock.AddedControl);
+      replacer.ViewStateModificationState = state;
 
-      Assert.That (_replacer.ViewStateModificationState, Is.SameAs (_state));
-      addedControlMock.AssertWasCalled (mock => mock.AddedControl (_testPageHolder.NamingContainer, 0));
+      state.AddedControl (testPageHolder.NamingContainer, 0, addedControlMock.AddedControl);
+
+      Assert.That (replacer.ViewStateModificationState, Is.SameAs (state));
+      addedControlMock.AssertWasCalled (mock => mock.AddedControl (testPageHolder.NamingContainer, 0));
     }
   }
 }

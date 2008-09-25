@@ -10,40 +10,20 @@
 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
-using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
   [TestFixture]
   public class ViewStateCompletedStateTest : TestBase
   {
-    private TestPageHolder _testPageHolder;
-    private ControlReplacer _replacer;
-    private ViewStateCompletedState _state;
-
-    [SetUp]
-    public override void SetUp ()
-    {
-      base.SetUp ();
-
-      _testPageHolder = new TestPageHolder (false);
-
-      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy> ();
-      _replacer = SetupControlReplacer (MemberCallerMock, _testPageHolder.NamingContainer, modificationStateSelectionStrategy);
-      _state = new ViewStateCompletedState (_replacer, MemberCallerMock);
-      modificationStateSelectionStrategy.Stub (stub => stub.CreateViewStateModificationState (_replacer, MemberCallerMock)).Return (_state);
-    }
-
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void LoadViewState ()
     {
-      _replacer.ViewStateModificationState = _state;
- 
-      _state.LoadViewState (null);
+      ViewStateCompletedState state = new ViewStateCompletedState (new ControlReplacer (MemberCallerMock), MemberCallerMock);
+      state.LoadViewState (null);
     }
   }
 }

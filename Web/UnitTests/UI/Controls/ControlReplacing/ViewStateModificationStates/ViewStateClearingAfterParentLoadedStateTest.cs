@@ -9,17 +9,12 @@
  */
 
 using System;
-using System.Collections.Specialized;
-using System.Web.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
-using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
-using Remotion.Web.Utilities;
 using Rhino.Mocks;
-using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
@@ -36,29 +31,14 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
       base.SetUp();
 
       _testPageHolder = new TestPageHolder (false);
-      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy>();
-      _replacer = SetupControlReplacerForIntegrationTest (_testPageHolder.NamingContainer, modificationStateSelectionStrategy);
+      _replacer = new ControlReplacer (MemberCallerMock);
       _state = new ViewStateClearingAfterParentLoadedState (_replacer, MemberCallerMock);
-
-      IViewStateModificationState stateStub = MockRepository.GenerateStub<ViewStateModificationStateBase> (_replacer, MemberCallerMock);
-      stateStub
-          .Stub (stub => stub.AddedControl (Arg<Control>.Is.Anything, Arg<int>.Is.Anything, Arg<Action<Control, int>>.Is.Anything))
-          .CallOriginalMethod (OriginalCallOptions.NoExpectation);
-
-      modificationStateSelectionStrategy
-          .Stub (stub => stub.CreateViewStateModificationState (Arg.Is (_replacer), Arg<IInternalControlMemberCaller>.Is.NotNull))
-          .Return (stateStub);
-      modificationStateSelectionStrategy
-          .Stub (stub => stub.CreateControlStateModificationState (Arg.Is (_replacer), Arg<IInternalControlMemberCaller>.Is.NotNull))
-          .Return (new ControlStateLoadingState (_replacer, MemberCallerMock));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void LoadViewState ()
     {
-      _replacer.ViewStateModificationState = _state;
-
       _state.LoadViewState (null);
     }
 
@@ -66,8 +46,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     public void AdddedControl ()
     {
       IAddedControl addedControlMock = MockRepository.GenerateMock<IAddedControl>();
-      _testPageHolder.Page.SetRequestValueCollection (new NameValueCollection());
-      _testPageHolder.PageInvoker.InitRecursive();
 
       _state.AddedControl (_testPageHolder.NamingContainer, 0, addedControlMock.AddedControl);
 

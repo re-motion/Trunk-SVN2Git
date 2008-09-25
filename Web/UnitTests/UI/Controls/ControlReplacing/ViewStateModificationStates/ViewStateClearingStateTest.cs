@@ -9,15 +9,12 @@
  */
 
 using System;
-using System.Collections.Specialized;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
-using Remotion.Web.Utilities;
-using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
@@ -28,22 +25,17 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     public void LoadViewState_BeforeParentLoaded ()
     {
       TestPageHolder testPageHolder = new TestPageHolder (false);
-      var modificationStateSelectionStrategy = MockRepository.GenerateStub<IModificationStateSelectionStrategy>();
-      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, modificationStateSelectionStrategy);
-      modificationStateSelectionStrategy
-          .Stub (stub => stub.CreateViewStateModificationState (Arg.Is (replacer), Arg<IInternalControlMemberCaller>.Is.NotNull))
-          .Return (new ViewStateClearingState (replacer, MemberCallerMock));
-      modificationStateSelectionStrategy
-          .Stub (stub => stub.CreateControlStateModificationState (Arg.Is (replacer), Arg<IInternalControlMemberCaller>.Is.NotNull))
-          .Return (new ControlStateLoadingState (replacer, MemberCallerMock));
+      ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
+      replacer.ViewStateModificationState = new ViewStateLoadingState (replacer, MemberCallerMock);
+      replacer.ControlStateModificationState = new ControlStateLoadingState (replacer, MemberCallerMock);
+      replacer.Controls.Add (testPageHolder.NamingContainer);
 
-      testPageHolder.Page.SetRequestValueCollection (new NameValueCollection());
-      testPageHolder.PageInvoker.InitRecursive();
+      ViewStateClearingState state = new ViewStateClearingState (replacer, MemberCallerMock);
 
       Assert.That (testPageHolder.NamingContainer.EnableViewState, Is.True);
       Assert.That (testPageHolder.Parent.EnableViewState, Is.True);
 
-      new ViewStateClearingState (replacer, MemberCallerMock).LoadViewState (null);
+      state.LoadViewState (null);
 
       Assert.That (replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateCompletedState)));
       Assert.That (((ViewStateModificationStateBase) replacer.ViewStateModificationState).Replacer, Is.SameAs (replacer));
