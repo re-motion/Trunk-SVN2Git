@@ -10,6 +10,7 @@
 
 using System;
 using System.Web.UI;
+using Remotion.Utilities;
 
 namespace Remotion.Development.Web.UnitTesting.AspNetFramework
 {
@@ -36,6 +37,7 @@ namespace Remotion.Development.Web.UnitTesting.AspNetFramework
     {
       base.OnInit (e);
 
+      Assertion.IsNotNull (Page, "Page is null for control '{0}'", ID);
       Page.RegisterRequiresControlState (this);
     }
 

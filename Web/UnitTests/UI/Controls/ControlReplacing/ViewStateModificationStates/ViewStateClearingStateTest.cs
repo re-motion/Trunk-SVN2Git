@@ -12,6 +12,7 @@ using System;
 using System.Collections.Specialized;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
@@ -54,10 +55,11 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
       Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.False);
       Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
 
-      _testPageHolder.PageInvoker.LoadRecursive();
+      ControlInvoker namingContainerInvoker = new ControlInvoker (_testPageHolder.NamingContainer);
+      namingContainerInvoker.LoadRecursive();
 
       Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.True);
-      Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
+      Assert.That (_testPageHolder.Parent.ValueInViewState, Is.Null);
     }
 
     [Test]
