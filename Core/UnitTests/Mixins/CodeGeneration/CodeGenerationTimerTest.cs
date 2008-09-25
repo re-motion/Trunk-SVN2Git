@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
@@ -25,7 +26,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       DateTime start = DateTime.Now;
       using (new CodeGenerationTimer ())
       {
-        while (DateTime.Now - start < TimeSpan.FromMilliseconds (1)) // wait for at least one millisecond
+        Stopwatch sw = new Stopwatch();
+        while (sw.ElapsedMilliseconds < 1) // wait for at least one millisecond
           ;
       }
       Assert.That (CodeGenerationTimer.CodeGenerationTime > timeBefore);
