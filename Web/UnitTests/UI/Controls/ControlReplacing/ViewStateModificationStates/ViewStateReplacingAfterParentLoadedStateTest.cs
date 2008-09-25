@@ -56,23 +56,28 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     public void AddedControl ()
     {
       IAddedControl addedControlMock = MockRepository.GenerateMock<IAddedControl>();
-      addedControlMock.Expect (mock => mock.AddedControl (_testPageHolder.NamingContainer, 0))
-          .Do (
-          invocation =>
-          {
-            Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.False);
-            Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
-          });
 
-      MemberCallerMock.Expect (mock => mock.LoadViewStateRecursive (_replacer, _viewState))
-          .Do (
-          invocation =>
-          {
-            Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.True);
-            Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
-            Assert.That (_replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateLoadingState)));
-            Assert.That (((ViewStateModificationStateBase) _replacer.ViewStateModificationState).Replacer, Is.SameAs (_replacer));
-          });
+      using (MockRepository.Ordered ())
+      {
+        addedControlMock.Expect (mock => mock.AddedControl (_testPageHolder.NamingContainer, 0))
+            .Do (
+            invocation =>
+            {
+              Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.False);
+              Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
+            });
+
+        MemberCallerMock.Expect (mock => mock.LoadViewStateRecursive (_replacer, _viewState))
+            .Do (
+            invocation =>
+            {
+              Assert.That (_testPageHolder.NamingContainer.EnableViewState, Is.True);
+              Assert.That (_testPageHolder.Parent.EnableViewState, Is.True);
+              Assert.That (_replacer.ViewStateModificationState, Is.InstanceOfType (typeof (ViewStateLoadingState)));
+              Assert.That (((ViewStateModificationStateBase) _replacer.ViewStateModificationState).Replacer, Is.SameAs (_replacer));
+            });
+      }
+      MockRepository.ReplayAll ();
 
       _state.AddedControl (_testPageHolder.NamingContainer, 0, addedControlMock.AddedControl);
 

@@ -33,9 +33,13 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModifi
       ControlStateClearingState state = new ControlStateClearingState (replacer, MemberCallerMock);
       replacer.ControlStateModificationState = state;
 
+      MemberCallerMock.Expect (mock => mock.ClearChildControlState (replacer));
+      MockRepository.ReplayAll ();
+
       state.LoadControlState (null);
 
-      MemberCallerMock.AssertWasCalled (mock => mock.ClearChildControlState (replacer));
+      MockRepository.VerifyAll();
+
       Assert.That (replacer.ControlStateModificationState, Is.InstanceOfType (typeof (ControlStateCompletedState)));
       Assert.That (((ControlStateModificationStateBase) replacer.ControlStateModificationState).Replacer, Is.SameAs (replacer));
     }

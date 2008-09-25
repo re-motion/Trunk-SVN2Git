@@ -23,6 +23,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
   {
     private HttpContext _httpContext;
     private IInternalControlMemberCaller _memberCallerMock;
+    private MockRepository _mockRepository;
 
     [SetUp]
     public virtual void SetUp ()
@@ -31,7 +32,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
       _httpContext.Response.ContentEncoding = Encoding.UTF8;
       HttpContextHelper.SetCurrent (_httpContext);
 
-      _memberCallerMock = MockRepository.GenerateMock<IInternalControlMemberCaller>();
+      _mockRepository = new MockRepository();
+      _memberCallerMock = _mockRepository.StrictMultiMock<IInternalControlMemberCaller> ();
     }
 
     [TearDown]
@@ -94,6 +96,11 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     protected IInternalControlMemberCaller MemberCallerMock
     {
       get { return _memberCallerMock; }
+    }
+
+    protected MockRepository MockRepository
+    {
+      get { return _mockRepository; }
     }
   }
 }

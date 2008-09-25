@@ -386,19 +386,23 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
       var controlToWrap = new ReplaceableControlMock ();
       MemberCallerMock.Stub (stub => stub.GetControlState (controlToReplace)).Return (ControlState.ChildrenInitialized);
 
-      using (MemberCallerMock.GetMockRepository ().Ordered ())
+      using (MockRepository.Ordered ())
       {
         MemberCallerMock.Expect (mock => mock.SetCollectionReadOnly (testPageHolder.Page.Controls, null)).Return ("error");
-        MemberCallerMock.Expect (mock => mock.InitRecursive (replacer, testPageHolder.Page));
         MemberCallerMock.Expect (mock => mock.SetCollectionReadOnly (testPageHolder.Page.Controls, "error")).Return (null).Do (
             invocation => Assert.That (
                               testPageHolder.Page.Controls,
                               Is.EqualTo (new Control[] { testPageHolder.OtherNamingContainer, testPageHolder.NamingContainer, replacer })));
-        Assert.That (replacer.Controls, Is.Empty);
+        MemberCallerMock.Expect (mock => mock.InitRecursive (replacer, testPageHolder.Page));
       }
+
+      Assert.That (replacer.Controls, Is.Empty);
+      MockRepository.ReplayAll ();
 
       testPageHolder.Page.Controls.Add (controlToReplace);
       replacer.ReplaceAndWrap (controlToReplace, controlToWrap, new LoadingStateSelectionStrategy ());
+
+      MockRepository.VerifyAll();
 
       Assert.That (
           testPageHolder.Page.Controls, 
@@ -428,6 +432,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
       var control = new ReplaceableControlMock ();
       MemberCallerMock.Stub (stub => stub.GetControlState (control)).Return (ControlState.ChildrenInitialized);
       control.EnsureLazyInitializationContainer ();
+
+      MockRepository.ReplayAll ();
 
       replacer.ReplaceAndWrap (control, control, new LoadingStateSelectionStrategy ());
     }

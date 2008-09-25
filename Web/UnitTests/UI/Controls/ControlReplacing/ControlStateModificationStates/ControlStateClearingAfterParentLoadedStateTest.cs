@@ -42,19 +42,23 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModifi
       replacer.ControlStateModificationState = MockRepository.GenerateStub<ControlStateModificationStateBase> (replacer, MemberCallerMock);
       replacer.Controls.Add (testPageHolder.NamingContainer);
 
-      IAddedControl addedControlMock = MockRepository.GenerateMock<IAddedControl> ();
+      IAddedControl addedControlMock = MockRepository.StrictMock<IAddedControl> ();
 
       var state = new ControlStateClearingAfterParentLoadedState (replacer, MemberCallerMock);
       replacer.ControlStateModificationState = state;
 
+      using (MockRepository.Ordered ())
+      {
+        MemberCallerMock.Expect (mock => mock.ClearChildControlState (replacer));
+        addedControlMock.Expect (mock => mock.AddedControl (testPageHolder.NamingContainer, 0));
+      }
+      MockRepository.ReplayAll();
+
       state.AddedControl (testPageHolder.NamingContainer, 0, addedControlMock.AddedControl);
 
-      MemberCallerMock.AssertWasCalled (mock => mock.ClearChildControlState (replacer));
-      addedControlMock.AssertWasCalled (mock => mock.AddedControl (testPageHolder.NamingContainer, 0));
-
+      MockRepository.VerifyAll();
       Assert.That (replacer.ControlStateModificationState, Is.InstanceOfType (typeof (ControlStateCompletedState)));
       Assert.That (((ControlStateModificationStateBase) replacer.ControlStateModificationState).Replacer, Is.SameAs (replacer));
     }
-
   }
 }
