@@ -25,7 +25,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       TimeSpan timeBefore = CodeGenerationTimer.CodeGenerationTime;
       using (new CodeGenerationTimer ())
       {
-        Stopwatch sw = new Stopwatch();
+        Stopwatch sw = Stopwatch.StartNew();
         while (sw.ElapsedMilliseconds < 1) // wait for at least one millisecond
           ;
       }
