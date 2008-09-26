@@ -20,7 +20,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 {
   public sealed class SecurityToken
   {
-    private readonly User _user;
+    private readonly User _user; // principial, NOT owning user (onwing user will be introduced in future)
     private readonly Tenant _owningTenant;
     private readonly ReadOnlyCollection<Group> _owningGroups;
     private readonly ReadOnlyCollection<AbstractRoleDefinition> _abstractRoles;
