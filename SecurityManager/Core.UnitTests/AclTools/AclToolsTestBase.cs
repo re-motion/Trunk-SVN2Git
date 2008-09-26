@@ -60,18 +60,18 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     {
       base.SetUp ();
       _testHelper = new AccessControlTestHelper ();
-      TestHelper.Transaction.EnterNonDiscardingScope ();
+      _testHelper.Transaction.EnterNonDiscardingScope ();
 
-      _tenant = TestHelper.CreateTenant ("Da Tenant");
-      _group = TestHelper.CreateGroup ("Da Group", null, Tenant);
-      _position = TestHelper.CreatePosition ("Supreme Being");
-      _role = TestHelper.CreateRole (User, Group, Position);
-      _user  = TestHelper.CreateUser ("DaUs", "Da", "Usa", "Dr.", Group, Tenant);
+      _tenant = _testHelper.CreateTenant ("Da Tenant");
+      _group = _testHelper.CreateGroup ("Da Group", null, Tenant);
+      _position = _testHelper.CreatePosition ("Supreme Being");
+      _user = _testHelper.CreateUser ("DaUs", "Da", "Usa", "Dr.", Group, Tenant);
+      _role = _testHelper.CreateRole (User, Group, Position);
     }
 
     private User CreateUser (Tenant userTenant, Group userGroup)
     {
-      return TestHelper.CreateUser ("JoDo", "John", "Doe", "Prof.", userGroup, userTenant);
+      return _testHelper.CreateUser ("JoDo", "John", "Doe", "Prof.", userGroup, userTenant);
     }
   }
 }

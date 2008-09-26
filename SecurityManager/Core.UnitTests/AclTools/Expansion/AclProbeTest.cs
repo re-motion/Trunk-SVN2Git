@@ -22,11 +22,28 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   {
 
     [Test]
-    public void CreateAclProbeTest ()
+    public void CreateAclProbe_User_Test ()
     {
-      AccessControlEntry ace = AccessControlEntry.NewObject ();
+      AccessControlEntry ace = TestHelper.CreateAceWithAbstractRole();
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.User, Is.EqualTo (User));
+    }
+
+    [Test]
+    public void CreateAclProbe_SpecificTenant_Test ()
+    {
+      AccessControlEntry ace = TestHelper.CreateAceWithSpecficTenant (Tenant);
+      AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
+      Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (ace.SpecificTenant));
+    }
+
+    [Test]
+    [Ignore]
+    public void CreateAclProbe_OwningTenant_Test ()
+    {
+      AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant ();
+      AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
+      Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (ace.SpecificTenant));
     }
 
     //[Test]
