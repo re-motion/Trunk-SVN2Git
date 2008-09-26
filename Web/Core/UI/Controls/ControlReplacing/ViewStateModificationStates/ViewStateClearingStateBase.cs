@@ -13,6 +13,9 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
+  /// <summary>
+  /// The <see cref="ViewStateClearingStateBase"/> defines the reusable clearing-logik for resetting the view state.
+  /// </summary>
   public abstract class ViewStateClearingStateBase : ViewStateModificationStateBase
   {
     protected ViewStateClearingStateBase (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)

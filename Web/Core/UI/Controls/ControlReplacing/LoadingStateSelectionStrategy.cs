@@ -14,6 +14,10 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing
 {
+  /// <summary>
+  /// The <see cref="LoadingStateSelectionStrategy"/> type is used when the state of a <see cref="ControlReplacer"/>'s control tree should be 
+  /// loaded during a regular page-lifecycle, i.e. when the view state is to be loaded without modification
+  /// </summary>
   public class LoadingStateSelectionStrategy : IModificationStateSelectionStrategy
   {
     public IViewStateModificationState CreateViewStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)

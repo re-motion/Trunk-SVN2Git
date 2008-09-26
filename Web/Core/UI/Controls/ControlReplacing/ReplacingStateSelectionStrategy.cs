@@ -18,6 +18,10 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing
 {
+  /// <summary>
+  /// The <see cref="ReplacingStateSelectionStrategy"/> type is used when the state of a <see cref="ControlReplacer"/>'s control tree should be 
+  /// restored to reflect a previously used state.
+  /// </summary>
   public class ReplacingStateSelectionStrategy : IModificationStateSelectionStrategy
   {
     private readonly IDictionary _controlState;

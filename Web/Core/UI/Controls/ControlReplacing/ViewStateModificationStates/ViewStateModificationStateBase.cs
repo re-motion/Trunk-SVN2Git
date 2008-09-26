@@ -5,6 +5,9 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
+  /// <summary>
+  /// The <see cref="ViewStateModificationStateBase"/> type is the base implementation of the <see cref="IViewStateModificationState"/> interface.
+  /// </summary>
   public abstract class ViewStateModificationStateBase : IViewStateModificationState
   {
     private readonly ControlReplacer _replacer;

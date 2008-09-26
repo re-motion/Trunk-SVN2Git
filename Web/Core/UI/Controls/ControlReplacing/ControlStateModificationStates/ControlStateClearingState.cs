@@ -12,6 +12,14 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
+  /// <summary>
+  /// The <see cref="ControlStateClearingState"/> represents the <see cref="ControlStateModificationStateBase.Replacer"/> during a page-lifecycle in which 
+  /// the control tree will be replaced with new version, requiring the reset of the view state for this instance as well.
+  /// Executing the <see cref="LoadControlState"/> method will transation the <see cref="ControlStateModificationStateBase.Replacer"/> into the 
+  /// <see cref="ControlStateCompletedState"/> if the <see cref="ControlStateModificationStateBase.Replacer"/> was initialized along with the rest of the 
+  /// page's controls and the <see cref="ControlStateClearingAfterParentLoadedState"/> if the <see cref="ControlStateModificationStateBase.Replacer"/>
+  /// was initialized later in the page-lifecycle, i.e. during the loading-phase.
+  /// </summary>
   public class ControlStateClearingState : ControlStateClearingStateBase
   {
     public ControlStateClearingState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)

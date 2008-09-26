@@ -14,6 +14,12 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates
 {
+  /// <summary>
+  /// The <see cref="ControlStateReplacingState"/> represents the <see cref="ControlStateModificationStateBase.Replacer"/> during a page-lifecycle in which 
+  /// the control tree will be replaced with a previosuly used version, requiring the restoration of the control state from that instance as well.
+  /// Executing the <see cref="LoadControlState"/> method will transation the <see cref="ControlStateModificationStateBase.Replacer"/> into the 
+  /// <see cref="ControlStateCompletedState"/>.
+  /// </summary>
   public class ControlStateReplacingState : ControlStateModificationStateBase
   {
     private readonly IDictionary _controlState;

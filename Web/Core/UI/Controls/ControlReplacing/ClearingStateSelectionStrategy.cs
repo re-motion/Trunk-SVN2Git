@@ -14,6 +14,9 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing
 {
+  /// <summary>
+  /// The <see cref="ClearingStateSelectionStrategy"/> type is used when the state of a <see cref="ControlReplacer"/>'s control tree should be reset.
+  /// </summary>
   public class ClearingStateSelectionStrategy:IModificationStateSelectionStrategy
   {
     public IViewStateModificationState CreateViewStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)

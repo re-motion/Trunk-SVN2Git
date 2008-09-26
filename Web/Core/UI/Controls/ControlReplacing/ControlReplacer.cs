@@ -57,9 +57,14 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     {
       Assertion.IsTrue (object.ReferenceEquals (WrappedControl, control), "The added control is not the same as the wrapped control.");
 
-      Action<Control, int> baseCallControl = (controlArg, indexArg) => base.AddedControl (controlArg, indexArg);
+      Action<Control, int> baseCallControl = (controlArg, indexArg) => BaseAddedControl (controlArg, indexArg);
       Action<Control, int> baseCallControlState = (controlArg, indexArg) => ControlStateModificationState.AddedControl (controlArg, indexArg, baseCallControl);
       ViewStateModificationState.AddedControl (control, index, baseCallControlState);
+    }
+
+    private void BaseAddedControl (Control control, int index)
+    {
+      base.AddedControl (control, index);
     }
 
     protected override object SaveControlState ()

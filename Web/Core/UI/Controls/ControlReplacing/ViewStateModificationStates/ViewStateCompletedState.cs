@@ -13,6 +13,10 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates
 {
+  /// <summary>
+  /// The <see cref="ViewStateCompletedState"/> represents the <see cref="ViewStateModificationStateBase.Replacer"/> after the view state has been 
+  /// loaded. Executing the <see cref="LoadViewState"/> method will result in a <see cref="NotSupportedException"/> being thrown.
+  /// </summary>
   public class ViewStateCompletedState : ViewStateModificationStateBase
   {
     public ViewStateCompletedState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
