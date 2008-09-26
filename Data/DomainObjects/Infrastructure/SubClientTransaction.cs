@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <returns></returns>
     [Obsolete ("Use ClientTransaction.CreateBindingTransaction for clarity.")]
-    public static new ClientTransaction NewBindingTransaction ()
+    public static new ClientTransaction CreateBindingTransaction ()
     {
       return ClientTransaction.CreateBindingTransaction ();
     }

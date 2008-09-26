@@ -20,7 +20,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <returns></returns>
     [Obsolete ("Use ClientTransaction.CreateRootTransaction for clarity.")]
-    public static new ClientTransaction NewRootTransaction ()
+    public static new ClientTransaction CreateRootTransaction ()
     {
       return ClientTransaction.CreateRootTransaction();
     }
