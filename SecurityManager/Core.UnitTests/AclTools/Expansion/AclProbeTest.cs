@@ -59,6 +59,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclProbe.SecurityToken.OwningGroups, NUnit.Framework.SyntaxHelpers.List.Contains (ace.SpecificGroup));
     }
 
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "ace.GroupSelection=2147483647 is currently not supported by this method. Please extend method to handle the new GroupSelection state.")]
+    public void CreateAclProbe_UnsupportedGroupSelection_Test ()
+    {
+      AccessControlEntry ace = TestHelper.CreateAceWithGroupSelectionAll ();
+      FleshOutAccessControlEntryForTest (ace);
+      ace.GroupSelection = (GroupSelection) int.MaxValue;
+      AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
+    }
+
 
     [Test]
     public void CreateAclProbe_SpecificTenant_Test ()
