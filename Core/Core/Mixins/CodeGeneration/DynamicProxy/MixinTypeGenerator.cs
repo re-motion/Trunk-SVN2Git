@@ -21,21 +21,22 @@ using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
+using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
-  internal class MixinTypeGenerator : IMixinTypeGenerator
+  public class MixinTypeGenerator : IMixinTypeGenerator
   {
     private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor =
         typeof (DebuggerDisplayAttribute).GetConstructor (new Type[] { typeof (string) });
 
-    private readonly ModuleManager _module;
-    private readonly TypeGenerator _targetGenerator;
+    private readonly IModuleManager _module;
+    private readonly ITypeGenerator _targetGenerator;
     private readonly MixinDefinition _configuration;
-    private readonly CustomClassEmitter _emitter;
+    private readonly IClassEmitter _emitter;
     private readonly FieldReference _configurationField;
 
-    public MixinTypeGenerator (ModuleManager module, TypeGenerator targetGenerator, MixinDefinition configuration, INameProvider nameProvider)
+    public MixinTypeGenerator (IModuleManager module, ITypeGenerator targetGenerator, MixinDefinition configuration, INameProvider nameProvider)
     {
       ArgumentUtility.CheckNotNull ("module", module);
       ArgumentUtility.CheckNotNull ("targetGenerator", targetGenerator);
@@ -51,25 +52,49 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       string typeName = nameProvider.GetNewTypeName (configuration);
       typeName = CustomClassEmitter.FlattenTypeName (typeName);
 
-      Type[] interfaces = new Type[] {typeof (ISerializable), typeof (IGeneratedMixinType)};
+      Type[] interfaces = new[] {typeof (ISerializable), typeof (IGeneratedMixinType)};
       TypeAttributes flags = TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable;
 
-      bool forceUnsigned = !StrongNameUtil.IsAssemblySigned (targetGenerator.TypeBuilder.Assembly);
-      ClassEmitter classEmitter = new ClassEmitter (_module.Scope, typeName, configuration.Type, interfaces, flags, forceUnsigned);
-      _emitter = new CustomClassEmitter (classEmitter);
+      bool forceUnsigned = !targetGenerator.IsAssemblySigned;
+      _emitter = _module.CreateClassEmitter (typeName, configuration.Type, interfaces, flags, forceUnsigned);
 
-      _configurationField = classEmitter.CreateStaticField ("__configuration", typeof (MixinDefinition));
+      _configurationField = _emitter.CreateStaticField ("__configuration", typeof (MixinDefinition));
+    }
 
+    public IClassEmitter Emitter
+    {
+      get { return _emitter; }
+    }
+
+    public MixinDefinition Configuration
+    {
+      get { return _configuration; }
+    }
+
+    public bool IsAssemblySigned
+    {
+      get { return ReflectionUtility.IsAssemblySigned (Emitter.TypeBuilder.Assembly); }
+    }
+
+    public Type GetBuiltType ()
+    {
+      Generate ();
+      Type builtType = Emitter.BuildType ();
+      return builtType;
+    }
+
+    private void Generate ()
+    {
       AddTypeInitializer ();
 
       _emitter.ReplicateBaseTypeConstructors ();
 
-      ImplementGetObjectData();
+      ImplementGetObjectData ();
 
-      AddMixinTypeAttribute();
-      AddDebuggerAttributes();
+      AddMixinTypeAttribute ();
+      AddDebuggerAttributes ();
       ReplicateAttributes (_configuration.CustomAttributes, _emitter);
-      ImplementOverrides();
+      ImplementOverrides ();
     }
 
     private void AddTypeInitializer ()
@@ -110,7 +135,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       if (!_configuration.HasOverriddenMembers())
         return;
 
-      PropertyInfo targetProperty = MixinReflector.GetTargetProperty (TypeBuilder.BaseType);
+      PropertyInfo targetProperty = MixinReflector.GetTargetProperty (Emitter.TypeBuilder.BaseType);
       PropertyReference targetReference = new PropertyReference (SelfReference.Self, targetProperty);
 
       if (targetProperty == null)
@@ -153,27 +178,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
               new ConvertExpression (targetMethod.DeclaringType, targetReference.ToExpression())));
 
       methodOverride.ImplementByDelegating (castTargetLocal, targetMethod);
-    }
-
-    public TypeBuilder TypeBuilder
-    {
-      get { return _emitter.TypeBuilder; }
-    }
-
-    public CustomClassEmitter Emitter
-    {
-      get { return _emitter; }
-    }
-
-    public MixinDefinition Configuration
-    {
-      get { return _configuration; }
-    }
-
-    public Type GetBuiltType ()
-    {
-      Type builtType = Emitter.BuildType();
-      return builtType;
     }
 
     private void ReplicateAttributes (IEnumerable<AttributeDefinition> attributes, IAttributableEmitter target)

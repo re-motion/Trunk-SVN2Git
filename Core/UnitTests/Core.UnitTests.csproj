@@ -152,13 +152,17 @@
     <Compile Include="Diagnostics\ToTextProviderHandlerTest.cs" />
     <Compile Include="Diagnostics\ToTextSpecificHandlerCollectorTest.cs" />
     <Compile Include="Diagnostics\ToTextTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\CodeGenerationCacheTest.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimerTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinTypeGeneratorTest.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\TargetClassCallingIntroducedMethodFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinIntroducingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinOverridingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\TargetClassCallingOverriddenMethodFromCtor.cs" />
     <Compile Include="Mixins\MixAttributeTest.cs" />
     <Compile Include="Mixins\CodeGenerationStatisticsTest.cs" />
+    <Compile Include="Mixins\SampleTypes\IMarkerInterface.cs" />
     <Compile Include="Mixins\SampleTypes\MixinNonIntroducingSimpleAttribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinSuppressingAndAddingBT1Attribute.cs" />
     <Compile Include="Mixins\SampleTypes\MixinSuppressingBT1Attribute.cs" />
@@ -180,6 +184,7 @@
     <Compile Include="Reflection\AssemblyFinderTest.cs" />
     <Compile Include="Reflection\AssemblyLoaderTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\FileLoadExceptionConsoleApplication\Program.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\SimpleAttribute.cs" />
     <Compile Include="Reflection\ConstructorLookupInfoTest.cs" />
     <Compile Include="Reflection\MethodLookupInfoTest.cs" />
     <Compile Include="Reflection\TestAssemblyFinder.cs" />

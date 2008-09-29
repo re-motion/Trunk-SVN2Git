@@ -8,22 +8,10 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-using Remotion.Collections;
-using Remotion.Mixins.Definitions;
-
 namespace Remotion.Mixins.CodeGeneration
 {
-  public interface ITypeGenerator
+  public class CodeGenerationCache
   {
-    TypeBuilder TypeBuilder { get; }
-    bool IsAssemblySigned { get; }
-
-    Type GetBuiltType ();
-    IEnumerable<Tuple<MixinDefinition, Type>> GetBuiltMixinTypes ();
-    MethodInfo GetPublicMethodWrapper (MethodDefinition methodToBeWrapped);
+    
   }
 }

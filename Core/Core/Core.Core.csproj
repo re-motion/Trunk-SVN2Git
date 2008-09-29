@@ -143,7 +143,9 @@
     <Compile Include="Diagnostics\ToText\ToTextSpecificTypeHandler.cs" />
     <Compile Include="Diagnostics\ToText\ToTextSpecificTypeHandlerWrapper.cs" />
     <Compile Include="Diagnostics\ToText\ToTextSpecificInterfaceHandlerWrapper.cs" />
+    <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimer.cs" />
+    <Compile Include="Mixins\CodeGeneration\ConcreteMixinType.cs" />
     <Compile Include="Mixins\Definitions\IAttributeIntroductionSource.cs" />
     <Compile Include="Mixins\Definitions\NonAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\SuppressedAttributeIntroductionDefinition.cs" />
@@ -153,6 +155,7 @@
     <Compile Include="Mixins\Validation\Rules\ContextStoreMemberIntroductionLookupUtility.cs" />
     <Compile Include="Mixins\Validation\Rules\DefaultSuppressedAttributeIntroductionRules.cs" />
     <Compile Include="Reflection\AssemblyLoader.cs" />
+    <Compile Include="Reflection\CodeGeneration\IClassEmitter.cs" />
     <Compile Include="Reflection\ConstructorLookupInfo.cs" />
     <Compile Include="Reflection\MemberLookupInfo.cs" />
     <Compile Include="Reflection\MethodLookupInfo.cs" />

@@ -27,7 +27,7 @@ namespace Remotion.Reflection.CodeGeneration
     }
 
     public static CustomMethodEmitter ImplementGetObjectDataByDelegation (
-        CustomClassEmitter classEmitter, Func<CustomMethodEmitter, bool, MethodInvocationExpression> delegatingMethodInvocationGetter)
+        IClassEmitter classEmitter, Func<CustomMethodEmitter, bool, MethodInvocationExpression> delegatingMethodInvocationGetter)
     {
       ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
       ArgumentUtility.CheckNotNull ("delegatingMethodInvocationGetter", delegatingMethodInvocationGetter);
@@ -50,7 +50,7 @@ namespace Remotion.Reflection.CodeGeneration
       return newMethod;
     }
 
-    private static void ImplementBaseGetObjectDataCall (CustomClassEmitter classEmitter, CustomMethodEmitter getObjectDataMethod)
+    private static void ImplementBaseGetObjectDataCall (IClassEmitter classEmitter, CustomMethodEmitter getObjectDataMethod)
     {
       ConstructorInfo baseConstructor = classEmitter.BaseType.GetConstructor (
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
@@ -90,7 +90,7 @@ namespace Remotion.Reflection.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
 
-      ConstructorEmitter emitter = classEmitter.CreateConstructor (new Type[] {typeof (SerializationInfo), typeof (StreamingContext)});
+      ConstructorEmitter emitter = classEmitter.CreateConstructor (new[] {typeof (SerializationInfo), typeof (StreamingContext)});
       emitter.CodeBuilder.AddStatement (
           new ThrowStatement (
               typeof (NotImplementedException),

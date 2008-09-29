@@ -16,7 +16,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection.CodeGeneration;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration

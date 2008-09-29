@@ -9,9 +9,12 @@
  */
 
 using System;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
+using Castle.DynamicProxy.Generators.Emitters;
 using Remotion.Mixins.Definitions;
+using Remotion.Reflection.CodeGeneration;
 
 namespace Remotion.Mixins.CodeGeneration
 {
@@ -39,5 +42,7 @@ namespace Remotion.Mixins.CodeGeneration
 
     IObjectReference BeginDeserialization (Func<Type, Type> typeTransformer, SerializationInfo info, StreamingContext context);
     void FinishDeserialization (IObjectReference objectReference);
+    
+    IClassEmitter CreateClassEmitter (string typeName, Type baseType, Type[] interfaces, TypeAttributes typeAttributes, bool forceUnsigned);
   }
 }

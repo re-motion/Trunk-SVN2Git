@@ -26,7 +26,7 @@ using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
-  internal class TypeGenerator : ITypeGenerator
+  public class TypeGenerator : ITypeGenerator
   {
     private static readonly MethodInfo s_concreteTypeInitializationMethod =
         typeof (GeneratedClassInstanceInitializer).GetMethod ("InitializeMixinTarget", new Type[] { typeof (IInitializableMixinTarget), typeof (bool) });
@@ -65,7 +65,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         flags |= TypeAttributes.Abstract;
 
       bool forceUnsigned = StrongNameUtil.IsAnyTypeFromUnsignedAssembly (GetMixinTypes());
-      ClassEmitter classEmitter = new ClassEmitter (_module.Scope, typeName, configuration.Type, interfaces.ToArray(), flags, forceUnsigned);
+
+      ClassEmitter classEmitter = new ClassEmitter (_module.Scope, typeName, configuration.Type, interfaces.ToArray (), flags, forceUnsigned);
       _emitter = new CustomClassEmitter (classEmitter);
 
       _configurationField = _emitter.CreateStaticField ("__configuration", typeof (TargetClassDefinition), FieldAttributes.Private);
@@ -167,6 +168,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     public TypeBuilder TypeBuilder
     {
       get { return Emitter.TypeBuilder; }
+    }
+
+    public bool IsAssemblySigned
+    {
+      get { return ReflectionUtility.IsAssemblySigned (Emitter.TypeBuilder.Assembly); }
     }
 
     public CustomClassEmitter Emitter

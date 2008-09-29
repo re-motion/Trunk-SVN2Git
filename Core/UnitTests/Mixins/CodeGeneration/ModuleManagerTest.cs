@@ -23,6 +23,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.Reflection.CodeGeneration;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
@@ -379,6 +380,19 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       Type t = scope1.CreateTypeGenerator (
           TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)), GuidNameProvider.Instance, GuidNameProvider.Instance).GetBuiltType();
       Assert.That (ModuleManager.CreatedAssemblies.Contains (t.Assembly), Is.True);
+    }
+
+    [Test]
+    public void CreateClassEmitter ()
+    {
+      IClassEmitter emitter = 
+          _moduleManager.CreateClassEmitter ("X", typeof (BaseType2), new[] { typeof (IMarkerInterface) }, TypeAttributes.Public, true);
+      Type type = emitter.BuildType();
+      Assert.That (emitter, Is.InstanceOfType (typeof (CustomClassEmitter)));
+      Assert.That (type.BaseType, Is.SameAs (typeof (BaseType2)));
+      Assert.That (type.GetInterface (typeof (IMarkerInterface).FullName), Is.SameAs (typeof (IMarkerInterface)));
+      Assert.That (type.Attributes, Is.EqualTo (TypeAttributes.Public));
+      Assert.That (ReflectionUtility.IsAssemblySigned (type.Assembly), Is.False);
     }
 
     private Type GetUnsignedConcreteType ()

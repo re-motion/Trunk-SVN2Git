@@ -21,7 +21,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Reflection.CodeGeneration
 {
-  public class CustomClassEmitter : IAttributableEmitter
+  public class CustomClassEmitter : IClassEmitter
   {
     public static string FlattenTypeName (string fullName)
     {

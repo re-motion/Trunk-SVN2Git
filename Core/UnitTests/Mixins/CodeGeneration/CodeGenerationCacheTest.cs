@@ -9,21 +9,23 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-using Remotion.Collections;
-using Remotion.Mixins.Definitions;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Mixins.CodeGeneration;
 
-namespace Remotion.Mixins.CodeGeneration
+namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
-  public interface ITypeGenerator
+  [TestFixture]
+  public class CodeGenerationCacheTest
   {
-    TypeBuilder TypeBuilder { get; }
-    bool IsAssemblySigned { get; }
+    private CodeGenerationCache _cache;
 
-    Type GetBuiltType ();
-    IEnumerable<Tuple<MixinDefinition, Type>> GetBuiltMixinTypes ();
-    MethodInfo GetPublicMethodWrapper (MethodDefinition methodToBeWrapped);
+    [SetUp]
+    public void SetUp ()
+    {
+      _cache = new CodeGenerationCache();
+    }
+
+    // TODO...
   }
 }

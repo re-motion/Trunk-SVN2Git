@@ -19,8 +19,10 @@ using Castle.DynamicProxy;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
+using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
+using Castle.DynamicProxy.Generators.Emitters;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
@@ -238,6 +240,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ArgumentUtility.CheckTypeIsAssignableFrom ("objectReference", objectReference.GetType (), typeof (IDeserializationCallback));
 
       ((IDeserializationCallback) objectReference).OnDeserialization (this);
+    }
+
+    public IClassEmitter CreateClassEmitter (string typeName, Type baseType, Type[] interfaces, TypeAttributes typeAttributes, bool forceUnsigned)
+    {
+      ClassEmitter dynamicProxyEmitter = new ClassEmitter (Scope, typeName, baseType, interfaces, typeAttributes, forceUnsigned);
+      return new CustomClassEmitter (dynamicProxyEmitter);
     }
   }
 }
