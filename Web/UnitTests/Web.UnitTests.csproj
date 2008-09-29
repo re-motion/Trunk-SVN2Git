@@ -144,12 +144,15 @@
   <ItemGroup>
     <Compile Include="Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Context\WebSafeContextMixinTest.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategyTest.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionModeTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateRootTransactionModeTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullExecutionListenerTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullTransactionModeTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullTransactionStrategyTest.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestFunction2.cs" />
+    <Compile Include="ExecutionEngine\TestFunctions\TestTransactionScope2.cs" />
     <Compile Include="ExecutionEngine\WxeContextFactory.cs" />
     <Compile Include="ExecutionEngine\WxeFunction2Test.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionModeTest.cs" />

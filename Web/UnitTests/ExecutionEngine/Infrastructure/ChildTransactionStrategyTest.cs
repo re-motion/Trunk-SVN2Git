@@ -12,18 +12,19 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine.Infrastructure;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 {
   [TestFixture]
-  public class NullTransactionStrategyTest
+  public class ChildTransactionStrategyTest
   {
     [Test]
     public void GetInnerListener ()
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
-      var strategy = new NullTransactionStrategy (executionListenerStub);
+      var strategy = new ChildTransactionStrategy<TestTransactionScopeManager2> (false, executionListenerStub);
 
       Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
     }
@@ -32,9 +33,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void GetAutoCommit ()
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      ITransactionStrategy strategy = new NullTransactionStrategy(executionListenerStub);
+      ITransactionStrategy strategy = new ChildTransactionStrategy<TestTransactionScopeManager2> (true, executionListenerStub);
 
-      Assert.That (strategy.AutoCommit, Is.False);
+      Assert.That (strategy.AutoCommit, Is.True);
     }
   }
 }

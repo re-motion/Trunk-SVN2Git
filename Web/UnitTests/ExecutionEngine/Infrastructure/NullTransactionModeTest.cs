@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
@@ -29,6 +30,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 
       Assert.That (strategy, Is.InstanceOfType (typeof (NullTransactionStrategy)));
       Assert.That (((NullTransactionStrategy) strategy).InnerListener, Is.SameAs (executionListenerStub));
+    }
+
+    [Test]
+    public void IsSerializeable ()
+    {
+      var deserialized = Serializer.SerializeAndDeserialize (new NullTransactionMode ());
+
+      Assert.That (deserialized.AutoCommit, Is.False);
     }
   }
 }

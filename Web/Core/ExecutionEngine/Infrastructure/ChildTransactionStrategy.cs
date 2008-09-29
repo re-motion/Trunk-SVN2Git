@@ -9,14 +9,18 @@
  */
 
 using System;
+using Remotion.Data;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
-  public class NullTransactionStrategy : TransactionStrategyBase
+  public class ChildTransactionStrategy<TScopeManager> : TransactionStrategyBase
+    where TScopeManager : ITransactionScopeManager, new ()
   {
-    public NullTransactionStrategy (IWxeFunctionExecutionListener innerListener)
-        : base (false, innerListener)
+    private TScopeManager _scopeManager;
+
+    public ChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener)
+        : base (autoCommit, innerListener)
     {
     }
   }

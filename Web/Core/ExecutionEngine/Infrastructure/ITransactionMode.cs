@@ -15,5 +15,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   public interface ITransactionMode
   {
     ITransactionStrategy GetStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener);
+    bool AutoCommit { get; }
   }
 }

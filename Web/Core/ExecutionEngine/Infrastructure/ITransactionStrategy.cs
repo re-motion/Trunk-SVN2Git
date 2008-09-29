@@ -13,5 +13,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   //TODO: Doc
   public interface ITransactionStrategy
   {
+    bool AutoCommit { get; }
   }
 }

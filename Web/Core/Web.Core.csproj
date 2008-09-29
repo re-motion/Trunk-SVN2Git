@@ -110,6 +110,8 @@
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Context\WebSafeContextMixin.cs" />
     <None Include="ExecutionEngine\Infrastructure\TxStrategyDoc.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategy.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateRootTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\IWxeFunctionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ITransactionStrategy.cs" />

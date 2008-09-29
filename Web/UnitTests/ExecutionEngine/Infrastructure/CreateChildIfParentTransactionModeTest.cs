@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
@@ -18,18 +19,26 @@ using Rhino.Mocks;
 namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 {
   [TestFixture]
-  public class CreateRootTransactionModeTest
+  public class CreateChildIfParentTransactionModeTest
   {
     [Test]
-    public void GetStrategy ()
+    public void GetStrategy_WithoutParentTransaction ()
     {
-      ITransactionMode transactionMode = new CreateRootTransactionMode<TestTransactionScopeManager2> (true);
+      ITransactionMode transactionMode = new CreateChildIfParentTransactionMode<TestTransactionScopeManager2> (true);
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
       ITransactionStrategy strategy = transactionMode.GetStrategy (new TestFunction2 (), executionListenerStub);
 
       Assert.That (strategy, Is.InstanceOfType (typeof (RootTransactionStrategy<TestTransactionScopeManager2>)));
       Assert.That (((TransactionStrategyBase) strategy).InnerListener, Is.SameAs (executionListenerStub));
       Assert.That (strategy.AutoCommit, Is.True);
+    }
+
+    [Test]
+    public void IsSerializeable ()
+    {
+      var deserialized = Serializer.SerializeAndDeserialize (new CreateChildIfParentTransactionMode<TestTransactionScopeManager2> (true));
+
+      Assert.That (deserialized.AutoCommit, Is.True);
     }
   }
 }

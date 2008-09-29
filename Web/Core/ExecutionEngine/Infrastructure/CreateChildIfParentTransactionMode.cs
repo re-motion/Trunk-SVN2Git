@@ -9,27 +9,33 @@
  */
 
 using System;
+using Remotion.Data;
 using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
   [Serializable]
-  public class NullTransactionMode : ITransactionMode
+  public class CreateChildIfParentTransactionMode<TScopeManager> : ITransactionMode
+      where TScopeManager: ITransactionScopeManager, new()
   {
-    public NullTransactionMode ()
+    private readonly bool _autoCommit;
+
+    public CreateChildIfParentTransactionMode (bool autoCommit)
     {
+      _autoCommit = autoCommit;
     }
 
     public virtual ITransactionStrategy GetStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
     {
       ArgumentUtility.CheckNotNull ("executionListener", executionListener);
-      return new NullTransactionStrategy (executionListener);
+
+      return new RootTransactionStrategy<TScopeManager> (_autoCommit, executionListener);
     }
 
     public bool AutoCommit
     {
-      get { return false; }
+      get { return _autoCommit; }
     }
   }
 }

@@ -24,9 +24,18 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void GetInnerListener ()
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
-      var strategy = new RootTransactionStrategy<TestTransaction, TestTransactionScope, TestTransactionScopeManager> (executionListenerStub);
+      var strategy = new RootTransactionStrategy<TestTransactionScopeManager2> (false, executionListenerStub);
 
       Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
+    }
+
+    [Test]
+    public void GetAutoCommit ()
+    {
+      var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
+      ITransactionStrategy strategy = new RootTransactionStrategy<TestTransactionScopeManager2> (true, executionListenerStub);
+
+      Assert.That (strategy.AutoCommit, Is.True);
     }
   }
 }

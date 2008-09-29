@@ -15,20 +15,26 @@ using Remotion.Utilities;
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
-  public class CreateRootTransactionMode<TTransaction, TScope, TScopeManager> : ITransactionMode
-      where TTransaction: class, ITransaction
-      where TScope: class, ITransactionScope<TTransaction>
-      where TScopeManager: ITransactionScopeManager<TTransaction, TScope>, new()
+  public class CreateRootTransactionMode<TScopeManager> : ITransactionMode
+      where TScopeManager: ITransactionScopeManager, new()
   {
-    public CreateRootTransactionMode ()
+    private readonly bool _autoCommit;
+
+    public CreateRootTransactionMode (bool autoCommit)
     {
+      _autoCommit = autoCommit;
     }
 
     public virtual ITransactionStrategy GetStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
     {
       ArgumentUtility.CheckNotNull ("executionListener", executionListener);
 
-      return new RootTransactionStrategy<TTransaction, TScope, TScopeManager> (executionListener);
+      return new RootTransactionStrategy<TScopeManager> (_autoCommit, executionListener);
+    }
+
+    public bool AutoCommit
+    {
+      get { return _autoCommit; }
     }
   }
 }

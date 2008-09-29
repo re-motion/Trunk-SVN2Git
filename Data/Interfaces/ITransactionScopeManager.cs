@@ -11,8 +11,27 @@
 namespace Remotion.Data
 {
   /// <summary>
+  /// The <see cref="ITransactionScopeManager"/> interface defines methods required to manage transaction scopes within a
+  /// user interface application such as a web application using the Execution Engine flow control infrastructure.
+  /// </summary>
+  public interface ITransactionScopeManager
+  {
+    /// <summary>
+    /// Gets the active transaction scope, or <see langword="null"/> if no active scope exists.
+    /// </summary>
+    /// <value>The active transaction scope.</value>
+    ITransactionScope ActiveScope { get; }
+
+    /// <summary>
+    /// Creates a new root transaction instance. This instance is not yet managed by a scope.
+    /// </summary>
+    /// <returns>A new root transaction.</returns>
+    ITransaction CreateRootTransaction ();
+  }
+
+  /// <summary>
   /// The <see cref="ITransactionScopeManager{TTransaction,TScope}"/> interface defines methods required to manage transaction scopes within a
-  /// user interface applicatio such as a web application using the Execution Engine flow control infrastructure.
+  /// user interface application such as a web application using the Execution Engine flow control infrastructure.
   /// </summary>
   /// <typeparam name="TTransaction"></typeparam>
   /// <typeparam name="TScope"></typeparam>
