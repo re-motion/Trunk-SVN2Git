@@ -45,8 +45,18 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void CreateAclProbe_OwningGroup_Test ()
     {
       AccessControlEntry ace = TestHelper.CreateAceWithOwningGroup ();
+      FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningGroups, NUnit.Framework.SyntaxHelpers.List.Contains (Role.Group));
+    }
+
+    [Test]
+    public void CreateAclProbe_GroupSelectionAll_Test ()
+    {
+      AccessControlEntry ace = TestHelper.CreateAceWithGroupSelectionAll ();
+      FleshOutAccessControlEntryForTest (ace);
+      AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
+      Assert.That (aclProbe.SecurityToken.OwningGroups, NUnit.Framework.SyntaxHelpers.List.Contains (ace.SpecificGroup));
     }
 
 
