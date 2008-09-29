@@ -150,6 +150,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
+    public void ScopeHasTransactionProperty_FromITransactionScopeInterface ()
+    {
+      ClientTransaction outerTransaction = ClientTransaction.CreateRootTransaction ();
+      ClientTransaction innerTransaction = ClientTransaction.CreateRootTransaction ();
+      using (ClientTransactionScope outer = outerTransaction.EnterNonDiscardingScope ())
+      {
+        using (ClientTransactionScope inner = innerTransaction.EnterNonDiscardingScope ())
+        {
+          Assert.AreSame (innerTransaction, ((ITransactionScope)inner).ScopedTransaction);
+          Assert.AreSame (outerTransaction, ((ITransactionScope)outer).ScopedTransaction);
+        }
+      }
+    }
+
+    [Test]
     public void ScopeHasAutoRollbackBehavior ()
     {
       using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterDiscardingScope())

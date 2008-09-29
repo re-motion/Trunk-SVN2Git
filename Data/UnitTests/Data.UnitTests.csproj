@@ -168,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidUnidirectionalRelation.cs" />
+    <Compile Include="DomainObjects\Core\ClientTransactionScopeManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\CloneContextTest.cs" />
     <Compile Include="DomainObjects\Core\Cloning\CloneStrategyTestBase.cs" />
     <Compile Include="DomainObjects\Core\Cloning\CompleteCloneStrategyTest.cs" />

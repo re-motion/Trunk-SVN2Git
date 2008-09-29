@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects
   /// will become a memory leak unless <see cref="ResetActiveScope"/> is used.
   /// </para>
   /// </remarks>
-  public class ClientTransactionScope : IDisposable, ITransactionScope<ClientTransaction>
+  public class ClientTransactionScope : IDisposable, ITransactionScope, ITransactionScope<ClientTransaction>
   {
     private static readonly SafeContextSingleton<ClientTransactionScope> _scopeSingleton = 
         new SafeContextSingleton<ClientTransactionScope> (typeof (ClientTransactionScope).FullName, delegate { return null; });
@@ -154,6 +154,15 @@ namespace Remotion.Data.DomainObjects
     public ClientTransaction ScopedTransaction
     {
       get { return _scopedTransaction; }
+    }
+
+    /// <summary>
+    /// Gets the transaction managed by this scope.
+    /// </summary>
+    /// <value>The scoped transaction.</value>
+    ITransaction ITransactionScope.ScopedTransaction
+    {
+      get { return ScopedTransaction; }
     }
 
     /// <summary>

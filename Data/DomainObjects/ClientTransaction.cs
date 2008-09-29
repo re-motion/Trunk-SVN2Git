@@ -1527,6 +1527,11 @@ public abstract class ClientTransaction : ITransaction
     get { return HasChanged(); }
   }
 
+  ITransactionScope ITransaction.EnterScope ()
+  {
+    return EnterNonDiscardingScope ();
+  }
+
   #endregion
 }
 }

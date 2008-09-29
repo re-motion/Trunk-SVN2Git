@@ -60,5 +60,12 @@ namespace Remotion.Data
     /// <value> <see langword="true"/> if the transaction cannot be modified. </value>
     /// <remarks>Implementations that do not support read-only transactions should always return false.</remarks>
     bool IsReadOnly { get; }
+
+    /// <summary>
+    /// Enters a new scope for the given transaction, making it the active transaction while the scope exists.
+    /// </summary>
+    /// <returns>The scope keeping the transaction active.</returns>
+    /// <remarks>The scope must not discard the transaction when it is left.</remarks>
+    ITransactionScope EnterScope ();
   }
 }
