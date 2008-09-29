@@ -8,10 +8,12 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
-  public interface ITransactionStrategy
+  public interface ITransactionStrategy : INullObject
   {
     bool AutoCommit { get; }
   }

@@ -42,7 +42,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       //NOP
     }
 
-    bool INullObject.IsNull
+    public bool IsNull
     {
       get { return true; }
     }

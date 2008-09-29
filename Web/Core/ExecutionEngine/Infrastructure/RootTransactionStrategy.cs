@@ -23,5 +23,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         : base (autoCommit, innerListener)
     {
     }
+
+    public override bool IsNull
+    {
+      get { return false; }
+    }
   }
 }

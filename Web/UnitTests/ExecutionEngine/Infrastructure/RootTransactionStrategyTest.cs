@@ -37,5 +37,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 
       Assert.That (strategy.AutoCommit, Is.True);
     }
+
+    [Test]
+    public void IsNull ()
+    {
+      var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
+      INullObject strategy = new RootTransactionStrategy<TestTransactionScopeManager2> (true, executionListenerStub);
+
+      Assert.That (strategy.IsNull, Is.False);
+    }
   }
 }

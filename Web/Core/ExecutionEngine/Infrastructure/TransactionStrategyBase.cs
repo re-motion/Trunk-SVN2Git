@@ -4,12 +4,12 @@ using Remotion.Utilities;
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
-  public class TransactionStrategyBase : ITransactionStrategy
+  public abstract class TransactionStrategyBase : ITransactionStrategy
   {
     private readonly bool _autoCommit;
     private readonly IWxeFunctionExecutionListener _innerListener;
 
-    public TransactionStrategyBase (bool autoCommit, IWxeFunctionExecutionListener innerListener)
+    protected TransactionStrategyBase (bool autoCommit, IWxeFunctionExecutionListener innerListener)
     {
       ArgumentUtility.CheckNotNull ("innerListener", innerListener);
       _autoCommit = autoCommit;
@@ -25,5 +25,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       get { return _innerListener; }
     }
+
+    public abstract bool IsNull { get; }
   }
 }

@@ -19,5 +19,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         : base (false, innerListener)
     {
     }
+
+    public override bool IsNull
+    {
+      get { return true; }
+    }
   }
 }
