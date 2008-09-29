@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 using Remotion.SecurityManager.AclTools.Expansion;
@@ -51,6 +52,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
  
       var accessConditionsExpected = new AclExpansionAccessConditions();
       accessConditionsExpected.OnlyIfGroupIsOwner = true;
+
+      //To.Console.e (accessConditionsExpected);
+
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
 

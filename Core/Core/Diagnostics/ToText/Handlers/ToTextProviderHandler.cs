@@ -27,7 +27,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
     protected void Log (string s)
     {
-      Console.WriteLine ("[ToTextProviderHandler]: " + s);
+      //Console.WriteLine ("[ToTextProviderHandler]: " + s);
     }
 
     /// <summary>

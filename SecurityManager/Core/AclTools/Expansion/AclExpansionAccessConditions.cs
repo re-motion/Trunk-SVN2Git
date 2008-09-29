@@ -1,9 +1,10 @@
 using System;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public class AclExpansionAccessConditions 
+  public class AclExpansionAccessConditions  : IToText  
   {
     public bool OnlyIfUserIsOwner { get; set; }
     public bool OnlyIfGroupIsOwner { get; set; }
@@ -22,6 +23,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return (ac.OnlyIfAbstractRoleMatches == OnlyIfAbstractRoleMatches) && (ac.AbstractRole == AbstractRole) &&
         (ac.OnlyIfGroupIsOwner == OnlyIfGroupIsOwner) && (ac.OnlyIfTenantIsOwner == OnlyIfTenantIsOwner) &&
         (ac.OnlyIfUserIsOwner == OnlyIfUserIsOwner);
+    }
+
+    public void ToText (IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib<AclExpansionAccessConditions>();
+      toTextBuilder.e ("userMustOwn", OnlyIfUserIsOwner).e ("groupMustOwn", OnlyIfGroupIsOwner).e ("tenantMustOwn", OnlyIfTenantIsOwner);
+      toTextBuilder.e ("abstractRoleMustMatche", OnlyIfAbstractRoleMatches).e ("abstractRole", AbstractRole);
+      toTextBuilder.ie ();
     }
   }
 }
