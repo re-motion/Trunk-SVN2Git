@@ -408,7 +408,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         AccessControlEntry entry = AccessControlEntry.NewObject ();
-        entry.Tenant = TenantSelection.OwningTenant;
+        entry.TenantSelection = TenantSelection.OwningTenant;
 
         return entry;
       }
@@ -419,7 +419,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         AccessControlEntry entry = AccessControlEntry.NewObject ();
-        entry.Tenant = TenantSelection.SpecificTenant;
+        entry.TenantSelection = TenantSelection.SpecificTenant;
         entry.SpecificTenant = tenant;
 
         return entry;
@@ -442,9 +442,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         AccessControlEntry entry = AccessControlEntry.NewObject ();
-        entry.User = UserSelection.SpecificPosition;
+        entry.UserSelection = UserSelection.SpecificPosition;
         entry.SpecificPosition = position;
-        entry.Group = groupSelection;
+        entry.GroupSelection = groupSelection;
 
         return entry;
       }

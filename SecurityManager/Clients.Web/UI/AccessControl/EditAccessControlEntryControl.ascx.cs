@@ -130,9 +130,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     private void AdjustPositionFields ()
     {
       if (SpecificPositionField.BusinessObjectID == null)
-        CurrentAccessControlEntry.User = UserSelection.All;
+        CurrentAccessControlEntry.UserSelection = UserSelection.All;
       else
-        CurrentAccessControlEntry.User = UserSelection.SpecificPosition;
+        CurrentAccessControlEntry.UserSelection = UserSelection.SpecificPosition;
 
       // TODO: Remove when Group can stand alone during ACE lookup.
       if (SpecificPositionField.BusinessObjectID == null)

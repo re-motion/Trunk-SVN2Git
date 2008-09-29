@@ -67,13 +67,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public abstract int Index { get; set; }
 
     [DBColumn ("TenantSelection")]
-    public abstract TenantSelection Tenant { get; set; }
+    public abstract TenantSelection TenantSelection { get; set; }
 
     [DBColumn ("GroupSelection")]
-    public abstract GroupSelection Group { get; set; }
+    public abstract GroupSelection GroupSelection { get; set; }
 
     [DBColumn ("UserSelection")]
-    public abstract UserSelection User { get; set; }
+    public abstract UserSelection UserSelection { get; set; }
 
     public abstract int? Priority { get; set; }
 
@@ -199,7 +199,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private bool MatchesTenant (SecurityToken token)
     {
-      switch (Tenant)
+      switch (TenantSelection)
       {
         case TenantSelection.All:
           return true;
@@ -231,7 +231,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private bool MatchesUserOrPosition (SecurityToken token)
     {
-      switch (User)
+      switch (UserSelection)
       {
         case UserSelection.All:
           return true;
@@ -246,7 +246,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private bool MatchPosition (SecurityToken token)
     {
-      switch (Group)
+      switch (GroupSelection)
       {
         case GroupSelection.All:
           return token.ContainsRoleForUserGroupAndPosition (SpecificPosition);
@@ -286,16 +286,16 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       int priority = 0;
 
-      if (User != UserSelection.All)
+      if (UserSelection != UserSelection.All)
         priority += UserPriority;
 
       if (SpecificAbstractRole != null)
         priority += AbstractRolePriority;
 
-      if (Group != GroupSelection.All)
+      if (GroupSelection != GroupSelection.All)
         priority += GroupPriority;
 
-      if (Tenant != TenantSelection.All)
+      if (TenantSelection != TenantSelection.All)
         priority += TenantPriority;
 
       return priority;
@@ -326,7 +326,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       if (State != StateType.Deleted)
       {
-        if (Tenant == TenantSelection.SpecificTenant && SpecificTenant == null)
+        if (TenantSelection == TenantSelection.SpecificTenant && SpecificTenant == null)
           result.SetSpecificTenantMissing();
       }
 
@@ -348,7 +348,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         throw new ConstraintViolationException ("The access control entry is in an invalid state.");
       }
 
-      if (State != StateType.Deleted && Tenant != TenantSelection.SpecificTenant)
+      if (State != StateType.Deleted && TenantSelection != TenantSelection.SpecificTenant)
         SpecificTenant = null;
 
       base.OnCommitting (args);

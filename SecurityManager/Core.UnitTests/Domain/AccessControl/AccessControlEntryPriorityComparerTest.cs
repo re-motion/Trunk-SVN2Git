@@ -68,7 +68,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       AccessControlEntry leftAce = AccessControlEntry.NewObject();
       leftAce.Priority = 2;
       AccessControlEntry rightAce = AccessControlEntry.NewObject();
-      rightAce.User = UserSelection.Owner;
+      rightAce.UserSelection = UserSelection.Owner;
       AccessControlEntryPriorityComparer comparer = new AccessControlEntryPriorityComparer ();
 
       Assert.Less (comparer.Compare (leftAce, rightAce), 0);

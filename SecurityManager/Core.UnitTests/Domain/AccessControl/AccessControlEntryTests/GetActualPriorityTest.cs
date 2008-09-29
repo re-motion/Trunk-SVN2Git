@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void AceWithUser ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      ace.User = UserSelection.Owner;
+      ace.UserSelection = UserSelection.Owner;
 
       Assert.AreEqual (AccessControlEntry.UserPriority, ace.ActualPriority);
     }
@@ -66,7 +66,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void AceWithGroup ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      ace.Group = GroupSelection.OwningGroup;
+      ace.GroupSelection = GroupSelection.OwningGroup;
 
       Assert.AreEqual (AccessControlEntry.GroupPriority, ace.ActualPriority);
     }
@@ -75,7 +75,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void AceWithTenant ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      ace.Tenant = TenantSelection.OwningTenant;
+      ace.TenantSelection = TenantSelection.OwningTenant;
 
       Assert.AreEqual (AccessControlEntry.TenantPriority, ace.ActualPriority);
     }
@@ -84,8 +84,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void AceWithUserAndGroup ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      ace.User = UserSelection.Owner;
-      ace.Group = GroupSelection.OwningGroup;
+      ace.UserSelection = UserSelection.Owner;
+      ace.GroupSelection = GroupSelection.OwningGroup;
 
       int expectedPriority = AccessControlEntry.UserPriority + AccessControlEntry.GroupPriority;
       Assert.AreEqual (expectedPriority, ace.ActualPriority);
@@ -95,10 +95,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void AceWithUserAndAbstractRoleAndGroupAndTenant ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      ace.User = UserSelection.Owner;
+      ace.UserSelection = UserSelection.Owner;
       ace.SpecificAbstractRole = AbstractRoleDefinition.NewObject (Guid.NewGuid(), "Test", 42);
-      ace.Group = GroupSelection.OwningGroup;
-      ace.Tenant = TenantSelection.OwningTenant;
+      ace.GroupSelection = GroupSelection.OwningGroup;
+      ace.TenantSelection = TenantSelection.OwningTenant;
 
       int expectedPriority = AccessControlEntry.UserPriority + AccessControlEntry.AbstractRolePriority + AccessControlEntry.GroupPriority
                              + AccessControlEntry.TenantPriority;

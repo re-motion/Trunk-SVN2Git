@@ -22,7 +22,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       var aclProbe = new AclProbe();
       //aclProbe._securityToken.User = user;
 
-      Tenant owningTenant = (ace.Tenant == TenantSelection.OwningTenant) ? user.Tenant : ace.SpecificTenant;
+      Tenant owningTenant = (ace.TenantSelection == TenantSelection.OwningTenant) ? user.Tenant : ace.SpecificTenant;
 
       IList<Group> owningGroups = new List<Group>();
 
