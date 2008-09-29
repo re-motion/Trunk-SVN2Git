@@ -25,14 +25,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   {
     private readonly TypeGenerator _surroundingType;
     private readonly ConcreteMixinType[] _concreteMixinTypes;
-    private readonly CustomClassEmitter _emitter;
+    private readonly IClassEmitter _emitter;
     private readonly ConstructorEmitter _ctor;
     private readonly TargetClassDefinition _targetClassConfiguration;
     private readonly FieldReference _depthField;
     private readonly FieldReference _thisField;
     private readonly Dictionary<MethodDefinition, MethodInfo> _overriddenMethodToImplementationMap = new Dictionary<MethodDefinition, MethodInfo>();
 
-    public BaseCallProxyGenerator (TypeGenerator surroundingType, ClassEmitter surroundingTypeEmitter, ConcreteMixinType[] concreteMixinTypes)
+    public BaseCallProxyGenerator (TypeGenerator surroundingType, IClassEmitter surroundingTypeEmitter, ConcreteMixinType[] concreteMixinTypes)
     {
       ArgumentUtility.CheckNotNull ("surroundingType", surroundingType);
       ArgumentUtility.CheckNotNull ("surroundingTypeEmitter", surroundingTypeEmitter);
@@ -47,12 +47,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       foreach (RequiredBaseCallTypeDefinition requiredType in _targetClassConfiguration.RequiredBaseCallTypes)
         interfaces.Add (requiredType.Type);
 
-      _emitter = new CustomClassEmitter (
-          new NestedClassEmitter (
-              surroundingTypeEmitter,
-              "BaseCallProxy",
-              typeof (object),
-              interfaces.ToArray()));
+      _emitter = surroundingTypeEmitter.CreateNestedClass("BaseCallProxy", typeof (object), interfaces.ToArray());
       _emitter.AddCustomAttribute (new CustomAttributeBuilder (typeof (SerializableAttribute).GetConstructor (Type.EmptyTypes), new object[0]));
 
       _thisField = _emitter.CreateField ("__this", _surroundingType.TypeBuilder);
@@ -122,7 +117,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Assertion.IsTrue (methodDefinitionOnTarget.DeclaringClass == _targetClassConfiguration);
 
       MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-      CustomMethodEmitter methodOverride = new CustomMethodEmitter (_emitter, methodDefinitionOnTarget.FullName, attributes);
+      CustomMethodEmitter methodOverride = _emitter.CreateMethod (methodDefinitionOnTarget.FullName, attributes);
       methodOverride.CopyParametersAndReturnType (methodDefinitionOnTarget.MethodInfo);
       
       BaseCallMethodGenerator methodGenerator = new BaseCallMethodGenerator (methodOverride, this, _concreteMixinTypes);

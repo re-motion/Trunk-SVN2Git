@@ -30,9 +30,9 @@ namespace Remotion.Reflection.CodeGeneration
     }
 
     private readonly AbstractTypeEmitter _innerEmitter;
-    private readonly Cache<MethodInfo, CustomMethodEmitter> _publicMethodWrappers = new Cache<MethodInfo, CustomMethodEmitter> ();
+    private readonly Cache<MethodInfo, CustomMethodEmitter> _publicMethodWrappers = new Cache<MethodInfo, CustomMethodEmitter>();
     private bool _hasBeenBuilt = false;
-    private readonly List<CustomEventEmitter> _eventEmitters = new List<CustomEventEmitter> ();
+    private readonly List<CustomEventEmitter> _eventEmitters = new List<CustomEventEmitter>();
 
     public CustomClassEmitter (AbstractTypeEmitter innerEmitter)
     {
@@ -41,7 +41,7 @@ namespace Remotion.Reflection.CodeGeneration
     }
 
     public CustomClassEmitter (ModuleScope scope, string name, Type baseType)
-      : this (scope, name, baseType, Type.EmptyTypes, TypeAttributes.Class | TypeAttributes.Public, false)
+        : this (scope, name, baseType, Type.EmptyTypes, TypeAttributes.Class | TypeAttributes.Public, false)
     {
     }
 
@@ -52,10 +52,11 @@ namespace Remotion.Reflection.CodeGeneration
                 ArgumentUtility.CheckNotNullOrEmpty ("name", name),
                 CheckBaseType (baseType),
                 CheckInterfaces (interfaces),
-                flags, forceUnsigned))
+                flags,
+                forceUnsigned))
     {
     }
-    
+
     private static Type CheckBaseType (Type baseType)
     {
       ArgumentUtility.CheckNotNull ("baseType", baseType);
@@ -114,12 +115,12 @@ namespace Remotion.Reflection.CodeGeneration
 
     public void CreateDefaultConstructor ()
     {
-      InnerEmitter.CreateDefaultConstructor ();
+      InnerEmitter.CreateDefaultConstructor();
     }
 
     public ConstructorEmitter CreateTypeConstructor ()
     {
-      return InnerEmitter.CreateTypeConstructor ();
+      return InnerEmitter.CreateTypeConstructor();
     }
 
     public FieldReference CreateField (string name, Type fieldType)
@@ -217,13 +218,15 @@ namespace Remotion.Reflection.CodeGeneration
     public CustomMethodEmitter CreatePrivateMethodOverride (MethodInfo baseMethod)
     {
       ArgumentUtility.CheckNotNull ("baseMethod", baseMethod);
-      return CreateMethodOverrideOrInterfaceImplementation (baseMethod, false, MethodAttributes.NewSlot | MethodAttributes.Private | MethodAttributes.Final);
+      return CreateMethodOverrideOrInterfaceImplementation (
+          baseMethod, false, MethodAttributes.NewSlot | MethodAttributes.Private | MethodAttributes.Final);
     }
 
     public CustomMethodEmitter CreateInterfaceMethodImplementation (MethodInfo interfaceMethod)
     {
       ArgumentUtility.CheckNotNull ("interfaceMethod", interfaceMethod);
-      return CreateMethodOverrideOrInterfaceImplementation (interfaceMethod, false, MethodAttributes.NewSlot | MethodAttributes.Private | MethodAttributes.Final);
+      return CreateMethodOverrideOrInterfaceImplementation (
+          interfaceMethod, false, MethodAttributes.NewSlot | MethodAttributes.Private | MethodAttributes.Final);
     }
 
     /// <summary>
@@ -241,7 +244,9 @@ namespace Remotion.Reflection.CodeGeneration
       return CreateMethodOverrideOrInterfaceImplementation (interfaceMethod, true, MethodAttributes.NewSlot | MethodAttributes.Public);
     }
 
-    private CustomMethodEmitter CreateMethodOverrideOrInterfaceImplementation (MethodInfo baseOrInterfaceMethod, bool keepName,
+    private CustomMethodEmitter CreateMethodOverrideOrInterfaceImplementation (
+        MethodInfo baseOrInterfaceMethod,
+        bool keepName,
         MethodAttributes visibilityFlags)
     {
       ArgumentUtility.CheckNotNull ("baseOrInterfaceMethod", baseOrInterfaceMethod);
@@ -327,6 +332,20 @@ namespace Remotion.Reflection.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("interfaceEvent", interfaceEvent);
       return CreateEventOverrideOrInterfaceImplementation (interfaceEvent, true);
+    }
+
+    /// <summary>
+    /// Creates a nested class within the type emitted by this <see cref="IClassEmitter"/>.
+    /// </summary>
+    /// <param name="typeName">The name of the nested type.</param>
+    /// <param name="baseType">The base type of the nested type.</param>
+    /// <param name="interfaces">The interfaces to be implemented by the nested type.</param>
+    /// <returns>
+    /// A new <see cref="IClassEmitter"/> for the nested class.
+    /// </returns>
+    public IClassEmitter CreateNestedClass (string typeName, Type baseType, Type[] interfaces)
+    {
+      return new CustomClassEmitter (new NestedClassEmitter (InnerEmitter, "BaseCallProxy", typeof (object), interfaces));
     }
 
     // does not create the event's methods

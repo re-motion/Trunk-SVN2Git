@@ -146,6 +146,7 @@
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimer.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinType.cs" />
+    <Compile Include="Mixins\CodeGeneration\ICodeGenerationModule.cs" />
     <Compile Include="Mixins\Definitions\IAttributeIntroductionSource.cs" />
     <Compile Include="Mixins\Definitions\NonAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\SuppressedAttributeIntroductionDefinition.cs" />

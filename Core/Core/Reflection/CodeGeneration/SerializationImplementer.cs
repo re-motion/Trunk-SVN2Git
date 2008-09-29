@@ -35,7 +35,7 @@ namespace Remotion.Reflection.CodeGeneration
       bool baseIsISerializable = typeof (ISerializable).IsAssignableFrom (classEmitter.BaseType);
 
       MethodInfo getObjectDataMethod =
-          typeof (ISerializable).GetMethod ("GetObjectData", new Type[] {typeof (SerializationInfo), typeof (StreamingContext)});
+          typeof (ISerializable).GetMethod ("GetObjectData", new[] {typeof (SerializationInfo), typeof (StreamingContext)});
       CustomMethodEmitter newMethod = classEmitter.CreatePublicInterfaceMethodImplementation (getObjectDataMethod);
 
       if (baseIsISerializable)
@@ -50,13 +50,13 @@ namespace Remotion.Reflection.CodeGeneration
       return newMethod;
     }
 
-    private static void ImplementBaseGetObjectDataCall (IClassEmitter classEmitter, CustomMethodEmitter getObjectDataMethod)
+    private static void ImplementBaseGetObjectDataCall (IClassEmitter classEmitter, IMethodEmitter getObjectDataMethod)
     {
       ConstructorInfo baseConstructor = classEmitter.BaseType.GetConstructor (
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
           null,
           CallingConventions.Any,
-          new Type[] {typeof (SerializationInfo), typeof (StreamingContext)},
+          new[] {typeof (SerializationInfo), typeof (StreamingContext)},
           null);
       if (baseConstructor == null || !IsPublicOrProtected (baseConstructor))
       {
@@ -86,7 +86,7 @@ namespace Remotion.Reflection.CodeGeneration
                   new ReferenceExpression (getObjectDataMethod.ArgumentReferences[1]))));
     }
 
-    public static ConstructorEmitter ImplementDeserializationConstructorByThrowing (CustomClassEmitter classEmitter)
+    public static ConstructorEmitter ImplementDeserializationConstructorByThrowing (IClassEmitter classEmitter)
     {
       ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
 
@@ -98,11 +98,11 @@ namespace Remotion.Reflection.CodeGeneration
       return emitter;
     }
 
-    public static ConstructorEmitter ImplementDeserializationConstructorByThrowingIfNotExistsOnBase (CustomClassEmitter classEmitter)
+    public static ConstructorEmitter ImplementDeserializationConstructorByThrowingIfNotExistsOnBase (IClassEmitter classEmitter)
     {
       ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
 
-      Type[] serializationConstructorSignature = new Type[] {typeof (SerializationInfo), typeof (StreamingContext)};
+      Type[] serializationConstructorSignature = new[] {typeof (SerializationInfo), typeof (StreamingContext)};
       ConstructorInfo baseConstructor = classEmitter.BaseType.GetConstructor (
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
           null,

@@ -65,7 +65,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
 
-      ITypeGenerator generator = _moduleManager.CreateTypeGenerator (bt1, GuidNameProvider.Instance, GuidNameProvider.Instance);
+      ITypeGenerator generator = _moduleManager.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache, bt1, GuidNameProvider.Instance, GuidNameProvider.Instance);
       Assert.IsNotNull (generator);
       Assert.IsTrue (bt1.Type.IsAssignableFrom (generator.GetBuiltType()));
     }
@@ -357,7 +357,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void SignedModule_NonNull ()
     {
       var scope1 = new ModuleManager { SignedModulePath = "xyz{counter}.dll" };
-      scope1.CreateTypeGenerator (
+      scope1.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache,
           TargetClassDefinitionUtility.GetActiveConfiguration (typeof (object), GenerationPolicy.ForceGeneration), GuidNameProvider.Instance, GuidNameProvider.Instance);
       Assert.That (scope1.SignedModule, Is.Not.Null);
       Assert.That (scope1.SignedModule.FullyQualifiedName, Is.EqualTo (Path.GetFullPath (scope1.SignedModulePath)));
@@ -367,7 +367,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void UnsignedModule_NonNull ()
     {
       var scope1 = new ModuleManager { UnsignedModulePath = "xyz{counter}.dll" };
-      scope1.CreateTypeGenerator (
+      scope1.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache,
           TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)), GuidNameProvider.Instance, GuidNameProvider.Instance);
       Assert.That (scope1.UnsignedModule, Is.Not.Null);
       Assert.That (scope1.UnsignedModule.FullyQualifiedName, Is.EqualTo (Path.GetFullPath (scope1.UnsignedModulePath)));
@@ -377,7 +377,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void CreatedAssemblyBuilders ()
     {
       var scope1 = new ModuleManager { UnsignedModulePath = "xyz{counter}.dll" };
-      Type t = scope1.CreateTypeGenerator (
+      Type t = scope1.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache,
           TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)), GuidNameProvider.Instance, GuidNameProvider.Instance).GetBuiltType();
       Assert.That (ModuleManager.CreatedAssemblies.Contains (t.Assembly), Is.True);
     }

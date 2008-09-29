@@ -8,6 +8,9 @@ namespace Remotion.Reflection.CodeGeneration
 {
   public interface IClassEmitter : IAttributableEmitter
   {
+    TypeBuilder TypeBuilder { get; }
+    Type BaseType { get; }
+
     ConstructorEmitter CreateConstructor (ArgumentReference[] arguments);
     ConstructorEmitter CreateConstructor (Type[] arguments);
     void CreateDefaultConstructor ();
@@ -54,12 +57,19 @@ namespace Remotion.Reflection.CodeGeneration
     CustomEventEmitter CreateEventOverride (EventInfo baseEvent);
     CustomEventEmitter CreateInterfaceEventImplementation (EventInfo interfaceEvent);
     CustomEventEmitter CreatePublicInterfaceEventImplementation (EventInfo interfaceEvent);
+
+    /// <summary>
+    /// Creates a nested class within the type emitted by this <see cref="IClassEmitter"/>.
+    /// </summary>
+    /// <param name="typeName">The name of the nested type.</param>
+    /// <param name="baseType">The base type of the nested type.</param>
+    /// <param name="interfaces">The interfaces to be implemented by the nested type.</param>
+    /// <returns>A new <see cref="IClassEmitter"/> for the nested class.</returns>
+    IClassEmitter CreateNestedClass (string typeName, Type baseType, Type[] interfaces);
+
     void ReplicateBaseTypeConstructors (params Statement[] postBaseCallInitializationStatements);
     
     MethodInfo GetPublicMethodWrapper (MethodInfo methodToBeWrapped);
     Type BuildType ();
-    
-    TypeBuilder TypeBuilder { get; }
-    Type BaseType { get; }
   }
 }

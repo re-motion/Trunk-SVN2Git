@@ -32,13 +32,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor =
         typeof (DebuggerDisplayAttribute).GetConstructor (new[] { typeof (string) });
 
-    private readonly IModuleManager _module;
+    private readonly ICodeGenerationModule _module;
     private readonly ITypeGenerator _targetGenerator;
     private readonly MixinDefinition _configuration;
     private readonly IClassEmitter _emitter;
     private readonly FieldReference _configurationField;
 
-    public MixinTypeGenerator (IModuleManager module, ITypeGenerator targetGenerator, MixinDefinition configuration, INameProvider nameProvider)
+    public MixinTypeGenerator (ICodeGenerationModule module, ITypeGenerator targetGenerator, MixinDefinition configuration, INameProvider nameProvider)
     {
       ArgumentUtility.CheckNotNull ("module", module);
       ArgumentUtility.CheckNotNull ("targetGenerator", targetGenerator);

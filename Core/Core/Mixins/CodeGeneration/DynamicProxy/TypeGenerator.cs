@@ -29,16 +29,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   public class TypeGenerator : ITypeGenerator
   {
     private static readonly MethodInfo s_concreteTypeInitializationMethod =
-        typeof (GeneratedClassInstanceInitializer).GetMethod ("InitializeMixinTarget", new Type[] { typeof (IInitializableMixinTarget), typeof (bool) });
+        typeof (GeneratedClassInstanceInitializer).GetMethod ("InitializeMixinTarget", new[] { typeof (IInitializableMixinTarget), typeof (bool) });
     private static readonly ConstructorInfo s_debuggerBrowsableAttributeConstructor =
-        typeof (DebuggerBrowsableAttribute).GetConstructor (new Type[] { typeof (DebuggerBrowsableState) });
+        typeof (DebuggerBrowsableAttribute).GetConstructor (new[] { typeof (DebuggerBrowsableState) });
     private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor =
-        typeof (DebuggerDisplayAttribute).GetConstructor (new Type[] { typeof (string) });
-    private readonly PropertyInfo[] s_debuggerDisplayNameProperty = new PropertyInfo[] { typeof (DebuggerDisplayAttribute).GetProperty ("Name") };
+        typeof (DebuggerDisplayAttribute).GetConstructor (new[] { typeof (string) });
+    private readonly PropertyInfo[] s_debuggerDisplayNameProperty = new[] { typeof (DebuggerDisplayAttribute).GetProperty ("Name") };
 
-    private readonly ModuleManager _module;
+    private readonly CodeGenerationCache _codeGenerationCache;
+    private readonly ICodeGenerationModule _module;
     private readonly TargetClassDefinition _configuration;
-    private readonly CustomClassEmitter _emitter;
+    private readonly IClassEmitter _emitter;
     private readonly BaseCallProxyGenerator _baseCallGenerator;
 
     private readonly FieldReference _configurationField;
@@ -47,11 +48,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly Dictionary<MethodInfo, MethodInfo> _baseCallMethods = new Dictionary<MethodInfo, MethodInfo>();
     private readonly ConcreteMixinType[] _concreteMixinTypes;
 
-    public TypeGenerator (ModuleManager module, TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider)
+    public TypeGenerator (CodeGenerationCache codeGenerationCache, ICodeGenerationModule module, TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider)
     {
+      ArgumentUtility.CheckNotNull ("codeGenerationCache", codeGenerationCache);
       ArgumentUtility.CheckNotNull ("module", module);
       ArgumentUtility.CheckNotNull ("configuration", configuration);
 
+      _codeGenerationCache = codeGenerationCache;
       _module = module;
       _configuration = configuration;
 
@@ -66,16 +69,15 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       bool forceUnsigned = StrongNameUtil.IsAnyTypeFromUnsignedAssembly (GetMixinTypes());
 
-      ClassEmitter classEmitter = new ClassEmitter (_module.Scope, typeName, configuration.Type, interfaces.ToArray (), flags, forceUnsigned);
-      _emitter = new CustomClassEmitter (classEmitter);
+      _emitter = _module.CreateClassEmitter (typeName, configuration.Type, interfaces.ToArray (), flags, forceUnsigned);
 
       _configurationField = _emitter.CreateStaticField ("__configuration", typeof (TargetClassDefinition), FieldAttributes.Private);
       HideFieldFromDebugger (_configurationField);
       _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]), FieldAttributes.Private);
       HideFieldFromDebugger (_extensionsField);
 
-      _concreteMixinTypes = CreateMixinTypeGenerators (mixinNameProvider);
-      _baseCallGenerator = new BaseCallProxyGenerator (this, classEmitter, _concreteMixinTypes);
+      _concreteMixinTypes = GetConcreteMixinTypes (mixinNameProvider);
+      _baseCallGenerator = new BaseCallProxyGenerator (this, _emitter, _concreteMixinTypes);
 
       _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder, FieldAttributes.Private);
       HideFieldFromDebugger (_firstField);
@@ -123,14 +125,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         yield return mixin.Type;
     }
 
-    private ConcreteMixinType[] CreateMixinTypeGenerators (INameProvider mixinNameProvider)
+    private ConcreteMixinType[] GetConcreteMixinTypes (INameProvider mixinNameProvider)
     {
       ConcreteMixinType[] concreteMixinTypes = new ConcreteMixinType[Configuration.Mixins.Count];
       for (int i = 0; i < concreteMixinTypes.Length; ++i)
       {
         MixinDefinition mixinConfiguration = Configuration.Mixins[i];
         if (NeedsDerivedMixinType (mixinConfiguration))
-          concreteMixinTypes[i] = new MixinTypeGenerator (_module, this, mixinConfiguration, mixinNameProvider).GetBuiltType();
+          concreteMixinTypes[i] = _codeGenerationCache.GetConcreteMixinType (this, mixinConfiguration, mixinNameProvider);
       }
       return concreteMixinTypes;
     }
@@ -175,7 +177,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       get { return ReflectionUtility.IsAssemblySigned (Emitter.TypeBuilder.Assembly); }
     }
 
-    public CustomClassEmitter Emitter
+    public IClassEmitter Emitter
     {
       get { return _emitter; }
     }
@@ -236,18 +238,18 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementISerializable ()
     {
-      SerializationImplementer.ImplementGetObjectDataByDelegation (Emitter, delegate (CustomMethodEmitter newMethod, bool baseIsISerializable)
-          {
-            return new MethodInvocationExpression (
-                null,
-                typeof (SerializationHelper).GetMethod ("GetObjectDataForGeneratedTypes"),
-                new ReferenceExpression (newMethod.ArgumentReferences[0]),
-                new ReferenceExpression (newMethod.ArgumentReferences[1]),
-                new ReferenceExpression (SelfReference.Self),
-                new ReferenceExpression (_configurationField),
-                new ReferenceExpression (_extensionsField),
-                new ReferenceExpression (new ConstReference (!baseIsISerializable)));
-          });
+      SerializationImplementer.ImplementGetObjectDataByDelegation (
+          Emitter,
+          (newMethod, baseIsISerializable) => new MethodInvocationExpression (
+                                                  null,
+                                                  typeof (SerializationHelper).GetMethod (
+                                                      "GetObjectDataForGeneratedTypes"),
+                                                  new ReferenceExpression (newMethod.ArgumentReferences[0]),
+                                                  new ReferenceExpression (newMethod.ArgumentReferences[1]),
+                                                  new ReferenceExpression (SelfReference.Self),
+                                                  new ReferenceExpression (_configurationField),
+                                                  new ReferenceExpression (_extensionsField),
+                                                  new ReferenceExpression (new ConstReference (!baseIsISerializable))));
 
       // Implement dummy ISerializable constructor if we haven't already replicated it
       SerializationImplementer.ImplementDeserializationConstructorByThrowingIfNotExistsOnBase (Emitter);
@@ -345,7 +347,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return introducedMethod;
     }
 
-    private CustomPropertyEmitter ImplementIntroducedProperty (Expression implementerExpression, PropertyIntroductionDefinition property)
+    private void ImplementIntroducedProperty (Expression implementerExpression, PropertyIntroductionDefinition property)
     {
       CustomPropertyEmitter propertyEmitter;
       if (property.Visibility == MemberVisibility.Public)
@@ -368,10 +370,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
             property.Visibility);
 
       ReplicateAttributes (property.ImplementingMember, propertyEmitter);
-      return propertyEmitter;
+      return;
     }
 
-    private CustomEventEmitter ImplementIntroducedEvent (EventIntroductionDefinition eventIntro, Expression implementerExpression)
+    private void ImplementIntroducedEvent (EventIntroductionDefinition eventIntro, Expression implementerExpression)
     {
       Assertion.IsNotNull (eventIntro.ImplementingMember.AddMethod);
       Assertion.IsNotNull (eventIntro.ImplementingMember.RemoveMethod);
@@ -394,7 +396,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           eventIntro.Visibility);
 
       ReplicateAttributes (eventIntro.ImplementingMember, eventEmitter);
-      return eventEmitter;
+      return;
     }
 
     private void ImplementRequiredDuckMethods ()
@@ -522,8 +524,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       if (!Configuration.ReceivedAttributes.ContainsKey (typeof (DebuggerDisplayAttribute)))
       {
-        string debuggerString = "Mix of " + _configuration.Type.FullName + " + "
-            + SeparatedStringBuilder.Build (" + ", _configuration.Mixins, delegate (MixinDefinition m) { return m.FullName; });
+        string debuggerString = "Mix of " + _configuration.Type.FullName + " + " 
+            + SeparatedStringBuilder.Build (" + ", _configuration.Mixins, m => m.FullName);
         CustomAttributeBuilder debuggerAttribute = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor, new object[] {debuggerString});
         Emitter.AddCustomAttribute (debuggerAttribute);
       }
@@ -555,8 +557,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       Assertion.IsTrue (ReflectionUtility.IsPublicOrProtected (method));
 
-      MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig;
-      CustomMethodEmitter baseCallMethod = new CustomMethodEmitter (Emitter, "__base__" + method.Name, attributes);
+      const MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig;
+      IMethodEmitter baseCallMethod = Emitter.CreateMethod ("__base__" + method.Name, attributes);
       baseCallMethod.CopyParametersAndReturnType (method);
       baseCallMethod.ImplementByBaseCall (method);
       return baseCallMethod.MethodBuilder;

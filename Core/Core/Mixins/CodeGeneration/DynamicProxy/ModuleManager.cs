@@ -51,6 +51,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private static int s_counter = 0; // we count the instances of this class so that we can generate unique assembly names
 
+    private readonly int _currentCount;
+
     private string _weakAssemblyName;
     private string _weakModulePath;
 
@@ -58,7 +60,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private string _strongModulePath;
 
     private ModuleScope _scope;
-    private readonly int _currentCount;
 
     public ModuleManager ()
     {
@@ -74,13 +75,22 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return formatSring.Replace ("{counter}", _currentCount.ToString ());
     }
 
-    public ITypeGenerator CreateTypeGenerator (TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider)
+    public ITypeGenerator CreateTypeGenerator (CodeGenerationCache cache, TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider)
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
       ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
 
-      return new TypeGenerator (this, configuration, nameProvider, mixinNameProvider);
+      return new TypeGenerator (cache, this, configuration, nameProvider, mixinNameProvider);
+    }
+
+    public IMixinTypeGenerator CreateMixinTypeGenerator (ITypeGenerator mixedTypeGenerator, MixinDefinition mixinDefinition, INameProvider mixinNameProvider)
+    {
+      ArgumentUtility.CheckNotNull ("mixedTypeGenerator", mixedTypeGenerator);
+      ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
+      ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
+
+      return new MixinTypeGenerator (this, mixedTypeGenerator, mixinDefinition, mixinNameProvider);
     }
 
     // should be called when a type was generated with the scope from this module

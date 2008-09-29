@@ -9,18 +9,16 @@
  */
 
 using System;
-using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
-using Castle.DynamicProxy.Generators.Emitters;
 using Remotion.Mixins.Definitions;
-using Remotion.Reflection.CodeGeneration;
 
 namespace Remotion.Mixins.CodeGeneration
 {
-  public interface IModuleManager
+  public interface IModuleManager : ICodeGenerationModule
   {
-    ITypeGenerator CreateTypeGenerator (TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider);
+    ITypeGenerator CreateTypeGenerator (CodeGenerationCache codeGenerationCache, TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider);
+    IMixinTypeGenerator CreateMixinTypeGenerator (ITypeGenerator mixedTypeGenerator, MixinDefinition mixinDefinition, INameProvider mixinNameProvider);
 
     string SignedAssemblyName { get; set; }
     string UnsignedAssemblyName { get; set; }
@@ -42,7 +40,5 @@ namespace Remotion.Mixins.CodeGeneration
 
     IObjectReference BeginDeserialization (Func<Type, Type> typeTransformer, SerializationInfo info, StreamingContext context);
     void FinishDeserialization (IObjectReference objectReference);
-    
-    IClassEmitter CreateClassEmitter (string typeName, Type baseType, Type[] interfaces, TypeAttributes typeAttributes, bool forceUnsigned);
   }
 }

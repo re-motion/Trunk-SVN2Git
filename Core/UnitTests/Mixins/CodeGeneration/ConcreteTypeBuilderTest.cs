@@ -363,45 +363,29 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         Assembly assembly = Assembly.Load (AssemblyName.GetAssemblyName (modulePath));
         ConcreteTypeBuilder.Current.LoadAssemblyIntoCache (assembly);
 
-        var repository = new MockRepository ();
-
-        var moduleManagerMock = repository.StrictMock<IModuleManager> ();
-        IModuleManager realScope = ConcreteTypeBuilder.Current.Scope;
-        ConcreteTypeBuilder.Current.Scope = moduleManagerMock;
-
-        Expect.Call (moduleManagerMock.SignedAssemblyName).Return ("whatever");
-        Expect.Call (moduleManagerMock.UnsignedAssemblyName).Return ("whatever");
-
-        repository.Replay (moduleManagerMock);
-
-        TargetClassDefinition innerClassDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType2), GenerationPolicy.ForceGeneration);
         MixinDefinition innerMixinDefinition =
             TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingSingleMixinMethod)).Mixins[typeof (MixinWithSingleAbstractMethod)];
 
-        repository.BackToRecord (moduleManagerMock);
-
-        using (repository.Ordered ())
-        {
-          Expect.Call (moduleManagerMock.CreateTypeGenerator (innerClassDefinition, GuidNameProvider.Instance, GuidNameProvider.Instance))
-              .Return (realScope.CreateTypeGenerator (innerClassDefinition, GuidNameProvider.Instance, GuidNameProvider.Instance));
-          Expect.Call (moduleManagerMock.CreateTypeGenerator (innerMixinDefinition.TargetClass, GuidNameProvider.Instance, GuidNameProvider.Instance))
-              .Return (realScope.CreateTypeGenerator (innerMixinDefinition.TargetClass, GuidNameProvider.Instance, GuidNameProvider.Instance));
-        }
-
-        repository.ReplayAll ();
-
         // causes CreateTypeGenerator
-        TypeFactory.GetConcreteType (typeof (BaseType2), GenerationPolicy.ForceGeneration);
+        Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType2), GenerationPolicy.ForceGeneration);
+        Assert.That (TypeUtility.IsGeneratedByMixinEngine (generatedType));
+        Assert.That (generatedType.Assembly, Is.Not.SameAs (assembly));
+
         // causes CreateMixinTypeGenerator
-        ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
+        Type generatedMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
+        Assert.That (TypeUtility.IsGeneratedByMixinEngine (generatedMixinType));
+        Assert.That (generatedMixinType.Assembly, Is.Not.SameAs (assembly));
 
         // causes nothing, was loaded
-        TypeFactory.GetConcreteType (typeof (ClassOverridingMixinMembers));
+        Type loadedType = TypeFactory.GetConcreteType (typeof (ClassOverridingMixinMembers));
+        Assert.That (TypeUtility.IsGeneratedByMixinEngine (loadedType));
+        Assert.That (loadedType.Assembly, Is.SameAs (assembly));
+
         // causes nothing, was loaded
         innerMixinDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
-        ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
-        
-        repository.VerifyAll ();
+        Type loadedMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
+        Assert.That (TypeUtility.IsGeneratedByMixinEngine (loadedMixinType));
+        Assert.That (loadedMixinType.Assembly, Is.SameAs (assembly));
       }, paths.Single());
     }
 

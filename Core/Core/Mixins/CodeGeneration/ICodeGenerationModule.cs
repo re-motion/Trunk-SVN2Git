@@ -9,23 +9,15 @@
  */
 
 using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Mixins.CodeGeneration;
+using System.Reflection;
+using System.Reflection.Emit;
+using Remotion.Reflection.CodeGeneration;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration
+namespace Remotion.Mixins.CodeGeneration
 {
-  [TestFixture]
-  public class CodeGenerationCacheTest
+  public interface ICodeGenerationModule
   {
-    // private CodeGenerationCache _cache;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      // _cache = new CodeGenerationCache();
-    }
-
-    // TODO...
+    IClassEmitter CreateClassEmitter (string typeName, Type baseType, Type[] interfaces, TypeAttributes typeAttributes, bool forceUnsigned);
+    void OnTypeGenerated (Type generatedType, TypeBuilder typeBuilder);
   }
 }
