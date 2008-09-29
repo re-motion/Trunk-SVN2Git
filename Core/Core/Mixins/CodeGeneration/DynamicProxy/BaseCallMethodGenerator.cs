@@ -21,21 +21,21 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   internal class BaseCallMethodGenerator
   {
     private readonly CustomMethodEmitter _methodEmitter;
-    private readonly MixinTypeGenerator[] _mixinTypeGenerators;
+    private readonly ConcreteMixinType[] _concreteMixinTypes;
     private readonly TargetClassDefinition _targetClassConfiguration;
     private readonly FieldReference _depthField;
     private readonly FieldReference _thisField;
     private readonly TypeGenerator _surroundingType;
 
     public BaseCallMethodGenerator (CustomMethodEmitter methodEmitter, BaseCallProxyGenerator baseCallProxyGenerator,
-        MixinTypeGenerator[] mixinTypeGenerators)
+        ConcreteMixinType[] concreteMixinTypes)
     {
       ArgumentUtility.CheckNotNull ("methodEmitter", methodEmitter);
       ArgumentUtility.CheckNotNull ("baseCallProxyGenerator", baseCallProxyGenerator);
-      ArgumentUtility.CheckNotNull ("mixinTypeGenerators", mixinTypeGenerators);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypes", concreteMixinTypes);
 
       _methodEmitter = methodEmitter;
-      _mixinTypeGenerators = mixinTypeGenerators;
+      _concreteMixinTypes = concreteMixinTypes;
       _thisField = baseCallProxyGenerator.ThisField;
       _depthField = baseCallProxyGenerator.DepthField;
       _surroundingType = baseCallProxyGenerator.SurroundingType;
@@ -80,7 +80,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private Statement CreateBaseCallStatement (MethodDefinition target, ArgumentReference[] args)
     {
-      Expression[] argExpressions = Array.ConvertAll<ArgumentReference, Expression> (args, delegate (ArgumentReference a) { return a.ToExpression (); });
+      Expression[] argExpressions = Array.ConvertAll (args, a => a.ToExpression());
       
       if (target.DeclaringClass == _targetClassConfiguration)
         return CreateBaseCallToTargetClassStatement(target, argExpressions);
@@ -110,8 +110,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         return mixinMethod.MethodInfo;
       else
       {
-        Assertion.IsNotNull (_mixinTypeGenerators[mixinIndex]);
-        return _mixinTypeGenerators[mixinIndex].GetPublicMethodWrapper (mixinMethod);
+        Assertion.IsNotNull (_concreteMixinTypes[mixinIndex]);
+        return _concreteMixinTypes[mixinIndex].GetMethodWrapper (mixinMethod.MethodInfo);
       }
     }
 

@@ -45,7 +45,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly FieldReference _extensionsField;
     private readonly FieldReference _firstField;
     private readonly Dictionary<MethodInfo, MethodInfo> _baseCallMethods = new Dictionary<MethodInfo, MethodInfo>();
-    private readonly MixinTypeGenerator[] _mixinTypeGenerators;
+    private readonly ConcreteMixinType[] _concreteMixinTypes;
 
     public TypeGenerator (ModuleManager module, TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider)
     {
@@ -74,8 +74,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]), FieldAttributes.Private);
       HideFieldFromDebugger (_extensionsField);
 
-      _mixinTypeGenerators = CreateMixinTypeGenerators (mixinNameProvider);
-      _baseCallGenerator = new BaseCallProxyGenerator (this, classEmitter, _mixinTypeGenerators);
+      _concreteMixinTypes = CreateMixinTypeGenerators (mixinNameProvider);
+      _baseCallGenerator = new BaseCallProxyGenerator (this, classEmitter, _concreteMixinTypes);
 
       _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder, FieldAttributes.Private);
       HideFieldFromDebugger (_firstField);
@@ -123,16 +123,16 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         yield return mixin.Type;
     }
 
-    private MixinTypeGenerator[] CreateMixinTypeGenerators (INameProvider mixinNameProvider)
+    private ConcreteMixinType[] CreateMixinTypeGenerators (INameProvider mixinNameProvider)
     {
-      MixinTypeGenerator[] mixinTypeGenerators = new MixinTypeGenerator[Configuration.Mixins.Count];
-      for (int i = 0; i < mixinTypeGenerators.Length; ++i)
+      ConcreteMixinType[] concreteMixinTypes = new ConcreteMixinType[Configuration.Mixins.Count];
+      for (int i = 0; i < concreteMixinTypes.Length; ++i)
       {
         MixinDefinition mixinConfiguration = Configuration.Mixins[i];
         if (NeedsDerivedMixinType (mixinConfiguration))
-          mixinTypeGenerators[i] = new MixinTypeGenerator (_module, this, mixinConfiguration, mixinNameProvider);
+          concreteMixinTypes[i] = new MixinTypeGenerator (_module, this, mixinConfiguration, mixinNameProvider).GetBuiltType();
       }
-      return mixinTypeGenerators;
+      return concreteMixinTypes;
     }
 
     public static bool NeedsDerivedMixinType (MixinDefinition configuration)
@@ -194,10 +194,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     public IEnumerable<Tuple<MixinDefinition, Type>> GetBuiltMixinTypes ()
     {
-      foreach (MixinTypeGenerator mixinTypeGenerator in _mixinTypeGenerators)
+      foreach (ConcreteMixinType concreteMixinType in _concreteMixinTypes)
       {
-        if (mixinTypeGenerator != null)
-          yield return new Tuple<MixinDefinition, Type> (mixinTypeGenerator.Configuration, mixinTypeGenerator.GetBuiltType().GeneratedType);
+        if (concreteMixinType != null)
+          yield return new Tuple<MixinDefinition, Type> (concreteMixinType.MixinDefinition, concreteMixinType.GeneratedType);
       }
     }
 

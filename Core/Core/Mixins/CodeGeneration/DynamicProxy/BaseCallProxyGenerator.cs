@@ -24,7 +24,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   internal class BaseCallProxyGenerator
   {
     private readonly TypeGenerator _surroundingType;
-    private readonly MixinTypeGenerator[] _mixinTypeGenerators;
+    private readonly ConcreteMixinType[] _concreteMixinTypes;
     private readonly CustomClassEmitter _emitter;
     private readonly ConstructorEmitter _ctor;
     private readonly TargetClassDefinition _targetClassConfiguration;
@@ -32,14 +32,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly FieldReference _thisField;
     private readonly Dictionary<MethodDefinition, MethodInfo> _overriddenMethodToImplementationMap = new Dictionary<MethodDefinition, MethodInfo>();
 
-    public BaseCallProxyGenerator (TypeGenerator surroundingType, ClassEmitter surroundingTypeEmitter, MixinTypeGenerator[] mixinTypeGenerators)
+    public BaseCallProxyGenerator (TypeGenerator surroundingType, ClassEmitter surroundingTypeEmitter, ConcreteMixinType[] concreteMixinTypes)
     {
       ArgumentUtility.CheckNotNull ("surroundingType", surroundingType);
       ArgumentUtility.CheckNotNull ("surroundingTypeEmitter", surroundingTypeEmitter);
-      ArgumentUtility.CheckNotNull ("mixinTypeGenerators", mixinTypeGenerators);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypes", concreteMixinTypes);
 
       _surroundingType = surroundingType;
-      _mixinTypeGenerators = mixinTypeGenerators;
+      _concreteMixinTypes = concreteMixinTypes;
       _targetClassConfiguration = surroundingType.Configuration;
 
       List<Type> interfaces = new List<Type> ();
@@ -125,7 +125,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       CustomMethodEmitter methodOverride = new CustomMethodEmitter (_emitter, methodDefinitionOnTarget.FullName, attributes);
       methodOverride.CopyParametersAndReturnType (methodDefinitionOnTarget.MethodInfo);
       
-      BaseCallMethodGenerator methodGenerator = new BaseCallMethodGenerator (methodOverride, this, _mixinTypeGenerators);
+      BaseCallMethodGenerator methodGenerator = new BaseCallMethodGenerator (methodOverride, this, _concreteMixinTypes);
       methodGenerator.AddBaseCallToNextInChain (methodDefinitionOnTarget);
 
       _overriddenMethodToImplementationMap.Add (methodDefinitionOnTarget, methodOverride.MethodBuilder);
@@ -158,7 +158,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private void ImplementBaseCallForRequirementOnTarget (RequiredMethodDefinition requiredMethod)
     {
       CustomMethodEmitter methodImplementation = _emitter.CreateInterfaceMethodImplementation (requiredMethod.InterfaceMethod);
-      BaseCallMethodGenerator methodGenerator = new BaseCallMethodGenerator (methodImplementation, this, _mixinTypeGenerators);
+      BaseCallMethodGenerator methodGenerator = new BaseCallMethodGenerator (methodImplementation, this, _concreteMixinTypes);
       if (requiredMethod.ImplementingMethod.Overrides.Count == 0) // this is not an overridden method, call method directly on _this
         methodGenerator.AddBaseCallToTarget (requiredMethod.ImplementingMethod);
       else // this is an override, go to next in chain
@@ -175,7 +175,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private void ImplementBaseCallForRequirementOnMixin (RequiredMethodDefinition requiredMethod)
     {
       CustomMethodEmitter methodImplementation = _emitter.CreateInterfaceMethodImplementation (requiredMethod.InterfaceMethod);
-      BaseCallMethodGenerator methodGenerator = new BaseCallMethodGenerator (methodImplementation, this, _mixinTypeGenerators);
+      BaseCallMethodGenerator methodGenerator = new BaseCallMethodGenerator (methodImplementation, this, _concreteMixinTypes);
       if (requiredMethod.ImplementingMethod.Base == null) // this is not an override, call method directly on extension
         methodGenerator.AddBaseCallToTarget (requiredMethod.ImplementingMethod);
       else // this is an override, go to next in chain

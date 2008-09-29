@@ -30,7 +30,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   public class MixinTypeGenerator : IMixinTypeGenerator
   {
     private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor =
-        typeof (DebuggerDisplayAttribute).GetConstructor (new Type[] { typeof (string) });
+        typeof (DebuggerDisplayAttribute).GetConstructor (new[] { typeof (string) });
 
     private readonly IModuleManager _module;
     private readonly ITypeGenerator _targetGenerator;
@@ -54,8 +54,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       string typeName = nameProvider.GetNewTypeName (configuration);
       typeName = CustomClassEmitter.FlattenTypeName (typeName);
 
-      Type[] interfaces = new[] {typeof (ISerializable), typeof (IGeneratedMixinType)};
-      TypeAttributes flags = TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable;
+      Type[] interfaces = new[] { typeof (ISerializable), typeof (IGeneratedMixinType) };
+      const TypeAttributes flags = TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable;
 
       bool forceUnsigned = !targetGenerator.IsAssemblySigned;
       _emitter = _module.CreateClassEmitter (typeName, configuration.Type, interfaces, flags, forceUnsigned);
@@ -80,11 +80,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     public ConcreteMixinType GetBuiltType ()
     {
-      Generate ();
+      Generate();
       Tuple<MethodInfo, MethodInfo>[] methodWrappers = GenerateMethodWrappers().ToArray();
 
-      Type generatedType = Emitter.BuildType ();
-      ConcreteMixinType result = new ConcreteMixinType (generatedType);
+      Type generatedType = Emitter.BuildType();
+      ConcreteMixinType result = new ConcreteMixinType (Configuration, generatedType);
       foreach (var methodWrapper in methodWrappers)
         result.AddMethodWrapper (methodWrapper.A, methodWrapper.B);
 
@@ -93,16 +93,16 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     protected virtual void Generate ()
     {
-      AddTypeInitializer ();
+      AddTypeInitializer();
 
-      _emitter.ReplicateBaseTypeConstructors ();
+      _emitter.ReplicateBaseTypeConstructors();
 
-      ImplementGetObjectData ();
+      ImplementGetObjectData();
 
-      AddMixinTypeAttribute ();
-      AddDebuggerAttributes ();
+      AddMixinTypeAttribute();
+      AddDebuggerAttributes();
       ReplicateAttributes (_configuration.CustomAttributes, _emitter);
-      ImplementOverrides ();
+      ImplementOverrides();
     }
 
     private IEnumerable<Tuple<MethodInfo, MethodInfo>> GenerateMethodWrappers ()
@@ -116,26 +116,31 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void AddTypeInitializer ()
     {
-      ConstructorEmitter emitter = _emitter.CreateTypeConstructor ();
+      ConstructorEmitter emitter = _emitter.CreateTypeConstructor();
 
       Expression attributeExpression =
-          ConcreteMixinTypeAttributeUtility.CreateNewAttributeExpression (Configuration.MixinIndex, Configuration.TargetClass.ConfigurationContext,
-          emitter.CodeBuilder);
+          ConcreteMixinTypeAttributeUtility.CreateNewAttributeExpression (
+              Configuration.MixinIndex,
+              Configuration.TargetClass.ConfigurationContext,
+              emitter.CodeBuilder);
       LocalReference attributeLocal = emitter.CodeBuilder.DeclareLocal (typeof (ConcreteMixinTypeAttribute));
       emitter.CodeBuilder.AddStatement (new AssignStatement (attributeLocal, attributeExpression));
-      
+
       MethodInfo getMixinDefinitionMethod = typeof (ConcreteMixinTypeAttribute).GetMethod ("GetMixinDefinition");
       Assertion.IsNotNull (getMixinDefinitionMethod);
 
-      emitter.CodeBuilder.AddStatement (new AssignStatement (_configurationField,
-          new VirtualMethodInvocationExpression (attributeLocal, getMixinDefinitionMethod)));
+      emitter.CodeBuilder.AddStatement (
+          new AssignStatement (
+              _configurationField,
+              new VirtualMethodInvocationExpression (attributeLocal, getMixinDefinitionMethod)));
 
-      emitter.CodeBuilder.AddStatement (new ReturnStatement ());
+      emitter.CodeBuilder.AddStatement (new ReturnStatement());
     }
 
     private void AddMixinTypeAttribute ()
     {
-      CustomAttributeBuilder attributeBuilder = ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (Configuration.MixinIndex,
+      CustomAttributeBuilder attributeBuilder = ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (
+          Configuration.MixinIndex,
           Configuration.TargetClass.ConfigurationContext);
       Emitter.AddCustomAttribute (attributeBuilder);
     }
@@ -186,7 +191,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         return _targetGenerator.GetPublicMethodWrapper (overrider);
     }
 
-    private void AddCallToOverrider (CustomMethodEmitter methodOverride, Reference targetReference, MethodInfo targetMethod)
+    private void AddCallToOverrider (IMethodEmitter methodOverride, Reference targetReference, MethodInfo targetMethod)
     {
       LocalReference castTargetLocal = methodOverride.DeclareLocal (targetMethod.DeclaringType);
       methodOverride.AddStatement (
@@ -209,26 +214,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementGetObjectData ()
     {
-      SerializationImplementer.ImplementGetObjectDataByDelegation (Emitter, delegate (CustomMethodEmitter newMethod, bool baseIsISerializable)
-          {
-            return new MethodInvocationExpression (
-                null,
-                typeof (MixinSerializationHelper).GetMethod ("GetObjectDataForGeneratedTypes"),
-                new ReferenceExpression (newMethod.ArgumentReferences[0]),
-                new ReferenceExpression (newMethod.ArgumentReferences[1]),
-                new ReferenceExpression (SelfReference.Self),
-                new ReferenceExpression (_configurationField),
-                new ReferenceExpression (new ConstReference (!baseIsISerializable)));
-          });
-    }
-
-    public MethodInfo GetPublicMethodWrapper (MethodDefinition methodToBeWrapped)
-    {
-      ArgumentUtility.CheckNotNull ("methodToBeWrapped", methodToBeWrapped);
-      if (methodToBeWrapped.DeclaringClass != Configuration)
-        throw new ArgumentException ("Only methods from class " + Configuration.FullName + " can be wrapped.");
-
-      return Emitter.GetPublicMethodWrapper (methodToBeWrapped.MethodInfo);
+      SerializationImplementer.ImplementGetObjectDataByDelegation (
+          Emitter,
+          (newMethod, baseIsISerializable) =>
+          new MethodInvocationExpression (
+              null,
+              typeof (MixinSerializationHelper).GetMethod ("GetObjectDataForGeneratedTypes"),
+              new ReferenceExpression (newMethod.ArgumentReferences[0]),
+              new ReferenceExpression (newMethod.ArgumentReferences[1]),
+              new ReferenceExpression (SelfReference.Self),
+              new ReferenceExpression (_configurationField),
+              new ReferenceExpression (new ConstReference (!baseIsISerializable))));
     }
   }
 }
