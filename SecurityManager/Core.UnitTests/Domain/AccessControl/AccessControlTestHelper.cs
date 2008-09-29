@@ -403,6 +403,20 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
+
+    // 2008-09-29 MGi
+    public AccessControlEntry CreateAceWithOwningGroup ()
+    {
+      using (_transaction.EnterNonDiscardingScope())
+      {
+        AccessControlEntry entry = AccessControlEntry.NewObject ();
+        entry.GroupSelection = GroupSelection.OwningGroup;
+
+        return entry;
+      }
+    }
+
+
     public AccessControlEntry CreateAceWithOwningTenant ()
     {
       using (_transaction.EnterNonDiscardingScope())
@@ -562,5 +576,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         return role;
       }
     }
+
+
   }
 }

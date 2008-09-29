@@ -25,6 +25,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       Tenant owningTenant = (ace.TenantSelection == TenantSelection.OwningTenant) ? user.Tenant : ace.SpecificTenant;
 
       IList<Group> owningGroups = new List<Group>();
+      switch (ace.GroupSelection)
+      {
+        case GroupSelection.OwningGroup:
+          owningGroups.Add (role.Group); 
+          break;
+        case GroupSelection.All:
+          owningGroups.Add (ace.SpecificGroup); 
+          break;
+        default:
+          throw new NotSupportedException (String.Format("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.",ace.GroupSelection));
+      }
+
 
       IList<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition>();
 

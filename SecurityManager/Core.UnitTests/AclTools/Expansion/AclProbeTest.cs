@@ -25,6 +25,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void CreateAclProbe_User_Test ()
     {
       AccessControlEntry ace = TestHelper.CreateAceWithAbstractRole();
+      FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.User, Is.EqualTo (User));
     }
@@ -36,24 +37,24 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       {
         AccessControlEntry ace = TestHelper.CreateAceWithSpecficGroup (Group);
         AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-        Assert.That (aclProbe.SecurityToken.OwningGroup, Is.EqualTo (ace.SpecificGroup));
+        Assert.That (aclProbe.SecurityToken.OwningGroups, NUnit.Framework.SyntaxHelpers.List.Contains (ace.SpecificGroup));
       }
-    #endif
+#endif
 
-    //[Test]
-    //[Ignore]
-    //public void CreateAclProbe_OwningGroup_Test ()
-    //{
-    //  AccessControlEntry ace = TestHelper.CreateAceWithOwningGroup ();
-    //  AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-    //  Assert.That (aclProbe.SecurityToken.OwningGroup, Is.EqualTo (ace.SpecificGroup));
-    //}
+    [Test]
+    public void CreateAclProbe_OwningGroup_Test ()
+    {
+      AccessControlEntry ace = TestHelper.CreateAceWithOwningGroup ();
+      AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
+      Assert.That (aclProbe.SecurityToken.OwningGroups, NUnit.Framework.SyntaxHelpers.List.Contains (Role.Group));
+    }
 
 
     [Test]
     public void CreateAclProbe_SpecificTenant_Test ()
     {
       AccessControlEntry ace = TestHelper.CreateAceWithSpecficTenant (Tenant);
+      FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (ace.SpecificTenant));
     }
@@ -62,6 +63,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void CreateAclProbe_OwningTenant_Test ()
     {
       AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant ();
+      FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (User.Tenant));
     }
@@ -72,6 +74,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     //  AccessControlEntry entry = TestHelper.CreateAceWithOwningTenant ();
     //  AccessControlEntry entry = TestHelper.CreateAceWithAbstractRole ();
     //}
+
+
+    void FleshOutAccessControlEntryForTest (AccessControlEntry ace)
+    {
+      ace.SpecificGroup = TestHelper.CreateGroup ("Specific Group for an ACE", null, Tenant);
+    }
 
   }
 }
