@@ -22,11 +22,21 @@ namespace Remotion.Web.ExecutionEngine
   public abstract class WxeFunction2 : WxeStepList
   {
     private IWxeFunctionExecutionListener _executionListener = new NullExecutionListener();
+    private ITransactionStrategy _transactionStrategy;
+    private readonly ITransactionMode _transactionMode;
+
+    protected WxeFunction2 (ITransactionMode transactionMode)
+    {
+      _transactionMode = transactionMode;
+    }
 
     public override void Execute (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       Assertion.IsNotNull (_executionListener);
+
+      if (!IsExecutionStarted)
+        _transactionStrategy = _transactionMode.CreateTransactionStrategy (this, _executionListener);
 
       _executionListener.OnExecutionPlay (context);
 
@@ -59,6 +69,22 @@ namespace Remotion.Web.ExecutionEngine
     {
       get { return _executionListener; }
       set { _executionListener = ArgumentUtility.CheckNotNull ("value", value); }
+    }
+
+    //TODO: Remove when WxeFunction2 merged to WxeFunction
+    public new WxeFunction2 ParentFunction
+    {
+      get { return WxeStep.GetStepByType<WxeFunction2> (ParentStep); }
+    }
+
+    public ITransactionStrategy Transaction
+    {
+      get { return _transactionStrategy; }
+    }
+
+    public ITransactionMode TransactionMode
+    {
+      get { return _transactionMode; }
     }
   }
 }

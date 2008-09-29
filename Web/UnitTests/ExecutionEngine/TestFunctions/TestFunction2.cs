@@ -8,11 +8,22 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
-  public class TestFunction2:WxeFunction2
+  public class TestFunction2 : WxeFunction2
   {
+    public TestFunction2 (ITransactionMode transactionMode)
+        : base (transactionMode)
+    {
+    }
+
+    public TestFunction2 ()
+        : base (WxeTransactionMode<TestTransactionScopeManager2>.Null)
+    {
+    }
   }
 }

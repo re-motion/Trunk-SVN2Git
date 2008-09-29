@@ -26,10 +26,16 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _autoCommit = autoCommit;
     }
 
-    public virtual ITransactionStrategy GetStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
+    public virtual ITransactionStrategy CreateTransactionStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
     {
+      ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("executionListener", executionListener);
 
+      for (WxeFunction2 parentFunction = function.ParentFunction; parentFunction != null; parentFunction = parentFunction.ParentFunction)
+      {
+        if (!parentFunction.Transaction.IsNull)
+          return new ChildTransactionStrategy<TScopeManager> (_autoCommit, executionListener);
+      }
       return new RootTransactionStrategy<TScopeManager> (_autoCommit, executionListener);
     }
 

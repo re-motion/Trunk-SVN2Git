@@ -21,7 +21,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
     }
 
-    public virtual ITransactionStrategy GetStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
+    public virtual ITransactionStrategy CreateTransactionStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
     {
       ArgumentUtility.CheckNotNull ("executionListener", executionListener);
       return new NullTransactionStrategy (executionListener);

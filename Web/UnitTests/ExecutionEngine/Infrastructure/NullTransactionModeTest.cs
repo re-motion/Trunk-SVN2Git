@@ -22,11 +22,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
   public class NullTransactionModeTest
   {
     [Test]
-    public void GetStrategy ()
+    public void CreateTransactionStrategy ()
     {
       ITransactionMode transactionMode = new NullTransactionMode();
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
-      ITransactionStrategy strategy = transactionMode.GetStrategy (new TestFunction2(), executionListenerStub);
+      ITransactionStrategy strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), executionListenerStub);
 
       Assert.That (strategy, Is.InstanceOfType (typeof (NullTransactionStrategy)));
       Assert.That (((NullTransactionStrategy) strategy).InnerListener, Is.SameAs (executionListenerStub));
