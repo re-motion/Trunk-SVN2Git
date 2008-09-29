@@ -31,25 +31,28 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       ArgumentUtility.CheckNotNull ("user", user);
       ArgumentUtility.CheckNotNull ("role", role);
       ArgumentUtility.CheckNotNull ("ace", ace);
-      var aclProbe = new AclProbe();
 
-      IList<Group> owningGroups = CreateOwningGroups(role, ace);
-      Tenant owningTenant = CreateOwningTenant(user, ace);
+      IList<Group> owningGroups = CreateOwningGroupsEntry(role, ace);
+      Tenant owningTenant = CreateOwningTenantEntry(user, ace);
+      IList<AbstractRoleDefinition> abstractRoles = CreatAbstractRolesEntry(ace);
 
-      
+      var aclProbe = new AclProbe ();
+      aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroups, abstractRoles);
+      return aclProbe;
+    }
+
+    private static IList<AbstractRoleDefinition> CreatAbstractRolesEntry (AccessControlEntry ace)
+    {
       IList<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition>();
       if (ace.SpecificAbstractRole != null)
       {
         abstractRoles.Add (ace.SpecificAbstractRole);
       }
-
-
-      aclProbe._securityToken = new SecurityToken(user,owningTenant,owningGroups,abstractRoles);
-      return aclProbe;
+      return abstractRoles;
     }
 
 
-    private static Tenant CreateOwningTenant (User user, AccessControlEntry ace)
+    private static Tenant CreateOwningTenantEntry (User user, AccessControlEntry ace)
     {
       Tenant owningTenant = null;
       switch (ace.TenantSelection)
@@ -67,7 +70,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return owningTenant;
     }
 
-    private static IList<Group> CreateOwningGroups (Role role, AccessControlEntry ace)
+    private static IList<Group> CreateOwningGroupsEntry (Role role, AccessControlEntry ace)
     {
       IList<Group> owningGroups = new List<Group>();
       switch (ace.GroupSelection)

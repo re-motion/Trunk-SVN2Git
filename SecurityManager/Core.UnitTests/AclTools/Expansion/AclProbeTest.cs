@@ -110,13 +110,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    //[Test]
-    //public void EmptyToken_EmptyAce_Matches ()
-    //{
-    //  AccessControlEntry entry = TestHelper.CreateAceWithOwningTenant ();
-    //  AccessControlEntry entry = TestHelper.CreateAceWithAbstractRole ();
-    //}
-
 
     void FleshOutAccessControlEntryForTest (AccessControlEntry ace)
     {
