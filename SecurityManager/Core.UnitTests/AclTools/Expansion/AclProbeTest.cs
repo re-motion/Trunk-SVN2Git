@@ -52,9 +52,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
  
       var accessConditionsExpected = new AclExpansionAccessConditions();
       accessConditionsExpected.OnlyIfGroupIsOwner = true;
-
-      //To.Console.e (accessConditionsExpected);
-
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
 
@@ -88,6 +85,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (ace.SpecificTenant));
+
+      var accessConditionsExpected = new AclExpansionAccessConditions ();
+      Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
 
     [Test]
@@ -97,6 +97,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (User.Tenant));
+
+      var accessConditionsExpected = new AclExpansionAccessConditions ();
+      accessConditionsExpected.OnlyIfTenantIsOwner = true;
+      Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
 
     [Test]
@@ -118,6 +122,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (ace.SpecificAbstractRole, Is.Not.Null);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.AbstractRoles, List.Contains (ace.SpecificAbstractRole));
+
+      var accessConditionsExpected = new AclExpansionAccessConditions ();
+      accessConditionsExpected.OnlyIfAbstractRoleMatches = true;
+      accessConditionsExpected.AbstractRole = ace.SpecificAbstractRole;
+      Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
 
 
