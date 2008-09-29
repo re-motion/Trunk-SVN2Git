@@ -17,7 +17,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   /// The <see cref="IWxeFunctionExecutionListener"/> interface defines hooks for interacting with a <see cref="WxeFunction2"/>'s execution,
   /// including it's re-entry model.
   /// </summary>
-  public interface IWxeFunctionExecutionListener
+  public interface IWxeFunctionExecutionListener : INullObject
   {
     /// <summary>Play is invoked when the function's <see cref="WxeFunction2.Execute(WxeContext)"/> method is invoked (first and subsequent calls).</summary>
     void OnExecutionPlay (WxeContext context);

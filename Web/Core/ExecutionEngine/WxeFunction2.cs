@@ -21,11 +21,12 @@ namespace Remotion.Web.ExecutionEngine
   [Serializable]
   public abstract class WxeFunction2 : WxeStepList
   {
-    private IWxeFunctionExecutionListener _executionListener;
+    private IWxeFunctionExecutionListener _executionListener = new NullExecutionListener();
 
     public override void Execute (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
+      Assertion.IsNotNull (_executionListener);
 
       _executionListener.OnExecutionPlay (context);
 
@@ -57,7 +58,7 @@ namespace Remotion.Web.ExecutionEngine
     public IWxeFunctionExecutionListener ExecutionListener
     {
       get { return _executionListener; }
-      set { _executionListener = value; }
+      set { _executionListener = ArgumentUtility.CheckNotNull ("value", value); }
     }
   }
 }

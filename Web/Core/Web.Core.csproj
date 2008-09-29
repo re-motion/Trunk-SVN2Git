@@ -111,6 +111,7 @@
     <Compile Include="Context\WebSafeContextMixin.cs" />
     <None Include="ExecutionEngine\Infrastructure\TxStrategyDoc.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\IWxeFunctionExecutionListener.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\NullExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxeVariablesContainer.cs" />
     <Compile Include="ExecutionEngine\WxeFatalExecutionException.cs" />
     <Compile Include="ExecutionEngine\WxeFunction2.cs" />
