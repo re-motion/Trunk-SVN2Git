@@ -46,7 +46,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     void ExpandSpike ()
     {
-      var aclExpansion = new AclExpansion();
+      //var aclExpansion = new AclExpansion();
+      //var aclExpansionEntries = new Dictionary<UserWithRole,AclExpansionEntry> (); //
+      var aclExpansionEntries = new List<AclExpansionEntry> ();
 
       var users = FindAllUsers();
       var acls = FindAllAccessControlLists();
@@ -60,12 +62,43 @@ namespace Remotion.SecurityManager.AclTools.Expansion
             foreach (var ace in acl.AccessControlEntries)
             {
               AclProbe aclProbe = AclProbe.CreateAclProbe (user, role, ace);
+
+              // TODO(?): Check if query with such a token was already done.
               AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (aclProbe.SecurityToken);
-              aclExpansion.Add (new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions));
+
+              if (accessTypeDefinitions != null && accessTypeDefinitions.Length > 0)
+              {
+                //var userWithRole = new UserWithRole (user, role);
+                //AclExpansionEntry aclExpansionEntry;
+                //aclExpansionEntries.TryGetValue (userWithRole, out aclExpansionEntry);
+                //if(aclExpansionEntry == null)
+                //{
+                //  aclExpansionEntries[userWithRole] = new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions);
+                //}
+
+                aclExpansionEntries.Add (new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions));
+              }
             }
           }
         }
       }
+    }
+  }
+
+
+  public class UserWithRole : IEquatable<AclExpansionEntry>
+  {
+    public User User { get; private set; }
+    public Role Role { get; private set; }
+    public UserWithRole (User user, Role role)
+    {
+      User = user;
+      Role = role;
+    }
+
+    public bool Equals (AclExpansionEntry other)
+    {
+      return (User == other.User) && (Role == other.Role);
     }
   }
 
@@ -79,9 +112,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
   public class AclExpansionEntry
   {
-    public AclExpansionEntry (User user, Role role, AclExpansionAccessConditions conditions, AccessTypeDefinition[] definitions)
+    public AclExpansionEntry (User user, Role role, 
+      AclExpansionAccessConditions accessConditions, AccessTypeDefinition[] accessTypeDefinitions)
     {
-      throw new NotImplementedException();
+      User = user;
+      Role = role;
+      AccessConditions = accessConditions;
+      AccessTypeDefinitions = accessTypeDefinitions;
     }
+
+    public User User { get; set; }
+    public Role Role { get; set; }
+    public AclExpansionAccessConditions AccessConditions { get; set; }
+    public AccessTypeDefinition[] AccessTypeDefinitions { get; set; }
+    
+
   }
 }
