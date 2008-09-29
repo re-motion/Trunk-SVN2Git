@@ -21,9 +21,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       ArgumentUtility.CheckNotNull ("ace", ace);
       var aclProbe = new AclProbe();
       //aclProbe._securityToken.User = user;
-      Tenant owningTenant = ace.SpecificTenant;
+
+      Tenant owningTenant = (ace.Tenant == TenantSelection.OwningTenant) ? user.Tenant : ace.SpecificTenant;
+
       IList<Group> owningGroups = new List<Group>();
+
       IList<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition>();
+
       aclProbe._securityToken = new SecurityToken(user,owningTenant,owningGroups,abstractRoles);
       return aclProbe;
     }

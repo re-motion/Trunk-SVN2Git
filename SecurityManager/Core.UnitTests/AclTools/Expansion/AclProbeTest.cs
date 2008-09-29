@@ -29,6 +29,27 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclProbe.SecurityToken.User, Is.EqualTo (User));
     }
 
+    #if(false)
+      // Enable as soon as GroupSelection supports SpecificGroup state.
+      [Test]
+      public void CreateAclProbe_SpecificGroup_Test ()
+      {
+        AccessControlEntry ace = TestHelper.CreateAceWithSpecficGroup (Group);
+        AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
+        Assert.That (aclProbe.SecurityToken.OwningGroup, Is.EqualTo (ace.SpecificGroup));
+      }
+    #endif
+
+    //[Test]
+    //[Ignore]
+    //public void CreateAclProbe_OwningGroup_Test ()
+    //{
+    //  AccessControlEntry ace = TestHelper.CreateAceWithOwningGroup ();
+    //  AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
+    //  Assert.That (aclProbe.SecurityToken.OwningGroup, Is.EqualTo (ace.SpecificGroup));
+    //}
+
+
     [Test]
     public void CreateAclProbe_SpecificTenant_Test ()
     {
@@ -38,12 +59,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
     [Test]
-    [Ignore]
     public void CreateAclProbe_OwningTenant_Test ()
     {
       AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant ();
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (ace.SpecificTenant));
+      Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (User.Tenant));
     }
 
     //[Test]
