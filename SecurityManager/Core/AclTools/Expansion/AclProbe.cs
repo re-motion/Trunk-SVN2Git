@@ -22,7 +22,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       var aclProbe = new AclProbe();
       //aclProbe._securityToken.User = user;
 
-      Tenant owningTenant = (ace.TenantSelection == TenantSelection.OwningTenant) ? user.Tenant : ace.SpecificTenant;
+
+
+      //Tenant owningTenant = (ace.TenantSelection == TenantSelection.OwningTenant) ? user.Tenant : ace.SpecificTenant;
 
       IList<Group> owningGroups = new List<Group>();
       switch (ace.GroupSelection)
@@ -36,6 +38,22 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         default:
           throw new NotSupportedException (String.Format("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.",ace.GroupSelection));
       }
+
+
+      Tenant owningTenant = null;
+      switch (ace.TenantSelection)
+      {
+        case TenantSelection.OwningTenant:
+          owningTenant = user.Tenant;
+          break;
+        case TenantSelection.SpecificTenant: 
+        case TenantSelection.All:
+          owningTenant = ace.SpecificTenant;
+          break;
+        default:
+          throw new NotSupportedException (String.Format ("ace.TenantSelection={0} is currently not supported by this method. Please extend method to handle the new TenantSelection state.", ace.TenantSelection));
+      }
+
 
 
       IList<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition>();

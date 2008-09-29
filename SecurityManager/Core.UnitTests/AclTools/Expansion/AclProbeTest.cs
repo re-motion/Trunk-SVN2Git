@@ -88,6 +88,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (User.Tenant));
     }
 
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "ace.TenantSelection=2147483647 is currently not supported by this method. Please extend method to handle the new TenantSelection state.")]
+    public void CreateAclProbe_UnsupportedTenantSelection_Test ()
+    { 
+      AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant ();
+      FleshOutAccessControlEntryForTest (ace);
+      ace.TenantSelection = (TenantSelection) int.MaxValue;
+      AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
+    }
+
+
     //[Test]
     //public void EmptyToken_EmptyAce_Matches ()
     //{
