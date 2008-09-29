@@ -99,6 +99,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    [Test]
+    public void CreateAclProbe_SpecificAbstractRole_Test ()
+    {
+      AccessControlEntry ace = TestHelper.CreateAceWithAbstractRole(); 
+      FleshOutAccessControlEntryForTest (ace);
+      Assert.That (ace.SpecificAbstractRole, Is.Not.Null);
+      AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
+      Assert.That (aclProbe.SecurityToken.AbstractRoles, List.Contains (ace.SpecificAbstractRole));
+    }
+
+
     //[Test]
     //public void EmptyToken_EmptyAce_Matches ()
     //{

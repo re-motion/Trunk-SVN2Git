@@ -14,32 +14,43 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private SecurityToken _securityToken;
     private AclExpansionAccessConditions _aclExpansionAccessConditions = new AclExpansionAccessConditions();
 
+    
+    public SecurityToken SecurityToken
+    {
+      get { return _securityToken; }
+    }
+
+    public AclExpansionAccessConditions AccessConditions
+    {
+      get { return _aclExpansionAccessConditions; }
+    }
+
+
     public static AclProbe CreateAclProbe (User user, Role role, AccessControlEntry ace)
     {
       ArgumentUtility.CheckNotNull ("user", user);
       ArgumentUtility.CheckNotNull ("role", role);
       ArgumentUtility.CheckNotNull ("ace", ace);
       var aclProbe = new AclProbe();
-      //aclProbe._securityToken.User = user;
 
+      IList<Group> owningGroups = CreateOwningGroups(role, ace);
+      Tenant owningTenant = CreateOwningTenant(user, ace);
 
-
-      //Tenant owningTenant = (ace.TenantSelection == TenantSelection.OwningTenant) ? user.Tenant : ace.SpecificTenant;
-
-      IList<Group> owningGroups = new List<Group>();
-      switch (ace.GroupSelection)
+      
+      IList<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition>();
+      if (ace.SpecificAbstractRole != null)
       {
-        case GroupSelection.OwningGroup:
-          owningGroups.Add (role.Group); 
-          break;
-        case GroupSelection.All:
-          owningGroups.Add (ace.SpecificGroup); 
-          break;
-        default:
-          throw new NotSupportedException (String.Format("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.",ace.GroupSelection));
+        abstractRoles.Add (ace.SpecificAbstractRole);
       }
 
 
+      aclProbe._securityToken = new SecurityToken(user,owningTenant,owningGroups,abstractRoles);
+      return aclProbe;
+    }
+
+
+    private static Tenant CreateOwningTenant (User user, AccessControlEntry ace)
+    {
       Tenant owningTenant = null;
       switch (ace.TenantSelection)
       {
@@ -53,23 +64,26 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         default:
           throw new NotSupportedException (String.Format ("ace.TenantSelection={0} is currently not supported by this method. Please extend method to handle the new TenantSelection state.", ace.TenantSelection));
       }
-
-
-
-      IList<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition>();
-
-      aclProbe._securityToken = new SecurityToken(user,owningTenant,owningGroups,abstractRoles);
-      return aclProbe;
+      return owningTenant;
     }
 
-    public SecurityToken SecurityToken
+    private static IList<Group> CreateOwningGroups (Role role, AccessControlEntry ace)
     {
-      get { return _securityToken; }
+      IList<Group> owningGroups = new List<Group>();
+      switch (ace.GroupSelection)
+      {
+        case GroupSelection.OwningGroup:
+          owningGroups.Add (role.Group); 
+          break;
+        case GroupSelection.All:
+          owningGroups.Add (ace.SpecificGroup); 
+          break;
+        default:
+          throw new NotSupportedException (String.Format("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.",ace.GroupSelection));
+      }
+      return owningGroups;
     }
 
-    public AclExpansionAccessConditions AccessConditions
-    {
-      get { return _aclExpansionAccessConditions; }
-    }
+
   }
 }
