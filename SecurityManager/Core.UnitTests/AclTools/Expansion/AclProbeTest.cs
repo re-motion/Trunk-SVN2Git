@@ -48,6 +48,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningGroups, NUnit.Framework.SyntaxHelpers.List.Contains (Role.Group));
+ 
+      var accessConditionsExpected = new AclExpansionAccessConditions();
+      accessConditionsExpected.OnlyIfGroupIsOwner = true;
+      Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
 
     [Test]
