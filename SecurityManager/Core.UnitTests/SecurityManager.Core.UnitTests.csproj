@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest.cs" />
+    <Compile Include="AclTools\Expansion\AclExpansionAccessConditionsTest.cs" />
     <Compile Include="AclTools\Expansion\AclProbeTest.cs" />
     <Compile Include="AclTools\SetUpFixture.cs" />
     <Compile Include="Configuration\SecurityConfigurationMock.cs" />

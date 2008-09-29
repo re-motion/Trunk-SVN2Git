@@ -65,6 +65,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningGroups, NUnit.Framework.SyntaxHelpers.List.Contains (ace.SpecificGroup));
+
+      var accessConditionsExpected = new AclExpansionAccessConditions ();
+      Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
 
     [Test]
