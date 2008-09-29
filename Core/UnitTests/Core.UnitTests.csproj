@@ -40,7 +40,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;DEBUG;NO_PEVERIFY;NET35SP1</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NO_PEVERIFY</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>true</DebugSymbols>

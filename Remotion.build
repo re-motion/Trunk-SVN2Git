@@ -60,7 +60,7 @@
     <property name="build.step.run-tests" value="true" />
     <property name="project.config" value="debug" />
     <property name="build.debug" value="Full" />
-    <property name="build.csc.define" value="DEBUG;TRACE;NET35SP1;"/>
+    <property name="build.csc.define" value="DEBUG;TRACE;"/>
     <call target="init-build-version" />
   </target>
 
