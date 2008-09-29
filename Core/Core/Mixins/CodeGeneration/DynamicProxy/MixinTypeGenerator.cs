@@ -11,11 +11,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Remotion.Collections;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
@@ -76,14 +78,20 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       get { return ReflectionUtility.IsAssemblySigned (Emitter.TypeBuilder.Assembly); }
     }
 
-    public Type GetBuiltType ()
+    public ConcreteMixinType GetBuiltType ()
     {
       Generate ();
-      Type builtType = Emitter.BuildType ();
-      return builtType;
+      Tuple<MethodInfo, MethodInfo>[] methodWrappers = GenerateMethodWrappers().ToArray();
+
+      Type generatedType = Emitter.BuildType ();
+      ConcreteMixinType result = new ConcreteMixinType (generatedType);
+      foreach (var methodWrapper in methodWrappers)
+        result.AddMethodWrapper (methodWrapper.A, methodWrapper.B);
+
+      return result;
     }
 
-    private void Generate ()
+    protected virtual void Generate ()
     {
       AddTypeInitializer ();
 
@@ -95,6 +103,15 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       AddDebuggerAttributes ();
       ReplicateAttributes (_configuration.CustomAttributes, _emitter);
       ImplementOverrides ();
+    }
+
+    private IEnumerable<Tuple<MethodInfo, MethodInfo>> GenerateMethodWrappers ()
+    {
+      var methodsToBeWrapped = from m in _configuration.Type.GetMethods (BindingFlags.NonPublic | BindingFlags.Instance)
+                               where m.IsFamily
+                               select m;
+      return from m in methodsToBeWrapped
+             select Tuple.NewTuple (m, Emitter.GetPublicMethodWrapper (m));
     }
 
     private void AddTypeInitializer ()
@@ -211,7 +228,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       if (methodToBeWrapped.DeclaringClass != Configuration)
         throw new ArgumentException ("Only methods from class " + Configuration.FullName + " can be wrapped.");
 
-      return Emitter.GetPublicMethodWrapper (methodToBeWrapped.MethodInfo).MethodBuilder;
+      return Emitter.GetPublicMethodWrapper (methodToBeWrapped.MethodInfo);
     }
   }
 }

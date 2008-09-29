@@ -197,7 +197,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       foreach (MixinTypeGenerator mixinTypeGenerator in _mixinTypeGenerators)
       {
         if (mixinTypeGenerator != null)
-          yield return new Tuple<MixinDefinition, Type> (mixinTypeGenerator.Configuration, mixinTypeGenerator.GetBuiltType());
+          yield return new Tuple<MixinDefinition, Type> (mixinTypeGenerator.Configuration, mixinTypeGenerator.GetBuiltType().GeneratedType);
       }
     }
 
@@ -568,7 +568,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       if (methodToBeWrapped.DeclaringClass != Configuration)
         throw new ArgumentException ("Only methods from class " + Configuration.FullName + " can be wrapped.");
 
-      return Emitter.GetPublicMethodWrapper (methodToBeWrapped.MethodInfo).MethodBuilder;
+      return Emitter.GetPublicMethodWrapper (methodToBeWrapped.MethodInfo);
     }
   }
 }

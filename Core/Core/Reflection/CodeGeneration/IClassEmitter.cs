@@ -55,7 +55,8 @@ namespace Remotion.Reflection.CodeGeneration
     CustomEventEmitter CreateInterfaceEventImplementation (EventInfo interfaceEvent);
     CustomEventEmitter CreatePublicInterfaceEventImplementation (EventInfo interfaceEvent);
     void ReplicateBaseTypeConstructors (params Statement[] postBaseCallInitializationStatements);
-    CustomMethodEmitter GetPublicMethodWrapper (MethodInfo methodToBeWrapped);
+    
+    MethodInfo GetPublicMethodWrapper (MethodInfo methodToBeWrapped);
     Type BuildType ();
     
     TypeBuilder TypeBuilder { get; }

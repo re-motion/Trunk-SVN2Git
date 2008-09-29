@@ -675,13 +675,13 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void GetPublicMethodWrapper ()
     {
       CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper", typeof (ClassWithProtectedMethod));
-      CustomMethodEmitter emitter1 =
+      MethodInfo emitter1 =
           classEmitter.GetPublicMethodWrapper (typeof (ClassWithProtectedMethod).GetMethod ("GetSecret", _declaredInstanceBindingFlags));
-      CustomMethodEmitter emitter2 =
+      MethodInfo emitter2 =
           classEmitter.GetPublicMethodWrapper (typeof (ClassWithProtectedMethod).GetMethod ("GetSecret", _declaredInstanceBindingFlags));
       Assert.AreSame (emitter1, emitter2);
 
-      CustomMethodEmitter emitter3 =
+      MethodInfo emitter3 =
           classEmitter.GetPublicMethodWrapper (typeof (object).GetMethod ("Finalize", _declaredInstanceBindingFlags));
       Assert.AreNotSame (emitter1, emitter3);
 

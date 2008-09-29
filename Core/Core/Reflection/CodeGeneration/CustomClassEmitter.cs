@@ -383,7 +383,7 @@ namespace Remotion.Reflection.CodeGeneration
       newConstructor.CodeBuilder.AddStatement (new ReturnStatement());
     }
 
-    public CustomMethodEmitter GetPublicMethodWrapper (MethodInfo methodToBeWrapped)
+    public MethodInfo GetPublicMethodWrapper (MethodInfo methodToBeWrapped)
     {
       ArgumentUtility.CheckNotNull ("methodToBeWrapped", methodToBeWrapped);
 
@@ -396,7 +396,7 @@ namespace Remotion.Reflection.CodeGeneration
             wrapper.CopyParametersAndReturnType (method);
             wrapper.ImplementByDelegating (new TypeReferenceWrapper (SelfReference.Self, TypeBuilder), method);
             return wrapper;
-          });
+          }).MethodBuilder;
     }
 
     public Type BuildType ()

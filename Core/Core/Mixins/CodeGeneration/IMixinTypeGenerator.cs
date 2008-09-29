@@ -14,6 +14,6 @@ namespace Remotion.Mixins.CodeGeneration
 {
   public interface IMixinTypeGenerator
   {
-    Type GetBuiltType ();
+    ConcreteMixinType GetBuiltType ();
   }
 }

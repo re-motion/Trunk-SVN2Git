@@ -18,7 +18,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Reflection.CodeGeneration
 {
-  public class CustomMethodEmitter : IAttributableEmitter
+  public class CustomMethodEmitter : IMethodEmitter
   {
     private readonly MethodEmitter _innerEmitter;
     private readonly CustomClassEmitter _declaringType;

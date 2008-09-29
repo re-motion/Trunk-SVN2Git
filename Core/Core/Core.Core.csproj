@@ -156,6 +156,7 @@
     <Compile Include="Mixins\Validation\Rules\DefaultSuppressedAttributeIntroductionRules.cs" />
     <Compile Include="Reflection\AssemblyLoader.cs" />
     <Compile Include="Reflection\CodeGeneration\IClassEmitter.cs" />
+    <Compile Include="Reflection\CodeGeneration\IMethodEmitter.cs" />
     <Compile Include="Reflection\ConstructorLookupInfo.cs" />
     <Compile Include="Reflection\MemberLookupInfo.cs" />
     <Compile Include="Reflection\MethodLookupInfo.cs" />
