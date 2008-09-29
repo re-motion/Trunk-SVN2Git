@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclProbe.SecurityToken.User, Is.EqualTo (User));
     }
 
-    #if(false)
+#if(false)
       // Enable as soon as GroupSelection supports SpecificGroup state.
       [Test]
       public void CreateAclProbe_SpecificGroup_Test ()

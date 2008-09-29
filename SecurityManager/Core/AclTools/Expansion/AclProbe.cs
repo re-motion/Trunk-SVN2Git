@@ -12,7 +12,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclProbe
   {
     private SecurityToken _securityToken;
-    private AclExpansionAccessConditions _aclExpansionAccessConditions = new AclExpansionAccessConditions();
+    private readonly AclExpansionAccessConditions _accessConditions = new AclExpansionAccessConditions();
 
     
     public SecurityToken SecurityToken
@@ -22,7 +22,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public AclExpansionAccessConditions AccessConditions
     {
-      get { return _aclExpansionAccessConditions; }
+      get { return _accessConditions; }
     }
 
 
@@ -32,33 +32,37 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       ArgumentUtility.CheckNotNull ("role", role);
       ArgumentUtility.CheckNotNull ("ace", ace);
 
-      IList<Group> owningGroups = CreateOwningGroupsEntry(role, ace);
-      Tenant owningTenant = CreateOwningTenantEntry(user, ace);
-      IList<AbstractRoleDefinition> abstractRoles = CreatAbstractRolesEntry(ace);
-
       var aclProbe = new AclProbe ();
+      IList<Group> owningGroups = CreateOwningGroupsEntry (aclProbe, role, ace);
+      Tenant owningTenant = CreateOwningTenantEntry (aclProbe, user, ace);
+      IList<AbstractRoleDefinition> abstractRoles = CreatAbstractRolesEntry (aclProbe, ace);
+
       aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroups, abstractRoles);
       return aclProbe;
     }
 
-    private static IList<AbstractRoleDefinition> CreatAbstractRolesEntry (AccessControlEntry ace)
+    private static IList<AbstractRoleDefinition> CreatAbstractRolesEntry (AclProbe aclProbe, AccessControlEntry ace)
     {
       IList<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition>();
       if (ace.SpecificAbstractRole != null)
       {
-        abstractRoles.Add (ace.SpecificAbstractRole);
+        var abstractRole = ace.SpecificAbstractRole;
+        abstractRoles.Add (abstractRole);
+        aclProbe.AccessConditions.AbstractRole = abstractRole;
+        aclProbe.AccessConditions.OnlyIfAbstractRoleMatches = true;
       }
       return abstractRoles;
     }
 
 
-    private static Tenant CreateOwningTenantEntry (User user, AccessControlEntry ace)
+    private static Tenant CreateOwningTenantEntry (AclProbe aclProbe, User user, AccessControlEntry ace)
     {
       Tenant owningTenant = null;
       switch (ace.TenantSelection)
       {
         case TenantSelection.OwningTenant:
           owningTenant = user.Tenant;
+          aclProbe.AccessConditions.OnlyIfTenantIsOwner = true;
           break;
         case TenantSelection.SpecificTenant: 
         case TenantSelection.All:
@@ -70,13 +74,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return owningTenant;
     }
 
-    private static IList<Group> CreateOwningGroupsEntry (Role role, AccessControlEntry ace)
+    private static IList<Group> CreateOwningGroupsEntry (AclProbe aclProbe, Role role, AccessControlEntry ace)
     {
       IList<Group> owningGroups = new List<Group>();
       switch (ace.GroupSelection)
       {
         case GroupSelection.OwningGroup:
-          owningGroups.Add (role.Group); 
+          owningGroups.Add (role.Group);
+          aclProbe.AccessConditions.OnlyIfGroupIsOwner = true;
           break;
         case GroupSelection.All:
           owningGroups.Add (ace.SpecificGroup); 

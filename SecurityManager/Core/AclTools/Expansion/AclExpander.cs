@@ -8,6 +8,7 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects;
@@ -45,7 +46,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     void ExpandSpike ()
     {
-      //TODO   var aclExpansion = new AclExpansion();
+      var aclExpansion = new AclExpansion();
 
       var users = FindAllUsers();
       var acls = FindAllAccessControlLists();
@@ -58,13 +59,29 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           {
             foreach (var ace in acl.AccessControlEntries)
             {
-              //TODO   AclProbe aclProbe = AclProbe.CreateAclProbe (user, role, ace);
-              //TODO   AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (aclProbe.SecurityToken);
-              //TODO   aclExpansion.Add (new AclExpansionEntry (user, role, aclProbe.Conditions, accessTypeDefinitions));
+              AclProbe aclProbe = AclProbe.CreateAclProbe (user, role, ace);
+              AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (aclProbe.SecurityToken);
+              aclExpansion.Add (new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions));
             }
           }
         }
       }
+    }
+  }
+
+  public class AclExpansion
+  {
+    public void Add (AclExpansionEntry aclExpansionEntry)
+    {
+      throw new NotImplementedException();
+    }
+  }
+
+  public class AclExpansionEntry
+  {
+    public AclExpansionEntry (User user, Role role, AclExpansionAccessConditions conditions, AccessTypeDefinition[] definitions)
+    {
+      throw new NotImplementedException();
     }
   }
 }
