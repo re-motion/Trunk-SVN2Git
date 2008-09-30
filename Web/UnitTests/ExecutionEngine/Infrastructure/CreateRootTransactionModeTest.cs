@@ -25,10 +25,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     {
       ITransactionMode transactionMode = new CreateRootTransactionMode<TestTransactionScopeManager2> (true);
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      ITransactionStrategy strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), executionListenerStub);
+      TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), executionListenerStub);
 
       Assert.That (strategy, Is.InstanceOfType (typeof (RootTransactionStrategy<TestTransactionScopeManager2>)));
-      Assert.That (((TransactionStrategyBase) strategy).InnerListener, Is.SameAs (executionListenerStub));
+      Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
       Assert.That (strategy.AutoCommit, Is.True);
     }
   }

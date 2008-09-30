@@ -21,9 +21,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
   public class WxeTransactionModeTest
   {
     [Test]
-    public void GetNull ()
+    public void GetNone ()
     {
-      Assert.That (WxeTransactionMode<TestTransactionScopeManager2>.Null, Is.InstanceOfType (typeof (NullTransactionMode)));
+      Assert.That (WxeTransactionMode<TestTransactionScopeManager2>.None, Is.InstanceOfType (typeof (NoneTransactionMode)));
     }
 
     [Test]

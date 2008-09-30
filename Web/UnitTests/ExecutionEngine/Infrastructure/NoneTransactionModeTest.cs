@@ -11,39 +11,33 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine.Infrastructure;
+using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 {
   [TestFixture]
-  public class NullTransactionStrategyTest
+  public class NoneTransactionModeTest
   {
     [Test]
-    public void GetInnerListener ()
+    public void CreateTransactionStrategy ()
     {
+      ITransactionMode transactionMode = new NoneTransactionMode();
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
-      var strategy = new NullTransactionStrategy (executionListenerStub);
+      ITransactionStrategy strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), executionListenerStub);
 
-      Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
+      Assert.That (strategy, Is.InstanceOfType (typeof (NoneTransactionStrategy)));
+      Assert.That (((NoneTransactionStrategy) strategy).InnerListener, Is.SameAs (executionListenerStub));
     }
 
     [Test]
-    public void GetAutoCommit ()
+    public void IsSerializeable ()
     {
-      var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      ITransactionStrategy strategy = new NullTransactionStrategy(executionListenerStub);
+      var deserialized = Serializer.SerializeAndDeserialize (new NoneTransactionMode ());
 
-      Assert.That (strategy.AutoCommit, Is.False);
-    }
-
-    [Test]
-    public void IsNull ()
-    {
-      var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      INullObject strategy = new NullTransactionStrategy (executionListenerStub);
-
-      Assert.That (strategy.IsNull, Is.True);
+      Assert.That (deserialized.AutoCommit, Is.False);
     }
   }
 }

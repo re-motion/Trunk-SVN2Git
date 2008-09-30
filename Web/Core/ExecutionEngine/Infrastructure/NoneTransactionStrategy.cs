@@ -14,59 +14,56 @@ using Remotion.Data;
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
-  public class ChildTransactionStrategy<TScopeManager> : TransactionStrategyBase
-    where TScopeManager : ITransactionScopeManager, new ()
+  public class NoneTransactionStrategy : TransactionStrategyBase
   {
-    private TScopeManager _scopeManager;
-
-    public ChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener)
-        : base (autoCommit, innerListener)
+    public NoneTransactionStrategy (IWxeFunctionExecutionListener innerListener)
+        : base (false, innerListener)
     {
     }
 
     public override void OnExecutionPlay (WxeContext context)
     {
-      throw new System.NotImplementedException();
+      InnerListener.OnExecutionPlay (context);
     }
 
     public override void OnExecutionStop (WxeContext context)
     {
-      throw new System.NotImplementedException();
+      InnerListener.OnExecutionStop (context);
     }
 
     public override void OnExecutionPause (WxeContext context)
     {
-      throw new System.NotImplementedException();
+      InnerListener.OnExecutionPause (context);
     }
 
     public override void OnExecutionFail (WxeContext context, Exception exception)
     {
-      throw new System.NotImplementedException();
-    }
-
-    public override ITransaction Transaction
-    {
-      get { throw new System.NotImplementedException (); }
+      InnerListener.OnExecutionFail (context, exception);
     }
 
     public override void Commit ()
     {
-      throw new System.NotImplementedException ();
+      throw new NotSupportedException();
     }
 
     public override void Rollback ()
     {
-      throw new System.NotImplementedException ();
+      throw new NotSupportedException();
     }
 
     public override void Reset ()
     {
-      throw new System.NotImplementedException ();
+      throw new NotSupportedException();
+    }
+
+    public override ITransaction Transaction
+    {
+      get { return null; }
     }
 
     public override bool IsNull
     {
-      get { return false; }
+      get { return true; }
     }
   }
 }

@@ -9,12 +9,16 @@
  */
 
 using System;
+using Remotion.Data;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
   public interface ITransactionStrategy : INullObject
   {
-    bool AutoCommit { get; }
+    ITransaction Transaction { get; }
+    void Commit ();
+    void Rollback ();
+    void Reset ();
   }
 }

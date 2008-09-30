@@ -15,16 +15,16 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
   [Serializable]
-  public class NullTransactionMode : ITransactionMode
+  public class NoneTransactionMode : ITransactionMode
   {
-    public NullTransactionMode ()
+    public NoneTransactionMode ()
     {
     }
 
-    public virtual ITransactionStrategy CreateTransactionStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
+    public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
     {
       ArgumentUtility.CheckNotNull ("executionListener", executionListener);
-      return new NullTransactionStrategy (executionListener);
+      return new NoneTransactionStrategy (executionListener);
     }
 
     public bool AutoCommit

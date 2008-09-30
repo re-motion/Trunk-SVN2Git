@@ -26,7 +26,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _autoCommit = autoCommit;
     }
 
-    public virtual ITransactionStrategy CreateTransactionStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
+    public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
     {
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("executionListener", executionListener);

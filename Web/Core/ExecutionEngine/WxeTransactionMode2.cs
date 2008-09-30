@@ -18,7 +18,7 @@ namespace Remotion.Web.ExecutionEngine
   public abstract class WxeTransactionMode<TScopeManager>
       where TScopeManager : ITransactionScopeManager, new ()
   {
-    public static readonly ITransactionMode Null = new NullTransactionMode();
+    public static readonly ITransactionMode None = new NoneTransactionMode();
 
     public static readonly ITransactionMode CreateRoot = new CreateRootTransactionMode<TScopeManager>(false);
 

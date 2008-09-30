@@ -24,6 +24,46 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
     }
 
+    public override void OnExecutionPlay (WxeContext context)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override void OnExecutionStop (WxeContext context)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override void OnExecutionPause (WxeContext context)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override void OnExecutionFail (WxeContext context, Exception exception)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override ITransaction Transaction
+    {
+      get { throw new System.NotImplementedException(); }
+    }
+
+    public override void Commit ()
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override void Rollback ()
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override void Reset ()
+    {
+      throw new System.NotImplementedException ();
+    }
+
     public override bool IsNull
     {
       get { return false; }

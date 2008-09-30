@@ -33,7 +33,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void GetAutoCommit ()
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      ITransactionStrategy strategy = new ChildTransactionStrategy<TestTransactionScopeManager2> (true, executionListenerStub);
+      TransactionStrategyBase strategy = new ChildTransactionStrategy<TestTransactionScopeManager2> (true, executionListenerStub);
 
       Assert.That (strategy.AutoCommit, Is.True);
     }
