@@ -191,7 +191,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       }
 
       MockRepository.VerifyAll ();
-      Assert.That (strategy.Scope, Is.Not.Null);
+      Assert.That (strategy.Scope, Is.Null);
     }
 
     [Test]
@@ -286,7 +286,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       }
 
       MockRepository.VerifyAll ();
-      Assert.That (strategy.Scope, Is.Not.Null);
+      Assert.That (strategy.Scope, Is.Null);
     }
 
     [Test]
@@ -319,7 +319,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       }
 
       MockRepository.VerifyAll ();
-      Assert.That (strategy.Scope, Is.Not.Null);
+      Assert.That (strategy.Scope, Is.Null);
     }
   }
 }

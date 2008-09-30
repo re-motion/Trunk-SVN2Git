@@ -63,8 +63,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       finally
       {
         ExecuteAndWrapInnerException (_scope.Leave, innerException);
-        ExecuteAndWrapInnerException (_transaction.Release, innerException);
         _scope = null;
+        ExecuteAndWrapInnerException (_transaction.Release, innerException);
       }
     }
 
@@ -108,8 +108,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       finally
       {
         ExecuteAndWrapInnerException (_scope.Leave, innerException);
-        ExecuteAndWrapInnerException (_transaction.Release, innerException);
         _scope = null;
+        ExecuteAndWrapInnerException (_transaction.Release, innerException);
       }
     }
 
