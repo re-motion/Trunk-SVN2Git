@@ -9,20 +9,21 @@
  */
 
 using System;
-using Remotion.Data;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
+namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionStrategyTests
 {
-  public class TestTransactionScopeManager2 : ITransactionScopeManager
+  [TestFixture]
+  public class OnExecutionFail : RootTransactionStrategyTestBase
   {
-    public ITransactionScope ActiveScope
-    {
-      get { throw new NotImplementedException(); }
-    }
+    private RootTransactionStrategy _strategy;
 
-    public virtual ITransaction CreateRootTransaction ()
+    public override void SetUp ()
     {
-      return new TestTransaction();
+      base.SetUp ();
+      _strategy = CreateRootTransactionStrategy (true);
     }
   }
 }

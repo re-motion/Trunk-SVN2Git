@@ -146,7 +146,12 @@
     <Compile Include="Context\WebSafeContextMixinTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategyTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionModeTest.cs" />
-    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTest.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTests\Common.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTests\OnExecutionFail.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTests\OnExecutionPause.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTests\OnExecutionPlay.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTests\OnExecutionStop.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTests\RootTransactionStrategyTestBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateRootTransactionModeTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullExecutionListenerTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionModeTest.cs" />
