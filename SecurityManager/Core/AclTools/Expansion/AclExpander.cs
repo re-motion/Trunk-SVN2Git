@@ -9,57 +9,29 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpander
   {
+    private readonly IAclExpanderUserFinder _userFinder;
+    private readonly IAclExpanderAclFinder _accessControlListFinder;
 
-    private IAclExpanderUserFinder _userFinder = new AclExpanderUserFinder ();
-    private IAclExpanderAclFinder _accessControlListFinder = new AclExpanderAclFinder ();
 
-    public IAclExpanderUserFinder UserFinder
+    public AclExpander (IAclExpanderUserFinder userFinder, IAclExpanderAclFinder accessControlListFinder)
     {
-      get { return _userFinder; }
-      set { _userFinder = value; }
+      _userFinder = userFinder;
+      _accessControlListFinder = accessControlListFinder;
     }
 
-    public IAclExpanderAclFinder AccessControlListFinder
+    public AclExpander () : this (new AclExpanderUserFinder (), new AclExpanderAclFinder ()) {}
+
+
+    public List<AclExpansionEntry> GetAclExpansionEntryList ()
     {
-      get { return _accessControlListFinder; }
-      set { _accessControlListFinder = value; }
-    }
-
-    //public static List<User> FindAllUsers ()
-    //{
-    //  var result = from u in DataContext.Entity<User> ()
-    //               orderby u.LastName, u.FirstName
-    //               select u;
-
-    //  return result.ToList ();
-    //}
-
-    //public static List<AccessControlList> FindAllAccessControlLists ()
-    //{
-    //  var acls = new List<AccessControlList>();
-    //  foreach (SecurableClassDefinition securableClassDefinition in SecurableClassDefinition.FindAll ())
-    //  {
-    //    acls.AddRange (securableClassDefinition.AccessControlLists);
-    //  }
-
-    //  return acls;
-    //}
-
-
-    List<AclExpansionEntry> GetAclExpansion ()
-    {
-      //var aclExpansion = new AclExpansion();
-      //var aclExpansionEntries = new Dictionary<UserWithRole,AclExpansionEntry> (); //
       var aclExpansionEntries = new List<AclExpansionEntry> ();
 
       var users = _userFinder.Users;
@@ -95,28 +67,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         }
       }
       return aclExpansionEntries;
-    }
-  }
-
-
-  public class AclExpansion : IEnumerable<AclExpansionEntry>
-  {
-    private readonly AclExpansionEntry[] _aclExpansionEntries;
-
-    public AclExpansion (AclExpansionEntry[] aclExpansionEntries)
-    {
-      ArgumentUtility.CheckNotNull ("aclExpansionEntries", aclExpansionEntries);
-      _aclExpansionEntries = aclExpansionEntries;
-    }
-
-    public IEnumerator<AclExpansionEntry> GetEnumerator ()
-    {
-      return ((IEnumerable<AclExpansionEntry>) _aclExpansionEntries).GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator();
     }
   }
 }

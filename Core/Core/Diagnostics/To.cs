@@ -98,6 +98,10 @@ namespace Remotion.Diagnostics
 
     static To ()
     {
+      _toTextProvider.Settings.UseAutomaticObjectToText = false;
+      //_toTextProvider.Settings.UseParentHandlers = true;
+      //_toTextProvider.Settings.ParentHandlerSearchUpToRoot = true;
+
       _toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter (LogFilePath));
       
       _xmlWriterSettings = new XmlWriterSettings ();

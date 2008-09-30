@@ -62,6 +62,7 @@
     <Compile Include="AclTools\Expansion\AccessControlListFinder2.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderUserFinder.cs" />
+    <Compile Include="AclTools\Expansion\AclExpansion.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditions.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionEntry.cs" />
     <Compile Include="AclTools\Expansion\AclProbe.cs" />

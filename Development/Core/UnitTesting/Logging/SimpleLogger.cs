@@ -52,7 +52,7 @@ namespace Remotion.Development.UnitTesting.Logging
       {
         _toText = new ToTextProvider();
       }
-      _toText.Settings.UseAutomaticObjectToText = true;
+      _toText.Settings.UseAutomaticObjectToText = false;
       _toText.Settings.UseAutomaticStringEnclosing = true;
       _toText.Settings.UseAutomaticCharEnclosing = true;
     }

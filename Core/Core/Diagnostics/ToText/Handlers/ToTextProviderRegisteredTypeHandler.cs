@@ -9,6 +9,7 @@
  */
 
 using System;
+using Remotion.Mixins;
 
 namespace Remotion.Diagnostics.ToText.Handlers
 {
@@ -71,7 +72,12 @@ namespace Remotion.Diagnostics.ToText.Handlers
       ToTextProviderHandler.CheckNotNull (toTextParameters, toTextProviderHandlerFeedback);
 
       Object obj = toTextParameters.Object;
-      Type type = toTextParameters.Type;
+      //Type type = toTextParameters.Type;
+
+      // For mixin types we currently use the type handler for the target type.
+      // TODO: Search for exact type handler first, do fallback to GetUnderlyingTargetType if none can be found.
+      Type type = GetUnderlyingMixinType(toTextParameters.Type);
+
       IToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
       var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
 
@@ -79,11 +85,21 @@ namespace Remotion.Diagnostics.ToText.Handlers
       IToTextSpecificTypeHandler specificTypeHandler = null;
       if (!_searchForParentHandlers || !toTextBuilder.ToTextProvider.Settings.UseParentHandlers)
       {
-        specificTypeHandler = GetHandler (toTextParameters.Type);
+        specificTypeHandler = GetHandler (type);
+
+        // TODO: Move GetHandler-calls to class to avoid code duplication of commented out code below.
+        //if (specificTypeHandler == null)
+        //{
+        //  Type underlyingMixinType  = GetUnderlyingMixinType (type);
+        //  if (underlyingMixinType != type)
+        //  {
+        //    specificTypeHandler = GetHandler (underlyingMixinType);
+        //  }
+        //}
       }
       else
       {
-        specificTypeHandler = GetHandlerWithBaseClassFallback (toTextParameters.Type, settings);
+        specificTypeHandler = GetHandlerWithBaseClassFallback (type, settings);
       }
 
 
@@ -92,6 +108,11 @@ namespace Remotion.Diagnostics.ToText.Handlers
         specificTypeHandler.ToText (toTextParameters.Object, toTextParameters.ToTextBuilder);
         toTextProviderHandlerFeedback.Handled = true;
       }
+    }
+
+    private static Type GetUnderlyingMixinType (Type type)
+    {
+      return TypeUtility.GetUnderlyingTargetType (type);
     }
   }
 }
