@@ -9,13 +9,10 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
@@ -23,35 +20,50 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclExpander
   {
 
-    public static List<User> FindAllUsers ()
-    {
-      var result = from u in DataContext.Entity<User> ()
-                   orderby u.LastName, u.FirstName
-                   select u;
+    private IAclExpanderUserFinder _userFinder = new AclExpanderUserFinder ();
+    private IAclExpanderAclFinder _accessControlListFinder = new AclExpanderAclFinder ();
 
-      return result.ToList ();
+    public IAclExpanderUserFinder UserFinder
+    {
+      get { return _userFinder; }
+      set { _userFinder = value; }
     }
 
-    public static List<AccessControlList> FindAllAccessControlLists ()
+    public IAclExpanderAclFinder AccessControlListFinder
     {
-      var acls = new List<AccessControlList>();
-      foreach (SecurableClassDefinition securableClassDefinition in SecurableClassDefinition.FindAll ())
-      {
-        acls.AddRange (securableClassDefinition.AccessControlLists);
-      }
-
-      return acls;
+      get { return _accessControlListFinder; }
+      set { _accessControlListFinder = value; }
     }
 
+    //public static List<User> FindAllUsers ()
+    //{
+    //  var result = from u in DataContext.Entity<User> ()
+    //               orderby u.LastName, u.FirstName
+    //               select u;
 
-    void ExpandSpike ()
+    //  return result.ToList ();
+    //}
+
+    //public static List<AccessControlList> FindAllAccessControlLists ()
+    //{
+    //  var acls = new List<AccessControlList>();
+    //  foreach (SecurableClassDefinition securableClassDefinition in SecurableClassDefinition.FindAll ())
+    //  {
+    //    acls.AddRange (securableClassDefinition.AccessControlLists);
+    //  }
+
+    //  return acls;
+    //}
+
+
+    List<AclExpansionEntry> GetAclExpansion ()
     {
       //var aclExpansion = new AclExpansion();
       //var aclExpansionEntries = new Dictionary<UserWithRole,AclExpansionEntry> (); //
       var aclExpansionEntries = new List<AclExpansionEntry> ();
 
-      var users = FindAllUsers();
-      var acls = FindAllAccessControlLists();
+      var users = _userFinder.Users;
+      var acls = _accessControlListFinder.AccessControlLists;
 
       foreach (var user in users)
       {
@@ -82,35 +94,29 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           }
         }
       }
+      return aclExpansionEntries;
     }
   }
 
 
-
-  public class AclExpansion
+  public class AclExpansion : IEnumerable<AclExpansionEntry>
   {
-    public void Add (AclExpansionEntry aclExpansionEntry)
-    {
-      throw new NotImplementedException();
-    }
-  }
+    private readonly AclExpansionEntry[] _aclExpansionEntries;
 
-  public class AclExpansionEntry
-  {
-    public AclExpansionEntry (User user, Role role, 
-      AclExpansionAccessConditions accessConditions, AccessTypeDefinition[] accessTypeDefinitions)
+    public AclExpansion (AclExpansionEntry[] aclExpansionEntries)
     {
-      User = user;
-      Role = role;
-      AccessConditions = accessConditions;
-      AccessTypeDefinitions = accessTypeDefinitions;
+      ArgumentUtility.CheckNotNull ("aclExpansionEntries", aclExpansionEntries);
+      _aclExpansionEntries = aclExpansionEntries;
     }
 
-    public User User { get; set; }
-    public Role Role { get; set; }
-    public AclExpansionAccessConditions AccessConditions { get; set; }
-    public AccessTypeDefinition[] AccessTypeDefinitions { get; set; }
-    
+    public IEnumerator<AclExpansionEntry> GetEnumerator ()
+    {
+      return ((IEnumerable<AclExpansionEntry>) _aclExpansionEntries).GetEnumerator();
+    }
 
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator();
+    }
   }
 }

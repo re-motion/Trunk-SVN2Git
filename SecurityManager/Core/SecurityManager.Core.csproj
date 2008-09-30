@@ -60,11 +60,16 @@
     <None Include="SecurityManager.Core.build" />
     <Compile Include="AclTools\Expansion\AclExpander.cs" />
     <Compile Include="AclTools\Expansion\AccessControlListFinder2.cs" />
+    <Compile Include="AclTools\Expansion\AclExpanderAclFinder.cs" />
+    <Compile Include="AclTools\Expansion\AclExpanderUserFinder.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditions.cs" />
+    <Compile Include="AclTools\Expansion\AclExpansionEntry.cs" />
     <Compile Include="AclTools\Expansion\AclProbe.cs" />
     <Compile Include="AclTools\Expansion\AclSecurityContextHelper.cs" />
     <Compile Include="AclTools\Expansion\ClassStateDictionary.cs" />
     <Compile Include="AclTools\Expansion\ClassStateTuple.cs" />
+    <Compile Include="AclTools\Expansion\IAclExpanderAclFinder.cs" />
+    <Compile Include="AclTools\Expansion\IAclExpanderUserFinder.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilderFast.cs" />
     <Compile Include="Configuration\SecurityManagerConfiguration.cs">
       <SubType>Code</SubType>

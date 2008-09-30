@@ -404,7 +404,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
 
-    // 2008-09-29 MGi
     public AccessControlEntry CreateAceWithOwningGroup ()
     {
       using (_transaction.EnterNonDiscardingScope())
@@ -416,7 +415,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    // 2008-09-29 MGi
     public AccessControlEntry CreateAceWithGroupSelectionAll ()
     {
       using (_transaction.EnterNonDiscardingScope ())

@@ -61,6 +61,8 @@
     <Compile Include="AclTools\AclToolsTestBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditionsTest.cs" />
+    <Compile Include="AclTools\Expansion\AclExpansionEntryTest.cs" />
+    <Compile Include="AclTools\Expansion\AclExpansionTest.cs" />
     <Compile Include="AclTools\Expansion\AclProbeTest.cs" />
     <Compile Include="AclTools\Expansion\Properties.cs" />
     <Compile Include="AclTools\Expansion\Property.cs" />
