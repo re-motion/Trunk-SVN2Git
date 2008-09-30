@@ -66,13 +66,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public abstract int Index { get; set; }
 
-    [DBColumn ("TenantSelection")]
     public abstract TenantSelection TenantSelection { get; set; }
 
-    [DBColumn ("GroupSelection")]
     public abstract GroupSelection GroupSelection { get; set; }
 
-    [DBColumn ("UserSelection")]
     public abstract UserSelection UserSelection { get; set; }
 
     public abstract int? Priority { get; set; }

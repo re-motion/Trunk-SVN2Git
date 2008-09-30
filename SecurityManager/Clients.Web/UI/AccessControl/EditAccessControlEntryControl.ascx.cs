@@ -116,7 +116,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void AdjustSpecificTenantField ()
     {
-      if ((TenantSelection?) TenantField.Value == TenantSelection.SpecificTenant)
+      if ((TenantSelection?) TenantSelectionField.Value == TenantSelection.SpecificTenant)
       {
         SpecificTenantField.Visible = true;
       }
@@ -138,13 +138,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       if (SpecificPositionField.BusinessObjectID == null)
       {
         SpecificPositionAndGroupLinkingLabel.Visible = false;
-        GroupField.Visible = false;
-        GroupField.Value = GroupSelection.All;
+        GroupSelectionField.Visible = false;
+        GroupSelectionField.Value = GroupSelection.All;
       }
       else
       {
         SpecificPositionAndGroupLinkingLabel.Visible = true;
-        GroupField.Visible = true;
+        GroupSelectionField.Visible = true;
       }
     }
 
