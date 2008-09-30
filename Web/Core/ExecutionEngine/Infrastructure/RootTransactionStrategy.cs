@@ -18,7 +18,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   public class RootTransactionStrategy : TransactionStrategyBase
   {
     private readonly ITransactionScopeManager _scopeManager;
-    private readonly ITransaction _transaction;
+    private ITransaction _transaction;
     private ITransactionScope _scope;
 
     public RootTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener, ITransactionScopeManager scopeManager)
@@ -27,7 +27,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       ArgumentUtility.CheckNotNull ("_scopeManager", scopeManager);
 
       _scopeManager = scopeManager;
-      _transaction = scopeManager.CreateRootTransaction();
+      InitializeTransaction();
     }
 
     public override void OnExecutionPlay (WxeContext context)
@@ -120,17 +120,28 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public override void Commit ()
     {
-      throw new NotImplementedException();
+      _transaction.Commit();
     }
 
     public override void Rollback ()
     {
-      throw new NotImplementedException();
+      _transaction.Rollback();
     }
 
     public override void Reset ()
     {
-      throw new NotImplementedException();
+      if (_scope != null)
+      {
+        _scope.Leave ();
+        _transaction.Release ();
+        InitializeTransaction ();
+        _scope = _transaction.EnterScope ();
+      }
+      else
+      {
+        _transaction.Release ();
+        InitializeTransaction ();
+      }
     }
 
     public override bool IsNull
@@ -146,6 +157,13 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public ITransactionScope Scope
     {
       get { return _scope; }
+    }
+
+    private void InitializeTransaction ()
+    {
+      var transaction = _scopeManager.CreateRootTransaction ();
+      Assertion.IsNotNull (transaction);
+      _transaction = transaction;
     }
 
     private void ExecuteAndWrapInnerException (Action action, Exception existingInnerException)
