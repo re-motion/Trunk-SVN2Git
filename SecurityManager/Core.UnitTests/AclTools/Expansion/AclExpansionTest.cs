@@ -13,24 +13,10 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
-  [ToTextSpecificHandler]
-  public class UserToTextSpecificTypeHandler : ToTextSpecificTypeHandler<User>
-  {
-    public override void ToText (User u, IToTextBuilder toTextBuilder)
-    {
-      toTextBuilder.ib<User> ().e ("user", u.UserName).e ("title", u.Title).e ("first", u.FirstName).e ("last", u.LastName);
-      toTextBuilder.e ("display", u.DisplayName).e ("owning group", u.OwningGroup).e ("tenat", u.Tenant);
-      toTextBuilder.nl().e ("roles", u.Roles);
-      toTextBuilder.ie();
-    }
-  }
-
   [TestFixture]
   public class AclExpansionTest : AclToolsTestBase
   {

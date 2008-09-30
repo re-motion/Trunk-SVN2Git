@@ -368,23 +368,23 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
         // causes CreateTypeGenerator
         Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType2), GenerationPolicy.ForceGeneration);
-        Assert.That (TypeUtility.IsGeneratedByMixinEngine (generatedType));
+        Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (generatedType));
         Assert.That (generatedType.Assembly, Is.Not.SameAs (assembly));
 
         // causes CreateMixinTypeGenerator
         Type generatedMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
-        Assert.That (TypeUtility.IsGeneratedByMixinEngine (generatedMixinType));
+        Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (generatedMixinType));
         Assert.That (generatedMixinType.Assembly, Is.Not.SameAs (assembly));
 
         // causes nothing, was loaded
         Type loadedType = TypeFactory.GetConcreteType (typeof (ClassOverridingMixinMembers));
-        Assert.That (TypeUtility.IsGeneratedByMixinEngine (loadedType));
+        Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (loadedType));
         Assert.That (loadedType.Assembly, Is.SameAs (assembly));
 
         // causes nothing, was loaded
         innerMixinDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
         Type loadedMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
-        Assert.That (TypeUtility.IsGeneratedByMixinEngine (loadedMixinType));
+        Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (loadedMixinType));
         Assert.That (loadedMixinType.Assembly, Is.SameAs (assembly));
       }, paths.Single());
     }

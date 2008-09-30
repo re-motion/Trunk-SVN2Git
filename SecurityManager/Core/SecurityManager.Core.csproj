@@ -59,7 +59,6 @@
     </None>
     <None Include="SecurityManager.Core.build" />
     <Compile Include="AclTools\Expansion\AclExpander.cs" />
-    <Compile Include="AclTools\Expansion\AccessControlListFinder2.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderUserFinder.cs" />
     <Compile Include="AclTools\Expansion\AclExpansion.cs" />

@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
             {
               AclProbe aclProbe = AclProbe.CreateAclProbe (user, role, ace);
 
-              // TODO(?): Check if query with such a token was already done.
+              // TODO(?): Check if we already queried with an identical token.
               AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (aclProbe.SecurityToken);
 
               if (accessTypeDefinitions != null && accessTypeDefinitions.Length > 0)

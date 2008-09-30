@@ -138,7 +138,7 @@ namespace Remotion.Diagnostics
     }
 
     /// <summary>
-    /// <para>Returns a <see cref="ToTextBuilder"/> preconfigured to write to the console output stream (<see cref="System.Console.Out"/>).</para>
+    /// <para>Returns a <see cref="ToTextBuilder"/> which writes to the console output stream (<see cref="System.Console.Out"/>).</para>
     /// </summary>
     public static ToTextBuilder Console 
     {
@@ -147,6 +147,20 @@ namespace Remotion.Diagnostics
         return _toTextBuilderConsole;
       }
     }
+
+    /// <summary>
+    /// <para>Returns a <see cref="ToTextBuilder"/> which writes to the console output stream (<see cref="System.Console.Out"/>).
+    /// A newline is emitted before returning the <see cref="ToTextBuilder"/>.</para>
+    /// </summary>
+    public static ToTextBuilder ConsoleLine
+    {
+      get
+      {
+        _toTextBuilderConsole.nl();
+        return _toTextBuilderConsole;
+      }
+    }
+
 
     /// <summary>
     /// <para>Returns a <see cref="ToTextBuilder"/> preconfigured to write to the console error stream (<see cref="System.Console.Error"/>).</para>
@@ -222,6 +236,7 @@ namespace Remotion.Diagnostics
       get { return LogFileDirectory + "\\remotion.log.xml"; }
     }
 
+ 
 
 
     /// <summary>
