@@ -342,6 +342,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AclTools\Expansion\Code Repository.txt" />
     <Content Include="Database\SecurityManagerSetupConstraints.sql" />
     <Content Include="Doc\Whats_New.Remotion.SecurityManager.txt" />
   </ItemGroup>

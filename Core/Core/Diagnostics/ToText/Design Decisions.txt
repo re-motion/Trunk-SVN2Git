@@ -1,5 +1,5 @@
 ﻿   
-// ToTextBuilderBase.WriteElement: Plain vanilla implementation; performanc approx 10x slower than optimized versions  
+// ToTextBuilderBase.WriteElement: Plain vanilla implementation; performance approx 10x slower than optimized versions  
 public IToTextBuilderBase WriteElement<T> (Expression<Func<T>> expression)
 {
   ArgumentUtility.CheckNotNull ("expression", expression);

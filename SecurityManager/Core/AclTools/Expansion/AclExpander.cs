@@ -86,21 +86,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   }
 
 
-  public class UserWithRole : IEquatable<AclExpansionEntry>
-  {
-    public User User { get; private set; }
-    public Role Role { get; private set; }
-    public UserWithRole (User user, Role role)
-    {
-      User = user;
-      Role = role;
-    }
-
-    public bool Equals (AclExpansionEntry other)
-    {
-      return (User == other.User) && (Role == other.Role);
-    }
-  }
 
   public class AclExpansion
   {

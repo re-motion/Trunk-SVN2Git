@@ -1,0 +1,41 @@
+﻿  // User together with a role for Dictionary based AclExpander implementation
+  public class UserWithRole : IEquatable<AclExpansionEntry>
+  {
+    public User User { get; private set; }
+    public Role Role { get; private set; }
+    public UserWithRole (User user, Role role)
+    {
+      User = user;
+      Role = role;
+    }
+
+    public bool Equals (AclExpansionEntry other)
+    {
+      return (User == other.User) && (Role == other.Role);
+    }
+  }
+
+
+
+    void PropertyTest(ObjectID tenantId) {
+      User[] users = User.FindByTenantID (tenantId).ToArray ();
+      IsUserPropertyNull (users, Properties<User>.Get (x => x.UserName));
+      IsUserPropertyNull (users, Properties<User>.Get (x => x.OwningGroup));
+      IsUserPropertyNull (users, Properties<User>.Get (x => x.Tenant));
+
+      var userNameProperty = new Property<User, string> (x => x.UserName);
+      var userName = userNameProperty.Get (users[0]);
+    }
+     
+    bool IsUserPropertyNull<T>(User[] users, Property<User,T> userProperty) where T : class
+    {
+      foreach (var user in users)
+      {
+        var propertyValue = userProperty.Get (user);
+        if (propertyValue == null)
+        {
+          return true;
+        }
+      }
+      return false;
+    }

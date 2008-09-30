@@ -9,14 +9,14 @@
  */
 
 using System;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.Metadata;
-using System.Reflection;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -44,14 +44,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+
     [Test]
     public void Equals2 ()
     {
-      MemberTest (new PropertyObject<AclExpansionAccessConditions, bool> (x => x.OnlyIfAbstractRoleMatches),true);
-      MemberTest (new PropertyObject<AclExpansionAccessConditions, bool> (x => x.OnlyIfGroupIsOwner), true);
-      MemberTest (new PropertyObject<AclExpansionAccessConditions, bool> (x => x.OnlyIfTenantIsOwner), true);
-      MemberTest (new PropertyObject<AclExpansionAccessConditions, bool> (x => x.OnlyIfUserIsOwner), true);
-      MemberTest (new PropertyObject<AclExpansionAccessConditions, AbstractRoleDefinition> (x => x.AbstractRole), TestHelper.CreateAbstractRoleDefinition("titatutest",11235) );
+      MemberTest (Properties<AclExpansionAccessConditions>.Get (x => x.OnlyIfAbstractRoleMatches), true);
+      MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfAbstractRoleMatches), true);
+      MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfGroupIsOwner), true);
+      MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfTenantIsOwner), true);
+      MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfUserIsOwner), true);
+      MemberTest (new Property<AclExpansionAccessConditions, AbstractRoleDefinition> (x => x.AbstractRole), TestHelper.CreateAbstractRoleDefinition("titatutest",11235) );
     }
 
 
@@ -77,7 +79,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    private void MemberTest<TProperty> (PropertyObject<AclExpansionAccessConditions, TProperty> boolProperty, TProperty notEqualValue)
+    private void MemberTest<TProperty> (Property<AclExpansionAccessConditions, TProperty> boolProperty, TProperty notEqualValue)
     {
       var accessConditions0 = new AclExpansionAccessConditions ();
       var accessConditions1 = new AclExpansionAccessConditions ();
@@ -87,26 +89,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    public class PropertyObject<TClass, TProperty>
-    {
-      private readonly PropertyInfo _propertyInfo;
-
-      public PropertyObject (Expression<Func<TClass, TProperty>> propertyLambda)
-      {
-        _propertyInfo = (PropertyInfo) ((MemberExpression) propertyLambda.Body).Member;
-      }
-
-      public TProperty Get (TClass obj)
-      {
-        return (TProperty) _propertyInfo.GetValue (obj, null);
-      }
-
-      public void Set (TClass obj, TProperty value)
-      {
-        _propertyInfo.SetValue (obj, value, null);
-      }
-
-    }
 
 
   }
