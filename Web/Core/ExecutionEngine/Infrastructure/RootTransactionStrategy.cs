@@ -53,7 +53,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       {
         InnerListener.OnExecutionStop (context);
         if (AutoCommit)
-          _transaction.Commit ();
+          _transaction.Commit();
       }
       catch (Exception e)
       {
@@ -92,7 +92,25 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public override void OnExecutionFail (WxeContext context, Exception exception)
     {
-      throw new NotImplementedException();
+      if (_scope == null)
+        throw new InvalidOperationException ("OnExecutionFail may not be invoked unless OnExecutionPlay was called first.");
+
+      Exception innerException = null;
+      try
+      {
+        InnerListener.OnExecutionFail (context, exception);
+      }
+      catch (Exception e)
+      {
+        innerException = e;
+        throw;
+      }
+      finally
+      {
+        ExecuteAndWrapInnerException (_scope.Leave, innerException);
+        ExecuteAndWrapInnerException (_transaction.Release, innerException);
+        _scope = null;
+      }
     }
 
     public override ITransaction Transaction
@@ -134,7 +152,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       try
       {
-        action ();
+        action();
       }
       catch (Exception e)
       {
