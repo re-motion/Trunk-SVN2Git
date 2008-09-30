@@ -182,6 +182,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Queries
     }
 
     [Test]
+    public void GetDefaultQueryFilePath_WithEmptyRelativeSearchPath ()
+    {
+      AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
+      setup.ApplicationBase = AppDomain.CurrentDomain.BaseDirectory;
+      setup.DynamicBase = Path.GetTempPath ();
+      setup.PrivateBinPath = "";
+
+      new AppDomainRunner (setup, delegate
+      {
+        QueryConfiguration configuration = new QueryConfiguration ();
+        Assert.That (configuration.GetDefaultQueryFilePath (), Is.EqualTo (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "queries.xml")));
+      }, AppDomain.CurrentDomain.BaseDirectory).Run ();
+    }
+
+    [Test]
     public void Deserialize_WithNonUniqueNames ()
     {
       string xmlFragment =

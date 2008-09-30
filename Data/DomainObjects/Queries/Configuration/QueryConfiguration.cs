@@ -116,7 +116,7 @@ namespace Remotion.Data.DomainObjects.Queries.Configuration
       potentialPaths.Add (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, c_defaultConfigurationFile));
       if (AppDomain.CurrentDomain.RelativeSearchPath != null)
       {
-        foreach (string part in AppDomain.CurrentDomain.RelativeSearchPath.Split (';'))
+        foreach (string part in AppDomain.CurrentDomain.RelativeSearchPath.Split (new[] {';'}, StringSplitOptions.RemoveEmptyEntries))
         {
           string absoluteSearchPath = Path.GetFullPath (Path.Combine (AppDomain.CurrentDomain.BaseDirectory, part));
           potentialPaths.Add (Path.Combine (absoluteSearchPath, c_defaultConfigurationFile));
