@@ -16,7 +16,6 @@ using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
-using TypeUtility=Remotion.Mixins.TypeUtility;
 
 namespace Remotion.ObjectBinding.Design.BindableObject
 {
@@ -45,8 +44,8 @@ namespace Remotion.ObjectBinding.Design.BindableObject
       {
         foreach (Type type in types)
         {
-          if (!TypeUtility.IsGeneratedByMixinEngine (type)
-              && TypeUtility.HasAscribableMixin (type, typeof (BindableObjectMixinBase<>)))
+          if (!MixinTypeUtility.IsGeneratedByMixinEngine (type)
+              && MixinTypeUtility.HasAscribableMixin (type, typeof (BindableObjectMixinBase<>)))
             bindableTypes.Add (type);
         }
       }

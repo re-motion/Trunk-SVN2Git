@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void BindableDomainObjectAddsMixin ()
     {
-      Assert.IsTrue (TypeUtility.HasMixin (typeof (SampleBindableDomainObject), typeof (BindableDomainObjectMixin)));
+      Assert.IsTrue (MixinTypeUtility.HasMixin (typeof (SampleBindableDomainObject), typeof (BindableDomainObjectMixin)));
     }
 
     [Test]

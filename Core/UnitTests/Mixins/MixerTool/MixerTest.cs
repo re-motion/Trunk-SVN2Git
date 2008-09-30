@@ -177,7 +177,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       
       using (MixinConfiguration.BuildNew().ForClass<NullTarget>().Clear().AddMixins (typeof (NullMixin)).EnterScope())
       {
-        Assert.IsTrue (TypeUtility.HasMixin (typeof (DerivedNullTarget), typeof (NullMixin)));
+        Assert.IsTrue (MixinTypeUtility.HasMixin (typeof (DerivedNullTarget), typeof (NullMixin)));
         mixer.Execute (false);
       }
 

@@ -171,7 +171,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     [Test]
     public void GetMetadata_WithReadWriteMixedProperty ()
     {
-      IPropertyInformation propertyInfo = GetPropertyInfo (TypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
+      IPropertyInformation propertyInfo = GetPropertyInfo (MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
           typeof (IMixinAddingProperty), "MixedProperty");
       PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
@@ -191,7 +191,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     [Test]
     public void GetMetadata_WithReadOnlyMixedProperty ()
     {
-      IPropertyInformation propertyInfo = GetPropertyInfo (TypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
+      IPropertyInformation propertyInfo = GetPropertyInfo (MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
           typeof (IMixinAddingProperty).FullName + ".MixedReadOnlyProperty");
       PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 

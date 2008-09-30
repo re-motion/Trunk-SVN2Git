@@ -119,7 +119,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       BindableObjectProvider provider = new BindableObjectProvider (metadataFactoryMock, _serviceFactoryStub);
       BindableObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), provider);
       Type targetType = typeof (SimpleBusinessObjectClass);
-      Type concreteType = Mixins.TypeUtility.GetConcreteMixedType (targetType);
+      Type concreteType = Mixins.MixinTypeUtility.GetConcreteMixedType (targetType);
       BindableObjectClass expectedBindableObjectClass = new BindableObjectClass (concreteType, provider);
 
       Expect.Call (metadataFactoryMock.CreateClassReflector (targetType, provider)).Return (classReflectorMock);

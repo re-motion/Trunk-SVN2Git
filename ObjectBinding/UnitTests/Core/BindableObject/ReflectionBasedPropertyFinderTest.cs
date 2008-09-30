@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void NoPropertiesFromBindableObjectMixins ()
     {
       Type targetType = typeof (ClassWithIdentity);
-      Type concreteType = Mixins.TypeUtility.GetConcreteMixedType (targetType);
+      Type concreteType = Mixins.MixinTypeUtility.GetConcreteMixedType (targetType);
 
       var targetTypeProperties = new List<IPropertyInformation> (new ReflectionBasedPropertyFinder (targetType).GetPropertyInfos ());
       var concreteTypeProperties = new List<IPropertyInformation> (new ReflectionBasedPropertyFinder (concreteType).GetPropertyInfos ());

@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void Initialize ()
     {
       BindableObjectClassWithIdentity bindableObjectClass =
-          new BindableObjectClassWithIdentity (TypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)), _bindableObjectProvider);
+          new BindableObjectClassWithIdentity (MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)), _bindableObjectProvider);
 
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (ClassWithIdentity)));
       Assert.That (
@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetObject_WithDefaultService ()
     {
       BindableObjectClassWithIdentity bindableObjectClass =
-          new BindableObjectClassWithIdentity (TypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)), _bindableObjectProvider);
+          new BindableObjectClassWithIdentity (MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)), _bindableObjectProvider);
       IGetObjectService mockService = _mockRepository.StrictMock<IGetObjectService>();
       IBusinessObjectWithIdentity expected = _mockRepository.Stub<IBusinessObjectWithIdentity>();
 
@@ -68,7 +68,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetObject_WithCustomService ()
     {
       BindableObjectClassWithIdentity bindableObjectClass = new BindableObjectClassWithIdentity (
-          TypeUtility.GetConcreteMixedType (typeof (ClassWithIdentityAndGetObjectServiceAttribute)), _bindableObjectProvider);
+          MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentityAndGetObjectServiceAttribute)), _bindableObjectProvider);
       ICustomGetObjectService mockService = _mockRepository.StrictMock<ICustomGetObjectService>();
       IBusinessObjectWithIdentity expected = _mockRepository.Stub<IBusinessObjectWithIdentity>();
 
@@ -91,7 +91,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetObject_WithoutService ()
     {
       BindableObjectClassWithIdentity bindableObjectClass =
-          new BindableObjectClassWithIdentity (TypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)), _bindableObjectProvider);
+          new BindableObjectClassWithIdentity (MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)), _bindableObjectProvider);
 
       bindableObjectClass.GetObject ("TheUniqueIdentifier");
     }

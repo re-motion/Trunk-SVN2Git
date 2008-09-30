@@ -10,9 +10,9 @@
 
 using System;
 using System.Collections.Generic;
+using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
-using TypeUtility=Remotion.Mixins.TypeUtility;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.BindableObject
       Assertion.IsFalse (concreteType.IsValueType, "mixed types cannot be value types");
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
       
-      _targetType = TypeUtility.GetUnderlyingTargetType (concreteType);
+      _targetType = MixinTypeUtility.GetUnderlyingTargetType (concreteType);
       _concreteType = concreteType;
       _businessObjectProvider = businessObjectProvider;
       
@@ -145,8 +145,8 @@ namespace Remotion.ObjectBinding.BindableObject
 
     protected void CheckTypeForMixin (Type concreteType)
     {
-      Type underlyingTargetType = TypeUtility.GetUnderlyingTargetType (concreteType);
-      if (underlyingTargetType == concreteType || !TypeUtility.HasAscribableMixin (concreteType, typeof (BindableObjectMixinBase<>)))
+      Type underlyingTargetType = MixinTypeUtility.GetUnderlyingTargetType (concreteType);
+      if (underlyingTargetType == concreteType || !MixinTypeUtility.HasAscribableMixin (concreteType, typeof (BindableObjectMixinBase<>)))
       {
         throw new ArgumentException (
             string.Format (

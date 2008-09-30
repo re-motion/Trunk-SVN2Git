@@ -24,7 +24,6 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Utilities;
-using TypeUtility=Remotion.Mixins.TypeUtility;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 {
@@ -269,7 +268,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     {
       Type mixedBaseType = TypeFactory.GetConcreteType (typeof (TargetClassForPersistentMixin));
       // save mixin scope to enable peverifying the intercepted type
-      Assert.IsTrue (TypeUtility.HasMixin (mixedBaseType, typeof (MixinAddingPersistentProperties)));
+      Assert.IsTrue (MixinTypeUtility.HasMixin (mixedBaseType, typeof (MixinAddingPersistentProperties)));
       Type type = _scope.CreateTypeGenerator (typeof (TargetClassForPersistentMixin), mixedBaseType).BuildType ();
       Assert.That (type.GetProperties (_declaredInstanceFlags), Is.Empty);
     }

@@ -88,6 +88,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
         specificTypeHandler = GetHandler (type);
 
         // TODO: Move GetHandler-calls to class to avoid code duplication of commented out code below.
+        // Do not forget to change "Type type = GetUnderlyingMixinType(toTextParameters.Type);" above.
         //if (specificTypeHandler == null)
         //{
         //  Type underlyingMixinType  = GetUnderlyingMixinType (type);
@@ -112,7 +113,7 @@ namespace Remotion.Diagnostics.ToText.Handlers
 
     private static Type GetUnderlyingMixinType (Type type)
     {
-      return TypeUtility.GetUnderlyingTargetType (type);
+      return MixinTypeUtility.GetUnderlyingTargetType (type);
     }
   }
 }

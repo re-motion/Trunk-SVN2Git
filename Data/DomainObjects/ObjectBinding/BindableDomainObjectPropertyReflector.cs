@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     private void InitializeMappingDefinitions (Type concreteType, IPropertyInformation propertyInfo)
     {
-      Type targetType = Mixins.TypeUtility.GetUnderlyingTargetType (concreteType);
+      Type targetType = Mixins.MixinTypeUtility.GetUnderlyingTargetType (concreteType);
 
       if (DesignerUtility.IsDesignMode)
       {

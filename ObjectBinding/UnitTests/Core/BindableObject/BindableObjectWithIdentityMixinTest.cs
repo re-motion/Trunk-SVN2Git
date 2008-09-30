@@ -74,9 +74,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void HasMixin ()
     {
-      Assert.IsTrue (Mixins.TypeUtility.HasMixin (typeof (ClassWithIdentity), typeof (BindableObjectWithIdentityMixin)));
-      Assert.IsFalse (Mixins.TypeUtility.HasMixin (typeof (ClassWithAllDataTypes), typeof (BindableObjectWithIdentityMixin)));
-      Assert.IsFalse (Mixins.TypeUtility.HasMixin (typeof (object), typeof (BindableObjectWithIdentityMixin)));
+      Assert.IsTrue (Mixins.MixinTypeUtility.HasMixin (typeof (ClassWithIdentity), typeof (BindableObjectWithIdentityMixin)));
+      Assert.IsFalse (Mixins.MixinTypeUtility.HasMixin (typeof (ClassWithAllDataTypes), typeof (BindableObjectWithIdentityMixin)));
+      Assert.IsFalse (Mixins.MixinTypeUtility.HasMixin (typeof (object), typeof (BindableObjectWithIdentityMixin)));
     }
   }
 }

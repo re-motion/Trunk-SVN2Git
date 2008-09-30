@@ -11,8 +11,8 @@
 using System;
 using System.Collections;
 using Remotion.Collections;
+using Remotion.Mixins;
 using Remotion.Utilities;
-using TypeUtility=Remotion.Mixins.TypeUtility;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.BindableObject
           type,
           delegate (Type targetType)
           {
-            Type concreteType = TypeUtility.GetConcreteMixedType (targetType);
+            Type concreteType = MixinTypeUtility.GetConcreteMixedType (targetType);
             BusinessObjectProviderAttribute attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
 
             if (attribute == null)

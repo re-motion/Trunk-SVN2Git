@@ -125,7 +125,7 @@ namespace Remotion.UnitTests.Mixins.Context
       DeclarativeConfigurationBuilder referenceBuilder = new DeclarativeConfigurationBuilder (null);
       foreach (Type t in typeof (DeclarativeConfigurationBuilderTest).Assembly.GetTypes ())
       {
-        if (!t.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false) && !TypeUtility.IsGeneratedByMixinEngine (t))
+        if (!t.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false) && !MixinTypeUtility.IsGeneratedByMixinEngine (t))
           referenceBuilder.AddType (t);
       }
 

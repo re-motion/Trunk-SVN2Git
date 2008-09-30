@@ -23,8 +23,8 @@ namespace Remotion.Mixins.Globalization
   {
     public override IResourceManager GetResourceManager (Type objectType, bool includeHierarchy, out Type definingType)
     {
-      if (TypeUtility.IsGeneratedConcreteMixedType (objectType))
-        objectType = TypeUtility.GetUnderlyingTargetType (objectType);
+      if (MixinTypeUtility.IsGeneratedConcreteMixedType (objectType))
+        objectType = MixinTypeUtility.GetUnderlyingTargetType (objectType);
 
       return base.GetResourceManager (objectType, includeHierarchy, out definingType);
     }

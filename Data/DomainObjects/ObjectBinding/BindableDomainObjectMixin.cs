@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       Type originalDeclaringType = property.PropertyInfo.GetOriginalDeclaringType();
       var interfacePropertyInfo = property.PropertyInfo.InterfacePropertyInfo;
 
-      if (interfacePropertyInfo != null && Mixins.TypeUtility.IsGeneratedConcreteMixedType (originalDeclaringType))
+      if (interfacePropertyInfo != null && Mixins.MixinTypeUtility.IsGeneratedConcreteMixedType (originalDeclaringType))
       {
         // this property was added by a mixin, associate it with the respective mixin type for the mapping
 

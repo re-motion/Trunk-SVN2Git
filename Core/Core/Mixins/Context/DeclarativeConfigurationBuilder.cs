@@ -194,7 +194,7 @@ namespace Remotion.Mixins.Context
 
       foreach (Type t in assembly.GetTypes())
       {
-        if (!t.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false) && !TypeUtility.IsGeneratedByMixinEngine (t))
+        if (!t.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false) && !MixinTypeUtility.IsGeneratedByMixinEngine (t))
           AddType (t);
       }
       return this;

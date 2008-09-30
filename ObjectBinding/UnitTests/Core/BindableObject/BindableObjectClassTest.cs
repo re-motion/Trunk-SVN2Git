@@ -17,7 +17,6 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Utilities;
-using TypeUtility=Remotion.Mixins.TypeUtility;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -37,11 +36,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void Initialize ()
     {
       BindableObjectClass bindableObjectClass =
-          new BindableObjectClass (TypeUtility.GetConcreteMixedType (typeof (SimpleBusinessObjectClass)), _bindableObjectProvider);
+          new BindableObjectClass (MixinTypeUtility.GetConcreteMixedType (typeof (SimpleBusinessObjectClass)), _bindableObjectProvider);
 
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (SimpleBusinessObjectClass)));
       Assert.That (bindableObjectClass.ConcreteType, Is.Not.SameAs (typeof (SimpleBusinessObjectClass)));
-      Assert.That (bindableObjectClass.ConcreteType, Is.SameAs (Mixins.TypeUtility.GetConcreteMixedType (typeof (SimpleBusinessObjectClass))));
+      Assert.That (bindableObjectClass.ConcreteType, Is.SameAs (Mixins.MixinTypeUtility.GetConcreteMixedType (typeof (SimpleBusinessObjectClass))));
       Assert.That (
           bindableObjectClass.Identifier,
           Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"));
@@ -54,7 +53,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void Initialize_WithGeneric ()
     {
       BindableObjectClass bindableObjectClass =
-          new BindableObjectClass (TypeUtility.GetConcreteMixedType (typeof (ClassWithReferenceType<SimpleReferenceType>)), _bindableObjectProvider);
+          new BindableObjectClass (MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithReferenceType<SimpleReferenceType>)), _bindableObjectProvider);
 
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
     }
@@ -67,7 +66,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         + "Parameter name: concreteType")]
     public void Initialize_WithTypeNotUsingBindableObjectMixin ()
     {
-      new BindableObjectClass (TypeUtility.GetConcreteMixedType (typeof (SimpleReferenceType)), _bindableObjectProvider);
+      new BindableObjectClass (MixinTypeUtility.GetConcreteMixedType (typeof (SimpleReferenceType)), _bindableObjectProvider);
     }
 
     [Test]
@@ -91,7 +90,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (ManualBusinessObject)).AddMixins (typeof (object)).EnterScope())
       {
-        new BindableObjectClass (TypeUtility.GetConcreteMixedType (typeof (ManualBusinessObject)), _bindableObjectProvider);
+        new BindableObjectClass (MixinTypeUtility.GetConcreteMixedType (typeof (ManualBusinessObject)), _bindableObjectProvider);
       }
     }
 
@@ -111,7 +110,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       PropertyReflector propertyReflector =
           PropertyReflector.Create(GetPropertyInfo (
-                     TypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
+                     MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
                      typeof (IMixinAddingProperty).FullName + ".MixedProperty"), _bindableObjectProvider);
       ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperty), _bindableObjectProvider, BindableObjectMetadataFactory.Create())
       ;
@@ -199,7 +198,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               CreateProperty (type, "ReadOnlyScalar"),
           };
 
-      BindableObjectClass bindableObjectClass = new BindableObjectClass (TypeUtility.GetConcreteMixedType (type), _bindableObjectProvider);
+      BindableObjectClass bindableObjectClass = new BindableObjectClass (MixinTypeUtility.GetConcreteMixedType (type), _bindableObjectProvider);
       bindableObjectClass.SetPropertyDefinitions (expectedProperties);
       IBusinessObjectProperty[] actualProperties = bindableObjectClass.GetPropertyDefinitions();
 

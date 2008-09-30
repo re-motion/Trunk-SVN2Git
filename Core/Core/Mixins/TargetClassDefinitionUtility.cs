@@ -172,7 +172,7 @@ namespace Remotion.Mixins
       ArgumentUtility.CheckNotNull ("mixinConfiguration", mixinConfiguration);
 
       ClassContext context;
-      if (generationPolicy != GenerationPolicy.ForceGeneration && TypeUtility.IsGeneratedConcreteMixedType (targetType))
+      if (generationPolicy != GenerationPolicy.ForceGeneration && MixinTypeUtility.IsGeneratedConcreteMixedType (targetType))
         context = MixinReflector.GetClassContextFromConcreteType (targetType);
       else
         context = mixinConfiguration.ClassContexts.GetWithInheritance (targetType);
