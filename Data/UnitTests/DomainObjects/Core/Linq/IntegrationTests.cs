@@ -604,6 +604,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [Ignore ("TODO: check generate sql")]
+    public void QueryTest ()
+    {
+      var query = (from o in DataContext.Entity<Order>()
+                   select o).Distinct();
+      query.Single();
+      Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
+    }
+
+    //[Test]
+    //public void QueryToGetDomainObjectWithID ()
+    //{
+    //  var query = (from o in DataContext.Entity<Order>()
+    //               where o.ID
+    //}
+
+    [Test]
     public void QueryWithWhereOnForeignKey_RealSide ()
     {
       ObjectID id = DomainObjectIDs.Order1;
