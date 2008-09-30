@@ -45,6 +45,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
     {
     }
 
+    public ITransactionScope EnterScope ()
+    {
+      return new TestTransactionScope (this);
+    }
+
     public void Rollback()
     {
       if (Current != this)

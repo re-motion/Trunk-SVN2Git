@@ -13,7 +13,7 @@ using Remotion.Data;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
-  public class TestTransactionScope : ITransactionScope<TestTransaction>
+  public class TestTransactionScope : ITransactionScope<TestTransaction>, ITransactionScope
   {
     private static TestTransactionScope _currentScope;
 
@@ -41,6 +41,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
         _currentScope = value;
         TestTransaction.Current = value != null ? value.ScopedTransaction : null;
       }
+    }
+
+    ITransaction ITransactionScope.ScopedTransaction
+    {
+      get { return ScopedTransaction; }
     }
 
     public void Leave ()

@@ -14,7 +14,7 @@ using Remotion.Data;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
-  public class TestTransactionScopeManager : ITransactionScopeManager<TestTransaction, TestTransactionScope>
+  public class TestTransactionScopeManager : ITransactionScopeManager<TestTransaction, TestTransactionScope>, ITransactionScopeManager
   {
     public TestTransaction RootTransactionToCreate = new TestTransaction();
     public MultiDictionary<TestTransaction, object> EnlistedObjects = new MultiDictionary<TestTransaction, object> ();
@@ -27,6 +27,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
       get { return TestTransactionScope.CurrentScope; }
     }
 
+    ITransactionScope ITransactionScopeManager.ActiveScope
+    {
+      get { return ActiveScope; }
+    }
+
     public TestTransactionScope EnterScope (TestTransaction transaction)
     {
       return new TestTransactionScope (transaction);
@@ -35,6 +40,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
     public TestTransaction CreateRootTransaction ()
     {
       return RootTransactionToCreate;
+    }
+
+    ITransaction ITransactionScopeManager.CreateRootTransaction ()
+    {
+      return CreateRootTransaction ();
     }
 
     public bool TryEnlistObject (TestTransaction transaction, object objectToBeEnlisted)
