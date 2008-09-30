@@ -19,8 +19,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
   [TestFixture]
   public class OnExecutionStop:RootTransactionStrategyTestBase
   {
-
-
     [Test]
     public void Test_WithoutAutoCommit ()
     {
@@ -107,7 +105,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
-    public void Test_CommitListenerThrows ()
+    public void Test_CommitThrows ()
     {
       var strategy = CreateRootTransactionStrategy (true);
       var innerException = new ApplicationException ("Commit Exception");
@@ -196,5 +194,132 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       Assert.That (strategy.Scope, Is.Not.Null);
     }
 
+    [Test]
+    public void Test_InnerListenerThrows_And_LeaveThrows ()
+    {
+      var strategy = CreateRootTransactionStrategy (true);
+      var innerException = new Exception ("InnerListener Exception");
+      var outerException = new Exception ("Leave Exception");
+
+      InvokeOnExecutionPlay (strategy);
+      using (MockRepository.Ordered ())
+      {
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context)).Throw (innerException);
+        ScopeMock.Expect (mock => mock.Leave ()).Throw (outerException);
+      }
+
+      MockRepository.ReplayAll ();
+
+      try
+      {
+        strategy.OnExecutionStop (Context);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (WxeFatalExecutionException actualException)
+      {
+        Assert.That (actualException.InnerException, Is.SameAs (innerException));
+        Assert.That (actualException.OuterException, Is.SameAs (outerException));
+      }
+
+      MockRepository.VerifyAll ();
+      Assert.That (strategy.Scope, Is.Not.Null);
+    }
+
+    [Test]
+    public void Test_CommitThrows_And_LeaveThrows ()
+    {
+      var strategy = CreateRootTransactionStrategy (true);
+      var innerException = new Exception ("Commit Exception");
+      var outerException = new Exception ("Leave Exception");
+
+      InvokeOnExecutionPlay (strategy);
+      using (MockRepository.Ordered ())
+      {
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
+        TransactionMock.Expect (mock => mock.Commit ()).Throw (innerException);
+        ScopeMock.Expect (mock => mock.Leave ()).Throw (outerException);
+      }
+
+      MockRepository.ReplayAll ();
+
+      try
+      {
+        strategy.OnExecutionStop (Context);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (WxeFatalExecutionException actualException)
+      {
+        Assert.That (actualException.InnerException, Is.SameAs (innerException));
+        Assert.That (actualException.OuterException, Is.SameAs (outerException));
+      }
+
+      MockRepository.VerifyAll ();
+      Assert.That (strategy.Scope, Is.Not.Null);
+    }
+
+    [Test]
+    public void Test_InnerListenerThrows_And_ReleaseThrows ()
+    {
+      var strategy = CreateRootTransactionStrategy (true);
+      var innerException = new Exception ("InnerListener Exception");
+      var outerException = new Exception ("Release Exception");
+
+      InvokeOnExecutionPlay (strategy);
+      using (MockRepository.Ordered ())
+      {
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context)).Throw (innerException);
+        ScopeMock.Expect (mock => mock.Leave ());
+        TransactionMock.Expect (mock => mock.Release ()).Throw (outerException);
+      }
+
+      MockRepository.ReplayAll ();
+
+      try
+      {
+        strategy.OnExecutionStop (Context);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (WxeFatalExecutionException actualException)
+      {
+        Assert.That (actualException.InnerException, Is.SameAs (innerException));
+        Assert.That (actualException.OuterException, Is.SameAs (outerException));
+      }
+
+      MockRepository.VerifyAll ();
+      Assert.That (strategy.Scope, Is.Not.Null);
+    }
+
+    [Test]
+    public void Test_CommitThrows_And_ReleaseThrows ()
+    {
+      var strategy = CreateRootTransactionStrategy (true);
+      var innerException = new Exception ("Commit Exception");
+      var outerException = new Exception ("Release Exception");
+
+      InvokeOnExecutionPlay (strategy);
+      using (MockRepository.Ordered ())
+      {
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
+        TransactionMock.Expect (mock => mock.Commit ()).Throw (innerException);
+        ScopeMock.Expect (mock => mock.Leave ());
+        TransactionMock.Expect (mock => mock.Release ()).Throw (outerException);
+      }
+
+      MockRepository.ReplayAll ();
+
+      try
+      {
+        strategy.OnExecutionStop (Context);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (WxeFatalExecutionException actualException)
+      {
+        Assert.That (actualException.InnerException, Is.SameAs (innerException));
+        Assert.That (actualException.OuterException, Is.SameAs (outerException));
+      }
+
+      MockRepository.VerifyAll ();
+      Assert.That (strategy.Scope, Is.Not.Null);
+    }
   }
 }

@@ -48,16 +48,22 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (_scope == null)
         throw new InvalidOperationException ("OnExecutionStop may not be invoked unless OnExecutionPlay was called first.");
 
+      Exception innerException = null;
       try
       {
         InnerListener.OnExecutionStop (context);
         if (AutoCommit)
           _transaction.Commit ();
       }
+      catch (Exception e)
+      {
+        innerException = e;
+        throw;
+      }
       finally
       {
-        ExecuteAndWrapInnerException (_scope.Leave, null);
-        ExecuteAndWrapInnerException (_transaction.Release, null);
+        ExecuteAndWrapInnerException (_scope.Leave, innerException);
+        ExecuteAndWrapInnerException (_transaction.Release, innerException);
         _scope = null;
       }
     }
@@ -67,19 +73,19 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (_scope == null)
         throw new InvalidOperationException ("OnExecutionPause may not be invoked unless OnExecutionPlay was called first.");
 
-      Exception innerListenerException = null;
+      Exception innerException = null;
       try
       {
         InnerListener.OnExecutionPause (context);
       }
       catch (Exception e)
       {
-        innerListenerException = e;
+        innerException = e;
         throw;
       }
       finally
       {
-        ExecuteAndWrapInnerException (_scope.Leave, innerListenerException);
+        ExecuteAndWrapInnerException (_scope.Leave, innerException);
         _scope = null;
       }
     }
