@@ -10,18 +10,20 @@
 
 using System;
 using Remotion.Data;
+using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
-  public class RootTransactionStrategy<TScopeManager> : TransactionStrategyBase
-    where TScopeManager : ITransactionScopeManager, new ()
+  public class RootTransactionStrategy : TransactionStrategyBase
   {
-    private TScopeManager _scopeManager;
+    private readonly ITransactionScopeManager _scopeManager;
 
-    public RootTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener)
+    public RootTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener, ITransactionScopeManager scopeManager)
         : base (autoCommit, innerListener)
     {
+      ArgumentUtility.CheckNotNull ("_scopeManager", scopeManager);
+      _scopeManager = scopeManager;
     }
 
     public override void OnExecutionPlay (WxeContext context)
@@ -67,6 +69,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public override bool IsNull
     {
       get { return false; }
+    }
+
+    public ITransactionScopeManager ScopeManager
+    {
+      get { return _scopeManager; }
     }
   }
 }

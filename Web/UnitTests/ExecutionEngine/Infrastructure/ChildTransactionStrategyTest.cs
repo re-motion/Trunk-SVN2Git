@@ -24,7 +24,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void GetInnerListener ()
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
-      var strategy = new ChildTransactionStrategy<TestTransactionScopeManager2> (false, executionListenerStub);
+      var strategy = new ChildTransactionStrategy (false, executionListenerStub);
 
       Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
     }
@@ -33,7 +33,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void GetAutoCommit ()
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      TransactionStrategyBase strategy = new ChildTransactionStrategy<TestTransactionScopeManager2> (true, executionListenerStub);
+      TransactionStrategyBase strategy = new ChildTransactionStrategy (true, executionListenerStub);
 
       Assert.That (strategy.AutoCommit, Is.True);
     }
@@ -42,7 +42,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void IsNull ()
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      INullObject strategy = new ChildTransactionStrategy<TestTransactionScopeManager2> (true, executionListenerStub);
+      INullObject strategy = new ChildTransactionStrategy (true, executionListenerStub);
 
       Assert.That (strategy.IsNull, Is.False);
     }

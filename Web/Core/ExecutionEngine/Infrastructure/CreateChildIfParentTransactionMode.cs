@@ -34,9 +34,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       for (WxeFunction2 parentFunction = function.ParentFunction; parentFunction != null; parentFunction = parentFunction.ParentFunction)
       {
         if (!parentFunction.Transaction.IsNull)
-          return new ChildTransactionStrategy<TScopeManager> (_autoCommit, executionListener);
+          return new ChildTransactionStrategy (_autoCommit, executionListener);
       }
-      return new RootTransactionStrategy<TScopeManager> (_autoCommit, executionListener);
+      return new RootTransactionStrategy (_autoCommit, executionListener, new TScopeManager());
     }
 
     public bool AutoCommit

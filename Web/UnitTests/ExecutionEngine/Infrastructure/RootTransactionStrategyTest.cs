@@ -11,8 +11,8 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data;
 using Remotion.Web.ExecutionEngine.Infrastructure;
-using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
@@ -20,31 +20,40 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
   [TestFixture]
   public class RootTransactionStrategyTest
   {
+    private IWxeFunctionExecutionListener _executionListenerMock;
+    private RootTransactionStrategy _strategy;
+    private ITransactionScopeManager _scopeManager;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _executionListenerMock = MockRepository.GenerateMock<IWxeFunctionExecutionListener> ();
+      _scopeManager = MockRepository.GenerateMock<ITransactionScopeManager>();
+      _strategy = new RootTransactionStrategy (true, _executionListenerMock, _scopeManager);
+    }
+
     [Test]
     public void GetInnerListener ()
     {
-      var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
-      var strategy = new RootTransactionStrategy<TestTransactionScopeManager2> (false, executionListenerStub);
-
-      Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
+      Assert.That (_strategy.InnerListener, Is.SameAs (_executionListenerMock));
     }
 
     [Test]
     public void GetAutoCommit ()
     {
-      var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      TransactionStrategyBase strategy = new RootTransactionStrategy<TestTransactionScopeManager2> (true, executionListenerStub);
-
-      Assert.That (strategy.AutoCommit, Is.True);
+      Assert.That (_strategy.AutoCommit, Is.True);
     }
 
     [Test]
     public void IsNull ()
     {
-      var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      INullObject strategy = new RootTransactionStrategy<TestTransactionScopeManager2> (true, executionListenerStub);
+      Assert.That (_strategy.IsNull, Is.False);
+    }
 
-      Assert.That (strategy.IsNull, Is.False);
+    [Test]
+    public void GetScopeManager ()
+    {
+      Assert.That (_strategy.ScopeManager, Is.SameAs (_scopeManager));
     }
   }
 }

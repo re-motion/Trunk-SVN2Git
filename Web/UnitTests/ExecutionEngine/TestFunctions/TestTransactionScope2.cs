@@ -8,20 +8,21 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using Remotion.Data;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
-  public class TestTransactionScopeManager2:ITransactionScopeManager
+  public class TestTransactionScopeManager2 : ITransactionScopeManager
   {
     public ITransactionScope ActiveScope
     {
-      get { throw new System.NotImplementedException(); }
+      get { throw new NotImplementedException(); }
     }
 
-    public ITransaction CreateRootTransaction ()
+    public virtual ITransaction CreateRootTransaction ()
     {
-      throw new System.NotImplementedException();
+      throw new NotImplementedException();
     }
   }
 }
