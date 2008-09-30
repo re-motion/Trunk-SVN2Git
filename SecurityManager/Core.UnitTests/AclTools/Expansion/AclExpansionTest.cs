@@ -40,15 +40,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AclExpansionEntry[] aclExpansionEntries = GetAclExpansionEntries();
       var aclExpansion = new AclExpansion ((AclExpansionEntry[]) aclExpansionEntries.Clone ());
 
-      //foreach (var handler in To.GetTypeHandlers())
-      //{
-      //  To.Console.e ("type handler type",handler.Key).nl();
-      //}
-
       int i = 0;
       foreach (AclExpansionEntry aclExpansionEntry in aclExpansion)
       {
-        To.Console.e (aclExpansionEntry.User).nl ();
         //To.Console.e (i + 1).s (") ").e (aclExpansionEntry.User).nl ();
         Assert.That (aclExpansionEntry, Is.EqualTo (aclExpansionEntries[i]));
         ++i;
@@ -56,14 +50,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
     [Test]
+    [Explicit]
     public void Linq ()
     {
       AclExpansionEntry[] aclExpansionEntries = GetAclExpansionEntries ();
       var aclExpansion = new AclExpansion ((AclExpansionEntry[]) aclExpansionEntries.Clone ());
 
       var query = from e in aclExpansion
-                  //where e.User.LastName.Contains()
-                  select e;
+                  where e.User.Title != ""
+                  select e.User.DisplayName;
+
+      To.Console.e (query.ToArray());
     }
 
     private AclExpansionEntry[] GetAclExpansionEntries ()
