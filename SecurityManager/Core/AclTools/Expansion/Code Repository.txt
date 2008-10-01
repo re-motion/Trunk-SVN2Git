@@ -39,3 +39,13 @@
       }
       return false;
     }
+    
+    
+var userWithRole = new UserWithRole (user, role);
+AclExpansionEntry aclExpansionEntry;
+aclExpansionEntries.TryGetValue (userWithRole, out aclExpansionEntry);
+if(aclExpansionEntry == null)
+{
+  aclExpansionEntries[userWithRole] = new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions);
+}
+    

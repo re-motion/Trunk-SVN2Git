@@ -80,11 +80,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       switch (ace.GroupSelection)
       {
         case GroupSelection.OwningGroup:
+          Assertion.IsNotNull (role.Group);
           owningGroups.Add (role.Group);
           aclProbe.AccessConditions.OnlyIfGroupIsOwner = true;
           break;
         case GroupSelection.All:
-          owningGroups.Add (ace.SpecificGroup); 
+          // If the ACE contains no specific group, then the probe's owningGroups collection is empty.
+          if (ace.SpecificGroup != null)
+          {
+            owningGroups.Add (ace.SpecificGroup);
+          }
           break;
         default:
           throw new NotSupportedException (String.Format("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.",ace.GroupSelection));

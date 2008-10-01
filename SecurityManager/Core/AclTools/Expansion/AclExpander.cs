@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Diagnostics;
 using Remotion.SecurityManager.Domain.Metadata;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
@@ -43,23 +44,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         {
           foreach (var acl in acls)
           {
+            To.ConsoleLine.e (acl);
             foreach (var ace in acl.AccessControlEntries)
             {
+              To.ConsoleLine.e (ace);
               AclProbe aclProbe = AclProbe.CreateAclProbe (user, role, ace);
+              To.ConsoleLine.e (aclProbe);
 
               // TODO(?): Check if we already queried with an identical token.
               AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (aclProbe.SecurityToken);
 
               if (accessTypeDefinitions != null && accessTypeDefinitions.Length > 0)
               {
-                //var userWithRole = new UserWithRole (user, role);
-                //AclExpansionEntry aclExpansionEntry;
-                //aclExpansionEntries.TryGetValue (userWithRole, out aclExpansionEntry);
-                //if(aclExpansionEntry == null)
-                //{
-                //  aclExpansionEntries[userWithRole] = new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions);
-                //}
-
                 aclExpansionEntries.Add (new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions));
               }
             }

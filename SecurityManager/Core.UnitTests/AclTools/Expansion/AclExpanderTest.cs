@@ -51,9 +51,87 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       _aclList.Add (TestHelper.CreateAcl());
     }
 
-    // TODO: Enable and check why owningGroups get a null entry 
+
+    /*
+    [Test]
+    public void FindMatchingEntries_WithMultipleMatchingAces ()
+    {
+      AccessControlEntry ace1 = AccessControlEntry.NewObject();
+      AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessType (ace1, true);
+      AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessType (ace1, null);
+      AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessType (ace1, null);
+
+      AbstractRoleDefinition role2 = AbstractRoleDefinition.NewObject (Guid.NewGuid(), "SoftwareDeveloper", 1);
+      AccessControlEntry ace2 = AccessControlEntry.NewObject();
+      ace2.SpecificAbstractRole = role2;
+      TestHelper.AttachAccessType (ace2, readAccessType, null);
+      TestHelper.AttachAccessType (ace2, writeAccessType, true);
+      TestHelper.AttachAccessType (ace2, deleteAccessType, null);
+
+      AccessControlList acl = TestHelper.CreateAcl (ace1, ace2);
+      SecurityToken token = TestHelper.CreateTokenWithAbstractRole (role2);
+
+      AccessControlEntry[] entries = acl.FindMatchingEntries (token);
+
+      Assert.AreEqual (2, entries.Length);
+      Assert.Contains (ace2, entries);
+      Assert.Contains (ace1, entries);
+    }
+    */
+
+    [Test]
+    //[Ignore]
+    public void AccessControlList_GetAccessTypes ()
+    {
+      var user = User;
+      List<AccessControlList> aclList = new List<AccessControlList> ();
+
+      AccessControlEntry ace = AccessControlEntry.NewObject ();
+      AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessType (ace, true);
+      AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessType (ace, true);
+      AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessType (ace, true);
+
+      AccessControlList acl = TestHelper.CreateAcl (ace);
+      aclList.Add (acl);
+
+      SecurityToken securityToken = new SecurityToken (user, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
+      AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
+      To.ConsoleLine.sb ().e (accessTypeDefinitions.Length).e (() => accessTypeDefinitions).se ();
+    }
+
+
     [Test]
     [Ignore]
+    public void AccessControlList_GetAccessTypes2 ()
+    {
+      var user = User;
+      //var tenant = user.Tenant;
+
+      List<AccessControlList> aclList = new List<AccessControlList> ();
+      var ace = TestHelper.CreateAceWithSpecficTenant (user.Tenant);
+      ace.TenantSelection = TenantSelection.All;
+      ace.GroupSelection = GroupSelection.All;
+      ace.UserSelection = UserSelection.All;
+
+      //var ace = aclList[0].CreateAccessControlEntry ();
+      ace.Permissions[0].Allowed = true;
+
+
+      //ace.Permissions =
+
+      var acl = TestHelper.CreateAcl (ace);
+      aclList.Add (acl);
+
+      SecurityToken securityToken = new SecurityToken (user, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
+      AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
+      To.ConsoleLine.sb().e (accessTypeDefinitions.Length).e (() => accessTypeDefinitions).se();
+    }
+
+
+
+
+    [Test]
+    //[Ignore]
     public void GetAclExpansionEntryList ()
     {
       List<User> userList = new List<User> ();
@@ -63,6 +141,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       
       List<AccessControlList> aclList = new List<AccessControlList>();
       var ace = TestHelper.CreateAceWithAbstractRole();
+      ace.TenantSelection = TenantSelection.All;
+      ace.GroupSelection = GroupSelection.All;
+      ace.UserSelection = UserSelection.All;
       var acl = TestHelper.CreateAcl (ace);
       aclList.Add (acl);
       var aclFinder = new TestAclExpanderAclFinder (aclList);
@@ -86,7 +167,4 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public TestAclExpanderUserFinder (List<User> users) { _users = users; }
     public List<User> Users { get { return _users; } }
   }
-
-
-
 }
