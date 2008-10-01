@@ -6,6 +6,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public interface IAclExpanderAclFinder
   {
-    List<AccessControlList> AccessControlLists { get; }
+    List<AccessControlList> FindAccessControlLists ();
   }
 }

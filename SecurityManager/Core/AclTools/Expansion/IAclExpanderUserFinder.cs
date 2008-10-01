@@ -6,6 +6,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public interface IAclExpanderUserFinder
   {
-    List<User> Users { get; }
+    List<User> FindUsers ();
   }
 }

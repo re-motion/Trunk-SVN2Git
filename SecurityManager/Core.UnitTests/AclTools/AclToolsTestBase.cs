@@ -43,6 +43,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     private AccessTypeDefinition[] _accessTypeDefinitions3;
 
 
+    //AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessType (ace, true);
+    //AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessType (ace, true);
+    //AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessType (ace, true);
+
  
 
     public AccessTypeDefinition[] AccessTypeDefinitions

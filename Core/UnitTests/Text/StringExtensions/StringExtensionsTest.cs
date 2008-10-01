@@ -66,7 +66,7 @@ namespace Remotion.UnitTests.Text.StringExtensions
     public void EscapeStringTest ()
     {
       var testString = "abcdEFG\t\n\"\\ HIJklmn \t\t\n\n\"\"\\\\ \r \b\v\f";
-      var result = testString.EscapeString();
+      var result = testString.Escape();
       Assert.That (result, Is.EqualTo ("abcdEFG\\t\\n\\\"\\\\ HIJklmn \\t\\t\\n\\n\\\"\\\"\\\\\\\\ \\r \\b\\v\\f"));
     }
 

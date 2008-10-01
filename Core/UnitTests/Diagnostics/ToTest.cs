@@ -14,13 +14,11 @@ using System.Linq.Expressions;
 using log4net.Core;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
+using Remotion.Diagnostics.ToText.Internal;
 using Remotion.Logging;
 using System.IO;
-//using Rhino.Mocks;
 
-//using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Diagnostics
 {

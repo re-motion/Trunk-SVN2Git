@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Diagnostics;
+using Remotion.Diagnostics.ToText;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;

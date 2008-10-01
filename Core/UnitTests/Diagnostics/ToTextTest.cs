@@ -11,8 +11,8 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
+using Remotion.Diagnostics.ToText.Internal;
 
 namespace Remotion.UnitTests.Diagnostics
 {

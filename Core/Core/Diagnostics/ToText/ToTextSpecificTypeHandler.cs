@@ -9,9 +9,13 @@
  */
 
 using System;
+using Remotion.Diagnostics.ToText.Internal;
 
 namespace Remotion.Diagnostics.ToText
 {
+  /// <summary>
+  /// Convenience base class for defining externally registered ToText type handlers. For details see <see cref="To"/>-class description.
+  /// </summary>
   public abstract class ToTextSpecificTypeHandler<T> : IToTextSpecificTypeHandler
   {
     public abstract void ToText (T t, IToTextBuilder toTextBuilder);

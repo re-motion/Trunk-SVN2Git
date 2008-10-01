@@ -9,19 +9,14 @@
  */
 
 using System;
-using System.Linq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
-using Remotion.Diagnostics;
-using Remotion.Security;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using System.Collections.Generic;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.SecurityManager.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -45,10 +40,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       //AccessControlListFinder aclFinder = new AccessControlListFinder ();
       //AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, premiumOrderClass, context);
 
-
-
       TestHelper.CreateAceWithSpecficTenant (Tenant);
       _aclList.Add (TestHelper.CreateAcl());
+
+
     }
 
 
@@ -125,6 +120,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       SecurityToken securityToken = new SecurityToken (user, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
       AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
       To.ConsoleLine.sb().e (accessTypeDefinitions.Length).e (() => accessTypeDefinitions).se();
+      To.ToTextProvider.Settings.EmitPrivateFields = true;
     }
 
 
@@ -137,8 +133,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<User> userList = new List<User> ();
       var user = User;
       userList.Add (user);
-      var userFinder = new TestAclExpanderUserFinder (userList);
-      
+
+      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); //new TestAclExpanderUserFinder (userList);
+      userFinderMock.Expect (mock => mock.FindUsers()).Return (userList);
+
       List<AccessControlList> aclList = new List<AccessControlList>();
       var ace = TestHelper.CreateAceWithAbstractRole();
       ace.TenantSelection = TenantSelection.All;
@@ -148,9 +146,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       aclList.Add (acl);
       var aclFinder = new TestAclExpanderAclFinder (aclList);
 
-      var aclExpander = new AclExpander (userFinder, aclFinder);
+      var aclExpander = new AclExpander (userFinderMock, aclFinder);
       var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList();
       To.ConsoleLine.e (() => aclExpansionEntryList);
+      userFinderMock.VerifyAllExpectations();
     }
   }
 
@@ -158,13 +157,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   {
     private readonly List<AccessControlList> _acls;
     public TestAclExpanderAclFinder (List<AccessControlList> acls) { _acls = acls; }
-    public List<AccessControlList> AccessControlLists { get { return _acls; } }
+
+    public List<AccessControlList> FindAccessControlLists ()
+    {
+      return _acls;
+    }
   }
 
-  public class TestAclExpanderUserFinder : IAclExpanderUserFinder
-  {
-    private readonly List<User> _users;
-    public TestAclExpanderUserFinder (List<User> users) { _users = users; }
-    public List<User> Users { get { return _users; } }
-  }
+  //public class TestAclExpanderUserFinder : IAclExpanderUserFinder
+  //{
+  //  private readonly List<User> _users;
+  //  public TestAclExpanderUserFinder (List<User> users) { _users = users; }
+  //  public List<User> Users { get { return _users; } }
+  //}
 }

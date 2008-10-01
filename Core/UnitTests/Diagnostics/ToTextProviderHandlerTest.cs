@@ -14,7 +14,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics.ToText;
-using Remotion.Diagnostics.ToText.Handlers;
+using Remotion.Diagnostics.ToText.Internal.ToTextProviderHandler;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.UnitTests.Diagnostics

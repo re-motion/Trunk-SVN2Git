@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Linq.Expressions;
+using Remotion.Diagnostics.ToText.Internal;
 
 namespace Remotion.Diagnostics.ToText
 {

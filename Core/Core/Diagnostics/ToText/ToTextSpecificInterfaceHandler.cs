@@ -8,8 +8,13 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using Remotion.Diagnostics.ToText.Internal;
+
 namespace Remotion.Diagnostics.ToText
 {
+  /// <summary>
+  /// Convenience base class for defining externally registered ToText interface type handlers. For details see <see cref="To"/>-class description.
+  /// </summary>
   public abstract class ToTextSpecificInterfaceHandler<T> : IToTextSpecificInterfaceHandler
   {
     public ToTextSpecificInterfaceHandler ()

@@ -12,7 +12,7 @@ using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
+namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
   public class User_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<User>

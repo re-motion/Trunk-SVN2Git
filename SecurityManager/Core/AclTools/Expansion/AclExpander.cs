@@ -11,7 +11,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Diagnostics;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
@@ -35,8 +35,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       var aclExpansionEntries = new List<AclExpansionEntry> ();
 
-      var users = _userFinder.Users;
-      var acls = _accessControlListFinder.AccessControlLists;
+      var users = _userFinder.FindUsers();
+      var acls = _accessControlListFinder.FindAccessControlLists();
 
       foreach (var user in users)
       {
@@ -54,7 +54,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
               // TODO(?): Check if we already queried with an identical token.
               AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (aclProbe.SecurityToken);
 
-              if (accessTypeDefinitions != null && accessTypeDefinitions.Length > 0)
+              if (accessTypeDefinitions.Length > 0)
               {
                 aclExpansionEntries.Add (new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions));
               }

@@ -10,7 +10,6 @@
 
 using System;
 using System.IO;
-using Remotion.Diagnostics;
 using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 

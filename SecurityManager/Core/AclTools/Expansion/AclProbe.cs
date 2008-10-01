@@ -35,13 +35,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       var aclProbe = new AclProbe ();
       IList<Group> owningGroups = CreateOwningGroupsEntry (aclProbe, role, ace);
       Tenant owningTenant = CreateOwningTenantEntry (aclProbe, user, ace);
-      IList<AbstractRoleDefinition> abstractRoles = CreatAbstractRolesEntry (aclProbe, ace);
+      IList<AbstractRoleDefinition> abstractRoles = CreateAbstractRolesEntry (aclProbe, ace);
 
       aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroups, abstractRoles);
       return aclProbe;
     }
 
-    private static IList<AbstractRoleDefinition> CreatAbstractRolesEntry (AclProbe aclProbe, AccessControlEntry ace)
+    private static IList<AbstractRoleDefinition> CreateAbstractRolesEntry (AclProbe aclProbe, AccessControlEntry ace)
     {
       IList<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition>();
       if (ace.SpecificAbstractRole != null)
@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private static Tenant CreateOwningTenantEntry (AclProbe aclProbe, User user, AccessControlEntry ace)
     {
-      Tenant owningTenant = null;
+      Tenant owningTenant;
       switch (ace.TenantSelection)
       {
         case TenantSelection.OwningTenant:
@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           owningTenant = ace.SpecificTenant;
           break;
         default:
-          throw new NotSupportedException (String.Format ("ace.TenantSelection={0} is currently not supported by this method. Please extend method to handle the new TenantSelection state.", ace.TenantSelection));
+          throw new ArgumentException (String.Format ("ace.TenantSelection={0} is currently not supported by this method. Please extend method to handle the new TenantSelection state.", ace.TenantSelection));
       }
       return owningTenant;
     }
@@ -92,7 +92,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           }
           break;
         default:
-          throw new NotSupportedException (String.Format("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.",ace.GroupSelection));
+          throw new ArgumentException (String.Format ("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.", ace.GroupSelection));
       }
       return owningGroups;
     }

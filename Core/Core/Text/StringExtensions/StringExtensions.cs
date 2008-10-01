@@ -47,7 +47,7 @@ namespace Remotion.Text.StringExtensions
     /// <summary>
     /// Appends the passed string to the passed <see cref="StringBuilder"/>, replacing all tabs,newlines, linefeeds, etc 
     /// with their escaped C# string representation. E.g. tabulator => \t .
-    /// See also <see cref="EscapeString(string)"/>.
+    /// See also <see cref="Escape"/>.
     /// </summary>
     public static void EscapeString (this string s, StringBuilder stringBuilder)
     {
@@ -71,9 +71,9 @@ namespace Remotion.Text.StringExtensions
     /// replaced with their escaped C# string representation. E.g. tabulator => \t .
     /// See also <see cref="EscapeString(string,StringBuilder)"/>.
     /// </summary>
-    public static string EscapeString (this string s)
+    public static string Escape (this string s)
     {
-      var stringBuilder = new StringBuilder();
+      var stringBuilder = new StringBuilder (2 * s.Length);
       foreach (char c in s)
       {
         string mappedString;

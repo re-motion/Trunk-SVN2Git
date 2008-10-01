@@ -13,7 +13,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
+using Remotion.Diagnostics.ToText.Internal;
 using Remotion.Utilities;
+using Remotion.Text.StringExtensions;
 
 namespace Remotion.Diagnostics.ToText
 {

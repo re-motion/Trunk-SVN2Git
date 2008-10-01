@@ -10,7 +10,8 @@
 
 using System;
 using System.Collections.Generic;
-using Remotion.Diagnostics.ToText.Handlers;
+using Remotion.Diagnostics.ToText.Internal;
+using Remotion.Diagnostics.ToText.Internal.ToTextProviderHandler;
 using Remotion.Utilities;
 
 namespace Remotion.Diagnostics.ToText
