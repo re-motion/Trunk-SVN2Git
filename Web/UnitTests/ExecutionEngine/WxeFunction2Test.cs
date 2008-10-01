@@ -103,6 +103,37 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     }
 
     [Test]
+    public void Execute_ThreadAbort_WithFatalException ()
+    {
+      TestFunction2 function = new TestFunction2 ();
+      function.ExecutionListener = _executionListenerMock;
+
+      WxeStep step1 = MockRepository.GenerateMock<WxeStep> ();
+      step1.Expect (mock => mock.Execute (_context)).Do (invocation => Thread.CurrentThread.Abort ());
+      function.Add (step1);
+
+      var fatalExecutionException = new WxeFatalExecutionException (new Exception ("Pause exception"), null);
+
+      using (_mockRepository.Ordered ())
+      {
+        _executionListenerMock.Expect (mock => mock.OnExecutionPlay (_context));
+        _executionListenerMock.Expect (mock => mock.OnExecutionPause (_context)).Throw (fatalExecutionException);
+      }
+      _mockRepository.ReplayAll ();
+
+      try
+      {
+        function.Execute (_context);
+        Assert.Fail ();
+      }
+      catch (WxeFatalExecutionException actualException)
+      {
+        Assert.That (actualException, Is.SameAs (fatalExecutionException));
+        Thread.ResetAbort ();
+      }
+    } 
+
+    [Test]
     public void Execute_FailAfterException ()
     {
       TestFunction2 function = new TestFunction2 ();
