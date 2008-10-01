@@ -570,7 +570,7 @@
     <Compile Include="Mixins\SampleTypes\TargetClassWithAdditionalDependencies.cs" />
     <Compile Include="Mixins\SampleTypes\ValueTypeMixin.cs" />
     <Compile Include="Mixins\TypeFactoryTest.cs" />
-    <Compile Include="Mixins\TypeUtilityTest.cs" />
+    <Compile Include="Mixins\MixinTypeUtilityTest.cs" />
     <Compile Include="Mixins\UnvalidatedDefinitionBuilder.cs" />
     <Compile Include="Mixins\Utilities\DependencySortTest.cs" />
     <Compile Include="Mixins\Utilities\GenericTypeInstantiatorTest.cs" />

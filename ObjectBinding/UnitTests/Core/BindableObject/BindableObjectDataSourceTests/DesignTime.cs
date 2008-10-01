@@ -58,8 +58,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
 
     private void PrepareMixinConfiguration (IDesignerHost host)
     {
-      SetupResult.For (host.GetType ("Remotion.Mixins.BridgeImplementations.TypeUtilityImplementation, Remotion, Version = 1.9.0.202"))
-          .Return (typeof (TypeUtilityImplementation));
+      SetupResult.For (host.GetType ("Remotion.Mixins.BridgeImplementations.MixinTypeUtilityImplementation, Remotion, Version = 1.9.0.202"))
+          .Return (typeof (MixinTypeUtilityImplementation));
       SetupResult.For (host.GetType ("Remotion.Mixins.BridgeImplementations.TypeFactoryImplementation, Remotion, Version = 1.9.0.202"))
           .Return (typeof (TypeFactoryImplementation));
       SetupResult.For (host.GetType ("Remotion.Context.BootstrapStorageProvider, Remotion, Version = 1.9.0.202"))

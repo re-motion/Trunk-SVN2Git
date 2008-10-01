@@ -19,7 +19,7 @@ using ReflectionUtility=Remotion.Utilities.ReflectionUtility;
 
 namespace Remotion.Mixins.BridgeImplementations
 {
-  public class TypeUtilityImplementation : ITypeUtilityImplementation
+  public class MixinTypeUtilityImplementation : IMixinTypeUtilityImplementation
   {
     public bool IsGeneratedConcreteMixedType (Type type)
     {

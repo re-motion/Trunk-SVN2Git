@@ -29,7 +29,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static bool IsGeneratedConcreteMixedType (Type type)
     {
-      return VersionDependentImplementationBridge<ITypeUtilityImplementation>.Implementation.IsGeneratedConcreteMixedType (type);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.IsGeneratedConcreteMixedType (type);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static bool IsGeneratedByMixinEngine (Type type)
     {
-      return VersionDependentImplementationBridge<ITypeUtilityImplementation>.Implementation.IsGeneratedByMixinEngine (type);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.IsGeneratedByMixinEngine (type);
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ namespace Remotion.Mixins
     /// otherwise, a generated type containing all the mixins currently configured for <paramref name="baseType"/>.</returns>
     public static Type GetConcreteMixedType (Type baseType)
     {
-      return VersionDependentImplementationBridge<ITypeUtilityImplementation>.Implementation.GetConcreteMixedType (baseType);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetConcreteMixedType (baseType);
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ namespace Remotion.Mixins
     /// given <paramref name="type"/> was generated.</returns>
     public static Type GetUnderlyingTargetType (Type type)
     {
-      return VersionDependentImplementationBridge<ITypeUtilityImplementation>.Implementation.GetUnderlyingTargetType (type);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetUnderlyingTargetType (type);
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static bool IsAssignableFrom (Type baseOrInterface, Type typeToAssign)
     {
-      return VersionDependentImplementationBridge<ITypeUtilityImplementation>.Implementation.IsAssignableFrom (baseOrInterface, typeToAssign);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.IsAssignableFrom (baseOrInterface, typeToAssign);
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static bool HasMixins (Type type)
     {
-      return VersionDependentImplementationBridge<ITypeUtilityImplementation>.Implementation.HasMixins (type);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasMixins (type);
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ namespace Remotion.Mixins
     /// check should be broadened to include these properties, <see cref="GetAscribableMixinType"/> should be used.</remarks>
     public static bool HasMixin (Type typeToCheck, Type mixinType)
     {
-      return VersionDependentImplementationBridge<ITypeUtilityImplementation>.Implementation.HasMixin (typeToCheck, mixinType);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasMixin (typeToCheck, mixinType);
     }
 
     /// <summary>
@@ -123,7 +123,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static Type GetAscribableMixinType (Type typeToCheck, Type mixinType)
     {
-      return VersionDependentImplementationBridge<ITypeUtilityImplementation>.Implementation.GetAscribableMixinType (typeToCheck, mixinType);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetAscribableMixinType (typeToCheck, mixinType);
     }
 
     /// <summary>
@@ -138,7 +138,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static bool HasAscribableMixin (Type typeToCheck, Type mixinType)
     {
-      return VersionDependentImplementationBridge<ITypeUtilityImplementation>.Implementation.HasAscribableMixin (typeToCheck, mixinType);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasAscribableMixin (typeToCheck, mixinType);
     }
 
     /// <summary>
@@ -149,7 +149,7 @@ namespace Remotion.Mixins
     /// <paramref name="type"/>.</returns>
     public static IEnumerable<Type> GetMixinTypes (Type type)
     {
-      return VersionDependentImplementationBridge<ITypeUtilityImplementation>.Implementation.GetMixinTypes (type);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetMixinTypes (type);
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ namespace Remotion.Mixins
     /// specified <paramref name="args"/>.</returns>
     public static object CreateInstance (Type type, params object[] args)
     {
-      return VersionDependentImplementationBridge<ITypeUtilityImplementation>.Implementation.CreateInstance (type, args);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.CreateInstance (type, args);
     }
   }
 }

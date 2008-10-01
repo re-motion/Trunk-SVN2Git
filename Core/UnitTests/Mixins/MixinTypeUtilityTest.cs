@@ -21,7 +21,7 @@ using Remotion.UnitTests.Mixins.SampleTypes;
 namespace Remotion.UnitTests.Mixins
 {
   [TestFixture]
-  public class TypeUtilityTest
+  public class MixinTypeUtilityTest
   {
     [Test]
     public void IsGeneratedConcreteMixedType ()
