@@ -154,18 +154,57 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    //[Ignore]
-    public void GetAclExpansionEntryList ()
+    public void GetAclExpansionEntryList_AceWithPosition_GroupSelectionAll ()
+    {
+      List<AclExpansionEntry> aclExpansionEntryList = 
+        GetAclExpansionEntryList_UserPositionGroupSelection(User,Position,GroupSelection.All);
+
+      var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
+      var accessConditions = new AclExpansionAccessConditions()
+       { 
+         OnlyIfUserIsOwner = false, OnlyIfGroupIsOwner = false, OnlyIfTenantIsOwner = false, 
+         OnlyIfAbstractRoleMatches = false, AbstractRole = null
+       };
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
+      Assert.That (aclExpansionEntryList[0].AccessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
+      Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
+    }
+
+    [Test]
+    public void GetAclExpansionEntryList_AceWithPosition_GroupSelectionOwningGroup ()
+    {
+      List<AclExpansionEntry> aclExpansionEntryList = 
+        GetAclExpansionEntryList_UserPositionGroupSelection (User, Position, GroupSelection.OwningGroup);
+
+      var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
+      var accessConditions = new AclExpansionAccessConditions ()
+      {
+        OnlyIfUserIsOwner = false,
+        OnlyIfGroupIsOwner = true, //  GroupSelection.OwningGroup => group must be owner
+        OnlyIfTenantIsOwner = false,
+        OnlyIfAbstractRoleMatches = false,
+        AbstractRole = null
+      };
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
+      Assert.That (aclExpansionEntryList[0].AccessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
+      Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
+    }
+
+
+
+    // Returns a list of AclExpansionEntry for the passed User, ACE with the passed Positon and passed GroupSelection
+    private List<AclExpansionEntry> GetAclExpansionEntryList_UserPositionGroupSelection (
+      User user, Position position, GroupSelection groupSelection)
     {
       List<User> userList = new List<User> ();
-      var user = User;
+      //var user = User;
       userList.Add (user);
 
       var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); //new TestAclExpanderUserFinder (userList);
       userFinderMock.Expect (mock => mock.FindUsers()).Return (userList);
 
       List<AccessControlList> aclList = new List<AccessControlList>();
-      var ace = TestHelper.CreateAceWithPosition (Position, GroupSelection.All);
+      var ace = TestHelper.CreateAceWithPosition (position, groupSelection);
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
       Assert.That (ace.Validate ().IsValid);
       var acl = TestHelper.CreateAcl (ace);
@@ -179,19 +218,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       To.ConsoleLine.e (() => aclExpansionEntryList);
       userFinderMock.VerifyAllExpectations();
       aclFinderMock.VerifyAllExpectations ();
-
-      var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
-      var accessConditions = new AclExpansionAccessConditions()
-                             {
-                               OnlyIfUserIsOwner = false,
-                               OnlyIfGroupIsOwner = false,
-                               OnlyIfTenantIsOwner = false,
-                               OnlyIfAbstractRoleMatches = false,
-                               AbstractRole = null
-                             };
-      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
-      Assert.That (aclExpansionEntryList[0].AccessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
-      Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
+      return aclExpansionEntryList;
     }
   }
 
