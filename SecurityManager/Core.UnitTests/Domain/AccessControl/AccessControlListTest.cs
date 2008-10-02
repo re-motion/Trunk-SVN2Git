@@ -56,9 +56,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void FindMatchingEntries_WithMultipleMatchingAces ()
     {
       AccessControlEntry ace1 = AccessControlEntry.NewObject();
-      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessType (ace1, true);
-      AccessTypeDefinition writeAccessType = _testHelper.CreateWriteAccessType (ace1, null);
-      AccessTypeDefinition deleteAccessType = _testHelper.CreateDeleteAccessType (ace1, null);
+      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace1, true);
+      AccessTypeDefinition writeAccessType = _testHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace1, null);
+      AccessTypeDefinition deleteAccessType = _testHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace1, null);
 
       AbstractRoleDefinition role2 = AbstractRoleDefinition.NewObject (Guid.NewGuid(), "SoftwareDeveloper", 1);
       AccessControlEntry ace2 = AccessControlEntry.NewObject();
@@ -81,9 +81,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void GetAccessTypes_WithMatchingAce ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessType (ace, true);
-      _testHelper.CreateWriteAccessType (ace, null);
-      _testHelper.CreateDeleteAccessType (ace, null);
+      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, true);
+      _testHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace, null);
+      _testHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace, null);
       AccessControlList acl = _testHelper.CreateAcl (ace);
       SecurityToken token = _testHelper.CreateEmptyToken();
 
@@ -97,9 +97,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void GetAccessTypes_WithoutMatchingAce ()
     {
       AccessControlEntry ace = _testHelper.CreateAceWithAbstractRole();
-      _testHelper.CreateReadAccessType (ace, true);
-      _testHelper.CreateWriteAccessType (ace, null);
-      _testHelper.CreateDeleteAccessType (ace, null);
+      _testHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, true);
+      _testHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace, null);
+      _testHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace, null);
       AccessControlList acl = _testHelper.CreateAcl (ace);
       SecurityToken token = _testHelper.CreateEmptyToken();
 
@@ -114,9 +114,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       AbstractRoleDefinition role1 = AbstractRoleDefinition.NewObject (Guid.NewGuid(), "QualityManager", 0);
       AccessControlEntry ace1 = AccessControlEntry.NewObject();
       ace1.SpecificAbstractRole = role1;
-      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessType (ace1, true);
-      AccessTypeDefinition writeAccessType = _testHelper.CreateWriteAccessType (ace1, null);
-      AccessTypeDefinition deleteAccessType = _testHelper.CreateDeleteAccessType (ace1, null);
+      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace1, true);
+      AccessTypeDefinition writeAccessType = _testHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace1, null);
+      AccessTypeDefinition deleteAccessType = _testHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace1, null);
 
       AbstractRoleDefinition role2 = AbstractRoleDefinition.NewObject (Guid.NewGuid(), "SoftwareDeveloper", 1);
       AccessControlEntry ace2 = AccessControlEntry.NewObject();
@@ -141,9 +141,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       AbstractRoleDefinition role1 = AbstractRoleDefinition.NewObject (Guid.NewGuid(), "QualityManager", 0);
       AccessControlEntry ace1 = AccessControlEntry.NewObject();
       ace1.SpecificAbstractRole = role1;
-      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessType (ace1, true);
-      AccessTypeDefinition writeAccessType = _testHelper.CreateWriteAccessType (ace1, null);
-      AccessTypeDefinition deleteAccessType = _testHelper.CreateDeleteAccessType (ace1, null);
+      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace1, true);
+      AccessTypeDefinition writeAccessType = _testHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace1, null);
+      AccessTypeDefinition deleteAccessType = _testHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace1, null);
 
       AbstractRoleDefinition role2 = AbstractRoleDefinition.NewObject (Guid.NewGuid(), "SoftwareDeveloper", 1);
       AccessControlEntry ace2 = AccessControlEntry.NewObject();

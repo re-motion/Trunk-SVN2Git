@@ -41,7 +41,8 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="AaaInfoAboutTheDesignOfTheRemotionFramework.cs" />
+    <Compile Include="TheDesignOfTheRemotionFramework\Finder.cs" />
+    <Compile Include="TheDesignOfTheRemotionFramework\Builder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Remotion, Version=1.11.0.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">

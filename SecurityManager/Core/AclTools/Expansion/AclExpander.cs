@@ -31,7 +31,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public AclExpander () : this (new AclExpanderUserFinder (), new AclExpanderAclFinder ()) {}
 
 
-    public List<AclExpansionEntry> GetAclExpansionEntryList ()
+    // Spike implementation to test algorithm. 
+    public List<AclExpansionEntry> GetAclExpansionEntryList_Spike ()
     {
       var aclExpansionEntries = new List<AclExpansionEntry> ();
 

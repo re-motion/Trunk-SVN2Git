@@ -52,9 +52,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void FindMatchingEntries_WithMultipleMatchingAces ()
     {
       AccessControlEntry ace1 = AccessControlEntry.NewObject();
-      AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessType (ace1, true);
-      AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessType (ace1, null);
-      AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessType (ace1, null);
+      AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace1, true);
+      AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace1, null);
+      AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace1, null);
 
       AbstractRoleDefinition role2 = AbstractRoleDefinition.NewObject (Guid.NewGuid(), "SoftwareDeveloper", 1);
       AccessControlEntry ace2 = AccessControlEntry.NewObject();
@@ -82,9 +82,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AccessControlList> aclList = new List<AccessControlList> ();
 
       AccessControlEntry ace = AccessControlEntry.NewObject ();
-      AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessType (ace, true);
-      AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessType (ace, true);
-      AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessType (ace, true);
+      AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, true);
+      AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace, true);
+      AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace, true);
 
       AccessControlList acl = TestHelper.CreateAcl (ace);
       aclList.Add (acl);
@@ -103,18 +103,19 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       //var tenant = user.Tenant;
 
       List<AccessControlList> aclList = new List<AccessControlList> ();
-      var ace = TestHelper.CreateAceWithSpecficTenant (user.Tenant);
-      ace.TenantSelection = TenantSelection.All;
-      ace.GroupSelection = GroupSelection.All;
-      ace.UserSelection = UserSelection.All;
+      //var ace = TestHelper.CreateAceWithSpecficTenant (user.Tenant);
+      //ace.TenantSelection = TenantSelection.All;
+      //ace.GroupSelection = GroupSelection.All;
+      //ace.UserSelection = UserSelection.All;
 
-      //var ace = aclList[0].CreateAccessControlEntry ();
-      ace.Permissions[0].Allowed = true;
-
-
+      ////var ace = aclList[0].CreateAccessControlEntry ();
+      //ace.Permissions[0].Allowed = true;
       //ace.Permissions =
 
-      var acl = TestHelper.CreateAcl (ace);
+      //var acl = TestHelper.CreateAcl (ace);
+
+      var acl = Acl;
+
       aclList.Add (acl);
 
       SecurityToken securityToken = new SecurityToken (user, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
@@ -147,7 +148,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aclFinder = new TestAclExpanderAclFinder (aclList);
 
       var aclExpander = new AclExpander (userFinderMock, aclFinder);
-      var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList();
+      var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList_Spike();
       To.ConsoleLine.e (() => aclExpansionEntryList);
       userFinderMock.VerifyAllExpectations();
     }

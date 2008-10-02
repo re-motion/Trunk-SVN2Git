@@ -42,9 +42,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void GetAllowedAccessTypes_ReadAllowed ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessType (ace, true);
-      _testHelper.CreateWriteAccessType (ace, null);
-      _testHelper.CreateDeleteAccessType (ace, null);
+      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, true);
+      _testHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace, null);
+      _testHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace, null);
 
       AccessTypeDefinition[] accessTypes = ace.GetAllowedAccessTypes();
 
@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void AllowAccess_Read ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      AccessTypeDefinition accessType = _testHelper.CreateReadAccessType (ace, null);
+      AccessTypeDefinition accessType = _testHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, null);
 
       ace.AllowAccess (accessType);
 
@@ -81,7 +81,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void RemoveAccess_Read ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      AccessTypeDefinition accessType = _testHelper.CreateReadAccessType (ace, true);
+      AccessTypeDefinition accessType = _testHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, true);
 
       ace.RemoveAccess (accessType);
 

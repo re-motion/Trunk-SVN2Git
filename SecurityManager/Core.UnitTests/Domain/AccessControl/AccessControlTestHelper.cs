@@ -497,20 +497,73 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    public AccessTypeDefinition CreateReadAccessType (AccessControlEntry ace, bool? allowAccess)
+    public AccessTypeDefinition CreateReadAccessTypeAndSetWithValueAtAce (AccessControlEntry ace, bool? allowAccess)
     {
-      return CreateAccessTypeForAce (ace, allowAccess, Guid.NewGuid (), "Read", 0);
+      //return CreateAccessTypeForAce (ace, allowAccess, Guid.NewGuid (), "Read", 0);
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        AccessTypeDefinition accessType = CreateReadAccessType ();
+        AttachAccessType (ace, accessType, allowAccess);
+
+        return accessType;
+      }
     }
 
-    public AccessTypeDefinition CreateWriteAccessType (AccessControlEntry ace, bool? allowAccess)
+    public AccessTypeDefinition CreateWriteAccessTypeAndSetWithValueAtAce (AccessControlEntry ace, bool? allowAccess)
     {
-      return CreateAccessTypeForAce (ace, allowAccess, Guid.NewGuid (), "Write", 1);
+      //return CreateAccessTypeForAce (ace, allowAccess, Guid.NewGuid (), "Write", 1);
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        AccessTypeDefinition accessType = CreateWriteAccessType ();
+        AttachAccessType (ace, accessType, allowAccess);
+
+        return accessType;
+      }
     }
 
-    public AccessTypeDefinition CreateDeleteAccessType (AccessControlEntry ace, bool? allowAccess)
+    public AccessTypeDefinition CreateDeleteAccessTypeAndSetWithValueAtAce (AccessControlEntry ace, bool? allowAccess)
     {
-      return CreateAccessTypeForAce (ace, allowAccess, Guid.NewGuid (), "Delete", 2);
+      //return CreateAccessTypeForAce (ace, allowAccess, Guid.NewGuid (), "Delete", 2);
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        AccessTypeDefinition accessType = CreateDeleteAccessType ();
+        AttachAccessType (ace, accessType, allowAccess);
+
+        return accessType;
+      }
     }
+
+
+    public AccessTypeDefinition CreateReadAccessType ()
+    {
+      return CreateAccessType ("Read", 0);
+    }
+
+    public AccessTypeDefinition CreateWriteAccessType ()
+    {
+      return CreateAccessType ("Write", 1);
+    }
+
+    public AccessTypeDefinition CreateDeleteAccessType ()
+    {
+      return CreateAccessType ("Delete", 2);
+    }
+
+
+    public AccessTypeDefinition CreateAccessType (Guid metadataItemID, string name, int value)
+    {
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        AccessTypeDefinition accessType = AccessTypeDefinition.NewObject (metadataItemID, name, value);
+        return accessType;
+      }
+    }
+
+    public AccessTypeDefinition CreateAccessType (string name, int value)
+    {
+      return CreateAccessType (Guid.NewGuid (), name, value);
+    }
+
 
     public AccessTypeDefinition CreateAccessTypeForAce (AccessControlEntry ace, bool? allowAccess, Guid metadataItemID, string name, int value)
     {
@@ -522,6 +575,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         return accessType;
       }
     }
+
 
     public Tenant CreateTenant (string name)
     {

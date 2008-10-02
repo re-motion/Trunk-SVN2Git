@@ -18,187 +18,98 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
 {
   public class AclToolsTestBase : DomainTest
   {
-    private AccessControlTestHelper _testHelper;
+    public AccessControlList Acl { get; private set; }
+    public AccessTypeDefinition DeleteAccessType { get; private set; }
+    public AccessTypeDefinition WriteAccessType { get; private set; }
+    public AccessTypeDefinition ReadAccessType { get; private set; }
 
-    private Tenant _tenant;
-    private Group _group;
-    private Position _position;
-    private Role _role;
-    private User _user;
-    private AccessTypeDefinition[] _accessTypeDefinitions;
-    private AccessControlEntry _ace;
-    
-    private Group _group2;
-    private Position _position2;
-    private User _user2;
-    private Role _role2;
-    private AccessControlEntry _ace2;
-    private AccessTypeDefinition[] _accessTypeDefinitions2;
+    public AccessTypeDefinition[] AccessTypeDefinitions { get; private set; }
+    public AccessControlTestHelper TestHelper { get; private set; }
+    public Tenant Tenant { get; private set; }
+    public Group Group { get; private set; }
+    public Position Position { get; private set; }
+    public Role Role { get; private set; }
+    public User User { get; private set; }
+    public AccessControlEntry Ace { get; private set; }
 
-    private Group _group3;
-    private Position _position3;
-    private User _user3;
-    private Role _role3;
-    private AccessControlEntry _ace3;
-    private AccessTypeDefinition[] _accessTypeDefinitions3;
+    public AccessTypeDefinition[] AccessTypeDefinitions2 { get; private set; }
+    public AccessControlEntry Ace2 { get; private set; }
+    public Role Role2 { get; private set; }
+    public User User2 { get; private set; }
+    public Position Position2 { get; private set; }
+    public Group Group2 { get; private set; }
 
-
-    //AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessType (ace, true);
-    //AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessType (ace, true);
-    //AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessType (ace, true);
-
- 
-
-    public AccessTypeDefinition[] AccessTypeDefinitions
-    {
-      get { return _accessTypeDefinitions; }
-    }
-
-    public AccessControlTestHelper TestHelper
-    {
-      get { return _testHelper; }
-    }
-
-    public Tenant Tenant
-    {
-      get { return _tenant; }
-    }
-
-    public Group Group
-    {
-      get { return _group; }
-    }
-
-    public Position Position
-    {
-      get { return _position; }
-    }
-
-    public Role Role
-    {
-      get { return _role; }
-    }
-
-    public User User
-    {
-      get { return _user; }
-    }
-
-    public AccessControlEntry Ace
-    {
-      get { return _ace; }
-    }
-
-
-    public AccessTypeDefinition[] AccessTypeDefinitions2
-    {
-      get { return _accessTypeDefinitions2; }
-    }
-
-    public AccessControlEntry Ace2
-    {
-      get { return _ace2; }
-    }
-
-    public Role Role2
-    {
-      get { return _role2; }
-    }
-
-    public User User2
-    {
-      get { return _user2; }
-    }
-
-    public Position Position2
-    {
-      get { return _position2; }
-    }
-
-    public Group Group2
-    {
-      get { return _group2; }
-    }
-
-
-
-    public AccessTypeDefinition[] AccessTypeDefinitions3
-    {
-      get { return _accessTypeDefinitions3; }
-    }
-
-    public AccessControlEntry Ace3
-    {
-      get { return _ace3; }
-    }
-
-    public Role Role3
-    {
-      get { return _role3; }
-    }
-
-    public User User3
-    {
-      get { return _user3; }
-    }
-
-    public Position Position3
-    {
-      get { return _position3; }
-    }
-
-    public Group Group3
-    {
-      get { return _group3; }
-    }
-
+    public AccessTypeDefinition[] AccessTypeDefinitions3 { get; private set; }
+    public AccessControlEntry Ace3 { get; private set; }
+    public Role Role3 { get; private set; }
+    public User User3 { get; private set; }
+    public Position Position3 { get; private set; }
+    public Group Group3 { get; private set; }
 
 
     public override void SetUp ()
     {
       base.SetUp ();
-      _testHelper = new AccessControlTestHelper ();
-      _testHelper.Transaction.EnterNonDiscardingScope ();
+      TestHelper = new AccessControlTestHelper ();
+      TestHelper.Transaction.EnterNonDiscardingScope ();
 
-      _tenant = _testHelper.CreateTenant ("Da Tenant");
-      _group = _testHelper.CreateGroup ("Da Group", null, Tenant);
-      _position = _testHelper.CreatePosition ("Supreme Being");
-      _user = _testHelper.CreateUser ("DaUs", "Da", "Usa", "Dr.", Group, Tenant);
-      _role = _testHelper.CreateRole (User, Group, Position);
-      _ace = _testHelper.CreateAceWithOwningTenant();
-      _accessTypeDefinitions  = List.New (
-        _testHelper.CreateReadAccessType (Ace, true), 
-        _testHelper.CreateWriteAccessType (Ace, false), 
-        _testHelper.CreateDeleteAccessType(Ace,true)
+
+      Tenant = TestHelper.CreateTenant ("Da Tenant");
+      Group = TestHelper.CreateGroup ("Da Group", null, Tenant);
+      Position = TestHelper.CreatePosition ("Supreme Being");
+      User = TestHelper.CreateUser ("DaUs", "Da", "Usa", "Dr.", Group, Tenant);
+      Role = TestHelper.CreateRole (User, Group, Position);
+      Ace = TestHelper.CreateAceWithOwningTenant();
+
+      ReadAccessType = TestHelper.CreateReadAccessType ();  // read access
+      WriteAccessType = TestHelper.CreateWriteAccessType();  // write access
+      DeleteAccessType = TestHelper.CreateDeleteAccessType();  // delete permission
+
+      AccessTypeDefinitions  = List.New (
+        TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace, true),
+        TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace, null), 
+        TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce(Ace,true)
       ).ToArray();
 
-      _group2 = _testHelper.CreateGroup ("Anotha Group", null, Tenant);
-      _position2 = _testHelper.CreatePosition ("Working Drone");
-      _user2 = _testHelper.CreateUser ("mr.smith", "", "Smith", "Mr.", Group2, Tenant);
-      _role2 = _testHelper.CreateRole (User2, Group2, Position2);
-      _ace2 = _testHelper.CreateAceWithSpecficTenant (Tenant);
-      _accessTypeDefinitions2 = List.New (
-        _testHelper.CreateReadAccessType (Ace2, false),
-        _testHelper.CreateWriteAccessType (Ace2, true),
-        _testHelper.CreateDeleteAccessType (Ace2, true)
+      Group2 = TestHelper.CreateGroup ("Anotha Group", null, Tenant);
+      Position2 = TestHelper.CreatePosition ("Working Drone");
+      User2 = TestHelper.CreateUser ("mr.smith", "", "Smith", "Mr.", Group2, Tenant);
+      Role2 = TestHelper.CreateRole (User2, Group2, Position2);
+      Ace2 = TestHelper.CreateAceWithSpecficTenant (Tenant);
+      AccessTypeDefinitions2 = List.New (
+        TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace2, null),
+        TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace2, true),
+        TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (Ace2, true)
       ).ToArray ();
 
-      _group3 = _testHelper.CreateGroup ("Da 3rd Group", null, Tenant);
-      _position3 = _testHelper.CreatePosition ("Warrior");
-      _user3 = _testHelper.CreateUser ("ryan_james", "Ryan", "James", "", Group3, Tenant);
-      _role3 = _testHelper.CreateRole (User3, Group3, Position3);
-      _ace3 = _testHelper.CreateAceWithSpecficTenant (Tenant);
-      _accessTypeDefinitions3 = List.New (
-        _testHelper.CreateReadAccessType (Ace3, false),
-        _testHelper.CreateWriteAccessType (Ace3, false),
-        _testHelper.CreateDeleteAccessType (Ace3, false)
+      Group3 = TestHelper.CreateGroup ("Da 3rd Group", null, Tenant);
+      Position3 = TestHelper.CreatePosition ("Warrior");
+      User3 = TestHelper.CreateUser ("ryan_james", "Ryan", "James", "", Group3, Tenant);
+      Role3 = TestHelper.CreateRole (User3, Group3, Position3);
+      Ace3 = TestHelper.CreateAceWithOwningGroup();
+      AccessTypeDefinitions3 = List.New (
+        TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace3, null),
+        TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace3, true),
+        TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (Ace3, null)
       ).ToArray ();
-    
+
+
+      Acl = TestHelper.CreateAcl (Ace, Ace2, Ace3);
+
+
+      //ReadAccessType = TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace, true);  // allow read access
+      //WriteAccessType = TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace, true);  // allow write access
+      //DeleteAccessType = TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (Ace, false);  // allow delete operations
+
+      //TestHelper.AttachAccessType (ace2, readAccessType, null);
+      //TestHelper.AttachAccessType (ace2, writeAccessType, true);
+      //TestHelper.AttachAccessType (ace2, deleteAccessType, null);
     }
+
 
     private User CreateUser (Tenant userTenant, Group userGroup)
     {
-      return _testHelper.CreateUser ("JoDo", "John", "Doe", "Prof.", userGroup, userTenant);
+      return TestHelper.CreateUser ("JoDo", "John", "Doe", "Prof.", userGroup, userTenant);
     }
   }
 }
