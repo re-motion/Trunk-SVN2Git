@@ -52,6 +52,23 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     }
 
     [Test]
+    public void EnterScope ()
+    {
+      var scopeStub = MockRepository.GenerateStub<ITransactionScope>();
+      _transactionMock.Expect (mock => mock.EnterScope ()).Return (scopeStub);
+
+      var actualScope = _transactionManager.EnterScope ();
+      Assert.That (actualScope, Is.SameAs (scopeStub));
+    }
+
+    [Test]
+    public void ReleaseTransaction ()
+    {
+      _transactionManager.ReleaseTransaction();
+      _transactionMock.AssertWasCalled (mock => mock.Release());
+    }
+
+    [Test]
     public void RegisterObjects ()
     {
       var expectedObject1 = new object ();

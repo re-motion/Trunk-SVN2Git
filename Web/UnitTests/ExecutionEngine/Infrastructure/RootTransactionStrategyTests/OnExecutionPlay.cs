@@ -34,7 +34,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     {
       using (MockRepository.Ordered ())
       {
-        TransactionMock.Expect (mock => mock.EnterScope ()).Return (ScopeMock);
+        TransactionManagerMock.Expect (mock => mock.EnterScope ()).Return (ScopeMock);
         ExecutionListenerMock.Expect (mock => mock.OnExecutionPlay (Context));
       }
 
@@ -58,7 +58,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     public void Test_EnterScopeThrows ()
     {
       var innerException = new Exception ("Enter Scope Exception");
-      TransactionMock.Expect (mock => mock.EnterScope ()).Throw (innerException);
+      TransactionManagerMock.Expect (mock => mock.EnterScope ()).Throw (innerException);
 
       MockRepository.ReplayAll ();
 

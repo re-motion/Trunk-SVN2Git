@@ -114,6 +114,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateRootTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ITransactionManager.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\IWxeFunctionExecutionContext.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\IWxeFunctionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ITransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullExecutionListener.cs" />

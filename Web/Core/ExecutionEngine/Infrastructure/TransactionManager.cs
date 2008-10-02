@@ -39,9 +39,14 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _transaction = transaction;
     }
 
-    public void Release ()
+    public ITransactionScope EnterScope ()
     {
-      throw new System.NotImplementedException();
+      return _transaction.EnterScope();
+    }
+
+    public void ReleaseTransaction ()
+    {
+      _transaction.Release();
     }
 
     public void RegisterObjects (IEnumerable objects)

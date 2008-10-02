@@ -27,6 +27,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     private WxeContext _context;
     private MockRepository _mockRepository;
     private ITransactionManager _transactionManagerMock;
+    private IWxeFunctionExecutionContext _executionContextStub;
 
     [SetUp]
     public virtual void SetUp ()
@@ -37,15 +38,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _mockRepository = new MockRepository();
       _executionListenerMock = MockRepository.StrictMock<IWxeFunctionExecutionListener>();
       _transactionMock = MockRepository.StrictMock<ITransaction>();
-
       _scopeMock = MockRepository.StrictMock<ITransactionScope>();
-
       _transactionManagerMock = MockRepository.StrictMock<ITransactionManager>();
-    }
 
-    public IWxeFunctionExecutionListener ExecutionListenerMock
-    {
-      get { return _executionListenerMock; }
+      _executionContextStub = MockRepository.StrictMock<IWxeFunctionExecutionContext>();
+      _executionContextStub.Stub (stub => stub.GetInParameters ()).Return (new object[0]);
     }
 
     public MockRepository MockRepository
@@ -73,27 +70,39 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       get { return _transactionManagerMock; }
     }
 
+    public IWxeFunctionExecutionListener ExecutionListenerMock
+    {
+      get { return _executionListenerMock; }
+    }
+
+    public IWxeFunctionExecutionContext ExecutionContextStub
+    {
+      get { return _executionContextStub; }
+    }
+
     protected RootTransactionStrategy CreateRootTransactionStrategy (bool autoCommit)
     {
-      TransactionManagerMock.BackToRecord();
-      TransactionManagerMock.Expect (mock => mock.InitializeTransaction());
-      TransactionManagerMock.Stub (stub => stub.Transaction).Return (TransactionMock).Repeat.Any();
-      TransactionManagerMock.Replay();
+      _transactionManagerMock.BackToRecord();
+      _transactionManagerMock.Expect (mock => mock.InitializeTransaction ());
+      _transactionManagerMock.Replay ();
 
-      return new RootTransactionStrategy (autoCommit, ExecutionListenerMock, _transactionManagerMock);
+      return new RootTransactionStrategy (autoCommit, _executionListenerMock, _transactionManagerMock, _executionContextStub);
     }
 
     protected void InvokeOnExecutionPlay (RootTransactionStrategy strategy)
     {
-      TransactionMock.Stub (stub => stub.EnterScope()).Return (ScopeMock);
-      ExecutionListenerMock.Stub (stub => stub.OnExecutionPlay (Context));
-      MockRepository.Replay (TransactionMock);
-      MockRepository.Replay (ExecutionListenerMock);
+      _executionListenerMock.BackToRecord ();
+      _executionListenerMock.Stub (stub => stub.OnExecutionPlay (Context));
+      _executionListenerMock.Replay ();
+
+      _transactionManagerMock.BackToRecord ();
+      _transactionManagerMock.Stub (stub => stub.EnterScope ()).Return (ScopeMock);
+      _transactionManagerMock.Replay ();
 
       strategy.OnExecutionPlay (Context);
 
-      MockRepository.BackToRecord (TransactionMock);
-      MockRepository.BackToRecord (ExecutionListenerMock);
+      _transactionManagerMock.BackToRecord ();
+      _executionListenerMock.BackToRecord ();
     }
 
     protected void InvokeOnExecutionPause (RootTransactionStrategy strategy)

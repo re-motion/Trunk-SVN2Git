@@ -49,13 +49,15 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void GetTransaction ()
     {
+      TransactionManagerMock.Stub (stub => stub.Transaction).Return (TransactionMock);
       Assert.That (_strategy.Transaction, Is.SameAs (TransactionMock));
     }
 
     [Test]
     public void Commit ()
     {
-      TransactionMock.Expect (mock => mock.Commit());
+      TransactionManagerMock.Stub (stub => stub.Transaction).Return (TransactionMock);
+      TransactionMock.Expect (mock => mock.Commit ());
       MockRepository.ReplayAll();
 
       _strategy.Commit();
@@ -66,12 +68,19 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Rollback ()
     {
-      TransactionMock.Expect (mock => mock.Rollback());
+      TransactionManagerMock.Stub (stub => stub.Transaction).Return (TransactionMock);
+      TransactionMock.Expect (mock => mock.Rollback ());
       MockRepository.ReplayAll();
 
       _strategy.Rollback();
 
       MockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void RegisterInParameters ()
+    {
+      
     }
   }
 }

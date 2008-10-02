@@ -34,7 +34,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       TransactionManagerMock.BackToRecord();
       using (MockRepository.Ordered())
       {
-        TransactionManagerMock.Expect (mock => mock.Release ());
+        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
         TransactionManagerMock.Expect (mock => mock.InitializeTransaction());
       }
       Assert.That (_strategy.Scope, Is.Null);
@@ -50,7 +50,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     public void Test_WithoutScope_And_ReleaseThrows ()
     {
       var exception = new ApplicationException ("Release Exception");
-      TransactionManagerMock.Expect (mock => mock.Release ()).Throw (exception);
+      TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ()).Throw (exception);
       Assert.That (_strategy.Scope, Is.Null);
       MockRepository.ReplayAll();
 
@@ -74,7 +74,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       var exception = new ApplicationException ("CreateRootTransaction Exception");
       using (MockRepository.Ordered())
       {
-        TransactionManagerMock.Expect (mock => mock.Release ());
+        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
         TransactionManagerMock.Expect (mock => mock.InitializeTransaction()).Throw (exception);
       }
       Assert.That (_strategy.Scope, Is.Null);
@@ -98,15 +98,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     {
       InvokeOnExecutionPlay (_strategy);
       TransactionManagerMock.BackToRecord();
-      var newTransactionMock = MockRepository.StrictMock<ITransaction>();
       var newScopeMock = MockRepository.StrictMock<ITransactionScope>();
       using (MockRepository.Ordered())
       {
         ScopeMock.Expect (mock => mock.Leave());
-        TransactionManagerMock.Expect (mock => mock.Release ());
+        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
         TransactionManagerMock.Expect (mock => mock.InitializeTransaction());
-        TransactionManagerMock.Expect (mock => mock.Transaction).Return (newTransactionMock);
-        newTransactionMock.Expect (mock => mock.EnterScope()).Return (newScopeMock);
+        TransactionManagerMock.Expect (mock => mock.EnterScope ()).Return (newScopeMock);
       }
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
       MockRepository.ReplayAll();
@@ -125,7 +123,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       using (MockRepository.Ordered())
       {
         ScopeMock.Expect (mock => mock.Leave());
-        TransactionManagerMock.Expect (mock => mock.Release ()).Throw (exception);
+        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ()).Throw (exception);
       }
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
       MockRepository.ReplayAll();
@@ -177,7 +175,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       using (MockRepository.Ordered())
       {
         ScopeMock.Expect (mock => mock.Leave());
-        TransactionManagerMock.Expect (mock => mock.Release ());
+        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
         TransactionManagerMock.Expect (mock => mock.InitializeTransaction()).Throw (exception);
       }
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));

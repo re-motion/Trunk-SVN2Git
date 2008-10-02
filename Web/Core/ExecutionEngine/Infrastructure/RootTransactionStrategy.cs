@@ -22,7 +22,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     private readonly ITransactionManager _transactionManager;
     private ITransactionScope _scope;
 
-    public RootTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener, ITransactionManager transactionManager)
+    public RootTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener, ITransactionManager transactionManager, IWxeFunctionExecutionContext _executionContext)
         : base (autoCommit, innerListener)
     {
       ArgumentUtility.CheckNotNull ("transactionManager", transactionManager);
@@ -39,7 +39,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
             "OnExecutionPlay may not be invoked twice without calling OnExecutionStop, OnExecutionPause, or OnExecutionFail in-between.");
       }
 
-      ExecuteAndWrapInnerException (delegate { _scope = _transactionManager.Transaction.EnterScope(); }, null);
+      ExecuteAndWrapInnerException (delegate { _scope = _transactionManager.EnterScope(); }, null);
 
       InnerListener.OnExecutionPlay (context);
     }
@@ -67,7 +67,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       {
         ExecuteAndWrapInnerException (_scope.Leave, innerException);
         _scope = null;
-        ExecuteAndWrapInnerException (_transactionManager.Release, innerException);
+        ExecuteAndWrapInnerException (_transactionManager.ReleaseTransaction, innerException);
       }
     }
 
@@ -112,7 +112,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       {
         ExecuteAndWrapInnerException (_scope.Leave, innerException);
         _scope = null;
-        ExecuteAndWrapInnerException (_transactionManager.Release, innerException);
+        ExecuteAndWrapInnerException (_transactionManager.ReleaseTransaction, innerException);
       }
     }
 
@@ -136,13 +136,13 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (_scope != null)
       {
         _scope.Leave();
-        _transactionManager.Release ();
+        _transactionManager.ReleaseTransaction ();
         InitializeTransaction();
-        _scope = _transactionManager.Transaction.EnterScope ();
+        _scope = _transactionManager.EnterScope ();
       }
       else
       {
-        _transactionManager.Release ();
+        _transactionManager.ReleaseTransaction ();
         InitializeTransaction();
       }
     }

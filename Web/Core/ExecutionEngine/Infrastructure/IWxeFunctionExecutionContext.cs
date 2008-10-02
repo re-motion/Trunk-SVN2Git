@@ -8,17 +8,10 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System.Collections;
-using Remotion.Data;
-
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
-  public interface ITransactionManager
+  public interface IWxeFunctionExecutionContext
   {
-    ITransaction Transaction { get; }
-    void InitializeTransaction ();
-    ITransactionScope EnterScope ();
-    void ReleaseTransaction ();
-    void RegisterObjects (IEnumerable objects);
+    object[] GetInParameters ();
   }
 }

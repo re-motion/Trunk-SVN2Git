@@ -38,7 +38,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionFail (Context, _failException));
         ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.Release ());
+        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
       }
 
       MockRepository.ReplayAll ();
@@ -69,7 +69,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionFail (Context, _failException)).Throw (innerException);
         ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.Release ());
+        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
       }
 
       MockRepository.ReplayAll ();
@@ -126,7 +126,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionFail (Context, _failException));
         ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.Release ()).Throw (innerException);
+        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ()).Throw (innerException);
       }
 
       MockRepository.ReplayAll ();
@@ -186,7 +186,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionFail (Context, _failException)).Throw (innerException);
         ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.Release ()).Throw (outerException);
+        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ()).Throw (outerException);
       }
 
       MockRepository.ReplayAll ();
