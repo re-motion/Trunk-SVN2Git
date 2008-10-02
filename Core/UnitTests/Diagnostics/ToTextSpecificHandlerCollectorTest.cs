@@ -15,7 +15,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics.ToText;
-using Remotion.Diagnostics.ToText.Internal;
+using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.Reflection;
 using Remotion.Utilities;
 

@@ -12,18 +12,20 @@
 using System;
 using Remotion.Diagnostics.ToText.Infrastructure;
 
-namespace Remotion.Diagnostics.ToText
+namespace Remotion.Diagnostics.ToText.Infrastructure
 {
-  /// <summary>
-  /// Convenience base class for defining externally registered ToText type handlers. For details see <see cref="To"/>-class description.
-  /// </summary>
-  public abstract class ToTextSpecificTypeHandler<T> : IToTextSpecificTypeHandler
+  public class ToTextSpecificTypeHandlerWrapper<T> : IToTextSpecificTypeHandler
   {
-    public abstract void ToText (T t, IToTextBuilder toTextBuilder);
+    private readonly Action<T, IToTextBuilder> _handler;
 
-    public virtual void ToText (object obj, IToTextBuilder toTextBuilder)
+    public ToTextSpecificTypeHandlerWrapper (Action<T, IToTextBuilder> handler)
     {
-      ToText ((T) obj, toTextBuilder);
+      _handler = handler;
+    }
+
+    public void ToText (object obj, IToTextBuilder toTextBuilder)
+    {
+      _handler ((T) obj, toTextBuilder);
     }
   }
 }

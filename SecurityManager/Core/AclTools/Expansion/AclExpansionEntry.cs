@@ -32,7 +32,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void ToText (IToTextBuilder toTextBuilder)
     {
-      toTextBuilder.ib().e ("user", User.UserName).e ("role", Role).e (AccessTypeDefinitions).e ("conditions", AccessConditions).ie ();
+      toTextBuilder.ib<AclExpansionEntry> ("").e ("user", User.UserName).e ("role", Role).e (AccessTypeDefinitions).e ("conditions", AccessConditions).ie ();
     }
   }
 }

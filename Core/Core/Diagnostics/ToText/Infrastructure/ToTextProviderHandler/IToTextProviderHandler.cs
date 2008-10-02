@@ -11,10 +11,11 @@
 // 
 using System;
 
-namespace Remotion.Diagnostics.ToText
+namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
 {
-  /// <summary>
-  /// Attribute that qualifies a class as an externally registered ToText type handler. For details see <see cref="To"/>-class description.
-  /// </summary>
-  public class ToTextSpecificHandlerAttribute : Attribute {}
+  public interface IToTextProviderHandler
+  {
+    void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback);
+    bool Disabled { get; set; }
+  }
 }

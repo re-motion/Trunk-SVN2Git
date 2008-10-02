@@ -25,6 +25,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         (ac.OnlyIfUserIsOwner == OnlyIfUserIsOwner);
     }
 
+
     public void ToText (IToTextBuilder toTextBuilder)
     {
       toTextBuilder.ib<AclExpansionAccessConditions>();

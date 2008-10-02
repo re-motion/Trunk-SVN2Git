@@ -15,7 +15,7 @@ using log4net.Core;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
-using Remotion.Diagnostics.ToText.Internal;
+using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.Logging;
 using System.IO;
 
