@@ -80,7 +80,26 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void RegisterInParameters ()
     {
-      
+      var expectedInParamters = new object[0];
+
+      ExecutionContextMock.BackToRecord();
+      TransactionManagerMock.BackToRecord();
+
+      using (MockRepository.Ordered())
+      {
+        TransactionManagerMock.Expect (mock => mock.InitializeTransaction());
+        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (expectedInParamters);
+        TransactionManagerMock.Expect (mock => mock.RegisterObjects (expectedInParamters));
+      }
+
+      TransactionManagerMock.Replay();
+      ExecutionContextMock.Replay();
+
+
+      new RootTransactionStrategy (false, ExecutionListenerMock, TransactionManagerMock, ExecutionContextMock);
+
+      ExecutionContextMock.VerifyAllExpectations();
+      TransactionManagerMock.VerifyAllExpectations();
     }
   }
 }

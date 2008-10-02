@@ -19,7 +19,7 @@ namespace Remotion.Web.ExecutionEngine
   /// The new <see cref="WxeFunction"/>. Will replace the <see cref="WxeFunction"/> type once implemtation is completed.
   /// </summary>
   [Serializable]
-  public abstract class WxeFunction2 : WxeStepList
+  public abstract class WxeFunction2 : WxeStepList, IWxeFunctionExecutionContext
   {
     private IWxeFunctionExecutionListener _executionListener = new NullExecutionListener();
     private ITransactionStrategy _transactionStrategy;
@@ -85,6 +85,11 @@ namespace Remotion.Web.ExecutionEngine
     public ITransactionMode TransactionMode
     {
       get { return _transactionMode; }
+    }
+
+    public object[] GetInParameters ()
+    {
+      return new object[0];
     }
   }
 }

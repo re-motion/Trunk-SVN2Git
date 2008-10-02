@@ -16,6 +16,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
+using System.Collections;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionStrategyTests
 {
@@ -27,7 +28,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     private WxeContext _context;
     private MockRepository _mockRepository;
     private ITransactionManager _transactionManagerMock;
-    private IWxeFunctionExecutionContext _executionContextStub;
+    private IWxeFunctionExecutionContext _executionContextMock;
 
     [SetUp]
     public virtual void SetUp ()
@@ -41,8 +42,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _scopeMock = MockRepository.StrictMock<ITransactionScope>();
       _transactionManagerMock = MockRepository.StrictMock<ITransactionManager>();
 
-      _executionContextStub = MockRepository.StrictMock<IWxeFunctionExecutionContext>();
-      _executionContextStub.Stub (stub => stub.GetInParameters ()).Return (new object[0]);
+      _executionContextMock = MockRepository.StrictMock<IWxeFunctionExecutionContext>();
+      _executionContextMock.Stub (stub => stub.GetInParameters ()).Return (new object[0]).Repeat.Any();
     }
 
     public MockRepository MockRepository
@@ -75,18 +76,21 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       get { return _executionListenerMock; }
     }
 
-    public IWxeFunctionExecutionContext ExecutionContextStub
+    public IWxeFunctionExecutionContext ExecutionContextMock
     {
-      get { return _executionContextStub; }
+      get { return _executionContextMock; }
     }
 
     protected RootTransactionStrategy CreateRootTransactionStrategy (bool autoCommit)
     {
       _transactionManagerMock.BackToRecord();
       _transactionManagerMock.Expect (mock => mock.InitializeTransaction ());
+      _transactionManagerMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.Anything));
       _transactionManagerMock.Replay ();
 
-      return new RootTransactionStrategy (autoCommit, _executionListenerMock, _transactionManagerMock, _executionContextStub);
+      _executionContextMock.Replay();
+
+      return new RootTransactionStrategy (autoCommit, _executionListenerMock, _transactionManagerMock, _executionContextMock);
     }
 
     protected void InvokeOnExecutionPlay (RootTransactionStrategy strategy)

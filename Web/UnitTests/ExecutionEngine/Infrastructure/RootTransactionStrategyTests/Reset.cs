@@ -31,11 +31,15 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_WithoutScope ()
     {
-      TransactionManagerMock.BackToRecord();
+      TransactionManagerMock.BackToRecord ();
+      ExecutionContextMock.BackToRecord();
+      var expectedInParamters = new object[0];
       using (MockRepository.Ordered())
       {
         TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
         TransactionManagerMock.Expect (mock => mock.InitializeTransaction());
+        ExecutionContextMock.Expect (mock => mock.GetInParameters ()).Return (expectedInParamters);
+        TransactionManagerMock.Expect (mock => mock.RegisterObjects (expectedInParamters));
       }
       Assert.That (_strategy.Scope, Is.Null);
       MockRepository.ReplayAll();
@@ -98,12 +102,16 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     {
       InvokeOnExecutionPlay (_strategy);
       TransactionManagerMock.BackToRecord();
+      ExecutionContextMock.BackToRecord();
       var newScopeMock = MockRepository.StrictMock<ITransactionScope>();
-      using (MockRepository.Ordered())
+      var expectedInParamters = new object[0];
+      using (MockRepository.Ordered ())
       {
         ScopeMock.Expect (mock => mock.Leave());
         TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
         TransactionManagerMock.Expect (mock => mock.InitializeTransaction());
+        ExecutionContextMock.Expect (mock => mock.GetInParameters ()).Return (expectedInParamters);
+        TransactionManagerMock.Expect (mock => mock.RegisterObjects (expectedInParamters));
         TransactionManagerMock.Expect (mock => mock.EnterScope ()).Return (newScopeMock);
       }
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));

@@ -20,14 +20,18 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   public class RootTransactionStrategy : TransactionStrategyBase
   {
     private readonly ITransactionManager _transactionManager;
+    private readonly IWxeFunctionExecutionContext _executionContext;
     private ITransactionScope _scope;
 
-    public RootTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener, ITransactionManager transactionManager, IWxeFunctionExecutionContext _executionContext)
+    public RootTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener, ITransactionManager transactionManager, IWxeFunctionExecutionContext executionContext)
         : base (autoCommit, innerListener)
     {
       ArgumentUtility.CheckNotNull ("transactionManager", transactionManager);
+      ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
       _transactionManager = transactionManager;
+      _executionContext = executionContext;
+
       InitializeTransaction ();
     }
 
@@ -160,8 +164,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     private void InitializeTransaction ()
     {
       _transactionManager.InitializeTransaction();
-      // inParameters = function.Variables.GetInParameters();
-      // RegisterObjects (inParameters);
+      _transactionManager.RegisterObjects (_executionContext.GetInParameters());
     }
 
     // after RegisterObjects finished, all newly registered objects should be loaded
