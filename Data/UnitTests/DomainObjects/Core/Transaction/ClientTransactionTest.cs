@@ -1106,22 +1106,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.That (loadedOrders.ToArray(), Is.EquivalentTo(new[] {o1, o2, o3}));
     }
 
-    [Test]
-    public void ITransaction_EnterScope ()
-    {
-      ITransaction transaction = ClientTransaction.CreateRootTransaction();
-
-      ClientTransactionScope.ResetActiveScope ();
-      Assert.That (ClientTransactionScope.ActiveScope, Is.Null);
-
-      ITransactionScope transactionScope = transaction.EnterScope();
-
-      Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (transactionScope));
-      Assert.That (ClientTransactionScope.ActiveScope.ScopedTransaction, Is.SameAs (transaction));
-      Assert.That (ClientTransactionScope.ActiveScope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.None));
-      ClientTransactionScope.ResetActiveScope ();
-    }
-
     private bool HasEventHandler (object instance, string eventName, Delegate handler)
     {
       Delegate eventField = (Delegate) PrivateInvoke.GetNonPublicField (instance, eventName);

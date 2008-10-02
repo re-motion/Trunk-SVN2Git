@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 
@@ -24,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
  	     base.SetUp();
      
-      _transaction = ClientTransactionMock;
+      _transaction = new ClientTransactionWrapper (ClientTransactionMock);
     }
 
     [Test]
@@ -67,6 +68,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       child.Release ();
       Assert.IsFalse (((ClientTransaction) _transaction).IsReadOnly);
       Assert.IsTrue (((ClientTransaction) child).IsDiscarded);
+    }
+
+    [Test]
+    public void EnterScope ()
+    {
+      ITransaction transaction = ClientTransaction.CreateRootTransaction ();
+
+      ClientTransactionScope.ResetActiveScope ();
+      Assert.That (ClientTransactionScope.ActiveScope, Is.Null);
+
+      ITransactionScope transactionScope = transaction.EnterScope ();
+
+      Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (transactionScope));
+      Assert.That (ClientTransactionScope.ActiveScope.ScopedTransaction, Is.SameAs (transaction));
+      Assert.That (ClientTransactionScope.ActiveScope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.None));
+      ClientTransactionScope.ResetActiveScope ();
     }
   }
 }

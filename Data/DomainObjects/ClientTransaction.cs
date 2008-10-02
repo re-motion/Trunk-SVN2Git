@@ -1539,7 +1539,7 @@ public abstract class ClientTransaction : ITransaction
 
   ITransactionScope ITransaction.EnterScope ()
   {
-    return EnterNonDiscardingScope ();
+    throw new NotImplementedException();
   }
 
   #endregion

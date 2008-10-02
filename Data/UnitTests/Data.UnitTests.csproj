@@ -1216,7 +1216,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Transaction\BindingClientTransactionTest.cs" />
-    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionAsITransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\Transaction\ClientTransactionWrapperTest.cs" />
     <Compile Include="DomainObjects\Core\Transaction\ClientTransactionExtensionCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Transaction\ClientTransactionExtensionRelationChangesTest.cs" />
     <Compile Include="DomainObjects\Core\Transaction\ClientTransactionExtensionTest.cs" />
