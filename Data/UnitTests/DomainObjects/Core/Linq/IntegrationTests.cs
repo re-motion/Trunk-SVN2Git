@@ -585,7 +585,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                     select o).Count();
       Assert.AreEqual (number, 6);
     }
-
+    
     [Test]
     public void QueryWithFirst ()
     {
