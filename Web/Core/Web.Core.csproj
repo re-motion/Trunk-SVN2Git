@@ -113,14 +113,12 @@
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateRootTransactionMode.cs" />
-    <Compile Include="ExecutionEngine\Infrastructure\ITransactionManager.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\IWxeFunctionExecutionContext.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\IWxeFunctionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ITransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionStrategy.cs" />
-    <Compile Include="ExecutionEngine\Infrastructure\TransactionManager.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\TransactionStrategyBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxeVariablesContainer.cs" />

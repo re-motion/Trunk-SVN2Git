@@ -9,14 +9,13 @@
  */
 
 using System;
+using System.Collections;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
-using System.Collections;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionStrategyTests
 {
@@ -27,7 +26,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     private ITransaction _transactionMock;
     private WxeContext _context;
     private MockRepository _mockRepository;
-    private ITransactionManager _transactionManagerMock;
+    private ITransactionScopeManager _scopeManagerMock;
     private IWxeFunctionExecutionContext _executionContextMock;
 
     [SetUp]
@@ -40,10 +39,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _executionListenerMock = MockRepository.StrictMock<IWxeFunctionExecutionListener>();
       _transactionMock = MockRepository.StrictMock<ITransaction>();
       _scopeMock = MockRepository.StrictMock<ITransactionScope>();
-      _transactionManagerMock = MockRepository.StrictMock<ITransactionManager>();
-
+      _scopeManagerMock = MockRepository.StrictMock<ITransactionScopeManager>();
       _executionContextMock = MockRepository.StrictMock<IWxeFunctionExecutionContext>();
-      _executionContextMock.Stub (stub => stub.GetInParameters ()).Return (new object[0]).Repeat.Any();
+      _executionContextMock.Stub (stub => stub.GetInParameters()).Return (new object[0]).Repeat.Any();
     }
 
     public MockRepository MockRepository
@@ -66,9 +64,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       get { return _scopeMock; }
     }
 
-    public ITransactionManager TransactionManagerMock
+    public ITransactionScopeManager ScopeManagerMock
     {
-      get { return _transactionManagerMock; }
+      get { return _scopeManagerMock; }
     }
 
     public IWxeFunctionExecutionListener ExecutionListenerMock
@@ -83,30 +81,33 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
     protected RootTransactionStrategy CreateRootTransactionStrategy (bool autoCommit)
     {
-      _transactionManagerMock.BackToRecord();
-      _transactionManagerMock.Expect (mock => mock.InitializeTransaction ());
-      _transactionManagerMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.Anything));
-      _transactionManagerMock.Replay ();
-
+      _scopeManagerMock.BackToRecord();
+      _scopeManagerMock.Expect (stub => stub.CreateRootTransaction()).Return (TransactionMock).Repeat.Once();
+      _scopeManagerMock.Replay ();
+      
       _executionContextMock.Replay();
 
-      return new RootTransactionStrategy (autoCommit, _executionListenerMock, _transactionManagerMock, _executionContextMock);
+      _transactionMock.BackToRecord ();
+      _transactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
+      _transactionMock.Replay ();
+
+      return new RootTransactionStrategy (autoCommit, _executionListenerMock, _scopeManagerMock, _executionContextMock);
     }
 
     protected void InvokeOnExecutionPlay (RootTransactionStrategy strategy)
     {
-      _executionListenerMock.BackToRecord ();
+      _executionListenerMock.BackToRecord();
       _executionListenerMock.Stub (stub => stub.OnExecutionPlay (Context));
-      _executionListenerMock.Replay ();
+      _executionListenerMock.Replay();
 
-      _transactionManagerMock.BackToRecord ();
-      _transactionManagerMock.Stub (stub => stub.EnterScope ()).Return (ScopeMock);
-      _transactionManagerMock.Replay ();
+      _transactionMock.BackToRecord();
+      _transactionMock.Stub (stub => stub.EnterScope()).Return (ScopeMock);
+      _transactionMock.Replay();
 
       strategy.OnExecutionPlay (Context);
 
-      _transactionManagerMock.BackToRecord ();
-      _executionListenerMock.BackToRecord ();
+      _transactionMock.BackToRecord();
+      _executionListenerMock.BackToRecord();
     }
 
     protected void InvokeOnExecutionPause (RootTransactionStrategy strategy)

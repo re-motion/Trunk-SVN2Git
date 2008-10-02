@@ -9,6 +9,8 @@
  */
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Remotion.Data;
 using Remotion.Utilities;
 
@@ -17,21 +19,25 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   //TODO: Doc
   public class RootTransactionStrategy : TransactionStrategyBase
   {
-    private readonly ITransactionManager _transactionManager;
+    private readonly ITransaction _transaction;
     private readonly IWxeFunctionExecutionContext _executionContext;
     private ITransactionScope _scope;
 
-    public RootTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener, ITransactionManager transactionManager, IWxeFunctionExecutionContext executionContext)
+    public RootTransactionStrategy (
+        bool autoCommit,
+        IWxeFunctionExecutionListener innerListener,
+        ITransactionScopeManager scopeManager,
+        IWxeFunctionExecutionContext executionContext)
         : base (autoCommit, innerListener)
     {
-      ArgumentUtility.CheckNotNull ("transactionManager", transactionManager);
+      ArgumentUtility.CheckNotNull ("scopeManager", scopeManager);
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
-      _transactionManager = transactionManager;
       _executionContext = executionContext;
 
-      _transactionManager.InitializeTransaction ();
-      _transactionManager.RegisterObjects (_executionContext.GetInParameters ());
+      _transaction = scopeManager.CreateRootTransaction();
+      Assertion.IsNotNull (_transaction);
+      _transaction.RegisterObjects (FlattenList (_executionContext.GetInParameters()));
     }
 
     public override void OnExecutionPlay (WxeContext context)
@@ -42,7 +48,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
             "OnExecutionPlay may not be invoked twice without calling OnExecutionStop, OnExecutionPause, or OnExecutionFail in-between.");
       }
 
-      ExecuteAndWrapInnerException (delegate { _scope = _transactionManager.EnterScope(); }, null);
+      ExecuteAndWrapInnerException (delegate { _scope = _transaction.EnterScope(); }, null);
 
       InnerListener.OnExecutionPlay (context);
     }
@@ -57,7 +63,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       {
         InnerListener.OnExecutionStop (context);
         if (AutoCommit)
-          _transactionManager.Transaction.Commit ();
+          _transaction.Commit();
         // outParameters = function.Variables.GetOutParameters();
         // function.ParentFunction.Transaction.RegisterObjects (outParameters);
       }
@@ -70,7 +76,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       {
         ExecuteAndWrapInnerException (_scope.Leave, innerException);
         _scope = null;
-        ExecuteAndWrapInnerException (_transactionManager.ReleaseTransaction, innerException);
+        ExecuteAndWrapInnerException (_transaction.Release, innerException);
       }
     }
 
@@ -115,23 +121,23 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       {
         ExecuteAndWrapInnerException (_scope.Leave, innerException);
         _scope = null;
-        ExecuteAndWrapInnerException (_transactionManager.ReleaseTransaction, innerException);
+        ExecuteAndWrapInnerException (_transaction.Release, innerException);
       }
     }
 
     public override ITransaction Transaction
     {
-      get { return _transactionManager.Transaction; }
+      get { return _transaction; }
     }
 
     public override void Commit ()
     {
-      _transactionManager.Transaction.Commit ();
+      _transaction.Commit();
     }
 
     public override void Rollback ()
     {
-      _transactionManager.Transaction.Rollback ();
+      _transaction.Rollback();
     }
 
     public override void Reset ()
@@ -139,13 +145,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (_scope != null)
       {
         _scope.Leave();
-        _transactionManager.ResetTransaction ();
-        _scope = _transactionManager.EnterScope ();
+        _transaction.Reset();
+        _scope = _transaction.EnterScope();
       }
       else
-      {
-        _transactionManager.ResetTransaction ();
-      }
+        _transaction.Reset();
     }
 
     public override bool IsNull
@@ -158,8 +162,19 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       get { return _scope; }
     }
 
-    // transaction event handlers and 
-    // if called from Reset: collection event handlers should be copied, transaction event handlers should be copied
+    private IEnumerable<object> FlattenList (IEnumerable objects)
+    {
+      var list = new List<object>();
+      foreach (var obj in objects)
+      {
+        if (obj is IEnumerable)
+          list.AddRange (FlattenList ((IEnumerable) obj));
+        else if (obj != null)
+          list.Add (obj);
+      }
+
+      return list;
+    }
 
     private void ExecuteAndWrapInnerException (Action action, Exception existingInnerException)
     {

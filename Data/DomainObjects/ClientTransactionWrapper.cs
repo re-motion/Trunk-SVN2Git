@@ -132,6 +132,7 @@ namespace Remotion.Data.DomainObjects
 
       //ScopeManager.EnlistSameObjects (oldTransaction, MyTransaction, copyEventHandlers);
       //  ScopeManager.CopyTransactionEventHandlers (oldTransaction, MyTransaction);
+      // if called from Reset: collection event handlers should be copied, transaction event handlers should be copied
     }
   }
 }

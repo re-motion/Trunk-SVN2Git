@@ -49,15 +49,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void GetTransaction ()
     {
-      TransactionManagerMock.Stub (stub => stub.Transaction).Return (TransactionMock);
       Assert.That (_strategy.Transaction, Is.SameAs (TransactionMock));
     }
 
     [Test]
     public void Commit ()
     {
-      TransactionManagerMock.Stub (stub => stub.Transaction).Return (TransactionMock);
-      TransactionMock.Expect (mock => mock.Commit ());
+      TransactionMock.Expect (mock => mock.Commit());
       MockRepository.ReplayAll();
 
       _strategy.Commit();
@@ -68,8 +66,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Rollback ()
     {
-      TransactionManagerMock.Stub (stub => stub.Transaction).Return (TransactionMock);
-      TransactionMock.Expect (mock => mock.Rollback ());
+      TransactionMock.Expect (mock => mock.Rollback());
       MockRepository.ReplayAll();
 
       _strategy.Rollback();
@@ -78,28 +75,85 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
-    public void Initialize_WithInParameters ()
+    public void RegisterObjects ()
     {
-      var expectedInParamters = new object[0];
+      var expectedObject1 = new object();
+      var expectedObject2 = new object();
 
+      SetupForInitializeAndRegisterObjects (
+          new[] { expectedObject1, expectedObject2 },
+          new[] { expectedObject1, expectedObject2 });
+
+      new RootTransactionStrategy (false, ExecutionListenerMock, ScopeManagerMock, ExecutionContextMock);
+
+      ExecutionContextMock.VerifyAllExpectations();
+      TransactionMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void RegisterObjects_WithNullValue ()
+    {
+      var expectedObject1 = new object();
+      var expectedObject2 = new object();
+
+      SetupForInitializeAndRegisterObjects (
+          new[] { expectedObject1, null, expectedObject2 },
+          new[] { expectedObject1, expectedObject2 });
+
+      new RootTransactionStrategy (false, ExecutionListenerMock, ScopeManagerMock, ExecutionContextMock);
+
+      ExecutionContextMock.VerifyAllExpectations();
+      TransactionMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void RegisterObjects_Recursively ()
+    {
+      var expectedObject1 = new object();
+      var expectedObject2 = new object();
+      var expectedObject3 = new object();
+
+      SetupForInitializeAndRegisterObjects (
+          new[] { expectedObject1, new[] { expectedObject2, expectedObject3 } },
+          new[] { expectedObject1, expectedObject2, expectedObject3 });
+
+      new RootTransactionStrategy (false, ExecutionListenerMock, ScopeManagerMock, ExecutionContextMock);
+
+      ExecutionContextMock.VerifyAllExpectations();
+      TransactionMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void RegisterObjects_RecursivelyWithNullValue ()
+    {
+      var expectedObject1 = new object();
+      var expectedObject2 = new object();
+      var expectedObject3 = new object();
+
+      SetupForInitializeAndRegisterObjects (
+          new[] { expectedObject1, new[] { expectedObject2, null, expectedObject3 } },
+          new[] { expectedObject1, expectedObject2, expectedObject3 });
+
+      new RootTransactionStrategy (false, ExecutionListenerMock, ScopeManagerMock, ExecutionContextMock);
+
+      ExecutionContextMock.VerifyAllExpectations();
+      TransactionMock.VerifyAllExpectations();
+    }
+
+    private void SetupForInitializeAndRegisterObjects (object[] actualInParamters, object[] expectedInParamters)
+    {
       ExecutionContextMock.BackToRecord();
-      TransactionManagerMock.BackToRecord();
+      TransactionMock.BackToRecord();
 
       using (MockRepository.Ordered())
       {
-        TransactionManagerMock.Expect (mock => mock.InitializeTransaction());
-        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (expectedInParamters);
-        TransactionManagerMock.Expect (mock => mock.RegisterObjects (expectedInParamters));
+        ScopeManagerMock.Expect (mock => mock.CreateRootTransaction()).Return (TransactionMock);
+        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (actualInParamters);
+        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (expectedInParamters)));
       }
 
-      TransactionManagerMock.Replay();
+      TransactionMock.Replay();
       ExecutionContextMock.Replay();
-
-
-      new RootTransactionStrategy (false, ExecutionListenerMock, TransactionManagerMock, ExecutionContextMock);
-
-      ExecutionContextMock.VerifyAllExpectations();
-      TransactionManagerMock.VerifyAllExpectations();
     }
   }
 }

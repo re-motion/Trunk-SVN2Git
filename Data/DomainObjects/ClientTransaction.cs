@@ -1527,6 +1527,11 @@ public abstract class ClientTransaction : ITransaction
     Discard ();
   }
 
+  public void Reset ()
+  {
+    throw new System.NotImplementedException();
+  }
+
   ITransaction ITransaction.Parent
   {
     get { return ParentTransaction; }

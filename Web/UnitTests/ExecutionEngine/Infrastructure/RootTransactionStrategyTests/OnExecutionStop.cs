@@ -29,7 +29,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
         ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
+        TransactionMock.Expect (mock => mock.Release ());
       }
 
       MockRepository.ReplayAll ();
@@ -49,10 +49,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       using (MockRepository.Ordered ())
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
-        TransactionManagerMock.Stub (stub => stub.Transaction).Return (TransactionMock);
         TransactionMock.Expect (mock => mock.Commit ());
         ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
+        TransactionMock.Expect (mock => mock.Release ());
       }
 
       MockRepository.ReplayAll ();
@@ -86,7 +85,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context)).Throw (innerException);
         ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
+        TransactionMock.Expect (mock => mock.Release ());
       }
 
       MockRepository.ReplayAll ();
@@ -115,10 +114,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       using (MockRepository.Ordered ())
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
-        TransactionManagerMock.Stub (stub => stub.Transaction).Return (TransactionMock);
         TransactionMock.Expect (mock => mock.Commit ()).Throw (innerException);
         ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
+        TransactionMock.Expect (mock => mock.Release ());
       }
 
       MockRepository.ReplayAll ();
@@ -177,7 +175,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
         ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ()).Throw (innerException);
+        TransactionMock.Expect (mock => mock.Release ()).Throw (innerException);
       }
 
       MockRepository.ReplayAll ();
@@ -238,7 +236,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       using (MockRepository.Ordered ())
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
-        TransactionManagerMock.Stub (stub => stub.Transaction).Return (TransactionMock);
         TransactionMock.Expect (mock => mock.Commit ()).Throw (innerException);
         ScopeMock.Expect (mock => mock.Leave ()).Throw (outerException);
       }
@@ -272,7 +269,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context)).Throw (innerException);
         ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ()).Throw (outerException);
+        TransactionMock.Expect (mock => mock.Release ()).Throw (outerException);
       }
 
       MockRepository.ReplayAll ();
@@ -303,10 +300,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       using (MockRepository.Ordered ())
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
-        TransactionManagerMock.Stub (stub => stub.Transaction).Return (TransactionMock);
         TransactionMock.Expect (mock => mock.Commit ()).Throw (innerException);
         ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ()).Throw (outerException);
+        TransactionMock.Expect (mock => mock.Release ()).Throw (outerException);
       }
 
       MockRepository.ReplayAll ();
