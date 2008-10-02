@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -17,6 +18,9 @@ using Remotion.SecurityManager.Domain.Metadata;
 using System.Collections.Generic;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Rhino.Mocks;
+using Remotion.Development.UnitTesting.ObjectMother;
+
+using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -75,16 +79,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     */
 
     [Test]
-    //[Ignore]
+    [Explicit]
     public void AccessControlList_GetAccessTypes ()
     {
       var user = User;
       List<AccessControlList> aclList = new List<AccessControlList> ();
 
       AccessControlEntry ace = AccessControlEntry.NewObject ();
-      AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, true);
-      AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace, true);
-      AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace, true);
+      //AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, true);
+      //AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace, true);
+      //AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace, true);
 
       AccessControlList acl = TestHelper.CreateAcl (ace);
       aclList.Add (acl);
@@ -96,25 +100,61 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    //[Ignore]
     public void AccessControlList_GetAccessTypes2 ()
     {
-      var user = User2;
-      List<AccessControlList> aclList = new List<AccessControlList> ();
-      var acl = Acl;
-
-      aclList.Add (acl);
-
+      var user = User3;
+      //var acl = TestHelper.CreateAcl (Ace3, Ace2, Ace);
+      var acl = TestHelper.CreateAcl (Ace3);
+      Assert.That (Ace3.Validate().IsValid);
       SecurityToken securityToken = new SecurityToken (user, user.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
       AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
-      To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (accessTypeDefinitions.Length).e (() => accessTypeDefinitions).se ();
+      //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
+
+      var accessTypeDefinitionsExpected = new[] { ReadAccessType, WriteAccessType };
+      Assert.That (accessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
+    }
+
+    [Test]
+    public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionAll ()
+    {
+      var ace = TestHelper.CreateAceWithPosition (Position, GroupSelection.All);
+      AttachAccessTypeReadWriteDelete (ace, true, null, true);
+
+      Assert.That (ace.Validate ().IsValid);
+      
+      var acl = TestHelper.CreateAcl (ace);
+      SecurityToken securityToken = new SecurityToken (User, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
+      AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
+   
+      To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
+
+      var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
+      Assert.That (accessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
+    }
+
+    [Test]
+    public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionOwningGroup ()
+    {
+      var ace = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      AttachAccessTypeReadWriteDelete (ace, true, null, true);
+
+      Assert.That (ace.Validate ().IsValid);
+
+      var acl = TestHelper.CreateAcl (ace);
+      // We pass the Group used in the ace Position above in the owningGroups-list => ACE will match.
+      SecurityToken securityToken = new SecurityToken (User, User.Tenant, List.New (Group), new List<AbstractRoleDefinition> ());
+      AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
+
+      To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
+
+      var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
+      Assert.That (accessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
     }
 
 
 
-
     [Test]
-    //[Ignore]
+    [Ignore]
     public void GetAclExpansionEntryList ()
     {
       List<User> userList = new List<User> ();

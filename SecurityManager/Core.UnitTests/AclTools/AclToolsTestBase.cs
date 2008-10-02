@@ -54,6 +54,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       TestHelper.Transaction.EnterNonDiscardingScope ();
 
 
+      ReadAccessType = TestHelper.CreateReadAccessType ();  // read access
+      WriteAccessType = TestHelper.CreateWriteAccessType ();  // write access
+      DeleteAccessType = TestHelper.CreateDeleteAccessType ();  // delete permission
+
+      AccessTypeDefinitionArray = new[] { ReadAccessType, WriteAccessType, DeleteAccessType };
+
+
       Tenant = TestHelper.CreateTenant ("Da Tenant");
       Group = TestHelper.CreateGroup ("Da Group", null, Tenant);
       Position = TestHelper.CreatePosition ("Supreme Being");
@@ -61,17 +68,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       Role = TestHelper.CreateRole (User, Group, Position);
       Ace = TestHelper.CreateAceWithOwningTenant();
 
-      ReadAccessType = TestHelper.CreateReadAccessType ();  // read access
-      WriteAccessType = TestHelper.CreateWriteAccessType();  // write access
-      DeleteAccessType = TestHelper.CreateDeleteAccessType();  // delete permission
-
-      //AccessTypeDefinitions  = List.New (
-      //  TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace, true),
-      //  TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace, null), 
-      //  TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce(Ace,true)
-      //).ToArray();
-
-      AccessTypeDefinitionArray = new[] { ReadAccessType, WriteAccessType, DeleteAccessType };
+      TestHelper.AttachAccessType (Ace, ReadAccessType, null);
+      TestHelper.AttachAccessType (Ace, WriteAccessType, true);
+      TestHelper.AttachAccessType (Ace, DeleteAccessType, null);
 
 
       Group2 = TestHelper.CreateGroup ("Anotha Group", null, Tenant);
@@ -79,34 +78,34 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       User2 = TestHelper.CreateUser ("mr.smith", "", "Smith", "Mr.", Group2, Tenant);
       Role2 = TestHelper.CreateRole (User2, Group2, Position2);
       Ace2 = TestHelper.CreateAceWithSpecficTenant (Tenant);
-      //AccessTypeDefinitions2 = List.New (
-      //  TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace2, null),
-      //  TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace2, true),
-      //  TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (Ace2, true)
-      //).ToArray ();
+
+      TestHelper.AttachAccessType (Ace2, ReadAccessType, true);
+      TestHelper.AttachAccessType (Ace2, WriteAccessType, null);
+      TestHelper.AttachAccessType (Ace2, DeleteAccessType, true);
+
 
       Group3 = TestHelper.CreateGroup ("Da 3rd Group", null, Tenant);
-      Position3 = TestHelper.CreatePosition ("Warrior");
+      Position3 = TestHelper.CreatePosition ("Combatant");
       User3 = TestHelper.CreateUser ("ryan_james", "Ryan", "James", "", Group3, Tenant);
       Role3 = TestHelper.CreateRole (User3, Group3, Position3);
-      Ace3 = TestHelper.CreateAceWithOwningGroup();
-      //AccessTypeDefinitions3 = List.New (
-      //  TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace3, null),
-      //  TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace3, true),
-      //  TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (Ace3, null)
-      //).ToArray ();
+      // DO NOT use TestHelper.CreateAceWithOwningGroup() here; functionality for group matching is
+      // incomplete and therefore the ACE entry will always match.
+      Ace3 = TestHelper.CreateAceWithPosition (Position3, GroupSelection.All);
+
+      TestHelper.AttachAccessType (Ace3, ReadAccessType, true);
+      TestHelper.AttachAccessType (Ace3, WriteAccessType, true);
+      TestHelper.AttachAccessType (Ace3, DeleteAccessType, null);
 
 
       Acl = TestHelper.CreateAcl (Ace, Ace2, Ace3);
+    }
 
 
-      //ReadAccessType = TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace, true);  // allow read access
-      //WriteAccessType = TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace, true);  // allow write access
-      //DeleteAccessType = TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (Ace, false);  // allow delete operations
-
-      //TestHelper.AttachAccessType (ace2, readAccessType, null);
-      //TestHelper.AttachAccessType (ace2, writeAccessType, true);
-      //TestHelper.AttachAccessType (ace2, deleteAccessType, null);
+    public void AttachAccessTypeReadWriteDelete (AccessControlEntry ace, bool? allowRead, bool? allowWrite, bool? allowDelete)
+    {
+      TestHelper.AttachAccessType (ace, ReadAccessType, allowRead);
+      TestHelper.AttachAccessType (ace, WriteAccessType, allowWrite);
+      TestHelper.AttachAccessType (ace, DeleteAccessType, allowDelete);
     }
 
 
