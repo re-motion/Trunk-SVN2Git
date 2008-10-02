@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\Role_ToTextSpecificTypeHandler.cs" />
     <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AccessTypeDefinition_ToTextSpecificTypeHandler.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTestOld.cs" />
@@ -205,6 +206,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AclTools\Code Repository.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

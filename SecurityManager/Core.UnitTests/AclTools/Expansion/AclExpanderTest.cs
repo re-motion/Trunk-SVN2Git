@@ -197,7 +197,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       User user, Position position, GroupSelection groupSelection)
     {
       List<User> userList = new List<User> ();
-      //var user = User;
       userList.Add (user);
 
       var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); //new TestAclExpanderUserFinder (userList);
@@ -221,35 +220,4 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       return aclExpansionEntryList;
     }
   }
-
-  //public class TestAclExpanderAclFinder : IAclExpanderAclFinder
-  //{
-  //  private readonly List<AccessControlList> _acls;
-  //  public TestAclExpanderAclFinder (List<AccessControlList> acls) { _acls = acls; }
-
-  //  public List<AccessControlList> FindAccessControlLists ()
-  //  {
-  //    return _acls;
-  //  }
-  //}
-
-  //public class TestAclExpanderUserFinder : IAclExpanderUserFinder
-  //{
-  //  private readonly List<User> _users;
-  //  public TestAclExpanderUserFinder (List<User> users) { _users = users; }
-  //  public List<User> Users { get { return _users; } }
-  //}
-
-
-  [ToTextSpecificHandler]
-  public class AccessTypeDefinition_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<Role>
-  {
-    public override void ToText (Role x, IToTextBuilder toTextBuilder)
-    {
-      toTextBuilder.ib<Role> ("");
-      toTextBuilder.e ("user", x.User.UserName).e ("group", x.Group.Name).e ("pos", x.Position.Name);
-      toTextBuilder.ie ();
-    }
-  }
-
 }

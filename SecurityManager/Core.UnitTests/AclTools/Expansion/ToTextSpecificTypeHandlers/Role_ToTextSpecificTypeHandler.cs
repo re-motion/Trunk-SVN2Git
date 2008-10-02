@@ -11,20 +11,18 @@
 // 
 using System;
 using Remotion.Diagnostics.ToText;
-using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
-  public class AccessTypeDefinition_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AccessTypeDefinition>
+  public class Role_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<Role>
   {
-    public override void ToText (AccessTypeDefinition x, IToTextBuilder toTextBuilder)
+    public override void ToText (Role x, IToTextBuilder toTextBuilder)
     {
-      //toTextBuilder.ib<AccessTypeDefinition> ();
-      //toTextBuilder.e ("name", x.Name).e ("val", x.Value);
-      //toTextBuilder.ie ();
-
-      toTextBuilder.sbLiteral ("ATD(",")").elements (x.Name, x.Value).se();
+      toTextBuilder.ib<Role> ("");
+      toTextBuilder.e ("user", x.User.UserName).e ("group", x.Group.Name).e ("pos", x.Position.Name);
+      toTextBuilder.ie ();
     }
   }
 }
