@@ -19,6 +19,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     void InitializeTransaction ();
     ITransactionScope EnterScope ();
     void ReleaseTransaction ();
+    void ResetTransaction ();
     void RegisterObjects (IEnumerable objects);
   }
 }

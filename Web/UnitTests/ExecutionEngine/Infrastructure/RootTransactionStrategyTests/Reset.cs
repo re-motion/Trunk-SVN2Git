@@ -33,14 +33,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     public void Test_WithoutScope ()
     {
       TransactionManagerMock.BackToRecord ();
-      ExecutionContextMock.BackToRecord();
-      var expectedInParamters = new object[0];
       using (MockRepository.Ordered())
       {
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
-        TransactionManagerMock.Expect (mock => mock.InitializeTransaction());
-        ExecutionContextMock.Expect (mock => mock.GetInParameters ()).Return (expectedInParamters);
-        TransactionManagerMock.Expect (mock => mock.RegisterObjects (expectedInParamters));
+        TransactionManagerMock.Expect (mock => mock.ResetTransaction ());
       }
       Assert.That (_strategy.Scope, Is.Null);
       MockRepository.ReplayAll();
@@ -52,10 +47,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
-    public void Test_WithoutScope_And_ReleaseThrows ()
+    public void Test_WithoutScope_And_ResetThrows ()
     {
-      var exception = new ApplicationException ("Release Exception");
-      TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ()).Throw (exception);
+      var exception = new ApplicationException ("Reset Exception");
+      TransactionManagerMock.Expect (mock => mock.ResetTransaction ()).Throw (exception);
       Assert.That (_strategy.Scope, Is.Null);
       MockRepository.ReplayAll();
 
@@ -69,87 +64,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
         Assert.That (actualException, Is.SameAs (exception));
       }
       MockRepository.VerifyAll();
-      Assert.That (_strategy.Scope, Is.Null);
-    }
-
-    [Test]
-    public void Test_WithoutScope_And_InitializeTransactionThrows ()
-    {
-      TransactionManagerMock.BackToRecord();
-      var exception = new ApplicationException ("InitializeTransaction Exception");
-      using (MockRepository.Ordered())
-      {
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
-        TransactionManagerMock.Expect (mock => mock.InitializeTransaction()).Throw (exception);
-      }
-      Assert.That (_strategy.Scope, Is.Null);
-      MockRepository.ReplayAll();
-
-      try
-      {
-        _strategy.Reset();
-        Assert.Fail ("Expected Exception");
-      }
-      catch (ApplicationException actualException)
-      {
-        Assert.That (actualException, Is.SameAs (exception));
-      }
-      MockRepository.VerifyAll();
-      Assert.That (_strategy.Scope, Is.Null);
-    }
-
-    [Test]
-    public void Test_WithoutScope_And_GetInParametersThrows ()
-    {
-      TransactionManagerMock.BackToRecord ();
-      ExecutionContextMock.BackToRecord();
-      var exception = new ApplicationException ("GetInParameters Exception");
-      using (MockRepository.Ordered ())
-      {
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
-        TransactionManagerMock.Expect (mock => mock.InitializeTransaction ());
-        ExecutionContextMock.Expect (mock => mock.GetInParameters ()).Throw (exception);
-      }
-      Assert.That (_strategy.Scope, Is.Null);
-      MockRepository.ReplayAll ();
-
-      try
-      {
-        _strategy.Reset ();
-        Assert.Fail ("Expected Exception");
-      }
-      catch (ApplicationException actualException)
-      {
-        Assert.That (actualException, Is.SameAs (exception));
-      }
-      MockRepository.VerifyAll ();
-      Assert.That (_strategy.Scope, Is.Null);
-    }
-
-    [Test]
-    public void Test_WithoutScope_And_RegisterObjectsThrows ()
-    {
-      TransactionManagerMock.BackToRecord ();
-      var exception = new ApplicationException ("RegisterObjects Exception");
-      using (MockRepository.Ordered ())
-      {
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
-        TransactionManagerMock.Expect (mock => mock.InitializeTransaction ());
-        TransactionManagerMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.Is.Anything)).Throw (exception);
-      }
-      Assert.That (_strategy.Scope, Is.Null);
-      MockRepository.ReplayAll ();
-
-      try
-      {
-        _strategy.Reset ();
-        Assert.Fail ("Expected Exception");
-      }
-      catch (ApplicationException actualException)
-      {
-        Assert.That (actualException, Is.SameAs (exception));
-      }
-      MockRepository.VerifyAll ();
       Assert.That (_strategy.Scope, Is.Null);
     }
 
@@ -158,16 +72,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     {
       InvokeOnExecutionPlay (_strategy);
       TransactionManagerMock.BackToRecord();
-      ExecutionContextMock.BackToRecord();
       var newScopeMock = MockRepository.StrictMock<ITransactionScope>();
-      var expectedInParamters = new object[0];
+
       using (MockRepository.Ordered ())
       {
         ScopeMock.Expect (mock => mock.Leave());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
-        TransactionManagerMock.Expect (mock => mock.InitializeTransaction());
-        ExecutionContextMock.Expect (mock => mock.GetInParameters ()).Return (expectedInParamters);
-        TransactionManagerMock.Expect (mock => mock.RegisterObjects (expectedInParamters));
+        TransactionManagerMock.Expect (mock => mock.ResetTransaction ());
         TransactionManagerMock.Expect (mock => mock.EnterScope ()).Return (newScopeMock);
       }
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
@@ -180,67 +90,39 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
-    public void Test_WithScope_And_ReleaseThrows ()
-    {
-      InvokeOnExecutionPlay (_strategy);
-      var exception = new ApplicationException ("Release Exception");
-      using (MockRepository.Ordered())
-      {
-        ScopeMock.Expect (mock => mock.Leave());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ()).Throw (exception);
-      }
-      Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
-      MockRepository.ReplayAll();
-
-      try
-      {
-        _strategy.Reset();
-        Assert.Fail ("Expected Exception");
-      }
-      catch (ApplicationException actualException)
-      {
-        Assert.That (actualException, Is.SameAs (exception));
-      }
-      MockRepository.VerifyAll();
-      Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
-    }
-
-    [Test]
     public void Test_WithScope_And_LeaveThrows ()
     {
       InvokeOnExecutionPlay (_strategy);
       var exception = new ApplicationException ("Leave Exception");
-      using (MockRepository.Ordered())
+      using (MockRepository.Ordered ())
       {
-        ScopeMock.Expect (mock => mock.Leave()).Throw (exception);
+        ScopeMock.Expect (mock => mock.Leave ()).Throw (exception);
       }
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
-      MockRepository.ReplayAll();
+      MockRepository.ReplayAll ();
 
       try
       {
-        _strategy.Reset();
+        _strategy.Reset ();
         Assert.Fail ("Expected Exception");
       }
       catch (ApplicationException actualException)
       {
         Assert.That (actualException, Is.SameAs (exception));
       }
-      MockRepository.VerifyAll();
+      MockRepository.VerifyAll ();
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
     }
 
     [Test]
-    public void Test_WithScope_And_InitializeTransactionThrows ()
+    public void Test_WithScope_And_ResetThrows ()
     {
       InvokeOnExecutionPlay (_strategy);
-      TransactionManagerMock.BackToRecord();
-      var exception = new ApplicationException ("InitializeTransaction Exception");
+      var exception = new ApplicationException ("Reset Exception");
       using (MockRepository.Ordered())
       {
         ScopeMock.Expect (mock => mock.Leave());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
-        TransactionManagerMock.Expect (mock => mock.InitializeTransaction()).Throw (exception);
+        TransactionManagerMock.Expect (mock => mock.ResetTransaction ()).Throw (exception);
       }
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
       MockRepository.ReplayAll();
@@ -255,65 +137,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
         Assert.That (actualException, Is.SameAs (exception));
       }
       MockRepository.VerifyAll();
-      Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
-    }
-
-    [Test]
-    public void Test_WithScope_And_GetInParametersThrows ()
-    {
-      InvokeOnExecutionPlay (_strategy);
-      TransactionManagerMock.BackToRecord ();
-      ExecutionContextMock.BackToRecord ();
-      var exception = new ApplicationException ("GetInParameters Exception");
-      using (MockRepository.Ordered ())
-      {
-        ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
-        TransactionManagerMock.Expect (mock => mock.InitializeTransaction ());
-        ExecutionContextMock.Expect (mock => mock.GetInParameters ()).Throw (exception);
-      }
-      Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
-      MockRepository.ReplayAll ();
-
-      try
-      {
-        _strategy.Reset ();
-        Assert.Fail ("Expected Exception");
-      }
-      catch (ApplicationException actualException)
-      {
-        Assert.That (actualException, Is.SameAs (exception));
-      }
-      MockRepository.VerifyAll ();
-      Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
-    }
-
-    [Test]
-    public void Test_WithScope_And_RegisterObjectsThrows ()
-    {
-      InvokeOnExecutionPlay (_strategy);
-      TransactionManagerMock.BackToRecord ();
-      var exception = new ApplicationException ("RegisterObjectsThrows Exception");
-      using (MockRepository.Ordered ())
-      {
-        ScopeMock.Expect (mock => mock.Leave ());
-        TransactionManagerMock.Expect (mock => mock.ReleaseTransaction ());
-        TransactionManagerMock.Expect (mock => mock.InitializeTransaction ());
-        TransactionManagerMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.Is.Anything)).Throw (exception);
-      }
-      Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
-      MockRepository.ReplayAll ();
-
-      try
-      {
-        _strategy.Reset ();
-        Assert.Fail ("Expected Exception");
-      }
-      catch (ApplicationException actualException)
-      {
-        Assert.That (actualException, Is.SameAs (exception));
-      }
-      MockRepository.VerifyAll ();
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
     }
   }

@@ -123,5 +123,15 @@ namespace Remotion.Data.DomainObjects
       //all newly registered objects should be loaded
       throw new NotImplementedException();
     }
+
+    public void Reset()
+    {
+      throw new NotImplementedException ();
+      //        _transactionManager.ReleaseTransaction ();
+      //Assertion.IsFalse (oldTransaction.HasUncommittedChanges, "WxeTransaction should have thrown if the transaction had been changed");
+
+      //ScopeManager.EnlistSameObjects (oldTransaction, MyTransaction, copyEventHandlers);
+      //  ScopeManager.CopyTransactionEventHandlers (oldTransaction, MyTransaction);
+    }
   }
 }

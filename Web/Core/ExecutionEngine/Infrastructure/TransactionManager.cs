@@ -49,6 +49,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _transaction.Release();
     }
 
+    public void ResetTransaction ()
+    {
+      _transaction.Reset();
+    }
+
     public void RegisterObjects (IEnumerable objects)
     {
       ArgumentUtility.CheckNotNull ("objects", objects);

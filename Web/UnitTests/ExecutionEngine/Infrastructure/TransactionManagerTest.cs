@@ -69,6 +69,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     }
 
     [Test]
+    public void ResetTransaction ()
+    {
+      _transactionManager.ResetTransaction ();
+      _transactionMock.AssertWasCalled (mock => mock.Reset ());
+    }
+
+    [Test]
     public void RegisterObjects ()
     {
       var expectedObject1 = new object ();

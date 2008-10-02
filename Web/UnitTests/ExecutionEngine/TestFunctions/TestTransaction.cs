@@ -30,6 +30,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
     private bool _isRolledBack;
     private bool _isCommitted;
     private bool _isReleased;
+    private bool _isReset;
     private bool _canCreateChild;
     private TestTransaction _child;
     private TestTransaction _parent;
@@ -119,6 +120,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
       _isReleased = true;
     }
 
+    public void Reset ()
+    {
+      Release();
+      _isReset = true;
+    }
+
     public void RegisterObjects (IEnumerable objects)
     {
       foreach (var obj in objects)
@@ -143,6 +150,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
     public bool IsReleased
     {
       get { return _isReleased; }
+    }
+
+    public bool IsReset
+    {
+      get { return _isReset; }
     }
 
     public bool ThrowOnCommit

@@ -30,7 +30,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _transactionManager = transactionManager;
       _executionContext = executionContext;
 
-      InitializeTransaction ();
+      _transactionManager.InitializeTransaction ();
+      _transactionManager.RegisterObjects (_executionContext.GetInParameters ());
     }
 
     public override void OnExecutionPlay (WxeContext context)
@@ -138,14 +139,12 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (_scope != null)
       {
         _scope.Leave();
-        _transactionManager.ReleaseTransaction ();
-        InitializeTransaction();
+        _transactionManager.ResetTransaction ();
         _scope = _transactionManager.EnterScope ();
       }
       else
       {
-        _transactionManager.ReleaseTransaction ();
-        InitializeTransaction();
+        _transactionManager.ResetTransaction ();
       }
     }
 
@@ -157,12 +156,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public ITransactionScope Scope
     {
       get { return _scope; }
-    }
-
-    private void InitializeTransaction ()
-    {
-      _transactionManager.InitializeTransaction();
-      _transactionManager.RegisterObjects (_executionContext.GetInParameters());
     }
 
     // transaction event handlers and 

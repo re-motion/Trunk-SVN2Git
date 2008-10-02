@@ -73,5 +73,9 @@ namespace Remotion.Data
     /// <param name="objects">The objects to be registered. Must not be <see langword="null" />.</param>
     /// <remarks>If the type of of of the objects is not supported by the transaction, the object must be ignored.</remarks>
     void RegisterObjects (IEnumerable objects);
+
+    /// <summary>Resets the transaction.</summary>
+    /// <remarks>Object references must still be valid after the reset.</remarks>
+    void Reset ();
   }
 }
