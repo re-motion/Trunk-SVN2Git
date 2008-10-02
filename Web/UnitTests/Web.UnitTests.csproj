@@ -157,6 +157,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\NullExecutionListenerTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionModeTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionStrategyTest.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\TransactionManagerTest.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestFunction2.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestTransactionScope2.cs" />
     <Compile Include="ExecutionEngine\WxeContextFactory.cs" />

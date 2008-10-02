@@ -36,7 +36,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         if (!parentFunction.Transaction.IsNull)
           return new ChildTransactionStrategy (_autoCommit, executionListener);
       }
-      return new RootTransactionStrategy (_autoCommit, executionListener, new TScopeManager());
+      ITransactionScopeManager scopeManager = new TScopeManager();
+      return new RootTransactionStrategy (_autoCommit, executionListener, new TransactionManager (scopeManager));
     }
 
     public bool AutoCommit

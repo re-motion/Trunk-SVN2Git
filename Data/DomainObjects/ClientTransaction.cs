@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -625,6 +626,15 @@ public abstract class ClientTransaction : ITransaction
     ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
     EnlistDomainObjects ((IEnumerable<DomainObject>) domainObjects);
+  }
+
+  /// <summary>Registers the <paramref name="objects"/> with the transaction.</summary>
+  /// <param name="objects">The objects to be registered. Must not be <see langword="null" />.</param>
+  /// <remarks>If the type of of of the objects is not supported by the transaction, the object must be ignored.</remarks>
+  void ITransaction.RegisterObjects (IEnumerable objects)
+  {
+    //all newly registered objects should be loaded
+    throw new System.NotImplementedException();
   }
 
   /// <summary>

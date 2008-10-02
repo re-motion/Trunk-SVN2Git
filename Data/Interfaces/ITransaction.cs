@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections;
 
 namespace Remotion.Data
 {
@@ -67,5 +68,10 @@ namespace Remotion.Data
     /// <returns>The scope keeping the transaction active.</returns>
     /// <remarks>The scope must not discard the transaction when it is left.</remarks>
     ITransactionScope EnterScope ();
+
+    /// <summary>Registers the <paramref name="objects"/> with the transaction.</summary>
+    /// <param name="objects">The objects to be registered. Must not be <see langword="null" />.</param>
+    /// <remarks>If the type of of of the objects is not supported by the transaction, the object must be ignored.</remarks>
+    void RegisterObjects (IEnumerable objects);
   }
 }

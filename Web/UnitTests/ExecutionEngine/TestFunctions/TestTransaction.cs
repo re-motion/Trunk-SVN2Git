@@ -9,6 +9,8 @@
  */
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Remotion.Data;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
@@ -37,6 +39,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
     private bool _throwOnRelease;
     private bool _isReadOnly;
     private bool _hasUncommittedChanges;
+    private readonly List<object> _registeredObjects = new List<object>();
 
     public event EventHandler Committed;
     public event EventHandler RolledBack;
@@ -116,6 +119,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
       _isReleased = true;
     }
 
+    public void RegisterObjects (IEnumerable objects)
+    {
+      foreach (var obj in objects)
+        _registeredObjects.Add (obj);
+    }
+
     public ITransaction Parent
     {
       get { return _parent; }
@@ -152,6 +161,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
     {
       get { return _throwOnRelease; }
       set { _throwOnRelease = value; }
+    }
+
+    public List<object> RegisteredObjects
+    {
+      get { return _registeredObjects; }
     }
   }
 }

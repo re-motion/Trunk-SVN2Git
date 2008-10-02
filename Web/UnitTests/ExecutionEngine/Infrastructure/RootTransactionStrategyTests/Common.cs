@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine.Infrastructure;
@@ -43,12 +44,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     public void IsNull ()
     {
       Assert.That (_strategy.IsNull, Is.False);
-    }
-
-    [Test]
-    public void GetScopeManager ()
-    {
-      Assert.That (_strategy.ScopeManager, Is.SameAs (ScopeManagerMock));
     }
 
     [Test]

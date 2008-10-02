@@ -29,7 +29,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("executionListener", executionListener);
 
-      return new RootTransactionStrategy (_autoCommit, executionListener, new TScopeManager ());
+      ITransactionScopeManager scopeManager = new TScopeManager ();
+      return new RootTransactionStrategy (_autoCommit, executionListener, new TransactionManager (scopeManager));
     }
 
     public bool AutoCommit

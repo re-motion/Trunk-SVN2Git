@@ -9,6 +9,8 @@
  */
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Remotion.Data;
 using Remotion.Utilities;
 
@@ -17,17 +19,16 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   //TODO: Doc
   public class RootTransactionStrategy : TransactionStrategyBase
   {
-    private readonly ITransactionScopeManager _scopeManager;
-    private ITransaction _transaction;
+    private readonly ITransactionManager _transactionManager;
     private ITransactionScope _scope;
 
-    public RootTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener, ITransactionScopeManager scopeManager)
+    public RootTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener, ITransactionManager transactionManager)
         : base (autoCommit, innerListener)
     {
-      ArgumentUtility.CheckNotNull ("_scopeManager", scopeManager);
+      ArgumentUtility.CheckNotNull ("transactionManager", transactionManager);
 
-      _scopeManager = scopeManager;
-      InitializeTransaction();
+      _transactionManager = transactionManager;
+      InitializeTransaction ();
     }
 
     public override void OnExecutionPlay (WxeContext context)
@@ -38,7 +39,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
             "OnExecutionPlay may not be invoked twice without calling OnExecutionStop, OnExecutionPause, or OnExecutionFail in-between.");
       }
 
-      ExecuteAndWrapInnerException (delegate { _scope = _transaction.EnterScope(); }, null);
+      ExecuteAndWrapInnerException (delegate { _scope = _transactionManager.Transaction.EnterScope(); }, null);
 
       InnerListener.OnExecutionPlay (context);
     }
@@ -53,7 +54,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       {
         InnerListener.OnExecutionStop (context);
         if (AutoCommit)
-          _transaction.Commit();
+          _transactionManager.Transaction.Commit ();
+        // outParameters = function.Variables.GetOutParameters();
+        // function.ParentFunction.Transaction.RegisterObjects (outParameters);
       }
       catch (Exception e)
       {
@@ -64,7 +67,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       {
         ExecuteAndWrapInnerException (_scope.Leave, innerException);
         _scope = null;
-        ExecuteAndWrapInnerException (_transaction.Release, innerException);
+        ExecuteAndWrapInnerException (_transactionManager.Release, innerException);
       }
     }
 
@@ -109,49 +112,44 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       {
         ExecuteAndWrapInnerException (_scope.Leave, innerException);
         _scope = null;
-        ExecuteAndWrapInnerException (_transaction.Release, innerException);
+        ExecuteAndWrapInnerException (_transactionManager.Release, innerException);
       }
     }
 
     public override ITransaction Transaction
     {
-      get { return _transaction; }
+      get { return _transactionManager.Transaction; }
     }
 
     public override void Commit ()
     {
-      _transaction.Commit();
+      _transactionManager.Transaction.Commit ();
     }
 
     public override void Rollback ()
     {
-      _transaction.Rollback();
+      _transactionManager.Transaction.Rollback ();
     }
 
     public override void Reset ()
     {
       if (_scope != null)
       {
-        _scope.Leave ();
-        _transaction.Release ();
-        InitializeTransaction ();
-        _scope = _transaction.EnterScope ();
+        _scope.Leave();
+        _transactionManager.Release ();
+        InitializeTransaction();
+        _scope = _transactionManager.Transaction.EnterScope ();
       }
       else
       {
-        _transaction.Release ();
-        InitializeTransaction ();
+        _transactionManager.Release ();
+        InitializeTransaction();
       }
     }
 
     public override bool IsNull
     {
       get { return false; }
-    }
-
-    public ITransactionScopeManager ScopeManager
-    {
-      get { return _scopeManager; }
     }
 
     public ITransactionScope Scope
@@ -161,10 +159,14 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     private void InitializeTransaction ()
     {
-      var transaction = _scopeManager.CreateRootTransaction ();
-      Assertion.IsNotNull (transaction);
-      _transaction = transaction;
+      _transactionManager.InitializeTransaction();
+      // inParameters = function.Variables.GetInParameters();
+      // RegisterObjects (inParameters);
     }
+
+    // after RegisterObjects finished, all newly registered objects should be loaded
+    // transaction event handlers and 
+    // if called from Reset: collection event handlers should be copied, transaction event handlers should be copied
 
     private void ExecuteAndWrapInnerException (Action action, Exception existingInnerException)
     {
