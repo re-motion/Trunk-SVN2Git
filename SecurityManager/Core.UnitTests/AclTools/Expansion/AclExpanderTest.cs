@@ -174,32 +174,37 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
       aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
 
-      //var ace = TestHelper.CreateAceWithAbstractRole();
-      //ace.TenantSelection = TenantSelection.All;
-      //ace.GroupSelection = GroupSelection.All;
-      //ace.UserSelection = UserSelection.All;
-      //var acl = TestHelper.CreateAcl (ace);
-      //aclList.Add (acl);
-      //var aclFinder = new TestAclExpanderAclFinder (aclList);
-
       var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
       var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList_Spike();
       To.ConsoleLine.e (() => aclExpansionEntryList);
       userFinderMock.VerifyAllExpectations();
       aclFinderMock.VerifyAllExpectations ();
+
+      var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
+      var accessConditions = new AclExpansionAccessConditions()
+                             {
+                               OnlyIfUserIsOwner = false,
+                               OnlyIfGroupIsOwner = false,
+                               OnlyIfTenantIsOwner = false,
+                               OnlyIfAbstractRoleMatches = false,
+                               AbstractRole = null
+                             };
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
+      Assert.That (aclExpansionEntryList[0].AccessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
+      Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
     }
   }
 
-  public class TestAclExpanderAclFinder : IAclExpanderAclFinder
-  {
-    private readonly List<AccessControlList> _acls;
-    public TestAclExpanderAclFinder (List<AccessControlList> acls) { _acls = acls; }
+  //public class TestAclExpanderAclFinder : IAclExpanderAclFinder
+  //{
+  //  private readonly List<AccessControlList> _acls;
+  //  public TestAclExpanderAclFinder (List<AccessControlList> acls) { _acls = acls; }
 
-    public List<AccessControlList> FindAccessControlLists ()
-    {
-      return _acls;
-    }
-  }
+  //  public List<AccessControlList> FindAccessControlLists ()
+  //  {
+  //    return _acls;
+  //  }
+  //}
 
   //public class TestAclExpanderUserFinder : IAclExpanderUserFinder
   //{
@@ -207,4 +212,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   //  public TestAclExpanderUserFinder (List<User> users) { _users = users; }
   //  public List<User> Users { get { return _users; } }
   //}
+
+
+  [ToTextSpecificHandler]
+  public class AccessTypeDefinition_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<Role>
+  {
+    public override void ToText (Role x, IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib<Role> ("");
+      toTextBuilder.e ("user", x.User.UserName).e ("group", x.Group.Name).e ("pos", x.Position.Name);
+      toTextBuilder.ie ();
+    }
+  }
+
 }

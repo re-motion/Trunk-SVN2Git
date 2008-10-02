@@ -18,12 +18,12 @@ namespace Remotion.Diagnostics.ToText
   /// </summary>
   public abstract class ToTextSpecificInterfaceHandler<T> : IToTextSpecificInterfaceHandler
   {
-    public ToTextSpecificInterfaceHandler ()
+    protected ToTextSpecificInterfaceHandler ()
     {
       Priority = 0;
     }
 
-    public ToTextSpecificInterfaceHandler (int priority)
+    protected ToTextSpecificInterfaceHandler (int priority)
     {
       Priority = priority;
     }

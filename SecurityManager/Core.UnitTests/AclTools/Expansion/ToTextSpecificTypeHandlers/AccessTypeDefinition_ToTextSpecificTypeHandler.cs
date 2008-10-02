@@ -15,7 +15,7 @@ using Remotion.SecurityManager.Domain.Metadata;
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
-  public class ToTextSpecificTypeHandler_AccessTypeDefinition : ToTextSpecificTypeHandler<AccessTypeDefinition>
+  public class AccessTypeDefinition_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AccessTypeDefinition>
   {
     public override void ToText (AccessTypeDefinition x, IToTextBuilder toTextBuilder)
     {

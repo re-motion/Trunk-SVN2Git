@@ -59,7 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\ToTextSpecificTypeHandler_AccessTypeDefinition.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AccessTypeDefinition_ToTextSpecificTypeHandler.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTestOld.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditionsTest.cs" />
