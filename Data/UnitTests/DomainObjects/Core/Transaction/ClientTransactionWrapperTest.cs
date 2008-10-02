@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void Parent ()
     {
       ITransaction child = _transaction.CreateChild ();
-      Assert.AreSame (_transaction, child.Parent);
+      Assert.AreSame (((ClientTransactionWrapper)_transaction).WrappedInstance, child.Parent);
       Assert.AreSame (child, child.CreateChild ().Parent);
     }
 
@@ -63,17 +63,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void Release ()
     {
       ITransaction child = _transaction.CreateChild ();
-      Assert.IsTrue (((ClientTransaction) _transaction).IsReadOnly);
+      Assert.IsTrue (((ClientTransactionWrapper) _transaction).WrappedInstance.IsReadOnly);
       Assert.IsFalse (((ClientTransaction) child).IsDiscarded);
       child.Release ();
-      Assert.IsFalse (((ClientTransaction) _transaction).IsReadOnly);
+      Assert.IsFalse (((ClientTransactionWrapper) _transaction).WrappedInstance.IsReadOnly);
       Assert.IsTrue (((ClientTransaction) child).IsDiscarded);
     }
 
     [Test]
     public void EnterScope ()
     {
-      ITransaction transaction = ClientTransaction.CreateRootTransaction ();
+      ITransaction transaction = new ClientTransactionWrapper(ClientTransaction.CreateRootTransaction ());
 
       ClientTransactionScope.ResetActiveScope ();
       Assert.That (ClientTransactionScope.ActiveScope, Is.Null);
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ITransactionScope transactionScope = transaction.EnterScope ();
 
       Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (transactionScope));
-      Assert.That (ClientTransactionScope.ActiveScope.ScopedTransaction, Is.SameAs (transaction));
+      Assert.That (ClientTransactionScope.ActiveScope.ScopedTransaction, Is.SameAs (((ClientTransactionWrapper) transaction).WrappedInstance));
       Assert.That (ClientTransactionScope.ActiveScope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.None));
       ClientTransactionScope.ResetActiveScope ();
     }
