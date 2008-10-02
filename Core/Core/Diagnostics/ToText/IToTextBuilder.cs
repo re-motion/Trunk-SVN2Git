@@ -375,8 +375,10 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Begins a new sequence for writing an instance of the passed Type.</para>
     /// <para>Shorthand notation: <see cref="ib"/>.</para>
     /// </summary>
-    IToTextBuilder WriteInstanceBegin (Type type);
+    IToTextBuilder WriteInstanceBegin (Type type, string shortTypeName);
     
+
+
     /// <summary>
     /// <para>Begins a new sequence for writing an instance of the passed Type.</para>
     /// <para>Shorthand notation for <see cref="WriteInstanceBegin"/>.</para>
@@ -387,7 +389,13 @@ namespace Remotion.Diagnostics.ToText
     /// <para>Begins a new sequence for writing an instance of the Type of the generic argument.</para>
     /// </summary>
     IToTextBuilder ib<T> ();
-    
+
+    /// <summary>
+    /// <para>Begins a new sequence for writing an instance of the Type of the generic argument, using
+    /// the passed shortTypeName in the output.</para>
+    /// </summary>
+    IToTextBuilder ib<T> (string shortTypeName);
+
     /// <summary>
     /// <para>Closes an instance sequence.</para>
     /// </summary>

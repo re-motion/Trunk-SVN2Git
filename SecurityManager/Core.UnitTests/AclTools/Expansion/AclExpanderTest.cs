@@ -154,7 +154,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    [Ignore]
+    //[Ignore]
     public void GetAclExpansionEntryList ()
     {
       List<User> userList = new List<User> ();
@@ -165,18 +165,28 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       userFinderMock.Expect (mock => mock.FindUsers()).Return (userList);
 
       List<AccessControlList> aclList = new List<AccessControlList>();
-      var ace = TestHelper.CreateAceWithAbstractRole();
-      ace.TenantSelection = TenantSelection.All;
-      ace.GroupSelection = GroupSelection.All;
-      ace.UserSelection = UserSelection.All;
+      var ace = TestHelper.CreateAceWithPosition (Position, GroupSelection.All);
+      AttachAccessTypeReadWriteDelete (ace, true, null, true);
+      Assert.That (ace.Validate ().IsValid);
       var acl = TestHelper.CreateAcl (ace);
       aclList.Add (acl);
-      var aclFinder = new TestAclExpanderAclFinder (aclList);
 
-      var aclExpander = new AclExpander (userFinderMock, aclFinder);
+      var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
+      aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
+
+      //var ace = TestHelper.CreateAceWithAbstractRole();
+      //ace.TenantSelection = TenantSelection.All;
+      //ace.GroupSelection = GroupSelection.All;
+      //ace.UserSelection = UserSelection.All;
+      //var acl = TestHelper.CreateAcl (ace);
+      //aclList.Add (acl);
+      //var aclFinder = new TestAclExpanderAclFinder (aclList);
+
+      var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
       var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList_Spike();
       To.ConsoleLine.e (() => aclExpansionEntryList);
       userFinderMock.VerifyAllExpectations();
+      aclFinderMock.VerifyAllExpectations ();
     }
   }
 

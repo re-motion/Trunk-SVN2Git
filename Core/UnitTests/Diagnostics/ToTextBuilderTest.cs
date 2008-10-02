@@ -12,18 +12,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Development.UnitTesting.Logging;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Internal;
 using Remotion.UnitTests.Diagnostics.TestDomain;
-using Remotion.Utilities;
-using Assertion=NUnit.Framework.Assertion;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 
@@ -574,7 +569,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var obj = new object();
-      toTextBuilder.WriteInstanceBegin (obj.GetType ()).WriteSequenceEnd ();
+      toTextBuilder.WriteInstanceBegin (obj.GetType (),null).WriteSequenceEnd ();
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("[Object]")); // NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
@@ -589,6 +584,17 @@ namespace Remotion.UnitTests.Diagnostics
       Log (result);
       Assert.That (result, Is.EqualTo ("[Test]")); // NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
     }
+
+    [Test]
+    public void ibShortName ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.ib<Test> ("ShortName").ie ();
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("[ShortName]")); // NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
+    }
+
 
     [Test]
     public void SequenceStateTest ()

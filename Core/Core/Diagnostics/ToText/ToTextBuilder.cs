@@ -242,7 +242,6 @@ namespace Remotion.Diagnostics.ToText
         Settings.EnumerableElementPostfix, Settings.EnumerableSeparator, Settings.EnumerablePostfix);
       foreach (DictionaryEntry de in dictionary)
       {
-        //dictionary.
         SequenceLiteralBegin ("", "", "", "", ":", "");
         WriteElement (de.Key);
         WriteElement (de.Value);
@@ -252,10 +251,6 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    //public override IToTextBuilder array (Array array)
-    //{
-    //  return WriteArray (array);
-    //}
 
 
     public override IToTextBuilder WriteRaw (Object obj)
@@ -265,11 +260,14 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override IToTextBuilder WriteInstanceBegin (Type type)
+    public override IToTextBuilder WriteInstanceBegin (Type type, string shortTypeName)
     {
-      //SequenceBegin ("", "[" + type.Name + "  ", "", "", ",", "]");
-      SequenceLiteralBegin ("", "[" + type.Name, "", "", ",", "]");
-      _disableableWriter.WriteDelayedAsPrefix ("  ");
+      string typeName = shortTypeName ?? type.Name;
+      SequenceLiteralBegin ("", "[" + typeName, "", "", ",", "]");
+      if (typeName.Length > 0)
+      {
+        _disableableWriter.WriteDelayedAsPrefix (" ");
+      }
       return this;
     }
 

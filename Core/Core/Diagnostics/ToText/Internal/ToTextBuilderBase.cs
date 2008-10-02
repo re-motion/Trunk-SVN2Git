@@ -346,17 +346,23 @@ namespace Remotion.Diagnostics.ToText.Internal
     public abstract IToTextBuilder WriteRaw (Object obj);
 
 
-    public abstract IToTextBuilder WriteInstanceBegin (Type type);
+    public abstract IToTextBuilder WriteInstanceBegin (Type type, string shortTypeName);
 
     public IToTextBuilder ib (Type type)
     {
-      return WriteInstanceBegin (type);
+      return WriteInstanceBegin (type, null);
     }
 
     public IToTextBuilder  ib<T>()
     {
-      return WriteInstanceBegin (typeof(T));
+      return WriteInstanceBegin (typeof(T), null);
     }
+
+    public IToTextBuilder ib<T> (string shortTypeName)
+    {
+      return WriteInstanceBegin (typeof (T), shortTypeName);
+    }
+
 
     public IToTextBuilder ie ()
     {

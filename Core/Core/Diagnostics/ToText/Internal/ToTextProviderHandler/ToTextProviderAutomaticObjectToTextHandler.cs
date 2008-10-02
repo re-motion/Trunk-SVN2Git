@@ -52,7 +52,7 @@ namespace Remotion.Diagnostics.ToText.Internal.ToTextProviderHandler
     {
       Type type = obj.GetType ();
 
-      toTextBuilder.WriteInstanceBegin (type);
+      toTextBuilder.WriteInstanceBegin (type,null);
 
       if (emitPublicProperties)
       {

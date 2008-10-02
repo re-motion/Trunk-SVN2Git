@@ -1,4 +1,5 @@
 using System;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -8,7 +9,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// <summary>
   /// Represents a row in an access control list expansion (see <see cref="AclExpander"/>, <see cref="AclExpansion"/>).
   /// </summary>
-  public class AclExpansionEntry
+  public class AclExpansionEntry : IToText
   {
     public AclExpansionEntry (User user, Role role, 
                               AclExpansionAccessConditions accessConditions, AccessTypeDefinition[] accessTypeDefinitions)
@@ -27,7 +28,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public Role Role { get; set; }
     public AclExpansionAccessConditions AccessConditions { get; set; }
     public AccessTypeDefinition[] AccessTypeDefinitions { get; set; }
-    
 
+
+    public void ToText (IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib().e ("user", User.UserName).e ("role", Role).e (AccessTypeDefinitions).e ("conditions", AccessConditions).ie ();
+    }
   }
 }

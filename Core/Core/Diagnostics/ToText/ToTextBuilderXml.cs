@@ -169,7 +169,7 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override IToTextBuilder WriteInstanceBegin (Type type)
+    public override IToTextBuilder WriteInstanceBegin (Type type, string shortTypeName)
     {
       SequenceXmlBegin (type.Name, "instance", "seq", "e");
       return this;

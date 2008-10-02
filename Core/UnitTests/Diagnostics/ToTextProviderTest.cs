@@ -191,23 +191,23 @@ namespace Remotion.UnitTests.Diagnostics
 
       Assert.That (
           resultAutomaticObjectToText,
-          Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
+          Is.EqualTo ("[TestSimple2 PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
 
       toText.Settings.SetAutomaticObjectToTextEmit (true, true, true, false);
       Assert.That (
-          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*]"));
+          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2 PubProp=%public_property%,pubField=%public_field%,PrivateProp=*private*]"));
 
       toText.Settings.SetAutomaticObjectToTextEmit (true, true, false, true);
       Assert.That (
-          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,pubField=%public_field%,privateField=*private_field*]"));
+          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2 PubProp=%public_property%,pubField=%public_field%,privateField=*private_field*]"));
 
       toText.Settings.SetAutomaticObjectToTextEmit (true, false, true, true);
       Assert.That (
-          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  PubProp=%public_property%,PrivateProp=*private*,privateField=*private_field*]"));
+          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2 PubProp=%public_property%,PrivateProp=*private*,privateField=*private_field*]"));
 
       toText.Settings.SetAutomaticObjectToTextEmit (false, true, true, true);
       Assert.That (
-          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2  pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
+          ToText (toText, testSimple2), Is.EqualTo ("[TestSimple2 pubField=%public_field%,PrivateProp=*private*,privateField=*private_field*]"));
     }
 
 
@@ -460,7 +460,7 @@ namespace Remotion.UnitTests.Diagnostics
       //Log(toTextTest);
       log.It (toTextTest);
       //string toTextTestExpected = "[Test   Name=\"That's not my name\"  Int=179  LinkedListString={}  ListListString={}  Array3D={{{91,82,73,64}}}  RectangularArray2D=null  RectangularArray3D=null  _privateFieldString=\"FieldString text\"  _privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}} ]";
-      const string toTextTestExpected = "[Test  Name=\"That's not my name\",Int=179,LinkedListString={},ListListString={},Array3D={{{91,82,73,64}}},RectangularArray2D=null,RectangularArray3D=null,_privateFieldString=\"FieldString text\",_privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}}]";
+      const string toTextTestExpected = "[Test Name=\"That's not my name\",Int=179,LinkedListString={},ListListString={},Array3D={{{91,82,73,64}}},RectangularArray2D=null,RectangularArray3D=null,_privateFieldString=\"FieldString text\",_privateFieldListList={{\"private\",\"field\"},{\"list of\",\"list\"}}]";
       Assert.That (toTextTest, Is.EqualTo (toTextTestExpected));
     }
 
