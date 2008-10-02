@@ -52,7 +52,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     private AclExpansionEntry[] GetAclExpansionEntries ()
     {
       var accessConditions = new AclExpansionAccessConditions();
-      return new AclExpansionEntry[] { new AclExpansionEntry (User, Role, accessConditions, AccessTypeDefinitions), new AclExpansionEntry (User2, Role2, new AclExpansionAccessConditions(), AccessTypeDefinitions2), new AclExpansionEntry (User3, Role3, new AclExpansionAccessConditions(), AccessTypeDefinitions3) };
+      return new AclExpansionEntry[] { 
+        new AclExpansionEntry (User, Role, accessConditions, AccessTypeDefinitionArray), 
+        new AclExpansionEntry (User2, Role2, new AclExpansionAccessConditions(), AccessTypeDefinitionArray), 
+        new AclExpansionEntry (User3, Role3, new AclExpansionAccessConditions(), AccessTypeDefinitionArray) 
+      };
     }
   }
 }

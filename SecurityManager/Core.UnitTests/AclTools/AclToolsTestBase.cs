@@ -23,7 +23,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     public AccessTypeDefinition WriteAccessType { get; private set; }
     public AccessTypeDefinition ReadAccessType { get; private set; }
 
-    public AccessTypeDefinition[] AccessTypeDefinitions { get; private set; }
+    public AccessTypeDefinition[] AccessTypeDefinitionArray { get; private set; }
     public AccessControlTestHelper TestHelper { get; private set; }
     public Tenant Tenant { get; private set; }
     public Group Group { get; private set; }
@@ -32,14 +32,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     public User User { get; private set; }
     public AccessControlEntry Ace { get; private set; }
 
-    public AccessTypeDefinition[] AccessTypeDefinitions2 { get; private set; }
+    //public AccessTypeDefinition[] AccessTypeDefinitions2 { get; private set; }
     public AccessControlEntry Ace2 { get; private set; }
     public Role Role2 { get; private set; }
     public User User2 { get; private set; }
     public Position Position2 { get; private set; }
     public Group Group2 { get; private set; }
 
-    public AccessTypeDefinition[] AccessTypeDefinitions3 { get; private set; }
+    //public AccessTypeDefinition[] AccessTypeDefinitions3 { get; private set; }
     public AccessControlEntry Ace3 { get; private set; }
     public Role Role3 { get; private set; }
     public User User3 { get; private set; }
@@ -65,33 +65,36 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       WriteAccessType = TestHelper.CreateWriteAccessType();  // write access
       DeleteAccessType = TestHelper.CreateDeleteAccessType();  // delete permission
 
-      AccessTypeDefinitions  = List.New (
-        TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace, true),
-        TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace, null), 
-        TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce(Ace,true)
-      ).ToArray();
+      //AccessTypeDefinitions  = List.New (
+      //  TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace, true),
+      //  TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace, null), 
+      //  TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce(Ace,true)
+      //).ToArray();
+
+      AccessTypeDefinitionArray = new[] { ReadAccessType, WriteAccessType, DeleteAccessType };
+
 
       Group2 = TestHelper.CreateGroup ("Anotha Group", null, Tenant);
       Position2 = TestHelper.CreatePosition ("Working Drone");
       User2 = TestHelper.CreateUser ("mr.smith", "", "Smith", "Mr.", Group2, Tenant);
       Role2 = TestHelper.CreateRole (User2, Group2, Position2);
       Ace2 = TestHelper.CreateAceWithSpecficTenant (Tenant);
-      AccessTypeDefinitions2 = List.New (
-        TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace2, null),
-        TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace2, true),
-        TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (Ace2, true)
-      ).ToArray ();
+      //AccessTypeDefinitions2 = List.New (
+      //  TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace2, null),
+      //  TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace2, true),
+      //  TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (Ace2, true)
+      //).ToArray ();
 
       Group3 = TestHelper.CreateGroup ("Da 3rd Group", null, Tenant);
       Position3 = TestHelper.CreatePosition ("Warrior");
       User3 = TestHelper.CreateUser ("ryan_james", "Ryan", "James", "", Group3, Tenant);
       Role3 = TestHelper.CreateRole (User3, Group3, Position3);
       Ace3 = TestHelper.CreateAceWithOwningGroup();
-      AccessTypeDefinitions3 = List.New (
-        TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace3, null),
-        TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace3, true),
-        TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (Ace3, null)
-      ).ToArray ();
+      //AccessTypeDefinitions3 = List.New (
+      //  TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (Ace3, null),
+      //  TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (Ace3, true),
+      //  TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (Ace3, null)
+      //).ToArray ();
 
 
       Acl = TestHelper.CreateAcl (Ace, Ace2, Ace3);

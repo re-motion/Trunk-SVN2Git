@@ -24,11 +24,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void Ctor ()
     {
       var accessConditions = new AclExpansionAccessConditions();
-      var aclExpansionEntry = new AclExpansionEntry (User,Role,accessConditions,AccessTypeDefinitions);
+      var aclExpansionEntry = new AclExpansionEntry (User,Role,accessConditions,AccessTypeDefinitionArray);
       Assert.That (aclExpansionEntry.User, Is.EqualTo (User));
       Assert.That (aclExpansionEntry.Role, Is.EqualTo (Role));
       Assert.That (aclExpansionEntry.AccessConditions, Is.EqualTo (accessConditions));
-      Assert.That (aclExpansionEntry.AccessTypeDefinitions, Is.EqualTo (AccessTypeDefinitions));
+      Assert.That (aclExpansionEntry.AccessTypeDefinitions, Is.EqualTo (AccessTypeDefinitionArray));
     }
   }
 }

@@ -96,32 +96,18 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    [Ignore]
+    //[Ignore]
     public void AccessControlList_GetAccessTypes2 ()
     {
-      var user = User;
-      //var tenant = user.Tenant;
-
+      var user = User2;
       List<AccessControlList> aclList = new List<AccessControlList> ();
-      //var ace = TestHelper.CreateAceWithSpecficTenant (user.Tenant);
-      //ace.TenantSelection = TenantSelection.All;
-      //ace.GroupSelection = GroupSelection.All;
-      //ace.UserSelection = UserSelection.All;
-
-      ////var ace = aclList[0].CreateAccessControlEntry ();
-      //ace.Permissions[0].Allowed = true;
-      //ace.Permissions =
-
-      //var acl = TestHelper.CreateAcl (ace);
-
       var acl = Acl;
 
       aclList.Add (acl);
 
-      SecurityToken securityToken = new SecurityToken (user, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
+      SecurityToken securityToken = new SecurityToken (user, user.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
       AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
-      To.ConsoleLine.sb().e (accessTypeDefinitions.Length).e (() => accessTypeDefinitions).se();
-      To.ToTextProvider.Settings.EmitPrivateFields = true;
+      To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (accessTypeDefinitions.Length).e (() => accessTypeDefinitions).se ();
     }
 
 
