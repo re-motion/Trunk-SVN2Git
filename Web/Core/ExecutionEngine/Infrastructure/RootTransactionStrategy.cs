@@ -33,11 +33,12 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       ArgumentUtility.CheckNotNull ("scopeManager", scopeManager);
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
-      _executionContext = executionContext;
-
       _transaction = scopeManager.CreateRootTransaction();
       Assertion.IsNotNull (_transaction);
-      _transaction.RegisterObjects (FlattenList (_executionContext.GetInParameters()));
+
+      _executionContext = executionContext;
+
+      RegisterObjects (_executionContext.GetInParameters ());
     }
 
     public override void OnExecutionPlay (WxeContext context)
@@ -160,6 +161,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public ITransactionScope Scope
     {
       get { return _scope; }
+    }
+
+    private void RegisterObjects (object[] objects)
+    {
+      _transaction.RegisterObjects (FlattenList (objects));
     }
 
     private IEnumerable<object> FlattenList (IEnumerable objects)
