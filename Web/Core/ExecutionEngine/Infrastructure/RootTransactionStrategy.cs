@@ -9,8 +9,6 @@
  */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Remotion.Data;
 using Remotion.Utilities;
 
@@ -167,7 +165,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _transactionManager.RegisterObjects (_executionContext.GetInParameters());
     }
 
-    // after RegisterObjects finished, all newly registered objects should be loaded
     // transaction event handlers and 
     // if called from Reset: collection event handlers should be copied, transaction event handlers should be copied
 

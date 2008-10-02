@@ -78,7 +78,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
-    public void RegisterInParameters ()
+    public void Initialize_WithInParameters ()
     {
       var expectedInParamters = new object[0];
 
