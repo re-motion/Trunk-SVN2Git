@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         var abstractRole = ace.SpecificAbstractRole;
         abstractRoles.Add (abstractRole);
         aclProbe.AccessConditions.AbstractRole = abstractRole;
-        aclProbe.AccessConditions.OnlyIfAbstractRoleMatches = true;
+        //aclProbe.AccessConditions.OnlyIfAbstractRoleMatches = true;
       }
       return abstractRoles;
     }

@@ -122,7 +122,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclProbe.SecurityToken.AbstractRoles, List.Contains (ace.SpecificAbstractRole));
 
       var accessConditionsExpected = new AclExpansionAccessConditions();
-      accessConditionsExpected.OnlyIfAbstractRoleMatches = true;
+      //accessConditionsExpected.OnlyIfAbstractRoleMatches = true;
       accessConditionsExpected.AbstractRole = ace.SpecificAbstractRole;
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }

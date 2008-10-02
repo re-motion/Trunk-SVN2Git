@@ -163,7 +163,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var accessConditions = new AclExpansionAccessConditions()
        { 
          OnlyIfUserIsOwner = false, OnlyIfGroupIsOwner = false, OnlyIfTenantIsOwner = false, 
-         OnlyIfAbstractRoleMatches = false, AbstractRole = null
+         //OnlyIfAbstractRoleMatches = false, 
+         AbstractRole = null
        };
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
       Assert.That (aclExpansionEntryList[0].AccessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
@@ -182,7 +183,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         OnlyIfUserIsOwner = false,
         OnlyIfGroupIsOwner = true, //  GroupSelection.OwningGroup => group must be owner
         OnlyIfTenantIsOwner = false,
-        OnlyIfAbstractRoleMatches = false,
+        //OnlyIfAbstractRoleMatches = false,
         AbstractRole = null
       };
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));

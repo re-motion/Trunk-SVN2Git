@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void Equals ()
     {
-      BooleanMemberTest ((aeac,b) => aeac.OnlyIfAbstractRoleMatches = b);
+      //BooleanMemberTest ((aeac,b) => aeac.OnlyIfAbstractRoleMatches = b);
       BooleanMemberTest ((aeac, b) => aeac.OnlyIfGroupIsOwner = b);
       BooleanMemberTest ((aeac, b) => aeac.OnlyIfTenantIsOwner = b);
       BooleanMemberTest ((aeac, b) => aeac.OnlyIfUserIsOwner = b);
@@ -47,8 +47,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void Equals2 ()
     {
-      MemberTest (Properties<AclExpansionAccessConditions>.Get (x => x.OnlyIfAbstractRoleMatches), true);
-      MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfAbstractRoleMatches), true);
+      //MemberTest (Properties<AclExpansionAccessConditions>.Get (x => x.OnlyIfAbstractRoleMatches), true);
+      //MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfAbstractRoleMatches), true);
       MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfGroupIsOwner), true);
       MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfTenantIsOwner), true);
       MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfUserIsOwner), true);
