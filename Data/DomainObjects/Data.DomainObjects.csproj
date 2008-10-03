@@ -130,7 +130,6 @@
     <Compile Include="ClassIDAttribute.cs" />
     <Compile Include="ClientTransactionFactory.cs" />
     <Compile Include="ClientTransactionScopeManager.cs" />
-    <Compile Include="ClientTransactionWrapper.cs" />
     <Compile Include="Cloning\CloneContext.cs" />
     <Compile Include="Cloning\CompleteCloneStrategy.cs" />
     <Compile Include="Cloning\DomainObjectCloner.cs" />
@@ -156,6 +155,7 @@
     <Compile Include="FullGraphTraversalStrategy.cs" />
     <Compile Include="Infrastructure\BindingClientTransaction.cs" />
     <Compile Include="Infrastructure\BindingClientTransactionListener.cs" />
+    <Compile Include="Infrastructure\ClientTransactionWrapper.cs" />
     <Compile Include="Infrastructure\Interception\DomainObjectConstructorLookupInfo.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedDeserializationInfo.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedSerializationReader.cs" />

@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 
@@ -55,7 +56,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void GetTransaction ()
     {
-      Assert.That (_strategy.Transaction, Is.SameAs (TransactionMock));
+      TransactionMock.Expect (mock => mock.To<ITransaction>()).Return (TransactionMock);
+      TransactionMock.Replay();
+      Assert.That (_strategy.GetNativeTransaction<ITransaction>(), Is.SameAs (TransactionMock));
     }
 
     [Test]

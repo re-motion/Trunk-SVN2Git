@@ -75,7 +75,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void GetTransaction ()
     {
-      Assert.That (_strategy.Transaction, Is.Null);
+      Assert.That (_strategy.GetNativeTransaction<object>(), Is.Null);
     }
 
     [Test]

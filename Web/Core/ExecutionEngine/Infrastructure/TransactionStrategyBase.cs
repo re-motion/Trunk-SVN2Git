@@ -42,7 +42,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public abstract void OnExecutionPause (WxeContext context);
     public abstract void OnExecutionFail (WxeContext context, Exception exception);
 
-    public abstract ITransaction Transaction { get; }
+    public abstract TTransaction GetNativeTransaction<TTransaction> ();
     public abstract void Commit ();
     public abstract void Rollback ();
     public abstract void Reset ();

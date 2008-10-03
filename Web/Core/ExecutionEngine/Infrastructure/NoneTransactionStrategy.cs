@@ -57,9 +57,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       throw new NotSupportedException();
     }
 
-    public override ITransaction Transaction
+    public override TTransaction GetNativeTransaction<TTransaction> ()
     {
-      get { return null; }
+      return default (TTransaction);
     }
 
     public override void RegisterObjects (IEnumerable objects)

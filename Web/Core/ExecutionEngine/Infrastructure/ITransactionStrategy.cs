@@ -10,14 +10,13 @@
 
 using System;
 using System.Collections;
-using Remotion.Data;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
   public interface ITransactionStrategy : INullObject
   {
-    ITransaction Transaction { get; }
+    TTransaction GetNativeTransaction<TTransaction> ();
     void Commit ();
     void Rollback ();
     void Reset ();

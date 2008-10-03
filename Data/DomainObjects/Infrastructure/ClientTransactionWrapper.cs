@@ -9,11 +9,11 @@
  */
 
 using System;
-using System.Linq;
 using System.Collections;
+using System.Linq;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects
+namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
   /// <see cref="ClientTransactionWrapper"/> provides a wrapper for ClientTransactions that implements the <see cref="ITransaction"/> interface.

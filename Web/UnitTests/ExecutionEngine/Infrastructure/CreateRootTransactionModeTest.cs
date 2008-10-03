@@ -30,7 +30,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       Assert.That (strategy, Is.InstanceOfType (typeof (RootTransactionStrategy)));
       Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
       Assert.That (strategy.AutoCommit, Is.True);
-      Assert.That (strategy.Transaction, Is.InstanceOfType (typeof (TestTransaction)));
+      Assert.That (strategy.GetNativeTransaction<TestTransaction> (), Is.InstanceOfType (typeof (TestTransaction)));
+      Assert.That (((RootTransactionStrategy) strategy).Transaction, Is.InstanceOfType (typeof (TestTransaction)));
     }
   }
 }

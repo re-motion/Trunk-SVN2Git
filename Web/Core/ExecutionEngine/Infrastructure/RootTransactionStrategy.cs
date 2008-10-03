@@ -124,9 +124,14 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
     }
 
-    public override ITransaction Transaction
+    public ITransaction Transaction
     {
       get { return _transaction; }
+    }
+
+    public override TTransaction GetNativeTransaction<TTransaction> ()
+    {
+      return _transaction.To<TTransaction>();
     }
 
     public override void Commit ()

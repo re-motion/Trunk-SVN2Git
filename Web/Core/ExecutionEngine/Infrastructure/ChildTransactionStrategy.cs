@@ -42,9 +42,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       throw new System.NotImplementedException();
     }
 
-    public override ITransaction Transaction
+    public override TTransaction GetNativeTransaction<TTransaction> ()
     {
-      get { throw new System.NotImplementedException (); }
+      throw new System.NotImplementedException();
     }
 
     public override void Commit ()
