@@ -26,7 +26,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     private ITransaction _transactionMock;
     private WxeContext _context;
     private MockRepository _mockRepository;
-    private ITransactionScopeManager _scopeManagerMock;
     private IWxeFunctionExecutionContext _executionContextMock;
 
     [SetUp]
@@ -39,7 +38,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _executionListenerMock = MockRepository.StrictMock<IWxeFunctionExecutionListener>();
       _transactionMock = MockRepository.StrictMock<ITransaction>();
       _scopeMock = MockRepository.StrictMock<ITransactionScope>();
-      _scopeManagerMock = MockRepository.StrictMock<ITransactionScopeManager>();
       _executionContextMock = MockRepository.StrictMock<IWxeFunctionExecutionContext>();
       _executionContextMock.Stub (stub => stub.GetInParameters()).Return (new object[0]).Repeat.Any();
     }
@@ -64,11 +62,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       get { return _scopeMock; }
     }
 
-    public ITransactionScopeManager ScopeManagerMock
-    {
-      get { return _scopeManagerMock; }
-    }
-
     public IWxeFunctionExecutionListener ExecutionListenerMock
     {
       get { return _executionListenerMock; }
@@ -81,17 +74,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
     protected RootTransactionStrategy CreateRootTransactionStrategy (bool autoCommit)
     {
-      _scopeManagerMock.BackToRecord();
-      _scopeManagerMock.Expect (stub => stub.CreateRootTransaction()).Return (TransactionMock).Repeat.Once();
-      _scopeManagerMock.Replay ();
-      
       _executionContextMock.Replay();
 
       _transactionMock.BackToRecord ();
       _transactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
       _transactionMock.Replay ();
 
-      return new RootTransactionStrategy (autoCommit, _executionListenerMock, _scopeManagerMock, _executionContextMock);
+      return new RootTransactionStrategy (autoCommit, TransactionMock, _executionContextMock, _executionListenerMock);
     }
 
     protected void InvokeOnExecutionPlay (RootTransactionStrategy strategy)

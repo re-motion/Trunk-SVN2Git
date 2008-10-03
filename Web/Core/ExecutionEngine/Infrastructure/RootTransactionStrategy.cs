@@ -23,19 +23,13 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     private readonly IWxeFunctionExecutionContext _executionContext;
     private ITransactionScope _scope;
 
-    public RootTransactionStrategy (
-        bool autoCommit,
-        IWxeFunctionExecutionListener innerListener,
-        ITransactionScopeManager scopeManager,
-        IWxeFunctionExecutionContext executionContext)
+    public RootTransactionStrategy (bool autoCommit, ITransaction transaction, IWxeFunctionExecutionContext executionContext, IWxeFunctionExecutionListener innerListener)
         : base (autoCommit, innerListener)
     {
-      ArgumentUtility.CheckNotNull ("scopeManager", scopeManager);
+      ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
-      _transaction = scopeManager.CreateRootTransaction();
-      Assertion.IsNotNull (_transaction);
-
+      _transaction = transaction;      
       _executionContext = executionContext;
 
       RegisterObjects (_executionContext.GetInParameters ());
