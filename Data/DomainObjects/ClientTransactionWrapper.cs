@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects
     /// </exception>
     public ITransaction CreateChild ()
     {
-      return _wrappedInstance.CreateSubTransaction();
+      return new ClientTransactionWrapper (_wrappedInstance.CreateSubTransaction());
     }
 
     /// <summary> Allows the transaction to implement clean up logic. </summary>
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects
     /// </value>
     public ITransaction Parent
     {
-      get { return _wrappedInstance.ParentTransaction; }
+      get { return new ClientTransactionWrapper (_wrappedInstance.ParentTransaction); }
     }
 
     /// <summary>Gets a flag describing whether the transaction is a child transaction.</summary>

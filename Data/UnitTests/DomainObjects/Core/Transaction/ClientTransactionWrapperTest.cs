@@ -39,7 +39,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ITransaction child = _transaction.CreateChild ();
       Assert.IsNotNull (child);
-      Assert.IsInstanceOfType (typeof (SubClientTransaction), child);
+      Assert.IsInstanceOfType (typeof (ClientTransactionWrapper), child);
+      Assert.IsInstanceOfType (typeof (SubClientTransaction), ((ClientTransactionWrapper)child).WrappedInstance);
     }
 
     [Test]
@@ -55,8 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void Parent ()
     {
       ITransaction child = _transaction.CreateChild ();
-      Assert.AreSame (((ClientTransactionWrapper)_transaction).WrappedInstance, child.Parent);
-      Assert.AreSame (child, child.CreateChild ().Parent);
+      Assert.AreSame (((ClientTransactionWrapper)_transaction).WrappedInstance, ((ClientTransactionWrapper)child.Parent).WrappedInstance);
+      Assert.AreSame (((ClientTransactionWrapper) child).WrappedInstance, ((ClientTransactionWrapper) child.CreateChild ().Parent).WrappedInstance);
     }
 
     [Test]
@@ -64,10 +65,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ITransaction child = _transaction.CreateChild ();
       Assert.IsTrue (((ClientTransactionWrapper) _transaction).WrappedInstance.IsReadOnly);
-      Assert.IsFalse (((ClientTransaction) child).IsDiscarded);
+      Assert.IsFalse (((ClientTransactionWrapper)child).WrappedInstance.IsDiscarded);
       child.Release ();
       Assert.IsFalse (((ClientTransactionWrapper) _transaction).WrappedInstance.IsReadOnly);
-      Assert.IsTrue (((ClientTransaction) child).IsDiscarded);
+      Assert.IsTrue (((ClientTransactionWrapper) child).WrappedInstance.IsDiscarded);
     }
 
     [Test]
