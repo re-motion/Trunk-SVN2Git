@@ -105,7 +105,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       MixinDefinition referenceDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (context).Mixins[0];
 
       ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (0, context);
-      MixinDefinition definition = attribute.GetMixinDefinition ();
+      MixinDefinition definition = attribute.GetMixinDefinition (TargetClassDefinitionCache.Current);
       Assert.That (definition, Is.SameAs (referenceDefinition));
     }
   }

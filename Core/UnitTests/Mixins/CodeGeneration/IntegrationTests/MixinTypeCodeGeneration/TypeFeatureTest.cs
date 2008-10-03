@@ -61,7 +61,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
 
       ConcreteMixinTypeAttribute[] attributes =
           (ConcreteMixinTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false);
-      Assert.AreSame (mixinDefinition, attributes[0].GetMixinDefinition ());
+      Assert.AreSame (mixinDefinition, attributes[0].GetMixinDefinition (TargetClassDefinitionCache.Current));
     }
 
     [Test]

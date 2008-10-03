@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         new Type[] {typeof (string), typeof (object), typeof (int)},
         new Type[] {typeof (int)},
         new Type[] {typeof (object), typeof (double), typeof (bool), typeof (NextMixinDependency), typeof (string), typeof (bool)})]
-    private class TestType
+    public class TestType
     {
     }
 
@@ -153,7 +153,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       TargetClassDefinition referenceDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (context);
 
       ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (context);
-      TargetClassDefinition definition = attribute.GetTargetClassDefinition ();
+      TargetClassDefinition definition = attribute.GetTargetClassDefinition (TargetClassDefinitionCache.Current);
       Assert.AreSame (referenceDefinition, definition);
     }
 
@@ -167,7 +167,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       ClassContext context2 = attribute.GetClassContext ();
       Assert.AreEqual (typeof (List<int>), context2.Type);
 
-      TargetClassDefinition definition = attribute.GetTargetClassDefinition ();
+      TargetClassDefinition definition = attribute.GetTargetClassDefinition (TargetClassDefinitionCache.Current);
       Assert.AreEqual (typeof (List<int>), definition.Type);
     }
   }

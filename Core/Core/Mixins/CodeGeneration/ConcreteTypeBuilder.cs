@@ -177,7 +177,18 @@ namespace Remotion.Mixins.CodeGeneration
       ArgumentUtility.CheckNotNull ("configuration", configuration);
 
       GetConcreteType (configuration.TargetClass); // ensure base type was created
-      return Cache.GetConcreteMixinTypeFromCacheOnly (configuration); // now we know the mixin type must be in the cache
+      ConcreteMixinType concreteMixinType = Cache.GetConcreteMixinTypeFromCacheOnly (configuration); // now we know the mixin type must be in the cache
+      if (concreteMixinType == null)
+      {
+        string message = string.Format (
+            "No concrete mixin type is required for the given configuration (mixin {0} and target class {1}).",
+            configuration.FullName,
+            configuration.TargetClass.FullName);
+        throw new ArgumentException (message, "configuration");
+      }
+      else
+        return concreteMixinType.GeneratedType;
+
     }
 
     /// <summary>
@@ -233,7 +244,7 @@ namespace Remotion.Mixins.CodeGeneration
         throw new ArgumentException (message, "assembly");
       }
 
-      Cache.ImportTypes(assembly.GetExportedTypes ());
+      Cache.ImportTypes(assembly.GetExportedTypes (), new AttributeBasedMetadataImporter());
     }
 
  

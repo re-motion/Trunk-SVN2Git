@@ -38,9 +38,9 @@ namespace Remotion.Mixins.CodeGeneration
       get { return _mixinIndex; }
     }
 
-    public MixinDefinition GetMixinDefinition ()
+    public MixinDefinition GetMixinDefinition (ITargetClassDefinitionCache targetClassDefinitionCache)
     {
-      return GetTargetClassDefinition ().Mixins[MixinIndex];
+      return GetTargetClassDefinition (targetClassDefinitionCache).Mixins[MixinIndex];
     }
   }
 }

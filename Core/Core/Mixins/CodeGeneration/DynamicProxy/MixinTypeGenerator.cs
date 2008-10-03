@@ -129,10 +129,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       MethodInfo getMixinDefinitionMethod = typeof (ConcreteMixinTypeAttribute).GetMethod ("GetMixinDefinition");
       Assertion.IsNotNull (getMixinDefinitionMethod);
 
+      var currentCacheProperty = typeof (TargetClassDefinitionCache).BaseType.GetProperty ("Current");
+      Assertion.IsNotNull (currentCacheProperty);
+      var currentCachePropertyReference = new PropertyReference (null, currentCacheProperty);
+
       emitter.CodeBuilder.AddStatement (
           new AssignStatement (
               _configurationField,
-              new VirtualMethodInvocationExpression (attributeLocal, getMixinDefinitionMethod)));
+              new VirtualMethodInvocationExpression (attributeLocal, getMixinDefinitionMethod, currentCachePropertyReference.ToExpression())));
 
       emitter.CodeBuilder.AddStatement (new ReturnStatement());
     }

@@ -194,15 +194,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return builtType;
     }
 
-    public IEnumerable<Tuple<MixinDefinition, Type>> GetBuiltMixinTypes ()
-    {
-      foreach (ConcreteMixinType concreteMixinType in _concreteMixinTypes)
-      {
-        if (concreteMixinType != null)
-          yield return new Tuple<MixinDefinition, Type> (concreteMixinType.MixinDefinition, concreteMixinType.GeneratedType);
-      }
-    }
-
     internal FieldInfo ExtensionsField
     {
       get { return _extensionsField.Reference; }
@@ -219,8 +210,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       
       MethodInfo getTargetClassDefinitionMethod = typeof (ConcreteMixedTypeAttribute).GetMethod ("GetTargetClassDefinition");
       Assertion.IsNotNull (getTargetClassDefinitionMethod);
+
+      var currentCacheProperty = typeof (TargetClassDefinitionCache).BaseType.GetProperty ("Current");
+      Assertion.IsNotNull (currentCacheProperty);
+      var currentCachePropertyReference = new PropertyReference (null, currentCacheProperty);
+
       emitter.CodeBuilder.AddStatement (new AssignStatement (_configurationField,
-          new VirtualMethodInvocationExpression (attributeLocal, getTargetClassDefinitionMethod)));
+          new VirtualMethodInvocationExpression (attributeLocal, getTargetClassDefinitionMethod, currentCachePropertyReference.ToExpression())));
 
       emitter.CodeBuilder.AddStatement (new ReturnStatement ());
     }

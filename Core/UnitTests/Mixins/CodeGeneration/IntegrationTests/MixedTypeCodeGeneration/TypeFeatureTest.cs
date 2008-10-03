@@ -149,7 +149,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
       ConcreteMixedTypeAttribute[] attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
-      TargetClassDefinition definition = attributes[0].GetTargetClassDefinition ();
+      TargetClassDefinition definition = attributes[0].GetTargetClassDefinition (TargetClassDefinitionCache.Current);
       Assert.AreSame (definition, TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)));
     }
 

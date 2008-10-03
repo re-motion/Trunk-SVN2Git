@@ -40,7 +40,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;DEBUG;NO_PEVERIFY</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
@@ -152,6 +152,7 @@
     <Compile Include="Diagnostics\ToTextProviderHandlerTest.cs" />
     <Compile Include="Diagnostics\ToTextSpecificHandlerCollectorTest.cs" />
     <Compile Include="Diagnostics\ToTextTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporterTest.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCacheTest.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeTest.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinIntroducingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinOverridingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\TargetClassCallingOverriddenMethodFromCtor.cs" />
+    <Compile Include="Mixins\DefinitionObjectMother.cs" />
     <Compile Include="Mixins\MixAttributeTest.cs" />
     <Compile Include="Mixins\CodeGenerationStatisticsTest.cs" />
     <Compile Include="Mixins\SampleTypes\IMarkerInterface.cs" />

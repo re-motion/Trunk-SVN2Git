@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Logging;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 
@@ -27,7 +26,8 @@ namespace Remotion.Mixins.CodeGeneration
     
     private readonly object _lockObject = new object();
     private readonly ConcreteTypeBuilder _concreteTypeBuilder;
-    private readonly Cache<ClassDefinitionBase, Type> _typeCache = new Cache<ClassDefinitionBase, Type> ();
+    private readonly Cache<TargetClassDefinition, Type> _typeCache = new Cache<TargetClassDefinition, Type> ();
+    private readonly Cache<MixinDefinition, ConcreteMixinType> _mixinTypeCache = new Cache<MixinDefinition, ConcreteMixinType> ();
 
     public CodeGenerationCache (ConcreteTypeBuilder concreteTypeBuilder)
     {
@@ -37,81 +37,79 @@ namespace Remotion.Mixins.CodeGeneration
 
     public Type GetConcreteType (IModuleManager moduleManager, TargetClassDefinition targetClassDefinition, INameProvider nameProvider, INameProvider mixinNameProvider)
     {
-      s_log.InfoFormat ("Generating type for {0}.", targetClassDefinition.ConfigurationContext);
-      using (new CodeGenerationTimer ())
+      ArgumentUtility.CheckNotNull ("moduleManager", moduleManager);
+      ArgumentUtility.CheckNotNull ("targetClassDefinition", targetClassDefinition);
+      ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
+      ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
+
+      lock (_lockObject)
       {
-        lock (_lockObject)
-        {
-          return _typeCache.GetOrCreateValue (
-              targetClassDefinition,
-              key => GenerateConcreteType (moduleManager, key, nameProvider, mixinNameProvider));
-        }
+        return _typeCache.GetOrCreateValue (
+            targetClassDefinition,
+            key => GenerateConcreteType (moduleManager, key, nameProvider, mixinNameProvider));
       }
     }
 
-    private Type GenerateConcreteType (IModuleManager moduleManager, ClassDefinitionBase targetClassDefinition, INameProvider nameProvider, INameProvider mixinNameProvider)
+    private Type GenerateConcreteType (IModuleManager moduleManager, TargetClassDefinition targetClassDefinition, INameProvider nameProvider, INameProvider mixinNameProvider)
     {
-      ITypeGenerator generator = moduleManager.CreateTypeGenerator (
-          this,
-          (TargetClassDefinition) targetClassDefinition,
-          nameProvider,
-          mixinNameProvider);
-
-      foreach (Tuple<MixinDefinition, Type> finishedMixinTypes in generator.GetBuiltMixinTypes())
+      s_log.InfoFormat ("Generating type for {0}.", targetClassDefinition.ConfigurationContext);
+      using (new CodeGenerationTimer ())
       {
-        Tuple<MixinDefinition, Type> finishedMixinType = finishedMixinTypes;
-        _typeCache.GetOrCreateValue (finishedMixinType.A, delegate { return finishedMixinType.B; });
-      }
+        ITypeGenerator generator = moduleManager.CreateTypeGenerator (
+            this,
+            targetClassDefinition,
+            nameProvider,
+            mixinNameProvider);
 
-      Type finishedType = generator.GetBuiltType();
-      return finishedType;
+        return generator.GetBuiltType();
+      }
     }
 
     public ConcreteMixinType GetConcreteMixinType (ITypeGenerator mixedTypeGenerator, MixinDefinition mixinDefinition, INameProvider mixinNameProvider)
     {
+      ArgumentUtility.CheckNotNull ("mixedTypeGenerator", mixedTypeGenerator);
+      ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
+      ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
+
       lock (_lockObject)
       {
-        return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (mixedTypeGenerator, mixinDefinition, mixinNameProvider).GetBuiltType();
+        return _mixinTypeCache.GetOrCreateValue (
+              mixinDefinition,
+              key => GenerateConcreteMixinType(mixedTypeGenerator, mixinDefinition, mixinNameProvider));
       }
     }
 
-    public Type GetConcreteMixinTypeFromCacheOnly (MixinDefinition mixinDefinition)
+    private ConcreteMixinType GenerateConcreteMixinType(ITypeGenerator mixedTypeGenerator, MixinDefinition mixinDefinition, INameProvider mixinNameProvider)
+    {
+      return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (mixedTypeGenerator, mixinDefinition, mixinNameProvider).GetBuiltType ();
+    }
+
+    public ConcreteMixinType GetConcreteMixinTypeFromCacheOnly (MixinDefinition mixinDefinition)
     {
       ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
       lock (_lockObject)
       {
-        Type type;
-        _typeCache.TryGetValue (mixinDefinition, out type);
-        if (type == null)
-        {
-          string message = string.Format (
-              "No concrete mixin type is required for the given configuration (mixin {0} and target class {1}).",
-              mixinDefinition.FullName,
-              mixinDefinition.TargetClass.FullName);
-          throw new ArgumentException (message, "mixinDefinition");
-        }
-        else
-          return type;
+        ConcreteMixinType type;
+        _mixinTypeCache.TryGetValue (mixinDefinition, out type);
+        return type;
       }
     }
 
-    public void ImportTypes (IEnumerable<Type> types)
+    public void ImportTypes (IEnumerable<Type> types, IConcreteTypeMetadataImporter metadataImporter)
     {
       ArgumentUtility.CheckNotNull ("types", types);
       lock (_lockObject)
       {
         foreach (Type type in types)
         {
-          foreach (ConcreteMixedTypeAttribute typeDescriptor in type.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false))
-          {
-            TargetClassDefinition targetClassDefinition = typeDescriptor.GetTargetClassDefinition();
-            _typeCache.GetOrCreateValue (targetClassDefinition, delegate { return type; });
-          }
+          foreach (TargetClassDefinition mixedTypeMetadata in metadataImporter.GetMetadataForMixedType (type, TargetClassDefinitionCache.Current))
+            _typeCache.GetOrCreateValue (mixedTypeMetadata, delegate { return type; });
 
-          foreach (ConcreteMixinTypeAttribute typeDescriptor in type.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false))
+          foreach (MixinDefinition mixinDefinition in metadataImporter.GetMetadataForMixinType (type, TargetClassDefinitionCache.Current))
           {
-            MixinDefinition mixinDefinition = typeDescriptor.GetMixinDefinition();
-            _typeCache.GetOrCreateValue (mixinDefinition, delegate { return type; });
+            var concreteMixinType = new ConcreteMixinType (mixinDefinition, type);
+            #warning TODO FS: add public method wrappers and add to returned object
+            _mixinTypeCache.GetOrCreateValue (mixinDefinition, delegate { return concreteMixinType; });
           }
         }
       }

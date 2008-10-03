@@ -24,10 +24,10 @@ namespace Remotion.Mixins.CodeGeneration
     public static ConcreteMixedTypeAttribute FromClassContext (ClassContext context)
     {
       Type baseType = context.Type;
-      List<MixinKind> mixinKinds = new List<MixinKind> (context.Mixins.Count);
-      List<Type> mixinTypes = new List<Type> (context.Mixins.Count);
-      List<Type> completeInterfaces = new List<Type> (context.CompleteInterfaces.Count);
-      List<Type> explicitDependencyList = new List<Type> ();
+      var mixinKinds = new List<MixinKind> (context.Mixins.Count);
+      var mixinTypes = new List<Type> (context.Mixins.Count);
+      var completeInterfaces = new List<Type> (context.CompleteInterfaces.Count);
+      var explicitDependencyList = new List<Type> ();
 
       completeInterfaces.AddRange (context.CompleteInterfaces);
 
@@ -96,7 +96,7 @@ namespace Remotion.Mixins.CodeGeneration
 
     public ClassContext GetClassContext ()
     {
-      ClassContextBuilder contextBuilder = new ClassContextBuilder (new MixinConfigurationBuilder (null), TargetType, null);
+      var contextBuilder = new ClassContextBuilder (new MixinConfigurationBuilder (null), TargetType, null);
       for (int i = 0; i < MixinTypes.Length; ++i)
         contextBuilder.AddMixin (MixinTypes[i]).OfKind (MixinKinds[i]);
       
@@ -119,9 +119,9 @@ namespace Remotion.Mixins.CodeGeneration
       return context;
     }
 
-    public TargetClassDefinition GetTargetClassDefinition ()
+    public virtual TargetClassDefinition GetTargetClassDefinition (ITargetClassDefinitionCache targetClassDefinitionCache)
     {
-      return TargetClassDefinitionCache.Current.GetTargetClassDefinition (GetClassContext ());
+      return targetClassDefinitionCache.GetTargetClassDefinition (GetClassContext ());
     }
   }
 

@@ -77,7 +77,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       if (mixinTypeAttributes.Length > 0)
       {
         Assertion.IsTrue (mixinTypeAttributes.Length == 1, "AllowMultiple == false");
-        return mixinTypeAttributes[0].GetMixinDefinition();
+        return mixinTypeAttributes[0].GetMixinDefinition(TargetClassDefinitionCache.Current);
       }
       else
         return targetClassDefinition.Mixins[mixinType];

@@ -143,11 +143,14 @@
     <Compile Include="Diagnostics\ToText\ToTextSpecificTypeHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificTypeHandlerWrapper.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificInterfaceHandlerWrapper.cs" />
+    <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimer.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinType.cs" />
     <Compile Include="Mixins\CodeGeneration\ICodeGenerationModule.cs" />
+    <Compile Include="Mixins\CodeGeneration\IConcreteTypeMetadataImporter.cs" />
     <Compile Include="Mixins\Definitions\IAttributeIntroductionSource.cs" />
+    <Compile Include="Mixins\Definitions\ITargetClassDefinitionCache.cs" />
     <Compile Include="Mixins\Definitions\NonAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\SuppressedAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\IMemberIntroductionDefinition.cs" />

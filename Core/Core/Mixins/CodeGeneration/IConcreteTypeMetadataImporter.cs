@@ -10,19 +10,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-using Remotion.Collections;
+using System.Runtime.InteropServices;
 using Remotion.Mixins.Definitions;
 
 namespace Remotion.Mixins.CodeGeneration
 {
-  public interface ITypeGenerator
+  /// <summary>
+  /// Assists in importing pre-generated concrete mixed and mixin types by analyzing the types and returning the respective metadata they were
+  /// generated for.
+  /// </summary>
+  public interface IConcreteTypeMetadataImporter
   {
-    TypeBuilder TypeBuilder { get; }
-    bool IsAssemblySigned { get; }
-
-    Type GetBuiltType ();
-    MethodInfo GetPublicMethodWrapper (MethodDefinition methodToBeWrapped);
+    IEnumerable<TargetClassDefinition> GetMetadataForMixedType (Type concreteMixedType, ITargetClassDefinitionCache targetClassDefinitionCache);
+    IEnumerable<MixinDefinition> GetMetadataForMixinType (Type concreteMixinType, ITargetClassDefinitionCache targetClassDefinitionCache);
   }
 }

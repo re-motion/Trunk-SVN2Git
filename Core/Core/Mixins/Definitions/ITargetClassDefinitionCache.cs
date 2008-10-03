@@ -8,21 +8,13 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-using Remotion.Collections;
-using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Context;
 
-namespace Remotion.Mixins.CodeGeneration
+namespace Remotion.Mixins.Definitions
 {
-  public interface ITypeGenerator
+  public interface ITargetClassDefinitionCache
   {
-    TypeBuilder TypeBuilder { get; }
-    bool IsAssemblySigned { get; }
-
-    Type GetBuiltType ();
-    MethodInfo GetPublicMethodWrapper (MethodDefinition methodToBeWrapped);
+    bool IsCached (ClassContext context);
+    TargetClassDefinition GetTargetClassDefinition (ClassContext context);
   }
 }
