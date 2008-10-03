@@ -25,7 +25,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void CreateTransactionStrategy_WithoutParentTransaction ()
     {
-      ITransactionMode transactionMode = new CreateChildIfParentTransactionMode<TestTransactionScopeManager2> (true);
+      ITransactionMode transactionMode = new CreateChildIfParentTransactionMode<TestTransactionFactory> (true);
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
       TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), executionListenerStub);
 
@@ -38,10 +38,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void CreateTransactionStrategy_WithParentTransaction ()
     {
-      ITransactionMode transactionMode = new CreateChildIfParentTransactionMode<TestTransactionScopeManager2> (true);
+      ITransactionMode transactionMode = new CreateChildIfParentTransactionMode<TestTransactionFactory> (true);
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
 
-      WxeFunction2 parentFunction = new TestFunction2(new CreateRootTransactionMode<TestTransactionScopeManager2> (true));
+      WxeFunction2 parentFunction = new TestFunction2 (new CreateRootTransactionMode<TestTransactionFactory> (true));
       WxeFunction2 childFunction = new TestFunction2 (transactionMode);
       parentFunction.Add (childFunction);
 
@@ -66,10 +66,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void CreateTransactionStrategy_WithParentTransactionInGrandParentFunction ()
     {
-      ITransactionMode transactionMode = new CreateChildIfParentTransactionMode<TestTransactionScopeManager2> (true);
+      ITransactionMode transactionMode = new CreateChildIfParentTransactionMode<TestTransactionFactory> (true);
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
 
-      WxeFunction2 grandParentFunction = new TestFunction2 (new CreateRootTransactionMode<TestTransactionScopeManager2> (true));
+      WxeFunction2 grandParentFunction = new TestFunction2 (new CreateRootTransactionMode<TestTransactionFactory> (true));
 
       WxeFunction2 parentFunction = new TestFunction2 (new NoneTransactionMode ());
       grandParentFunction.Add (parentFunction);
@@ -98,7 +98,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void IsSerializeable ()
     {
-      var deserialized = Serializer.SerializeAndDeserialize (new CreateChildIfParentTransactionMode<TestTransactionScopeManager2> (true));
+      var deserialized = Serializer.SerializeAndDeserialize (new CreateChildIfParentTransactionMode<TestTransactionFactory> (true));
 
       Assert.That (deserialized.AutoCommit, Is.True);
     }

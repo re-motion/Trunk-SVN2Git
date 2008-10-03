@@ -15,18 +15,18 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 namespace Remotion.Web.ExecutionEngine
 {
   //TODO: Doc
-  public abstract class WxeTransactionMode<TScopeManager>
-      where TScopeManager : ITransactionScopeManager, new ()
+  public abstract class WxeTransactionMode<TTransactionFactory>
+      where TTransactionFactory : ITransactionFactory, new ()
   {
     public static readonly ITransactionMode None = new NoneTransactionMode();
 
-    public static readonly ITransactionMode CreateRoot = new CreateRootTransactionMode<TScopeManager>(false);
+    public static readonly ITransactionMode CreateRoot = new CreateRootTransactionMode<TTransactionFactory>(false);
 
-    public static readonly ITransactionMode CreateRootWithAutoCommit = new CreateRootTransactionMode<TScopeManager> (true);
+    public static readonly ITransactionMode CreateRootWithAutoCommit = new CreateRootTransactionMode<TTransactionFactory> (true);
 
-    public static readonly ITransactionMode CreateChildIfParent = new CreateChildIfParentTransactionMode<TScopeManager>(false);
+    public static readonly ITransactionMode CreateChildIfParent = new CreateChildIfParentTransactionMode<TTransactionFactory>(false);
 
-    public static readonly ITransactionMode CreateChildIfParentWithAutoCommit = new CreateChildIfParentTransactionMode<TScopeManager> (true);
+    public static readonly ITransactionMode CreateChildIfParentWithAutoCommit = new CreateChildIfParentTransactionMode<TTransactionFactory> (true);
 
     private WxeTransactionMode ()
     {

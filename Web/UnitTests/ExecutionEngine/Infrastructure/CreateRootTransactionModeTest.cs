@@ -23,7 +23,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void CreateTransactionStrategy ()
     {
-      ITransactionMode transactionMode = new CreateRootTransactionMode<TestTransactionScopeManager2> (true);
+      ITransactionMode transactionMode = new CreateRootTransactionMode<TestTransactionFactory> (true);
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
       TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), executionListenerStub);
 

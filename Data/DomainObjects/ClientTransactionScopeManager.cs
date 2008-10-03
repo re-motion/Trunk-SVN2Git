@@ -17,31 +17,13 @@ namespace Remotion.Data.DomainObjects
   /// Implements the <see cref="ITransactionScopeManager{TTransaction,TScope}"/> interface for <see cref="ClientTransaction"/> and
   /// <see cref="ClientTransactionScope"/>.
   /// </summary>
-  public class ClientTransactionScopeManager : ITransactionScopeManager, ITransactionScopeManager<ClientTransaction, ClientTransactionScope>
+  public class ClientTransactionScopeManager: ITransactionScopeManager<ClientTransaction, ClientTransactionScope>
   {
     /// <summary>
     /// Gets the active transaction scope, or <see langword="null"/> if no active scope exists.
     /// </summary>
     /// <value>The active transaction scope.</value>
-    public ITransactionScope ActiveScope
-    {
-      get { return ClientTransactionScope.ActiveScope; }
-    }
-
-    /// <summary>
-    /// Creates a new root transaction instance. This instance is not yet managed by a scope.
-    /// </summary>
-    /// <returns>A new root transaction.</returns>
-    public ITransaction CreateRootTransaction ()
-    {
-      return ClientTransaction.CreateRootTransaction ();
-    }
-
-    /// <summary>
-    /// Gets the active transaction scope, or <see langword="null"/> if no active scope exists.
-    /// </summary>
-    /// <value>The active transaction scope.</value>
-    ClientTransactionScope ITransactionScopeManager<ClientTransaction, ClientTransactionScope>.ActiveScope
+    public ClientTransactionScope ActiveScope
     {
       get { return ClientTransactionScope.ActiveScope; }
     }
@@ -54,7 +36,7 @@ namespace Remotion.Data.DomainObjects
     /// The scope keeping the transaction active.
     /// </returns>
     /// <remarks>The scope does not discard the transaction when it is left.</remarks>
-    ClientTransactionScope ITransactionScopeManager<ClientTransaction, ClientTransactionScope>.EnterScope (ClientTransaction transaction)
+    public ClientTransactionScope EnterScope (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       return transaction.EnterNonDiscardingScope ();
@@ -64,7 +46,7 @@ namespace Remotion.Data.DomainObjects
     /// Creates a new root transaction instance. This instance is not yet managed by a scope.
     /// </summary>
     /// <returns>A new root transaction.</returns>
-    ClientTransaction ITransactionScopeManager<ClientTransaction, ClientTransactionScope>.CreateRootTransaction ()
+    public ClientTransaction CreateRootTransaction ()
     {
       return ClientTransaction.CreateRootTransaction ();
     }
@@ -77,7 +59,7 @@ namespace Remotion.Data.DomainObjects
     /// <returns>
     /// True if the object could be enlisted, or false if it was not of type <see cref="DomainObject"/>. (Otherwise, an exception is thrown.)
     /// </returns>
-    bool ITransactionScopeManager<ClientTransaction, ClientTransactionScope>.TryEnlistObject (ClientTransaction transaction, object objectToBeEnlisted)
+    public bool TryEnlistObject (ClientTransaction transaction, object objectToBeEnlisted)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("objectToBeEnlisted", objectToBeEnlisted);
@@ -99,7 +81,7 @@ namespace Remotion.Data.DomainObjects
     /// <param name="destinationTransaction">The transaction to enlist the objects in.</param>
     /// <param name="copyCollectionEventHandlers">If true, any event handlers registered with collection properties of the objects being enlisted will
     /// be copied to the new transactions. Events are only copied for objects that are newly enlisted by this method.</param>
-    void ITransactionScopeManager<ClientTransaction, ClientTransactionScope>.EnlistSameObjects (ClientTransaction sourceTransaction, ClientTransaction destinationTransaction, bool copyCollectionEventHandlers)
+    public void EnlistSameObjects (ClientTransaction sourceTransaction, ClientTransaction destinationTransaction, bool copyCollectionEventHandlers)
     {
       ArgumentUtility.CheckNotNull ("sourceTransaction", sourceTransaction);
       ArgumentUtility.CheckNotNull ("destinationTransaction", destinationTransaction);
@@ -111,7 +93,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="sourceTransaction">The transaction whose event handlers should be copied.</param>
     /// <param name="destinationTransaction">The transaction to register the event handlers with.</param>
-    void ITransactionScopeManager<ClientTransaction, ClientTransactionScope>.CopyTransactionEventHandlers (ClientTransaction sourceTransaction, ClientTransaction destinationTransaction)
+    public void CopyTransactionEventHandlers (ClientTransaction sourceTransaction, ClientTransaction destinationTransaction)
     {
       ArgumentUtility.CheckNotNull ("sourceTransaction", sourceTransaction);
       ArgumentUtility.CheckNotNull ("destinationTransaction", destinationTransaction);
@@ -123,7 +105,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="transaction">The transaction to load the object in.</param>
     /// <param name="objectEnlistedInTransaction">The object to be loaded.</param>
-    void ITransactionScopeManager<ClientTransaction, ClientTransactionScope>.EnsureEnlistedObjectIsLoaded (ClientTransaction transaction, object objectEnlistedInTransaction)
+    public void EnsureEnlistedObjectIsLoaded (ClientTransaction transaction, object objectEnlistedInTransaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("objectEnlistedInTransaction", objectEnlistedInTransaction);

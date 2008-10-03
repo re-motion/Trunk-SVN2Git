@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{70273934-12F1-49AF-975A-303BAEFE1CAE}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -27,7 +27,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Remotion.Data.Interfaces.XML</DocumentationFile>
-    <NoWarn>1591;419</NoWarn><WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592;3008</WarningsAsErrors>
+    <NoWarn>1591;419</NoWarn>
+    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592;3008</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ITransaction.cs" />
+    <Compile Include="ITransactionFactory.cs" />
     <Compile Include="ITransactionScope.cs" />
     <Compile Include="ITransactionScopeManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

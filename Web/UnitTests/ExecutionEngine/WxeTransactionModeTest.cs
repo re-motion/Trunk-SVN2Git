@@ -23,38 +23,38 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     [Test]
     public void GetNone ()
     {
-      Assert.That (WxeTransactionMode<TestTransactionScopeManager2>.None, Is.InstanceOfType (typeof (NoneTransactionMode)));
+      Assert.That (WxeTransactionMode<TestTransactionFactory>.None, Is.InstanceOfType (typeof (NoneTransactionMode)));
     }
 
     [Test]
     public void GetCreateRoot ()
     {
-      ITransactionMode transactionMode = WxeTransactionMode<TestTransactionScopeManager2>.CreateRoot;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateRootTransactionMode<TestTransactionScopeManager2>)));
+      ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateRoot;
+      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateRootTransactionMode<TestTransactionFactory>)));
       Assert.That (transactionMode.AutoCommit, Is.False);
     }
 
     [Test]
     public void GetCreateRootWithAutoCommit ()
     {
-      ITransactionMode transactionMode = WxeTransactionMode<TestTransactionScopeManager2>.CreateRootWithAutoCommit;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateRootTransactionMode<TestTransactionScopeManager2>)));
+      ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateRootWithAutoCommit;
+      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateRootTransactionMode<TestTransactionFactory>)));
       Assert.That (transactionMode.AutoCommit, Is.True);
     }
 
     [Test]
     public void GetCreateChildIfParent ()
     {
-      ITransactionMode transactionMode = WxeTransactionMode<TestTransactionScopeManager2>.CreateChildIfParent;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateChildIfParentTransactionMode<TestTransactionScopeManager2>)));
+      ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateChildIfParent;
+      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateChildIfParentTransactionMode<TestTransactionFactory>)));
       Assert.That (transactionMode.AutoCommit, Is.False);
     }
 
     [Test]
     public void GetCreateChildIfParentWithAutoCommit ()
     {
-      ITransactionMode transactionMode = WxeTransactionMode<TestTransactionScopeManager2>.CreateChildIfParentWithAutoCommit;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateChildIfParentTransactionMode<TestTransactionScopeManager2>)));
+      ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateChildIfParentWithAutoCommit;
+      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateChildIfParentTransactionMode<TestTransactionFactory>)));
       Assert.That (transactionMode.AutoCommit, Is.True);
     }
   }

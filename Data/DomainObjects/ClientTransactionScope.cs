@@ -166,6 +166,14 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
+    /// Gets a flag that describes whether this is the active scope.
+    /// </summary>
+    bool ITransactionScope.IsActiveScope
+    {
+      get { return ClientTransactionScope.ActiveScope == this; }
+    }
+
+    /// <summary>
     /// Gets or sets a value indicating whether <see cref="DomainObject"/> instances are automatically enlisted in the current transaction within
     /// this scope.
     /// </summary>

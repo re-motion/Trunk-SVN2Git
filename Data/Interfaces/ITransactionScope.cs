@@ -16,6 +16,11 @@ namespace Remotion.Data
   public interface ITransactionScope
   {
     /// <summary>
+    /// Gets a flag that describes whether this is the active scope.
+    /// </summary>
+    bool IsActiveScope { get; }
+
+    /// <summary>
     /// Gets the transaction managed by this scope.
     /// </summary>
     /// <value>The scoped transaction.</value>

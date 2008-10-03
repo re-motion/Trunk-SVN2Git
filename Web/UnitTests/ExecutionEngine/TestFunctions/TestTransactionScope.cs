@@ -48,6 +48,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
       get { return ScopedTransaction; }
     }
 
+    bool ITransactionScope.IsActiveScope
+    {
+      get { return CurrentScope == this; }
+    }
+
     public void Leave ()
     {
       if (_left)

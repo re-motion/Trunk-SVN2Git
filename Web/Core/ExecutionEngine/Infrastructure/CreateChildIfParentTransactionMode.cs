@@ -16,8 +16,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
   [Serializable]
-  public class CreateChildIfParentTransactionMode<TScopeManager> : ITransactionMode
-      where TScopeManager: ITransactionScopeManager, new()
+  public class CreateChildIfParentTransactionMode<TTransactionFactory> : ITransactionMode
+      where TTransactionFactory: ITransactionFactory, new()
   {
     private readonly bool _autoCommit;
 
@@ -36,8 +36,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         if (!parentFunction.Transaction.IsNull)
           return new ChildTransactionStrategy (_autoCommit, executionListener, function);
       }
-      ITransactionScopeManager scopeManager = new TScopeManager();
-      return new RootTransactionStrategy (_autoCommit, scopeManager.CreateRootTransaction(), function, executionListener);
+
+      var transactionFactory = new TTransactionFactory();
+      return new RootTransactionStrategy (_autoCommit, transactionFactory.CreateRootTransaction(), function, executionListener);
     }
 
     public bool AutoCommit

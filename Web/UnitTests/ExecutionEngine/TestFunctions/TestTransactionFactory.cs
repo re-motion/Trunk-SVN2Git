@@ -13,13 +13,8 @@ using Remotion.Data;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
-  public class TestTransactionScopeManager2 : ITransactionScopeManager
+  public class TestTransactionFactory : ITransactionFactory
   {
-    public ITransactionScope ActiveScope
-    {
-      get { throw new NotImplementedException(); }
-    }
-
     public virtual ITransaction CreateRootTransaction ()
     {
       return new TestTransaction();

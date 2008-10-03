@@ -128,6 +128,7 @@
   <ItemGroup>
     <Compile Include="AutoRollbackBehavior.cs" />
     <Compile Include="ClassIDAttribute.cs" />
+    <Compile Include="ClientTransactionFactory.cs" />
     <Compile Include="ClientTransactionScopeManager.cs" />
     <Compile Include="ClientTransactionWrapper.cs" />
     <Compile Include="Cloning\CloneContext.cs" />

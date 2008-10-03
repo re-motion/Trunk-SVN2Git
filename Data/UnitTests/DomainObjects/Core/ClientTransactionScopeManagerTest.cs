@@ -17,27 +17,14 @@ using Remotion.Data.DomainObjects.Infrastructure;
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   [TestFixture]
-  public class ClientTransactionScopeManagerTest
+  public class ClientTransactionFactoryTest
   {
-    [Test]
-    public void GetActiveScope ()
-    {
-      ITransactionScopeManager scopeManager = new ClientTransactionScopeManager();
-
-      Assert.That (scopeManager.ActiveScope, Is.Null);
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        Assert.That (scopeManager.ActiveScope, Is.SameAs (ClientTransactionScope.ActiveScope));
-      }
-      Assert.That (scopeManager.ActiveScope, Is.Null);
-    }
-
     [Test]
     public void CreateRootTransaction ()
     {
-      ITransactionScopeManager scopeManager = new ClientTransactionScopeManager ();
+      ITransactionFactory transactionFactory = new ClientTransactionFactory ();
 
-      Assert.That (scopeManager.CreateRootTransaction(), Is.InstanceOfType (typeof (RootClientTransaction)));
+      Assert.That (transactionFactory.CreateRootTransaction(), Is.InstanceOfType (typeof (RootClientTransaction)));
     }
   }
 }

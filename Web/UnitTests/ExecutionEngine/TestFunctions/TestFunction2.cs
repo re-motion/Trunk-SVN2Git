@@ -22,7 +22,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
     }
 
     public TestFunction2 ()
-        : base (WxeTransactionMode<TestTransactionScopeManager2>.None)
+        : base (WxeTransactionMode<TestTransactionFactory>.None)
     {
     }
   }
