@@ -62,15 +62,26 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    [Ignore]
-    public void ToText ()
+    public void ToTextDefaultConstructed ()
     {
       var accessConditions = new AclExpansionAccessConditions ();
       var result = To.String.e (accessConditions).CheckAndConvertToString ();
-      To.Console.s (result);
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("userMustOwn=False,groupMustOwn=False,tenantMustOwn=False,abstractRoleMustMatch=False"));
+      //To.Console.s (result);
+      Assert.That (result, Is.EqualTo ("[]"));
     }
 
+    [Test]
+    public void ToText ()
+    {
+      var accessConditions = new AclExpansionAccessConditions ();
+      accessConditions.AbstractRole = TestHelper.CreateAbstractRoleDefinition ("xyz", 123);
+      accessConditions.OnlyIfGroupIsOwner = true;
+      accessConditions.OnlyIfTenantIsOwner = true;
+      accessConditions.OnlyIfUserIsOwner = true;
+      var result = To.String.e (accessConditions).CheckAndConvertToString ();
+      //To.Console.s (result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("userMustOwn=True,groupMustOwn=True,tenantMustOwn=True,abstractRoleMustMatch=True,abstractRole="));
+    }
 
 
 
