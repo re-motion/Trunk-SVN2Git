@@ -290,6 +290,16 @@ namespace Remotion.Diagnostics.ToText
     /// </summary>
     IToTextBuilder e (string name, Object obj);
 
+    /// <summary>
+    /// <para>Writes element using <see cref="e(string,object)"/> if the passed Object is not null.</para>
+    /// </summary>
+    IToTextBuilder eIfNotNull (string name, Object obj);
+
+    /// <summary>
+    /// <para>Writes element using <see cref="e(object)"/> if the passed Object is not null.</para>
+    /// </summary>
+    IToTextBuilder eIfNotNull (Object obj);
+
 
     /// <summary>
     /// <para>Closes a sequence, activating the previously active sequence.</para>

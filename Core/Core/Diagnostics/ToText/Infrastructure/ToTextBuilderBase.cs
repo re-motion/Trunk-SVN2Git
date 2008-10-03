@@ -310,6 +310,27 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
       return WriteElement (name, obj);
     }
 
+
+    public IToTextBuilder eIfNotNull (string name, Object obj)
+    {
+      if (obj == null)
+      {
+        return this;
+      }
+      return WriteElement (name, obj);
+    }
+
+    public IToTextBuilder eIfNotNull (Object obj)
+    {
+      if (obj == null)
+      {
+        return this;
+      }
+      return WriteElement (obj);
+    }
+
+
+
     public abstract IToTextBuilder WriteEnumerable (IEnumerable enumerable);
 
     public IToTextBuilder array (Array array)

@@ -1017,6 +1017,32 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    [Test]
+    public void WriteIfNotNull ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      Object nullVar = null;
+      var someVar = "text";
+      toTextBuilder.eIfNotNull (nullVar).eIfNotNull (someVar).e (nullVar);
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("textnull"));
+    }
+
+    [Test]
+    public void WriteIfNotNullWithName ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      Object nullVar = null;
+      var someVar = "text";
+      toTextBuilder.eIfNotNull ("nullVar", nullVar).eIfNotNull ("someVar", someVar).e ("nullVar", nullVar);
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo ("someVar=textnullVar=null"));
+    }
+
+
+
     public static ToTextBuilder CreateTextBuilder ()
     {
       var toTextProvider = new ToTextProvider();

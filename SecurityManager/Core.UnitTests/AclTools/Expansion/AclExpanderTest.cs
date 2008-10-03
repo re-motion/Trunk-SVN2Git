@@ -178,6 +178,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceGroupAll = TestHelper.CreateAceWithGroupSelectionAll ();
       AttachAccessTypeReadWriteDelete (aceGroupAll, null, true, null);
 
+      To.ConsoleLine.e (aceGroupOwning);
+      To.ConsoleLine.e (aceAbstractRole);
+      To.ConsoleLine.e (aceGroupAll);
+
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
           List.New (User),
@@ -262,6 +266,26 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public override void ToText (AbstractRoleDefinition x, IToTextBuilder toTextBuilder)
     {
       toTextBuilder.ib<AbstractRoleDefinition> ("").e (x.Name).ie ();
+    }
+  }
+
+
+  [ToTextSpecificHandler]
+  public class Permission_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<Permission>
+  {
+    public override void ToText (Permission x, IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib<Permission> ("").e (x.AccessType).e (x.Allowed).ie ();
+    }
+  }
+
+
+  [ToTextSpecificHandler]
+  public class AccessControlEntry_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AccessControlEntry>
+  {
+    public override void ToText (AccessControlEntry x, IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib<AccessControlEntry> ("").e ("SelUser", x.UserSelection).eIfNotNull(x.SpecificUser).e(x.SpecificPosition).e(x.SpecificGroup).e(x.SpecificTenant).e ("SelGroup", x.GroupSelection).e ("SelTenant", x.TenantSelection).e ("SelUser", x.UserSelection).e (x.Permissions).ie ();
     }
   }
 }
