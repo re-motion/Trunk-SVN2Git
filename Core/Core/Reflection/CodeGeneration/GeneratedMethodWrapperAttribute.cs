@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Remotion.Mixins.CodeGeneration
+namespace Remotion.Reflection.CodeGeneration
 {
   [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
   public class GeneratedMethodWrapperAttribute : Attribute

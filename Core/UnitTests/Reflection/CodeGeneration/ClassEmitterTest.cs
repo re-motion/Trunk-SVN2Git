@@ -15,16 +15,18 @@ using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
   [TestFixture]
   public class ClassEmitterTest : CodeGenerationBaseTest
   {
-    private readonly BindingFlags _declaredInstanceBindingFlags =
+    private const BindingFlags _declaredInstanceBindingFlags = 
         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
     [Test]
@@ -36,7 +38,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void EmitSimpleClass ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "SimpleClass", typeof (ClassEmitterTest), new Type[] { typeof (IMarkerInterface) },
+      var classEmitter = new CustomClassEmitter (Scope, "SimpleClass", typeof (ClassEmitterTest), new[] { typeof (IMarkerInterface) },
           TypeAttributes.Public | TypeAttributes.Class, false);
       Type builtType = classEmitter.BuildType ();
 
@@ -50,7 +52,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void HasBeenBuilt ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "HasBeenBuilt", typeof (ClassEmitterTest));
+      var classEmitter = new CustomClassEmitter (Scope, "HasBeenBuilt", typeof (ClassEmitterTest));
       Assert.IsFalse (classEmitter.HasBeenBuilt);
       classEmitter.BuildType();
       Assert.IsTrue (classEmitter.HasBeenBuilt);
@@ -77,16 +79,16 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         MatchType = MessageMatch.Contains)]
     public void ThrowsWhenNonInterfaceAsInterface ()
     {
-      new CustomClassEmitter (Scope, "ThrowsWhenNonInterfaceAsInterface", typeof (object), new Type[] { typeof (object) },
+      new CustomClassEmitter (Scope, "ThrowsWhenNonInterfaceAsInterface", typeof (object), new[] { typeof (object) },
           TypeAttributes.Public | TypeAttributes.Class, false);
     }
 
     [Test]
     public void CreateConstructorCreateField ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateConstructorCreateField", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "CreateConstructorCreateField", typeof (object));
       FieldReference field = classEmitter.CreateField ("_test", typeof (string));
-      ConstructorEmitter constructor = classEmitter.CreateConstructor (new Type[] { typeof (string), typeof (int) });
+      ConstructorEmitter constructor = classEmitter.CreateConstructor (new[] { typeof (string), typeof (int) });
       constructor.CodeBuilder.InvokeBaseConstructor();
       constructor.CodeBuilder
           .AddStatement (new AssignStatement (field, new ArgumentReference (typeof (string), 1).ToExpression()))
@@ -99,7 +101,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateField_WithAttributes ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateField_WithAttributes", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "CreateField_WithAttributes", typeof (object));
       classEmitter.CreateField ("_test", typeof (string), FieldAttributes.Private);
 
       Type t = classEmitter.BuildType ();
@@ -109,7 +111,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateStaticField_WithAttributes ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateStaticField_WithAttributes", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "CreateStaticField_WithAttributes", typeof (object));
       classEmitter.CreateStaticField ("_test", typeof (string), FieldAttributes.Private);
 
       Type t = classEmitter.BuildType ();
@@ -119,7 +121,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateDefaultConstructor ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateDefaultConstructor", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "CreateDefaultConstructor", typeof (object));
       classEmitter.CreateDefaultConstructor ();
       Activator.CreateInstance (classEmitter.BuildType ());
     }
@@ -127,7 +129,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateTypeConstructorCreateStaticField ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateTypeConstructorCreateStaticField", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "CreateTypeConstructorCreateStaticField", typeof (object));
       FieldReference field = classEmitter.CreateStaticField ("s_test", typeof (string));
       classEmitter.CreateTypeConstructor ().CodeBuilder
           .AddStatement (new AssignStatement (field, (new ConstReference ("Yay").ToExpression ())))
@@ -139,7 +141,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateMethod ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateMethod", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "CreateMethod", typeof (object));
       CustomMethodEmitter method = classEmitter.CreateMethod ("Check", MethodAttributes.Public);
       method.SetReturnType (typeof (string));
       method.AddStatement (new ReturnStatement (new ConstReference ("ret")));
@@ -151,7 +153,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateStaticMethod ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateStaticMethod", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "CreateStaticMethod", typeof (object));
       CustomMethodEmitter method = classEmitter.CreateMethod ("Check", MethodAttributes.Public | MethodAttributes.Static);
       method.SetReturnType (typeof (string));
       method.AddStatement (new ReturnStatement (new ConstReference ("stat")));
@@ -163,7 +165,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateProperty ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateProperty", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "CreateProperty", typeof (object));
       CustomPropertyEmitter property = classEmitter.CreateProperty ("Check", PropertyKind.Instance, typeof (string), Type.EmptyTypes, PropertyAttributes.None);
       property.CreateGetMethod ().AddStatement (new ReturnStatement (new ConstReference ("4711")));
 
@@ -174,7 +176,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateEvent ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateEvent", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "CreateEvent", typeof (object));
       CustomEventEmitter eventEmitter = classEmitter.CreateEvent ("Eve", EventKind.Instance, typeof (Func<string>));
       eventEmitter.AddMethod.AddStatement (new ReturnStatement ());
       eventEmitter.RemoveMethod.AddStatement (new ReturnStatement ());
@@ -186,7 +188,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateMethodOverride ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateMethodOverride", typeof (object), new Type[] { typeof (IMarkerInterface) },
+      var classEmitter = new CustomClassEmitter (Scope, "CreateMethodOverride", typeof (object), new[] { typeof (IMarkerInterface) },
           TypeAttributes.Public | TypeAttributes.Class, false);
       
       CustomMethodEmitter toStringMethod = classEmitter.CreateMethodOverride (typeof (object).GetMethod ("ToString"));
@@ -204,7 +206,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreatePrivateMethodOverride ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateMethodOverride", typeof (object), new Type[] { typeof (IMarkerInterface) },
+      var classEmitter = new CustomClassEmitter (Scope, "CreateMethodOverride", typeof (object), new[] { typeof (IMarkerInterface) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomMethodEmitter toStringMethod = classEmitter.CreatePrivateMethodOverride (typeof (object).GetMethod ("ToString"));
@@ -227,7 +229,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void MethodNameAndVisibilityArePreservedOnOverride ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "MethodNameAndVisibilityArePreservedOnOverride", typeof (ClassWithAllKindsOfMembers), new Type[] { typeof (IMarkerInterface) },
+      var classEmitter = new CustomClassEmitter (Scope, "MethodNameAndVisibilityArePreservedOnOverride", typeof (ClassWithAllKindsOfMembers), new[] { typeof (IMarkerInterface) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomMethodEmitter toStringMethod = classEmitter.CreateMethodOverride (typeof (object).GetMethod ("ToString", _declaredInstanceBindingFlags));
@@ -268,7 +270,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateInterfaceMethodImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateInterfaceMethodImplementation", typeof (object), new Type[] { typeof (ICloneable) },
+      var classEmitter = new CustomClassEmitter (Scope, "CreateInterfaceMethodImplementation", typeof (object), new[] { typeof (ICloneable) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomMethodEmitter cloneMethod = classEmitter.CreateInterfaceMethodImplementation (typeof (ICloneable).GetMethod ("Clone"));
@@ -282,7 +284,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void MethodNameAndVisibilityAreChangedOnInterfaceImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "MethodNameAndVisibilityAreChangedOnInterfaceImplementation", typeof (object), new Type[] { typeof (ICloneable) },
+      var classEmitter = new CustomClassEmitter (Scope, "MethodNameAndVisibilityAreChangedOnInterfaceImplementation", typeof (object), new[] { typeof (ICloneable) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomMethodEmitter method =
@@ -304,8 +306,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreatePublicInterfaceMethodImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreatePublicInterfaceMethodImplementation", typeof (object),
-          new Type[] { typeof (ICloneable) }, TypeAttributes.Public | TypeAttributes.Class, false);
+      var classEmitter = new CustomClassEmitter (Scope, "CreatePublicInterfaceMethodImplementation", typeof (object),
+          new[] { typeof (ICloneable) }, TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomMethodEmitter cloneMethod = classEmitter.CreatePublicInterfaceMethodImplementation (typeof (ICloneable).GetMethod ("Clone"));
       cloneMethod.AddStatement (new ReturnStatement (new ConstReference ("P0wned!")));
@@ -318,8 +320,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void MethodNameAndVisibilityAreUnchangedOnPublicInterfaceImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "MethodNameAndVisibilityAreUnchangedOnPublicInterfaceImplementation",
-          typeof (object), new Type[] { typeof (ICloneable) }, TypeAttributes.Public | TypeAttributes.Class, false);
+      var classEmitter = new CustomClassEmitter (Scope, "MethodNameAndVisibilityAreUnchangedOnPublicInterfaceImplementation",
+          typeof (object), new[] { typeof (ICloneable) }, TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomMethodEmitter method =
           classEmitter.CreatePublicInterfaceMethodImplementation (typeof (ICloneable).GetMethod ("Clone", _declaredInstanceBindingFlags));
@@ -337,7 +339,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreatePropertyOverride ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreatePropertyOverride", typeof (ClassWithAllKindsOfMembers), Type.EmptyTypes,
+      var classEmitter = new CustomClassEmitter (Scope, "CreatePropertyOverride", typeof (ClassWithAllKindsOfMembers), Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomPropertyEmitter property =
@@ -352,7 +354,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       property.GetMethod.AddStatement (new ReturnStatement (new ConstReference (17)));
 
       Type builtType = classEmitter.BuildType ();
-      ClassWithAllKindsOfMembers instance = (ClassWithAllKindsOfMembers) Activator.CreateInstance (builtType);
+      var instance = (ClassWithAllKindsOfMembers) Activator.CreateInstance (builtType);
 
       Assert.AreEqual (17, instance.Property); // overridden
       instance.Property = 7; // inherited, not overridden
@@ -361,7 +363,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateIndexedPropertyOverride ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateIndexedPropertyOverride", typeof (ClassWithAllKindsOfMembers), Type.EmptyTypes,
+      var classEmitter = new CustomClassEmitter (Scope, "CreateIndexedPropertyOverride", typeof (ClassWithAllKindsOfMembers), Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       PropertyInfo baseProperty = typeof (ClassWithAllKindsOfMembers).GetProperty ("Item", _declaredInstanceBindingFlags);
@@ -371,7 +373,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       property.CreateSetMethod ().ImplementByBaseCall (baseProperty.GetSetMethod ());
 
       Type builtType = classEmitter.BuildType ();
-      ClassWithAllKindsOfMembers instance = (ClassWithAllKindsOfMembers) Activator.CreateInstance (builtType);
+      var instance = (ClassWithAllKindsOfMembers) Activator.CreateInstance (builtType);
 
       Assert.AreEqual ("17", instance[17]);
       instance[18] = "foo";
@@ -380,7 +382,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void PropertyNamePreservedOnOverride ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "PropertyNamePreservedOnOverride", typeof (ClassWithAllKindsOfMembers), Type.EmptyTypes,
+      var classEmitter = new CustomClassEmitter (Scope, "PropertyNamePreservedOnOverride", typeof (ClassWithAllKindsOfMembers), Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomPropertyEmitter property =
@@ -399,7 +401,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateInterfacePropertyImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateInterfacePropertyImplementation", typeof (object), new Type[] { typeof (IInterfaceWithProperty) },
+      var classEmitter = new CustomClassEmitter (Scope, "CreateInterfacePropertyImplementation", typeof (object), new[] { typeof (IInterfaceWithProperty) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomPropertyEmitter property = classEmitter.CreateInterfacePropertyImplementation (
@@ -414,14 +416,14 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Type builtType = classEmitter.BuildType ();
 
-      IInterfaceWithProperty instance = (IInterfaceWithProperty) Activator.CreateInstance (builtType);
+      var instance = (IInterfaceWithProperty) Activator.CreateInstance (builtType);
       instance.Property = 7;
     }
 
     [Test]
     public void CreatePublicInterfacePropertyImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreatePublicInterfacePropertyImplementation", typeof (object), new Type[] { typeof (IInterfaceWithProperty) },
+      var classEmitter = new CustomClassEmitter (Scope, "CreatePublicInterfacePropertyImplementation", typeof (object), new[] { typeof (IInterfaceWithProperty) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomPropertyEmitter property = classEmitter.CreatePublicInterfacePropertyImplementation (
@@ -436,14 +438,14 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Type builtType = classEmitter.BuildType ();
 
-      IInterfaceWithProperty instance = (IInterfaceWithProperty) Activator.CreateInstance (builtType);
+      var instance = (IInterfaceWithProperty) Activator.CreateInstance (builtType);
       instance.Property = 7;
     }
 
     [Test]
     public void PropertyNameIsChangedOnInterfaceImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "PropertyNameIsChangedOnInterfaceImplementation", typeof (object), new Type[] { typeof (IInterfaceWithProperty) },
+      var classEmitter = new CustomClassEmitter (Scope, "PropertyNameIsChangedOnInterfaceImplementation", typeof (object), new[] { typeof (IInterfaceWithProperty) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomPropertyEmitter property = classEmitter.CreateInterfacePropertyImplementation (
@@ -462,7 +464,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void PropertyNameIsNotChangedOnPublicInterfaceImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "PropertyNameIsNotChangedOnPublicInterfaceImplementation", typeof (object), new Type[] { typeof (IInterfaceWithProperty) },
+      var classEmitter = new CustomClassEmitter (Scope, "PropertyNameIsNotChangedOnPublicInterfaceImplementation", typeof (object), new[] { typeof (IInterfaceWithProperty) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomPropertyEmitter property = classEmitter.CreatePublicInterfacePropertyImplementation (
@@ -480,7 +482,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateEventOverride ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateEventOverride", typeof (ClassWithAllKindsOfMembers), Type.EmptyTypes,
+      var classEmitter = new CustomClassEmitter (Scope, "CreateEventOverride", typeof (ClassWithAllKindsOfMembers), Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomEventEmitter eventEmitter =
@@ -495,7 +497,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       eventEmitter.RemoveMethod.AddStatement (new ReturnStatement ());
       
       Type builtType = classEmitter.BuildType ();
-      ClassWithAllKindsOfMembers instance = (ClassWithAllKindsOfMembers) Activator.CreateInstance (builtType);
+      var instance = (ClassWithAllKindsOfMembers) Activator.CreateInstance (builtType);
 
       instance.Event += delegate { };
       instance.Event -= delegate { };
@@ -504,7 +506,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void EventNamePreservedOnOverride ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "EventNamePreservedOnOverride", typeof (ClassWithAllKindsOfMembers), Type.EmptyTypes,
+      var classEmitter = new CustomClassEmitter (Scope, "EventNamePreservedOnOverride", typeof (ClassWithAllKindsOfMembers), Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomEventEmitter eventEmitter =
@@ -531,7 +533,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreateInterfaceEventImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreateInterfaceEventImplementation", typeof (object), new Type[] { typeof (IInterfaceWithEvent) },
+      var classEmitter = new CustomClassEmitter (Scope, "CreateInterfaceEventImplementation", typeof (object), new[] { typeof (IInterfaceWithEvent) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomEventEmitter eventEmitter = classEmitter.CreateInterfaceEventImplementation (
@@ -547,7 +549,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Type builtType = classEmitter.BuildType ();
 
-      IInterfaceWithEvent instance = (IInterfaceWithEvent) Activator.CreateInstance (builtType);
+      var instance = (IInterfaceWithEvent) Activator.CreateInstance (builtType);
       instance.Event += delegate { };
       instance.Event -= delegate { };
     }
@@ -555,7 +557,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreatePublicInterfaceEventImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "CreatePublicInterfaceEventImplementation", typeof (object), new Type[] { typeof (IInterfaceWithEvent) },
+      var classEmitter = new CustomClassEmitter (Scope, "CreatePublicInterfaceEventImplementation", typeof (object), new[] { typeof (IInterfaceWithEvent) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomEventEmitter eventEmitter = classEmitter.CreatePublicInterfaceEventImplementation (
@@ -571,7 +573,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Type builtType = classEmitter.BuildType ();
 
-      IInterfaceWithEvent instance = (IInterfaceWithEvent) Activator.CreateInstance (builtType);
+      var instance = (IInterfaceWithEvent) Activator.CreateInstance (builtType);
       instance.Event += delegate { };
       instance.Event -= delegate { };
     }
@@ -579,7 +581,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void EventNameIsChangedOnInterfaceImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "EventNameIsChangedOnInterfaceImplementation", typeof (object), new Type[] { typeof (IInterfaceWithEvent) },
+      var classEmitter = new CustomClassEmitter (Scope, "EventNameIsChangedOnInterfaceImplementation", typeof (object), new[] { typeof (IInterfaceWithEvent) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomEventEmitter eventEmitter = classEmitter.CreateInterfaceEventImplementation (
@@ -602,7 +604,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void EventNameIsNotChangedOnPublicInterfaceImplementation ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "EventNameIsNotChangedOnPublicInterfaceImplementation", typeof (object), new Type[] { typeof (IInterfaceWithEvent) },
+      var classEmitter = new CustomClassEmitter (Scope, "EventNameIsNotChangedOnPublicInterfaceImplementation", typeof (object), new[] { typeof (IInterfaceWithEvent) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomEventEmitter eventEmitter = classEmitter.CreatePublicInterfaceEventImplementation (
@@ -624,13 +626,13 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void AddCustomAttribute ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "AddCustomAttribute", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "AddCustomAttribute", typeof (object));
       classEmitter.AddCustomAttribute (new CustomAttributeBuilder (typeof (SimpleAttribute).GetConstructor (Type.EmptyTypes), new object[0],
           typeof (SimpleAttribute).GetFields (), new object[] { "value" }));
 
       Type builtType = classEmitter.BuildType ();
 
-      SimpleAttribute[] attributes = (SimpleAttribute[]) builtType.GetCustomAttributes (typeof (SimpleAttribute), false);
+      var attributes = (SimpleAttribute[]) builtType.GetCustomAttributes (typeof (SimpleAttribute), false);
       Assert.AreEqual (1, attributes.Length);
       Assert.AreEqual ("value", attributes[0].S);
     }
@@ -638,7 +640,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ReplicateBaseTypeConstructors ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ReplicateBaseTypeConstructors", typeof (List<int>));
+      var classEmitter = new CustomClassEmitter (Scope, "ReplicateBaseTypeConstructors", typeof (List<int>));
       FieldReference field = classEmitter.CreateStaticField ("s_ctorsCalled", typeof (int));
 
       classEmitter.ReplicateBaseTypeConstructors (
@@ -657,12 +659,12 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       Assert.AreEqual (1, builtType.GetField ("s_ctorsCalled").GetValue (null));
 
-      List<int> list = (List<int>) Activator.CreateInstance (builtType, 5); // capacity
+      var list = (List<int>) Activator.CreateInstance (builtType, 5); // capacity
       Assert.AreEqual (5, list.Capacity);
 
       Assert.AreEqual (2, builtType.GetField ("s_ctorsCalled").GetValue (null));
 
-      list = (List<int>) Activator.CreateInstance (builtType, new int[] { 1, 2, 3 }); // IEnumerable
+      list = (List<int>) Activator.CreateInstance (builtType, new[] { 1, 2, 3 }); // IEnumerable
       Assert.AreEqual (3, list.Count);
       Assert.AreEqual (1, list[0]);
       Assert.AreEqual (2, list[1]);
@@ -674,7 +676,20 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void GetPublicMethodWrapper ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper", typeof (ClassWithProtectedMethod));
+      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper", typeof (ClassWithProtectedMethod));
+      classEmitter.GetPublicMethodWrapper (typeof (ClassWithProtectedMethod).GetMethod ("GetSecret", _declaredInstanceBindingFlags));
+
+      object instance = Activator.CreateInstance (classEmitter.BuildType ());
+      MethodInfo publicWrapper = instance.GetType().GetMethod ("__wrap__GetSecret");
+      Assert.IsNotNull (publicWrapper);
+      Assert.AreEqual ("The secret is to be more provocative and interesting than anything else in [the] environment.", 
+          publicWrapper.Invoke (instance, null));
+    }
+
+    [Test]
+    public void GetPublicMethodWrapper_Cached ()
+    {
+      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper_Cached", typeof (ClassWithProtectedMethod));
       MethodInfo emitter1 =
           classEmitter.GetPublicMethodWrapper (typeof (ClassWithProtectedMethod).GetMethod ("GetSecret", _declaredInstanceBindingFlags));
       MethodInfo emitter2 =
@@ -682,20 +697,47 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       Assert.AreSame (emitter1, emitter2);
 
       MethodInfo emitter3 =
-          classEmitter.GetPublicMethodWrapper (typeof (object).GetMethod ("Finalize", _declaredInstanceBindingFlags));
+      classEmitter.GetPublicMethodWrapper (typeof (object).GetMethod ("Finalize", _declaredInstanceBindingFlags));
       Assert.AreNotSame (emitter1, emitter3);
 
+      classEmitter.BuildType ();
+    }
+
+    [Test]
+    public void GetPublicMethodWrapper_HasAttribute()
+    {
+      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper_HasAttribute", typeof (ClassWithProtectedMethod));
+      classEmitter.GetPublicMethodWrapper (typeof (ClassWithProtectedMethod).GetMethod ("GetSecret", _declaredInstanceBindingFlags));
+
       object instance = Activator.CreateInstance (classEmitter.BuildType ());
-      MethodInfo publicWrapper = instance.GetType().GetMethod ("__wrap__GetSecret");
-      Assert.IsNotNull (publicWrapper);
-      Assert.AreEqual (
-          "The secret is to be more provocative and interesting than anything else in [the] environment.", publicWrapper.Invoke (instance, null));
+      MethodInfo publicWrapper = instance.GetType ().GetMethod ("__wrap__GetSecret");
+      
+      var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (publicWrapper, false);
+      Assert.That (attribute, Is.Not.Null);
+    }
+
+    [Test]
+    public void GetPublicMethodWrapper_Attribute_HasRightToken ()
+    {
+      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper_Attribute_HasRightToken", typeof (ClassWithProtectedMethod));
+      var methodToBeWrapped = typeof (ClassWithProtectedMethod).GetMethod ("GetSecret", _declaredInstanceBindingFlags);
+      classEmitter.GetPublicMethodWrapper (methodToBeWrapped);
+
+      Type type = classEmitter.BuildType ();
+      MethodInfo publicWrapper = type.GetMethod ("__wrap__GetSecret");
+
+      int expectedToken = Scope.WeakNamedModule.GetMethodToken (methodToBeWrapped).Token;
+
+      var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (publicWrapper, false);
+      Assert.That (attribute.WrappedMethodRefToken, Is.EqualTo (expectedToken));
+
+      Assert.That (type.Module.ResolveMethod (expectedToken), Is.EqualTo (methodToBeWrapped));
     }
 
     [Test]
     public void ForceUnsignedTrue ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper", typeof (object),
+      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper", typeof (object),
           Type.EmptyTypes, TypeAttributes.Public, true);
       Type t = classEmitter.BuildType ();
       Assert.IsFalse (StrongNameUtil.IsAssemblySigned (t.Assembly));
@@ -704,7 +746,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ForceUnsignedFalse()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper", typeof (object),
+      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper", typeof (object),
           Type.EmptyTypes, TypeAttributes.Public, false);
       Type t = classEmitter.BuildType ();
       Assert.IsTrue (StrongNameUtil.IsAssemblySigned (t.Assembly));

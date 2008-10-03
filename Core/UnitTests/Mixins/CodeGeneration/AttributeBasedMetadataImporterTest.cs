@@ -18,6 +18,7 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
+using Remotion.Reflection.CodeGeneration;
 using Rhino.Mocks;
 using System.Linq;
 using Remotion.Collections;

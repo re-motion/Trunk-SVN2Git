@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Remotion.Collections;
 using Remotion.Mixins.Definitions;
+using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration

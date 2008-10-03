@@ -148,7 +148,7 @@
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimer.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinType.cs" />
-    <Compile Include="Mixins\CodeGeneration\GeneratedMethodWrapperAttribute.cs" />
+    <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttribute.cs" />
     <Compile Include="Mixins\CodeGeneration\ICodeGenerationModule.cs" />
     <Compile Include="Mixins\CodeGeneration\IConcreteTypeMetadataImporter.cs" />
     <Compile Include="Mixins\Definitions\IAttributeIntroductionSource.cs" />

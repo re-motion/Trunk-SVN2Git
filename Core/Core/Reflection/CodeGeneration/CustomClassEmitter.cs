@@ -23,6 +23,9 @@ namespace Remotion.Reflection.CodeGeneration
 {
   public class CustomClassEmitter : IClassEmitter
   {
+    private static readonly ConstructorInfo s_generatedMethodWrapperAttributeCtor = 
+        typeof (GeneratedMethodWrapperAttribute).GetConstructor (new[] { typeof (int) });
+
     public static string FlattenTypeName (string fullName)
     {
       ArgumentUtility.CheckNotNull ("fullName", fullName);
@@ -406,16 +409,23 @@ namespace Remotion.Reflection.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("methodToBeWrapped", methodToBeWrapped);
 
-      return _publicMethodWrappers.GetOrCreateValue (
-          methodToBeWrapped,
-          delegate (MethodInfo method)
-          {
-            MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig;
-            CustomMethodEmitter wrapper = CreateMethod ("__wrap__" + method.Name, attributes);
-            wrapper.CopyParametersAndReturnType (method);
-            wrapper.ImplementByDelegating (new TypeReferenceWrapper (SelfReference.Self, TypeBuilder), method);
-            return wrapper;
-          }).MethodBuilder;
+      return _publicMethodWrappers.GetOrCreateValue (methodToBeWrapped, CreatePublicMethodWrapper).MethodBuilder;
+    }
+
+    private CustomMethodEmitter CreatePublicMethodWrapper (MethodInfo methodToBeWrapped)
+    {
+      const MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig;
+      
+      CustomMethodEmitter wrapper = CreateMethod ("__wrap__" + methodToBeWrapped.Name, attributes);
+      wrapper.CopyParametersAndReturnType (methodToBeWrapped);
+      wrapper.ImplementByDelegating (new TypeReferenceWrapper (SelfReference.Self, TypeBuilder), methodToBeWrapped);
+      
+      var moduleBuilder = (ModuleBuilder) InnerEmitter.TypeBuilder.Module;
+      int metadataToken = moduleBuilder.GetMethodToken (methodToBeWrapped).Token;
+      var attributeBuilder = new CustomAttributeBuilder (s_generatedMethodWrapperAttributeCtor, new object[] { metadataToken });
+      wrapper.AddCustomAttribute (attributeBuilder);
+
+      return wrapper;
     }
 
     public Type BuildType ()

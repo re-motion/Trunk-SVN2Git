@@ -8,7 +8,6 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -22,7 +21,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     public void OverrideMixinMethod ()
     {
       ClassOverridingMixinMembers com = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers)).With ();
-      IMixinWithAbstractMembers comAsIAbstractMixin = com as IMixinWithAbstractMembers;
+      var comAsIAbstractMixin = com as IMixinWithAbstractMembers;
       Assert.IsNotNull (comAsIAbstractMixin);
       Assert.AreEqual ("MixinWithAbstractMembers.ImplementedMethod-ClassOverridingMixinMembers.AbstractMethod-25",
           comAsIAbstractMixin.ImplementedMethod ());
@@ -32,7 +31,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     public void OverrideMixinProperty ()
     {
       ClassOverridingMixinMembers com = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers)).With ();
-      IMixinWithAbstractMembers comAsIAbstractMixin = com as IMixinWithAbstractMembers;
+      var comAsIAbstractMixin = com as IMixinWithAbstractMembers;
       Assert.IsNotNull (comAsIAbstractMixin);
       Assert.AreEqual ("MixinWithAbstractMembers.ImplementedProperty-ClassOverridingMixinMembers.AbstractProperty",
           comAsIAbstractMixin.ImplementedProperty ());
@@ -42,7 +41,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     public void OverrideMixinEvent ()
     {
       ClassOverridingMixinMembers com = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers)).With ();
-      IMixinWithAbstractMembers comAsIAbstractMixin = com as IMixinWithAbstractMembers;
+      var comAsIAbstractMixin = com as IMixinWithAbstractMembers;
       Assert.IsNotNull (comAsIAbstractMixin);
       Assert.AreEqual ("MixinWithAbstractMembers.ImplementedEvent", comAsIAbstractMixin.ImplementedEvent ());
     }
@@ -51,7 +50,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     public void DoubleOverride ()
     {
       ClassOverridingSingleMixinMethod com = CreateMixedObject<ClassOverridingSingleMixinMethod> (typeof (MixinOverridingClassMethod)).With ();
-      IMixinOverridingClassMethod comAsIAbstractMixin = com as IMixinOverridingClassMethod;
+      var comAsIAbstractMixin = com as IMixinOverridingClassMethod;
       Assert.IsNotNull (comAsIAbstractMixin);
       Assert.AreEqual ("ClassOverridingSingleMixinMethod.AbstractMethod-25", comAsIAbstractMixin.AbstractMethod (25));
       Assert.AreEqual ("MixinOverridingClassMethod.OverridableMethod-13", com.OverridableMethod (13));
@@ -61,7 +60,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     public void ClassOverridingInheritedMixinMethod ()
     {
       ClassOverridingInheritedMixinMethod coimm = ObjectFactory.Create<ClassOverridingInheritedMixinMethod> ().With ();
-      MixinWithInheritedMethod mixin = Mixin.Get<MixinWithInheritedMethod> (coimm);
+      var mixin = Mixin.Get<MixinWithInheritedMethod> (coimm);
       Assert.AreEqual ("ClassOverridingInheritedMixinMethod.ProtectedInheritedMethod-"
           + "ClassOverridingInheritedMixinMethod.ProtectedInternalInheritedMethod-"
           + "ClassOverridingInheritedMixinMethod.PublicInheritedMethod",
@@ -72,7 +71,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     public void ClassWithProtectedOverrider ()
     {
       ClassOverridingMixinMembersProtected com = CreateMixedObject<ClassOverridingMixinMembersProtected> (typeof (MixinWithAbstractMembers)).With ();
-      IMixinWithAbstractMembers comAsIAbstractMixin = com as IMixinWithAbstractMembers;
+      var comAsIAbstractMixin = com as IMixinWithAbstractMembers;
 
       Assert.IsNotNull (comAsIAbstractMixin);
       Assert.AreEqual ("MixinWithAbstractMembers.ImplementedMethod-ClassOverridingMixinMembersProtected.AbstractMethod-25",
