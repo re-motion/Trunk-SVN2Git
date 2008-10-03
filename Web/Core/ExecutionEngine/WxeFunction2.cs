@@ -87,17 +87,17 @@ namespace Remotion.Web.ExecutionEngine
       get { return _transactionMode; }
     }
 
-    public object[] GetInParameters ()
+    object[] IWxeFunctionExecutionContext.GetInParameters ()
     {
-      throw new NotImplementedException ();
+      return new object[0];
     }
 
-    public object[] GetOutParameters ()
+    object[] IWxeFunctionExecutionContext.GetOutParameters ()
     {
       throw new NotImplementedException();
     }
 
-    public ITransactionStrategy ParentTransactionStrategy
+    ITransactionStrategy IWxeFunctionExecutionContext.ParentTransactionStrategy
     {
       get { throw new System.NotImplementedException(); }
     }

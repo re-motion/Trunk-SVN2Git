@@ -34,7 +34,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       for (WxeFunction2 parentFunction = function.ParentFunction; parentFunction != null; parentFunction = parentFunction.ParentFunction)
       {
         if (!parentFunction.Transaction.IsNull)
-          return new ChildTransactionStrategy (_autoCommit, executionListener);
+          return new ChildTransactionStrategy (_autoCommit, executionListener, function);
       }
       ITransactionScopeManager scopeManager = new TScopeManager();
       return new RootTransactionStrategy (_autoCommit, scopeManager.CreateRootTransaction(), function, executionListener);

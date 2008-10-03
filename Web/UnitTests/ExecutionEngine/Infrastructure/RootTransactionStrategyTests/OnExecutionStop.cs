@@ -24,17 +24,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     public void Test_WithoutAutoCommit ()
     {
       var strategy = CreateRootTransactionStrategy (false);
-      var expectedObjects = new[] { new object () };
 
       InvokeOnExecutionPlay (strategy);
       using (MockRepository.Ordered ())
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
-
-        ExecutionContextMock.Expect (mock => mock.GetOutParameters ()).Return (expectedObjects);
-        ExecutionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (ParentTransactionStrategyMock);
-        ParentTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
-        
+        ExecutionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (null);
         ScopeMock.Expect (mock => mock.Leave ());
         TransactionMock.Expect (mock => mock.Release ());
       }
@@ -51,6 +46,29 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     public void Test_WithAutoCommit ()
     {
       var strategy = CreateRootTransactionStrategy (true);
+
+      InvokeOnExecutionPlay (strategy);
+      using (MockRepository.Ordered ())
+      {
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
+        TransactionMock.Expect (mock => mock.Commit ());
+        ExecutionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (null);
+        ScopeMock.Expect (mock => mock.Leave ());
+        TransactionMock.Expect (mock => mock.Release ());
+      }
+
+      MockRepository.ReplayAll ();
+
+      strategy.OnExecutionStop (Context);
+
+      MockRepository.VerifyAll ();
+      Assert.That (strategy.Scope, Is.Null);
+    }
+
+    [Test]
+    public void Test_WithParentTransactionStrategy ()
+    {
+      var strategy = CreateRootTransactionStrategy (true);
       var expectedObjects = new[] { new object () };
 
       InvokeOnExecutionPlay (strategy);
@@ -59,10 +77,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
         TransactionMock.Expect (mock => mock.Commit ());
 
-        ExecutionContextMock.Expect (mock => mock.GetOutParameters ()).Return (expectedObjects);
         ExecutionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (ParentTransactionStrategyMock);
+        ExecutionContextMock.Expect (mock => mock.GetOutParameters ()).Return (expectedObjects);
         ParentTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
-        
+
         ScopeMock.Expect (mock => mock.Leave ());
         TransactionMock.Expect (mock => mock.Release ());
       }
@@ -149,6 +167,106 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
+    public void Test_GetParentTransactionThrows ()
+    {
+      var strategy = CreateRootTransactionStrategy (false);
+      var innerException = new ApplicationException ("ParentTransactionStrategy Exception");
+
+      InvokeOnExecutionPlay (strategy);
+      using (MockRepository.Ordered ())
+      {
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
+        ExecutionContextMock.Expect (mock => mock.ParentTransactionStrategy).Throw (innerException);
+        ScopeMock.Expect (mock => mock.Leave ());
+        TransactionMock.Expect (mock => mock.Release ());
+      }
+
+      MockRepository.ReplayAll ();
+
+      try
+      {
+        strategy.OnExecutionStop (Context);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (ApplicationException actualException)
+      {
+        Assert.That (actualException, Is.SameAs (innerException));
+      }
+
+      MockRepository.VerifyAll ();
+      Assert.That (strategy.Scope, Is.Null);
+    }
+
+    [Test]
+    public void Test_GetOutParameterThrows ()
+    {
+      var strategy = CreateRootTransactionStrategy (false);
+      var innerException = new ApplicationException ("GetOutParameters Exception");
+
+      InvokeOnExecutionPlay (strategy);
+      using (MockRepository.Ordered ())
+      {
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
+
+        ExecutionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (ParentTransactionStrategyMock);
+        ExecutionContextMock.Expect (mock => mock.GetOutParameters()).Throw (innerException);
+
+        ScopeMock.Expect (mock => mock.Leave ());
+        TransactionMock.Expect (mock => mock.Release ());
+      }
+
+      MockRepository.ReplayAll ();
+
+      try
+      {
+        strategy.OnExecutionStop (Context);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (ApplicationException actualException)
+      {
+        Assert.That (actualException, Is.SameAs (innerException));
+      }
+
+      MockRepository.VerifyAll ();
+      Assert.That (strategy.Scope, Is.Null);
+    }
+
+    [Test]
+    public void Test_RegisterObjectsThrows ()
+    {
+      var strategy = CreateRootTransactionStrategy (false);
+      var innerException = new ApplicationException ("GetOutParameters Exception");
+
+      InvokeOnExecutionPlay (strategy);
+      using (MockRepository.Ordered ())
+      {
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
+
+        ExecutionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (ParentTransactionStrategyMock);
+        ExecutionContextMock.Expect (mock => mock.GetOutParameters ()).Return (new object[0]);
+        ParentTransactionStrategyMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.Is.Anything)).Throw (innerException);
+
+        ScopeMock.Expect (mock => mock.Leave ());
+        TransactionMock.Expect (mock => mock.Release ());
+      }
+
+      MockRepository.ReplayAll ();
+
+      try
+      {
+        strategy.OnExecutionStop (Context);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (ApplicationException actualException)
+      {
+        Assert.That (actualException, Is.SameAs (innerException));
+      }
+
+      MockRepository.VerifyAll ();
+      Assert.That (strategy.Scope, Is.Null);
+    }
+
+    [Test]
     public void Test_LeaveThrows ()
     {
       var strategy = CreateRootTransactionStrategy (false);
@@ -158,6 +276,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       using (MockRepository.Ordered ())
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
+        ExecutionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (null);
         ScopeMock.Expect (mock => mock.Leave ()).Throw (innerException);
       }
 
@@ -187,6 +306,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       using (MockRepository.Ordered ())
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
+        ExecutionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (null);
         ScopeMock.Expect (mock => mock.Leave ());
         TransactionMock.Expect (mock => mock.Release ()).Throw (innerException);
       }

@@ -24,7 +24,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
     {
       ArgumentUtility.CheckNotNull ("executionListener", executionListener);
-      return new NoneTransactionStrategy (executionListener);
+      return new NoneTransactionStrategy (executionListener, function);
     }
 
     public bool AutoCommit

@@ -17,8 +17,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   //TODO: Doc
   public class NoneTransactionStrategy : TransactionStrategyBase
   {
-    public NoneTransactionStrategy (IWxeFunctionExecutionListener innerListener)
-        : base (false, innerListener)
+    public NoneTransactionStrategy (IWxeFunctionExecutionListener innerListener, IWxeFunctionExecutionContext executionContext)
+      : base (false, innerListener, executionContext)
     {
     }
 
@@ -64,7 +64,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public override void RegisterObjects (IEnumerable objects)
     {
-      throw new System.NotImplementedException();
+      var parentTransactionStrategy = ExecutionContext.ParentTransactionStrategy;
+      if (parentTransactionStrategy != null)
+        parentTransactionStrategy.RegisterObjects (objects);
     }
 
     public override bool IsNull

@@ -27,6 +27,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
     {
+      ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("executionListener", executionListener);
 
       ITransactionScopeManager scopeManager = new TScopeManager ();

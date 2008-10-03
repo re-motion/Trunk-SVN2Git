@@ -17,8 +17,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   //TODO: Doc
   public class ChildTransactionStrategy : TransactionStrategyBase
   {
-    public ChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener)
-        : base (autoCommit, innerListener)
+    public ChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener, IWxeFunctionExecutionContext executionContext)
+        : base (autoCommit, innerListener, executionContext)
     {
     }
 

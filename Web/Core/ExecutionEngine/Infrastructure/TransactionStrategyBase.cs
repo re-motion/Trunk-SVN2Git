@@ -10,12 +10,16 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   {
     private readonly bool _autoCommit;
     private readonly IWxeFunctionExecutionListener _innerListener;
+    private readonly IWxeFunctionExecutionContext _executionContext;
 
-    protected TransactionStrategyBase (bool autoCommit, IWxeFunctionExecutionListener innerListener)
+    protected TransactionStrategyBase (bool autoCommit, IWxeFunctionExecutionListener innerListener, IWxeFunctionExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("innerListener", innerListener);
+      ArgumentUtility.CheckNotNull ("executionContext", executionContext);
+
       _autoCommit = autoCommit;
       _innerListener = innerListener;
+      _executionContext = executionContext;
     }
 
     public bool AutoCommit
@@ -26,6 +30,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public IWxeFunctionExecutionListener InnerListener
     {
       get { return _innerListener; }
+    }
+
+    public IWxeFunctionExecutionContext ExecutionContext
+    {
+      get { return _executionContext; }
     }
 
     public abstract void OnExecutionPlay (WxeContext context);

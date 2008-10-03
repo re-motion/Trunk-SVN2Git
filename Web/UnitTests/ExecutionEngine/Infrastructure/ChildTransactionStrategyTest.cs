@@ -12,7 +12,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine.Infrastructure;
-using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
@@ -24,7 +23,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void GetInnerListener ()
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
-      var strategy = new ChildTransactionStrategy (false, executionListenerStub);
+      var executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext>();
+      var strategy = new ChildTransactionStrategy (false, executionListenerStub, executionContextStub);
 
       Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
     }
@@ -33,7 +33,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void GetAutoCommit ()
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      TransactionStrategyBase strategy = new ChildTransactionStrategy (true, executionListenerStub);
+      var executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext> ();
+      TransactionStrategyBase strategy = new ChildTransactionStrategy (true, executionListenerStub, executionContextStub);
 
       Assert.That (strategy.AutoCommit, Is.True);
     }
@@ -42,7 +43,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void IsNull ()
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      INullObject strategy = new ChildTransactionStrategy (true, executionListenerStub);
+      var executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext> ();
+      INullObject strategy = new ChildTransactionStrategy (true, executionListenerStub, executionContextStub);
 
       Assert.That (strategy.IsNull, Is.False);
     }

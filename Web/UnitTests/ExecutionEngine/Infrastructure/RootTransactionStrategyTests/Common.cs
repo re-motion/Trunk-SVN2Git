@@ -35,6 +35,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
+    public void GetExecutionContext ()
+    {
+      Assert.That (_strategy.ExecutionContext, Is.SameAs (ExecutionContextMock));
+    }
+
+    [Test]
     public void GetAutoCommit ()
     {
       Assert.That (_strategy.AutoCommit, Is.True);
