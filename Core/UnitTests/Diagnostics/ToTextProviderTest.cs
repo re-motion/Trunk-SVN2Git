@@ -807,9 +807,22 @@ namespace Remotion.UnitTests.Diagnostics
       Log ("toTextTest=" + toTextTest);
     }
 
+    private enum ToTextProviderTestEnum
+    {
+      Start = 3,
+      Stop = 17
+    }
 
-
-
+    [Test]
+    public void EnumTest ()
+    {
+      ToTextProvider toText = CreateTextProvider ();
+      var enumVal = ToTextProviderTestEnum.Stop;
+      var result = ToText (toText, enumVal);
+      //Log (result);
+      Assert.That (ToText (toText, ToTextProviderTestEnum.Start), Is.EqualTo ("Start"));
+      Assert.That (result, Is.EqualTo ("Stop"));
+    }
 
 
 

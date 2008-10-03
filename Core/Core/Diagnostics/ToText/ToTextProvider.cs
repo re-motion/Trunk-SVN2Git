@@ -92,6 +92,9 @@ namespace Remotion.Diagnostics.ToText
       RegisterToTextProviderHandler (new ToTextProviderTypeHandler ());
 
       RegisterToTextProviderHandler (new ToTextProviderCharHandler ());
+
+      RegisterToTextProviderHandler (new ToTextProviderEnumHandler ());
+
       RegisterToTextProviderHandler (new ToTextProviderFormattableHandler ());
 
       RegisterToTextProviderHandler (new ToTextProviderDictionaryHandler ());

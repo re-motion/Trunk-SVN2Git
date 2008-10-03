@@ -112,6 +112,7 @@
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderCharHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderDictionaryHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderEnumerableHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderEnumHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderFormattableHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderHandlerFeedback.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderIToTextHandlerHandler.cs" />
