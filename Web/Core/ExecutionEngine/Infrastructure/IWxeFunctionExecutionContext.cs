@@ -13,5 +13,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   public interface IWxeFunctionExecutionContext
   {
     object[] GetInParameters ();
+    object[] GetOutParameters ();
+    ITransactionStrategy ParentTransactionStrategy { get; }
   }
 }

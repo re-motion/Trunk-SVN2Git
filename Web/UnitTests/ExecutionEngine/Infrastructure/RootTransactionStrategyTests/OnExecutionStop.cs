@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine;
@@ -23,11 +24,17 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     public void Test_WithoutAutoCommit ()
     {
       var strategy = CreateRootTransactionStrategy (false);
+      var expectedObjects = new[] { new object () };
 
       InvokeOnExecutionPlay (strategy);
       using (MockRepository.Ordered ())
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
+
+        ExecutionContextMock.Expect (mock => mock.GetOutParameters ()).Return (expectedObjects);
+        ExecutionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (ParentTransactionStrategyMock);
+        ParentTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
+        
         ScopeMock.Expect (mock => mock.Leave ());
         TransactionMock.Expect (mock => mock.Release ());
       }
@@ -44,12 +51,18 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     public void Test_WithAutoCommit ()
     {
       var strategy = CreateRootTransactionStrategy (true);
+      var expectedObjects = new[] { new object () };
 
       InvokeOnExecutionPlay (strategy);
       using (MockRepository.Ordered ())
       {
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
         TransactionMock.Expect (mock => mock.Commit ());
+
+        ExecutionContextMock.Expect (mock => mock.GetOutParameters ()).Return (expectedObjects);
+        ExecutionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (ParentTransactionStrategyMock);
+        ParentTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
+        
         ScopeMock.Expect (mock => mock.Leave ());
         TransactionMock.Expect (mock => mock.Release ());
       }

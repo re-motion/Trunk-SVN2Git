@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections;
 using Remotion.Data;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
@@ -59,6 +60,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public override ITransaction Transaction
     {
       get { return null; }
+    }
+
+    public override void RegisterObjects (IEnumerable objects)
+    {
+      throw new System.NotImplementedException();
     }
 
     public override bool IsNull

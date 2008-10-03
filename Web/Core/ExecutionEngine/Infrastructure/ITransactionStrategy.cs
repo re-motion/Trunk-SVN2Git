@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections;
 using Remotion.Data;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
@@ -20,5 +21,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     void Commit ();
     void Rollback ();
     void Reset ();
+    void RegisterObjects (IEnumerable objects);
   }
 }

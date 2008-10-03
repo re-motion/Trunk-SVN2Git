@@ -33,7 +33,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _transaction = transaction;
       _executionContext = executionContext;
 
-      RegisterObjects (_executionContext.GetInParameters());
+      var inParameters = _executionContext.GetInParameters();
+      RegisterObjects (inParameters);
     }
 
     public override void OnExecutionPlay (WxeContext context)
@@ -60,8 +61,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         InnerListener.OnExecutionStop (context);
         if (AutoCommit)
           _transaction.Commit();
-        // outParameters = function.Variables.GetOutParameters();
-        // function.ParentFunction.Transaction.RegisterObjects (outParameters);
+        
+        var outParameters = _executionContext.GetOutParameters();
+        _executionContext.ParentTransactionStrategy.RegisterObjects (outParameters);
       }
       catch (Exception e)
       {
@@ -158,7 +160,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       get { return _scope; }
     }
 
-    private void RegisterObjects (object[] objects)
+    public sealed override void RegisterObjects (IEnumerable objects)
     {
       _transaction.RegisterObjects (FlattenList (objects));
     }

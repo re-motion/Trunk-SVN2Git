@@ -24,6 +24,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     private IWxeFunctionExecutionListener _executionListenerMock;
     private ITransactionScope _scopeMock;
     private ITransaction _transactionMock;
+    private ITransactionStrategy _parentTransactionStrategyMock;
     private WxeContext _context;
     private MockRepository _mockRepository;
     private IWxeFunctionExecutionContext _executionContextMock;
@@ -35,10 +36,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _context = wxeContextFactory.CreateContext (new TestFunction());
 
       _mockRepository = new MockRepository();
-      _executionListenerMock = MockRepository.StrictMock<IWxeFunctionExecutionListener>();
+      _executionListenerMock = MockRepository.StrictMock<IWxeFunctionExecutionListener> ();
       _transactionMock = MockRepository.StrictMock<ITransaction>();
       _scopeMock = MockRepository.StrictMock<ITransactionScope>();
       _executionContextMock = MockRepository.StrictMock<IWxeFunctionExecutionContext>();
+      _parentTransactionStrategyMock = MockRepository.StrictMock<ITransactionStrategy> ();
     }
 
     public MockRepository MockRepository
@@ -49,6 +51,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     public WxeContext Context
     {
       get { return _context; }
+    }
+
+    public ITransactionStrategy ParentTransactionStrategyMock
+    {
+      get { return _parentTransactionStrategyMock; }
     }
 
     public ITransaction TransactionMock

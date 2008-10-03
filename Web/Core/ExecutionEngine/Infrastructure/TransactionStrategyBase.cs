@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Remotion.Data;
 using Remotion.Utilities;
 
@@ -36,6 +37,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public abstract void Commit ();
     public abstract void Rollback ();
     public abstract void Reset ();
+    public abstract void RegisterObjects (IEnumerable objects);
 
     public abstract bool IsNull { get; }
   }

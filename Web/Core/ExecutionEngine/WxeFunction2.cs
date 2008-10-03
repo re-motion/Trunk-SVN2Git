@@ -89,7 +89,17 @@ namespace Remotion.Web.ExecutionEngine
 
     public object[] GetInParameters ()
     {
-      return new object[0];
+      throw new NotImplementedException ();
+    }
+
+    public object[] GetOutParameters ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public ITransactionStrategy ParentTransactionStrategy
+    {
+      get { throw new System.NotImplementedException(); }
     }
   }
 }

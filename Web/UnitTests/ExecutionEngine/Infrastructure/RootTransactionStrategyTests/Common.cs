@@ -77,12 +77,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void RegisterObjects ()
     {
-      var expectedObject1 = new object();
-      var expectedObject2 = new object();
+      var object1 = new object();
+      var object2 = new object();
 
-      SetupForInitializationWithRegisterObjects (
-          new[] { expectedObject1, expectedObject2 },
-          new[] { expectedObject1, expectedObject2 });
+      using (MockRepository.Ordered())
+      {
+        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, object2 });
+        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
+      }
       MockRepository.ReplayAll();
 
       new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
@@ -93,12 +95,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void RegisterObjects_WithNullValue ()
     {
-      var expectedObject1 = new object();
-      var expectedObject2 = new object();
+      var object1 = new object();
+      var object2 = new object();
 
-      SetupForInitializationWithRegisterObjects (
-          new[] { expectedObject1, null, expectedObject2 },
-          new[] { expectedObject1, expectedObject2 });
+      using (MockRepository.Ordered())
+      {
+        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, null, object2 });
+        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
+      }
       MockRepository.ReplayAll();
 
       new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
@@ -109,13 +113,15 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void RegisterObjects_Recursively ()
     {
-      var expectedObject1 = new object();
-      var expectedObject2 = new object();
-      var expectedObject3 = new object();
+      var object1 = new object();
+      var object2 = new object();
+      var object3 = new object();
 
-      SetupForInitializationWithRegisterObjects (
-          new[] { expectedObject1, new[] { expectedObject2, expectedObject3 } },
-          new[] { expectedObject1, expectedObject2, expectedObject3 });
+      using (MockRepository.Ordered())
+      {
+        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, new[] { object2, object3 } });
+        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2, object3 })));
+      }
       MockRepository.ReplayAll();
 
       new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
@@ -126,27 +132,20 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void RegisterObjects_RecursivelyWithNullValue ()
     {
-      var expectedObject1 = new object();
-      var expectedObject2 = new object();
-      var expectedObject3 = new object();
+      var object1 = new object();
+      var object2 = new object();
+      var object3 = new object();
 
-      SetupForInitializationWithRegisterObjects (
-          new[] { expectedObject1, new[] { expectedObject2, null, expectedObject3 } },
-          new[] { expectedObject1, expectedObject2, expectedObject3 });
+      using (MockRepository.Ordered())
+      {
+        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, new[] { object2, null, object3 } });
+        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2, object3 })));
+      }
       MockRepository.ReplayAll();
 
       new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
 
       MockRepository.VerifyAll();
-    }
-
-    private void SetupForInitializationWithRegisterObjects (object[] actualInParamters, object[] expectedInParamters)
-    {
-      using (MockRepository.Ordered())
-      {
-        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (actualInParamters);
-        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (expectedInParamters)));
-      }
     }
   }
 }
