@@ -164,6 +164,8 @@
     <Compile Include="Reflection\ConstructorLookupInfo.cs" />
     <Compile Include="Reflection\MemberLookupInfo.cs" />
     <Compile Include="Reflection\MethodLookupInfo.cs" />
+    <Compile Include="Reflection\Properties.cs" />
+    <Compile Include="Reflection\Property.cs" />
     <Compile Include="SafeContextSingleton.cs" />
     <Compile Include="Collections\InterlockedDataStore.cs" />
     <Compile Include="Collections\NullDataStore.cs" />

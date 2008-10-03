@@ -67,8 +67,6 @@
     <Compile Include="AclTools\Expansion\AclExpansionEntryTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionTest.cs" />
     <Compile Include="AclTools\Expansion\AclProbeTest.cs" />
-    <Compile Include="AclTools\Expansion\Properties.cs" />
-    <Compile Include="AclTools\Expansion\Property.cs" />
     <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\User_ToTextSpecificTypeHandler.cs" />
     <Compile Include="AclTools\SetUpFixture.cs" />
     <Compile Include="Configuration\SecurityConfigurationMock.cs" />

@@ -36,23 +36,21 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void Equals ()
     {
-      //BooleanMemberTest ((aeac,b) => aeac.OnlyIfAbstractRoleMatches = b);
       BooleanMemberTest ((aeac, b) => aeac.OnlyIfGroupIsOwner = b);
       BooleanMemberTest ((aeac, b) => aeac.OnlyIfTenantIsOwner = b);
       BooleanMemberTest ((aeac, b) => aeac.OnlyIfUserIsOwner = b);
     }
 
 
-
+    // Check Equals operator for each property of AclExpansionAccessConditions if changing the property from its default value 
+    // leaves to two instances being unequal.
     [Test]
     public void Equals2 ()
     {
-      //MemberTest (Properties<AclExpansionAccessConditions>.Get (x => x.OnlyIfAbstractRoleMatches), true);
-      //MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfAbstractRoleMatches), true);
-      MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfGroupIsOwner), true);
-      MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfTenantIsOwner), true);
-      MemberTest (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfUserIsOwner), true);
-      MemberTest (new Property<AclExpansionAccessConditions, AbstractRoleDefinition> (x => x.AbstractRole), TestHelper.CreateAbstractRoleDefinition("titatutest",11235) );
+      CheckIfChangingThePassedPropertyInOnlyOneOfTwoDefaultConstructedInstancesOfAclExpansionAccessConditionsLeadsToTheTwoInstancesBeingUnequal (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfGroupIsOwner), true);
+      CheckIfChangingThePassedPropertyInOnlyOneOfTwoDefaultConstructedInstancesOfAclExpansionAccessConditionsLeadsToTheTwoInstancesBeingUnequal (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfTenantIsOwner), true);
+      CheckIfChangingThePassedPropertyInOnlyOneOfTwoDefaultConstructedInstancesOfAclExpansionAccessConditionsLeadsToTheTwoInstancesBeingUnequal (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfUserIsOwner), true);
+      CheckIfChangingThePassedPropertyInOnlyOneOfTwoDefaultConstructedInstancesOfAclExpansionAccessConditionsLeadsToTheTwoInstancesBeingUnequal (new Property<AclExpansionAccessConditions, AbstractRoleDefinition> (x => x.AbstractRole), TestHelper.CreateAbstractRoleDefinition("titatutest",11235) );
     }
 
 
@@ -78,7 +76,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    private void MemberTest<TProperty> (Property<AclExpansionAccessConditions, TProperty> boolProperty, TProperty notEqualValue)
+    // Check if changing the passed Property of AclExpansionAccessConditions in only one instance flips equality.
+    private void CheckIfChangingThePassedPropertyInOnlyOneOfTwoDefaultConstructedInstancesOfAclExpansionAccessConditionsLeadsToTheTwoInstancesBeingUnequal<TProperty> (Property<AclExpansionAccessConditions, TProperty> boolProperty, TProperty notEqualValue)
     {
       var accessConditions0 = new AclExpansionAccessConditions ();
       var accessConditions1 = new AclExpansionAccessConditions ();
