@@ -106,7 +106,7 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
     [Test]
-    [Ignore]
+    [Explicit]
     public void ToTempLogTest ()
     {
       var s = @"  line1
@@ -156,7 +156,7 @@ line3";
     }
 
     [Test]
-    [Ignore]
+    [Explicit]
     public void ToILogTest2 ()
     {
       // TODO: Implement test
@@ -166,34 +166,8 @@ line3";
     }
    
 
-//    [Test]
-//    [Ignore]
-//    public void ToTempLogTest2 ()
-//    {
-//      var s = @"  line1
-//line2   
-//line3";
-//      Log(s_log, LogLevel.Info, log => log.s ("ToTempLogTest").sEsc (s).s (s).e (() => s));
-      
-////      To.LogInfo (s_log, log => log.s ("ToTempLogTest").sEsc (s).s (s).e (() => s));
-
-      
-//    }
-
-//    public void Log (ILog log, LogLevel level, Action<ToTextBuilder> logAction)
-//    {
-//      // if (!log.Is...Enabled)
-//      //   return;
-
-//      StringWriter sw = new StringWriter ();
-//      ToTextBuilder builder = new ToTextBuilder (provider, sw);
-//      logAction (builder);
-//      string result = sw.ToString ();
-//      s_log.Log (level, result);
-//    }
-
     [Test]
-    [Ignore]
+    [Explicit]
     public void ToTempLogXmlTest ()
     {
       var magicNumber = 123.456;
@@ -206,7 +180,7 @@ line3";
     }
 
     [Test]
-    [Ignore]
+    [Explicit]
     public void ToTempLogXmlCloseTest ()
     {
       // Note: AppDomain.ProcessExit does not get called when executing a test =>
@@ -219,7 +193,7 @@ line3";
     }
 
     [Test]
-    [Ignore]
+    [Explicit]
     public void ThankYouTest ()
     {
       var Thank = "You";

@@ -62,6 +62,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
+    [Ignore]
     public void ToText ()
     {
       var accessConditions = new AclExpansionAccessConditions ();

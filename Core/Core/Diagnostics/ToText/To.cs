@@ -89,9 +89,9 @@ namespace Remotion.Diagnostics.ToText
    
     private static readonly ToTextBuilder _toTextBuilderConsole = new ToTextBuilder (_toTextProvider, System.Console.Out);
     private static readonly ToTextBuilder _toTextBuilderError = new ToTextBuilder (_toTextProvider, System.Console.Error);
-    private static readonly ToTextBuilder _toTextBuilderLog; 
-    private static readonly ToTextBuilderXml _toTextBuilderLogXml;
-    private static readonly XmlWriterSettings _xmlWriterSettings;
+    private static ToTextBuilder _toTextBuilderLog; 
+    private static ToTextBuilderXml _toTextBuilderLogXml;
+    private static XmlWriterSettings _xmlWriterSettings;
 
     private static ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> _typeHandlerMap;
     private static ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceHandlerMap;
@@ -100,25 +100,17 @@ namespace Remotion.Diagnostics.ToText
     static To ()
     {
       _toTextProvider.Settings.UseAutomaticObjectToText = false;
-      //_toTextProvider.Settings.UseParentHandlers = true;
-      //_toTextProvider.Settings.ParentHandlerSearchUpToRoot = true;
 
-      _toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter (LogFilePath));
+      //_toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter (LogFilePath));
       
-      _xmlWriterSettings = new XmlWriterSettings ();
-      _xmlWriterSettings.OmitXmlDeclaration = false;
-      _xmlWriterSettings.Indent = true;
-      _xmlWriterSettings.NewLineOnAttributes = false;
-
-      var xmlWriter = XmlWriter.Create (new StreamWriter (XmlLogFilePath), _xmlWriterSettings);
-      _toTextBuilderLogXml = new ToTextBuilderXml (_toTextProvider, xmlWriter);
-      _toTextBuilderLogXml.Open();
-      Thread.GetDomain ().ProcessExit += DisposeAtShutdown;
     }
 
     private static void DisposeAtShutdown (object sender, EventArgs e)
     {
-      _toTextBuilderLogXml.Close ();
+      if (_toTextBuilderLogXml != null)
+      {
+        _toTextBuilderLogXml.Close();
+      }
     }
 
 
@@ -180,6 +172,10 @@ namespace Remotion.Diagnostics.ToText
     {
       get
       {
+        if (_toTextBuilderLog == null)
+        {
+          _toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter (LogFilePath));
+        }
         return _toTextBuilderLog;
       }
     }
@@ -190,9 +186,20 @@ namespace Remotion.Diagnostics.ToText
     /// </summary>    
     public static ToTextBuilderXml TempLogXml
     {
-      // TODO: Must make sure ToTextBuilderXml.Close is called. finalize ToTextBuilderXml ?
       get
       {
+        if (_toTextBuilderLogXml == null)
+        {
+          _xmlWriterSettings = new XmlWriterSettings ();
+          _xmlWriterSettings.OmitXmlDeclaration = false;
+          _xmlWriterSettings.Indent = true;
+          _xmlWriterSettings.NewLineOnAttributes = false;
+
+          var xmlWriter = XmlWriter.Create (new StreamWriter (XmlLogFilePath), _xmlWriterSettings);
+          _toTextBuilderLogXml = new ToTextBuilderXml (_toTextProvider, xmlWriter);
+          _toTextBuilderLogXml.Open();
+          Thread.GetDomain ().ProcessExit += DisposeAtShutdown;
+        }
         return _toTextBuilderLogXml;
       }
     }
