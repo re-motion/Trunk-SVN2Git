@@ -74,6 +74,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return ParentTransaction.RootTransaction; }
     }
 
+    /// <summary>Initializes a new instance of this transaction.</summary>
+    public override ClientTransaction CreateEmptyTransactionOfSameType ()
+    {
+      return _parentTransaction.CreateSubTransaction();
+    }
+
     public override IQueryManager QueryManager
     {
       get

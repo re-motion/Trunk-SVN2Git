@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Remotion.Data;
+using Remotion.Utilities;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
@@ -52,6 +53,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
     public ITransactionScope EnterScope ()
     {
       return new TestTransactionScope (this);
+    }
+
+    public TTransaction To<TTransaction> ()
+    {
+      ArgumentUtility.CheckTypeIsAssignableFrom ("TTransaction", typeof (TTransaction), typeof (TestTransaction));
+      return (TTransaction) (object) this;
     }
 
     public void Rollback()

@@ -74,6 +74,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
+    public void CreateEmptyTransactionOfSameType_ForSubTransaction ()
+    {
+      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      subTransaction.Discard();
+      ClientTransaction newSubTransaction = subTransaction.CreateEmptyTransactionOfSameType();
+      Assert.AreSame (ClientTransactionMock, subTransaction.ParentTransaction);
+      Assert.AreSame (ClientTransactionMock, subTransaction.RootTransaction);
+      Assert.AreNotSame (subTransaction, newSubTransaction);
+      Assert.AreEqual (subTransaction.GetType (), newSubTransaction.GetType ());
+    }
+
+    [Test]
+    public void CreateEmptyTransactionOfSameType_ForRootTransaction ()
+    {
+      ClientTransaction newRootTransaction = ClientTransactionMock.CreateEmptyTransactionOfSameType ();
+      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      Assert.AreSame (ClientTransactionMock, subTransaction.ParentTransaction);
+      Assert.AreSame (ClientTransactionMock, subTransaction.RootTransaction);
+      Assert.AreNotSame (ClientTransactionMock, newRootTransaction);
+      Assert.AreEqual (ClientTransactionMock.GetType (), newRootTransaction.GetType ());
+    }
+
+    [Test]
     public void EnterDiscardingScopeEnablesDiscardBehavior ()
     {
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())

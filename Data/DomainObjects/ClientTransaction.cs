@@ -170,6 +170,9 @@ public abstract class ClientTransaction : ITransaction
   /// is an instance of <see cref="SubClientTransaction"/>, it returns the parent's root transaction. </remarks>
   public abstract ClientTransaction RootTransaction { get; }
 
+  /// <summary>Initializes a new instance of this transaction.</summary>
+  public abstract ClientTransaction CreateEmptyTransactionOfSameType ();
+
   /// <summary>
   /// Enlists the given domain object in the current transaction.
   /// </summary>
@@ -564,7 +567,7 @@ public abstract class ClientTransaction : ITransaction
     foreach (DomainObject domainObject in sourceTransaction.EnlistedDomainObjects)
     {
       bool enlisted = EnlistDomainObject (domainObject);
-      if (enlisted)
+      if (enlisted || IsEnlisted (domainObject))
         enlistedObjects.Add (domainObject);
     }
 
@@ -1502,6 +1505,11 @@ public abstract class ClientTransaction : ITransaction
   }
 
   #region ITransaction Members
+
+  public TTransaction To<TTransaction> ()
+  {
+    throw new System.NotImplementedException();
+  }
 
   ITransaction ITransaction.CreateChild ()
   {

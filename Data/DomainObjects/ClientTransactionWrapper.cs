@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using Remotion.Utilities;
@@ -21,7 +20,7 @@ namespace Remotion.Data.DomainObjects
   /// </summary>
   public class ClientTransactionWrapper : ITransaction
   {
-    private readonly ClientTransaction _wrappedInstance;
+    private ClientTransaction _wrappedInstance;
 
     internal ClientTransactionWrapper (ClientTransaction wrappedInstance)
     {
@@ -32,6 +31,14 @@ namespace Remotion.Data.DomainObjects
     public ClientTransaction WrappedInstance
     {
       get { return _wrappedInstance; }
+    }
+
+    /// <summary> Gets the native transaction.</summary>
+    /// <typeparam name="TTransaction">The type of the transaction abstracted by this instance.</typeparam>
+    public TTransaction To<TTransaction> ()
+    {
+      ArgumentUtility.CheckTypeIsAssignableFrom ("TTransaction", typeof (TTransaction), typeof (ClientTransaction));
+      return (TTransaction) (object) _wrappedInstance;
     }
 
     /// <summary> Commits the transaction. </summary>
@@ -131,13 +138,25 @@ namespace Remotion.Data.DomainObjects
 
     public void Reset()
     {
-      throw new NotImplementedException ();
-      //        _transactionManager.ReleaseTransaction ();
-      //Assertion.IsFalse (oldTransaction.HasUncommittedChanges, "WxeTransaction should have thrown if the transaction had been changed");
+      if (_wrappedInstance.IsReadOnly)
+      {
+        throw new InvalidOperationException (
+            "The transaction cannot be reset as it is read-only. The reason might be an open child transaction.");
+      }
 
-      //ScopeManager.EnlistSameObjects (oldTransaction, MyTransaction, copyEventHandlers);
-      //  ScopeManager.CopyTransactionEventHandlers (oldTransaction, MyTransaction);
-      // if called from Reset: collection event handlers should be copied, transaction event handlers should be copied
+      if (_wrappedInstance.HasChanged ())
+      {
+        throw new InvalidOperationException (
+            "The transaction cannot be reset as it is in a dirty state and needs to be committed or rolled back.");
+      }
+
+      _wrappedInstance.Discard ();
+
+      ClientTransaction newTransaction = _wrappedInstance.CreateEmptyTransactionOfSameType();
+      newTransaction.EnlistSameDomainObjects (_wrappedInstance, true);
+      newTransaction.CopyTransactionEventHandlers (_wrappedInstance);
+
+      _wrappedInstance = newTransaction;
     }
   }
 }

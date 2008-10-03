@@ -15,6 +15,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
@@ -28,6 +29,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       base.SetUp();
 
       _transaction = ClientTransactionMock.ToITransation();
+    }
+
+    [Test]
+    public void To_ClientTransaction ()
+    {
+      ClientTransactionMock actual = _transaction.To<ClientTransactionMock>();
+
+      Assert.That (actual, Is.SameAs (ClientTransactionMock));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
+        "Argument TTransaction is a Remotion.Data.DomainObjects.DomainObject, "
+        + "which cannot be assigned to type Remotion.Data.DomainObjects.ClientTransaction.\r\nParameter name: TTransaction")]
+    public void To_InvalidType ()
+    {
+      _transaction.To<DomainObject>();
     }
 
     [Test]
@@ -136,6 +154,125 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ITransaction secondTransaction = secondClientTransaction.ToITransation();
 
       secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2 });
+    }
+
+    [Test]
+    public void Reset_RootTransaction ()
+    {
+      ClientTransaction clientTransactionBefore = ClientTransaction.CreateRootTransaction();
+      ITransaction transaction = clientTransactionBefore.ToITransation();
+      Order order;
+      bool addedCalled;
+      bool loadedCalled;
+
+      using (clientTransactionBefore.EnterNonDiscardingScope())
+      {
+        order = Order.GetObject (DomainObjectIDs.Order1);
+        order.OrderNumber = 7;
+        clientTransactionBefore.Rollback();
+
+        addedCalled = false;
+        order.OrderItems.Added += delegate { addedCalled = true; };
+
+        loadedCalled = false;
+        clientTransactionBefore.Loaded += delegate { loadedCalled = true; };
+
+        transaction.Reset();
+        Assert.That (clientTransactionBefore.IsDiscarded, Is.True);
+      }
+
+      ClientTransaction clientTransactionAfter = ((ClientTransactionWrapper) transaction).WrappedInstance;
+
+      Assert.That (clientTransactionAfter, Is.Not.SameAs (clientTransactionBefore));
+
+      using (clientTransactionAfter.EnterNonDiscardingScope())
+      {
+        Assert.That (order.CanBeUsedInTransaction (clientTransactionAfter), Is.True);
+        Assert.That (order.OrderNumber, Is.EqualTo (1));
+
+        Assert.That (addedCalled, Is.False);
+        order.OrderItems.Add (OrderItem.NewObject());
+        Assert.That (addedCalled, Is.True);
+
+        loadedCalled = false;
+
+        Order.GetObject (DomainObjectIDs.Order2);
+
+        Assert.That (loadedCalled, Is.True);
+      }
+    }
+
+    [Test]
+    public void Reset_SubTransaction ()
+    {
+      ClientTransaction rootTransaction = ClientTransaction.CreateRootTransaction();
+      ClientTransaction clientTransactionBefore = rootTransaction.CreateSubTransaction();
+      ITransaction transaction = clientTransactionBefore.ToITransation();
+      Order order;
+      bool addedCalled;
+      bool loadedCalled;
+
+      using (clientTransactionBefore.EnterNonDiscardingScope())
+      {
+        order = Order.GetObject (DomainObjectIDs.Order1);
+        order.OrderNumber = 7;
+        clientTransactionBefore.Rollback();
+
+        addedCalled = false;
+        order.OrderItems.Added += delegate { addedCalled = true; };
+
+        loadedCalled = false;
+        clientTransactionBefore.Loaded += delegate { loadedCalled = true; };
+
+        transaction.Reset();
+        Assert.That (clientTransactionBefore.IsDiscarded, Is.True);
+      }
+
+      ClientTransaction clientTransactionAfter = ((ClientTransactionWrapper) transaction).WrappedInstance;
+
+      Assert.That (clientTransactionAfter, Is.Not.SameAs (clientTransactionBefore));
+      Assert.That (clientTransactionAfter.RootTransaction, Is.SameAs (rootTransaction));
+
+      using (clientTransactionAfter.EnterNonDiscardingScope())
+      {
+        Assert.That (order.CanBeUsedInTransaction (clientTransactionAfter), Is.True);
+        Assert.That (order.OrderNumber, Is.EqualTo (1));
+
+        Assert.That (addedCalled, Is.False);
+        order.OrderItems.Add (OrderItem.NewObject());
+        Assert.That (addedCalled, Is.True);
+
+        loadedCalled = false;
+
+        Order.GetObject (DomainObjectIDs.Order2);
+
+        Assert.That (loadedCalled, Is.True);
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "The transaction cannot be reset as it is read-only. The reason might be an open child transaction.")]
+    public void Reset_RootTransaction_WithSubTransaction_Throws ()
+    {
+      ClientTransaction rootTransaction = ClientTransaction.CreateRootTransaction();
+      rootTransaction.CreateSubTransaction();
+      ITransaction transaction = rootTransaction.ToITransation ();
+      transaction.Reset();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "The transaction cannot be reset as it is in a dirty state and needs to be committed or rolled back.")]
+    public void Reset_RootTransaction_HasChanged_Throws ()
+    {
+      ClientTransaction rootTransaction = ClientTransaction.CreateRootTransaction();
+      ITransaction transaction = rootTransaction.ToITransation();
+      using (rootTransaction.EnterNonDiscardingScope ())
+      {
+        Order.NewObject();
+        transaction.Reset();
+      }
     }
   }
 }

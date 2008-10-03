@@ -655,6 +655,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    public void EnlistSameWithCopyEventHandlers_SubTransaction ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      bool orderItemAdded = false;
+      order.OrderItems.Added += delegate { orderItemAdded = true; };
+      Assert.IsFalse (orderItemAdded);
+      order.OrderItems.Add (OrderItem.NewObject ());
+      Assert.IsTrue (orderItemAdded);
+
+      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ClientTransaction.Current.EnlistSameDomainObjects (ClientTransactionMock, true);
+        orderItemAdded = false;
+        Assert.IsFalse (orderItemAdded);
+        order.OrderItems.Add (OrderItem.NewObject ());
+        Assert.IsTrue (orderItemAdded);
+      }
+    }
+
+    [Test]
     public void EnlistSameWithCopyEventHandlers_WithDiscardedSource ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
@@ -673,28 +693,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.IsFalse (orderItemAdded);
         order.OrderItems.Add (OrderItem.NewObject ());
         Assert.IsTrue (orderItemAdded);
-      }
-    }
-
-    [Test]
-    public void EnlistSameWithCopyEventHandlers_CopiesOnlyOnEnlist ()
-    {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      bool orderItemAdded = false;
-      order.OrderItems.Added += delegate { orderItemAdded = true; };
-      Assert.IsFalse (orderItemAdded);
-      order.OrderItems.Add (OrderItem.NewObject ());
-      Assert.IsTrue (orderItemAdded);
-
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        ClientTransaction.Current.EnlistDomainObject (order);
-        ClientTransaction.Current.EnlistSameDomainObjects (ClientTransactionMock, true);
-
-        orderItemAdded = false;
-        Assert.IsFalse (orderItemAdded);
-        order.OrderItems.Add (OrderItem.NewObject ());
-        Assert.IsFalse (orderItemAdded);
       }
     }
   }

@@ -15,6 +15,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -56,6 +57,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public override ClientTransaction RootTransaction
     {
       get { return this; }
+    }
+
+    /// <summary>Initializes a new instance of this transaction.</summary>
+    public override ClientTransaction CreateEmptyTransactionOfSameType ()
+    {
+      return (ClientTransaction) TypesafeActivator.CreateInstance (GetType()).With();
     }
 
     public override IQueryManager QueryManager

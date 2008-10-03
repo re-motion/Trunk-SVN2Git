@@ -16,6 +16,10 @@ namespace Remotion.Data
   /// <summary> The <see cref="ITransaction"/> interface provides functionality needed when working with a transaction.</summary>
   public interface ITransaction
   {
+    /// <summary> Gets the native transaction.</summary>
+    /// <typeparam name="TTransaction">The type of the transaction abstracted by this instance.</typeparam>
+    TTransaction To<TTransaction> ();
+
     /// <summary> Commits the transaction. </summary>
     void Commit ();
 
