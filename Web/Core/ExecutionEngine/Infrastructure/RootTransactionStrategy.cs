@@ -23,16 +23,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     private readonly IWxeFunctionExecutionContext _executionContext;
     private ITransactionScope _scope;
 
-    public RootTransactionStrategy (bool autoCommit, ITransaction transaction, IWxeFunctionExecutionContext executionContext, IWxeFunctionExecutionListener innerListener)
+    public RootTransactionStrategy (
+        bool autoCommit, ITransaction transaction, IWxeFunctionExecutionContext executionContext, IWxeFunctionExecutionListener innerListener)
         : base (autoCommit, innerListener)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
-      _transaction = transaction;      
+      _transaction = transaction;
       _executionContext = executionContext;
 
-      RegisterObjects (_executionContext.GetInParameters ());
+      RegisterObjects (_executionContext.GetInParameters());
     }
 
     public override void OnExecutionPlay (WxeContext context)

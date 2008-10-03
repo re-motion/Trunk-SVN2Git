@@ -39,7 +39,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _transactionMock = MockRepository.StrictMock<ITransaction>();
       _scopeMock = MockRepository.StrictMock<ITransactionScope>();
       _executionContextMock = MockRepository.StrictMock<IWxeFunctionExecutionContext>();
-      _executionContextMock.Stub (stub => stub.GetInParameters()).Return (new object[0]).Repeat.Any();
     }
 
     public MockRepository MockRepository
@@ -74,13 +73,20 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
     protected RootTransactionStrategy CreateRootTransactionStrategy (bool autoCommit)
     {
+      _executionContextMock.BackToRecord();
+      _executionContextMock.Stub (stub => stub.GetInParameters()).Return (new object[0]).Repeat.Any();
       _executionContextMock.Replay();
 
-      _transactionMock.BackToRecord ();
+      _transactionMock.BackToRecord();
       _transactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
-      _transactionMock.Replay ();
+      _transactionMock.Replay();
 
-      return new RootTransactionStrategy (autoCommit, TransactionMock, _executionContextMock, _executionListenerMock);
+      var strategy = new RootTransactionStrategy (autoCommit, TransactionMock, _executionContextMock, _executionListenerMock);
+
+      _executionContextMock.BackToRecord();
+      _transactionMock.BackToRecord();
+
+      return strategy;
     }
 
     protected void InvokeOnExecutionPlay (RootTransactionStrategy strategy)
@@ -101,16 +107,18 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
     protected void InvokeOnExecutionPause (RootTransactionStrategy strategy)
     {
-      ExecutionListenerMock.Stub (stub => stub.OnExecutionPause (Context));
-      ScopeMock.Stub (stub => stub.Leave());
+      _executionListenerMock.BackToRecord();
+      _executionListenerMock.Stub (stub => stub.OnExecutionPause (Context));
+      _executionListenerMock.Replay();
 
-      MockRepository.Replay (ExecutionListenerMock);
-      MockRepository.Replay (ScopeMock);
+      _scopeMock.BackToRecord();
+      _scopeMock.Stub (stub => stub.Leave());
+      _scopeMock.Replay();
 
       strategy.OnExecutionPause (Context);
 
-      MockRepository.BackToRecord (ExecutionListenerMock);
-      MockRepository.BackToRecord (ScopeMock);
+      _executionListenerMock.BackToRecord();
+      _scopeMock.BackToRecord();
     }
   }
 }

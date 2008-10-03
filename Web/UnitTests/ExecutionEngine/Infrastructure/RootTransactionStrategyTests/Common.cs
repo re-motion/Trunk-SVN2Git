@@ -12,7 +12,6 @@ using System;
 using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 
@@ -81,14 +80,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       var expectedObject1 = new object();
       var expectedObject2 = new object();
 
-      SetupForInitializeAndRegisterObjects (
+      SetupForInitializationWithRegisterObjects (
           new[] { expectedObject1, expectedObject2 },
           new[] { expectedObject1, expectedObject2 });
+      MockRepository.ReplayAll();
 
       new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
 
-      ExecutionContextMock.VerifyAllExpectations();
-      TransactionMock.VerifyAllExpectations();
+      MockRepository.VerifyAll();
     }
 
     [Test]
@@ -97,14 +96,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       var expectedObject1 = new object();
       var expectedObject2 = new object();
 
-      SetupForInitializeAndRegisterObjects (
+      SetupForInitializationWithRegisterObjects (
           new[] { expectedObject1, null, expectedObject2 },
           new[] { expectedObject1, expectedObject2 });
+      MockRepository.ReplayAll();
 
       new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
 
-      ExecutionContextMock.VerifyAllExpectations();
-      TransactionMock.VerifyAllExpectations();
+      MockRepository.VerifyAll();
     }
 
     [Test]
@@ -114,14 +113,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       var expectedObject2 = new object();
       var expectedObject3 = new object();
 
-      SetupForInitializeAndRegisterObjects (
+      SetupForInitializationWithRegisterObjects (
           new[] { expectedObject1, new[] { expectedObject2, expectedObject3 } },
           new[] { expectedObject1, expectedObject2, expectedObject3 });
+      MockRepository.ReplayAll();
 
       new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
 
-      ExecutionContextMock.VerifyAllExpectations();
-      TransactionMock.VerifyAllExpectations();
+      MockRepository.VerifyAll();
     }
 
     [Test]
@@ -131,29 +130,23 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       var expectedObject2 = new object();
       var expectedObject3 = new object();
 
-      SetupForInitializeAndRegisterObjects (
+      SetupForInitializationWithRegisterObjects (
           new[] { expectedObject1, new[] { expectedObject2, null, expectedObject3 } },
           new[] { expectedObject1, expectedObject2, expectedObject3 });
+      MockRepository.ReplayAll();
 
       new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
 
-      ExecutionContextMock.VerifyAllExpectations();
-      TransactionMock.VerifyAllExpectations();
+      MockRepository.VerifyAll();
     }
 
-    private void SetupForInitializeAndRegisterObjects (object[] actualInParamters, object[] expectedInParamters)
+    private void SetupForInitializationWithRegisterObjects (object[] actualInParamters, object[] expectedInParamters)
     {
-      ExecutionContextMock.BackToRecord();
-      TransactionMock.BackToRecord();
-
       using (MockRepository.Ordered())
       {
         ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (actualInParamters);
         TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (expectedInParamters)));
       }
-
-      TransactionMock.Replay();
-      ExecutionContextMock.Replay();
     }
   }
 }
