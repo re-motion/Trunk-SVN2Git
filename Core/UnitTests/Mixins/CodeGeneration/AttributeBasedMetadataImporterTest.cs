@@ -12,12 +12,17 @@ using System;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
+using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Rhino.Mocks;
 using System.Linq;
+using Remotion.Collections;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
@@ -68,6 +73,20 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     }
 
     [Test]
+    public void GetMethodWrappersForMixinType_Wrapper ()
+    {
+      var importerMock = new MockRepository ().PartialMock<AttributeBasedMetadataImporter> ();
+      var expectedResult = new Tuple<MethodInfo, MethodInfo>[0];
+      importerMock.Expect (mock => mock.GetMethodWrappersForMixinType((_Type) typeof (object))).Return (expectedResult);
+
+      importerMock.Replay ();
+      var result = importerMock.GetMethodWrappersForMixinType (typeof (object));
+
+      Assert.That (result, Is.SameAs (expectedResult));
+      importerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     public void GetMetadataForMixedType ()
     {
       var importer = new AttributeBasedMetadataImporter ();
@@ -101,6 +120,84 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       Assert.That (results.ToArray (), Is.EqualTo (new[] { _targetClassDefinition1.Mixins[0], _targetClassDefinition2.Mixins[0] }));
 
       typeMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void GetMethodWrappersForMixinType()
+    {
+      var moduleForWrappers = new ModuleManager ();
+      Type builtType = CreateTypeWithFakeWrappers(moduleForWrappers);
+
+      // fake wrapper methods
+      var wrapperMethod1 = builtType.GetMethod ("Wrapper1");
+      var wrapperMethod2 = builtType.GetMethod ("Wrapper2");
+      var nonWrapperMethod1 = builtType.GetMethod ("NonWrapper1");
+      var nonWrapperMethod2 = builtType.GetMethod ("NonWrapper2");
+      
+      // fake wrapped methods
+      var wrappedMethod1 = typeof (DateTime).GetMethod ("get_Now");
+      var wrappedMethod2 = typeof (DateTime).GetMethod ("get_Day");
+
+      // fake attributes simulating the relationship between wrapper methods and wrapped methods
+      var attribute1 = new GeneratedMethodWrapperAttribute (moduleForWrappers.SignedModule.GetMethodToken (wrappedMethod1).Token);
+      var attribute2 = new GeneratedMethodWrapperAttribute (moduleForWrappers.SignedModule.GetMethodToken (wrappedMethod2).Token);
+
+      // prepare importerMock.GetWrapperAttribute to return attribute1 and attribute2 for wrapperMethod1 and wrapperMethod2
+      var importerMock = new MockRepository ().PartialMock<AttributeBasedMetadataImporter> ();
+      importerMock.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GetWrapperAttribute", nonWrapperMethod1)).Return (null);
+      importerMock.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GetWrapperAttribute", nonWrapperMethod2)).Return (null);
+      importerMock.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GetWrapperAttribute", wrapperMethod1)).Return (attribute1);
+      importerMock.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GetWrapperAttribute", wrapperMethod2)).Return (attribute2);
+      importerMock.Replay ();
+      
+      var typeMock = MockRepository.GenerateMock<_Type> ();
+      typeMock.Expect (mock => mock.GetMethods (BindingFlags.Instance | BindingFlags.Public))
+          .Return (new[] { nonWrapperMethod1, nonWrapperMethod2, wrapperMethod1, wrapperMethod2 });
+
+      var result = importerMock.GetMethodWrappersForMixinType (typeMock).ToArray();
+      Assert.That (result, Is.EqualTo (new[] { new Tuple<MethodInfo, MethodInfo> (wrappedMethod1, wrapperMethod1), new Tuple<MethodInfo, MethodInfo> (wrappedMethod2, wrapperMethod2) }));
+    }
+
+    [Test]
+    public void GetWrapperAttribute_WithResult ()
+    {
+      var importer = new AttributeBasedMetadataImporter();
+      var method = GetType ().GetMethod ("FakeWrapperMethod");
+      var attribute = (GeneratedMethodWrapperAttribute) PrivateInvoke.InvokeNonPublicMethod (importer, "GetWrapperAttribute", method);
+
+      Assert.That (attribute, Is.Not.Null);
+      Assert.That (attribute.WrappedMethodRefToken, Is.EqualTo (0xfeefee));
+    }
+
+    [Test]
+    public void GetWrapperAttribute_WithoutResult ()
+    {
+      var importer = new AttributeBasedMetadataImporter ();
+      var method = GetType ().GetMethod ("FakeNonWrapperMethod");
+      var attribute = (GeneratedMethodWrapperAttribute) PrivateInvoke.InvokeNonPublicMethod (importer, "GetWrapperAttribute", method);
+
+      Assert.That (attribute, Is.Null);
+    }
+
+    [GeneratedMethodWrapper(0xfeefee)]
+    public void FakeWrapperMethod ()
+    {
+    }
+
+    public void FakeNonWrapperMethod ()
+    {
+    }
+
+    private Type CreateTypeWithFakeWrappers (ModuleManager moduleForWrappers)
+    {
+      TypeBuilder wrapperClassBuilder = moduleForWrappers.Scope.ObtainDynamicModuleWithStrongName ().DefineType ("WrapperClass");
+
+      wrapperClassBuilder.DefineMethod ("Wrapper1", MethodAttributes.Public).GetILGenerator ().Emit (OpCodes.Ret);
+      wrapperClassBuilder.DefineMethod ("Wrapper2", MethodAttributes.Public).GetILGenerator ().Emit (OpCodes.Ret);
+      wrapperClassBuilder.DefineMethod ("NonWrapper1", MethodAttributes.Public).GetILGenerator ().Emit (OpCodes.Ret);
+      wrapperClassBuilder.DefineMethod ("NonWrapper2", MethodAttributes.Public).GetILGenerator ().Emit (OpCodes.Ret);
+
+      return wrapperClassBuilder.CreateType ();
     }
   }
 }

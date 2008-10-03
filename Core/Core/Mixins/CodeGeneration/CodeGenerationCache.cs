@@ -14,6 +14,8 @@ using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
+using System.Reflection;
+using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration
 {
@@ -102,15 +104,32 @@ namespace Remotion.Mixins.CodeGeneration
       {
         foreach (Type type in types)
         {
-          foreach (TargetClassDefinition mixedTypeMetadata in metadataImporter.GetMetadataForMixedType (type, TargetClassDefinitionCache.Current))
-            _typeCache.GetOrCreateValue (mixedTypeMetadata, delegate { return type; });
+          ImportConcreteMixedType(metadataImporter, type);
+          ImportConcreteMixinType(metadataImporter, type);
+        }
+      }
+    }
 
-          foreach (MixinDefinition mixinDefinition in metadataImporter.GetMetadataForMixinType (type, TargetClassDefinitionCache.Current))
-          {
-            var concreteMixinType = new ConcreteMixinType (mixinDefinition, type);
-            #warning TODO FS: add public method wrappers and add to returned object
-            _mixinTypeCache.GetOrCreateValue (mixinDefinition, delegate { return concreteMixinType; });
-          }
+    private void ImportConcreteMixedType(IConcreteTypeMetadataImporter metadataImporter, Type type)
+    {
+      foreach (TargetClassDefinition mixedTypeMetadata in metadataImporter.GetMetadataForMixedType (type, TargetClassDefinitionCache.Current))
+        _typeCache.GetOrCreateValue (mixedTypeMetadata, delegate { return type; });
+    }
+
+
+    private void ImportConcreteMixinType (IConcreteTypeMetadataImporter metadataImporter, Type type)
+    {
+      var mixinDefinitions = metadataImporter.GetMetadataForMixinType (type, TargetClassDefinitionCache.Current).ToArray ();
+      if (mixinDefinitions.Length > 0)
+      {
+        var methodWrappers = metadataImporter.GetMethodWrappersForMixinType (type);
+        foreach (MixinDefinition mixinDefinition in mixinDefinitions)
+        {
+          var concreteMixinType = new ConcreteMixinType (mixinDefinition, type);
+          foreach (Tuple<MethodInfo, MethodInfo> wrapper in methodWrappers)
+            concreteMixinType.AddMethodWrapper (wrapper.A, wrapper.B);
+
+          _mixinTypeCache.GetOrCreateValue (mixinDefinition, delegate { return concreteMixinType; });
         }
       }
     }

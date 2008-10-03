@@ -9,9 +9,12 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Remotion.Mixins.Definitions;
+using System.Reflection;
+using Remotion.Collections;
 
 namespace Remotion.Mixins.CodeGeneration
 {
@@ -23,5 +26,6 @@ namespace Remotion.Mixins.CodeGeneration
   {
     IEnumerable<TargetClassDefinition> GetMetadataForMixedType (Type concreteMixedType, ITargetClassDefinitionCache targetClassDefinitionCache);
     IEnumerable<MixinDefinition> GetMetadataForMixinType (Type concreteMixinType, ITargetClassDefinitionCache targetClassDefinitionCache);
+    IEnumerable<Tuple<MethodInfo, MethodInfo>> GetMethodWrappersForMixinType (Type concreteMixinType);
   }
 }
