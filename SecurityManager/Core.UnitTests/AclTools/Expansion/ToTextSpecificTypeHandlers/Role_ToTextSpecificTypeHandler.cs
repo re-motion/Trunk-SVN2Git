@@ -11,6 +11,7 @@
 // 
 using System;
 using Remotion.Diagnostics.ToText;
+using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ToTextSpecificTypeHandlers
@@ -21,7 +22,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ToTextSpecificTy
     public override void ToText (Role x, IToTextBuilder toTextBuilder)
     {
       toTextBuilder.ib<Role> ("");
-      toTextBuilder.e ("user", x.User.UserName).e ("group", x.Group.Name).e ("pos", x.Position.Name);
+      if (toTextBuilder.OutputComplexity >= ToTextBuilderBase.ToTextBuilderOutputComplexityLevel.Complex)
+      {
+        toTextBuilder.e ("user", x.User.UserName).e ("group", x.Group.Name).e ("pos", x.Position.Name);
+      }
+      else
+      {
+        toTextBuilder.e (x.User.UserName).e (x.Group.Name).e (x.Position.Name);
+      }
       toTextBuilder.ie ();
     }
   }

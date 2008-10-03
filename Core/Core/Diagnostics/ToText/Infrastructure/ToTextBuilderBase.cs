@@ -329,6 +329,14 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
       return WriteElement (obj);
     }
 
+    public IToTextBuilder eIfNotEqualTo (string name, Object obj, Object notEqualObj)
+    {
+      if ((obj == null && notEqualObj == null) || (obj != null && obj.Equals (notEqualObj)))
+      {
+        return this;
+      }
+      return WriteElement (name, obj);
+    }
 
 
     public abstract IToTextBuilder WriteEnumerable (IEnumerable enumerable);

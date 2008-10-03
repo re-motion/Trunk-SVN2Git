@@ -37,8 +37,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public void ToText (IToTextBuilder toTextBuilder)
     {
       toTextBuilder.ib<AclExpansionAccessConditions>("");
-      toTextBuilder.e ("userMustOwn", OnlyIfUserIsOwner).e ("groupMustOwn", OnlyIfGroupIsOwner).e ("tenantMustOwn", OnlyIfTenantIsOwner);
-      toTextBuilder.e ("abstractRoleMustMatche", OnlyIfAbstractRoleMatches).e ("abstractRole", AbstractRole);
+      toTextBuilder.eIfNotEqualTo ("userMustOwn", OnlyIfUserIsOwner, false).e ("groupMustOwn", OnlyIfGroupIsOwner).e ("tenantMustOwn", OnlyIfTenantIsOwner);
+      toTextBuilder.e ("abstractRoleMustMatch", OnlyIfAbstractRoleMatches).eIfNotNull ("abstractRole", AbstractRole);
       toTextBuilder.ie ();
     }
   }

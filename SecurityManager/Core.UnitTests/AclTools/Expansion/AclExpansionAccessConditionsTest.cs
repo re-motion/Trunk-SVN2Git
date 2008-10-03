@@ -11,12 +11,9 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Diagnostics.ToText;
 using Remotion.Reflection;
 using Remotion.SecurityManager.AclTools.Expansion;
-using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -42,17 +39,25 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       BooleanMemberTest ((aeac, b) => aeac.OnlyIfUserIsOwner = b);
     }
 
+    [Test]
+    public void Equals_UsingLambda ()
+    {
+      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.OnlyIfGroupIsOwner = true);
+      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.OnlyIfTenantIsOwner = true);
+      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.OnlyIfUserIsOwner = true);
+      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.AbstractRole = TestHelper.CreateAbstractRoleDefinition ("titatutest", 11235));
+    }
+
 
     // Check Equals operator for each property of AclExpansionAccessConditions if changing the property from its default value 
     // leaves to two instances being unequal.
     [Test]
-    public void Equals2 ()
+    public void Equals_UsingPropertyObject ()
     {
-      //CheckIfPassedPropertyChangeChangesEquality (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfGroupIsOwner), true);
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (x => x.OnlyIfGroupIsOwner), true);
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (x => x.OnlyIfTenantIsOwner), true);
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (x => x.OnlyIfUserIsOwner), true);
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (x => x.AbstractRole), TestHelper.CreateAbstractRoleDefinition ("titatutest", 11235));
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.OnlyIfGroupIsOwner), true);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.OnlyIfTenantIsOwner), true);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.OnlyIfUserIsOwner), true);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.AbstractRole), TestHelper.CreateAbstractRoleDefinition ("titatutest", 11235));
     }
 
 
@@ -61,8 +66,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var accessConditions = new AclExpansionAccessConditions ();
       var result = To.String.e (accessConditions).CheckAndConvertToString ();
-      //To.Console.s (result);
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("userMustOwn=False,groupMustOwn=False,tenantMustOwn=False,abstractRoleMustMatche=False,abstractRole=null"));
+      To.Console.s (result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("userMustOwn=False,groupMustOwn=False,tenantMustOwn=False,abstractRoleMustMatch=False"));
     }
 
 
@@ -74,6 +79,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var accessConditions1 = new AclExpansionAccessConditions ();
       Assert.That (accessConditions0.Equals (accessConditions1), Is.True);
       setBoolProperty (accessConditions1, true);
+      Assert.That (accessConditions0.Equals (accessConditions1), Is.False);
+    }
+
+
+    // Check if applying the passed Action to only one instance of AclExpansionAccessConditions flips equality.
+    private void CheckIfPassedPropertyChangeChangesEquality<TProperty> (Action<AclExpansionAccessConditions> changeProperty)
+    {
+      var accessConditions0 = new AclExpansionAccessConditions ();
+      var accessConditions1 = new AclExpansionAccessConditions ();
+      Assert.That (accessConditions0.Equals (accessConditions1), Is.True);
+      changeProperty(accessConditions1);
       Assert.That (accessConditions0.Equals (accessConditions1), Is.False);
     }
 

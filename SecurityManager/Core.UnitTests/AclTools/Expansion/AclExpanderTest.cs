@@ -178,9 +178,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceGroupAll = TestHelper.CreateAceWithGroupSelectionAll ();
       AttachAccessTypeReadWriteDelete (aceGroupAll, null, true, null);
 
-      To.ConsoleLine.e (aceGroupOwning);
-      To.ConsoleLine.e (aceAbstractRole);
-      To.ConsoleLine.e (aceGroupAll);
+      To.ConsoleLine.e (() => aceGroupOwning);
+      To.ConsoleLine.e (() => aceAbstractRole);
+      To.ConsoleLine.e (() => aceGroupAll);
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
@@ -281,11 +281,46 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
   [ToTextSpecificHandler]
+  public class Position_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<Position>
+  {
+    public override void ToText (Position x, IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib<Position> ("").e (x.DisplayName).ie ();
+    }
+  }
+
+
+  [ToTextSpecificHandler]
   public class AccessControlEntry_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AccessControlEntry>
   {
     public override void ToText (AccessControlEntry x, IToTextBuilder toTextBuilder)
     {
-      toTextBuilder.ib<AccessControlEntry> ("").e ("SelUser", x.UserSelection).eIfNotNull(x.SpecificUser).e(x.SpecificPosition).e(x.SpecificGroup).e(x.SpecificTenant).e ("SelGroup", x.GroupSelection).e ("SelTenant", x.TenantSelection).e ("SelUser", x.UserSelection).e (x.Permissions).ie ();
+      toTextBuilder.ib<AccessControlEntry> ("").e (x.Permissions).e ("SelUser", x.UserSelection).e ("SelGroup", x.GroupSelection).e ("SelTenant", x.TenantSelection).eIfNotNull ("user", x.SpecificUser).eIfNotNull ("position", x.SpecificPosition).eIfNotNull ("group", x.SpecificGroup).eIfNotNull ("tenant", x.SpecificTenant).ie ();
     }
   }
+
+  [ToTextSpecificHandler]
+  public class AccessControlList_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AccessControlList>
+  {
+    public override void ToText (AccessControlList x, IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib<AccessControlList> ("").e (x.AccessControlEntries).ie ();
+    }
+  }
+
+
+  [ToTextSpecificHandler]
+  public class ListOfAclExpansionEntry_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<List<AclExpansionEntry>>
+  {
+    public override void ToText (List<AclExpansionEntry> listOfAclExpansionEntry, IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib<List<AclExpansionEntry>> ("").nl();
+      foreach (AclExpansionEntry aclExpansionEntry in listOfAclExpansionEntry)
+      {
+        toTextBuilder.e (aclExpansionEntry).nl ();
+      }
+      toTextBuilder.ie ();
+    }
+  }
+
 }

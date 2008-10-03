@@ -1035,10 +1035,23 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder ();
       Object nullVar = null;
       var someVar = "text";
-      toTextBuilder.eIfNotNull ("nullVar", nullVar).eIfNotNull ("someVar", someVar).e ("nullVar", nullVar);
+      toTextBuilder.eIfNotNull ("nullVar_NotEmitted", nullVar).eIfNotNull ("someVar", someVar).e ("nullVar", nullVar);
       var result = toTextBuilder.CheckAndConvertToString ();
-      Log (result);
-      Assert.That (result, Is.EqualTo ("someVar=textnullVar=null"));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.DoesNotContain ("NotEmitted"));
+    }
+
+    [Test]
+    public void WriteIfNotEqualWithName ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      Object nullVar = null;
+      String s = "ABC";
+      bool testBool = false;
+      toTextBuilder.sb ().eIfNotEqualTo ("testBoolFalse_NotEmitted", testBool, false).eIfNotEqualTo ("testBoolFalse", testBool, true);
+      toTextBuilder.eIfNotEqualTo ("s_NotEmitted", s, "ABC").eIfNotEqualTo ("s", s, "XYZ");
+      toTextBuilder.eIfNotEqualTo ("nullVar_NotEmitted", nullVar, null).eIfNotEqualTo ("nullVar", nullVar, s).se();
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.DoesNotContain ("NotEmitted"));
     }
 
 
