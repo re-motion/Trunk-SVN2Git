@@ -13,6 +13,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
@@ -21,10 +23,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
   {
     private ITransaction _transaction;
 
-    public override void SetUp()
+    public override void SetUp ()
     {
- 	     base.SetUp();
-     
+      base.SetUp();
+
       _transaction = ClientTransactionMock.ToITransation();
     }
 
@@ -37,16 +39,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void CreateChild ()
     {
-      ITransaction child = _transaction.CreateChild ();
+      ITransaction child = _transaction.CreateChild();
       Assert.IsNotNull (child);
       Assert.IsInstanceOfType (typeof (ClientTransactionWrapper), child);
-      Assert.IsInstanceOfType (typeof (SubClientTransaction), ((ClientTransactionWrapper)child).WrappedInstance);
+      Assert.IsInstanceOfType (typeof (SubClientTransaction), ((ClientTransactionWrapper) child).WrappedInstance);
     }
 
     [Test]
     public void IsChild ()
     {
-      ITransaction child = _transaction.CreateChild ();
+      ITransaction child = _transaction.CreateChild();
       Assert.IsTrue (child.IsChild);
       Assert.IsFalse (_transaction.IsChild);
       Assert.IsTrue (child.CreateChild().IsChild);
@@ -55,18 +57,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void Parent ()
     {
-      ITransaction child = _transaction.CreateChild ();
-      Assert.AreSame (((ClientTransactionWrapper)_transaction).WrappedInstance, ((ClientTransactionWrapper)child.Parent).WrappedInstance);
-      Assert.AreSame (((ClientTransactionWrapper) child).WrappedInstance, ((ClientTransactionWrapper) child.CreateChild ().Parent).WrappedInstance);
+      ITransaction child = _transaction.CreateChild();
+      Assert.AreSame (((ClientTransactionWrapper) _transaction).WrappedInstance, ((ClientTransactionWrapper) child.Parent).WrappedInstance);
+      Assert.AreSame (((ClientTransactionWrapper) child).WrappedInstance, ((ClientTransactionWrapper) child.CreateChild().Parent).WrappedInstance);
     }
 
     [Test]
     public void Release ()
     {
-      ITransaction child = _transaction.CreateChild ();
+      ITransaction child = _transaction.CreateChild();
       Assert.IsTrue (((ClientTransactionWrapper) _transaction).WrappedInstance.IsReadOnly);
-      Assert.IsFalse (((ClientTransactionWrapper)child).WrappedInstance.IsDiscarded);
-      child.Release ();
+      Assert.IsFalse (((ClientTransactionWrapper) child).WrappedInstance.IsDiscarded);
+      child.Release();
       Assert.IsFalse (((ClientTransactionWrapper) _transaction).WrappedInstance.IsReadOnly);
       Assert.IsTrue (((ClientTransactionWrapper) child).WrappedInstance.IsDiscarded);
     }
@@ -76,15 +78,64 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ITransaction transaction = ClientTransaction.CreateRootTransaction().ToITransation();
 
-      ClientTransactionScope.ResetActiveScope ();
+      ClientTransactionScope.ResetActiveScope();
       Assert.That (ClientTransactionScope.ActiveScope, Is.Null);
 
-      ITransactionScope transactionScope = transaction.EnterScope ();
+      ITransactionScope transactionScope = transaction.EnterScope();
 
       Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (transactionScope));
       Assert.That (ClientTransactionScope.ActiveScope.ScopedTransaction, Is.SameAs (((ClientTransactionWrapper) transaction).WrappedInstance));
       Assert.That (ClientTransactionScope.ActiveScope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.None));
-      ClientTransactionScope.ResetActiveScope ();
+      ClientTransactionScope.ResetActiveScope();
+    }
+
+    [Test]
+    public void RegisterObjects ()
+    {
+      ClientTransaction firstClientTransaction = ClientTransaction.CreateRootTransaction();
+
+      DomainObject domainObject1;
+      DomainObject domainObject2;
+      using (firstClientTransaction.EnterNonDiscardingScope())
+      {
+        domainObject1 = RepositoryAccessor.GetObject (DomainObjectIDs.ClassWithAllDataTypes2, false);
+        domainObject2 = RepositoryAccessor.GetObject (DomainObjectIDs.Partner1, false);
+      }
+
+      var secondClientTransaction = ClientTransactionMock;
+      ITransaction secondTransaction = secondClientTransaction.ToITransation();
+      Assert.That (domainObject1.CanBeUsedInTransaction (secondClientTransaction), Is.False);
+      Assert.That (domainObject2.CanBeUsedInTransaction (secondClientTransaction), Is.False);
+
+      secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2 });
+
+      Assert.That (domainObject1.CanBeUsedInTransaction (secondClientTransaction), Is.True);
+      Assert.That (secondClientTransaction.DataManager.DataContainerMap.GetObjectWithoutLoading (domainObject1.ID, false), Is.Not.Null);
+
+      Assert.That (domainObject2.CanBeUsedInTransaction (secondClientTransaction), Is.True);
+      Assert.That (secondClientTransaction.DataManager.DataContainerMap.GetObjectWithoutLoading (domainObject2.ID, false), Is.Not.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (BulkLoadException),
+        ExpectedMessage = "There were errors when loading a bulk of DomainObjects:\r\nObject 'Partner|",
+        MatchType = MessageMatch.Contains)]
+    public void RegisterObjects_WithNewObject ()
+    {
+      ClientTransaction firstClientTransaction = ClientTransaction.CreateRootTransaction();
+
+      DomainObject domainObject1;
+      DomainObject domainObject2;
+      using (firstClientTransaction.EnterNonDiscardingScope())
+      {
+        domainObject1 = RepositoryAccessor.GetObject (DomainObjectIDs.ClassWithAllDataTypes2, false);
+        domainObject2 = Partner.NewObject();
+      }
+
+      var secondClientTransaction = ClientTransactionMock;
+      ITransaction secondTransaction = secondClientTransaction.ToITransation();
+
+      secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2 });
     }
   }
 }

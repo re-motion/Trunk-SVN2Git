@@ -9,6 +9,8 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Collections;
 using Remotion.Utilities;
 
@@ -120,8 +122,11 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>If the type of of of the objects is not supported by the transaction, the object must be ignored.</remarks>
     public void RegisterObjects (IEnumerable objects)
     {
-      //all newly registered objects should be loaded
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("objects", objects);
+
+      var domainObjects = objects.OfType<DomainObject>();
+      _wrappedInstance.EnlistDomainObjects (domainObjects);
+      _wrappedInstance.GetObjects<DomainObject> (domainObjects.Select (domainObject => domainObject.ID).ToArray());
     }
 
     public void Reset()

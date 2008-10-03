@@ -628,15 +628,6 @@ public abstract class ClientTransaction : ITransaction
     EnlistDomainObjects ((IEnumerable<DomainObject>) domainObjects);
   }
 
-  /// <summary>Registers the <paramref name="objects"/> with the transaction.</summary>
-  /// <param name="objects">The objects to be registered. Must not be <see langword="null" />.</param>
-  /// <remarks>If the type of of of the objects is not supported by the transaction, the object must be ignored.</remarks>
-  void ITransaction.RegisterObjects (IEnumerable objects)
-  {
-    //all newly registered objects should be loaded
-    throw new System.NotImplementedException();
-  }
-
   /// <summary>
   /// Copies the event handlers defined on the given <see cref="DomainObject"/>'s collection properties from another transaction to this
   /// transaction.
@@ -1550,6 +1541,11 @@ public abstract class ClientTransaction : ITransaction
   ITransactionScope ITransaction.EnterScope ()
   {
     throw new NotImplementedException();
+  }
+
+  void ITransaction.RegisterObjects (IEnumerable objects)
+  {
+    throw new System.NotImplementedException ();
   }
 
   #endregion
