@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects
   {
     private readonly ClientTransaction _wrappedInstance;
 
-    public ClientTransactionWrapper (ClientTransaction wrappedInstance)
+    internal ClientTransactionWrapper (ClientTransaction wrappedInstance)
     {
       ArgumentUtility.CheckNotNull ("wrappedInstance", wrappedInstance);
       _wrappedInstance = wrappedInstance;

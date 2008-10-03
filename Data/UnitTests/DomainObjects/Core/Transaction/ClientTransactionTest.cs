@@ -1106,6 +1106,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.That (loadedOrders.ToArray(), Is.EquivalentTo(new[] {o1, o2, o3}));
     }
 
+    [Test]
+    public void ToITransaction ()
+    {
+      ITransaction transaction = ClientTransactionMock.ToITransation();
+
+      Assert.That (((ClientTransactionWrapper) transaction).WrappedInstance, Is.SameAs (ClientTransactionMock));
+    }
+
     private bool HasEventHandler (object instance, string eventName, Delegate handler)
     {
       Delegate eventField = (Delegate) PrivateInvoke.GetNonPublicField (instance, eventName);

@@ -1505,6 +1505,11 @@ public abstract class ClientTransaction : ITransaction
     OnRolledBack (new ClientTransactionEventArgs (changedDomainObjects.Clone (true)));
   }
 
+  public ITransaction ToITransation ()
+  {
+    return new ClientTransactionWrapper (this);
+  }
+
   #region ITransaction Members
 
   ITransaction ITransaction.CreateChild ()

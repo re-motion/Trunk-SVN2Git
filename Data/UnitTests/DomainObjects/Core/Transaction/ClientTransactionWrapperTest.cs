@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
  	     base.SetUp();
      
-      _transaction = new ClientTransactionWrapper (ClientTransactionMock);
+      _transaction = ClientTransactionMock.ToITransation();
     }
 
     [Test]
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void EnterScope ()
     {
-      ITransaction transaction = new ClientTransactionWrapper(ClientTransaction.CreateRootTransaction ());
+      ITransaction transaction = ClientTransaction.CreateRootTransaction().ToITransation();
 
       ClientTransactionScope.ResetActiveScope ();
       Assert.That (ClientTransactionScope.ActiveScope, Is.Null);
