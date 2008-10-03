@@ -11,7 +11,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
+namespace Remotion.Reflection
 {
   /// <summary>
   /// Allows the creation of the property of a class independent of a concrete class instance,

@@ -13,6 +13,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Diagnostics.ToText;
+using Remotion.Reflection;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -47,10 +48,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void Equals2 ()
     {
-      CheckIfChangingThePassedPropertyInOnlyOneOfTwoDefaultConstructedInstancesOfAclExpansionAccessConditionsLeadsToTheTwoInstancesBeingUnequal (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfGroupIsOwner), true);
-      CheckIfChangingThePassedPropertyInOnlyOneOfTwoDefaultConstructedInstancesOfAclExpansionAccessConditionsLeadsToTheTwoInstancesBeingUnequal (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfTenantIsOwner), true);
-      CheckIfChangingThePassedPropertyInOnlyOneOfTwoDefaultConstructedInstancesOfAclExpansionAccessConditionsLeadsToTheTwoInstancesBeingUnequal (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfUserIsOwner), true);
-      CheckIfChangingThePassedPropertyInOnlyOneOfTwoDefaultConstructedInstancesOfAclExpansionAccessConditionsLeadsToTheTwoInstancesBeingUnequal (new Property<AclExpansionAccessConditions, AbstractRoleDefinition> (x => x.AbstractRole), TestHelper.CreateAbstractRoleDefinition("titatutest",11235) );
+      CheckIfPassedPropertyChangeChangesEquality (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfGroupIsOwner), true);
+      CheckIfPassedPropertyChangeChangesEquality (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfTenantIsOwner), true);
+      CheckIfPassedPropertyChangeChangesEquality (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfUserIsOwner), true);
+      CheckIfPassedPropertyChangeChangesEquality (new Property<AclExpansionAccessConditions, AbstractRoleDefinition> (x => x.AbstractRole), TestHelper.CreateAbstractRoleDefinition("titatutest",11235) );
     }
 
 
@@ -77,7 +78,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     // Check if changing the passed Property of AclExpansionAccessConditions in only one instance flips equality.
-    private void CheckIfChangingThePassedPropertyInOnlyOneOfTwoDefaultConstructedInstancesOfAclExpansionAccessConditionsLeadsToTheTwoInstancesBeingUnequal<TProperty> (Property<AclExpansionAccessConditions, TProperty> boolProperty, TProperty notEqualValue)
+    private void CheckIfPassedPropertyChangeChangesEquality<TProperty> (Property<AclExpansionAccessConditions, TProperty> boolProperty, TProperty notEqualValue)
     {
       var accessConditions0 = new AclExpansionAccessConditions ();
       var accessConditions1 = new AclExpansionAccessConditions ();
@@ -85,8 +86,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       boolProperty.Set (accessConditions1, notEqualValue);
       Assert.That (accessConditions0.Equals (accessConditions1), Is.False);
     }
-
-
 
 
   }
