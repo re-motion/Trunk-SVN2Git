@@ -48,10 +48,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void Equals2 ()
     {
-      CheckIfPassedPropertyChangeChangesEquality (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfGroupIsOwner), true);
-      CheckIfPassedPropertyChangeChangesEquality (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfTenantIsOwner), true);
-      CheckIfPassedPropertyChangeChangesEquality (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfUserIsOwner), true);
-      CheckIfPassedPropertyChangeChangesEquality (new Property<AclExpansionAccessConditions, AbstractRoleDefinition> (x => x.AbstractRole), TestHelper.CreateAbstractRoleDefinition("titatutest",11235) );
+      //CheckIfPassedPropertyChangeChangesEquality (new Property<AclExpansionAccessConditions, bool> (x => x.OnlyIfGroupIsOwner), true);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (x => x.OnlyIfGroupIsOwner), true);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (x => x.OnlyIfTenantIsOwner), true);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (x => x.OnlyIfUserIsOwner), true);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (x => x.AbstractRole), TestHelper.CreateAbstractRoleDefinition ("titatutest", 11235));
     }
 
 

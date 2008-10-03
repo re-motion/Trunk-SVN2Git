@@ -48,7 +48,7 @@ namespace Remotion.Reflection
   /// </code>
   /// </example>
   /// <typeparam name="T">The class for which we want to create the <see cref="Property{TClass,TProperty}"/> object.</typeparam>
-  class Properties<T>
+  public class Properties<T>
   {
     public static Property<T, R> Get<R> (Expression<Func<T, R>> lambda)
     {
