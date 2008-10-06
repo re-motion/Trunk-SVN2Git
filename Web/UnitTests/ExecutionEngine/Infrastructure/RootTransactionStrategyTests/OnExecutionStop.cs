@@ -37,7 +37,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       MockRepository.ReplayAll();
 
-      strategy.OnExecutionStop (Context);
+      strategy.OnExecutionStop (Context, ExecutionListenerMock);
 
       MockRepository.VerifyAll();
       Assert.That (strategy.Scope, Is.Null);
@@ -60,7 +60,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       MockRepository.ReplayAll();
 
-      strategy.OnExecutionStop (Context);
+      strategy.OnExecutionStop (Context, ExecutionListenerMock);
 
       MockRepository.VerifyAll();
       Assert.That (strategy.Scope, Is.Null);
@@ -87,7 +87,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       MockRepository.ReplayAll();
 
-      strategy.OnExecutionStop (Context);
+      strategy.OnExecutionStop (Context, ExecutionListenerMock);
 
       MockRepository.VerifyAll();
       Assert.That (strategy.Scope, Is.Null);
@@ -102,7 +102,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       Assert.That (strategy.Scope, Is.Null);
 
-      strategy.OnExecutionStop (Context);
+      strategy.OnExecutionStop (Context, ExecutionListenerMock);
     }
 
     [Test]
@@ -123,7 +123,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        strategy.OnExecutionStop (Context);
+        strategy.OnExecutionStop (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (ApplicationException actualException)
@@ -154,7 +154,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        strategy.OnExecutionStop (Context);
+        strategy.OnExecutionStop (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (ApplicationException actualException)
@@ -187,7 +187,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        strategy.OnExecutionStop (Context);
+        strategy.OnExecutionStop (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (ApplicationException actualException)
@@ -221,7 +221,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        strategy.OnExecutionStop (Context);
+        strategy.OnExecutionStop (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (ApplicationException actualException)
@@ -251,7 +251,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        strategy.OnExecutionStop (Context);
+        strategy.OnExecutionStop (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -282,7 +282,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        strategy.OnExecutionStop (Context);
+        strategy.OnExecutionStop (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -312,7 +312,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        strategy.OnExecutionStop (Context);
+        strategy.OnExecutionStop (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -344,7 +344,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        strategy.OnExecutionStop (Context);
+        strategy.OnExecutionStop (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -376,7 +376,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        strategy.OnExecutionStop (Context);
+        strategy.OnExecutionStop (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -409,7 +409,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        strategy.OnExecutionStop (Context);
+        strategy.OnExecutionStop (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)

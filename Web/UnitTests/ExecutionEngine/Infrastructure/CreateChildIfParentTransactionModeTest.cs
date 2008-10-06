@@ -26,11 +26,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void CreateTransactionStrategy_WithoutParentTransaction ()
     {
       ITransactionMode transactionMode = new CreateChildIfParentTransactionMode<TestTransactionFactory> (true);
-      var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), executionListenerStub);
+      TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode));
 
       Assert.That (strategy, Is.InstanceOfType (typeof (RootTransactionStrategy)));
-      Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
       Assert.That (strategy.AutoCommit, Is.True);
       Assert.That (strategy.GetNativeTransaction<TestTransaction>(), Is.InstanceOfType (typeof (TestTransaction)));
       Assert.That (((RootTransactionStrategy) strategy).Transaction, Is.InstanceOfType (typeof (TestTransaction)));
@@ -41,7 +39,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void CreateTransactionStrategy_WithParentTransaction ()
     {
       ITransactionMode transactionMode = new CreateChildIfParentTransactionMode<TestTransactionFactory> (true);
-      var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
 
       WxeFunction2 parentFunction = new TestFunction2 (new CreateRootTransactionMode<TestTransactionFactory> (true));
       WxeFunction2 childFunction = new TestFunction2 (transactionMode);
@@ -56,9 +53,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       stepMock.Expect (mock => mock.Execute (context)).Do (
           invocation =>
           {
-            TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction, executionListenerStub);
+            TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction);
             Assert.That (strategy, Is.InstanceOfType (typeof (ChildTransactionStrategy)));
-            Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
             Assert.That (strategy.AutoCommit, Is.True);
             Assert.That (strategy.Parent, Is.SameAs (parentFunction.Transaction));
           });
@@ -70,7 +66,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void CreateTransactionStrategy_WithParentTransactionInGrandParentFunction ()
     {
       ITransactionMode transactionMode = new CreateChildIfParentTransactionMode<TestTransactionFactory> (true);
-      var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
 
       WxeFunction2 grandParentFunction = new TestFunction2 (new CreateRootTransactionMode<TestTransactionFactory> (true));
 
@@ -89,9 +84,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       stepMock.Expect (mock => mock.Execute (context)).Do (
           invocation =>
           {
-            TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction, executionListenerStub);
+            TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction);
             Assert.That (strategy, Is.InstanceOfType (typeof (ChildTransactionStrategy)));
-            Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
             Assert.That (strategy.AutoCommit, Is.True);
             Assert.That (strategy.Parent, Is.SameAs (parentFunction.Transaction));
           });

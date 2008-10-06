@@ -10,35 +10,40 @@
 
 using System;
 using System.Collections;
+using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
   public class NoneTransactionStrategy : TransactionStrategyBase
   {
-    public NoneTransactionStrategy (ITransactionStrategy parent, IWxeFunctionExecutionListener innerListener, IWxeFunctionExecutionContext executionContext)
-      : base (false, parent, innerListener, executionContext)
+    public NoneTransactionStrategy (ITransactionStrategy parent, IWxeFunctionExecutionContext executionContext)
+      : base (false, parent, executionContext)
     {
     }
 
-    public override void OnExecutionPlay (WxeContext context)
+    public override void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener)
     {
-      InnerListener.OnExecutionPlay (context);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+      listener.OnExecutionPlay (context);
     }
 
-    public override void OnExecutionStop (WxeContext context)
+    public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
     {
-      InnerListener.OnExecutionStop (context);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+      listener.OnExecutionStop (context);
     }
 
-    public override void OnExecutionPause (WxeContext context)
+    public override void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener)
     {
-      InnerListener.OnExecutionPause (context);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+      listener.OnExecutionPause (context);
     }
 
-    public override void OnExecutionFail (WxeContext context, Exception exception)
+    public override void OnExecutionFail (WxeContext context, IWxeFunctionExecutionListener listener, Exception exception)
     {
-      InnerListener.OnExecutionFail (context, exception);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+      listener.OnExecutionFail (context, exception);
     }
 
     public override void Commit ()

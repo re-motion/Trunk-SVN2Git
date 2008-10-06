@@ -25,11 +25,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void CreateTransactionStrategy ()
     {
       ITransactionMode transactionMode = new NoneTransactionMode();
-      var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
-      ITransactionStrategy strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), executionListenerStub);
+      ITransactionStrategy strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode));
 
       Assert.That (strategy, Is.InstanceOfType (typeof (NoneTransactionStrategy)));
-      Assert.That (((NoneTransactionStrategy) strategy).InnerListener, Is.SameAs (executionListenerStub));
     }
 
     [Test]

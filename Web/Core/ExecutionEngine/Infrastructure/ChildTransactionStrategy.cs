@@ -16,27 +16,27 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   //TODO: Doc
   public class ChildTransactionStrategy : TransactionStrategyBase
   {
-    public ChildTransactionStrategy (bool autoCommit, ITransactionStrategy parent, IWxeFunctionExecutionListener innerListener, IWxeFunctionExecutionContext executionContext)
-      : base (autoCommit, parent, innerListener, executionContext)
+    public ChildTransactionStrategy (bool autoCommit, ITransactionStrategy parent, IWxeFunctionExecutionContext executionContext)
+      : base (autoCommit, parent, executionContext)
     {
     }
 
-    public override void OnExecutionPlay (WxeContext context)
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public override void OnExecutionStop (WxeContext context)
+    public override void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener)
     {
       throw new System.NotImplementedException();
     }
 
-    public override void OnExecutionPause (WxeContext context)
+    public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
     {
       throw new System.NotImplementedException();
     }
 
-    public override void OnExecutionFail (WxeContext context, Exception exception)
+    public override void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override void OnExecutionFail (WxeContext context, IWxeFunctionExecutionListener listener, Exception exception)
     {
       throw new System.NotImplementedException();
     }

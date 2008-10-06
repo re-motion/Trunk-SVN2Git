@@ -23,8 +23,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     private ITransactionScope _scope;
 
     public RootTransactionStrategy (
-        bool autoCommit, ITransaction transaction, ITransactionStrategy parent, IWxeFunctionExecutionContext executionContext, IWxeFunctionExecutionListener innerListener)
-        : base (autoCommit, parent, innerListener, executionContext)
+        bool autoCommit, ITransaction transaction, ITransactionStrategy parent, IWxeFunctionExecutionContext executionContext)
+        : base (autoCommit, parent, executionContext)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
@@ -34,8 +34,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       RegisterObjects (inParameters);
     }
 
-    public override void OnExecutionPlay (WxeContext context)
+    public override void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener)
     {
+      ArgumentUtility.CheckNotNull ("listener", listener);
+      
       if (_scope != null)
       {
         throw new InvalidOperationException (
@@ -44,18 +46,20 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       ExecuteAndWrapInnerException (delegate { _scope = _transaction.EnterScope(); }, null);
 
-      InnerListener.OnExecutionPlay (context);
+      listener.OnExecutionPlay (context);
     }
 
-    public override void OnExecutionStop (WxeContext context)
+    public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
     {
+      ArgumentUtility.CheckNotNull ("listener", listener);
+      
       if (_scope == null)
         throw new InvalidOperationException ("OnExecutionStop may not be invoked unless OnExecutionPlay was called first.");
 
       Exception innerException = null;
       try
       {
-        InnerListener.OnExecutionStop (context);
+        listener.OnExecutionStop (context);
         if (AutoCommit)
           _transaction.Commit();
 
@@ -78,15 +82,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
     }
 
-    public override void OnExecutionPause (WxeContext context)
+    public override void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener)
     {
+      ArgumentUtility.CheckNotNull ("listener", listener);
+      
       if (_scope == null)
         throw new InvalidOperationException ("OnExecutionPause may not be invoked unless OnExecutionPlay was called first.");
 
       Exception innerException = null;
       try
       {
-        InnerListener.OnExecutionPause (context);
+        listener.OnExecutionPause (context);
       }
       catch (Exception e)
       {
@@ -100,15 +106,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
     }
 
-    public override void OnExecutionFail (WxeContext context, Exception exception)
+    public override void OnExecutionFail (WxeContext context, IWxeFunctionExecutionListener listener, Exception exception)
     {
+      ArgumentUtility.CheckNotNull ("listener", listener);
+
       if (_scope == null)
         throw new InvalidOperationException ("OnExecutionFail may not be invoked unless OnExecutionPlay was called first.");
 
       Exception innerException = null;
       try
       {
-        InnerListener.OnExecutionFail (context, exception);
+        listener.OnExecutionFail (context, exception);
       }
       catch (Exception e)
       {

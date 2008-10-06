@@ -36,7 +36,7 @@ namespace Remotion.Web.ExecutionEngine
       Assertion.IsNotNull (_executionListener);
 
       if (!IsExecutionStarted)
-        _transactionStrategy = _transactionMode.CreateTransactionStrategy (this, _executionListener);
+        _transactionStrategy = _transactionMode.CreateTransactionStrategy (this);
 
       _executionListener.OnExecutionPlay (context);
 

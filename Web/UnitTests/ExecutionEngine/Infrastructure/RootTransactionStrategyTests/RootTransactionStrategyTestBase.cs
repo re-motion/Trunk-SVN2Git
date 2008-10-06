@@ -88,8 +88,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _transactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
       _transactionMock.Replay();
 
-      var strategy = new RootTransactionStrategy (
-          autoCommit, TransactionMock, parentTransactionStrategy, _executionContextMock, _executionListenerMock);
+      var strategy = new RootTransactionStrategy (autoCommit, TransactionMock, parentTransactionStrategy, _executionContextMock);
 
       _executionContextMock.BackToRecord();
       _transactionMock.BackToRecord();
@@ -107,7 +106,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _transactionMock.Stub (stub => stub.EnterScope()).Return (ScopeMock);
       _transactionMock.Replay();
 
-      strategy.OnExecutionPlay (Context);
+      strategy.OnExecutionPlay (Context, ExecutionListenerMock);
 
       _transactionMock.BackToRecord();
       _executionListenerMock.BackToRecord();
@@ -123,7 +122,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _scopeMock.Stub (stub => stub.Leave());
       _scopeMock.Replay();
 
-      strategy.OnExecutionPause (Context);
+      strategy.OnExecutionPause (Context, _executionListenerMock);
 
       _executionListenerMock.BackToRecord();
       _scopeMock.BackToRecord();

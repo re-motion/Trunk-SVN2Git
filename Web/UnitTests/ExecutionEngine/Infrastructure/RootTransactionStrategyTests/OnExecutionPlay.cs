@@ -40,7 +40,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       MockRepository.ReplayAll ();
 
-      _strategy.OnExecutionPlay (Context);
+      _strategy.OnExecutionPlay (Context, ExecutionListenerMock);
 
       MockRepository.VerifyAll ();
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
@@ -64,7 +64,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        _strategy.OnExecutionPlay (Context);
+        _strategy.OnExecutionPlay (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -82,7 +82,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     {
       InvokeOnExecutionPlay (_strategy);
       Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
-      _strategy.OnExecutionPlay (Context);
+      _strategy.OnExecutionPlay (Context, ExecutionListenerMock);
     }
 
     [Test]

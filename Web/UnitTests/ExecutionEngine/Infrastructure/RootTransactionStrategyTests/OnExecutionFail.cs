@@ -43,7 +43,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       MockRepository.ReplayAll ();
 
-      _strategy.OnExecutionFail (Context, _failException);
+      _strategy.OnExecutionFail (Context, ExecutionListenerMock, _failException);
 
       MockRepository.VerifyAll ();
       Assert.That (_strategy.Scope, Is.Null);
@@ -56,7 +56,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     {
       Assert.That (_strategy.Scope, Is.Null);
 
-      _strategy.OnExecutionFail (Context, _failException);
+      _strategy.OnExecutionFail (Context, ExecutionListenerMock, _failException);
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        _strategy.OnExecutionFail (Context, _failException);
+        _strategy.OnExecutionFail (Context, ExecutionListenerMock, _failException);
         Assert.Fail ("Expected Exception");
       }
       catch (ApplicationException actualException)
@@ -104,7 +104,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        _strategy.OnExecutionFail (Context, _failException);
+        _strategy.OnExecutionFail (Context, ExecutionListenerMock, _failException);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -133,7 +133,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        _strategy.OnExecutionFail (Context, _failException);
+        _strategy.OnExecutionFail (Context, ExecutionListenerMock, _failException);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -162,7 +162,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        _strategy.OnExecutionFail (Context, _failException);
+        _strategy.OnExecutionFail (Context, ExecutionListenerMock, _failException);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -193,7 +193,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        _strategy.OnExecutionFail (Context, _failException);
+        _strategy.OnExecutionFail (Context, ExecutionListenerMock, _failException);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)

@@ -40,7 +40,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       MockRepository.ReplayAll();
 
-      _strategy.OnExecutionPause (Context);
+      _strategy.OnExecutionPause (Context, ExecutionListenerMock);
 
       MockRepository.VerifyAll();
       Assert.That (_strategy.Scope, Is.Null);
@@ -52,7 +52,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     public void Test_WithNullScope ()
     {
       Assert.That (_strategy.Scope, Is.Null);
-      _strategy.OnExecutionPause (Context);
+      _strategy.OnExecutionPause (Context, ExecutionListenerMock);
     }
 
     [Test]
@@ -71,7 +71,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        _strategy.OnExecutionPause (Context);
+        _strategy.OnExecutionPause (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (ApplicationException actualException)
@@ -99,7 +99,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        _strategy.OnExecutionPause (Context);
+        _strategy.OnExecutionPause (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -128,7 +128,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       try
       {
-        _strategy.OnExecutionPause (Context);
+        _strategy.OnExecutionPause (Context, ExecutionListenerMock);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)

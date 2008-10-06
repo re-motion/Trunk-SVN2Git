@@ -36,13 +36,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       _executionListenerMock = MockRepository.GenerateMock<IWxeFunctionExecutionListener> ();
       _executionContextMock = MockRepository.GenerateMock<IWxeFunctionExecutionContext> ();
       _parentTransactionStrategyMock = MockRepository.GenerateMock<ITransactionStrategy> ();
-      _strategy = new NoneTransactionStrategy (NullTransactionStrategy.Null, _executionListenerMock, _executionContextMock);
-    }
-
-    [Test]
-    public void GetInnerListener ()
-    {
-      Assert.That (_strategy.InnerListener, Is.SameAs (_executionListenerMock));
+      _strategy = new NoneTransactionStrategy (NullTransactionStrategy.Null, _executionContextMock);
     }
 
     [Test]
@@ -81,21 +75,21 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void OnExecutionPlay ()
     {
-      ((IWxeFunctionExecutionListener) _strategy).OnExecutionPlay (_context);
+      _strategy.OnExecutionPlay (_context, _executionListenerMock);
       _executionListenerMock.AssertWasCalled (mock => mock.OnExecutionPlay (_context));
     }
 
     [Test]
     public void OnExecutionStop ()
     {
-      ((IWxeFunctionExecutionListener) _strategy).OnExecutionStop (_context);
+      _strategy.OnExecutionStop (_context, _executionListenerMock);
       _executionListenerMock.AssertWasCalled (mock => mock.OnExecutionStop (_context));
     }
 
     [Test]
     public void OnExecutionPause ()
     {
-      ((IWxeFunctionExecutionListener) _strategy).OnExecutionPause (_context);
+      _strategy.OnExecutionPause (_context, _executionListenerMock);
       _executionListenerMock.AssertWasCalled (mock => mock.OnExecutionPause (_context));
     }
     
@@ -103,14 +97,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     public void OnExecutionFail ()
     {
       var exception = new Exception();
-      ((IWxeFunctionExecutionListener) _strategy).OnExecutionFail (_context, exception);
+      _strategy.OnExecutionFail (_context, _executionListenerMock, exception);
       _executionListenerMock.AssertWasCalled (mock => mock.OnExecutionFail (_context, exception));
     }
 
     [Test]
     public void RegisterObjects ()
     {
-      var strategy = new NoneTransactionStrategy (_parentTransactionStrategyMock, _executionListenerMock, _executionContextMock);
+      var strategy = new NoneTransactionStrategy (_parentTransactionStrategyMock, _executionContextMock);
       var expectedObjects = new[] { new object () };
       
       _parentTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));

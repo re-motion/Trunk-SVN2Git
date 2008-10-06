@@ -30,12 +30,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
-    public void GetInnerListener ()
-    {
-      Assert.That (_strategy.InnerListener, Is.SameAs (ExecutionListenerMock));
-    }
-
-    [Test]
     public void GetExecutionContext ()
     {
       Assert.That (_strategy.ExecutionContext, Is.SameAs (ExecutionContextMock));
@@ -96,7 +90,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock, ExecutionListenerMock);
+      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
 
       MockRepository.VerifyAll();
     }
@@ -114,7 +108,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock, ExecutionListenerMock);
+      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
 
       MockRepository.VerifyAll();
     }
@@ -133,7 +127,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock, ExecutionListenerMock);
+      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
 
       MockRepository.VerifyAll();
     }
@@ -152,7 +146,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock, ExecutionListenerMock);
+      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
 
       MockRepository.VerifyAll();
     }

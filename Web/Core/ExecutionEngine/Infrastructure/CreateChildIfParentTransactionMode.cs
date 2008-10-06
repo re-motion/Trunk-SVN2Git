@@ -26,19 +26,18 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _autoCommit = autoCommit;
     }
 
-    public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction2 function, IWxeFunctionExecutionListener executionListener)
+    public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction2 function )
     {
       ArgumentUtility.CheckNotNull ("function", function);
-      ArgumentUtility.CheckNotNull ("executionListener", executionListener);
 
       for (WxeFunction2 parentFunction = function.ParentFunction; parentFunction != null; parentFunction = parentFunction.ParentFunction)
       {
         if (!parentFunction.Transaction.IsNull)
-          return new ChildTransactionStrategy (_autoCommit, function.ParentFunction.Transaction, executionListener, function);
+          return new ChildTransactionStrategy (_autoCommit, function.ParentFunction.Transaction, function);
       }
 
       var transactionFactory = new TTransactionFactory();
-      return new RootTransactionStrategy (_autoCommit, transactionFactory.CreateRootTransaction (), NullTransactionStrategy.Null, function, executionListener);
+      return new RootTransactionStrategy (_autoCommit, transactionFactory.CreateRootTransaction (), NullTransactionStrategy.Null, function);
     }
 
     public bool AutoCommit
