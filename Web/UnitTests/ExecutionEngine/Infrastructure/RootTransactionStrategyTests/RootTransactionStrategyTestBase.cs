@@ -78,7 +78,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       get { return _executionContextMock; }
     }
 
-    protected RootTransactionStrategy CreateRootTransactionStrategy (bool autoCommit)
+    protected RootTransactionStrategy CreateRootTransactionStrategy (bool autoCommit, ITransactionStrategy parentTransactionStrategy)
     {
       _executionContextMock.BackToRecord();
       _executionContextMock.Stub (stub => stub.GetInParameters()).Return (new object[0]).Repeat.Any();
@@ -88,7 +88,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _transactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
       _transactionMock.Replay();
 
-      var strategy = new RootTransactionStrategy (autoCommit, TransactionMock, _executionContextMock, _executionListenerMock);
+      var strategy = new RootTransactionStrategy (
+          autoCommit, TransactionMock, parentTransactionStrategy, _executionContextMock, _executionListenerMock);
 
       _executionContextMock.BackToRecord();
       _transactionMock.BackToRecord();

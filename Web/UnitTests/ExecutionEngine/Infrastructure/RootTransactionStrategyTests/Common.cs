@@ -26,7 +26,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     public override void SetUp ()
     {
       base.SetUp();
-      _strategy = CreateRootTransactionStrategy (true);
+      _strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
     }
 
     [Test]
@@ -96,7 +96,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
+      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock, ExecutionListenerMock);
 
       MockRepository.VerifyAll();
     }
@@ -114,7 +114,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
+      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock, ExecutionListenerMock);
 
       MockRepository.VerifyAll();
     }
@@ -133,7 +133,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
+      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock, ExecutionListenerMock);
 
       MockRepository.VerifyAll();
     }
@@ -152,7 +152,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       }
       MockRepository.ReplayAll();
 
-      new RootTransactionStrategy (false, TransactionMock, ExecutionContextMock, ExecutionListenerMock);
+      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock, ExecutionListenerMock);
 
       MockRepository.VerifyAll();
     }

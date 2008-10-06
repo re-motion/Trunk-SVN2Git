@@ -23,8 +23,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     private ITransactionScope _scope;
 
     public RootTransactionStrategy (
-        bool autoCommit, ITransaction transaction, IWxeFunctionExecutionContext executionContext, IWxeFunctionExecutionListener innerListener)
-        : base (autoCommit, innerListener, executionContext)
+        bool autoCommit, ITransaction transaction, ITransactionStrategy parent, IWxeFunctionExecutionContext executionContext, IWxeFunctionExecutionListener innerListener)
+        : base (autoCommit, parent, innerListener, executionContext)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
@@ -59,11 +59,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         if (AutoCommit)
           _transaction.Commit();
 
-        var parentTransactionStrategy = ExecutionContext.ParentTransactionStrategy;
-        if (parentTransactionStrategy != null)
+        if (Parent != null)
         {
           var outParameters = ExecutionContext.GetOutParameters();
-          parentTransactionStrategy.RegisterObjects (outParameters);
+          Parent.RegisterObjects (outParameters);
         }
       }
       catch (Exception e)

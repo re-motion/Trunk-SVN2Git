@@ -10,15 +10,14 @@
 
 using System;
 using System.Collections;
-using Remotion.Data;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
   public class NoneTransactionStrategy : TransactionStrategyBase
   {
-    public NoneTransactionStrategy (IWxeFunctionExecutionListener innerListener, IWxeFunctionExecutionContext executionContext)
-      : base (false, innerListener, executionContext)
+    public NoneTransactionStrategy (ITransactionStrategy parent, IWxeFunctionExecutionListener innerListener, IWxeFunctionExecutionContext executionContext)
+      : base (false, parent, innerListener, executionContext)
     {
     }
 
@@ -64,9 +63,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public override void RegisterObjects (IEnumerable objects)
     {
-      var parentTransactionStrategy = ExecutionContext.ParentTransactionStrategy;
-      if (parentTransactionStrategy != null)
-        parentTransactionStrategy.RegisterObjects (objects);
+      Parent.RegisterObjects (objects);
     }
 
     public override bool IsNull

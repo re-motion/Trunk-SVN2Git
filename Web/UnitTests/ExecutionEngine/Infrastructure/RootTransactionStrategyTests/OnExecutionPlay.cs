@@ -26,7 +26,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     {
       base.SetUp ();
 
-      _strategy = CreateRootTransactionStrategy (true);
+      _strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
     }
 
     [Test]

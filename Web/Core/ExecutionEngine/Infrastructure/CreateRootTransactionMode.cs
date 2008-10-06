@@ -31,7 +31,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       ArgumentUtility.CheckNotNull ("executionListener", executionListener);
 
       var transactionFactory = new TTransactionFactory ();
-      return new RootTransactionStrategy (_autoCommit, transactionFactory.CreateRootTransaction(), function, executionListener);
+      return new RootTransactionStrategy (_autoCommit, transactionFactory.CreateRootTransaction (), NullTransactionStrategy.Null, function, executionListener);
     }
 
     public bool AutoCommit

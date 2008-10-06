@@ -24,7 +24,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
       var executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext>();
-      var strategy = new ChildTransactionStrategy (false, executionListenerStub, executionContextStub);
+      var strategy = new ChildTransactionStrategy (false, NullTransactionStrategy.Null, executionListenerStub, executionContextStub);
 
       Assert.That (strategy.InnerListener, Is.SameAs (executionListenerStub));
     }
@@ -34,7 +34,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
       var executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext> ();
-      TransactionStrategyBase strategy = new ChildTransactionStrategy (true, executionListenerStub, executionContextStub);
+      TransactionStrategyBase strategy = new ChildTransactionStrategy (true, NullTransactionStrategy.Null, executionListenerStub, executionContextStub);
 
       Assert.That (strategy.AutoCommit, Is.True);
     }
@@ -44,7 +44,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     {
       var executionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
       var executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext> ();
-      INullObject strategy = new ChildTransactionStrategy (true, executionListenerStub, executionContextStub);
+      INullObject strategy = new ChildTransactionStrategy (true, NullTransactionStrategy.Null, executionListenerStub, executionContextStub);
 
       Assert.That (strategy.IsNull, Is.False);
     }

@@ -8,11 +8,15 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-namespace Remotion.Web.ExecutionEngine.Infrastructure
+using System;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+
+namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 {
-  public interface IWxeFunctionExecutionContext
+  [TestFixture]
+  public class TransactionExecutionListenerTest
   {
-    object[] GetInParameters ();
-    object[] GetOutParameters ();
+    
   }
 }

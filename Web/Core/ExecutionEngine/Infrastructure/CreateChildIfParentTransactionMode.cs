@@ -34,11 +34,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       for (WxeFunction2 parentFunction = function.ParentFunction; parentFunction != null; parentFunction = parentFunction.ParentFunction)
       {
         if (!parentFunction.Transaction.IsNull)
-          return new ChildTransactionStrategy (_autoCommit, executionListener, function);
+          return new ChildTransactionStrategy (_autoCommit, function.ParentFunction.Transaction, executionListener, function);
       }
 
       var transactionFactory = new TTransactionFactory();
-      return new RootTransactionStrategy (_autoCommit, transactionFactory.CreateRootTransaction(), function, executionListener);
+      return new RootTransactionStrategy (_autoCommit, transactionFactory.CreateRootTransaction (), NullTransactionStrategy.Null, function, executionListener);
     }
 
     public bool AutoCommit

@@ -119,6 +119,8 @@
     <Compile Include="ExecutionEngine\Infrastructure\NullExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionStrategy.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\NullTransactionStrategy.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\TransactionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\TransactionStrategyBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxeVariablesContainer.cs" />

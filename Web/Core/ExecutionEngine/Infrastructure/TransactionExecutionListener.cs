@@ -10,9 +10,8 @@
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
-  public interface IWxeFunctionExecutionContext
+  public class TransactionExecutionListener
   {
-    object[] GetInParameters ();
-    object[] GetOutParameters ();
+    
   }
 }

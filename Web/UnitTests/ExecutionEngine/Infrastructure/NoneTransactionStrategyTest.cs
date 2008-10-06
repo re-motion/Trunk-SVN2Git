@@ -36,7 +36,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       _executionListenerMock = MockRepository.GenerateMock<IWxeFunctionExecutionListener> ();
       _executionContextMock = MockRepository.GenerateMock<IWxeFunctionExecutionContext> ();
       _parentTransactionStrategyMock = MockRepository.GenerateMock<ITransactionStrategy> ();
-      _strategy = new NoneTransactionStrategy (_executionListenerMock, _executionContextMock);
+      _strategy = new NoneTransactionStrategy (NullTransactionStrategy.Null, _executionListenerMock, _executionContextMock);
     }
 
     [Test]
@@ -110,28 +110,15 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void RegisterObjects ()
     {
+      var strategy = new NoneTransactionStrategy (_parentTransactionStrategyMock, _executionListenerMock, _executionContextMock);
       var expectedObjects = new[] { new object () };
       
-      _executionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (_parentTransactionStrategyMock);
       _parentTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
 
-      _strategy.RegisterObjects (expectedObjects);
+      strategy.RegisterObjects (expectedObjects);
 
       _executionContextMock.VerifyAllExpectations();
       _parentTransactionStrategyMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void RegisterObjects_WithoutParentTransactionStrategy ()
-    {
-      var expectedObjects = new[] { new object () };
-
-      _executionContextMock.Expect (mock => mock.ParentTransactionStrategy).Return (null);
-
-      _strategy.RegisterObjects (expectedObjects);
-
-      _executionContextMock.VerifyAllExpectations ();
-      _parentTransactionStrategyMock.VerifyAllExpectations ();
     }
 
     [Test]

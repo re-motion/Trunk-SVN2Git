@@ -32,6 +32,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       Assert.That (strategy.AutoCommit, Is.True);
       Assert.That (strategy.GetNativeTransaction<TestTransaction> (), Is.InstanceOfType (typeof (TestTransaction)));
       Assert.That (((RootTransactionStrategy) strategy).Transaction, Is.InstanceOfType (typeof (TestTransaction)));
+      Assert.That (strategy.Parent, Is.InstanceOfType (typeof (NullTransactionStrategy)));
     }
   }
 }

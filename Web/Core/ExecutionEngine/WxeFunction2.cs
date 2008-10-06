@@ -96,10 +96,5 @@ namespace Remotion.Web.ExecutionEngine
     {
       throw new NotImplementedException();
     }
-
-    ITransactionStrategy IWxeFunctionExecutionContext.ParentTransactionStrategy
-    {
-      get { throw new System.NotImplementedException(); }
-    }
   }
 }

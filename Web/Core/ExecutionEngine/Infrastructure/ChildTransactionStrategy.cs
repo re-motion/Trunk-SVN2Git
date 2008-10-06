@@ -10,15 +10,14 @@
 
 using System;
 using System.Collections;
-using Remotion.Data;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
   public class ChildTransactionStrategy : TransactionStrategyBase
   {
-    public ChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionListener innerListener, IWxeFunctionExecutionContext executionContext)
-        : base (autoCommit, innerListener, executionContext)
+    public ChildTransactionStrategy (bool autoCommit, ITransactionStrategy parent, IWxeFunctionExecutionListener innerListener, IWxeFunctionExecutionContext executionContext)
+      : base (autoCommit, parent, innerListener, executionContext)
     {
     }
 
