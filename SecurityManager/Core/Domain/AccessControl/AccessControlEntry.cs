@@ -14,6 +14,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -182,6 +183,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("token", token);
 
+      if (!MatchesAce (token))
+        return false;
+
       if (!MatchesTenant (token))
         return false;
 
@@ -192,6 +196,17 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         return false;
 
       return true;
+    }
+
+
+    /// <summary>
+    /// Used by <see cref="AclExpander"/> to make sure that a matching ACE is the one we are probing for.
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    private bool MatchesAce (SecurityToken token)
+    {
+      return this == (token.SpecificAce ?? this);
     }
 
     private bool MatchesTenant (SecurityToken token)

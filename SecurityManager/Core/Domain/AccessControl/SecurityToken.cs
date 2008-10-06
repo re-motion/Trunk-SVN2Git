@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -79,6 +80,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       get { return _abstractRoles; }
     }
+
+    /// <summary>
+    /// The <see cref="SecurityToken"/> only matches if the tested <see cref="AccessControlEntry"/> instance is
+    /// equal to this instance. If null, all <see cref="AccessControlEntry"/>|s match.
+    /// Used by <see cref="AclExpander"/>.
+    /// </summary>
+    public AccessControlEntry SpecificAce { get; set; }
+
 
     public bool MatchesUserTenant (Tenant tenant)
     {

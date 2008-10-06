@@ -178,9 +178,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceGroupAll = TestHelper.CreateAceWithGroupSelectionAll ();
       AttachAccessTypeReadWriteDelete (aceGroupAll, null, true, null);
 
-      To.ConsoleLine.e (() => aceGroupOwning);
-      To.ConsoleLine.e (() => aceAbstractRole);
-      To.ConsoleLine.e (() => aceGroupAll);
+      //To.ConsoleLine.e (() => aceGroupOwning);
+      //To.ConsoleLine.e (() => aceAbstractRole);
+      //To.ConsoleLine.e (() => aceGroupAll);
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
@@ -196,12 +196,85 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType },
        new AclExpansionAccessConditions { AbstractRole = aceAbstractRole.SpecificAbstractRole });
 
-      //Assert.That (aclExpansionEntryList[1].AccessTypeDefinitions, Is.EquivalentTo (new[] { WriteAccessType, DeleteAccessType }));
-      //Assert.That (aclExpansionEntryList[1].AccessConditions,
-      //  Is.EqualTo (new AclExpansionAccessConditions { AbstractRole = aceAbstractRole.SpecificAbstractRole }));
-
+      AssertAclExpansionEntry (aclExpansionEntryList[2], new[] { WriteAccessType },
+       new AclExpansionAccessConditions());
     }
 
+
+    [Test]
+    public void GetAclExpansionEntryList_UserList_AceList_AnotherTenant ()
+    {
+      // A 2nd tenant + user, etc
+      var otherTenant = TestHelper.CreateTenant ("OtherTenant");
+      var otherTenantGroup = TestHelper.CreateGroup ("GroupForOtherTenant", null, otherTenant);
+      var otherTenantPosition = TestHelper.CreatePosition ("Head Honcho");
+      var otherTenantUser = TestHelper.CreateUser ("UserForOtherTenant", "User", "Other", "Chief", otherTenantGroup, otherTenant);
+      var otherTenantRole = TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
+
+      var aceGroupSpecificTenant = TestHelper.CreateAceWithSpecficTenant (otherTenant);
+      AttachAccessTypeReadWriteDelete (aceGroupSpecificTenant, null, true, null);
+
+
+      To.ConsoleLine.e (() => aceGroupSpecificTenant);
+
+      List<AclExpansionEntry> aclExpansionEntryList =
+        GetAclExpansionEntryList_UserList_AceList (
+          List.New (otherTenantUser),
+          List.New (TestHelper.CreateAcl (aceGroupSpecificTenant))
+        );
+
+
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
+
+      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType },
+        new AclExpansionAccessConditions());
+    }
+
+
+
+    [Test]
+    public void GetAclExpansionEntryList_UserList_AceList_TwoDifferentTenants ()
+    {
+      // A 2nd tenant + user, etc
+      var otherTenant = TestHelper.CreateTenant ("OtherTenant");
+      var otherTenantGroup = TestHelper.CreateGroup ("GroupForOtherTenant", null, otherTenant);
+      var otherTenantPosition = TestHelper.CreatePosition ("Head Honcho");
+      var otherTenantUser = TestHelper.CreateUser ("UserForOtherTenant", "User", "Other", "Chief", otherTenantGroup, otherTenant);
+      var otherTenantRole = TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
+
+      var otherTenantAceSpecificTenant = TestHelper.CreateAceWithSpecficTenant (otherTenant);
+      AttachAccessTypeReadWriteDelete (otherTenantAceSpecificTenant, true, true, true);
+
+      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
+
+      To.ConsoleLine.e (() => otherTenantAceSpecificTenant);
+
+      List<AclExpansionEntry> aclExpansionEntryList =
+        GetAclExpansionEntryList_UserList_AceList (
+          //List.New (otherTenantUser, User),
+          List.New (otherTenantUser),
+          List.New (TestHelper.CreateAcl (otherTenantAceSpecificTenant, aceGroupOwning))
+        );
+
+
+      //Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
+
+      //AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { ReadAccessType, DeleteAccessType },
+      //  new AclExpansionAccessConditions { OnlyIfGroupIsOwner = true });
+
+      //AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { WriteAccessType },
+      //  new AclExpansionAccessConditions ());
+
+      //AssertAclExpansionEntry (aclExpansionEntryList[2], new[] { ReadAccessType, DeleteAccessType },
+      //  new AclExpansionAccessConditions { OnlyIfGroupIsOwner = true });
+    }
+
+
+    /// <summary>
+    /// NUnit-Asserts that the passed <see cref="AclExpansionEntry"/> has the passed <see cref="AccessTypeDefinition"/>|s and the
+    /// passed <see cref="AclExpansionAccessConditions"/>.
+    /// </summary>
     private void AssertAclExpansionEntry (AclExpansionEntry aclExpansionEntry, AccessTypeDefinition[] accessTypeDefinitions,
       AclExpansionAccessConditions aclExpansionAccessConditions)
     {
@@ -323,4 +396,31 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
   }
 
+
+  [ToTextSpecificHandler]
+  public class AclProbe_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AclProbe>
+  {
+    public override void ToText (AclProbe x, IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib<AclProbe> ("").e("token",x.SecurityToken).e("conditions",x.AccessConditions) .ie ();
+    }
+  }
+
+  [ToTextSpecificHandler]
+  public class Tenant_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<Tenant>
+  {
+    public override void ToText (Tenant x, IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib<Tenant> ("").e (x.DisplayName).ie ();
+    }
+  }
+
+  [ToTextSpecificHandler]
+  public class SecurityToken_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<SecurityToken>
+  {
+    public override void ToText (SecurityToken x, IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib<SecurityToken> ("").e ("principal", x.User).eIfNotNull (x.OwningTenant).eIfNotNull (x.OwningGroups).eIfNotNull (x.OwningGroupRoles).eIfNotNull (x.AbstractRoles).ie ();
+    }
+  }
 }

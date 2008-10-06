@@ -45,12 +45,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         {
           foreach (var acl in acls)
           {
-            To.ConsoleLine.e (acl);
+            To.ConsoleLine.e (() => acl);
             foreach (var ace in acl.AccessControlEntries)
             {
-              To.ConsoleLine.e (ace);
+              To.ConsoleLine.e (() => ace);
               AclProbe aclProbe = AclProbe.CreateAclProbe (user, role, ace);
-              To.ConsoleLine.e (aclProbe);
+              To.ConsoleLine.e (() => aclProbe);
 
               // TODO(?): Check if we already queried with an identical token.
               AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (aclProbe.SecurityToken);
