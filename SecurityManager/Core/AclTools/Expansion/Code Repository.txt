@@ -49,3 +49,15 @@ if(aclExpansionEntry == null)
   aclExpansionEntries[userWithRole] = new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions);
 }
     
+    
+    
+/// <summary>
+/// Used by <see cref="AclExpander"/> to make sure that a matching ACE is the one we are probing for.
+/// </summary>
+/// <param name="token"></param>
+/// <returns></returns>
+private bool MatchesAce (SecurityToken token)
+{
+  return this == (token.SpecificAce ?? this);
+}
+    

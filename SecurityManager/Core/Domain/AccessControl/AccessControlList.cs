@@ -146,6 +146,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           delegate (AccessControlEntry current) { return current.ActualPriority == highestPriority; });
     }
 
+    // MK reminder: Include "deny" information in output for AclExpander (e.g. return tuple of allow and deny lists).
+    // Information is needed so that aggregation of AclExpansionEntry|s by sys admin does not lead to 
+    // false assumption about access rights (e.g. if user is in two different abstract roles and
+    // gets read access from one ACE and write access AND denied read access from another ACE, then having
+    // both abstract roles will only get him write access but NOT read access, since the deny of read access
+    // in the second ACE overrides the allow in the first ACE).
     public AccessTypeDefinition[] GetAccessTypes (SecurityToken token)
     {
       ArgumentUtility.CheckNotNull ("token", token);

@@ -41,23 +41,27 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       foreach (var user in users)
       {
+        To.ConsoleLine.e (() => user);
         foreach (var role in user.Roles)
         {
+          To.ConsoleLine.s ("\t").e (() => role);
           foreach (var acl in acls)
           {
-            To.ConsoleLine.e (() => acl);
+            To.ConsoleLine.s ("\t\t").e (() => acl);
             foreach (var ace in acl.AccessControlEntries)
             {
-              To.ConsoleLine.e (() => ace);
+              To.ConsoleLine.s ("\t\t\t").e (() => ace);
               AclProbe aclProbe = AclProbe.CreateAclProbe (user, role, ace);
-              To.ConsoleLine.e (() => aclProbe);
+              To.ConsoleLine.s ("\t\t\t").e (() => aclProbe);
 
               // TODO(?): Check if we already queried with an identical token.
               AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (aclProbe.SecurityToken);
 
               if (accessTypeDefinitions.Length > 0)
               {
-                aclExpansionEntries.Add (new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions));
+                var aclExpansionEntry = new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions);
+                To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
+                aclExpansionEntries.Add (aclExpansionEntry);
               }
             }
           }

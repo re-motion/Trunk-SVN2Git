@@ -233,6 +233,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
+    [Ignore("Fixme to accept double AclExpansion entries.")]
     public void GetAclExpansionEntryList_UserList_AceList_TwoDifferentTenants ()
     {
       // A 2nd tenant + user, etc
@@ -243,7 +244,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var otherTenantRole = TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
 
       var otherTenantAceSpecificTenant = TestHelper.CreateAceWithSpecficTenant (otherTenant);
-      AttachAccessTypeReadWriteDelete (otherTenantAceSpecificTenant, true, true, true);
+      AttachAccessTypeReadWriteDelete (otherTenantAceSpecificTenant, true, true, null);
 
       var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
@@ -252,23 +253,58 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
-          //List.New (otherTenantUser, User),
-          List.New (otherTenantUser),
+          List.New (otherTenantUser, User),
+          //List.New (otherTenantUser),
           List.New (TestHelper.CreateAcl (otherTenantAceSpecificTenant, aceGroupOwning))
         );
 
 
-      //Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
 
-      //AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { ReadAccessType, DeleteAccessType },
-      //  new AclExpansionAccessConditions { OnlyIfGroupIsOwner = true });
+      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { ReadAccessType, WriteAccessType },
+        new AclExpansionAccessConditions ());
 
-      //AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { WriteAccessType },
+      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { ReadAccessType, DeleteAccessType },
+        new AclExpansionAccessConditions { OnlyIfGroupIsOwner = true });
+    }
+
+
+    [Test]
+    public void GetAclExpansionEntryList_UserList_SeparateAcls ()
+    {
+      //var aceMatchAll = TestHelper.CreateAceWithGroupSelectionAll();
+      //AttachAccessTypeReadWriteDelete (aceMatchAll, true, null, null);
+
+      var aceMatchAll = TestHelper.CreateAceWithOwningTenant();
+      AttachAccessTypeReadWriteDelete (aceMatchAll, true, true, null);
+      
+      var aceSpecificTenant = TestHelper.CreateAceWithSpecficTenant (Tenant);
+      AttachAccessTypeReadWriteDelete (aceSpecificTenant, true, true, null);
+
+      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
+
+      List<AclExpansionEntry> aclExpansionEntryList =
+        GetAclExpansionEntryList_UserList_AceList (
+          //List.New (otherTenantUser, User),
+          List.New (User),
+          List.New (TestHelper.CreateAcl (aceMatchAll, aceSpecificTenant, aceGroupOwning))
+        //List.New (TestHelper.CreateAcl (otherTenantAceSpecificTenant), TestHelper.CreateAcl (aceGroupOwning))
+          //List.New ( TestHelper.CreateAcl (aceGroupOwning))
+        );
+
+
+      //Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
+
+      //AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { ReadAccessType, WriteAccessType },
       //  new AclExpansionAccessConditions ());
 
-      //AssertAclExpansionEntry (aclExpansionEntryList[2], new[] { ReadAccessType, DeleteAccessType },
+      //AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { ReadAccessType, DeleteAccessType },
       //  new AclExpansionAccessConditions { OnlyIfGroupIsOwner = true });
     }
+
+
+
 
 
     /// <summary>
@@ -421,6 +457,15 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public override void ToText (SecurityToken x, IToTextBuilder toTextBuilder)
     {
       toTextBuilder.ib<SecurityToken> ("").e ("principal", x.User).eIfNotNull (x.OwningTenant).eIfNotNull (x.OwningGroups).eIfNotNull (x.OwningGroupRoles).eIfNotNull (x.AbstractRoles).ie ();
+    }
+  }
+
+  [ToTextSpecificHandler]
+  public class Group_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<Group>
+  {
+    public override void ToText (Group x, IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.ib<Group> ("").e (x.DisplayName).ie ();
     }
   }
 }

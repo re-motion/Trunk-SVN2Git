@@ -249,25 +249,25 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       Assert.IsTrue (entry.MatchesToken (token));
     }
 
-    [Test]
-    public void EmptyToken_AceFilter_Matches ()
-    {
-      AccessControlEntry entry = AccessControlEntry.NewObject ();
-      SecurityToken token = _testHelper.CreateEmptyToken ();
-      token.SpecificAce = entry; 
-      Assert.IsTrue (entry.MatchesToken (token));
-    }
+    //[Test]
+    //public void EmptyToken_AceFilter_Matches ()
+    //{
+    //  AccessControlEntry entry = AccessControlEntry.NewObject ();
+    //  SecurityToken token = _testHelper.CreateEmptyToken ();
+    //  token.SpecificAce = entry; 
+    //  Assert.IsTrue (entry.MatchesToken (token));
+    //}
 
-    [Test]
-    public void EmptyToken_AceFilter_DoesNotMatch ()
-    {
-      AccessControlEntry entry = AccessControlEntry.NewObject ();
-      AccessControlEntry entryOther = AccessControlEntry.NewObject ();
-      SecurityToken token = _testHelper.CreateEmptyToken ();
-      token.SpecificAce = entryOther;
-      Assert.IsFalse (entry.MatchesToken (token));
-      Assert.IsTrue (entryOther.MatchesToken (token));
-    }
+    //[Test]
+    //public void EmptyToken_AceFilter_DoesNotMatch ()
+    //{
+    //  AccessControlEntry entry = AccessControlEntry.NewObject ();
+    //  AccessControlEntry entryOther = AccessControlEntry.NewObject ();
+    //  SecurityToken token = _testHelper.CreateEmptyToken ();
+    //  token.SpecificAce = entryOther;
+    //  Assert.IsFalse (entry.MatchesToken (token));
+    //  Assert.IsTrue (entryOther.MatchesToken (token));
+    //}
 
 
     private User CreateUser (Tenant tenant, Group group)
