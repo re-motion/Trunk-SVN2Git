@@ -61,7 +61,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       int mixinIndex = info.GetInt32 ("__configuration.MixinIndex");
       _mixinDefinition = targetClassDefinition.Mixins[mixinIndex];
 
-      Type concreteType = ConcreteTypeBuilder.Current.GetConcreteMixinType (_mixinDefinition);
+      Type concreteType = ConcreteTypeBuilder.Current.GetConcreteMixinType (_mixinDefinition).GeneratedType;
       _baseMemberValues = (object[]) info.GetValue ("__baseMemberValues", typeof (object[]));
 
       // Usually, instantiate a deserialized object using GetSafeUninitializedObject.

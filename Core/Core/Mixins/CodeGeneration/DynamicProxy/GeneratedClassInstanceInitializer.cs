@@ -54,7 +54,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
             string message = string.Format ("The supplied mixin of type {0} is not valid in the current configuration.", mixinInstance.GetType());
             throw new ArgumentException (message, "mixinInstances");
           }
-          else if (TypeGenerator.NeedsDerivedMixinType (mixinDefinition) && !ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).IsInstanceOfType (mixinInstance))
+          else if (TypeGenerator.NeedsDerivedMixinType (mixinDefinition) && !ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType.IsInstanceOfType (mixinInstance))
           {
             string message = string.Format ("The mixin {0} applied to base type {1} needs to have a subclass generated at runtime. It is therefore "
                 + "not possible to use the given object of type {2} as a mixin instance.", mixinDefinition.FullName, configuration.FullName,
@@ -98,7 +98,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Assertion.IsFalse (mixinType.ContainsGenericParameters);
 
       if (TypeGenerator.NeedsDerivedMixinType (mixinDefinition))
-        mixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition);
+        mixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
 
       object mixinInstance;
       if (mixinType.IsValueType)

@@ -100,7 +100,7 @@ namespace Remotion.UnitTests.Mixins
     public void AcceptsInstanceOfGeneratedMixinType1 ()
     {
       TargetClassDefinition configuration = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers));
-      Type generatedMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (configuration.Mixins[typeof (MixinWithAbstractMembers)]);
+      Type generatedMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (configuration.Mixins[typeof (MixinWithAbstractMembers)]).GeneratedType;
       object mixinInstance = Activator.CreateInstance (generatedMixinType);
 
       ClassOverridingMixinMembers classInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (mixinInstance).With ();
@@ -113,7 +113,7 @@ namespace Remotion.UnitTests.Mixins
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinWithProtectedOverrider)).EnterScope())
       {
         TargetClassDefinition configuration = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
-        Type mixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (configuration.Mixins[0]);
+        Type mixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (configuration.Mixins[0]).GeneratedType;
         object mixinInstance = Activator.CreateInstance (mixinType);
         BaseType1 bt1 = ObjectFactory.Create<BaseType1> (mixinInstance).With ();
         bt1.VirtualMethod ();

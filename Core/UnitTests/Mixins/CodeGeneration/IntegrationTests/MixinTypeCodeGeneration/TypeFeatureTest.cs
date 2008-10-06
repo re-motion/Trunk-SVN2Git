@@ -30,7 +30,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       MixinDefinition mixinDefinition =
           TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
       Assert.IsNotNull (mixinDefinition);
-      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition);
+      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
       Assert.IsTrue (typeof (IGeneratedMixinType).IsAssignableFrom (generatedType));
     }
 
@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
           TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
       Assert.IsNotNull (mixinDefinition);
 
-      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition);
+      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
       Assert.IsTrue (generatedType.IsDefined (typeof (ConcreteMixinTypeAttribute), false));
 
       ConcreteMixinTypeAttribute[] attributes =
@@ -56,7 +56,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
           TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
       Assert.IsNotNull (mixinDefinition);
 
-      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition);
+      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
       Assert.IsTrue (generatedType.IsDefined (typeof (ConcreteMixinTypeAttribute), false));
 
       ConcreteMixinTypeAttribute[] attributes =
@@ -87,7 +87,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
 
       repository.ReplayAll ();
 
-      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition);
+      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
 
       Assert.AreEqual ("Bra", generatedType.FullName);
 
@@ -109,7 +109,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
 
       repository.ReplayAll ();
 
-      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition);
+      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
 
       Assert.AreEqual ("Bra/Oof", generatedType.FullName);
 
@@ -124,7 +124,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
         MixinDefinition mixinDefinition =
             TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinWithProtectedOverriderAndAttributes)];
         Assert.IsNotNull (mixinDefinition);
-        Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition);
+        Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
         Assert.AreNotSame (typeof (MixinWithProtectedOverriderAndAttributes), generatedType);
 
         object[] inheritableAttributes = generatedType.GetCustomAttributes (typeof (InheritableAttribute), true);
@@ -146,7 +146,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
         MixinDefinition mixinDefinition =
             TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinWithProtectedOverriderAndAttributes)];
         Assert.IsNotNull (mixinDefinition);
-        Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition);
+        Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
         Assert.AreNotSame (typeof (MixinWithProtectedOverriderAndAttributes), generatedType);
 
         object[] copiedAttributes = generatedType.GetCustomAttributes (typeof (SampleCopyTemplateAttribute), true);

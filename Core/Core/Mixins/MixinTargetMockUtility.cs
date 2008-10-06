@@ -151,7 +151,7 @@ namespace Remotion.Mixins
       Type mixinType;
       try
       {
-        mixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition);
+        mixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
       }
       catch (ArgumentException) // no concrete type is required for the given configuration
       {

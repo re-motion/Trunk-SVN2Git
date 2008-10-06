@@ -273,7 +273,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
       Assert.IsNotNull (mixinDefinition);
 
-      string concreteTypeName = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).FullName;
+      string concreteTypeName = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType.FullName;
       string[] paths = ConcreteTypeBuilder.Current.SaveAndResetDynamicScope ();
 
       AppDomainRunner.Run (delegate (object[] args)
@@ -301,10 +301,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
             TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
         Assert.IsNotNull (innerMixinDefinition);
 
-        Type concreteType = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
+        ConcreteMixinType concreteType = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
 
-        Assert.AreEqual (expectedTypeName, concreteType.FullName);
-        Assert.AreSame (assembly.GetType (expectedTypeName), concreteType);
+        Assert.AreEqual (expectedTypeName, concreteType.GeneratedType.FullName);
+        Assert.AreSame (assembly.GetType (expectedTypeName), concreteType.GeneratedType);
+
+        var wrappedMethod = typeof (MixinWithAbstractMembers).GetMethod ("AbstractMethod", BindingFlags.Instance | BindingFlags.NonPublic);
+        var wrapperMethod = concreteType.GeneratedType.GetMethod ("__wrap__AbstractMethod");
+        Assert.That (wrappedMethod, Is.Not.Null);
+        Assert.That (wrapperMethod, Is.Not.Null);
+        Assert.That (concreteType.GetMethodWrapper (wrappedMethod), Is.EqualTo (wrapperMethod));
 
         repository.VerifyAll ();
       }, concreteTypeName, paths.Single ());
@@ -317,7 +323,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
       Assert.IsNotNull (mixinDefinition);
 
-      string concreteTypeName = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).FullName;
+      string concreteTypeName = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType.FullName;
       string[] paths = ConcreteTypeBuilder.Current.SaveAndResetDynamicScope ();
 
       AppDomainRunner.Run (delegate (object[] args)
@@ -330,12 +336,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         MixinDefinition innerMixinDefinition =
             TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
 
-        Type concreteType1a = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
+        Type concreteType1a = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition).GeneratedType;
 
         Assembly assembly = Assembly.Load (AssemblyName.GetAssemblyName (modulePath));
         ConcreteTypeBuilder.Current.LoadAssemblyIntoCache (assembly);
 
-        Type concreteType1b = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
+        Type concreteType1b = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition).GeneratedType;
 
         Assert.AreSame (concreteType1a, concreteType1b);
 
@@ -372,7 +378,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         Assert.That (generatedType.Assembly, Is.Not.SameAs (assembly));
 
         // causes CreateMixinTypeGenerator
-        Type generatedMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
+        Type generatedMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition).GeneratedType;
         Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (generatedMixinType));
         Assert.That (generatedMixinType.Assembly, Is.Not.SameAs (assembly));
 
@@ -383,7 +389,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
         // causes nothing, was loaded
         innerMixinDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
-        Type loadedMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition);
+        Type loadedMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (innerMixinDefinition).GeneratedType;
         Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (loadedMixinType));
         Assert.That (loadedMixinType.Assembly, Is.SameAs (assembly));
       }, paths.Single());
@@ -394,7 +400,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       using (MixinConfiguration.BuildFromActive().ForClass<TargetClassOverridingMixinMember> ().Clear().AddMixins (typeof (MixinWithOverridableMember)).EnterScope())
       {
-        Type t = ConcreteTypeBuilder.Current.GetConcreteMixinType (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassOverridingMixinMember)).Mixins[0]);
+        Type t = ConcreteTypeBuilder.Current.GetConcreteMixinType (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassOverridingMixinMember)).Mixins[0]).GeneratedType;
         Assert.IsNotNull (t);
         Assert.IsTrue (typeof (MixinWithOverridableMember).IsAssignableFrom (t));
 

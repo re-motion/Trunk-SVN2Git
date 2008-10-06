@@ -172,7 +172,7 @@ namespace Remotion.Mixins.CodeGeneration
     /// <param name="configuration">The configuration object for the mixin class.</param>
     /// <returns>A concrete type for the given mixin <paramref name="configuration"/>.</returns>
     /// <remarks>This is mostly for internal reasons, users will hardly ever need to use this method..</remarks>
-    public Type GetConcreteMixinType (MixinDefinition configuration)
+    public ConcreteMixinType GetConcreteMixinType (MixinDefinition configuration)
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
 
@@ -187,7 +187,7 @@ namespace Remotion.Mixins.CodeGeneration
         throw new ArgumentException (message, "configuration");
       }
       else
-        return concreteMixinType.GeneratedType;
+        return concreteMixinType;
 
     }
 
