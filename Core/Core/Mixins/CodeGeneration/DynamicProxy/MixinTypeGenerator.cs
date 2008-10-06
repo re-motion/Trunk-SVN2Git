@@ -107,8 +107,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private IEnumerable<Tuple<MethodInfo, MethodInfo>> GenerateMethodWrappers ()
     {
+      // public wrappers are generated for all protected methods, but not for methods declared by one of the mixin classes
       var methodsToBeWrapped = from m in _configuration.Type.GetMethods (BindingFlags.NonPublic | BindingFlags.Instance)
-                               where m.IsFamily
+                               where m.IsFamily && m.DeclaringType.Assembly != typeof (Mixin<>).Assembly
                                select m;
       return from m in methodsToBeWrapped
              select Tuple.NewTuple (m, Emitter.GetPublicMethodWrapper (m));

@@ -731,7 +731,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (publicWrapper, false);
       Assert.That (attribute.WrappedMethodRefToken, Is.EqualTo (expectedToken));
 
-      Assert.That (type.Module.ResolveMethod (expectedToken), Is.EqualTo (methodToBeWrapped));
+      Assert.That (attribute.ResolveWrappedMethod (type), Is.EqualTo (methodToBeWrapped));
     }
 
     [Test]

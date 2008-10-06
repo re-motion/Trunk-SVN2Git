@@ -125,7 +125,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
             TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinWithProtectedOverriderAndAttributes)];
         Assert.IsNotNull (mixinDefinition);
         Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition);
-        Assert.AreNotSame (typeof (MixinWithProtectedOverrider), generatedType);
+        Assert.AreNotSame (typeof (MixinWithProtectedOverriderAndAttributes), generatedType);
 
         object[] inheritableAttributes = generatedType.GetCustomAttributes (typeof (InheritableAttribute), true);
         object[] nonInheritableAttributes = generatedType.GetCustomAttributes (typeof (NonInheritableAttribute), true);
@@ -147,7 +147,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
             TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinWithProtectedOverriderAndAttributes)];
         Assert.IsNotNull (mixinDefinition);
         Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition);
-        Assert.AreNotSame (typeof (MixinWithProtectedOverrider), generatedType);
+        Assert.AreNotSame (typeof (MixinWithProtectedOverriderAndAttributes), generatedType);
 
         object[] copiedAttributes = generatedType.GetCustomAttributes (typeof (SampleCopyTemplateAttribute), true);
         Assert.AreEqual (0, copiedAttributes.Length);

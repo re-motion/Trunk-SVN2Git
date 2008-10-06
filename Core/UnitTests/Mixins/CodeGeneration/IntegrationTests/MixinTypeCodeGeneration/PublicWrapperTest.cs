@@ -9,10 +9,12 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics.ToText;
 using Remotion.Mixins;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -24,30 +26,46 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
   public class PublicWrapperTest : CodeGenerationBaseTest
   {
     [Test]
-    public void PublicWrapperGeneratedForProtectedOverrider ()
+    public void PublicWrapperGeneratedForOverriddenProtected()
     {
       Type type = ((IMixinTarget) CreateMixedObject<ClassOverridingMixinMembersProtected> (typeof (MixinWithAbstractMembers)).With()).Mixins[0].GetType();
       MethodInfo wrappedMethod = typeof (MixinWithAbstractMembers).GetMethod ("AbstractMethod", BindingFlags.NonPublic | BindingFlags.Instance);
 
-      var wrapper = (from method in type.GetMethods (BindingFlags.Instance | BindingFlags.Public)
-                                      let attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (method, false)
-                                      where attribute != null && type.Module.ResolveMethod (attribute.WrappedMethodRefToken).Equals (wrappedMethod)
-                                      select method).Single();
+      MethodInfo wrapper = GetWrapper (type, wrappedMethod);
       Assert.That (wrapper, Is.Not.Null);
     }
 
     [Test]
-    [Ignore ("TODO: FS - add test")]
-    public void PublicWrapperGeneratedForOverriddenProtected ()
+    public void PublicWrapperGeneratedForProtectedOverrider ()
     {
-      Assert.Fail ("TODO");
+      Type type = ((IMixinTarget) CreateMixedObject<BaseType1> (typeof (MixinWithProtectedOverrider)).With ()).Mixins[0].GetType ();
+      MethodInfo wrappedMethod = typeof (MixinWithProtectedOverrider).GetMethod ("VirtualMethod", BindingFlags.NonPublic | BindingFlags.Instance);
+
+      MethodInfo wrapper = GetWrapper (type, wrappedMethod);
+      Assert.That (wrapper, Is.Not.Null);
     }
 
     [Test]
-    [Ignore ("TODO: FS - add test")]
     public void NoPublicWrapperGeneratedForInfrastructureMembers ()
     {
-      Assert.Fail ("TODO");
+      Type type = ((IMixinTarget) CreateMixedObject<BaseType1> (typeof (MixinWithProtectedOverrider)).With ()).Mixins[0].GetType ();
+      IEnumerable<MethodInfo> wrappedMethods = 
+          from method in type.GetMethods (BindingFlags.Instance | BindingFlags.Public)
+          let attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (method, false)
+          let declaringType = attribute != null ? attribute.ResolveWrappedMethod (type).DeclaringType : null
+          let declaringTypeDefinition = declaringType != null && declaringType.IsGenericType ? declaringType.GetGenericTypeDefinition() : declaringType
+          where attribute != null && (declaringTypeDefinition == typeof (Mixin<>) || declaringTypeDefinition == typeof (Mixin<,>))
+          select method;
+
+      Assert.That (wrappedMethods.ToArray (), Is.Empty);
+    }
+
+    private MethodInfo GetWrapper (Type type, MethodInfo wrappedMethod)
+    {
+      return (from method in type.GetMethods (BindingFlags.Instance | BindingFlags.Public)
+              let attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (method, false)
+              where attribute != null && attribute.ResolveWrappedMethod (type).Equals (wrappedMethod)
+              select method).Single ();
     }
   }
 }

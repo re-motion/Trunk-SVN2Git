@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Reflection;
 
 namespace Remotion.Reflection.CodeGeneration
 {
@@ -25,6 +26,11 @@ namespace Remotion.Reflection.CodeGeneration
     public int WrappedMethodRefToken
     {
       get { return _wrappedMethodRefToken; }
+    }
+
+    public MethodInfo ResolveWrappedMethod (Type typeHoldingWrapperMethod)
+    {
+      return (MethodInfo) typeHoldingWrapperMethod.Module.ResolveMethod (WrappedMethodRefToken);
     }
   }
 }
