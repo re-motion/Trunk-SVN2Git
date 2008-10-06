@@ -273,13 +273,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    public void GetAclExpansionEntryList_UserList_SeparateAcls ()
+    public void GetAclExpansionEntryList_UserList_MultipleAces ()
     {
-      //var aceMatchAll = TestHelper.CreateAceWithGroupSelectionAll();
-      //AttachAccessTypeReadWriteDelete (aceMatchAll, true, null, null);
-
-      var aceMatchAll = TestHelper.CreateAceWithOwningTenant();
-      AttachAccessTypeReadWriteDelete (aceMatchAll, true, true, null);
+      var aceOwningTenant = TestHelper.CreateAceWithOwningTenant();
+      AttachAccessTypeReadWriteDelete (aceOwningTenant, true, true, null);
       
       var aceSpecificTenant = TestHelper.CreateAceWithSpecficTenant (Tenant);
       AttachAccessTypeReadWriteDelete (aceSpecificTenant, true, true, null);
@@ -289,11 +286,50 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
-          //List.New (otherTenantUser, User),
           List.New (User),
-          List.New (TestHelper.CreateAcl (aceMatchAll, aceSpecificTenant, aceGroupOwning))
-        //List.New (TestHelper.CreateAcl (otherTenantAceSpecificTenant), TestHelper.CreateAcl (aceGroupOwning))
-          //List.New ( TestHelper.CreateAcl (aceGroupOwning))
+          List.New (TestHelper.CreateAcl (aceOwningTenant, aceSpecificTenant, aceGroupOwning))
+        );
+
+
+      var aclExpansionEntryListEnumerator = aclExpansionEntryList.GetEnumerator ();
+
+      aclExpansionEntryListEnumerator.MoveNext ();
+      AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, WriteAccessType },
+        new AclExpansionAccessConditions { IsOwningTenantRequired = true });
+
+      aclExpansionEntryListEnumerator.MoveNext ();
+      AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, WriteAccessType },
+        new AclExpansionAccessConditions ());
+
+      aclExpansionEntryListEnumerator.MoveNext ();
+      AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, DeleteAccessType },
+        new AclExpansionAccessConditions { IsOwningGroupRequired = true });
+
+      Assert.That (aclExpansionEntryListEnumerator.MoveNext(), Is.EqualTo (false));
+    }
+
+
+
+    [Test]
+    public void GetAclExpansionEntryList_UserList_SeparateAcls ()
+    {
+      //var aceMatchAll = TestHelper.CreateAceWithGroupSelectionAll();
+      //AttachAccessTypeReadWriteDelete (aceMatchAll, true, null, null);
+
+      var aceOwningTenant = TestHelper.CreateAceWithOwningTenant ();
+      AttachAccessTypeReadWriteDelete (aceOwningTenant, true, true, null);
+
+      var aceSpecificTenant = TestHelper.CreateAceWithSpecficTenant (Tenant);
+      AttachAccessTypeReadWriteDelete (aceSpecificTenant, true, true, null);
+
+      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
+
+      List<AclExpansionEntry> aclExpansionEntryList =
+        GetAclExpansionEntryList_UserList_AceList (
+          List.New (User),
+          //List.New (TestHelper.CreateAcl (aceMatchAll, aceSpecificTenant, aceGroupOwning))
+          List.New (TestHelper.CreateAcl (aceOwningTenant), TestHelper.CreateAcl (aceSpecificTenant), TestHelper.CreateAcl (aceGroupOwning))
         );
 
 
@@ -313,9 +349,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, DeleteAccessType },
         new AclExpansionAccessConditions { IsOwningGroupRequired = true });
 
-      Assert.That (aclExpansionEntryListEnumerator.MoveNext(), Is.EqualTo (false));
+      Assert.That (aclExpansionEntryListEnumerator.MoveNext (), Is.EqualTo (false));
     }
-
 
 
 
