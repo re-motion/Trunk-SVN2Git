@@ -52,7 +52,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       IEnumerable<MethodInfo> wrappedMethods = 
           from method in type.GetMethods (BindingFlags.Instance | BindingFlags.Public)
           let attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (method, false)
-          let declaringType = attribute != null ? attribute.ResolveWrappedMethod (type).DeclaringType : null
+          let declaringType = attribute != null ? attribute.ResolveWrappedMethod (type.Module).DeclaringType : null
           let declaringTypeDefinition = declaringType != null && declaringType.IsGenericType ? declaringType.GetGenericTypeDefinition() : declaringType
           where attribute != null && (declaringTypeDefinition == typeof (Mixin<>) || declaringTypeDefinition == typeof (Mixin<,>))
           select method;
@@ -64,7 +64,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       return (from method in type.GetMethods (BindingFlags.Instance | BindingFlags.Public)
               let attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (method, false)
-              where attribute != null && attribute.ResolveWrappedMethod (type).Equals (wrappedMethod)
+              where attribute != null && attribute.ResolveWrappedMethod (type.Module).Equals (wrappedMethod)
               select method).Single ();
     }
   }

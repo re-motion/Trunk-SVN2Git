@@ -24,7 +24,7 @@ namespace Remotion.Reflection.CodeGeneration
   public class CustomClassEmitter : IClassEmitter
   {
     private static readonly ConstructorInfo s_generatedMethodWrapperAttributeCtor = 
-        typeof (GeneratedMethodWrapperAttribute).GetConstructor (new[] { typeof (int) });
+        typeof (GeneratedMethodWrapperAttribute).GetConstructor (new[] { typeof (int), typeof (Type[]) });
 
     public static string FlattenTypeName (string fullName)
     {
@@ -422,7 +422,8 @@ namespace Remotion.Reflection.CodeGeneration
       
       var moduleBuilder = (ModuleBuilder) InnerEmitter.TypeBuilder.Module;
       int metadataToken = moduleBuilder.GetMethodToken (methodToBeWrapped).Token;
-      var attributeBuilder = new CustomAttributeBuilder (s_generatedMethodWrapperAttributeCtor, new object[] { metadataToken });
+      Type[] genericArguments = methodToBeWrapped.DeclaringType.IsGenericType ? methodToBeWrapped.DeclaringType.GetGenericArguments () : Type.EmptyTypes;
+      var attributeBuilder = new CustomAttributeBuilder (s_generatedMethodWrapperAttributeCtor, new object[] { metadataToken, genericArguments });
       wrapper.AddCustomAttribute (attributeBuilder);
 
       return wrapper;

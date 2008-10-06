@@ -717,6 +717,32 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
+    public void GetPublicMethodWrapper_Attribute_HasRightGenericTypeArguments_Empty ()
+    {
+      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper_Attribute_HasRightGenericTypeArguments_Empty", typeof (ClassWithProtectedMethod));
+      classEmitter.GetPublicMethodWrapper (typeof (ClassWithProtectedMethod).GetMethod ("GetSecret", _declaredInstanceBindingFlags));
+
+      object instance = Activator.CreateInstance (classEmitter.BuildType ());
+      MethodInfo publicWrapper = instance.GetType ().GetMethod ("__wrap__GetSecret");
+
+      var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (publicWrapper, false);
+      Assert.That (attribute.GenericTypeArguments, Is.Empty);
+    }
+
+    [Test]
+    public void GetPublicMethodWrapper_Attribute_HasRightGenericTypeArguments_NotEmpty ()
+    {
+      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper_Attribute_HasRightGenericTypeArguments_NotEmpty", typeof (GenericClassWithAllKindsOfMembers<string>));
+      classEmitter.GetPublicMethodWrapper (typeof (GenericClassWithAllKindsOfMembers<string>).GetMethod ("Method", _declaredInstanceBindingFlags));
+
+      object instance = Activator.CreateInstance (classEmitter.BuildType ());
+      MethodInfo publicWrapper = instance.GetType ().GetMethod ("__wrap__Method");
+
+      var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (publicWrapper, false);
+      Assert.That (attribute.GenericTypeArguments, Is.EqualTo (new[] {typeof (string)}));
+    }
+
+    [Test]
     public void GetPublicMethodWrapper_Attribute_HasRightToken ()
     {
       var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper_Attribute_HasRightToken", typeof (ClassWithProtectedMethod));
@@ -731,7 +757,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (publicWrapper, false);
       Assert.That (attribute.WrappedMethodRefToken, Is.EqualTo (expectedToken));
 
-      Assert.That (attribute.ResolveWrappedMethod (type), Is.EqualTo (methodToBeWrapped));
+      Assert.That (attribute.ResolveWrappedMethod (type.Module), Is.EqualTo (methodToBeWrapped));
     }
 
     [Test]

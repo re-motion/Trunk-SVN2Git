@@ -140,8 +140,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var wrappedMethod2 = typeof (DateTime).GetMethod ("get_Day");
 
       // fake attributes simulating the relationship between wrapper methods and wrapped methods
-      var attribute1 = new GeneratedMethodWrapperAttribute (moduleForWrappers.SignedModule.GetMethodToken (wrappedMethod1).Token);
-      var attribute2 = new GeneratedMethodWrapperAttribute (moduleForWrappers.SignedModule.GetMethodToken (wrappedMethod2).Token);
+      var attribute1 = new GeneratedMethodWrapperAttribute (moduleForWrappers.SignedModule.GetMethodToken (wrappedMethod1).Token, new Type[0]);
+      var attribute2 = new GeneratedMethodWrapperAttribute (moduleForWrappers.SignedModule.GetMethodToken (wrappedMethod2).Token, new Type[0]);
 
       // prepare importerMock.GetWrapperAttribute to return attribute1 and attribute2 for wrapperMethod1 and wrapperMethod2
       var importerMock = new MockRepository ().PartialMock<AttributeBasedMetadataImporter> ();
@@ -180,7 +180,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       Assert.That (attribute, Is.Null);
     }
 
-    [GeneratedMethodWrapper(0xfeefee)]
+    [GeneratedMethodWrapper (0xfeefee, new Type[0])]
     public void FakeWrapperMethod ()
     {
     }
