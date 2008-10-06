@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -67,7 +68,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           }
         }
       }
-      return aclExpansionEntries;
+
+      List<AclExpansionEntry> aclExpansionEntriesSortedAndDistinct = 
+        (from AclExpansionEntry aclExpansionEntry in aclExpansionEntries
+         //orderby aclExpansionEntry.User.DisplayName, aclExpansionEntry.Role.DisplayName
+         select aclExpansionEntry ).Distinct().ToList();
+
+      return aclExpansionEntriesSortedAndDistinct;
     }
   }
 }

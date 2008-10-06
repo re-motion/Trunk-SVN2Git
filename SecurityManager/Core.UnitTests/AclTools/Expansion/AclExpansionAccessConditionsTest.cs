@@ -25,26 +25,26 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var accessConditions = new AclExpansionAccessConditions ();
       Assert.That (accessConditions.AbstractRole, Is.Null);
-      Assert.That (accessConditions.OnlyIfAbstractRoleMatches, Is.EqualTo(false));
-      Assert.That (accessConditions.OnlyIfGroupIsOwner, Is.EqualTo (false));
-      Assert.That (accessConditions.OnlyIfTenantIsOwner, Is.EqualTo (false));
-      Assert.That (accessConditions.OnlyIfUserIsOwner, Is.EqualTo (false));
+      Assert.That (accessConditions.IsAbstractRoleRequired, Is.EqualTo(false));
+      Assert.That (accessConditions.IsOwningGroupRequired, Is.EqualTo (false));
+      Assert.That (accessConditions.IsOwningTenantRequired, Is.EqualTo (false));
+      Assert.That (accessConditions.IsOwningUserRequired, Is.EqualTo (false));
     }
 
     [Test]
     public void Equals ()
     {
-      BooleanMemberTest ((aeac, b) => aeac.OnlyIfGroupIsOwner = b);
-      BooleanMemberTest ((aeac, b) => aeac.OnlyIfTenantIsOwner = b);
-      BooleanMemberTest ((aeac, b) => aeac.OnlyIfUserIsOwner = b);
+      BooleanMemberTest ((aeac, b) => aeac.IsOwningGroupRequired = b);
+      BooleanMemberTest ((aeac, b) => aeac.IsOwningTenantRequired = b);
+      BooleanMemberTest ((aeac, b) => aeac.IsOwningUserRequired = b);
     }
 
     [Test]
     public void Equals_UsingLambda ()
     {
-      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.OnlyIfGroupIsOwner = true);
-      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.OnlyIfTenantIsOwner = true);
-      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.OnlyIfUserIsOwner = true);
+      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.IsOwningGroupRequired = true);
+      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.IsOwningTenantRequired = true);
+      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.IsOwningUserRequired = true);
       CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.AbstractRole = TestHelper.CreateAbstractRoleDefinition ("titatutest", 11235));
     }
 
@@ -54,9 +54,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void Equals_UsingPropertyObject ()
     {
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.OnlyIfGroupIsOwner), true);
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.OnlyIfTenantIsOwner), true);
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.OnlyIfUserIsOwner), true);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.IsOwningGroupRequired), true);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.IsOwningTenantRequired), true);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.IsOwningUserRequired), true);
       CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.AbstractRole), TestHelper.CreateAbstractRoleDefinition ("titatutest", 11235));
     }
 
@@ -75,9 +75,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var accessConditions = new AclExpansionAccessConditions ();
       accessConditions.AbstractRole = TestHelper.CreateAbstractRoleDefinition ("xyz", 123);
-      accessConditions.OnlyIfGroupIsOwner = true;
-      accessConditions.OnlyIfTenantIsOwner = true;
-      accessConditions.OnlyIfUserIsOwner = true;
+      accessConditions.IsOwningGroupRequired = true;
+      accessConditions.IsOwningTenantRequired = true;
+      accessConditions.IsOwningUserRequired = true;
       var result = To.String.e (accessConditions).CheckAndConvertToString ();
       //To.Console.s (result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("userMustOwn=True,groupMustOwn=True,tenantMustOwn=True,abstractRoleMustMatch=True,abstractRole="));

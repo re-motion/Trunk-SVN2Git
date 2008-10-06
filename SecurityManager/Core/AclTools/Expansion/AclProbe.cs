@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         var abstractRole = ace.SpecificAbstractRole;
         abstractRoles.Add (abstractRole);
         aclProbe.AccessConditions.AbstractRole = abstractRole;
-        //aclProbe.AccessConditions.OnlyIfAbstractRoleMatches = true;
+        //aclProbe.AccessConditions.IsAbstractRoleRequired = true;
       }
       return abstractRoles;
     }
@@ -63,7 +63,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         case TenantSelection.OwningTenant:
           owningTenant = user.Tenant;
-          aclProbe.AccessConditions.OnlyIfTenantIsOwner = true;
+          aclProbe.AccessConditions.IsOwningTenantRequired = true;
           break;
         case TenantSelection.SpecificTenant: 
         case TenantSelection.All:
@@ -83,7 +83,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         case GroupSelection.OwningGroup:
           Assertion.IsNotNull (role.Group);
           owningGroups.Add (role.Group);
-          aclProbe.AccessConditions.OnlyIfGroupIsOwner = true;
+          aclProbe.AccessConditions.IsOwningGroupRequired = true;
           break;
         case GroupSelection.All:
           // If the ACE contains no specific group, then the probe's owningGroups collection is empty.

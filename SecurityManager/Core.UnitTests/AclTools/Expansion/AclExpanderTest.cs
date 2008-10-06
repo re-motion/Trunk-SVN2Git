@@ -137,7 +137,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
       var accessConditions = new AclExpansionAccessConditions () { 
-        OnlyIfGroupIsOwner = true, //  GroupSelection.OwningGroup => group must be owner
+        IsOwningGroupRequired = true, //  GroupSelection.OwningGroup => group must be owner
       };
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
       Assert.That (aclExpansionEntryList[0].AccessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
@@ -158,7 +158,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
       var accessConditions = new AclExpansionAccessConditions ()
       {
-        OnlyIfGroupIsOwner = true, //  GroupSelection.OwningGroup => group must be owner
+        IsOwningGroupRequired = true, //  GroupSelection.OwningGroup => group must be owner
       };
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
       Assert.That (aclExpansionEntryList[0].AccessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
@@ -191,7 +191,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
 
       AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { ReadAccessType, DeleteAccessType }, 
-        new AclExpansionAccessConditions { OnlyIfGroupIsOwner = true });
+        new AclExpansionAccessConditions { IsOwningGroupRequired = true });
 
       AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType },
        new AclExpansionAccessConditions { AbstractRole = aceAbstractRole.SpecificAbstractRole });
@@ -233,7 +233,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    [Ignore("Fixme to accept double AclExpansion entries.")]
+    //[Ignore("Fixme to accept double AclExpansion entries.")]
     public void GetAclExpansionEntryList_UserList_AceList_TwoDifferentTenants ()
     {
       // A 2nd tenant + user, etc
@@ -249,7 +249,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
 
-      To.ConsoleLine.e (() => otherTenantAceSpecificTenant);
+      //To.ConsoleLine.e (() => otherTenantAceSpecificTenant);
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
@@ -259,13 +259,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         );
 
 
-      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
 
       AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { ReadAccessType, WriteAccessType },
         new AclExpansionAccessConditions ());
 
-      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { ReadAccessType, DeleteAccessType },
-        new AclExpansionAccessConditions { OnlyIfGroupIsOwner = true });
+      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { ReadAccessType, WriteAccessType },
+        new AclExpansionAccessConditions { IsOwningGroupRequired = true });
+
+      AssertAclExpansionEntry (aclExpansionEntryList[2], new[] { ReadAccessType, DeleteAccessType },
+        new AclExpansionAccessConditions { IsOwningGroupRequired = true });
     }
 
 
@@ -294,13 +297,23 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         );
 
 
-      //Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
+      //Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
 
-      //AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { ReadAccessType, WriteAccessType },
-      //  new AclExpansionAccessConditions ());
+      var aclExpansionEntryListEnumerator = aclExpansionEntryList.GetEnumerator ();
 
-      //AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { ReadAccessType, DeleteAccessType },
-      //  new AclExpansionAccessConditions { OnlyIfGroupIsOwner = true });
+      aclExpansionEntryListEnumerator.MoveNext ();
+      AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, WriteAccessType },
+        new AclExpansionAccessConditions { IsOwningTenantRequired = true });
+
+      aclExpansionEntryListEnumerator.MoveNext ();
+      AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, WriteAccessType },
+        new AclExpansionAccessConditions ());
+
+      aclExpansionEntryListEnumerator.MoveNext ();
+      AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, DeleteAccessType },
+        new AclExpansionAccessConditions { IsOwningGroupRequired = true });
+
+      Assert.That (aclExpansionEntryListEnumerator.MoveNext(), Is.EqualTo (false));
     }
 
 
