@@ -40,9 +40,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
-    public List<AclExpansionEntry> GetAclExpansionEntryListSortedAndDistinct (List<AclExpansionEntry> aclExpansionEntries)
+    public List<AclExpansionEntry> GetAclExpansionEntryListSortedAndDistinct ()
     {
-      return (from AclExpansionEntry aclExpansionEntry in aclExpansionEntries
+      return (from AclExpansionEntry aclExpansionEntry in GetAclExpansionEntryList ()
               orderby aclExpansionEntry.User.DisplayName, aclExpansionEntry.Role.DisplayName
               select aclExpansionEntry ).Distinct().ToList();
     }

@@ -9,15 +9,8 @@
  */
 
 using System;
-using System.ComponentModel.Design;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Diagnostics.ToText;
-using Remotion.Reflection;
-using Remotion.Security.Metadata;
-using Remotion.SecurityManager.Domain;
-using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.Text.CommandLine;
 using Remotion.Utilities;
 
@@ -66,7 +59,7 @@ namespace Remotion.SecurityManager.AclTools.Expander
       Console.WriteLine (parser.GetAsciiSynopsis (commandName, Console.BufferWidth));
     }
 
-    CommandLineArguments _arguments;
+    readonly CommandLineArguments _arguments;
 
     private Program (CommandLineArguments arguments)
     {
@@ -78,21 +71,14 @@ namespace Remotion.SecurityManager.AclTools.Expander
     {
       try
       {
-        ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
-            new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, typeof (BaseSecurityManagerObject).Assembly));
-        MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
+        var aclExpander = new AclExpander();
 
-        ClientTransaction transaction = ClientTransaction.CreateRootTransaction();
-        
-        if (_arguments.ImportMetadata)
-          ImportMetadata (transaction);
+        var aclExpansion = aclExpander.GetAclExpansionEntryListSortedAndDistinct();
 
-        transaction.Commit ();
-
-        if (_arguments.ImportLocalization)
-          ImportLocalization (transaction);
-
-        transaction.Commit ();
+        foreach (AclExpansionEntry aclExpansionEntry in aclExpansion)
+        {
+          To.ConsoleLine.e (aclExpansionEntry);
+        }
 
         return 0;
       }
@@ -103,28 +89,28 @@ namespace Remotion.SecurityManager.AclTools.Expander
       }
     }
 
-    private void ImportMetadata (ClientTransaction transaction)
-    {
-      MetadataImporter importer = new MetadataImporter (transaction);
-      WriteInfo ("Importing metadata file '{0}'.", _arguments.MetadataFile);
-      importer.Import (_arguments.MetadataFile);
-    }
+    //private void ImportMetadata (ClientTransaction transaction)
+    //{
+    //  MetadataImporter importer = new MetadataImporter (transaction);
+    //  WriteInfo ("Importing metadata file '{0}'.", _arguments.MetadataFile);
+    //  importer.Import (_arguments.MetadataFile);
+    //}
 
-    private void ImportLocalization (ClientTransaction transaction)
-    {
-      CultureImporter importer = new CultureImporter (transaction);
-      LocalizationFileNameStrategy localizationFileNameStrategy = new LocalizationFileNameStrategy ();
-      string[] localizationFileNames = localizationFileNameStrategy.GetLocalizationFileNames (_arguments.MetadataFile);
+    //private void ImportLocalization (ClientTransaction transaction)
+    //{
+    //  CultureImporter importer = new CultureImporter (transaction);
+    //  LocalizationFileNameStrategy localizationFileNameStrategy = new LocalizationFileNameStrategy ();
+    //  string[] localizationFileNames = localizationFileNameStrategy.GetLocalizationFileNames (_arguments.MetadataFile);
 
-      foreach (string localizationFileName in localizationFileNames)
-      {
-        WriteInfo ("Importing localization file '{0}'.", localizationFileName);
-        importer.Import (localizationFileName);
-      }
+    //  foreach (string localizationFileName in localizationFileNames)
+    //  {
+    //    WriteInfo ("Importing localization file '{0}'.", localizationFileName);
+    //    importer.Import (localizationFileName);
+    //  }
 
-      if (localizationFileNames.Length == 0)
-        WriteInfo ("Localization files not found.");
-    }
+    //  if (localizationFileNames.Length == 0)
+    //    WriteInfo ("Localization files not found.");
+    //}
 
     private void HandleException (Exception exception)
     {
@@ -143,10 +129,10 @@ namespace Remotion.SecurityManager.AclTools.Expander
       }
     }
 
-    private void WriteInfo (string text, params object[] args)
-    {
-      if (_arguments.Verbose)
-        Console.WriteLine (text, args);
-    }
+    //private void WriteInfo (string text, params object[] args)
+    //{
+    //  if (_arguments.Verbose)
+    //    Console.WriteLine (text, args);
+    //}
   }
 }
