@@ -430,7 +430,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DataContext.Entity<Order>()"
+    [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DomainObjectQueryable<Order>"
                                                                     + ".Select(o => Entity().Select(c => c)) (MethodCallExpression).")]
     public void QueryWithSubQuery_InSelectClause ()
     {
@@ -442,7 +442,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DataContext.Entity<Order>()"
+    [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DomainObjectQueryable<Order>"
                                                                     + ".Where(o => (o.OrderNumber = 5)).Select(o => Entity().Select(c => c)) (MethodCallExpression).")]
     public void QueryWithSubQueryInSelectClause_WhereClause ()
     {
@@ -455,7 +455,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DataContext.Entity<Order>()"
+    [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DomainObjectQueryable<Order>"
                                                                     + ".Where(o => (o.OrderNumber = 5)).Select(o => Entity().Where(c => (c = null))) (MethodCallExpression).")]
     public void QueryWithSubQueryInSelectClause_WhereClause2 ()
     {

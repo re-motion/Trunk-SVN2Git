@@ -8,18 +8,14 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.Linq.SqlGeneration;
-using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Development.UnitTesting;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Queries
