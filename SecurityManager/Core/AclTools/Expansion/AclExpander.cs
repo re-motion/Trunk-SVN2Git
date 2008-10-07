@@ -13,68 +13,76 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Diagnostics.ToText;
+using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpander
   {
-    private readonly IAclExpanderUserFinder _userFinder;
-    private readonly IAclExpanderAclFinder _accessControlListFinder;
+    private readonly IUserRoleAclAceCombinations _userRoleAclAceCombinations;
 
+    public AclExpander (IUserRoleAclAceCombinations userRoleAclAceCombinations)
+    {
+      _userRoleAclAceCombinations = userRoleAclAceCombinations;
+    }
 
     public AclExpander (IAclExpanderUserFinder userFinder, IAclExpanderAclFinder accessControlListFinder)
     {
-      _userFinder = userFinder;
-      _accessControlListFinder = accessControlListFinder;
+      _userRoleAclAceCombinations = new UserRoleAclAceCombinations (userFinder, accessControlListFinder);
     }
 
+    /// <summary>
+    /// Default bahvior is to use all <see cref="User"/>|s and all <see cref="AccessControlList"/>|s.
+    /// </summary>
     public AclExpander () : this (new AclExpanderUserFinder (), new AclExpanderAclFinder ()) {}
 
 
-    // Spike implementation to test algorithm. 
-    public List<AclExpansionEntry> GetAclExpansionEntryList_Spike ()
+
+    public List<AclExpansionEntry> GetAclExpansionEntryListSortedAndDistinct (List<AclExpansionEntry> aclExpansionEntries)
+    {
+      return (from AclExpansionEntry aclExpansionEntry in aclExpansionEntries
+              orderby aclExpansionEntry.User.DisplayName, aclExpansionEntry.Role.DisplayName
+              select aclExpansionEntry ).Distinct().ToList();
+    }
+
+
+    /// <summary>
+    /// Returns the expansion of <see cref="AccessTypeDefinition"/>|s for 
+    /// all the <see cref="User"/>|s and all <see cref="AccessControlList"/>|s  
+    /// supplied in the ctor as a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>. 
+    /// </summary>
+    /// <returns></returns>
+    public List<AclExpansionEntry> GetAclExpansionEntryList ()
     {
       var aclExpansionEntries = new List<AclExpansionEntry> ();
 
-      var users = _userFinder.FindUsers();
-      var acls = _accessControlListFinder.FindAccessControlLists();
-
-      foreach (var user in users)
+      foreach (UserRoleAclAceCombination userRoleAclAce in _userRoleAclAceCombinations)
       {
-        To.ConsoleLine.e (() => user);
-        foreach (var role in user.Roles)
-        {
-          To.ConsoleLine.s ("\t").e (() => role);
-          foreach (var acl in acls)
-          {
-            To.ConsoleLine.s ("\t\t").e (() => acl);
-            foreach (var ace in acl.AccessControlEntries)
-            {
-              To.ConsoleLine.s ("\t\t\t").e (() => ace);
-              AclProbe aclProbe = AclProbe.CreateAclProbe (user, role, ace);
-              To.ConsoleLine.s ("\t\t\t").e (() => aclProbe);
-
-              // TODO(?): Check if we already queried with an identical token.
-              AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (aclProbe.SecurityToken);
-
-              if (accessTypeDefinitions.Length > 0)
-              {
-                var aclExpansionEntry = new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions);
-                To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
-                aclExpansionEntries.Add (aclExpansionEntry);
-              }
-            }
-          }
-        }
+        AddAclExpansionEntry (aclExpansionEntries, userRoleAclAce);
       }
 
-      List<AclExpansionEntry> aclExpansionEntriesSortedAndDistinct = 
-        (from AclExpansionEntry aclExpansionEntry in aclExpansionEntries
-         //orderby aclExpansionEntry.User.DisplayName, aclExpansionEntry.Role.DisplayName
-         select aclExpansionEntry ).Distinct().ToList();
-
-      return aclExpansionEntriesSortedAndDistinct;
+      return aclExpansionEntries;
     }
+
+
+    private void AddAclExpansionEntry (List<AclExpansionEntry> aclExpansionEntries, UserRoleAclAceCombination userRoleAclAce)
+    {
+      AclProbe aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);
+      To.ConsoleLine.s ("\t\t\t").e (() => aclProbe);
+
+      // TODO(?): Check if we already queried with an identical token.
+      AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken);
+
+      if (accessTypeDefinitions.Length > 0)
+      {
+        var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, aclProbe.AccessConditions, accessTypeDefinitions);
+        To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
+        aclExpansionEntries.Add (aclExpansionEntry);
+      }
+    }
+
+
   }
 }

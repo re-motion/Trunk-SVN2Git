@@ -59,6 +59,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\Group_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\SecurityToken_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\Tenant_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AclProbe_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\ListOfAclExpansionEntry_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AccessControlList_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AccessControlEntry_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\Position_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\Permission_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AbstractRoleDefinition_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="AclTools\Expansion\AclExpanderTest_Spike.cs" />
     <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\Role_ToTextSpecificTypeHandler.cs" />
     <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AccessTypeDefinition_ToTextSpecificTypeHandler.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest.cs" />
