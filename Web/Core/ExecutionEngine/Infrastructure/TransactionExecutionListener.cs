@@ -8,10 +8,59 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+using System.Threading;
+using Remotion.Utilities;
+
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
-  public class TransactionExecutionListener
+  public class TransactionExecutionListener : IWxeFunctionExecutionListener
   {
-    
+    private readonly TransactionStrategyBase _transactionStrategy;
+    private readonly IWxeFunctionExecutionListener _innerListener;
+
+    public TransactionExecutionListener (TransactionStrategyBase transactionStrategy, IWxeFunctionExecutionListener innerListener)
+    {
+      ArgumentUtility.CheckNotNull ("transactionStrategy", transactionStrategy);
+      ArgumentUtility.CheckNotNull ("innerListener", innerListener);
+
+      _transactionStrategy = transactionStrategy;
+      _innerListener = innerListener;
+    }
+
+    public TransactionStrategyBase TransactionStrategy
+    {
+      get { return _transactionStrategy; }
+    }
+
+    public IWxeFunctionExecutionListener InnerListener
+    {
+      get { return _innerListener; }
+    }
+
+    public bool IsNull
+    {
+      get { return false; }
+    }
+
+    public void OnExecutionPlay (WxeContext context)
+    {
+      _transactionStrategy.OnExecutionPlay (context, _innerListener);
+    }
+
+    public void OnExecutionStop (WxeContext context)
+    {
+      _transactionStrategy.OnExecutionStop (context, _innerListener);
+    }
+
+    public void OnExecutionPause (WxeContext context)
+    {
+      _transactionStrategy.OnExecutionPause (context, _innerListener);
+    }
+
+    public void OnExecutionFail (WxeContext context, Exception exception)
+    {
+      _transactionStrategy.OnExecutionFail (context, _innerListener, exception);
+    }
   }
 }
