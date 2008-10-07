@@ -9,24 +9,23 @@
  */
 
 using System;
-using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionStrategyTests
+namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactionStrategyTests
 {
   [TestFixture]
-  public class Reset : RootTransactionStrategyTestBase
+  public class Reset : ScopedTransactionStrategyTestBase
   {
-    private RootTransactionStrategy _strategy;
+    private ScopedTransactionStrategyBase _strategy;
 
     public override void SetUp ()
     {
       base.SetUp();
-      _strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      _strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
     }
 
     [Test]

@@ -11,22 +11,23 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionStrategyTests
+namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactionStrategyTests
 {
   [TestFixture]
-  public class OnExecutionFail : RootTransactionStrategyTestBase
+  public class OnExecutionFail : ScopedTransactionStrategyTestBase
   {
-    private RootTransactionStrategy _strategy;
+    private ScopedTransactionStrategyBase _strategy;
     private Exception _failException;
 
     public override void SetUp ()
     {
       base.SetUp ();
-      _strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      _strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
       _failException = new ApplicationException ("Fail Exception");
     }
 
@@ -60,6 +61,25 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
         ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionFail (Context,ExecutionListenerMock, _failException));
         ScopeMock.Expect (mock => mock.Leave ());
         TransactionMock.Expect (mock => mock.Release ());
+      }
+
+      MockRepository.ReplayAll ();
+
+      _strategy.OnExecutionFail (Context, ExecutionListenerMock, _failException);
+
+      MockRepository.VerifyAll ();
+      Assert.That (_strategy.Scope, Is.Null);
+    }
+
+    [Test]
+    public void Test_WithReleaseTransactionOverride ()
+    {
+      InvokeOnExecutionPlay (_strategy);
+      using (MockRepository.Ordered ())
+      {
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionFail (Context, _failException));
+        ScopeMock.Expect (mock => mock.Leave ());
+        _strategy.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ReleaseTransaction"));
       }
 
       MockRepository.ReplayAll ();

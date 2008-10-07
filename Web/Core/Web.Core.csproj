@@ -123,6 +123,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\TransactionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\TransactionStrategyBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategy.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ScopedTransactionStrategyBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxeVariablesContainer.cs" />
     <Compile Include="ExecutionEngine\WxeFatalExecutionException.cs" />
     <Compile Include="ExecutionEngine\WxeFunction2.cs" />

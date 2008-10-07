@@ -17,9 +17,9 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionStrategyTests
+namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactionStrategyTests
 {
-  public class RootTransactionStrategyTestBase
+  public class ScopedTransactionStrategyTestBase
   {
     private IWxeFunctionExecutionListener _executionListenerMock;
     private ITransactionScope _scopeMock;
@@ -86,7 +86,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       get { return _executionContextMock; }
     }
 
-    protected RootTransactionStrategy CreateRootTransactionStrategy (bool autoCommit, ITransactionStrategy parentTransactionStrategy)
+    protected ScopedTransactionStrategyBase CreateScopedTransactionStrategy (bool autoCommit, ITransactionStrategy parentTransactionStrategy)
     {
       _executionContextMock.BackToRecord();
       _executionContextMock.Stub (stub => stub.GetInParameters()).Return (new object[0]).Repeat.Any();
@@ -96,7 +96,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _transactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
       _transactionMock.Replay();
 
-      var strategy = new RootTransactionStrategy (autoCommit, TransactionMock, parentTransactionStrategy, _executionContextMock);
+      var strategy = MockRepository.PartialMock<ScopedTransactionStrategyBase> (autoCommit, TransactionMock, parentTransactionStrategy, _executionContextMock);
+      strategy.Replay();
 
       _executionContextMock.BackToRecord();
       _transactionMock.BackToRecord();
@@ -104,7 +105,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       return strategy;
     }
 
-    protected void InvokeOnExecutionPlay (RootTransactionStrategy strategy)
+    protected void InvokeOnExecutionPlay (ScopedTransactionStrategyBase strategy)
     {
       _executionListenerMock.BackToRecord();
       _executionListenerMock.Stub (stub => stub.OnExecutionPlay (Context));
@@ -120,7 +121,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _executionListenerMock.BackToRecord();
     }
 
-    protected void InvokeOnExecutionPause (RootTransactionStrategy strategy)
+    protected void InvokeOnExecutionPause (ScopedTransactionStrategyBase strategy)
     {
       _executionListenerMock.BackToRecord();
       _executionListenerMock.Stub (stub => stub.OnExecutionPause (Context));

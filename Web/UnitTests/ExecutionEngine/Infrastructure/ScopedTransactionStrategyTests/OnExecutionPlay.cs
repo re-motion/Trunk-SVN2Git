@@ -15,18 +15,18 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionStrategyTests
+namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactionStrategyTests
 {
   [TestFixture]
-  public class OnExecutionPlay:RootTransactionStrategyTestBase
+  public class OnExecutionPlay:ScopedTransactionStrategyTestBase
   {
-    private RootTransactionStrategy _strategy;
+    private ScopedTransactionStrategyBase _strategy;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      _strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
     }
 
     [Test]

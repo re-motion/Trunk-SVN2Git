@@ -12,19 +12,20 @@ using System;
 using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionStrategyTests
+namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactionStrategyTests
 {
   [TestFixture]
-  public class OnExecutionStop : RootTransactionStrategyTestBase
+  public class OnExecutionStop : ScopedTransactionStrategyTestBase
   {
     [Test]
     public void Test_WithoutAutoCommit ()
     {
-      var strategy = CreateRootTransactionStrategy (false, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (false, NullTransactionStrategy.Null);
 
       InvokeOnExecutionPlay (strategy);
       using (MockRepository.Ordered())
@@ -46,7 +47,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_WithAutoCommit ()
     {
-      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
 
       InvokeOnExecutionPlay (strategy);
       using (MockRepository.Ordered())
@@ -69,7 +70,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_WithParentTransactionStrategy ()
     {
-      var strategy = CreateRootTransactionStrategy (true, OuterTransactionStrategyMock);
+      var strategy = CreateScopedTransactionStrategy (true, OuterTransactionStrategyMock);
       var expectedObjects = new[] { new object() };
 
       InvokeOnExecutionPlay (strategy);
@@ -96,7 +97,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_WithChildStrategy ()
     {
-      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
 
       InvokeOnExecutionPlay (strategy);
       strategy.SetChild (ChildTransactionStrategyMock);
@@ -120,11 +121,56 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
+    public void Test_WithCommitTransactionOverride ()
+    {
+      var strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
+
+      InvokeOnExecutionPlay (strategy);
+      using (MockRepository.Ordered ())
+      {
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
+        strategy.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "CommitTransaction"));
+        ExecutionContextMock.Expect (mock => mock.GetOutParameters ()).Return (new object[0]);
+        ScopeMock.Expect (mock => mock.Leave ());
+        TransactionMock.Expect (mock => mock.Release ());
+      }
+
+      MockRepository.ReplayAll ();
+
+      strategy.OnExecutionStop (Context, ExecutionListenerMock);
+
+      MockRepository.VerifyAll ();
+      Assert.That (strategy.Scope, Is.Null);
+    }
+
+    [Test]
+    public void Test_WithReleaseTransactionOverride ()
+    {
+      var strategy = CreateScopedTransactionStrategy (false, NullTransactionStrategy.Null);
+
+      InvokeOnExecutionPlay (strategy);
+      using (MockRepository.Ordered ())
+      {
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
+        ExecutionContextMock.Expect (mock => mock.GetOutParameters ()).Return (new object[0]);
+        ScopeMock.Expect (mock => mock.Leave ());
+        strategy.Expect (mock => PrivateInvoke.InvokeNonPublicMethod ( mock, "ReleaseTransaction"));
+      }
+
+      MockRepository.ReplayAll ();
+
+      strategy.OnExecutionStop (Context, ExecutionListenerMock);
+
+      MockRepository.VerifyAll ();
+      Assert.That (strategy.Scope, Is.Null);
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage = "OnExecutionStop may not be invoked unless OnExecutionPlay was called first.")]
     public void Test_WithNullScope ()
     {
-      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
 
       Assert.That (strategy.Scope, Is.Null);
 
@@ -134,7 +180,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_InnerListenerThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
       var innerException = new ApplicationException ("InnerListener Exception");
 
       InvokeOnExecutionPlay (strategy);
@@ -164,7 +210,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_ChildStrategyThrowsFatalException ()
     {
-      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
       var innerException = new WxeFatalExecutionException (new Exception ("ChildStrategy Exception"), null);
 
       InvokeOnExecutionPlay (strategy);
@@ -191,7 +237,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_CommitThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
       var innerException = new ApplicationException ("Commit Exception");
 
       InvokeOnExecutionPlay (strategy);
@@ -222,7 +268,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_GetOutParameterThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (false, OuterTransactionStrategyMock);
+      var strategy = CreateScopedTransactionStrategy (false, OuterTransactionStrategyMock);
       var innerException = new ApplicationException ("GetOutParameters Exception");
 
       InvokeOnExecutionPlay (strategy);
@@ -255,7 +301,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_RegisterObjectsThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (false, OuterTransactionStrategyMock);
+      var strategy = CreateScopedTransactionStrategy (false, OuterTransactionStrategyMock);
       var innerException = new ApplicationException ("GetOutParameters Exception");
 
       InvokeOnExecutionPlay (strategy);
@@ -289,7 +335,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_LeaveThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (false, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (false, NullTransactionStrategy.Null);
       var innerException = new Exception ("Leave Exception");
 
       InvokeOnExecutionPlay (strategy);
@@ -319,7 +365,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_ReleaseThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (false, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (false, NullTransactionStrategy.Null);
       var innerException = new Exception ("Release Exception");
 
       InvokeOnExecutionPlay (strategy);
@@ -350,7 +396,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_InnerListenerThrows_And_LeaveThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
       var innerException = new Exception ("InnerListener Exception");
       var outerException = new Exception ("Leave Exception");
 
@@ -381,7 +427,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_CommitThrows_And_LeaveThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
       var innerException = new Exception ("Commit Exception");
       var outerException = new Exception ("Leave Exception");
 
@@ -413,7 +459,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_InnerListenerThrows_And_ReleaseThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
       var innerException = new Exception ("InnerListener Exception");
       var outerException = new Exception ("Release Exception");
 
@@ -445,7 +491,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_CommitThrows_And_ReleaseThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      var strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
       var innerException = new Exception ("Commit Exception");
       var outerException = new Exception ("Release Exception");
 

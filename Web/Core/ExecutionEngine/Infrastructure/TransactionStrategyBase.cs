@@ -14,7 +14,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     protected TransactionStrategyBase (bool autoCommit, ITransactionStrategy outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
     {
-      ArgumentUtility.CheckNotNull ("parent", outerTransactionStrategy);
+      ArgumentUtility.CheckNotNull ("outerTransactionStrategy", outerTransactionStrategy);
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
       _autoCommit = autoCommit;
