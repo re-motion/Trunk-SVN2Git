@@ -16,16 +16,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 {
   [Instantiable]
   [Serializable]
-  public abstract class BindableDomainObjectWithOverriddenDisplayName : BindableSampleDomainObject
+  public abstract class SampleBindableMixinDomainObjectWithOverriddenDisplayName : SampleBindableMixinDomainObject
   {
-    public new static BindableDomainObjectWithOverriddenDisplayName NewObject ()
+    public new static SampleBindableMixinDomainObjectWithOverriddenDisplayName NewObject ()
     {
-      return NewObject<BindableDomainObjectWithOverriddenDisplayName> ().With ();
+      return NewObject<SampleBindableMixinDomainObjectWithOverriddenDisplayName> ().With ();
     }
 
-    public static new BindableDomainObjectWithOverriddenDisplayName GetObject (ObjectID id)
+    public static new SampleBindableMixinDomainObjectWithOverriddenDisplayName GetObject (ObjectID id)
     {
-      return GetObject<BindableDomainObjectWithOverriddenDisplayName> (id);
+      return GetObject<SampleBindableMixinDomainObjectWithOverriddenDisplayName> (id);
     }
 
     [OverrideMixin]

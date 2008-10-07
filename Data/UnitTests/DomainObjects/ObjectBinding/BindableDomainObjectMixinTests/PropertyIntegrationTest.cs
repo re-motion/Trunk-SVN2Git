@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void TestPropertyAccess ()
     {
-      BindableSampleDomainObject instance = BindableSampleDomainObject.NewObject ();
+      SampleBindableMixinDomainObject instance = SampleBindableMixinDomainObject.NewObject ();
       IBusinessObject instanceAsIBusinessObject = (IBusinessObject) instance;
 
       Assert.IsNull (instanceAsIBusinessObject.GetProperty ("Int32"));
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void GetPropertyDefinitions ()
     {
-      BindableObjectClass bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (typeof (BindableSampleDomainObject));
+      BindableObjectClass bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (typeof (SampleBindableMixinDomainObject));
       IBusinessObjectProperty[] properties = bindableObjectClass.GetPropertyDefinitions ();
       string[] propertiesByName =
           Array.ConvertAll<IBusinessObjectProperty, string> (properties, delegate (IBusinessObjectProperty property) { return property.Identifier; });

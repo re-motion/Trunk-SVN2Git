@@ -9,6 +9,7 @@
  */
 
 using System;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Reflection;
 using System.Runtime.Serialization;
 
@@ -26,7 +27,7 @@ namespace Remotion.Data.DomainObjects
   /// if you don't.
   /// </remarks>
   [Serializable]
-  public abstract class SimpleDomainObject<TDomainObject> : DomainObject
+  public abstract class SimpleDomainObject<TDomainObject> : BindableDomainObject
       where TDomainObject : SimpleDomainObject<TDomainObject>
   {
     /// <summary>

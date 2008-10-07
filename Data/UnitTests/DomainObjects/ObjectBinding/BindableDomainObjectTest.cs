@@ -9,12 +9,13 @@
  */
 
 using System;
+using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.ObjectBinding;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
@@ -25,32 +26,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
   [TestFixture]
   public class BindableDomainObjectTest : ObjectBindingBaseTest
   {
-    [DBTable]
-    [TestDomain]
-    public class SampleBindableDomainObject : BindableDomainObject
-    {
-    }
-
-    [DBTable]
-    [TestDomain]
-    [Serializable]
-    public class SampleBindableDomainObjectWithOverriddenDisplayName : BindableDomainObject
-    {
-      private int _test;
-
-      [StorageClassNone]
-      public int Test
-      {
-        get { return _test; }
-        set { _test = value; }
-      }
-
-      public override string DisplayName
-      {
-        get { return "CustomName"; }
-      }
-    }
-
     [Test]
     public void BindableDomainObjectIsDomainObject ()
     {
@@ -77,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       Assert.AreNotEqual (
           Utilities.TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)),
           businessObject.DisplayName);
-      Assert.AreEqual ("CustomName", businessObject.DisplayName);
+      Assert.AreEqual ("TheDisplayName", businessObject.DisplayName);
     }
 
     [Test]
@@ -90,14 +65,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       Assert.AreSame (businessObjectMixin.BusinessObjectClass, businessObject.BusinessObjectClass);
       Assert.AreEqual (businessObjectMixin.DisplayName, businessObject.DisplayName);
       Assert.AreEqual (businessObjectMixin.DisplayNameSafe, businessObject.DisplayNameSafe);
-      businessObject.SetProperty ("Test", 1);
-      Assert.AreEqual (1, businessObject.GetProperty ("Test"));
-      Assert.AreEqual (1, businessObject.GetProperty (businessObjectMixin.BusinessObjectClass.GetPropertyDefinition ("Test")));
-      Assert.AreEqual ("001", businessObject.GetPropertyString (businessObjectMixin.BusinessObjectClass.GetPropertyDefinition ("Test"), "000"));
-      Assert.AreEqual ("1", businessObject.GetPropertyString ("Test"));
+      businessObject.SetProperty ("Int32", 1);
+      Assert.AreEqual (1, businessObject.GetProperty ("Int32"));
+      Assert.AreEqual (1, businessObject.GetProperty (businessObjectMixin.BusinessObjectClass.GetPropertyDefinition ("Int32")));
+      Assert.AreEqual ("001", businessObject.GetPropertyString (businessObjectMixin.BusinessObjectClass.GetPropertyDefinition ("Int32"), "000"));
+      Assert.AreEqual ("1", businessObject.GetPropertyString ("Int32"));
       Assert.AreEqual (businessObjectMixin.UniqueIdentifier, businessObject.UniqueIdentifier);
-      businessObject.SetProperty (businessObjectMixin.BusinessObjectClass.GetPropertyDefinition ("Test"), 2);
-      Assert.AreEqual (2, businessObject.GetProperty ("Test"));
+      businessObject.SetProperty (businessObjectMixin.BusinessObjectClass.GetPropertyDefinition ("Int32"), 2);
+      Assert.AreEqual (2, businessObject.GetProperty ("Int32"));
     }
 
     [Test]
@@ -118,6 +93,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       Assert.That (provider, Is.InstanceOfType (typeof (BindableDomainObjectProvider)));
       Assert.That (provider, Is.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableDomainObjectProviderAttribute))));
       Assert.That (provider, Is.Not.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute))));
+    }
+
+    [Test]
+    public void DeserializationConstructor_CallsBase ()
+    {
+      var serializable = SampleBindableDomainObject_ImplementingISerializable.NewObject ().With ();
+
+      var info = new SerializationInfo (typeof (SampleBindableDomainObject_ImplementingISerializable), new FormatterConverter ());
+      var context = new StreamingContext ();
+
+      serializable.GetObjectData (info, context);
+      Assert.That (info.MemberCount, Is.GreaterThan (0));
+
+      var deserialized =
+          (SampleBindableDomainObject_ImplementingISerializable) Activator.CreateInstance (((object) serializable).GetType (), info, context);
+      Assert.That (deserialized.ID, Is.EqualTo (serializable.ID));
     }
   }
 }

@@ -14,20 +14,19 @@ using Remotion.Data.DomainObjects.ObjectBinding;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 {
-  [BindableDomainObject]
   [Instantiable]
   [Serializable]
   [DBTable]
-  public abstract class BindableSampleDomainObject : DomainObject
+  public abstract class SampleBindableDomainObject : BindableDomainObject
   {
-    public static BindableSampleDomainObject NewObject ()
+    public static SampleBindableDomainObject NewObject ()
     {
-      return NewObject<BindableSampleDomainObject> ().With ();
+      return NewObject<SampleBindableDomainObject> ().With ();
     }
 
-    public static BindableSampleDomainObject GetObject (ObjectID id)
+    public static SampleBindableDomainObject GetObject (ObjectID id)
     {
-      return GetObject<BindableSampleDomainObject> (id);
+      return GetObject<SampleBindableDomainObject> (id);
     }
 
     public abstract string Name { get; set; }

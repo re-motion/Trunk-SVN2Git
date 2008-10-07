@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       AssemblyCompiler compiler = new AssemblyCompiler (
           sourceDirectory,
           outputAssembly,
-          ArrayUtility.Combine (new string[] { "Remotion.Interfaces.dll", "Remotion.dll", "Remotion.Data.Interfaces.dll", "Remotion.Data.DomainObjects.dll" }, referencedAssemblies));
+          ArrayUtility.Combine (new string[] { "Remotion.Interfaces.dll", "Remotion.dll", "Remotion.Data.Interfaces.dll", "Remotion.Data.DomainObjects.dll", "Remotion.ObjectBinding.Interfaces.dll" }, referencedAssemblies));
 
       try
       {

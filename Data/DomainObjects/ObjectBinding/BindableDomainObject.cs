@@ -9,7 +9,7 @@
  */
 
 using System;
-using Remotion.Data.DomainObjects;
+using System.Runtime.Serialization;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -27,6 +27,15 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   [Serializable]
   public abstract class BindableDomainObject : DomainObject, IBusinessObjectWithIdentity
   {
+    protected BindableDomainObject()
+    {
+    }
+
+    protected BindableDomainObject (SerializationInfo info, StreamingContext context)
+      : base (info, context)
+    {
+    }
+
     /// <summary>
     /// Provides a possibility to override the display name of the bindable domain object.
     /// </summary>

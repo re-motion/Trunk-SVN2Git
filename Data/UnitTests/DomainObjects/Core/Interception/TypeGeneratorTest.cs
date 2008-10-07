@@ -23,6 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
+using Remotion.ObjectBinding;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
@@ -68,6 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
       Module coreAssemblyModule = typeof (ArgumentUtility).Assembly.ManifestModule;
       File.Copy (coreAssemblyModule.FullyQualifiedName, Path.Combine (directory, coreAssemblyModule.Name));
+
+      Module objectBindingInterfacesModule = typeof (IBusinessObject).Assembly.ManifestModule;
+      File.Copy (objectBindingInterfacesModule.FullyQualifiedName, Path.Combine (directory, objectBindingInterfacesModule.Name));
     }
 
     public override void TearDown ()

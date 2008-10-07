@@ -22,7 +22,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
   [TestFixture]
   public class GetBusinessObjectClassTest : ObjectBindingBaseTest
   {
-    private BindableSampleDomainObject _bindableObject;
+    private SampleBindableMixinDomainObject _bindableObject;
     private BindableDomainObjectMixin _bindableObjectMixin;
     private IBusinessObject _businessObject;
 
@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     {
       base.SetUp();
 
-      _bindableObject = BindableSampleDomainObject.NewObject();
+      _bindableObject = SampleBindableMixinDomainObject.NewObject();
       _bindableObjectMixin = Mixin.Get<BindableDomainObjectMixin> (_bindableObject);
       _businessObject = _bindableObjectMixin;
     }
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void FromClass ()
     {
       Assert.That (_bindableObjectMixin.BusinessObjectClass, Is.Not.Null);
-      Assert.That (_bindableObjectMixin.BusinessObjectClass.TargetType, Is.SameAs (typeof (BindableSampleDomainObject)));
+      Assert.That (_bindableObjectMixin.BusinessObjectClass.TargetType, Is.SameAs (typeof (SampleBindableMixinDomainObject)));
       Assert.That (_bindableObjectMixin.BusinessObjectClass.BusinessObjectProvider, Is.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableDomainObjectProviderAttribute))));
     }
 

@@ -9,7 +9,9 @@
  */
 
 using System;
+using System.Runtime.Serialization;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -87,6 +89,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.AreSame (instance, gottenInstance);
         Assert.AreEqual (StateType.Deleted, gottenInstance.State);
       }
+    }
+
+    [Test]
+    public void DeserializationConstructor_CallsBase ()
+    {
+      var serializable = ClassDerivedFromSimpleDomainObject_ImplementingISerializable.NewObject ().With();
+
+      var info = new SerializationInfo (typeof (ClassDerivedFromSimpleDomainObject_ImplementingISerializable), new FormatterConverter ());
+      var context = new StreamingContext ();
+
+      serializable.GetObjectData (info, context);
+      Assert.That (info.MemberCount, Is.GreaterThan (0));
+
+      var deserialized = 
+          (ClassDerivedFromSimpleDomainObject_ImplementingISerializable) Activator.CreateInstance (((object)serializable).GetType (), info, context);
+      Assert.That (deserialized.ID, Is.EqualTo (serializable.ID));
     }
   }
 }

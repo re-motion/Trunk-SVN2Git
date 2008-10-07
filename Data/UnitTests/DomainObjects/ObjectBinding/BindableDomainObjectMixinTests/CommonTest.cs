@@ -26,16 +26,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void InstantiateMixedType ()
     {
-      Assert.That (BindableSampleDomainObject.NewObject(), Is.InstanceOfType (typeof (IBusinessObject)));
+      Assert.That (SampleBindableMixinDomainObject.NewObject(), Is.InstanceOfType (typeof (IBusinessObject)));
     }
 
     [Test]
     public void SerializeAndDeserialize ()
     {
-      BindableSampleDomainObject value = BindableSampleDomainObject.NewObject ();
+      SampleBindableMixinDomainObject value = SampleBindableMixinDomainObject.NewObject ();
       Assert.AreNotEqual ("Earl", value.Name);
       value.Name = "Earl";
-      Tuple<ClientTransactionMock, BindableSampleDomainObject> deserialized = Serializer.SerializeAndDeserialize (Tuple.NewTuple (ClientTransactionMock, value));
+      Tuple<ClientTransactionMock, SampleBindableMixinDomainObject> deserialized = Serializer.SerializeAndDeserialize (Tuple.NewTuple (ClientTransactionMock, value));
 
       using (deserialized.A.EnterDiscardingScope ())
       {
@@ -47,10 +47,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void SerializeAndDeserialize_WithNewBindableObjectProvider ()
     {
-      BindableSampleDomainObject value = BindableSampleDomainObject.NewObject ();
+      SampleBindableMixinDomainObject value = SampleBindableMixinDomainObject.NewObject ();
       byte[] serialized = Serializer.Serialize (Tuple.NewTuple (ClientTransactionMock, value));
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-      Tuple<ClientTransactionMock, BindableSampleDomainObject> deserialized = (Tuple<ClientTransactionMock, BindableSampleDomainObject>) Serializer.Deserialize (serialized);
+      Tuple<ClientTransactionMock, SampleBindableMixinDomainObject> deserialized = (Tuple<ClientTransactionMock, SampleBindableMixinDomainObject>) Serializer.Deserialize (serialized);
 
       using (deserialized.A.EnterDiscardingScope ())
       {

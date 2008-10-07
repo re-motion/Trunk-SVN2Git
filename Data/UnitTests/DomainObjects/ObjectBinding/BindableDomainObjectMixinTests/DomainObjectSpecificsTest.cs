@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     {
       base.SetUp ();
       _businessObjectClassWithProperties = BindableObjectProvider.GetBindableObjectClass (typeof (BindableDomainObjectWithProperties));
-      _businessObjectSampleClass = BindableObjectProvider.GetBindableObjectClass (typeof (BindableSampleDomainObject));
+      _businessObjectSampleClass = BindableObjectProvider.GetBindableObjectClass (typeof (SampleBindableMixinDomainObject));
     }
 
     [Test]
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void UsesBindableDomainObjectMetadataFactory ()
     {
       Assert.That (
-        BindableObjectProvider.GetProviderForBindableObjectType(typeof (BindableSampleDomainObject)).MetadataFactory,
+        BindableObjectProvider.GetProviderForBindableObjectType(typeof (SampleBindableMixinDomainObject)).MetadataFactory,
         Is.InstanceOfType (typeof (BindableDomainObjectMetadataFactory)));
     }
 

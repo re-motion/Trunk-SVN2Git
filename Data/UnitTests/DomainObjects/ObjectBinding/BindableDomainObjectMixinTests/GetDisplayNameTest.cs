@@ -45,17 +45,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void DisplayName ()
     {
-      BindableDomainObjectMixin bindableObjectMixin = Mixin.Get<BindableDomainObjectMixin> (BindableSampleDomainObject.NewObject ());
+      BindableDomainObjectMixin bindableObjectMixin = Mixin.Get<BindableDomainObjectMixin> (SampleBindableMixinDomainObject.NewObject ());
 
       Assert.That (
           ((IBusinessObject) bindableObjectMixin).DisplayName,
-          Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.BindableSampleDomainObject, Remotion.Data.UnitTests"));
+          Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.SampleBindableMixinDomainObject, Remotion.Data.UnitTests"));
     }
 
     [Test]
     public void OverriddenDisplayName ()
     {
-      IBusinessObject businessObject = (IBusinessObject) BindableDomainObjectWithOverriddenDisplayName.NewObject();
+      IBusinessObject businessObject = (IBusinessObject) SampleBindableMixinDomainObjectWithOverriddenDisplayName.NewObject();
 
       Assert.That (
           businessObject.DisplayName,
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void DisplayNameSafe_WithOverriddenDisplayNameAndAccessGranted ()
     {
       IObjectSecurityStrategy stubSecurityStrategy = _mockRepository.Stub<IObjectSecurityStrategy>();
-      ISecurableObject securableObject = SecurableBindableDomainObjectWithOverriddenDisplayName.NewObject (stubSecurityStrategy);
+      ISecurableObject securableObject = SecurableBindableMixinDomainObjectWithOverriddenDisplayName.NewObject (stubSecurityStrategy);
       BindableDomainObjectMixin bindableObjectMixin = Mixin.Get<BindableDomainObjectMixin> (securableObject);
       Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, "DisplayName")).Return (true);
       _mockRepository.ReplayAll();
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void DisplayNameSafe_WithOverriddenDisplayNameAndWithAccessDenied ()
     {
       IObjectSecurityStrategy stubSecurityStrategy = _mockRepository.Stub<IObjectSecurityStrategy>();
-      ISecurableObject securableObject = SecurableBindableDomainObjectWithOverriddenDisplayName.NewObject (stubSecurityStrategy);
+      ISecurableObject securableObject = SecurableBindableMixinDomainObjectWithOverriddenDisplayName.NewObject (stubSecurityStrategy);
       BindableDomainObjectMixin bindableObjectMixin = Mixin.Get<BindableDomainObjectMixin> (securableObject);
       Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, "DisplayName")).Return (false);
       _mockRepository.ReplayAll();

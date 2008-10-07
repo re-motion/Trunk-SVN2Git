@@ -16,21 +16,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 {
   [Instantiable]
   [Serializable]
-  public abstract class SecurableBindableDomainObjectWithOverriddenDisplayName : BindableDomainObjectWithOverriddenDisplayName, ISecurableObject
+  public abstract class SecurableBindableMixinDomainObjectWithOverriddenDisplayName : SampleBindableMixinDomainObjectWithOverriddenDisplayName, ISecurableObject
   {
-    public static SecurableBindableDomainObjectWithOverriddenDisplayName NewObject (IObjectSecurityStrategy objectSecurityStrategy)
+    public static SecurableBindableMixinDomainObjectWithOverriddenDisplayName NewObject (IObjectSecurityStrategy objectSecurityStrategy)
     {
-      return NewObject<SecurableBindableDomainObjectWithOverriddenDisplayName> ().With (objectSecurityStrategy);
+      return NewObject<SecurableBindableMixinDomainObjectWithOverriddenDisplayName> ().With (objectSecurityStrategy);
     }
 
-    public static new SecurableBindableDomainObjectWithOverriddenDisplayName GetObject (ObjectID id)
+    public static new SecurableBindableMixinDomainObjectWithOverriddenDisplayName GetObject (ObjectID id)
     {
-      return GetObject<SecurableBindableDomainObjectWithOverriddenDisplayName> (id);
+      return GetObject<SecurableBindableMixinDomainObjectWithOverriddenDisplayName> (id);
     }
 
     private readonly IObjectSecurityStrategy _objectSecurityStrategy;
 
-    protected SecurableBindableDomainObjectWithOverriddenDisplayName (IObjectSecurityStrategy objectSecurityStrategy)
+    protected SecurableBindableMixinDomainObjectWithOverriddenDisplayName (IObjectSecurityStrategy objectSecurityStrategy)
     {
       _objectSecurityStrategy = objectSecurityStrategy;
     }
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 
     public Type GetSecurableType ()
     {
-      return typeof (SecurableBindableDomainObjectWithOverriddenDisplayName);
+      return typeof (SecurableBindableMixinDomainObjectWithOverriddenDisplayName);
     }
   }
 }

@@ -24,21 +24,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void BindableDomainObjectsHaveIdentity ()
     {
-      BindableSampleDomainObject domainObject = BindableSampleDomainObject.NewObject ();
+      SampleBindableMixinDomainObject domainObject = SampleBindableMixinDomainObject.NewObject ();
       Assert.IsTrue (domainObject is IBusinessObjectWithIdentity);
     }
 
     [Test]
     public void BindableDomainObjectClassesHaveIdentity ()
     {
-      BindableSampleDomainObject domainObject = BindableSampleDomainObject.NewObject ();
+      SampleBindableMixinDomainObject domainObject = SampleBindableMixinDomainObject.NewObject ();
       Assert.IsTrue (((IBusinessObjectWithIdentity)domainObject).BusinessObjectClass is IBusinessObjectClassWithIdentity);
     }
     
     [Test]
     public void UniqueIdentifier ()
     {
-      BindableSampleDomainObject domainObject = BindableSampleDomainObject.NewObject ();
+      SampleBindableMixinDomainObject domainObject = SampleBindableMixinDomainObject.NewObject ();
       Assert.AreEqual (domainObject.ID.ToString (), ((IBusinessObjectWithIdentity) domainObject).UniqueIdentifier);
     }
 
@@ -46,9 +46,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void GetFromUniqueIdentifier ()
     {
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (IGetObjectService), new BindableDomainObjectGetObjectService());
-      BindableSampleDomainObject original = BindableSampleDomainObject.NewObject ();
+      SampleBindableMixinDomainObject original = SampleBindableMixinDomainObject.NewObject ();
       BindableObjectClassWithIdentity boClass =
-          (BindableObjectClassWithIdentity) BindableObjectProvider.GetBindableObjectClass (typeof (BindableSampleDomainObject));
+          (BindableObjectClassWithIdentity) BindableObjectProvider.GetBindableObjectClass (typeof (SampleBindableMixinDomainObject));
       Assert.AreSame (original, boClass.GetObject (original.ID.ToString ()));
     }
   }
