@@ -72,7 +72,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       AclProbe aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);
       To.ConsoleLine.s ("\t\t\t").e (() => aclProbe);
 
-      // TODO(?): Check if we already queried with an identical token.
+      // NOTTODO: Check if we already queried with an identical token.
+      // Problem: If the same token was already used by an AclProbe which has conditions then it would be incorrect
+      // to skip it if it would now be coming from an AclProbe without (or with different) conditions.
+      // This problem stems from the fact that due to the current SecurityManager logic which uses priorities
+      // the SecurityToken of an AclProbe for an ACE can be "shadowed" by a different ACE (i.e. the ACE which is used for 
+      // deciding the access rights is not the one we are probing for). This could be solved if we extend the SecurityManager
+      // to support a mode where only a specific ACE shall be used for deciding the access rights and if that ACE is not
+      // in the set of ACEs used then no access rights shall be returned. MK is reluctant to allow these (small) changes due
+      // to code purity concerns; since it is planned to remove priorities from the SecurityManager 
+      // in the near future (to be replaced by a deny concept), which transforms the problem, since any matching ACE
+      // will contribute to the access rights result (deny rights can still lead to it not having any impact, though)
+      // it was therefore decided to ignore these (up to 9= 2^4+1) "double entries" for now.
       AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken);
 
       if (accessTypeDefinitions.Length > 0)

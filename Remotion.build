@@ -169,7 +169,7 @@
       Data.Interfaces, Data.Linq, Data.DomainObjects, Data.DomainObjects.Security, 
       Data.DomainObjects.RdbmsTools, Data.DomainObjects.RdbmsTools.Console, 
       Security.Interfaces, Security, Security.Metadata.Extractor, Security.MSBuild.Tasks, 
-      SecurityManager.Core, SecurityManager.Metadata.Importer, SecurityManager.Clients.Web">
+      SecurityManager.Core, SecurityManager.AclTools.Expander, SecurityManager.Metadata.Importer, SecurityManager.Clients.Web">
     <echo message="Target has executed."/>
   </target>
 
@@ -441,11 +441,19 @@
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
   </target>
-
+  
   <target name="SecurityManager.Metadata.Importer" depends="Core.Core, Data.DomainObjects, SecurityManager.Core">
     <property name="project.name" value="SecurityManager.Metadata.Importer" />
     <property name="project.dir" value="SecurityManager/Metadata.Importer" />
     <property name="project.output" value="Remotion.SecurityManager.Metadata.Importer" />
+    <property name="project.extension" value="exe" />
+    <call target="execute-buildstep" />
+  </target>
+
+  <target name="SecurityManager.AclTools.Expander" depends="Core.Core, Data.DomainObjects, SecurityManager.Core">
+    <property name="project.name" value="SecurityManager.AclTools.Expander" />
+    <property name="project.dir" value="SecurityManager/AclTools.Expander" />
+    <property name="project.output" value="AclExpander" />
     <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
   </target>
