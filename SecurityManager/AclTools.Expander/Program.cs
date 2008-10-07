@@ -13,6 +13,7 @@ using System.ComponentModel.Design;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Diagnostics.ToText;
 using Remotion.Reflection;
 using Remotion.Security.Metadata;
 using Remotion.SecurityManager.Domain;
@@ -28,10 +29,16 @@ namespace Remotion.SecurityManager.AclTools.Expander
     {
       CommandLineArguments arguments = GetArguments (args);
       if (arguments == null)
+      {
+        To.Console.nl().s ("No arguments passed => aborting. Press any-key...");
+        Console.ReadKey ();
         return 1;
+      }
 
       Program program = new Program (arguments);
-      return program.Run ();
+      int result = program.Run ();
+      Console.ReadKey ();
+      return result;
     }
 
     private static CommandLineArguments GetArguments (string[] args)
