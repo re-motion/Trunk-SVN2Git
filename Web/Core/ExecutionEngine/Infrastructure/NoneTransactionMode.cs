@@ -23,6 +23,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction2 function)
     {
+      ArgumentUtility.CheckNotNull ("function", function);
+
       return new NoneTransactionStrategy (NullTransactionStrategy.Null, function);
     }
 

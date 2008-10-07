@@ -67,9 +67,22 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     }
 
     [Test]
-    public void GetTransaction ()
+    public void CreateExecutionListener ()
     {
-      Assert.That (_strategy.GetNativeTransaction<object>(), Is.Null);
+      Assert.That (_strategy.CreateExecutionListener (_executionListenerMock), Is.SameAs (_executionListenerMock));
+    }
+    [Test]
+    public void RegisterObjects ()
+    {
+      var strategy = new NoneTransactionStrategy (_parentTransactionStrategyMock, _executionContextMock);
+      var expectedObjects = new[] { new object () };
+
+      _parentTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
+
+      strategy.RegisterObjects (expectedObjects);
+
+      _executionContextMock.VerifyAllExpectations ();
+      _parentTransactionStrategyMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -102,17 +115,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     }
 
     [Test]
-    public void RegisterObjects ()
+    public void GetTransaction ()
     {
-      var strategy = new NoneTransactionStrategy (_parentTransactionStrategyMock, _executionContextMock);
-      var expectedObjects = new[] { new object () };
-      
-      _parentTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
-
-      strategy.RegisterObjects (expectedObjects);
-
-      _executionContextMock.VerifyAllExpectations();
-      _parentTransactionStrategyMock.VerifyAllExpectations();
+      Assert.That (_strategy.GetNativeTransaction<object> (), Is.Null);
     }
 
     [Test]

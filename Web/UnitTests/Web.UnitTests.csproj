@@ -148,6 +148,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionModeTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullTransactionStrategyTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTests\Common.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTests\RegisterObjects.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTests\Reset.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTests\OnExecutionFail.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTests\OnExecutionPause.cs" />

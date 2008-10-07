@@ -48,5 +48,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public abstract void RegisterObjects (IEnumerable objects);
 
     public abstract bool IsNull { get; }
+    public abstract IWxeFunctionExecutionListener CreateExecutionListener (IWxeFunctionExecutionListener innerListener);
   }
 }

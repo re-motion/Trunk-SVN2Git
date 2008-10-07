@@ -21,6 +21,31 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
     }
 
+    public override void Commit ()
+    {
+      throw new System.NotImplementedException ();
+    }
+
+    public override void Rollback ()
+    {
+      throw new System.NotImplementedException ();
+    }
+
+    public override void Reset ()
+    {
+      throw new System.NotImplementedException ();
+    }
+
+    public override IWxeFunctionExecutionListener CreateExecutionListener (IWxeFunctionExecutionListener innerListener)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override void RegisterObjects (IEnumerable objects)
+    {
+      throw new System.NotImplementedException ();
+    }
+
     public override void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener)
     {
       throw new System.NotImplementedException();
@@ -42,26 +67,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     }
 
     public override TTransaction GetNativeTransaction<TTransaction> ()
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public override void Commit ()
-    {
-      throw new System.NotImplementedException ();
-    }
-
-    public override void Rollback ()
-    {
-      throw new System.NotImplementedException ();
-    }
-
-    public override void Reset ()
-    {
-      throw new System.NotImplementedException ();
-    }
-
-    public override void RegisterObjects (IEnumerable objects)
     {
       throw new System.NotImplementedException();
     }

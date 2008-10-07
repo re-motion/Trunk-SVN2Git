@@ -12,7 +12,6 @@ using System;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Utilities;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {

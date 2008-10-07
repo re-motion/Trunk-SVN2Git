@@ -30,14 +30,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
-    public void GetExecutionContext ()
+    public void Initialize ()
     {
       Assert.That (_strategy.ExecutionContext, Is.SameAs (ExecutionContextMock));
-    }
-
-    [Test]
-    public void GetAutoCommit ()
-    {
       Assert.That (_strategy.AutoCommit, Is.True);
     }
 
@@ -78,77 +73,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
-    public void RegisterObjects ()
+    public void CreateExecutionListener ()
     {
-      var object1 = new object();
-      var object2 = new object();
+      IWxeFunctionExecutionListener executionListener = _strategy.CreateExecutionListener (ExecutionListenerMock);
 
-      using (MockRepository.Ordered())
-      {
-        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, object2 });
-        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
-      }
-      MockRepository.ReplayAll();
-
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
-
-      MockRepository.VerifyAll();
-    }
-
-    [Test]
-    public void RegisterObjects_WithNullValue ()
-    {
-      var object1 = new object();
-      var object2 = new object();
-
-      using (MockRepository.Ordered())
-      {
-        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, null, object2 });
-        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2 })));
-      }
-      MockRepository.ReplayAll();
-
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
-
-      MockRepository.VerifyAll();
-    }
-
-    [Test]
-    public void RegisterObjects_Recursively ()
-    {
-      var object1 = new object();
-      var object2 = new object();
-      var object3 = new object();
-
-      using (MockRepository.Ordered())
-      {
-        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, new[] { object2, object3 } });
-        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2, object3 })));
-      }
-      MockRepository.ReplayAll();
-
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
-
-      MockRepository.VerifyAll();
-    }
-
-    [Test]
-    public void RegisterObjects_RecursivelyWithNullValue ()
-    {
-      var object1 = new object();
-      var object2 = new object();
-      var object3 = new object();
-
-      using (MockRepository.Ordered())
-      {
-        ExecutionContextMock.Expect (mock => mock.GetInParameters()).Return (new[] { object1, new[] { object2, null, object3 } });
-        TransactionMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.List.ContainsAll (new[] { object1, object2, object3 })));
-      }
-      MockRepository.ReplayAll();
-
-      new RootTransactionStrategy (false, TransactionMock, NullTransactionStrategy.Null, ExecutionContextMock);
-
-      MockRepository.VerifyAll();
+      Assert.That (executionListener, Is.InstanceOfType (typeof (TransactionExecutionListener)));
+      var transactionExecutionListener = (TransactionExecutionListener) executionListener;
+      Assert.That (transactionExecutionListener.InnerListener, Is.SameAs (ExecutionListenerMock));
+      Assert.That (transactionExecutionListener.TransactionStrategy, Is.SameAs (_strategy));
     }
   }
 }

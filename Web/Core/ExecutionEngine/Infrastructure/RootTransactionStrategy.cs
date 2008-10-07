@@ -34,8 +34,45 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       RegisterObjects (inParameters);
     }
 
+    public override void Commit ()
+    {
+      _transaction.Commit ();
+    }
+
+    public override void Rollback ()
+    {
+      _transaction.Rollback ();
+    }
+
+    public override void Reset ()
+    {
+      if (_scope != null)
+      {
+        _scope.Leave ();
+        _transaction.Reset ();
+        _scope = _transaction.EnterScope ();
+      }
+      else
+        _transaction.Reset ();
+    }
+
+    public override IWxeFunctionExecutionListener CreateExecutionListener (IWxeFunctionExecutionListener innerListener)
+    {
+      ArgumentUtility.CheckNotNull ("innerListener", innerListener);
+
+      return new TransactionExecutionListener (this, innerListener);
+    }
+
+    public sealed override void RegisterObjects (IEnumerable objects)
+    {
+      ArgumentUtility.CheckNotNull ("objects", objects);
+
+      _transaction.RegisterObjects (FlattenList (objects));
+    }
+
     public override void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("listener", listener);
       
       if (_scope != null)
@@ -51,6 +88,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("listener", listener);
       
       if (_scope == null)
@@ -84,6 +122,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public override void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("listener", listener);
       
       if (_scope == null)
@@ -108,6 +147,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public override void OnExecutionFail (WxeContext context, IWxeFunctionExecutionListener listener, Exception exception)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("listener", listener);
 
       if (_scope == null)
@@ -136,46 +176,19 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       get { return _transaction; }
     }
 
-    public override TTransaction GetNativeTransaction<TTransaction> ()
-    {
-      return _transaction.To<TTransaction>();
-    }
-
-    public override void Commit ()
-    {
-      _transaction.Commit();
-    }
-
-    public override void Rollback ()
-    {
-      _transaction.Rollback();
-    }
-
-    public override void Reset ()
-    {
-      if (_scope != null)
-      {
-        _scope.Leave();
-        _transaction.Reset();
-        _scope = _transaction.EnterScope();
-      }
-      else
-        _transaction.Reset();
-    }
-
-    public override bool IsNull
-    {
-      get { return false; }
-    }
-
     public ITransactionScope Scope
     {
       get { return _scope; }
     }
 
-    public sealed override void RegisterObjects (IEnumerable objects)
+    public override TTransaction GetNativeTransaction<TTransaction> ()
     {
-      _transaction.RegisterObjects (FlattenList (objects));
+      return _transaction.To<TTransaction>();
+    }
+
+    public override bool IsNull
+    {
+      get { return false; }
     }
 
     private IEnumerable<object> FlattenList (IEnumerable objects)

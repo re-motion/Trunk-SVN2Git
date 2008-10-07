@@ -22,53 +22,65 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
     }
 
+    public override void Commit ()
+    {
+      throw new NotSupportedException ();
+    }
+
+    public override void Rollback ()
+    {
+      throw new NotSupportedException ();
+    }
+
+    public override void Reset ()
+    {
+      throw new NotSupportedException ();
+    }
+
+    public override IWxeFunctionExecutionListener CreateExecutionListener (IWxeFunctionExecutionListener innerListener)
+    {
+      ArgumentUtility.CheckNotNull ("innerListener", innerListener);
+
+      return innerListener;
+    }
+
+    public override void RegisterObjects (IEnumerable objects)
+    {
+      ArgumentUtility.CheckNotNull ("objects", objects);
+      Parent.RegisterObjects (objects);
+    }
+
     public override void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("listener", listener);
       listener.OnExecutionPlay (context);
     }
 
     public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("listener", listener);
       listener.OnExecutionStop (context);
     }
 
     public override void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("listener", listener);
       listener.OnExecutionPause (context);
     }
 
     public override void OnExecutionFail (WxeContext context, IWxeFunctionExecutionListener listener, Exception exception)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("listener", listener);
       listener.OnExecutionFail (context, exception);
-    }
-
-    public override void Commit ()
-    {
-      throw new NotSupportedException();
-    }
-
-    public override void Rollback ()
-    {
-      throw new NotSupportedException();
-    }
-
-    public override void Reset ()
-    {
-      throw new NotSupportedException();
     }
 
     public override TTransaction GetNativeTransaction<TTransaction> ()
     {
       return default (TTransaction);
-    }
-
-    public override void RegisterObjects (IEnumerable objects)
-    {
-      Parent.RegisterObjects (objects);
     }
 
     public override bool IsNull
