@@ -24,10 +24,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     private IWxeFunctionExecutionListener _executionListenerMock;
     private ITransactionScope _scopeMock;
     private ITransaction _transactionMock;
-    private ITransactionStrategy _parentTransactionStrategyMock;
+    private ITransactionStrategy _outerTransactionStrategyMock;
     private WxeContext _context;
     private MockRepository _mockRepository;
     private IWxeFunctionExecutionContext _executionContextMock;
+    private TransactionStrategyBase _childTransactionStrategyMock;
 
     [SetUp]
     public virtual void SetUp ()
@@ -36,11 +37,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       _context = wxeContextFactory.CreateContext (new TestFunction());
 
       _mockRepository = new MockRepository();
-      _executionListenerMock = MockRepository.StrictMock<IWxeFunctionExecutionListener> ();
+      _executionListenerMock = MockRepository.StrictMock<IWxeFunctionExecutionListener>();
       _transactionMock = MockRepository.StrictMock<ITransaction>();
       _scopeMock = MockRepository.StrictMock<ITransactionScope>();
       _executionContextMock = MockRepository.StrictMock<IWxeFunctionExecutionContext>();
-      _parentTransactionStrategyMock = MockRepository.StrictMock<ITransactionStrategy> ();
+      _outerTransactionStrategyMock = MockRepository.StrictMock<ITransactionStrategy>();
+      _childTransactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase> (
+          false, NullTransactionStrategy.Null, MockRepository.GenerateStub<IWxeFunctionExecutionContext>());
     }
 
     public MockRepository MockRepository
@@ -53,9 +56,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       get { return _context; }
     }
 
-    public ITransactionStrategy ParentTransactionStrategyMock
+    public ITransactionStrategy OuterTransactionStrategyMock
     {
-      get { return _parentTransactionStrategyMock; }
+      get { return _outerTransactionStrategyMock; }
+    }
+
+    public TransactionStrategyBase ChildTransactionStrategyMock
+    {
+      get { return _childTransactionStrategyMock; }
     }
 
     public ITransaction TransactionMock

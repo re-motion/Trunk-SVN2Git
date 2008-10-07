@@ -47,6 +47,25 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
+    public void Test_WithChildStrategy ()
+    {
+      _strategy.SetChild (ChildTransactionStrategyMock);
+
+      using (MockRepository.Ordered ())
+      {
+        TransactionMock.Expect (mock => mock.EnterScope ()).Return (ScopeMock);
+        ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionPlay (Context, ExecutionListenerMock));
+      }
+
+      MockRepository.ReplayAll ();
+
+      _strategy.OnExecutionPlay (Context, ExecutionListenerMock);
+
+      MockRepository.VerifyAll ();
+      Assert.That (_strategy.Scope, Is.SameAs (ScopeMock));
+    }
+
+    [Test]
     public void Test_AfterPause ()
     {
       InvokeOnExecutionPlay (_strategy);
@@ -86,10 +105,57 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
-    [Ignore ("TODO: Test")]
     public void Test_InnerListenerThrows ()
     {
+      var innerException = new ApplicationException ("InnerListener Exception");
+      
+      using (MockRepository.Ordered ())
+      {
+        TransactionMock.Expect (mock => mock.EnterScope ()).Return (ScopeMock);
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionPlay (Context)).Throw (innerException);
+      }
+
+      MockRepository.ReplayAll ();
+
+      try
+      {
+        _strategy.OnExecutionPlay (Context, ExecutionListenerMock);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (ApplicationException actualException)
+      {
+        Assert.That (actualException, Is.SameAs (innerException));
+      }
+
+      MockRepository.VerifyAll ();
+      Assert.That (_strategy.Scope, Is.Not.Null);
     }
 
+    [Test]
+    public void Test_ChildStrategyThrowsFatalException ()
+    {
+      var innerException = new WxeFatalExecutionException (new Exception ("InnerListener Exception"), null);
+
+      using (MockRepository.Ordered())
+      {
+        TransactionMock.Expect (mock => mock.EnterScope()).Return (ScopeMock);
+        ExecutionListenerMock.Expect (mock => mock.OnExecutionPlay (Context)).Throw (innerException);
+      }
+
+      MockRepository.ReplayAll();
+
+      try
+      {
+        _strategy.OnExecutionPlay (Context, ExecutionListenerMock);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (WxeFatalExecutionException actualException)
+      {
+        Assert.That (actualException, Is.SameAs (innerException));
+      }
+
+      MockRepository.VerifyAll();
+      Assert.That (_strategy.Scope, Is.Not.Null);
+    }
   }
 }

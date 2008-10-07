@@ -82,5 +82,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       Assert.That (transactionExecutionListener.InnerListener, Is.SameAs (ExecutionListenerMock));
       Assert.That (transactionExecutionListener.TransactionStrategy, Is.SameAs (_strategy));
     }
+
+    [Test]
+    public void SetChild ()
+    {
+      _strategy.SetChild (ChildTransactionStrategyMock);
+
+      Assert.That (_strategy.Child, Is.SameAs (ChildTransactionStrategyMock));
+    }
   }
 }

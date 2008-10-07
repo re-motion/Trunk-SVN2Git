@@ -47,6 +47,26 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
+    public void Test_WithChildStrategy ()
+    {
+      InvokeOnExecutionPlay (_strategy);
+      _strategy.SetChild (ChildTransactionStrategyMock);
+
+      using (MockRepository.Ordered ())
+      {
+        ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionPause (Context, ExecutionListenerMock));
+        ScopeMock.Expect (mock => mock.Leave ());
+      }
+
+      MockRepository.ReplayAll ();
+
+      _strategy.OnExecutionPause (Context, ExecutionListenerMock);
+
+      MockRepository.VerifyAll ();
+      Assert.That (_strategy.Scope, Is.Null);
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage = "OnExecutionPause may not be invoked unless OnExecutionPlay was called first.")]
     public void Test_WithNullScope ()
@@ -81,6 +101,32 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
 
       MockRepository.VerifyAll();
       Assert.That (_strategy.Scope, Is.Null);
+    }
+
+    [Test]
+    public void Test_ChildStrategyThrowsFatalException ()
+    {
+      var innerException = new WxeFatalExecutionException (new Exception ("ChildStrategy Exception"), null);
+
+      InvokeOnExecutionPlay (_strategy);
+      _strategy.SetChild (ChildTransactionStrategyMock);
+
+      ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionPause (Context, ExecutionListenerMock)).Throw (innerException);
+
+      MockRepository.ReplayAll ();
+
+      try
+      {
+        _strategy.OnExecutionPause (Context, ExecutionListenerMock);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (WxeFatalExecutionException actualException)
+      {
+        Assert.That (actualException, Is.SameAs (innerException));
+      }
+
+      MockRepository.VerifyAll ();
+      Assert.That (_strategy.Scope, Is.Not.Null);
     }
 
     [Test]

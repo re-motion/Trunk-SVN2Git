@@ -32,7 +32,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       Assert.That (strategy.AutoCommit, Is.True);
       Assert.That (strategy.GetNativeTransaction<TestTransaction>(), Is.InstanceOfType (typeof (TestTransaction)));
       Assert.That (((RootTransactionStrategy) strategy).Transaction, Is.InstanceOfType (typeof (TestTransaction)));
-      Assert.That (strategy.Parent, Is.InstanceOfType (typeof (NullTransactionStrategy)));
+      Assert.That (strategy.OuterTransactionStrategy, Is.InstanceOfType (typeof (NullTransactionStrategy)));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
             TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction);
             Assert.That (strategy, Is.InstanceOfType (typeof (ChildTransactionStrategy)));
             Assert.That (strategy.AutoCommit, Is.True);
-            Assert.That (strategy.Parent, Is.SameAs (parentFunction.Transaction));
+            Assert.That (strategy.OuterTransactionStrategy, Is.SameAs (parentFunction.Transaction));
           });
 
       parentFunction.Execute (context);
@@ -87,7 +87,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
             TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction);
             Assert.That (strategy, Is.InstanceOfType (typeof (ChildTransactionStrategy)));
             Assert.That (strategy.AutoCommit, Is.True);
-            Assert.That (strategy.Parent, Is.SameAs (parentFunction.Transaction));
+            Assert.That (strategy.OuterTransactionStrategy, Is.SameAs (parentFunction.Transaction));
           });
 
       grandParentFunction.Execute (context);

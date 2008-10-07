@@ -47,35 +47,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public override void RegisterObjects (IEnumerable objects)
     {
       ArgumentUtility.CheckNotNull ("objects", objects);
-      Parent.RegisterObjects (objects);
-    }
-
-    public override void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("listener", listener);
-      listener.OnExecutionPlay (context);
-    }
-
-    public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("listener", listener);
-      listener.OnExecutionStop (context);
-    }
-
-    public override void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("listener", listener);
-      listener.OnExecutionPause (context);
-    }
-
-    public override void OnExecutionFail (WxeContext context, IWxeFunctionExecutionListener listener, Exception exception)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("listener", listener);
-      listener.OnExecutionFail (context, exception);
+      OuterTransactionStrategy.RegisterObjects (objects);
     }
 
     public override TTransaction GetNativeTransaction<TTransaction> ()

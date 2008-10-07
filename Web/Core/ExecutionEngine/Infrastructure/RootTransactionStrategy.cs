@@ -83,7 +83,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       ExecuteAndWrapInnerException (delegate { _scope = _transaction.EnterScope(); }, null);
 
-      listener.OnExecutionPlay (context);
+      base.OnExecutionPlay (context, listener);
     }
 
     public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
@@ -97,14 +97,14 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       Exception innerException = null;
       try
       {
-        listener.OnExecutionStop (context);
+        base.OnExecutionStop (context, listener);
         if (AutoCommit)
-          _transaction.Commit();
+          _transaction.Commit ();
 
-        if (Parent != null)
+        if (OuterTransactionStrategy != null)
         {
-          var outParameters = ExecutionContext.GetOutParameters();
-          Parent.RegisterObjects (outParameters);
+          var outParameters = ExecutionContext.GetOutParameters ();
+          OuterTransactionStrategy.RegisterObjects (outParameters);
         }
       }
       catch (Exception e)
@@ -114,9 +114,13 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
       finally
       {
-        ExecuteAndWrapInnerException (_scope.Leave, innerException);
-        _scope = null;
-        ExecuteAndWrapInnerException (_transaction.Release, innerException);
+        bool isFatalExecutionException = innerException != null && innerException is WxeFatalExecutionException;
+        if (!isFatalExecutionException)
+        {
+          ExecuteAndWrapInnerException (_scope.Leave, innerException);
+          _scope = null;
+          ExecuteAndWrapInnerException (_transaction.Release, innerException);
+        }
       }
     }
 
@@ -131,7 +135,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       Exception innerException = null;
       try
       {
-        listener.OnExecutionPause (context);
+        base.OnExecutionPause (context, listener);
       }
       catch (Exception e)
       {
@@ -140,8 +144,12 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
       finally
       {
-        ExecuteAndWrapInnerException (_scope.Leave, innerException);
-        _scope = null;
+        bool isFatalExecutionException = innerException != null && innerException is WxeFatalExecutionException;
+        if (!isFatalExecutionException)
+        {
+          ExecuteAndWrapInnerException (_scope.Leave, innerException);
+          _scope = null;
+        }
       }
     }
 
@@ -156,7 +164,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       Exception innerException = null;
       try
       {
-        listener.OnExecutionFail (context, exception);
+        base.OnExecutionFail (context, listener, exception);
       }
       catch (Exception e)
       {
@@ -165,9 +173,13 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
       finally
       {
-        ExecuteAndWrapInnerException (_scope.Leave, innerException);
-        _scope = null;
-        ExecuteAndWrapInnerException (_transaction.Release, innerException);
+        bool isFatalExecutionException = innerException != null && innerException is WxeFatalExecutionException;
+        if (!isFatalExecutionException)
+        {
+          ExecuteAndWrapInnerException (_scope.Leave, innerException);
+          _scope = null;
+          ExecuteAndWrapInnerException (_transaction.Release, innerException);
+        }
       }
     }
 

@@ -50,6 +50,27 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
+    public void Test_WithChildStrategy ()
+    {
+      InvokeOnExecutionPlay (_strategy);
+      _strategy.SetChild (ChildTransactionStrategyMock);
+
+      using (MockRepository.Ordered ())
+      {
+        ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionFail (Context,ExecutionListenerMock, _failException));
+        ScopeMock.Expect (mock => mock.Leave ());
+        TransactionMock.Expect (mock => mock.Release ());
+      }
+
+      MockRepository.ReplayAll ();
+
+      _strategy.OnExecutionFail (Context, ExecutionListenerMock, _failException);
+
+      MockRepository.VerifyAll ();
+      Assert.That (_strategy.Scope, Is.Null);
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage = "OnExecutionFail may not be invoked unless OnExecutionPlay was called first.")]
     public void Test_WithNullScope ()
@@ -88,6 +109,31 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
       Assert.That (_strategy.Scope, Is.Null);
     }
 
+    [Test]
+    public void Test_ChildStrategyThrowsFatalException ()
+    {
+      var innerException = new WxeFatalExecutionException  (new Exception( "InnerListener Exception"), null);
+
+      InvokeOnExecutionPlay (_strategy);
+      _strategy.SetChild (ChildTransactionStrategyMock);
+
+      ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionFail (Context,ExecutionListenerMock, _failException)).Throw (innerException);
+
+      MockRepository.ReplayAll ();
+
+      try
+      {
+        _strategy.OnExecutionFail (Context, ExecutionListenerMock, _failException);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (ApplicationException actualException)
+      {
+        Assert.That (actualException, Is.SameAs (innerException));
+      }
+
+      MockRepository.VerifyAll ();
+      Assert.That (_strategy.Scope, Is.Not.Null);
+    }
     [Test]
     public void Test_LeaveThrows ()
     {

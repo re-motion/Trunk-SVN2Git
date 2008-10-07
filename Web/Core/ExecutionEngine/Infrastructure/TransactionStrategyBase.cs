@@ -9,15 +9,16 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   {
     private readonly bool _autoCommit;
     private readonly IWxeFunctionExecutionContext _executionContext;
-    private readonly ITransactionStrategy _parent;
+    private readonly ITransactionStrategy _outerTransactionStrategy;
+    private TransactionStrategyBase _child;
 
-    protected TransactionStrategyBase (bool autoCommit, ITransactionStrategy parent, IWxeFunctionExecutionContext executionContext)
+    protected TransactionStrategyBase (bool autoCommit, ITransactionStrategy outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
     {
-      ArgumentUtility.CheckNotNull ("parent", parent);
+      ArgumentUtility.CheckNotNull ("parent", outerTransactionStrategy);
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
       _autoCommit = autoCommit;
-      _parent = parent;
+      _outerTransactionStrategy = outerTransactionStrategy;
       _executionContext = executionContext;
   }
 
@@ -26,20 +27,25 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       get { return _autoCommit; }
     }
 
-    public ITransactionStrategy Parent
+    public ITransactionStrategy OuterTransactionStrategy
     {
-      get { return _parent; }
+      get { return _outerTransactionStrategy; }
+    }
+
+    public void SetChild (TransactionStrategyBase child)
+    {
+      _child = child;
+    }
+
+    public TransactionStrategyBase Child
+    {
+      get { return _child; }
     }
 
     public IWxeFunctionExecutionContext ExecutionContext
     {
       get { return _executionContext; }
     }
-
-    public abstract void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener);
-    public abstract void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener);
-    public abstract void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener);
-    public abstract void OnExecutionFail (WxeContext context, IWxeFunctionExecutionListener listener, Exception exception);
 
     public abstract TTransaction GetNativeTransaction<TTransaction> ();
     public abstract void Commit ();
@@ -49,5 +55,49 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public abstract bool IsNull { get; }
     public abstract IWxeFunctionExecutionListener CreateExecutionListener (IWxeFunctionExecutionListener innerListener);
+
+    public virtual void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+
+      if (Child != null)
+        Child.OnExecutionPlay (context,listener);
+      else
+        listener.OnExecutionPlay (context);
+    }
+
+    public virtual void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+
+      if (Child != null)
+        Child.OnExecutionStop (context, listener);
+      else
+        listener.OnExecutionStop (context);
+    }
+
+    public virtual void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+
+      if (Child != null)
+        Child.OnExecutionPause (context, listener);
+      else
+        listener.OnExecutionPause (context);
+    }
+
+    public virtual void OnExecutionFail (WxeContext context, IWxeFunctionExecutionListener listener, Exception exception)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+
+      if (Child != null)
+        Child.OnExecutionFail (context, listener, exception);
+      else
+        listener.OnExecutionFail (context, exception);
+    }
   }
 }

@@ -32,7 +32,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       WxeContextFactory wxeContextFactory = new WxeContextFactory ();
       _wxeContext = wxeContextFactory.CreateContext (new TestFunction ());
       _transactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase> (
-          false, MockRepository.GenerateStub<ITransactionStrategy> (), MockRepository.GenerateStub<IWxeFunctionExecutionContext> ());
+          false, NullTransactionStrategy.Null, MockRepository.GenerateStub<IWxeFunctionExecutionContext> ());
       _innerListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
       _transactionListener = new TransactionExecutionListener(_transactionStrategyMock, _innerListenerStub);
     }

@@ -69,7 +69,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_WithParentTransactionStrategy ()
     {
-      var strategy = CreateRootTransactionStrategy (true, ParentTransactionStrategyMock);
+      var strategy = CreateRootTransactionStrategy (true, OuterTransactionStrategyMock);
       var expectedObjects = new[] { new object() };
 
       InvokeOnExecutionPlay (strategy);
@@ -79,8 +79,34 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
         TransactionMock.Expect (mock => mock.Commit());
 
         ExecutionContextMock.Expect (mock => mock.GetOutParameters()).Return (expectedObjects);
-        ParentTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
+        OuterTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
 
+        ScopeMock.Expect (mock => mock.Leave());
+        TransactionMock.Expect (mock => mock.Release());
+      }
+
+      MockRepository.ReplayAll();
+
+      strategy.OnExecutionStop (Context, ExecutionListenerMock);
+
+      MockRepository.VerifyAll();
+      Assert.That (strategy.Scope, Is.Null);
+    }
+
+    [Test]
+    public void Test_WithChildStrategy ()
+    {
+      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+
+      InvokeOnExecutionPlay (strategy);
+      strategy.SetChild (ChildTransactionStrategyMock);
+
+      using (MockRepository.Ordered())
+      {
+        ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionStop (Context, ExecutionListenerMock));
+        TransactionMock.Expect (mock => mock.Commit());
+
+        ExecutionContextMock.Expect (mock => mock.GetOutParameters()).Return (new object[0]);
         ScopeMock.Expect (mock => mock.Leave());
         TransactionMock.Expect (mock => mock.Release());
       }
@@ -136,6 +162,33 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     }
 
     [Test]
+    public void Test_ChildStrategyThrowsFatalException ()
+    {
+      var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
+      var innerException = new WxeFatalExecutionException (new Exception ("ChildStrategy Exception"), null);
+
+      InvokeOnExecutionPlay (strategy);
+      strategy.SetChild (ChildTransactionStrategyMock);
+
+      ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionStop (Context, ExecutionListenerMock)).Throw (innerException);
+
+      MockRepository.ReplayAll();
+
+      try
+      {
+        strategy.OnExecutionStop (Context, ExecutionListenerMock);
+        Assert.Fail ("Expected Exception");
+      }
+      catch (WxeFatalExecutionException actualException)
+      {
+        Assert.That (actualException, Is.SameAs (innerException));
+      }
+
+      MockRepository.VerifyAll();
+      Assert.That (strategy.Scope, Is.Not.Null);
+    }
+
+    [Test]
     public void Test_CommitThrows ()
     {
       var strategy = CreateRootTransactionStrategy (true, NullTransactionStrategy.Null);
@@ -169,7 +222,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_GetOutParameterThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (false, ParentTransactionStrategyMock);
+      var strategy = CreateRootTransactionStrategy (false, OuterTransactionStrategyMock);
       var innerException = new ApplicationException ("GetOutParameters Exception");
 
       InvokeOnExecutionPlay (strategy);
@@ -202,7 +255,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
     [Test]
     public void Test_RegisterObjectsThrows ()
     {
-      var strategy = CreateRootTransactionStrategy (false, ParentTransactionStrategyMock);
+      var strategy = CreateRootTransactionStrategy (false, OuterTransactionStrategyMock);
       var innerException = new ApplicationException ("GetOutParameters Exception");
 
       InvokeOnExecutionPlay (strategy);
@@ -211,7 +264,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.RootTransactionS
         ExecutionListenerMock.Expect (mock => mock.OnExecutionStop (Context));
 
         ExecutionContextMock.Expect (mock => mock.GetOutParameters()).Return (new object[0]);
-        ParentTransactionStrategyMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.Is.Anything)).Throw (innerException);
+        OuterTransactionStrategyMock.Expect (mock => mock.RegisterObjects (Arg<IEnumerable>.Is.Anything)).Throw (innerException);
 
         ScopeMock.Expect (mock => mock.Leave());
         TransactionMock.Expect (mock => mock.Release());
