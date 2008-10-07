@@ -18,7 +18,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
   [TestFixture]
-  public class QueryManagerTest : ClientTransactionBaseTest
+  public class RootQueryManagerTest : ClientTransactionBaseTest
   {
     private RootQueryManager _queryManager;
 
