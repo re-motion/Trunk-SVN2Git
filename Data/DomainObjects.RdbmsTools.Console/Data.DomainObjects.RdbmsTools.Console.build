@@ -35,6 +35,7 @@
         <include asis="true" name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Data.DomainObjects.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Data.DomainObjects.RdbmsTools.dll"/>
+        <include asis="true" name="${build.outputdir}/Remotion.ObjectBinding.Interfaces.dll"/>
         <include asis="true" name="System.dll"/>
         <include asis="true" name="System.Configuration.dll"/>
       </references>

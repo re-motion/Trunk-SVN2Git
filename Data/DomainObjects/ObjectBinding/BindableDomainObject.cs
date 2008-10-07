@@ -31,6 +31,13 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BindableDomainObject"/> class in the process of deserialization.
+    /// </summary>
+    /// <param name="info">The <see cref="SerializationInfo"/> coming from the .NET serialization infrastructure.</param>
+    /// <param name="context">The <see cref="StreamingContext"/> coming from the .NET serialization infrastructure.</param>
+    /// <remarks>Be sure to call this base constructor from the deserialization constructor of any concrete <see cref="BindableDomainObject"/> type
+    /// implementing the <see cref="ISerializable"/> interface.</remarks>
     protected BindableDomainObject (SerializationInfo info, StreamingContext context)
       : base (info, context)
     {
