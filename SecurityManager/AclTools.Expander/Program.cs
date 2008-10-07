@@ -30,6 +30,7 @@ namespace Remotion.SecurityManager.AclTools.Expander
 
       Program program = new Program (arguments);
       int result = program.Run ();
+      To.Console.nl ().s ("Press any-key...");
       Console.ReadKey ();
       return result;
     }
@@ -73,12 +74,16 @@ namespace Remotion.SecurityManager.AclTools.Expander
       {
         var aclExpander = new AclExpander();
 
-        var aclExpansion = aclExpander.GetAclExpansionEntryListSortedAndDistinct();
+        //var aclExpansion = aclExpander.GetAclExpansionEntryListSortedAndDistinct();
+        var aclExpansion = aclExpander.GetAclExpansionEntryList (); // TODO: Use GetAclExpansionEntryListSortedAndDistinct again
 
+        To.ConsoleLine.s ("ACL Expansion");
+        To.ConsoleLine.s ("====START====");
         foreach (AclExpansionEntry aclExpansionEntry in aclExpansion)
         {
           To.ConsoleLine.e (aclExpansionEntry);
         }
+        To.ConsoleLine.s ("=====END=====");
 
         return 0;
       }

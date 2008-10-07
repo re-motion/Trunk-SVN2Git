@@ -11,10 +11,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.Metadata;
+
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
@@ -22,9 +23,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     public List<AccessControlList> FindAccessControlLists ()
     {
-      var findAllAclsQuery = from acl in QueryFactory.CreateQueryable<AccessControlList>()
-                             select acl;
-      return findAllAclsQuery.ToList();
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var findAllAclsQuery = from acl in QueryFactory.CreateQueryable<AccessControlList> ()
+                               select acl;
+        return findAllAclsQuery.ToList ();
+      }
     }
   }
 }
