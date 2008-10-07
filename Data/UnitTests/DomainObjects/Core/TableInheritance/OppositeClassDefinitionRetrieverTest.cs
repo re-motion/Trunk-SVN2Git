@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Incorrect database format encountered. Entity '' must have column "
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Incorrect database format encountered. CreateQueryable '' must have column "
         + "'ParentFolderIDClassID' defined, because opposite class 'TI_Folder' is part of an inheritance hierarchy.")]
     public void GetMandatoryOppositeClassDefinition_NoOrdinal ()
     {
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Incorrect database format encountered. Entity 'TableInheritance_Person' "
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Incorrect database format encountered. CreateQueryable 'TableInheritance_Person' "
         + "must not contain column 'RegionIDClassID', because opposite class 'TI_Region' is not part of an inheritance hierarchy.")]
     public void GetMandatoryOppositeClassDefinition_NoInheritanceHierarchy_WithOrdinal ()
     {

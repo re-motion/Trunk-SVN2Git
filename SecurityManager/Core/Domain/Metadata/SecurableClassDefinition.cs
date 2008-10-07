@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      var result = from c in DataContext.Entity<SecurableClassDefinition>()
+      var result = from c in QueryFactory.CreateQueryable<SecurableClassDefinition>()
                    where c.Name == name
                    select c;
 
@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public static ObjectList<SecurableClassDefinition> FindAll ()
     {
-      var result = from c in DataContext.Entity<SecurableClassDefinition>()
+      var result = from c in QueryFactory.CreateQueryable<SecurableClassDefinition>()
                    orderby c.Index
                    select c;
 
@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public static ObjectList<SecurableClassDefinition> FindAllBaseClasses ()
     {
-      var result = from c in DataContext.Entity<SecurableClassDefinition>()
+      var result = from c in QueryFactory.CreateQueryable<SecurableClassDefinition>()
                    where c.BaseClass == null
                    orderby c.Index
                    select c;

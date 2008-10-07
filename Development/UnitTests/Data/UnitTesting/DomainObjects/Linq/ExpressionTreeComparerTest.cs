@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Development.Data.UnitTesting.DomainObjects.Linq;
 using Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects.TestDomain;
 
@@ -22,8 +23,8 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects.Linq
     [Test]
     public void Compare_Equal ()
     {
-      IQueryable<SimpleDomainObject> expected = from d in DataContext.Entity<SimpleDomainObject>() where d.Value == 1 select d;
-      IQueryable<SimpleDomainObject> actual = from d in DataContext.Entity<SimpleDomainObject> () where d.Value == 1 select d;
+      IQueryable<SimpleDomainObject> expected = from d in QueryFactory.CreateQueryable<SimpleDomainObject>() where d.Value == 1 select d;
+      IQueryable<SimpleDomainObject> actual = from d in QueryFactory.CreateQueryable<SimpleDomainObject>() where d.Value == 1 select d;
 
       _expressionTreeComparer.Compare (expected, actual);
     }
@@ -32,8 +33,8 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects.Linq
     [ExpectedException (typeof (AssertionException))]
     public void Compare_NotEqual ()
     {
-      IQueryable<SimpleDomainObject> expected = from d in DataContext.Entity<SimpleDomainObject> () where d.Value == 1 select d;
-      IQueryable<SimpleDomainObject> actual = from d in DataContext.Entity<SimpleDomainObject> () where d.Value == 0 select d;
+      IQueryable<SimpleDomainObject> expected = from d in QueryFactory.CreateQueryable<SimpleDomainObject>() where d.Value == 1 select d;
+      IQueryable<SimpleDomainObject> actual = from d in QueryFactory.CreateQueryable<SimpleDomainObject>() where d.Value == 0 select d;
 
       _expressionTreeComparer.Compare (expected, actual);
     }

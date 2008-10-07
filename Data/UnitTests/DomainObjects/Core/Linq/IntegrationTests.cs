@@ -15,6 +15,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -30,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void SimpleQuery ()
     {
       var computers =
-          from c in DataContext.Entity<Computer> ()
+          from c in QueryFactory.CreateQueryable<Computer>()
           select c;
       CheckQueryResult (computers, DomainObjectIDs.Computer1, DomainObjectIDs.Computer2, DomainObjectIDs.Computer3, DomainObjectIDs.Computer4,
                         DomainObjectIDs.Computer5);
@@ -40,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void SimpleQuery_WithRelatedEntity ()
     {
       var query =
-          from o in DataContext.Entity<OrderTicket> ()
+          from o in QueryFactory.CreateQueryable<OrderTicket>()
           select o.Order;
       CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
                         DomainObjectIDs.OrderWithoutOrderItem);
@@ -50,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithWhereConditions ()
     {
       var computers =
-          from c in DataContext.Entity<Computer> ()
+          from c in QueryFactory.CreateQueryable<Computer>()
           where c.SerialNumber == "93756-ndf-23" || c.SerialNumber == "98678-abc-43"
           select c;
 
@@ -61,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithWhereConditionsAndNull ()
     {
       var computers =
-          from c in DataContext.Entity<Computer> ()
+          from c in QueryFactory.CreateQueryable<Computer>()
           where c.Employee != null
           select c;
 
@@ -72,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithWhereConditionAndStartsWith ()
     {
       var computers =
-          from c in DataContext.Entity<Computer> ()
+          from c in QueryFactory.CreateQueryable<Computer>()
           where c.SerialNumber.StartsWith ("9")
           select c;
 
@@ -83,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithWhereConditionAndEndsWith ()
     {
       var computers =
-          from c in DataContext.Entity<Computer> ()
+          from c in QueryFactory.CreateQueryable<Computer>()
           where c.SerialNumber.EndsWith ("7")
           select c;
 
@@ -95,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee1);
       var employees =
-          from e in DataContext.Entity<Employee> ()
+          from e in QueryFactory.CreateQueryable<Employee>()
           where e == employee
           select e;
 
@@ -106,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithWhereConditionAndGreaterThan ()
     {
       var orders =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           where o.OrderNumber <= 3
           select o;
 
@@ -117,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithVirtualKeySide_EqualsNull ()
     {
       var employees =
-          from e in DataContext.Entity<Employee> ()
+          from e in QueryFactory.CreateQueryable<Employee>()
           where e.Computer == null
           select e;
 
@@ -128,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithVirtualKeySide_NotEqualsNull ()
     {
       var employees =
-          from e in DataContext.Entity<Employee> ()
+          from e in QueryFactory.CreateQueryable<Employee>()
           where e.Computer != null
           select e;
 
@@ -140,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       var employees =
-          from e in DataContext.Entity<Employee> ()
+          from e in QueryFactory.CreateQueryable<Employee>()
           where e.Computer == computer
           select e;
 
@@ -152,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       var employees =
-          from e in DataContext.Entity<Employee> ()
+          from e in QueryFactory.CreateQueryable<Employee>()
           where e.Computer != computer
           select e;
 
@@ -165,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
       var computers =
-          from c in DataContext.Entity<Computer> ()
+          from c in QueryFactory.CreateQueryable<Computer>()
           where c.Employee == employee
           select c;
 
@@ -177,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
       var computers =
-          from c in DataContext.Entity<Computer> ()
+          from c in QueryFactory.CreateQueryable<Computer>()
           where c.Employee.ID == employee.ID
           select c;
 
@@ -188,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithSimpleOrderBy ()
     {
       var query =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           orderby o.OrderNumber
           select o;
       CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.Order2, DomainObjectIDs.Order3,
@@ -199,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithOrderByAndImplicitJoin ()
     {
       var orders =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           where o.OrderNumber <= 4
           orderby o.Customer.Name
           select o;
@@ -214,7 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithSelectAndImplicitJoin_VirtualSide ()
     {
       var ceos =
-          (from o in DataContext.Entity<Order> ()
+          (from o in QueryFactory.CreateQueryable<Order>()
            where o.Customer.Ceo != null
            select o.Customer.Ceo).Distinct ();
 
@@ -225,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithSelectAndImplicitJoin ()
     {
       var ceos =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           where o.Customer.Ceo.Name == "Hugo Boss"
           select o.Customer.Ceo;
 
@@ -236,7 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithSelectAndImplicitJoin_UsingJoinPartTwice ()
     {
       var ceos =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           where o.Customer.Name == "Kunde 3"
           select o.Customer.Ceo;
 
@@ -247,7 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithDistinct ()
     {
       var ceos =
-          (from o in DataContext.Entity<Order> ()
+          (from o in QueryFactory.CreateQueryable<Order>()
            where o.Customer.Ceo != null
            select o.Customer.Ceo).Distinct ();
 
@@ -259,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithWhereAndImplicitJoin ()
     {
       var orders =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           where o.Customer.Type == Customer.CustomerType.Gold
           select o;
 
@@ -270,9 +271,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithSubQueryAndWhereInAdditionalFrom ()
     {
       var orders =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           from o2 in
-              (from oi in DataContext.Entity<OrderItem> () where oi.Order == o select oi)
+              (from oi in QueryFactory.CreateQueryable<OrderItem>() where oi.Order == o select oi)
           select o2;
 
       CheckQueryResult (orders, DomainObjectIDs.OrderItem5, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem1,
@@ -283,8 +284,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithSubQueryInWhere ()
     {
       var orders =
-          from o in DataContext.Entity<Order> ()
-          where (from c in DataContext.Entity<Customer> () select c).Contains (o.Customer)
+          from o in QueryFactory.CreateQueryable<Order>()
+          where (from c in QueryFactory.CreateQueryable<Customer>() select c).Contains (o.Customer)
           select o;
 
       CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
@@ -294,7 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void QueryWithContains_Like ()
     {
-      var ceos = from c in DataContext.Entity<Ceo> ()
+      var ceos = from c in QueryFactory.CreateQueryable<Ceo>()
                  where c.Name.Contains ("Sepp Fischer")
                  select c;
       CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
@@ -304,8 +305,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithSubQueryAndJoinInWhere ()
     {
       var orders =
-          from o in DataContext.Entity<Order> ()
-          where (from c in DataContext.Entity<OrderTicket> () select c.Order).Contains (o)
+          from o in QueryFactory.CreateQueryable<Order>()
+          where (from c in QueryFactory.CreateQueryable<OrderTicket>() select c.Order).Contains (o)
           select o;
 
       CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
@@ -317,8 +318,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       OrderItem myOrderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var orders =
-          from o in DataContext.Entity<Order> ()
-          where (from oi in DataContext.Entity<OrderItem> () where oi.Order == o select oi).Contains (myOrderItem)
+          from o in QueryFactory.CreateQueryable<Order>()
+          where (from oi in QueryFactory.CreateQueryable<OrderItem>() where oi.Order == o select oi).Contains (myOrderItem)
           select o;
 
       CheckQueryResult (orders, DomainObjectIDs.Order1);
@@ -329,7 +330,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       ObjectID[] possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 };
       var orders =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           where possibleItems.Contains (o.ID)
           select o;
 
@@ -341,7 +342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       ObjectID[] possibleItems = new ObjectID[] {  };
       var orders =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           where possibleItems.Contains (o.ID)
           select o;
 
@@ -353,7 +354,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var orders =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           where o.OrderItems.ContainsObject (item)
           select o;
 
@@ -365,8 +366,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var orders = 
-          from o in DataContext.Entity<Order> ()
-          where (from y in DataContext.Entity <OrderItem>() where y == item select y.Order).Contains(o) 
+          from o in QueryFactory.CreateQueryable<Order>()
+          where (from y in QueryFactory.CreateQueryable<OrderItem>() where y == item select y.Order).Contains(o) 
           select o;
       CheckQueryResult (orders, DomainObjectIDs.Order1);
 
@@ -375,7 +376,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void QueryWithLet_LethWithTable ()
     {
-      var orders = from o in DataContext.Entity<Order> ()
+      var orders = from o in QueryFactory.CreateQueryable<Order>()
                    let x = o
                    select x;
 
@@ -386,7 +387,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void QueryWithLet_LetWithColumn ()
     {
-      var orders = from o in DataContext.Entity<Order> ()
+      var orders = from o in QueryFactory.CreateQueryable<Order>()
                    let y = o.OrderNumber
                    where y > 1
                    select o;
@@ -399,7 +400,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void QueryWithLet_LetWithColumn2 ()
     {
-      var orders = from o in DataContext.Entity<Order> ()
+      var orders = from o in QueryFactory.CreateQueryable<Order>()
                    let x = o.Customer.Name
                    where x == "Kunde 1"
                    select o;
@@ -409,7 +410,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void QueryWithSeveralJoinsAndCrossApply ()
     {
-      var ceos = from o in DataContext.Entity<Order> ()
+      var ceos = from o in QueryFactory.CreateQueryable<Order>()
                  let x = o.Customer.Ceo
                  where x.Name == "Hugo Boss"
                  select x;
@@ -420,7 +421,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void QueryWithLet_SeveralCrossApplies ()
     {
-      var orders = from o in DataContext.Entity<Order> ()
+      var orders = from o in QueryFactory.CreateQueryable<Order>()
                    let x = o
                    let y = o.Customer
                    select x;
@@ -431,38 +432,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DomainObjectQueryable<Order>"
-                                                                    + ".Select(o => Entity().Select(c => c)) (MethodCallExpression).")]
+                                                                    + ".Select(o => CreateQueryable().Select(c => c)) (MethodCallExpression).")]
     public void QueryWithSubQuery_InSelectClause ()
     {
-      var orders = from o in DataContext.Entity<Order>()
+      var orders = from o in QueryFactory.CreateQueryable<Order>()
                    select
-                       (from c in DataContext.Entity<Computer>() select c);
+                       (from c in QueryFactory.CreateQueryable<Computer>() select c);
 
       IQueryable<Computer>[] result = orders.ToArray();
     }
 
     [Test]
     [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DomainObjectQueryable<Order>"
-                                                                    + ".Where(o => (o.OrderNumber = 5)).Select(o => Entity().Select(c => c)) (MethodCallExpression).")]
+                                                                    + ".Where(o => (o.OrderNumber = 5)).Select(o => CreateQueryable().Select(c => c)) (MethodCallExpression).")]
     public void QueryWithSubQueryInSelectClause_WhereClause ()
     {
-      var orders = from o in DataContext.Entity<Order> ()
+      var orders = from o in QueryFactory.CreateQueryable<Order>()
                    where o.OrderNumber == 5
                    select
-                       (from c in DataContext.Entity<Computer> () select c);
+                       (from c in QueryFactory.CreateQueryable<Computer>() select c);
 
       IQueryable<Computer>[] result = orders.ToArray ();
     }
 
     [Test]
     [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found DomainObjectQueryable<Order>"
-                                                                    + ".Where(o => (o.OrderNumber = 5)).Select(o => Entity().Where(c => (c = null))) (MethodCallExpression).")]
+                                                                    + ".Where(o => (o.OrderNumber = 5)).Select(o => CreateQueryable().Where(c => (c = null))) (MethodCallExpression).")]
     public void QueryWithSubQueryInSelectClause_WhereClause2 ()
     {
-      var orders = from o in DataContext.Entity<Order> ()
+      var orders = from o in QueryFactory.CreateQueryable<Order>()
                    where o.OrderNumber == 5
                    select
-                       (from c in DataContext.Entity<Computer> () where c == null select c);
+                       (from c in QueryFactory.CreateQueryable<Computer>() where c == null select c);
 
       IQueryable<Computer>[] result = orders.ToArray ();
     }
@@ -470,7 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void QueryWithSeveralOrderBys ()
     {
-      var orders = from o in DataContext.Entity<Order>()
+      var orders = from o in QueryFactory.CreateQueryable<Order>()
                    orderby o.OrderNumber
                    orderby o.Customer.Name descending
                    select o;
@@ -482,7 +483,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Query_WithToUpper ()
     {
       var computers =
-          from c in DataContext.Entity<Computer> ()
+          from c in QueryFactory.CreateQueryable<Computer>()
           where c.Employee.Name.ToUpper () == "TRILLIAN"
           select c;
       CheckQueryResult (computers, DomainObjectIDs.Computer2);
@@ -494,11 +495,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void Query_WithCustomSqlGenerator_ForExtendStringMethod ()
     {
-      DataContext.SqlGenerator.MethodCallRegistry.Register (
-          typeof (MethodExtensions).GetMethod ("ExtendString", new Type[] { typeof (string)}), new MethodExtendString ());
+      QueryFactory.GetDefaultSqlGenerator(typeof (Computer)).MethodCallRegistry.Register (
+          typeof (MethodExtensions).GetMethod ("ExtendString", new[] { typeof (string)}), new MethodExtendString ());
       
       var computers =
-          from c in DataContext.Entity<Computer> ()
+          from c in QueryFactory.CreateQueryable<Computer>()
           where c.Employee.Name.ExtendString () == "Trillian"
           select c;
       CheckQueryResult (computers, DomainObjectIDs.Computer2);
@@ -508,7 +509,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Query_WithView ()
     {
       var domainBases =
-          from d in DataContext.Entity<DomainBase>()
+          from d in QueryFactory.CreateQueryable<DomainBase>()
           select d;
 
       Assert.That (domainBases.ToArray(), Is.Not.Empty);
@@ -518,8 +519,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Query_WithSeveralFroms ()
     {
       var query =
-          from o in DataContext.Entity<Order>()
-          from c in DataContext.Entity<OrderTicket>()
+          from o in QueryFactory.CreateQueryable<Order>()
+          from c in QueryFactory.CreateQueryable<OrderTicket>()
           where c.Order == o
           where o.OrderNumber == 1
           select c;
@@ -531,7 +532,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Query_WithCastOnResultSet ()
     {
       var query =
-          (from o in DataContext.Entity<Order> ()
+          (from o in QueryFactory.CreateQueryable<Order>()
           where o.OrderNumber == 1
           select o).Cast<TestDomainBase>();
 
@@ -544,7 +545,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Query_WithUnsupportedType_NewObject ()
     {
       var query =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           where o.OrderNumber == 1
           select new { o, o.Customer };
 
@@ -557,7 +558,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Query_WithUnsupportedType_Constant ()
     {
       var query =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           where o.OrderNumber == 1
           select 1;
 
@@ -570,7 +571,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Query_WithUnsupportedType_NonDomainObjectColumn ()
     {
       var query =
-          from o in DataContext.Entity<Order> ()
+          from o in QueryFactory.CreateQueryable<Order>()
           where o.OrderNumber == 1
           select o.ID;
 
@@ -581,7 +582,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Ignore ("Not supported by OPF")]
     public void QueryWithCount ()
     {
-      var number = (from o in DataContext.Entity<Order> ()
+      var number = (from o in QueryFactory.CreateQueryable<Order>()
                     select o).Count();
       Assert.AreEqual (number, 6);
     }
@@ -589,7 +590,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void QueryWithFirst ()
     {
-      var query = (from o in DataContext.Entity<Order>() 
+      var query = (from o in QueryFactory.CreateQueryable<Order>() 
                    select o).First();
       Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
     }
@@ -598,7 +599,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     //[Ignore]
     public void QueryWithSingleAndPredicate ()
     {
-      var query = (from o in DataContext.Entity<Order>()
+      var query = (from o in QueryFactory.CreateQueryable<Order>()
                     select o).Single (i => i.OrderNumber == 5);
       Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
     }
@@ -607,7 +608,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Ignore ("TODO: check generate sql")]
     public void QueryTest ()
     {
-      var query = (from o in DataContext.Entity<Order>()
+      var query = (from o in QueryFactory.CreateQueryable<Order>()
                    select o).Distinct();
       query.Single();
       Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
@@ -616,7 +617,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     //[Test]
     //public void QueryToGetDomainObjectWithID ()
     //{
-    //  var query = (from o in DataContext.Entity<Order>()
+    //  var query = (from o in DataContext.CreateQueryable<Order>()
     //               where o.ID
     //}
 
@@ -624,7 +625,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithWhereOnForeignKey_RealSide ()
     {
       ObjectID id = DomainObjectIDs.Order1;
-      var query = from oi in DataContext.Entity<OrderItem> ()
+      var query = from oi in QueryFactory.CreateQueryable<OrderItem>()
                   where oi.Order.ID == id
                   select oi;
       CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
@@ -634,7 +635,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithWhereOnForeignKey_VirtualSide ()
     {
       ObjectID id = DomainObjectIDs.Computer1;
-      var query = from e in DataContext.Entity<Employee> ()
+      var query = from e in QueryFactory.CreateQueryable<Employee>()
                   where e.Computer.ID == id
                   select e;
       CheckQueryResult (query, DomainObjectIDs.Employee3);

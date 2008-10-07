@@ -167,7 +167,6 @@
     <Compile Include="IGraphTraversalStrategy.cs" />
     <Compile Include="Linq\ContainsObjectParser.cs" />
     <Compile Include="Linq\DatabaseInfo.cs" />
-    <Compile Include="Linq\DataContext.cs" />
     <Compile Include="Linq\DomainObjectQueryable.cs" />
     <Compile Include="Linq\ExtensionMethods.cs" />
     <Compile Include="Linq\QueryExecutor.cs" />

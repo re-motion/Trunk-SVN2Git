@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
     /// <remarks>
     /// This overload uses the <see cref="ISqlGenerator"/> associated with <typeparamref name="T"/> via its <see cref="StorageProviderDefinition"/>.
-    /// Use the <see cref="CreateQueryable{T}(ISqlGenerator)"/> overload to explicitly specify an <see cref="ISqlGenerator"/> instance.
+    /// Use the <see cref="CreateQueryable{T}()"/> overload to explicitly specify an <see cref="ISqlGenerator"/> instance.
     /// </remarks>
     /// <example>
     /// The following example used <see cref="CreateQueryable{T}()"/> to retrieve 

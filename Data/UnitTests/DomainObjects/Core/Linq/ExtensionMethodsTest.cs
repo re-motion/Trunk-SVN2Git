@@ -4,6 +4,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -14,7 +15,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ToObjectList ()
     {
-      IQueryable<Order> queryable = from o in DataContext.Entity<Order> () 
+      IQueryable<Order> queryable = from o in QueryFactory.CreateQueryable<Order>() 
                                     where o.OrderNumber == 1 || o.ID == DomainObjectIDs.Order2 
                                     select o;
       

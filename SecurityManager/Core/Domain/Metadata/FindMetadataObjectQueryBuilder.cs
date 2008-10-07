@@ -12,6 +12,7 @@ using System;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata
@@ -59,13 +60,13 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
       if (metadataID.StateValue.HasValue)
       {
-        return (from state in DataContext.Entity<StateDefinition>()
+        return (from state in QueryFactory.CreateQueryable<StateDefinition>()
                where state.StateProperty.MetadataItemID == metadataID.MetadataItemID && state.Value == metadataID.StateValue
                select state).Cast<MetadataObject>();
       }
       else
       {
-        return from m in DataContext.Entity<MetadataObject>()
+        return from m in QueryFactory.CreateQueryable<MetadataObject>()
                where m.MetadataItemID == metadataID.MetadataItemID
                select m;
       }

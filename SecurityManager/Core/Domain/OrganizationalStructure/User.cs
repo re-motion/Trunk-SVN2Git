@@ -72,7 +72,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNull ("userName", userName);
 
-      var result = from u in DataContext.Entity<User>()
+      var result = from u in QueryFactory.CreateQueryable<User>()
                    where u.UserName == userName
                    select u;
 
@@ -83,7 +83,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
 
-      var result = from u in DataContext.Entity<User> ()
+      var result = from u in QueryFactory.CreateQueryable<User>()
                    where u.Tenant.ID == tenantID
                    orderby u.LastName, u.FirstName
                    select u;

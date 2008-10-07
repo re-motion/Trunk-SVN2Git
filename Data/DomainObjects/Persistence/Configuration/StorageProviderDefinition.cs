@@ -10,11 +10,14 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Linq.Expressions;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration.StorageProviders;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.Linq.Parsing.Details;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
+using Remotion.Mixins;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
@@ -57,7 +60,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       _storageProviderType = storageProviderType;
       _typeConversionProvider = TypeConversionProvider.Create ();
       _typeProvider = new TypeProvider();
-      _linqSqlGenerator = new SqlServerGenerator (DatabaseInfo.Instance); // TODO: let concrete provider definition instantiate ISqlGenerator
+      
+      // TODO: let concrete provider definition instantiate ISqlGenerator
+      ResetLinqSqlGenerator();
     }
 
     // abstract methods and properties
@@ -90,6 +95,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     public ISqlGenerator LinqSqlGenerator
     {
       get { return _linqSqlGenerator; }
+    }
+
+    public void ResetLinqSqlGenerator ()
+    {
+      _linqSqlGenerator = ObjectFactory.Create<SqlServerGenerator> ().With (DatabaseInfo.Instance);
+
+      WhereConditionParserRegistry whereConditionParserRegistry = _linqSqlGenerator.DetailParserRegistries.WhereConditionParser;
+      whereConditionParserRegistry.RegisterParser (typeof (MethodCallExpression), new ContainsObjectParser (whereConditionParserRegistry));
     }
   }
 }

@@ -14,6 +14,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -28,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlGenerator = new SqlServerGenerator (DatabaseInfo.Instance);
       var executor = new QueryExecutor<Supplier> (sqlGenerator);
       var provider = new QueryProvider (executor);
-      IQueryable<Supplier> query = from supplier in DataContext.Entity<Supplier> () select supplier;
+      IQueryable<Supplier> query = from supplier in QueryFactory.CreateQueryable<Supplier>() select supplier;
 
       IQueryable<Supplier> queryCreatedByProvider = provider.CreateQuery<Supplier> (query.Expression);
       Assert.IsNotNull (queryCreatedByProvider);

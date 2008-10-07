@@ -14,6 +14,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Expressions;
@@ -26,7 +27,7 @@ using Remotion.Data.Linq;
 namespace Remotion.Data.DomainObjects.Linq
 {
   // source: where o.OrderItems.ContainsObject (myOrderItem)
-  // transformed: where (from oi in DataContext.Entity<OrderItem> () where oi.Order == o select oi).Contains (myOrderItem)
+  // transformed: where (from oi in DataContext.CreateQueryable<OrderItem> () where oi.Order == o select oi).Contains (myOrderItem)
   // SQL: WHERE @1 IN (SELECT [oi].[ID] FROM [OrderItem] [oi] WHERE (([oi].[OrderID] IS NULL AND [o].[ID] IS NULL) OR [oi].[OrderID] = [o].[ID]))
   public class ContainsObjectParser : IWhereConditionParser
   {
@@ -35,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Linq
     private static readonly MethodInfo s_containsObjectMethod =
         ParserUtility.GetMethod (() => ((DomainObjectCollection) null).ContainsObject (null));
     private static readonly MethodInfo s_genericDataContextEntityMethod = 
-        ParserUtility.GetMethod (() => DataContext.Entity<DomainObject>()).GetGenericMethodDefinition();
+        ParserUtility.GetMethod (() => QueryFactory.CreateQueryable<DomainObject>()).GetGenericMethodDefinition();
 
     private readonly WhereConditionParserRegistry _registry;
 
@@ -97,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Linq
       return queryModel;
     }
 
-    // from oi in DataContext.Entity<OrderItem>
+    // from oi in DataContext.CreateQueryable<OrderItem>
     public MainFromClause CreateFromClause (Type containsParameterType)
     {
       ArgumentUtility.CheckNotNull ("containsParameterType", containsParameterType);

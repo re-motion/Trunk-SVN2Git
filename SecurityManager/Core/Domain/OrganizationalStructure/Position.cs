@@ -42,7 +42,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     public static ObjectList<Position> FindAll ()
     {
-      var result = from p in DataContext.Entity<Position> ()
+      var result = from p in QueryFactory.CreateQueryable<Position>()
                    orderby p.Name
                    select p;
 

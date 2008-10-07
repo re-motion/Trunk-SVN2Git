@@ -258,7 +258,6 @@
     <Compile Include="DomainObjects\Core\TableInheritance\ClassDefinitionValidatorTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ContainsObjectParserTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DatabaseInfoTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\DataContextTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryableTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DummyQueryable.cs" />
     <Compile Include="DomainObjects\Core\Linq\FulltextIntegrationTests.cs" />

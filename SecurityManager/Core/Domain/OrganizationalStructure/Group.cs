@@ -80,7 +80,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
 
-      var result = from g in DataContext.Entity<Group> ()
+      var result = from g in QueryFactory.CreateQueryable<Group>()
                    where g.Tenant.ID == tenantID
                    orderby g.Name, g.ShortName
                    select g;
@@ -92,7 +92,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
-      var result = from g in DataContext.Entity<Group>()
+      var result = from g in QueryFactory.CreateQueryable<Group>()
                    where g.UniqueIdentifier == uniqueIdentifier
                    select g;
 

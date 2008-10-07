@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
@@ -39,7 +40,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
       var abstractRoleNames = (from abstractRole in abstractRoles select abstractRole.Name).ToArray();
 
-      var result = from ar in DataContext.Entity<AbstractRoleDefinition>()
+      var result = from ar in QueryFactory.CreateQueryable<AbstractRoleDefinition>()
                    where abstractRoleNames.Contains (ar.Name)
                    orderby ar.Index
                    select ar;
@@ -49,7 +50,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public static ObjectList<AbstractRoleDefinition> FindAll ()
     {
-      var result = from ar in DataContext.Entity<AbstractRoleDefinition>()
+      var result = from ar in QueryFactory.CreateQueryable<AbstractRoleDefinition>()
                    orderby ar.Index
                    select ar;
 

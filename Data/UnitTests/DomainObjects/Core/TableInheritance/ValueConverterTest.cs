@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
-        "Incorrect database format encountered. Entity 'TableInheritance_BaseClassWithInvalidRelationClassIDColumns' must have column"
+        "Incorrect database format encountered. CreateQueryable 'TableInheritance_BaseClassWithInvalidRelationClassIDColumns' must have column"
         + " 'DomainBaseIDClassID' defined, because opposite class 'TI_DomainBase' is part of an inheritance hierarchy.")]
     public void GetValueWithMissingRelationClassIDColumn ()
     {
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
-        "Incorrect database format encountered. Entity 'TableInheritance_BaseClassWithInvalidRelationClassIDColumns' must not contain column"
+        "Incorrect database format encountered. CreateQueryable 'TableInheritance_BaseClassWithInvalidRelationClassIDColumns' must not contain column"
         + " 'ClientIDClassID', because opposite class 'TI_Client' is not part of an inheritance hierarchy.")]
     public void GetValueWithInvalidRelationClassIDColumn ()
     {

@@ -41,7 +41,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     public static ObjectList<GroupType> FindAll ()
     {
-      var result = from g in DataContext.Entity<GroupType>()
+      var result = from g in QueryFactory.CreateQueryable<GroupType>()
                    orderby g.Name
                    select g;
 

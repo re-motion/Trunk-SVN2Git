@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
@@ -20,7 +21,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     public List<User> FindUsers ()
     {
-      var findAllUsersQuery = from u in DataContext.Entity<User>()
+      var findAllUsersQuery = from u in QueryFactory.CreateQueryable<User>()
                               orderby u.LastName , u.FirstName
                               select u;
       return findAllUsersQuery.ToList();

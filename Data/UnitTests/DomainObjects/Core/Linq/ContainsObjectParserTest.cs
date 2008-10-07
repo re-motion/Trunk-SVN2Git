@@ -17,6 +17,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
@@ -211,7 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private MethodInfo GetContainsMethod ()
     {
-      return ParserUtility.GetMethod (() => (from oi in DataContext.Entity<OrderItem> () select oi).Contains (_orderItem1));
+      return ParserUtility.GetMethod (() => (from oi in QueryFactory.CreateQueryable<OrderItem>() select oi).Contains (_orderItem1));
     }
 
     [Test]
@@ -249,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private IQueryable<Order> GetQuery ()
     {
-      return from o in DataContext.Entity<Order> ()
+      return from o in QueryFactory.CreateQueryable<Order>()
              where o.OrderItems.ContainsObject (_orderItem1)
              select o;
     }
