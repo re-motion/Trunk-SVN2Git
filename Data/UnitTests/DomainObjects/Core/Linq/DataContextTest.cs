@@ -52,17 +52,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void SqlGenerator_AutoInitialization ()
     {
-      ISqlGeneratorBase generator = DataContext.SqlGenerator;
+      ISqlGenerator generator = DataContext.SqlGenerator;
       Assert.That (generator, Is.Not.Null);
     }
 
     [Test]
     public void ResetSqlGenerator ()
     {
-      ISqlGeneratorBase generator = DataContext.SqlGenerator;
+      ISqlGenerator generator = DataContext.SqlGenerator;
 
       DataContext.ResetSqlGenerator ();
-      ISqlGeneratorBase generator2 = DataContext.SqlGenerator;
+      ISqlGenerator generator2 = DataContext.SqlGenerator;
 
       Assert.That (generator2, Is.Not.Null);
       Assert.That (generator2, Is.Not.SameAs (generator));
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void SqlGenerator_HasOPFDetailParsers ()
     {
-      ISqlGeneratorBase generator = DataContext.SqlGenerator;
+      ISqlGenerator generator = DataContext.SqlGenerator;
       IEnumerable<IWhereConditionParser> whereConditionParsers = generator.DetailParserRegistries.WhereConditionParser.GetParsers (
           typeof (MethodCallExpression));
       IEnumerable<Type> parserTypes = from p in whereConditionParsers select p.GetType();

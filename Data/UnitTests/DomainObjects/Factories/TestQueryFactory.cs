@@ -15,7 +15,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Factories
 {
-  public static class QueryFactory
+  public static class TestQueryFactory
   {
     public static QueryDefinition CreateOrderQueryWithCustomCollectionType()
     {

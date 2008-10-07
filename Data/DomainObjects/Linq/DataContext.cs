@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Linq
       whereConditionParserRegistry.RegisterParser (typeof (MethodCallExpression), new ContainsObjectParser (whereConditionParserRegistry));
     }
 
-    public static ISqlGeneratorBase SqlGenerator { get; set; }
+    public static ISqlGenerator SqlGenerator { get; set; }
     
     public static DomainObjectQueryable<T> Entity<T> ()
       where T : DomainObject

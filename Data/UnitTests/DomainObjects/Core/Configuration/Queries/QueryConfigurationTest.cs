@@ -328,10 +328,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Queries
     {
       QueryDefinitionCollection queries = new QueryDefinitionCollection ();
 
-      queries.Add (QueryFactory.CreateOrderQueryWithCustomCollectionType ());
-      queries.Add (QueryFactory.CreateOrderQueryDefinitionWithObjectListOfOrder ());
-      queries.Add (QueryFactory.CreateCustomerTypeQueryDefinition ());
-      queries.Add (QueryFactory.CreateOrderSumQueryDefinition ());
+      queries.Add (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ());
+      queries.Add (TestQueryFactory.CreateOrderQueryDefinitionWithObjectListOfOrder ());
+      queries.Add (TestQueryFactory.CreateCustomerTypeQueryDefinition ());
+      queries.Add (TestQueryFactory.CreateOrderSumQueryDefinition ());
 
       return queries;
     }

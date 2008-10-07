@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       QueryParameterCollection parameters = new QueryParameterCollection ();
 
-      QueryDefinition definition = QueryFactory.CreateOrderQueryWithCustomCollectionType ();
+      QueryDefinition definition = TestQueryFactory.CreateOrderQueryWithCustomCollectionType ();
       Query query = new Query (definition, parameters);
 
       Assert.AreSame (definition, query.Definition);

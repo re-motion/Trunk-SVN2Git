@@ -12,6 +12,9 @@ using System;
 using System.Collections.Specialized;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration.StorageProviders;
+using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
@@ -27,6 +30,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     private Type _storageProviderType;
     private TypeConversionProvider _typeConversionProvider;
     private TypeProvider _typeProvider;
+    private ISqlGenerator _linqSqlGenerator;
 
     // construction and disposing
 
@@ -53,6 +57,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       _storageProviderType = storageProviderType;
       _typeConversionProvider = TypeConversionProvider.Create ();
       _typeProvider = new TypeProvider();
+      _linqSqlGenerator = new SqlServerGenerator (DatabaseInfo.Instance); // TODO: let concrete provider definition instantiate ISqlGenerator
     }
 
     // abstract methods and properties
@@ -80,6 +85,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     public TypeProvider TypeProvider
     {
       get { return _typeProvider; }
+    }
+
+    public ISqlGenerator LinqSqlGenerator
+    {
+      get { return _linqSqlGenerator; }
     }
   }
 }

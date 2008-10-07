@@ -227,6 +227,7 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\Queries\QueryFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Queries\QueryFileElementTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\StorageProviders\RdbmsProviderDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\StorageProviders\TypeProviderTest.cs" />
@@ -860,7 +861,7 @@
     <Compile Include="DomainObjects\Factories\DomainObjectIDs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Factories\QueryFactory.cs">
+    <Compile Include="DomainObjects\Factories\TestQueryFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Factories\StorageProviderDefinitionFactory.cs">

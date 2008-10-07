@@ -23,12 +23,12 @@ namespace Remotion.Data.DomainObjects.Linq
 {
   public class QueryExecutor<T> : IQueryExecutor
   {
-    public QueryExecutor (ISqlGeneratorBase sqlGenerator)
+    public QueryExecutor (ISqlGenerator sqlGenerator)
     {
       SqlGenerator = sqlGenerator;
     }
 
-    public ISqlGeneratorBase SqlGenerator { get; private set; }
+    public ISqlGenerator SqlGenerator { get; private set; }
 
     public object ExecuteSingle (QueryModel queryModel)
     {

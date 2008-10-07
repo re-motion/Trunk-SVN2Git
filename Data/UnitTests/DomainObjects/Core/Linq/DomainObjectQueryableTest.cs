@@ -10,7 +10,9 @@
 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.Linq;
@@ -31,10 +33,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void Get_Executor()
+    public void Provider_AutoInitialized()
     {
-      DomainObjectQueryable<Order> queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
-      Assert.IsNotNull (((QueryProviderBase) queryable.Provider).Executor);
+      var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
+      Assert.That (queryable.Provider, Is.Not.Null);
+      Assert.That (queryable.Provider, Is.InstanceOfType (typeof (QueryProvider)));
+    }
+
+    [Test]
+    public void Provider_PassedIn ()
+    {
+      var expectedProvider = new QueryProvider (new QueryExecutor<Order> (_sqlGenerator));
+      var queryable = new DomainObjectQueryable<Order> (expectedProvider, Expression.Constant (null, typeof (DomainObjectQueryable<Order>)));
+      Assert.That (queryable.Provider, Is.Not.Null);
+      Assert.That (queryable.Provider, Is.SameAs (expectedProvider));
+    }
+
+    [Test]
+    public void Get_Executor ()
+    {
+      var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
+      Assert.That (queryable.Provider.Executor, Is.InstanceOfType (typeof (QueryExecutor<Order>)));
+      Assert.That (queryable.GetExecutor(), Is.SameAs (queryable.Provider.Executor));
+      
     }
   }
 }
