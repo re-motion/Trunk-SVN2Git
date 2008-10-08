@@ -18,7 +18,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public abstract bool IsNull { get; }
 
     public abstract TransactionStrategyBase OuterTransactionStrategy { get; }
-    public abstract ChildTransactionStrategy CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext);
+    public abstract ScopedTransactionStrategyBase CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext);
     public abstract IWxeFunctionExecutionListener CreateExecutionListener (IWxeFunctionExecutionListener innerListener);
     public abstract void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener);
     public abstract void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener);

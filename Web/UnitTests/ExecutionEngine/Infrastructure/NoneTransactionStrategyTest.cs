@@ -94,7 +94,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 
       grandParentTransactionStrategyMock.Expect (mock => mock.CreateChildTransactionStrategy (true, childExecutionContextStub)).Return (expected);
 
-      ChildTransactionStrategy actual = noneTransactionStrategy.CreateChildTransactionStrategy (true, childExecutionContextStub);
+      ScopedTransactionStrategyBase actual = noneTransactionStrategy.CreateChildTransactionStrategy (true, childExecutionContextStub);
       Assert.That (actual, Is.SameAs (expected));
     }
 

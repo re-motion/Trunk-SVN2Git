@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using NUnit.Framework;
 using Remotion.Data;
+using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
@@ -21,7 +22,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
 {
   public class ScopedTransactionStrategyTestBase
   {
-    private IWxeFunctionExecutionListener _executionListenerMock;
+    private IWxeFunctionExecutionListener _executionListenerStub;
     private ITransactionScope _scopeMock;
     private ITransaction _transactionMock;
     private TransactionStrategyBase _outerTransactionStrategyMock;
@@ -37,12 +38,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       _context = wxeContextFactory.CreateContext (new TestFunction());
 
       _mockRepository = new MockRepository();
-      _executionListenerMock = MockRepository.StrictMock<IWxeFunctionExecutionListener>();
+      _executionListenerStub = MockRepository.Stub<IWxeFunctionExecutionListener>();
       _transactionMock = MockRepository.StrictMock<ITransaction>();
       _scopeMock = MockRepository.StrictMock<ITransactionScope>();
       _executionContextMock = MockRepository.StrictMock<IWxeFunctionExecutionContext>();
       _outerTransactionStrategyMock = MockRepository.StrictMock<TransactionStrategyBase>();
-      _childTransactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase>();
+      _childTransactionStrategyMock = MockRepository.StrictMock<TransactionStrategyBase> ();
     }
 
     public MockRepository MockRepository
@@ -75,14 +76,19 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       get { return _scopeMock; }
     }
 
-    public IWxeFunctionExecutionListener ExecutionListenerMock
+    public IWxeFunctionExecutionListener ExecutionListenerStub
     {
-      get { return _executionListenerMock; }
+      get { return _executionListenerStub; }
     }
 
     public IWxeFunctionExecutionContext ExecutionContextMock
     {
       get { return _executionContextMock; }
+    }
+
+    protected void SetChild (ScopedTransactionStrategyBase strategy, TransactionStrategyBase childStrategy)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (strategy, "SetChild", childStrategy);
     }
 
     protected ScopedTransactionStrategyBase CreateScopedTransactionStrategy (bool autoCommit, TransactionStrategyBase parentTransactionStrategy)
@@ -99,6 +105,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
           autoCommit, TransactionMock, parentTransactionStrategy, _executionContextMock);
       strategy.Replay();
 
+      SetChild (strategy, ChildTransactionStrategyMock);
+
       _executionContextMock.BackToRecord();
       _transactionMock.BackToRecord();
 
@@ -107,33 +115,33 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
 
     protected void InvokeOnExecutionPlay (ScopedTransactionStrategyBase strategy)
     {
-      _executionListenerMock.BackToRecord();
-      _executionListenerMock.Stub (stub => stub.OnExecutionPlay (Context));
-      _executionListenerMock.Replay();
+      _childTransactionStrategyMock.BackToRecord();
+      _childTransactionStrategyMock.Stub (stub => stub.OnExecutionPlay (_context, _executionListenerStub));
+      _childTransactionStrategyMock.Replay ();
 
       _transactionMock.BackToRecord();
       _transactionMock.Stub (stub => stub.EnterScope()).Return (ScopeMock);
       _transactionMock.Replay();
 
-      strategy.OnExecutionPlay (Context, ExecutionListenerMock);
+      strategy.OnExecutionPlay (Context, ExecutionListenerStub);
 
       _transactionMock.BackToRecord();
-      _executionListenerMock.BackToRecord();
+      _childTransactionStrategyMock.BackToRecord ();
     }
 
     protected void InvokeOnExecutionPause (ScopedTransactionStrategyBase strategy)
     {
-      _executionListenerMock.BackToRecord();
-      _executionListenerMock.Stub (stub => stub.OnExecutionPause (Context));
-      _executionListenerMock.Replay();
+      _childTransactionStrategyMock.BackToRecord ();
+      _childTransactionStrategyMock.Stub (stub => stub.OnExecutionPause (_context, _executionListenerStub));
+      _childTransactionStrategyMock.Replay ();
 
       _scopeMock.BackToRecord();
       _scopeMock.Stub (stub => stub.Leave());
       _scopeMock.Replay();
 
-      strategy.OnExecutionPause (Context, _executionListenerMock);
+      strategy.OnExecutionPause (Context, _executionListenerStub);
 
-      _executionListenerMock.BackToRecord();
+      _childTransactionStrategyMock.BackToRecord ();
       _scopeMock.BackToRecord();
     }
   }

@@ -37,7 +37,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       return default (TTransaction);
     }
 
-    public override ChildTransactionStrategy CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext)
+    public override ScopedTransactionStrategyBase CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext)
     {
       return null;
     }

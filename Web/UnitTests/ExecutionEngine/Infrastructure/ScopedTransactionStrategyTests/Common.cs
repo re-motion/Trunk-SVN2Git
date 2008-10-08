@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data;
@@ -25,7 +26,20 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
     public override void SetUp ()
     {
       base.SetUp();
-      _strategy = CreateScopedTransactionStrategy (true, NullTransactionStrategy.Null);
+      ExecutionContextMock.BackToRecord();
+      ExecutionContextMock.Stub (stub => stub.GetInParameters()).Return (new object[0]).Repeat.Any();
+      ExecutionContextMock.Replay();
+
+      TransactionMock.BackToRecord();
+      TransactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
+      TransactionMock.Replay();
+
+      _strategy = MockRepository.PartialMock<ScopedTransactionStrategyBase> (
+          true, TransactionMock, OuterTransactionStrategyMock, ExecutionContextMock);
+      _strategy.Replay();
+
+      ExecutionContextMock.BackToRecord();
+      TransactionMock.BackToRecord();
     }
 
     [Test]
@@ -34,6 +48,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       Assert.That (_strategy.ExecutionContext, Is.SameAs (ExecutionContextMock));
       Assert.That (_strategy.AutoCommit, Is.True);
       Assert.That (_strategy.IsNull, Is.False);
+      Assert.That (_strategy.OuterTransactionStrategy, Is.SameAs (OuterTransactionStrategyMock));
+      Assert.That (_strategy.Child, Is.SameAs (NullTransactionStrategy.Null));
     }
 
     [Test]
@@ -67,9 +83,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
     }
 
     [Test]
-    public void SetChild ()
+    public void GetChild ()
     {
-      _strategy.SetChild (ChildTransactionStrategyMock);
+      SetChild (_strategy, ChildTransactionStrategyMock);
 
       Assert.That (_strategy.Child, Is.SameAs (ChildTransactionStrategyMock));
     }

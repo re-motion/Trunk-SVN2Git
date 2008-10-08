@@ -37,8 +37,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _transaction = transaction;
       _outerTransactionStrategy = outerTransactionStrategy;
       _executionContext = executionContext;
+      _child = NullTransactionStrategy.Null;
 
-      var inParameters = ExecutionContext.GetInParameters ();
+      var inParameters = ExecutionContext.GetInParameters();
       RegisterObjects (inParameters);
     }
 
@@ -72,8 +73,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       get { return _child; }
     }
 
-    public void SetChild (TransactionStrategyBase child)
+    protected void SetChild (TransactionStrategyBase child)
     {
+      ArgumentUtility.CheckNotNull ("child", child);
+
       _child = child;
     }
 
@@ -84,27 +87,27 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public override void Commit ()
     {
-      _transaction.Commit ();
+      _transaction.Commit();
     }
 
     public override void Rollback ()
     {
-      _transaction.Rollback ();
+      _transaction.Rollback();
     }
 
     public override void Reset ()
     {
       if (_scope != null)
       {
-        _scope.Leave ();
-        _transaction.Reset ();
+        _scope.Leave();
+        _transaction.Reset();
         EnterScope();
       }
       else
-        _transaction.Reset ();
+        _transaction.Reset();
     }
 
-    public sealed override void RegisterObjects (IEnumerable objects)
+    public override sealed void RegisterObjects (IEnumerable objects)
     {
       ArgumentUtility.CheckNotNull ("objects", objects);
 
@@ -115,7 +118,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("listener", listener);
-      
+
       if (_scope != null)
       {
         throw new InvalidOperationException (
@@ -124,32 +127,26 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       ExecuteAndWrapInnerException (EnterScope, null);
 
-      if (Child != null)
-        Child.OnExecutionPlay (context, listener);
-      else
-        listener.OnExecutionPlay (context);
+      Child.OnExecutionPlay (context, listener);
     }
 
     public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("listener", listener);
-      
+
       if (_scope == null)
         throw new InvalidOperationException ("OnExecutionStop may not be invoked unless OnExecutionPlay was called first.");
 
       Exception innerException = null;
       try
       {
-        if (Child != null)
-          Child.OnExecutionStop (context, listener);
-        else
-          listener.OnExecutionStop (context);
+        Child.OnExecutionStop (context, listener);
 
         if (AutoCommit)
           CommitTransaction();
 
-        var outParameters = ExecutionContext.GetOutParameters ();
+        var outParameters = ExecutionContext.GetOutParameters();
         OuterTransactionStrategy.RegisterObjects (outParameters);
       }
       catch (Exception e)
@@ -167,17 +164,14 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("listener", listener);
-      
+
       if (_scope == null)
         throw new InvalidOperationException ("OnExecutionPause may not be invoked unless OnExecutionPlay was called first.");
 
       Exception innerException = null;
       try
       {
-        if (Child != null)
-          Child.OnExecutionPause (context, listener);
-        else
-          listener.OnExecutionPause (context);
+        Child.OnExecutionPause (context, listener);
       }
       catch (Exception e)
       {
@@ -201,10 +195,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       Exception innerException = null;
       try
       {
-        if (Child != null)
-          Child.OnExecutionFail (context, listener, exception);
-        else
-          listener.OnExecutionFail (context, exception);
+        Child.OnExecutionFail (context, listener, exception);
       }
       catch (Exception e)
       {
@@ -224,17 +215,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     private void EnterScope ()
     {
-      _scope = _transaction.EnterScope ();
+      _scope = _transaction.EnterScope();
     }
 
     protected virtual void CommitTransaction ()
     {
-      _transaction.Commit ();
+      _transaction.Commit();
     }
 
     protected virtual void ReleaseTransaction ()
     {
-      _transaction.Release ();
+      _transaction.Release();
     }
 
     private void LeaveScope (Exception innerException)

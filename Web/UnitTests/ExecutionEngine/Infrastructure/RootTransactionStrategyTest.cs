@@ -67,7 +67,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       var childExecutionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext>();
       childExecutionContextStub.Stub (stub => stub.GetInParameters ()).Return (new object[0]);
 
-      ChildTransactionStrategy childTransactionStrategy = _strategy.CreateChildTransactionStrategy (true, childExecutionContextStub);
+      ScopedTransactionStrategyBase childTransactionStrategy = _strategy.CreateChildTransactionStrategy (true, childExecutionContextStub);
 
       Assert.That (childTransactionStrategy, Is.Not.Null);
       Assert.That (childTransactionStrategy.AutoCommit, Is.True);

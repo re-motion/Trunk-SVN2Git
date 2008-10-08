@@ -32,35 +32,16 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
     public void Test ()
     {
       InvokeOnExecutionPlay (_strategy);
-      using (MockRepository.Ordered())
-      {
-        ExecutionListenerMock.Expect (mock => mock.OnExecutionPause (Context));
-        ScopeMock.Expect (mock => mock.Leave());
-      }
-
-      MockRepository.ReplayAll();
-
-      _strategy.OnExecutionPause (Context, ExecutionListenerMock);
-
-      MockRepository.VerifyAll();
-      Assert.That (_strategy.Scope, Is.Null);
-    }
-
-    [Test]
-    public void Test_WithChildStrategy ()
-    {
-      InvokeOnExecutionPlay (_strategy);
-      _strategy.SetChild (ChildTransactionStrategyMock);
 
       using (MockRepository.Ordered ())
       {
-        ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionPause (Context, ExecutionListenerMock));
+        ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionPause (Context, ExecutionListenerStub));
         ScopeMock.Expect (mock => mock.Leave ());
       }
 
       MockRepository.ReplayAll ();
 
-      _strategy.OnExecutionPause (Context, ExecutionListenerMock);
+      _strategy.OnExecutionPause (Context, ExecutionListenerStub);
 
       MockRepository.VerifyAll ();
       Assert.That (_strategy.Scope, Is.Null);
@@ -72,26 +53,26 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
     public void Test_WithNullScope ()
     {
       Assert.That (_strategy.Scope, Is.Null);
-      _strategy.OnExecutionPause (Context, ExecutionListenerMock);
+      _strategy.OnExecutionPause (Context, ExecutionListenerStub);
     }
 
     [Test]
-    public void Test_InnerListenerThrows ()
+    public void Test_ChildStrategyThrows ()
     {
       var innerException = new ApplicationException ("InnerListener Exception");
 
       InvokeOnExecutionPlay (_strategy);
       using (MockRepository.Ordered())
       {
-        ExecutionListenerMock.Expect (mock => mock.OnExecutionPause (Context)).Throw (innerException);
-        ScopeMock.Expect (mock => mock.Leave());
+        ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionPause (Context, ExecutionListenerStub)).Throw (innerException);
+        ScopeMock.Expect (mock => mock.Leave ());
       }
 
       MockRepository.ReplayAll();
 
       try
       {
-        _strategy.OnExecutionPause (Context, ExecutionListenerMock);
+        _strategy.OnExecutionPause (Context, ExecutionListenerStub);
         Assert.Fail ("Expected Exception");
       }
       catch (ApplicationException actualException)
@@ -109,15 +90,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       var innerException = new WxeFatalExecutionException (new Exception ("ChildStrategy Exception"), null);
 
       InvokeOnExecutionPlay (_strategy);
-      _strategy.SetChild (ChildTransactionStrategyMock);
-
-      ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionPause (Context, ExecutionListenerMock)).Throw (innerException);
+      ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionPause (Context, ExecutionListenerStub)).Throw (innerException);
 
       MockRepository.ReplayAll ();
 
       try
       {
-        _strategy.OnExecutionPause (Context, ExecutionListenerMock);
+        _strategy.OnExecutionPause (Context, ExecutionListenerStub);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -137,15 +116,15 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       InvokeOnExecutionPlay (_strategy);
       using (MockRepository.Ordered())
       {
-        ExecutionListenerMock.Expect (mock => mock.OnExecutionPause (Context));
-        ScopeMock.Expect (mock => mock.Leave()).Throw (innerException);
+        ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionPause (Context, ExecutionListenerStub));
+        ScopeMock.Expect (mock => mock.Leave ()).Throw (innerException);
       }
 
       MockRepository.ReplayAll();
 
       try
       {
-        _strategy.OnExecutionPause (Context, ExecutionListenerMock);
+        _strategy.OnExecutionPause (Context, ExecutionListenerStub);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
@@ -158,7 +137,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
     }
 
     [Test]
-    public void Test_InnerListenerThrows_And_LeaveThrows ()
+    public void Test_ChildStrategyThrows_And_LeaveThrows ()
     {
       var innerException = new Exception ("InnerListener Exception");
       var outerException = new Exception ("Leave Exception");
@@ -166,15 +145,15 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       InvokeOnExecutionPlay (_strategy);
       using (MockRepository.Ordered())
       {
-        ExecutionListenerMock.Expect (mock => mock.OnExecutionPause (Context)).Throw (innerException);
-        ScopeMock.Expect (mock => mock.Leave()).Throw (outerException);
+        ChildTransactionStrategyMock.Expect (mock => mock.OnExecutionPause (Context, ExecutionListenerStub)).Throw (innerException);
+        ScopeMock.Expect (mock => mock.Leave ()).Throw (outerException);
       }
 
       MockRepository.ReplayAll();
 
       try
       {
-        _strategy.OnExecutionPause (Context, ExecutionListenerMock);
+        _strategy.OnExecutionPause (Context, ExecutionListenerStub);
         Assert.Fail ("Expected Exception");
       }
       catch (WxeFatalExecutionException actualException)
