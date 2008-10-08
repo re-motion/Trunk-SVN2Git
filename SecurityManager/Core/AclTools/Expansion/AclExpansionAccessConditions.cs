@@ -1,6 +1,7 @@
 using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
@@ -27,6 +28,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return (ac.AbstractRole == AbstractRole) &&
         (ac.IsOwningGroupRequired == IsOwningGroupRequired) && (ac.IsOwningTenantRequired == IsOwningTenantRequired) &&
         (ac.IsOwningUserRequired == IsOwningUserRequired);
+    }
+
+    public override int GetHashCode ()
+    {
+      return EqualityUtility.GetRotatedHashCode (AbstractRole,IsOwningGroupRequired,IsOwningTenantRequired,IsOwningUserRequired);
     }
 
 
