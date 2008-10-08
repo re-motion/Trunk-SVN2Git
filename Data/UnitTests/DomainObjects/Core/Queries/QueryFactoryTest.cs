@@ -12,13 +12,14 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Queries
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
   [TestFixture]
   public class QueryFactoryTest : StandardMappingTest
@@ -51,5 +52,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Queries
       var providerDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions[providerID];
       Assert.That (QueryFactory.GetDefaultSqlGenerator (typeof (Order)), Is.SameAs (providerDefinition.LinqSqlGenerator));
     }
+
+    //[Test]
+    //public void CreateQuery_FromDefinition()
+    //{
+    //  var definition = new QueryDefinition ("Test", "x", "y", QueryType.Collection, typeof (OrderCollection));
+    //  IQuery query = QueryFactory.CreateQuery (definition);
+    //  Assert.That (query.CollectionType, Is.EqualTo (definition.CollectionType));
+    //  Assert.That (query.ID, Is.EqualTo (definition.ID));
+    //  Assert.That (query.Parameters, Is.Empty);
+    //  Assert.That (query.QueryType, Is.EqualTo (definition.QueryType));
+    //  Assert.That (query.Statement, Is.EqualTo (definition.Statement));
+    //  Assert.That (query.StorageProviderID, Is.EqualTo (definition.StorageProviderID));
+    //}
+
+    //[Test]
+    //public void CreateQuery_()
+    //{
+      
+    //}
+      
   }
 }
