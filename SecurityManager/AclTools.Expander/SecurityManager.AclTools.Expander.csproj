@@ -54,8 +54,9 @@
     <None Include="SecurityManager.AclTools.Expander.build" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AclExpansion.css" />
     <Content Include="SecurityManagerQueries.xml" />
-    <Content Include="test.htm" />
+    <Content Include="AclExpansionTest.htm" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
