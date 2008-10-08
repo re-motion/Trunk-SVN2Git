@@ -27,8 +27,8 @@ public class Query : IQuery
 
   // member fields
 
-  private QueryDefinition _definition;
-  private QueryParameterCollection _parameters;
+  private readonly QueryDefinition _definition;
+  private readonly QueryParameterCollection _parameters;
 
   // construction and disposing
 

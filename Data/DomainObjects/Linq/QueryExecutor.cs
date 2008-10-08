@@ -9,12 +9,9 @@
  */
 
 using System.Collections;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.Configuration;
 using System;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
@@ -33,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Linq
     public object ExecuteSingle (QueryModel queryModel)
     {
       IEnumerable results = ExecuteCollection (queryModel);
-      ArrayList resultList = new ArrayList();
+      var resultList = new ArrayList();
       foreach (object o in results)
         resultList.Add (o);
       if (resultList.Count == 1)
@@ -55,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Linq
       CommandData commandData = CreateStatement(queryModel);
       CheckProjection (commandData.SqlGenerationData.SelectEvaluation);
 
-      Query query = CreateQuery(classDefinition, commandData.Statement, commandData.Parameters);
+      IQuery query = CreateQuery (classDefinition, commandData.Statement, commandData.Parameters);
       return ClientTransaction.Current.QueryManager.GetCollection (query);
     }
 
@@ -68,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new InvalidOperationException (message);
       }
       
-      Column column = (Column) evaluation;
+      var column = (Column) evaluation;
       if (column.Name != "*")
       {
         string message = string.Format (
@@ -78,14 +75,13 @@ namespace Remotion.Data.DomainObjects.Linq
       }
     }
 
-    public virtual Query CreateQuery(ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
+    public virtual IQuery CreateQuery(ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
     {
-      QueryParameterCollection queryParameters = new QueryParameterCollection();
+      var queryParameters = new QueryParameterCollection();
       foreach (CommandParameter commandParameter in commandParameters)
         queryParameters.Add (commandParameter.Name, commandParameter.Value, QueryParameterType.Value);
 
-      QueryDefinition queryDefinition = new QueryDefinition ("<dynamic query>", classDefinition.StorageProviderID, statement, QueryType.Collection);
-      return new Query (queryDefinition,queryParameters);
+      return QueryFactory.CreateCollectionQuery ("<dynamic query>", classDefinition.StorageProviderID, statement, queryParameters, typeof (DomainObjectCollection));
     }
 
     public virtual ClassDefinition GetClassDefinition ()

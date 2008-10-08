@@ -11,7 +11,6 @@
 using System;
 using System.Collections;
 using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -50,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       ClientTransaction.Current.Commit();
 
-      QueryExecutor<Computer> executor = new QueryExecutor<Computer> (_sqlGenerator);
+      var executor = new QueryExecutor<Computer> (_sqlGenerator);
       QueryModel model = GetParsedSimpleQuery ();
 
       object instance = executor.ExecuteSingle (model);
@@ -62,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (ExpectedMessage = "ExecuteSingle must return a single object, but the query returned 5 objects.")]
     public void ExecuteSingle_TooManyObjects()
     {
-      QueryExecutor<Computer> executor = new QueryExecutor<Computer> (_sqlGenerator);
+      var executor = new QueryExecutor<Computer> (_sqlGenerator);
       executor.ExecuteSingle (GetParsedSimpleQuery());
     }
 
@@ -70,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void QueryExecutor_ExecuteSingle_NoCurrentTransaction ()
     {
-      QueryExecutor<Computer> executor = new QueryExecutor<Computer> (_sqlGenerator);
+      var executor = new QueryExecutor<Computer> (_sqlGenerator);
       QueryModel model = GetParsedSimpleQuery ();
 
       using (ClientTransactionScope.EnterNullScope ())
@@ -82,16 +81,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ExecuteCollection ()
     {
-      QueryExecutor<Computer> executor = new QueryExecutor<Computer> (_sqlGenerator);
+      var executor = new QueryExecutor<Computer> (_sqlGenerator);
       QueryModel model = GetParsedSimpleQuery();
 
       IEnumerable computers = executor.ExecuteCollection (model);
 
-      ArrayList computerList = new ArrayList();
+      var computerList = new ArrayList();
       foreach (Computer computer in computers)
         computerList.Add (computer);
 
-      Computer[] expected = new Computer[]
+      var expected = new[]
                             {
                                 Computer.GetObject (DomainObjectIDs.Computer1),
                                 Computer.GetObject (DomainObjectIDs.Computer2),
@@ -106,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'Remotion.Data.DomainObjects.DomainObject'.")]
     public void ExecuteCollection_WrongType ()
     {
-      QueryExecutor<DomainObject> executor = new QueryExecutor<DomainObject> (_sqlGenerator);
+      var executor = new QueryExecutor<DomainObject> (_sqlGenerator);
       executor.ExecuteCollection (GetParsedSimpleQuery());
     }
 
@@ -114,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void QueryExecutor_ExecuteCollection_NoCurrentTransaction ()
     {
-      QueryExecutor<Computer> executor = new QueryExecutor<Computer> (_sqlGenerator);
+      var executor = new QueryExecutor<Computer> (_sqlGenerator);
       QueryModel model = GetParsedSimpleQuery ();
 
       using (ClientTransactionScope.EnterNullScope ())
@@ -126,10 +125,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ExecuteSingle_WithParameters ()
     {
-      QueryExecutor<Order> executor = new QueryExecutor<Order> (_sqlGenerator);
+      var executor = new QueryExecutor<Order> (_sqlGenerator);
       QueryModel model = GetParsedSimpleWhereQuery ();
 
-      Order order = (Order) executor.ExecuteSingle (model);
+      var order = (Order) executor.ExecuteSingle (model);
 
       Order expected = Order.GetObject (DomainObjectIDs.Order1);
       Assert.AreSame (expected, order);
@@ -138,16 +137,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ExecuteCollection_WithParameters()
     {
-      QueryExecutor<Order> executor = new QueryExecutor<Order> (_sqlGenerator);
+      var executor = new QueryExecutor<Order> (_sqlGenerator);
       QueryModel model = GetParsedSimpleWhereQuery ();
 
       IEnumerable orders = executor.ExecuteCollection (model);
 
-      ArrayList orderList = new ArrayList ();
+      var orderList = new ArrayList ();
       foreach (Order order in orders) 
         orderList.Add (order);
 
-      Order[] expected = new Order[]
+      var expected = new[]
                          {
                              Order.GetObject (DomainObjectIDs.Order1),
 
@@ -160,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       public interface IBaseCallRequirements
       {
         ClassDefinition GetClassDefinition ();
-        Query CreateQuery (ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters);
+        IQuery CreateQuery (ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters);
         CommandData CreateStatement (QueryModel queryModel);
       }
 
@@ -176,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       }
 
       [OverrideTarget]
-      public Query CreateQuery (ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
+      public IQuery CreateQuery (ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
       {
         CreateQueryCalled = true;
         return Base.CreateQuery (classDefinition, statement, commandParameters);
@@ -195,8 +194,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestMixin> ().EnterScope ())
       {
-        DomainObjectQueryable<Order> queryable = new DomainObjectQueryable<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
-        Assert.That (Mixin.Get<QueryExecutorTest.TestMixin> (((QueryProvider)queryable.Provider).Executor), Is.Not.Null);
+        var queryable = new DomainObjectQueryable<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
+        Assert.That (Mixin.Get<TestMixin> (queryable.Provider.Executor), Is.Not.Null);
       }
     }
 
@@ -205,8 +204,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestMixin> ().EnterScope ())
       {
-        DomainObjectQueryable<Order> queryable = new DomainObjectQueryable<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
-        QueryExecutor<Order> executor = (QueryExecutor<Order>) ((QueryProvider) queryable.Provider).Executor;
+        var queryable = new DomainObjectQueryable<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
+        var executor = queryable.GetExecutor();
 
         executor.GetClassDefinition();
         Assert.That (Mixin.Get<TestMixin> (executor).GetClassDefinitionCalled, Is.True);
@@ -218,8 +217,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestMixin> ().EnterScope ())
       {
-        DomainObjectQueryable<Computer> queryable = new DomainObjectQueryable<Computer> (new SqlServerGenerator (DatabaseInfo.Instance));
-        QueryExecutor<Computer> executor = (QueryExecutor<Computer>) ((QueryProvider) queryable.Provider).Executor;
+        var queryable = new DomainObjectQueryable<Computer> (new SqlServerGenerator (DatabaseInfo.Instance));
+        var executor = queryable.GetExecutor();
 
         executor.CreateStatement (GetParsedSimpleQuery ());
         Assert.That (Mixin.Get<TestMixin> (executor).GetStatementCalled, Is.True);
@@ -231,8 +230,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestMixin> ().EnterScope ())
       {
-        DomainObjectQueryable<Order> queryable = new DomainObjectQueryable<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
-        QueryExecutor<Order> executor = (QueryExecutor<Order>) ((QueryProvider) queryable.Provider).Executor;
+        var queryable = new DomainObjectQueryable<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
+        var executor = queryable.GetExecutor();
 
         ClassDefinition classDefinition = executor.GetClassDefinition();
         CommandData statement = executor.CreateStatement(GetParsedSimpleQuery());

@@ -139,6 +139,9 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="statement">The scalar query statement.</param>
     /// <param name="queryParameterCollection">The parameter collection to be used for the query.</param>
     /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
+    /// <remarks>Note that creating queries with a hard-coded SQL statement is not very flexible and not portable at all.
+    /// Therefore, the <see cref="CreateQueryable{T}()"/> and <see cref="CreateQuery(QueryDefinition,QueryParameterCollection)"/>
+    /// methods should usually be preferred to this method.</remarks>
     public static IQuery CreateScalarQuery (string id, string storageProviderID, string statement, QueryParameterCollection queryParameterCollection)
     {
       ArgumentUtility.CheckNotNull ("id", id);
@@ -161,6 +164,9 @@ namespace Remotion.Data.DomainObjects.Queries
     /// about the collection type. Note that the type passed here can be specialized by 
     /// <see cref="IQueryManager.GetCollection{T}"/>.</param>
     /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
+    /// <remarks>Note that creating queries with a hard-coded SQL statement is not very flexible and not portable at all.
+    /// Therefore, the <see cref="CreateQueryable{T}()"/> and <see cref="CreateQuery(QueryDefinition,QueryParameterCollection)"/>
+    /// methods should usually be preferred to this method.</remarks>
     public static IQuery CreateCollectionQuery (string id, string storageProviderID, string statement, QueryParameterCollection queryParameterCollection, Type collectionType)
     {
       ArgumentUtility.CheckNotNull ("id", id);
