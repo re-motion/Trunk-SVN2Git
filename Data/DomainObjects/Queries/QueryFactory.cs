@@ -9,11 +9,13 @@
  */
 
 using System;
+using System.Linq;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Utilities;
@@ -130,6 +132,30 @@ namespace Remotion.Data.DomainObjects.Queries
 
       return new Query (queryDefinition, queryParameterCollection);
     }
+
+    /// <summary>
+    /// Creates a new query object from a given LINQ query.
+    /// </summary>
+    /// <param name="queryable">The queryable.</param>
+    /// <returns></returns>
+    public static IQuery CreateQuery (IQueryable queryable)
+    {
+      ArgumentUtility.CheckNotNull ("queryable", queryable);
+
+      var provider = queryable.Provider as QueryProvider;
+      if (provider == null)
+      {
+        string message = string.Format ("The given queryable must stem from an instance of DomainObjectQueryable. Instead, it is of type '{0}',"
+            + " with a query provider of type '{1}'. Be sure to use QueryFactory.CreateQueryable to create the queryable instance, and only use "
+            + "standard query methods on it.", queryable.GetType ().Name, queryable.Provider.GetType ().Name);
+        throw new ArgumentException (message, "queryable");
+      }
+
+      var queryExecutor = (QueryExecutorBase) provider.Executor;
+      var queryModel = provider.GenerateQueryModel (queryable.Expression);
+      return queryExecutor.CreateQuery (queryModel);
+    }
+
 
     /// <summary>
     /// Creates a new query object, loading its data from the <see cref="QueryConfiguration"/>.

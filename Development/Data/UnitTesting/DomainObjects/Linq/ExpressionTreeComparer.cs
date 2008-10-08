@@ -43,7 +43,7 @@ namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
 
     private CommandData GetCommandData<T> (IQueryable<T> queryable)
     {
-      QueryModel queryModel = MethodCaller.CallFunc<QueryModel> ("GenerateQueryExpression", BindingFlags.Instance | BindingFlags.NonPublic)
+      QueryModel queryModel = MethodCaller.CallFunc<QueryModel> ("GenerateQueryModel", BindingFlags.Instance | BindingFlags.Public)
           .With ((QueryProviderBase) queryable.Provider, queryable.Expression);
 
       return ((QueryExecutor<T>) ((QueryProviderBase) queryable.Provider).Executor).CreateStatement (queryModel);

@@ -18,7 +18,7 @@ namespace Remotion.Data.DomainObjects.Linq
 {
   public class QueryProvider : QueryProviderBase
   {
-    public QueryProvider (IQueryExecutor executor)
+    public QueryProvider (QueryExecutorBase executor)
         : base (executor)
     {
     }

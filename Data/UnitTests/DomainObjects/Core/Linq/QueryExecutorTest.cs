@@ -154,81 +154,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (orderList, Is.EquivalentTo (expected));
     }
 
-    public class TestMixin : Mixin<object, TestMixin.IBaseCallRequirements>
+    [Test]
+    public void CreateQuery()
     {
-      public interface IBaseCallRequirements
-      {
-        ClassDefinition GetClassDefinition ();
-        IQuery CreateQuery (ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters);
-        CommandData CreateStatement (QueryModel queryModel);
-      }
-
-      public bool GetClassDefinitionCalled = false;
-      public bool CreateQueryCalled = false;
-      public bool GetStatementCalled = false;
-
-      [OverrideTarget]
-      public ClassDefinition GetClassDefinition ()
-      {
-        GetClassDefinitionCalled = true;
-        return Base.GetClassDefinition();
-      }
-
-      [OverrideTarget]
-      public IQuery CreateQuery (ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
-      {
-        CreateQueryCalled = true;
-        return Base.CreateQuery (classDefinition, statement, commandParameters);
-      }
-
-      [OverrideTarget]
-      public CommandData CreateStatement (QueryModel queryModel)
-      {
-        GetStatementCalled = true;
-        return Base.CreateStatement (queryModel);
-      }
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
+      var statement = "x";
+      var commandParameters = new [] { new CommandParameter("x", "y") };
+      var executor = new QueryExecutor<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
+      
+      var query = executor.CreateQuery (classDefinition, statement, commandParameters);
+      Assert.That (query.Statement, Is.EqualTo (statement));
+      Assert.That (query.Parameters.Count, Is.EqualTo (1));
+      Assert.That (query.Parameters[0].Name, Is.EqualTo ("x"));
+      Assert.That (query.Parameters[0].Value, Is.EqualTo ("y"));
+      Assert.That (query.StorageProviderID, Is.EqualTo (classDefinition.StorageProviderID));
+      Assert.That (query.ID, Is.EqualTo ("<dynamic query>"));
     }
-    
+
+    [Test]
+    public void CreateQuery_FromModel ()
+    {
+      var queryModel = GetParsedSimpleWhereQuery ();
+      var executor = new QueryExecutor<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
+
+      var query = executor.CreateQuery (queryModel);
+      Assert.That (query.Statement, Is.EqualTo ("SELECT [order].* FROM [OrderView] [order] WHERE ([order].[OrderNo] = @1)"));
+      Assert.That (query.Parameters.Count, Is.EqualTo (1));
+      Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
+      Assert.That (query.Parameters[0].Value, Is.EqualTo (1));
+      Assert.That (query.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).StorageProviderID));
+      Assert.That (query.ID, Is.EqualTo ("<dynamic query>"));
+    }
+
     [Test]
     public void QueryExecutor_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var queryable = new DomainObjectQueryable<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
-        Assert.That (Mixin.Get<TestMixin> (queryable.Provider.Executor), Is.Not.Null);
+        Assert.That (Mixin.Get<TestQueryExecutorMixin> (queryable.Provider.Executor), Is.Not.Null);
       }
     }
 
     [Test]
     public void GetClassDefinition_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var queryable = new DomainObjectQueryable<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
         var executor = queryable.GetExecutor();
 
         executor.GetClassDefinition();
-        Assert.That (Mixin.Get<TestMixin> (executor).GetClassDefinitionCalled, Is.True);
+        Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).GetClassDefinitionCalled, Is.True);
       }
     }
 
     [Test]
     public void GetStatement_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var queryable = new DomainObjectQueryable<Computer> (new SqlServerGenerator (DatabaseInfo.Instance));
         var executor = queryable.GetExecutor();
 
         executor.CreateStatement (GetParsedSimpleQuery ());
-        Assert.That (Mixin.Get<TestMixin> (executor).GetStatementCalled, Is.True);
+        Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).GetStatementCalled, Is.True);
       }
     }
 
     [Test]
     public void CreateQuery_CanBeMixed ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestMixin> ().EnterScope ())
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var queryable = new DomainObjectQueryable<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
         var executor = queryable.GetExecutor();
@@ -237,7 +234,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         CommandData statement = executor.CreateStatement(GetParsedSimpleQuery());
 
         executor.CreateQuery (classDefinition, statement.Statement, statement.Parameters);
-        Assert.That (Mixin.Get<TestMixin> (executor).CreateQueryCalled, Is.True);
+        Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryCalled, Is.True);
+      }
+    }
+
+    [Test]
+    public void CreateQueryFromModel_CanBeMixed ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      {
+        var queryModel = GetParsedSimpleQuery ();
+        var executor = ObjectFactory.Create<QueryExecutor<Order>>().With (new SqlServerGenerator (DatabaseInfo.Instance));
+
+        executor.CreateQuery (queryModel);
+        Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);
       }
     }
 
@@ -253,5 +263,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       return new QueryParser (query.Expression).GetParsedQuery ();
     }
 
+    
   }
 }

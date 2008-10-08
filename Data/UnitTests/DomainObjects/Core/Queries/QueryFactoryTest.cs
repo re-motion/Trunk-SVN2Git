@@ -8,6 +8,8 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
@@ -144,6 +146,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Collection));
       Assert.That (query.Statement, Is.EqualTo (statement));
       Assert.That (query.StorageProviderID, Is.EqualTo (storageProviderID));
+    }
+
+    [Test]
+    public void CreateQuery_FromLinqQuery()
+    {
+      var queryable = from o in QueryFactory.CreateQueryable<Order> ()
+                      where o.OrderNumber > 1
+                      select o;
+
+      IQuery query = QueryFactory.CreateQuery (queryable);
+      Assert.That (query.Statement, Is.EqualTo ("SELECT [o].* FROM [OrderView] [o] WHERE ([o].[OrderNo] > @1)"));
+      Assert.That (query.Parameters.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given queryable must stem from an instance of DomainObjectQueryable. Instead, "
+        + "it is of type 'EnumerableQuery`1', with a query provider of type 'EnumerableQuery`1'. Be sure to use QueryFactory.CreateQueryable to "
+        + "create the queryable instance, and only use standard query methods on it.\r\nParameter name: queryable")]
+    public void CreateQuery_FromLinqQuery_InvalidQueryable ()
+    {
+      var queryable = new int[0].AsQueryable ();
+      QueryFactory.CreateQuery (queryable);
     }
   }
 }
