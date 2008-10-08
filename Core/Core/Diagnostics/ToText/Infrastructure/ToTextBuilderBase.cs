@@ -104,12 +104,41 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
       }
     }
 
-    public void SetOutputComplexityToDisable () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Disable; }
-    public void SetOutputComplexityToSkeleton () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Skeleton; }
-    public void SetOutputComplexityToBasic () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic; }
-    public void SetOutputComplexityToMedium () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Medium; }
-    public void SetOutputComplexityToComplex () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Complex; }
-    public void SetOutputComplexityToFull () { OutputComplexity = ToTextBuilderOutputComplexityLevel.Full; }
+    public IToTextBuilder SetOutputComplexityToDisable () { 
+      OutputComplexity = ToTextBuilderOutputComplexityLevel.Disable;
+      return this; 
+    }
+
+    public IToTextBuilder SetOutputComplexityToSkeleton ()
+    {
+      OutputComplexity = ToTextBuilderOutputComplexityLevel.Skeleton;
+      return this;
+    }
+
+    public IToTextBuilder SetOutputComplexityToBasic ()
+    {
+      OutputComplexity = ToTextBuilderOutputComplexityLevel.Basic;
+      return this;
+    }
+
+    public IToTextBuilder SetOutputComplexityToMedium ()
+    {
+      OutputComplexity = ToTextBuilderOutputComplexityLevel.Medium;
+      return this;
+    }
+
+    public IToTextBuilder SetOutputComplexityToComplex ()
+    {
+      OutputComplexity = ToTextBuilderOutputComplexityLevel.Complex;
+      return this;
+    }
+
+    public IToTextBuilder SetOutputComplexityToFull ()
+    {
+      OutputComplexity = ToTextBuilderOutputComplexityLevel.Full;
+      return this;
+    }
+
     public abstract IToTextBuilder WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel);
     public abstract string CheckAndConvertToString ();
     protected abstract void BeforeWriteElement ();

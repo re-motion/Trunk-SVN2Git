@@ -59,26 +59,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\Group_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\SecurityToken_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\Tenant_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AclProbe_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\ListOfAclExpansionEntry_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AccessControlList_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AccessControlEntry_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\Position_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\Permission_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AbstractRoleDefinition_ToTextSpecificTypeHandler.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest_Spike.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\Role_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\AccessTypeDefinition_ToTextSpecificTypeHandler.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTestOld.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditionsTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionEntryTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionTest.cs" />
     <Compile Include="AclTools\Expansion\AclProbeTest.cs" />
-    <Compile Include="AclTools\Expansion\ToTextSpecificTypeHandlers\User_ToTextSpecificTypeHandler.cs" />
     <Compile Include="AclTools\SetUpFixture.cs" />
     <Compile Include="Configuration\SecurityConfigurationMock.cs" />
     <Compile Include="Configuration\SecurityManagerConfigurationTest.cs" />
@@ -144,6 +131,7 @@
     <Compile Include="Domain\Metadata\SecurableClassValidationResultTest.cs" />
     <Compile Include="Domain\RevisionTest.cs" />
     <Compile Include="Domain\SerializationTest.cs" />
+    <Compile Include="Domain\ToTextSpecificTypeHandlers\ToTextSpecificTypeHandlerTests.cs" />
     <Compile Include="Persistence\RevisionSqlProviderExtensionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityServiceTest.cs" />

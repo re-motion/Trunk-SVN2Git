@@ -11,9 +11,11 @@
 // 
 using System;
 using Remotion.Diagnostics.ToText;
+using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ToTextSpecificTypeHandlers
+namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
   public class AccessTypeDefinition_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AccessTypeDefinition>
@@ -24,7 +26,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ToTextSpecificTy
       //toTextBuilder.e ("name", x.Name).e ("val", x.Value);
       //toTextBuilder.ie ();
 
-      toTextBuilder.sbLiteral ("ATD(",")").elements (x.Name, x.Value).se();
+      if (toTextBuilder.OutputComplexity >= ToTextBuilderBase.ToTextBuilderOutputComplexityLevel.Complex)
+      {
+        //toTextBuilder.sbLiteral ("ATD(",")").elements (x.Name, x.Value).se();
+        toTextBuilder.ib<AccessTypeDefinition> ("").elements (x.Name, x.Value).se();
+      }
+      else
+      {
+        toTextBuilder.ib<AccessTypeDefinition> ("").e (x.Name).se();
+      }
     }
+
+   
   }
 }

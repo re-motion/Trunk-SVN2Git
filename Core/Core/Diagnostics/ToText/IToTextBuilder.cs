@@ -72,27 +72,27 @@ namespace Remotion.Diagnostics.ToText
     /// <summary>
     /// <para>Set the output complexity level to "disable", effectively disabling the <see cref="ToTextBuilder"/>.</para>
     /// </summary>
-    void SetOutputComplexityToDisable ();
+    IToTextBuilder SetOutputComplexityToDisable ();
     /// <summary>
     /// <para>Set the output complexity level to "skeleton", the lowest complexity level where output is still produced.</para>
     /// </summary>
-    void SetOutputComplexityToSkeleton ();
+    IToTextBuilder SetOutputComplexityToSkeleton ();
     /// <summary>
     /// <para>Set the output complexity level to "basic".</para>
     /// </summary>
-    void SetOutputComplexityToBasic ();
+    IToTextBuilder SetOutputComplexityToBasic ();
     /// <summary>
     /// <para>Set the output complexity level to "medium".</para>
     /// </summary>
-    void SetOutputComplexityToMedium ();
+    IToTextBuilder SetOutputComplexityToMedium ();
     /// <summary>
     /// <para>Set the output complexity level to "complex".</para>
     /// </summary>
-    void SetOutputComplexityToComplex ();
+    IToTextBuilder SetOutputComplexityToComplex ();
     /// <summary>
     /// <para>Set the output complexity level to "full".</para>
     /// </summary>
-    void SetOutputComplexityToFull ();
+    IToTextBuilder SetOutputComplexityToFull ();
 
 
 
