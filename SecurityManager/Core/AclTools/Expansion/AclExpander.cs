@@ -83,12 +83,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // to code purity concerns; since it is planned to remove priorities from the SecurityManager 
       // in the near future (to be replaced by a deny concept), which transforms the problem, since any matching ACE
       // will contribute to the access rights result (deny rights can still lead to it not having any impact, though)
-      // it was therefore decided to ignore these (up to 9= 2^4+1) "double entries" for now.
+      // it was therefore decided to ignore these (up to 9 = 2^4+1) "double entries" for now.
       AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken);
 
       if (accessTypeDefinitions.Length > 0)
       {
-        var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, aclProbe.AccessConditions, accessTypeDefinitions);
+        var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions, accessTypeDefinitions);
         To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
         aclExpansionEntries.Add (aclExpansionEntry);
       }

@@ -16,6 +16,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Text.CommandLine;
 using Remotion.Utilities;
 
@@ -98,7 +99,13 @@ namespace Remotion.SecurityManager.AclTools.Expander
       To.ConsoleLine.s ("====START====");
       foreach (AclExpansionEntry aclExpansionEntry in aclExpansion)
       {
-        To.ConsoleLine.e (aclExpansionEntry);
+        //To.ConsoleLine.e (aclExpansionEntry);
+        To.ConsoleLine.e (aclExpansionEntry.User.UserName);
+        To.Console.e (aclExpansionEntry.Role);
+        To.Console.e (aclExpansionEntry.Class);
+        To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
+        To.Console.e (aclExpansionEntry.AccessTypeDefinitions);
+        To.Console.e (aclExpansionEntry.AccessConditions);
       }
       To.ConsoleLine.s ("=====END=====");
     }
@@ -111,29 +118,7 @@ namespace Remotion.SecurityManager.AclTools.Expander
       return aclExpander.GetAclExpansionEntryList ();
     }
 
-    //private void ImportMetadata (ClientTransaction transaction)
-    //{
-    //  MetadataImporter importer = new MetadataImporter (transaction);
-    //  WriteInfo ("Importing metadata file '{0}'.", _arguments.MetadataFile);
-    //  importer.Import (_arguments.MetadataFile);
-    //}
-
-    //private void ImportLocalization (ClientTransaction transaction)
-    //{
-    //  CultureImporter importer = new CultureImporter (transaction);
-    //  LocalizationFileNameStrategy localizationFileNameStrategy = new LocalizationFileNameStrategy ();
-    //  string[] localizationFileNames = localizationFileNameStrategy.GetLocalizationFileNames (_arguments.MetadataFile);
-
-    //  foreach (string localizationFileName in localizationFileNames)
-    //  {
-    //    WriteInfo ("Importing localization file '{0}'.", localizationFileName);
-    //    importer.Import (localizationFileName);
-    //  }
-
-    //  if (localizationFileNames.Length == 0)
-    //    WriteInfo ("Localization files not found.");
-    //}
-
+ 
     private void HandleException (Exception exception)
     {
       if (_arguments.Verbose)

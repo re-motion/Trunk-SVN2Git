@@ -450,7 +450,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
               if (accessTypeDefinitions.Length > 0)
               {
-                var aclExpansionEntry = new AclExpansionEntry (user, role, aclProbe.AccessConditions, accessTypeDefinitions);
+                var aclExpansionEntry = new AclExpansionEntry (user, role, acl, aclProbe.AccessConditions, accessTypeDefinitions);
                 To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
                 aclExpansionEntries.Add (aclExpansionEntry);
               }

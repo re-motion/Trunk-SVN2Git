@@ -12,6 +12,7 @@
 using System;
 using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
+using Remotion.Text.StringExtensions;
 
 namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
 {
@@ -34,7 +35,8 @@ namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
       if (objAsEnum != null)
       {
         toTextBuilder.WriteRawElementBegin();
-        toTextBuilder.WriteRawString (objAsEnum.ToString());
+        string enumName = objAsEnum.ToString().LeftUntilChar ('|');
+        toTextBuilder.WriteRawString (enumName);
         toTextBuilder.WriteRawElementEnd ();
         toTextProviderHandlerFeedback.Handled = true;
       }

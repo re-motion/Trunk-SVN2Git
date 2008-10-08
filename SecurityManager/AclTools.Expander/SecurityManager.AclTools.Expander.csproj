@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SecurityManagerQueries.xml" />
+    <Content Include="test.htm" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
