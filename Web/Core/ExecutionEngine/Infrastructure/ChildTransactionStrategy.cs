@@ -29,5 +29,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       return innerListener;
     }
+
+    protected override void ReleaseTransaction ()
+    {
+      base.ReleaseTransaction ();
+      OuterTransactionStrategy.UnregisterChildTransactionStrategy (this);
+    }
   }
 }

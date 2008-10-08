@@ -37,7 +37,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       _executionListenerMock = MockRepository.GenerateMock<IWxeFunctionExecutionListener>();
       _executionContextMock = MockRepository.GenerateMock<IWxeFunctionExecutionContext>();
       _outerTransactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase>();
-      _strategy = new NoneTransactionStrategy (NullTransactionStrategy.Null);
+      _strategy = new NoneTransactionStrategy (_outerTransactionStrategyMock);
     }
 
     [Test]
@@ -99,14 +99,24 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     }
 
     [Test]
+    public void UnregisterChildTransactionStrategy ()
+    {
+      Assert.That (_strategy.OuterTransactionStrategy, Is.SameAs (_outerTransactionStrategyMock));
+      var childTransactionStrategyStub = MockRepository.GenerateStub<TransactionStrategyBase> ();
+
+      _strategy.UnregisterChildTransactionStrategy (childTransactionStrategyStub);
+
+      _outerTransactionStrategyMock.AssertWasCalled (mock => mock.UnregisterChildTransactionStrategy (childTransactionStrategyStub));
+    }
+
+    [Test]
     public void RegisterObjects ()
     {
-      var strategy = new NoneTransactionStrategy (_outerTransactionStrategyMock);
       var expectedObjects = new[] { new object() };
 
       _outerTransactionStrategyMock.Expect (mock => mock.RegisterObjects (expectedObjects));
 
-      strategy.RegisterObjects (expectedObjects);
+      _strategy.RegisterObjects (expectedObjects);
 
       _executionContextMock.VerifyAllExpectations();
       _outerTransactionStrategyMock.VerifyAllExpectations();

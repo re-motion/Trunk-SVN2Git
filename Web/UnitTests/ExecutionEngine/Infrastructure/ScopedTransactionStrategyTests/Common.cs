@@ -93,11 +93,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
     [Test]
     public void CreateChildTransactionStrategy ()
     {
-      var childTransaction = MockRepository.GenerateStub<ITransaction> ();
-      TransactionMock.Expect (mock => mock.CreateChild ()).Return (childTransaction);
+      var childTransaction = MockRepository.GenerateStub<ITransaction>();
+      TransactionMock.Expect (mock => mock.CreateChild()).Return (childTransaction);
 
-      var childExecutionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext> ();
-      childExecutionContextStub.Stub (stub => stub.GetInParameters ()).Return (new object[0]);
+      var childExecutionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext>();
+      childExecutionContextStub.Stub (stub => stub.GetInParameters()).Return (new object[0]);
 
       MockRepository.ReplayAll();
 
@@ -110,6 +110,35 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       Assert.That (childTransactionStrategy.OuterTransactionStrategy, Is.SameAs (_strategy));
       Assert.That (childTransactionStrategy.ExecutionContext, Is.SameAs (childExecutionContextStub));
       Assert.That (_strategy.Child, Is.SameAs (childTransactionStrategy));
+    }
+
+    [Test]
+    public void UnregisterChildTransactionStrategy ()
+    {
+      SetChild (_strategy, ChildTransactionStrategyMock);
+      Assert.That (_strategy.Child, Is.SameAs (ChildTransactionStrategyMock));
+
+      _strategy.UnregisterChildTransactionStrategy (ChildTransactionStrategyMock);
+
+      Assert.That (_strategy.Child, Is.SameAs (NullTransactionStrategy.Null));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The child transaction strategy passed for de-registration is not the same that is presently associated with the transaction strategy.")]
+    public void UnregisterChildTransactionStrategy_Throws ()
+    {
+      SetChild (_strategy, ChildTransactionStrategyMock);
+      Assert.That (_strategy.Child, Is.SameAs (ChildTransactionStrategyMock));
+
+      try
+      {
+        _strategy.UnregisterChildTransactionStrategy (NullTransactionStrategy.Null);
+      }
+      finally
+      {
+        Assert.That (_strategy.Child, Is.SameAs (ChildTransactionStrategyMock));
+      }
     }
   }
 }

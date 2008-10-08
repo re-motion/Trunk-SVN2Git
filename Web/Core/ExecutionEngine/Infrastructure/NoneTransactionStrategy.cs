@@ -55,6 +55,13 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       return OuterTransactionStrategy.CreateChildTransactionStrategy (autoCommit, executionContext);
     }
 
+    public override void UnregisterChildTransactionStrategy (TransactionStrategyBase childTransactionStrategy)
+    {
+      ArgumentUtility.CheckNotNull ("childTransactionStrategy", childTransactionStrategy);
+
+      OuterTransactionStrategy.UnregisterChildTransactionStrategy (childTransactionStrategy);
+    }
+
     public override void RegisterObjects (IEnumerable objects)
     {
       ArgumentUtility.CheckNotNull ("objects", objects);

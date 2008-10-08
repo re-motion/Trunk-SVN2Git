@@ -24,5 +24,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public abstract void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener);
     public abstract void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener);
     public abstract void OnExecutionFail (WxeContext context, IWxeFunctionExecutionListener listener, Exception exception);
+    public abstract void UnregisterChildTransactionStrategy (TransactionStrategyBase childTransactionStrategy);
   }
 }

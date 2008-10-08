@@ -100,14 +100,28 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         _transaction.Reset();
     }
 
-    public override sealed ScopedTransactionStrategyBase CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext)
+    public override sealed ScopedTransactionStrategyBase CreateChildTransactionStrategy (
+        bool autoCommit, IWxeFunctionExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
-      ChildTransactionStrategy childTransactionStrategy = new ChildTransactionStrategy (autoCommit, Transaction.CreateChild (), this, executionContext);
+      var childTransactionStrategy = new ChildTransactionStrategy (autoCommit, Transaction.CreateChild(), this, executionContext);
       _child = childTransactionStrategy;
 
       return childTransactionStrategy;
+    }
+
+    public override void UnregisterChildTransactionStrategy (TransactionStrategyBase childTransactionStrategy)
+    {
+      ArgumentUtility.CheckNotNull ("childTransactionStrategy", childTransactionStrategy);
+
+      if (_child != childTransactionStrategy)
+      {
+        throw new InvalidOperationException (
+            "The child transaction strategy passed for de-registration is not the same that is presently associated with the transaction strategy.");
+      }
+
+      _child = NullTransactionStrategy.Null;
     }
 
     public override sealed void RegisterObjects (IEnumerable objects)
@@ -218,7 +232,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     private void EnterScope ()
     {
-      _scope = _transaction.EnterScope();
+      var scope = _transaction.EnterScope();
+      Assertion.IsNotNull (scope);
+      _scope = scope;
     }
 
     protected virtual void CommitTransaction ()

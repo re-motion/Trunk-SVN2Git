@@ -62,6 +62,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     }
 
     [Test]
+    public void UnregisterChildTransactionStrategy ()
+    {
+      _strategy.UnregisterChildTransactionStrategy (MockRepository.GenerateStub<TransactionStrategyBase>());
+    }
+
+    [Test]
     public void RegisterObjects ()
     {
       _strategy.RegisterObjects (null);
