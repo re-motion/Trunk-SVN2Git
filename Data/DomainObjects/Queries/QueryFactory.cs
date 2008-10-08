@@ -105,5 +105,72 @@ namespace Remotion.Data.DomainObjects.Queries
       var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
       return storageProviderDefinition.LinqSqlGenerator;
     }
+
+    /// <summary>
+    /// Creates a new query object from a given <paramref name="queryDefinition"/>.
+    /// </summary>
+    /// <param name="queryDefinition">The query definition to construct a query from.</param>
+    /// <returns>An implementation of <see cref="IQuery"/> corresponding to <paramref name="queryDefinition"/>.</returns>
+    public static IQuery CreateQuery (QueryDefinition queryDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("queryDefinition", queryDefinition);
+      return new Query (queryDefinition);
+    }
+
+    /// <summary>
+    /// Creates a new query object from a given <paramref name="queryDefinition"/>.
+    /// </summary>
+    /// <param name="queryDefinition">The query definition to construct a query from.</param>
+    /// <param name="queryParameterCollection">The parameter collection to use for the query.</param>
+    /// <returns>An implementation of <see cref="IQuery"/> corresponding to <paramref name="queryDefinition"/>.</returns>
+    public static IQuery CreateQuery (QueryDefinition queryDefinition, QueryParameterCollection queryParameterCollection)
+    {
+      ArgumentUtility.CheckNotNull ("queryDefinition", queryDefinition);
+      ArgumentUtility.CheckNotNull ("queryParameterCollection", queryParameterCollection);
+
+      return new Query (queryDefinition, queryParameterCollection);
+    }
+
+    /// <summary>
+    /// Creates a new scalar query with the given statement, parameters, and metadata.
+    /// </summary>
+    /// <param name="id">A string identifying the query.</param>
+    /// <param name="storageProviderID">The ID of the storage provider used to execute the query.</param>
+    /// <param name="statement">The scalar query statement.</param>
+    /// <param name="queryParameterCollection">The parameter collection to be used for the query.</param>
+    /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
+    public static IQuery CreateScalarQuery (string id, string storageProviderID, string statement, QueryParameterCollection queryParameterCollection)
+    {
+      ArgumentUtility.CheckNotNull ("id", id);
+      ArgumentUtility.CheckNotNull ("storageProviderID", storageProviderID);
+      ArgumentUtility.CheckNotNull ("statement", statement);
+      ArgumentUtility.CheckNotNull ("queryParameterCollection", queryParameterCollection);
+
+      var definition = new QueryDefinition (id, storageProviderID, statement, QueryType.Scalar);
+      return new Query (definition, queryParameterCollection);
+    }
+
+    /// <summary>
+    /// Creates a new collection query with the given statement, parameters, and metadata.
+    /// </summary>
+    /// <param name="id">A string identifying the query.</param>
+    /// <param name="storageProviderID">The ID of the storage provider used to execute the query.</param>
+    /// <param name="statement">The scalar query statement.</param>
+    /// <param name="queryParameterCollection">The parameter collection to be used for the query.</param>
+    /// <param name="collectionType">The collection type to be returned from the query. Pass <see cref="DomainObjectCollection"/> if you don't care
+    /// about the collection type. Note that the type passed here can be specialized by 
+    /// <see cref="IQueryManager.GetCollection{T}"/>.</param>
+    /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
+    public static IQuery CreateCollectionQuery (string id, string storageProviderID, string statement, QueryParameterCollection queryParameterCollection, Type collectionType)
+    {
+      ArgumentUtility.CheckNotNull ("id", id);
+      ArgumentUtility.CheckNotNull ("storageProviderID", storageProviderID);
+      ArgumentUtility.CheckNotNull ("statement", statement);
+      ArgumentUtility.CheckNotNull ("queryParameterCollection", queryParameterCollection);
+      ArgumentUtility.CheckNotNull ("collectionType", collectionType);
+
+      var definition = new QueryDefinition (id, storageProviderID, statement, QueryType.Collection, collectionType);
+      return new Query (definition, queryParameterCollection);
+    }
   }
 }
