@@ -83,6 +83,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
+    public void CreateQueryFromConfiguration_FromID ()
+    {
+      var definition = DomainObjectsConfiguration.Current.Query.QueryDefinitions[0];
+
+      IQuery query = QueryFactory.CreateQueryFromConfiguration (definition.ID);
+      Assert.That (query.CollectionType, Is.EqualTo (definition.CollectionType));
+      Assert.That (query.ID, Is.EqualTo (definition.ID));
+      Assert.That (query.Parameters, Is.Empty);
+      Assert.That (query.QueryType, Is.EqualTo (definition.QueryType));
+      Assert.That (query.Statement, Is.EqualTo (definition.Statement));
+      Assert.That (query.StorageProviderID, Is.EqualTo (definition.StorageProviderID));
+    }
+
+    [Test]
+    public void CreateQueryFromConfiguration_FromID_WithParameterCollection ()
+    {
+      var definition = DomainObjectsConfiguration.Current.Query.QueryDefinitions[0];
+      var parameterCollection = new QueryParameterCollection ();
+
+      IQuery query = QueryFactory.CreateQueryFromConfiguration (definition.ID, parameterCollection);
+      Assert.That (query.CollectionType, Is.EqualTo (definition.CollectionType));
+      Assert.That (query.ID, Is.EqualTo (definition.ID));
+      Assert.That (query.Parameters, Is.SameAs (parameterCollection));
+      Assert.That (query.QueryType, Is.EqualTo (definition.QueryType));
+      Assert.That (query.Statement, Is.EqualTo (definition.Statement));
+      Assert.That (query.StorageProviderID, Is.EqualTo (definition.StorageProviderID));
+    }
+
+    [Test]
     public void CreateScalarQuery()
     {
       var id = "id";

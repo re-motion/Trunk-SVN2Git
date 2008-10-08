@@ -132,6 +132,31 @@ namespace Remotion.Data.DomainObjects.Queries
     }
 
     /// <summary>
+    /// Creates a new query object, loading its data from the <see cref="QueryConfiguration"/>.
+    /// </summary>
+    /// <param name="id">The id of the query to load.</param>
+    /// <returns>An implementation of <see cref="IQuery"/> corresponding to the <see cref="QueryDefinition"/> with the given <paramref name="id"/>
+    /// held by the current <see cref="QueryConfiguration"/>.</returns>
+    public static IQuery CreateQueryFromConfiguration (string id)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty("id", id);
+      return new Query (id);
+    }
+
+    /// <summary>
+    /// Creates a new query object, loading its data from the <see cref="QueryConfiguration"/>.
+    /// </summary>
+    /// <param name="id">The id of the query to load.</param>
+    /// <param name="queryParameterCollection">The parameter collection to use for the query.</param>
+    /// <returns>An implementation of <see cref="IQuery"/> corresponding to the <see cref="QueryDefinition"/> with the given <paramref name="id"/>
+    /// held by the current <see cref="QueryConfiguration"/>.</returns>
+    public static IQuery CreateQueryFromConfiguration (string id, QueryParameterCollection queryParameterCollection)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      return new Query (id, queryParameterCollection);
+    }
+
+    /// <summary>
     /// Creates a new scalar query with the given statement, parameters, and metadata.
     /// </summary>
     /// <param name="id">A string identifying the query.</param>
