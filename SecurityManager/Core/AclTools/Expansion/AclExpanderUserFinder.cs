@@ -22,17 +22,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     public List<User> FindUsers ()
     {
-      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope ())
-      {
-        //var findAllUsersQuery = from u in DataContext.Entity<User> ()
-        //                        orderby u.LastName, u.FirstName
-        //                        select u;
-        //return findAllUsersQuery.ToList ();
+      //using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope ())
+      //{
         var findAllUsersQuery = from u in QueryFactory.CreateQueryable<User>()
                                 orderby u.LastName , u.FirstName
                                 select u;
         return findAllUsersQuery.ToList();
-      }
+      //}
     }
   }
 }

@@ -23,12 +23,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     public List<AccessControlList> FindAccessControlLists ()
     {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
+      //using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      //{
         var findAllAclsQuery = from acl in QueryFactory.CreateQueryable<AccessControlList> ()
                                select acl;
         return findAllAclsQuery.ToList ();
-      }
+      //}
     }
   }
 }

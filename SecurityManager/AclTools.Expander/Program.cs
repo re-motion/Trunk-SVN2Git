@@ -9,8 +9,13 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Text.CommandLine;
 using Remotion.Utilities;
 
@@ -72,18 +77,11 @@ namespace Remotion.SecurityManager.AclTools.Expander
     {
       try
       {
-        var aclExpander = new AclExpander();
-
-        //var aclExpansion = aclExpander.GetAclExpansionEntryListSortedAndDistinct();
-        var aclExpansion = aclExpander.GetAclExpansionEntryList (); // TODO: Use GetAclExpansionEntryListSortedAndDistinct again
-
-        To.ConsoleLine.s ("ACL Expansion");
-        To.ConsoleLine.s ("====START====");
-        foreach (AclExpansionEntry aclExpansionEntry in aclExpansion)
+        using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
         {
-          To.ConsoleLine.e (aclExpansionEntry);
+          List<AclExpansionEntry> aclExpansion = GetAclExpansion();
+          OutputAclExpansion(aclExpansion);
         }
-        To.ConsoleLine.s ("=====END=====");
 
         return 0;
       }
@@ -92,6 +90,25 @@ namespace Remotion.SecurityManager.AclTools.Expander
         HandleException (e);
         return 1;
       }
+    }
+
+    private void OutputAclExpansion (List<AclExpansionEntry> aclExpansion)
+    {
+      To.ConsoleLine.s ("ACL Expansion");
+      To.ConsoleLine.s ("====START====");
+      foreach (AclExpansionEntry aclExpansionEntry in aclExpansion)
+      {
+        To.ConsoleLine.e (aclExpansionEntry);
+      }
+      To.ConsoleLine.s ("=====END=====");
+    }
+
+    private List<AclExpansionEntry> GetAclExpansion ()
+    {
+      var aclExpander = new AclExpander ();
+
+      //var aclExpansion = aclExpander.GetAclExpansionEntryListSortedAndDistinct();
+      return aclExpander.GetAclExpansionEntryList ();
     }
 
     //private void ImportMetadata (ClientTransaction transaction)

@@ -18,7 +18,7 @@ namespace Remotion.Text.CommandLine
 /// </summary>
 public abstract class CommandLineArgument
 {
-  // fields
+  // fields 
 
   private string _name = null;
   private string _placeholder = null;
