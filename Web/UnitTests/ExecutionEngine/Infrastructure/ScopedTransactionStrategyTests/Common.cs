@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data;
@@ -34,11 +33,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
     {
       Assert.That (_strategy.ExecutionContext, Is.SameAs (ExecutionContextMock));
       Assert.That (_strategy.AutoCommit, Is.True);
-    }
-
-    [Test]
-    public void IsNull ()
-    {
       Assert.That (_strategy.IsNull, Is.False);
     }
 
@@ -70,17 +64,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       _strategy.Rollback();
 
       MockRepository.VerifyAll();
-    }
-
-    [Test]
-    public void CreateExecutionListener ()
-    {
-      IWxeFunctionExecutionListener executionListener = _strategy.CreateExecutionListener (ExecutionListenerMock);
-
-      Assert.That (executionListener, Is.InstanceOfType (typeof (TransactionExecutionListener)));
-      var transactionExecutionListener = (TransactionExecutionListener) executionListener;
-      Assert.That (transactionExecutionListener.InnerListener, Is.SameAs (ExecutionListenerMock));
-      Assert.That (transactionExecutionListener.TransactionStrategy, Is.SameAs (_strategy));
     }
 
     [Test]

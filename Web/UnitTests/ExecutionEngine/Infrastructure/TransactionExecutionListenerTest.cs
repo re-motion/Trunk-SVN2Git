@@ -29,12 +29,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [SetUp]
     public void SetUp ()
     {
-      WxeContextFactory wxeContextFactory = new WxeContextFactory ();
-      _wxeContext = wxeContextFactory.CreateContext (new TestFunction ());
-      _transactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase> (
-          false, NullTransactionStrategy.Null, MockRepository.GenerateStub<IWxeFunctionExecutionContext> ());
-      _innerListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
-      _transactionListener = new TransactionExecutionListener(_transactionStrategyMock, _innerListenerStub);
+      WxeContextFactory wxeContextFactory = new WxeContextFactory();
+      _wxeContext = wxeContextFactory.CreateContext (new TestFunction());
+      _transactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase>();
+      _innerListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
+      _transactionListener = new TransactionExecutionListener (_transactionStrategyMock, _innerListenerStub);
     }
 
     [Test]
@@ -44,13 +43,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 
       _transactionStrategyMock.AssertWasCalled (mock => mock.OnExecutionPlay (_wxeContext, _innerListenerStub));
     }
-    
+
     [Test]
     public void OnExecutionStop ()
     {
       _transactionListener.OnExecutionStop (_wxeContext);
 
-      _transactionStrategyMock.AssertWasCalled (mock => mock.OnExecutionStop(_wxeContext, _innerListenerStub));
+      _transactionStrategyMock.AssertWasCalled (mock => mock.OnExecutionStop (_wxeContext, _innerListenerStub));
     }
 
     [Test]

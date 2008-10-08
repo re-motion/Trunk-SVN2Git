@@ -8,46 +8,97 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using System.Collections;
+using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
-  public class NullTransactionStrategy : ITransactionStrategy
+  public class NullTransactionStrategy : TransactionStrategyBase
   {
-    public static readonly NullTransactionStrategy Null = new NullTransactionStrategy(); 
+    public static readonly NullTransactionStrategy Null = new NullTransactionStrategy();
 
     private NullTransactionStrategy ()
     {
     }
 
-    public bool IsNull
+    public override bool IsNull
     {
       get { return true; }
     }
 
-    public TTransaction GetNativeTransaction<TTransaction> ()
+    public override TransactionStrategyBase OuterTransactionStrategy
+    {
+      get { return null; }
+    }
+
+    public override TTransaction GetNativeTransaction<TTransaction> ()
     {
       return default (TTransaction);
     }
 
-    public void RegisterObjects (IEnumerable objects)
+    public override ChildTransactionStrategy CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext)
+    {
+      return null;
+    }
+
+    public override IWxeFunctionExecutionListener CreateExecutionListener (IWxeFunctionExecutionListener innerListener)
+    {
+      ArgumentUtility.CheckNotNull ("innerListener", innerListener);
+
+      return innerListener;
+    }
+
+    public override void RegisterObjects (IEnumerable objects)
     {
       //NOP
     }
 
-    public void Commit ()
+    public override void Commit ()
     {
       //NOP
     }
 
-    public void Rollback ()
+    public override void Rollback ()
     {
       //NOP
     }
 
-    public void Reset ()
+    public override void Reset ()
     {
       //NOP
+    }
+
+    public override void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+
+      listener.OnExecutionPlay (context);
+    }
+
+    public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+
+      listener.OnExecutionStop (context);
+    }
+
+    public override void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+
+      listener.OnExecutionPause (context);
+    }
+
+    public override void OnExecutionFail (WxeContext context, IWxeFunctionExecutionListener listener, Exception exception)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("listener", listener);
+
+      listener.OnExecutionFail (context, exception);
     }
   }
 }

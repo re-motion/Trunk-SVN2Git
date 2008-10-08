@@ -18,7 +18,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   [Serializable]
   public class NullExecutionListener : IWxeFunctionExecutionListener
   {
-    public NullExecutionListener ()
+    public static readonly NullExecutionListener Null = new NullExecutionListener();
+    
+    private NullExecutionListener ()
     {
     }
 

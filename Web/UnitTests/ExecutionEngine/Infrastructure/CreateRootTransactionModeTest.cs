@@ -13,7 +13,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
-using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 {
@@ -27,10 +26,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode));
 
       Assert.That (strategy, Is.InstanceOfType (typeof (RootTransactionStrategy)));
-      Assert.That (strategy.AutoCommit, Is.True);
       Assert.That (strategy.GetNativeTransaction<TestTransaction> (), Is.InstanceOfType (typeof (TestTransaction)));
-      Assert.That (((RootTransactionStrategy) strategy).Transaction, Is.InstanceOfType (typeof (TestTransaction)));
       Assert.That (strategy.OuterTransactionStrategy, Is.InstanceOfType (typeof (NullTransactionStrategy)));
+      Assert.That (((RootTransactionStrategy) strategy).AutoCommit, Is.True);
+      Assert.That (((RootTransactionStrategy) strategy).Transaction, Is.InstanceOfType (typeof (TestTransaction)));
     }
   }
 }

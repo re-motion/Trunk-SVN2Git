@@ -25,7 +25,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("function", function);
 
-      return new NoneTransactionStrategy (NullTransactionStrategy.Null, function);
+      return new NoneTransactionStrategy (NullTransactionStrategy.Null);
     }
 
     public bool AutoCommit

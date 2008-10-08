@@ -147,6 +147,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategyTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionModeTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullTransactionStrategyTest.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ScopedTransactionStrategyTests\Common.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ScopedTransactionStrategyTests\RegisterObjects.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ScopedTransactionStrategyTests\Reset.cs" />

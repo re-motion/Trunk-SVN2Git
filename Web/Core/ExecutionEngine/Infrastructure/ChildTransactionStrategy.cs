@@ -10,70 +10,29 @@
 
 using System;
 using System.Collections;
+using Remotion.Data;
+using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
-  public class ChildTransactionStrategy : TransactionStrategyBase
+  public class ChildTransactionStrategy : ScopedTransactionStrategyBase
   {
-    public ChildTransactionStrategy (bool autoCommit, ITransactionStrategy parent, IWxeFunctionExecutionContext executionContext)
-      : base (autoCommit, parent, executionContext)
+    public ChildTransactionStrategy (bool autoCommit, ITransaction transaction, TransactionStrategyBase outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
+      : base (autoCommit, transaction, outerTransactionStrategy, executionContext)
     {
-    }
-
-    public override void Commit ()
-    {
-      throw new System.NotImplementedException ();
-    }
-
-    public override void Rollback ()
-    {
-      throw new System.NotImplementedException ();
-    }
-
-    public override void Reset ()
-    {
-      throw new System.NotImplementedException ();
     }
 
     public override IWxeFunctionExecutionListener CreateExecutionListener (IWxeFunctionExecutionListener innerListener)
     {
-      throw new System.NotImplementedException();
+      ArgumentUtility.CheckNotNull ("innerListener", innerListener);
+
+      return innerListener;
     }
 
-    public override void RegisterObjects (IEnumerable objects)
+    public override ChildTransactionStrategy CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext)
     {
       throw new System.NotImplementedException ();
-    }
-
-    public override void OnExecutionPlay (WxeContext context, IWxeFunctionExecutionListener listener)
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public override void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener)
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public override void OnExecutionFail (WxeContext context, IWxeFunctionExecutionListener listener, Exception exception)
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public override TTransaction GetNativeTransaction<TTransaction> ()
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public override bool IsNull
-    {
-      get { return false; }
     }
   }
 }

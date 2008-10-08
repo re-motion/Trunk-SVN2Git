@@ -30,7 +30,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       WxeContextFactory contextFactory = new WxeContextFactory();
       _context = contextFactory.CreateContext (new TestFunction());
 
-      _executionListener = new NullExecutionListener();
+      _executionListener = NullExecutionListener.Null;
     }
 
     [Test]
@@ -60,8 +60,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void IsNull ()
     {
-      INullObject nullListener = _executionListener;
-      Assert.That (nullListener.IsNull);
+      Assert.That (_executionListener.IsNull);
     }
 
     [Test]

@@ -21,14 +21,22 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   {
     private readonly ITransaction _transaction;
     private ITransactionScope _scope;
+    private readonly bool _autoCommit;
+    private readonly IWxeFunctionExecutionContext _executionContext;
+    private readonly TransactionStrategyBase _outerTransactionStrategy;
+    private TransactionStrategyBase _child;
 
     protected ScopedTransactionStrategyBase (
-        bool autoCommit, ITransaction transaction, ITransactionStrategy outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
-      : base (autoCommit, outerTransactionStrategy, executionContext)
+        bool autoCommit, ITransaction transaction, TransactionStrategyBase outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
+      ArgumentUtility.CheckNotNull ("outerTransactionStrategy", outerTransactionStrategy);
+      ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
+      _autoCommit = autoCommit;
       _transaction = transaction;
+      _outerTransactionStrategy = outerTransactionStrategy;
+      _executionContext = executionContext;
 
       var inParameters = ExecutionContext.GetInParameters ();
       RegisterObjects (inParameters);
@@ -47,6 +55,31 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public override bool IsNull
     {
       get { return false; }
+    }
+
+    public bool AutoCommit
+    {
+      get { return _autoCommit; }
+    }
+
+    public override TransactionStrategyBase OuterTransactionStrategy
+    {
+      get { return _outerTransactionStrategy; }
+    }
+
+    public TransactionStrategyBase Child
+    {
+      get { return _child; }
+    }
+
+    public void SetChild (TransactionStrategyBase child)
+    {
+      _child = child;
+    }
+
+    public IWxeFunctionExecutionContext ExecutionContext
+    {
+      get { return _executionContext; }
     }
 
     public override void Commit ()
@@ -71,13 +104,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         _transaction.Reset ();
     }
 
-    public override IWxeFunctionExecutionListener CreateExecutionListener (IWxeFunctionExecutionListener innerListener)
-    {
-      ArgumentUtility.CheckNotNull ("innerListener", innerListener);
-
-      return new TransactionExecutionListener (this, innerListener);
-    }
-
     public sealed override void RegisterObjects (IEnumerable objects)
     {
       ArgumentUtility.CheckNotNull ("objects", objects);
@@ -98,7 +124,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       ExecuteAndWrapInnerException (EnterScope, null);
 
-      base.OnExecutionPlay (context, listener);
+      if (Child != null)
+        Child.OnExecutionPlay (context, listener);
+      else
+        listener.OnExecutionPlay (context);
     }
 
     public override void OnExecutionStop (WxeContext context, IWxeFunctionExecutionListener listener)
@@ -112,7 +141,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       Exception innerException = null;
       try
       {
-        base.OnExecutionStop (context, listener);
+        if (Child != null)
+          Child.OnExecutionStop (context, listener);
+        else
+          listener.OnExecutionStop (context);
+
         if (AutoCommit)
           CommitTransaction();
 
@@ -141,7 +174,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       Exception innerException = null;
       try
       {
-        base.OnExecutionPause (context, listener);
+        if (Child != null)
+          Child.OnExecutionPause (context, listener);
+        else
+          listener.OnExecutionPause (context);
       }
       catch (Exception e)
       {
@@ -165,7 +201,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       Exception innerException = null;
       try
       {
-        base.OnExecutionFail (context, listener, exception);
+        if (Child != null)
+          Child.OnExecutionFail (context, listener, exception);
+        else
+          listener.OnExecutionFail (context, exception);
       }
       catch (Exception e)
       {

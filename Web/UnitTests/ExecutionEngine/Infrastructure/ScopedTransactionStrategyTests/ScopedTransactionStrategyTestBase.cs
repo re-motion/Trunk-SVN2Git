@@ -24,7 +24,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
     private IWxeFunctionExecutionListener _executionListenerMock;
     private ITransactionScope _scopeMock;
     private ITransaction _transactionMock;
-    private ITransactionStrategy _outerTransactionStrategyMock;
+    private TransactionStrategyBase _outerTransactionStrategyMock;
     private WxeContext _context;
     private MockRepository _mockRepository;
     private IWxeFunctionExecutionContext _executionContextMock;
@@ -41,9 +41,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       _transactionMock = MockRepository.StrictMock<ITransaction>();
       _scopeMock = MockRepository.StrictMock<ITransactionScope>();
       _executionContextMock = MockRepository.StrictMock<IWxeFunctionExecutionContext>();
-      _outerTransactionStrategyMock = MockRepository.StrictMock<ITransactionStrategy>();
-      _childTransactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase> (
-          false, NullTransactionStrategy.Null, MockRepository.GenerateStub<IWxeFunctionExecutionContext>());
+      _outerTransactionStrategyMock = MockRepository.StrictMock<TransactionStrategyBase>();
+      _childTransactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase>();
     }
 
     public MockRepository MockRepository
@@ -56,7 +55,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       get { return _context; }
     }
 
-    public ITransactionStrategy OuterTransactionStrategyMock
+    public TransactionStrategyBase OuterTransactionStrategyMock
     {
       get { return _outerTransactionStrategyMock; }
     }
@@ -86,7 +85,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       get { return _executionContextMock; }
     }
 
-    protected ScopedTransactionStrategyBase CreateScopedTransactionStrategy (bool autoCommit, ITransactionStrategy parentTransactionStrategy)
+    protected ScopedTransactionStrategyBase CreateScopedTransactionStrategy (bool autoCommit, TransactionStrategyBase parentTransactionStrategy)
     {
       _executionContextMock.BackToRecord();
       _executionContextMock.Stub (stub => stub.GetInParameters()).Return (new object[0]).Repeat.Any();
@@ -96,7 +95,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
       _transactionMock.Stub (stub => stub.RegisterObjects (Arg<IEnumerable>.Is.NotNull));
       _transactionMock.Replay();
 
-      var strategy = MockRepository.PartialMock<ScopedTransactionStrategyBase> (autoCommit, TransactionMock, parentTransactionStrategy, _executionContextMock);
+      var strategy = MockRepository.PartialMock<ScopedTransactionStrategyBase> (
+          autoCommit, TransactionMock, parentTransactionStrategy, _executionContextMock);
       strategy.Replay();
 
       _executionContextMock.BackToRecord();

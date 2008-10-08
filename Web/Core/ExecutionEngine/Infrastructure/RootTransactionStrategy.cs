@@ -10,6 +10,7 @@
 
 using System;
 using Remotion.Data;
+using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
@@ -17,9 +18,26 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   public class RootTransactionStrategy : ScopedTransactionStrategyBase
   {
     public RootTransactionStrategy (
-        bool autoCommit, ITransaction transaction, ITransactionStrategy outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
+        bool autoCommit, ITransaction transaction, TransactionStrategyBase outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
       : base (autoCommit, transaction, outerTransactionStrategy, executionContext)
     {
+    }
+
+    public override IWxeFunctionExecutionListener CreateExecutionListener (IWxeFunctionExecutionListener innerListener)
+    {
+      ArgumentUtility.CheckNotNull ("innerListener", innerListener);
+
+      return new TransactionExecutionListener (this, innerListener);
+    }
+
+    public override ChildTransactionStrategy CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext)
+    {
+      ArgumentUtility.CheckNotNull ("executionContext", executionContext);
+
+      ChildTransactionStrategy childTransactionStrategy = new ChildTransactionStrategy (autoCommit, Transaction.CreateChild(), this, executionContext);
+      SetChild (childTransactionStrategy);
+
+      return childTransactionStrategy;
     }
   }
 }

@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Rhino.Mocks;
 
@@ -19,22 +20,40 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
   [TestFixture]
   public class ChildTransactionStrategyTest
   {
-    [Test]
-    public void GetAutoCommit ()
-    {
-      var executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext> ();
-      TransactionStrategyBase strategy = new ChildTransactionStrategy (true, NullTransactionStrategy.Null, executionContextStub);
+    private ChildTransactionStrategy _strategy;
+    private ITransaction _childTransactionStub;
+    private IWxeFunctionExecutionContext _executionContextStub;
+    private TransactionStrategyBase _outerTransactionStrategyStub;
 
-      Assert.That (strategy.AutoCommit, Is.True);
+    [SetUp]
+    public void SetUp ()
+    {
+      _outerTransactionStrategyStub = MockRepository.GenerateStub<TransactionStrategyBase> ();
+      _childTransactionStub = MockRepository.GenerateStub<ITransaction> ();
+      _executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext> ();
+
+      _executionContextStub.Stub (stub => stub.GetInParameters ()).Return (new object[0]);
+
+      _strategy = new ChildTransactionStrategy (true, _childTransactionStub, _outerTransactionStrategyStub, _executionContextStub);  
     }
 
     [Test]
-    public void IsNull ()
+    public void Initialize ()
     {
-      var executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext> ();
-      INullObject strategy = new ChildTransactionStrategy (true, NullTransactionStrategy.Null, executionContextStub);
+      Assert.That (_strategy.Transaction, Is.SameAs (_childTransactionStub));
+      Assert.That (_strategy.OuterTransactionStrategy, Is.SameAs (_outerTransactionStrategyStub));
+      Assert.That (_strategy.ExecutionContext, Is.SameAs (_executionContextStub));
+      Assert.That (_strategy.AutoCommit, Is.True);
+      Assert.That (_strategy.IsNull, Is.False);
+    }
 
-      Assert.That (strategy.IsNull, Is.False);
+    [Test]
+    public void CreateExecutionListener ()
+    {
+      IWxeFunctionExecutionListener innerExecutionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener> ();
+      IWxeFunctionExecutionListener executionListener = _strategy.CreateExecutionListener (innerExecutionListenerStub);
+
+      Assert.That (executionListener, Is.SameAs (innerExecutionListenerStub));
     }
   }
 }

@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Threading;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;
@@ -21,12 +22,14 @@ namespace Remotion.Web.ExecutionEngine
   [Serializable]
   public abstract class WxeFunction2 : WxeStepList, IWxeFunctionExecutionContext
   {
-    private IWxeFunctionExecutionListener _executionListener = new NullExecutionListener();
-    private ITransactionStrategy _transactionStrategy;
+    private IWxeFunctionExecutionListener _executionListener = NullExecutionListener.Null;
+    private TransactionStrategyBase _transactionStrategy = NullTransactionStrategy.Null;
     private readonly ITransactionMode _transactionMode;
 
     protected WxeFunction2 (ITransactionMode transactionMode)
     {
+      ArgumentUtility.CheckNotNull ("transactionMode", transactionMode);
+
       _transactionMode = transactionMode;
     }
 
@@ -78,6 +81,12 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     public ITransactionStrategy Transaction
+    {
+      get { return _transactionStrategy; }
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public TransactionStrategyBase TransactionStrategy
     {
       get { return _transactionStrategy; }
     }
