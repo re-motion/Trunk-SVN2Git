@@ -29,15 +29,5 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       return new TransactionExecutionListener (this, innerListener);
     }
-
-    public override ScopedTransactionStrategyBase CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext)
-    {
-      ArgumentUtility.CheckNotNull ("executionContext", executionContext);
-
-      ChildTransactionStrategy childTransactionStrategy = new ChildTransactionStrategy (autoCommit, Transaction.CreateChild(), this, executionContext);
-      SetChild (childTransactionStrategy);
-
-      return childTransactionStrategy;
-    }
   }
 }

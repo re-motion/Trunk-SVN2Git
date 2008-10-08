@@ -57,24 +57,5 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       Assert.That (transactionExecutionListener.InnerListener, Is.SameAs (innerExecutionListenerStub));
       Assert.That (transactionExecutionListener.TransactionStrategy, Is.SameAs (_strategy));
     }
-
-    [Test]
-    public void CreateChildTransactionStrategy ()
-    {
-      var childTransaction = MockRepository.GenerateStub<ITransaction>();
-      _transactionMock.Expect (mock => mock.CreateChild()).Return (childTransaction);
-
-      var childExecutionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext>();
-      childExecutionContextStub.Stub (stub => stub.GetInParameters ()).Return (new object[0]);
-
-      ScopedTransactionStrategyBase childTransactionStrategy = _strategy.CreateChildTransactionStrategy (true, childExecutionContextStub);
-
-      Assert.That (childTransactionStrategy, Is.Not.Null);
-      Assert.That (childTransactionStrategy.AutoCommit, Is.True);
-      Assert.That (childTransactionStrategy.Transaction, Is.SameAs (childTransaction));
-      Assert.That (childTransactionStrategy.OuterTransactionStrategy, Is.SameAs (_strategy));
-      Assert.That (childTransactionStrategy.ExecutionContext, Is.SameAs (childExecutionContextStub));
-      Assert.That (_strategy.Child, Is.SameAs (childTransactionStrategy));
-    }
   }
 }

@@ -88,7 +88,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
 
     protected void SetChild (ScopedTransactionStrategyBase strategy, TransactionStrategyBase childStrategy)
     {
-      PrivateInvoke.InvokeNonPublicMethod (strategy, "SetChild", childStrategy);
+      PrivateInvoke.SetNonPublicField (strategy, "_child", childStrategy);
     }
 
     protected ScopedTransactionStrategyBase CreateScopedTransactionStrategy (bool autoCommit, TransactionStrategyBase parentTransactionStrategy)

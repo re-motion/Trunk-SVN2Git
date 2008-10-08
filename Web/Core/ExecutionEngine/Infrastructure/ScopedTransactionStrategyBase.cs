@@ -73,13 +73,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       get { return _child; }
     }
 
-    protected void SetChild (TransactionStrategyBase child)
-    {
-      ArgumentUtility.CheckNotNull ("child", child);
-
-      _child = child;
-    }
-
     public IWxeFunctionExecutionContext ExecutionContext
     {
       get { return _executionContext; }
@@ -105,6 +98,16 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
       else
         _transaction.Reset();
+    }
+
+    public override sealed ScopedTransactionStrategyBase CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext)
+    {
+      ArgumentUtility.CheckNotNull ("executionContext", executionContext);
+
+      ChildTransactionStrategy childTransactionStrategy = new ChildTransactionStrategy (autoCommit, Transaction.CreateChild (), this, executionContext);
+      _child = childTransactionStrategy;
+
+      return childTransactionStrategy;
     }
 
     public override sealed void RegisterObjects (IEnumerable objects)

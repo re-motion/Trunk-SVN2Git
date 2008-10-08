@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections;
 using Remotion.Data;
 using Remotion.Utilities;
 
@@ -18,8 +17,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   //TODO: Doc
   public class ChildTransactionStrategy : ScopedTransactionStrategyBase
   {
-    public ChildTransactionStrategy (bool autoCommit, ITransaction transaction, TransactionStrategyBase outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
-      : base (autoCommit, transaction, outerTransactionStrategy, executionContext)
+    public ChildTransactionStrategy (
+        bool autoCommit, ITransaction transaction, TransactionStrategyBase outerTransactionStrategy, IWxeFunctionExecutionContext executionContext)
+        : base (autoCommit, transaction, outerTransactionStrategy, executionContext)
     {
     }
 
@@ -28,11 +28,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       ArgumentUtility.CheckNotNull ("innerListener", innerListener);
 
       return innerListener;
-    }
-
-    public override ScopedTransactionStrategyBase CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext)
-    {
-      throw new System.NotImplementedException ();
     }
   }
 }

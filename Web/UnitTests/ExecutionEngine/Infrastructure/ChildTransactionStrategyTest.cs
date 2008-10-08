@@ -23,25 +23,25 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     private ChildTransactionStrategy _strategy;
     private ITransaction _childTransactionStub;
     private IWxeFunctionExecutionContext _executionContextStub;
-    private TransactionStrategyBase _outerTransactionStrategyStub;
+    private TransactionStrategyBase _outerTransactionStrategyMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _outerTransactionStrategyStub = MockRepository.GenerateStub<TransactionStrategyBase> ();
+      _outerTransactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase> ();
       _childTransactionStub = MockRepository.GenerateStub<ITransaction> ();
       _executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext> ();
 
       _executionContextStub.Stub (stub => stub.GetInParameters ()).Return (new object[0]);
 
-      _strategy = new ChildTransactionStrategy (true, _childTransactionStub, _outerTransactionStrategyStub, _executionContextStub);  
+      _strategy = new ChildTransactionStrategy (true, _childTransactionStub, _outerTransactionStrategyMock, _executionContextStub);  
     }
 
     [Test]
     public void Initialize ()
     {
       Assert.That (_strategy.Transaction, Is.SameAs (_childTransactionStub));
-      Assert.That (_strategy.OuterTransactionStrategy, Is.SameAs (_outerTransactionStrategyStub));
+      Assert.That (_strategy.OuterTransactionStrategy, Is.SameAs (_outerTransactionStrategyMock));
       Assert.That (_strategy.ExecutionContext, Is.SameAs (_executionContextStub));
       Assert.That (_strategy.AutoCommit, Is.True);
       Assert.That (_strategy.IsNull, Is.False);

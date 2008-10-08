@@ -12,6 +12,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
@@ -22,12 +23,39 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
   public class NoneTransactionModeTest
   {
     [Test]
-    public void CreateTransactionStrategy ()
+    public void CreateTransactionStrategy_WithoutParentFunction ()
     {
       ITransactionMode transactionMode = new NoneTransactionMode();
-      ITransactionStrategy strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode));
+      TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode));
 
       Assert.That (strategy, Is.InstanceOfType (typeof (NoneTransactionStrategy)));
+      Assert.That (strategy.OuterTransactionStrategy, Is.SameAs (NullTransactionStrategy.Null));
+    }
+
+    [Test]
+    public void CreateTransactionStrategy_WithParentFunction ()
+    {
+      ITransactionMode transactionMode = new NoneTransactionMode ();
+
+      WxeFunction2 parentFunction = new TestFunction2 (new NoneTransactionMode());
+      WxeFunction2 childFunction = new TestFunction2 (transactionMode);
+      parentFunction.Add (childFunction);
+
+      WxeStep stepMock = MockRepository.GenerateMock<WxeStep> ();
+      childFunction.Add (stepMock);
+
+      WxeContextFactory wxeContextFactory = new WxeContextFactory ();
+      WxeContext context = wxeContextFactory.CreateContext (new TestFunction ());
+
+      stepMock.Expect (mock => mock.Execute (context)).Do (
+          invocation =>
+          {
+            TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction);
+            Assert.That (strategy, Is.InstanceOfType (typeof (NoneTransactionStrategy)));
+            Assert.That (strategy.OuterTransactionStrategy, Is.SameAs (parentFunction.TransactionStrategy));
+          });
+
+      parentFunction.Execute (context);
     }
 
     [Test]
