@@ -162,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var commandParameters = new [] { new CommandParameter("x", "y") };
       var executor = new QueryExecutor<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
       
-      var query = executor.CreateQuery (classDefinition, statement, commandParameters);
+      var query = executor.CreateQuery ("<dynamic query>", classDefinition, statement, commandParameters);
       Assert.That (query.Statement, Is.EqualTo (statement));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("x"));
@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryModel = GetParsedSimpleWhereQuery ();
       var executor = new QueryExecutor<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
 
-      var query = executor.CreateQuery (queryModel);
+      var query = executor.CreateQuery ("<dynamic query>", queryModel);
       Assert.That (query.Statement, Is.EqualTo ("SELECT [order].* FROM [OrderView] [order] WHERE ([order].[OrderNo] = @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         ClassDefinition classDefinition = executor.GetClassDefinition();
         CommandData statement = executor.CreateStatement(GetParsedSimpleQuery());
 
-        executor.CreateQuery (classDefinition, statement.Statement, statement.Parameters);
+        executor.CreateQuery ("<dynamic query>", classDefinition, statement.Statement, statement.Parameters);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryCalled, Is.True);
       }
     }
@@ -246,7 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         var queryModel = GetParsedSimpleQuery ();
         var executor = ObjectFactory.Create<QueryExecutor<Order>>().With (new SqlServerGenerator (DatabaseInfo.Instance));
 
-        executor.CreateQuery (queryModel);
+        executor.CreateQuery ("<dynamic query>", queryModel);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);
       }
     }

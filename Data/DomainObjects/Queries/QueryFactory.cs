@@ -136,11 +136,14 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <summary>
     /// Creates a new query object from a given LINQ query.
     /// </summary>
-    /// <param name="queryable">The queryable.</param>
-    /// <returns></returns>
-    public static IQuery CreateQuery (IQueryable queryable)
+    /// <param name="id">The ID to assign to the query.</param>
+    /// <param name="queryable">The queryable constituting the LINQ query. This must be obtained by forming a LINQ query starting with an instance of 
+    /// <see cref="DomainObjectQueryable{T}"/>. Use <see cref="CreateQueryable{T}()"/> to create such a query source.</param>
+    /// <returns>An implementation of <see cref="IQuery"/> holding the parsed LINQ query data.</returns>
+    public static IQuery CreateQuery (string id, IQueryable queryable)
     {
       ArgumentUtility.CheckNotNull ("queryable", queryable);
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
 
       var provider = queryable.Provider as QueryProvider;
       if (provider == null)
@@ -153,9 +156,8 @@ namespace Remotion.Data.DomainObjects.Queries
 
       var queryExecutor = (QueryExecutorBase) provider.Executor;
       var queryModel = provider.GenerateQueryModel (queryable.Expression);
-      return queryExecutor.CreateQuery (queryModel);
+      return queryExecutor.CreateQuery (id, queryModel);
     }
-
 
     /// <summary>
     /// Creates a new query object, loading its data from the <see cref="QueryConfiguration"/>.

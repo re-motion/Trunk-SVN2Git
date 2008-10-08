@@ -15,6 +15,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -47,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      IQuery query = CreateQuery(queryModel);
+      IQuery query = CreateQuery("<dynamic query>", queryModel);
       return ClientTransaction.Current.QueryManager.GetCollection (query);
     }
 
@@ -70,23 +71,31 @@ namespace Remotion.Data.DomainObjects.Linq
       }
     }
 
-    public virtual IQuery CreateQuery (QueryModel queryModel)
+    public virtual IQuery CreateQuery (string id, QueryModel queryModel)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+
       ClassDefinition classDefinition = GetClassDefinition ();
 
       CommandData commandData = CreateStatement (queryModel);
       CheckProjection (commandData.SqlGenerationData.SelectEvaluation);
 
-      return CreateQuery (classDefinition, commandData.Statement, commandData.Parameters);
+      return CreateQuery (id, classDefinition, commandData.Statement, commandData.Parameters);
     }
 
-    public virtual IQuery CreateQuery(ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
+    public virtual IQuery CreateQuery(string id, ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("statement", statement);
+      ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
+
       var queryParameters = new QueryParameterCollection();
       foreach (CommandParameter commandParameter in commandParameters)
         queryParameters.Add (commandParameter.Name, commandParameter.Value, QueryParameterType.Value);
 
-      return QueryFactory.CreateCollectionQuery ("<dynamic query>", classDefinition.StorageProviderID, statement, queryParameters, typeof (DomainObjectCollection));
+      return QueryFactory.CreateCollectionQuery (id, classDefinition.StorageProviderID, statement, queryParameters, typeof (DomainObjectCollection));
     }
 
     public abstract ClassDefinition GetClassDefinition ();

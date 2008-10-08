@@ -25,13 +25,13 @@ namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
   {
     public interface IBaseCallRequirements
     {
-      IQuery CreateQuery (ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters);
+      IQuery CreateQuery (string id, ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters);
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
+    public IQuery CreateQuery (string id, ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
     {
-      IQuery query = Base.CreateQuery (classDefinition, statement, commandParameters);
+      IQuery query = Base.CreateQuery (id, classDefinition, statement, commandParameters);
       QueryConstructed (query);
       return query;
     }

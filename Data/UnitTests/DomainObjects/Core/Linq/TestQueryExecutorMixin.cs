@@ -21,8 +21,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public interface IBaseCallRequirements
     {
       ClassDefinition GetClassDefinition ();
-      IQuery CreateQuery (ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters);
-      IQuery CreateQuery (QueryModel queryModel);
+      IQuery CreateQuery (string id, ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters);
+      IQuery CreateQuery (string id, QueryModel queryModel);
       CommandData CreateStatement (QueryModel queryModel);
     }
 
@@ -39,17 +39,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
+    public IQuery CreateQuery (string id, ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
     {
       CreateQueryCalled = true;
-      return Base.CreateQuery (classDefinition, statement, commandParameters);
+      return Base.CreateQuery (id, classDefinition, statement, commandParameters);
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (QueryModel queryModel)
+    public IQuery CreateQuery (string id, QueryModel queryModel)
     {
       CreateQueryFromModelCalled = true;
-      return Base.CreateQuery (queryModel);
+      return Base.CreateQuery (id, queryModel);
     }
 
     [OverrideTarget]

@@ -155,9 +155,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
                       where o.OrderNumber > 1
                       select o;
 
-      IQuery query = QueryFactory.CreateQuery (queryable);
+      IQuery query = QueryFactory.CreateQuery ("<dynamico queryo>", queryable);
       Assert.That (query.Statement, Is.EqualTo ("SELECT [o].* FROM [OrderView] [o] WHERE ([o].[OrderNo] > @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
+      Assert.That (query.ID, Is.EqualTo ("<dynamico queryo>"));
     }
 
     [Test]
@@ -167,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void CreateQuery_FromLinqQuery_InvalidQueryable ()
     {
       var queryable = new int[0].AsQueryable ();
-      QueryFactory.CreateQuery (queryable);
+      QueryFactory.CreateQuery ("<dynamic query>", queryable);
     }
   }
 }
