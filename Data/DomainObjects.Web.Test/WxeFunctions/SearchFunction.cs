@@ -16,10 +16,8 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 {
-  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
   [Serializable]
-  public class SearchFunction : WxeTransactedFunction
+  public class SearchFunction : WxeFunction
   {
     // types
 
@@ -30,6 +28,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
     // construction and disposing
 
     public SearchFunction ()
+      : base (WxeTransactionMode.CreateRootWithAutoCommit)
     {
       ReturnUrl = "default.aspx";
     }

@@ -15,10 +15,8 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 {
-  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
   [Serializable]
-  public class UndefinedEnumTestFunction : WxeTransactedFunction
+  public class UndefinedEnumTestFunction : WxeFunction
   {
     // types
 
@@ -29,6 +27,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
     // construction and disposing
 
     public UndefinedEnumTestFunction ()
+      : base (WxeTransactionMode.CreateRootWithAutoCommit)
     {
       ReturnUrl = "default.aspx";
     }

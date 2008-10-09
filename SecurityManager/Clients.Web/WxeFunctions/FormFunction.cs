@@ -12,6 +12,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 {
@@ -26,17 +27,17 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 
     // construction and disposing
 
-    public FormFunction ()
+    protected FormFunction ()
     {
     }
 
-    protected FormFunction (params object[] args)
-      : base (args)
+    protected FormFunction (ITransactionMode transactionMode, params object[] args)
+      : base (transactionMode, args)
     {
     }
 
-    public FormFunction (ObjectID CurrentObjectID)
-      : base (CurrentObjectID)
+    protected FormFunction (ITransactionMode transactionMode, ObjectID CurrentObjectID)
+      : base (transactionMode, CurrentObjectID)
     {
     }
 

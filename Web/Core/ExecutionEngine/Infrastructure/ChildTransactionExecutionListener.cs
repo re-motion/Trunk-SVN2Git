@@ -13,12 +13,13 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
-  public class TransactionExecutionListener : IWxeFunctionExecutionListener
+  [Serializable]
+  public class ChildTransactionExecutionListener : IWxeFunctionExecutionListener
   {
-    private readonly TransactionStrategyBase _transactionStrategy;
+    private readonly ChildTransactionStrategy _transactionStrategy;
     private readonly IWxeFunctionExecutionListener _innerListener;
 
-    public TransactionExecutionListener (TransactionStrategyBase transactionStrategy, IWxeFunctionExecutionListener innerListener)
+    public ChildTransactionExecutionListener (ChildTransactionStrategy transactionStrategy, IWxeFunctionExecutionListener innerListener)
     {
       ArgumentUtility.CheckNotNull ("transactionStrategy", transactionStrategy);
       ArgumentUtility.CheckNotNull ("innerListener", innerListener);
@@ -27,7 +28,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _innerListener = innerListener;
     }
 
-    public TransactionStrategyBase TransactionStrategy
+    public ChildTransactionStrategy TransactionStrategy
     {
       get { return _transactionStrategy; }
     }
@@ -45,7 +46,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public void OnExecutionPlay (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
-      _transactionStrategy.OnExecutionPlay (context, _innerListener);
+      //_transactionStrategy.State == Started
+      Assertion.IsNotNull (_transactionStrategy.Scope);
+      _innerListener.OnExecutionPlay (context);
     }
 
     public void OnExecutionStop (WxeContext context)
@@ -57,7 +60,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public void OnExecutionPause (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
-      _transactionStrategy.OnExecutionPause (context, _innerListener);
+      Assertion.IsNotNull (_transactionStrategy.Scope);
+      _innerListener.OnExecutionPause (context);
     }
 
     public void OnExecutionFail (WxeContext context, Exception exception)

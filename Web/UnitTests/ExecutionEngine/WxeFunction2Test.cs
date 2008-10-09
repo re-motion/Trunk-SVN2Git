@@ -179,9 +179,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
         function.Execute (_context);
         Assert.Fail();
       }
-      catch (Exception actualException)
+      catch (WxeUnhandledException actualException)
       {
-        Assert.That (actualException, Is.SameAs (stepException));
+        Assert.That (actualException.InnerException, Is.SameAs (stepException));
       }
 
       _mockRepository.VerifyAll();

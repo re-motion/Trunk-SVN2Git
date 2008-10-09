@@ -20,7 +20,7 @@ namespace Remotion.Web.ExecutionEngine
     private readonly Exception _outerException;
 
     public WxeFatalExecutionException (Exception innerExcection, Exception outerException)
-      :base ("Execution failed", innerExcection)
+      : base ("Execution failed.\r\n" + innerExcection.Message + (outerException != null ? ("\r\n" + outerException.Message) : string.Empty), innerExcection)
     {
       _outerException = outerException;
     }

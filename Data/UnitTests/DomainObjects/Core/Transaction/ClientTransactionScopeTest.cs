@@ -159,8 +159,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         using (ClientTransactionScope inner = innerTransaction.EnterNonDiscardingScope())
         {
-          Assert.AreSame (innerTransaction, ((ITransactionScope) inner).ScopedTransaction);
-          Assert.AreSame (outerTransaction, ((ITransactionScope) outer).ScopedTransaction);
+          Assert.AreSame (innerTransaction, ((ITransactionScope) inner).ScopedTransaction.To<ClientTransaction>());
+          Assert.AreSame (outerTransaction, ((ITransactionScope) outer).ScopedTransaction.To<ClientTransaction> ());
         }
       }
     }

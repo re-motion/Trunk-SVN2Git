@@ -14,29 +14,17 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
+using Assertion=Remotion.Utilities.Assertion;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
-  using WxeTransactedFunction = Remotion.Web.ExecutionEngine.WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
-  public class ResetTestTransactedFunction : WxeTransactedFunction
+  public class ResetTestTransactedFunction : WxeFunction
   {
-    public bool CopyEventHandlers = false;
-
-
-    public ResetTestTransactedFunction (WxeTransactionMode transactionMode, params object[] actualParameters)
+    public ResetTestTransactedFunction (ITransactionMode transactionMode, params object[] actualParameters)
         : base (transactionMode, actualParameters)
     {
-    }
-
-    public ResetTestTransactedFunction (params object[] actualParameters)
-        : base (actualParameters)
-    {
-    }
-
-    protected override bool AutoCommit
-    {
-      get { return false; }
+      Assertion.IsFalse (TransactionMode.AutoCommit);
     }
 
     private void Step1 ()
@@ -52,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
       bool loadedCalled = false;
       ClientTransactionScope.CurrentTransaction.Loaded += delegate { loadedCalled = true; };
 
-      ResetTransaction (CopyEventHandlers);
+      Transaction.Reset ();
 
       Assert.AreNotEqual (transactionBefore, ClientTransactionScope.CurrentTransaction);
       Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
@@ -61,13 +49,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
       Assert.IsFalse (addedCalled);
       order.OrderItems.Add (OrderItem.NewObject());
-      Assert.AreEqual (CopyEventHandlers, addedCalled);
+      Assert.AreEqual (true, addedCalled);
 
       loadedCalled = false;
 
       Order.GetObject (new DomainObjectIDs().Order2);
 
-      Assert.AreEqual (CopyEventHandlers, loadedCalled);
+      Assert.AreEqual (true, loadedCalled);
     }
   }
 }

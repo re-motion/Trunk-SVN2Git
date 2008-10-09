@@ -13,6 +13,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure
 {
@@ -31,13 +32,13 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
     {
     }
 
-    protected EditGroupTypeFormFunction (params object[] args)
-      : base (args)
+    protected EditGroupTypeFormFunction (ITransactionMode transactionMode, params object[] args)
+      : base (transactionMode, args)
     {
     }
 
-    public EditGroupTypeFormFunction (ObjectID organizationalStructureObjectID)
-      : base (organizationalStructureObjectID)
+    public EditGroupTypeFormFunction (ITransactionMode transactionMode, ObjectID organizationalStructureObjectID)
+      : base (transactionMode, organizationalStructureObjectID)
     {
     }
 

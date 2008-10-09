@@ -9,15 +9,13 @@
  */
 
 using System;
-using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Web.Test.Domain;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 {
-  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
   [Serializable]
-  public class CreateNoneTestTransactedFunction : WxeTransactedFunction
+  public class TestTransactedFunction : WxeFunction
   {
     // types
 
@@ -27,24 +25,25 @@ namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 
     // construction and disposing
 
-    public CreateNoneTestTransactedFunction (ClientTransaction previousClientTransaction)
-        : base (WxeTransactionMode.None, previousClientTransaction)
+    public TestTransactedFunction (ITransactionMode transactionMode, ObjectID objectWithAllDataTypes)
+        : base (transactionMode, objectWithAllDataTypes)
     {
     }
 
     // methods and properties
 
     [WxeParameter (1, true, WxeParameterDirection.In)]
-    public ClientTransaction PreviousClientTransaction
+    public ObjectID ObjectWithAllDataTypes
     {
-      get { return (ClientTransaction) Variables["PreviousClientTransaction"]; }
-      set { Variables["PreviousClientTransaction"] = value; }
+      get { return (ObjectID) Variables["ObjectWithAllDataTypes"]; }
+      set { Variables["ObjectWithAllDataTypes"] = value; }
     }
 
     private void Step1 ()
     {
-      if (ClientTransactionScope.CurrentTransaction != PreviousClientTransaction)
-        throw new TestFailureException ("The WxeTransactedFunction of the parent function was not properly used.");
+      ClassWithAllDataTypes objectWithAllDataTypes = ClassWithAllDataTypes.GetObject (ObjectWithAllDataTypes);
+
+      objectWithAllDataTypes.Int32Property = 10;
     }
   }
 }

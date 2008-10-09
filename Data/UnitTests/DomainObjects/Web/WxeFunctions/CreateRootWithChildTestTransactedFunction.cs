@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
     // construction and disposing
 
     public CreateRootWithChildTestTransactedFunction (ClientTransaction previousClientTransaction, WxeFunction childFunction)
-        : base (WxeTransactionMode.CreateRoot, childFunction, previousClientTransaction)
+        : base (WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit, childFunction, previousClientTransaction)
     {
       Add (
           new WxeMethodStep (

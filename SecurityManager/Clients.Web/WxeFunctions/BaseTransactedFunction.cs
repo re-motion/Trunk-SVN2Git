@@ -15,13 +15,12 @@ using Remotion.Data.DomainObjects.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 {
-  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
   [Serializable]
-  public abstract class BaseTransactedFunction : WxeTransactedFunction
+  public abstract class BaseTransactedFunction : WxeFunction
   {
     // types
 
@@ -32,12 +31,12 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
     // construction and disposing
 
     protected BaseTransactedFunction ()
+      : this (WxeTransactionMode.CreateRootWithAutoCommit)
     {
-      Initialize ();
     }
 
-    protected BaseTransactedFunction (params object[] args)
-      : base (args)
+    protected BaseTransactedFunction (ITransactionMode transactionMode, params object[] args)
+      : base (transactionMode, args)
     {
       Initialize ();
     }
@@ -54,37 +53,19 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
       get { return (ExceptionHandler.Exception != null && ExceptionHandler.Exception.GetType () == typeof (WxeUserCancelException)); }
     }
 
-    public ClientTransaction CurrentTransaction
-    {
-      get
-      {
-        ClientTransaction currentTransaction = MyTransaction;
-        if (currentTransaction == null)
-        {
-          WxeTransactedFunction transactedFunction = this;
-          while (currentTransaction == null && transactedFunction != null)
-          {
-            transactedFunction = GetStepByType<WxeTransactedFunction> (transactedFunction.ParentFunction);
-            if (transactedFunction != null)
-              currentTransaction = transactedFunction.MyTransaction;
-          }
-        }
-        return currentTransaction;
-      }
-    }
-
     protected virtual void Initialize ()
     {
       ExceptionHandler.SetCatchExceptionTypes (typeof (WxeUserCancelException));
     }
 
-    protected override void OnTransactionCreated (ClientTransaction transaction)
+    protected override void OnTransactionCreated (ITransactionStrategy transactionStrategy)
     {
-      ArgumentUtility.CheckNotNull ("transaction", transaction);
+      ArgumentUtility.CheckNotNull ("transactionStrategy", transactionStrategy);
 
-      base.OnTransactionCreated (transaction);
+      base.OnTransactionCreated (transactionStrategy);
 
-      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
+      ClientTransaction transaction = transactionStrategy.GetNativeTransaction<ClientTransaction>();
+      if (transaction != null && !SecurityConfiguration.Current.SecurityProvider.IsNull)
         transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension ());
     }
   }

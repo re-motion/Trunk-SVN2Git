@@ -15,6 +15,7 @@ using Remotion.Utilities;
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
+  [Serializable]
   public class CreateRootTransactionMode<TTransactionFactory> : ITransactionMode
       where TTransactionFactory : ITransactionFactory, new ()
   {
@@ -25,7 +26,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _autoCommit = autoCommit;
     }
 
-    public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction2 function, WxeContext context)
+    public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction function, WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("function", function);
 

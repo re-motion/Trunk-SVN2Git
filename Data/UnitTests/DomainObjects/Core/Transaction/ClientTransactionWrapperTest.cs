@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.That (domainObject1.CanBeUsedInTransaction (secondClientTransaction), Is.False);
       Assert.That (domainObject2.CanBeUsedInTransaction (secondClientTransaction), Is.False);
 
-      secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2 });
+      secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2, domainObject2 });
 
       Assert.That (domainObject1.CanBeUsedInTransaction (secondClientTransaction), Is.True);
       Assert.That (secondClientTransaction.DataManager.DataContainerMap.GetObjectWithoutLoading (domainObject1.ID, false), Is.Not.Null);
@@ -268,11 +268,91 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ClientTransaction rootTransaction = ClientTransaction.CreateRootTransaction();
       ITransaction transaction = rootTransaction.ToITransation();
-      using (rootTransaction.EnterNonDiscardingScope ())
+      using (rootTransaction.EnterNonDiscardingScope())
       {
         Order.NewObject();
         transaction.Reset();
       }
+    }
+
+    [Test]
+    [Ignore ("TODO: Test")]
+    public void TransactionResettableWhenNotReadOnly ()
+    {
+      //using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      //{
+      //  WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> tx = new WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> ();
+      //  PrivateInvoke.InvokeNonPublicMethod (tx, "CheckCurrentTransactionResettable");
+      //}
+    }
+
+    [Test]
+    [Ignore ("TODO: Test")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The current transaction cannot be reset as it is read-only. "
+                                                                              + "The reason might be an open child transaction.")]
+    public void TransactionNotResettableWhenReadOnly ()
+    {
+      //using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      //{
+      //  ClientTransactionScope.CurrentTransaction.CreateSubTransaction ();
+
+      //  WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> tx = new WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> ();
+      //  PrivateInvoke.InvokeNonPublicMethod (tx, "CheckCurrentTransactionResettable");
+      //}
+    }
+
+    [Test]
+    [Ignore ("TODO: Test")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "There is no current transaction.")]
+    public void TransactionNotResettableWhenNull ()
+    {
+      //using (ClientTransactionScope.EnterNullScope ())
+      //{
+      //  WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> tx = new WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> ();
+      //  PrivateInvoke.InvokeNonPublicMethod (tx, "CheckCurrentTransactionResettable");
+      //}
+    }
+
+    [Test]
+    [Ignore ("TODO: Test")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The current transaction cannot be reset as it is in a dirty state and "
+                                                                              + "needs to be committed or rolled back.")]
+    public void TransactionNotResettableWhenNewObject ()
+    {
+      //using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      //{
+      //  WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> tx = new WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> ();
+      //  Order.NewObject ();
+      //  PrivateInvoke.InvokeNonPublicMethod (tx, "CheckCurrentTransactionResettable");
+      //}
+    }
+
+    [Test]
+    [Ignore ("TODO: Test")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The current transaction cannot be reset as it is in a dirty state and "
+                                                                              + "needs to be committed or rolled back.")]
+    public void TransactionNotResettableWhenChangedObject ()
+    {
+      //using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      //{
+      //  WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> tx = new WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> ();
+      //  ++Order.GetObject (DomainObjectIDs.Order1).OrderNumber;
+      //  PrivateInvoke.InvokeNonPublicMethod (tx, "CheckCurrentTransactionResettable");
+      //}
+    }
+
+    [Test]
+    [Ignore ("TODO: Test")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The current transaction cannot be reset as it is in a dirty state and "
+                                                                              + "needs to be committed or rolled back.")]
+    public void TransactionNotResettableWhenChangedRelation ()
+    {
+      //using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      //{
+      //  WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> tx = new WxeScopedTransaction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager> ();
+      //  Order.GetObject (DomainObjectIDs.Order1).OrderItems.Clear ();
+      //  PrivateInvoke.InvokeNonPublicMethod (tx, "CheckCurrentTransactionResettable");
+      //}
     }
   }
 }

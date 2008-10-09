@@ -160,7 +160,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\NullExecutionListenerTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionModeTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionStrategyTest.cs" />
-    <Compile Include="ExecutionEngine\Infrastructure\TransactionExecutionListenerTest.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionExecutionListenerTest.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestFunction2.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestTransactionFactory.cs" />
     <Compile Include="ExecutionEngine\WxeContextFactory.cs" />
@@ -196,18 +196,7 @@
     <Compile Include="ExecutionEngine\TestFunctions\RollbackException.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\SetCurrentException.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\SetPreviousCurrentException.cs" />
-    <Compile Include="ExecutionEngine\TestFunctions\TestableScopedTransactedFunction.cs" />
-    <Compile Include="ExecutionEngine\TestFunctions\TestableWxeScopedTransaction.cs" />
-    <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithResetFailingMyTransactionValidation.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestTransactionScope.cs" />
-    <Compile Include="ExecutionEngine\TestFunctions\TestTransactionScopeManager.cs" />
-    <Compile Include="ExecutionEngine\TestFunctions\TestWxeTransactionFailingResetValidation.cs" />
-    <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithResetFailingSubclassValidation.cs" />
-    <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithReset.cs" />
-    <Compile Include="ExecutionEngine\TestFunctions\TestFunctionWithSpecificTransaction.cs" />
-    <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithNestedFunction.cs" />
-    <Compile Include="ExecutionEngine\TestFunctions\TestTransactedFunctionWithThreadAbort.cs" />
-    <Compile Include="ExecutionEngine\TestFunctions\TestWxeTransaction.cs" />
     <Compile Include="ExecutionEngine\WxeFunctionStateManagerTest.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PostProcessingSubFunctionTest.cs" />
     <Compile Include="ExecutionEngine\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingRedirectToSubFunctionStateTest.cs" />
@@ -233,16 +222,9 @@
     <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\Execute_Self.cs" />
     <Compile Include="ExecutionEngine\WxePageStepTest.cs" />
     <Compile Include="ExecutionEngine\WxePageStepIntegrationTests\TestBase.cs" />
-    <Compile Include="ExecutionEngine\WxeScopedTransactedFunctionTest.cs" />
-    <Compile Include="ExecutionEngine\WxeScopedTransactionTest.cs" />
-    <Compile Include="ExecutionEngine\WxeTransactedFunctionParameterEnlisterTest.cs" />
-    <Compile Include="ExecutionEngine\WxeTransactionBaseExecuteTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\TestFunctions\ProxyWxeTransaction.cs" />
-    <Compile Include="ExecutionEngine\WxeTransactedFunctionBaseTest.cs" />
-    <Compile Include="ExecutionEngine\WxeTransactedFunctionMock.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -308,12 +290,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxeTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExecutionEngine\WxeTransactionBaseTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExecutionEngine\WxeTransactionMock.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Security\Configuration\SecurityConfigurationMock.cs" />

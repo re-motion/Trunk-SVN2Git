@@ -11,16 +11,15 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
-  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
-  public class CreateRootWithChildTestTransactedFunctionBase : WxeTransactedFunction
+  public class CreateRootWithChildTestTransactedFunctionBase : WxeFunction
   {
     public WxeFunction ChildFunction;
 
-    public CreateRootWithChildTestTransactedFunctionBase (WxeTransactionMode mode, WxeFunction childFunction, params object[] actualParameters)
+    public CreateRootWithChildTestTransactedFunctionBase (ITransactionMode mode, WxeFunction childFunction, params object[] actualParameters)
         : base(mode, actualParameters)
     {
       Add (childFunction);

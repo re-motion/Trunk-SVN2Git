@@ -12,14 +12,12 @@ using System;
 using System.Threading;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
-  using WxeTransactedFunction =
-      Remotion.Web.ExecutionEngine.WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
   [Serializable]
-  public class ThreadAbortTestTransactedFunction : WxeTransactedFunction
+  public class ThreadAbortTestTransactedFunction : WxeFunction
   {
     // types
 
@@ -30,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
     // construction and disposing
 
     public ThreadAbortTestTransactedFunction ()
-        : base()
+      : base (WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit)
     {
     }
 

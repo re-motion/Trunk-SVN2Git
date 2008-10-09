@@ -20,16 +20,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   [WebMultiLingualResources (typeof (EditUserFormResources))]
   public partial class EditUserForm : BaseEditPage
   {
-
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    // methods and properties
     protected override IFocusableControl InitialFocusControl
     {
       get { return EditUserControl.InitialFocusControl; }
@@ -44,7 +34,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     protected void CancelButton_Click (object sender, EventArgs e)
     {
-      CurrentFunction.CurrentTransaction.Rollback ();
       throw new WxeUserCancelException ();
     }
 

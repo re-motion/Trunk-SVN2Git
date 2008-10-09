@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine.TestFunctions;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
@@ -19,10 +20,10 @@ using Rhino.Mocks;
 namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 {
   [TestFixture]
-  public class TransactionExecutionListenerTest
+  public class RootTransactionExecutionListenerTest
   {
     private WxeContext _wxeContext;
-    private TransactionStrategyBase _transactionStrategyMock;
+    private RootTransactionStrategy _transactionStrategyMock;
     private IWxeFunctionExecutionListener _innerListenerStub;
     private IWxeFunctionExecutionListener _transactionListener;
 
@@ -31,9 +32,16 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     {
       WxeContextFactory wxeContextFactory = new WxeContextFactory();
       _wxeContext = wxeContextFactory.CreateContext (new TestFunction());
-      _transactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase>();
+      ITransaction transactionMock = MockRepository.GenerateMock<ITransaction>();
+      TransactionStrategyBase outerTransactionStrategyStub = MockRepository.GenerateStub<TransactionStrategyBase>();
+      IWxeFunctionExecutionContext executionContextStub = MockRepository.GenerateStub<IWxeFunctionExecutionContext>();
+      executionContextStub.Stub (stub => stub.GetInParameters()).Return (new object[0]);
+
+      _transactionStrategyMock = MockRepository.GenerateMock<RootTransactionStrategy> (
+          false, transactionMock, outerTransactionStrategyStub, executionContextStub);
+
       _innerListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
-      _transactionListener = new TransactionExecutionListener (_transactionStrategyMock, _innerListenerStub);
+      _transactionListener = new RootTransactionExecutionListener (_transactionStrategyMock, _innerListenerStub);
     }
 
     [Test]

@@ -18,6 +18,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// <summary>
   /// <see cref="ClientTransactionWrapper"/> provides a wrapper for ClientTransactions that implements the <see cref="ITransaction"/> interface.
   /// </summary>
+  [Serializable]
   public class ClientTransactionWrapper : ITransaction
   {
     private ClientTransaction _wrappedInstance;
@@ -131,7 +132,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("objects", objects);
 
-      var domainObjects = objects.OfType<DomainObject>();
+      var domainObjects = objects.OfType<DomainObject>().Distinct();
       _wrappedInstance.EnlistDomainObjects (domainObjects);
       _wrappedInstance.GetObjects<DomainObject> (domainObjects.Select (domainObject => domainObject.ID).ToArray());
     }

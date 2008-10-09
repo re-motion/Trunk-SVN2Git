@@ -14,7 +14,7 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
-  public class TestFunction2 : WxeFunction2
+  public class TestFunction2 : WxeFunction
   {
     public TestFunction2 (ITransactionMode transactionMode)
         : base (transactionMode, new WxeParameterDeclaration[0], new object[0])
@@ -24,6 +24,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
     public TestFunction2 ()
       : base (WxeTransactionMode<TestTransactionFactory>.None, new WxeParameterDeclaration[0], new object[0])
     {
+    }
+
+    public new TransactionStrategyBase TransactionStrategy
+    {
+      get { return base.TransactionStrategy; }
     }
   }
 }

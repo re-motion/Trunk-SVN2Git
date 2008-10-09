@@ -12,13 +12,12 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
-  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
   [Serializable]
-  public class DomainObjectParameterInvalidOutTestTransactedFunction : WxeTransactedFunction
+  public class DomainObjectParameterInvalidOutTestTransactedFunction : WxeFunction
   {
     // types
 
@@ -28,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     // construction and disposing
 
-    public DomainObjectParameterInvalidOutTestTransactedFunction (WxeTransactionMode transactionMode)
+    public DomainObjectParameterInvalidOutTestTransactedFunction (ITransactionMode transactionMode)
         : base (transactionMode)
     {
     }

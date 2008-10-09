@@ -12,6 +12,7 @@ using System;
 using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure
 {
@@ -30,8 +31,13 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
     {
     }
 
-    protected SearchGroupFormFunction (params object[] args)
-      : base (args)
+    protected SearchGroupFormFunction (ITransactionMode transactionMode, params object[] args)
+      : base (transactionMode, args)
+    {
+    }
+
+    public SearchGroupFormFunction (ITransactionMode transactionMode)
+      : base (transactionMode)
     {
     }
 

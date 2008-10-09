@@ -15,6 +15,7 @@ using Remotion.Utilities;
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
+  [Serializable]
   public class ChildTransactionStrategy : ScopedTransactionStrategyBase
   {
     public ChildTransactionStrategy (
@@ -27,7 +28,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("innerListener", innerListener);
 
-      return innerListener;
+      return new ChildTransactionExecutionListener (this, innerListener);
     }
 
     protected override void ReleaseTransaction ()

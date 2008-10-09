@@ -21,11 +21,9 @@ namespace Remotion.Data.DomainObjects.Web.Test
   {
     protected Button WxeTransactedFunctionCreateNewButton;
     protected Label ResultLabel;
-    protected Button WxeTransactedFunctionNoneButton;
     protected Button WxeTransactedFunctionCreateNewAutoCommitButton;
     protected Button WxeTransactedFunctionCreateNewNoAutoCommitButton;
-    protected Button WxeTransactedFunctionNoneAutoCommitButton;
-    protected Button WxeTransactedFunctionNoneNoAutoCommitButton;
+    protected Button WxeTransactedFunctionCreateNoneButton;
     protected Button WxeTransactedFunctionWithPageStepButton;
 
     protected WxeTestPageFunction CurrentWxeTestPageFunction
@@ -58,12 +56,10 @@ namespace Remotion.Data.DomainObjects.Web.Test
     private void InitializeComponent()
     {
       this.WxeTransactedFunctionCreateNewButton.Click += new System.EventHandler (this.WxeTransactedFunctionCreateNewButton_Click);
-      this.WxeTransactedFunctionNoneButton.Click += new System.EventHandler (this.WxeTransactedFunctionNoneButton_Click);
       this.WxeTransactedFunctionCreateNewAutoCommitButton.Click += new System.EventHandler (this.WxeTransactedFunctionCreateNewAutoCommitButton_Click);
-      this.WxeTransactedFunctionNoneAutoCommitButton.Click += new System.EventHandler (this.WxeTransactedFunctionNoneAutoCommitButton_Click);
       this.WxeTransactedFunctionCreateNewNoAutoCommitButton.Click +=
           new System.EventHandler (this.WxeTransactedFunctionCreateNewNoAutoCommitButton_Click);
-      this.WxeTransactedFunctionNoneNoAutoCommitButton.Click += new System.EventHandler (this.WxeTransactedFunctionNoneNoAutoCommitButton_Click);
+      this.WxeTransactedFunctionCreateNoneButton.Click += new System.EventHandler (this.WxeTransactedFunctionCreateNoneButton_Click);
       this.WxeTransactedFunctionWithPageStepButton.Click += new EventHandler (WxeTransactedFunctionWithPageStepButton_Click);
       this.Load += new System.EventHandler (this.Page_Load);
     }
@@ -85,18 +81,6 @@ namespace Remotion.Data.DomainObjects.Web.Test
       ShowResultText ("Test WxeTransactedFunction (CreateNew) executed successfully.");
     }
 
-    private void WxeTransactedFunctionNoneButton_Click (object sender, EventArgs e)
-    {
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
-      {
-        RememberCurrentClientTransaction();
-
-        new CreateNoneTestTransactedFunction (ClientTransactionScope.CurrentTransaction).Execute();
-        CheckCurrentClientTransactionRestored();
-      }
-      ShowResultText ("Test WxeTransactedFunction (None) executed successfully.");
-    }
-
     private void WxeTransactedFunctionCreateNewAutoCommitButton_Click (object sender, EventArgs e)
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
@@ -104,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
         RememberCurrentClientTransaction();
         SetInt32Property (5, ClientTransaction.CreateRootTransaction());
 
-        new AutoCommitTestTransactedFunction (WxeTransactionMode.CreateRoot, DomainObjectIDs.ObjectWithAllDataTypes1).Execute ();
+        new TestTransactedFunction (WxeTransactionMode.CreateRootWithAutoCommit, DomainObjectIDs.ObjectWithAllDataTypes1).Execute ();
         CheckCurrentClientTransactionRestored();
 
         if (GetInt32Property (ClientTransaction.CreateRootTransaction()) != 10)
@@ -121,7 +105,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
         RememberCurrentClientTransaction();
         SetInt32Property (5, ClientTransaction.CreateRootTransaction());
 
-        new NoAutoCommitTestTransactedFunction (WxeTransactionMode.CreateRoot, DomainObjectIDs.ObjectWithAllDataTypes1).Execute ();
+        new TestTransactedFunction (WxeTransactionMode.CreateRoot, DomainObjectIDs.ObjectWithAllDataTypes1).Execute ();
 
         CheckCurrentClientTransactionRestored();
 
@@ -131,35 +115,14 @@ namespace Remotion.Data.DomainObjects.Web.Test
       ShowResultText ("Test WxeTransactedFunction (TransactionMode = CreateNew, AutoCommit = false) executed successfully.");
     }
 
-    private void WxeTransactedFunctionNoneAutoCommitButton_Click (object sender, EventArgs e)
+    private void WxeTransactedFunctionCreateNoneButton_Click (object sender, EventArgs e)
     {
       SetInt32Property (5, ClientTransaction.CreateRootTransaction());
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         RememberCurrentClientTransaction();
 
-        new AutoCommitTestTransactedFunction (WxeTransactionMode.None, DomainObjectIDs.ObjectWithAllDataTypes1).Execute ();
-
-        CheckCurrentClientTransactionRestored();
-
-        if (GetInt32Property (ClientTransactionScope.CurrentTransaction) != 10)
-          throw new TestFailureException ("The WxeTransactedFunction wrongly did not set property value.");
-      }
-
-      if (GetInt32Property (ClientTransaction.CreateRootTransaction()) != 5)
-        throw new TestFailureException ("The WxeTransactedFunction wrongly committed the property value.");
-
-      ShowResultText ("Test WxeTransactedFunction (TransactionMode = None, AutoCommit = true) executed successfully.");
-    }
-
-    private void WxeTransactedFunctionNoneNoAutoCommitButton_Click (object sender, EventArgs e)
-    {
-      SetInt32Property (5, ClientTransaction.CreateRootTransaction());
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
-      {
-        RememberCurrentClientTransaction();
-
-        new NoAutoCommitTestTransactedFunction (WxeTransactionMode.None, DomainObjectIDs.ObjectWithAllDataTypes1).Execute ();
+        new TestTransactedFunction (WxeTransactionMode.None, DomainObjectIDs.ObjectWithAllDataTypes1).Execute ();
 
         CheckCurrentClientTransactionRestored();
 
@@ -177,24 +140,19 @@ namespace Remotion.Data.DomainObjects.Web.Test
     {
       if (!IsReturningPostBack)
       {
-        using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
-        {
-          RememberCurrentClientTransaction();
-          this.ExecuteFunction (new ParentPageStepTestTransactedFunction(), WxeCallArguments.Default);
-        } // we must dispose the scope on the original thread
+        RememberCurrentClientTransaction();
+        this.ExecuteFunction (new ParentPageStepTestTransactedFunction(), WxeCallArguments.Default);
       }
       else
       {
-        // the WXE must copy the original scope to the new thread
         if (ClientTransactionScope.ActiveScope == null)
           throw new TestFailureException ("The function did not restore the original scope.");
 
         CheckCurrentClientTransactionRestored();
-        ClientTransactionScope.ActiveScope.Leave (); // dispose the scope on the new thread
         ShowResultText ("Test WxeTransactedFunction with nested PageStep executed successfully.");
       }
     }
-    
+
     private void SetInt32Property (int value, ClientTransaction clientTransaction)
     {
       using (clientTransaction.EnterDiscardingScope ())

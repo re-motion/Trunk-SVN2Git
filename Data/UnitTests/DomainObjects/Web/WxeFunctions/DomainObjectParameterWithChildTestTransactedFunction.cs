@@ -20,7 +20,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
   public class DomainObjectParameterWithChildTestTransactedFunction : CreateRootWithChildTestTransactedFunctionBase
   {
     public DomainObjectParameterWithChildTestTransactedFunction ()
-        : base (WxeTransactionMode.CreateRoot, new DomainObjectParameterTestTransactedFunction (WxeTransactionMode.CreateChildIfParent, null, null))
+        : base (
+            WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit,
+            new DomainObjectParameterTestTransactedFunction (
+                WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParentWithAutoCommit, null, null))
     {
       Insert (0, new WxeMethodStep (FirstStep));
       Add (new WxeMethodStep (LastStep));
@@ -28,13 +31,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     private void FirstStep ()
     {
-      Assert.AreSame (MyTransaction, ClientTransactionScope.CurrentTransaction);
+      Assert.AreSame (Transaction.GetNativeTransaction<ClientTransaction>(), ClientTransactionScope.CurrentTransaction);
 
       DomainObjectParameterTestTransactedFunction childFunction = (DomainObjectParameterTestTransactedFunction) ChildFunction;
       ClassWithAllDataTypes inParameter = ClassWithAllDataTypes.GetObject (new DomainObjectIDs().ClassWithAllDataTypes2);
       inParameter.Int32Property = 47;
 
-      ClassWithAllDataTypes[] inParameterArray = new ClassWithAllDataTypes[] { inParameter };
+      ClassWithAllDataTypes[] inParameterArray = new[] { inParameter };
 
       childFunction.InParameter = inParameter;
       childFunction.InParameterArray = inParameterArray;
@@ -42,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     private void LastStep ()
     {
-      Assert.AreSame (MyTransaction, ClientTransactionScope.CurrentTransaction);
+      Assert.AreSame (Transaction.GetNativeTransaction<ClientTransaction>(), ClientTransactionScope.CurrentTransaction);
 
       DomainObjectParameterTestTransactedFunction childFunction = (DomainObjectParameterTestTransactedFunction) ChildFunction;
       ClassWithAllDataTypes outParameter = childFunction.OutParameter;

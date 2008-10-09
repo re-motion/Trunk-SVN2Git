@@ -16,10 +16,8 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
-  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
   [Serializable]
-  public class SerializationTestTransactedFunction: WxeTransactedFunction
+  public class SerializationTestTransactedFunction: WxeFunction
   {
     // types
 
@@ -30,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
     // construction and disposing
 
     public SerializationTestTransactedFunction ()
-        : base ()
+        : base (WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit)
     {
     }
 

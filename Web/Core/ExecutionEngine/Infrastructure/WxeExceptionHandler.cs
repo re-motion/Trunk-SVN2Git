@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections;
-using Remotion.Web.Utilities;
 using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure

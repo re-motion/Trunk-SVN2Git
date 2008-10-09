@@ -19,6 +19,7 @@ using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Globalization;
+using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
@@ -72,8 +73,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       if (!Page.IsReturningPostBack)
       {
-        EditGroupFormFunction editGroupFormFunction = new EditGroupFormFunction (((Group) e.BusinessObject).ID);
-        editGroupFormFunction.TransactionMode = WxeTransactionMode.None;
+        EditGroupFormFunction editGroupFormFunction = new EditGroupFormFunction (WxeTransactionMode.None, ((Group) e.BusinessObject).ID);
         Page.ExecuteFunction (editGroupFormFunction, WxeCallArguments.Default);
       }
       else
@@ -87,8 +87,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       if (!Page.IsReturningPostBack)
       {
-        EditGroupFormFunction editGroupFormFunction = new EditGroupFormFunction (null);
-        editGroupFormFunction.TransactionMode = WxeTransactionMode.None;
+        EditGroupFormFunction editGroupFormFunction = new EditGroupFormFunction (WxeTransactionMode.None, null);
         Page.ExecuteFunction (editGroupFormFunction, WxeCallArguments.Default);
       }
       else

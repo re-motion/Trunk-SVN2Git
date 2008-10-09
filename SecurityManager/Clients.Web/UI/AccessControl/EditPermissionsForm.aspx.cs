@@ -188,7 +188,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected void CancelButton_Click (object sender, EventArgs e)
     {
-      CurrentFunction.CurrentTransaction.Rollback ();
+      CurrentFunction.Transaction.Rollback ();
       throw new WxeUserCancelException ();
     }
 

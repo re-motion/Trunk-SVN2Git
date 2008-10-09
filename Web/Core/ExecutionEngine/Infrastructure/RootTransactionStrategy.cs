@@ -15,6 +15,7 @@ using Remotion.Utilities;
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
+  [Serializable]
   public class RootTransactionStrategy : ScopedTransactionStrategyBase
   {
     public RootTransactionStrategy (
@@ -27,7 +28,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("innerListener", innerListener);
 
-      return new TransactionExecutionListener (this, innerListener);
+      return new RootTransactionExecutionListener (this, innerListener);
     }
   }
 }

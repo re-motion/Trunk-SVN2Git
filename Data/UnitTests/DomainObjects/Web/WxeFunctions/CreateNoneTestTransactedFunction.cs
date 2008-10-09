@@ -15,10 +15,8 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
-  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
   [Serializable]
-  public class CreateNoneTestTransactedFunction : WxeTransactedFunction
+  public class CreateNoneTestTransactedFunction : WxeFunction
   {
     // types
 
@@ -29,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
     // construction and disposing
 
     public CreateNoneTestTransactedFunction (ClientTransactionScope previousClientTransactionScope)
-        : base (WxeTransactionMode.None, previousClientTransactionScope)
+        : base (WxeTransactionMode<ClientTransactionFactory>.None, previousClientTransactionScope)
     {
     }
 

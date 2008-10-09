@@ -9,14 +9,18 @@
  */
 
 using System;
+using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 {
-  using WxeTransactedFunction = Remotion.Web.ExecutionEngine.WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
-  public class ParentPageStepTestTransactedFunction : WxeTransactedFunction
+  public class ParentPageStepTestTransactedFunction : WxeFunction
   {
     private ClientTransaction _transactionInStep1;
+
+    public ParentPageStepTestTransactedFunction ()
+        : base(WxeTransactionMode.CreateRootWithAutoCommit)
+    {
+    }
 
     private void Step1 ()
     {

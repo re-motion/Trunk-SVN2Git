@@ -14,13 +14,12 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
-  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
   [Serializable]
-  public class DomainObjectParameterTestTransactedFunction : WxeTransactedFunction
+  public class DomainObjectParameterTestTransactedFunction : WxeFunction
   {
     // types
 
@@ -31,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
     // construction and disposing
 
     public DomainObjectParameterTestTransactedFunction (
-        WxeTransactionMode transactionMode,
+        ITransactionMode transactionMode,
         ClassWithAllDataTypes inParameter,
         ClassWithAllDataTypes[] inParameterArray)
         : base (transactionMode, inParameter, inParameterArray)
@@ -70,14 +69,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     private void Step1 ()
     {
-      Assert.IsTrue (Transaction == null || Transaction == ClientTransactionScope.CurrentTransaction);
+      ClientTransaction clientTransaction = Transaction.GetNativeTransaction<ClientTransaction> ();
+      Assert.IsTrue (clientTransaction == null || clientTransaction == ClientTransactionScope.CurrentTransaction);
       Assert.IsTrue (InParameter.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
       Assert.IsTrue (InParameterArray[0].CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
 
       OutParameter = ClassWithAllDataTypes.GetObject (new DomainObjectIDs().ClassWithAllDataTypes1);
       OutParameter.Int32Property = InParameter.Int32Property + 5;
 
-      OutParameterArray = new ClassWithAllDataTypes[] {ClassWithAllDataTypes.GetObject (new DomainObjectIDs().ClassWithAllDataTypes2)};
+      OutParameterArray = new[] {ClassWithAllDataTypes.GetObject (new DomainObjectIDs().ClassWithAllDataTypes2)};
       OutParameterArray[0].Int32Property = InParameterArray[0].Int32Property + 5;
     }
   }

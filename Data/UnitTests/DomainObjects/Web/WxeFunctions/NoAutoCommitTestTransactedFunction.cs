@@ -11,36 +11,30 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
-  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
   [Serializable]
-  public class NoAutoCommitTestTransactedFunction : WxeTransactedFunction
+  public class NoAutoCommitTestTransactedFunction : WxeFunction
   {
     // types
 
     // static members and constants
 
     // member fields
-    private WxeTransactionMode _transactionMode;
 
     // construction and disposing
 
-    public NoAutoCommitTestTransactedFunction (WxeTransactionMode transactionMode, ObjectID objectWithAllDataTypes)
+    public NoAutoCommitTestTransactedFunction (ITransactionMode transactionMode, ObjectID objectWithAllDataTypes)
         : base (transactionMode, objectWithAllDataTypes)
     {
-      _transactionMode = transactionMode;
+      Assertion.IsFalse (TransactionMode.AutoCommit);
     }
 
     // methods and properties
-
-    protected override bool AutoCommit
-    {
-      get { return false; }
-    }
 
     [WxeParameter (1, true, WxeParameterDirection.In)]
     public ObjectID ObjectWithAllDataTypes

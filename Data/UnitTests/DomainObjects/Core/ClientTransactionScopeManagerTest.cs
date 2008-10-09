@@ -24,7 +24,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       ITransactionFactory transactionFactory = new ClientTransactionFactory ();
 
-      Assert.That (transactionFactory.CreateRootTransaction(), Is.InstanceOfType (typeof (RootClientTransaction)));
+      ITransaction transaction = transactionFactory.CreateRootTransaction();
+      Assert.That (transaction, Is.InstanceOfType (typeof (ClientTransactionWrapper)));
+      Assert.That (transaction.To<ClientTransaction>(), Is.InstanceOfType (typeof (RootClientTransaction)));
     }
   }
 }

@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects
 /// </para>
 /// </remarks>
 [Serializable]
-public abstract class ClientTransaction : ITransaction
+public abstract class ClientTransaction
 {
   // types
 
@@ -528,8 +528,8 @@ public abstract class ClientTransaction : ITransaction
   /// <see cref="ObjectNotFoundException"/>.</para>
   /// </remarks>
   /// <exception cref="InvalidOperationException">The domain object cannot be enlisted, because another <see cref="DomainObject"/> with the same
-  /// <exception cref="ArgumentNullException">The <paramref name="domainObject"/> parameter is <see langword="null"/>.</exception>
   /// <see cref="ObjectID"/> has already been associated with this transaction.</exception>
+  /// <exception cref="ArgumentNullException">The <paramref name="domainObject"/> parameter is <see langword="null"/>.</exception>
   public bool EnlistDomainObject (DomainObject domainObject)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
@@ -539,7 +539,6 @@ public abstract class ClientTransaction : ITransaction
           domainObject.ID);
       throw new InvalidOperationException (message);
     }
-
     return DoEnlistDomainObject (domainObject);
   }
 
@@ -558,7 +557,6 @@ public abstract class ClientTransaction : ITransaction
   /// <remarks>
   /// This method also enlists objects that do not exist in the database; accessing such an object in the context of this transaction will
   /// result in an <see cref="ObjectNotFoundException"/>.</remarks>
-
   public void EnlistSameDomainObjects (ClientTransaction sourceTransaction, bool copyCollectionEventHandlers)
   {
     ArgumentUtility.CheckNotNull ("sourceTransaction", sourceTransaction);
@@ -1503,59 +1501,5 @@ public abstract class ClientTransaction : ITransaction
   {
     return new ClientTransactionWrapper (this);
   }
-
-  #region ITransaction Members
-
-  public TTransaction To<TTransaction> ()
-  {
-    throw new System.NotImplementedException();
-  }
-
-  ITransaction ITransaction.CreateChild ()
-  {
-    return CreateSubTransaction ();
-  }
-
-  bool ITransaction.IsChild
-  {
-    get { return ParentTransaction != null; }
-  }
-
-  bool ITransaction.CanCreateChild
-  {
-    get { return true; }
-  }
-
-  void ITransaction.Release ()
-  {
-    Discard ();
-  }
-
-  public void Reset ()
-  {
-    throw new System.NotImplementedException();
-  }
-
-  ITransaction ITransaction.Parent
-  {
-    get { return ParentTransaction; }
-  }
-
-  bool ITransaction.HasUncommittedChanges
-  {
-    get { return HasChanged(); }
-  }
-
-  ITransactionScope ITransaction.EnterScope ()
-  {
-    throw new NotImplementedException();
-  }
-
-  void ITransaction.RegisterObjects (IEnumerable objects)
-  {
-    throw new System.NotImplementedException ();
-  }
-
-  #endregion
 }
 }

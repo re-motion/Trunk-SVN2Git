@@ -52,8 +52,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       var innerExecutionListenerStub = MockRepository.GenerateStub<IWxeFunctionExecutionListener>();
       IWxeFunctionExecutionListener executionListener = _strategy.CreateExecutionListener (innerExecutionListenerStub);
 
-      Assert.That (executionListener, Is.InstanceOfType (typeof (TransactionExecutionListener)));
-      var transactionExecutionListener = (TransactionExecutionListener) executionListener;
+      Assert.That (executionListener, Is.InstanceOfType (typeof (RootTransactionExecutionListener)));
+      var transactionExecutionListener = (RootTransactionExecutionListener) executionListener;
       Assert.That (transactionExecutionListener.InnerListener, Is.SameAs (innerExecutionListenerStub));
       Assert.That (transactionExecutionListener.TransactionStrategy, Is.SameAs (_strategy));
     }

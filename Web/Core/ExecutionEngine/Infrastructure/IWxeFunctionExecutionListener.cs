@@ -14,24 +14,24 @@ using System.Threading;
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   /// <summary>
-  /// The <see cref="IWxeFunctionExecutionListener"/> interface defines hooks for interacting with a <see cref="WxeFunction2"/>'s execution,
+  /// The <see cref="IWxeFunctionExecutionListener"/> interface defines hooks for interacting with a <see cref="WxeFunction"/>'s execution,
   /// including it's re-entry model.
   /// </summary>
   public interface IWxeFunctionExecutionListener : INullObject
   {
-    /// <summary>Play is invoked when the function's <see cref="WxeFunction2.Execute(WxeContext)"/> method is invoked (first and subsequent calls).</summary>
+    /// <summary>Play is invoked when the function's <see cref="WxeFunction.Execute(WxeContext)"/> method is invoked (first and subsequent calls).</summary>
     void OnExecutionPlay (WxeContext context);
 
-    /// <summary>Stop is invoked when the function's <see cref="WxeFunction2.Execute(WxeContext)"/> method is completed successfully.</summary>
+    /// <summary>Stop is invoked when the function's <see cref="WxeFunction.Execute(WxeContext)"/> method is completed successfully.</summary>
     void OnExecutionStop (WxeContext context);
 
     /// <summary>
-    /// Play is invoked when the function's <see cref="WxeFunction2.Execute(WxeContext)"/> method is exited by a <see cref="ThreadAbortException"/>,
+    /// Play is invoked when the function's <see cref="WxeFunction.Execute(WxeContext)"/> method is exited by a <see cref="ThreadAbortException"/>,
     /// i.e. the execution is paused.
     /// </summary>
     void OnExecutionPause (WxeContext context);
 
-    /// <summary>Play is invoked when the function's <see cref="WxeFunction2.Execute(WxeContext)"/> method fails.</summary>
+    /// <summary>Play is invoked when the function's <see cref="WxeFunction.Execute(WxeContext)"/> method fails.</summary>
     void OnExecutionFail (WxeContext context, Exception exception);
   }
 }

@@ -32,13 +32,13 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStruct
     {
     }
 
-    protected EditUserFormFunction (params object[] args)
-      : base (args)
+    protected EditUserFormFunction (ITransactionMode transactionMode, params object[] args)
+      : base (transactionMode, args)
     {
     }
 
-    public EditUserFormFunction (ObjectID organizationalStructureObjectID)
-      : base (organizationalStructureObjectID)
+    public EditUserFormFunction (ITransactionMode transactionMode, ObjectID organizationalStructureObjectID)
+      : base (transactionMode, organizationalStructureObjectID)
     {
     }
 

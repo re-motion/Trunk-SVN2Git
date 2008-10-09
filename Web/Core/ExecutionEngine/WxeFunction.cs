@@ -9,24 +9,35 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using Remotion.Collections;
-using Remotion.Logging;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  #region Obsoletes
+
+  [Obsolete ("Use Remotion.Web.ExecutionEngine.WxeFunction instead. (Version 1.11.7)", true)]
+  public abstract class WxeScopedTransactedFunction<TTransaction, TScope, TTransactionScopeManager>
+  {
+    private WxeScopedTransactedFunction ()
+    {
+      throw new NotImplementedException ("Use Remotion.Web.ExecutionEngine.WxeFunctions instead. (Version 1.11.7)");
+    }
+  }
+
+  #endregion
+
   /// <summary>
-  ///   Performs a sequence of operations in a web application using named arguments.
+  /// The new <see cref="WxeFunction"/>. Will replace the <see cref="WxeFunction"/> type once implemtation is completed.
   /// </summary>
   [Serializable]
-  public abstract class WxeFunction : WxeStepList
+  public abstract class WxeFunction : WxeStepList, IWxeFunctionExecutionContext
   {
     #region Obsoletes
 
@@ -115,83 +126,136 @@ namespace Remotion.Web.ExecutionEngine
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("functionType", functionType, typeof (WxeFunction));
 
-      IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter>();
+      IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
       if (wxeSecurityAdapter == null)
         return true;
 
       return wxeSecurityAdapter.HasStatelessAccess (functionType);
     }
 
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (WxeFunction));
-
+    private IWxeFunctionExecutionListener _executionListener = NullExecutionListener.Null;
+    private TransactionStrategyBase _transactionStrategy = NullTransactionStrategy.Null;
+    private readonly ITransactionMode _transactionMode;
     private readonly WxeVariablesContainer _variablesContainer;
-    private readonly WxeExceptionHandler _exceptionHandler;
+    private readonly WxeExceptionHandler _exceptionHandler = new WxeExceptionHandler ();
     private string _functionToken;
     private string _returnUrl;
 
-    protected WxeFunction (WxeParameterDeclaration[] parameterDeclarations,  params object[] actualParameters)
-    {
-      _variablesContainer = new WxeVariablesContainer (this, actualParameters, parameterDeclarations);
-      _exceptionHandler = new WxeExceptionHandler();
-
-      Insert (0, new WxeMethodStep (CheckPermissions));
-    }
-
     protected WxeFunction (params object[] actualParameters)
+      : this (new NoneTransactionMode (), actualParameters)
     {
-      _variablesContainer = new WxeVariablesContainer (this, actualParameters);
-      _exceptionHandler = new WxeExceptionHandler ();
-
-      Insert (0, new WxeMethodStep (CheckPermissions));
     }
 
-    /// <summary> Take the actual parameters without any conversion. </summary>
+    protected WxeFunction (ITransactionMode transactionMode, params object[] actualParameters)
+    {
+      ArgumentUtility.CheckNotNull ("transactionMode", transactionMode);
+      ArgumentUtility.CheckNotNull ("actualParameters", actualParameters);
+
+      _transactionMode = transactionMode;
+      _variablesContainer = new WxeVariablesContainer (this, actualParameters);
+    }
+
+    protected WxeFunction (ITransactionMode transactionMode, WxeParameterDeclaration[] parameterDeclarations, object[] actualParameters)
+    {
+      ArgumentUtility.CheckNotNull ("transactionMode", transactionMode);
+      ArgumentUtility.CheckNotNull ("parameterDeclarations", parameterDeclarations);
+      ArgumentUtility.CheckNotNull ("actualParameters", actualParameters);
+
+      _transactionMode = transactionMode;
+      _variablesContainer = new WxeVariablesContainer (this, actualParameters, parameterDeclarations);
+    }
+
     public override void Execute (WxeContext context)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      Assertion.IsNotNull (_executionListener);
+
       if (!IsExecutionStarted)
       {
-        s_log.Debug ("Initializing execution of " + GetType().FullName + ".");
-
         _variablesContainer.EnsureParametersInitialized (null);
+        
+        var transactionStrategy = _transactionMode.CreateTransactionStrategy (this, context);
+        OnTransactionCreated (transactionStrategy);
+        _transactionStrategy = transactionStrategy;
+
+        _executionListener = _transactionStrategy.CreateExecutionListener (_executionListener);
       }
-      else
-        s_log.Debug (string.Format ("Resuming execution of " + GetType().FullName + "."));
 
       try
       {
+        _executionListener.OnExecutionPlay (context);
+        if (!IsExecutionStarted)
+          CheckPermissions (context);
         base.Execute (context);
+        _executionListener.OnExecutionStop (context);
+      }
+      catch (WxeFatalExecutionException)
+      {
+        // bubble up
+        throw;
       }
       catch (ThreadAbortException)
       {
+        _executionListener.OnExecutionPause (context);
         throw;
       }
-      catch (WxeExecuteUserControlStepException)
+      catch (Exception stepException)
       {
-        throw;
-      }
-      catch (WxeExecuteUserControlNextStepException)
-      {
-      }
-      catch (Exception e)
-      {
-        Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (e) ?? e;
+        Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (stepException) ?? stepException;
+        try
+        {
+          _executionListener.OnExecutionFail (context, unwrappedException);
+        }
+        catch (Exception listenerException)
+        {
+          throw new WxeFatalExecutionException (unwrappedException, listenerException);
+        }
+
         if (!_exceptionHandler.Catch (unwrappedException))
         {
           if (unwrappedException is WxeUnhandledException)
             throw unwrappedException;
 
           throw new WxeUnhandledException (
-              string.Format ("An unhandled exception ocured while executing WxeFunction  '{0}': {1}", GetType().FullName, unwrappedException.Message),
+              string.Format ("An unhandled exception ocured while executing WxeFunction '{0}':\r\n{1}", GetType().FullName, unwrappedException.Message),
               unwrappedException);
         }
       }
 
       if (_exceptionHandler.Exception == null && ParentStep != null)
-        _variablesContainer.ReturnParametersToCaller();
-
-      s_log.Debug ("Ending execution of " + GetType().FullName + ".");
+        _variablesContainer.ReturnParametersToCaller ();
     }
 
+    public IWxeFunctionExecutionListener ExecutionListener
+    {
+      get { return _executionListener; }
+      set { _executionListener = ArgumentUtility.CheckNotNull ("value", value); }
+    }
+
+    public ITransactionStrategy Transaction
+    {
+      get { return _transactionStrategy; }
+    }
+
+    protected internal TransactionStrategyBase TransactionStrategy
+    {
+      get { return _transactionStrategy; }
+    }
+
+    public ITransactionMode TransactionMode
+    {
+      get { return _transactionMode; }
+    }
+
+    object[] IWxeFunctionExecutionContext.GetInParameters ()
+    {
+      return _variablesContainer.ParameterDeclarations.Where (p => p.IsIn).Select (p => p.GetValue (_variablesContainer.Variables)).ToArray();
+    }
+
+    object[] IWxeFunctionExecutionContext.GetOutParameters ()
+    {
+      return _variablesContainer.ParameterDeclarations.Where (p => p.IsOut).Select (p => p.GetValue (_variablesContainer.Variables)).ToArray ();
+    }
 
     public string ReturnUrl
     {
@@ -234,35 +298,43 @@ namespace Remotion.Web.ExecutionEngine
       _functionToken = functionToken;
     }
 
-    public override string ToString ()
-    {
-      StringBuilder sb = new StringBuilder();
-      sb.Append ("WxeFunction: ");
-      sb.Append (GetType().Name);
-      sb.Append (" (");
-      for (int i = 0; i < _variablesContainer.ActualParameters.Length; ++i)
-      {
-        if (i > 0)
-          sb.Append (", ");
-        object value = _variablesContainer.ActualParameters[i];
-        if (value is WxeVariableReference)
-          sb.Append ("@" + ((WxeVariableReference) value).Name);
-        else if (value is string)
-          sb.AppendFormat ("\"{0}\"", value);
-        else
-          sb.Append (value);
-      }
-      sb.Append (")");
-      return sb.ToString();
-    }
+    //public override string ToString ()
+    //{
+    //  StringBuilder sb = new StringBuilder ();
+    //  sb.Append ("WxeFunction: ");
+    //  sb.Append (GetType ().Name);
+    //  sb.Append (" (");
+    //  for (int i = 0; i < _variablesContainer.ActualParameters.Length; ++i)
+    //  {
+    //    if (i > 0)
+    //      sb.Append (", ");
+    //    object value = _variablesContainer.ActualParameters[i];
+    //    if (value is WxeVariableReference)
+    //      sb.Append ("@" + ((WxeVariableReference) value).Name);
+    //    else if (value is string)
+    //      sb.AppendFormat ("\"{0}\"", value);
+    //    else
+    //      sb.Append (value);
+    //  }
+    //  sb.Append (")");
+    //  return sb.ToString ();
+    //}
 
     protected virtual void CheckPermissions (WxeContext context)
     {
-      IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter>();
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
       if (wxeSecurityAdapter == null)
         return;
 
       wxeSecurityAdapter.CheckAccess (this);
+    }
+
+    protected virtual void OnTransactionCreated (ITransactionStrategy transactionStrategy)
+    {
+      ArgumentUtility.CheckNotNull ("transactionStrategy", transactionStrategy);
+      //NOP
     }
   }
 }

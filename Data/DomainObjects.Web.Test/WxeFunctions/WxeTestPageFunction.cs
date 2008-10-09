@@ -27,6 +27,7 @@ public class WxeTestPageFunction : WxeFunction
   // construction and disposing
 
   public WxeTestPageFunction ()
+    :base (WxeTransactionMode.CreateRoot)
   {
   }
 

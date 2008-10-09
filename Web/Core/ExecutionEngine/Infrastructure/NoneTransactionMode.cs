@@ -21,7 +21,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
     }
 
-    public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction2 function, WxeContext context)
+    public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction function, WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("function", function);
 

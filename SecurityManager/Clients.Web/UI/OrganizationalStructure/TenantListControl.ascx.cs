@@ -19,6 +19,7 @@ using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Globalization;
+using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
@@ -72,8 +73,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       if (!Page.IsReturningPostBack)
       {
-        EditTenantFormFunction editTenantFormFunction = new EditTenantFormFunction (((Tenant) e.BusinessObject).ID);
-        editTenantFormFunction.TransactionMode = WxeTransactionMode.None;
+        EditTenantFormFunction editTenantFormFunction = new EditTenantFormFunction (WxeTransactionMode.None, ((Tenant) e.BusinessObject).ID);
         Page.ExecuteFunction (editTenantFormFunction, WxeCallArguments.Default);
       }
       else
@@ -87,8 +87,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       if (!Page.IsReturningPostBack)
       {
-        EditTenantFormFunction editTenantFormFunction = new EditTenantFormFunction (null);
-        editTenantFormFunction.TransactionMode = WxeTransactionMode.None;
+        EditTenantFormFunction editTenantFormFunction = new EditTenantFormFunction (WxeTransactionMode.None, null);
         Page.ExecuteFunction (editTenantFormFunction, WxeCallArguments.Default);
       }
       else

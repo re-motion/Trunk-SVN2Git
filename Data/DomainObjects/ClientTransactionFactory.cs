@@ -11,7 +11,7 @@ namespace Remotion.Data.DomainObjects
     /// <returns>A new root transaction.</returns>
     public ITransaction CreateRootTransaction ()
     {
-      return ClientTransaction.CreateRootTransaction ();
+      return ClientTransaction.CreateRootTransaction ().ToITransation();
     }
 
   }

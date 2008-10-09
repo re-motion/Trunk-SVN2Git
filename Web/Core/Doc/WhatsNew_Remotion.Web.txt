@@ -1,3 +1,12 @@
+1.11.7
+======
+- Unified WxeScopedTransactedFunction and WxeFunction
+  Use WxeTransactionMode<TTransactionFactory> to specify "No Transaction", "Root Transaction", or "Child Transaction"
+  - WxeTransactionMode.None -> WxeTransactionMode<T>.None
+  - WxeTransactionMode.CreateRoot -> WxeTransactionMode<T>.CreateRootWithAutoCommit
+  - WxeTransactionMode.CreateChildIfParent -> WxeTransactionMode<T>.CreateChildIfParentWithAutoCommit
+  See Documentation for additional details.
+
 1.11.5
 ======
 - WxeFunction: Moved methods for handling WxeVariables to WxeVariablesContainer.

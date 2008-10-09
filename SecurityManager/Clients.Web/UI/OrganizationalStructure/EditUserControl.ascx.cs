@@ -17,6 +17,7 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
+using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
@@ -111,9 +112,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     private void EditRole (Role role, User user, Group group, Position position)
     {
-      EditRoleFormFunction editRoleFormFunction = new EditRoleFormFunction ( (role != null) ? role.ID : null, user, group);
-
-      editRoleFormFunction.TransactionMode = WxeTransactionMode.None;
+      EditRoleFormFunction editRoleFormFunction = new EditRoleFormFunction (WxeTransactionMode.None, (role != null) ? role.ID : null, user, group);
       Page.ExecuteFunction (editRoleFormFunction, WxeCallArguments.Default);
     }
   }

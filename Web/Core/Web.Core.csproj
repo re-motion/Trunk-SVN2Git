@@ -111,6 +111,7 @@
     <Compile Include="Context\WebSafeContextMixin.cs" />
     <None Include="ExecutionEngine\Infrastructure\TxStrategyDoc.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategy.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateRootTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\IWxeFunctionExecutionContext.cs" />
@@ -120,16 +121,16 @@
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullTransactionStrategy.cs" />
-    <Compile Include="ExecutionEngine\Infrastructure\TransactionExecutionListener.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\TransactionStrategyBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ScopedTransactionStrategyBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxeExceptionHandler.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxeVariablesContainer.cs" />
+    <Compile Include="ExecutionEngine\ITransactionMode.cs" />
     <Compile Include="ExecutionEngine\WxeFatalExecutionException.cs" />
-    <Compile Include="ExecutionEngine\WxeFunction2.cs" />
-    <Compile Include="ExecutionEngine\WxeTransactionMode2.cs" />
-    <Compile Include="ExecutionEngine\Infrastructure\ITransactionMode.cs" />
+    <Compile Include="ExecutionEngine\WxeFunction.cs" />
+    <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ClearingStateSelectionStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateClearingAfterParentLoadedState.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateClearingState.cs" />
@@ -209,19 +210,12 @@
     <Compile Include="ExecutionEngine\WxeCallOptionsNoRepost.cs" />
     <Compile Include="ExecutionEngine\WxeExecutor.cs" />
     <Compile Include="ExecutionEngine\WxeIgnorableException.cs" />
-    <Compile Include="ExecutionEngine\InconsistentClientTransactionScopeException.cs" />
     <Compile Include="ExecutionEngine\IWxePage.cs" />
     <Compile Include="ExecutionEngine\WxeCallArguments.cs" />
     <Compile Include="ExecutionEngine\WxeFunctionStateManager.cs" />
-    <Compile Include="ExecutionEngine\WxeNonRecoverableTransactionException.cs" />
     <Compile Include="ExecutionEngine\Obsolete\WxePageExtensions.cs" />
     <Compile Include="ExecutionEngine\WxePermaUrlCallArguments.cs" />
     <Compile Include="ExecutionEngine\WxePermaUrlOptions.cs" />
-    <Compile Include="ExecutionEngine\WxeScopedTransaction.cs" />
-    <Compile Include="ExecutionEngine\WxeScopedTransactedFunction.cs" />
-    <Compile Include="ExecutionEngine\WxeTransactedFunctionParameterEnlister.cs" />
-    <Compile Include="ExecutionEngine\WxeTransactionAlreadyReleasedException.cs" />
-    <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlReplacer.cs" />
     <Compile Include="ExecutionEngine\WxeUserControlStep.cs" />
     <Compile Include="ExecutionEngine\WxeVariableReference.cs" />
@@ -251,8 +245,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxePermanentUrlTooLongException.cs" />
-    <Compile Include="ExecutionEngine\WxeTransactedFunctionEventArgs.cs" />
-    <Compile Include="ExecutionEngine\WxeTransactionEventArgs.cs" />
     <Compile Include="ExecutionEngine\WxeUnhandledException.cs" />
     <Compile Include="ExecutionEngine\IWxeSecurityAdapter.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NumberedMemberFinder.cs">
@@ -280,9 +272,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxeForm.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExecutionEngine\WxeFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxeFunctionState.cs">
@@ -340,12 +329,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WxeTimeoutException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExecutionEngine\WxeTransactedFunctionBase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExecutionEngine\WxeTransactionBase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\Obsolete\WxeTryCatch.cs">

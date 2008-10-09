@@ -13,7 +13,7 @@ using Remotion.Data;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
-  public class TestTransactionScope : ITransactionScope<TestTransaction>, ITransactionScope
+  public class TestTransactionScope : ITransactionScope
   {
     private static TestTransactionScope _currentScope;
 

@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 
@@ -66,7 +67,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
         if (ValidatePagePostSaveValues ())
         {
-          CurrentFunction.CurrentTransaction.Commit ();
+          ClientTransaction.Current.Commit ();
           ExecuteNextStep ();
         }
         else

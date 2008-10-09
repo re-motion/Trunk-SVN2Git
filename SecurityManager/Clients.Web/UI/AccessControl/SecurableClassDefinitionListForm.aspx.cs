@@ -13,6 +13,7 @@ using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
+using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Web.ExecutionEngine;
@@ -67,7 +68,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       if (!IsReturningPostBack)
       {
         SecurableClassDefinition classDefinition = (SecurableClassDefinition) e.BusinessObjectTreeNode.BusinessObject;
-        EditPermissionsFormFunction function = new EditPermissionsFormFunction (classDefinition.ID);
+        EditPermissionsFormFunction function = new EditPermissionsFormFunction (WxeTransactionMode.CreateRootWithAutoCommit , classDefinition.ID);
         var options = new WxeCallOptionsExternal (
             "_blank", "width=1000, height=700, resizable=yes, menubar=no, toolbar=no, location=no, status=no", true);
         try

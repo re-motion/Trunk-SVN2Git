@@ -13,6 +13,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.UI.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl
 {
@@ -31,13 +32,13 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl
     {
     }
 
-    protected EditPermissionsFormFunction (params object[] args)
-      : base (args)
+    protected EditPermissionsFormFunction (ITransactionMode transactionMode, params object[] args)
+      : base (transactionMode, args)
     {
     }
 
-    public EditPermissionsFormFunction (ObjectID securableClassDefinitionObjectID)
-      : base (securableClassDefinitionObjectID)
+    public EditPermissionsFormFunction (ITransactionMode transactionMode, ObjectID securableClassDefinitionObjectID)
+      : base (transactionMode, securableClassDefinitionObjectID)
     {
     }
 

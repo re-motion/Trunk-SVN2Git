@@ -17,7 +17,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
   public class DomainObjectParameterWithChildInvalidOutTestTransactedFunction : CreateRootWithChildTestTransactedFunctionBase
   {
     public DomainObjectParameterWithChildInvalidOutTestTransactedFunction ()
-        : base (WxeTransactionMode.CreateRoot, new DomainObjectParameterInvalidOutTestTransactedFunction (WxeTransactionMode.CreateChildIfParent))
+        : base (
+            WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit,
+            new DomainObjectParameterInvalidOutTestTransactedFunction (WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParentWithAutoCommit)
+            )
     {
     }
   }

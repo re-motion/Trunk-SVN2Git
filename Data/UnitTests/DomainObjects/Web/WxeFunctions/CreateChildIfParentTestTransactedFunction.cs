@@ -15,10 +15,8 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
-  using WxeTransactedFunction = WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>;
-
   [Serializable]
-  public class CreateChildIfParentTestTransactedFunction : WxeTransactedFunction
+  public class CreateChildIfParentTestTransactedFunction : WxeFunction
   {
     // types
 
@@ -29,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
     // construction and disposing
 
     public CreateChildIfParentTestTransactedFunction ()
-        : base (WxeTransactionMode.CreateChildIfParent)
+        : base (WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParentWithAutoCommit)
     {
     }
 
@@ -37,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     private void Step1 ()
     {
-      ITransaction parentTransaction = ((WxeTransactedFunction)ParentFunction).MyTransaction;
+      ClientTransaction parentTransaction = ParentFunction.Transaction.GetNativeTransaction<ClientTransaction>();
       Assert.AreNotSame (parentTransaction, ClientTransactionScope.CurrentTransaction);
       Assert.AreSame (parentTransaction, ClientTransactionScope.CurrentTransaction.ParentTransaction);
     }

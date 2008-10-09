@@ -12,6 +12,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.UI.AccessControl;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl
 {
@@ -31,13 +32,13 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl
     }
 
     // TODO: Make protected once delegation works
-    public SecurableClassDefinitionListFormFunction (params object[] args)
-      : base (args)
+    public SecurableClassDefinitionListFormFunction (ITransactionMode transactionMode, params object[] args)
+      : base (transactionMode, args)
     {
     }
 
-    public SecurableClassDefinitionListFormFunction (ObjectID tenantID)
-      : base (tenantID)
+    public SecurableClassDefinitionListFormFunction (ITransactionMode transactionMode, ObjectID tenantID)
+      : base (transactionMode, tenantID)
     {
     }
 

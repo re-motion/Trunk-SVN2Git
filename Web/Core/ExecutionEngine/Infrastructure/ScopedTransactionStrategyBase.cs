@@ -17,9 +17,11 @@ using Remotion.Utilities;
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   // TODO: Doc
+  [Serializable]
   public abstract class ScopedTransactionStrategyBase : TransactionStrategyBase
   {
     private readonly ITransaction _transaction;
+    [NonSerialized]
     private ITransactionScope _scope;
     private readonly bool _autoCommit;
     private readonly IWxeFunctionExecutionContext _executionContext;
@@ -164,26 +166,15 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (_scope == null)
         throw new InvalidOperationException ("OnExecutionStop may not be invoked unless OnExecutionPlay was called first.");
 
-      Exception innerException = null;
-      try
-      {
-        Child.OnExecutionStop (context, listener);
+      Child.OnExecutionStop (context, listener);
 
-        if (AutoCommit)
-          CommitTransaction();
+      if (AutoCommit)
+        CommitTransaction();
 
-        var outParameters = ExecutionContext.GetOutParameters();
-        OuterTransactionStrategy.RegisterObjects (outParameters);
-      }
-      catch (Exception e)
-      {
-        innerException = e;
-        throw;
-      }
-      finally
-      {
-        LeaveScopeAndReleaseTransaction (innerException);
-      }
+      var outParameters = ExecutionContext.GetOutParameters();
+      OuterTransactionStrategy.RegisterObjects (outParameters);
+
+      LeaveScopeAndReleaseTransaction (null);
     }
 
     public override void OnExecutionPause (WxeContext context, IWxeFunctionExecutionListener listener)

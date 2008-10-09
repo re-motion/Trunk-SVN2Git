@@ -58,15 +58,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       try
       {
         function.Execute ();
+        Assert.Fail ("Expected PermissionDeniedException.");
       }
       catch (WxeUnhandledException e)
       {
         _mocks.VerifyAll ();
 
         Assert.IsInstanceOfType (typeof (PermissionDeniedException), e.InnerException);
-        return;
       }
-      Assert.Fail ("Expected PermissionDeniedException.");
     }
 
     [Test]

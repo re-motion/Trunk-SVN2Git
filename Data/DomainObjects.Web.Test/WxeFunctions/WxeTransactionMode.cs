@@ -8,13 +8,10 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
+using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.ExecutionEngine.Infrastructure
+namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 {
-  public interface ITransactionMode
-  {
-    TransactionStrategyBase CreateTransactionStrategy (WxeFunction2 function, WxeContext context);
-    bool AutoCommit { get; }
-  }
+  public abstract class WxeTransactionMode : WxeTransactionMode<ClientTransactionFactory>
+  {  }
 }

@@ -9,19 +9,29 @@
  */
 
 using System;
+using Remotion.Data;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
-/// <summary>
-/// Indicates the behavior of a <see cref="WxeScopedTransactedFunction{TTransaction,TScope,TTransactionScopeManager}"/>.
-/// </summary>
-public enum WxeTransactionMode
-{
-  /// <summary>Create a new transaction.</summary>
-  CreateRoot,
-  /// <summary>Create a new child transaction.</summary>
-  CreateChildIfParent,
-  /// <summary>Never create a transaction.</summary>
-  None
-}
+  //TODO: Doc
+  public abstract class WxeTransactionMode<TTransactionFactory>
+      where TTransactionFactory : ITransactionFactory, new ()
+  {
+    public static readonly ITransactionMode None = new NoneTransactionMode();
+
+    public static readonly ITransactionMode CreateRoot = new CreateRootTransactionMode<TTransactionFactory>(false);
+
+    public static readonly ITransactionMode CreateRootWithAutoCommit = new CreateRootTransactionMode<TTransactionFactory> (true);
+
+    public static readonly ITransactionMode CreateChildIfParent = new CreateChildIfParentTransactionMode<TTransactionFactory>(false);
+
+    public static readonly ITransactionMode CreateChildIfParentWithAutoCommit = new CreateChildIfParentTransactionMode<TTransactionFactory> (true);
+
+    protected WxeTransactionMode ()
+    {
+    }
+
+    internal abstract void BlockInstantiableInheritance ();
+  }
 }

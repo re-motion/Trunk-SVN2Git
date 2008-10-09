@@ -44,8 +44,9 @@
   <ItemGroup>
     <Compile Include="ITransaction.cs" />
     <Compile Include="ITransactionFactory.cs" />
-    <Compile Include="ITransactionScope.cs" />
-    <Compile Include="ITransactionScopeManager.cs" />
+    <Compile Include="ITransactionScope.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Data.Interfaces.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />

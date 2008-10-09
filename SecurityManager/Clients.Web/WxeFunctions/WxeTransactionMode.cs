@@ -8,15 +8,12 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
+using Remotion.Data.DomainObjects;
+using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
+namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 {
-  public class TestWxeTransactionFailingResetValidation : TestWxeTransaction
+  public abstract class WxeTransactionMode : WxeTransactionMode<ClientTransactionFactory>
   {
-    protected override void CheckCurrentTransactionResettable ()
-    {
-      throw new InvalidOperationException ("The current transaction cannot be reset.");
-    }
   }
 }

@@ -42,8 +42,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     {
       ITransactionMode transactionMode = new CreateRootTransactionMode<TestTransactionFactory> (true);
 
-      WxeFunction2 parentFunction = new TestFunction2 (new NoneTransactionMode ());
-      WxeFunction2 childFunction = new TestFunction2 (transactionMode);
+      WxeFunction parentFunction = new TestFunction2 (new NoneTransactionMode ());
+      WxeFunction childFunction = new TestFunction2 (transactionMode);
       parentFunction.Add (childFunction);
 
       WxeStep stepMock = MockRepository.GenerateMock<WxeStep> ();
@@ -57,7 +57,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
           {
             TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction, context);
             Assert.That (strategy, Is.InstanceOfType (typeof (RootTransactionStrategy)));
-            Assert.That (strategy.OuterTransactionStrategy, Is.SameAs (parentFunction.TransactionStrategy));
+            Assert.That (strategy.OuterTransactionStrategy, Is.SameAs (((TestFunction2) parentFunction).TransactionStrategy));
           });
 
       parentFunction.Execute (context);

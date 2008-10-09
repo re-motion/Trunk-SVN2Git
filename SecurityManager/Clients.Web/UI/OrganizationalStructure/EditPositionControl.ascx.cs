@@ -17,6 +17,7 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
+using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
@@ -118,9 +119,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     private void EditGroupTypePosition (GroupTypePosition groupTypePosition, Position position, GroupType groupType)
     {
       EditGroupTypePositionFormFunction editGroupTypePositionFormFunction =
-        new EditGroupTypePositionFormFunction ( (groupTypePosition != null) ? groupTypePosition.ID : null, position, groupType);
+        new EditGroupTypePositionFormFunction (WxeTransactionMode.None, (groupTypePosition != null) ? groupTypePosition.ID : null, position, groupType);
 
-      editGroupTypePositionFormFunction.TransactionMode = WxeTransactionMode.None;
       Page.ExecuteFunction (editGroupTypePositionFormFunction, WxeCallArguments.Default);
     }
   }

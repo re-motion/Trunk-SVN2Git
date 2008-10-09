@@ -47,7 +47,7 @@
           </para><para>
             To prevent the <see cref="WxeUserCancelException"/> from being passed to the root function, e.g.
             if you intend to continue with the execution in the parent function, use the 
-            <see cref="WxeFunction.SetCatchExceptionTypes">WxeFunction.SetCatchExceptionTypes</see> method or
+            <see cref="WxeExceptionHandler.SetCatchExceptionTypes">WxeFunction.ExeceptionHandler.SetCatchExceptionTypes</see> method or
             use a <see cref="WxeTryCatch"/> step. For details on working with exceptions, please refer to the 
             <see cref="WxeFunction"/>'s documentation.
           </para>            
