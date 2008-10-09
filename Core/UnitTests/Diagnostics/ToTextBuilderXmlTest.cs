@@ -444,6 +444,21 @@ namespace Remotion.UnitTests.Diagnostics
     }
 
 
+    [Test]
+    public void IndentTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
+      //toTextBuilderXml.indent().nl().s ("line0").Flush ();
+      toTextBuilderXml.Open ();
+      toTextBuilderXml.indent ().nl ().s ("line0").unindent ().nl ().s ("line1").Flush ();
+      toTextBuilderXml.Close ();
+      string result = stringWriter.ToString ();
+      //log.It (result);
+      // Asert that indent has no effect
+      Assert.That (result, Is.EqualTo ("<remotion><br />line0<br />line1</remotion>"));
+    }
+
 
     public static ToTextProvider CreateTextProvider ()
     {

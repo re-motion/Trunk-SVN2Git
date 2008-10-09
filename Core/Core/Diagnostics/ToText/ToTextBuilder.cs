@@ -23,10 +23,13 @@ namespace Remotion.Diagnostics.ToText
   public class ToTextBuilder : ToTextBuilderBase
   {
     private readonly DisableableWriter _disableableWriter;
+    private readonly Stack<int> _indendationStack = new Stack<int> (16);
 
     public ToTextBuilder (ToTextProvider toTextProvider, TextWriter textWriter)
       : base (toTextProvider)
     {
+      IndentationString = "  ";
+      IndendationLevel = 0;
       _disableableWriter = new DisableableWriter (textWriter);
       Settings = new ToTextBuilderSettings ();
     }
@@ -131,12 +134,13 @@ namespace Remotion.Diagnostics.ToText
       if (AllowNewline)
       {
         _disableableWriter.Write (System.Environment.NewLine);
+        for (int i = 0; i < IndendationLevel; i++)
+        {
+          _disableableWriter.Write (IndentationString);
+        }
       }
       return this;
     }
-
-
-
 
     public override IToTextBuilder WriteSequenceLiteralBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
@@ -146,6 +150,37 @@ namespace Remotion.Diagnostics.ToText
     protected override IToTextBuilder SequenceBegin ()
     {
       return SequenceLiteralBegin ("", "(", "", "", ",", ")");
+    }
+
+
+    //--------------------------------------------------------------------------
+    // Indentation
+    //--------------------------------------------------------------------------
+
+    public object IndentationString
+    {
+      get;
+      set;
+    }
+
+    private int IndendationLevel
+    {
+      get;
+      set;
+    }
+
+    public override IToTextBuilder indent ()
+    {
+      _indendationStack.Push (IndendationLevel);
+      ++IndendationLevel;
+      return this;
+    }
+
+    public override IToTextBuilder unindent ()
+    {
+      Assertion.IsTrue (_indendationStack.Count > 0, "unindent called without pairing call to indent.");
+      IndendationLevel = _indendationStack.Pop ();
+      return this;
     }
 
 
@@ -180,6 +215,7 @@ namespace Remotion.Diagnostics.ToText
       );
       return this;
     }
+
 
     public override IToTextBuilder WriteArray (Array array)
     {
@@ -336,8 +372,6 @@ namespace Remotion.Diagnostics.ToText
 
       return this;
     }
-
-
 
 
 

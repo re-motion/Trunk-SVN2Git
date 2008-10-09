@@ -459,6 +459,11 @@ namespace Remotion.Diagnostics.ToText
     /// </summary>
     IToTextBuilder dictionary (IDictionary dictionary);
 
+
+
+    IToTextBuilder indent ();
+    IToTextBuilder unindent ();
+
     void Close ();
   }
 }

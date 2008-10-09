@@ -125,28 +125,48 @@ namespace Remotion.SecurityManager.AclTools.Expander
 
     private void OutputAclExpansionHierarchical (List<AclExpansionEntry> aclExpansion)
     {
+      const bool repeatHierarchyEntriesInEachRow = false;
+
       var aclExpansionHierarchy =
-          aclExpansion.GroupBy (x => x.User.UserName).Select (x => new { UserName = x.Key, Items = x });
+          from expansion in aclExpansion
+          group expansion by expansion.User
+          into userGroup
+              select new { User = userGroup.Key,
+                RoleGroup =
+              from user in userGroup
+              group user by user.Role
+              into roleGroup
+                  select new { Role = roleGroup.Key, RoleGroup = roleGroup }};
+         
+               
 
       To.ConsoleLine.nl (10).s ("ACL Expansion");
       To.ConsoleLine.s ("====START====");
       foreach (var userGrouping in aclExpansionHierarchy)
       {
-        To.Console.nl (2).e ("user", userGrouping.UserName);
-        foreach (AclExpansionEntry aclExpansionEntry in userGrouping.Items)
+        To.Console.nl (2).e ("user", userGrouping.User);
+        foreach (var roleGrouping in userGrouping.RoleGroup)
         {
+          To.Console.nl ().s ("\t").e ("role", roleGrouping.Role);
+          foreach (var aclExpansionEntry in roleGrouping.RoleGroup)
+          {
 
-          var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).ToArray();
+            var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).ToArray();
 
-          To.Console.nl().s ("\t").sb();
-          To.Console.e ("user", aclExpansionEntry.User.UserName);
-          To.Console.e ("role", aclExpansionEntry.Role);
-          To.Console.e ("class", aclExpansionEntry.Class);
-          //To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
-          To.Console.e ("states", stateArray);
-          To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
-          To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
-          To.Console.se();
+            To.Console.nl().s ("\t\t").sb();
+            To.Console.indent();
+            if (repeatHierarchyEntriesInEachRow)
+            {
+              To.Console.e ("user", aclExpansionEntry.User.UserName);
+              To.Console.e ("role", aclExpansionEntry.Role);
+            }
+            To.Console.e ("class", aclExpansionEntry.Class);
+            //To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
+            To.Console.e ("states", stateArray);
+            To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
+            To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
+            To.Console.se();
+          }
         }
       }
       To.ConsoleLine.s ("=====END=====");

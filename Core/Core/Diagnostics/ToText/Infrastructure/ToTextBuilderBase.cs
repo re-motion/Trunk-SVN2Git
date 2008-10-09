@@ -390,6 +390,8 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
       return WriteDictionary (dictionary);
     }
 
+    public abstract IToTextBuilder indent ();
+    public abstract IToTextBuilder unindent ();
 
 
     public abstract IToTextBuilder WriteArray (Array array);

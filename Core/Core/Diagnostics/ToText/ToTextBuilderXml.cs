@@ -139,6 +139,18 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
+    public override IToTextBuilder indent ()
+    {
+      // intentionally do nothing
+      return this;
+    }
+
+    public override IToTextBuilder unindent ()
+    {
+      // intentionally do nothing
+      return this;
+    }
+
 
     public override IToTextBuilder WriteArray (Array array)
     {

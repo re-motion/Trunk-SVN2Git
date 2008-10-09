@@ -1054,6 +1054,47 @@ namespace Remotion.UnitTests.Diagnostics
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.DoesNotContain ("NotEmitted"));
     }
 
+    [Test]
+    public void IndentTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.IndentationString = "  ";
+      toTextBuilder.s ("line0").indent ().nl ().s ("line1").nl ().s ("line2").indent ().nl ().s ("line3").unindent ().nl ().s ("line4").unindent ().nl ().s ("line5");
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo (
+@"line0
+  line1
+  line2
+    line3
+  line4
+line5"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (Remotion.Utilities.AssertionException), ExpectedMessage = "unindent called without pairing call to indent.")]
+    public void IndentErrorTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.unindent ();
+    }
+
+    [Test]
+    public void IndentationStringTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.IndentationString = ">}|";
+      toTextBuilder.s ("line0").indent ().nl ().s ("line1").nl ().s ("line2").indent ().nl ().s ("line3").unindent ().nl ().s ("line4").unindent ().nl ().s ("line5");
+      var result = toTextBuilder.CheckAndConvertToString ();
+      Log (result);
+      Assert.That (result, Is.EqualTo (
+@"line0
+>}|line1
+>}|line2
+>}|>}|line3
+>}|line4
+line5"));
+    }
 
 
     public static ToTextBuilder CreateTextBuilder ()
