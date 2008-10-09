@@ -147,14 +147,13 @@ namespace Remotion.SecurityManager.AclTools.Expander
         To.Console.nl (2).e ("user", userGrouping.User);
         foreach (var roleGrouping in userGrouping.RoleGroup)
         {
-          To.Console.nl ().s ("\t").e ("role", roleGrouping.Role);
+          To.Console.indent().nl ().e ("role", roleGrouping.Role);
           foreach (var aclExpansionEntry in roleGrouping.RoleGroup)
           {
 
             var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).ToArray();
 
-            To.Console.nl().s ("\t\t").sb();
-            To.Console.indent();
+            To.Console.indent ().nl ().sb ();
             if (repeatHierarchyEntriesInEachRow)
             {
               To.Console.e ("user", aclExpansionEntry.User.UserName);
@@ -166,7 +165,9 @@ namespace Remotion.SecurityManager.AclTools.Expander
             To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
             To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
             To.Console.se();
+            To.Console.unindent();
           }
+          To.Console.unindent ();
         }
       }
       To.ConsoleLine.s ("=====END=====");
