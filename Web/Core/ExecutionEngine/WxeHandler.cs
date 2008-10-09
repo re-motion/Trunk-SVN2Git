@@ -378,7 +378,7 @@ namespace Remotion.Web.ExecutionEngine
       if (function.IsAborted)
         throw new ArgumentException ("The function " + function.GetType().FullName + " is aborted.");
 
-      function.AppendCatchExceptionTypes (typeof (WxeUserCancelException));
+      function.ExceptionHandler.AppendCatchExceptionTypes (typeof (WxeUserCancelException));
       function.Execute (context);
     }
 

@@ -51,7 +51,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 
     public bool HasUserCancelled
     {
-      get { return (Exception != null && Exception.GetType () == typeof (WxeUserCancelException)); }
+      get { return (ExceptionHandler.Exception != null && ExceptionHandler.Exception.GetType () == typeof (WxeUserCancelException)); }
     }
 
     public ClientTransaction CurrentTransaction
@@ -75,7 +75,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 
     protected virtual void Initialize ()
     {
-      SetCatchExceptionTypes (typeof (WxeUserCancelException));
+      ExceptionHandler.SetCatchExceptionTypes (typeof (WxeUserCancelException));
     }
 
     protected override void OnTransactionCreated (ClientTransaction transaction)

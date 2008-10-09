@@ -100,13 +100,22 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         _transaction.Reset();
     }
 
-    public override sealed ScopedTransactionStrategyBase CreateChildTransactionStrategy (
-        bool autoCommit, IWxeFunctionExecutionContext executionContext)
+    public override sealed TransactionStrategyBase CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext, WxeContext wxeContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
+      ArgumentUtility.CheckNotNull ("wxeContext", wxeContext);
+
+      if (!_child.IsNull)
+      {
+        throw new InvalidOperationException (
+            "The transaction strategy already has an active child transaction strategy. "
+            + "This child transaction strategy must first be unregistered before invoking CreateChildTransactionStrategy again.");
+      }
 
       var childTransactionStrategy = new ChildTransactionStrategy (autoCommit, Transaction.CreateChild(), this, executionContext);
       _child = childTransactionStrategy;
+      if (_scope != null)
+        _child.OnExecutionPlay (wxeContext, NullExecutionListener.Null);
 
       return childTransactionStrategy;
     }
@@ -118,7 +127,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (_child != childTransactionStrategy)
       {
         throw new InvalidOperationException (
-            "The child transaction strategy passed for de-registration is not the same that is presently associated with the transaction strategy.");
+            "Unregistering a child transaction strategy that is different from the presently registered strategy is not supported.");
       }
 
       _child = NullTransactionStrategy.Null;

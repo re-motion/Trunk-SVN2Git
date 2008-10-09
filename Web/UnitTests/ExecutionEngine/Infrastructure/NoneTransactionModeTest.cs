@@ -25,8 +25,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void CreateTransactionStrategy_WithoutParentFunction ()
     {
-      ITransactionMode transactionMode = new NoneTransactionMode();
-      TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode));
+      WxeContextFactory wxeContextFactory = new WxeContextFactory ();
+      WxeContext context = wxeContextFactory.CreateContext (new TestFunction ());
+      
+      ITransactionMode transactionMode = new NoneTransactionMode ();
+      TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), context);
 
       Assert.That (strategy, Is.InstanceOfType (typeof (NoneTransactionStrategy)));
       Assert.That (strategy.OuterTransactionStrategy, Is.SameAs (NullTransactionStrategy.Null));
@@ -50,7 +53,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       stepMock.Expect (mock => mock.Execute (context)).Do (
           invocation =>
           {
-            TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction);
+            TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction, context);
             Assert.That (strategy, Is.InstanceOfType (typeof (NoneTransactionStrategy)));
             Assert.That (strategy.OuterTransactionStrategy, Is.SameAs (parentFunction.TransactionStrategy));
           });

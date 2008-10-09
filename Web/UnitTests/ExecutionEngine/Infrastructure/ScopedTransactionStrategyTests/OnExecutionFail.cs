@@ -123,7 +123,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.ScopedTransactio
         _strategy.OnExecutionFail (Context, ExecutionListenerStub, _failException);
         Assert.Fail ("Expected Exception");
       }
-      catch (ApplicationException actualException)
+      catch (WxeFatalExecutionException actualException)
       {
         Assert.That (actualException, Is.SameAs (innerException));
       }

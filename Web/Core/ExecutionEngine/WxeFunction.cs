@@ -78,6 +78,37 @@ namespace Remotion.Web.ExecutionEngine
       throw new NotImplementedException ("Use VariablesContainer.SerializeParametersForQueryString instead. (Version 1.11.5)");
     }
 
+    [Obsolete ("Use ExceptionHandler.CatchExceptions instead. (Version 1.11.7)", true)]
+    public bool CatchExceptions
+    {
+      get { throw new NotImplementedException ("Use ExceptionHandler.CatchExceptions instead. (Version 1.11.7)"); }
+      set { throw new NotImplementedException ("Use ExceptionHandler.CatchExceptions instead. (Version 1.11.7)"); }
+    }
+
+    [Obsolete ("Use ExceptionHandler.SetCatchExceptionTypes instead. (Version 1.11.7)", true)]
+    public void SetCatchExceptionTypes (params Type[] exceptionTypes)
+    {
+      throw new NotImplementedException ("Use ExceptionHandler.SetCatchExceptionTypes instead. (Version 1.11.7)");
+    }
+
+    [Obsolete ("Use ExceptionHandler.AppendCatchExceptionTypes instead. (Version 1.11.7)", true)]
+    public void AppendCatchExceptionTypes (params Type[] exceptionTypes)
+    {
+      throw new NotImplementedException ("Use ExceptionHandler.AppendCatchExceptionTypes instead. (Version 1.11.7)");
+    }
+
+    [Obsolete ("Use ExceptionHandler.GetCatchExceptionTypes instead. (Version 1.11.7)", true)]
+    public Type[] GetCatchExceptionTypes ()
+    {
+      throw new NotImplementedException ("Use ExceptionHandler.GetCatchExceptionTypes instead. (Version 1.11.7)");
+    }
+
+    [Obsolete ("Use ExceptionHandler.Exception instead. (Version 1.11.7)", true)]
+    public Exception Exception
+    {
+      get { throw new NotImplementedException ("Use ExceptionHandler.Exception instead. (Version 1.11.7)"); }
+    }
+
     #endregion
 
     public static bool HasAccess (Type functionType)
@@ -94,16 +125,14 @@ namespace Remotion.Web.ExecutionEngine
     private static readonly ILog s_log = LogManager.GetLogger (typeof (WxeFunction));
 
     private readonly WxeVariablesContainer _variablesContainer;
-
+    private readonly WxeExceptionHandler _exceptionHandler;
     private string _functionToken;
     private string _returnUrl;
-    private bool _catchExceptions;
-    private Type[] _catchExceptionTypes;
-    private Exception _exception;
 
     protected WxeFunction (WxeParameterDeclaration[] parameterDeclarations,  params object[] actualParameters)
     {
       _variablesContainer = new WxeVariablesContainer (this, actualParameters, parameterDeclarations);
+      _exceptionHandler = new WxeExceptionHandler();
 
       Insert (0, new WxeMethodStep (CheckPermissions));
     }
@@ -111,71 +140,9 @@ namespace Remotion.Web.ExecutionEngine
     protected WxeFunction (params object[] actualParameters)
     {
       _variablesContainer = new WxeVariablesContainer (this, actualParameters);
+      _exceptionHandler = new WxeExceptionHandler ();
 
       Insert (0, new WxeMethodStep (CheckPermissions));
-    }
-
-    /// <summary> 
-    ///   If this is <c>true</c>, exceptions are caught and returned in the <see cref="Exception"/> property.
-    /// </summary>
-    public bool CatchExceptions
-    {
-      get { return _catchExceptions; }
-      set { _catchExceptions = value; }
-    }
-
-    /// <summary>
-    ///   Sets <see cref="CatchExceptions"/> to <c>true</c> and limits the types of exceptions that are caught.
-    /// </summary>
-    /// <param name="exceptionTypes"> Exceptions of these types or sub classes will be caught, all other
-    ///     exceptions will be rethrown. </param>
-    public void SetCatchExceptionTypes (params Type[] exceptionTypes)
-    {
-      _catchExceptions = true;
-      _catchExceptionTypes = exceptionTypes;
-    }
-
-    /// <summary>
-    ///   Joins the passed exceptions types with those already assigned.
-    /// </summary>
-    /// <param name="exceptionTypes"> 
-    ///   Exceptions of these types or sub classes will be caught, all other exceptions will be rethrown. 
-    /// </param>
-    public void AppendCatchExceptionTypes (params Type[] exceptionTypes)
-    {
-      if (_catchExceptionTypes != null)
-      {
-        ArrayList exceptionTypeList = new ArrayList (_catchExceptionTypes);
-        for (int idxNewTypes = 0; idxNewTypes < exceptionTypes.Length; idxNewTypes++)
-        {
-          bool isRegistered = false;
-          for (int idxRegisteredTypes = 0; idxRegisteredTypes < _catchExceptionTypes.Length; idxRegisteredTypes++)
-          {
-            if (_catchExceptionTypes[idxRegisteredTypes] == exceptionTypes[idxNewTypes])
-            {
-              isRegistered = true;
-              break;
-            }
-          }
-          if (!isRegistered)
-            exceptionTypeList.Add (exceptionTypes[idxNewTypes]);
-        }
-        exceptionTypes = (Type[]) exceptionTypeList.ToArray (typeof (Type));
-      }
-      SetCatchExceptionTypes (exceptionTypes);
-    }
-
-    public Type[] GetCatchExceptionTypes ()
-    {
-      return (Type[]) _catchExceptionTypes.Clone();
-    }
-
-    /// <summary>
-    ///   Contains any exception that occured during execution (only if <see cref="CatchExceptions"/> is <c>true</c>).
-    /// </summary>
-    public Exception Exception
-    {
-      get { return _exception; }
     }
 
     /// <summary> Take the actual parameters without any conversion. </summary>
@@ -208,37 +175,23 @@ namespace Remotion.Web.ExecutionEngine
       catch (Exception e)
       {
         Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (e) ?? e;
-
-        bool match = false;
-        if (_catchExceptions && _catchExceptionTypes != null)
-        {
-          foreach (Type exceptionType in _catchExceptionTypes)
-          {
-            if (exceptionType.IsAssignableFrom (unwrappedException.GetType()))
-            {
-              match = true;
-              break;
-            }
-          }
-        }
-
-        if (!_catchExceptions || !match)
+        if (!_exceptionHandler.Catch (unwrappedException))
         {
           if (unwrappedException is WxeUnhandledException)
             throw unwrappedException;
+
           throw new WxeUnhandledException (
               string.Format ("An unhandled exception ocured while executing WxeFunction  '{0}': {1}", GetType().FullName, unwrappedException.Message),
               unwrappedException);
         }
-
-        _exception = unwrappedException;
       }
 
-      if (_exception == null && ParentStep != null)
+      if (_exceptionHandler.Exception == null && ParentStep != null)
         _variablesContainer.ReturnParametersToCaller();
 
       s_log.Debug ("Ending execution of " + GetType().FullName + ".");
     }
+
 
     public string ReturnUrl
     {
@@ -254,6 +207,11 @@ namespace Remotion.Web.ExecutionEngine
     public WxeVariablesContainer VariablesContainer
     {
       get { return _variablesContainer; }
+    }
+
+    public WxeExceptionHandler ExceptionHandler
+    {
+      get { return _exceptionHandler; }
     }
 
     public string FunctionToken

@@ -58,7 +58,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void CreateChildTransactionStrategy ()
     {
-      Assert.That (_strategy.CreateChildTransactionStrategy (true, MockRepository.GenerateStub<IWxeFunctionExecutionContext> ()), Is.Null);
+      Assert.That (_strategy.CreateChildTransactionStrategy (true, MockRepository.GenerateStub<IWxeFunctionExecutionContext> (), _context), Is.Null);
     }
 
     [Test]

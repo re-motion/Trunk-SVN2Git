@@ -591,6 +591,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       // common variables
       CodeArgumentReferenceExpression currentPage = new CodeArgumentReferenceExpression ("currentPage");
       CodeVariableReferenceExpression function = new CodeVariableReferenceExpression ("function");
+      CodePropertyReferenceExpression exceptionHandler = new CodePropertyReferenceExpression (function, "ExceptionHandler");
       // if (! currentPage.IsReturningPostBack)
       CodeConditionStatement ifNotIsReturningPostBack = new CodeConditionStatement ();
       callMethod.Statements.Add (ifNotIsReturningPostBack);
@@ -613,9 +614,9 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
               new CodeArgumentReferenceExpression (parameterDeclaration.Name)));
         }
       }
-      //   function.SetCatchExceptionTypes (typeof (Exception));
+      //   function.ExceptionHandler.SetCatchExceptionTypes (typeof (Exception));
       ifNotIsReturningPostBack.TrueStatements.Add (new CodeMethodInvokeExpression (
-          function,
+          exceptionHandler,
           "SetCatchExceptionTypes", 
           new CodeTypeOfExpression (typeof (Exception))));
       //  currentPage.ExecuteFunction (function, arguments);
@@ -645,14 +646,14 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       ifNotIsReturningPostBack.FalseStatements.Add (ifException);
       ifException.Condition = new CodeBinaryOperatorExpression (
           new CodePropertyReferenceExpression (
-              function,
+              exceptionHandler,
               "Exception"),
           CodeBinaryOperatorType.IdentityInequality,
           new CodePrimitiveExpression (null));
       //      throw function.Exception;
       ifException.TrueStatements.Add (new CodeThrowExceptionStatement (
           new CodePropertyReferenceExpression (
-              function,
+              exceptionHandler,
               "Exception")
           ));
       //   ParamN = function.ParamN;

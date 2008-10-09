@@ -48,11 +48,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       return innerListener;
     }
 
-    public override ScopedTransactionStrategyBase CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext)
+    public override TransactionStrategyBase CreateChildTransactionStrategy (bool autoCommit, IWxeFunctionExecutionContext executionContext, WxeContext wxeContext)
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
-      return OuterTransactionStrategy.CreateChildTransactionStrategy (autoCommit, executionContext);
+      return OuterTransactionStrategy.CreateChildTransactionStrategy (autoCommit, executionContext, wxeContext);
     }
 
     public override void UnregisterChildTransactionStrategy (TransactionStrategyBase childTransactionStrategy)

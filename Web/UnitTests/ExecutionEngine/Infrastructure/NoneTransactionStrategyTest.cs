@@ -92,9 +92,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       ChildTransactionStrategy expected = new ChildTransactionStrategy (
           false, MockRepository.GenerateStub<ITransaction>(), grandParentTransactionStrategyMock, childExecutionContextStub);
 
-      grandParentTransactionStrategyMock.Expect (mock => mock.CreateChildTransactionStrategy (true, childExecutionContextStub)).Return (expected);
-
-      ScopedTransactionStrategyBase actual = noneTransactionStrategy.CreateChildTransactionStrategy (true, childExecutionContextStub);
+      grandParentTransactionStrategyMock.Expect (mock => mock.CreateChildTransactionStrategy (true, childExecutionContextStub, _context)).Return (expected);
+      
+      TransactionStrategyBase actual = noneTransactionStrategy.CreateChildTransactionStrategy (true, childExecutionContextStub, _context);
       Assert.That (actual, Is.SameAs (expected));
     }
 

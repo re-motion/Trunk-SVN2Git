@@ -16,7 +16,7 @@ namespace Remotion.Web.ExecutionEngine
 
 /// <summary> This exception is thrown by the web execution engine. </summary>
 [Serializable]
-public class WxeException: ApplicationException
+public class WxeException: Exception
 {
 	public WxeException()
     : base ("The execution engine encountered an error.")

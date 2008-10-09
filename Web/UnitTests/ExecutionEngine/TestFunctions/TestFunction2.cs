@@ -17,12 +17,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
   public class TestFunction2 : WxeFunction2
   {
     public TestFunction2 (ITransactionMode transactionMode)
-        : base (transactionMode)
+        : base (transactionMode, new WxeParameterDeclaration[0], new object[0])
     {
     }
 
     public TestFunction2 ()
-        : base (WxeTransactionMode<TestTransactionFactory>.None)
+      : base (WxeTransactionMode<TestTransactionFactory>.None, new WxeParameterDeclaration[0], new object[0])
     {
     }
   }

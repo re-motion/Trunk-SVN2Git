@@ -22,15 +22,33 @@ namespace Remotion.Web.ExecutionEngine
   [Serializable]
   public abstract class WxeFunction2 : WxeStepList, IWxeFunctionExecutionContext
   {
+
+    //public static bool HasAccess (Type functionType)
+    //{
+    //  ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("functionType", functionType, typeof (WxeFunction));
+
+    //  IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
+    //  if (wxeSecurityAdapter == null)
+    //    return true;
+
+    //  return wxeSecurityAdapter.HasStatelessAccess (functionType);
+    //}
+
     private IWxeFunctionExecutionListener _executionListener = NullExecutionListener.Null;
     private TransactionStrategyBase _transactionStrategy = NullTransactionStrategy.Null;
     private readonly ITransactionMode _transactionMode;
+    //private readonly WxeVariablesContainer _variablesContainer;
+    //private string _functionToken;
+    //private string _returnUrl;
 
-    protected WxeFunction2 (ITransactionMode transactionMode)
+    protected WxeFunction2 (ITransactionMode transactionMode, WxeParameterDeclaration[] parameterDeclarations, object[] actualParameters)
     {
       ArgumentUtility.CheckNotNull ("transactionMode", transactionMode);
+      ArgumentUtility.CheckNotNull ("parameterDeclarations", parameterDeclarations);
+      ArgumentUtility.CheckNotNull ("actualParameters", actualParameters);
 
       _transactionMode = transactionMode;
+      //_variablesContainer = new WxeVariablesContainer (this, actualParameters, parameterDeclarations);
     }
 
     public override void Execute (WxeContext context)
@@ -39,13 +57,18 @@ namespace Remotion.Web.ExecutionEngine
       Assertion.IsNotNull (_executionListener);
 
       if (!IsExecutionStarted)
-        _transactionStrategy = _transactionMode.CreateTransactionStrategy (this);
+      {
+        _transactionStrategy = _transactionMode.CreateTransactionStrategy (this, context);
+        _executionListener = _transactionStrategy.CreateExecutionListener (_executionListener);
+        //_variablesContainer.EnsureParametersInitialized (null);
+      }
 
       _executionListener.OnExecutionPlay (context);
 
       try
       {
         base.Execute (context);
+        _executionListener.OnExecutionStop (context);
       }
       catch (ThreadAbortException)
       {
@@ -64,8 +87,9 @@ namespace Remotion.Web.ExecutionEngine
         }
         throw;
       }
-
-      _executionListener.OnExecutionStop (context);
+      
+      //if (_exception == null && ParentStep != null)
+      //  _variablesContainer.ReturnParametersToCaller ();
     }
 
     public IWxeFunctionExecutionListener ExecutionListener
@@ -103,7 +127,65 @@ namespace Remotion.Web.ExecutionEngine
 
     object[] IWxeFunctionExecutionContext.GetOutParameters ()
     {
-      throw new NotImplementedException();
+      return new object[0];
     }
+
+    //public string ReturnUrl
+    //{
+    //  get { return _returnUrl; }
+    //  set { _returnUrl = value; }
+    //}
+
+    //public string FunctionToken
+    //{
+    //  get
+    //  {
+    //    if (_functionToken != null)
+    //      return _functionToken;
+    //    WxeFunction rootFunction = RootFunction;
+    //    if (rootFunction != null && rootFunction != this)
+    //      return rootFunction.FunctionToken;
+    //    throw new InvalidOperationException (
+    //        "The WxeFunction does not have a RootFunction, i.e. the top-most WxeFunction does not have a FunctionToken.");
+    //  }
+    //}
+
+    //internal void SetFunctionToken (string functionToken)
+    //{
+    //  ArgumentUtility.CheckNotNullOrEmpty ("functionToken", functionToken);
+    //  _functionToken = functionToken;
+    //}
+
+    //public override string ToString ()
+    //{
+    //  StringBuilder sb = new StringBuilder ();
+    //  sb.Append ("WxeFunction: ");
+    //  sb.Append (GetType ().Name);
+    //  sb.Append (" (");
+    //  for (int i = 0; i < _variablesContainer.ActualParameters.Length; ++i)
+    //  {
+    //    if (i > 0)
+    //      sb.Append (", ");
+    //    object value = _variablesContainer.ActualParameters[i];
+    //    if (value is WxeVariableReference)
+    //      sb.Append ("@" + ((WxeVariableReference) value).Name);
+    //    else if (value is string)
+    //      sb.AppendFormat ("\"{0}\"", value);
+    //    else
+    //      sb.Append (value);
+    //  }
+    //  sb.Append (")");
+    //  return sb.ToString ();
+    //}
+
+    //protected virtual void CheckPermissions (WxeContext context)
+    //{
+    //  IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
+    //  if (wxeSecurityAdapter == null)
+    //    return;
+
+    //  wxeSecurityAdapter.CheckAccess (this);
+    //}
+
   }
 }

@@ -488,7 +488,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       WxeContext wxeContext = function.TestStep.WxeContext;
       Assert.AreSame (WxeContext.Current, wxeContext);
 
-      Type[] catchExceptionTypes = function.GetCatchExceptionTypes();
+      Type[] catchExceptionTypes = function.ExceptionHandler.GetCatchExceptionTypes();
       Assert.AreEqual (1, catchExceptionTypes.Length);
       Assert.AreSame (typeof (WxeUserCancelException), catchExceptionTypes[0]);
 

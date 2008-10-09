@@ -57,6 +57,29 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     }
 
     [Test]
+    public void Execute_WithTransactionStrategy ()
+    {
+      ITransactionMode transactionModeMock = _mockRepository.StrictMock<ITransactionMode>();
+      TestFunction2 function = new TestFunction2 (transactionModeMock);
+      TransactionStrategyBase transactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase>();
+      transactionModeMock.Expect (mock => mock.CreateTransactionStrategy (function, _context)).Return (transactionStrategyMock);
+      transactionStrategyMock.Expect (mock => mock.CreateExecutionListener (function.ExecutionListener)).Return (_executionListenerMock);
+
+      using (_mockRepository.Ordered ())
+      {
+        _executionListenerMock.Expect (mock => mock.OnExecutionPlay (_context));
+        _executionListenerMock.Expect (mock => mock.OnExecutionStop (_context));
+      }
+
+      _mockRepository.ReplayAll ();
+
+      function.Execute (_context);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (function.ExecutionListener, Is.SameAs (_executionListenerMock));
+    }
+
+    [Test]
     public void Execute_ReEntryAfterThreadAbort ()
     {
       TestFunction2 function = new TestFunction2 ();

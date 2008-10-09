@@ -54,7 +54,7 @@ public class TestFunction: WxeFunction
     if (StringUtility.IsNullOrEmpty (UserControl))
       UserControl = "BocBooleanValueUserControl.ascx";
 
-    AppendCatchExceptionTypes (typeof (WxeUserCancelException));
+    ExceptionHandler.AppendCatchExceptionTypes (typeof (WxeUserCancelException));
   }
 
   private void Step2()
