@@ -20,7 +20,7 @@ namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
   {
     public override void ToText (AbstractRoleDefinition x, IToTextBuilder toTextBuilder)
     {
-      toTextBuilder.ib<AbstractRoleDefinition> ("").e (x.Name).ie ();
+      toTextBuilder.ib<AbstractRoleDefinition> ("").e (x.DisplayName).ie ();
     }
   }
 }

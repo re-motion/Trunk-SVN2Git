@@ -42,16 +42,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       foreach (var user in users)
       {
-        To.ConsoleLine.e (() => user);
+        //To.ConsoleLine.e (() => user);
         foreach (var role in user.Roles)
         {
-          To.ConsoleLine.s ("\t").e (() => role);
+          //To.ConsoleLine.s ("\t").e (() => role);
           foreach (var acl in acls)
           {
-            To.ConsoleLine.s ("\t\t").e (() => acl);
+            //To.ConsoleLine.s ("\t\t").e (() => acl);
             foreach (var ace in acl.AccessControlEntries)
             {
-              To.ConsoleLine.s ("\t\t\t").e (() => ace);
+              //To.ConsoleLine.s ("\t\t\t").e (() => ace);
               yield return new UserRoleAclAceCombination (role, ace);
             }
           }

@@ -23,7 +23,8 @@ namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
   {
     public override void ToText (AccessTypeDefinition x, IToTextBuilder toTextBuilder)
     {
-      string shortName = x.Name.LeftUntilChar('|');
+      //string shortName = x.Name.LeftUntilChar('|');
+      string shortName = x.DisplayName;
 
       if (toTextBuilder.OutputComplexity >= ToTextBuilderBase.ToTextBuilderOutputComplexityLevel.Complex)
       {

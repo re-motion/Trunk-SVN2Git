@@ -24,11 +24,13 @@ namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
       toTextBuilder.ib<Role> ("");
       if (toTextBuilder.OutputComplexity >= ToTextBuilderBase.ToTextBuilderOutputComplexityLevel.Complex)
       {
-        toTextBuilder.e ("user", x.User.UserName).e ("group", x.Group.Name).e ("pos", x.Position.Name);
+        //toTextBuilder.e ("user", x.User.UserName).e ("group", x.Group.Name).e ("pos", x.Position.Name);
+        toTextBuilder.e ("user", x.User.UserName).e ("group", x.Group.DisplayName).e ("pos", x.Position.DisplayName);
       }
       else
       {
-        toTextBuilder.e (x.User.UserName).e (x.Group.Name).e (x.Position.Name);
+        //toTextBuilder.e (x.User.UserName).e (x.Group.Name).e (x.Position.Name);
+        toTextBuilder.e (x.User.UserName).e (x.Group.DisplayName).e (x.Position.DisplayName);
       }
       toTextBuilder.ie ();
     }

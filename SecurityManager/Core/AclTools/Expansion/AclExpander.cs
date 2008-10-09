@@ -11,8 +11,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects.Linq;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -70,7 +68,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void AddAclExpansionEntry (List<AclExpansionEntry> aclExpansionEntries, UserRoleAclAceCombination userRoleAclAce)
     {
       AclProbe aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);
-      To.ConsoleLine.s ("\t\t\t").e (() => aclProbe);
+      //To.ConsoleLine.s ("\t\t\t").e (() => aclProbe);
 
       // NOTTODO: Check if we already queried with an identical token.
       // Problem: If the same token was already used by an AclProbe which has conditions then it would be incorrect
@@ -89,7 +87,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       if (accessTypeDefinitions.Length > 0)
       {
         var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions, accessTypeDefinitions);
-        To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
+        //To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
         aclExpansionEntries.Add (aclExpansionEntry);
       }
     }

@@ -20,7 +20,8 @@ namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
   {
     public override void ToText (StateDefinition x, IToTextBuilder toTextBuilder)
     {
-      toTextBuilder.ib<StateDefinition> ("").e (x.Name).ie ();
+      //toTextBuilder.ib<StateDefinition> ("").e (x.Name).ie ();
+      toTextBuilder.ib<StateDefinition> ("").e (x.DisplayName).ie ();
     }
   }
 }
