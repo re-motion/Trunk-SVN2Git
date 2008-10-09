@@ -79,6 +79,11 @@ namespace Remotion.Diagnostics.ToText
   /// </para>
   /// </example>
   /// </remarks>
+
+  // TODO: Initalize _toTextProvider in ToTextProvider property. Otherwise it will only get initialized for the first thread that uses it (see ThreadStaticAttribute description).
+  // TODO: Make _toTextBuilderConsole, etc [ThreadStatic] (for indent, etc).
+  // TODO: Make _toTextBuilderLog [ThreadStatic], but make sure all instances share the same file.
+  
   [Synchronization]
   public static class To
   {

@@ -127,17 +127,6 @@ namespace Remotion.SecurityManager.AclTools.Expander
     {
       const bool repeatHierarchyEntriesInEachRow = false;
 
-      //var aclExpansionHierarchy =
-      //    from expansion in aclExpansion
-      //    group expansion by expansion.User
-      //    into userGroup
-      //        select new { User = userGroup.Key,
-      //          RoleGroup =
-      //        from user in userGroup
-      //        group user by user.Role
-      //        into roleGroup
-      //            select new { Role = roleGroup.Key, RoleGroup = roleGroup }};
-
       var aclExpansionHierarchy =
           from expansion in aclExpansion
           group expansion by expansion.User
