@@ -10,6 +10,7 @@
 // 
 // 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -58,6 +59,12 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
         DelayedPrefix = null;
       }
       TextWriter.Write (obj);
+
+      if (obj.Equals ("Enabled|Remotion.SecurityManager.Domain.OrganizationalStructure.Delegation, Remotion.SecurityManager"))
+      {
+        Debugger.Break(); // ("found Remotion.SecurityManager.Domain.OrganizationalStructure.OrganizationalStructureObject, Remotion.SecurityManager");
+      }
+
       return TextWriter;
     }
 

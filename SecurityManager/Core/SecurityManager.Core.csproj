@@ -147,7 +147,9 @@
     <Compile Include="Domain\ToTextSpecificTypeHandlers\Permission_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\Position_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\Role_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="Domain\ToTextSpecificTypeHandlers\SecurableClassDefinition_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\SecurityToken_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="Domain\ToTextSpecificTypeHandlers\StateDefinition_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\Tenant_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\User_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Globalization\Domain\AccessControl\AccessControlEntry.Designer.cs">

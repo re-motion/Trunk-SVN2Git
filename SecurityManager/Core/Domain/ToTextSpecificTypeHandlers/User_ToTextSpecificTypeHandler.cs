@@ -13,6 +13,7 @@ using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Text.StringExtensions;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
@@ -36,4 +37,8 @@ namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
     }
 
   }
+
+
+
+
 }

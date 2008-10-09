@@ -14,6 +14,7 @@ using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Text.StringExtensions;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
@@ -22,18 +23,17 @@ namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
   {
     public override void ToText (AccessTypeDefinition x, IToTextBuilder toTextBuilder)
     {
-      //toTextBuilder.ib<AccessTypeDefinition> ();
-      //toTextBuilder.e ("name", x.Name).e ("val", x.Value);
-      //toTextBuilder.ie ();
+      string shortName = x.Name.LeftUntilChar('|');
 
       if (toTextBuilder.OutputComplexity >= ToTextBuilderBase.ToTextBuilderOutputComplexityLevel.Complex)
       {
         //toTextBuilder.sbLiteral ("ATD(",")").elements (x.Name, x.Value).se();
-        toTextBuilder.ib<AccessTypeDefinition> ("").elements (x.Name, x.Value).se();
+        toTextBuilder.ib<AccessTypeDefinition> ("").elements (shortName, x.Value).se ();
       }
       else
       {
-        toTextBuilder.ib<AccessTypeDefinition> ("").e (x.Name).se();
+        //toTextBuilder.ib<AccessTypeDefinition> ("").e (x.Name).se();
+        toTextBuilder.ib<AccessTypeDefinition> ("").e (shortName).se ();
       }
     }
 

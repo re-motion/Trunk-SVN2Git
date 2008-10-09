@@ -11,8 +11,11 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.Text.StringExtensions;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -126,6 +129,32 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       accessConditionsExpected.AbstractRole = ace.SpecificAbstractRole;
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
+
+
+
+    //[Test]
+    //[Explicit]
+    //public void GeneralAccessTypesTextHandlerTest ()
+    //{
+    //  //var generalAccessType = Remotion.Security.GeneralAccessTypes.Delete;
+    //  //To.ConsoleLine.e (generalAccessType.ToString());
+    //  //To.ConsoleLine.e (generalAccessType);
+
+    //  var accessTypeDefinition = TestHelper.CreateAccessType ("xyz", 123);
+    //  To.ConsoleLine.e (accessTypeDefinition.Name);
+    //  To.ConsoleLine.e (accessTypeDefinition.ToString ());
+    //  To.ConsoleLine.e (accessTypeDefinition);
+    //}
+
+    //[ToTextSpecificHandler]
+    //public class GeneralAccessTypes_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<Remotion.Security.GeneralAccessTypes>
+    //{
+    //  public override void ToText (Remotion.Security.GeneralAccessTypes x, IToTextBuilder toTextBuilder)
+    //  {
+    //    toTextBuilder.ib<Remotion.Security.GeneralAccessTypes> ("!!!!!!!!!!!!!!!!!!!!!!!").e (x.ToString ().LeftUntilChar ('|')).ie ();
+    //  }
+    //}
+
 
 
     private void FleshOutAccessControlEntryForTest (AccessControlEntry ace)

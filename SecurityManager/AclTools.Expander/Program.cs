@@ -16,8 +16,10 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Text.CommandLine;
+using Remotion.Text.StringExtensions;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expander
@@ -94,8 +96,8 @@ namespace Remotion.SecurityManager.AclTools.Expander
     }
 
     private void OutputAclExpansion (List<AclExpansionEntry> aclExpansion)
-    {
-      To.ConsoleLine.s ("ACL Expansion");
+    { 
+      To.ConsoleLine.nl(10).s ("ACL Expansion");
       To.ConsoleLine.s ("====START====");
       foreach (AclExpansionEntry aclExpansionEntry in aclExpansion)
       {
@@ -142,4 +144,6 @@ namespace Remotion.SecurityManager.AclTools.Expander
     //    Console.WriteLine (text, args);
     //}
   }
+
+
 }
