@@ -10,16 +10,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
-using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Text.CommandLine;
-using Remotion.Text.StringExtensions;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expander
@@ -83,7 +77,9 @@ namespace Remotion.SecurityManager.AclTools.Expander
         using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
         {
           List<AclExpansionEntry> aclExpansion = GetAclExpansion();
-          OutputAclExpansion(aclExpansion);
+
+          var aclExpansionWriter = new AclExpansionConsoleTextWriter();
+          aclExpansionWriter.WriteHierarchical (aclExpansion);
         }
 
         return 0;
@@ -95,101 +91,7 @@ namespace Remotion.SecurityManager.AclTools.Expander
       }
     }
 
-    private void OutputAclExpansion(List<AclExpansionEntry> aclExpansion)
-    {
-      OutputAclExpansionHierarchical (aclExpansion);
-    }
 
-
-    private void OutputAclExpansionSimple (List<AclExpansionEntry> aclExpansion)
-    { 
-      To.ConsoleLine.nl(10).s ("ACL Expansion");
-      To.ConsoleLine.s ("====START====");
-      foreach (AclExpansionEntry aclExpansionEntry in aclExpansion)
-      {
-        var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).ToArray();
-
-        //To.ConsoleLine.e (aclExpansionEntry);
-        To.ConsoleLine.sb();
-        To.Console.e ("user",aclExpansionEntry.User.UserName);
-        To.Console.e ("role",aclExpansionEntry.Role);
-        To.Console.e ("class", aclExpansionEntry.Class);
-        //To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
-        To.Console.e ("states", stateArray);
-        To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
-        To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
-        To.Console.se();
-      }
-      To.ConsoleLine.s ("=====END=====");
-    }
-
-    private void OutputAclExpansionHierarchical (List<AclExpansionEntry> aclExpansion)
-    {
-      const bool repeatHierarchyEntriesInEachRow = false;
-
-      var aclExpansionHierarchy =
-          from expansion in aclExpansion
-          group expansion by expansion.User
-            into userGroup
-            select new
-            {
-              User = userGroup.Key,
-              RoleGroup =
-                from user in userGroup
-                group user by user.Role
-                  into roleGroup
-                  select new
-                  {
-                    Role = roleGroup.Key,
-                    ClassGroup =
-                    from role in roleGroup
-                    group role by role.Class
-                      into classGroup
-                      select new
-                      {
-                        Class = classGroup.Key,
-                        ClassGroup = classGroup
-                      }
-                  }
-            };               
-
-      To.ConsoleLine.nl (10).s ("ACL Expansion");
-      To.ConsoleLine.s ("====START====");
-      foreach (var userGrouping in aclExpansionHierarchy)
-      {
-        To.Console.nl (2).e ("user", userGrouping.User);
-        foreach (var roleGrouping in userGrouping.RoleGroup)
-        {
-          To.Console.indent().nl().e ("role", roleGrouping.Role);
-          foreach (var classGroup in roleGrouping.ClassGroup)
-          {
-
-            To.Console.indent ().nl ().e ("class", classGroup.Class);
-            foreach (var aclExpansionEntry in classGroup.ClassGroup)
-            {
-              var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).ToArray();
-
-              To.Console.indent().nl().sb();
-              if (repeatHierarchyEntriesInEachRow)
-              {
-                To.Console.e ("user", aclExpansionEntry.User.UserName);
-                To.Console.e ("role", aclExpansionEntry.Role);
-                To.Console.e ("class", aclExpansionEntry.Class);
-              }
-              //To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
-              To.Console.e ("states", stateArray);
-              To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
-              To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
-              To.Console.se();
-              To.Console.unindent();
-            }
-            To.Console.unindent();
-          }
-          To.Console.unindent ();
-        }
-      }
-      To.ConsoleLine.s ("=====END=====");
-    }
 
     private List<AclExpansionEntry> GetAclExpansion ()
     {
