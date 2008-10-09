@@ -95,19 +95,59 @@ namespace Remotion.SecurityManager.AclTools.Expander
       }
     }
 
-    private void OutputAclExpansion (List<AclExpansionEntry> aclExpansion)
+    private void OutputAclExpansion(List<AclExpansionEntry> aclExpansion)
+    {
+      OutputAclExpansionHierarchical (aclExpansion);
+    }
+
+
+    private void OutputAclExpansionSimple (List<AclExpansionEntry> aclExpansion)
     { 
       To.ConsoleLine.nl(10).s ("ACL Expansion");
       To.ConsoleLine.s ("====START====");
       foreach (AclExpansionEntry aclExpansionEntry in aclExpansion)
       {
+        var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).ToArray();
+
         //To.ConsoleLine.e (aclExpansionEntry);
-        To.ConsoleLine.e (aclExpansionEntry.User.UserName);
-        To.Console.e (aclExpansionEntry.Role);
-        To.Console.e (aclExpansionEntry.Class);
-        To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
-        To.Console.e (aclExpansionEntry.AccessTypeDefinitions);
-        To.Console.e (aclExpansionEntry.AccessConditions);
+        To.ConsoleLine.sb();
+        To.Console.e ("user",aclExpansionEntry.User.UserName);
+        To.Console.e ("role",aclExpansionEntry.Role);
+        To.Console.e ("class", aclExpansionEntry.Class);
+        //To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
+        To.Console.e ("states", stateArray);
+        To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
+        To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
+        To.Console.se();
+      }
+      To.ConsoleLine.s ("=====END=====");
+    }
+
+    private void OutputAclExpansionHierarchical (List<AclExpansionEntry> aclExpansion)
+    {
+      var aclExpansionHierarchy =
+          aclExpansion.GroupBy (x => x.User.UserName).Select (x => new { UserName = x.Key, Items = x });
+
+      To.ConsoleLine.nl (10).s ("ACL Expansion");
+      To.ConsoleLine.s ("====START====");
+      foreach (var userGrouping in aclExpansionHierarchy)
+      {
+        To.Console.nl (2).e ("user", userGrouping.UserName);
+        foreach (AclExpansionEntry aclExpansionEntry in userGrouping.Items)
+        {
+
+          var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).ToArray();
+
+          To.Console.nl().s ("\t").sb();
+          To.Console.e ("user", aclExpansionEntry.User.UserName);
+          To.Console.e ("role", aclExpansionEntry.Role);
+          To.Console.e ("class", aclExpansionEntry.Class);
+          //To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
+          To.Console.e ("states", stateArray);
+          To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
+          To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
+          To.Console.se();
+        }
       }
       To.ConsoleLine.s ("=====END=====");
     }
