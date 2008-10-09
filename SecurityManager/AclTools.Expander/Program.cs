@@ -127,18 +127,42 @@ namespace Remotion.SecurityManager.AclTools.Expander
     {
       const bool repeatHierarchyEntriesInEachRow = false;
 
+      //var aclExpansionHierarchy =
+      //    from expansion in aclExpansion
+      //    group expansion by expansion.User
+      //    into userGroup
+      //        select new { User = userGroup.Key,
+      //          RoleGroup =
+      //        from user in userGroup
+      //        group user by user.Role
+      //        into roleGroup
+      //            select new { Role = roleGroup.Key, RoleGroup = roleGroup }};
+
       var aclExpansionHierarchy =
           from expansion in aclExpansion
           group expansion by expansion.User
-          into userGroup
-              select new { User = userGroup.Key,
-                RoleGroup =
-              from user in userGroup
-              group user by user.Role
-              into roleGroup
-                  select new { Role = roleGroup.Key, RoleGroup = roleGroup }};
-         
-               
+            into userGroup
+            select new
+            {
+              User = userGroup.Key,
+              RoleGroup =
+                from user in userGroup
+                group user by user.Role
+                  into roleGroup
+                  select new
+                  {
+                    Role = roleGroup.Key,
+                    ClassGroup =
+                    from role in roleGroup
+                    group role by role.Class
+                      into classGroup
+                      select new
+                      {
+                        Class = classGroup.Key,
+                        ClassGroup = classGroup
+                      }
+                  }
+            };               
 
       To.ConsoleLine.nl (10).s ("ACL Expansion");
       To.ConsoleLine.s ("====START====");
@@ -147,24 +171,29 @@ namespace Remotion.SecurityManager.AclTools.Expander
         To.Console.nl (2).e ("user", userGrouping.User);
         foreach (var roleGrouping in userGrouping.RoleGroup)
         {
-          To.Console.indent().nl ().e ("role", roleGrouping.Role);
-          foreach (var aclExpansionEntry in roleGrouping.RoleGroup)
+          To.Console.indent().nl().e ("role", roleGrouping.Role);
+          foreach (var classGroup in roleGrouping.ClassGroup)
           {
 
-            var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).ToArray();
-
-            To.Console.indent ().nl ().sb ();
-            if (repeatHierarchyEntriesInEachRow)
+            To.Console.indent ().nl ().e ("class", classGroup.Class);
+            foreach (var aclExpansionEntry in classGroup.ClassGroup)
             {
-              To.Console.e ("user", aclExpansionEntry.User.UserName);
-              To.Console.e ("role", aclExpansionEntry.Role);
+              var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).ToArray();
+
+              To.Console.indent().nl().sb();
+              if (repeatHierarchyEntriesInEachRow)
+              {
+                To.Console.e ("user", aclExpansionEntry.User.UserName);
+                To.Console.e ("role", aclExpansionEntry.Role);
+                To.Console.e ("class", aclExpansionEntry.Class);
+              }
+              //To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
+              To.Console.e ("states", stateArray);
+              To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
+              To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
+              To.Console.se();
+              To.Console.unindent();
             }
-            To.Console.e ("class", aclExpansionEntry.Class);
-            //To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
-            To.Console.e ("states", stateArray);
-            To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
-            To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
-            To.Console.se();
             To.Console.unindent();
           }
           To.Console.unindent ();
