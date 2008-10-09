@@ -35,6 +35,7 @@
         <include name="${build.outputdir}/Remotion.Interfaces.dll" />
         <include name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
         <include name="${build.outputdir}/Remotion.Data.DomainObjects.dll" />
+        <include name="${build.outputdir}/Remotion.Data.DomainObjects.Security.dll" />
         <include name="${build.outputdir}/Remotion.ObjectBinding.Interfaces.dll" />
         <include name="${build.outputdir}/Remotion.Security.dll" />
         <include name="${build.outputdir}/Remotion.Security.Interfaces.dll" />
