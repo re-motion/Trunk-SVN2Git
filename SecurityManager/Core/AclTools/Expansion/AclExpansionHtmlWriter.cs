@@ -125,21 +125,33 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       html.tdEnd ();
     }
 
-    void tdBody (string value)
+    void WriteTabldeDataAddendum (Object addendum)
+    {
+      if (addendum != null)
+      {
+        _htmlWriter.value (" (");
+        _htmlWriter.value (addendum);
+        _htmlWriter.value (") ");
+      }
+    }
+
+    void tdBody (string value, Object addendum)
     {
       var html = _htmlWriter;
       html.td ();
       html.value (value);
+      WriteTabldeDataAddendum (addendum);
       html.tdEnd ();
     }
 
-    private void tdBodyRole (Role role)
+    private void tdBodyRole (Role role, Object addendum)
     {
       var html = _htmlWriter;
       html.td ();
       html.value (role.Group.DisplayName);
       html.value (", ");
       html.value (role.Position.DisplayName);
+      WriteTabldeDataAddendum (addendum);
       html.tdEnd ();
     }
   
@@ -233,25 +245,27 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       foreach (var userGroup in aclExpansionHierarchy)
       {
         var userName = userGroup.User.DisplayName;
-        int UserRowCount = aclExpansionHierarchy.Where (x => x.User == userGroup.User).Count ();
+        //int userRowCount = aclExpansionHierarchy.Where (x => x.User == userGroup.User).Count ();
+        int userRowCount = userGroup.RoleGroup.SelectMany(x => x.ClassGroup).Count();
         foreach (var roleGroup in userGroup.RoleGroup)
         {
           // TODO: output role as its parts (user,group,position); DisplayName does not do that (ToText based variant did this automatically through handler).
           //var roleName = roleGroup.Role.DisplayName;
           var role = roleGroup.Role;
-          int roleRowCount = userGroup.RoleGroup.Count ();
+          //int roleRowCount = userGroup.RoleGroup.Where (x => x.Role == role).Count ();
+          int roleRowCount = roleGroup.ClassGroup.Count ();
           foreach (var classGroup in roleGroup.ClassGroup)
           {
             // TODO: Get rid of fully qualified name ("Remotion.SecurityManager.UnitTests.TestDomain.Order").
             var className = classGroup.Class.DisplayName;
-            int classRowCount = roleGroup.ClassGroup.Count ();
+            //int classRowCount = roleGroup.ClassGroup.Count ();
             foreach (var aclExpansionEntry in classGroup.ClassGroup)
             {
               var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
               _htmlWriter.tr ();
-              tdBody (userName);
-              tdBodyRole (role);
-              tdBody (className);
+              tdBody (userName, userRowCount);
+              tdBodyRole (role, roleRowCount);
+              tdBody (className,null);
               tdBodyStates (stateArray);
               tdBodyConditions (aclExpansionEntry.AccessConditions);
               tdBodyAccessTypes (aclExpansionEntry.AccessTypeDefinitions);

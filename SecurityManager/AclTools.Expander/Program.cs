@@ -81,7 +81,7 @@ namespace Remotion.SecurityManager.AclTools.Expander
 
           //var aclExpansionWriter = new AclExpansionConsoleTextWriter();
           //aclExpansionWriter.WriteHierarchical (aclExpansion);
-          WriteAclExpansionAsHtmlSpike (aclExpansion);
+          WriteAclExpansionAsHtmlSpikeToStreamWriter (aclExpansion);
         }
 
         return 0;
@@ -94,7 +94,7 @@ namespace Remotion.SecurityManager.AclTools.Expander
     }
 
 
-    public void WriteAclExpansionAsHtmlSpike (List<AclExpansionEntry> aclExpansion)
+    public void WriteAclExpansionAsHtmlSpikeToStringWriter (List<AclExpansionEntry> aclExpansion)
     {
       var stringWriter = new StringWriter ();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
@@ -102,7 +102,20 @@ namespace Remotion.SecurityManager.AclTools.Expander
       To.ConsoleLine.s (stringWriter.ToString ());
     }
 
+    public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion)
+    {
+      string aclExpansionFileName = "c:\\temp\\AclExpansion_" + FileNameTimestamp(DateTime.Now) + ".html";
+      using (var streamWriter = new StreamWriter (aclExpansionFileName))
+      {
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true);
+        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+      }
+    }
 
+    private string FileNameTimestamp (DateTime dt)
+    {
+      return StringUtility.ConcatWithSeparator (new [] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond }, "_");
+    }
 
     private List<AclExpansionEntry> GetAclExpansion ()
     {
