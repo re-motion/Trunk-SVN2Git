@@ -135,12 +135,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    void tdBody (string value, Object addendum)
+    void tdBody (string value, int rowCount)
     {
       var html = _htmlWriter;
       html.td ();
+      if (rowCount > 0)
+      {
+        html.a ("rowspan", Convert.ToString (rowCount));
+      }
       html.value (value);
-      WriteTabldeDataAddendum (addendum);
+      WriteTabldeDataAddendum (rowCount);
       html.tdEnd ();
     }
 
@@ -245,31 +249,33 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       foreach (var userGroup in aclExpansionHierarchy)
       {
         var userName = userGroup.User.DisplayName;
-        //int userRowCount = aclExpansionHierarchy.Where (x => x.User == userGroup.User).Count ();
         int userRowCount = userGroup.RoleGroup.SelectMany(x => x.ClassGroup).Count();
+        bool newUserRow = true;
         foreach (var roleGroup in userGroup.RoleGroup)
         {
-          // TODO: output role as its parts (user,group,position); DisplayName does not do that (ToText based variant did this automatically through handler).
-          //var roleName = roleGroup.Role.DisplayName;
           var role = roleGroup.Role;
-          //int roleRowCount = userGroup.RoleGroup.Where (x => x.Role == role).Count ();
           int roleRowCount = roleGroup.ClassGroup.Count ();
           foreach (var classGroup in roleGroup.ClassGroup)
           {
-            // TODO: Get rid of fully qualified name ("Remotion.SecurityManager.UnitTests.TestDomain.Order").
             var className = classGroup.Class.DisplayName;
-            //int classRowCount = roleGroup.ClassGroup.Count ();
             foreach (var aclExpansionEntry in classGroup.ClassGroup)
             {
               var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
               _htmlWriter.tr ();
-              tdBody (userName, userRowCount);
+              if (newUserRow)
+              {
+                tdBody (userName, userRowCount);
+              }
+              tdBody (userName, 0);
+              
               tdBodyRole (role, roleRowCount);
-              tdBody (className,null);
+              tdBody (className,1);
               tdBodyStates (stateArray);
               tdBodyConditions (aclExpansionEntry.AccessConditions);
               tdBodyAccessTypes (aclExpansionEntry.AccessTypeDefinitions);
               _htmlWriter.trEnd ();
+
+              newUserRow = false;
             }
           }
         }
