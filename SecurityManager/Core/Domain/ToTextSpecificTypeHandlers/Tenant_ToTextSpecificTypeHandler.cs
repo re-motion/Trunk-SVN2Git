@@ -12,15 +12,18 @@
 using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
   public class Tenant_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<Tenant>
   {
-    public override void ToText (Tenant x, IToTextBuilder toTextBuilder)
+    public override void ToText (Tenant tenant, IToTextBuilder toTextBuilder)
     {
-      toTextBuilder.ib<Tenant> ("").e (x.DisplayName).ie ();
+      ArgumentUtility.CheckNotNull ("tenant", tenant);
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
+      toTextBuilder.ib<Tenant> ("").e (tenant.DisplayName).ie ();
     }
   }
 }

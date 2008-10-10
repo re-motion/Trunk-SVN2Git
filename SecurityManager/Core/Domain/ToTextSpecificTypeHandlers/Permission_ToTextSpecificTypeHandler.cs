@@ -12,15 +12,18 @@
 using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
   public class Permission_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<Permission>
   {
-    public override void ToText (Permission x, IToTextBuilder toTextBuilder)
+    public override void ToText (Permission permission, IToTextBuilder toTextBuilder)
     {
-      toTextBuilder.ib<Permission> ("").e (x.AccessType).e (x.Allowed).ie ();
+      ArgumentUtility.CheckNotNull ("permission", permission);
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
+      toTextBuilder.ib<Permission> ("").e (permission.AccessType).e (permission.Allowed).ie ();
     }
   }
 }

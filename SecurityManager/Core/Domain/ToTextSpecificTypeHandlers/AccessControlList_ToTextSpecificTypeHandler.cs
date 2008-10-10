@@ -12,15 +12,18 @@
 using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
   public class AccessControlList_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AccessControlList>
   {
-    public override void ToText (AccessControlList x, IToTextBuilder toTextBuilder)
+    public override void ToText (AccessControlList accessControlList, IToTextBuilder toTextBuilder)
     {
-      toTextBuilder.ib<AccessControlList> ("").e (x.AccessControlEntries).ie ();
+      ArgumentUtility.CheckNotNull ("accessControlList", accessControlList);
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
+      toTextBuilder.ib<AccessControlList> ("").e (accessControlList.AccessControlEntries).ie ();
     }
   }
 }

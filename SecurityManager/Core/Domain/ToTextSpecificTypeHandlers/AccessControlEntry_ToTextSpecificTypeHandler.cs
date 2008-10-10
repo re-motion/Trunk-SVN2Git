@@ -12,15 +12,18 @@
 using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
   public class AccessControlEntry_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AccessControlEntry>
   {
-    public override void ToText (AccessControlEntry x, IToTextBuilder toTextBuilder)
+    public override void ToText (AccessControlEntry accessControlEntry, IToTextBuilder toTextBuilder)
     {
-      toTextBuilder.ib<AccessControlEntry> ("").e (x.Permissions).e ("SelUser", x.UserSelection).e ("SelGroup", x.GroupSelection).e ("SelTenant", x.TenantSelection).eIfNotNull ("user", x.SpecificUser).eIfNotNull ("position", x.SpecificPosition).eIfNotNull ("group", x.SpecificGroup).eIfNotNull ("tenant", x.SpecificTenant).ie ();
+      ArgumentUtility.CheckNotNull ("accessControlEntry", accessControlEntry);
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
+      toTextBuilder.ib<AccessControlEntry> ("").e (accessControlEntry.Permissions).e ("SelUser", accessControlEntry.UserSelection).e ("SelGroup", accessControlEntry.GroupSelection).e ("SelTenant", accessControlEntry.TenantSelection).eIfNotNull ("user", accessControlEntry.SpecificUser).eIfNotNull ("position", accessControlEntry.SpecificPosition).eIfNotNull ("group", accessControlEntry.SpecificGroup).eIfNotNull ("tenant", accessControlEntry.SpecificTenant).ie ();
     }
   }
 }

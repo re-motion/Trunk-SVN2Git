@@ -12,15 +12,18 @@
 using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
   public class AclProbe_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AclProbe>
   {
-    public override void ToText (AclProbe x, IToTextBuilder toTextBuilder)
+    public override void ToText (AclProbe aclProbe, IToTextBuilder toTextBuilder)
     {
-      toTextBuilder.ib<AclProbe> ("").e("token",x.SecurityToken).e("conditions",x.AccessConditions) .ie ();
+      ArgumentUtility.CheckNotNull ("aclProbe", aclProbe);
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
+      toTextBuilder.ib<AclProbe> ("").e ("token", aclProbe.SecurityToken).e ("conditions", aclProbe.AccessConditions).ie ();
     }
   }
 }

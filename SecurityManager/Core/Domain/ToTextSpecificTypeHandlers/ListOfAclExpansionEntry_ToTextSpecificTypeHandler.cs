@@ -13,16 +13,19 @@ using System;
 using System.Collections.Generic;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
   public class ListOfAclExpansionEntry_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<List<AclExpansionEntry>>
   {
-    public override void ToText (List<AclExpansionEntry> listOfAclExpansionEntry, IToTextBuilder toTextBuilder)
+    public override void ToText (List<AclExpansionEntry> aclExpansionEntryList, IToTextBuilder toTextBuilder)
     {
-      toTextBuilder.ib<List<AclExpansionEntry>> ("").nl();
-      foreach (AclExpansionEntry aclExpansionEntry in listOfAclExpansionEntry)
+      ArgumentUtility.CheckNotNull ("aclExpansionEntryList", aclExpansionEntryList);
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
+      toTextBuilder.ib<List<AclExpansionEntry>> ("").nl ();
+      foreach (AclExpansionEntry aclExpansionEntry in aclExpansionEntryList)
       {
         toTextBuilder.e (aclExpansionEntry).nl ();
       }

@@ -79,20 +79,20 @@ namespace Remotion.UnitTests.Diagnostics
     [ToTextSpecificHandler]
     class TestSimpleToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimple>
     {
-      public override void ToText (TestSimple t, IToTextBuilder toTextBuilder)
+      public override void ToText (TestSimple accessControlEntry, IToTextBuilder toTextBuilder)
       {
-        toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimple").e (t.Name).e (t.Int).se ();
+        toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimple").e (accessControlEntry.Name).e (accessControlEntry.Int).se ();
       }
     }
 
     [ToTextSpecificHandler]
     class TestSimpleSimpleToTextSpecificTypeHandler : ToTextSpecificTypeHandler<TestSimpleSimple>
     {
-      public override void ToText (TestSimpleSimple t, IToTextBuilder toTextBuilder)
+      public override void ToText (TestSimpleSimple accessControlEntry, IToTextBuilder toTextBuilder)
       {
         //toTextBuilder.WriteInstanceBegin (typeof (TestSimple)).e ("name", t.Name).WriteInstanceEnd ();
         //toTextBuilder.sbLiteral ("[", ",", "]").s ("name=").e (t.Name).se ();
-        toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimpleSimple").e (t.Name).se ();
+        toTextBuilder.sbLiteral ("[", ",", "]").e ("TestSimpleSimple").e (accessControlEntry.Name).se ();
       }
     }
 

@@ -13,26 +13,27 @@ using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Text.StringExtensions;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
   public class User_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<User>
   {
-    public override void ToText (User u, IToTextBuilder toTextBuilder)
+    public override void ToText (User user, IToTextBuilder toTextBuilder)
     {
-
+      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
       if (toTextBuilder.OutputComplexity >= ToTextBuilderBase.ToTextBuilderOutputComplexityLevel.Complex)
       {
-        toTextBuilder.ib<User> ().e ("user", u.UserName).e ("title", u.Title).e ("first", u.FirstName).e ("last", u.LastName);
-        toTextBuilder.e ("display", u.DisplayName).e ("group", u.OwningGroup).e ("tenant", u.Tenant);
-        toTextBuilder.nl ().e ("roles", u.Roles);
+        toTextBuilder.ib<User> ().e ("user", user.UserName).e ("title", user.Title).e ("first", user.FirstName).e ("last", user.LastName);
+        toTextBuilder.e ("display", user.DisplayName).e ("group", user.OwningGroup).e ("tenant", user.Tenant);
+        toTextBuilder.nl ().e ("roles", user.Roles);
         toTextBuilder.ie ();
       }
       else
       {
-        toTextBuilder.ib<User> ("").e (u.UserName).ie();
+        toTextBuilder.ib<User> ("").e (user.UserName).ie();
       }
     }
 

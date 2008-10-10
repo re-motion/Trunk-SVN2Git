@@ -12,15 +12,19 @@
 using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
   public class AbstractRoleDefinition_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AbstractRoleDefinition>
   {
-    public override void ToText (AbstractRoleDefinition x, IToTextBuilder toTextBuilder)
+    public override void ToText (AbstractRoleDefinition abstractRoleDefinition, IToTextBuilder toTextBuilder)
     {
-      toTextBuilder.ib<AbstractRoleDefinition> ("").e (x.DisplayName).ie ();
+
+      ArgumentUtility.CheckNotNull ("abstractRoleDefinition", abstractRoleDefinition);
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
+      toTextBuilder.ib<AbstractRoleDefinition> ("").e (abstractRoleDefinition.DisplayName).ie ();
     }
   }
 }

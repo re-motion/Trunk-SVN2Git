@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Diagnostics
     [ToTextSpecificHandler]
     public class ToTextTestToTextSpecificTypeHandler : ToTextSpecificTypeHandler<ToTextTest>
     {
-      public override void ToText (ToTextTest t, IToTextBuilder toTextBuilder)
+      public override void ToText (ToTextTest accessControlEntry, IToTextBuilder toTextBuilder)
       {
         toTextBuilder.s ("handled by ToTextTestToTextSpecificTypeHandler");
       }

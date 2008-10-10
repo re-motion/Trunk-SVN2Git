@@ -12,16 +12,18 @@
 using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
 {
   [ToTextSpecificHandler]
   public class StateDefinition_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<StateDefinition>
   {
-    public override void ToText (StateDefinition x, IToTextBuilder toTextBuilder)
+    public override void ToText (StateDefinition stateDefinition, IToTextBuilder toTextBuilder)
     {
-      //toTextBuilder.ib<StateDefinition> ("").e (x.Name).ie ();
-      toTextBuilder.ib<StateDefinition> ("").e (x.DisplayName).ie ();
+      ArgumentUtility.CheckNotNull ("stateDefinition", stateDefinition);
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
+      toTextBuilder.ib<StateDefinition> ("").e (stateDefinition.DisplayName).ie ();
     }
   }
 }
