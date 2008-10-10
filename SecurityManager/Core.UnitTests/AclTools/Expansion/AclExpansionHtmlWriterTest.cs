@@ -8,14 +8,16 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using System.IO;
 using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryTests;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -80,15 +82,15 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Explicit]
     public void WriteAclExpansionAsHtmlSpikeTest ()
     {
-      //using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      //{
+      using (new CultureScope ("de","de"))
+      {
         var aclExpander = new AclExpander();
         var aclExpansion = aclExpander.GetAclExpansionEntryList();
         var stringWriter = new StringWriter();
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
         aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
         To.ConsoleLine.s (stringWriter.ToString());
-      //}
+      }
     }
 
 

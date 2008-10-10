@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Remotion.Data.DomainObjects;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
@@ -78,8 +79,9 @@ namespace Remotion.SecurityManager.AclTools.Expander
         {
           List<AclExpansionEntry> aclExpansion = GetAclExpansion();
 
-          var aclExpansionWriter = new AclExpansionConsoleTextWriter();
-          aclExpansionWriter.WriteHierarchical (aclExpansion);
+          //var aclExpansionWriter = new AclExpansionConsoleTextWriter();
+          //aclExpansionWriter.WriteHierarchical (aclExpansion);
+          WriteAclExpansionAsHtmlSpike (aclExpansion);
         }
 
         return 0;
@@ -89,6 +91,15 @@ namespace Remotion.SecurityManager.AclTools.Expander
         HandleException (e);
         return 1;
       }
+    }
+
+
+    public void WriteAclExpansionAsHtmlSpike (List<AclExpansionEntry> aclExpansion)
+    {
+      var stringWriter = new StringWriter ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+      To.ConsoleLine.s (stringWriter.ToString ());
     }
 
 

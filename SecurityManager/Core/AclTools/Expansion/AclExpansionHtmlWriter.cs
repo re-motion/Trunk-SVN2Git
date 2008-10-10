@@ -15,6 +15,7 @@ using System.Linq;
 using System.Xml;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 
 namespace Remotion.SecurityManager.AclTools.Expansion
@@ -45,15 +46,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       var html = _htmlWriter;
 
       WriteStartPage (html);
-      
+
       //html.value ("re-motion ACL Expansion body");
 
       WriteTableStart (html);
-      WriteTableHeaders(html);
+      WriteTableHeaders (html);
       WriteTableBody (html, aclExpansion);
-      WriteTableEnd (html); 
+      WriteTableEnd (html);
 
-      WriteEndPage(html);
+      WriteEndPage (html);
     }
 
     private void WriteTableEnd (HtmlWriter html)
@@ -68,7 +69,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteTableHeaders (HtmlWriter html)
     {
-      html.tr();
+      html.tr ();
       tdHeader ("User");
       tdHeader ("Role");
       tdHeader ("Class");
@@ -83,7 +84,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteEndPage (HtmlWriter html)
     {
-      html.end ("body"); 
+      html.end ("body");
       html.end ("html");
 
       html.Close ();
@@ -107,8 +108,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // STYLE
       html.e ("style");
       html.value ("@import \"AclExpansion.css\";");
-      html.end ("style"); 
-      html.end ("head");  
+      html.end ("style");
+      html.end ("head");
 
       // BODY
       html.e ("body");
@@ -121,16 +122,27 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       var html = _htmlWriter;
       html.td ().a ("class", "header");
       html.value (columnName);
-      html.tdEnd ();  
+      html.tdEnd ();
     }
 
     void tdBody (string value)
     {
       var html = _htmlWriter;
-      html.td (); 
+      html.td ();
       html.value (value);
       html.tdEnd ();
     }
+
+    private void tdBodyRole (Role role)
+    {
+      var html = _htmlWriter;
+      html.td ();
+      html.value (role.Group.DisplayName);
+      html.value (", ");
+      html.value (role.Position.DisplayName);
+      html.tdEnd ();
+    }
+  
 
     void tdBodyStates (params StateDefinition[] stateDefinitions)
     {
@@ -173,7 +185,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       tdBodyBooleanCondition (conditions.IsOwningUserRequired);
       tdBodyBooleanCondition (conditions.IsOwningGroupRequired);
       tdBodyBooleanCondition (conditions.IsOwningTenantRequired);
-      
+
       html.td ();
       html.value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");
       html.tdEnd ();
@@ -221,20 +233,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       foreach (var userGroup in aclExpansionHierarchy)
       {
         var userName = userGroup.User.DisplayName;
+        int UserRowCount = aclExpansionHierarchy.Where (x => x.User == userGroup.User).Count ();
         foreach (var roleGroup in userGroup.RoleGroup)
         {
           // TODO: output role as its parts (user,group,position); DisplayName does not do that (ToText based variant did this automatically through handler).
-          var roleName = roleGroup.Role.DisplayName;
+          //var roleName = roleGroup.Role.DisplayName;
+          var role = roleGroup.Role;
+          int roleRowCount = userGroup.RoleGroup.Count ();
           foreach (var classGroup in roleGroup.ClassGroup)
           {
             // TODO: Get rid of fully qualified name ("Remotion.SecurityManager.UnitTests.TestDomain.Order").
             var className = classGroup.Class.DisplayName;
+            int classRowCount = roleGroup.ClassGroup.Count ();
             foreach (var aclExpansionEntry in classGroup.ClassGroup)
             {
               var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
               _htmlWriter.tr ();
               tdBody (userName);
-              tdBody (roleName);
+              tdBodyRole (role);
               tdBody (className);
               tdBodyStates (stateArray);
               tdBodyConditions (aclExpansionEntry.AccessConditions);
@@ -246,6 +262,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
   }
+
 
   // Spike
   public class HtmlWriter : IDisposable
