@@ -99,6 +99,19 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return this;
     }
 
+    public HtmlWriter th ()
+    {
+      Tag ("th");
+      return this;
+    }
+
+    public HtmlWriter thEnd ()
+    {
+      TagEnd ("th");
+      return this;
+    }
+
+
     public XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
     {
       XmlWriterSettings settings = new XmlWriterSettings ();

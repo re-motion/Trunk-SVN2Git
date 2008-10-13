@@ -148,3 +148,47 @@ private void WriteTableBodySpike (HtmlWriter html, List<AclExpansionEntry> aclEx
     }
   }
 }    
+
+
+
+private void WriteTableBody (List<AclExpansionEntry> aclExpansion)
+{
+  var aclExpansionUserGrouping = GetAclExpansionGrouping (aclExpansion, (aee => aee.User));
+
+  foreach (var userGroup in aclExpansionUserGrouping)
+  {
+    var userName = userGroup.Key.DisplayName;
+    WriteTableRowBeginIfNotInTableRow ();
+    WriteTableDataWithRowCount (userName, userGroup.Items.Count ());
+
+    var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
+
+    foreach (var roleGroup in aclExpansionRoleGrouping)
+    {
+      var role = roleGroup.Key;
+      WriteTableRowBeginIfNotInTableRow ();
+      WriteTableDataForRole (role, roleGroup.Items.Count ());
+
+      var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
+
+      foreach (var classGroup in aclExpansionClassGrouping)
+      {
+        var className = classGroup.Key.DisplayName;
+        WriteTableRowBeginIfNotInTableRow ();
+        WriteTableDataWithRowCount (className, classGroup.Items.Count ());
+
+        foreach (var aclExpansionEntry in classGroup.Items)
+        {
+          WriteTableRowBeginIfNotInTableRow ();
+
+          tdBodyStates (aclExpansionEntry);
+          tdBodyConditions (aclExpansionEntry.AccessConditions);
+          tdBodyAccessTypes (aclExpansionEntry.AccessTypeDefinitions);
+
+          WriteTableRowEnd ();
+
+        }
+      }
+    }
+  }
+}

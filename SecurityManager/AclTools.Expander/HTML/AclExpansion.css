@@ -14,7 +14,7 @@
   text-align: left;
 }
 
-td
+th, td
 {
   border-style: solid;
   border-color: black;
@@ -25,7 +25,7 @@ td
   padding: 5px;
 } 
 
-td.header
+th
 {
    background-color: #CCCCCC;
 }    

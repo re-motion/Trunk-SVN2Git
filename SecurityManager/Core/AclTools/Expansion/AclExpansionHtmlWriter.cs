@@ -117,9 +117,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     void WriteHeaderCell (string columnName)
     {
-      _htmlWriter.td ().a ("class", "header");
+      _htmlWriter.th ().a ("class", "header");
       _htmlWriter.Value (columnName);
-      _htmlWriter.tdEnd ();
+      _htmlWriter.thEnd ();
     }
 
     void WriteTableDataAddendum (Object addendum)
@@ -131,14 +131,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         _htmlWriter.Value (") ");
       }
     }
-
-    //void WriteTableDataWithAddendum (string value, Object addendum)
-    //{
-    //  _htmlWriter.td ();
-    //  WriteTableDataAddendum (addendum);
-    //  _htmlWriter.Value (value);
-    //  _htmlWriter.tdEnd ();
-    //}
 
 
     void WriteTableDataWithRowCount (string value, int rowCount)
@@ -160,7 +152,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return _htmlWriter;
     }
 
-    private void WriteTableDataForRole (Role role, int rowCount)
+    public void WriteTableDataForRole (Role role, int rowCount)
     {
       WriteTableRowBeginIfNotInTableRow();
       _htmlWriter.td ();
@@ -224,53 +216,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _htmlWriter.tdEnd ();
     }
 
- 
 
-    //private void WriteTableBody (List<AclExpansionEntry> aclExpansion)
-    //{
-    //  var aclExpansionUserGrouping = GetAclExpansionGrouping (aclExpansion, (aee => aee.User));
-
-    //  foreach (var userGroup in aclExpansionUserGrouping)
-    //  {
-    //    var userName = userGroup.Key.DisplayName;
-    //    WriteTableRowBeginIfNotInTableRow();
-    //    WriteTableDataWithRowCount (userName, userGroup.Items.Count());
-
-    //    var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
-
-    //    foreach (var roleGroup in aclExpansionRoleGrouping)
-    //    {
-    //      var role = roleGroup.Key;
-    //      WriteTableRowBeginIfNotInTableRow ();
-    //      WriteTableDataForRole (role, roleGroup.Items.Count ());
-
-    //      var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
-
-    //      foreach (var classGroup in aclExpansionClassGrouping)
-    //      {
-    //        var className = classGroup.Key.DisplayName;
-    //        WriteTableRowBeginIfNotInTableRow ();
-    //        WriteTableDataWithRowCount (className, classGroup.Items.Count ());
-
-    //        foreach (var aclExpansionEntry in classGroup.Items)
-    //        {
-    //          WriteTableRowBeginIfNotInTableRow();
-
-    //          tdBodyStates (aclExpansionEntry);
-    //          tdBodyConditions (aclExpansionEntry.AccessConditions);
-    //          tdBodyAccessTypes (aclExpansionEntry.AccessTypeDefinitions);
-
-    //          WriteTableRowEnd();
-
-    //        }
-    //      }
-    //    }
-    //  }
-    //}
-
-
-
-    private void WriteTableBody (List<AclExpansionEntry> aclExpansion)
+    public void WriteTableBody (List<AclExpansionEntry> aclExpansion)
     {
       var aclExpansionUserGrouping = GetAclExpansionGrouping (aclExpansion, (aee => aee.User));
       foreach (var userGroup in aclExpansionUserGrouping)
@@ -279,10 +226,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    private void WriteTableBody_ProcessUserGroup (LinqGroup<User, AclExpansionEntry> userGroup)
+    public void WriteTableBody_ProcessUserGroup (LinqGroup<User, AclExpansionEntry> userGroup)
     {
       var userName = userGroup.Key.DisplayName;
-      //WriteTableRowBeginIfNotInTableRow ();
       WriteTableDataWithRowCount (userName, userGroup.Items.Count ());
 
       var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
@@ -293,9 +239,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    private void WriteTableBody_ProcessRoleGroup (LinqGroup<Role, AclExpansionEntry> roleGroup)
+    public void WriteTableBody_ProcessRoleGroup (LinqGroup<Role, AclExpansionEntry> roleGroup)
     {
-      //WriteTableRowBeginIfNotInTableRow ();
       WriteTableDataForRole (roleGroup.Key, roleGroup.Items.Count ());
 
       var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
@@ -306,10 +251,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    private void WriteTableBody_ProcessClassGroup (LinqGroup<SecurableClassDefinition, AclExpansionEntry> classGroup)
+    public void WriteTableBody_ProcessClassGroup (LinqGroup<SecurableClassDefinition, AclExpansionEntry> classGroup)
     {
       WriteTableDataWithRowCount (classGroup.Key.DisplayName, classGroup.Items.Count ());
-
       foreach (var aclExpansionEntry in classGroup.Items)
       {
         WriteTableRowBeginIfNotInTableRow ();
@@ -323,7 +267,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    private void WriteTableRowBeginIfNotInTableRow ()
+    public void WriteTableRowBeginIfNotInTableRow ()
     {
       if (!_inTableRow)
       {
@@ -332,26 +276,25 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    private void WriteTableRowEnd ()
+    public void WriteTableRowEnd ()
     {
       _htmlWriter.trEnd ();
       _inTableRow = false;
     }
 
 
-    private IEnumerable<LinqGroup<T, AclExpansionEntry>> GetAclExpansionGrouping<T, TIn> (
+    public IEnumerable<LinqGroup<T, AclExpansionEntry>> GetAclExpansionGrouping<T, TIn> (
       LinqGroup<TIn, AclExpansionEntry> linqGroup,
       Func<AclExpansionEntry, T> groupingKeyFunc)
     {
       return from aee in linqGroup.Items
-             //group aee by aee.Role
              group aee by groupingKeyFunc (aee)
                into groupEntries
                select ObjectMother.LinqGroup.New (groupEntries);
     }
 
 
-    private IEnumerable<LinqGroup<User, AclExpansionEntry>> GetAclExpansionGrouping (IEnumerable<AclExpansionEntry> aclExpansion,
+    public IEnumerable<LinqGroup<User, AclExpansionEntry>> GetAclExpansionGrouping (IEnumerable<AclExpansionEntry> aclExpansion,
       Func<AclExpansionEntry, User> groupingKeyFunc)
     {
       return from aee in aclExpansion
