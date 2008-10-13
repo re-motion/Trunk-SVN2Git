@@ -22,6 +22,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclExpansionHtmlWriter : AclExpansionWriter
   {
     private readonly HtmlWriter _htmlWriter;
+    private bool _inTableRow;
 
     public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml)
     {
@@ -338,9 +339,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       foreach (var userGroup in aclExpansionUserGrouping)
       {
-        bool newUserRow = true;
+        //bool newUserRow = true;
         var userName = userGroup.Key.DisplayName;
         int userRowCount = userGroup.Items.Count();
+
+        WriteTableRowBeginIfNotInTableRow();
+        WriteTableDataWithRowCount (userName, userRowCount);
 
         var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
 
@@ -364,13 +368,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
             {
               var stateArray = entry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
 
-              _htmlWriter.tr ();
+              WriteTableRowBeginIfNotInTableRow();
 
-              if (newUserRow)
-              {
-                newUserRow = false;
-                WriteTableDataWithRowCount (userName, userRowCount);
-              }
+              //if (newUserRow)
+              //{
+              //  newUserRow = false;
+              //  WriteTableDataWithRowCount (userName, userRowCount);
+              //}
 
               if (newRoleRow)
               {
@@ -391,7 +395,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
               tdBodyStates (stateArray);
               tdBodyConditions (entry.AccessConditions);
               tdBodyAccessTypes (entry.AccessTypeDefinitions);
-              _htmlWriter.trEnd ();
+
+              WriteTableRowEnd();
 
             }
           }
@@ -399,6 +404,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
+    private void WriteTableRowBeginIfNotInTableRow ()
+    {
+      if (!_inTableRow)
+      {
+        _htmlWriter.tr ();
+        _inTableRow = true;
+      }
+    }
+
+    private void WriteTableRowEnd ()
+    {
+      _htmlWriter.trEnd ();
+      _inTableRow = false;
+    }
 
 
     private IEnumerable<LinqGroup<T, AclExpansionEntry>> GetAclExpansionGrouping<T, TIn> (
@@ -413,7 +432,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    private IEnumerable<LinqGroup<User, AclExpansionEntry>> GetAclExpansionGrouping (List<AclExpansionEntry> aclExpansion,
+    private IEnumerable<LinqGroup<User, AclExpansionEntry>> GetAclExpansionGrouping (IEnumerable<AclExpansionEntry> aclExpansion,
       Func<AclExpansionEntry, User> groupingKeyFunc)
     {
       return from aee in aclExpansion
