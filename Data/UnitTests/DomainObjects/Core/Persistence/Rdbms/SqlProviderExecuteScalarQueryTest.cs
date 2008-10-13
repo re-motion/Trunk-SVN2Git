@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void ScalarQueryWithoutParameter ()
     {
-      Assert.AreEqual (42, Provider.ExecuteScalarQuery (new Query ("QueryWithoutParameter")));
+      Assert.AreEqual (42, Provider.ExecuteScalarQuery (QueryFactory.CreateQueryFromConfiguration ("QueryWithoutParameter")));
     }
 
     [Test]
@@ -38,13 +38,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       QueryDefinition definition = new QueryDefinition ("InvalidQuery", c_testDomainProviderID, "This is not T-SQL", QueryType.Scalar);
 
-      Provider.ExecuteScalarQuery (new Query (definition));
+      Provider.ExecuteScalarQuery (QueryFactory.CreateQuery (definition));
     }
 
     [Test]
     public void ScalarQueryWithParameter ()
     {
-      Query query = new Query ("OrderNoSumByCustomerNameQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderNoSumByCustomerNameQuery");
       query.Parameters.Add ("@customerName", "Kunde 1");
 
       Assert.AreEqual (3, Provider.ExecuteScalarQuery (query));
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void ParameterWithTextReplacement ()
     {
-      Query query = new Query ("OrderNoSumForMultipleCustomers");
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderNoSumForMultipleCustomers");
       query.Parameters.Add ("{companyNames}", "'Kunde 1', 'Kunde 3'", QueryParameterType.Text);
 
       Assert.AreEqual (6, Provider.ExecuteScalarQuery (query));
@@ -63,13 +63,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Expected query type is 'Scalar', but was 'Collection'.\r\nParameter name: query")]
     public void CollectionQuery ()
     {
-      Provider.ExecuteScalarQuery (new Query ("OrderQuery"));
+      Provider.ExecuteScalarQuery (QueryFactory.CreateQueryFromConfiguration ("OrderQuery"));
     }
 
     [Test]
     public void BulkUpdateQuery ()
     {
-      Query query = new Query ("BulkUpdateQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("BulkUpdateQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1.Value);
 
       Assert.AreEqual (2, Provider.ExecuteScalarQuery (query));
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           "select 42",
           QueryType.Scalar);
 
-      Provider.ExecuteScalarQuery (new Query (definition));
+      Provider.ExecuteScalarQuery (QueryFactory.CreateQuery (definition));
     }
   }
 }

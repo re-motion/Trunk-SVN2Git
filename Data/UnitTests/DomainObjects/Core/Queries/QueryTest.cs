@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void InitializeWithQueryID ()
     {
       QueryParameterCollection parameters = new QueryParameterCollection ();
-      Query query = new Query ("OrderQuery", parameters);
+      var query = (Query) QueryFactory.CreateQueryFromConfiguration ("OrderQuery", parameters);
 
       QueryDefinition definition = DomainObjectsConfiguration.Current.Query.QueryDefinitions["OrderQuery"];
       Assert.AreSame (definition, query.Definition);
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       QueryParameterCollection parameters = new QueryParameterCollection ();
 
       QueryDefinition definition = TestQueryFactory.CreateOrderQueryWithCustomCollectionType ();
-      Query query = new Query (definition, parameters);
+      var query = new Query (definition, parameters);
 
       Assert.AreSame (definition, query.Definition);
       Assert.AreEqual (definition.ID, query.ID);

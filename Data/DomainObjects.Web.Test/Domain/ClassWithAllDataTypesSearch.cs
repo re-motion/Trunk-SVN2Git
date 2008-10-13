@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
 
     public IQuery CreateQuery ()
     {
-      Query query = new Query ("QueryWithAllDataTypes");
+      var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithAllDataTypes");
 
       query.Parameters.Add ("@stringProperty", _stringProperty);
       query.Parameters.Add ("@bytePropertyFrom", _bytePropertyFrom);

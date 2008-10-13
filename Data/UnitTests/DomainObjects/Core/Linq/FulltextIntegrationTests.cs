@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       ClassDefinition orderClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
       QueryDefinition queryDefinition =
           new QueryDefinition ("bla", orderClassDefinition.StorageProviderID, "SELECT * FROM CeoView WHERE Contains ([CeoView].[Name], 'Fischer')", QueryType.Collection);
-      Query query = new Query (queryDefinition);
+      var query = QueryFactory.CreateQuery (queryDefinition);
 
       var orders = ClientTransactionMock.QueryManager.GetCollection<Ceo> (query).Cast<Ceo> ();
       IntegrationTests.CheckQueryResult (orders, DomainObjectIDs.Ceo4);

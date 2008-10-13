@@ -116,7 +116,7 @@ namespace Remotion.Data.DomainObjects.Queries
     public static IQuery CreateQuery (QueryDefinition queryDefinition)
     {
       ArgumentUtility.CheckNotNull ("queryDefinition", queryDefinition);
-      return new Query (queryDefinition);
+      return CreateQuery (queryDefinition, new QueryParameterCollection());
     }
 
     /// <summary>
@@ -168,7 +168,7 @@ namespace Remotion.Data.DomainObjects.Queries
     public static IQuery CreateQueryFromConfiguration (string id)
     {
       ArgumentUtility.CheckNotNullOrEmpty("id", id);
-      return new Query (id);
+      return CreateQueryFromConfiguration (id, new QueryParameterCollection ());
     }
 
     /// <summary>
@@ -181,7 +181,8 @@ namespace Remotion.Data.DomainObjects.Queries
     public static IQuery CreateQueryFromConfiguration (string id, QueryParameterCollection queryParameterCollection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      return new Query (id, queryParameterCollection);
+      var queryDefinition = DomainObjectsConfiguration.Current.Query.QueryDefinitions.GetMandatory (id);
+      return new Query (queryDefinition, queryParameterCollection);
     }
 
     /// <summary>

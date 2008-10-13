@@ -9,7 +9,6 @@
  */
 
 using System;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
 
@@ -31,40 +30,6 @@ public class Query : IQuery
   private readonly QueryParameterCollection _parameters;
 
   // construction and disposing
-
-  /// <summary>
-  /// Initializes a new instance of the <see cref="Query"/> class using a pre-defined query.
-  /// </summary>
-  /// <param name="queryID">The <paramref name="queryID"/> of the query definition from queries.xml to use.</param>
-  /// <exception cref="Configuration.QueryConfigurationException"><paramref name="queryID"/> could not be found in the <see cref="Configuration.QueryConfiguration"/>.</exception>
-  public Query (string queryID) : this (queryID, new QueryParameterCollection ()) 
-  {
-  }
-
-  /// <summary>
-  /// Initializes a new instance of the <see cref="Query"/> class using a pre-defined query and a given collection of <see cref="QueryParameter"/>s.
-  /// </summary>
-  /// <param name="queryID">The <paramref name="queryID"/> of the query definition from queries.xml to use.</param>
-  /// <param name="parameters">The <see cref="QueryParameter"/>s to use to execute the query. Must not be <see langword="null"/>.</param>
-  /// <exception cref="Configuration.QueryConfigurationException"><paramref name="queryID"/> could not be found in the <see cref="Configuration.QueryConfiguration"/>.</exception>
-  /// <exception cref="System.ArgumentNullException">
-  ///   <paramref name="parameters"/> is <see langword="null"/>.
-  /// </exception>
-  public Query (string queryID, QueryParameterCollection parameters) 
-      : this (DomainObjectsConfiguration.Current.Query.QueryDefinitions.GetMandatory (queryID), parameters)
-  {
-  }
-
-  /// <summary>
-  /// Initializes a new instance of the <see cref="Query"/> class using a <see cref="Configuration.QueryDefinition"/>.
-  /// </summary>
-  /// <param name="definition">The <see cref="Configuration.QueryDefinition"/> to use for the query. Must not be <see langword="null"/>.</param>
-  /// <exception cref="System.ArgumentNullException">
-  ///   <paramref name="definition"/> is <see langword="null"/>.
-  /// </exception>
-  public Query (QueryDefinition definition) : this (definition, new QueryParameterCollection ())
-  {
-  }
 
   /// <summary>
   /// Initializes a new instance of the <see cref="Query"/> class using a <see cref="Configuration.QueryDefinition"/> and a given collection of <see cref="QueryParameter"/>s.

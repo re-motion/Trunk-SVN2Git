@@ -1100,7 +1100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void FilterQueryResult ()
     {
-      Query query = new Query ("OrderQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1);
       using (_newTransaction.EnterNonDiscardingScope ())
       {
@@ -1125,7 +1125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void FilterQueryResultWithLoad ()
     {
-      Query query = new Query ("OrderQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer4);
 
       using (_mockRepository.Ordered())
@@ -1153,7 +1153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void FilterQueryResultWithFiltering ()
     {
-      Query query = new Query ("OrderQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer4);
       IClientTransactionExtension filteringExtension = _mockRepository.StrictMock<ClientTransactionExtensionWithQueryFiltering>();
       _newTransaction.Extensions.Add ("FilteringExtension", filteringExtension);

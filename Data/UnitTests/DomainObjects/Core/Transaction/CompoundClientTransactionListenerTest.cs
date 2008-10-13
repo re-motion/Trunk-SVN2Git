@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           new object[]
               {
                   new DomainObjectCollection(),
-                  new Query (TestQueryFactory.CreateOrderQueryWithCustomCollectionType())
+                  QueryFactory.CreateQuery(TestQueryFactory.CreateOrderQueryWithCustomCollectionType())
               });
 
       CheckNotification (

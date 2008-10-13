@@ -395,7 +395,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void FilterQueryResult ()
     {
       DomainObjectCollection domainObjects = new DomainObjectCollection ();
-      Query query = new Query ("OrderQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
 
       using (_mockRepository.Ordered ())
       {

@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SecurableObject allowedObject = _testHelper.CreateSecurableObject ();
       DomainObjectCollection collection = new DomainObjectCollection ();
       collection.Add (allowedObject);
-      IQuery query = new Query ("Dummy");
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (allowedObject, GeneralAccessTypes.Find, true);
       _testHelper.ReplayAll ();
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       _extension = new SecurityClientTransactionExtension ();
       DomainObjectCollection collection = new DomainObjectCollection ();
-      IQuery query = new Query ("Dummy");
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SecurableObject deniedObject = _testHelper.CreateSecurableObject ();
       DomainObjectCollection collection = new DomainObjectCollection ();
       collection.Add (deniedObject);
-      IQuery query = new Query ("Dummy");
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (deniedObject, GeneralAccessTypes.Find, false);
       _testHelper.ReplayAll ();
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       DomainObjectCollection collection = new DomainObjectCollection ();
       collection.Add (allowedObject);
       collection.Add (deniedObject);
-      IQuery query = new Query ("Dummy");
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (allowedObject, GeneralAccessTypes.Find, true);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (deniedObject, GeneralAccessTypes.Find, false);
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       NonSecurableObject nonSecurableObject = _testHelper.CreateNonSecurableObject ();
       DomainObjectCollection collection = new DomainObjectCollection ();
       collection.Add (nonSecurableObject);
-      IQuery query = new Query ("Dummy");
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       DomainObjectCollection collection = new DomainObjectCollection ();
       collection.Add (allowedObject);
       collection.Add (deniedObject);
-      IQuery query = new Query ("Dummy");
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
@@ -161,11 +161,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       DomainObjectCollection collection = new DomainObjectCollection ();
       collection.Add (securableObject);
-      IQuery query = new Query ("Dummy");
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
       _testHelper.AddExtension (_extension);
       HasAccessDelegate hasAccess = delegate (ISecurityProvider securityProvider, IPrincipal user, AccessType[] requiredAccessTypes)
       {
-        _testHelper.Transaction.QueryManager.GetCollection (new Query ("GetSecurableObjects"));
+        _testHelper.Transaction.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("GetSecurableObjects"));
         return true;
       };
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Find, hasAccess);
@@ -183,7 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectSecurityProviderGetAccess (SecurityContext.CreateStateless(typeof (SecurableObject)), GeneralAccessTypes.Find);
       _testHelper.ReplayAll ();
 
-      _testHelper.Transaction.QueryManager.GetCollection (new Query ("GetSecurableObjects"));
+      _testHelper.Transaction.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("GetSecurableObjects"));
 
       _testHelper.VerifyAll ();
     }

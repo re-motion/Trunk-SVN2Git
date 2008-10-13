@@ -38,13 +38,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void GetScalarWithoutParameter ()
     {
-      Assert.AreEqual (42, _queryManager.GetScalar (new Query ("QueryWithoutParameter")));
+      Assert.AreEqual (42, _queryManager.GetScalar (QueryFactory.CreateQueryFromConfiguration ("QueryWithoutParameter")));
     }
 
     [Test]
     public void GetCollection ()
     {
-      Query query = new Query ("CustomerTypeQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
       query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
       DomainObjectCollection customers = _queryManager.GetCollection (query);
@@ -59,13 +59,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [ExpectedException (typeof (ArgumentException))]
     public void GetCollectionWithScalarQuery ()
     {
-      _queryManager.GetCollection (new Query ("OrderNoSumByCustomerNameQuery"));
+      _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("OrderNoSumByCustomerNameQuery"));
     }
 
     [Test]
     public void GetCollectionWithObjectList ()
     {
-      Query query = new Query ("CustomerTypeQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
       query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
       ObjectList<Customer> customers = _queryManager.GetCollection<Customer> (query);
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void GetCollectionWithObjectListWorksWhenAssignableCollectionType ()
     {
-      Query query = new Query ("OrderByOfficialQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderByOfficialQuery");
       query.Parameters.Add ("@officialID", DomainObjectIDs.Official1);
 
       ObjectList<Order> orders = _queryManager.GetCollection<Order> (query);
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
         + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer, which cannot be added to an ObjectList<Order>.")]
     public void GetCollectionWithObjectListThrowsWhenInvalidT ()
     {
-      Query query = new Query ("CustomerTypeQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
       query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
       _queryManager.GetCollection<Order> (query);
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
         + "Remotion.Data.UnitTests.DomainObjects.TestDomain.SpecificOrderCollection, which is not compatible with ObjectList<Order>.")]
     public void GetCollectionWithObjectListThrowsWhenUnassignableCollectionType ()
     {
-      Query query = new Query ("QueryWithSpecificCollectionType");
+      var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType");
 
       _queryManager.GetCollection<Order> (query);
     }
@@ -119,13 +119,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [ExpectedException (typeof (ArgumentException))]
     public void GetScalarWithCollectionQuery ()
     {
-      _queryManager.GetScalar (new Query ("OrderQuery"));
+      _queryManager.GetScalar (QueryFactory.CreateQueryFromConfiguration ("OrderQuery"));
     }
 
     [Test]
     public void GetStoredProcedureResult ()
     {
-      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (new Query ("StoredProcedureQuery"));
+      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery"));
 
       Assert.IsNotNull (orders, "OrderCollection is null");
       Assert.AreEqual (2, orders.Count, "Order count");
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void GetStoredProcedureResultWithParameter ()
     {
-      Query query = new Query ("StoredProcedureQueryWithParameter");
+      var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQueryWithParameter");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1.Value);
       OrderCollection orders = (OrderCollection) _queryManager.GetCollection (query);
 
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       Order.GetObject (DomainObjectIDs.Order1); // ensure Order1 already exists in transaction
 
-      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (new Query ("StoredProcedureQuery"));
+      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery"));
       Assert.AreEqual (2, orders.Count, "Order count");
 
       foreach (Order order in orders)
@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
         Order.GetObject (DomainObjectIDs.Order1); // ensure Order1 already exists in newTransaction
       }
 
-      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (new Query ("StoredProcedureQuery"));
+      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery"));
       Assert.AreEqual (2, orders.Count, "Order count");
 
       using (newTransaction.EnterDiscardingScope ())

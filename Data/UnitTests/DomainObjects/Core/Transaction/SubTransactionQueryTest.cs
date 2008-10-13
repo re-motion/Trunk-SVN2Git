@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Query query = new Query ("QueryWithoutParameter");
+        var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithoutParameter");
 
         Assert.AreEqual (42, ClientTransactionScope.CurrentTransaction.QueryManager.GetScalar (query));
       }
@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Query query = new Query ("CustomerTypeQuery");
+        var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
         DomainObjectCollection queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Query query = new Query ("CustomerTypeQuery");
+        var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
         ObjectList<Customer> queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection<Customer> (query);
@@ -79,13 +79,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DomainObjectCollection queriedObjectsInSub;
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Query query = new Query ("CustomerTypeQuery");
+        var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
         queriedObjectsInSub = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
       }
 
-      Query queryInRoot = new Query ("CustomerTypeQuery");
+      var queryInRoot = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
       queryInRoot.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
       DomainObjectCollection queriedObjectsInRoot = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (queryInRoot);
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Query query = new Query ("CustomerTypeQuery");
+        var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
         queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order newOrder;
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Query query = new Query ("CustomerTypeQuery");
+        var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
         queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransactionMock.Extensions.Add ("mock", extensionMock);
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Query query = new Query ("OrderQuery");
+        var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
         query.Parameters.Add ("@customerID", DomainObjectIDs.Customer3);
 
         extensionMock.FilterQueryResult (null, null, null); // expectation
@@ -184,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransactionMock.Extensions.Add ("mock", extensionMock);
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Query query = new Query ("OrderQuery");
+        var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
         query.Parameters.Add ("@customerID", DomainObjectIDs.Customer3);
 
         extensionMock.FilterQueryResult (null, null, null); // expectation

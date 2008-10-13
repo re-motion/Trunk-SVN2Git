@@ -385,7 +385,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void CanExecuteQueryIfAlreadyLoaded ()
     {
-      Query query = new Query ("StoredProcedureQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery");
       OrderCollection loadedOrders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query);
 
       ClientTransactionMock.IsReadOnly = true;
@@ -400,7 +400,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         + "ClientTransaction is read-only. Offending transaction modification: ObjectLoading.")]
     public void ThrowsOnExecuteQueryIfNotLoaded ()
     {
-      Query query = new Query ("StoredProcedureQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery");
 
       ClientTransactionMock.IsReadOnly = true;
 

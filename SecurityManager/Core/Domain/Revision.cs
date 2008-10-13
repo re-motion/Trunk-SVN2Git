@@ -19,13 +19,13 @@ namespace Remotion.SecurityManager.Domain
   {
     public static int GetRevision ()
     {
-      Query query = new Query ("Remotion.SecurityManager.Domain.Revision.GetRevision");
+      var query = QueryFactory.CreateQueryFromConfiguration ("Remotion.SecurityManager.Domain.Revision.GetRevision");
       return (int) ClientTransactionScope.CurrentTransaction.QueryManager.GetScalar (query);
     }
 
     public static void IncrementRevision ()
     {
-      Query query = new Query ("Remotion.SecurityManager.Domain.Revision.IncrementRevision");
+      var query = QueryFactory.CreateQueryFromConfiguration ("Remotion.SecurityManager.Domain.Revision.IncrementRevision");
       ClientTransactionScope.CurrentTransaction.QueryManager.GetScalar (query);
     }
   }

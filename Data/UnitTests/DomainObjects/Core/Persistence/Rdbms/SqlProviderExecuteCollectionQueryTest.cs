@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void ExecuteCollectionQuery ()
     {
-      Query query = new Query ("OrderQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1.Value);
 
       DataContainerCollection orderContainers = Provider.ExecuteCollectionQuery (query);
@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void AllDataTypes ()
     {
-      Query query = new Query ("QueryWithAllDataTypes");
+      var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithAllDataTypes");
       query.Parameters.Add ("@boolean", false);
       query.Parameters.Add ("@byte", (byte) 85);
       query.Parameters.Add ("@date", new DateTime (2005, 1, 1));
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       query.Parameters.Add ("@guid", new Guid ("{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}"));
       query.Parameters.Add ("@int16", (short) 32767);
       query.Parameters.Add ("@int32", 2147483647);
-      query.Parameters.Add ("@int64", (long) 9223372036854775807);
+      query.Parameters.Add ("@int64", 9223372036854775807L);
       query.Parameters.Add ("@singleLowerBound", (float) 6789);
       query.Parameters.Add ("@singleUpperBound", (float) 6790);
       query.Parameters.Add ("@string", "abcdeföäü");
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Assert.AreEqual (1, actualContainers.Count);
 
       DataContainer expectedContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
-      DataContainerChecker checker = new DataContainerChecker ();
+      var checker = new DataContainerChecker ();
       checker.Check (expectedContainer, actualContainers[0]);
     }
 
@@ -97,26 +97,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Expected query type is 'Collection', but was 'Scalar'.\r\nParameter name: query")]
     public void ScalarQuery ()
     {
-      Provider.ExecuteCollectionQuery (new Query ("OrderNoSumByCustomerNameQuery"));
+      Provider.ExecuteCollectionQuery (QueryFactory.CreateQueryFromConfiguration ("OrderNoSumByCustomerNameQuery"));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException))]
     public void DifferentStorageProviderID ()
     {
-      QueryDefinition definition = new QueryDefinition (
+      var definition = new QueryDefinition (
           "QueryWithDifferentStorageProviderID",
           "DifferentStorageProviderID",
           "select 42",
           QueryType.Collection);
 
-      Provider.ExecuteCollectionQuery (new Query (definition));
+      Provider.ExecuteCollectionQuery (QueryFactory.CreateQuery (definition));
     }
 
     [Test]
     public void ObjectIDParameter ()
     {
-      Query query = new Query ("OrderQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1);
 
       DataContainerCollection orderContainers = Provider.ExecuteCollectionQuery (query);
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void ObjectIDOfDifferentStorageProvider ()
     {
-      Query query = new Query ("OrderByOfficialQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderByOfficialQuery");
       query.Parameters.Add ("@officialID", DomainObjectIDs.Official1);
 
       DataContainerCollection orderContainers = Provider.ExecuteCollectionQuery (query);

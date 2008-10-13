@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void GetCollectionWithNullValues ()
     {
       IQueryManager queryManager = new RootQueryManager (ClientTransactionMock);
-      Query query = new Query ("QueryWithNullValues");
+      var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithNullValues");
       queryManager.GetCollection (query);
     }
 
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void GetCollectionWithDuplicates ()
     {
       IQueryManager queryManager = new RootQueryManager (ClientTransactionMock);
-      Query query = new Query ("QueryWithDuplicates");
+      var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithDuplicates");
       queryManager.GetCollection (query);
     }
 

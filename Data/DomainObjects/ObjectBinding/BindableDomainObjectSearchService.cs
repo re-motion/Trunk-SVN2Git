@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
       ClientTransaction clientTransaction = ClientTransactionScope.CurrentTransaction;
 
-      DomainObjectCollection result = clientTransaction.QueryManager.GetCollection (new Query (definition));
+      DomainObjectCollection result = clientTransaction.QueryManager.GetCollection (QueryFactory.CreateQuery (definition));
       IBusinessObjectWithIdentity[] availableObjects = new IBusinessObjectWithIdentity[result.Count];
 
       if (availableObjects.Length > 0)

@@ -95,10 +95,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void Query ()
     {
-      Query query = new Query ("OrderQuery");
+      var query = (Query) QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1);
 
-      Query deserializedQuery = (Query) SerializeAndDeserialize (query);
+      var deserializedQuery = (Query) SerializeAndDeserialize (query);
       AreEqual (query, deserializedQuery);
       Assert.AreSame (DomainObjectsConfiguration.Current.Query.QueryDefinitions["OrderQuery"], deserializedQuery.Definition);
     }
