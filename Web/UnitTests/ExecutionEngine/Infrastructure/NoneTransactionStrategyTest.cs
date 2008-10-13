@@ -70,7 +70,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void IsNull ()
     {
-      Assert.That (((INullObject) _strategy).IsNull, Is.False);
+      Assert.That (((INullObject) _strategy).IsNull, Is.True);
     }
 
     [Test]

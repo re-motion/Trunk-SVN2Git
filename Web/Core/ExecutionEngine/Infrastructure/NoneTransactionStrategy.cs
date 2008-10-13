@@ -77,7 +77,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     public override bool IsNull
     {
-      get { return false; }
+      get { return true; }
     }
 
     public override TransactionStrategyBase OuterTransactionStrategy
