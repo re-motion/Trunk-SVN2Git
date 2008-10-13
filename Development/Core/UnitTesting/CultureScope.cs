@@ -40,10 +40,6 @@ namespace Remotion.Development.UnitTesting
     /// <param name="uiCultureName">User interface culture name string. null to not switch UI-culture.</param>
     public CultureScope (string cultureName, string uiCultureName)
     {
-      // Note: Both arguments can be null
-      //ArgumentUtility.CheckNotNull ("culture", culture);
-      //ArgumentUtility.CheckNotNull ("UICulture", UICulture);
- 
       _backupCulture = null;
       _backupUICulture = null;
 

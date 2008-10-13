@@ -71,6 +71,7 @@
     <Compile Include="AclTools\Expansion\AclSecurityContextHelper.cs" />
     <Compile Include="AclTools\Expansion\ClassStateDictionary.cs" />
     <Compile Include="AclTools\Expansion\ClassStateTuple.cs" />
+    <Compile Include="AclTools\Expansion\HtmlWriter.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderUserFinder.cs" />
     <Compile Include="AclTools\Expansion\IUserRoleAclAceCombinations.cs" />

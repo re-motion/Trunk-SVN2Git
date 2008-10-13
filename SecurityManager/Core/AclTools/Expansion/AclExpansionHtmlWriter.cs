@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -70,22 +69,22 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableHeaders (HtmlWriter html)
     {
       html.tr ();
-      tdHeader ("User");
-      tdHeader ("Role");
-      tdHeader ("Class");
-      tdHeader ("States");
-      tdHeader ("User Must Own");
-      tdHeader ("Group Must Own");
-      tdHeader ("Tenant Must Own");
-      tdHeader ("User Must Have Abstract Role");
-      tdHeader ("Access Rights");
+      WriteHeaderCell ("User");
+      WriteHeaderCell ("Role");
+      WriteHeaderCell ("Class");
+      WriteHeaderCell ("States");
+      WriteHeaderCell ("User Must Own");
+      WriteHeaderCell ("Group Must Own");
+      WriteHeaderCell ("Tenant Must Own");
+      WriteHeaderCell ("User Must Have Abstract Role");
+      WriteHeaderCell ("Access Rights");
       html.trEnd ();
     }
 
     private void WriteEndPage (HtmlWriter html)
     {
-      html.end ("body");
-      html.end ("html");
+      html.TagEnd ("body");
+      html.TagEnd ("html");
 
       html.Close ();
     }
@@ -97,65 +96,82 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // DOCTYPE
       html.XmlWriter.WriteDocType ("HTML", "-//W3C//DTD HTML 4.0 Transitional//EN", null, null);
       // HTML
-      html.e ("html");
+      html.Tag ("html");
       // HEAD
-      html.e ("head");
+      html.Tag ("head");
       // TITLE
-      html.e ("title");
-      html.value ("re-motion ACL Expansion");
-      html.end ("title");
+      html.Tag ("title");
+      html.Value ("re-motion ACL Expansion");
+      html.TagEnd ("title");
 
       // STYLE
-      html.e ("style");
-      html.value ("@import \"AclExpansion.css\";");
-      html.end ("style");
-      html.end ("head");
+      html.Tag ("style");
+      html.Value ("@import \"AclExpansion.css\";");
+      html.TagEnd ("style");
+      html.TagEnd ("head");
 
       // BODY
-      html.e ("body");
+      html.Tag ("body");
       return html;
     }
 
 
-    void tdHeader (string columnName)
+    void WriteHeaderCell (string columnName)
     {
       var html = _htmlWriter;
       html.td ().a ("class", "header");
-      html.value (columnName);
+      html.Value (columnName);
       html.tdEnd ();
     }
 
-    void WriteTabldeDataAddendum (Object addendum)
+    void WriteTableDataAddendum (Object addendum)
     {
       if (addendum != null)
       {
-        _htmlWriter.value (" (");
-        _htmlWriter.value (addendum);
-        _htmlWriter.value (") ");
+        _htmlWriter.Value (" (");
+        _htmlWriter.Value (addendum);
+        _htmlWriter.Value (") ");
       }
     }
 
-    void tdBody (string value, int rowCount)
+    void WriteTableDataWithAddendum (string value, Object addendum)
     {
       var html = _htmlWriter;
       html.td ();
-      if (rowCount > 0)
-      {
-        html.a ("rowspan", Convert.ToString (rowCount));
-      }
-      html.value (value);
-      WriteTabldeDataAddendum (rowCount);
+      WriteTableDataAddendum (addendum);
+      html.Value (value);
       html.tdEnd ();
     }
 
-    private void tdBodyRole (Role role, Object addendum)
+
+    void WriteTableDataWithRowCount (string value, int rowCount)
     {
       var html = _htmlWriter;
       html.td ();
-      html.value (role.Group.DisplayName);
-      html.value (", ");
-      html.value (role.Position.DisplayName);
-      WriteTabldeDataAddendum (addendum);
+      WriteRowspanAttribute(rowCount);
+      html.Value (value);
+      WriteTableDataAddendum (rowCount);
+      html.tdEnd ();
+    }
+
+    private HtmlWriter WriteRowspanAttribute (int rowCount)
+    {
+      if (rowCount > 0)
+      {
+        _htmlWriter.a ("rowspan", Convert.ToString (rowCount));
+      }
+      return _htmlWriter;
+    }
+
+    private void WriteTableDataForRole (Role role, int rowCount)
+    {
+      var html = _htmlWriter;
+      html.td ();
+      WriteRowspanAttribute (rowCount);
+      html.Value (role.Group.DisplayName);
+      html.Value (", ");
+      html.Value (role.Position.DisplayName);
+      WriteTableDataAddendum (rowCount);
       html.tdEnd ();
     }
   
@@ -171,7 +187,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         {
           html.br ();
         }
-        html.value (stateDefiniton.DisplayName);
+        html.Value (stateDefiniton.DisplayName);
         firstElement = false;
       }
       html.tdEnd ();
@@ -186,9 +202,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         if (!firstElement)
         {
-          html.value (", ");
+          html.Value (", ");
         }
-        html.value (accessTypeDefinition.DisplayName);
+        html.Value (accessTypeDefinition.DisplayName);
         firstElement = false;
       }
       html.tdEnd ();
@@ -203,20 +219,19 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       tdBodyBooleanCondition (conditions.IsOwningTenantRequired);
 
       html.td ();
-      html.value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");
+      html.Value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");
       html.tdEnd ();
     }
 
     private void tdBodyBooleanCondition (bool required)
     {
       var html = _htmlWriter;
-      html.td ();
-      html.value (required ? "X" : "");
-      html.tdEnd ();
+      _htmlWriter.td ();
+      _htmlWriter.Value (required ? "X" : "");
+      _htmlWriter.tdEnd ();
     }
 
     // Spike
-    // TODO: Introduce rowspan|s 
     private void WriteTableBody (HtmlWriter html, List<AclExpansionEntry> aclExpansion)
     {
       // TODO: Share with AclExpansionConsoleTextWriter
@@ -241,170 +256,65 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                       select new
                       {
                         Class = classGroup.Key,
-                        ClassGroup = classGroup
+                        StatesGroup = classGroup
                       }
                   }
             };
 
       foreach (var userGroup in aclExpansionHierarchy)
       {
-        var userName = userGroup.User.DisplayName;
-        int userRowCount = userGroup.RoleGroup.SelectMany(x => x.ClassGroup).Count();
         bool newUserRow = true;
+        var userName = userGroup.User.DisplayName;
+        int userRowCount = userGroup.RoleGroup.SelectMany(x => x.ClassGroup).SelectMany(x => x.StatesGroup).Count();
         foreach (var roleGroup in userGroup.RoleGroup)
         {
+          bool newRoleRow = true;
           var role = roleGroup.Role;
-          int roleRowCount = roleGroup.ClassGroup.Count ();
+          //int roleRowCount = roleGroup.ClassGroup.Count ();
+          int roleRowCount = roleGroup.ClassGroup.SelectMany (x => x.StatesGroup).Count ();
           foreach (var classGroup in roleGroup.ClassGroup)
           {
+            bool newClassRow = true;
             var className = classGroup.Class.DisplayName;
-            foreach (var aclExpansionEntry in classGroup.ClassGroup)
+            int classRowCount = classGroup.StatesGroup.Count ();
+            
+            foreach (var entry in classGroup.StatesGroup)
             {
-              var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
-              _htmlWriter.tr ();
+              var stateArray = entry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
+
+              _htmlWriter.tr();
+
               if (newUserRow)
               {
-                tdBody (userName, userRowCount);
+                newUserRow = false;
+                WriteTableDataWithRowCount (userName, userRowCount);
               }
-              tdBody (userName, 0);
-              
-              tdBodyRole (role, roleRowCount);
-              tdBody (className,1);
-              tdBodyStates (stateArray);
-              tdBodyConditions (aclExpansionEntry.AccessConditions);
-              tdBodyAccessTypes (aclExpansionEntry.AccessTypeDefinitions);
-              _htmlWriter.trEnd ();
 
-              newUserRow = false;
+              if (newRoleRow)
+              {
+                newRoleRow = false;
+                WriteTableDataForRole (role, roleRowCount);
+              }
+
+              if (newClassRow)
+              {
+                newClassRow = false;
+                WriteTableDataWithRowCount (className, classRowCount);
+              }
+
+              //WriteTableDataWithAddendum (userName, userRowCount);
+              //WriteTableDataForRole (role, roleRowCount);
+              //WriteTableDataWithRowCount (className, classRowCount);
+
+              tdBodyStates (stateArray);
+              tdBodyConditions (entry.AccessConditions);
+              tdBodyAccessTypes (entry.AccessTypeDefinitions);
+              _htmlWriter.trEnd();
+
             }
           }
         }
       }
     }
   }
-
-
-  // Spike
-  public class HtmlWriter : IDisposable
-  {
-    private readonly XmlWriter _xmlWriter;
-    private readonly Stack<string> _openElementStack = new Stack<string>();
-
-
-    public HtmlWriter (TextWriter textWriter, bool indentXml)
-    {
-      _xmlWriter = CreateXmlWriter (textWriter, indentXml);
-    }
-
-    public HtmlWriter (XmlWriter xmlWriter)
-    {
-      _xmlWriter = xmlWriter;
-    }
-
-    public XmlWriter XmlWriter
-    {
-      get { return _xmlWriter; }
-    }
-
-    public HtmlWriter e (string elementName)
-    {
-      _xmlWriter.WriteStartElement (elementName);
-      _openElementStack.Push (elementName);
-      return this;
-    }
-
-    public HtmlWriter end (string elementName)
-    {
-      string ElementNameExpected = _openElementStack.Pop();
-      if (ElementNameExpected != elementName)
-      {
-        //_xmlWriter.Settings.ConformanceLevel = ConformanceLevel.Fragment;
-        //_xmlWriter.Close();
-        throw new XmlException (String.Format ("Wrong closing tag in XML: Expected {0} but was {1}:\n{2}", ElementNameExpected, elementName, _xmlWriter.ToString()));
-      }
-      _xmlWriter.WriteEndElement ();
-      return this;
-    }
-
-    public HtmlWriter a (string attributeName, string attributeValue)
-    {
-      _xmlWriter.WriteAttributeString (attributeName,attributeValue);
-      return this;
-    }
-
-    public HtmlWriter table ()
-    {
-      e ("table");
-      return this;
-    }
-
-    public HtmlWriter tableEnd ()
-    {
-      end ("table");
-      return this;
-    }
-
-    public HtmlWriter tr ()
-    {
-      e ("tr");
-      return this;
-    }
-
-    public HtmlWriter trEnd ()
-    {
-      end ("tr");
-      return this;
-    }
-
-    public HtmlWriter td ()
-    {
-      e ("td");
-      return this;
-    }
-
-    public HtmlWriter tdEnd ()
-    {
-      end ("td");
-      return this;
-    }
-
-    public XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
-    {
-      XmlWriterSettings settings = new XmlWriterSettings ();
-
-      settings.OmitXmlDeclaration = true;
-      settings.Indent = indent;
-      settings.NewLineOnAttributes = false;
-      //settings.ConformanceLevel = ConformanceLevel.Fragment;
-
-      return XmlWriter.Create (textWriter, settings);
-    }
-
-    public void value (string s)
-    {
-      _xmlWriter.WriteValue(s);
-    }
-
-    public void value (object obj)
-    {
-      _xmlWriter.WriteValue (obj);
-    }
-
-    public void Close ()
-    {
-      Dispose ();
-    }
-
-    public void Dispose ()
-    {
-      _xmlWriter.Close();
-    }
-
-    public void br ()
-    {
-      _xmlWriter.WriteStartElement ("br");
-      _xmlWriter.WriteEndElement ();
-    }
-  }
-
 }

@@ -121,8 +121,8 @@ namespace Remotion.SecurityManager.AclTools.Expander
     {
       var aclExpander = new AclExpander ();
 
-      //var aclExpansion = aclExpander.GetAclExpansionEntryListSortedAndDistinct();
-      return aclExpander.GetAclExpansionEntryList ();
+      return aclExpander.GetAclExpansionEntryListSortedAndDistinct();
+      //return aclExpander.GetAclExpansionEntryList ();
     }
 
  
