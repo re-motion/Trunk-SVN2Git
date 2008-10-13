@@ -339,30 +339,25 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       foreach (var userGroup in aclExpansionUserGrouping)
       {
-        //bool newUserRow = true;
         var userName = userGroup.Key.DisplayName;
-        int userRowCount = userGroup.Items.Count();
-
         WriteTableRowBeginIfNotInTableRow();
-        WriteTableDataWithRowCount (userName, userRowCount);
+        WriteTableDataWithRowCount (userName, userGroup.Items.Count());
 
         var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
 
         foreach (var roleGroup in aclExpansionRoleGrouping)
         {
-          bool newRoleRow = true;
-
           var role = roleGroup.Key;
-          int roleRowCount = roleGroup.Items.Count ();
-
+          WriteTableRowBeginIfNotInTableRow ();
+          WriteTableDataForRole (role, roleGroup.Items.Count ());
 
           var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
 
           foreach (var classGroup in aclExpansionClassGrouping)
           {
-            bool newClassRow = true;
             var className = classGroup.Key.DisplayName;
-            int classRowCount = classGroup.Items.Count ();
+            WriteTableRowBeginIfNotInTableRow ();
+            WriteTableDataWithRowCount (className, classGroup.Items.Count ());
 
             foreach (var entry in classGroup.Items)
             {
@@ -376,17 +371,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion
               //  WriteTableDataWithRowCount (userName, userRowCount);
               //}
 
-              if (newRoleRow)
-              {
-                newRoleRow = false;
-                WriteTableDataForRole (role, roleRowCount);
-              }
+              //if (newRoleRow)
+              //{
+              //  newRoleRow = false;
+              //  WriteTableDataForRole (role, roleRowCount);
+              //}
 
-              if (newClassRow)
-              {
-                newClassRow = false;
-                WriteTableDataWithRowCount (className, classRowCount);
-              }
+              //if (newClassRow)
+              //{
+              //  newClassRow = false;
+              //  WriteTableDataWithRowCount (className, classRowCount);
+              //}
 
               //WriteTableDataWithAddendum (userName, userRowCount);
               //WriteTableDataForRole (role, roleRowCount);
