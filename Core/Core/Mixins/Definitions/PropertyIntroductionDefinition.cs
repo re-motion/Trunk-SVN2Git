@@ -14,10 +14,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  public class PropertyIntroductionDefinition : MemberIntroductionDefinition<PropertyInfo, PropertyDefinition>
+  public class PropertyIntroductionDefinition : MemberIntroductionDefinitionBase<PropertyInfo, PropertyDefinition>
   {
-    private bool _introducesGetMethod;
-    private bool _introducesSetMethod;
+    private readonly bool _introducesGetMethod;
+    private readonly bool _introducesSetMethod;
 
     public PropertyIntroductionDefinition (InterfaceIntroductionDefinition declaringInterface, PropertyInfo interfaceMember, PropertyDefinition implementingMember, MemberVisibility visibility)
         : base (declaringInterface, interfaceMember, implementingMember, visibility)

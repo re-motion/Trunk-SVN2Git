@@ -16,15 +16,15 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Definitions
 {
   [DebuggerDisplay ("{InterfaceMember}")]
-  public abstract class MemberIntroductionDefinition<TMemberInfo, TMemberDefinition>: IMemberIntroductionDefinition where TMemberInfo : MemberInfo
-      where TMemberDefinition : MemberDefinition
+  public abstract class MemberIntroductionDefinitionBase<TMemberInfo, TMemberDefinition>: IMemberIntroductionDefinition where TMemberInfo : MemberInfo
+      where TMemberDefinition : MemberDefinitionBase
   {
     private readonly InterfaceIntroductionDefinition _declaringInterface;
     private readonly TMemberInfo _interfaceMember;
     private readonly TMemberDefinition _implementingMember;
     private readonly MemberVisibility _visibility;
 
-    public MemberIntroductionDefinition (
+    protected MemberIntroductionDefinitionBase (
         InterfaceIntroductionDefinition declaringInterface, TMemberInfo interfaceMember, TMemberDefinition implementingMember, MemberVisibility visibility)
     {
       ArgumentUtility.CheckNotNull ("interfaceMember", interfaceMember);

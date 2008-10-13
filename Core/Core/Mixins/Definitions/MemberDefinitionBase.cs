@@ -16,13 +16,13 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Definitions
 {
   [DebuggerDisplay ("{MemberInfo}, DeclaringClass = {DeclaringClass.Type}")]
-  public abstract class MemberDefinition : IAttributeIntroductionTarget, IAttributeIntroductionSource, IVisitableDefinition
+  public abstract class MemberDefinitionBase : IAttributeIntroductionTarget, IAttributeIntroductionSource
   {
     private IVisitableDefinition _parent;
 
-    private IDefinitionCollection<Type, MemberDefinition> _internalOverridesWrapper = null;
+    private IDefinitionCollection<Type, MemberDefinitionBase> _internalOverridesWrapper = null;
 
-    public MemberDefinition (MemberInfo memberInfo, ClassDefinitionBase declaringClass)
+    public MemberDefinitionBase (MemberInfo memberInfo, ClassDefinitionBase declaringClass)
     {
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       ArgumentUtility.CheckNotNull ("declaringClass", declaringClass);
@@ -82,7 +82,7 @@ namespace Remotion.Mixins.Definitions
       get { return string.Format ("{0}.{1}", MemberInfo.DeclaringType.FullName, Name); }
     }
 
-    public abstract MemberDefinition BaseAsMember { get; set; }
+    public abstract MemberDefinitionBase BaseAsMember { get; protected internal set; }
 
     public IVisitableDefinition Parent
     {
@@ -95,7 +95,7 @@ namespace Remotion.Mixins.Definitions
       get { return MemberInfo; }
     }
 
-    public IDefinitionCollection<Type, MemberDefinition> Overrides
+    public IDefinitionCollection<Type, MemberDefinitionBase> Overrides
     {
       get
       {
@@ -107,17 +107,17 @@ namespace Remotion.Mixins.Definitions
       }
     }
 
-    protected abstract IDefinitionCollection<Type, MemberDefinition> GetInternalOverridesWrapper();
+    protected abstract IDefinitionCollection<Type, MemberDefinitionBase> GetInternalOverridesWrapper();
 
-    public virtual bool CanBeOverriddenBy (MemberDefinition overrider)
+    public virtual bool CanBeOverriddenBy (MemberDefinitionBase overrider)
     {
       ArgumentUtility.CheckNotNull ("overrider", overrider);
       return MemberType == overrider.MemberType && IsSignatureCompatibleWith (overrider);
     }
 
-    internal abstract void AddOverride (MemberDefinition member);
+    internal abstract void AddOverride (MemberDefinitionBase member);
 
-    protected abstract bool IsSignatureCompatibleWith (MemberDefinition overrider);
+    protected abstract bool IsSignatureCompatibleWith (MemberDefinitionBase overrider);
 
     public void Accept (IDefinitionVisitor visitor)
     {

@@ -113,9 +113,9 @@ namespace Remotion.Mixins.Definitions
       get { return _interfaceIntroductions; }
     }
 
-    public IEnumerable<MemberDefinition> GetAllOverrides ()
+    public IEnumerable<MemberDefinitionBase> GetAllOverrides ()
     {
-      foreach (MemberDefinition member in GetAllMembers ())
+      foreach (MemberDefinitionBase member in GetAllMembers ())
       {
         if (member.BaseAsMember != null)
           yield return member;
@@ -140,12 +140,22 @@ namespace Remotion.Mixins.Definitions
       _mixinDependencies.Accept (visitor);
     }
 
-    internal IEnumerable<DependencyDefinitionBase> GetOrderRelevantDependencies ()
+    public IEnumerable<DependencyDefinitionBase> GetOrderRelevantDependencies ()
     {
       foreach (var dependency in _baseDependencies)
         yield return dependency;
       foreach (var dependency in _mixinDependencies)
         yield return dependency;
+    }
+
+    public bool NeedsDerivedMixinType ()
+    {
+      return HasOverriddenMembers () || HasProtectedOverriders ();
+    }
+
+    public object GetConcreteMixinTypeCacheKey ()
+    {
+      return this;
     }
   }
 }

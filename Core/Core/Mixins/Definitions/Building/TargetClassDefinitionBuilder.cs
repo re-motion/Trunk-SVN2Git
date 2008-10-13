@@ -152,7 +152,7 @@ namespace Remotion.Mixins.Definitions.Building
         InitializeOverride (eventOverride.A, eventOverride.B);
     }
 
-    private void InitializeOverride (MemberDefinition overrider, MemberDefinition baseMember)
+    private void InitializeOverride (MemberDefinitionBase overrider, MemberDefinitionBase baseMember)
     {
       overrider.BaseAsMember = baseMember;
       baseMember.AddOverride (overrider);
@@ -181,12 +181,12 @@ namespace Remotion.Mixins.Definitions.Building
       Assertion.IsTrue ((AttributeUtility.GetAttributeUsage (typeof (SuppressAttributesAttribute)).ValidOn & memberTargets) == 0, 
           "must be updated with AddPotentialSuppressors once SuppressAttributesAttribute supports members");
 
-      foreach (MemberDefinition member in classDefinition.GetAllMembers ())
+      foreach (MemberDefinitionBase member in classDefinition.GetAllMembers ())
       {
         if (member.Overrides.Count != 0)
         {
           AttributeIntroductionDefinitionBuilder introductionBuilder = new AttributeIntroductionDefinitionBuilder (member);
-          foreach (MemberDefinition overrider in member.Overrides)
+          foreach (MemberDefinitionBase overrider in member.Overrides)
             introductionBuilder.Apply (overrider);
         }
       }

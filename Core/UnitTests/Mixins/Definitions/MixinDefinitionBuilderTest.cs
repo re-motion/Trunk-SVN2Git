@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       MethodInfo method = typeof (IBaseType2).GetMethod ("IfcMethod");
       Assert.IsNotNull (method);
 
-      MemberDefinition member = targetClass.Methods[method];
+      MemberDefinitionBase member = targetClass.Methods[method];
       Assert.IsNotNull (member);
 
       MixinDefinition mixin = targetClass.Mixins[typeof (BT2Mixin1)];

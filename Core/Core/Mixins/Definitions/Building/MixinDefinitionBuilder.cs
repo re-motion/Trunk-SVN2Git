@@ -23,7 +23,6 @@ namespace Remotion.Mixins.Definitions.Building
     private readonly TargetClassDefinition _targetClass;
     private readonly RequirementsAnalyzer _faceRequirementsAnalyzer; 
     private readonly RequirementsAnalyzer _baseRequirementsAnalyzer;
-    private readonly AttributeIntroductionDefinitionBuilder _attributeIntroductionBuilder;
 
     public MixinDefinitionBuilder (TargetClassDefinition targetClass)
     {
@@ -31,7 +30,6 @@ namespace Remotion.Mixins.Definitions.Building
       _targetClass = targetClass;
       _faceRequirementsAnalyzer = new RequirementsAnalyzer (targetClass, typeof (ThisAttribute));
       _baseRequirementsAnalyzer = new RequirementsAnalyzer (targetClass, typeof (BaseAttribute));
-      _attributeIntroductionBuilder = new AttributeIntroductionDefinitionBuilder (_targetClass);
     }
 
     public TargetClassDefinition TargetClass
@@ -57,7 +55,7 @@ namespace Remotion.Mixins.Definitions.Building
     {
       Type mixinType = TargetClass.MixinTypeInstantiator.GetClosedMixinType (mixinContext.MixinType);
       bool acceptsAlphabeticOrdering = AcceptsAlphabeticOrdering (mixinType);
-      MixinDefinition mixin = new MixinDefinition (mixinContext.MixinKind, mixinType, TargetClass, acceptsAlphabeticOrdering);
+      var mixin = new MixinDefinition (mixinContext.MixinKind, mixinType, TargetClass, acceptsAlphabeticOrdering);
       TargetClass.Mixins.Add (mixin);
       return mixin;
     }
@@ -70,7 +68,7 @@ namespace Remotion.Mixins.Definitions.Building
     private void AnalyzeMembers (MixinDefinition mixin)
     {
       const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      MemberDefinitionBuilder membersBuilder = new MemberDefinitionBuilder (mixin, IsVisibleToInheritorsOrExplicitInterfaceImpl, bindingFlags);
+      var membersBuilder = new MemberDefinitionBuilder (mixin, IsVisibleToInheritorsOrExplicitInterfaceImpl, bindingFlags);
       membersBuilder.Apply (mixin.Type);
     }
 
@@ -81,32 +79,32 @@ namespace Remotion.Mixins.Definitions.Building
 
     private void AnalyzeAttributes (MixinDefinition mixin)
     {
-      AttributeDefinitionBuilder attributesBuilder = new AttributeDefinitionBuilder (mixin);
+      var attributesBuilder = new AttributeDefinitionBuilder (mixin);
       attributesBuilder.Apply (mixin.Type);
     }
 
     private void AnalyzeInterfaceIntroductions (MixinDefinition mixin, MemberVisibility defaultVisibility)
     {
-      InterfaceIntroductionDefinitionBuilder introductionBuilder = new InterfaceIntroductionDefinitionBuilder (mixin, defaultVisibility);
+      var introductionBuilder = new InterfaceIntroductionDefinitionBuilder (mixin, defaultVisibility);
       introductionBuilder.Apply ();
     }
 
     private void AnalyzeOverrides (MixinDefinition mixin)
     {
-      OverridesAnalyzer<MethodDefinition> methodAnalyzer = new OverridesAnalyzer<MethodDefinition> (typeof (OverrideTargetAttribute), _targetClass.Methods);
+      var methodAnalyzer = new OverridesAnalyzer<MethodDefinition> (typeof (OverrideTargetAttribute), _targetClass.Methods);
       foreach (Tuple<MethodDefinition, MethodDefinition> methodOverride in methodAnalyzer.Analyze (mixin.Methods))
         InitializeOverride (methodOverride.A, methodOverride.B);
 
-      OverridesAnalyzer<PropertyDefinition> propertyAnalyzer = new OverridesAnalyzer<PropertyDefinition> (typeof (OverrideTargetAttribute), _targetClass.Properties);
+      var propertyAnalyzer = new OverridesAnalyzer<PropertyDefinition> (typeof (OverrideTargetAttribute), _targetClass.Properties);
       foreach (Tuple<PropertyDefinition, PropertyDefinition> propertyOverride in propertyAnalyzer.Analyze (mixin.Properties))
         InitializeOverride (propertyOverride.A, propertyOverride.B);
 
-      OverridesAnalyzer<EventDefinition> eventAnalyzer = new OverridesAnalyzer<EventDefinition> (typeof (OverrideTargetAttribute), _targetClass.Events);
+      var eventAnalyzer = new OverridesAnalyzer<EventDefinition> (typeof (OverrideTargetAttribute), _targetClass.Events);
       foreach (Tuple<EventDefinition, EventDefinition> eventOverride in eventAnalyzer.Analyze (mixin.Events))
         InitializeOverride (eventOverride.A, eventOverride.B);
     }
 
-    private void InitializeOverride (MemberDefinition overrider, MemberDefinition baseMember)
+    private void InitializeOverride (MemberDefinitionBase overrider, MemberDefinitionBase baseMember)
     {
       overrider.BaseAsMember = baseMember;
       if (baseMember.Overrides.ContainsKey (overrider.DeclaringClass.Type))
@@ -120,13 +118,13 @@ namespace Remotion.Mixins.Definitions.Building
     
     private void AnalyzeDependencies (MixinDefinition mixin, IEnumerable<Type> additionalDependencies)
     {
-      ThisDependencyDefinitionBuilder thisDependencyBuilder = new ThisDependencyDefinitionBuilder (mixin);
+      var thisDependencyBuilder = new ThisDependencyDefinitionBuilder (mixin);
       thisDependencyBuilder.Apply (_faceRequirementsAnalyzer.Analyze (mixin));
 
-      BaseDependencyDefinitionBuilder baseDependencyBuilder = new BaseDependencyDefinitionBuilder (mixin);
+      var baseDependencyBuilder = new BaseDependencyDefinitionBuilder (mixin);
       baseDependencyBuilder.Apply (_baseRequirementsAnalyzer.Analyze (mixin));
       
-      MixinDependencyDefinitionBuilder mixinDependencyBuilder = new MixinDependencyDefinitionBuilder (mixin);
+      var mixinDependencyBuilder = new MixinDependencyDefinitionBuilder (mixin);
       mixinDependencyBuilder.Apply (additionalDependencies);
     }
   }

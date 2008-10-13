@@ -14,7 +14,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  public class MethodIntroductionDefinition : MemberIntroductionDefinition<MethodInfo, MethodDefinition>
+  public class MethodIntroductionDefinition : MemberIntroductionDefinitionBase<MethodInfo, MethodDefinition>
   {
     public MethodIntroductionDefinition (InterfaceIntroductionDefinition declaringInterface, MethodInfo interfaceMember, MethodDefinition implementingMember, MemberVisibility visibility)
         : base (declaringInterface, interfaceMember, implementingMember, visibility)

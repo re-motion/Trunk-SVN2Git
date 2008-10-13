@@ -15,7 +15,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  public class MethodDefinition : MemberDefinition
+  public class MethodDefinition : MemberDefinitionBase
   {
     private static readonly SignatureChecker s_signatureChecker = new SignatureChecker ();
 
@@ -34,10 +34,10 @@ namespace Remotion.Mixins.Definitions
       get { return (MethodInfo) MemberInfo; }
     }
 
-    public override MemberDefinition BaseAsMember
+    public override MemberDefinitionBase BaseAsMember
     {
       get { return _base; }
-      set
+      protected internal set
       {
         if (value == null || value is MethodDefinition)
           _base = (MethodDefinition) value;
@@ -62,12 +62,12 @@ namespace Remotion.Mixins.Definitions
       get { return _overrides; }
     }
 
-    protected override IDefinitionCollection<Type, MemberDefinition> GetInternalOverridesWrapper()
+    protected override IDefinitionCollection<Type, MemberDefinitionBase> GetInternalOverridesWrapper()
     {
-      return new CovariantDefinitionCollectionWrapper<Type, MethodDefinition, MemberDefinition>(_overrides);
+      return new CovariantDefinitionCollectionWrapper<Type, MethodDefinition, MemberDefinitionBase>(_overrides);
     }
 
-    protected override bool IsSignatureCompatibleWith (MemberDefinition overrider)
+    protected override bool IsSignatureCompatibleWith (MemberDefinitionBase overrider)
     {
       ArgumentUtility.CheckNotNull ("overrider", overrider);
 
@@ -81,7 +81,7 @@ namespace Remotion.Mixins.Definitions
       return s_signatureChecker.MethodSignaturesMatch (MethodInfo, overrider.MethodInfo);
     }
 
-    internal override void AddOverride (MemberDefinition member)
+    internal override void AddOverride (MemberDefinitionBase member)
     {
       ArgumentUtility.CheckNotNull ("member", member);
 

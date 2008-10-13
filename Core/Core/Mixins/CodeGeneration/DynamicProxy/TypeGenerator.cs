@@ -104,18 +104,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private Statement GetInitializationStatement ()
     {
       ConditionExpression condition = new SameConditionExpression (_extensionsField.ToExpression (), NullExpression.Instance);
-      ExpressionStatement initializationMethodCall = new ExpressionStatement (new MethodInvocationExpression (null, s_concreteTypeInitializationMethod,
+      var initializationMethodCall = new ExpressionStatement (new MethodInvocationExpression (null, s_concreteTypeInitializationMethod,
           new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression ()),
           new ConstReference (false).ToExpression ()));
       
-      IfStatement ifStatement = new IfStatement (condition, initializationMethodCall);
+      var ifStatement = new IfStatement (condition, initializationMethodCall);
       return ifStatement;
     }
 
     private void HideFieldFromDebugger (FieldReference field)
     {
-      CustomAttributeBuilder attributeBuilder = new CustomAttributeBuilder (s_debuggerBrowsableAttributeConstructor,
-          new object[] {DebuggerBrowsableState.Never});
+      var attributeBuilder = new CustomAttributeBuilder (s_debuggerBrowsableAttributeConstructor, new object[] {DebuggerBrowsableState.Never});
       field.Reference.SetCustomAttribute (attributeBuilder);
     }
 
@@ -127,32 +126,24 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private ConcreteMixinType[] GetConcreteMixinTypes (INameProvider mixinNameProvider)
     {
-      ConcreteMixinType[] concreteMixinTypes = new ConcreteMixinType[Configuration.Mixins.Count];
+      var concreteMixinTypes = new ConcreteMixinType[Configuration.Mixins.Count];
       for (int i = 0; i < concreteMixinTypes.Length; ++i)
       {
         MixinDefinition mixinConfiguration = Configuration.Mixins[i];
-        if (NeedsDerivedMixinType (mixinConfiguration))
+        if (mixinConfiguration.NeedsDerivedMixinType ())
           concreteMixinTypes[i] = _codeGenerationCache.GetConcreteMixinType (this, mixinConfiguration, mixinNameProvider);
       }
       return concreteMixinTypes;
     }
 
-    public static bool NeedsDerivedMixinType (MixinDefinition configuration)
-    {
-      ArgumentUtility.CheckNotNull ("configuration", configuration);
-      return configuration.HasOverriddenMembers () || configuration.HasProtectedOverriders ();
-    }
-
     private List<Type> GetInterfacesToImplement (bool isSerializable)
     {
-      List<Type> interfaces = new List<Type>();
-      interfaces.Add (typeof (IMixinTarget));
-      interfaces.Add (typeof (IInitializableMixinTarget));
+      var interfaces = new List<Type> {typeof (IMixinTarget), typeof (IInitializableMixinTarget)};
 
       foreach (InterfaceIntroductionDefinition introduction in _configuration.ReceivedInterfaces)
         interfaces.Add (introduction.InterfaceType);
 
-      Set<Type> alreadyImplementedInterfaces = new Set<Type> (interfaces);
+      var alreadyImplementedInterfaces = new Set<Type> (interfaces);
       alreadyImplementedInterfaces.AddRange (_configuration.ImplementedInterfaces);
 
       foreach (RequiredFaceTypeDefinition requiredFaceType in _configuration.RequiredFaceTypes)
@@ -296,7 +287,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void AddDebuggerDisplayAttribute (IAttributableEmitter property, string displayString, string nameString)
     {
-      CustomAttributeBuilder attributeBuilder = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor,
+      var attributeBuilder = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor,
           new object[] { displayString }, s_debuggerDisplayNameProperty, new object[] { nameString });
       property.AddCustomAttribute (attributeBuilder);
     }
@@ -326,17 +317,15 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         MethodInfo interfaceMember,
         MemberVisibility visibility)
     {
-      CustomMethodEmitter introducedMethod;
-      if (visibility == MemberVisibility.Public)
-        introducedMethod = Emitter.CreatePublicInterfaceMethodImplementation (interfaceMember);
-      else
-        introducedMethod = Emitter.CreateInterfaceMethodImplementation (interfaceMember);
+      CustomMethodEmitter introducedMethod = 
+          visibility == MemberVisibility.Public 
+          ? Emitter.CreatePublicInterfaceMethodImplementation (interfaceMember) 
+          : Emitter.CreateInterfaceMethodImplementation (interfaceMember);
 
       Statement initializationStatement = GetInitializationStatement ();
       introducedMethod.AddStatement (initializationStatement);
 
-      ExpressionReference implementer =
-          new ExpressionReference (interfaceMember.DeclaringType, implementerExpression, introducedMethod);
+      var implementer = new ExpressionReference (interfaceMember.DeclaringType, implementerExpression, introducedMethod);
       introducedMethod.ImplementByDelegating (implementer, interfaceMember);
 
       ReplicateAttributes (implementingMember, introducedMethod);
@@ -345,11 +334,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementIntroducedProperty (Expression implementerExpression, PropertyIntroductionDefinition property)
     {
-      CustomPropertyEmitter propertyEmitter;
-      if (property.Visibility == MemberVisibility.Public)
-        propertyEmitter = Emitter.CreatePublicInterfacePropertyImplementation (property.InterfaceMember);
-      else
-        propertyEmitter = Emitter.CreateInterfacePropertyImplementation (property.InterfaceMember);
+      CustomPropertyEmitter propertyEmitter = 
+          property.Visibility == MemberVisibility.Public 
+          ? Emitter.CreatePublicInterfacePropertyImplementation (property.InterfaceMember) 
+          : Emitter.CreateInterfacePropertyImplementation (property.InterfaceMember);
 
       if (property.IntroducesGetMethod)
         propertyEmitter.GetMethod = ImplementIntroducedMethod (
@@ -374,11 +362,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Assertion.IsNotNull (eventIntro.ImplementingMember.AddMethod);
       Assertion.IsNotNull (eventIntro.ImplementingMember.RemoveMethod);
 
-      CustomEventEmitter eventEmitter;
-      if (eventIntro.Visibility == MemberVisibility.Public)
-        eventEmitter = Emitter.CreatePublicInterfaceEventImplementation (eventIntro.InterfaceMember);
-      else
-        eventEmitter = Emitter.CreateInterfaceEventImplementation (eventIntro.InterfaceMember);
+      CustomEventEmitter eventEmitter = 
+          eventIntro.Visibility == MemberVisibility.Public 
+          ? Emitter.CreatePublicInterfaceEventImplementation (eventIntro.InterfaceMember) 
+          : Emitter.CreateInterfaceEventImplementation (eventIntro.InterfaceMember);
 
       eventEmitter.AddMethod = ImplementIntroducedMethod (
           implementerExpression,
@@ -420,7 +407,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementOverrides ()
     {
-      foreach (MemberDefinition member in _configuration.GetAllMembers())
+      foreach (MemberDefinitionBase member in _configuration.GetAllMembers())
       {
         if (member.Overrides.Count > 0)
         {
@@ -430,17 +417,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       }
     }
 
-    private IAttributableEmitter ImplementOverride (MemberDefinition member)
+    private IAttributableEmitter ImplementOverride (MemberDefinitionBase member)
     {
-      MethodDefinition method = member as MethodDefinition;
+      var method = member as MethodDefinition;
       if (method != null)
         return ImplementMethodOverride (method);
 
-      PropertyDefinition property = member as PropertyDefinition;
+      var property = member as PropertyDefinition;
       if (property != null)
         return ImplementPropertyOverride (property);
 
-      EventDefinition eventDefinition = member as EventDefinition;
+      var eventDefinition = member as EventDefinition;
       Assertion.IsNotNull (eventDefinition, "Only methods, properties, and events can be overridden.");
       return ImplementEventOverride (eventDefinition);
     }
@@ -496,7 +483,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ICustomAttributeProvider declaringEntity = attribute.DeclaringDefinition.CustomAttributeProvider;
       foreach (AttributeIntroductionDefinition suppressAttribute in Configuration.ReceivedAttributes[typeof (SuppressAttributesAttribute)])
       {
-        SuppressAttributesAttribute suppressAttributeInstance = (SuppressAttributesAttribute)suppressAttribute.Attribute.Instance;
+        var suppressAttributeInstance = (SuppressAttributesAttribute)suppressAttribute.Attribute.Instance;
         ICustomAttributeProvider suppressingEntity = suppressAttribute.Attribute.DeclaringDefinition.CustomAttributeProvider;
         if (suppressAttributeInstance.IsSuppressed (attribute.AttributeType, declaringEntity, suppressingEntity))
           return true;
@@ -522,7 +509,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       {
         string debuggerString = "Mix of " + _configuration.Type.FullName + " + " 
             + SeparatedStringBuilder.Build (" + ", _configuration.Mixins, m => m.FullName);
-        CustomAttributeBuilder debuggerAttribute = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor, new object[] {debuggerString});
+        var debuggerAttribute = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor, new object[] {debuggerString});
         Emitter.AddCustomAttribute (debuggerAttribute);
       }
     }
@@ -538,7 +525,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ArgumentUtility.CheckNotNull ("method", overriddenMethod);
       if (!overriddenMethod.DeclaringType.IsAssignableFrom (TypeBuilder.BaseType))
       {
-        string message = string.Format (
+        string message = String.Format (
             "Cannot create base call method for a method defined on a different type than the base type: {0}.{1}.",
             overriddenMethod.DeclaringType.FullName,
             overriddenMethod.Name);

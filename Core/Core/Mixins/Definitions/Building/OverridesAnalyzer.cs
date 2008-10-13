@@ -16,7 +16,7 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Definitions.Building
 {
   public class OverridesAnalyzer<TMember>
-      where TMember : MemberDefinition
+      where TMember : MemberDefinitionBase
   {
     private readonly Type _attributeType;
     private readonly IEnumerable<TMember> _baseMembers;
@@ -38,7 +38,7 @@ namespace Remotion.Mixins.Definitions.Building
 
       foreach (TMember member in overriderMembers)
       {
-        IOverrideAttribute overrideAttribute = (IOverrideAttribute) AttributeUtility.GetCustomAttribute (member.MemberInfo, _attributeType, true);
+        var overrideAttribute = (IOverrideAttribute) AttributeUtility.GetCustomAttribute (member.MemberInfo, _attributeType, true);
         if (overrideAttribute != null)
         {
           TMember baseMember;

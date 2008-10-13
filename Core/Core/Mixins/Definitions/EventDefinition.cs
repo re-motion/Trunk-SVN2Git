@@ -15,19 +15,18 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  public class EventDefinition : MemberDefinition, IVisitableDefinition
+  public class EventDefinition : MemberDefinitionBase
   {
     private static readonly SignatureChecker s_signatureChecker = new SignatureChecker();
 
     public new readonly UniqueDefinitionCollection<Type, EventDefinition> Overrides =
-        new UniqueDefinitionCollection<Type, EventDefinition> (delegate (EventDefinition m) { return m.DeclaringClass.Type; });
+        new UniqueDefinitionCollection<Type, EventDefinition> (m => m.DeclaringClass.Type);
 
     private EventDefinition _base;
     private readonly MethodDefinition _addMethod;
     private readonly MethodDefinition _removeMethod;
 
-    public EventDefinition (EventInfo memberInfo, ClassDefinitionBase declaringClass, MethodDefinition addMethod, MethodDefinition removeMethod,
-        IVisitableDefinition parent)
+    public EventDefinition (EventInfo memberInfo, ClassDefinitionBase declaringClass, MethodDefinition addMethod, MethodDefinition removeMethod)
         : base (memberInfo, declaringClass)
     {
       ArgumentUtility.CheckNotNull ("addMethod", addMethod);
@@ -45,10 +44,10 @@ namespace Remotion.Mixins.Definitions
       get { return (EventInfo) MemberInfo; }
     }
 
-    public override MemberDefinition BaseAsMember
+    public override MemberDefinitionBase BaseAsMember
     {
       get { return _base; }
-      set
+      protected internal set
       {
         if (value == null || value is EventDefinition)
         {
@@ -77,11 +76,11 @@ namespace Remotion.Mixins.Definitions
       get { return _removeMethod; }
     }
 
-    protected override bool IsSignatureCompatibleWith (MemberDefinition overrider)
+    protected override bool IsSignatureCompatibleWith (MemberDefinitionBase overrider)
     {
       ArgumentUtility.CheckNotNull ("overrider", overrider);
 
-      EventDefinition overriderEvent = overrider as EventDefinition;
+      var overriderEvent = overrider as EventDefinition;
       if (overriderEvent == null)
         return false;
       else
@@ -94,11 +93,11 @@ namespace Remotion.Mixins.Definitions
       return s_signatureChecker.EventSignaturesMatch (EventInfo, overrider.EventInfo);
     }
 
-    internal override void AddOverride (MemberDefinition member)
+    internal override void AddOverride (MemberDefinitionBase member)
     {
       ArgumentUtility.CheckNotNull ("member", member);
 
-      EventDefinition overrider = member as EventDefinition;
+      var overrider = member as EventDefinition;
       if (overrider == null)
       {
         string message = string.Format ("Member {0} cannot override event {1} - it is not an event.", member.FullName, FullName);
@@ -120,9 +119,9 @@ namespace Remotion.Mixins.Definitions
       RemoveMethod.Accept (visitor);
     }
 
-    protected override IDefinitionCollection<Type, MemberDefinition> GetInternalOverridesWrapper ()
+    protected override IDefinitionCollection<Type, MemberDefinitionBase> GetInternalOverridesWrapper ()
     {
-      return new CovariantDefinitionCollectionWrapper<Type, EventDefinition, MemberDefinition> (Overrides);
+      return new CovariantDefinitionCollectionWrapper<Type, EventDefinition, MemberDefinitionBase> (Overrides);
     }
   }
 }

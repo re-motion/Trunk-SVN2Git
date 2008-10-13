@@ -89,7 +89,7 @@ namespace Remotion.Mixins.Definitions.Building
         TMemberInfo interfaceMember,
         IEnumerable<TDefinition> candidates,
         IEqualityComparer<TMemberInfo> comparer)
-        where TDefinition: MemberDefinition
+        where TDefinition: MemberDefinitionBase
         where TMemberInfo: MemberInfo
     {
       List<TDefinition> strongCandidates = new List<TDefinition>();

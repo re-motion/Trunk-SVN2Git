@@ -14,7 +14,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  public class EventIntroductionDefinition : MemberIntroductionDefinition<EventInfo, EventDefinition>
+  public class EventIntroductionDefinition : MemberIntroductionDefinitionBase<EventInfo, EventDefinition>
   {
     public EventIntroductionDefinition (InterfaceIntroductionDefinition declaringInterface, EventInfo interfaceMember, EventDefinition implementingMember, MemberVisibility visibility)
       : base (declaringInterface, interfaceMember, implementingMember, visibility)

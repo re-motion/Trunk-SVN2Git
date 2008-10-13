@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -27,16 +28,16 @@ namespace Remotion.UnitTests.Mixins.Definitions
       TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
 
       MethodInfo baseMethod1 = typeof (BaseType1).GetMethod ("VirtualMethod", new Type[0]);
-      MethodInfo baseMethod2 = typeof (BaseType1).GetMethod ("VirtualMethod", new Type[] {typeof (string)});
+      MethodInfo baseMethod2 = typeof (BaseType1).GetMethod ("VirtualMethod", new[] {typeof (string)});
       MethodInfo mixinMethod1 = typeof (BT1Mixin1).GetMethod ("VirtualMethod", new Type[0]);
 
       Assert.IsTrue (targetClass.Methods.ContainsKey (baseMethod1));
       Assert.IsFalse (targetClass.Methods.ContainsKey (mixinMethod1));
 
-      MemberDefinition member = targetClass.Methods[baseMethod1];
+      MemberDefinitionBase member = targetClass.Methods[baseMethod1];
 
-      Assert.IsTrue (new List<MemberDefinition> (targetClass.GetAllMembers()).Contains (member));
-      Assert.IsFalse (new List<MemberDefinition> (targetClass.Mixins[typeof (BT1Mixin1)].GetAllMembers()).Contains (member));
+      Assert.IsTrue (new List<MemberDefinitionBase> (targetClass.GetAllMembers()).Contains (member));
+      Assert.IsFalse (new List<MemberDefinitionBase> (targetClass.Mixins[typeof (BT1Mixin1)].GetAllMembers()).Contains (member));
 
       Assert.AreEqual ("VirtualMethod", member.Name);
       Assert.AreEqual (typeof (BaseType1).FullName + ".VirtualMethod", member.FullName);
@@ -55,7 +56,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsTrue (mixin1.Methods.ContainsKey (mixinMethod1));
       member = mixin1.Methods[mixinMethod1];
 
-      Assert.IsTrue (new List<MemberDefinition> (mixin1.GetAllMembers()).Contains (member));
+      Assert.IsTrue (new List<MemberDefinitionBase> (mixin1.GetAllMembers()).Contains (member));
 
       Assert.AreEqual ("VirtualMethod", member.Name);
       Assert.AreEqual (typeof (BT1Mixin1).FullName + ".VirtualMethod", member.FullName);
@@ -71,8 +72,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
       TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
 
       PropertyInfo baseProperty = typeof (BaseType1).GetProperty ("VirtualProperty");
-      PropertyInfo indexedProperty1 = typeof (BaseType1).GetProperty ("Item", new Type[] {typeof (int)});
-      PropertyInfo indexedProperty2 = typeof (BaseType1).GetProperty ("Item", new Type[] {typeof (string)});
+      PropertyInfo indexedProperty1 = typeof (BaseType1).GetProperty ("Item", new[] {typeof (int)});
+      PropertyInfo indexedProperty2 = typeof (BaseType1).GetProperty ("Item", new[] {typeof (string)});
       PropertyInfo mixinProperty = typeof (BT1Mixin1).GetProperty ("VirtualProperty", new Type[0]);
 
       Assert.IsTrue (targetClass.Properties.ContainsKey (baseProperty));
@@ -82,8 +83,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       PropertyDefinition member = targetClass.Properties[baseProperty];
 
-      Assert.IsTrue (new List<MemberDefinition> (targetClass.GetAllMembers()).Contains (member));
-      Assert.IsFalse (new List<MemberDefinition> (targetClass.Mixins[typeof (BT1Mixin1)].GetAllMembers()).Contains (member));
+      Assert.IsTrue (new List<MemberDefinitionBase> (targetClass.GetAllMembers()).Contains (member));
+      Assert.IsFalse (new List<MemberDefinitionBase> (targetClass.Mixins[typeof (BT1Mixin1)].GetAllMembers()).Contains (member));
 
       Assert.AreEqual ("VirtualProperty", member.Name);
       Assert.AreEqual (typeof (BaseType1).FullName + ".VirtualProperty", member.FullName);
@@ -118,7 +119,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       member = mixin1.Properties[mixinProperty];
 
-      Assert.IsTrue (new List<MemberDefinition> (mixin1.GetAllMembers()).Contains (member));
+      Assert.IsTrue (new List<MemberDefinitionBase> (mixin1.GetAllMembers()).Contains (member));
 
       Assert.AreEqual ("VirtualProperty", member.Name);
       Assert.AreEqual (typeof (BT1Mixin1).FullName + ".VirtualProperty", member.FullName);
@@ -146,8 +147,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       EventDefinition member = targetClass.Events[baseEvent1];
 
-      Assert.IsTrue (new List<MemberDefinition> (targetClass.GetAllMembers()).Contains (member));
-      Assert.IsFalse (new List<MemberDefinition> (targetClass.Mixins[typeof (BT1Mixin1)].GetAllMembers()).Contains (member));
+      Assert.IsTrue (new List<MemberDefinitionBase> (targetClass.GetAllMembers()).Contains (member));
+      Assert.IsFalse (new List<MemberDefinitionBase> (targetClass.Mixins[typeof (BT1Mixin1)].GetAllMembers()).Contains (member));
 
       Assert.AreEqual ("VirtualEvent", member.Name);
       Assert.AreEqual (typeof (BaseType1).FullName + ".VirtualEvent", member.FullName);
@@ -175,7 +176,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       member = mixin1.Events[mixinEvent];
 
-      Assert.IsTrue (new List<MemberDefinition> (mixin1.GetAllMembers()).Contains (member));
+      Assert.IsTrue (new List<MemberDefinitionBase> (mixin1.GetAllMembers()).Contains (member));
 
       Assert.AreEqual ("VirtualEvent", member.Name);
       Assert.AreEqual (typeof (BT1Mixin1).FullName + ".VirtualEvent", member.FullName);
@@ -188,7 +189,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsNotNull (member.RemoveMethod);
     }
 
-    class Base<T>
+    public class Base<T>
     {
       public virtual void Method(T t)
       {
@@ -197,13 +198,13 @@ namespace Remotion.UnitTests.Mixins.Definitions
       public virtual T Property
       {
         get { return default(T);}
-        set { }
+        set { Dev.Null = value; }
       }
 
       public virtual event Func<T> Event;
     }
 
-    class Derived : Base<int>
+    public class Derived : Base<int>
     {
       public virtual new void Method (int t)
       {
@@ -212,13 +213,13 @@ namespace Remotion.UnitTests.Mixins.Definitions
       public virtual new int Property
       {
         get { return default (int); }
-        set { }
+        set { Dev.Null = value; }
       }
 
       public virtual new event Func<int> Event;
     }
 
-    class ExtraDerived : Derived
+    public class ExtraDerived : Derived
     {
       public virtual new void Method (int t)
       {
@@ -227,13 +228,13 @@ namespace Remotion.UnitTests.Mixins.Definitions
       public virtual new int Property
       {
         get { return default (int); }
-        set { }
+        set { Dev.Null = value; }
       }
 
       public virtual new event Func<int> Event;
     }
 
-    class DerivedWithOverrides : ExtraDerived
+    public class DerivedWithOverrides : ExtraDerived
     {
       public override void Method (int t)
       {
@@ -242,13 +243,13 @@ namespace Remotion.UnitTests.Mixins.Definitions
       public override int Property
       {
         get { return default (int); }
-        set { }
+        set { Dev.Null = value; }
       }
 
       public override event Func<int> Event;
     }
 
-    class ExtraExtraDerived : DerivedWithOverrides
+    public class ExtraExtraDerived : DerivedWithOverrides
     {
       public new void Method (int t)
       {
@@ -257,7 +258,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       public new int Property
       {
         get { return default (int); }
-        set { }
+        set { Dev.Null = value; }
       }
 
       public new event Func<int> Event;
@@ -267,7 +268,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void ShadowedMembersExplicitlyRetrievedButOverriddenNot()
     {
       TargetClassDefinition d = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ExtraExtraDerived));
-      BindingFlags bf = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+      const BindingFlags bf = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
       Assert.IsTrue (d.Methods.ContainsKey (typeof (ExtraExtraDerived).GetMethod ("Method", bf)));
       Assert.IsTrue (d.Methods.ContainsKey (typeof (DerivedWithOverrides).GetMethod ("Method", bf)));
@@ -287,7 +288,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsTrue (d.Events.ContainsKey (typeof (Derived).GetEvent ("Event", bf)));
       Assert.IsTrue (d.Events.ContainsKey (typeof (Base<int>).GetEvent ("Event", bf)));
 
-      Assert.AreEqual (18, new List<MemberDefinition> (d.GetAllMembers ()).Count);
+      Assert.AreEqual (18, new List<MemberDefinitionBase> (d.GetAllMembers ()).Count);
     }
 
     [Test]
@@ -298,7 +299,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsTrue (d.Properties.ContainsKey (typeof (BT3Mixin2).GetProperty ("This")));
       Assert.IsTrue (d.Properties.ContainsKey (typeof (Mixin<IBaseType32>).GetProperty ("This", BindingFlags.NonPublic | BindingFlags.Instance)));
 
-      Assert.AreEqual (11, new List<MemberDefinition> (d.GetAllMembers ()).Count);
+      Assert.AreEqual (11, new List<MemberDefinitionBase> (d.GetAllMembers ()).Count);
     }
 
     [Test]

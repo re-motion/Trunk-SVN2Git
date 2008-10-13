@@ -29,7 +29,7 @@ namespace Remotion.Mixins.CodeGeneration
     private readonly object _lockObject = new object();
     private readonly ConcreteTypeBuilder _concreteTypeBuilder;
     private readonly Cache<TargetClassDefinition, Type> _typeCache = new Cache<TargetClassDefinition, Type> ();
-    private readonly Cache<MixinDefinition, ConcreteMixinType> _mixinTypeCache = new Cache<MixinDefinition, ConcreteMixinType> ();
+    private readonly Cache<object, ConcreteMixinType> _mixinTypeCache = new Cache<object, ConcreteMixinType> ();
 
     public CodeGenerationCache (ConcreteTypeBuilder concreteTypeBuilder)
     {
@@ -76,8 +76,8 @@ namespace Remotion.Mixins.CodeGeneration
       lock (_lockObject)
       {
         return _mixinTypeCache.GetOrCreateValue (
-              mixinDefinition,
-              key => GenerateConcreteMixinType(mixedTypeGenerator, mixinDefinition, mixinNameProvider));
+              mixinDefinition.GetConcreteMixinTypeCacheKey(),
+              key => GenerateConcreteMixinType (mixedTypeGenerator, mixinDefinition, mixinNameProvider));
       }
     }
 

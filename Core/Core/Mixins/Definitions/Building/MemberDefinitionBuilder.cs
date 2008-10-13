@@ -48,13 +48,13 @@ namespace Remotion.Mixins.Definitions.Building
 
     private IEnumerable<T> CleanupMembers<T> (IEnumerable<T> members, IEqualityComparer<T> comparer) where T : MemberInfo
     {
-      MultiSet<T> memberSet = new MultiSet<T>(comparer);
+      var memberSet = new MultiSet<T>(comparer);
       memberSet.AddRange (members); // collect duplicates
-      Set<T> result = new Set<T>();
+      var result = new Set<T>();
       
       foreach (T member in members)
       {
-        MemberChain<T> chain = new MemberChain<T> (memberSet[member]);
+        var chain = new MemberChain<T> (memberSet[member]);
         result.AddRange (chain.GetNonOverriddenMembers());
       }
       return result;
@@ -72,8 +72,8 @@ namespace Remotion.Mixins.Definitions.Building
 
         if (getMethodDefinition != null || setMethodDefinition != null)
         {
-          PropertyDefinition definition = new PropertyDefinition (property, _classDefinition, getMethodDefinition, setMethodDefinition);
-          AttributeDefinitionBuilder attributeBuilder = new AttributeDefinitionBuilder (definition);
+          var definition = new PropertyDefinition (property, _classDefinition, getMethodDefinition, setMethodDefinition);
+          var attributeBuilder = new AttributeDefinitionBuilder (definition);
           attributeBuilder.Apply (property);
           _classDefinition.Properties.Add (definition);
         }
@@ -92,8 +92,8 @@ namespace Remotion.Mixins.Definitions.Building
 
         if (addMethodDefinition != null || removeMethodDefinition != null)
         {
-          EventDefinition definition = new EventDefinition (eventInfo, _classDefinition, addMethodDefinition, removeMethodDefinition, _classDefinition);
-          AttributeDefinitionBuilder attributeBuilder = new AttributeDefinitionBuilder (definition);
+          var definition = new EventDefinition (eventInfo, _classDefinition, addMethodDefinition, removeMethodDefinition);
+          var attributeBuilder = new AttributeDefinitionBuilder (definition);
           attributeBuilder.Apply (eventInfo);
           _classDefinition.Events.Add (definition);
         }
@@ -106,8 +106,8 @@ namespace Remotion.Mixins.Definitions.Building
       {
         if (!_specialMethods.Contains (method) && _methodFilter (method))
         {
-          MethodDefinition definition = new MethodDefinition (method, _classDefinition);
-          AttributeDefinitionBuilder attributeBuilder = new AttributeDefinitionBuilder (definition);
+          var definition = new MethodDefinition (method, _classDefinition);
+          var attributeBuilder = new AttributeDefinitionBuilder (definition);
           attributeBuilder.Apply (method);
           _classDefinition.Methods.Add (definition);
         }
@@ -118,8 +118,8 @@ namespace Remotion.Mixins.Definitions.Building
     {
       if (methodInfo != null && _methodFilter (methodInfo))
       {
-        MethodDefinition methodDefinition = new MethodDefinition (methodInfo, _classDefinition);
-        AttributeDefinitionBuilder attributeBuilder = new AttributeDefinitionBuilder (methodDefinition);
+        var methodDefinition = new MethodDefinition (methodInfo, _classDefinition);
+        var attributeBuilder = new AttributeDefinitionBuilder (methodDefinition);
         attributeBuilder.Apply (methodInfo);
         _specialMethods.Add (methodInfo);
         return methodDefinition;

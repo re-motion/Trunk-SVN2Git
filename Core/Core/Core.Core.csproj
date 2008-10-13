@@ -148,6 +148,7 @@
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimer.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinType.cs" />
+    <Compile Include="Mixins\Definitions\Building\DependencySorting\DependentMixinGrouperAlgorithm.cs" />
     <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttribute.cs" />
     <Compile Include="Mixins\CodeGeneration\ICodeGenerationModule.cs" />
     <Compile Include="Mixins\CodeGeneration\IConcreteTypeMetadataImporter.cs" />
@@ -309,8 +310,8 @@
     <Compile Include="Mixins\Definitions\IDefinitionVisitor.cs" />
     <Compile Include="Mixins\Definitions\InterfaceIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\IVisitableDefinition.cs" />
-    <Compile Include="Mixins\Definitions\MemberDefinition.cs" />
-    <Compile Include="Mixins\Definitions\MemberIntroductionDefinition.cs" />
+    <Compile Include="Mixins\Definitions\MemberDefinitionBase.cs" />
+    <Compile Include="Mixins\Definitions\MemberIntroductionDefinitionBase.cs" />
     <Compile Include="Mixins\Definitions\MethodDefinition.cs" />
     <Compile Include="Mixins\Definitions\MethodIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\MixinDefinition.cs" />

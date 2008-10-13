@@ -54,7 +54,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       string typeName = nameProvider.GetNewTypeName (configuration);
       typeName = CustomClassEmitter.FlattenTypeName (typeName);
 
-      Type[] interfaces = new[] { typeof (ISerializable), typeof (IGeneratedMixinType) };
+      var interfaces = new[] { typeof (ISerializable), typeof (IGeneratedMixinType) };
       const TypeAttributes flags = TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable;
 
       bool forceUnsigned = !targetGenerator.IsAssemblySigned;
@@ -84,7 +84,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Tuple<MethodInfo, MethodInfo>[] methodWrappers = GenerateMethodWrappers().ToArray();
 
       Type generatedType = Emitter.BuildType();
-      ConcreteMixinType result = new ConcreteMixinType (Configuration, generatedType);
+      var result = new ConcreteMixinType (Configuration, generatedType);
       foreach (var methodWrapper in methodWrappers)
         result.AddMethodWrapper (methodWrapper.A, methodWrapper.B);
 
@@ -153,7 +153,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private void AddDebuggerAttributes ()
     {
       string debuggerString = "Derived mixin: " + _configuration.Type.Name + " on class " + _configuration.TargetClass.Type.Name;
-      CustomAttributeBuilder debuggerAttribute = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor, new object[] { debuggerString });
+      var debuggerAttribute = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor, new object[] { debuggerString });
       Emitter.AddCustomAttribute (debuggerAttribute);
     }
 
@@ -163,7 +163,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         return;
 
       PropertyInfo targetProperty = MixinReflector.GetTargetProperty (Emitter.TypeBuilder.BaseType);
-      PropertyReference targetReference = new PropertyReference (SelfReference.Self, targetProperty);
+      var targetReference = new PropertyReference (SelfReference.Self, targetProperty);
 
       if (targetProperty == null)
       {

@@ -31,7 +31,7 @@ namespace Remotion.Mixins.Definitions
     private readonly Type _type;
     private readonly Set<Type> _implementedInterfaces;
 
-    public ClassDefinitionBase (Type type)
+    protected ClassDefinitionBase (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       if (type.ContainsGenericParameters)
@@ -109,7 +109,7 @@ namespace Remotion.Mixins.Definitions
       get { return _events; }
     }
 
-    public IEnumerable<MemberDefinition> GetAllMembers()
+    public IEnumerable<MemberDefinitionBase> GetAllMembers()
     {
       foreach (MethodDefinition method in _methods)
         yield return method;
@@ -153,7 +153,7 @@ namespace Remotion.Mixins.Definitions
 
     public bool HasOverriddenMembers ()
     {
-      foreach (MemberDefinition member in GetAllMembers ())
+      foreach (MemberDefinitionBase member in GetAllMembers ())
       {
         if (member.Overrides.Count > 0)
           return true;

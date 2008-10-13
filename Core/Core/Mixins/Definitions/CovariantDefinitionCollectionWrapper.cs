@@ -20,7 +20,7 @@ namespace Remotion.Mixins.Definitions
       where TValue : class, TValueBase
       where TValueBase : IVisitableDefinition
   {
-    private UniqueDefinitionCollection<TKey, TValue> _items;
+    private readonly UniqueDefinitionCollection<TKey, TValue> _items;
 
     public CovariantDefinitionCollectionWrapper(UniqueDefinitionCollection<TKey, TValue> items)
     {

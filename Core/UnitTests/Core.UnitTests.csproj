@@ -163,6 +163,7 @@
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinOverridingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\TargetClassCallingOverriddenMethodFromCtor.cs" />
     <Compile Include="Mixins\DefinitionObjectMother.cs" />
+    <Compile Include="Mixins\Definitions\MixinDefinitionTest.cs" />
     <Compile Include="Mixins\MixAttributeTest.cs" />
     <Compile Include="Mixins\CodeGenerationStatisticsTest.cs" />
     <Compile Include="Mixins\SampleTypes\IMarkerInterface.cs" />

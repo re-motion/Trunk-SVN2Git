@@ -15,12 +15,12 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  public class PropertyDefinition : MemberDefinition, IVisitableDefinition
+  public class PropertyDefinition : MemberDefinitionBase
   {
     private static readonly SignatureChecker s_signatureChecker = new SignatureChecker();
 
     public new readonly UniqueDefinitionCollection<Type, PropertyDefinition> Overrides =
-        new UniqueDefinitionCollection<Type, PropertyDefinition> (delegate (PropertyDefinition m) { return m.DeclaringClass.Type; });
+        new UniqueDefinitionCollection<Type, PropertyDefinition> (m => m.DeclaringClass.Type);
 
     private PropertyDefinition _base;
     private readonly MethodDefinition _getMethod;
@@ -53,10 +53,10 @@ namespace Remotion.Mixins.Definitions
       get { return _setMethod; }
     }
 
-    public override MemberDefinition BaseAsMember
+    public override MemberDefinitionBase BaseAsMember
     {
       get { return _base; }
-      set
+      protected internal set
       {
         if (value == null || value is PropertyDefinition)
         {
@@ -77,11 +77,11 @@ namespace Remotion.Mixins.Definitions
       set { BaseAsMember = value; }
     }
 
-    protected override bool IsSignatureCompatibleWith (MemberDefinition overrider)
+    protected override bool IsSignatureCompatibleWith (MemberDefinitionBase overrider)
     {
       ArgumentUtility.CheckNotNull ("overrider", overrider);
 
-      PropertyDefinition overriderProperty = overrider as PropertyDefinition;
+      var overriderProperty = overrider as PropertyDefinition;
       if (overriderProperty == null)
       {
         return false;
@@ -98,11 +98,11 @@ namespace Remotion.Mixins.Definitions
       return s_signatureChecker.PropertySignaturesMatch (PropertyInfo, overrider.PropertyInfo);
     }
 
-    internal override void AddOverride (MemberDefinition member)
+    internal override void AddOverride (MemberDefinitionBase member)
     {
       ArgumentUtility.CheckNotNull ("member", member);
 
-      PropertyDefinition overrider = member as PropertyDefinition;
+      var overrider = member as PropertyDefinition;
       if (overrider == null)
       {
         string message = string.Format ("Member {0} cannot override property {1} - it is not a property.", member.FullName, FullName);
@@ -128,9 +128,9 @@ namespace Remotion.Mixins.Definitions
         SetMethod.Accept (visitor);
     }
 
-    protected override IDefinitionCollection<Type, MemberDefinition> GetInternalOverridesWrapper ()
+    protected override IDefinitionCollection<Type, MemberDefinitionBase> GetInternalOverridesWrapper ()
     {
-      return new CovariantDefinitionCollectionWrapper<Type, PropertyDefinition, MemberDefinition> (Overrides);
+      return new CovariantDefinitionCollectionWrapper<Type, PropertyDefinition, MemberDefinitionBase> (Overrides);
     }
   }
 }

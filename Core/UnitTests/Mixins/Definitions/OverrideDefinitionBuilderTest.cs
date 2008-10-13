@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsTrue (targetClass.HasOverriddenMembers ());
 
       MethodInfo baseMethod1 = typeof (BaseType1).GetMethod ("VirtualMethod", new Type[0]);
-      MethodInfo baseMethod2 = typeof (BaseType1).GetMethod ("VirtualMethod", new Type[] {typeof (string)});
+      MethodInfo baseMethod2 = typeof (BaseType1).GetMethod ("VirtualMethod", new[] {typeof (string)});
       MethodInfo mixinMethod1 = typeof (BT1Mixin1).GetMethod ("VirtualMethod", new Type[0]);
 
       MethodDefinition overridden = targetClass.Methods[baseMethod1];
@@ -51,7 +51,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsTrue (overridden.Overrides.ContainsKey (typeof (BT1Mixin2)));
       overrider = overridden.Overrides[typeof (BT1Mixin2)];
 
-      Assert.IsTrue (new List<MemberDefinition> (mixin2.GetAllOverrides()).Contains (overrider));
+      Assert.IsTrue (new List<MemberDefinitionBase> (mixin2.GetAllOverrides()).Contains (overrider));
       Assert.AreSame (overridden, overrider.Base);
     }
 
@@ -63,7 +63,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       MixinDefinition mixin2 = targetClass.Mixins[typeof (BT1Mixin2)];
 
       PropertyInfo baseProperty1 = typeof (BaseType1).GetProperty ("VirtualProperty");
-      PropertyInfo baseProperty2 = typeof (BaseType1).GetProperty ("Item", new Type[] {typeof (string)});
+      PropertyInfo baseProperty2 = typeof (BaseType1).GetProperty ("Item", new[] {typeof (string)});
       PropertyInfo mixinProperty1 = typeof (BT1Mixin1).GetProperty ("VirtualProperty");
 
       PropertyDefinition overridden = targetClass.Properties[baseProperty1];
@@ -83,7 +83,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsTrue (overridden.Overrides.ContainsKey (typeof (BT1Mixin2)));
       overrider = overridden.Overrides[typeof (BT1Mixin2)];
 
-      Assert.IsTrue (new List<MemberDefinition> (mixin2.GetAllOverrides()).Contains (overrider));
+      Assert.IsTrue (new List<MemberDefinitionBase> (mixin2.GetAllOverrides()).Contains (overrider));
       Assert.AreSame (overridden, overrider.Base);
       Assert.AreSame (overridden.GetMethod, overrider.GetMethod.Base);
     }
@@ -117,7 +117,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsTrue (overridden.Overrides.ContainsKey (typeof (BT1Mixin2)));
       overrider = overridden.Overrides[typeof (BT1Mixin2)];
 
-      Assert.IsTrue (new List<MemberDefinition> (mixin2.GetAllOverrides()).Contains (overrider));
+      Assert.IsTrue (new List<MemberDefinitionBase> (mixin2.GetAllOverrides()).Contains (overrider));
       Assert.AreSame (overridden, overrider.Base);
       Assert.AreSame (overridden.AddMethod, overrider.AddMethod.Base);
       Assert.AreSame (overridden.RemoveMethod, overrider.RemoveMethod.Base);
@@ -136,7 +136,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       Assert.AreSame (targetClass, overrider.Base.DeclaringClass);
 
-      List<MethodDefinition> overrides = new List<MethodDefinition> (targetClass.Methods[typeof (BaseType4).GetMethod ("NonVirtualMethod")].Overrides);
+      var overrides = new List<MethodDefinition> (targetClass.Methods[typeof (BaseType4).GetMethod ("NonVirtualMethod")].Overrides);
       Assert.AreEqual (1, overrides.Count);
       Assert.AreSame (overrider, overrides[0]);
     }
@@ -154,7 +154,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       Assert.AreSame (targetClass, overrider.Base.DeclaringClass);
 
-      List<PropertyDefinition> overrides = new List<PropertyDefinition> (targetClass.Properties[typeof (BaseType4).GetProperty ("NonVirtualProperty")].Overrides);
+      var overrides = new List<PropertyDefinition> (targetClass.Properties[typeof (BaseType4).GetProperty ("NonVirtualProperty")].Overrides);
       Assert.AreEqual (1, overrides.Count);
       Assert.AreSame (overrider, overrides[0]);
     }
@@ -172,7 +172,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       Assert.AreSame (targetClass, overrider.Base.DeclaringClass);
 
-      List<EventDefinition> overrides = new List<EventDefinition> (targetClass.Events[typeof (BaseType4).GetEvent ("NonVirtualEvent")].Overrides);
+      var overrides = new List<EventDefinition> (targetClass.Events[typeof (BaseType4).GetEvent ("NonVirtualEvent")].Overrides);
       Assert.AreEqual (1, overrides.Count);
       Assert.AreSame (overrider, overrides[0]);
     }
