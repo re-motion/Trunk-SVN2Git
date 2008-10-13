@@ -15,6 +15,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
+using System.Diagnostics;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
@@ -169,6 +170,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       _collectionWithExtensions.PropertyValueReading (ClientTransactionMock, _dataContainer, _propertyValue, ValueAccess.Original);
 
       _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    [Explicit ("Performance test")]
+    public void PropertyReading_Perf ()
+    {
+      var coll = new ClientTransactionExtensionCollection ();
+
+      Stopwatch sw = Stopwatch.StartNew ();
+      for (int i = 0; i < 100000; ++i)
+        coll.PropertyValueReading (ClientTransactionMock, _dataContainer, _propertyValue, ValueAccess.Original);
+      sw.Stop ();
+      Console.WriteLine (sw.Elapsed);
+      Console.WriteLine (sw.ElapsedMilliseconds / 100000.0);
     }
 
     [Test]
