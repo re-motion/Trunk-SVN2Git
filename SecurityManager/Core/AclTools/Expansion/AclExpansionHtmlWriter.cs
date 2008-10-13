@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       var html = _htmlWriter;
 
-      WriteStartPage (html);
+      WriteStartPage ();
 
       //html.value ("re-motion ACL Expansion body");
 
@@ -90,39 +90,36 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       html.Close ();
     }
 
-    private HtmlWriter WriteStartPage (HtmlWriter html)
+    private HtmlWriter WriteStartPage ()
     {
-      //var html = _htmlWriter;
-
       // DOCTYPE
-      html.XmlWriter.WriteDocType ("HTML", "-//W3C//DTD HTML 4.0 Transitional//EN", null, null);
+      _htmlWriter.XmlWriter.WriteDocType ("HTML", "-//W3C//DTD HTML 4.0 Transitional//EN", null, null);
       // HTML
-      html.Tag ("html");
+      _htmlWriter.Tag ("html");
       // HEAD
-      html.Tag ("head");
+      _htmlWriter.Tag ("head");
       // TITLE
-      html.Tag ("title");
-      html.Value ("re-motion ACL Expansion");
-      html.TagEnd ("title");
+      _htmlWriter.Tag ("title");
+      _htmlWriter.Value ("re-motion ACL Expansion");
+      _htmlWriter.TagEnd ("title");
 
       // STYLE
-      html.Tag ("style");
-      html.Value ("@import \"AclExpansion.css\";");
-      html.TagEnd ("style");
-      html.TagEnd ("head");
+      _htmlWriter.Tag ("style");
+      _htmlWriter.Value ("@import \"AclExpansion.css\";");
+      _htmlWriter.TagEnd ("style");
+      _htmlWriter.TagEnd ("head");
 
       // BODY
-      html.Tag ("body");
-      return html;
+      _htmlWriter.Tag ("body");
+      return _htmlWriter;
     }
 
 
     void WriteHeaderCell (string columnName)
     {
-      var html = _htmlWriter;
-      html.td ().a ("class", "header");
-      html.Value (columnName);
-      html.tdEnd ();
+      _htmlWriter.td ().a ("class", "header");
+      _htmlWriter.Value (columnName);
+      _htmlWriter.tdEnd ();
     }
 
     void WriteTableDataAddendum (Object addendum)
@@ -135,24 +132,23 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    void WriteTableDataWithAddendum (string value, Object addendum)
-    {
-      var html = _htmlWriter;
-      html.td ();
-      WriteTableDataAddendum (addendum);
-      html.Value (value);
-      html.tdEnd ();
-    }
+    //void WriteTableDataWithAddendum (string value, Object addendum)
+    //{
+    //  _htmlWriter.td ();
+    //  WriteTableDataAddendum (addendum);
+    //  _htmlWriter.Value (value);
+    //  _htmlWriter.tdEnd ();
+    //}
 
 
     void WriteTableDataWithRowCount (string value, int rowCount)
     {
-      var html = _htmlWriter;
-      html.td ();
+      WriteTableRowBeginIfNotInTableRow ();
+      _htmlWriter.td ();
       WriteRowspanAttribute(rowCount);
-      html.Value (value);
+      _htmlWriter.Value (value);
       WriteTableDataAddendum (rowCount);
-      html.tdEnd ();
+      _htmlWriter.tdEnd ();
     }
 
     private HtmlWriter WriteRowspanAttribute (int rowCount)
@@ -166,238 +162,166 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteTableDataForRole (Role role, int rowCount)
     {
-      var html = _htmlWriter;
-      html.td ();
+      WriteTableRowBeginIfNotInTableRow();
+      _htmlWriter.td ();
       WriteRowspanAttribute (rowCount);
-      html.Value (role.Group.DisplayName);
-      html.Value (", ");
-      html.Value (role.Position.DisplayName);
+      _htmlWriter.Value (role.Group.DisplayName);
+      _htmlWriter.Value (", ");
+      _htmlWriter.Value (role.Position.DisplayName);
       WriteTableDataAddendum (rowCount);
-      html.tdEnd ();
+      _htmlWriter.tdEnd ();
     }
   
 
-    void tdBodyStates (params StateDefinition[] stateDefinitions)
+    void tdBodyStates (AclExpansionEntry aclExpansionEntry) // params StateDefinition[] stateDefinitions)
     {
-      var html = _htmlWriter;
-      html.td ();
+      var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
+      _htmlWriter.td ();
       bool firstElement = true;
       foreach (StateDefinition stateDefiniton in stateDefinitions)
       {
         if (!firstElement)
         {
-          html.br ();
+          _htmlWriter.br ();
         }
-        html.Value (stateDefiniton.DisplayName);
+        _htmlWriter.Value (stateDefiniton.DisplayName);
         firstElement = false;
       }
-      html.tdEnd ();
+      _htmlWriter.tdEnd ();
     }
 
     private void tdBodyAccessTypes (AccessTypeDefinition[] accessTypeDefinitions)
     {
-      var html = _htmlWriter;
-      html.td ();
+      _htmlWriter.td ();
       bool firstElement = true;
       foreach (AccessTypeDefinition accessTypeDefinition in accessTypeDefinitions)
       {
         if (!firstElement)
         {
-          html.Value (", ");
+          _htmlWriter.Value (", ");
         }
-        html.Value (accessTypeDefinition.DisplayName);
+        _htmlWriter.Value (accessTypeDefinition.DisplayName);
         firstElement = false;
       }
-      html.tdEnd ();
+      _htmlWriter.tdEnd ();
     }
 
     private void tdBodyConditions (AclExpansionAccessConditions conditions)
     {
-      var html = _htmlWriter;
-
       tdBodyBooleanCondition (conditions.IsOwningUserRequired);
       tdBodyBooleanCondition (conditions.IsOwningGroupRequired);
       tdBodyBooleanCondition (conditions.IsOwningTenantRequired);
 
-      html.td ();
-      html.Value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");
-      html.tdEnd ();
+      _htmlWriter.td ();
+      _htmlWriter.Value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");
+      _htmlWriter.tdEnd ();
     }
 
     private void tdBodyBooleanCondition (bool required)
     {
-      var html = _htmlWriter;
       _htmlWriter.td ();
       _htmlWriter.Value (required ? "X" : "");
       _htmlWriter.tdEnd ();
     }
 
-    // Spike
-    private void WriteTableBodySpike (HtmlWriter html, List<AclExpansionEntry> aclExpansion)
-    {
-      // TODO: Share with AclExpansionConsoleTextWriter
-      var aclExpansionHierarchy =
-          from expansion in aclExpansion
-          group expansion by expansion.User
-            into userGroup
-            select new
-            {
-              User = userGroup.Key,
-              RoleGroup =
-                from user in userGroup
-                group user by user.Role
-                  into roleGroup
-                  select new
-                  {
-                    Role = roleGroup.Key,
-                    ClassGroup =
-                    from role in roleGroup
-                    group role by role.Class
-                      into classGroup
-                      select new
-                      {
-                        Class = classGroup.Key,
-                        StatesGroup = classGroup
-                      }
-                  }
-            };
+ 
 
-      foreach (var userGroup in aclExpansionHierarchy)
-      {
-        bool newUserRow = true;
-        var userName = userGroup.User.DisplayName;
-        int userRowCount = userGroup.RoleGroup.SelectMany(x => x.ClassGroup).SelectMany(x => x.StatesGroup).Count();
-        foreach (var roleGroup in userGroup.RoleGroup)
-        {
-          bool newRoleRow = true;
-          var role = roleGroup.Role;
-          //int roleRowCount = roleGroup.ClassGroup.Count ();
-          int roleRowCount = roleGroup.ClassGroup.SelectMany (x => x.StatesGroup).Count ();
-          foreach (var classGroup in roleGroup.ClassGroup)
-          {
-            bool newClassRow = true;
-            var className = classGroup.Class.DisplayName;
-            int classRowCount = classGroup.StatesGroup.Count ();
-            
-            foreach (var entry in classGroup.StatesGroup)
-            {
-              var stateArray = entry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
+    //private void WriteTableBody (List<AclExpansionEntry> aclExpansion)
+    //{
+    //  var aclExpansionUserGrouping = GetAclExpansionGrouping (aclExpansion, (aee => aee.User));
 
-              _htmlWriter.tr();
+    //  foreach (var userGroup in aclExpansionUserGrouping)
+    //  {
+    //    var userName = userGroup.Key.DisplayName;
+    //    WriteTableRowBeginIfNotInTableRow();
+    //    WriteTableDataWithRowCount (userName, userGroup.Items.Count());
 
-              if (newUserRow)
-              {
-                newUserRow = false;
-                WriteTableDataWithRowCount (userName, userRowCount);
-              }
+    //    var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
 
-              if (newRoleRow)
-              {
-                newRoleRow = false;
-                WriteTableDataForRole (role, roleRowCount);
-              }
+    //    foreach (var roleGroup in aclExpansionRoleGrouping)
+    //    {
+    //      var role = roleGroup.Key;
+    //      WriteTableRowBeginIfNotInTableRow ();
+    //      WriteTableDataForRole (role, roleGroup.Items.Count ());
 
-              if (newClassRow)
-              {
-                newClassRow = false;
-                WriteTableDataWithRowCount (className, classRowCount);
-              }
+    //      var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
 
-              //WriteTableDataWithAddendum (userName, userRowCount);
-              //WriteTableDataForRole (role, roleRowCount);
-              //WriteTableDataWithRowCount (className, classRowCount);
+    //      foreach (var classGroup in aclExpansionClassGrouping)
+    //      {
+    //        var className = classGroup.Key.DisplayName;
+    //        WriteTableRowBeginIfNotInTableRow ();
+    //        WriteTableDataWithRowCount (className, classGroup.Items.Count ());
 
-              tdBodyStates (stateArray);
-              tdBodyConditions (entry.AccessConditions);
-              tdBodyAccessTypes (entry.AccessTypeDefinitions);
-              _htmlWriter.trEnd();
+    //        foreach (var aclExpansionEntry in classGroup.Items)
+    //        {
+    //          WriteTableRowBeginIfNotInTableRow();
 
-            }
-          }
-        }
-      }
-    }
+    //          tdBodyStates (aclExpansionEntry);
+    //          tdBodyConditions (aclExpansionEntry.AccessConditions);
+    //          tdBodyAccessTypes (aclExpansionEntry.AccessTypeDefinitions);
 
+    //          WriteTableRowEnd();
 
-
-
-
-
-    //--------------------------------------------------------------------------------------------------------------------------------
-    //--------------------------------------------------------------------------------------------------------------------------------
-    //--------------------------------------------------------------------------------------------------------------------------------
-    //--------------------------------------------------------------------------------------------------------------------------------
-
-
-
+    //        }
+    //      }
+    //    }
+    //  }
+    //}
 
 
 
     private void WriteTableBody (List<AclExpansionEntry> aclExpansion)
     {
       var aclExpansionUserGrouping = GetAclExpansionGrouping (aclExpansion, (aee => aee.User));
-
       foreach (var userGroup in aclExpansionUserGrouping)
       {
-        var userName = userGroup.Key.DisplayName;
-        WriteTableRowBeginIfNotInTableRow();
-        WriteTableDataWithRowCount (userName, userGroup.Items.Count());
-
-        var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
-
-        foreach (var roleGroup in aclExpansionRoleGrouping)
-        {
-          var role = roleGroup.Key;
-          WriteTableRowBeginIfNotInTableRow ();
-          WriteTableDataForRole (role, roleGroup.Items.Count ());
-
-          var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
-
-          foreach (var classGroup in aclExpansionClassGrouping)
-          {
-            var className = classGroup.Key.DisplayName;
-            WriteTableRowBeginIfNotInTableRow ();
-            WriteTableDataWithRowCount (className, classGroup.Items.Count ());
-
-            foreach (var entry in classGroup.Items)
-            {
-              var stateArray = entry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
-
-              WriteTableRowBeginIfNotInTableRow();
-
-              //if (newUserRow)
-              //{
-              //  newUserRow = false;
-              //  WriteTableDataWithRowCount (userName, userRowCount);
-              //}
-
-              //if (newRoleRow)
-              //{
-              //  newRoleRow = false;
-              //  WriteTableDataForRole (role, roleRowCount);
-              //}
-
-              //if (newClassRow)
-              //{
-              //  newClassRow = false;
-              //  WriteTableDataWithRowCount (className, classRowCount);
-              //}
-
-              //WriteTableDataWithAddendum (userName, userRowCount);
-              //WriteTableDataForRole (role, roleRowCount);
-              //WriteTableDataWithRowCount (className, classRowCount);
-
-              tdBodyStates (stateArray);
-              tdBodyConditions (entry.AccessConditions);
-              tdBodyAccessTypes (entry.AccessTypeDefinitions);
-
-              WriteTableRowEnd();
-
-            }
-          }
-        }
+        WriteTableBody_ProcessUserGroup(userGroup);
       }
     }
+
+    private void WriteTableBody_ProcessUserGroup (LinqGroup<User, AclExpansionEntry> userGroup)
+    {
+      var userName = userGroup.Key.DisplayName;
+      //WriteTableRowBeginIfNotInTableRow ();
+      WriteTableDataWithRowCount (userName, userGroup.Items.Count ());
+
+      var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
+
+      foreach (var roleGroup in aclExpansionRoleGrouping)
+      {
+        WriteTableBody_ProcessRoleGroup(roleGroup);
+      }
+    }
+
+    private void WriteTableBody_ProcessRoleGroup (LinqGroup<Role, AclExpansionEntry> roleGroup)
+    {
+      //WriteTableRowBeginIfNotInTableRow ();
+      WriteTableDataForRole (roleGroup.Key, roleGroup.Items.Count ());
+
+      var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
+
+      foreach (var classGroup in aclExpansionClassGrouping)
+      {
+        WriteTableBody_ProcessClassGroup(classGroup);
+      }
+    }
+
+    private void WriteTableBody_ProcessClassGroup (LinqGroup<SecurableClassDefinition, AclExpansionEntry> classGroup)
+    {
+      WriteTableDataWithRowCount (classGroup.Key.DisplayName, classGroup.Items.Count ());
+
+      foreach (var aclExpansionEntry in classGroup.Items)
+      {
+        WriteTableRowBeginIfNotInTableRow ();
+
+        tdBodyStates (aclExpansionEntry);
+        tdBodyConditions (aclExpansionEntry.AccessConditions);
+        tdBodyAccessTypes (aclExpansionEntry.AccessTypeDefinitions);
+
+        WriteTableRowEnd ();
+      }
+    }
+
 
     private void WriteTableRowBeginIfNotInTableRow ()
     {
@@ -436,31 +360,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                  select ObjectMother.LinqGroup.New(groupEntries);
     }
   }
-
-  public class LinqGroup<TKey, Tentry>
-  {
-    public LinqGroup (IGrouping<TKey, Tentry> items)
-    {
-      Items = items;
-    }
-
-    public TKey Key
-    {
-      get { return Items.Key; }
-    }
-    public IGrouping<TKey, Tentry> Items { get; private set; }
-  }
-
 }
 
 
-namespace ObjectMother
-{
-  public class LinqGroup
-  {
-    public static Remotion.SecurityManager.AclTools.Expansion.LinqGroup<TKey, Tentry> New<TKey, Tentry> (IGrouping<TKey, Tentry> items)
-    {
-      return new Remotion.SecurityManager.AclTools.Expansion.LinqGroup<TKey, Tentry> (items);
-    }
-  }
-}
+

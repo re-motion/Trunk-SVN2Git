@@ -61,3 +61,90 @@ private bool MatchesAce (SecurityToken token)
   return this == (token.SpecificAce ?? this);
 }
     
+    
+    
+    
+    
+private void WriteTableBodySpike (HtmlWriter html, List<AclExpansionEntry> aclExpansion)
+{
+  var aclExpansionHierarchy =
+      from expansion in aclExpansion
+      group expansion by expansion.User
+        into userGroup
+        select new
+        {
+          User = userGroup.Key,
+          RoleGroup =
+            from user in userGroup
+            group user by user.Role
+              into roleGroup
+              select new
+              {
+                Role = roleGroup.Key,
+                ClassGroup =
+                from role in roleGroup
+                group role by role.Class
+                  into classGroup
+                  select new
+                  {
+                    Class = classGroup.Key,
+                    StatesGroup = classGroup
+                  }
+              }
+        };
+
+  foreach (var userGroup in aclExpansionHierarchy)
+  {
+    bool newUserRow = true;
+    var userName = userGroup.User.DisplayName;
+    int userRowCount = userGroup.RoleGroup.SelectMany(x => x.ClassGroup).SelectMany(x => x.StatesGroup).Count();
+    foreach (var roleGroup in userGroup.RoleGroup)
+    {
+      bool newRoleRow = true;
+      var role = roleGroup.Role;
+      //int roleRowCount = roleGroup.ClassGroup.Count ();
+      int roleRowCount = roleGroup.ClassGroup.SelectMany (x => x.StatesGroup).Count ();
+      foreach (var classGroup in roleGroup.ClassGroup)
+      {
+        bool newClassRow = true;
+        var className = classGroup.Class.DisplayName;
+        int classRowCount = classGroup.StatesGroup.Count ();
+        
+        foreach (var entry in classGroup.StatesGroup)
+        {
+          var stateArray = entry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
+
+          _htmlWriter.tr();
+
+          if (newUserRow)
+          {
+            newUserRow = false;
+            WriteTableDataWithRowCount (userName, userRowCount);
+          }
+
+          if (newRoleRow)
+          {
+            newRoleRow = false;
+            WriteTableDataForRole (role, roleRowCount);
+          }
+
+          if (newClassRow)
+          {
+            newClassRow = false;
+            WriteTableDataWithRowCount (className, classRowCount);
+          }
+
+          //WriteTableDataWithAddendum (userName, userRowCount);
+          //WriteTableDataForRole (role, roleRowCount);
+          //WriteTableDataWithRowCount (className, classRowCount);
+
+          tdBodyStates (entry);
+          tdBodyConditions (entry.AccessConditions);
+          tdBodyAccessTypes (entry.AccessTypeDefinitions);
+          _htmlWriter.trEnd();
+
+        }
+      }
+    }
+  }
+}    
