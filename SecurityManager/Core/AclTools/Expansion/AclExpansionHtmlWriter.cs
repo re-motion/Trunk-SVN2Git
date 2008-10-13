@@ -232,7 +232,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
     // Spike
-    private void WriteTableBody (HtmlWriter html, List<AclExpansionEntry> aclExpansion)
+    private void WriteTableBodySpike (HtmlWriter html, List<AclExpansionEntry> aclExpansion)
     {
       // TODO: Share with AclExpansionConsoleTextWriter
       var aclExpansionHierarchy =
@@ -315,6 +315,139 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           }
         }
       }
+    }
+
+
+
+
+
+
+    //--------------------------------------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+    private void WriteTableBody (HtmlWriter html, List<AclExpansionEntry> aclExpansion)
+    {
+      Func<AclExpansionEntry, User> groupingKeyFunc = (aee => aee.User);
+      IEnumerable<LinqGroup<User, AclExpansionEntry>> aclExpansionUserGrouping = GetAclExpansionUserGrouping (aclExpansion, groupingKeyFunc);
+
+      foreach (var userGroup in aclExpansionUserGrouping)
+      {
+        bool newUserRow = true;
+        var userName = userGroup.Key.DisplayName;
+        int userRowCount = userGroup.Items.Count();
+
+        var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
+
+        foreach (var roleGroup in aclExpansionRoleGrouping)
+        {
+          bool newRoleRow = true;
+
+          var role = roleGroup.Key;
+          int roleRowCount = roleGroup.Items.Count ();
+
+
+          var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
+
+          foreach (var classGroup in aclExpansionClassGrouping)
+          {
+            bool newClassRow = true;
+            var className = classGroup.Key.DisplayName;
+            int classRowCount = classGroup.Items.Count ();
+
+            foreach (var entry in classGroup.Items)
+            {
+              var stateArray = entry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
+
+              _htmlWriter.tr ();
+
+              if (newUserRow)
+              {
+                newUserRow = false;
+                WriteTableDataWithRowCount (userName, userRowCount);
+              }
+
+              if (newRoleRow)
+              {
+                newRoleRow = false;
+                WriteTableDataForRole (role, roleRowCount);
+              }
+
+              if (newClassRow)
+              {
+                newClassRow = false;
+                WriteTableDataWithRowCount (className, classRowCount);
+              }
+
+              //WriteTableDataWithAddendum (userName, userRowCount);
+              //WriteTableDataForRole (role, roleRowCount);
+              //WriteTableDataWithRowCount (className, classRowCount);
+
+              tdBodyStates (stateArray);
+              tdBodyConditions (entry.AccessConditions);
+              tdBodyAccessTypes (entry.AccessTypeDefinitions);
+              _htmlWriter.trEnd ();
+
+            }
+          }
+        }
+      }
+    }
+
+
+
+    private IEnumerable<LinqGroup<T, AclExpansionEntry>> GetAclExpansionGrouping<T, TIn> (
+      LinqGroup<TIn, AclExpansionEntry> linqGroup,
+      Func<AclExpansionEntry, T> groupingKeyFunc)
+    {
+      return from aee in linqGroup.Items
+             //group aee by aee.Role
+             group aee by groupingKeyFunc (aee)
+               into groupEntries
+               select ObjectMother.LinqGroup.New (groupEntries);
+    }
+
+
+    private IEnumerable<LinqGroup<User, AclExpansionEntry>> GetAclExpansionUserGrouping (List<AclExpansionEntry> aclExpansion,
+      Func<AclExpansionEntry, User> groupingKeyFunc)
+    {
+      return from aee in aclExpansion
+             group aee by groupingKeyFunc (aee)
+             into groupEntries
+                 select ObjectMother.LinqGroup.New(groupEntries);
+    }
+  }
+
+  public class LinqGroup<TKey, Tentry>
+  {
+    public LinqGroup (IGrouping<TKey, Tentry> items)
+    {
+      Items = items;
+    }
+
+    public TKey Key
+    {
+      get { return Items.Key; }
+    }
+    public IGrouping<TKey, Tentry> Items { get; private set; }
+  }
+
+}
+
+
+namespace ObjectMother
+{
+  public class LinqGroup
+  {
+    public static Remotion.SecurityManager.AclTools.Expansion.LinqGroup<TKey, Tentry> New<TKey, Tentry> (IGrouping<TKey, Tentry> items)
+    {
+      return new Remotion.SecurityManager.AclTools.Expansion.LinqGroup<TKey, Tentry> (items);
     }
   }
 }

@@ -111,16 +111,30 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return XmlWriter.Create (textWriter, settings);
     }
 
-    public void Value (string s)
+    public HtmlWriter Value (string s)
     {
       _xmlWriter.WriteValue(s);
+      return this;
     }
 
-    public void Value (object obj)
+    public HtmlWriter Value (object obj)
     {
       _xmlWriter.WriteValue (obj);
+      return this;
     }
 
+    public HtmlWriter br ()
+    {
+      _xmlWriter.WriteStartElement ("br");
+      _xmlWriter.WriteEndElement ();
+      return this;
+    }
+
+
+    //------------------------------------------------------------
+    // Dispose
+    //------------------------------------------------------------
+    
     public void Close ()
     {
       Dispose ();
@@ -128,13 +142,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void Dispose ()
     {
-      _xmlWriter.Close();
-    }
-
-    public void br ()
-    {
-      _xmlWriter.WriteStartElement ("br");
-      _xmlWriter.WriteEndElement ();
+      _xmlWriter.Close ();
     }
   }
 }
