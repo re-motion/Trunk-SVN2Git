@@ -14,8 +14,10 @@ using System.IO;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
-using PreProcessingSubFunctionState=Remotion.Web.ExecutionEngine.WxePageStepExecutionStates.Execute.PreProcessingSubFunctionState;
+using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
+using PreProcessingSubFunctionState = Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.Execute.PreProcessingSubFunctionState;
+using ExecuteByRedirect_PreProcessingSubFunctionState = 
+  Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionState;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -170,7 +172,7 @@ namespace Remotion.Web.ExecutionEngine
 
       _wxeHandler = parameters.Page.WxeHandler;
 
-      _executionState = new WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionState (this, parameters, returnOptions);
+      _executionState = new ExecuteByRedirect_PreProcessingSubFunctionState (this, parameters, returnOptions);
 
       Execute();
     }

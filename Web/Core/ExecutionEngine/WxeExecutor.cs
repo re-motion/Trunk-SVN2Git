@@ -13,7 +13,7 @@ using System.Collections.Specialized;
 using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.ExecutionEngine.WxePageStepExecutionStates;
+using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
