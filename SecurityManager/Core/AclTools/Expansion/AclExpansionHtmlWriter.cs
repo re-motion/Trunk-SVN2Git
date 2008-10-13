@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       WriteTableStart (html);
       WriteTableHeaders (html);
-      WriteTableBody (html, aclExpansion);
+      WriteTableBody (aclExpansion);
       WriteTableEnd (html);
 
       WriteEndPage (html);
@@ -332,10 +332,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
-    private void WriteTableBody (HtmlWriter html, List<AclExpansionEntry> aclExpansion)
+    private void WriteTableBody (List<AclExpansionEntry> aclExpansion)
     {
-      Func<AclExpansionEntry, User> groupingKeyFunc = (aee => aee.User);
-      IEnumerable<LinqGroup<User, AclExpansionEntry>> aclExpansionUserGrouping = GetAclExpansionUserGrouping (aclExpansion, groupingKeyFunc);
+      var aclExpansionUserGrouping = GetAclExpansionGrouping (aclExpansion, (aee => aee.User));
 
       foreach (var userGroup in aclExpansionUserGrouping)
       {
@@ -414,7 +413,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    private IEnumerable<LinqGroup<User, AclExpansionEntry>> GetAclExpansionUserGrouping (List<AclExpansionEntry> aclExpansion,
+    private IEnumerable<LinqGroup<User, AclExpansionEntry>> GetAclExpansionGrouping (List<AclExpansionEntry> aclExpansion,
       Func<AclExpansionEntry, User> groupingKeyFunc)
     {
       return from aee in aclExpansion
