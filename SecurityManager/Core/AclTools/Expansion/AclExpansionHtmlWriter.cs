@@ -220,6 +220,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public void WriteTableBody (List<AclExpansionEntry> aclExpansion)
     {
       var aclExpansionUserGrouping = GetAclExpansionGrouping (aclExpansion, (aee => aee.User));
+
       foreach (var userGroup in aclExpansionUserGrouping)
       {
         WriteTableBody_ProcessUserGroup(userGroup);
@@ -228,9 +229,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void WriteTableBody_ProcessUserGroup (LinqGroup<User, AclExpansionEntry> userGroup)
     {
-      var userName = userGroup.Key.DisplayName;
-      WriteTableDataWithRowCount (userName, userGroup.Items.Count ());
-
+      WriteTableDataWithRowCount (userGroup.Key.DisplayName, userGroup.Items.Count ());
+  
       var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
 
       foreach (var roleGroup in aclExpansionRoleGrouping)
@@ -242,7 +242,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public void WriteTableBody_ProcessRoleGroup (LinqGroup<Role, AclExpansionEntry> roleGroup)
     {
       WriteTableDataForRole (roleGroup.Key, roleGroup.Items.Count ());
-
+ 
       var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
 
       foreach (var classGroup in aclExpansionClassGrouping)
@@ -254,6 +254,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public void WriteTableBody_ProcessClassGroup (LinqGroup<SecurableClassDefinition, AclExpansionEntry> classGroup)
     {
       WriteTableDataWithRowCount (classGroup.Key.DisplayName, classGroup.Items.Count ());
+      
       foreach (var aclExpansionEntry in classGroup.Items)
       {
         WriteTableRowBeginIfNotInTableRow ();
