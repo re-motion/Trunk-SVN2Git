@@ -37,7 +37,7 @@ namespace Remotion.Mixins.CodeGeneration
       _concreteTypeBuilder = concreteTypeBuilder;
     }
 
-    public Type GetConcreteType (IModuleManager moduleManager, TargetClassDefinition targetClassDefinition, INameProvider nameProvider, INameProvider mixinNameProvider)
+    public Type GetOrCreateConcreteType (IModuleManager moduleManager, TargetClassDefinition targetClassDefinition, INameProvider nameProvider, INameProvider mixinNameProvider)
     {
       ArgumentUtility.CheckNotNull ("moduleManager", moduleManager);
       ArgumentUtility.CheckNotNull ("targetClassDefinition", targetClassDefinition);
@@ -67,7 +67,7 @@ namespace Remotion.Mixins.CodeGeneration
       }
     }
 
-    public ConcreteMixinType GetConcreteMixinType (ITypeGenerator mixedTypeGenerator, MixinDefinition mixinDefinition, INameProvider mixinNameProvider)
+    public ConcreteMixinType GetOrCreateConcreteMixinType (ITypeGenerator mixedTypeGenerator, MixinDefinition mixinDefinition, INameProvider mixinNameProvider)
     {
       ArgumentUtility.CheckNotNull ("mixedTypeGenerator", mixedTypeGenerator);
       ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
@@ -92,7 +92,7 @@ namespace Remotion.Mixins.CodeGeneration
       lock (_lockObject)
       {
         ConcreteMixinType type;
-        _mixinTypeCache.TryGetValue (mixinDefinition, out type);
+        _mixinTypeCache.TryGetValue (mixinDefinition.GetConcreteMixinTypeCacheKey(), out type);
         return type;
       }
     }
@@ -129,7 +129,7 @@ namespace Remotion.Mixins.CodeGeneration
           foreach (Tuple<MethodInfo, MethodInfo> wrapper in methodWrappers)
             concreteMixinType.AddMethodWrapper (wrapper.A, wrapper.B);
 
-          _mixinTypeCache.GetOrCreateValue (mixinDefinition, delegate { return concreteMixinType; });
+          _mixinTypeCache.GetOrCreateValue (mixinDefinition.GetConcreteMixinTypeCacheKey(), delegate { return concreteMixinType; });
         }
       }
     }

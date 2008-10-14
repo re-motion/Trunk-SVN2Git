@@ -50,10 +50,31 @@ namespace Remotion.UnitTests.Mixins.Definitions
     }
 
     [Test]
-    public void GetConcreteMixinTypeCacheKey ()
+    public void GetConcreteMixinTypeCacheKey_NoOverrides ()
     {
       var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
       Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.SameAs (definition));
+    }
+
+    [Test]
+    public void GetConcreteMixinTypeCacheKey_Overrides_TypeOverridesMethod ()
+    {
+      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedClassOverridingMixinMethod)).Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
+      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.SameAs (typeof (DerivedClassOverridingMixinMethod)));
+    }
+
+    [Test]
+    public void GetConcreteMixinTypeCacheKey_Overrides_TypeOverridesMethod_AndBaseOverridesOtherMethod ()
+    {
+      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedDerivedClassOverridingMixinMethod)).Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
+      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.SameAs (typeof (DerivedDerivedClassOverridingMixinMethod)));
+    }
+
+    [Test]
+    public void GetConcreteMixinTypeCacheKey_Overrides_BaseOverrides ()
+    {
+      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedDerivedDerivedClassOverridingMixinMethod)).Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
+      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.SameAs (typeof (DerivedDerivedClassOverridingMixinMethod)));
     }
 
     [Test]

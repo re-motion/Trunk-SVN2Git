@@ -157,7 +157,13 @@
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinTypeGeneratorTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\AdvancedCachingTest.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\PublicWrapperTest.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseClassNotOverridingMixinMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedDerivedClassOverridingMixinMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedDerivedDerivedClassOverridingMixinMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedClassOverridingMixinMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithMethodsOverriddenByDifferentClasses.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\TargetClassCallingIntroducedMethodFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinIntroducingMethodCalledFromCtor.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinOverridingMethodCalledFromCtor.cs" />

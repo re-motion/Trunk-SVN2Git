@@ -154,8 +154,28 @@ namespace Remotion.Mixins.Definitions
     }
 
     public object GetConcreteMixinTypeCacheKey ()
-    {
-      return this;
+    { 
+      // for each overridden member, find its topmost definition
+      // from the topmost definitions, find the lowest class in the inheritance hierarchy
+      // use this class as cache key
+      
+      Type lowestOverrider = null;
+      foreach (var member in GetAllMethods())
+      {
+        foreach (var overrider in member.Overrides)
+        {
+          var topMostDeclaringType = overrider.MethodInfo.GetBaseDefinition ().DeclaringType;
+          if (lowestOverrider == null || lowestOverrider.IsAssignableFrom (topMostDeclaringType))
+            lowestOverrider = topMostDeclaringType;
+          else
+            Assertion.IsTrue (topMostDeclaringType.IsAssignableFrom (lowestOverrider), "only linear type hierarchy supported");
+        }
+      }
+
+      if (lowestOverrider != null)
+        return lowestOverrider;
+      else // if no overrides, use the mixin definition as a cache
+        return this;
     }
   }
 }

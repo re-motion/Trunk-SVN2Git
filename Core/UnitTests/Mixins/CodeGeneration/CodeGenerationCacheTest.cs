@@ -16,6 +16,7 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.Utilities;
 using Rhino.Mocks;
 using Remotion.Mixins;
 using Remotion.Development.UnitTesting;
@@ -68,7 +69,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       _mockRepository.ReplayAll();
 
-      Type result = _cache.GetConcreteType (_moduleManagerMock, _targetClassDefinition, _nameProvider1, _nameProvider2);
+      Type result = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassDefinition, _nameProvider1, _nameProvider2);
       Assert.That (result, Is.SameAs (typeof (string)));
 
       _mockRepository.VerifyAll();
@@ -83,8 +84,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       _mockRepository.ReplayAll();
 
-      Type result1 = _cache.GetConcreteType (_moduleManagerMock, _targetClassDefinition, _nameProvider1, _nameProvider2);
-      Type result2 = _cache.GetConcreteType (_moduleManagerMock, _targetClassDefinition, _nameProvider1, _nameProvider2);
+      Type result1 = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassDefinition, _nameProvider1, _nameProvider2);
+      Type result2 = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassDefinition, _nameProvider1, _nameProvider2);
       Assert.That (result2, Is.SameAs (result1));
 
       _mockRepository.VerifyAll();
@@ -101,7 +102,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       _mockRepository.ReplayAll();
 
-      var result = _cache.GetConcreteMixinType (_typeGeneratorMock, _mixinDefinition, _nameProvider1);
+      var result = _cache.GetOrCreateConcreteMixinType (_typeGeneratorMock, _mixinDefinition, _nameProvider1);
       Assert.That (result, Is.SameAs (concreteMixinType));
 
       _mockRepository.VerifyAll();
@@ -118,8 +119,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       _mockRepository.ReplayAll();
 
-      var result1 = _cache.GetConcreteMixinType (_typeGeneratorMock, _mixinDefinition, _nameProvider1);
-      var result2 = _cache.GetConcreteMixinType (_typeGeneratorMock, _mixinDefinition, _nameProvider1);
+      var result1 = _cache.GetOrCreateConcreteMixinType (_typeGeneratorMock, _mixinDefinition, _nameProvider1);
+      var result2 = _cache.GetOrCreateConcreteMixinType (_typeGeneratorMock, _mixinDefinition, _nameProvider1);
       Assert.That (result2, Is.SameAs (result1));
 
       _mockRepository.VerifyAll();
@@ -142,7 +143,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       _mockRepository.ReplayAll();
 
-      var result1 = _cache.GetConcreteMixinType (_typeGeneratorMock, _mixinDefinition, _nameProvider1);
+      var result1 = _cache.GetOrCreateConcreteMixinType (_typeGeneratorMock, _mixinDefinition, _nameProvider1);
       var result2 = _cache.GetConcreteMixinTypeFromCacheOnly (_mixinDefinition);
       Assert.That (result2, Is.Not.Null);
       Assert.That (result2, Is.SameAs (result1));
@@ -165,10 +166,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       _cache.ImportTypes (typesToImport, metadataImporterStub);
 
-      Assert.That (_cache.GetConcreteType (_moduleManagerMock, targetClassDefinition1, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType1)));
-      Assert.That (_cache.GetConcreteType (_moduleManagerMock, targetClassDefinition2, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType1)));
-      Assert.That (_cache.GetConcreteType (_moduleManagerMock, targetClassDefinition3, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType2)));
-      Assert.That (_cache.GetConcreteType (_moduleManagerMock, targetClassDefinition4, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType2)));
+      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition1, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType1)));
+      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition2, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType1)));
+      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition3, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType2)));
+      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition4, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType2)));
     }
 
     [Test]
@@ -178,17 +179,21 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var mixinDefinition2 = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin1)).Mixins[0];
       var mixinDefinition3 = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin2)).Mixins[0];
       var mixinDefinition4 = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin2)).Mixins[0];
+      var mixinDefinition5 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedDerivedDerivedClassOverridingMixinMethod)).Mixins[0];
 
-      var typesToImport = new[] { typeof (BT1Mixin1), typeof (BT1Mixin2) };
+      var typesToImport = new[] { typeof (BT1Mixin1), typeof (BT1Mixin2), typeof (MixinWithMethodsOverriddenByDifferentClasses) };
       var metadataImporterStub = MockRepository.GenerateStub<IConcreteTypeMetadataImporter> ();
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin1), TargetClassDefinitionCache.Current)).Return (new TargetClassDefinition[0]);
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin2), TargetClassDefinitionCache.Current)).Return (new TargetClassDefinition[0]);
+      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (MixinWithMethodsOverriddenByDifferentClasses), TargetClassDefinitionCache.Current)).Return (new TargetClassDefinition[0]);
      
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin1), TargetClassDefinitionCache.Current)).Return (new[] { mixinDefinition1, mixinDefinition2 });
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin2), TargetClassDefinitionCache.Current)).Return (new[] { mixinDefinition3, mixinDefinition4 });
+      metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (MixinWithMethodsOverriddenByDifferentClasses), TargetClassDefinitionCache.Current)).Return (new[] { mixinDefinition5 });
       
       metadataImporterStub.Stub (stub => stub.GetMethodWrappersForMixinType (typeof (BT1Mixin1))).Return (new Tuple<MethodInfo, MethodInfo>[0]);
       metadataImporterStub.Stub (stub => stub.GetMethodWrappersForMixinType (typeof (BT1Mixin2))).Return (new Tuple<MethodInfo, MethodInfo>[0]);
+      metadataImporterStub.Stub (stub => stub.GetMethodWrappersForMixinType (typeof (MixinWithMethodsOverriddenByDifferentClasses))).Return (new Tuple<MethodInfo, MethodInfo>[0]);
 
       _cache.ImportTypes (typesToImport, metadataImporterStub);
 
@@ -196,6 +201,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       Assert.That (_cache.GetConcreteMixinTypeFromCacheOnly (mixinDefinition2).GeneratedType, Is.SameAs (typeof (BT1Mixin1)));
       Assert.That (_cache.GetConcreteMixinTypeFromCacheOnly (mixinDefinition3).GeneratedType, Is.SameAs (typeof (BT1Mixin2)));
       Assert.That (_cache.GetConcreteMixinTypeFromCacheOnly (mixinDefinition4).GeneratedType, Is.SameAs (typeof (BT1Mixin2)));
+      Assert.That (_cache.GetConcreteMixinTypeFromCacheOnly (mixinDefinition5).GeneratedType, Is.SameAs (typeof (MixinWithMethodsOverriddenByDifferentClasses)));
     }
 
     [Test]
