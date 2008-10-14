@@ -9,8 +9,10 @@
  */
 
 using System;
+using System.Globalization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectStringFormatterServiceTests
@@ -39,10 +41,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectStringFormatterSer
       Expect.Call (_mockBusinessObject.GetProperty (_mockProperty)).Return (new DateTime (2000, 1, 1));
       _mockRepository.ReplayAll();
 
-      string actual = _stringFormatterService.GetPropertyString (_mockBusinessObject, _mockProperty, null);
+      using (new CultureScope (new CultureInfo ("de-de"), new CultureInfo ("de-de")))
+      {
+        string actual = _stringFormatterService.GetPropertyString (_mockBusinessObject, _mockProperty, null);
 
-      _mockRepository.VerifyAll();
-      Assert.That (actual, Is.EqualTo ("01.01.2000 00:00:00"));
+        _mockRepository.VerifyAll();
+        Assert.That (actual, Is.EqualTo ("01.01.2000 00:00:00"));
+      }
     }
 
     [Test]
