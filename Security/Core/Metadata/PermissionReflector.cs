@@ -18,7 +18,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Security.Metadata
 {
-  public class PermissionReflector: ExtendedProviderBase, IPermissionProvider
+  public class PermissionReflector : ExtendedProviderBase, IPermissionProvider
   {
     // constants
 
@@ -43,7 +43,7 @@ namespace Remotion.Security.Metadata
 
     // construction and disposing
 
-    public PermissionReflector()
+    public PermissionReflector ()
         : this ("Reflection", new NameValueCollection())
     {
     }
@@ -68,9 +68,8 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
 
-      return
-          GetPermissionsFromCache<DemandMethodPermissionAttribute> (
-              type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+      return GetPermissionsFromCache<DemandMethodPermissionAttribute> (
+          type, methodName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
     }
 
     public Enum[] GetRequiredPropertyReadPermissions (Type type, string propertyName)
@@ -78,9 +77,8 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      return
-          GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (
-              type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      return GetPermissionsFromCache<DemandPropertyReadPermissionAttribute> (
+          type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
     public Enum[] GetRequiredPropertyWritePermissions (Type type, string propertyName)
@@ -88,22 +86,18 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
 
-      return
-          GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (
-              type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      return GetPermissionsFromCache<DemandPropertyWritePermissionAttribute> (
+          type, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
     public Enum[] GetPermissions<TAttribute> (MemberInfo methodInfo) where TAttribute: BaseDemandPermissionAttribute
     {
-      if (!methodInfo.IsDefined (typeof (TAttribute), true))
+      var permissionAttribute = AttributeUtility.GetCustomAttribute<TAttribute>(methodInfo, true);
+      if (permissionAttribute == null)
         return new Enum[0];
 
-      TAttribute[] permissionAttributes = (TAttribute[]) methodInfo.GetCustomAttributes (typeof (TAttribute), true);
-
-      TAttribute permission = permissionAttributes[0];
-
-      List<Enum> permissions = new List<Enum>();
-      foreach (Enum accessTypeEnum in permission.GetAccessTypes())
+      var permissions = new List<Enum> ();
+      foreach (Enum accessTypeEnum in permissionAttribute.GetAccessTypes())
       {
         if (!permissions.Contains (accessTypeEnum))
           permissions.Add (accessTypeEnum);
@@ -115,8 +109,7 @@ namespace Remotion.Security.Metadata
     private Enum[] GetPermissionsFromCache<TAttribute> (Type type, string memberName, BindingFlags bindingFlags)
         where TAttribute: BaseDemandPermissionAttribute
     {
-      Tuple<Type, Type, string, BindingFlags> cacheKey =
-          new Tuple<Type, Type, string, BindingFlags> (typeof (TAttribute), type, memberName, bindingFlags);
+      var cacheKey = new Tuple<Type, Type, string, BindingFlags> (typeof (TAttribute), type, memberName, bindingFlags);
       Enum[] cachedPermissions;
       if (!s_cache.TryGetValue (cacheKey, out cachedPermissions))
       {
@@ -142,25 +135,31 @@ namespace Remotion.Security.Metadata
       if (!TypeHasMember (type, memberType, memberName, bindingFlags))
         throw new ArgumentException (string.Format (c_memberNotFoundMessage, memberName), "memberName");
 
-      MemberInfo[] foundMembers = type.FindMembers (memberType, bindingFlags, IsSecuredMember<TAttribute>, memberName);
-      if (foundMembers.Length == 0)
+      var foundMembers = new List<MemberInfo>();
+      for (Type currentType = type; currentType != null; currentType = currentType.BaseType)
+      {
+        foundMembers.AddRange (
+            currentType.FindMembers (memberType, bindingFlags | BindingFlags.DeclaredOnly, IsSecuredMember<TAttribute>, memberName));
+      }
+      if (foundMembers.Count == 0)
         return new Enum[0];
 
-      if (foundMembers.Length > 1)
-        throw new ArgumentException (string.Format (c_memberHasMultipleAttributesMessage, memberName, attributeName), "memberName");
-
-      MemberInfo foundMember = (MemberInfo) foundMembers[0];
+      MemberInfo foundMember = foundMembers[0];
       if (type.BaseType != null && foundMember.DeclaringType == type && TypeHasMember (type.BaseType, memberType, memberName, bindingFlags))
+      {
         throw new ArgumentException (
             string.Format (c_memberPermissionsOnlyInBaseClassMessage, memberName, type.FullName, attributeName), "memberName");
+      }
+
+      if (foundMembers.Count > 1)
+        throw new ArgumentException (string.Format (c_memberHasMultipleAttributesMessage, memberName, attributeName), "memberName");
 
       return GetPermissions<TAttribute> (foundMember);
     }
 
     private MemberTypes GetApplicableMemberTypesFromAttributeType (Type attributeType)
     {
-      AttributeUsageAttribute[] attributeUsageAttributes =
-          (AttributeUsageAttribute[]) attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), false);
+      var attributeUsageAttributes = (AttributeUsageAttribute[]) attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), false);
       AttributeTargets targets = attributeUsageAttributes[0].ValidOn;
 
       MemberTypes memberTypes = 0;
@@ -183,7 +182,7 @@ namespace Remotion.Security.Metadata
     private bool IsSecuredMember<TAttribute> (MemberInfo member, object filterCriteria) where TAttribute: BaseDemandPermissionAttribute
     {
       string memberName = (string) filterCriteria;
-      return member.Name == memberName && member.IsDefined (typeof (TAttribute), true);
+      return member.Name == memberName && member.IsDefined (typeof (TAttribute), false);
     }
   }
 }

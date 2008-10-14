@@ -39,5 +39,10 @@ namespace Remotion.Security.UnitTests.Core.SampleDomain
     {
       base.Print ();
     }
+
+    public override void Record ()
+    {
+      base.Record ();
+    }
   }
 }

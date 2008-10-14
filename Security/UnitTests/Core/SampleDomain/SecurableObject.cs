@@ -69,7 +69,7 @@ namespace Remotion.Security.UnitTests.Core.SampleDomain
     }
 
     [DemandMethodPermission (GeneralAccessTypes.Edit)]
-    public void Record ()
+    public virtual void Record ()
     {
     }
 

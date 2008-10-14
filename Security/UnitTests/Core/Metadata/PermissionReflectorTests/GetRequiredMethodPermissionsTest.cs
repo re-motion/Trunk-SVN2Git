@@ -110,24 +110,36 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The member 'Sve' could not be found.\r\nParameter name: memberName")]
-    public void Test_NotExistingMethod ()
+    public void Test_OverriddenMethodWithPermissionFromBaseMethod ()
     {
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), "Sve");
+      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (DerivedSecurableObject), "Record");
+
+      Assert.AreEqual (1, requiredAccessTypes.Length);
+      Assert.Contains(GeneralAccessTypes.Edit, requiredAccessTypes);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The member 'Send' has multiple DemandMethodPermissionAttribute defined.\r\nParameter name: memberName")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The member 'Sve' could not be found.\r\nParameter name: memberName")]
+    public void Test_NotExistingMethod ()
+    {
+      _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), "Sve");
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException),
+      ExpectedMessage = "The DemandMethodPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
+        + "A member 'Send' exists in class 'Remotion.Security.UnitTests.Core.SampleDomain.DerivedSecurableObject' and its base class."
+        + "\r\nParameter name: memberName")]
     public void Test_PermissionsDeclaredOnBaseAndDerivedClass ()
     {
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (DerivedSecurableObject), "Send");
+      _permissionReflector.GetRequiredMethodPermissions (typeof (DerivedSecurableObject), "Send");
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The member 'Load' has multiple DemandMethodPermissionAttribute defined.\r\nParameter name: memberName")]
     public void Test_PermissionsDeclaredOnOverloads ()
     {
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), "Load");
+      _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), "Load");
     }
 
     [Test]
@@ -135,9 +147,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata.PermissionReflectorTests
       ExpectedMessage = "The DemandMethodPermissionAttribute must not be defined on members overriden or redefined in derived classes. "
         + "A member 'Print' exists in class 'Remotion.Security.UnitTests.Core.SampleDomain.DerivedSecurableObject' and its base class."
         + "\r\nParameter name: memberName")]
-    public void Test_VirtualMethod ()
+    public void Test_OverriddenMethodDefinesPermission ()
     {
-      Enum[] requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (DerivedSecurableObject), "Print");
+      _permissionReflector.GetRequiredMethodPermissions (typeof (DerivedSecurableObject), "Print");
     }
 
     [Test]
