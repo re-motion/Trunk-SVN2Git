@@ -23,6 +23,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   public struct PropertyIndexer : IEnumerable<PropertyAccessor>
   {
+    // TODO: consider caching PropertyAccessors per object - or - introduce instance-independent flyweight and cache per class
+
     private readonly DomainObject _domainObject;
 
     /// <summary>
