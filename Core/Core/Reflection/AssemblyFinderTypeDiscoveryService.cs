@@ -69,6 +69,7 @@ namespace Remotion.Reflection
 
     private IEnumerable<Type> GetTypes (Assembly assembly, Type baseType)
     {
+      // TODO: catch exceptions thrown here, especially LoaderExceptions
       Type[] allTypesInAssembly = assembly.GetTypes ();
       if (baseType == null)
         return allTypesInAssembly;
