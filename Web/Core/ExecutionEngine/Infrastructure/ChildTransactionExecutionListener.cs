@@ -54,12 +54,15 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public void OnExecutionStop (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
+      //_transactionStrategy.State == Playing
+      Assertion.IsNotNull (_transactionStrategy.Scope);
       _transactionStrategy.OnExecutionStop (context, _innerListener);
     }
 
     public void OnExecutionPause (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
+      //_transactionStrategy.State == Playing
       Assertion.IsNotNull (_transactionStrategy.Scope);
       _innerListener.OnExecutionPause (context);
     }
@@ -67,6 +70,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public void OnExecutionFail (WxeContext context, Exception exception)
     {
       ArgumentUtility.CheckNotNull ("context", context);
+      //_transactionStrategy.State == Started
+      Assertion.IsNotNull (_transactionStrategy.Scope);
       _transactionStrategy.OnExecutionFail (context, _innerListener, exception);
     }
   }
