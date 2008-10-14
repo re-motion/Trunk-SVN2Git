@@ -10,6 +10,7 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace OBWTest
 {
@@ -18,6 +19,7 @@ namespace OBWTest
 public class CompleteBocTestMainWxeFunction: WxeFunction
 {
   public CompleteBocTestMainWxeFunction ()
+    : base (new NoneTransactionMode ())
   {
     ReturnUrl = "StartForm.aspx";
     Variables["id"] = new Guid(0,0,0,0,0,0,0,0,0,0,1).ToString();

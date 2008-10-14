@@ -141,11 +141,6 @@ namespace Remotion.Web.ExecutionEngine
     private string _functionToken;
     private string _returnUrl;
 
-    protected WxeFunction (params object[] actualParameters)
-      : this (new NoneTransactionMode (), actualParameters)
-    {
-    }
-
     protected WxeFunction (ITransactionMode transactionMode, params object[] actualParameters)
     {
       ArgumentUtility.CheckNotNull ("transactionMode", transactionMode);

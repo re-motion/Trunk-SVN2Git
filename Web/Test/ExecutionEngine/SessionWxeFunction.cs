@@ -12,17 +12,19 @@ using System;
 using System.Web;
 using System.Web.SessionState;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
   public class SessionWxeFunction: WxeFunction
   {
     public SessionWxeFunction ()
+      : base (new NoneTransactionMode ())
     {
     }
 
     public SessionWxeFunction (params object[] args)
-        : base (args)
+        : base (new NoneTransactionMode(), args)
     {
     }
 

@@ -10,6 +10,7 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace OBWTest
 {
@@ -21,7 +22,7 @@ public class ViewPersonDetailsWxeFunction: WxeFunction
       new WxeParameterDeclaration ("id", false, WxeParameterDirection.In, typeof (string))};
 
   public ViewPersonDetailsWxeFunction()
-    :base (s_parameters)
+    :base (new NoneTransactionMode(), s_parameters)
   {
   }
 

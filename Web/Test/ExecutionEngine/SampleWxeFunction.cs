@@ -57,6 +57,7 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.ExecutionEngine.Obsolete;
 
 namespace Remotion.Web.Test.ExecutionEngine
@@ -64,6 +65,7 @@ namespace Remotion.Web.Test.ExecutionEngine
   public class SampleWxeFunction: WxeFunction, ISampleFunctionVariables
   {
     public SampleWxeFunction ()
+      : base (new NoneTransactionMode ())
     {
       ReturnUrl = "~/Start.aspx";
     }
@@ -97,14 +99,15 @@ namespace Remotion.Web.Test.ExecutionEngine
   public class SampleWxeSubFunction: WxeFunction, ISampleFunctionVariables
   {
     public SampleWxeSubFunction ()
+      : base (new NoneTransactionMode ())
     {
     }
     public SampleWxeSubFunction (params object[] args)
-        : base (args)
+        : base (new NoneTransactionMode (), args)
     {
     }
     public SampleWxeSubFunction (string var1, string var2)
-        : base (var1, var2)
+        : base (new NoneTransactionMode (), var1, var2)
     {
     }
 

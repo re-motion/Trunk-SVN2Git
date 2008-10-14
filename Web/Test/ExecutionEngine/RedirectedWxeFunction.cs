@@ -12,6 +12,7 @@ using System;
 using System.Web;
 using System.Web.SessionState;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Test.ExecutionEngine
@@ -19,6 +20,7 @@ namespace Remotion.Web.Test.ExecutionEngine
   public class RedirectedSubWxeFunction: WxeFunction
   {
     public RedirectedSubWxeFunction ()
+      : base (new NoneTransactionMode ())
     {
     }
 
@@ -31,11 +33,12 @@ namespace Remotion.Web.Test.ExecutionEngine
   public class RedirectedWxeFunction: WxeFunction
   {
     public RedirectedWxeFunction ()
+      : base (new NoneTransactionMode ())
     {
     }
 
     public RedirectedWxeFunction (params object[] args)
-        : base (args)
+        : base (new NoneTransactionMode(), args)
     {
     }
 

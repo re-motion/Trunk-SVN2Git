@@ -21,6 +21,7 @@ using System.Web.UI.HtmlControls;
 using System.Globalization;
 using System.Collections.Specialized;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.ExecutionEngine.Obsolete;
 using Remotion.Web.Test.ExecutionEngine;
 using Remotion.Web.Utilities;
@@ -187,12 +188,12 @@ namespace Remotion.Web.Test.ExecutionEngine
     public class SubFunction: WxeFunction, ISampleFunctionVariables
     {
       public SubFunction (string var1, string var2)
-          : base (var1, var2)
+          : base (new NoneTransactionMode(), var1, var2)
       {
       }
 
       public SubFunction (params object[] args)
-          : base (args)
+          : base (new NoneTransactionMode(), args)
       {
       }
 

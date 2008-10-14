@@ -10,20 +10,31 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.UrlMapping
 {
+  public class FirstMappedFunction : WxeFunction
+  {
+    public FirstMappedFunction ()
+        : base (new NoneTransactionMode())
+    {
+    }
+  }
 
-public class FirstMappedFunction: WxeFunction
-{
-}
+  public class SecondMappedFunction : WxeFunction
+  {
+    public SecondMappedFunction ()
+        : base (new NoneTransactionMode())
+    {
+    }
+  }
 
-public class SecondMappedFunction: WxeFunction
-{
-}
-
-public class UnmappedFunction: WxeFunction
-{
-}
-
+  public class UnmappedFunction : WxeFunction
+  {
+    public UnmappedFunction ()
+        : base (new NoneTransactionMode())
+    {
+    }
+  }
 }

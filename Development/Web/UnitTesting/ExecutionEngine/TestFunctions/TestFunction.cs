@@ -10,6 +10,7 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Development.Web.UnitTesting.ExecutionEngine.TestFunctions
 {
@@ -23,12 +24,13 @@ namespace Remotion.Development.Web.UnitTesting.ExecutionEngine.TestFunctions
     private string _executionOrder = string.Empty;
 
     public TestFunction ()
+      :base (new NoneTransactionMode())
     {
       ReturnUrl = TestFunction.ReturnUrlValue;
     }
 
     public TestFunction (params object[] args)
-        : base (args)
+        : base (new NoneTransactionMode(), args)
     {
       ReturnUrl = TestFunction.ReturnUrlValue;
     }

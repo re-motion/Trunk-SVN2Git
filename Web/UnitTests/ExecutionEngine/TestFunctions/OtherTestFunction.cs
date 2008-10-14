@@ -10,6 +10,7 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
@@ -21,12 +22,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
     private string _lastExecutedStepID;
 
     public OtherTestFunction ()
+      : base (new NoneTransactionMode ())
     {
       ReturnUrl = TestFunction.ReturnUrlValue;
     }
 
     public OtherTestFunction (params object[] args)
-        : base (args)
+        : base (new NoneTransactionMode (), args)
     {
       ReturnUrl = TestFunction.ReturnUrlValue;
     }

@@ -10,6 +10,7 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.UnitTests.Security.ExecutionEngine
 {
@@ -24,7 +25,7 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
     // construction and disposing
 
     public TestFunctionWithoutParameters ()
-      : base ()
+      : base (new NoneTransactionMode ())
     {
     }
 

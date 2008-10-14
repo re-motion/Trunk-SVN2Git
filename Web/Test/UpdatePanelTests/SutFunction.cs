@@ -10,11 +10,17 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.Test.UpdatePanelTests
 {
   public class SutFunction : WxeFunction
   {
+    public SutFunction ()
+      : base (new NoneTransactionMode ())
+    {      
+    }
+
     private WxeStep Step1 = new WxePageStep ("~/UpdatePanelTests/SutForm.aspx");
   }
 }

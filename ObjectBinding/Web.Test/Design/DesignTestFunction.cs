@@ -10,6 +10,7 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace OBWTest.Design
 {
@@ -18,6 +19,7 @@ namespace OBWTest.Design
 public class DesignTestFunction: WxeFunction
 {
   public DesignTestFunction ()
+    : base (new NoneTransactionMode ())
   {
     ReturnUrl = "StartForm.aspx";
   }

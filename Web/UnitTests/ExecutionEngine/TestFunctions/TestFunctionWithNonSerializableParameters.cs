@@ -10,22 +10,24 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
   public class TestFunctionWithNonSerializableParameters: WxeFunction
   {
     public TestFunctionWithNonSerializableParameters()
+      : base (new NoneTransactionMode ())
     {
     }
 
     public TestFunctionWithNonSerializableParameters (params object[] args)
-        : base (args)
+        : base (new NoneTransactionMode (), args)
     {
     }
 
     public TestFunctionWithNonSerializableParameters (string StringValue, object ObjectValue)
-        : base (StringValue, ObjectValue)
+        : base (new NoneTransactionMode (), StringValue, ObjectValue)
     {
     }
 

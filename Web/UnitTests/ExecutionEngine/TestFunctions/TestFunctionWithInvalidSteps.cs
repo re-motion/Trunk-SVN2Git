@@ -10,17 +10,14 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
 {
   public class TestFunctionWithInvalidSteps: WxeFunction
   {
     public TestFunctionWithInvalidSteps()
-    {
-    }
-
-    public TestFunctionWithInvalidSteps (params object[] args)
-        : base (args)
+      : base (new NoneTransactionMode ())
     {
     }
 

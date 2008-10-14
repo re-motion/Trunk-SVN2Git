@@ -22,6 +22,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Utilities;
 using Remotion.Text;
 using Remotion.Web.ExecutionEngine.CodeGenerator.Schema;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine.CodeGenerator
 {
@@ -523,39 +524,14 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
 
       // add constructors to WXE function
 
-      // ctor () {}
-      CodeConstructor defaultCtor = new CodeConstructor ();
-      functionClass.Members.Add (defaultCtor);
-      defaultCtor.Attributes = MemberAttributes.Public;
+      // ctor () : base (new NoneTransactionMode()) {}
+      GenerateWxeFunctionDefaultConstructor(functionClass);
 
       // ctor (params object[] args): base (args) {}
-      // replace by (VarRef<type1> arg1, VarRef<type2> arg2, ...)
-      //CodeConstructor untypedCtor = new CodeConstructor ();
-      //functionClass.Members.Add (untypedCtor);
-      //untypedCtor.Attributes = MemberAttributes.Public;
-      //CodeParameterDeclarationExpression untypedParameters = new CodeParameterDeclarationExpression (
-      //    new CodeTypeReference (typeof (object[])),
-      //    "args");
-      //untypedParameters.CustomAttributes.Add (new CodeAttributeDeclaration ("System.ParamArrayAttribute"));
-      //untypedCtor.Parameters.Add (untypedParameters);
-      //untypedCtor.BaseConstructorArgs.Add (new CodeArgumentReferenceExpression ("args"));
+      // GenerateWxeFunctionConstructorWithParamsArray();
 
-      // ctor (<type1> inarg1, <type2> inarg2, ...): base (inarg1, inarg2, ...) {}
-      CodeConstructor typedCtor = new CodeConstructor ();
-      typedCtor.Attributes = MemberAttributes.Public;
-      foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
-      {
-        if (parameterDeclaration.Direction == WxeParameterDirection.Out)
-          break;
-
-        typedCtor.Parameters.Add (new CodeParameterDeclarationExpression (
-            new CodeTypeReference (parameterDeclaration.TypeName),
-            parameterDeclaration.Name));
-
-        typedCtor.BaseConstructorArgs.Add (new CodeArgumentReferenceExpression (parameterDeclaration.Name));
-      }
-      if (typedCtor.Parameters.Count > 0)
-        functionClass.Members.Add (typedCtor);
+      // ctor (<type1> inarg1, <type2> inarg2, ...): base (new NoneTransactionMode(), inarg1, inarg2, ...) {}
+      GenerateWxeFunctionContructorWithTypesParameters(functionDeclaration, functionClass);
 
       // <returnType> Call (IWxePage page, WxeExecuteFunctionOptions options, <type> [ref|out] param1, <type> [ref|out] param2, ...)
       CodeMemberMethod callMethod = new CodeMemberMethod ();
@@ -702,6 +678,57 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       else
         callMethodOverload.Statements.Add (callOverloadStatement);
 
+    }
+
+    /// <summary>
+    /// ctor () : base (new NoneTransactionMode()) {}
+    /// </summary>
+    private static void GenerateWxeFunctionDefaultConstructor (CodeTypeDeclaration functionClass)
+    {
+      CodeConstructor defaultCtor = new CodeConstructor ();
+      functionClass.Members.Add (defaultCtor);
+      defaultCtor.Attributes = MemberAttributes.Public;
+      defaultCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
+    }
+
+    /// <summary>
+    /// ctor (params object[] args): base (args) {}
+    /// </summary>
+    private static void GenerateWxeFunctionConstructorWithParamsArray ()
+    {
+      // replace by (VarRef<type1> arg1, VarRef<type2> arg2, ...)
+      //CodeConstructor untypedCtor = new CodeConstructor ();
+      //functionClass.Members.Add (untypedCtor);
+      //untypedCtor.Attributes = MemberAttributes.Public;
+      //CodeParameterDeclarationExpression untypedParameters = new CodeParameterDeclarationExpression (
+      //    new CodeTypeReference (typeof (object[])),
+      //    "args");
+      //untypedParameters.CustomAttributes.Add (new CodeAttributeDeclaration ("System.ParamArrayAttribute"));
+      //untypedCtor.Parameters.Add (untypedParameters);
+      //untypedCtor.BaseConstructorArgs.Add (new CodeArgumentReferenceExpression ("args"));
+    }
+
+    /// <summary>
+    /// ctor (<type1> inarg1, <type2> inarg2, ...): base (new NoneTransactionMode(), inarg1, inarg2, ...) {}
+    /// </summary>
+    private static void GenerateWxeFunctionContructorWithTypesParameters (FunctionDeclaration functionDeclaration, CodeTypeDeclaration functionClass)
+    {
+      CodeConstructor typedCtor = new CodeConstructor ();
+      typedCtor.Attributes = MemberAttributes.Public;
+      typedCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
+      foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
+      {
+        if (parameterDeclaration.Direction == WxeParameterDirection.Out)
+          break;
+
+        typedCtor.Parameters.Add (new CodeParameterDeclarationExpression (
+                                      new CodeTypeReference (parameterDeclaration.TypeName),
+                                      parameterDeclaration.Name));
+
+        typedCtor.BaseConstructorArgs.Add (new CodeArgumentReferenceExpression (parameterDeclaration.Name));
+      }
+      if (typedCtor.Parameters.Count > 0)
+        functionClass.Members.Add (typedCtor);
     }
   }
 }

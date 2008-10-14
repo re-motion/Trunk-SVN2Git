@@ -12,6 +12,7 @@ using System;
 using Remotion.ObjectBinding.Sample;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace OBWTest.IndividualControlTests
 {
@@ -22,6 +23,7 @@ public class TestFunction: WxeFunction
   private Person _person;
 
   public TestFunction ()
+    : base (new NoneTransactionMode ())
   {
     
   }

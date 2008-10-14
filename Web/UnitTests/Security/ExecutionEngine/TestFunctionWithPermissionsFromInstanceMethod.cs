@@ -9,6 +9,7 @@
  */
 
 using System;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.Security.ExecutionEngine;
 using Remotion.Web.UnitTests.Security.Domain;
 using Remotion.Web.ExecutionEngine;
@@ -27,7 +28,7 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
     // construction and disposing
 
     public TestFunctionWithPermissionsFromInstanceMethod (SecurableObject thisObject)
-      : base (thisObject)
+      : base (new NoneTransactionMode(), thisObject)
     {
     }
 

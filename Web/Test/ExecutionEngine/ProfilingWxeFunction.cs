@@ -12,6 +12,7 @@ using System;
 using System.Web;
 using System.Web.SessionState;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
@@ -21,12 +22,13 @@ namespace Remotion.Web.Test.ExecutionEngine
     private DateTime _end;
 
     public ProfilingWxeFunction ()
+      : base (new NoneTransactionMode ())
     {
       ReturnUrl = "~/Start.aspx";
     }
 
     public ProfilingWxeFunction (params object[] args)
-        : base (args)
+        : base (new NoneTransactionMode(), args)
     {
       ReturnUrl = "~/Start.aspx";
     }

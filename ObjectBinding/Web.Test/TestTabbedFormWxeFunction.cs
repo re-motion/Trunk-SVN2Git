@@ -11,6 +11,7 @@
 using System;
 using Remotion.ObjectBinding.Sample;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace OBWTest
 {
@@ -19,13 +20,14 @@ namespace OBWTest
 public class TestTabbedFormWxeFunction: WxeFunction
 {
   public TestTabbedFormWxeFunction ()
+    : base (new NoneTransactionMode ())
   {
     Object = Person.GetObject (new Guid (0,0,0,0,0,0,0,0,0,0,1));
     ReturnUrl = "StartForm.aspx";
   }
 
   public TestTabbedFormWxeFunction (params object[] parameters)
-    : base (parameters)
+    : base (new NoneTransactionMode (), parameters)
   {
     Object = Person.GetObject (new Guid (0,0,0,0,0,0,0,0,0,0,1));
   }
@@ -36,7 +38,7 @@ public class TestTabbedFormWxeFunction: WxeFunction
 //  }
 
   public TestTabbedFormWxeFunction (object ReadOnly)
-    : base (ReadOnly)
+    : base (new NoneTransactionMode (), ReadOnly)
   {
   }
 

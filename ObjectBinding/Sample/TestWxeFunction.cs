@@ -10,12 +10,14 @@
 
 using System;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.ObjectBinding.Sample
 {
   public class TestWxeFunction : WxeFunction
   {
     public TestWxeFunction ()
+      : base (new NoneTransactionMode ())
     {
     }
 

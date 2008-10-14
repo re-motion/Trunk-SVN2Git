@@ -11,6 +11,7 @@
 using System;
 using Remotion.ObjectBinding;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace OBWTest
 {
@@ -22,7 +23,7 @@ public class ViewPersonsWxeFunction: WxeFunction
       new WxeParameterDeclaration ("objects", true, WxeParameterDirection.In, typeof (IBusinessObject[]))};
 
   public ViewPersonsWxeFunction()
-    : base (s_parameters)
+    : base (new NoneTransactionMode(), s_parameters)
   {
   }
 

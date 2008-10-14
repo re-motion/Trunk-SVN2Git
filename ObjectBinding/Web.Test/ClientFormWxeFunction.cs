@@ -12,6 +12,7 @@ using System;
 using System.Web;
 using Remotion.ObjectBinding.Sample;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace OBWTest
 {
@@ -19,6 +20,7 @@ namespace OBWTest
 public class ClientFormWxeFunction: WxeFunction
 {
   public ClientFormWxeFunction ()
+    : base (new NoneTransactionMode ())
   {
     Object = Person.GetObject (new Guid (0,0,0,0,0,0,0,0,0,0,1));
     ReturnUrl = "javascript:window.close();";
@@ -60,6 +62,11 @@ public class ClientFormWxeFunction: WxeFunction
 
 public class ClientFormClosingWxeFunction: WxeFunction
 {
+  public ClientFormClosingWxeFunction ()
+    : base (new NoneTransactionMode ())
+  {
+  }
+
   void Step1()
   {
     object val = HttpContext.Current.Session["key"];
@@ -72,6 +79,11 @@ public class ClientFormClosingWxeFunction: WxeFunction
 
 public class ClientFormKeepAliveWxeFunction: WxeFunction
 {
+  public ClientFormKeepAliveWxeFunction ()
+    : base (new NoneTransactionMode ())
+  {
+  }
+
   void Step1()
   {
     object val = HttpContext.Current.Session["key"];
