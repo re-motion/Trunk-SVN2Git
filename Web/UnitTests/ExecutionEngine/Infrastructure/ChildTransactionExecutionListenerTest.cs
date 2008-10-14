@@ -21,6 +21,7 @@ using Rhino.Mocks.Interfaces;
 namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
 {
   [TestFixture]
+  [Ignore]
   public class ChildTransactionExecutionListenerTest
   {
     private WxeContext _wxeContext;
