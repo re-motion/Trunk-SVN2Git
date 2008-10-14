@@ -145,6 +145,7 @@
     <Compile Include="Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Context\WebSafeContextMixinTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategyTest.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionExecutionListenerTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionModeTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullTransactionStrategyTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategyTest.cs" />

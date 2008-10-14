@@ -34,6 +34,7 @@ namespace Remotion.ObjectBinding.Design.BindableObject
       get { return _serviceProvider; }
     }
 
+    //TODO FS: Use IBindableObjectAttribute for filtering instead of BindableObjectMixinBase
     public List<Type> GetTypes (bool includeGac)
     {
       ICollection types = GetAllDesignerTypes (includeGac);

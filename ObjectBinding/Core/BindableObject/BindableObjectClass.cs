@@ -143,6 +143,7 @@ namespace Remotion.ObjectBinding.BindableObject
       }
     }
 
+    //TODO FS: Drop Check, add check for IBindableObjectAttribute to BindableObjectDataSource, add test for initialization with manual bindable object
     protected void CheckTypeForMixin (Type concreteType)
     {
       Type underlyingTargetType = MixinTypeUtility.GetUnderlyingTargetType (concreteType);

@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
 {
+  //TODO FS: Add manually implemented bindable object
   [TestFixture]
   public class BindableObjectTypeFinderTest
   {
@@ -48,7 +49,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
                   typeof (ClassWithValueType<>),
                   typeof (SimpleValueType),
                   typeof (SimpleReferenceType),
-                  typeof (ClassWithIdentity)
+                  typeof (ManualBusinessObject),
+                  typeof (ClassWithIdentity),
               });
 
       _mockRepository.ReplayAll ();
@@ -68,21 +70,22 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
       Expect.Call (_typeDiscoveryService.GetTypes (typeof (object), true))
           .Return (
           new object[]
-              {
-                  typeof (ClassWithAllDataTypes),
-                  typeof (ClassWithValueType<>),
-                  typeof (SimpleValueType),
-                  typeof (SimpleReferenceType)
-              });
+          {
+              typeof (ClassWithAllDataTypes),
+              typeof (ClassWithValueType<>),
+              typeof (SimpleValueType),
+              typeof (SimpleReferenceType),
+              typeof (ManualBusinessObject),
+          });
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
       BindableObjectTypeFinder finder = new BindableObjectTypeFinder (_serviceProvider);
       List<Type> types = finder.GetTypes (false);
 
       Assert.That (types, Is.EquivalentTo (new Type[] { typeof (ClassWithAllDataTypes), typeof (ClassWithValueType<>) }));
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
@@ -98,7 +101,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
                     typeof (ClassWithAllDataTypes),
                     typeof (ClassWithValueType<>),
                     typeof (SimpleValueType),
-                    typeof (SimpleReferenceType)
+                    typeof (SimpleReferenceType),
+                    typeof (ManualBusinessObject),
                 });
 
         _mockRepository.ReplayAll();
@@ -158,7 +162,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
               {
                   typeof (DerivedBusinessObjectClassWithoutAttribute),
                   typeof (SimpleBusinessObjectClass),
-                  typeof (ClassWithIdentity)
+                  typeof (ClassWithIdentity),
+                  typeof (ManualBusinessObject),
               });
 
       _mockRepository.ReplayAll ();
