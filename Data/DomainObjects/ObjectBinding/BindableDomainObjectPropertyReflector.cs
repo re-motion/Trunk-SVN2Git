@@ -53,6 +53,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         domainObjectsDesignModeHelper.InitializeConfiguration();
       }
 
+      // TODO: use GetMandatory
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[targetType];
       if (classDefinition != null)
       {
