@@ -14,6 +14,7 @@ using System.Linq;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  //TODO: Drop this type?
   public class LinqGroup<TKey, Tentry>
   {
     public LinqGroup (IGrouping<TKey, Tentry> items)
