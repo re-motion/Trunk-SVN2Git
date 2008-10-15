@@ -9,41 +9,43 @@
  */
 
 using System;
-using System.IO;
-using System.Text;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using System.Collections.Generic;
-using Remotion.Text.CommandLine;
-using Remotion.Web.ExecutionEngine;
-using Remotion.Utilities;
+using log4net.Config;
+using Microsoft.CSharp;
+using Microsoft.VisualBasic;
 using Remotion.Text;
+using Remotion.Text.CommandLine;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.CodeGenerator.Schema;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine.CodeGenerator
 {
-  class Program
+  internal class Program
   {
     private Arguments _arguments;
     private LanguageProvider _inputProvider;
 
-    static int Main (string[] args)
+    private static int Main (string[] args)
     {
       // parse arguments / show usage info
-      CommandLineClassParser<Arguments> parser = new CommandLineClassParser<Arguments> ();
+      CommandLineClassParser<Arguments> parser = new CommandLineClassParser<Arguments>();
       Arguments arguments = null;
       try
       {
         arguments = parser.Parse (args);
-        new Program (arguments).Process ();
+        new Program (arguments).Process();
       }
       catch (CommandLineArgumentException e)
       {
-        string appName = System.IO.Path.GetFileName (System.Environment.GetCommandLineArgs ()[0]);
+        string appName = Path.GetFileName (Environment.GetCommandLineArgs()[0]);
         Console.Error.WriteLine ("re:call function generator");
         Console.Error.Write (e.Message);
         Console.Error.WriteLine ("Usage: " + parser.GetAsciiSynopsis (appName, 79));
@@ -51,8 +53,11 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       }
       catch (InputException e)
       {
-        Console.Error.WriteLine ("{0}({1},{2}): error WG{3:0000}: {4}",
-            e.Path, e.Line, e.Position,
+        Console.Error.WriteLine (
+            "{0}({1},{2}): error WG{3:0000}: {4}",
+            e.Path,
+            e.Line,
+            e.Position,
             e.ErrorCode,
             e.Message.Replace ("\r", "\\r"));
         return 1;
@@ -60,7 +65,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       catch (Exception e)
       {
         // write error info accpording to /verbose option
-        Console.Error.WriteLine ("Execution aborted: {0}",  e.Message);
+        Console.Error.WriteLine ("Execution aborted: {0}", e.Message);
         if (arguments != null && arguments.Verbose)
         {
           Console.Error.WriteLine ("Detailed exception information:");
@@ -76,27 +81,27 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       return 0;
     }
 
-    Program (Arguments args)
+    private Program (Arguments args)
     {
       _arguments = args;
     }
 
-    void Process ()
+    private void Process ()
     {
-			if (_arguments.Verbose)
-				log4net.Config.BasicConfigurator.Configure ();
+      if (_arguments.Verbose)
+        BasicConfigurator.Configure();
 
-			// select correct CodeDOM provider and configure syntax
+      // select correct CodeDOM provider and configure syntax
       CodeDomProvider codeDomProvider;
       switch (_arguments.Language)
       {
         case Language.CSharp:
-          codeDomProvider = new Microsoft.CSharp.CSharpCodeProvider ();
+          codeDomProvider = new CSharpCodeProvider();
           _inputProvider = new CSharpProvider();
 
           break;
         case Language.VB:
-          codeDomProvider = new Microsoft.VisualBasic.VBCodeProvider();
+          codeDomProvider = new VBCodeProvider();
           _inputProvider = new VBProvider();
           break;
 
@@ -105,19 +110,19 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       }
 
       // generate classes for each [WxePageFunction] class
-      CodeCompileUnit unit = new CodeCompileUnit ();
+      CodeCompileUnit unit = new CodeCompileUnit();
       FunctionDeclaration declaration = null;
 
-			string fileMask = Path.Combine (Directory.GetCurrentDirectory (), _arguments.FileMask);
-			DirectoryInfo directory = new DirectoryInfo (Path.GetDirectoryName (fileMask));
-			FileInfo[] files = directory.GetFiles (
-					Path.GetFileName (fileMask), 
-					_arguments.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+      string fileMask = Path.Combine (Directory.GetCurrentDirectory(), _arguments.FileMask);
+      DirectoryInfo directory = new DirectoryInfo (Path.GetDirectoryName (fileMask));
+      FileInfo[] files = directory.GetFiles (
+          Path.GetFileName (fileMask),
+          _arguments.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
 
-      bool outputUpToDate = false; 
+      bool outputUpToDate = false;
       FileInfo outputFile = new FileInfo (_arguments.OutputFile);
       if (_arguments.ProjectFile != null)
-      {                
+      {
         if (outputFile.Exists)
           outputUpToDate = true;
 
@@ -129,31 +134,31 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
           outputUpToDate = false;
       }
 
-      char[] whitespace = new char[] {' ', '\t'};
+      char[] whitespace = new char[] { ' ', '\t' };
       FileInfo file = null;
       try
       {
-			  for (int idxFile = 0; idxFile < files.Length; ++idxFile)
-			  {
-			    file = files[idxFile];
+        for (int idxFile = 0; idxFile < files.Length; ++idxFile)
+        {
+          file = files[idxFile];
 
           if (outputUpToDate && file.LastWriteTimeUtc > outputFile.LastWriteTimeUtc)
             outputUpToDate = false;
 
           StringBuilder xmlFragment = null;
-          List<int> indents = null;         // beginning line position for each line
+          List<int> indents = null; // beginning line position for each line
           bool validationFailed = false;
-			    List<string> importNamespaces = new List<string>(); // namespaces to import
-			    SeparatedStringBuilder currentNamespace = new SeparatedStringBuilder (".");
+          List<string> importNamespaces = new List<string>(); // namespaces to import
+          SeparatedStringBuilder currentNamespace = new SeparatedStringBuilder (".");
 
           StreamReader reader = new StreamReader (file.FullName, true);
           int lineNumber = 1;
           int firstLineNumber = -1; // line number of the first XML segment line
-          string line = reader.ReadLine ();
+          string line = reader.ReadLine();
           while (line != null)
-				  {
+          {
             string lineArgument;
-			      CodeLineType lineType = _inputProvider.ParseLine (line, out lineArgument);
+            CodeLineType lineType = _inputProvider.ParseLine (line, out lineArgument);
 
             if (lineType == CodeLineType.NamespaceImport)
             {
@@ -161,9 +166,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
                 importNamespaces.Add (lineArgument);
             }
             else if (lineType == CodeLineType.NamespaceDeclaration)
-            {
               currentNamespace.Append (lineArgument);
-            }
             else if (lineType == CodeLineType.ClassDeclaration)
             {
               if (declaration != null && string.IsNullOrEmpty (declaration.PageType))
@@ -182,10 +185,10 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
               //{
               //  line = line.Substring (linePrefix.Length);
               // line = lineArgument;
-						  if (xmlFragment == null)
-						  {
-							  if (lineArgument.TrimStart (whitespace).StartsWith ("<" + FunctionDeclaration.ElementName))
-							  {
+              if (xmlFragment == null)
+              {
+                if (lineArgument.TrimStart (whitespace).StartsWith ("<" + FunctionDeclaration.ElementName))
+                {
                   if (declaration != null)
                   {
                     // generate previous wxe function
@@ -193,54 +196,55 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
                     declaration = null;
                   }
 
-							    xmlFragment = new StringBuilder (1000);
-								  xmlFragment.AppendFormat ("<{0} xmlns=\"{1}\"", FunctionDeclaration.ElementName, FunctionDeclaration.SchemaUri);
+                  xmlFragment = new StringBuilder (1000);
+                  xmlFragment.AppendFormat ("<{0} xmlns=\"{1}\"", FunctionDeclaration.ElementName, FunctionDeclaration.SchemaUri);
                   lineArgument = lineArgument.TrimStart (whitespace).Substring (FunctionDeclaration.ElementName.Length + 1);
                   xmlFragment.Append (lineArgument);
-							    indents = new List<int>();
+                  indents = new List<int>();
                   indents.Add (line.IndexOf (lineArgument));
 
-								  firstLineNumber = lineNumber;
-							  }
-						  }
-						  else
-						  {
-							  xmlFragment.AppendLine ();
+                  firstLineNumber = lineNumber;
+                }
+              }
+              else
+              {
+                xmlFragment.AppendLine();
                 xmlFragment.Append (lineArgument);
                 indents.Add (line.IndexOf (lineArgument));
                 if (lineArgument.TrimEnd (whitespace).EndsWith ("</" + FunctionDeclaration.ElementName + ">"))
-							  {
-								  // fragment complete, process it
-								  StringReader stringReader = new StringReader (xmlFragment.ToString());
+                {
+                  // fragment complete, process it
+                  StringReader stringReader = new StringReader (xmlFragment.ToString());
 
-								  XmlSchemaSet schemas = new XmlSchemaSet ();
-								  schemas.Add (FunctionDeclaration.SchemaUri, FunctionDeclaration.GetSchemaReader ());
+                  XmlSchemaSet schemas = new XmlSchemaSet();
+                  schemas.Add (FunctionDeclaration.SchemaUri, FunctionDeclaration.GetSchemaReader());
 
-								  XmlReaderSettings settings = new XmlReaderSettings ();
-								  settings.Schemas = schemas;
-								  settings.ValidationType = ValidationType.Schema;
+                  XmlReaderSettings settings = new XmlReaderSettings();
+                  settings.Schemas = schemas;
+                  settings.ValidationType = ValidationType.Schema;
                   settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
 
                   settings.ValidationEventHandler += delegate (object sender, ValidationEventArgs e)
-                      {
-                        XmlSchemaException schemaError = e.Exception;
-                        Console.Error.WriteLine ("{0}({1},{2}): {3} WG{4:0000}: {5}",
-                            file.FullName,
-                            schemaError.LineNumber + firstLineNumber - 1, 
-                            schemaError.LinePosition + indents[schemaError.LineNumber - 1],
-                            e.Severity.ToString ().ToLower (),
-                            (int)InputError.InvalidSchema,
-                            schemaError.Message); 
-                        if (e.Severity == XmlSeverityType.Error)
-                          validationFailed = true;
-                      };
+                  {
+                    XmlSchemaException schemaError = e.Exception;
+                    Console.Error.WriteLine (
+                        "{0}({1},{2}): {3} WG{4:0000}: {5}",
+                        file.FullName,
+                        schemaError.LineNumber + firstLineNumber - 1,
+                        schemaError.LinePosition + indents[schemaError.LineNumber - 1],
+                        e.Severity.ToString().ToLower(),
+                        (int) InputError.InvalidSchema,
+                        schemaError.Message);
+                    if (e.Severity == XmlSeverityType.Error)
+                      validationFailed = true;
+                  };
 
-							    XmlReader xmlReader = XmlReader.Create (stringReader, settings, file.FullName);
-								  XmlSerializer serializer = new XmlSerializer (typeof (FunctionDeclaration), FunctionDeclaration.SchemaUri);
+                  XmlReader xmlReader = XmlReader.Create (stringReader, settings, file.FullName);
+                  XmlSerializer serializer = new XmlSerializer (typeof (FunctionDeclaration), FunctionDeclaration.SchemaUri);
 
                   try
                   {
-									  declaration = (FunctionDeclaration) serializer.Deserialize(xmlReader);
+                    declaration = (FunctionDeclaration) serializer.Deserialize (xmlReader);
                   }
                   catch (InvalidOperationException e)
                   {
@@ -248,22 +252,18 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
                     if (xmlException != null)
                     {
                       throw new InputException (
-                          InputError.XmlError, 
-                          file.FullName, 
-                          xmlException.LineNumber + firstLineNumber - 1,  
-                          xmlException.LinePosition + indents[xmlException.LineNumber - 1], 
+                          InputError.XmlError,
+                          file.FullName,
+                          xmlException.LineNumber + firstLineNumber - 1,
+                          xmlException.LinePosition + indents[xmlException.LineNumber - 1],
                           xmlException);
                     }
                     else
-                    {
                       throw;
-                    }
                   }
 
-							    if (validationFailed)
-                  {
+                  if (validationFailed)
                     declaration = null;
-                  }
                   else
                   {
                     if (string.IsNullOrEmpty (declaration.AspxFile))
@@ -287,15 +287,14 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
                     if (string.IsNullOrEmpty (declaration.FunctionBaseType))
                       declaration.FunctionBaseType = _arguments.FunctionBaseType;
                   }
+                }
+              }
+            }
 
-							  }
-						  }
-					  }
+            line = reader.ReadLine();
+            ++ lineNumber;
+          }
 
-					  line = reader.ReadLine();
-					  ++ lineNumber;
-				  }
-        
           if (declaration != null)
           {
             GenerateClass (unit, declaration, importNamespaces, file, firstLineNumber);
@@ -322,38 +321,37 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
           generator.GenerateCodeFromCompileUnit (unit, writer, options);
         }
       }
-    } 
+    }
 
-		private static void SpliTypeName (string fullTypeName, out string nameSpace, out string typeName)
-		{
-			int pos = fullTypeName.LastIndexOf ('.');
-			if (pos < 0)
-			{
-				nameSpace = null;
-				typeName = fullTypeName;
-			}
-			else
-			{
-				nameSpace = fullTypeName.Substring (0, pos);
-				typeName = fullTypeName.Substring (pos + 1);
-			}
-		}
+    private static void SplitTypeName (string fullTypeName, out string nameSpace, out string typeName)
+    {
+      int pos = fullTypeName.LastIndexOf ('.');
+      if (pos < 0)
+      {
+        nameSpace = null;
+        typeName = fullTypeName;
+      }
+      else
+      {
+        nameSpace = fullTypeName.Substring (0, pos);
+        typeName = fullTypeName.Substring (pos + 1);
+      }
+    }
 
     // generate output classes for [WxePageFunction] page class
-    static void GenerateClass (CodeCompileUnit unit, FunctionDeclaration functionDeclaration, List<string> importNamespaces, FileInfo file, int line)
+    private static void GenerateClass (
+        CodeCompileUnit unit, FunctionDeclaration functionDeclaration, List<string> importNamespaces, FileInfo file, int line)
     {
       if (string.IsNullOrEmpty (functionDeclaration.PageType))
-      {
         throw new InputException (InputError.ClassNotFound, file.FullName, line, 1);
-      }
 
       string nameSpace;
-			string typeName;
-			SpliTypeName (functionDeclaration.PageType, out nameSpace, out typeName);
+      string typeName;
+      SplitTypeName (functionDeclaration.PageType, out nameSpace, out typeName);
 
-			string functionName = functionDeclaration.FunctionName;
-			if (functionName == null)
-				functionName = typeName + "Function";
+      string functionName = functionDeclaration.FunctionName;
+      if (functionName == null)
+        functionName = typeName + "Function";
 
       CodeNamespace ns = new CodeNamespace (nameSpace);
       unit.Namespaces.Add (ns);
@@ -365,24 +363,78 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
 
       // generate a partial class for the page that allows access to parameters and
       // local variables from page code
+      CodeTypeDeclaration partialPageClass = GenerateWxePageClassDecalation (typeName, ns);
+
+      // add Return() method as alias for ExecuteNextStep()
+      GenerateWxePageReturnMethod (partialPageClass);
+
+      //// add Return (outPar1, outPar2, ...) method 
+      //// -- removed (unneccessary, possibly confusing)
+      //GenerateWxePageReturnMethodWithOutParameters();
+
+      // generate a WxeFunction class
+      CodeTypeDeclaration functionClass = GenerateWxeFunctionClassDeclaration (functionDeclaration, functionName, ns);
+
+      // generate a strongly typed CurrentFunction property for the page class
+      GenerateWxePageCurrentFunctionProperty (partialPageClass, functionClass);
+
+      GenerateWxeFunctionVariablesAndWxePageVariables (functionDeclaration, partialPageClass, functionClass);
+
+      // add PageStep to WXE function
+      GenerateWxeFunctionPageStep (functionDeclaration, functionClass);
+
+      // add constructors to WXE function
+
+      // ctor () : base (new NoneTransactionMode()) {}
+      GenerateWxeFunctionDefaultConstructor (functionClass);
+
+      // ctor (params object[] args): base (args) {}
+      // GenerateWxeFunctionConstructorWithParamsArray();
+
+      // ctor (<type1> inarg1, <type2> inarg2, ...): base (new NoneTransactionMode(), inarg1, inarg2, ...) {}
+      GenerateWxeFunctionContructorWithTypesParameters (functionDeclaration, functionClass);
+
+      // <returnType> Call (IWxePage page, WxeExecuteFunctionOptions options, <type> [ref|out] param1, <type> [ref|out] param2, ...)
+      CodeMemberMethod callMethod = GenerateWxePageCallMethod (functionDeclaration, partialPageClass, functionClass);
+
+      // <returnType> Call (IWxePage page, <type> [ref|out] param1, <type> [ref|out] param2, ...)
+      GenerateWxePageCallMethodOverloadWithoutCallArguments (partialPageClass, callMethod);
+    }
+
+    /// <summary>
+    /// generate a partial class for the page that allows access to parameters and local variables from page code
+    /// </summary>
+    private static CodeTypeDeclaration GenerateWxePageClassDecalation (string typeName, CodeNamespace ns)
+    {
       CodeTypeDeclaration partialPageClass = new CodeTypeDeclaration (typeName);
       ns.Types.Add (partialPageClass);
       partialPageClass.IsPartial = true;
       partialPageClass.Attributes = MemberAttributes.Public;
+      return partialPageClass;
+    }
 
-      // add Return() method as alias for ExecuteNextStep()
-      CodeMemberMethod returnMethod = new CodeMemberMethod ();
+    /// <summary>
+    /// add Return() method as alias for ExecuteNextStep()
+    /// </summary>
+    private static void GenerateWxePageReturnMethod (CodeTypeDeclaration partialPageClass)
+    {
+      CodeMemberMethod returnMethod = new CodeMemberMethod();
       partialPageClass.Members.Add (returnMethod);
       returnMethod.Name = "Return";
       returnMethod.Attributes = MemberAttributes.Family | MemberAttributes.Final;
       CodeExpression executeNextStep = new CodeMethodInvokeExpression (
-          new CodeThisReferenceExpression (),
+          new CodeThisReferenceExpression(),
           "ExecuteNextStep",
           new CodeExpression[0]);
       returnMethod.Statements.Add (executeNextStep);
+    }
 
-      //// add Return (outPar1, outPar2, ...) method 
-      //// -- removed (unneccessary, possibly confusing)
+    /// <summary>
+    /// add Return (outPar1, outPar2, ...) method 
+    /// </summary>
+    [Obsolete ("removed (unneccessary, possibly confusing)", true)]
+    private static void GenerateWxePageReturnMethodWithOutParameters ()
+    {
       //CodeMemberMethod returnParametersMethod = new CodeMemberMethod ();
       //foreach (WxePageParameterAttribute parameterDeclaration in GetPageParameterAttributesOrdered (type))
       //{
@@ -403,68 +455,235 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       //  returnParametersMethod.Attributes = MemberAttributes.Family | MemberAttributes.Final;
       //  returnParametersMethod.Statements.Add (executeNextStep);
       //}
+    }
 
-      // generate a WxeFunction class
+    /// <summary>
+    /// &lt;returnType&gt; Call (IWxePage page, IWxeCallArguments arguments, &lt;type&gt; [ref|out] param1, &lt;type&gt; [ref|out] param2, ...)
+    /// </summary>
+    private static CodeMemberMethod GenerateWxePageCallMethod (
+        FunctionDeclaration functionDeclaration, CodeTypeDeclaration partialPageClass, CodeTypeDeclaration functionClass)
+    {
+      CodeMemberMethod callMethod = new CodeMemberMethod();
+      partialPageClass.Members.Add (callMethod);
+      callMethod.Name = "Call";
+      callMethod.Attributes = MemberAttributes.Static | MemberAttributes.Public;
+      callMethod.Parameters.Add (
+          new CodeParameterDeclarationExpression (
+              new CodeTypeReference (typeof (IWxePage)), "currentPage"));
+      callMethod.Parameters.Add (
+          new CodeParameterDeclarationExpression (
+              new CodeTypeReference (typeof (IWxeCallArguments)), "arguments"));
+      foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
+      {
+        if (parameterDeclaration.IsReturnValue)
+          callMethod.ReturnType = new CodeTypeReference (parameterDeclaration.TypeName);
+        else
+        {
+          CodeParameterDeclarationExpression parameter = new CodeParameterDeclarationExpression (
+              new CodeTypeReference (parameterDeclaration.TypeName),
+              parameterDeclaration.Name);
+          callMethod.Parameters.Add (parameter);
+          if (parameterDeclaration.Direction == WxeParameterDirection.InOut)
+            parameter.Direction = FieldDirection.Ref;
+          else if (parameterDeclaration.Direction == WxeParameterDirection.Out)
+            parameter.Direction = FieldDirection.Out;
+        }
+      }
+      // <class>Function function;
+      CodeVariableDeclarationStatement functionVariable = new CodeVariableDeclarationStatement (
+          new CodeTypeReference (functionClass.Name), "function");
+      callMethod.Statements.Add (functionVariable);
+      // common variables
+      CodeArgumentReferenceExpression currentPage = new CodeArgumentReferenceExpression ("currentPage");
+      CodeVariableReferenceExpression function = new CodeVariableReferenceExpression ("function");
+      CodePropertyReferenceExpression exceptionHandler = new CodePropertyReferenceExpression (function, "ExceptionHandler");
+      // if (! currentPage.IsReturningPostBack)
+      CodeConditionStatement ifNotIsReturningPostBack = new CodeConditionStatement();
+      callMethod.Statements.Add (ifNotIsReturningPostBack);
+      ifNotIsReturningPostBack.Condition = new CodeBinaryOperatorExpression (
+          new CodePropertyReferenceExpression (currentPage, "IsReturningPostBack"),
+          CodeBinaryOperatorType.ValueEquality,
+          new CodePrimitiveExpression (false));
+      // { 
+      //   function = new <class>Function();
+      ifNotIsReturningPostBack.TrueStatements.Add (
+          new CodeAssignStatement (
+              function,
+              new CodeObjectCreateExpression (new CodeTypeReference (functionClass.Name))));
+      //   function.ParamN = ParamN;
+      foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
+      {
+        if (parameterDeclaration.Direction != WxeParameterDirection.Out)
+        {
+          ifNotIsReturningPostBack.TrueStatements.Add (
+              new CodeAssignStatement (
+                  new CodePropertyReferenceExpression (function, parameterDeclaration.Name),
+                  new CodeArgumentReferenceExpression (parameterDeclaration.Name)));
+        }
+      }
+      //   function.ExceptionHandler.SetCatchExceptionTypes (typeof (Exception));
+      ifNotIsReturningPostBack.TrueStatements.Add (
+          new CodeMethodInvokeExpression (
+              exceptionHandler,
+              "SetCatchExceptionTypes",
+              new CodeTypeOfExpression (typeof (Exception))));
+      //  currentPage.ExecuteFunction (function, arguments);
+      ifNotIsReturningPostBack.TrueStatements.Add (
+          new CodeMethodInvokeExpression (
+              currentPage,
+              "ExecuteFunction",
+              function,
+              new CodeVariableReferenceExpression ("arguments")));
+      // //   currentPage.ExecuteFunction (function);
+      // ifNotIsReturningPostBack.TrueStatements.Add (new CodeMethodInvokeExpression (
+      //     currentPage, "ExecuteFunction",
+      //     new CodeExpression[] { new CodeVariableReferenceExpression ("function") }));
+      //    throw new Exception ("(Unreachable code)"); 
+      ifNotIsReturningPostBack.TrueStatements.Add (
+          new CodeThrowExceptionStatement (
+              new CodeObjectCreateExpression (
+                  new CodeTypeReference (typeof (Exception)),
+                  new CodeExpression[]
+                  {
+                      new CodePrimitiveExpression ("(Unreachable code)")
+                  })));
+      // } else {
+      //   function = (<class>Function) currentPage.ReturningFunction;
+      ifNotIsReturningPostBack.FalseStatements.Add (
+          new CodeAssignStatement (
+              function,
+              new CodeCastExpression (
+                  new CodeTypeReference (functionClass.Name),
+                  new CodePropertyReferenceExpression (currentPage, "ReturningFunction"))));
+      //    if (function.Exception != null)
+      CodeConditionStatement ifException = new CodeConditionStatement();
+      ifNotIsReturningPostBack.FalseStatements.Add (ifException);
+      ifException.Condition = new CodeBinaryOperatorExpression (
+          new CodePropertyReferenceExpression (
+              exceptionHandler,
+              "Exception"),
+          CodeBinaryOperatorType.IdentityInequality,
+          new CodePrimitiveExpression (null));
+      //      throw function.Exception;
+      ifException.TrueStatements.Add (
+          new CodeThrowExceptionStatement (
+              new CodePropertyReferenceExpression (
+                  exceptionHandler,
+                  "Exception")
+              ));
+      //   ParamN = function.ParamN;
+      foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
+      {
+        if (parameterDeclaration.Direction != WxeParameterDirection.In && !parameterDeclaration.IsReturnValue)
+        {
+          ifNotIsReturningPostBack.FalseStatements.Add (
+              new CodeAssignStatement (
+                  new CodeArgumentReferenceExpression (parameterDeclaration.Name),
+                  new CodePropertyReferenceExpression (function, parameterDeclaration.Name)));
+        }
+        else if (parameterDeclaration.IsReturnValue)
+        {
+          // TODO: Throw Exception if any but last parameter has return value flag!
+          ifNotIsReturningPostBack.FalseStatements.Add (
+              new CodeMethodReturnStatement (
+                  new CodePropertyReferenceExpression (function, parameterDeclaration.Name)));
+        }
+      }
+      return callMethod;
+    }
+
+    /// <summary>
+    /// &lt;returnType&gt; Call (IWxePage page, &lt;type&gt; [ref|out] param1, &lt;type&gt; [ref|out] param2, ...)
+    /// </summary>
+    private static void GenerateWxePageCallMethodOverloadWithoutCallArguments (CodeTypeDeclaration partialPageClass, CodeMemberMethod callMethod)
+    {
+      CodeMemberMethod callMethodOverload = new CodeMemberMethod();
+      callMethodOverload.Name = callMethod.Name;
+      callMethodOverload.ReturnType = callMethod.ReturnType;
+      callMethodOverload.Attributes = callMethod.Attributes;
+      CodeExpression[] callOverloadParameters = new CodeExpression[callMethod.Parameters.Count];
+      for (int i = 0; i < callMethod.Parameters.Count; ++i)
+      {
+        if (i == 1) // options parameter
+          callOverloadParameters[i] = new CodePropertyReferenceExpression (new CodeTypeReferenceExpression (typeof (WxeCallArguments)), "Default");
+        else
+        {
+          callMethodOverload.Parameters.Add (callMethod.Parameters[i]);
+          callOverloadParameters[i] = new CodeDirectionExpression (
+              callMethod.Parameters[i].Direction,
+              new CodeArgumentReferenceExpression (callMethod.Parameters[i].Name));
+        }
+      }
+      partialPageClass.Members.Add (callMethodOverload);
+      // [return] Call (page, WxeCallArguments.Default, param1, param2, ...);
+      CodeMethodInvokeExpression callOverloadStatement = new CodeMethodInvokeExpression (
+          new CodeTypeReferenceExpression ( /*nameSpace + "." + */partialPageClass.Name), callMethod.Name, callOverloadParameters);
+      if (callMethod.ReturnType.BaseType != typeof (void).FullName)
+        callMethodOverload.Statements.Add (new CodeMethodReturnStatement (callOverloadStatement));
+      else
+        callMethodOverload.Statements.Add (callOverloadStatement);
+    }
+
+    private static CodeTypeDeclaration GenerateWxeFunctionClassDeclaration (
+        FunctionDeclaration functionDeclaration, string functionName, CodeNamespace ns)
+    {
       CodeTypeDeclaration functionClass = new CodeTypeDeclaration (functionName);
       ns.Types.Add (functionClass);
       functionClass.Attributes = MemberAttributes.Public;
       functionClass.BaseTypes.Add (new CodeTypeReference (functionDeclaration.FunctionBaseType));
       functionClass.CustomAttributes.Add (new CodeAttributeDeclaration (new CodeTypeReference (typeof (SerializableAttribute))));
+      return functionClass;
+    }
 
-      // generate a strongly typed CurrentFunction property for the page class
-      CodeMemberProperty currentFunctionProperty = new CodeMemberProperty ();
+    private static void GenerateWxePageCurrentFunctionProperty (CodeTypeDeclaration partialPageClass, CodeTypeDeclaration functionClass)
+    {
+      CodeMemberProperty currentFunctionProperty = new CodeMemberProperty();
       currentFunctionProperty.Name = "CurrentFunction";
       currentFunctionProperty.Type = new CodeTypeReference (functionClass.Name);
       currentFunctionProperty.Attributes = MemberAttributes.New | MemberAttributes.Family | MemberAttributes.Final;
-      currentFunctionProperty.GetStatements.Add (new CodeMethodReturnStatement (
-          new CodeCastExpression (
-            new CodeTypeReference (functionClass.Name), 
-            new CodePropertyReferenceExpression (
-                new CodeBaseReferenceExpression (),
-                "CurrentFunction"))));
+      currentFunctionProperty.GetStatements.Add (
+          new CodeMethodReturnStatement (
+              new CodeCastExpression (
+                  new CodeTypeReference (functionClass.Name),
+                  new CodePropertyReferenceExpression (
+                      new CodeBaseReferenceExpression(),
+                      "CurrentFunction"))));
       partialPageClass.Members.Add (currentFunctionProperty);
+    }
 
+    private static void GenerateWxeFunctionPageStep (FunctionDeclaration functionDeclaration, CodeTypeDeclaration functionClass)
+    {
+      CodeMemberField step1 = new CodeMemberField (typeof (WxePageStep), "Step1");
+      functionClass.Members.Add (step1);
+      step1.InitExpression = new CodeObjectCreateExpression (
+          new CodeTypeReference (typeof (WxePageStep)),
+          new CodePrimitiveExpression (functionDeclaration.AspxFile));
+    }
+
+    private static void GenerateWxeFunctionVariablesAndWxePageVariables (
+        FunctionDeclaration functionDeclaration, CodeTypeDeclaration partialPageClass, CodeTypeDeclaration functionClass)
+    {
       int parameterIndex = 0;
 
       // generate local variables in partial/variables class, and
       // generate function parameters in partial/variables class and function class
-			foreach (VariableDeclaration variableDeclaration in functionDeclaration.ParametersAndVariables)
+      foreach (VariableDeclaration variableDeclaration in functionDeclaration.ParametersAndVariables)
       {
-        CodeMemberProperty localProperty = new CodeMemberProperty ();
-        localProperty.Name = variableDeclaration.Name;
-        localProperty.Type = new CodeTypeReference (variableDeclaration.TypeName);
-        // localProperty.Type = new LiteralTypeReference (variableDeclaration.TypeName);
-
-        partialPageClass.Members.Add (localProperty);
-        localProperty.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-        // TODO: can get-accessor alone be set to protected via CodeDOM?
+        CodeMemberProperty localProperty = GenerateWxePageVariableDeclaration (variableDeclaration, partialPageClass);
 
         ParameterDeclaration parameterDeclaration = variableDeclaration as ParameterDeclaration;
         CodeMemberProperty functionProperty = null;
         if (parameterDeclaration != null)
         {
-          functionProperty = new CodeMemberProperty ();
-          functionClass.Members.Add (functionProperty);
-          functionProperty.Name = parameterDeclaration.Name;
-          functionProperty.Type = new CodeTypeReference (parameterDeclaration.TypeName);
-          functionProperty.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+          functionProperty = GenerateWxeFunctionParameterDeclaration (parameterDeclaration, functionClass);
+          // add attribute [WxeParameter (parameterIndex, [Required,] Direction)
+          GenerateWxeFunctionDecoratePropertyWithWxeParameterAttribute (parameterDeclaration, functionProperty, parameterIndex);
         }
 
         // <variable> := Variables["<parameterName>"]
-        CodeExpression variable = new CodeIndexerExpression (
-            new CodePropertyReferenceExpression (new CodeThisReferenceExpression (), "Variables"),
-            new CodePrimitiveExpression (variableDeclaration.Name));
-
-        // <getStatement> := get { return (<type>) <variable>; }
-        CodeStatement getStatement = new CodeMethodReturnStatement (
-            new CodeCastExpression (
-                new CodeTypeReference (variableDeclaration.TypeName),
-                variable));
-
-        // <setStatement> := set { <variable> = value; }
-        CodeStatement setStatement = new CodeAssignStatement (
-            variable,
-            new CodePropertySetValueReferenceExpression ());
+        CodeStatement getStatement;
+        CodeStatement setStatement;
+        GenerateWxeFunctionAndWxePagePropertyAccessors (variableDeclaration, out getStatement, out setStatement);
 
         if (parameterDeclaration != null)
         {
@@ -492,192 +711,70 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
           localProperty.SetStatements.Add (setStatement);
         }
 
-        if (functionProperty != null)
-        {
-          // add attribute [WxeParameter (parameterIndex, [Required,] Direction)
-          CodeAttributeDeclaration wxeParameterAttribute = new CodeAttributeDeclaration (
-              new CodeTypeReference (typeof (WxeParameterAttribute)));
-          functionProperty.CustomAttributes.Add (wxeParameterAttribute);
-          wxeParameterAttribute.Arguments.Add (new CodeAttributeArgument (
-              new CodePrimitiveExpression (parameterIndex)));
-          if (parameterDeclaration.IsRequired.HasValue)
-          {
-            wxeParameterAttribute.Arguments.Add (new CodeAttributeArgument (
-                new CodePrimitiveExpression (parameterDeclaration.IsRequired.Value)));
-          }
-          wxeParameterAttribute.Arguments.Add (new CodeAttributeArgument (
-              new CodeFieldReferenceExpression (
-                  new CodeTypeReferenceExpression (typeof (WxeParameterDirection)),
-                  parameterDeclaration.Direction.ToString ())));
-        }
-
         if (parameterDeclaration != null)
           ++ parameterIndex;
       }
+    }
 
-      // add PageStep to WXE function
-      CodeMemberField step1 = new CodeMemberField (typeof (WxePageStep), "Step1");
-      functionClass.Members.Add (step1);
-      step1.InitExpression = new CodeObjectCreateExpression (
-          new CodeTypeReference (typeof (WxePageStep)),
-          new CodePrimitiveExpression (functionDeclaration.AspxFile));
+    private static CodeMemberProperty GenerateWxeFunctionParameterDeclaration (
+        ParameterDeclaration parameterDeclaration, CodeTypeDeclaration functionClass)
+    {
+      CodeMemberProperty functionProperty;
+      functionProperty = new CodeMemberProperty();
+      functionClass.Members.Add (functionProperty);
+      functionProperty.Name = parameterDeclaration.Name;
+      functionProperty.Type = new CodeTypeReference (parameterDeclaration.TypeName);
+      functionProperty.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+      return functionProperty;
+    }
 
-      // add constructors to WXE function
+    private static CodeMemberProperty GenerateWxePageVariableDeclaration (
+        VariableDeclaration variableDeclaration, CodeTypeDeclaration partialPageClass)
+    {
+      CodeMemberProperty localProperty = new CodeMemberProperty();
+      localProperty.Name = variableDeclaration.Name;
+      localProperty.Type = new CodeTypeReference (variableDeclaration.TypeName);
+      // localProperty.Type = new LiteralTypeReference (variableDeclaration.TypeName);
 
-      // ctor () : base (new NoneTransactionMode()) {}
-      GenerateWxeFunctionDefaultConstructor(functionClass);
+      partialPageClass.Members.Add (localProperty);
+      localProperty.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+      return localProperty;
+      // TODO: can get-accessor alone be set to protected via CodeDOM?
+    }
 
-      // ctor (params object[] args): base (args) {}
-      // GenerateWxeFunctionConstructorWithParamsArray();
+    /// <summary>
+    /// &lt;variable&gt; := Variables["&lt;parameterName&gt;"]
+    /// </summary>
+    private static void GenerateWxeFunctionAndWxePagePropertyAccessors (
+        VariableDeclaration variableDeclaration, out CodeStatement getStatement, out CodeStatement setStatement)
+    {
+      CodeExpression variable = new CodeIndexerExpression (
+          new CodePropertyReferenceExpression (new CodeThisReferenceExpression(), "Variables"),
+          new CodePrimitiveExpression (variableDeclaration.Name));
 
-      // ctor (<type1> inarg1, <type2> inarg2, ...): base (new NoneTransactionMode(), inarg1, inarg2, ...) {}
-      GenerateWxeFunctionContructorWithTypesParameters(functionDeclaration, functionClass);
+      // <getStatement> := get { return (<type>) <variable>; }
+      getStatement = new CodeMethodReturnStatement (new CodeCastExpression (new CodeTypeReference (variableDeclaration.TypeName), variable));
 
-      // <returnType> Call (IWxePage page, WxeExecuteFunctionOptions options, <type> [ref|out] param1, <type> [ref|out] param2, ...)
-      CodeMemberMethod callMethod = new CodeMemberMethod ();
-      partialPageClass.Members.Add (callMethod);
-      callMethod.Name = "Call";
-      callMethod.Attributes = MemberAttributes.Static | MemberAttributes.Public;
-      callMethod.Parameters.Add (new CodeParameterDeclarationExpression (
-          new CodeTypeReference (typeof (IWxePage)), "currentPage"));
-      callMethod.Parameters.Add (new CodeParameterDeclarationExpression (
-          new CodeTypeReference (typeof (IWxeCallArguments)), "arguments"));
-      foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
-      {
-        if (parameterDeclaration.IsReturnValue)
-        {
-          callMethod.ReturnType = new CodeTypeReference (parameterDeclaration.TypeName);
-        }
-        else
-        {
-          CodeParameterDeclarationExpression parameter = new CodeParameterDeclarationExpression (
-              new CodeTypeReference (parameterDeclaration.TypeName),
-              parameterDeclaration.Name);
-          callMethod.Parameters.Add (parameter);
-          if (parameterDeclaration.Direction == WxeParameterDirection.InOut)
-            parameter.Direction = FieldDirection.Ref;
-          else if (parameterDeclaration.Direction == WxeParameterDirection.Out)
-            parameter.Direction = FieldDirection.Out;
-        }
-      }
-      // <class>Function function;
-      CodeVariableDeclarationStatement functionVariable = new CodeVariableDeclarationStatement (
-          new CodeTypeReference (functionClass.Name), "function");
-      callMethod.Statements.Add (functionVariable);
-      // common variables
-      CodeArgumentReferenceExpression currentPage = new CodeArgumentReferenceExpression ("currentPage");
-      CodeVariableReferenceExpression function = new CodeVariableReferenceExpression ("function");
-      CodePropertyReferenceExpression exceptionHandler = new CodePropertyReferenceExpression (function, "ExceptionHandler");
-      // if (! currentPage.IsReturningPostBack)
-      CodeConditionStatement ifNotIsReturningPostBack = new CodeConditionStatement ();
-      callMethod.Statements.Add (ifNotIsReturningPostBack);
-      ifNotIsReturningPostBack.Condition = new CodeBinaryOperatorExpression (
-          new CodePropertyReferenceExpression (currentPage, "IsReturningPostBack"),
-          CodeBinaryOperatorType.ValueEquality,
-          new CodePrimitiveExpression (false));
-      // { 
-      //   function = new <class>Function();
-      ifNotIsReturningPostBack.TrueStatements.Add (new CodeAssignStatement (
-          function, 
-          new CodeObjectCreateExpression (new CodeTypeReference (functionClass.Name))));
-      //   function.ParamN = ParamN;
-      foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
-      {
-        if (parameterDeclaration.Direction != WxeParameterDirection.Out)
-        {
-          ifNotIsReturningPostBack.TrueStatements.Add (new CodeAssignStatement (
-              new CodePropertyReferenceExpression (function, parameterDeclaration.Name),
-              new CodeArgumentReferenceExpression (parameterDeclaration.Name)));
-        }
-      }
-      //   function.ExceptionHandler.SetCatchExceptionTypes (typeof (Exception));
-      ifNotIsReturningPostBack.TrueStatements.Add (new CodeMethodInvokeExpression (
-          exceptionHandler,
-          "SetCatchExceptionTypes", 
-          new CodeTypeOfExpression (typeof (Exception))));
-      //  currentPage.ExecuteFunction (function, arguments);
-      ifNotIsReturningPostBack.TrueStatements.Add (new CodeMethodInvokeExpression (
-          currentPage,
-          "ExecuteFunction",
-          function,
-          new CodeVariableReferenceExpression ("arguments")));
-              // //   currentPage.ExecuteFunction (function);
-              // ifNotIsReturningPostBack.TrueStatements.Add (new CodeMethodInvokeExpression (
-              //     currentPage, "ExecuteFunction",
-              //     new CodeExpression[] { new CodeVariableReferenceExpression ("function") }));
-              //    throw new Exception ("(Unreachable code)"); 
-      ifNotIsReturningPostBack.TrueStatements.Add (new CodeThrowExceptionStatement (
-          new CodeObjectCreateExpression (new CodeTypeReference (typeof (Exception)),
-          new CodeExpression[] {
-            new CodePrimitiveExpression ("(Unreachable code)") })));
-      // } else {
-      //   function = (<class>Function) currentPage.ReturningFunction;
-      ifNotIsReturningPostBack.FalseStatements.Add (new CodeAssignStatement (
-          function,
-          new CodeCastExpression (
-              new CodeTypeReference (functionClass.Name),
-              new CodePropertyReferenceExpression (currentPage, "ReturningFunction"))));
-      //    if (function.Exception != null)
-      CodeConditionStatement ifException = new CodeConditionStatement ();
-      ifNotIsReturningPostBack.FalseStatements.Add (ifException);
-      ifException.Condition = new CodeBinaryOperatorExpression (
-          new CodePropertyReferenceExpression (
-              exceptionHandler,
-              "Exception"),
-          CodeBinaryOperatorType.IdentityInequality,
-          new CodePrimitiveExpression (null));
-      //      throw function.Exception;
-      ifException.TrueStatements.Add (new CodeThrowExceptionStatement (
-          new CodePropertyReferenceExpression (
-              exceptionHandler,
-              "Exception")
-          ));
-      //   ParamN = function.ParamN;
-			foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
-      {
-        if (parameterDeclaration.Direction != WxeParameterDirection.In && !parameterDeclaration.IsReturnValue)
-        {
-          ifNotIsReturningPostBack.FalseStatements.Add (new CodeAssignStatement (
-              new CodeArgumentReferenceExpression (parameterDeclaration.Name),
-              new CodePropertyReferenceExpression (function, parameterDeclaration.Name)));
-        }
-        else if (parameterDeclaration.IsReturnValue)
-        {
-          // TODO: Throw Exception if any but last parameter has return value flag!
-          ifNotIsReturningPostBack.FalseStatements.Add (new CodeMethodReturnStatement (
-            new CodePropertyReferenceExpression (function, parameterDeclaration.Name)));
-        }
-      }
+      // <setStatement> := set { <variable> = value; }
+      setStatement = new CodeAssignStatement (variable, new CodePropertySetValueReferenceExpression());
+    }
 
-      // <returnType> Call (IWxePage page, <type> [ref|out] param1, <type> [ref|out] param2, ...)
-      CodeMemberMethod callMethodOverload = new CodeMemberMethod ();
-      callMethodOverload.Name = callMethod.Name;
-      callMethodOverload.ReturnType = callMethod.ReturnType;
-      callMethodOverload.Attributes = callMethod.Attributes;
-      CodeExpression[] callOverloadParameters = new CodeExpression[callMethod.Parameters.Count];
-      for (int i = 0; i < callMethod.Parameters.Count; ++i)
-      {
-        if (i == 1) // options parameter
-        {
-          callOverloadParameters[i] = new CodePropertyReferenceExpression (new CodeTypeReferenceExpression(typeof (WxeCallArguments)), "Default");
-        }
-        else
-        {
-          callMethodOverload.Parameters.Add (callMethod.Parameters[i]);
-          callOverloadParameters[i] = new CodeDirectionExpression (
-              callMethod.Parameters[i].Direction,
-              new CodeArgumentReferenceExpression (callMethod.Parameters[i].Name));
-        }
-      }
-      partialPageClass.Members.Add (callMethodOverload);
-      // [return] Call (page, WxeCallArguments.Default, param1, param2, ...);
-      CodeMethodInvokeExpression callOverloadStatement = new CodeMethodInvokeExpression (
-          new CodeTypeReferenceExpression ( /*nameSpace + "." + */partialPageClass.Name), callMethod.Name, callOverloadParameters);
-      if (callMethod.ReturnType.BaseType != typeof(void).FullName)
-        callMethodOverload.Statements.Add (new CodeMethodReturnStatement (callOverloadStatement));
-      else
-        callMethodOverload.Statements.Add (callOverloadStatement);
-
+    /// <summary>
+    /// add attribute [WxeParameter (parameterIndex, [Required,] Direction)
+    /// </summary>
+    private static void GenerateWxeFunctionDecoratePropertyWithWxeParameterAttribute (
+        ParameterDeclaration parameterDeclaration, CodeMemberProperty functionProperty, int parameterIndex)
+    {
+      CodeAttributeDeclaration wxeParameterAttribute = new CodeAttributeDeclaration (new CodeTypeReference (typeof (WxeParameterAttribute)));
+      functionProperty.CustomAttributes.Add (wxeParameterAttribute);
+      wxeParameterAttribute.Arguments.Add (new CodeAttributeArgument (new CodePrimitiveExpression (parameterIndex)));
+      if (parameterDeclaration.IsRequired.HasValue)
+        wxeParameterAttribute.Arguments.Add (new CodeAttributeArgument (new CodePrimitiveExpression (parameterDeclaration.IsRequired.Value)));
+      wxeParameterAttribute.Arguments.Add (
+          new CodeAttributeArgument (
+              new CodeFieldReferenceExpression (
+                  new CodeTypeReferenceExpression (typeof (WxeParameterDirection)),
+                  parameterDeclaration.Direction.ToString())));
     }
 
     /// <summary>
@@ -685,7 +782,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     /// </summary>
     private static void GenerateWxeFunctionDefaultConstructor (CodeTypeDeclaration functionClass)
     {
-      CodeConstructor defaultCtor = new CodeConstructor ();
+      CodeConstructor defaultCtor = new CodeConstructor();
       functionClass.Members.Add (defaultCtor);
       defaultCtor.Attributes = MemberAttributes.Public;
       defaultCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
@@ -694,6 +791,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     /// <summary>
     /// ctor (params object[] args): base (args) {}
     /// </summary>
+    [Obsolete ("replace by (VarRef<type1> arg1, VarRef<type2> arg2, ...)", true)]
     private static void GenerateWxeFunctionConstructorWithParamsArray ()
     {
       // replace by (VarRef<type1> arg1, VarRef<type2> arg2, ...)
@@ -713,7 +811,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     /// </summary>
     private static void GenerateWxeFunctionContructorWithTypesParameters (FunctionDeclaration functionDeclaration, CodeTypeDeclaration functionClass)
     {
-      CodeConstructor typedCtor = new CodeConstructor ();
+      CodeConstructor typedCtor = new CodeConstructor();
       typedCtor.Attributes = MemberAttributes.Public;
       typedCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
       foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
@@ -721,9 +819,10 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
         if (parameterDeclaration.Direction == WxeParameterDirection.Out)
           break;
 
-        typedCtor.Parameters.Add (new CodeParameterDeclarationExpression (
-                                      new CodeTypeReference (parameterDeclaration.TypeName),
-                                      parameterDeclaration.Name));
+        typedCtor.Parameters.Add (
+            new CodeParameterDeclarationExpression (
+                new CodeTypeReference (parameterDeclaration.TypeName),
+                parameterDeclaration.Name));
 
         typedCtor.BaseConstructorArgs.Add (new CodeArgumentReferenceExpression (parameterDeclaration.Name));
       }
