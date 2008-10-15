@@ -126,7 +126,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       for (int i = 0; i < mixins.Length; ++i)
       {
         object baseCallProxyInstance = mixinTargetInstance.CreateBaseCallProxy (i + 1);
-        IInitializableMixin initializableMixin = mixins[i] as IInitializableMixin;
+        var initializableMixin = mixins[i] as IInitializableMixin;
         if (initializableMixin != null)
           initializableMixin.Initialize (mixinTargetInstance, baseCallProxyInstance, deserialization);
       }

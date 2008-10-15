@@ -159,5 +159,20 @@ namespace Remotion.Mixins
       }
       return (TMixin) ObjectFactory.Create (mixinType).Invoke (args);
     }
+
+    public static void SignalOnDeserialization<TThis> (Mixin<TThis> mixin, TThis thisMock) 
+        where TThis : class
+    {
+      ArgumentUtility.CheckNotNull ("mixin", mixin);
+      ((IInitializableMixin) mixin).Initialize (thisMock, null, true);
+    }
+
+    public static void SignalOnDeserialization<TThis, TBase> (Mixin<TThis, TBase> mixin, TThis thisMock, TBase baseMock)
+        where TThis : class
+        where TBase : class
+    {
+      ArgumentUtility.CheckNotNull ("mixin", mixin);
+      ((IInitializableMixin) mixin).Initialize (thisMock, baseMock, true);
+    }
   }
 }
