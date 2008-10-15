@@ -36,24 +36,24 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
     /// <remarks>
     /// Use this overload to explicitly specify the <see cref="ISqlGenerator"/> used to generate the query command string. To have the storage
-    /// provider automatically supply the right generator, use the <see cref="CreateQueryable{T}()"/> overload.
+    /// provider automatically supply the right generator, use the <see cref="CreateLinqQuery{T}()"/> overload.
     /// </remarks>
     /// <example>
     /// The following example creates a new instance of <see cref="SqlServerGenerator"/> and supplies it to 
-    /// <see cref="CreateQueryable{T}(ISqlGenerator)"/>. The object returned by <see cref="CreateQueryable{T}(ISqlGenerator)"/> method is then used as 
+    /// <see cref="CreateLinqQuery{T}"/>. The object returned by <see cref="CreateLinqQuery{T}"/> method is then used as 
     /// an entry point for a query that selects a number of <c>Order</c> objects, filters them by <c>OrderNumber</c>, and orders them by name of
     /// customer (which includes an implicit join between <c>Order</c> and <c>Customer</c> objects).
     /// <code>
     /// var generator = new SqlServerGenerator (new DatabaseInfo());
     /// var query =
-    ///     from o in QueryFactory.CreateQueryable&lt;Order&gt; (generator)
+    ///     from o in QueryFactory.CreateLinqQuery&lt;Order&gt; (generator)
     ///     where o.OrderNumber &lt;= 4
     ///     orderby o.Customer.Name
     ///     select o;
     /// var result = query.ToArray();
     /// </code>
     /// </example>
-    public static DomainObjectQueryable<T> CreateQueryable<T> (ISqlGenerator sqlGenerator)
+    public static DomainObjectQueryable<T> CreateLinqQuery<T> (ISqlGenerator sqlGenerator)
         where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator);
@@ -67,23 +67,23 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
     /// <remarks>
     /// This overload uses the <see cref="ISqlGenerator"/> associated with <typeparamref name="T"/> via its <see cref="StorageProviderDefinition"/>.
-    /// Use the <see cref="CreateQueryable{T}()"/> overload to explicitly specify an <see cref="ISqlGenerator"/> instance.
+    /// Use the <see cref="CreateLinqQuery{T}()"/> overload to explicitly specify an <see cref="ISqlGenerator"/> instance.
     /// </remarks>
     /// <example>
-    /// The following example used <see cref="CreateQueryable{T}()"/> to retrieve 
+    /// The following example used <see cref="CreateLinqQuery{T}()"/> to retrieve 
     /// an entry point for a query that selects a number of <c>Order</c> objects, filters them by <c>OrderNumber</c>, and orders them by name of
     /// customer (which includes an implicit join between <c>Order</c> and <c>Customer</c> objects).
     /// <code>
     /// var generator = new SqlServerGenerator (new DatabaseInfo());
     /// var query =
-    ///     from o in QueryFactory.CreateQueryable&lt;Order&gt; (generator)
+    ///     from o in QueryFactory.CreateLinqQuery&lt;Order&gt; (generator)
     ///     where o.OrderNumber &lt;= 4
     ///     orderby o.Customer.Name
     ///     select o;
     /// var result = query.ToArray();
     /// </code>
     /// </example>
-    public static DomainObjectQueryable<T> CreateQueryable<T> ()
+    public static DomainObjectQueryable<T> CreateLinqQuery<T> ()
         where T : DomainObject
     {
       return new DomainObjectQueryable<T> (GetDefaultSqlGenerator (typeof (T)));
@@ -138,7 +138,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </summary>
     /// <param name="id">The ID to assign to the query.</param>
     /// <param name="queryable">The queryable constituting the LINQ query. This must be obtained by forming a LINQ query starting with an instance of 
-    /// <see cref="DomainObjectQueryable{T}"/>. Use <see cref="CreateQueryable{T}()"/> to create such a query source.</param>
+    /// <see cref="DomainObjectQueryable{T}"/>. Use <see cref="CreateLinqQuery{T}()"/> to create such a query source.</param>
     /// <returns>An implementation of <see cref="IQuery"/> holding the parsed LINQ query data.</returns>
     public static IQuery CreateQuery (string id, IQueryable queryable)
     {
@@ -149,7 +149,7 @@ namespace Remotion.Data.DomainObjects.Queries
       if (provider == null)
       {
         string message = string.Format ("The given queryable must stem from an instance of DomainObjectQueryable. Instead, it is of type '{0}',"
-            + " with a query provider of type '{1}'. Be sure to use QueryFactory.CreateQueryable to create the queryable instance, and only use "
+            + " with a query provider of type '{1}'. Be sure to use QueryFactory.CreateLinqQuery to create the queryable instance, and only use "
             + "standard query methods on it.", queryable.GetType ().Name, queryable.Provider.GetType ().Name);
         throw new ArgumentException (message, "queryable");
       }
@@ -194,7 +194,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="queryParameterCollection">The parameter collection to be used for the query.</param>
     /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
     /// <remarks>Note that creating queries with a hard-coded SQL statement is not very flexible and not portable at all.
-    /// Therefore, the <see cref="CreateQueryable{T}()"/> and <see cref="CreateQuery(QueryDefinition,QueryParameterCollection)"/>
+    /// Therefore, the <see cref="CreateLinqQuery{T}()"/> and <see cref="CreateQuery(QueryDefinition,QueryParameterCollection)"/>
     /// methods should usually be preferred to this method.</remarks>
     public static IQuery CreateScalarQuery (string id, string storageProviderID, string statement, QueryParameterCollection queryParameterCollection)
     {
@@ -219,7 +219,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <see cref="IQueryManager.GetCollection{T}"/>.</param>
     /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
     /// <remarks>Note that creating queries with a hard-coded SQL statement is not very flexible and not portable at all.
-    /// Therefore, the <see cref="CreateQueryable{T}()"/> and <see cref="CreateQuery(QueryDefinition,QueryParameterCollection)"/>
+    /// Therefore, the <see cref="CreateLinqQuery{T}()"/> and <see cref="CreateQuery(QueryDefinition,QueryParameterCollection)"/>
     /// methods should usually be preferred to this method.</remarks>
     public static IQuery CreateCollectionQuery (string id, string storageProviderID, string statement, QueryParameterCollection queryParameterCollection, Type collectionType)
     {

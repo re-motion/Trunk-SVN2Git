@@ -32,7 +32,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNull ("cultureName", cultureName);
       
-      var result = from c in QueryFactory.CreateQueryable<Culture>()
+      var result = from c in QueryFactory.CreateLinqQuery<Culture>()
                    where c.CultureName == cultureName
                    select c;
 

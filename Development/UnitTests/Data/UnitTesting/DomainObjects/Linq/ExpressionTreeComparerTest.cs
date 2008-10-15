@@ -23,8 +23,8 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects.Linq
     [Test]
     public void Compare_Equal ()
     {
-      IQueryable<SimpleDomainObject> expected = from d in QueryFactory.CreateQueryable<SimpleDomainObject>() where d.Value == 1 select d;
-      IQueryable<SimpleDomainObject> actual = from d in QueryFactory.CreateQueryable<SimpleDomainObject>() where d.Value == 1 select d;
+      IQueryable<SimpleDomainObject> expected = from d in QueryFactory.CreateLinqQuery<SimpleDomainObject>() where d.Value == 1 select d;
+      IQueryable<SimpleDomainObject> actual = from d in QueryFactory.CreateLinqQuery<SimpleDomainObject>() where d.Value == 1 select d;
 
       _expressionTreeComparer.Compare (expected, actual);
     }
@@ -33,8 +33,8 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects.Linq
     [ExpectedException (typeof (AssertionException))]
     public void Compare_NotEqual ()
     {
-      IQueryable<SimpleDomainObject> expected = from d in QueryFactory.CreateQueryable<SimpleDomainObject>() where d.Value == 1 select d;
-      IQueryable<SimpleDomainObject> actual = from d in QueryFactory.CreateQueryable<SimpleDomainObject>() where d.Value == 0 select d;
+      IQueryable<SimpleDomainObject> expected = from d in QueryFactory.CreateLinqQuery<SimpleDomainObject>() where d.Value == 1 select d;
+      IQueryable<SimpleDomainObject> actual = from d in QueryFactory.CreateLinqQuery<SimpleDomainObject>() where d.Value == 0 select d;
 
       _expressionTreeComparer.Compare (expected, actual);
     }

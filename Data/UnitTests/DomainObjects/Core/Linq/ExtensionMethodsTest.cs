@@ -15,7 +15,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void ToObjectList ()
     {
-      IQueryable<Order> queryable = from o in QueryFactory.CreateQueryable<Order>() 
+      IQueryable<Order> queryable = from o in QueryFactory.CreateLinqQuery<Order>() 
                                     where o.OrderNumber == 1 || o.ID == DomainObjectIDs.Order2 
                                     select o;
       

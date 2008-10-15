@@ -60,13 +60,13 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
       if (metadataID.StateValue.HasValue)
       {
-        return (from state in QueryFactory.CreateQueryable<StateDefinition>()
+        return (from state in QueryFactory.CreateLinqQuery<StateDefinition>()
                where state.StateProperty.MetadataItemID == metadataID.MetadataItemID && state.Value == metadataID.StateValue
                select state).Cast<MetadataObject>();
       }
       else
       {
-        return from m in QueryFactory.CreateQueryable<MetadataObject>()
+        return from m in QueryFactory.CreateLinqQuery<MetadataObject>()
                where m.MetadataItemID == metadataID.MetadataItemID
                select m;
       }

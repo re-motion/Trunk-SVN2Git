@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     {
       string metadataObjectID = "b8621bc9-9ab3-4524-b1e4-582657d6b420";
 
-      var expected = from m in QueryFactory.CreateQueryable<MetadataObject>()
+      var expected = from m in QueryFactory.CreateLinqQuery<MetadataObject>()
                      where m.MetadataItemID == new Guid (metadataObjectID)
                      select m;
 
@@ -58,7 +58,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     {
       string metadataObjectID = "9e689c4c-3758-436e-ac86-23171289fa5e|2";
 
-      var expected = from state in QueryFactory.CreateQueryable<StateDefinition>()
+      var expected = from state in QueryFactory.CreateLinqQuery<StateDefinition>()
                      where state.StateProperty.MetadataItemID == new Guid ("9e689c4c-3758-436e-ac86-23171289fa5e") && state.Value == 2
                      select state;
 

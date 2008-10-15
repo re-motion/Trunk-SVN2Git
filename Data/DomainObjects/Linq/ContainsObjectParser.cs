@@ -27,7 +27,7 @@ using Remotion.Data.Linq;
 namespace Remotion.Data.DomainObjects.Linq
 {
   // source: where o.OrderItems.ContainsObject (myOrderItem)
-  // transformed: where (from oi in DataContext.CreateQueryable<OrderItem> () where oi.Order == o select oi).Contains (myOrderItem)
+  // transformed: where (from oi in QueryFactory.CreateLinqQuery<OrderItem> () where oi.Order == o select oi).Contains (myOrderItem)
   // SQL: WHERE @1 IN (SELECT [oi].[ID] FROM [OrderItem] [oi] WHERE (([oi].[OrderID] IS NULL AND [o].[ID] IS NULL) OR [oi].[OrderID] = [o].[ID]))
   public class ContainsObjectParser : IWhereConditionParser
   {
@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Linq
     private static readonly MethodInfo s_containsObjectMethod =
         ParserUtility.GetMethod (() => ((DomainObjectCollection) null).ContainsObject (null));
     private static readonly MethodInfo s_genericCreateQueryableMethod = 
-        ParserUtility.GetMethod (() => QueryFactory.CreateQueryable<DomainObject>()).GetGenericMethodDefinition();
+        ParserUtility.GetMethod (() => QueryFactory.CreateLinqQuery<DomainObject>()).GetGenericMethodDefinition();
 
     private readonly WhereConditionParserRegistry _registry;
 
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Linq
       return queryModel;
     }
 
-    // from oi in DataContext.CreateQueryable<OrderItem>
+    // from oi in QueryFactory.CreateLinqQuery<OrderItem>
     public MainFromClause CreateFromClause (Type containsParameterType)
     {
       ArgumentUtility.CheckNotNull ("containsParameterType", containsParameterType);

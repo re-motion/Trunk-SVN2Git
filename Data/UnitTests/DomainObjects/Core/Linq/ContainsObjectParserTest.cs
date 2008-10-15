@@ -212,7 +212,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private MethodInfo GetContainsMethod ()
     {
-      return ParserUtility.GetMethod (() => (from oi in QueryFactory.CreateQueryable<OrderItem>() select oi).Contains (_orderItem1));
+      return ParserUtility.GetMethod (() => (from oi in QueryFactory.CreateLinqQuery<OrderItem>() select oi).Contains (_orderItem1));
     }
 
     [Test]
@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private IQueryable<Order> GetQuery ()
     {
-      return from o in QueryFactory.CreateQueryable<Order>()
+      return from o in QueryFactory.CreateLinqQuery<Order>()
              where o.OrderItems.ContainsObject (_orderItem1)
              select o;
     }

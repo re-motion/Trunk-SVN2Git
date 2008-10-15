@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void CreateQueryable_WithSqlGenerator ()
     {
       var sqlGeneratorMock = MockRepository.GenerateMock<ISqlGenerator> ();
-      var queryable = QueryFactory.CreateQueryable<Order> (sqlGeneratorMock);
+      var queryable = QueryFactory.CreateLinqQuery<Order> (sqlGeneratorMock);
       Assert.That (queryable, Is.Not.Null);
       Assert.That (queryable.GetExecutor (), Is.InstanceOfType (typeof (QueryExecutor<Order>)));
       Assert.That (queryable.GetExecutor ().SqlGenerator, Is.SameAs (sqlGeneratorMock));
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void CreateQueryable_WithImplicitSqlGenerator ()
     {
-      var queryable = QueryFactory.CreateQueryable<Order> ();
+      var queryable = QueryFactory.CreateLinqQuery<Order> ();
       Assert.That (queryable, Is.Not.Null);
       Assert.That (queryable.GetExecutor (), Is.InstanceOfType (typeof (QueryExecutor<Order>)));
       Assert.That (queryable.GetExecutor ().SqlGenerator, Is.Not.Null);
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void CreateQuery_FromLinqQuery()
     {
-      var queryable = from o in QueryFactory.CreateQueryable<Order> ()
+      var queryable = from o in QueryFactory.CreateLinqQuery<Order> ()
                       where o.OrderNumber > 1
                       select o;
 
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given queryable must stem from an instance of DomainObjectQueryable. Instead, "
-        + "it is of type 'EnumerableQuery`1', with a query provider of type 'EnumerableQuery`1'. Be sure to use QueryFactory.CreateQueryable to "
+        + "it is of type 'EnumerableQuery`1', with a query provider of type 'EnumerableQuery`1'. Be sure to use QueryFactory.CreateLinqQuery to "
         + "create the queryable instance, and only use standard query methods on it.\r\nParameter name: queryable")]
     public void CreateQuery_FromLinqQuery_InvalidQueryable ()
     {

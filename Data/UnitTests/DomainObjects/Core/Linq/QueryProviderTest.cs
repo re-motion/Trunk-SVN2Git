@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var sqlGenerator = new SqlServerGenerator (DatabaseInfo.Instance);
       var executor = new QueryExecutor<Supplier> (sqlGenerator);
       var provider = new QueryProvider (executor);
-      IQueryable<Supplier> query = from supplier in QueryFactory.CreateQueryable<Supplier>() select supplier;
+      IQueryable<Supplier> query = from supplier in QueryFactory.CreateLinqQuery<Supplier>() select supplier;
 
       IQueryable<Supplier> queryCreatedByProvider = provider.CreateQuery<Supplier> (query.Expression);
       Assert.IsNotNull (queryCreatedByProvider);

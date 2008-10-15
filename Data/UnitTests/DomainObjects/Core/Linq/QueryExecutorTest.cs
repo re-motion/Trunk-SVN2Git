@@ -253,13 +253,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private QueryModel GetParsedSimpleQuery ()
     {
-      IQueryable<Computer> query = from computer in QueryFactory.CreateQueryable<Computer>() select computer;
+      IQueryable<Computer> query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
       return new QueryParser (query.Expression).GetParsedQuery ();
     }
 
     private QueryModel GetParsedSimpleWhereQuery ()
     {
-      IQueryable<Order> query = from order in QueryFactory.CreateQueryable<Order>() where order.OrderNumber == 1 select order;
+      IQueryable<Order> query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       return new QueryParser (query.Expression).GetParsedQuery ();
     }
 

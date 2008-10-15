@@ -74,7 +74,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     public static ObjectList<Tenant> FindAll ()
     {
-      var result = from t in QueryFactory.CreateQueryable<Tenant>()
+      var result = from t in QueryFactory.CreateLinqQuery<Tenant>()
                    orderby t.Name
                    select t;
 
@@ -85,7 +85,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
-      var result = from t in QueryFactory.CreateQueryable<Tenant>()
+      var result = from t in QueryFactory.CreateLinqQuery<Tenant>()
                    where t.UniqueIdentifier == uniqueIdentifier
                    select t;
 

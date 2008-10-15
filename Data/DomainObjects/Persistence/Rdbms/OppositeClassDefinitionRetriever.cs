@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         throw _provider.CreateRdbmsProviderException (
             "Incorrect database format encountered."
-                + " CreateQueryable '{0}' must have column '{1}' defined, because opposite class '{2}' is part of an inheritance hierarchy.",
+                + " Entity '{0}' must have column '{1}' defined, because opposite class '{2}' is part of an inheritance hierarchy.",
             _classDefinition.GetEntityName (),
             RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName),
             _relatedClassDefinition.ID);
@@ -128,7 +128,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       if (hasClassIDColumn)
       {
         throw _provider.CreateRdbmsProviderException (
-            "Incorrect database format encountered. CreateQueryable '{0}' must not contain column '{1}', because opposite class '{2}' is not part of an inheritance hierarchy.",
+            "Incorrect database format encountered. Entity '{0}' must not contain column '{1}', because opposite class '{2}' is not part of an inheritance hierarchy.",
             _classDefinition.GetEntityName (),
             RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName),
             _relatedClassDefinition.ID);

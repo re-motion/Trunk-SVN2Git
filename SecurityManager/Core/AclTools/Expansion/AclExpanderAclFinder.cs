@@ -25,7 +25,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       //using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       //{
-        var findAllAclsQuery = from acl in QueryFactory.CreateQueryable<AccessControlList> ()
+        var findAllAclsQuery = from acl in QueryFactory.CreateLinqQuery<AccessControlList> ()
                                select acl;
         return findAllAclsQuery.ToList ();
       //}

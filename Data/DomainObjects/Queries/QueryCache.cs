@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
       return _cache.GetOrCreateValue (id, delegate
                                           {
-                                            var querySource = QueryFactory.CreateQueryable<T> ();
+                                            var querySource = QueryFactory.CreateLinqQuery<T> ();
                                             var query = queryGenerator (querySource);
                                             return QueryFactory.CreateQuery (id, query);
                                           });

@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
       var abstractRoleNames = (from abstractRole in abstractRoles select abstractRole.Name).ToArray();
 
-      var result = from ar in QueryFactory.CreateQueryable<AbstractRoleDefinition>()
+      var result = from ar in QueryFactory.CreateLinqQuery<AbstractRoleDefinition>()
                    where abstractRoleNames.Contains (ar.Name)
                    orderby ar.Index
                    select ar;
@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public static ObjectList<AbstractRoleDefinition> FindAll ()
     {
-      var result = from ar in QueryFactory.CreateQueryable<AbstractRoleDefinition>()
+      var result = from ar in QueryFactory.CreateLinqQuery<AbstractRoleDefinition>()
                    orderby ar.Index
                    select ar;
 
