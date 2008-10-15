@@ -9,12 +9,14 @@
  */
 
 using System;
+using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
   /// <summary>
-  /// Apply this mixin to a type in order to add an <see cref="IBusinessObject"/> implementation.
+  /// Apply this mixin to a type in order to add an <see cref="IBusinessObject"/> implementation if you cannot derive from 
+  /// <see cref="BindableObjectBase"/>.
   /// </summary>
   [Serializable]
   [BindableObjectProvider]
@@ -26,7 +28,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     protected override BindableObjectClass InitializeBindableObjectClass()
     {
-      Type targetType = MixinReflector.GetMixinConfiguration (this, This).TargetClass.Type;
+      Type targetType = MixinTypeUtility.GetUnderlyingTargetType (This.GetType());
       return BindableObjectProvider.GetBindableObjectClass (targetType);
     }
   }

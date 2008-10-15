@@ -28,7 +28,6 @@ namespace Remotion.ObjectBinding.BindableObject
     public BindableObjectClass (Type concreteType, BindableObjectProvider businessObjectProvider)
     {
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
-      CheckTypeForMixin (concreteType);
       Assertion.IsFalse (concreteType.IsValueType, "mixed types cannot be value types");
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
       
@@ -36,10 +35,9 @@ namespace Remotion.ObjectBinding.BindableObject
       _concreteType = concreteType;
       _businessObjectProvider = businessObjectProvider;
       
-      BusinessObjectProviderAttribute attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
+      var attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
       _businessObjectProviderAttribute = attribute;
     }
-      
 
     /// <summary> Returns the <see cref="IBusinessObjectProperty"/> for the passed <paramref name="propertyIdentifier"/>. </summary>
     /// <param name="propertyIdentifier"> 
@@ -143,20 +141,6 @@ namespace Remotion.ObjectBinding.BindableObject
       }
     }
 
-    //TODO FS: Drop Check, add check for IBindableObjectAttribute to BindableObjectDataSource, add test for initialization with manual bindable object
-    protected void CheckTypeForMixin (Type concreteType)
-    {
-      Type underlyingTargetType = MixinTypeUtility.GetUnderlyingTargetType (concreteType);
-      if (underlyingTargetType == concreteType || !MixinTypeUtility.HasAscribableMixin (concreteType, typeof (BindableObjectMixinBase<>)))
-      {
-        throw new ArgumentException (
-            string.Format (
-                "Type '{0}' does not implement the '{1}' interface via the '{2}'.",
-                underlyingTargetType.FullName,
-                typeof (IBusinessObject).FullName,
-                typeof (BindableObjectMixinBase<>).FullName),
-            "concreteType");
-      }
-    }
+#warning TODO FS: add check for IBindableObjectAttribute to BindableObjectDataSource, add test for initialization with manual bindable object
   }
 }

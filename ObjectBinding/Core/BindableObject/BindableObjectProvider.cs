@@ -81,7 +81,6 @@ namespace Remotion.ObjectBinding.BindableObject
     }
 
     //TODO FS: Add integration test for manual bindable object
-    //TODO FS: Add manual BindableObjectBase to bindable object layer.
     /// <summary>
     /// Use this method as a shortcut to retrieve the <see cref="BindableObjectClass"/> for a <see cref="Type"/> 
     /// that has the <see cref="BindableObjectMixinBase{T}"/> applied without first retrieving the matching provider.

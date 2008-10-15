@@ -21,7 +21,6 @@ using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
 {
-  //TODO FS: Add manually implemented bindable object
   [TestFixture]
   public class BindableObjectTypeFinderTest
   {
@@ -51,14 +50,21 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
                   typeof (SimpleReferenceType),
                   typeof (ManualBusinessObject),
                   typeof (ClassWithIdentity),
+                  typeof (ClassDerivedFromBindableObjectBase),
+                  typeof (ClassDerivedFromBindableObjectWithIdentityBase),
               });
 
       _mockRepository.ReplayAll ();
 
-      BindableObjectTypeFinder finder = new BindableObjectTypeFinder (_serviceProvider);
+      var finder = new BindableObjectTypeFinder (_serviceProvider);
       List<Type> types = finder.GetTypes (true);
 
-      Assert.That (types, Is.EquivalentTo (new Type[] { typeof (ClassWithAllDataTypes), typeof (ClassWithValueType<>), typeof (ClassWithIdentity) }));
+      Assert.That (types, Is.EquivalentTo (new[]
+                                             {
+                                                 typeof (ClassWithAllDataTypes), typeof (ClassWithValueType<>), typeof (ClassWithIdentity),
+                                                 typeof (ClassDerivedFromBindableObjectBase),
+                                                 typeof (ClassDerivedFromBindableObjectWithIdentityBase)
+                                             }));
 
       _mockRepository.VerifyAll ();
     }
@@ -76,14 +82,21 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
               typeof (SimpleValueType),
               typeof (SimpleReferenceType),
               typeof (ManualBusinessObject),
+              typeof (ClassDerivedFromBindableObjectBase),
+              typeof (ClassDerivedFromBindableObjectWithIdentityBase),
           });
 
       _mockRepository.ReplayAll();
 
-      BindableObjectTypeFinder finder = new BindableObjectTypeFinder (_serviceProvider);
+      var finder = new BindableObjectTypeFinder (_serviceProvider);
       List<Type> types = finder.GetTypes (false);
 
-      Assert.That (types, Is.EquivalentTo (new Type[] { typeof (ClassWithAllDataTypes), typeof (ClassWithValueType<>) }));
+      Assert.That (types, Is.EquivalentTo (new[]
+                                             {
+                                                 typeof (ClassWithAllDataTypes), typeof (ClassWithValueType<>),
+                                                 typeof (ClassDerivedFromBindableObjectBase),
+                                                 typeof (ClassDerivedFromBindableObjectWithIdentityBase),
+                                             }));
 
       _mockRepository.VerifyAll();
     }
@@ -103,14 +116,21 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
                     typeof (SimpleValueType),
                     typeof (SimpleReferenceType),
                     typeof (ManualBusinessObject),
+                    typeof (ClassDerivedFromBindableObjectBase),
+                    typeof (ClassDerivedFromBindableObjectWithIdentityBase),
                 });
 
         _mockRepository.ReplayAll();
 
-        BindableObjectTypeFinder finder = new BindableObjectTypeFinder (_serviceProvider);
+        var finder = new BindableObjectTypeFinder (_serviceProvider);
         List<Type> types = finder.GetTypes (false);
 
-        Assert.That (types, Is.EquivalentTo (new Type[] {typeof (ClassWithAllDataTypes), typeof (ClassWithValueType<>)}));
+        Assert.That (types,
+                     Is.EquivalentTo (new[]
+                                        {
+                                            typeof (ClassWithAllDataTypes), typeof (ClassWithValueType<>), typeof (ClassDerivedFromBindableObjectBase),
+                                            typeof (ClassDerivedFromBindableObjectWithIdentityBase),
+                                        }));
 
         _mockRepository.VerifyAll();
       }
@@ -129,10 +149,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
 
       _mockRepository.ReplayAll ();
 
-      BindableObjectTypeFinder finder = new BindableObjectTypeFinder (_serviceProvider);
+      var finder = new BindableObjectTypeFinder (_serviceProvider);
       List<Type> types = finder.GetTypes (false);
 
-      Assert.That (types, Is.EquivalentTo (new Type[] { typeof (DerivedBusinessObjectClassWithoutAttribute) }));
+      Assert.That (types, Is.EquivalentTo (new[] { typeof (DerivedBusinessObjectClassWithoutAttribute) }));
 
       _mockRepository.VerifyAll ();
     }
@@ -144,7 +164,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
 
       _mockRepository.ReplayAll ();
 
-      BindableObjectTypeFinder finder = new BindableObjectTypeFinder (_serviceProvider);
+      var finder = new BindableObjectTypeFinder (_serviceProvider);
       List<Type> types = finder.GetTypes (false);
 
       Assert.That (types, Is.Empty);
@@ -168,7 +188,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
 
       _mockRepository.ReplayAll ();
 
-      BindableObjectTypeFinder finder = new BindableObjectTypeFinder (_serviceProvider);
+      var finder = new BindableObjectTypeFinder (_serviceProvider);
       MixinConfiguration configuration = finder.GetMixinConfiguration (true);
       Assert.That (configuration.ClassContexts.Count, Is.EqualTo (3));
       Assert.That (configuration.ClassContexts.ContainsExact (typeof (BaseBusinessObjectClass)));
@@ -190,7 +210,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.Design.BindableObject
 
       _mockRepository.ReplayAll ();
 
-      BindableObjectTypeFinder finder = new BindableObjectTypeFinder (_serviceProvider);
+      var finder = new BindableObjectTypeFinder (_serviceProvider);
       finder.GetMixinConfiguration (false);
 
       _mockRepository.VerifyAll ();

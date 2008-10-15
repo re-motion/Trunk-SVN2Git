@@ -73,6 +73,13 @@ namespace Remotion.ObjectBinding.BindableObject
       if (Type == null)
         return null;
 
+      if (!BindableObjectTypeFinder.IsBindableObjectImplementation (Type))
+      {
+        var message = string.Format ("The type '{0}' is not a bindable object implementation. It must either have an BindableObject mixin or be " 
+            + "derived from a BindableObject base class to be used with this data source.", Type.FullName);
+        throw new InvalidOperationException (message);
+      }
+
       return BindableObjectProvider.GetBindableObjectClass (Type);
     }
 

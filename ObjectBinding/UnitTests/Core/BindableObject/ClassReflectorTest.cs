@@ -42,7 +42,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       Assert.That (_classReflector.TargetType, Is.SameAs (_type));
       Assert.That (((ClassReflector) _classReflector).ConcreteType, Is.Not.SameAs (_type));
-      Assert.That (((ClassReflector) _classReflector).ConcreteType, Is.SameAs (Mixins.MixinTypeUtility.GetConcreteMixedType (_type)));
+      Assert.That (((ClassReflector) _classReflector).ConcreteType, Is.SameAs (MixinTypeUtility.GetConcreteMixedType (_type)));
       Assert.That (_classReflector.BusinessObjectProvider, Is.SameAs (_businessObjectProvider));
     }
 
@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetMetadata_ForBindableObjectWithIdentity ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithIdentity), _businessObjectProvider, _metadataFactory);
+      var classReflector = new ClassReflector (typeof (ClassWithIdentity), _businessObjectProvider, _metadataFactory);
       BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
       Assert.That (bindableObjectClass, Is.InstanceOfType (typeof (IBusinessObjectClassWithIdentity)));
@@ -71,20 +71,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain."
-        + "ClassWithManualIdentity' does not implement the 'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding."
-        + "BindableObject.BindableObjectMixinBase`1'.\r\nParameter name: concreteType")]
     public void GetMetadata_ForBindableObjectWithManualIdentity ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithManualIdentity), _businessObjectProvider, _metadataFactory);
-      classReflector.GetMetadata ();
+      var classReflector = new ClassReflector (typeof (ClassWithManualIdentity), _businessObjectProvider, _metadataFactory);
+      var bindableObjectClass = classReflector.GetMetadata ();
+
+      Assert.That (bindableObjectClass, Is.InstanceOfType (typeof (IBusinessObjectClassWithIdentity)));
+      Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (ClassWithManualIdentity)));
     }
 
     [Test]
     public void GetMetadata_UsesFactory ()
     {
-      MockRepository mockRepository = new MockRepository ();
-      IMetadataFactory factoryMock = mockRepository.StrictMock<IMetadataFactory> ();
+      var mockRepository = new MockRepository ();
+      var factoryMock = mockRepository.StrictMock<IMetadataFactory> ();
 
       IPropertyInformation dummyProperty1 = GetPropertyInfo (typeof (DateTime), "Now");
       IPropertyInformation dummyProperty2 = GetPropertyInfo (typeof (Environment), "TickCount");
@@ -92,14 +92,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       PropertyReflector dummyReflector1 = PropertyReflector.Create(GetPropertyInfo (typeof (DateTime), "Ticks"), _businessObjectProvider);
       PropertyReflector dummyReflector2 = PropertyReflector.Create(GetPropertyInfo (typeof (Environment), "NewLine"), _businessObjectProvider);
 
-      IPropertyFinder propertyFinderMock = mockRepository.StrictMock<IPropertyFinder> ();
+      var propertyFinderMock = mockRepository.StrictMock<IPropertyFinder> ();
 
-      ClassReflector otherClassReflector = new ClassReflector (_type, _businessObjectProvider, factoryMock);
+      var otherClassReflector = new ClassReflector (_type, _businessObjectProvider, factoryMock);
 
-      Type concreteType = Mixins.MixinTypeUtility.GetConcreteMixedType (_type);
+      Type concreteType = MixinTypeUtility.GetConcreteMixedType (_type);
 
       Expect.Call (factoryMock.CreatePropertyFinder (concreteType)).Return (propertyFinderMock);
-      Expect.Call (propertyFinderMock.GetPropertyInfos ()).Return (new IPropertyInformation[] { dummyProperty1, dummyProperty2 });
+      Expect.Call (propertyFinderMock.GetPropertyInfos ()).Return (new[] { dummyProperty1, dummyProperty2 });
       Expect.Call (factoryMock.CreatePropertyReflector (concreteType, dummyProperty1, _businessObjectProvider)).Return (dummyReflector1);
       Expect.Call (factoryMock.CreatePropertyReflector (concreteType, dummyProperty2, _businessObjectProvider)).Return (dummyReflector2);
 
@@ -121,8 +121,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         + "'MixedProperty', this is currently not supported.", MatchType = MessageMatch.Regex)]
     public void GetMetadata_ForMixedPropertyWithSameName ()
     {
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedPropertyOfSameName), _businessObjectProvider,
-          _metadataFactory);
+      var classReflector = new ClassReflector (typeof (ClassWithMixedPropertyOfSameName), _businessObjectProvider, _metadataFactory);
       classReflector.GetMetadata ();
     }
 

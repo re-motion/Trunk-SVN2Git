@@ -58,40 +58,27 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>)));
     }
 
-    [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage =
-        "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleReferenceType' does not implement the "
-        + "'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding.BindableObject.BindableObjectMixinBase`1'.\r\n"
-        + "Parameter name: concreteType")]
     public void Initialize_WithTypeNotUsingBindableObjectMixin ()
     {
-      new BindableObjectClass (MixinTypeUtility.GetConcreteMixedType (typeof (SimpleReferenceType)), _bindableObjectProvider);
+      var bindableObjectClass = new BindableObjectClass (MixinTypeUtility.GetConcreteMixedType (typeof (SimpleReferenceType)), _bindableObjectProvider);
+      Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (SimpleReferenceType)));
+      Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (SimpleReferenceType)));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage =
-        "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not implement the "
-        + "'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding.BindableObject.BindableObjectMixinBase`1'.\r\n"
-        + "Parameter name: concreteType")]
     public void Initialize_WithUnmixedType ()
     {
-      new BindableObjectClass (typeof (ManualBusinessObject), _bindableObjectProvider);
+      var bindableObjectClass = new BindableObjectClass (typeof (ManualBusinessObject), _bindableObjectProvider);
+      Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (ManualBusinessObject)));
+      Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (ManualBusinessObject)));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage =
-        "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not implement the "
-        + "'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding.BindableObject.BindableObjectMixinBase`1'.\r\n"
-        + "Parameter name: concreteType")]
-    public void Initialize_WithMixedTypeManuallyImplementingBindableObjectMixin ()
+    public void Initialize_WithTypeDerivedFromBindableObjectBase ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (ManualBusinessObject)).AddMixins (typeof (object)).EnterScope())
-      {
-        new BindableObjectClass (MixinTypeUtility.GetConcreteMixedType (typeof (ManualBusinessObject)), _bindableObjectProvider);
-      }
+      var bindableObjectClass = new BindableObjectClass (typeof (ClassDerivedFromBindableObjectBase), _bindableObjectProvider);
+      Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectBase)));
+      Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectBase)));
     }
 
     [Test]

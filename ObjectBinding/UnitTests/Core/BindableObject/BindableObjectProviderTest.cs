@@ -112,15 +112,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetBindableObjectClass ()
     {
-      MockRepository mockRepository = new MockRepository();
-      IMetadataFactory metadataFactoryMock = mockRepository.StrictMock<IMetadataFactory>();
-      IClassReflector classReflectorMock = mockRepository.StrictMock<IClassReflector>();
+      var mockRepository = new MockRepository();
+      var metadataFactoryMock = mockRepository.StrictMock<IMetadataFactory>();
+      var classReflectorMock = mockRepository.StrictMock<IClassReflector>();
 
-      BindableObjectProvider provider = new BindableObjectProvider (metadataFactoryMock, _serviceFactoryStub);
+      var provider = new BindableObjectProvider (metadataFactoryMock, _serviceFactoryStub);
       BindableObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), provider);
       Type targetType = typeof (SimpleBusinessObjectClass);
-      Type concreteType = Mixins.MixinTypeUtility.GetConcreteMixedType (targetType);
-      BindableObjectClass expectedBindableObjectClass = new BindableObjectClass (concreteType, provider);
+      Type concreteType = MixinTypeUtility.GetConcreteMixedType (targetType);
+      var expectedBindableObjectClass = new BindableObjectClass (concreteType, provider);
 
       Expect.Call (metadataFactoryMock.CreateClassReflector (targetType, provider)).Return (classReflectorMock);
       Expect.Call (classReflectorMock.GetMetadata()).Return (expectedBindableObjectClass);
@@ -143,14 +143,27 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage =
-            "Type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleReferenceType' does not implement the "
-            + "'Remotion.ObjectBinding.IBusinessObject' interface via the 'Remotion.ObjectBinding.BindableObject.BindableObjectMixinBase`1'.\r\n"
-            + "Parameter name: concreteType")]
+    public void GetBindableObjectClass_WithTypeDerivedFromBindableObjectBase ()
+    {
+      var bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (typeof (ClassDerivedFromBindableObjectBase));
+      Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectBase)));
+      Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectBase)));
+    }
+
+    [Test]
+    public void GetBindableObjectClass_WithTypeDerivedFromBindableObjectWithIdentityBase ()
+    {
+      var bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (typeof (ClassDerivedFromBindableObjectWithIdentityBase));
+      Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectWithIdentityBase)));
+      Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectWithIdentityBase)));
+    }
+
+    [Test]
     public void GetBindableObjectClass_WithTypeNotUsingBindableObjectMixin ()
     {
-      BindableObjectProvider.GetBindableObjectClass (typeof (SimpleReferenceType));
+      var bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (typeof (SimpleReferenceType));
+      Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (SimpleReferenceType)));
+      Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (SimpleReferenceType)));
     }
 
     [Test]
@@ -162,7 +175,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetMetadataFactoryForType_WithCustomMetadataFactory ()
     {
-      BindableObjectProvider provider = new BindableObjectProvider (_metadataFactoryStub, _serviceFactoryStub);
+      var provider = new BindableObjectProvider (_metadataFactoryStub, _serviceFactoryStub);
       Assert.AreSame (_metadataFactoryStub, provider.MetadataFactory);
     }
 
@@ -177,7 +190,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       using (MixinConfiguration.BuildNew().ForClass (typeof (BindableObjectServiceFactory)).AddMixin<MixinStub>().EnterScope())
       {
-        BindableObjectProvider provider = new BindableObjectProvider();
+        var provider = new BindableObjectProvider();
         Assert.That (provider.ServiceFactory, Is.InstanceOfType (typeof (BindableObjectServiceFactory)));
         Assert.That (provider.ServiceFactory, Is.InstanceOfType (typeof (IMixinTarget)));
       }
@@ -186,7 +199,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetServiceFactoryForType_WithCustomServiceFactory ()
     {
-      BindableObjectProvider provider = new BindableObjectProvider (_metadataFactoryStub, _serviceFactoryStub);
+      var provider = new BindableObjectProvider (_metadataFactoryStub, _serviceFactoryStub);
       Assert.AreSame (_serviceFactoryStub, provider.ServiceFactory);
     }
   }

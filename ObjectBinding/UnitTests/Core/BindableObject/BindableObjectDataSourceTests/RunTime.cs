@@ -79,10 +79,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
+    [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage =
-        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not have the "
-        + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
+        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' is not a bindable object implementation. It must either "
+        + "have an BindableObject mixin or be derived from a BindableObject base class to be used with this data source.")]
     public void GetBusinessObjectClass_WithTypeNotUsingBindableObjectMixin ()
     {
       _dataSource.Type = typeof (ManualBusinessObject);

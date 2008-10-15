@@ -17,6 +17,8 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Context;
 using Remotion.Design;
 using Remotion.Development.UnitTesting;
+using Remotion.Implementation;
+using Remotion.Logging.BridgeImplementations;
 using Remotion.Mixins.BridgeImplementations;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -48,7 +50,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
       _mockDesignerHost = _mockRepository.StrictMock<IDesignerHost>();
       SetupResult.For (_stubSite.GetService (typeof (IDesignerHost))).Return (_mockDesignerHost);
 
-      IDesignModeHelper helperStub = _mockRepository.Stub<IDesignModeHelper> ();
+      var helperStub = _mockRepository.Stub<IDesignModeHelper> ();
       SetupResult.For (helperStub.DesignerHost).Return (_mockDesignerHost);
 
       DesignerUtility.SetDesignMode (helperStub);
@@ -58,19 +60,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
 
     private void PrepareMixinConfiguration (IDesignerHost host)
     {
-      SetupResult.For (host.GetType ("Remotion.Mixins.BridgeImplementations.MixinTypeUtilityImplementation, Remotion, Version = 1.9.0.202"))
-          .Return (typeof (MixinTypeUtilityImplementation));
-      SetupResult.For (host.GetType ("Remotion.Mixins.BridgeImplementations.TypeFactoryImplementation, Remotion, Version = 1.9.0.202"))
-          .Return (typeof (TypeFactoryImplementation));
-      SetupResult.For (host.GetType ("Remotion.Context.BootstrapStorageProvider, Remotion, Version = 1.9.0.202"))
-          .Return (typeof (BootstrapStorageProvider));
-      SetupResult.For (host.GetType ("Remotion.Mixins.BridgeImplementations.MixedObjectInstantiator, Remotion, Version = 1.9.0.202"))
-          .Return (typeof (MixedObjectInstantiator));
-      ITypeDiscoveryService serviceStub = _mockRepository.Stub<ITypeDiscoveryService> ();
+      SetupResult.For (host.GetType (typeof (MixinTypeUtilityImplementation).AssemblyQualifiedName)).Return (typeof (MixinTypeUtilityImplementation));
+      SetupResult.For (host.GetType (typeof (TypeFactoryImplementation).AssemblyQualifiedName)).Return (typeof (TypeFactoryImplementation));
+      SetupResult.For (host.GetType (typeof (BootstrapStorageProvider).AssemblyQualifiedName)).Return (typeof (BootstrapStorageProvider));
+      SetupResult.For (host.GetType (typeof (MixedObjectInstantiator).AssemblyQualifiedName)).Return (typeof (MixedObjectInstantiator));
+      var serviceStub = _mockRepository.Stub<ITypeDiscoveryService> ();
       SetupResult.For (serviceStub.GetTypes (null, false)).IgnoreArguments ().Return (Assembly.GetExecutingAssembly ().GetTypes ());
       SetupResult.For (host.GetService (typeof (ITypeDiscoveryService))).Return (serviceStub);
-      SetupResult.For (host.GetType ("Remotion.Context.CallContextStorageProvider, Remotion, Version = 1.9.0.202"))
-          .Return (typeof (CallContextStorageProvider));
+      SetupResult.For (host.GetType (typeof (CallContextStorageProvider).AssemblyQualifiedName)).Return (typeof (CallContextStorageProvider));
+      SetupResult.For (host.GetType (typeof (LogManagerImplementation).AssemblyQualifiedName)).Return (typeof (LogManagerImplementation));
     }
 
     [TearDown]
@@ -145,11 +143,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
+    [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage =
-        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not have the "
-        + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
-    public void GetBusinessObjectClass_WithTypeNotUsingBindableObjectMixin ()
+        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' is not a bindable object implementation. It must either "
+        + "have an BindableObject mixin or be derived from a BindableObject base class to be used with this data source.")]
+    public void GetBusinessObjectClass_WithNonBindableType ()
     {
       Expect.Call (
           _mockDesignerHost.GetType (
@@ -162,6 +160,24 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
       Dev.Null = _dataSource.BusinessObjectClass;
 
       _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void GetBusinessObjectClass_WithTypeDerivedFromBaseClass ()
+    {
+      Expect.Call (
+          _mockDesignerHost.GetType (
+              "Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassDerivedFromBindableObjectBase, Remotion.ObjectBinding.UnitTests"))
+          .Return (typeof (ClassDerivedFromBindableObjectBase))
+          .Repeat.AtLeastOnce ();
+      _mockRepository.ReplayAll ();
+
+      _dataSource.Type = typeof (ClassDerivedFromBindableObjectBase);
+      IBusinessObjectClass actual = _dataSource.BusinessObjectClass;
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.BusinessObjectProvider, Is.SameAs (BindableObjectProvider.GetProviderForBindableObjectType (typeof (ClassDerivedFromBindableObjectBase))));
+
+      _mockRepository.VerifyAll ();
     }
   }
 }

@@ -34,7 +34,6 @@ namespace Remotion.ObjectBinding.Design.BindableObject
       get { return _serviceProvider; }
     }
 
-    //TODO FS: Use IBindableObjectAttribute for filtering instead of BindableObjectMixinBase
     public List<Type> GetTypes (bool includeGac)
     {
       ICollection types = GetAllDesignerTypes (includeGac);
@@ -45,12 +44,26 @@ namespace Remotion.ObjectBinding.Design.BindableObject
       {
         foreach (Type type in types)
         {
-          if (!MixinTypeUtility.IsGeneratedByMixinEngine (type)
-              && MixinTypeUtility.HasAscribableMixin (type, typeof (BindableObjectMixinBase<>)))
+          if (IsBindableObjectImplementation (type))
             bindableTypes.Add (type);
         }
       }
       return bindableTypes;
+    }
+
+    public static bool IsBindableObjectImplementation(Type type)
+    {
+      return !MixinTypeUtility.IsGeneratedByMixinEngine (type) && (HasBindableObjectMixin(type) || IsDerivedFromBindableObjectBase(type));
+    }
+
+    private static bool IsDerivedFromBindableObjectBase(Type type)
+    {
+      return AttributeUtility.IsDefined (type, typeof (BindableObjectBaseClassAttribute), true);
+    }
+
+    private static bool HasBindableObjectMixin(Type type)
+    {
+      return MixinTypeUtility.HasAscribableMixin (type, typeof (BindableObjectMixinBase<>));
     }
 
     public MixinConfiguration GetMixinConfiguration (bool includeGac)
