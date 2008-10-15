@@ -191,7 +191,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private MethodInfo GetOverriderMethodToCall (MethodDefinition overrider)
     {
       if (overrider.MethodInfo.IsPublic)
-        return overrider.MethodInfo;
+        return overrider.MethodInfo.GetBaseDefinition();
       else
         return _targetGenerator.GetPublicMethodWrapper (overrider);
     }

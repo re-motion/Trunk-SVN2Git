@@ -38,6 +38,15 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     }
 
     [Test]
+    public void DerivedClassOverridingMixinMethod2 ()
+    {
+      var instance = ObjectFactory.Create<DerivedClassOverridingMixinMethod2> ().With ();
+      var mixin = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance);
+      Assert.That (mixin.M1 (), Is.EqualTo ("DerivedClassOverridingMixinMethod2.M1"));
+      Assert.That (mixin.M2 (), Is.EqualTo ("Mixin.M2"));
+    }
+
+    [Test]
     public void DerivedDerivedClassOverridingMixinMethod ()
     {
       var instance = ObjectFactory.Create<DerivedDerivedClassOverridingMixinMethod> ().With ();
@@ -56,6 +65,15 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     }
 
     [Test]
+    public void DerivedDerivedDerivedClassOverridingMixinMethod2 ()
+    {
+      var instance = ObjectFactory.Create<DerivedDerivedDerivedClassOverridingMixinMethod2> ().With ();
+      var mixin = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance);
+      Assert.That (mixin.M1 (), Is.EqualTo ("DerivedDerivedDerivedClassOverridingMixinMethod2.M1"));
+      Assert.That (mixin.M2 (), Is.EqualTo ("DerivedDerivedDerivedClassOverridingMixinMethod2.M2"));
+    }
+
+    [Test]
     public void Caching_Bottom_To_Top()
     {
       var instance1 = ObjectFactory.Create<BaseClassNotOverridingMixinMethod> ().With ();
@@ -64,26 +82,40 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       var instance2 = ObjectFactory.Create<DerivedClassOverridingMixinMethod> ().With ();
       var mixin2 = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance2);
 
+      var instance2b = ObjectFactory.Create<DerivedClassOverridingMixinMethod2> ().With ();
+      var mixin2b = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance2b);
+
       var instance3 = ObjectFactory.Create<DerivedDerivedClassOverridingMixinMethod> ().With ();
       var mixin3 = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance3);
 
       var instance4 = ObjectFactory.Create<DerivedDerivedDerivedClassOverridingMixinMethod> ().With ();
       var mixin4 = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance4);
 
+      var instance4b = ObjectFactory.Create<DerivedDerivedDerivedClassOverridingMixinMethod2> ().With ();
+      var mixin4b = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance4b);
+
       Assert.That (mixin1.GetType (), Is.Not.SameAs (mixin2.GetType ()));
       Assert.That (mixin1.GetType (), Is.Not.SameAs (mixin3.GetType ()));
       Assert.That (mixin2.GetType (), Is.Not.SameAs (mixin3.GetType ()));
+      Assert.That (mixin2b.GetType (), Is.Not.SameAs (mixin2.GetType ()));
       Assert.That (mixin3.GetType (), Is.SameAs (mixin4.GetType ()));
+      Assert.That (mixin3.GetType (), Is.SameAs (mixin4b.GetType ()));
     }
 
     [Test]
     public void Caching_Top_To_Bottom ()
     {
+      var instance4b = ObjectFactory.Create<DerivedDerivedDerivedClassOverridingMixinMethod2> ().With ();
+      var mixin4b = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance4b);
+
       var instance4 = ObjectFactory.Create<DerivedDerivedDerivedClassOverridingMixinMethod> ().With ();
       var mixin4 = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance4);
 
       var instance3 = ObjectFactory.Create<DerivedDerivedClassOverridingMixinMethod> ().With ();
       var mixin3 = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance3);
+
+      var instance2b = ObjectFactory.Create<DerivedClassOverridingMixinMethod2> ().With ();
+      var mixin2b = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance2b);
 
       var instance2 = ObjectFactory.Create<DerivedClassOverridingMixinMethod> ().With ();
       var mixin2 = Mixin.Get<MixinWithMethodsOverriddenByDifferentClasses> (instance2);
@@ -94,25 +126,31 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       Assert.That (mixin1.GetType (), Is.Not.SameAs (mixin2.GetType ()));
       Assert.That (mixin1.GetType (), Is.Not.SameAs (mixin3.GetType ()));
       Assert.That (mixin2.GetType (), Is.Not.SameAs (mixin3.GetType ()));
+      Assert.That (mixin2b.GetType (), Is.Not.SameAs (mixin2.GetType ()));
       Assert.That (mixin3.GetType (), Is.SameAs (mixin4.GetType ()));
+      Assert.That (mixin3.GetType (), Is.SameAs (mixin4b.GetType ()));
     }
 
     [Test]
     public void Tests_Bottom_To_Top ()
     {
       BaseClassNotOverridingMixinMethod();
-      DerivedClassOverridingMixinMethod();
+      DerivedClassOverridingMixinMethod ();
+      DerivedClassOverridingMixinMethod2 ();
       DerivedDerivedClassOverridingMixinMethod();
-      DerivedDerivedDerivedClassOverridingMixinMethod();
+      DerivedDerivedDerivedClassOverridingMixinMethod ();
+      DerivedDerivedDerivedClassOverridingMixinMethod2 ();
     }
 
     [Test]
     public void Tests_Top_To_Bottom ()
     {
-      BaseClassNotOverridingMixinMethod ();
-      DerivedClassOverridingMixinMethod ();
-      DerivedDerivedClassOverridingMixinMethod ();
+      DerivedDerivedDerivedClassOverridingMixinMethod2 ();
       DerivedDerivedDerivedClassOverridingMixinMethod ();
+      DerivedDerivedClassOverridingMixinMethod ();
+      DerivedClassOverridingMixinMethod2 ();
+      DerivedClassOverridingMixinMethod ();
+      BaseClassNotOverridingMixinMethod ();
     }
   }
 }

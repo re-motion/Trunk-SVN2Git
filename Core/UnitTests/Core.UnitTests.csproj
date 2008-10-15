@@ -159,6 +159,8 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinTypeGeneratorTest.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\AdvancedCachingTest.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\PublicWrapperTest.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedDerivedDerivedClassOverridingMixinMethod2.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedClassOverridingMixinMethod2.cs" />
     <Compile Include="Mixins\SampleTypes\SerializableBaseType31Mock.cs" />
     <Compile Include="Mixins\SampleTypes\BaseClassNotOverridingMixinMethod.cs" />
     <Compile Include="Mixins\SampleTypes\DerivedDerivedClassOverridingMixinMethod.cs" />
