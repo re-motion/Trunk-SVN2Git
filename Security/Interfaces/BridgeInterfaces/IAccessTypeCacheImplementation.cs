@@ -13,7 +13,7 @@ using Remotion.Implementation;
 
 namespace Remotion.Security.BridgeInterfaces
 {
-  [ConcreteImplementation("Remotion.Security.BridgeImplementations.AccessTypeCacheImplementation, Remotion.Security, Culture = neutral, Version = <version>, PublicKeyToken = <publicKeyToken>")]
+  [ConcreteImplementation ("Remotion.Security.BridgeImplementations.AccessTypeCacheImplementation, Remotion.Security, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>")]
   public interface IAccessTypeCacheImplementation
   {
     ICache<EnumWrapper, AccessType> CreateCache ();

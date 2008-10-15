@@ -13,7 +13,7 @@ using Remotion.Implementation;
 
 namespace Remotion.Mixins.BridgeInterfaces
 {
-  [ConcreteImplementation("Remotion.Mixins.BridgeImplementations.MixinImplementation, Remotion, Culture = neutral, Version = <version>, PublicKeyToken = <publicKeyToken>")]
+  [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.MixinImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>")]
   public interface IMixinImplementation
   {
     TMixin Get<TMixin> (object mixinTarget) where TMixin : class;
