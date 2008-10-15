@@ -807,7 +807,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     }
 
     /// <summary>
-    /// ctor (<type1> inarg1, <type2> inarg2, ...): base (new NoneTransactionMode(), inarg1, inarg2, ...) {}
+    /// ctor (&lt;type1&gt; inarg1, &lt;type2&gt; inarg2, ...): base (new NoneTransactionMode(), inarg1, inarg2, ...) {}
     /// </summary>
     private static void GenerateWxeFunctionContructorWithTypesParameters (FunctionDeclaration functionDeclaration, CodeTypeDeclaration functionClass)
     {
