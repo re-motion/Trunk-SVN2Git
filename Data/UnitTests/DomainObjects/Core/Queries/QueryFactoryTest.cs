@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   public class QueryFactoryTest : StandardMappingTest
   {
     [Test]
-    public void CreateQueryable_WithSqlGenerator ()
+    public void CreateLinqQuery_WithSqlGenerator ()
     {
       var sqlGeneratorMock = MockRepository.GenerateMock<ISqlGenerator> ();
       var queryable = QueryFactory.CreateLinqQuery<Order> (sqlGeneratorMock);
@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void CreateQueryable_WithImplicitSqlGenerator ()
+    public void CreateLinqQuery_WithImplicitSqlGenerator ()
     {
       var queryable = QueryFactory.CreateLinqQuery<Order> ();
       Assert.That (queryable, Is.Not.Null);
