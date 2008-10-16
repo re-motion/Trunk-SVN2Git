@@ -89,5 +89,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.TestFunctions
     {
       get { return _wxeContextStep2; }
     }
+
+    public new TransactionStrategyBase TransactionStrategy
+    {
+      get { return base.TransactionStrategy; }
+    }
   }
 }

@@ -17,10 +17,10 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.WxeFunctionTests
 {
   [TestFixture]
-  public class WxeFunction2Test
+  public class Execute
   {
     private MockRepository _mockRepository;
     private WxeContext _context;
@@ -38,7 +38,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     }
 
     [Test]
-    public void Execute_NoException ()
+    public void Test_NoException ()
     {
       TestFunction2 function = new TestFunction2 ();
       function.ExecutionListener = _executionListenerMock;
@@ -57,13 +57,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     }
 
     [Test]
-    public void Execute_WithTransactionStrategy ()
+    public void Test_WithTransactionStrategy ()
     {
       ITransactionMode transactionModeMock = _mockRepository.StrictMock<ITransactionMode>();
       TestFunction2 function = new TestFunction2 (transactionModeMock);
       TransactionStrategyBase transactionStrategyMock = MockRepository.GenerateMock<TransactionStrategyBase>();
       transactionModeMock.Expect (mock => mock.CreateTransactionStrategy (function, _context)).Return (transactionStrategyMock);
-      transactionStrategyMock.Expect (mock => mock.CreateExecutionListener (function.ExecutionListener)).Return (_executionListenerMock);
+      transactionStrategyMock.Expect (mock => mock.CreateExecutionListener (Arg<IWxeFunctionExecutionListener>.Is.NotNull))
+          .Return (_executionListenerMock);
 
       using (_mockRepository.Ordered ())
       {
@@ -80,7 +81,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     }
 
     [Test]
-    public void Execute_ReEntryAfterThreadAbort ()
+    public void Test_ReEntryAfterThreadAbort ()
     {
       TestFunction2 function = new TestFunction2 ();
       function.ExecutionListener = _executionListenerMock;
@@ -126,7 +127,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     }
 
     [Test]
-    public void Execute_ThreadAbort_WithFatalException ()
+    public void Test_ThreadAbort_WithFatalException ()
     {
       TestFunction2 function = new TestFunction2 ();
       function.ExecutionListener = _executionListenerMock;
@@ -157,7 +158,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     } 
 
     [Test]
-    public void Execute_FailAfterException ()
+    public void Test_FailAfterException ()
     {
       TestFunction2 function = new TestFunction2 ();
       function.ExecutionListener = _executionListenerMock;
@@ -188,7 +189,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     }
 
     [Test]
-    public void Execute_FailAfterExceptionAndFailInListener ()
+    public void Test_FailAfterExceptionAndFailInListener ()
     {
       TestFunction2 function = new TestFunction2 ();
       function.ExecutionListener = _executionListenerMock;
@@ -222,33 +223,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     }
 
     [Test]
-    public void Execute_UseNullListener ()
+    public void Test_UseNullListener ()
     {
       TestFunction2 function = new TestFunction2();
       function.Execute (_context);
-    }
-
-    [Test]
-    public void GetExecutionListener ()
-    {
-      TestFunction2 function = new TestFunction2 ();
-      Assert.That (function.ExecutionListener, Is.InstanceOfType (typeof (NullExecutionListener)));
-    }
-
-    [Test]
-    public void SetExecutionListener ()
-    {
-      TestFunction2 function = new TestFunction2 ();
-      function.ExecutionListener = _executionListenerMock;
-      Assert.That (function.ExecutionListener, Is.SameAs (_executionListenerMock));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
-    public void SetExecutionListenerNull ()
-    {
-      TestFunction2 function = new TestFunction2 ();
-      function.ExecutionListener = null;
     }
   }
 }

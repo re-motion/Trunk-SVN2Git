@@ -45,6 +45,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _securityAdapterMock);
     }
 
+    [TearDown]
+    public void TearDown ()
+    {
+      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
+    }
+
     [Test]
     public void Initialization ()
     {

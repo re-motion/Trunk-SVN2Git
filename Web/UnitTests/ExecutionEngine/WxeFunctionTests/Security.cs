@@ -15,22 +15,23 @@ using Rhino.Mocks;
 using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Web.UnitTests.ExecutionEngine
+namespace Remotion.Web.UnitTests.ExecutionEngine.WxeFunctionTests
 {
-
   [TestFixture]
-  public class WxeFunctionSecurityTest : WxeTest
+  public class Security
   {
-    private MockRepository _mocks;
+    private MockRepository _mockRepository;
     private IWxeSecurityAdapter _mockWxeSecurityAdapter;
+    private WxeContext _wxeContext;
 
     [SetUp]
-    public override void SetUp ()
+    public void SetUp ()
     {
-      base.SetUp ();
-
-      _mocks = new MockRepository ();
-      _mockWxeSecurityAdapter = _mocks.StrictMock<IWxeSecurityAdapter> ();
+      TestFunction rootFunction = new TestFunction ();
+      WxeContextFactory contextFactory = new WxeContextFactory ();
+      _wxeContext = contextFactory.CreateContext (rootFunction);
+      _mockRepository = new MockRepository ();
+      _mockWxeSecurityAdapter = _mockRepository.StrictMock<IWxeSecurityAdapter> ();
 
       AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), _mockWxeSecurityAdapter);
     }
@@ -40,56 +41,22 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     {
       TestFunction function = new TestFunction ();
       _mockWxeSecurityAdapter.CheckAccess (function);
-      _mocks.ReplayAll ();
+      _mockRepository.ReplayAll ();
 
-      function.Execute ();
+      function.Execute (_wxeContext);
 
-      _mocks.VerifyAll ();
-    }
-
-    [Test]
-    public void ExecuteFunctionWithAccessDenied ()
-    {
-      TestFunction function = new TestFunction ();
-      _mockWxeSecurityAdapter.CheckAccess (function);
-      LastCall.Throw (new PermissionDeniedException ("Test Exception"));
-      _mocks.ReplayAll ();
-
-      try
-      {
-        function.Execute ();
-        Assert.Fail ("Expected PermissionDeniedException.");
-      }
-      catch (WxeUnhandledException e)
-      {
-        _mocks.VerifyAll ();
-
-        Assert.IsInstanceOfType (typeof (PermissionDeniedException), e.InnerException);
-      }
-    }
-
-    [Test]
-    public void ExecuteFunctionWithoutWxeSecurityProvider ()
-    {
-      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
-
-      TestFunction function = new TestFunction ();
-      _mocks.ReplayAll ();
-
-      function.Execute ();
-
-      _mocks.VerifyAll ();
+      _mockRepository.VerifyAll ();
     }
 
     [Test]
     public void HasStatelessAccessGranted ()
     {
       Expect.Call (_mockWxeSecurityAdapter.HasStatelessAccess (typeof (TestFunction))).Return (true);
-      _mocks.ReplayAll ();
+      _mockRepository.ReplayAll ();
 
       bool hasAccess = WxeFunction.HasAccess (typeof (TestFunction));
 
-      _mocks.VerifyAll ();
+      _mockRepository.VerifyAll ();
       Assert.IsTrue (hasAccess);
     }
 
@@ -97,11 +64,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     public void HasStatelessAccessDenied ()
     {
       Expect.Call (_mockWxeSecurityAdapter.HasStatelessAccess (typeof (TestFunction))).Return (false);
-      _mocks.ReplayAll ();
+      _mockRepository.ReplayAll ();
 
       bool hasAccess = WxeFunction.HasAccess (typeof (TestFunction));
 
-      _mocks.VerifyAll ();
+      _mockRepository.VerifyAll ();
       Assert.IsFalse (hasAccess);
     }
 
@@ -109,11 +76,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     public void HasStatelessAccessGrantedWithoutWxeSecurityProvider ()
     {
       AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), null);
-      _mocks.ReplayAll ();
+      _mockRepository.ReplayAll ();
 
       bool hasAccess = WxeFunction.HasAccess (typeof (TestFunction));
 
-      _mocks.VerifyAll ();
+      _mockRepository.VerifyAll ();
       Assert.IsTrue (hasAccess);
     }
   }

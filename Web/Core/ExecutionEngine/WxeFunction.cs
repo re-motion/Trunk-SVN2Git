@@ -193,15 +193,18 @@ namespace Remotion.Web.ExecutionEngine
       if (!IsExecutionStarted)
       {
         _variablesContainer.EnsureParametersInitialized (null);
+        _executionListener = new SecurityExecutionListener (this, _executionListener);
+
         _transactionStrategy = _transactionMode.CreateTransactionStrategy (this, context);
+        Assertion.IsNotNull (_transactionStrategy);
+
         _executionListener = _transactionStrategy.CreateExecutionListener (_executionListener);
+        Assertion.IsNotNull (_executionListener);
       }
 
       try
       {
-        _executionListener.OnExecutionPlay (context);
-        if (!IsExecutionStarted)
-          CheckPermissions (context);
+        _executionListener.OnExecutionPlay (context);        
         base.Execute (context);
         _executionListener.OnExecutionStop (context);
       }
@@ -334,17 +337,6 @@ namespace Remotion.Web.ExecutionEngine
       }
       sb.Append (")");
       return sb.ToString ();
-    }
-
-    protected virtual void CheckPermissions (WxeContext context)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
-      if (wxeSecurityAdapter == null)
-        return;
-
-      wxeSecurityAdapter.CheckAccess (this);
     }
   }
 }
