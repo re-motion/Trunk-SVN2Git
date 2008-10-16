@@ -79,6 +79,7 @@ namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
 
       // For mixin types we currently use the type handler for the target type.
       // TODO: Search for exact type handler first, do fallback to GetUnderlyingTargetType if none can be found.
+      // TODO: Make work for OPF-generated types
       Type type = GetUnderlyingMixinType(toTextParameters.Type);
 
       IToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;

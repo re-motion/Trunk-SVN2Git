@@ -322,7 +322,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     [Test]
     public void MixedUserTest ()
     {
-      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (User)).Clear().AddMixins (typeof (TestMixin), typeof(BindableDomainObjectMixin)).EnterScope())
+      using (MixinConfiguration.BuildFromActive ().ForClass (typeof (User)).Clear().AddMixins (typeof (TestMixin)).EnterScope())
       {
         User user = CreateUser ();
         Assert.IsNotNull (Mixin.Get<TestMixin> (user));
