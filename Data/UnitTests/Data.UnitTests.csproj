@@ -273,6 +273,8 @@
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectProviderTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectServiceFactoryMixinTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectWithMixedPersistentPropertiesTest.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectTest.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectImplementationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectWithMixedPersistentProperties.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObject_ImplementingISerializable.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObjectWithOverriddenDisplayName.cs" />
@@ -420,7 +422,7 @@
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\IdentityTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\PropertyIntegrationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\SearchTest.cs" />
-    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectTest.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectIntegrationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\ObjectBindingBaseTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableBaseDomainObject.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectWithProperties.cs" />

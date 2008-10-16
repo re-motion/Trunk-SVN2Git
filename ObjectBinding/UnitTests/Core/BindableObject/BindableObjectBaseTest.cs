@@ -43,6 +43,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    public void BindableObjectBaseClassAttribute ()
+    {
+      Assert.That (typeof (BindableObjectBase).IsDefined (typeof (BindableObjectBaseClassAttribute), false), Is.True);
+    }
+
+    [Test]
     public void CreateImplementation ()
     {
       var instance = new ClassDerivedFromBindableObjectBase ();

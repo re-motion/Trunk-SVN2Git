@@ -14,6 +14,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -30,18 +31,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
 
     private BindableObjectClass _businessObjectClassWithMixedProperties;
     private BindableDomainObjectWithMixedPersistentProperties _classWithMixedPropertiesInstance;
-    private BindableDomainObjectMixin _classWithMixedPropertiesMixin;
+    private BindableDomainObjectMixin _classWithMixedPropertiesImplementation;
 
     public override void SetUp ()
     {
       base.SetUp ();
       _businessObjectClassWithProperties = BindableObjectProvider.GetBindableObjectClass (typeof (BindableDomainObjectWithProperties));
       _classWithPropertiesInstance = BindableDomainObjectWithProperties.NewObject();
-      _classWithPropertiesMixin = Mixin.Get<BindableDomainObjectMixin> (_classWithPropertiesInstance);
+      _classWithPropertiesMixin = Mixin.Get<BindableDomainObjectMixin>  (_classWithPropertiesInstance);
 
       _businessObjectClassWithMixedProperties = BindableObjectProvider.GetBindableObjectClass (typeof (BindableDomainObjectWithMixedPersistentProperties));
       _classWithMixedPropertiesInstance = BindableDomainObjectWithMixedPersistentProperties.NewObject ();
-      _classWithMixedPropertiesMixin = Mixin.Get<BindableDomainObjectMixin> (_classWithMixedPropertiesInstance);
+      _classWithMixedPropertiesImplementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (_classWithMixedPropertiesInstance, typeof (BindableDomainObject), "_implementation");
     }
 
     [Test]
@@ -83,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void GetMappingPropertyIdentifier_MixedPrivate ()
     {
       PropertyBase property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("PrivateMixedProperty");
-      string identifier = _classWithMixedPropertiesMixin.GetMappingPropertyIdentifier (property);
+      string identifier = _classWithMixedPropertiesImplementation.GetMappingPropertyIdentifier (property);
       Assert.That (
           identifier,
           Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.MixinAddingPersistentProperties.PrivateMixedProperty"));
@@ -94,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void GetMappingPropertyIdentifier_MixedPublic ()
     {
       PropertyBase property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("PublicMixedProperty");
-      string identifier = _classWithMixedPropertiesMixin.GetMappingPropertyIdentifier (property);
+      string identifier = _classWithMixedPropertiesImplementation.GetMappingPropertyIdentifier (property);
       Assert.That (
           identifier,
           Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.MixinAddingPersistentProperties.PublicMixedProperty"));
@@ -105,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void GetMappingPropertyIdentifier_Mixed_ExplicitOnMixin ()
     {
       PropertyBase property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("ExplicitMixedProperty");
-      string identifier = _classWithMixedPropertiesMixin.GetMappingPropertyIdentifier (property);
+      string identifier = _classWithMixedPropertiesImplementation.GetMappingPropertyIdentifier (property);
       Assert.That (
           identifier,
           Is.EqualTo ("Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain.MixinAddingPersistentProperties."

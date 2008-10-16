@@ -9,10 +9,13 @@
  */
 
 using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
@@ -23,12 +26,23 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   /// Deriving from this base class is equivalent to deriving from the <see cref="DomainObject"/> class and applying the
   /// <see cref="BindableDomainObjectAttribute"/> to the derived class.
   /// </remarks>
-  [BindableDomainObject]
+  [BindableDomainObjectProvider]
+  [BindableObjectBaseClass]
   [Serializable]
-  public abstract class BindableDomainObject : DomainObject, IBusinessObjectWithIdentity
+  public abstract class BindableDomainObject : DomainObject, IBusinessObjectWithIdentity, BindableDomainObjectMixin.IDomainObject
   {
-    protected BindableDomainObject()
+    private readonly IBusinessObjectWithIdentity _implementation;
+
+    protected BindableDomainObject ()
     {
+      _implementation = BindableDomainObjectImplementation.Create (this);
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    protected BindableDomainObject (IBusinessObjectWithIdentity businessObjectImplementation)
+    {
+      ArgumentUtility.CheckNotNull ("businessObjectImplementation", businessObjectImplementation);
+      _implementation = businessObjectImplementation;
     }
 
     /// <summary>
@@ -49,47 +63,45 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     /// <value>The display name.</value>
     /// <remarks>Override this property to replace the default display name provided by the <see cref="BindableObjectClass"/> with a custom one.
     /// </remarks>
-    [OverrideMixin]
     [StorageClassNone]
     public virtual string DisplayName
     {
-      get { return Mixin.Get<BindableDomainObjectMixin> (this).BaseDisplayName; }
-    }
-
-    [StorageClassNone]
-    private IBusinessObjectWithIdentity BindableDomainObjectMixin
-    {
-      get { return Mixin.Get<BindableDomainObjectMixin> (this); }
+      get { return _implementation.DisplayName; }
     }
 
     string IBusinessObjectWithIdentity.UniqueIdentifier
     {
-      get { return BindableDomainObjectMixin.UniqueIdentifier; }
+      get { return _implementation.UniqueIdentifier; }
     }
 
     object IBusinessObject.GetProperty (IBusinessObjectProperty property)
     {
-      return BindableDomainObjectMixin.GetProperty (property);
+      return _implementation.GetProperty (property);
     }
 
     void IBusinessObject.SetProperty (IBusinessObjectProperty property, object value)
     {
-      BindableDomainObjectMixin.SetProperty (property, value);
+      _implementation.SetProperty (property, value);
     }
 
     string IBusinessObject.GetPropertyString (IBusinessObjectProperty property, string format)
     {
-      return BindableDomainObjectMixin.GetPropertyString (property, format);
+      return _implementation.GetPropertyString (property, format);
     }
 
     string IBusinessObject.DisplayNameSafe
     {
-      get { return BindableDomainObjectMixin.DisplayNameSafe; }
+      get { return _implementation.DisplayNameSafe; }
     }
 
     IBusinessObjectClass IBusinessObject.BusinessObjectClass
     {
-      get { return BindableDomainObjectMixin.BusinessObjectClass; }
+      get { return _implementation.BusinessObjectClass; }
+    }
+
+    PropertyIndexer BindableDomainObjectMixin.IDomainObject.Properties
+    {
+      get { return Properties; }
     }
   }
 }

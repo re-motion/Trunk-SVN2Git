@@ -181,6 +181,7 @@
     <Compile Include="ObjectBinding\BindableDomainObject.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectAttribute.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectGetObjectService.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectImplementation.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectMetadataFactory.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectMixin.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectPropertyFinder.cs" />

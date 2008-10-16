@@ -37,11 +37,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       string outputAssemblyDirectory = Path.GetDirectoryName (Path.GetFullPath (outputAssembly));
       if (!Directory.Exists (outputAssemblyDirectory))
         Directory.CreateDirectory (outputAssemblyDirectory);
-      
-      AssemblyCompiler compiler = new AssemblyCompiler (
-          sourceDirectory,
-          outputAssembly,
-          ArrayUtility.Combine (new string[] { "Remotion.Interfaces.dll", "Remotion.dll", "Remotion.Data.Interfaces.dll", "Remotion.Data.DomainObjects.dll", "Remotion.ObjectBinding.Interfaces.dll" }, referencedAssemblies));
+
+      AssemblyCompiler compiler = new AssemblyCompiler (sourceDirectory, outputAssembly,
+                                                        ArrayUtility.Combine (
+                                                            new[]
+                                                              {
+                                                                  "Remotion.Interfaces.dll", "Remotion.dll", "Remotion.Data.Interfaces.dll",
+                                                                  "Remotion.Data.DomainObjects.dll", "Remotion.ObjectBinding.Interfaces.dll",
+                                                                  "Remotion.ObjectBinding.dll"
+                                                              }, referencedAssemblies));
 
       try
       {

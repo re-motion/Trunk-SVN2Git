@@ -109,6 +109,10 @@
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.Core.csproj">
+      <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
+      <Name>ObjectBinding.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ObjectBinding\Interfaces\ObjectBinding.Interfaces.csproj">
       <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
       <Name>ObjectBinding.Interfaces</Name>

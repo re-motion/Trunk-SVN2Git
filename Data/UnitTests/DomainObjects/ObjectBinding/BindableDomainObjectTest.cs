@@ -9,106 +9,148 @@
  */
 
 using System;
-using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 {
   [TestFixture]
-  public class BindableDomainObjectTest : ObjectBindingBaseTest
+  public class BindableDomainObjectTest : ClientTransactionBaseTest
   {
-    [Test]
-    public void BindableDomainObjectIsDomainObject ()
+    private SampleBindableDomainObject _instance;
+    private IBusinessObjectWithIdentity _implementationMock;
+    private IBusinessObjectProperty _propertyFake;
+    private IBusinessObjectClass _businessObjectClassFake;
+
+    [SetUp]
+    public override void SetUp()
     {
-      Assert.IsTrue (typeof (DomainObject).IsAssignableFrom (typeof (SampleBindableDomainObject)));
+      base.SetUp ();
+
+      _implementationMock = MockRepository.GenerateMock<IBusinessObjectWithIdentity> ();
+      _instance = SampleBindableDomainObject.NewObject (_implementationMock);
+
+      _propertyFake = MockRepository.GenerateMock<IBusinessObjectProperty> ();
+      _businessObjectClassFake = MockRepository.GenerateMock<IBusinessObjectClass> ();
     }
 
     [Test]
-    public void BindableDomainObjectAddsMixin ()
+    public void BindableObjectProviderAttribute()
     {
-      Assert.IsTrue (MixinTypeUtility.HasMixin (typeof (SampleBindableDomainObject), typeof (BindableDomainObjectMixin)));
+      Assert.That (typeof (BindableDomainObject).IsDefined (typeof (BindableDomainObjectProviderAttribute), false), Is.True);
     }
 
     [Test]
-    public void DefaultDisplayName ()
+    public void BindableObjectBaseClassAttribute ()
     {
-      IBusinessObject businessObject = (IBusinessObject) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObject)).With();
-      Assert.AreEqual (Utilities.TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObject)), businessObject.DisplayName);
+      Assert.That (typeof (BindableDomainObject).IsDefined (typeof (BindableObjectBaseClassAttribute), false), Is.True);
     }
 
     [Test]
-    public void OverriddenDisplayName ()
+    public void CreateImplementation ()
     {
-      IBusinessObject businessObject = (IBusinessObject) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)).With();
-      Assert.AreNotEqual (
-          Utilities.TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)),
-          businessObject.DisplayName);
-      Assert.AreEqual ("TheDisplayName", businessObject.DisplayName);
+      var instance = SampleBindableDomainObject.NewObject ();
+      Assert.That (PrivateInvoke.GetNonPublicField (instance, "_implementation"), Is.InstanceOfType (typeof (BindableDomainObjectImplementation)));
     }
 
     [Test]
-    public void VerifyInterfaceImplementation ()
+    public void Implementation_IsInitialized ()
     {
-      IBusinessObjectWithIdentity businessObject =
-          (SampleBindableDomainObjectWithOverriddenDisplayName) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)).With();
-      IBusinessObjectWithIdentity businessObjectMixin = Mixin.Get<BindableDomainObjectMixin> (businessObject);
-
-      Assert.AreSame (businessObjectMixin.BusinessObjectClass, businessObject.BusinessObjectClass);
-      Assert.AreEqual (businessObjectMixin.DisplayName, businessObject.DisplayName);
-      Assert.AreEqual (businessObjectMixin.DisplayNameSafe, businessObject.DisplayNameSafe);
-      businessObject.SetProperty ("Int32", 1);
-      Assert.AreEqual (1, businessObject.GetProperty ("Int32"));
-      Assert.AreEqual (1, businessObject.GetProperty (businessObjectMixin.BusinessObjectClass.GetPropertyDefinition ("Int32")));
-      Assert.AreEqual ("001", businessObject.GetPropertyString (businessObjectMixin.BusinessObjectClass.GetPropertyDefinition ("Int32"), "000"));
-      Assert.AreEqual ("1", businessObject.GetPropertyString ("Int32"));
-      Assert.AreEqual (businessObjectMixin.UniqueIdentifier, businessObject.UniqueIdentifier);
-      businessObject.SetProperty (businessObjectMixin.BusinessObjectClass.GetPropertyDefinition ("Int32"), 2);
-      Assert.AreEqual (2, businessObject.GetProperty ("Int32"));
+      var instance = SampleBindableDomainObject.NewObject ();
+      var mixin = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
+      Assert.That (mixin.BusinessObjectClass, Is.Not.Null);
     }
 
     [Test]
-    public void SerializeAndDeserialize ()
+    public void Serialization ()
     {
-      SampleBindableDomainObjectWithOverriddenDisplayName domainObject =
-          (SampleBindableDomainObjectWithOverriddenDisplayName) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)).With();
-
-      Serializer.SerializeAndDeserialize (domainObject);
+      var instance = SampleBindableDomainObject.NewObject ();
+      instance = Serializer.SerializeAndDeserialize (instance);
+      var mixin = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
+      Assert.That (mixin.BusinessObjectClass, Is.Not.Null);
     }
 
     [Test]
-    public void GetProviderForBindableObjectType ()
+    public void GetProperty()
     {
-      BindableObjectProvider provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (BindableDomainObject));
+      _implementationMock.Expect (mock => mock.GetProperty (_propertyFake)).Return (12);
+      _implementationMock.Replay ();
 
-      Assert.That (provider, Is.Not.Null);
-      Assert.That (provider, Is.InstanceOfType (typeof (BindableDomainObjectProvider)));
-      Assert.That (provider, Is.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableDomainObjectProviderAttribute))));
-      Assert.That (provider, Is.Not.SameAs (BusinessObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute))));
+      Assert.That (((IBusinessObject)_instance).GetProperty (_propertyFake), Is.EqualTo (12));
+      _implementationMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void DeserializationConstructor_CallsBase ()
+    public void SetProperty ()
     {
-      var serializable = SampleBindableDomainObject_ImplementingISerializable.NewObject ().With ();
+      _implementationMock.Expect (mock => mock.SetProperty (_propertyFake, 174));
+      _implementationMock.Replay ();
 
-      var info = new SerializationInfo (typeof (SampleBindableDomainObject_ImplementingISerializable), new FormatterConverter ());
-      var context = new StreamingContext ();
+      ((IBusinessObject) _instance).SetProperty (_propertyFake, 174);
+      _implementationMock.VerifyAllExpectations ();
+    }
 
-      serializable.GetObjectData (info, context);
-      Assert.That (info.MemberCount, Is.GreaterThan (0));
+    [Test]
+    public void GetPropertyString()
+    {
+      _implementationMock.Expect (mock => mock.GetPropertyString (_propertyFake, "gj")).Return ("yay");
+      _implementationMock.Replay ();
 
-      var deserialized =
-          (SampleBindableDomainObject_ImplementingISerializable) Activator.CreateInstance (((object) serializable).GetType (), info, context);
-      Assert.That (deserialized.ID, Is.EqualTo (serializable.ID));
+      Assert.That (((IBusinessObject) _instance).GetPropertyString (_propertyFake, "gj"), Is.EqualTo ("yay"));
+      _implementationMock.VerifyAllExpectations (); 
+    }
+
+    [Test]
+    public void DisplayName()
+    {
+      _implementationMock.Expect (mock => mock.DisplayName).Return ("Philips");
+      _implementationMock.Replay ();
+
+      Assert.That (_instance.DisplayName, Is.EqualTo ("Philips"));
+      _implementationMock.VerifyAllExpectations (); 
+    }
+
+    [Test]
+    public void DisplayNameSafe ()
+    {
+      _implementationMock.Expect (mock => mock.DisplayNameSafe).Return ("Megatron");
+      _implementationMock.Replay ();
+
+      Assert.That (((IBusinessObject) _instance).DisplayNameSafe, Is.EqualTo ("Megatron"));
+      _implementationMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void BusinessObjectClass ()
+    {
+      _implementationMock.Expect (mock => mock.BusinessObjectClass).Return (_businessObjectClassFake);
+      _implementationMock.Replay ();
+
+      Assert.That (((IBusinessObject) _instance).BusinessObjectClass, Is.SameAs (_businessObjectClassFake));
+      _implementationMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void UniqueIdentifier ()
+    {
+      _implementationMock.Expect (mock => mock.UniqueIdentifier).Return ("123");
+      _implementationMock.Replay ();
+
+      Assert.That (((IBusinessObjectWithIdentity) _instance).UniqueIdentifier, Is.EqualTo ("123"));
+      _implementationMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Properties()
+    {
+      Assert.That (((BindableDomainObjectMixin.IDomainObject) _instance).Properties, Is.EqualTo (_instance.PublicProperties));
+      _implementationMock.VerifyAllExpectations ();
     }
   }
 }

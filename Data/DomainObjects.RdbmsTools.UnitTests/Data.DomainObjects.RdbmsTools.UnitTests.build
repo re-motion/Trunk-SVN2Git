@@ -32,6 +32,7 @@
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Data.DomainObjects.RdbmsTools.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.ObjectBinding.Interfaces.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Remotion.ObjectBinding.dll"/>
         <include asis="true" name="${build.test.outputdir}/nunit.framework.dll"/>
         <include asis="true" name="${build.test.outputdir}/Rhino.Mocks.dll"/>
         <include asis="true" name="System.dll"/>

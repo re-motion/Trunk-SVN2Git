@@ -317,7 +317,15 @@ namespace Remotion.Development.UnitTesting
     public static object GetNonPublicField (object target, string fieldName)
     {
       if (target == null) throw new ArgumentNullException ("target");
-      return GetFieldInternal (target, target.GetType(), BindingFlags.Instance | BindingFlags.NonPublic, fieldName);
+      var declaringType = target.GetType();
+      return GetNonPublicField(target, declaringType, fieldName);
+    }
+
+    public static object GetNonPublicField(object target, Type declaringType, string fieldName)
+    {
+      if (target == null)
+        throw new ArgumentNullException ("target");
+      return GetFieldInternal (target, declaringType, BindingFlags.Instance | BindingFlags.NonPublic, fieldName);
     }
 
     public static object GetPublicStaticField (Type type, string fieldName)

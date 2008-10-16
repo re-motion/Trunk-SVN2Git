@@ -72,6 +72,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
       Module objectBindingInterfacesModule = typeof (IBusinessObject).Assembly.ManifestModule;
       File.Copy (objectBindingInterfacesModule.FullyQualifiedName, Path.Combine (directory, objectBindingInterfacesModule.Name));
+
+      Module objectBindingModule = typeof (BindableObjectBase).Assembly.ManifestModule;
+      File.Copy (objectBindingModule.FullyQualifiedName, Path.Combine (directory, objectBindingModule.Name));
     }
 
     public override void TearDown ()
