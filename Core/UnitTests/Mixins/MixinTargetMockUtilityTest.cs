@@ -147,6 +147,18 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
+    public void CreateMixinWithMockedTarget_NonPublicCtor ()
+    {
+      var repository = new MockRepository ();
+
+      var thisMock = repository.StrictMock<IBaseType32> ();
+
+      BT3Mixin2 mixin = MixinTargetMockUtility.CreateMixinWithMockedTarget<BT3Mixin2, IBaseType32> (thisMock, 7);
+      Assert.AreSame (thisMock, mixin.This);
+      Assert.That (mixin.I, Is.EqualTo (7));
+    }
+
+    [Test]
     public void SignalOnDeserialized_This ()
     {
       var thisMock = new SerializableBaseType32Mock ();

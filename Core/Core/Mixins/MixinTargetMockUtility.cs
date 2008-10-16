@@ -157,7 +157,7 @@ namespace Remotion.Mixins
       {
         mixinType = typeof (TMixin);
       }
-      return (TMixin) ObjectFactory.Create (mixinType).Invoke (args);
+      return (TMixin) ObjectFactory.Create (true, mixinType).Invoke (args);
     }
 
     public static void SignalOnDeserialization<TThis> (Mixin<TThis> mixin, TThis thisMock) 

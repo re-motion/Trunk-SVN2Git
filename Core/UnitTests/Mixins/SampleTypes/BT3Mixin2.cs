@@ -17,6 +17,17 @@ namespace Remotion.UnitTests.Mixins.SampleTypes
   [Serializable]
   public class BT3Mixin2 : Mixin<IBaseType32>
   {
+    public int I;
+
+    public BT3Mixin2()
+    {
+    }
+
+    protected BT3Mixin2 (int i)
+    {
+      I = i;
+    }
+
     public new IBaseType32 This
     {
       get { return base.This; }
