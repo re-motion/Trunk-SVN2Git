@@ -8,12 +8,13 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using Remotion.Data.DomainObjects;
+using System;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 {
-  public abstract class WxeTransactionMode : WxeTransactionMode<ClientTransactionFactory>
+  public abstract class WxeTransactionMode : WxeTransactionMode<SecurityClientTransactionFactory>
   {
   }
 }

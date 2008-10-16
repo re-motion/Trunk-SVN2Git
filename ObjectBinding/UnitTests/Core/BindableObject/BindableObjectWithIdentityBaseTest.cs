@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void BindableObjectProviderAttribute()
     {
-      Assert.That (typeof (BindableObjectWithIdentityBase).IsDefined (typeof (BindableObjectProviderAttribute), false), Is.True);
+      Assert.That (typeof (BindableObjectWithIdentityBase).IsDefined (typeof (BindableObjectWithIdentityProviderAttribute), false), Is.True);
     }
 
     [Test]

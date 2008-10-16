@@ -14,7 +14,12 @@ using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.ObjectBinding
 {
-  //TODO: doc
+  /// <summary>
+  /// Apply to a class to add a reflection-based implementation of <see cref="IBusinessObjectWithIdentity"/> to the class via 
+  /// <see cref="BindableObjectWithIdentityMixin"/>. Use this attribute if deriving from <see cref="BindableObjectWithIdentityBase"/> is not possible.
+  /// </summary>
+  /// <remarks>This attribute adds the <see cref="BindableObjectWithIdentityMixin"/> to its target class. 
+  /// Use <see cref="ObjectFactory"/> to instantiate the target class.</remarks>
   [AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
   public sealed class BindableObjectWithIdentityAttribute : UsesAttribute
   {

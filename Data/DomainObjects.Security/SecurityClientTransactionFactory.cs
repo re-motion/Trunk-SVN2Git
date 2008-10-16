@@ -15,7 +15,7 @@ namespace Remotion.Data.DomainObjects.Security
 {
   /// <summary>
   /// Implementation of the <see cref="ITransactionFactory"/> interface that creates root <see cref="ClientTransaction"/>s and adds a
-  /// <see cref="SecurityClientTransactionExtension"/>.
+  /// <see cref="SecurityClientTransactionExtension"/> when the transaction is created in an application that has a security provider configured.
   /// </summary>
   public class SecurityClientTransactionFactory : ITransactionFactory
   {

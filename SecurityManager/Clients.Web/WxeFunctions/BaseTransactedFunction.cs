@@ -10,38 +10,24 @@
 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Security.Configuration;
-using Remotion.Data.DomainObjects.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 {
   [Serializable]
   public abstract class BaseTransactedFunction : WxeFunction
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     protected BaseTransactedFunction ()
-      : this (WxeTransactionMode.CreateRootWithAutoCommit)
+        : this (WxeTransactionMode.CreateRootWithAutoCommit)
     {
     }
 
     protected BaseTransactedFunction (ITransactionMode transactionMode, params object[] args)
-      : base (transactionMode, args)
+        : base (transactionMode, args)
     {
-      Initialize ();
+      Initialize();
     }
-
-    // methods and properties
 
     public ObjectID TenantID
     {
@@ -50,23 +36,12 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 
     public bool HasUserCancelled
     {
-      get { return (ExceptionHandler.Exception != null && ExceptionHandler.Exception.GetType () == typeof (WxeUserCancelException)); }
+      get { return (ExceptionHandler.Exception != null && ExceptionHandler.Exception.GetType() == typeof (WxeUserCancelException)); }
     }
 
     protected virtual void Initialize ()
     {
       ExceptionHandler.SetCatchExceptionTypes (typeof (WxeUserCancelException));
-    }
-
-    protected override void OnTransactionCreated (ITransactionStrategy transactionStrategy)
-    {
-      ArgumentUtility.CheckNotNull ("transactionStrategy", transactionStrategy);
-
-      base.OnTransactionCreated (transactionStrategy);
-
-      ClientTransaction transaction = transactionStrategy.GetNativeTransaction<ClientTransaction>();
-      if (transaction != null && !SecurityConfiguration.Current.SecurityProvider.IsNull)
-        transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension ());
     }
   }
 }

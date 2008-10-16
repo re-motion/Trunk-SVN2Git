@@ -50,6 +50,17 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    public void GetProvider ()
+    {
+      Assert.That (
+          BindableObjectProvider.GetProviderForBindableObjectType (typeof (SimpleBusinessObjectClass)),
+          Is.SameAs (BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute> ()));
+      Assert.That (
+          BindableObjectProvider.GetProviderForBindableObjectType (typeof (SimpleBusinessObjectClass)),
+          Is.Not.SameAs (BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute> ()));
+    }
+
+    [Test]
     public void SerializeAndDeserialize ()
     {
       ClassWithIdentity value = ObjectFactory.Create<ClassWithIdentity> ().With ();

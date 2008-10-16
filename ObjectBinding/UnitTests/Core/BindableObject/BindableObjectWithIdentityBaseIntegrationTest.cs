@@ -73,5 +73,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       _instance.SetUniqueIdentifier ("hu");
       Assert.That (_instance.UniqueIdentifier, Is.EqualTo ("hu"));
     }
+
+    [Test]
+    public void GetProvider ()
+    {
+      Assert.That (
+          BindableObjectProvider.GetProviderForBindableObjectType (typeof (ClassDerivedFromBindableObjectWithIdentityBase)),
+          Is.SameAs (BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute> ()));
+      Assert.That (
+          BindableObjectProvider.GetProviderForBindableObjectType (typeof (ClassDerivedFromBindableObjectWithIdentityBase)),
+          Is.Not.SameAs (BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute> ()));
+    }
   }
 }

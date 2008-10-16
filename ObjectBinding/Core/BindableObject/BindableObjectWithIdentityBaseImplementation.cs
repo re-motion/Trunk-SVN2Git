@@ -18,8 +18,6 @@ namespace Remotion.ObjectBinding.BindableObject
   [Serializable]
   public class BindableObjectWithIdentityBaseImplementation : BindableObjectWithIdentityMixin, IDeserializationCallback
   {
-    private readonly BindableObjectWithIdentityBase _wrapper;
-
     public static BindableObjectWithIdentityBaseImplementation Create (BindableObjectWithIdentityBase wrapper)
     {
       ArgumentUtility.CheckNotNull ("wrapper", wrapper);
@@ -28,7 +26,9 @@ namespace Remotion.ObjectBinding.BindableObject
       return MixinTargetMockUtility.CreateMixinWithMockedTarget<BindableObjectWithIdentityBaseImplementation, object> (wrapper, wrapper);
     }
 
-    public BindableObjectWithIdentityBaseImplementation(BindableObjectWithIdentityBase wrapper)
+    private readonly BindableObjectWithIdentityBase _wrapper;
+
+    public BindableObjectWithIdentityBaseImplementation (BindableObjectWithIdentityBase wrapper)
     {
       ArgumentUtility.CheckNotNull ("wrapper", wrapper);
       _wrapper = wrapper;

@@ -28,6 +28,28 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     }
 
     [Test]
+    public void DisplayName ()
+    {
+      BindableObjectMixin mixin = Mixin.Get<BindableObjectMixin> (ObjectFactory.Create<SimpleBusinessObjectClass>().With());
+      IBusinessObject businessObject = mixin;
+
+      Assert.That (
+          businessObject.DisplayName,
+          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"));
+    }
+
+    [Test]
+    public void GetProvider ()
+    {
+      Assert.That (
+          BindableObjectProvider.GetProviderForBindableObjectType (typeof (SimpleBusinessObjectClass)),
+          Is.SameAs (BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>()));
+      Assert.That (
+          BindableObjectProvider.GetProviderForBindableObjectType (typeof (SimpleBusinessObjectClass)),
+          Is.Not.SameAs (BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute> ()));
+    }
+
+    [Test]
     public void SerializeAndDeserialize ()
     {
       SimpleBusinessObjectClass value = ObjectFactory.Create<SimpleBusinessObjectClass>().With();

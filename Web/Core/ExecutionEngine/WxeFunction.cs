@@ -120,6 +120,30 @@ namespace Remotion.Web.ExecutionEngine
       get { throw new NotImplementedException ("Use ExceptionHandler.Exception instead. (Version 1.11.7)"); }
     }
 
+    [Obsolete ("Supply a custom ITransactionFactory to the WxeTransactionMode. (Version 1.11.7)", true)]
+    protected object CreateRootTransaction ()
+    {
+      throw new NotImplementedException ("Supply a custom ITransactionFactory to the WxeTransactionMode. (Version 1.11.7)");
+    }
+
+    [Obsolete ("Supply a custom ITransactionFactory to the WxeTransactionMode. (Version 1.11.7)", true)]
+    protected void OnTransactionCreated (object transaction)
+    {
+      throw new NotImplementedException ("Use ExceptionHandler.GetCatchExceptionTypes instead. (Version 1.11.7)");
+    }
+
+    [Obsolete ("Suppy an auto-commiting WxeTransactionMode to the constructor instead. (Version 1.11.7)", true)]
+    protected virtual bool AutoCommit
+    {
+      get { throw new NotImplementedException ("Suppy an auto-commiting WxeTransactionMode to the constructor instead. (Version 1.11.7)"); }
+    }
+
+    [Obsolete ("Use Transaction.Reset() instead. (Version 1.11.7)", true)]
+    public void ResetTransaction ()
+    {
+      throw new NotImplementedException ("Use Transaction.Reset() instead. (Version 1.11.7)");
+    }
+
     #endregion
 
     public static bool HasAccess (Type functionType)
@@ -168,11 +192,7 @@ namespace Remotion.Web.ExecutionEngine
       if (!IsExecutionStarted)
       {
         _variablesContainer.EnsureParametersInitialized (null);
-        
-        var transactionStrategy = _transactionMode.CreateTransactionStrategy (this, context);
-        OnTransactionCreated (transactionStrategy);
-        _transactionStrategy = transactionStrategy;
-
+        _transactionStrategy = _transactionMode.CreateTransactionStrategy (this, context);
         _executionListener = _transactionStrategy.CreateExecutionListener (_executionListener);
       }
 
@@ -324,12 +344,6 @@ namespace Remotion.Web.ExecutionEngine
         return;
 
       wxeSecurityAdapter.CheckAccess (this);
-    }
-
-    protected virtual void OnTransactionCreated (ITransactionStrategy transactionStrategy)
-    {
-      ArgumentUtility.CheckNotNull ("transactionStrategy", transactionStrategy);
-      //NOP
     }
   }
 }

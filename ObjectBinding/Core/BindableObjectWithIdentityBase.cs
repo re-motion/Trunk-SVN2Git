@@ -23,7 +23,7 @@ namespace Remotion.ObjectBinding
   /// If derivation from this class is not possible, the reflection-based implementation can also be added via the 
   /// <see cref="BindableObjectWithIdentityAttribute"/>, which adds the <see cref="BindableObjectWithIdentityMixin"/> to the class.
   /// </remarks>
-  [BindableObjectProvider]
+  [BindableObjectWithIdentityProvider]
   [BindableObjectBaseClass]
   [Serializable]
   public abstract class BindableObjectWithIdentityBase : IBusinessObjectWithIdentity
