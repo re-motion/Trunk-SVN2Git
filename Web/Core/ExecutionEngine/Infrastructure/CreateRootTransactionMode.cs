@@ -16,28 +16,35 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
   [Serializable]
-  public class CreateRootTransactionMode<TTransactionFactory> : ITransactionMode
-      where TTransactionFactory : ITransactionFactory, new ()
+  public class CreateRootTransactionMode : ITransactionMode
   {
     private readonly bool _autoCommit;
+    private readonly ITransactionFactory _transactionFactory;
 
-    public CreateRootTransactionMode (bool autoCommit)
+    public CreateRootTransactionMode (bool autoCommit, ITransactionFactory transactionFactory)
     {
+      ArgumentUtility.CheckNotNull ("transactionFactory", transactionFactory);
+
       _autoCommit = autoCommit;
+      _transactionFactory = transactionFactory;
     }
 
     public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction function, WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("function", function);
 
-      var transactionFactory = new TTransactionFactory ();
       var outerTransactionStrategy = function.ParentFunction != null ? function.ParentFunction.TransactionStrategy : NullTransactionStrategy.Null;
-      return new RootTransactionStrategy (_autoCommit, transactionFactory.CreateRootTransaction (), outerTransactionStrategy, function);
+      return new RootTransactionStrategy (_autoCommit, _transactionFactory.CreateRootTransaction (), outerTransactionStrategy, function);
     }
 
     public bool AutoCommit
     {
       get { return _autoCommit; }
+    }
+
+    public ITransactionFactory TransactionFactory
+    {
+      get { return _transactionFactory; }
     }
   }
 }

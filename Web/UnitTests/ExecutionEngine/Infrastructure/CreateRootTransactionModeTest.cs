@@ -27,7 +27,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       WxeContextFactory wxeContextFactory = new WxeContextFactory();
       WxeContext context = wxeContextFactory.CreateContext (new TestFunction());
 
-      ITransactionMode transactionMode = new CreateRootTransactionMode<TestTransactionFactory> (true);
+      ITransactionMode transactionMode = new CreateRootTransactionMode (true, new TestTransactionFactory ());
       TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (new TestFunction2 (transactionMode), context);
 
       Assert.That (strategy, Is.InstanceOfType (typeof (RootTransactionStrategy)));
@@ -40,7 +40,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
     [Test]
     public void CreateTransactionStrategy_WithParentFunction ()
     {
-      ITransactionMode transactionMode = new CreateRootTransactionMode<TestTransactionFactory> (true);
+      ITransactionMode transactionMode = new CreateRootTransactionMode (true, new TestTransactionFactory ());
 
       WxeFunction parentFunction = new TestFunction2 (new NoneTransactionMode ());
       WxeFunction childFunction = new TestFunction2 (transactionMode);

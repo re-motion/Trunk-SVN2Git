@@ -14,6 +14,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
+  [Serializable]
   public class SecurityExecutionListener : IWxeFunctionExecutionListener
   {
     private readonly WxeFunction _function;

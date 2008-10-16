@@ -20,13 +20,13 @@ namespace Remotion.Web.ExecutionEngine
   {
     public static readonly ITransactionMode None = new NoneTransactionMode();
 
-    public static readonly ITransactionMode CreateRoot = new CreateRootTransactionMode<TTransactionFactory>(false);
+    public static readonly ITransactionMode CreateRoot = new CreateRootTransactionMode(false, new TTransactionFactory ());
 
-    public static readonly ITransactionMode CreateRootWithAutoCommit = new CreateRootTransactionMode<TTransactionFactory> (true);
+    public static readonly ITransactionMode CreateRootWithAutoCommit = new CreateRootTransactionMode (true, new TTransactionFactory ());
 
-    public static readonly ITransactionMode CreateChildIfParent = new CreateChildIfParentTransactionMode<TTransactionFactory>(false);
+    public static readonly ITransactionMode CreateChildIfParent = new CreateChildIfParentTransactionMode(false, new TTransactionFactory());
 
-    public static readonly ITransactionMode CreateChildIfParentWithAutoCommit = new CreateChildIfParentTransactionMode<TTransactionFactory> (true);
+    public static readonly ITransactionMode CreateChildIfParentWithAutoCommit = new CreateChildIfParentTransactionMode (true, new TTransactionFactory());
 
     protected WxeTransactionMode ()
     {

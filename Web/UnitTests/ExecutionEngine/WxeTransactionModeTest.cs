@@ -30,7 +30,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     public void GetCreateRoot ()
     {
       ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateRoot;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateRootTransactionMode<TestTransactionFactory>)));
+      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateRootTransactionMode)));
       Assert.That (transactionMode.AutoCommit, Is.False);
     }
 
@@ -38,7 +38,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     public void GetCreateRootWithAutoCommit ()
     {
       ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateRootWithAutoCommit;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateRootTransactionMode<TestTransactionFactory>)));
+      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateRootTransactionMode)));
       Assert.That (transactionMode.AutoCommit, Is.True);
     }
 
@@ -46,7 +46,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     public void GetCreateChildIfParent ()
     {
       ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateChildIfParent;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateChildIfParentTransactionMode<TestTransactionFactory>)));
+      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateChildIfParentTransactionMode)));
       Assert.That (transactionMode.AutoCommit, Is.False);
     }
 
@@ -54,7 +54,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     public void GetCreateChildIfParentWithAutoCommit ()
     {
       ITransactionMode transactionMode = WxeTransactionMode<TestTransactionFactory>.CreateChildIfParentWithAutoCommit;
-      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateChildIfParentTransactionMode<TestTransactionFactory>)));
+      Assert.That (transactionMode, Is.InstanceOfType (typeof (CreateChildIfParentTransactionMode)));
       Assert.That (transactionMode.AutoCommit, Is.True);
     }
   }

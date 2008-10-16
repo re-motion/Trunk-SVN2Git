@@ -8,6 +8,7 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using Remotion.Security.Configuration;
 using Remotion.Utilities;
 
@@ -17,26 +18,14 @@ namespace Remotion.Data.DomainObjects.Security
   /// Implementation of the <see cref="ITransactionFactory"/> interface that creates root <see cref="ClientTransaction"/>s and adds a
   /// <see cref="SecurityClientTransactionExtension"/> when the transaction is created in an application that has a security provider configured.
   /// </summary>
-  public class SecurityClientTransactionFactory : ITransactionFactory
+  [Serializable]
+  public class SecurityClientTransactionFactory : ClientTransactionFactory
   {
     public SecurityClientTransactionFactory ()
     {
     }
 
-    /// <summary>
-    /// Creates a new root transaction instance. This instance is not yet managed by a scope.
-    /// </summary>
-    /// <returns>A new root transaction.</returns>
-    public ITransaction CreateRootTransaction ()
-    {
-      var transaction = ClientTransaction.CreateRootTransaction();
-
-      OnTransactionCreated(transaction);
-
-      return transaction.ToITransation();
-    }
-
-    protected virtual void OnTransactionCreated (ClientTransaction transaction)
+    protected override void OnTransactionCreated (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 

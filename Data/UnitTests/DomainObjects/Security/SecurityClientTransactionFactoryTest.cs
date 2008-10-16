@@ -71,49 +71,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
       Assert.That (clientTransaction, Is.InstanceOfType (typeof (RootClientTransaction)));
       Assert.That (clientTransaction.Extensions, Is.Empty);
     }
-
-    [Test]
-    public void OnTransactionCreated ()
-    {
-      ITransactionFactory factory = MockRepository.GenerateMock<SecurityClientTransactionFactory> ();
-
-      var extensionStub = MockRepository.GenerateStub<IClientTransactionExtension>();
-      factory.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnTransactionCreated", Arg<ClientTransaction>.Is.NotNull)).Do (
-          invocation => ((ClientTransaction) invocation.Arguments[0]).Extensions.Add ("extension", extensionStub));
-
-      ITransaction transaction = factory.CreateRootTransaction ();
-
-      var clientTransaction = transaction.To<ClientTransaction> ();
-      Assert.That (clientTransaction, Is.InstanceOfType (typeof (RootClientTransaction)));
-      Assert.That (clientTransaction.Extensions.Count, Is.EqualTo (1));
-      Assert.That (clientTransaction.Extensions[0], Is.SameAs (extensionStub));
-    }
-
-    [Test]
-    public void CreateChildTransaction_WithEnabledSecurity ()
-    {
-      ITransactionFactory factory = new SecurityClientTransactionFactory ();
-
-      _testHelper.SetupSecurityConfiguration ();
-      SecurityConfiguration.Current.SecurityProvider.BackToRecord ();
-      SecurityConfiguration.Current.SecurityProvider.Stub (stub => stub.IsNull).Return (false).Repeat.Any ();
-      SecurityConfiguration.Current.SecurityProvider.Replay ();
-      ITransaction rootTransaction;
-      ITransaction childTransaction;
-      try
-      {
-        Assert.That (SecurityConfiguration.Current.SecurityProvider.IsNull, Is.False);
-        rootTransaction = factory.CreateRootTransaction ();
-        childTransaction = rootTransaction.CreateChild();
-      }
-      finally
-      {
-        _testHelper.TearDownSecurityConfiguration ();
-      }
-
-      var clientTransaction = childTransaction.To<ClientTransaction> ();
-      Assert.That (rootTransaction.To<ClientTransaction> ().Extensions[0], Is.InstanceOfType (typeof (SecurityClientTransactionExtension)));
-      Assert.That (clientTransaction.Extensions, Is.EqualTo (rootTransaction.To<ClientTransaction> ().Extensions));
-    }
   }
 }

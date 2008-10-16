@@ -16,14 +16,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   //TODO: Doc
   [Serializable]
-  public class CreateChildIfParentTransactionMode<TTransactionFactory> : ITransactionMode
-      where TTransactionFactory: ITransactionFactory, new()
+  public class CreateChildIfParentTransactionMode : ITransactionMode
   {
     private readonly bool _autoCommit;
+    private readonly ITransactionFactory _transactionFactory;
 
-    public CreateChildIfParentTransactionMode (bool autoCommit)
+    public CreateChildIfParentTransactionMode (bool autoCommit, ITransactionFactory transactionFactory)
     {
+      ArgumentUtility.CheckNotNull ("transactionFactory", transactionFactory);
+
       _autoCommit = autoCommit;
+      _transactionFactory = transactionFactory;
     }
 
     public virtual TransactionStrategyBase CreateTransactionStrategy (WxeFunction function, WxeContext context)
@@ -38,13 +41,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
           return childTransactionStrategy;
       }
 
-      var transactionFactory = new TTransactionFactory();
-      return new RootTransactionStrategy (_autoCommit, transactionFactory.CreateRootTransaction(), NullTransactionStrategy.Null, function);
+      return new RootTransactionStrategy (_autoCommit, _transactionFactory.CreateRootTransaction(), NullTransactionStrategy.Null, function);
     }
 
     public bool AutoCommit
     {
       get { return _autoCommit; }
+    }
+
+    public ITransactionFactory TransactionFactory
+    {
+      get { return _transactionFactory; }
     }
   }
 }
