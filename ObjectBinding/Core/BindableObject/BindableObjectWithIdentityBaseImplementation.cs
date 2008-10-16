@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private readonly BindableObjectWithIdentityBase _wrapper;
 
-    public BindableObjectWithIdentityBaseImplementation (BindableObjectWithIdentityBase wrapper)
+    protected BindableObjectWithIdentityBaseImplementation (BindableObjectWithIdentityBase wrapper)
     {
       ArgumentUtility.CheckNotNull ("wrapper", wrapper);
       _wrapper = wrapper;
