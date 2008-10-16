@@ -20,6 +20,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.BindableObject.Properties;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 {
@@ -121,6 +122,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       Assert.That (
           BindableDomainObjectProvider.GetProviderForBindableObjectType (typeof (SampleBindableDomainObject)),
           Is.Not.SameAs (BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute> ()));
+    }
+
+    [Test]
+    public void NoPropertyFromDomainObject ()
+    {
+      var instance = SampleBindableDomainObject.NewObject();
+      PropertyBase[] properties = (PropertyBase[]) ((IBusinessObject)instance).BusinessObjectClass.GetPropertyDefinitions ();
+
+      foreach (PropertyBase property in properties)
+        Assert.That (property.PropertyInfo.DeclaringType, Is.Not.EqualTo (typeof (DomainObject)));
+    }
+
+    [Test]
+    public void NoPropertyFromBindableDomainObject ()
+    {
+      var instance = SampleBindableDomainObject.NewObject ();
+      PropertyBase[] properties = (PropertyBase[]) ((IBusinessObject) instance).BusinessObjectClass.GetPropertyDefinitions ();
+
+      foreach (PropertyBase property in properties)
+        Assert.That (property.PropertyInfo.DeclaringType, Is.Not.EqualTo (typeof (BindableDomainObject)));
     }
   }
 }
