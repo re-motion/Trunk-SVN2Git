@@ -12,6 +12,7 @@ using System;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using Remotion.Collections;
 using Remotion.Utilities;
@@ -313,27 +314,27 @@ namespace Remotion.Web.ExecutionEngine
       _functionToken = functionToken;
     }
 
-    //public override string ToString ()
-    //{
-    //  StringBuilder sb = new StringBuilder ();
-    //  sb.Append ("WxeFunction: ");
-    //  sb.Append (GetType ().Name);
-    //  sb.Append (" (");
-    //  for (int i = 0; i < _variablesContainer.ActualParameters.Length; ++i)
-    //  {
-    //    if (i > 0)
-    //      sb.Append (", ");
-    //    object value = _variablesContainer.ActualParameters[i];
-    //    if (value is WxeVariableReference)
-    //      sb.Append ("@" + ((WxeVariableReference) value).Name);
-    //    else if (value is string)
-    //      sb.AppendFormat ("\"{0}\"", value);
-    //    else
-    //      sb.Append (value);
-    //  }
-    //  sb.Append (")");
-    //  return sb.ToString ();
-    //}
+    public override string ToString ()
+    {
+      StringBuilder sb = new StringBuilder ();
+      sb.Append ("WxeFunction: ");
+      sb.Append (GetType ().Name);
+      sb.Append (" (");
+      for (int i = 0; i < _variablesContainer.ActualParameters.Length; ++i)
+      {
+        if (i > 0)
+          sb.Append (", ");
+        object value = _variablesContainer.ActualParameters[i];
+        if (value is WxeVariableReference)
+          sb.Append ("@" + ((WxeVariableReference) value).Name);
+        else if (value is string)
+          sb.AppendFormat ("\"{0}\"", value);
+        else
+          sb.Append (value);
+      }
+      sb.Append (")");
+      return sb.ToString ();
+    }
 
     protected virtual void CheckPermissions (WxeContext context)
     {

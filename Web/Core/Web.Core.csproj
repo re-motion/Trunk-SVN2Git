@@ -122,6 +122,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionExecutionListener.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\SecurityExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\TransactionStrategyBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ScopedTransactionStrategyBase.cs" />

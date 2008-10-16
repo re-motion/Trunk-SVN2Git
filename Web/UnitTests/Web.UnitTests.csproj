@@ -162,6 +162,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionModeTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionStrategyTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionExecutionListenerTest.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\SecurityExecutionListenerTest.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestFunction2.cs" />
     <Compile Include="ExecutionEngine\TestFunctions\TestTransactionFactory.cs" />
     <Compile Include="ExecutionEngine\WxeContextFactory.cs" />
