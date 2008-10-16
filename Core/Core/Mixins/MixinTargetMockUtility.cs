@@ -149,14 +149,11 @@ namespace Remotion.Mixins
     private static TMixin CreateMixinForMocking<TMixin> (MixinDefinition mixinDefinition, object[] args)
     {
       Type mixinType;
-      try
-      {
+      if (mixinDefinition.NeedsDerivedMixinType ())
         mixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
-      }
-      catch (ArgumentException) // no concrete type is required for the given configuration
-      {
+      else
         mixinType = typeof (TMixin);
-      }
+
       return (TMixin) ObjectFactory.Create (true, mixinType).Invoke (args);
     }
 
