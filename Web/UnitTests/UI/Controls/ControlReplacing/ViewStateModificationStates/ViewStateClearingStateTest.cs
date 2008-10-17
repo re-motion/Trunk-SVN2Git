@@ -24,7 +24,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     [Test]
     public void LoadViewState_BeforeParentLoaded ()
     {
-      TestPageHolder testPageHolder = new TestPageHolder (false);
+      TestPageHolder testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
       replacer.ViewStateModificationState = new ViewStateLoadingState (replacer, MemberCallerMock);
       replacer.ControlStateModificationState = new ControlStateLoadingState (replacer, MemberCallerMock);

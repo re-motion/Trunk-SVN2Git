@@ -24,8 +24,8 @@ namespace Remotion.Web.ExecutionEngine
     private readonly WxeTemplateControlInfo _wxeInfo;
     private readonly LazyInitializationContainer _lazyContainer;
     private ControlReplacer _replacer;
-    private bool _isInOnInit;
     private bool _executeNextStep;
+    private bool _isWxeInfoInitialized;
 
     public WxeUserControl2 ()
     {
@@ -35,57 +35,51 @@ namespace Remotion.Web.ExecutionEngine
 
     protected override sealed void OnInit (EventArgs e)
     {
-      if (_isInOnInit)
-        return;
-      _isInOnInit = true;
-
-      _wxeInfo.Initialize (Context);
+      if (!_isWxeInfoInitialized)
+      {
+        _wxeInfo.Initialize (Context);
+        _isWxeInfoInitialized = true;
+      }
 
       if (_replacer == null)
       {
-        var replacer = new ControlReplacer (new InternalControlMemberCaller ());
+        var replacer = new ControlReplacer (new InternalControlMemberCaller());
         replacer.ID = ID + "_Parent";
 
         string uniqueID = UniqueID.Insert (UniqueID.Length - ID.Length, replacer.ID + IdSeparator);
+
+        IModificationStateSelectionStrategy selectionStrategy;,
 
         if (CurrentPageStep.UserControlID == uniqueID && !CurrentPageStep.IsReturningInnerFunction)
         {
           var control = (WxeUserControl2) Page.LoadControl (CurrentUserControlStep.UserControl);
           control.ID = ID;
 
-          IModificationStateSelectionStrategy selectionStrategy;
           if (!CurrentUserControlStep.IsPostBack)
             selectionStrategy = new ClearingStateSelectionStrategy();
           else
             selectionStrategy = new LoadingStateSelectionStrategy();
-
-          replacer.ReplaceAndWrap (this, control, selectionStrategy);
         }
         else
         {
-          IModificationStateSelectionStrategy selectionStrategy;
           if (CurrentPageStep.IsReturningInnerFunction)
             selectionStrategy = new ReplacingStateSelectionStrategy (CurrentPageStep.UserControlState);
           else
             selectionStrategy = new LoadingStateSelectionStrategy();
-
-          replacer.ReplaceAndWrap (this, this, selectionStrategy);
-
-          CompleteInitialization ();
         }
+
+        replacer.ReplaceAndWrap (this, this, selectionStrategy);
       }
       else
       {
-        Assertion.IsNotNull (Parent, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
-
-        CompleteInitialization ();
+        CompleteInitialization();
       }
-
-      _isInOnInit = false;
     }
 
     private void CompleteInitialization ()
     {
+      Assertion.IsNotNull (Parent, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
+
       _lazyContainer.Ensure(base.Controls);
 
       OnInitComplete (EventArgs.Empty);

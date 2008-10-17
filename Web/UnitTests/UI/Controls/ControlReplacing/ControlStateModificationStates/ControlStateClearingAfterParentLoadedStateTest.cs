@@ -36,7 +36,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModifi
     [Test]
     public void AddedControl ()
     {
-      TestPageHolder testPageHolder = new TestPageHolder (false);
+      TestPageHolder testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
       replacer.ViewStateModificationState = new ViewStateLoadingState (replacer, MemberCallerMock);
       replacer.ControlStateModificationState = MockRepository.GenerateStub<ControlStateModificationStateBase> (replacer, MemberCallerMock);

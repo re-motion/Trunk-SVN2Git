@@ -218,6 +218,13 @@ namespace Remotion.Web.ExecutionEngine
         _executionListener.OnExecutionPause (context);
         throw;
       }
+      catch (WxeExecuteUserControlStepException)
+      {
+        throw;
+      }
+      catch (WxeExecuteUserControlNextStepException)
+      {
+      }
       catch (Exception stepException)
       {
         Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (stepException) ?? stepException;

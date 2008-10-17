@@ -32,7 +32,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     {
       base.SetUp();
 
-      _testPageHolder = new TestPageHolder (false);
+      _testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
       _replacer = new ControlReplacer (MemberCallerMock);
 
       _replacer.ViewStateModificationState = MockRepository.GenerateStub<ViewStateModificationStateBase> (_replacer, MemberCallerMock);

@@ -188,6 +188,7 @@
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateClearingStateTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateReplacingStateTest.cs" />
     <Compile Include="UI\Controls\ReplaceableControlMock.cs" />
+    <Compile Include="UI\Controls\RequestMode.cs" />
     <Compile Include="UI\Controls\TestPageHolder.cs" />
     <Compile Include="Utilities\InternalControlMemberCallerTest.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectWithVarRefTest.cs" />

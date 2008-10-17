@@ -22,7 +22,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     [Test]
     public void LoadViewState ()
     {
-      TestPageHolder testPageHolder = new TestPageHolder (false);
+      TestPageHolder testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
       ViewStateLoadingState state = new ViewStateLoadingState (replacer, MemberCallerMock);
 

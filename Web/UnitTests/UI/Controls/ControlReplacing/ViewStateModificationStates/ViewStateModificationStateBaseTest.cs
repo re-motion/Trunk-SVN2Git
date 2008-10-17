@@ -25,7 +25,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ViewStateModificat
     [Test]
     public void AdddedControl ()
     {
-      TestPageHolder testPageHolder = new TestPageHolder (false);
+      TestPageHolder testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
       ControlReplacer replacer = new ControlReplacer  (MemberCallerMock);
       IAddedControl addedControlMock = MockRepository.GenerateMock<IAddedControl> ();
       

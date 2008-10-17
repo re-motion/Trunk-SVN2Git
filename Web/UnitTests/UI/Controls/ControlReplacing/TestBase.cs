@@ -12,26 +12,25 @@ using System;
 using System.Text;
 using System.Web;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
+using Assertion=Remotion.Utilities.Assertion;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 {
   public class TestBase
   {
-    private HttpContext _httpContext;
     private IInternalControlMemberCaller _memberCallerMock;
     private MockRepository _mockRepository;
 
     [SetUp]
     public virtual void SetUp ()
     {
-      _httpContext = HttpContextHelper.CreateHttpContext ("GET", "default.html", null);
-      _httpContext.Response.ContentEncoding = Encoding.UTF8;
-      HttpContextHelper.SetCurrent (_httpContext);
-
+      SetupHttpContext();
       _mockRepository = new MockRepository();
       _memberCallerMock = _mockRepository.StrictMultiMock<IInternalControlMemberCaller> ();
     }
@@ -40,6 +39,13 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     public virtual void TearDown ()
     {
       HttpContextHelper.SetCurrent (null);
+    }
+
+    protected void SetupHttpContext ()
+    {
+      var httpContext = HttpContextHelper.CreateHttpContext ("GET", "default.html", null);
+      httpContext.Response.ContentEncoding = Encoding.UTF8;
+      HttpContextHelper.SetCurrent (httpContext);
     }
 
     protected ControlReplacer SetupControlReplacerForIntegrationTest (
@@ -52,42 +58,39 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
         IInternalControlMemberCaller memberCaller, ReplaceableControlMock wrappedControl, IModificationStateSelectionStrategy stateSelectionStrategy)
     {
       ControlReplacer replacer = new ControlReplacer (memberCaller) { ID = "TheReplacer" };
-      bool isInitialized = false;
-      wrappedControl.Init += delegate
-      {
-        if (isInitialized)
-          return;
-        isInitialized = true;
-        replacer.ReplaceAndWrap (wrappedControl, wrappedControl, stateSelectionStrategy);
-      };
-
+      wrappedControl.OnInitParameters = new Tuple<ControlReplacer, IModificationStateSelectionStrategy>  (replacer, stateSelectionStrategy);
       return replacer;
     }
 
     protected object CreateViewState ()
     {
-      return CreateViewState (new TestPageHolder (true));
+      return CreateViewState (new TestPageHolder (true, RequestMode.Get));
     }
 
     protected object CreateViewState (TestPageHolder testPageHolder)
     {
-      SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new LoadingStateSelectionStrategy());
-
+      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new LoadingStateSelectionStrategy());
       testPageHolder.PageInvoker.InitRecursive();
+      if (testPageHolder.Page.IsPostBack)
+        new ControlInvoker (testPageHolder.NamingContainer).LoadControlState (null);
+      Assertion.IsTrue (replacer.Controls.Count == 1);
 
       return testPageHolder.PageInvoker.SaveViewStateRecursive();
     }
 
     protected object CreateControlState ()
     {
-      return CreateControlState (new TestPageHolder (true));
+      return CreateControlState (new TestPageHolder (true, RequestMode.Get));
     }
 
     protected object CreateControlState (TestPageHolder testPageHolder)
     {
-      SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new LoadingStateSelectionStrategy());
+      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new LoadingStateSelectionStrategy ());
       testPageHolder.PageInvoker.InitRecursive();
-
+      if (testPageHolder.Page.IsPostBack)
+        new ControlInvoker (testPageHolder.NamingContainer).LoadControlState (null);
+      Assertion.IsTrue (replacer.Controls.Count == 1);
+      
       testPageHolder.Page.SaveAllState();
 
       return testPageHolder.Page.GetPageStatePersister().ControlState;

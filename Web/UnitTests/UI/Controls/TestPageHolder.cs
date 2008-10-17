@@ -19,18 +19,19 @@ namespace Remotion.Web.UnitTests.UI.Controls
   public class TestPageHolder
   {
     private readonly PageMock _page;
-    private readonly ReplaceableControlMock _namingContainer;
     private readonly ControlInvoker _pageInvoker;
+    private readonly ReplaceableControlMock _namingContainer;
     private readonly ControlMock _parent;
     private readonly ControlMock _child;
     private readonly Control _child2;
     private readonly ControlMock _otherControl;
     private readonly NamingContainerMock _otherNamingContainer;
 
-    public TestPageHolder (bool initializeState)
+    public TestPageHolder (bool initializeState, RequestMode requestMode)
     {
       _page = new PageMock ();
-      _page.SetRequestValueCollection (new NameValueCollection ());
+      if (requestMode == RequestMode.PostBack)
+        _page.SetRequestValueCollection (new NameValueCollection ());
 
       _otherNamingContainer = new NamingContainerMock ();
       _otherNamingContainer.ID = "OtherNamingContainer";
@@ -78,14 +79,14 @@ namespace Remotion.Web.UnitTests.UI.Controls
       get { return _page; }
     }
 
-    public ReplaceableControlMock NamingContainer
-    {
-      get { return _namingContainer; }
-    }
-
     public ControlInvoker PageInvoker
     {
       get { return _pageInvoker; }
+    }
+
+    public ReplaceableControlMock NamingContainer
+    {
+      get { return _namingContainer; }
     }
 
     public ControlMock Parent
