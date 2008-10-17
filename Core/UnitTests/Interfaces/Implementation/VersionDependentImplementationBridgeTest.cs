@@ -47,41 +47,22 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot get a version-dependent implementation of type "
+    [ExpectedException (typeof (VersionDependentImplementationException), ExpectedMessage = "The initialization of type 'System.IServiceProvider' "
+        + "threw an exception of type 'InvalidOperationException': Cannot get a version-dependent implementation of type "
         + "'System.IServiceProvider': Expected one ConcreteImplementationAttribute applied to the type, but found 0.")]
     public void Implementation_WithoutAttribute ()
     {
-      try
-      {
-        Dev.Null = VersionDependentImplementationBridge<IServiceProvider>.Implementation;
-      }
-      catch (TypeInitializationException ex)
-      {
-        throw ex.InnerException;
-      }
-      catch
-      {
-        Assert.Fail ("Expected TypeInitializationException.");
-      }
+      Dev.Null = VersionDependentImplementationBridge<IServiceProvider>.Implementation;
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidCastException), ExpectedMessage = "Unable to cast object of type 'VersionDependentImplementation' to type " 
+    [ExpectedException (typeof (VersionDependentImplementationException), ExpectedMessage = "The initialization of type "
+        + "'Remotion.UnitTests.Interfaces.Implementation.VersionDependentImplementationBridgeTest+IVersionIndependentInterface2' "
+        + "threw an exception of type 'InvalidCastException': Unable to cast object of type 'VersionDependentImplementation' to type " 
         + "'IVersionIndependentInterface2'.")]
     public void Implementation_WithInvalidAttributeType ()
     {
-      try
-      {
-        Dev.Null = VersionDependentImplementationBridge<IVersionIndependentInterface2>.Implementation;
-      }
-      catch (TypeInitializationException ex)
-      {
-        throw ex.InnerException;
-      }
-      catch
-      {
-        Assert.Fail ("Expected TypeInitializationException.");
-      }
+      Dev.Null = VersionDependentImplementationBridge<IVersionIndependentInterface2>.Implementation;
     }
   }
 }

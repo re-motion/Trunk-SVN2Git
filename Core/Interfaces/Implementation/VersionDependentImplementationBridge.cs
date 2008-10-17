@@ -9,24 +9,43 @@
  */
 
 using System;
+using System.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Implementation
 {
   public static class VersionDependentImplementationBridge<T>
   {
-    public static readonly T Implementation = GetImplementation();
-
-    private static T GetImplementation ()
+    public static T Implementation
     {
-      ConcreteImplementationAttribute[] attributes = 
-          (ConcreteImplementationAttribute[]) typeof (T).GetCustomAttributes (typeof (ConcreteImplementationAttribute), false);
-      if (attributes.Length != 1)
+      get
       {
-        string message = string.Format ("Cannot get a version-dependent implementation of type '{0}': Expected one " 
-            + "ConcreteImplementationAttribute applied to the type, but found {1}.", typeof (T).FullName, attributes.Length);
-        throw new InvalidOperationException(message);
+        try
+        {
+          return ImplementationClass.Implementation;
+        }
+        catch (TypeInitializationException ex)
+        {
+          throw VersionDependentImplementationException.Wrap (typeof (T), ex.InnerException);
+        }
       }
-      return (T) attributes[0].InstantiateType();
+    }
+
+    private class ImplementationClass
+    {
+      public static readonly T Implementation = GetImplementation ();
+
+      private static T GetImplementation ()
+      {
+        var attributes = (ConcreteImplementationAttribute[]) typeof (T).GetCustomAttributes (typeof (ConcreteImplementationAttribute), false);
+        if (attributes.Length != 1)
+        {
+          string message = string.Format ("Cannot get a version-dependent implementation of type '{0}': Expected one "
+              + "ConcreteImplementationAttribute applied to the type, but found {1}.", typeof (T).FullName, attributes.Length);
+          throw new InvalidOperationException (message);
+        }
+        return (T) attributes[0].InstantiateType ();
+      }
     }
   }
 }
