@@ -41,7 +41,8 @@ namespace Remotion.ObjectBinding.BindableObject
 
     /// <summary>
     /// Use this method as a shortcut to retrieve the <see cref="BindableObjectProvider"/> for a <see cref="Type"/> 
-    /// that has the <see cref="BindableObjectMixinBase{T}"/> applied without first retrieving the matching provider.
+    /// that has the <see cref="BindableObjectMixinBase{T}"/> applied or is derived from a bindable object base class without first retrieving the 
+    /// matching provider.
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to retrieve the <see cref="BindableObjectProvider"/> for.</param>
     /// <returns>Returns the <see cref="BindableObjectProvider"/> for the <paramref name="type"/>.</returns>
@@ -82,11 +83,12 @@ namespace Remotion.ObjectBinding.BindableObject
 
     /// <summary>
     /// Use this method as a shortcut to retrieve the <see cref="BindableObjectClass"/> for a <see cref="Type"/> 
-    /// that has the <see cref="BindableObjectMixinBase{T}"/> applied without first retrieving the matching provider.
+    /// that has the <see cref="BindableObjectMixinBase{T}"/> applied or is derived from a bindable object base class without first retrieving the 
+    /// matching provider.
     /// </summary>
     /// <param name="type">The type to get a <see cref="BindableObjectClass"/> for. This type must have a mixin derived from
-    /// <see cref="BindableObjectMixinBase{TBindableObject}"/> configured, and it is recommended to specify the simple target type rather then the
-    /// generated mixed type.</param>
+    /// <see cref="BindableObjectMixinBase{TBindableObject}"/> configured or it must be derived from a bindable object class class, and it is 
+    /// recommended to specify the simple target type rather then the generated mixed type.</param>
     /// <returns>Returns the <see cref="BindableObjectClass"/> for the <paramref name="type"/>.</returns>
     public static BindableObjectClass GetBindableObjectClass (Type type)
     {
@@ -96,6 +98,31 @@ namespace Remotion.ObjectBinding.BindableObject
       Assertion.IsNotNull (provider, "No BindableObjectProvider associated with type '{0}'.", type.FullName);
 
       return provider.GetBindableObjectClassInternal (type);
+    }
+
+    /// <summary>
+    /// Determines whether the specified type is a bindable object implementation.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
+    /// <returns>
+    /// 	<see langword="true"/> if the specified <paramref name="type"/> has a mixin derived from 
+    /// 	<see cref="BindableObjectMixinBase{TBindableObject}"/> applied or is itself derived from a bindable object base class; otherwise 
+    /// 	<see langword="false"/>.
+    /// </returns>
+    public static bool IsBindableObjectImplementation (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      return HasBindableObjectMixin (type) || IsDerivedFromBindableObjectBase (type);
+    }
+
+    private static bool IsDerivedFromBindableObjectBase (Type type)
+    {
+      return AttributeUtility.IsDefined (type, typeof (BindableObjectBaseClassAttribute), true);
+    }
+
+    private static bool HasBindableObjectMixin (Type type)
+    {
+      return MixinTypeUtility.HasAscribableMixin (type, typeof (BindableObjectMixinBase<>));
     }
 
     private readonly InterlockedDataStore<Type, BindableObjectClass> _businessObjectClassStore = new InterlockedDataStore<Type, BindableObjectClass>();
@@ -144,21 +171,6 @@ namespace Remotion.ObjectBinding.BindableObject
       Assertion.IsNotNull (classReflector, "The IMetadataFactory.CreateClassReflector method evaluated and returned null.");
 
       return classReflector.GetMetadata();
-    }
-
-    public static bool IsBindableObjectImplementation(Type type)
-    {
-      return HasBindableObjectMixin(type) || IsDerivedFromBindableObjectBase(type);
-    }
-
-    private static bool IsDerivedFromBindableObjectBase(Type type)
-    {
-      return AttributeUtility.IsDefined (type, typeof (BindableObjectBaseClassAttribute), true);
-    }
-
-    private static bool HasBindableObjectMixin(Type type)
-    {
-      return MixinTypeUtility.HasAscribableMixin (type, typeof (BindableObjectMixinBase<>));
     }
   }
 }
