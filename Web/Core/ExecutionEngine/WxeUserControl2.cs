@@ -48,7 +48,7 @@ namespace Remotion.Web.ExecutionEngine
 
         string uniqueID = UniqueID.Insert (UniqueID.Length - ID.Length, replacer.ID + IdSeparator);
 
-        IModificationStateSelectionStrategy selectionStrategy;,
+        IModificationStateSelectionStrategy selectionStrategy;
 
         if (CurrentPageStep.UserControlID == uniqueID && !CurrentPageStep.IsReturningInnerFunction)
         {
