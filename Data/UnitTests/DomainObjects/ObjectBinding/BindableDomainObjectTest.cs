@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -63,8 +64,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void Implementation_IsInitialized ()
     {
       var instance = SampleBindableDomainObject.NewObject ();
-      var mixin = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
-      Assert.That (mixin.BusinessObjectClass, Is.Not.Null);
+      var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
+      Assert.That (implementation.BusinessObjectClass, Is.Not.Null);
     }
 
     [Test]
@@ -72,8 +73,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       var instance = SampleBindableDomainObject.NewObject ();
       instance = Serializer.SerializeAndDeserialize (instance);
-      var mixin = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
-      Assert.That (mixin.BusinessObjectClass, Is.Not.Null);
+      var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
+      Assert.That (implementation.BusinessObjectClass, Is.Not.Null);
+    }
+
+    [Test]
+    public void Loading ()
+    {
+      var newInstance = SampleBindableDomainObject.NewObject ();
+      SetDatabaseModifyable ();
+      ClientTransaction.Current.Commit ();
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var instance = SampleBindableDomainObject.GetObject (newInstance.ID);
+        var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
+        Assert.That (implementation, Is.Not.Null);
+        Assert.That (implementation.BusinessObjectClass, Is.Not.Null);
+      }
+    }
+
+    [Test]
+    public void Reloading ()
+    {
+      var instance1 = SampleBindableDomainObject.NewObject ();
+      var implementation1 = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance1, "_implementation");
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        var instance2 = SampleBindableDomainObject.GetObject (instance1.ID);
+        var implementation2 = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance2, "_implementation");
+        Assert.That (implementation2, Is.SameAs (implementation1));
+      }
     }
 
     [Test]

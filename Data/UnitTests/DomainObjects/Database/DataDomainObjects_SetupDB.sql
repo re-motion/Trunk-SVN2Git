@@ -289,6 +289,10 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'TableInhe
   DROP TABLE [TableInheritance_Folder]
 GO
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'SampleBindableDomainObject') 
+  DROP TABLE [SampleBindableDomainObject]
+GO
+
 IF OBJECT_ID ('rpf_testSPQuery', 'P') IS NOT NULL 
   DROP PROCEDURE rpf_testSPQuery;
 GO
@@ -956,6 +960,16 @@ CREATE TABLE [MixedDomains_TargetWithUnidirectionalMixin2] (
   CONSTRAINT [PK_MixedDomains_TargetWithUnidirectionalMixin2] PRIMARY KEY CLUSTERED ([ID]),
   CONSTRAINT [FK_MixedDomains_TargetWithUnidirectionalMixin2_Computer] FOREIGN KEY ([ComputerID]) REFERENCES [Computer] ([ID])
 ) 
+GO
+
+CREATE TABLE [SampleBindableDomainObject] (
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+
+  [Name] nvarchar(100) NULL,
+  [Int32] int NOT NULL
+)
 GO
 
 CREATE PROCEDURE rpf_testSPQuery

@@ -31,11 +31,11 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   [Serializable]
   public abstract class BindableDomainObject : DomainObject, IBusinessObjectWithIdentity, BindableDomainObjectMixin.IDomainObject
   {
-    private readonly IBusinessObjectWithIdentity _implementation;
+    private IBusinessObjectWithIdentity _implementation;
 
     protected BindableDomainObject ()
     {
-      _implementation = BindableDomainObjectImplementation.Create (this);
+      InitializeImplementation();
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -55,6 +55,18 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     protected BindableDomainObject (SerializationInfo info, StreamingContext context)
       : base (info, context)
     {
+    }
+
+    protected override void OnLoaded (LoadMode loadMode)
+    {
+      if (loadMode == LoadMode.WholeDomainObjectInitialized)
+        InitializeImplementation ();
+      base.OnLoaded (loadMode);
+    }
+
+    private void InitializeImplementation ()
+    {
+      _implementation = BindableDomainObjectImplementation.Create (this);
     }
 
     /// <summary>
