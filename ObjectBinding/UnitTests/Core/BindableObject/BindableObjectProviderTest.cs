@@ -202,5 +202,30 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var provider = new BindableObjectProvider (_metadataFactoryStub, _serviceFactoryStub);
       Assert.AreSame (_serviceFactoryStub, provider.ServiceFactory);
     }
+
+    [Test]
+    public void IsBindableObjectImplementation_TrueWithMixin_TargetType()
+    {
+      Assert.That (BindableObjectProvider.IsBindableObjectImplementation (typeof (SimpleBusinessObjectClass)), Is.True);
+    }
+
+    [Test]
+    public void IsBindableObjectImplementation_TrueWithMixin_ConcreteType ()
+    {
+      Assert.That (BindableObjectProvider.IsBindableObjectImplementation (TypeFactory.GetConcreteType( typeof (SimpleBusinessObjectClass))), Is.True);
+    }
+
+    [Test]
+    public void IsBindableObjectImplementation_TrueWithBase ()
+    {
+      Assert.That (BindableObjectProvider.IsBindableObjectImplementation (typeof (ClassDerivedFromBindableObjectBase)), Is.True);
+    }
+
+    [Test]
+    public void IsBindableObjectImplementation_False ()
+    {
+      Assert.That (BindableObjectProvider.IsBindableObjectImplementation (typeof (object)), Is.False);
+      Assert.That (BindableObjectProvider.IsBindableObjectImplementation (typeof (ManualBusinessObject)), Is.False);
+    }
   }
 }

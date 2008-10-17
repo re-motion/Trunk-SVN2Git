@@ -44,26 +44,11 @@ namespace Remotion.ObjectBinding.Design.BindableObject
       {
         foreach (Type type in types)
         {
-          if (IsBindableObjectImplementation (type))
+          if (!MixinTypeUtility.IsGeneratedByMixinEngine (type) && BindableObjectProvider.IsBindableObjectImplementation (type))
             bindableTypes.Add (type);
         }
       }
       return bindableTypes;
-    }
-
-    public static bool IsBindableObjectImplementation(Type type)
-    {
-      return !MixinTypeUtility.IsGeneratedByMixinEngine (type) && (HasBindableObjectMixin(type) || IsDerivedFromBindableObjectBase(type));
-    }
-
-    private static bool IsDerivedFromBindableObjectBase(Type type)
-    {
-      return AttributeUtility.IsDefined (type, typeof (BindableObjectBaseClassAttribute), true);
-    }
-
-    private static bool HasBindableObjectMixin(Type type)
-    {
-      return MixinTypeUtility.HasAscribableMixin (type, typeof (BindableObjectMixinBase<>));
     }
 
     public MixinConfiguration GetMixinConfiguration (bool includeGac)

@@ -64,6 +64,29 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
+    public void UseBindableObjectProvider_WithBaseClass ()
+    {
+      IBusinessObjectReferenceProperty property = new ReferenceProperty (
+          new PropertyBase.Parameters (
+              _bindableObjectProvider,
+              GetPropertyInfo (typeof (ClassWithReferenceToClassDerivedFromBindableObjectBase), "ScalarReference"),
+              typeof (ClassDerivedFromBindableObjectBase),
+              null,
+              false,
+              false),
+          typeof (ClassDerivedFromBindableObjectBase));
+
+      Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProvider.GetBindableObjectClass (typeof (ClassDerivedFromBindableObjectBase))));
+      Assert.That (
+          property.BusinessObjectProvider,
+          Is.SameAs (BindableObjectProvider.GetProviderForBindableObjectType (typeof (ClassWithReferenceToClassDerivedFromBindableObjectBase))));
+      Assert.That (
+          property.ReferenceClass.BusinessObjectProvider,
+          Is.SameAs (BindableObjectProvider.GetProviderForBindableObjectType (typeof (ClassDerivedFromBindableObjectBase))));
+      Assert.That (property.ReferenceClass.BusinessObjectProvider, Is.SameAs (property.BusinessObjectProvider));
+    }
+
+    [Test]
     public void UseBusinessObjectClassService ()
     {
       IBusinessObjectClassService mockService = _mockRepository.StrictMock<IBusinessObjectClassService>();

@@ -11,6 +11,7 @@
 using System;
 using Remotion.Collections;
 using Remotion.Mixins;
+using Remotion.ObjectBinding.Design.BindableObject;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject.Properties
@@ -116,15 +117,10 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private IBusinessObjectClass GetReferenceClass ()
     {
-      if (IsBindableObjectImplementation())
+      if (BindableObjectProvider.IsBindableObjectImplementation (UnderlyingType))
         return BindableObjectProvider.GetBindableObjectClass (UnderlyingType);
 
       return GetReferenceClassFromService();
-    }
-
-    private bool IsBindableObjectImplementation ()
-    {
-      return MixinTypeUtility.HasAscribableMixin (UnderlyingType, typeof (BindableObjectMixinBase<>));
     }
 
     private IBusinessObjectClass GetReferenceClassFromService ()

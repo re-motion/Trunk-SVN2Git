@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.BindableObject
             if (attribute == null)
             {
               throw new ArgumentException (
-                  string.Format (
+                  String.Format (
                       "The type '{0}' does not have the '{1}' applied.", targetType.FullName, typeof (BusinessObjectProviderAttribute).FullName),
                   "type");
             }
@@ -67,7 +67,7 @@ namespace Remotion.ObjectBinding.BindableObject
             if (!ReflectionUtility.CanAscribe (attribute.BusinessObjectProviderType, typeof (BindableObjectProvider)))
             {
               throw new ArgumentException (
-                  string.Format (
+                  String.Format (
                       "The business object provider associated with the type '{0}' is not of type '{1}'.",
                       targetType.FullName,
                       typeof (BindableObjectProvider).FullName),
@@ -80,7 +80,6 @@ namespace Remotion.ObjectBinding.BindableObject
       return (BindableObjectProvider) GetProvider (providerAttributeType);
     }
 
-    //TODO FS: Add integration test for manual bindable object
     /// <summary>
     /// Use this method as a shortcut to retrieve the <see cref="BindableObjectClass"/> for a <see cref="Type"/> 
     /// that has the <see cref="BindableObjectMixinBase{T}"/> applied without first retrieving the matching provider.
@@ -145,6 +144,21 @@ namespace Remotion.ObjectBinding.BindableObject
       Assertion.IsNotNull (classReflector, "The IMetadataFactory.CreateClassReflector method evaluated and returned null.");
 
       return classReflector.GetMetadata();
+    }
+
+    public static bool IsBindableObjectImplementation(Type type)
+    {
+      return HasBindableObjectMixin(type) || IsDerivedFromBindableObjectBase(type);
+    }
+
+    private static bool IsDerivedFromBindableObjectBase(Type type)
+    {
+      return AttributeUtility.IsDefined (type, typeof (BindableObjectBaseClassAttribute), true);
+    }
+
+    private static bool HasBindableObjectMixin(Type type)
+    {
+      return MixinTypeUtility.HasAscribableMixin (type, typeof (BindableObjectMixinBase<>));
     }
   }
 }

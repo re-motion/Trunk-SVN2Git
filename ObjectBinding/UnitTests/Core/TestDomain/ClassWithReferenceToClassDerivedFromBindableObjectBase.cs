@@ -8,22 +8,10 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
-
 namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
-  [Serializable]
-  public class ClassDerivedFromBindableObjectBase : BindableObjectBase
+  public class ClassWithReferenceToClassDerivedFromBindableObjectBase : BindableObjectBase
   {
-    public ClassDerivedFromBindableObjectBase()
-    {
-    }
-
-    public ClassDerivedFromBindableObjectBase(IBusinessObject businessObjectImplementation) : base(businessObjectImplementation)
-    {
-    }
-
-    public string String { get; set; }
-    public ClassWithIdentity ScalarReference { get; set; }
+    public ClassDerivedFromBindableObjectBase ScalarReference { get; set; }
   }
 }

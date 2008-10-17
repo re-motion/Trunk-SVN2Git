@@ -100,6 +100,7 @@
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBaseOverridingDisplayName.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBase.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBaseOverridingDisplayName.cs" />
+    <Compile Include="Core\TestDomain\ClassWithReferenceToClassDerivedFromBindableObjectBase.cs" />
     <Compile Include="Core\TestDomain\MixinAddingResources2.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttributeFromMixin.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttribute.cs" />
