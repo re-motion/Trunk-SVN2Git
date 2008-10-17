@@ -44,9 +44,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void TypedMethodInvocationMethodProperty ()
     {
-      SuppressAssemblySave ();
-
-      CustomMethodEmitter method = GetMethodEmitter (false);
+      CustomMethodEmitter method = GetUnsavedMethodEmitter (false);
       method.SetReturnType (typeof (string));
       Expression newObject = new NewInstanceExpression (typeof (ReferenceType), Type.EmptyTypes);
       ExpressionReference newObjectReference = new ExpressionReference (typeof (ReferenceType), newObject, method);

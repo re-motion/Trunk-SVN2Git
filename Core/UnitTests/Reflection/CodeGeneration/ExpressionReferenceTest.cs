@@ -36,9 +36,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Expressions cannot be assigned to.")]
     public void ExpressionReferenceCannotBeStored ()
     {
-      SuppressAssemblySave ();
-
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false);
+      CustomMethodEmitter methodEmitter = GetUnsavedMethodEmitter (false);
       ExpressionReference expressionReference = new ExpressionReference (typeof (string), new ConstReference ("bla").ToExpression (), methodEmitter);
       expressionReference.StoreReference (null);
     }

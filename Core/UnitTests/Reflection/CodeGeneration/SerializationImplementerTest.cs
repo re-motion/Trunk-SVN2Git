@@ -26,7 +26,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementGetObjectDataByDelegationBaseNonSerializable ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "GetObjectDataByDelegation", typeof (object),
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationBaseNonSerializable", typeof (object),
           new Type[] {typeof (ISerializable)}, TypeAttributes.Public, false );
 
       FieldReference delegationTargetCalled = classEmitter.CreateField ("DelegationTargetCalled", typeof (bool));
@@ -60,7 +60,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementGetObjectDataByDelegationBaseSerializable ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "GetObjectDataByDelegation", typeof (SerializableClass));
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationBaseSerializable", typeof (SerializableClass));
       SerializationImplementer.ImplementGetObjectDataByDelegation (classEmitter,
           delegate (CustomMethodEmitter getObjectDataMethod, bool baseIsISerializeable)
           {
@@ -87,7 +87,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         + "Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes.SerializableClassWithoutCtor - serialization is not supported.")]
     public void ImplementGetObjectDataByDelegationThrowsIfBaseHasNoDeserializationCtor ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "GetObjectDataByDelegation", typeof (SerializableClassWithoutCtor),
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationThrowsIfBaseHasNoDeserializationCtor", typeof (SerializableClassWithoutCtor),
           new Type[] {typeof (ISerializable)}, TypeAttributes.Public | TypeAttributes.Serializable, false);
       SerializationImplementer.ImplementGetObjectDataByDelegation (classEmitter, delegate { return null; });
       SerializableClassWithoutCtor instance = (SerializableClassWithoutCtor) Activator.CreateInstance (classEmitter.BuildType ());
@@ -100,7 +100,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         + "Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes.SerializableClassWithPrivateGetObjectData - serialization is not supported.")]
     public void ImplementGetObjectDataByDelegationThrowsIfBaseHasPrivateGetObjectData ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "GetObjectDataByDelegation", typeof (SerializableClassWithPrivateGetObjectData),
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationThrowsIfBaseHasPrivateGetObjectData", typeof (SerializableClassWithPrivateGetObjectData),
           new Type[] { typeof (ISerializable) }, TypeAttributes.Public | TypeAttributes.Serializable, false);
 
       SerializationImplementer.ImplementGetObjectDataByDelegation (classEmitter, delegate { return null; });
@@ -115,7 +115,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         ExpectedMessage = "The deserialization constructor should never be called; generated types are deserialized via IObjectReference helpers.")]
     public void ImplementDeserializationConstructorByThrowingWhenBaseHasNoCtor ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowing", typeof (object));
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowingWhenBaseHasNoCtor", typeof (object));
       ConstructorEmitter emitter = SerializationImplementer.ImplementDeserializationConstructorByThrowing (classEmitter);
       Assert.IsNotNull (emitter);
 

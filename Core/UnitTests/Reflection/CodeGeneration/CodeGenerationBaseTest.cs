@@ -15,53 +15,89 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
+using System.Reflection;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
+//  public abstract class CodeGenerationBaseTest
+//  {
+//    private ModuleScope _scope;
+//    private bool _assemblySaveSuppressed;
+
+//    [SetUp]
+//    public virtual void SetUp ()
+//    {
+//      _scope = new ModuleScope (true);
+//      _assemblySaveSuppressed = false;
+//      DeleteIfExists (Path.Combine (_scope.StrongNamedModuleDirectory ?? Environment.CurrentDirectory, _scope.StrongNamedModuleName));
+//      DeleteIfExists (Path.Combine (_scope.WeakNamedModuleDirectory ?? Environment.CurrentDirectory, _scope.WeakNamedModuleName));
+//    }
+
+//    [TearDown]
+//    public virtual void TearDown ()
+//    {
+//      if (!_assemblySaveSuppressed)
+//      {
+//#if !NO_PEVERIFY
+//        string[] paths = AssemblySaver.SaveAssemblies (_scope);
+//        foreach (string path in paths)
+//        {
+//          PEVerifier.VerifyPEFile (path);
+//          FileUtility.DeleteAndWaitForCompletion (path);
+//        }
+//#endif
+//      }
+//    }
+
+//    private void DeleteIfExists (string path)
+//    {
+//      if (File.Exists (path))
+//        FileUtility.DeleteAndWaitForCompletion (path);
+//    }
+
+//    public ModuleScope Scope
+//    {
+//      get { return _scope; }
+//    }
+
+//    public void SuppressAssemblySave ()
+//    {
+//      _assemblySaveSuppressed = true;
+//    }
+//  }
+
   public abstract class CodeGenerationBaseTest
   {
-    private ModuleScope _scope;
-    private bool _assemblySaveSuppressed;
+    private static int s_counter;
 
     [SetUp]
     public virtual void SetUp ()
     {
-      _scope = new ModuleScope (true);
-      _assemblySaveSuppressed = false;
-      DeleteIfExists (Path.Combine (_scope.StrongNamedModuleDirectory ?? Environment.CurrentDirectory, _scope.StrongNamedModuleName));
-      DeleteIfExists (Path.Combine (_scope.WeakNamedModuleDirectory ?? Environment.CurrentDirectory, _scope.WeakNamedModuleName));
+      // nothing to do
     }
 
     [TearDown]
     public virtual void TearDown ()
     {
-      if (!_assemblySaveSuppressed)
-      {
-#if !NO_PEVERIFY
-        string[] paths = AssemblySaver.SaveAssemblies (_scope);
-        foreach (string path in paths)
-        {
-          PEVerifier.VerifyPEFile (path);
-          FileUtility.DeleteAndWaitForCompletion (path);
-        }
-#endif
-      }
-    }
-
-    private void DeleteIfExists (string path)
-    {
-      if (File.Exists (path))
-        FileUtility.DeleteAndWaitForCompletion (path);
+      // nothing to do
     }
 
     public ModuleScope Scope
     {
-      get { return _scope; }
+      get { return SetupFixture.Scope; }
     }
 
-    public void SuppressAssemblySave ()
+    public ModuleScope UnsavedScope
     {
-      _assemblySaveSuppressed = true;
+      get { return SetupFixture.UnsavedScope; }
+    }
+
+    public string UniqueName
+    {
+      get
+      {
+        return GetType ().Name + "." + s_counter++;
+      }
     }
   }
 }

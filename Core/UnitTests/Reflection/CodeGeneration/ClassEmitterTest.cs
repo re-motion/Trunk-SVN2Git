@@ -206,7 +206,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CreatePrivateMethodOverride ()
     {
-      var classEmitter = new CustomClassEmitter (Scope, "CreateMethodOverride", typeof (object), new[] { typeof (IMarkerInterface) },
+      var classEmitter = new CustomClassEmitter (Scope, "CreatePrivateMethodOverride", typeof (object), new[] { typeof (IMarkerInterface) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       CustomMethodEmitter toStringMethod = classEmitter.CreatePrivateMethodOverride (typeof (object).GetMethod ("ToString"));
@@ -763,8 +763,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ForceUnsignedTrue ()
     {
-      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper", typeof (object),
-          Type.EmptyTypes, TypeAttributes.Public, true);
+      var classEmitter = new CustomClassEmitter (Scope, "ForceUnsignedTrue", typeof (object), Type.EmptyTypes, TypeAttributes.Public, true);
       Type t = classEmitter.BuildType ();
       Assert.IsFalse (StrongNameUtil.IsAssemblySigned (t.Assembly));
     }
@@ -772,8 +771,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ForceUnsignedFalse()
     {
-      var classEmitter = new CustomClassEmitter (Scope, "GetPublicMethodWrapper", typeof (object),
-          Type.EmptyTypes, TypeAttributes.Public, false);
+      var classEmitter = new CustomClassEmitter (Scope, "ForceUnsignedFalse", typeof (object), Type.EmptyTypes, TypeAttributes.Public, false);
       Type t = classEmitter.BuildType ();
       Assert.IsTrue (StrongNameUtil.IsAssemblySigned (t.Assembly));
     }

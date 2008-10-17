@@ -27,7 +27,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public override void SetUp ()
     {
       base.SetUp ();
-      _classEmitter = new CustomClassEmitter (Scope, "PropertyTestClass", typeof (object));
+      _classEmitter = new CustomClassEmitter (Scope, UniqueName, typeof (object));
     }
 
     public override void TearDown ()

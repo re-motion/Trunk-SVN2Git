@@ -19,14 +19,14 @@ using Remotion.UnitTests.Mixins.SampleTypes;
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
   [TestFixture]
-  public class EventAmitterTest : CodeGenerationBaseTest
+  public class EventEmitterTest : CodeGenerationBaseTest
   {
     private CustomClassEmitter _classEmitter;
 
     public override void SetUp ()
     {
       base.SetUp ();
-      _classEmitter = new CustomClassEmitter (Scope, "EventTestClass", typeof (object));
+      _classEmitter = new CustomClassEmitter (Scope, UniqueName, typeof (object));
     }
 
     public override void TearDown ()
@@ -44,7 +44,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
     private void AddEventMethod (object instance, CustomEventEmitter eventEmitter, object method)
     {
-      GetEvent(instance, eventEmitter).GetAddMethod(true).Invoke (instance, new object[] {method});
+      GetEvent(instance, eventEmitter).GetAddMethod(true).Invoke (instance, new[] {method});
     }
 
     private void AddEventMethod (Type type, CustomEventEmitter eventEmitter, object method)

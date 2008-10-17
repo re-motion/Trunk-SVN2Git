@@ -25,7 +25,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void DeriveFromSimpleOpenGenericType ()
     {
       Type baseType = typeof (List<>);
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "Foo", baseType, Type.EmptyTypes,
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "DeriveFromSimpleOpenGenericType", baseType, Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
       Type builtType = classEmitter.BuildType ();
 
@@ -40,7 +40,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void DeriveFromClosedGenericTypeWithConstraints ()
     {
       Type baseType = typeof (GenericClassWithConstraints<ICloneable, List<string>, int, object, ICloneable, List<List<ICloneable[]>>>);
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "Foo", baseType, Type.EmptyTypes,
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "DeriveFromClosedGenericTypeWithConstraints", baseType, Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
       Type builtType = classEmitter.BuildType ();
       Assert.IsFalse (builtType.ContainsGenericParameters);
@@ -53,7 +53,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void DeriveFromOpenGenericTypeWithConstraints ()
     {
       Type baseType = typeof (GenericClassWithConstraints<,,,,,>);
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "Foo", baseType, Type.EmptyTypes,
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "DeriveFromOpenGenericTypeWithConstraints", baseType, Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
       Type builtType = classEmitter.BuildType ();
       Assert.IsTrue (builtType.ContainsGenericParameters);
@@ -66,7 +66,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void OverrideSimpleGenericMethod ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "Foo", typeof (ClassWithSimpleGenericMethod), Type.EmptyTypes,
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "OverrideSimpleGenericMethod", typeof (ClassWithSimpleGenericMethod), Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       MethodInfo baseMethod = typeof (ClassWithSimpleGenericMethod).GetMethod ("GenericMethod");
@@ -83,7 +83,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void OverrideConstrainedGenericMethod ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "Foo", typeof (ClassWithConstrainedGenericMethod), Type.EmptyTypes,
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "OverrideConstrainedGenericMethod", typeof (ClassWithConstrainedGenericMethod), Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       MethodInfo baseMethod = typeof (ClassWithConstrainedGenericMethod).GetMethod ("GenericMethod");
@@ -128,7 +128,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void OverridingSimpleMembersOfClosedGenericClass ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "Foo", typeof (GenericClassWithAllKindsOfMembers<int>), Type.EmptyTypes,
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "OverridingSimpleMembersOfClosedGenericClass", typeof (GenericClassWithAllKindsOfMembers<int>), Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       MethodInfo baseMethod = typeof (GenericClassWithAllKindsOfMembers<int>).GetMethod ("Method");
@@ -157,10 +157,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
-    [Ignore ("Due to a bug in the .NET framework, this seems not to work on all .NET 2.0 installations at the moment. Waiting for a service pack...")]
     public void OverridingSimpleMembersOfOpenGenericClass ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "Foo", typeof (GenericClassWithAllKindsOfMembers<>), Type.EmptyTypes,
+      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "OverridingSimpleMembersOfOpenGenericClass", typeof (GenericClassWithAllKindsOfMembers<>), Type.EmptyTypes,
           TypeAttributes.Public | TypeAttributes.Class, false);
 
       MethodInfo baseMethod = typeof (GenericClassWithAllKindsOfMembers<>).GetMethod ("Method");
@@ -195,7 +194,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       CustomClassEmitter classEmitter =
           new CustomClassEmitter (
               Scope,
-              "Foo",
+              "ImplementingSimpleMembersOfOpenGenericInterface",
               typeof (object),
               new Type[] {typeof (GenericInterfaceWithAllKindsOfMembers<int>)},
               TypeAttributes.Public | TypeAttributes.Class, false);
@@ -229,7 +228,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "This emitter does not support nested types of non-closed generic types.")]
     public void ClassEmitterThrowsOnNestedGenericBase ()
     {
-      new CustomClassEmitter (Scope, "Foo", typeof (GenericClassWithNested<>.Nested));
+      new CustomClassEmitter (Scope, "ClassEmitterThrowsOnNestedGenericBase", typeof (GenericClassWithNested<>.Nested));
     }
 
     [Test]
@@ -239,7 +238,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       Type genericParameter = typeof (ClassWithSimpleGenericMethod).GetMethod ("GenericMethod").GetGenericArguments()[0];
       Type openConstructedType = typeof (GenericClassWithNested<>).MakeGenericType (genericParameter);
-      new CustomClassEmitter (Scope, "Foo", openConstructedType);
+      new CustomClassEmitter (Scope, "ClassEmitterThrowsOnOpenConstructedBase", openConstructedType);
     }
   }
 }

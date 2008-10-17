@@ -52,7 +52,6 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         + "to type System.Reflection.ICustomAttributeProvider.\r\nParameter name: attributeOwner")]
     public void CustomAttributeExpressionThrowsOnWrongReferenceType ()
     {
-      SuppressAssemblySave ();
       new CustomAttributeExpression (new LocalReference (typeof (string)), typeof (SimpleAttribute), 0, true);
     }
   }

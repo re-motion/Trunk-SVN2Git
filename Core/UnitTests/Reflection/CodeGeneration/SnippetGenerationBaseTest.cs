@@ -19,23 +19,43 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
   [TestFixture]
   public class SnippetGenerationBaseTest : CodeGenerationBaseTest
   {
+    private static int s_typeCount;
+
     private CustomClassEmitter _classEmitter;
     private CustomMethodEmitter _methodEmitter;
     private Type _builtType;
     private object _builtInstance;
+    private Type _unsavedBuiltType;
+    private CustomClassEmitter _unsavedClassEmitter;
 
     public override void SetUp ()
     {
       base.SetUp ();
-      _classEmitter = new CustomClassEmitter (Scope, this.GetType ().Name, typeof (object), Type.EmptyTypes, TypeAttributes.Public, true);
+      _classEmitter = null;
+      _unsavedClassEmitter = null;
+
       _methodEmitter = null;
       _builtType = null;
-      _builtInstance  = null;
+      _builtInstance = null;
+      _unsavedBuiltType = null;
     }
 
     public CustomClassEmitter ClassEmitter
     {
-      get { return _classEmitter; }
+      get
+      {
+        if (_classEmitter == null)
+          _classEmitter = new CustomClassEmitter (Scope, this.GetType ().Name + s_typeCount++, typeof (object), Type.EmptyTypes, TypeAttributes.Public, true);
+        return _classEmitter;
+      }
+    }
+
+    public CustomClassEmitter UnsavedClassEmitter
+    {
+      get { 
+        if (_unsavedClassEmitter == null)
+          _unsavedClassEmitter = new CustomClassEmitter (UnsavedScope, GetType ().Name + "Unsaved" + s_typeCount++, typeof (object), Type.EmptyTypes, TypeAttributes.Public, true);
+        return _unsavedClassEmitter; }
     }
 
     public CustomMethodEmitter GetMethodEmitter (bool isStatic)
@@ -50,11 +70,27 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       return _methodEmitter;
     }
 
+    public CustomMethodEmitter GetUnsavedMethodEmitter (bool isStatic)
+    {
+      MethodAttributes flags = MethodAttributes.Public;
+      if (isStatic)
+        flags |= MethodAttributes.Static;
+      var methodEmitter = UnsavedClassEmitter.CreateMethod ("TestMethod", flags);
+      return methodEmitter;
+    }
+
     public Type GetBuiltType ()
     {
       if (_builtType == null)
         _builtType = ClassEmitter.BuildType ();
       return _builtType;
+    }
+
+    public Type GetUnsavedBuiltType ()
+    {
+      if (_unsavedBuiltType == null)
+        _unsavedBuiltType = UnsavedClassEmitter.BuildType ();
+      return _unsavedBuiltType;
     }
 
     public object GetBuiltInstance ()

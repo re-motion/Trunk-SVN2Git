@@ -71,13 +71,12 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "The property PropertyReferenceTest.Property cannot be loaded, it has no getter.")]
+        ExpectedMessage = "The property .*.Property cannot be loaded, it has no getter.", MatchType = MessageMatch.Regex)]
     public void LoadPropertyWithoutGetterThrows ()
     {
-      CustomPropertyEmitter propertyEmitter = ClassEmitter.CreateProperty ("Property", PropertyKind.Instance, typeof (string));
+      CustomPropertyEmitter propertyEmitter = UnsavedClassEmitter.CreateProperty ("Property", PropertyKind.Instance, typeof (string));
 
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false)
-          .SetReturnType (typeof (string));
+      CustomMethodEmitter methodEmitter = GetUnsavedMethodEmitter (false).SetReturnType (typeof (string));
 
       LocalReference oldValueLocal = methodEmitter.DeclareLocal (typeof (string));
       PropertyReference propertyWithSelfOwner = new PropertyReference (propertyEmitter.PropertyBuilder);
@@ -85,19 +84,17 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       methodEmitter.AddStatement (new AssignStatement (oldValueLocal, propertyWithSelfOwner.ToExpression ()));
       methodEmitter.AddStatement (new ReturnStatement (oldValueLocal));
 
-      SuppressAssemblySave ();
-
-      GetBuiltType ();
+      GetUnsavedBuiltType ();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "The property PropertyReferenceTest.Property cannot be stored, it has no setter.")]
+        ExpectedMessage = "The property .*.Property cannot be stored, it has no setter.", MatchType = MessageMatch.Regex)]
     public void SavePropertyWithoutSetterThrows ()
     {
-      CustomPropertyEmitter propertyEmitter = ClassEmitter.CreateProperty ("Property", PropertyKind.Instance, typeof (string));
+      CustomPropertyEmitter propertyEmitter = UnsavedClassEmitter.CreateProperty ("Property", PropertyKind.Instance, typeof (string));
 
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false)
+      CustomMethodEmitter methodEmitter = GetUnsavedMethodEmitter (false)
           .SetReturnType (typeof (string));
 
       PropertyReference propertyWithSelfOwner = new PropertyReference (propertyEmitter.PropertyBuilder);
@@ -105,18 +102,16 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       methodEmitter.AddStatement (new AssignStatement (propertyWithSelfOwner, NullExpression.Instance));
       methodEmitter.AddStatement (new ReturnStatement (NullExpression.Instance));
 
-      SuppressAssemblySave ();
-
-      GetBuiltType ();
+      GetUnsavedBuiltType ();
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "A property's address cannot be loaded.")]
     public void LoadPropertyAddressThrows ()
     {
-      CustomPropertyEmitter propertyEmitter = ClassEmitter.CreateProperty ("Property", PropertyKind.Instance, typeof (string));
+      CustomPropertyEmitter propertyEmitter = UnsavedClassEmitter.CreateProperty ("Property", PropertyKind.Instance, typeof (string));
 
-      CustomMethodEmitter methodEmitter = GetMethodEmitter (false)
+      CustomMethodEmitter methodEmitter = GetUnsavedMethodEmitter (false)
           .SetReturnType (typeof (string));
 
       LocalReference valueAddress = methodEmitter.DeclareLocal (typeof (string).MakeByRefType());
@@ -125,9 +120,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       methodEmitter.AddStatement (new AssignStatement (valueAddress, propertyWithSelfOwner.ToAddressOfExpression()));
       methodEmitter.AddStatement (new ReturnStatement (NullExpression.Instance));
 
-      SuppressAssemblySave ();
-
-      GetBuiltType ();
+      GetUnsavedBuiltType ();
     }
   }
 }
