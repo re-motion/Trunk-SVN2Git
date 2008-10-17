@@ -13,6 +13,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -27,7 +29,7 @@ namespace Remotion.Reflection
   {
     private readonly AssemblyFinder _assemblyFinder;
 
-    private Assembly[] _assemblyCache;
+    private _Assembly[] _assemblyCache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AssemblyFinderTypeDiscoveryService"/> class with a specific <see cref="AssemblyFinder"/>
@@ -60,17 +62,26 @@ namespace Remotion.Reflection
     /// </returns>
     public ICollection GetTypes (Type baseType, bool excludeGlobalTypes)
     {
-      List<Type> types = new List<Type>();
-      foreach (Assembly assembly in GetAssemblies (excludeGlobalTypes))
+      var types = new List<Type>();
+      foreach (_Assembly assembly in GetAssemblies (excludeGlobalTypes))
         types.AddRange (GetTypes (assembly, baseType));
 
       return types;
     }
 
-    private IEnumerable<Type> GetTypes (Assembly assembly, Type baseType)
+    private IEnumerable<Type> GetTypes (_Assembly assembly, Type baseType)
     {
-      // TODO: catch exceptions thrown here, especially LoaderExceptions
-      Type[] allTypesInAssembly = assembly.GetTypes ();
+      Type[] allTypesInAssembly;
+      try
+      {
+        allTypesInAssembly = assembly.GetTypes ();
+      }
+      catch (ReflectionTypeLoadException ex)
+      {
+        string message = string.Format ("The types from assembly '{0}' could not be loaded.{1}{2}", assembly.GetName (), Environment.NewLine, SeparatedStringBuilder.Build (Environment.NewLine, ex.LoaderExceptions, e => e.Message));
+        throw new TypeLoadException (message, ex);
+      }
+
       if (baseType == null)
         return allTypesInAssembly;
       else
@@ -86,12 +97,12 @@ namespace Remotion.Reflection
       }
     }
 
-    private IEnumerable<Assembly> GetAssemblies (bool excludeGlobalTypes)
+    private IEnumerable<_Assembly> GetAssemblies (bool excludeGlobalTypes)
     {
       if (_assemblyCache == null)
-        _assemblyCache = _assemblyFinder.FindAssemblies();
+        _assemblyCache = _assemblyFinder.FindMockableAssemblies();
 
-      foreach (Assembly assembly in _assemblyCache)
+      foreach (_Assembly assembly in _assemblyCache)
       {
         if (!excludeGlobalTypes || !assembly.GlobalAssemblyCache)
           yield return assembly;
