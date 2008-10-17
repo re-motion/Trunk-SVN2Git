@@ -10,6 +10,7 @@
 
 using System;
 using System.Text;
+using System.Web.UI;
 using Remotion.Collections;
 using Remotion.Web.ExecutionEngine;
 
@@ -32,6 +33,10 @@ namespace Remotion.Web.Test.ExecutionEngine
     protected override void OnLoad (EventArgs e)
     {
       base.OnLoad (e);
+
+      //var control = Page.LoadControl ("FirstControl.ascx");
+      //control.ID = "FirstControl";
+      //FirstControlPlaceHoder.Controls.Add (control);
 
       ViewStateValue++;
       ViewStateLabel.Text = ViewStateValue.ToString();

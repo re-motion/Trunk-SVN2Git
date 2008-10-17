@@ -48,31 +48,34 @@ namespace Remotion.Web.ExecutionEngine
 
         string uniqueID = UniqueID.Insert (UniqueID.Length - ID.Length, replacer.ID + IdSeparator);
 
-        IModificationStateSelectionStrategy selectionStrategy;
 
         if (CurrentPageStep.UserControlID == uniqueID && !CurrentPageStep.IsReturningInnerFunction)
         {
           var control = (WxeUserControl2) Page.LoadControl (CurrentUserControlStep.UserControl);
           control.ID = ID;
 
+          IModificationStateSelectionStrategy selectionStrategy;
           if (!CurrentUserControlStep.IsPostBack)
             selectionStrategy = new ClearingStateSelectionStrategy();
           else
             selectionStrategy = new LoadingStateSelectionStrategy();
+
+          replacer.ReplaceAndWrap (this, control, selectionStrategy);
         }
         else
         {
+          IModificationStateSelectionStrategy selectionStrategy;
           if (CurrentPageStep.IsReturningInnerFunction)
             selectionStrategy = new ReplacingStateSelectionStrategy (CurrentPageStep.UserControlState);
           else
             selectionStrategy = new LoadingStateSelectionStrategy();
-        }
 
-        replacer.ReplaceAndWrap (this, this, selectionStrategy);
+          replacer.ReplaceAndWrap (this, this, selectionStrategy);
+        }
       }
       else
       {
-        CompleteInitialization();
+        CompleteInitialization ();
       }
     }
 

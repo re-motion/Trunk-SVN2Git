@@ -41,6 +41,7 @@
       <asp:Label ID="ControlStateLabel" runat="server" />
     </p>
   </div>
+  <asp:PlaceHolder ID="FirstControlPlaceHoder" runat="server" />
   <webTest:FirstControl ID="FirstControl" runat="server" />
   <div>
     Stack:

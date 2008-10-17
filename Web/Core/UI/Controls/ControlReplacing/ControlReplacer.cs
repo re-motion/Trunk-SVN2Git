@@ -26,6 +26,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     private Control _controlToWrap;
     private IViewStateModificationState _viewStateModificationState = new ViewStateNullModificationState();
     private IControlStateModificationState _controlStateModificationState = new ControlStateNullModificationState();
+    private bool _hasLoaded;
 
     public ControlReplacer (IInternalControlMemberCaller memberCaller)
     {
@@ -83,47 +84,61 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
 
     public bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      Assertion.IsNotNull (_controlToWrap);
-      Control controlToWrap = _controlToWrap;
-      _controlToWrap = null;
-
-      if (ViewStateModificationState is ViewStateLoadingState)
-      {
-        //NOP
-      }
-      else if (ViewStateModificationState is ViewStateReplacingState)
-      {
-        _memberCaller.LoadViewStateRecursive (this, ((ViewStateReplacingState)ViewStateModificationState).ViewState);
-      }
-      else if (ViewStateModificationState is ViewStateClearingStateBase)
-      {
-        bool enableViewStateBackup = controlToWrap.EnableViewState;
-        controlToWrap.EnableViewState = false;
-        controlToWrap.Load += delegate { controlToWrap.EnableViewState = enableViewStateBackup; };
-      }
-
-      if (ControlStateModificationState is ControlStateLoadingState)
-      {
-        //NOP
-      }
-      else if (ControlStateModificationState is ControlStateReplacingState)
-      {
-        _memberCaller.SetChildControlState (this, ((ControlStateReplacingState)ControlStateModificationState).ControlState);
-      }
-      else if (ControlStateModificationState is ControlStateClearingStateBase)
-      {
-        _memberCaller.ClearChildControlState (this);
-      }
-
-      _memberCaller.SetControlState (controlToWrap, ControlState.Constructed);
-      Controls.Add (controlToWrap);
-
+      EnsureWrappedControl();
       return false;
     }
 
     public void RaisePostDataChangedEvent ()
     {
       throw new NotSupportedException ();
+    }
+
+    protected override void OnLoad (EventArgs e)
+    {
+      base.OnLoad (e);
+      EnsureWrappedControl ();
+    }
+
+    private void EnsureWrappedControl ()
+    {
+      if (!_hasLoaded)
+      {
+        _hasLoaded = true;
+        Assertion.IsNotNull (_controlToWrap);
+        Control controlToWrap = _controlToWrap;
+        _controlToWrap = null;
+
+        if (ViewStateModificationState is ViewStateLoadingState)
+        {
+          //NOP
+        }
+        else if (ViewStateModificationState is ViewStateReplacingState)
+        {
+          _memberCaller.LoadViewStateRecursive (this, ((ViewStateReplacingState) ViewStateModificationState).ViewState);
+        }
+        else if (ViewStateModificationState is ViewStateClearingStateBase)
+        {
+          bool enableViewStateBackup = controlToWrap.EnableViewState;
+          controlToWrap.EnableViewState = false;
+          controlToWrap.Load += delegate { controlToWrap.EnableViewState = enableViewStateBackup; };
+        }
+
+        if (ControlStateModificationState is ControlStateLoadingState)
+        {
+          //NOP
+        }
+        else if (ControlStateModificationState is ControlStateReplacingState)
+        {
+          _memberCaller.SetChildControlState (this, ((ControlStateReplacingState) ControlStateModificationState).ControlState);
+        }
+        else if (ControlStateModificationState is ControlStateClearingStateBase)
+        {
+          _memberCaller.ClearChildControlState (this);
+        }
+
+        _memberCaller.SetControlState (controlToWrap, ControlState.Constructed);
+        Controls.Add (controlToWrap);
+      }
     }
 
     //protected override void AddedControl (Control control, int index)
@@ -150,7 +165,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     }
 
     public void ReplaceAndWrap<T> (T controlToReplace, T controlToWrap, IModificationStateSelectionStrategy modificationStateSelectionStrategy)
-        where T: Control, IReplaceableControl
+        where T : Control, IReplaceableControl
     {
       ArgumentUtility.CheckNotNull ("controlToReplace", controlToReplace);
       ArgumentUtility.CheckNotNull ("controlToWrap", controlToWrap);
@@ -180,11 +195,16 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       _memberCaller.SetCollectionReadOnly (parent.Controls, errorMessage);
 
       _memberCaller.InitRecursive (this, parent);
-     
+
       if (!parent.Page.IsPostBack)
+      {
+        _hasLoaded = true;
         Controls.Add (controlToWrap);
+      }
       else
+      {
         _controlToWrap = controlToWrap;
+      }
     }
   }
 }
