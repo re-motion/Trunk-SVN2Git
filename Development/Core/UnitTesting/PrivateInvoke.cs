@@ -12,7 +12,6 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
-using System.Runtime.Serialization;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -21,7 +20,7 @@ namespace Remotion.Development.UnitTesting
   /// <summary>
   /// Provides utility functions for accessing non-public types and members.
   /// </summary>
-  public sealed class PrivateInvoke
+  public static class PrivateInvoke
   {
     // static members
 
@@ -153,7 +152,7 @@ namespace Remotion.Development.UnitTesting
       }
       catch (TargetInvocationException e)
       {
-        throw e.InnerException;
+        throw e.InnerException.PreserveStackTrace();
       }
     }
 
@@ -217,7 +216,7 @@ namespace Remotion.Development.UnitTesting
       }
       catch (TargetInvocationException e)
       {
-        throw e.InnerException;
+        throw e.InnerException.PreserveStackTrace ();
       }
     }
 
@@ -258,7 +257,7 @@ namespace Remotion.Development.UnitTesting
       }
       catch (TargetInvocationException e)
       {
-        throw e.InnerException;
+        throw e.InnerException.PreserveStackTrace ();
       }
     }
 
@@ -300,7 +299,7 @@ namespace Remotion.Development.UnitTesting
       }
       catch (TargetInvocationException e)
       {
-        throw e.InnerException;
+        throw e.InnerException.PreserveStackTrace ();
       }
     }
 
@@ -349,7 +348,7 @@ namespace Remotion.Development.UnitTesting
       }
       catch (TargetInvocationException e)
       {
-        throw e.InnerException;
+        throw e.InnerException.PreserveStackTrace ();
       }
     }
 
@@ -390,60 +389,10 @@ namespace Remotion.Development.UnitTesting
       }
       catch (TargetInvocationException e)
       {
-        throw e.InnerException;
+        throw e.InnerException.PreserveStackTrace ();
       }
     }
 
     #endregion
-
-    // construction and disposal
-
-    private PrivateInvoke()
-    {
-    }
-  }
-
-
-
-  [Serializable]
-  public class AmbiguousMethodNameException: Exception
-  {
-    private const string c_errorMessage = "Method name \"{0}\" is ambiguous in type {1}.";
-
-    public AmbiguousMethodNameException (string methodName, Type type)
-      : this (string.Format (c_errorMessage, methodName, type.FullName))
-    {
-    }
-
-    public AmbiguousMethodNameException (string message)
-      : base (message)
-    {
-    }
-
-    protected AmbiguousMethodNameException (SerializationInfo info, StreamingContext context)
-      : base (info, context)
-    {
-    }
-  }
-
-  [Serializable]
-  public class MethodNotFoundException: Exception
-  {
-    private const string c_errorMessage = "There is no method \"{0}\" in type {1} that accepts the specified argument types.";
-
-    public MethodNotFoundException (string methodName, Type type)
-      : this (string.Format (c_errorMessage, methodName, type.FullName))
-    {
-    }
-
-    public MethodNotFoundException (string message)
-      : base (message)
-    {
-    }
-
-    protected MethodNotFoundException (SerializationInfo info, StreamingContext context)
-      : base (info, context)
-    {
-    }
   }
 }

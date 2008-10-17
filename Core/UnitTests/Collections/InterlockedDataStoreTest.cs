@@ -15,6 +15,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Collections
 {
@@ -121,19 +122,10 @@ namespace Remotion.UnitTests.Collections
       }
       catch (TargetInvocationException ex)
       {
-        throw ConserveStackTrace (ex.InnerException);
+        throw ex.InnerException.PreserveStackTrace ();
       }
       Assert.That (_innerStoreInterceptor.Executed);
       Assert.That (actualResult, Is.EqualTo (result));
-    }
-
-    private Exception ConserveStackTrace (Exception exception)
-    {
-      // http://weblogs.asp.net/fmarguerie/archive/2008/01/02/rethrowing-exceptions-and-preserving-the-full-call-stack-trace.aspx
-      // http://www.dotnetjunkies.com/WebLog/chris.taylor/archive/2004/03/03/8353.aspx
-      // PrivateInvoke.SetNonPublicField (exception, "_remoteStackTraceString", exception.StackTrace + Environment.NewLine);
-      PrivateInvoke.InvokeNonPublicMethod (exception, "InternalPreserveStackTrace");
-      return exception;
     }
   }
 }

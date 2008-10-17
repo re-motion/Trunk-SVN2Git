@@ -233,7 +233,7 @@ namespace Remotion.Web.ExecutionEngine
         if (!_exceptionHandler.Catch (unwrappedException))
         {
           if (unwrappedException is WxeUnhandledException)
-            throw unwrappedException;
+            throw unwrappedException.PreserveStackTrace();
 
           throw new WxeUnhandledException (
               string.Format ("An unhandled exception ocured while executing WxeFunction '{0}':\r\n{1}", GetType().FullName, unwrappedException.Message),
