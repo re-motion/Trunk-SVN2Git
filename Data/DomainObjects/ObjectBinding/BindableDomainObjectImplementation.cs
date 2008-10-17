@@ -11,18 +11,19 @@
 using System;
 using System.Runtime.Serialization;
 using Remotion.Mixins;
+using Remotion.ObjectBinding;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
   [Serializable]
-  public class BindableDomainObjectImplementation: BindableDomainObjectMixin, IDeserializationCallback
+  public class BindableDomainObjectImplementation : BindableDomainObjectMixin, IDeserializationCallback, IBindableDomainObjectImplementation
   {
     public static BindableDomainObjectImplementation Create (BindableDomainObject wrapper)
     {
       ArgumentUtility.CheckNotNull ("wrapper", wrapper);
       Assertion.DebugAssert (!Utilities.ReflectionUtility.CanAscribe (typeof (BindableDomainObjectImplementation), typeof (Mixin<,>)),
-          "we assume the mixin does not have a base object");
+                             "we assume the mixin does not have a base object");
       return MixinTargetMockUtility.CreateMixinWithMockedTarget<BindableDomainObjectImplementation, IDomainObject> (wrapper, wrapper);
     }
 
@@ -37,8 +38,23 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     void IDeserializationCallback.OnDeserialization (object sender)
     {
       Assertion.DebugAssert (!Utilities.ReflectionUtility.CanAscribe (typeof (BindableDomainObjectImplementation), typeof (Mixin<,>)),
-          "we assume the mixin does not have a base object");
+                             "we assume the mixin does not have a base object");
       MixinTargetMockUtility.SignalOnDeserialization (this, _wrapper);
+    }
+
+    public string BaseDisplayName
+    {
+      get { return base.DisplayName; }
+    }
+
+    public string BaseUniqueIdentifier
+    {
+      get { return base.UniqueIdentifier; }
+    }
+
+    public override string DisplayName
+    {
+      get { return ((IBusinessObject) This).DisplayName; }
     }
   }
 }

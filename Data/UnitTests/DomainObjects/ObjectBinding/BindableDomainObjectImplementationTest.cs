@@ -15,6 +15,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
@@ -47,6 +48,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var instance = SampleBindableDomainObject.NewObject ();
       var mixin = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, typeof(BindableDomainObject), "_implementation");
       Assert.That (mixin.UniqueIdentifier, Is.EqualTo (instance.ID.ToString()));
+    }
+
+    [Test]
+    public void BaseUniqueIdentifier ()
+    {
+      var wrapper = SampleBindableDomainObject.NewObject ();
+      var implementation = BindableDomainObjectImplementation.Create (wrapper);
+      Assert.That (implementation.BaseUniqueIdentifier, Is.EqualTo (wrapper.ID.ToString()));
+    }
+
+    [Test]
+    public void UniqueIdentifier_ViaImplementation () // overriding UniqueIdentifier is not possbile in BindableDomainObjects
+    {
+      var wrapper = SampleBindableDomainObject.NewObject ();
+      var implementation = BindableDomainObjectImplementation.Create (wrapper);
+      Assert.That (implementation.UniqueIdentifier, Is.EqualTo (wrapper.ID.ToString ()));
+    }
+
+    [Test]
+    public void BaseDisplayName ()
+    {
+      var wrapper = SampleBindableDomainObject.NewObject ();
+      var implementation = BindableDomainObjectImplementation.Create (wrapper);
+      Assert.That (implementation.BaseDisplayName, Is.EqualTo (((IBusinessObject)wrapper).BusinessObjectClass.Identifier));
+    }
+
+    [Test]
+    public void DisplayName_ViaImplementation_Default ()
+    {
+      var wrapper = SampleBindableDomainObject.NewObject ();
+      var implementation = BindableDomainObjectImplementation.Create (wrapper);
+      Assert.That (implementation.DisplayName, Is.EqualTo (((IBusinessObject) wrapper).BusinessObjectClass.Identifier));
+    }
+
+    [Test]
+    public void DisplayName_ViaImplementation_Overridden ()
+    {
+      var wrapper = SampleBindableDomainObjectWithOverriddenDisplayName.NewObject ();
+      var implementation = BindableDomainObjectImplementation.Create (wrapper);
+      Assert.That (implementation.DisplayName, Is.EqualTo ("TheDisplayName"));
     }
   }
 }

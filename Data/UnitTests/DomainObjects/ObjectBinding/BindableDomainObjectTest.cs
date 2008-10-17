@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
   public class BindableDomainObjectTest : ClientTransactionBaseTest
   {
     private SampleBindableDomainObject _instance;
-    private IBusinessObjectWithIdentity _implementationMock;
+    private IBindableDomainObjectImplementation _implementationMock;
     private IBusinessObjectProperty _propertyFake;
     private IBusinessObjectClass _businessObjectClassFake;
 
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       base.SetUp ();
 
-      _implementationMock = MockRepository.GenerateMock<IBusinessObjectWithIdentity> ();
+      _implementationMock = MockRepository.GenerateMock<IBindableDomainObjectImplementation> ();
       _instance = SampleBindableDomainObject.NewObject (_implementationMock);
 
       _propertyFake = MockRepository.GenerateMock<IBusinessObjectProperty> ();
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void DisplayName()
     {
-      _implementationMock.Expect (mock => mock.DisplayName).Return ("Philips");
+      _implementationMock.Expect (mock => mock.BaseDisplayName).Return ("Philips");
       _implementationMock.Replay ();
 
       Assert.That (_instance.DisplayName, Is.EqualTo ("Philips"));
@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void UniqueIdentifier ()
     {
-      _implementationMock.Expect (mock => mock.UniqueIdentifier).Return ("123");
+      _implementationMock.Expect (mock => mock.BaseUniqueIdentifier).Return ("123");
       _implementationMock.Replay ();
 
       Assert.That (((IBusinessObjectWithIdentity) _instance).UniqueIdentifier, Is.EqualTo ("123"));

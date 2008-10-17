@@ -16,7 +16,7 @@ using Remotion.Utilities;
 namespace Remotion.ObjectBinding.BindableObject
 {
   [Serializable]
-  public class BindableObjectWithIdentityBaseImplementation : BindableObjectWithIdentityMixin, IDeserializationCallback
+  public class BindableObjectWithIdentityBaseImplementation : BindableObjectWithIdentityMixin, IDeserializationCallback, IBindableObjectBaseImplementation
   {
     public static BindableObjectWithIdentityBaseImplementation Create (BindableObjectWithIdentityBase wrapper)
     {
@@ -44,6 +44,16 @@ namespace Remotion.ObjectBinding.BindableObject
       Assertion.DebugAssert (!ReflectionUtility.CanAscribe (typeof (BindableObjectWithIdentityBaseImplementation), typeof (Mixin<,>)),
           "we assume the mixin does not have a base object");
       MixinTargetMockUtility.SignalOnDeserialization (this, _wrapper);
+    }
+
+    public string BaseDisplayName
+    {
+      get { return base.DisplayName; }
+    }
+
+    public override string DisplayName
+    {
+      get { return ((IBusinessObject) This).DisplayName; }
     }
   }
 }

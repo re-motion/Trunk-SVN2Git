@@ -48,5 +48,29 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var mixin = (BindableObjectWithIdentityMixin) PrivateInvoke.GetNonPublicField (instance, "_implementation");
       Assert.That (mixin.UniqueIdentifier, Is.EqualTo ("uniqueID"));
     }
+
+    [Test]
+    public void BaseDisplayName ()
+    {
+      var wrapper = new ClassDerivedFromBindableObjectWithIdentityBase ();
+      var implementation = BindableObjectWithIdentityBaseImplementation.Create (wrapper);
+      Assert.That (implementation.BaseDisplayName, Is.EqualTo (wrapper.BusinessObjectClass.Identifier));
+    }
+
+    [Test]
+    public void DisplayName_ViaImplementation_Default ()
+    {
+      var wrapper = new ClassDerivedFromBindableObjectWithIdentityBase ();
+      var implementation = BindableObjectWithIdentityBaseImplementation.Create (wrapper);
+      Assert.That (implementation.DisplayName, Is.EqualTo (wrapper.BusinessObjectClass.Identifier));
+    }
+
+    [Test]
+    public void DisplayName_ViaImplementation_Overridden ()
+    {
+      var wrapper = new ClassDerivedFromBindableObjectWithIdentityBaseOverridingDisplayName ();
+      var implementation = BindableObjectWithIdentityBaseImplementation.Create (wrapper);
+      Assert.That (implementation.DisplayName, Is.EqualTo ("Overrotten!"));
+    }
   }
 }

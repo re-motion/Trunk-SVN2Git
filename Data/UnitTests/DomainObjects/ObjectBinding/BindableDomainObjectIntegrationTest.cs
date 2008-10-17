@@ -17,16 +17,26 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 {
   [TestFixture]
   public class BindableDomainObjectIntegrationTest : ObjectBindingBaseTest
   {
+    private IBusinessObjectWithIdentity _instance;
+    private IBusinessObjectWithIdentity _instanceOverridingDisplayName;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+      _instance = SampleBindableDomainObject.NewObject ();
+      _instanceOverridingDisplayName = SampleBindableDomainObjectWithOverriddenDisplayName.NewObject ();
+    }
+
     [Test]
     public void BindableDomainObjectIsDomainObject ()
     {
@@ -34,20 +44,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     }
 
     [Test]
-    public void DefaultDisplayName ()
+    public void DisplayName_Default ()
     {
-      IBusinessObject businessObject = (IBusinessObject) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObject)).With();
-      Assert.That (businessObject.DisplayName, Is.EqualTo (Utilities.TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObject))));
+      Assert.That (_instance.DisplayName, Is.EqualTo (TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObject))));
     }
 
     [Test]
-    public void OverriddenDisplayName ()
+    public void DisplayName_Overridden ()
     {
-      IBusinessObject businessObject = (IBusinessObject) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)).With();
-      Assert.AreNotEqual (
-          Utilities.TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)),
-          businessObject.DisplayName);
-      Assert.That (businessObject.DisplayName, Is.EqualTo ("TheDisplayName"));
+      Assert.That (_instanceOverridingDisplayName.DisplayName, Is.EqualTo ("TheDisplayName"));
+    }
+
+    [Test]
+    public void DisplayNameSafe_Default ()
+    {
+      Assert.That (_instance.DisplayNameSafe, Is.EqualTo (TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObject))));
+    }
+
+    [Test]
+    public void DisplayNameSafe_Overridden ()
+    {
+      Assert.That (_instanceOverridingDisplayName.DisplayNameSafe, Is.EqualTo ("TheDisplayName"));
+    }
+
+    [Test]
+    public void UniqueIdentifier ()
+    { 
+      Assert.That (_instance.UniqueIdentifier, Is.EqualTo (((SampleBindableDomainObject) _instance).ID.ToString()));
     }
 
     /// <summary>
@@ -61,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (businessObject, typeof (BindableDomainObject), "_implementation");
 
       Assert.That (businessObject.BusinessObjectClass, Is.SameAs (implementation.BusinessObjectClass));
-      Assert.That (businessObject.DisplayName, Is.Not.EqualTo (implementation.DisplayName));
+      Assert.That (businessObject.DisplayName, Is.EqualTo (implementation.DisplayName));
       Assert.That (businessObject.DisplayName, Is.EqualTo ("TheDisplayName"));
       Assert.That (businessObject.DisplayNameSafe, Is.EqualTo (implementation.DisplayNameSafe));
       businessObject.SetProperty ("Int32", 1);
@@ -77,10 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void SerializeAndDeserialize ()
     {
-      SampleBindableDomainObjectWithOverriddenDisplayName domainObject =
-          (SampleBindableDomainObjectWithOverriddenDisplayName) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)).With();
-
-      Serializer.SerializeAndDeserialize (domainObject);
+      Serializer.SerializeAndDeserialize (_instanceOverridingDisplayName);
     }
 
     [Test]
@@ -127,8 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void NoPropertyFromDomainObject ()
     {
-      var instance = SampleBindableDomainObject.NewObject();
-      PropertyBase[] properties = (PropertyBase[]) ((IBusinessObject)instance).BusinessObjectClass.GetPropertyDefinitions ();
+      var properties = (PropertyBase[]) _instance.BusinessObjectClass.GetPropertyDefinitions ();
 
       foreach (PropertyBase property in properties)
         Assert.That (property.PropertyInfo.DeclaringType, Is.Not.EqualTo (typeof (DomainObject)));
@@ -137,8 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void NoPropertyFromBindableDomainObject ()
     {
-      var instance = SampleBindableDomainObject.NewObject ();
-      PropertyBase[] properties = (PropertyBase[]) ((IBusinessObject) instance).BusinessObjectClass.GetPropertyDefinitions ();
+      var properties = (PropertyBase[]) (_instance).BusinessObjectClass.GetPropertyDefinitions ();
 
       foreach (PropertyBase property in properties)
         Assert.That (property.PropertyInfo.DeclaringType, Is.Not.EqualTo (typeof (BindableDomainObject)));

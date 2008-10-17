@@ -22,14 +22,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
   public class BindableObjectBaseTest
   {
     private BindableObjectBase _instance;
-    private IBusinessObject _implementationMock;
+    private IBindableObjectBaseImplementation _implementationMock;
     private IBusinessObjectProperty _propertyFake;
     private IBusinessObjectClass _businessObjectClassFake;
 
     [SetUp]
     public void SetUp()
     {
-      _implementationMock = MockRepository.GenerateMock<IBusinessObject> ();
+      _implementationMock = MockRepository.GenerateMock<IBindableObjectBaseImplementation> ();
       _instance = new ClassDerivedFromBindableObjectBase (_implementationMock);
 
       _propertyFake = MockRepository.GenerateMock<IBusinessObjectProperty> ();
@@ -105,7 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void DisplayName()
     {
-      _implementationMock.Expect (mock => mock.DisplayName).Return ("Philips");
+      _implementationMock.Expect (mock => mock.BaseDisplayName).Return ("Philips");
       _implementationMock.Replay ();
 
       Assert.That (_instance.DisplayName, Is.EqualTo ("Philips"));

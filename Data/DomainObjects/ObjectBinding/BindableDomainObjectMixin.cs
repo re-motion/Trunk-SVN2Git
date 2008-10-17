@@ -50,11 +50,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       get { return This.ID.ToString(); }
     }
 
-    public string BaseDisplayName
-    {
-      get { return base.DisplayName; }
-    }
-
     protected override bool IsDefaultValue (PropertyBase property, object nativeValue)
     {
       ArgumentUtility.CheckNotNull ("property", property);

@@ -25,19 +25,43 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void Create ()
     {
       var wrapper = new ClassDerivedFromBindableObjectBase ();
-      var mixin = BindableObjectBaseImplementation.Create (wrapper);
-      Assert.That (mixin.BusinessObjectClass, Is.Not.Null);
-      Assert.That (PrivateInvoke.GetNonPublicProperty (mixin, "This"), Is.SameAs (wrapper));
+      var implementation = BindableObjectBaseImplementation.Create (wrapper);
+      Assert.That (implementation.BusinessObjectClass, Is.Not.Null);
+      Assert.That (PrivateInvoke.GetNonPublicProperty (implementation, "This"), Is.SameAs (wrapper));
     }
 
     [Test]
     public void Deserialization ()
     {
       var wrapper = new ClassDerivedFromBindableObjectBase ();
-      var mixin = BindableObjectBaseImplementation.Create (wrapper);
-      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.NewTuple (mixin, wrapper));
+      var implementation = BindableObjectBaseImplementation.Create (wrapper);
+      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.NewTuple (implementation, wrapper));
       Assert.That (deserializedData.A.BusinessObjectClass, Is.Not.Null);
       Assert.That (PrivateInvoke.GetNonPublicProperty (deserializedData.A, "This"), Is.SameAs (deserializedData.B));
+    }
+
+    [Test]
+    public void BaseDisplayName()
+    {
+      var wrapper = new ClassDerivedFromBindableObjectBase ();
+      var implementation = BindableObjectBaseImplementation.Create (wrapper);
+      Assert.That (implementation.BaseDisplayName, Is.EqualTo (wrapper.BusinessObjectClass.Identifier));
+    }
+
+    [Test]
+    public void DisplayName_ViaImplementation_Default()
+    {
+      var wrapper = new ClassDerivedFromBindableObjectBase ();
+      var implementation = BindableObjectBaseImplementation.Create (wrapper);
+      Assert.That (implementation.DisplayName, Is.EqualTo (wrapper.BusinessObjectClass.Identifier));
+    }
+
+    [Test]
+    public void DisplayName_ViaImplementation_Overridden ()
+    {
+      var wrapper = new ClassDerivedFromBindableObjectBaseOverridingDisplayName();
+      var implementation = BindableObjectBaseImplementation.Create (wrapper);
+      Assert.That (implementation.DisplayName, Is.EqualTo ("Overrotten!"));
     }
   }
 }

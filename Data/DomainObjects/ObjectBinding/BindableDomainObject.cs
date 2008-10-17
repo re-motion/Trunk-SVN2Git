@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   [Serializable]
   public abstract class BindableDomainObject : DomainObject, IBusinessObjectWithIdentity, BindableDomainObjectMixin.IDomainObject
   {
-    private IBusinessObjectWithIdentity _implementation;
+    private IBindableDomainObjectImplementation _implementation;
 
     protected BindableDomainObject ()
     {
@@ -39,10 +39,10 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    protected BindableDomainObject (IBusinessObjectWithIdentity businessObjectImplementation)
+    protected BindableDomainObject (IBindableDomainObjectImplementation implementation)
     {
-      ArgumentUtility.CheckNotNull ("businessObjectImplementation", businessObjectImplementation);
-      _implementation = businessObjectImplementation;
+      ArgumentUtility.CheckNotNull ("implementation", implementation);
+      _implementation = implementation;
     }
 
     /// <summary>
@@ -78,12 +78,12 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     [StorageClassNone]
     public virtual string DisplayName
     {
-      get { return _implementation.DisplayName; }
+      get { return _implementation.BaseDisplayName; }
     }
 
     string IBusinessObjectWithIdentity.UniqueIdentifier
     {
-      get { return _implementation.UniqueIdentifier; }
+      get { return _implementation.BaseUniqueIdentifier; }
     }
 
     object IBusinessObject.GetProperty (IBusinessObjectProperty property)

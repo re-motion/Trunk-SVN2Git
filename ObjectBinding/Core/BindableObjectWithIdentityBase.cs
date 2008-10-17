@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding
   [Serializable]
   public abstract class BindableObjectWithIdentityBase : IBusinessObjectWithIdentity
   {
-    private readonly IBusinessObjectWithIdentity _implementation;
+    private readonly IBindableObjectBaseImplementation _implementation;
 
     protected BindableObjectWithIdentityBase()
     {
@@ -36,10 +36,10 @@ namespace Remotion.ObjectBinding
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    protected BindableObjectWithIdentityBase (IBusinessObjectWithIdentity businessObjectImplementation)
+    protected BindableObjectWithIdentityBase (IBindableObjectBaseImplementation implementation)
     {
-      ArgumentUtility.CheckNotNull ("businessObjectImplementation", businessObjectImplementation);
-      _implementation = businessObjectImplementation;
+      ArgumentUtility.CheckNotNull ("implementation", implementation);
+      _implementation = implementation;
     }
 
     public object GetProperty(IBusinessObjectProperty property)
@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding
 
     public virtual string DisplayName
     {
-      get { return _implementation.DisplayName; }
+      get { return _implementation.BaseDisplayName; }
     }
 
     public string DisplayNameSafe

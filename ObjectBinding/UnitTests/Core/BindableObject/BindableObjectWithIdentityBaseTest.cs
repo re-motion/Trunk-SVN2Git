@@ -22,14 +22,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
   public class BindableObjectWithIdentityBaseTest
   {
     private ClassDerivedFromBindableObjectWithIdentityBase _instance;
-    private IBusinessObjectWithIdentity _implementationMock;
+    private IBindableObjectBaseImplementation _implementationMock;
     private IBusinessObjectProperty _propertyFake;
     private IBusinessObjectClass _businessObjectClassFake;
 
     [SetUp]
     public void SetUp()
     {
-      _implementationMock = MockRepository.GenerateMock<IBusinessObjectWithIdentity> ();
+      _implementationMock = MockRepository.GenerateMock<IBindableObjectBaseImplementation> ();
       _instance = new ClassDerivedFromBindableObjectWithIdentityBase (_implementationMock);
 
       _propertyFake = MockRepository.GenerateMock<IBusinessObjectProperty> ();
@@ -105,7 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void DisplayName()
     {
-      _implementationMock.Expect (mock => mock.DisplayName).Return ("Philips");
+      _implementationMock.Expect (mock => mock.BaseDisplayName).Return ("Philips");
       _implementationMock.Replay ();
 
       Assert.That (_instance.DisplayName, Is.EqualTo ("Philips"));
@@ -137,8 +137,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       _instance.SetUniqueIdentifier("uniqueID");
       Assert.That (_instance.UniqueIdentifier, Is.EqualTo ("uniqueID"));
-      
-      _implementationMock.AssertWasNotCalled(mock => Dev.Null = mock.UniqueIdentifier);
     }
   }
 }

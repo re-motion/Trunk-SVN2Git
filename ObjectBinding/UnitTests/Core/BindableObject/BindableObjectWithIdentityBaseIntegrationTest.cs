@@ -54,6 +54,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    public void DisplayNameSafe_Default ()
+    {
+      Assert.That (_instance.DisplayNameSafe, Is.EqualTo (TypeUtility.GetPartialAssemblyQualifiedName (typeof (ClassDerivedFromBindableObjectWithIdentityBase))));
+    }
+
+    [Test]
+    public void DisplayNameSafe_Overridden ()
+    {
+      Assert.That (_instanceOverridingDisplayName.DisplayNameSafe, Is.EqualTo ("Overrotten!"));
+    }
+
+    [Test]
     public void GetProperty()
     {
       _instance.String = "hoo";

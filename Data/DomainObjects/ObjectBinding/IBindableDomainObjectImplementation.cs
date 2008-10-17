@@ -8,23 +8,12 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using Remotion.ObjectBinding.BindableObject;
 
-namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding
 {
-  [Serializable]
-  public class ClassDerivedFromBindableObjectBase : BindableObjectBase
+  public interface IBindableDomainObjectImplementation : IBindableObjectBaseImplementation
   {
-    public ClassDerivedFromBindableObjectBase()
-    {
-    }
-
-    public ClassDerivedFromBindableObjectBase (IBindableObjectBaseImplementation implementation) : base (implementation)
-    {
-    }
-
-    public string String { get; set; }
-    public ClassWithIdentity ScalarReference { get; set; }
+    string BaseUniqueIdentifier { get; }
   }
 }
