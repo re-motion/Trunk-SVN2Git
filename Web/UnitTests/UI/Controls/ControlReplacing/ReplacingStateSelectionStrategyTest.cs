@@ -14,11 +14,7 @@ using System.IO;
 using System.Web.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.Web.UnitTesting.AspNetFramework;
-using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
-using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
-using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
@@ -49,28 +45,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     {
       Assert.That (((ReplacingStateSelectionStrategy)_stateModificationStrategy).ViewState, Is.Not.Null);
       Assert.That (((ReplacingStateSelectionStrategy) _stateModificationStrategy).ControlState, Is.Not.Null);
-    }
-
-    [Test]
-    public void CreateViewStateModificationState ()
-    {
-      IViewStateModificationState viewState = _stateModificationStrategy.CreateViewStateModificationState (_replacer, MemberCallerMock);
-
-      Assert.That (viewState, Is.InstanceOfType (typeof (ViewStateReplacingState)));
-      Assert.That (((ViewStateReplacingState) viewState).Replacer, Is.SameAs (_replacer));
-      Assert.That (((ViewStateReplacingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
-      Assert.That (((ViewStateReplacingState) viewState).ViewState, Is.SameAs (((ReplacingStateSelectionStrategy) _stateModificationStrategy).ViewState));
-    }
-
-    [Test]
-    public void CreateControlStateModificationState ()
-    {
-      IControlStateModificationState viewState = _stateModificationStrategy.CreateControlStateModificationState (_replacer, MemberCallerMock);
-
-      Assert.That (viewState, Is.InstanceOfType (typeof (ControlStateReplacingState)));
-      Assert.That (((ControlStateReplacingState) viewState).Replacer, Is.SameAs (_replacer));
-      Assert.That (((ControlStateReplacingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
-      Assert.That (((ControlStateReplacingState) viewState).ControlState, Is.SameAs (((ReplacingStateSelectionStrategy) _stateModificationStrategy).ControlState));
     }
 
     [Test]

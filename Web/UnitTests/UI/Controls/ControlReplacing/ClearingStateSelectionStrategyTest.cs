@@ -15,8 +15,6 @@ using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
-using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
-using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
@@ -24,32 +22,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
   [TestFixture]
   public class ClearingStateSelectionStrategyTest : TestBase
   {
-    [Test]
-    public void CreateViewStateModificationState ()
-    {
-      ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-      IStateModificationStrategy state = new ClearingStateSelectionStrategy();
-
-      IViewStateModificationState viewState = state.CreateViewStateModificationState (replacer, MemberCallerMock);
-
-      Assert.That (viewState, Is.InstanceOfType (typeof (ViewStateClearingState)));
-      Assert.That (((ViewStateClearingState) viewState).Replacer, Is.SameAs (replacer));
-      Assert.That (((ViewStateClearingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
-    }
-
-    [Test]
-    public void CreateControlStateModificationState ()
-    {
-      ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-      IStateModificationStrategy state = new ClearingStateSelectionStrategy();
-
-      IControlStateModificationState viewState = state.CreateControlStateModificationState (replacer, MemberCallerMock);
-
-      Assert.That (viewState, Is.InstanceOfType (typeof (ControlStateClearingState)));
-      Assert.That (((ControlStateClearingState) viewState).Replacer, Is.SameAs (replacer));
-      Assert.That (((ControlStateClearingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
-    }
-
     [Test]
     public void LoadControlState ()
     {

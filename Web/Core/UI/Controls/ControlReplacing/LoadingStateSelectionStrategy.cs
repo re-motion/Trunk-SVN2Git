@@ -9,8 +9,6 @@
  */
 
 using Remotion.Utilities;
-using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
-using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing
@@ -21,16 +19,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
   /// </summary>
   public class LoadingStateSelectionStrategy : IStateModificationStrategy
   {
-    public IViewStateModificationState CreateViewStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
-    {
-      return new ViewStateLoadingState (replacer, memberCaller);
-    }
-
-    public IControlStateModificationState CreateControlStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
-    {
-      return new ControlStateLoadingState (replacer, memberCaller);
-    }
-
     public void LoadControlState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
     {
       ArgumentUtility.CheckNotNull ("replacer", replacer);

@@ -16,8 +16,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
-using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
-using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
@@ -215,17 +213,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
       Assert.That (testPageHolderWithoutState.OtherControl.ValueInViewState, Is.EqualTo ("OtherValue"));
       Assert.That (testPageHolderWithoutState.NamingContainer.ValueInViewState, Is.Null);
       Assert.That (testPageHolderWithoutState.Parent.ValueInViewState, Is.Null);
-    }
-
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only load state after OnInit phase.")]
-    public void LoadViewStateRecursive_ThrowsIfNotAfterOnInit ()
-    {
-      var testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
-      var replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new LoadingStateSelectionStrategy ());
-      var controlInvoker = new ControlInvoker (replacer);
-      controlInvoker.LoadViewState (null);
     }
 
 
@@ -545,8 +532,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     public void GetWrappedControl ()
     {
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" };
-      replacer.ViewStateModificationState = new ViewStateLoadingState (replacer, MemberCallerMock);
-      replacer.ControlStateModificationState = new ControlStateLoadingState (replacer, MemberCallerMock);
       Control control = new Control ();
 
       Assert.That (replacer.WrappedControl, Is.Null);

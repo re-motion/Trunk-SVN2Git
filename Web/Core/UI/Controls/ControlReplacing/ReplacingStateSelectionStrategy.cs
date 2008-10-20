@@ -12,8 +12,6 @@ using System;
 using System.Collections;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
-using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing
@@ -36,16 +34,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
 
       _controlState = (IDictionary) state.First;
       _viewState = state.Second;
-    }
-
-    public IViewStateModificationState CreateViewStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
-    {
-      return new ViewStateReplacingState (replacer, memberCaller, _viewState);
-    }
-
-    public IControlStateModificationState CreateControlStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
-    {
-      return new ControlStateReplacingState (replacer, memberCaller, _controlState);
     }
 
     public IDictionary ControlState

@@ -13,8 +13,6 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Web.UI;
 using Remotion.Utilities;
-using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
-using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing
@@ -24,8 +22,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
   {
     private readonly IInternalControlMemberCaller _memberCaller;
     private Control _controlToWrap;
-    private IViewStateModificationState _viewStateModificationState = new ViewStateNullModificationState();
-    private IControlStateModificationState _controlStateModificationState = new ControlStateNullModificationState();
     private bool _hasLoaded;
     private IStateModificationStrategy _stateModificationStrategy;
 
@@ -40,18 +36,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     {
       get { return _stateModificationStrategy; }
       set { _stateModificationStrategy = ArgumentUtility.CheckNotNull ("value", value); }
-    }
-
-    public IViewStateModificationState ViewStateModificationState
-    {
-      get { return _viewStateModificationState; }
-      set { _viewStateModificationState = ArgumentUtility.CheckNotNull ("value", value); }
-    }
-
-    public IControlStateModificationState ControlStateModificationState
-    {
-      get { return _controlStateModificationState; }
-      set { _controlStateModificationState = ArgumentUtility.CheckNotNull ("value", value); }
     }
 
     public Control WrappedControl
@@ -73,7 +57,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
 
     protected override void LoadControlState (object savedState)
     {
-      //ControlStateModificationState.LoadControlState (savedState);
     }
 
     protected override object SaveControlState ()
@@ -83,10 +66,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
 
     protected override void LoadViewState (object savedState)
     {
-      if (_memberCaller.GetControlState (this) < ControlState.Initialized)
-        throw new InvalidOperationException ("Controls can only load state after OnInit phase.");
-
-      //ViewStateModificationState.LoadViewState (savedState);
     }
 
     protected override object SaveViewState ()
@@ -128,20 +107,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       }
     }
 
-    //protected override void AddedControl (Control control, int index)
-    //{
-    //  Assertion.IsTrue (object.ReferenceEquals (WrappedControl, control), "The added control is not the same as the wrapped control.");
-
-    //  Action<Control, int> baseCallControl = (controlArg, indexArg) => BaseAddedControl (controlArg, indexArg);
-    //  Action<Control, int> baseCallControlState = (controlArg, indexArg) => ControlStateModificationState.AddedControl (controlArg, indexArg, baseCallControl);
-    //  ViewStateModificationState.AddedControl (control, index, baseCallControlState);
-    //}
-
-    //private void BaseAddedControl (Control control, int index)
-    //{
-    //  base.AddedControl (control, index);
-    //}
-
     public string SaveAllState ()
     {
       Pair state = new Pair (_memberCaller.SaveChildControlState (this), _memberCaller.SaveViewStateRecursive (this));
@@ -167,8 +132,6 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       controlToWrap.Replacer = this;
 
       _stateModificationStrategy = stateModificationStrategy;
-      ViewStateModificationState = stateModificationStrategy.CreateViewStateModificationState (this, _memberCaller);
-      ControlStateModificationState = stateModificationStrategy.CreateControlStateModificationState (this, _memberCaller);
 
       Control parent = controlToReplace.Parent;
       int index = parent.Controls.IndexOf (controlToReplace);

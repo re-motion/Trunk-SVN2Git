@@ -12,8 +12,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
-using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
-using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
@@ -21,32 +19,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
   [TestFixture]
   public class LoadingStateSelectionStrategyTest : TestBase
   {
-    [Test]
-    public void CreateViewStateModificationState ()
-    {
-      ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-      IStateModificationStrategy stateModificationStrategy = new LoadingStateSelectionStrategy ();
-
-      IViewStateModificationState viewState = stateModificationStrategy.CreateViewStateModificationState (replacer, MemberCallerMock);
-
-      Assert.That (viewState, Is.InstanceOfType (typeof (ViewStateLoadingState)));
-      Assert.That (((ViewStateLoadingState) viewState).Replacer, Is.SameAs (replacer));
-      Assert.That (((ViewStateLoadingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
-    }
-
-    [Test]
-    public void CreateControlStateModificationState ()
-    {
-      ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-      IStateModificationStrategy stateModificationStrategy = new LoadingStateSelectionStrategy ();
-
-      IControlStateModificationState viewState = stateModificationStrategy.CreateControlStateModificationState (replacer, MemberCallerMock);
-
-      Assert.That (viewState, Is.InstanceOfType (typeof (ControlStateLoadingState)));
-      Assert.That (((ControlStateLoadingState) viewState).Replacer, Is.SameAs (replacer));
-      Assert.That (((ControlStateLoadingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
-    }
-
     [Test]
     public void LoadControlState ()
     {
