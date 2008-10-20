@@ -49,16 +49,16 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     }
 
     protected ControlReplacer SetupControlReplacerForIntegrationTest (
-        ReplaceableControlMock wrappedControl, IModificationStateSelectionStrategy stateSelectionStrategy)
+        ReplaceableControlMock wrappedControl, IStateModificationStrategy stateModificationStrategy)
     {
-      return SetupControlReplacer (new InternalControlMemberCaller(), wrappedControl, stateSelectionStrategy);
+      return SetupControlReplacer (new InternalControlMemberCaller(), wrappedControl, stateModificationStrategy);
     }
 
     protected ControlReplacer SetupControlReplacer (
-        IInternalControlMemberCaller memberCaller, ReplaceableControlMock wrappedControl, IModificationStateSelectionStrategy stateSelectionStrategy)
+        IInternalControlMemberCaller memberCaller, ReplaceableControlMock wrappedControl, IStateModificationStrategy stateModificationStrategy)
     {
       ControlReplacer replacer = new ControlReplacer (memberCaller) { ID = "TheReplacer" };
-      wrappedControl.OnInitParameters = new Tuple<ControlReplacer, IModificationStateSelectionStrategy>  (replacer, stateSelectionStrategy);
+      wrappedControl.OnInitParameters = new Tuple<ControlReplacer, IStateModificationStrategy>  (replacer, stateModificationStrategy);
       return replacer;
     }
 

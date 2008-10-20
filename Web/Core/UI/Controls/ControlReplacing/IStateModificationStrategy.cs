@@ -15,13 +15,15 @@ using Remotion.Web.Utilities;
 namespace Remotion.Web.UI.Controls.ControlReplacing
 {
   /// <summary>
-  /// The <see cref="IModificationStateSelectionStrategy"/> interface defines the factory methods for initializing the respective instances
+  /// The <see cref="IStateModificationStrategy"/> interface defines the factory methods for initializing the respective instances
   /// of the <see cref="IViewStateModificationState"/> and <see cref="IControlStateModificationState"/> for the different state scenarios of the 
   /// <see cref="ControlReplacer"/>
   /// </summary>
-  public interface IModificationStateSelectionStrategy
+  public interface IStateModificationStrategy
   {
     IViewStateModificationState CreateViewStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller);
     IControlStateModificationState CreateControlStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller);
+    void LoadControlState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller);
+    void LoadViewState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller);
   }
 }

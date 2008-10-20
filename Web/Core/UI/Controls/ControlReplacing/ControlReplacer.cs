@@ -27,12 +27,19 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     private IViewStateModificationState _viewStateModificationState = new ViewStateNullModificationState();
     private IControlStateModificationState _controlStateModificationState = new ControlStateNullModificationState();
     private bool _hasLoaded;
+    private IStateModificationStrategy _stateModificationStrategy;
 
     public ControlReplacer (IInternalControlMemberCaller memberCaller)
     {
       ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
 
       _memberCaller = memberCaller;
+    }
+
+    public IStateModificationStrategy StateModificationStrategy
+    {
+      get { return _stateModificationStrategy; }
+      set { _stateModificationStrategy = ArgumentUtility.CheckNotNull ("value", value); }
     }
 
     public IViewStateModificationState ViewStateModificationState
@@ -50,6 +57,11 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     public Control WrappedControl
     {
       get { return Controls.Count == 1 ? Controls[0] : null; }
+    }
+
+    public Control ControlToWrap
+    {
+      get { return _controlToWrap; }
     }
 
     protected override void OnInit (EventArgs e)
@@ -105,38 +117,13 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       {
         _hasLoaded = true;
         Assertion.IsNotNull (_controlToWrap);
+
+        _stateModificationStrategy.LoadControlState (this, _memberCaller);
+        _stateModificationStrategy.LoadViewState (this, _memberCaller);
+
+        _memberCaller.SetControlState (_controlToWrap, ControlState.Constructed);
         Control controlToWrap = _controlToWrap;
         _controlToWrap = null;
-
-        if (ViewStateModificationState is ViewStateLoadingState)
-        {
-          //NOP
-        }
-        else if (ViewStateModificationState is ViewStateReplacingState)
-        {
-          _memberCaller.LoadViewStateRecursive (this, ((ViewStateReplacingState) ViewStateModificationState).ViewState);
-        }
-        else if (ViewStateModificationState is ViewStateClearingStateBase)
-        {
-          bool enableViewStateBackup = controlToWrap.EnableViewState;
-          controlToWrap.EnableViewState = false;
-          controlToWrap.Load += delegate { controlToWrap.EnableViewState = enableViewStateBackup; };
-        }
-
-        if (ControlStateModificationState is ControlStateLoadingState)
-        {
-          //NOP
-        }
-        else if (ControlStateModificationState is ControlStateReplacingState)
-        {
-          _memberCaller.SetChildControlState (this, ((ControlStateReplacingState) ControlStateModificationState).ControlState);
-        }
-        else if (ControlStateModificationState is ControlStateClearingStateBase)
-        {
-          _memberCaller.ClearChildControlState (this);
-        }
-
-        _memberCaller.SetControlState (controlToWrap, ControlState.Constructed);
         Controls.Add (controlToWrap);
       }
     }
@@ -164,12 +151,12 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       return writer.ToString();
     }
 
-    public void ReplaceAndWrap<T> (T controlToReplace, T controlToWrap, IModificationStateSelectionStrategy modificationStateSelectionStrategy)
+    public void ReplaceAndWrap<T> (T controlToReplace, T controlToWrap, IStateModificationStrategy stateModificationStrategy)
         where T : Control, IReplaceableControl
     {
       ArgumentUtility.CheckNotNull ("controlToReplace", controlToReplace);
       ArgumentUtility.CheckNotNull ("controlToWrap", controlToWrap);
-      ArgumentUtility.CheckNotNull ("modificationStateSelectionStrategy", modificationStateSelectionStrategy);
+      ArgumentUtility.CheckNotNull ("stateModificationStrategy", stateModificationStrategy);
 
       if (_memberCaller.GetControlState (controlToReplace) != ControlState.ChildrenInitialized)
         throw new InvalidOperationException ("Controls can only be wrapped during OnInit phase.");
@@ -179,8 +166,9 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
 
       controlToWrap.Replacer = this;
 
-      ViewStateModificationState = modificationStateSelectionStrategy.CreateViewStateModificationState (this, _memberCaller);
-      ControlStateModificationState = modificationStateSelectionStrategy.CreateControlStateModificationState (this, _memberCaller);
+      _stateModificationStrategy = stateModificationStrategy;
+      ViewStateModificationState = stateModificationStrategy.CreateViewStateModificationState (this, _memberCaller);
+      ControlStateModificationState = stateModificationStrategy.CreateControlStateModificationState (this, _memberCaller);
 
       Control parent = controlToReplace.Parent;
       int index = parent.Controls.IndexOf (controlToReplace);

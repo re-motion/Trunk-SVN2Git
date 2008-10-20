@@ -18,6 +18,11 @@ namespace Remotion.Web.Test.ExecutionEngine
       ExecuteNextStep ();
     }
 
+    protected void ExecuteSubFunctionButton_Click (object sender, EventArgs e)
+    {
+      //throw new InvalidOperationException ("This event handler should never be called.");
+    }
+
     protected override void OnInitComplete (EventArgs e)
     {
       base.OnInitComplete (e);

@@ -14,6 +14,8 @@ using System.IO;
 using System.Web.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
@@ -25,7 +27,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
   public class ReplacingStateSelectionStrategyTest : TestBase
   {
     private ControlReplacer _replacer;
-    private IModificationStateSelectionStrategy _selectionStrategy;
+    private IStateModificationStrategy _stateModificationStrategy;
 
     [SetUp]
     public override void SetUp ()
@@ -39,36 +41,67 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
       StringWriter writer = new StringWriter ();
       formatter.Serialize (writer, state);
 
-      _selectionStrategy = new ReplacingStateSelectionStrategy (writer.ToString ());
+      _stateModificationStrategy = new ReplacingStateSelectionStrategy (writer.ToString ());
     }
 
     [Test]
     public void Initialize ()
     {
-      Assert.That (((ReplacingStateSelectionStrategy)_selectionStrategy).ViewState, Is.Not.Null);
-      Assert.That (((ReplacingStateSelectionStrategy) _selectionStrategy).ControlState, Is.Not.Null);
+      Assert.That (((ReplacingStateSelectionStrategy)_stateModificationStrategy).ViewState, Is.Not.Null);
+      Assert.That (((ReplacingStateSelectionStrategy) _stateModificationStrategy).ControlState, Is.Not.Null);
     }
 
     [Test]
     public void CreateViewStateModificationState ()
     {
-      IViewStateModificationState viewState = _selectionStrategy.CreateViewStateModificationState (_replacer, MemberCallerMock);
+      IViewStateModificationState viewState = _stateModificationStrategy.CreateViewStateModificationState (_replacer, MemberCallerMock);
 
       Assert.That (viewState, Is.InstanceOfType (typeof (ViewStateReplacingState)));
       Assert.That (((ViewStateReplacingState) viewState).Replacer, Is.SameAs (_replacer));
       Assert.That (((ViewStateReplacingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
-      Assert.That (((ViewStateReplacingState) viewState).ViewState, Is.SameAs (((ReplacingStateSelectionStrategy) _selectionStrategy).ViewState));
+      Assert.That (((ViewStateReplacingState) viewState).ViewState, Is.SameAs (((ReplacingStateSelectionStrategy) _stateModificationStrategy).ViewState));
     }
 
     [Test]
     public void CreateControlStateModificationState ()
     {
-      IControlStateModificationState viewState = _selectionStrategy.CreateControlStateModificationState (_replacer, MemberCallerMock);
+      IControlStateModificationState viewState = _stateModificationStrategy.CreateControlStateModificationState (_replacer, MemberCallerMock);
 
       Assert.That (viewState, Is.InstanceOfType (typeof (ControlStateReplacingState)));
       Assert.That (((ControlStateReplacingState) viewState).Replacer, Is.SameAs (_replacer));
       Assert.That (((ControlStateReplacingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
-      Assert.That (((ControlStateReplacingState) viewState).ControlState, Is.SameAs (((ReplacingStateSelectionStrategy) _selectionStrategy).ControlState));
+      Assert.That (((ControlStateReplacingState) viewState).ControlState, Is.SameAs (((ReplacingStateSelectionStrategy) _stateModificationStrategy).ControlState));
+    }
+
+    [Test]
+    public void LoadControlState ()
+    {
+      var testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
+      _replacer.StateModificationStrategy = _stateModificationStrategy;
+      _replacer.Controls.Add (testPageHolder.NamingContainer);
+
+      MemberCallerMock.Expect (mock => mock.SetChildControlState (Arg<ControlReplacer>.Is.Same (_replacer), Arg<Hashtable>.Is.NotNull));
+      MockRepository.ReplayAll ();
+
+      _stateModificationStrategy.LoadControlState (_replacer, MemberCallerMock);
+
+      MockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void LoadViewState ()
+    {
+      var testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
+      _replacer.StateModificationStrategy = _stateModificationStrategy;
+      _replacer.Controls.Add (testPageHolder.NamingContainer);
+
+      MemberCallerMock.Expect (mock => mock.LoadViewStateRecursive (Arg<ControlReplacer>.Is.Same (_replacer), Arg<Hashtable>.Is.NotNull));
+
+      MockRepository.ReplayAll ();
+
+      _stateModificationStrategy.LoadViewState (_replacer, MemberCallerMock);
+
+      MemberCallerMock.VerifyAllExpectations ();
     }
   }
 }

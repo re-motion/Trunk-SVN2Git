@@ -8,6 +8,7 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
@@ -18,7 +19,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
   /// The <see cref="LoadingStateSelectionStrategy"/> type is used when the state of a <see cref="ControlReplacer"/>'s control tree should be 
   /// loaded during a regular page-lifecycle, i.e. when the view state is to be loaded without modification
   /// </summary>
-  public class LoadingStateSelectionStrategy : IModificationStateSelectionStrategy
+  public class LoadingStateSelectionStrategy : IStateModificationStrategy
   {
     public IViewStateModificationState CreateViewStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
     {
@@ -28,6 +29,22 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     public IControlStateModificationState CreateControlStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
     {
       return new ControlStateLoadingState (replacer, memberCaller);
+    }
+
+    public void LoadControlState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+    {
+      ArgumentUtility.CheckNotNull ("replacer", replacer);
+      ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
+
+      //NOP
+    }
+
+    public void LoadViewState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+    {
+      ArgumentUtility.CheckNotNull ("replacer", replacer);
+      ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
+
+      //NOP
     }
   }
 }

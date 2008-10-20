@@ -60,6 +60,6 @@ namespace Remotion.Web.UnitTests.UI.Controls
 
     public ControlReplacer Replacer { get; set; }
 
-    public Tuple<ControlReplacer, IModificationStateSelectionStrategy> OnInitParameters { get; set; }
+    public Tuple<ControlReplacer, IStateModificationStrategy> OnInitParameters { get; set; }
   }
 }

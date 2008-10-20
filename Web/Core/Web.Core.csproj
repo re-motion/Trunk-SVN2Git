@@ -142,7 +142,7 @@
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateModificationStateBase.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateLoadingState.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ControlStateModificationStates\ControlStateNullModificationState.cs" />
-    <Compile Include="UI\Controls\ControlReplacing\IModificationStateSelectionStrategy.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\IStateModificationStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\LoadingStateSelectionStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ReplacingStateSelectionStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\ViewStateModificationStates\ViewStateNullModificationState.cs" />

@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
   /// The <see cref="ReplacingStateSelectionStrategy"/> type is used when the state of a <see cref="ControlReplacer"/>'s control tree should be 
   /// restored to reflect a previously used state.
   /// </summary>
-  public class ReplacingStateSelectionStrategy : IModificationStateSelectionStrategy
+  public class ReplacingStateSelectionStrategy : IStateModificationStrategy
   {
     private readonly IDictionary _controlState;
     private readonly object _viewState;
@@ -56,6 +56,22 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     public object ViewState
     {
       get { return _viewState; }
+    }
+
+    public void LoadControlState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+    {
+      ArgumentUtility.CheckNotNull ("replacer", replacer);
+      ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
+
+      memberCaller.SetChildControlState (replacer, _controlState);
+    }
+
+    public void LoadViewState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+    {
+      ArgumentUtility.CheckNotNull ("replacer", replacer);
+      ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
+
+      memberCaller.LoadViewStateRecursive (replacer, _viewState);
     }
   }
 }

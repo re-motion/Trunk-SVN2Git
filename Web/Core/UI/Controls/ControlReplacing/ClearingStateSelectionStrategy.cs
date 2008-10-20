@@ -8,6 +8,9 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
 using Remotion.Web.Utilities;
@@ -17,7 +20,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
   /// <summary>
   /// The <see cref="ClearingStateSelectionStrategy"/> type is used when the state of a <see cref="ControlReplacer"/>'s control tree should be reset.
   /// </summary>
-  public class ClearingStateSelectionStrategy:IModificationStateSelectionStrategy
+  public class ClearingStateSelectionStrategy:IStateModificationStrategy
   {
     public IViewStateModificationState CreateViewStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
     {
@@ -27,6 +30,24 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
     public IControlStateModificationState CreateControlStateModificationState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
     {
       return new ControlStateClearingState (replacer, memberCaller);
+    }
+
+    public void LoadControlState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+    {
+      ArgumentUtility.CheckNotNull ("replacer", replacer);
+      ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
+
+      memberCaller.ClearChildControlState (replacer);
+    }
+
+    public void LoadViewState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
+    {
+      ArgumentUtility.CheckNotNull ("replacer", replacer);
+      ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
+
+      bool enableViewStateBackup = replacer.ControlToWrap.EnableViewState;
+      replacer.ControlToWrap.EnableViewState = false;
+      replacer.ControlToWrap.Load += delegate (object sender, EventArgs args ){ ((Control)sender).EnableViewState = enableViewStateBackup; };
     }
   }
 }

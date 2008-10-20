@@ -14,36 +14,69 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.UI.Controls.ControlReplacing.ControlStateModificationStates;
 using Remotion.Web.UI.Controls.ControlReplacing.ViewStateModificationStates;
+using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 {
   [TestFixture]
-  public class ClearingStateSelectionStrategyTest : TestBase
+  public class LoadingStateSelectionStrategyTest : TestBase
   {
     [Test]
     public void CreateViewStateModificationState ()
     {
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-      IModificationStateSelectionStrategy state = new ClearingStateSelectionStrategy();
+      IStateModificationStrategy stateModificationStrategy = new LoadingStateSelectionStrategy ();
 
-      IViewStateModificationState viewState = state.CreateViewStateModificationState (replacer, MemberCallerMock);
+      IViewStateModificationState viewState = stateModificationStrategy.CreateViewStateModificationState (replacer, MemberCallerMock);
 
-      Assert.That (viewState, Is.InstanceOfType (typeof (ViewStateClearingState)));
-      Assert.That (((ViewStateClearingState) viewState).Replacer, Is.SameAs (replacer));
-      Assert.That (((ViewStateClearingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
+      Assert.That (viewState, Is.InstanceOfType (typeof (ViewStateLoadingState)));
+      Assert.That (((ViewStateLoadingState) viewState).Replacer, Is.SameAs (replacer));
+      Assert.That (((ViewStateLoadingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
     }
 
     [Test]
     public void CreateControlStateModificationState ()
     {
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
-      IModificationStateSelectionStrategy state = new ClearingStateSelectionStrategy();
+      IStateModificationStrategy stateModificationStrategy = new LoadingStateSelectionStrategy ();
 
-      IControlStateModificationState viewState = state.CreateControlStateModificationState (replacer, MemberCallerMock);
+      IControlStateModificationState viewState = stateModificationStrategy.CreateControlStateModificationState (replacer, MemberCallerMock);
 
-      Assert.That (viewState, Is.InstanceOfType (typeof (ControlStateClearingState)));
-      Assert.That (((ControlStateClearingState) viewState).Replacer, Is.SameAs (replacer));
-      Assert.That (((ControlStateClearingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
+      Assert.That (viewState, Is.InstanceOfType (typeof (ControlStateLoadingState)));
+      Assert.That (((ControlStateLoadingState) viewState).Replacer, Is.SameAs (replacer));
+      Assert.That (((ControlStateLoadingState) viewState).MemberCaller, Is.SameAs (MemberCallerMock));
+    }
+
+    [Test]
+    public void LoadControlState ()
+    {
+      var testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
+      IStateModificationStrategy stateModificationStrategy = new LoadingStateSelectionStrategy ();
+      var replacer = new ControlReplacer (MemberCallerMock);
+      replacer.StateModificationStrategy = stateModificationStrategy;
+      replacer.Controls.Add (testPageHolder.NamingContainer);
+
+      MockRepository.ReplayAll ();
+
+      stateModificationStrategy.LoadControlState (replacer, MemberCallerMock);
+
+      MockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void LoadViewState ()
+    {
+      var testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
+      IStateModificationStrategy stateModificationStrategy = new LoadingStateSelectionStrategy ();
+      var replacer = new ControlReplacer (MemberCallerMock);
+      replacer.StateModificationStrategy = stateModificationStrategy;
+      replacer.Controls.Add (testPageHolder.NamingContainer);
+
+      MockRepository.ReplayAll ();
+
+      stateModificationStrategy.LoadViewState (replacer, MemberCallerMock);
+
+      MockRepository.VerifyAll ();
     }
   }
 }

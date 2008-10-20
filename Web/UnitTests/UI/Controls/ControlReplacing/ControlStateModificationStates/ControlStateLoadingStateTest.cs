@@ -20,7 +20,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing.ControlStateModifi
   public class ControlStateLoadingStateTest : TestBase
   {
     [Test]
-    public void LoadViewState ()
+    public void LoadControlState ()
     {
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock);
       ControlStateLoadingState state = new ControlStateLoadingState (replacer, MemberCallerMock);
