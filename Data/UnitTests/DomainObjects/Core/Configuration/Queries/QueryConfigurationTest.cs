@@ -310,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Queries
     [Test]
     public void CollectionType_SupportsTypeUtilityNotation ()
     {
-      QueryDefinitionCollection queries = DomainObjectsConfiguration.Current.Query.QueryDefinitions;
+      QueryDefinitionCollection queries = new QueryConfiguration ("DomainObjects\\QueriesForStandardMapping.xml").QueryDefinitions;
       Assert.AreSame (typeof (SpecificOrderCollection), queries["QueryWithSpecificCollectionType"].CollectionType);
     }
 
