@@ -59,7 +59,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
     {
       var postBackCollection = Parameters.Page.GetPostBackCollection().Clone();
 
-      if (!_repostOptions.SuppressRepost)
+      if (_repostOptions.SuppressRepost)
       {
         if (_repostOptions.UsesEventTarget)
         {

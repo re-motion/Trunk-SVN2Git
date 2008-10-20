@@ -40,12 +40,12 @@ namespace Remotion.Web.ExecutionEngine
 
       _sender = sender;
       _usesEventTarget = usesEventTarget;
-      _suppressRepost = false;
+      _suppressRepost = true;
     }
 
     private WxeRepostOptions ()
     {
-      _suppressRepost = true;
+      _suppressRepost = false;
     }
 
     public Control Sender
@@ -65,7 +65,7 @@ namespace Remotion.Web.ExecutionEngine
 
     bool INullObject.IsNull
     {
-      get { return _suppressRepost; }
+      get { return !_suppressRepost; }
     }
   }
 }
