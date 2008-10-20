@@ -18,7 +18,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
-using Remotion.Data.UnitTests.DomainObjects.Core.Interception.SampleTypes;
+using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
@@ -37,14 +37,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     private ModuleManager _scope;
     private string _directory;
 
-    public override void SetUp ()
+    public override void TestFixtureSetUp ()
     {
-      base.SetUp ();
+      base.TestFixtureSetUp ();
+
       _directory = Path.Combine (Environment.CurrentDirectory, "Interception.TypeGeneratorTest.Dlls");
-      SetupAssemblyDirectory(_directory);
+      SetupAssemblyDirectory (_directory);
 
       _scope = new ModuleManager (_directory);
-      
+
       // setup mixin builder to generate files into the same directory
       ConcreteTypeBuilder.SetCurrent (null); // reinitialize ConcreteTypeBuilder
       ConcreteTypeBuilder.Current.Scope.SignedModulePath = Path.Combine (_directory, ConcreteTypeBuilder.Current.Scope.SignedAssemblyName + ".dll");
@@ -77,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       File.Copy (objectBindingModule.FullyQualifiedName, Path.Combine (directory, objectBindingModule.Name));
     }
 
-    public override void TearDown ()
+    public override void TestFixtureTearDown ()
     {
       string[] paths = _scope.SaveAssemblies ();
       // save mixins as well, we need those files if the intercepted types depend on mixed types
@@ -87,7 +88,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       foreach (string path in paths)
         PEVerifier.VerifyPEFile (path);
 #endif
-      base.TearDown();
+
+      base.TestFixtureTearDown ();
     }
 
     private TypeGenerator CreateTypeGenerator (Type baseType)
@@ -116,19 +118,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void ReplicatesConstructors ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithConstructors)).BuildType ();
-      Assert.IsNotNull (type.GetConstructor (new Type[] { typeof (string), typeof (string) }));
-      Assert.IsNotNull (type.GetConstructor (new Type[] { typeof (int) }));
+      Assert.IsNotNull (type.GetConstructor (new[] { typeof (string), typeof (string) }));
+      Assert.IsNotNull (type.GetConstructor (new[] { typeof (int) }));
     }
 
     [Test]
     public void ReplicatedConstructorsDelegateToBase ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithConstructors)).BuildType ();
-      DOWithConstructors instance1 = (DOWithConstructors) Activator.CreateInstance (type, "Foo", "Bar");
+      var instance1 = (DOWithConstructors) Activator.CreateInstance (type, "Foo", "Bar");
       Assert.AreEqual ("Foo", instance1.FirstArg);
       Assert.AreEqual ("Bar", instance1.SecondArg);
 
-      DOWithConstructors instance2 = (DOWithConstructors) Activator.CreateInstance (type, 7);
+      var instance2 = (DOWithConstructors) Activator.CreateInstance (type, 7);
       Assert.AreEqual ("7", instance2.FirstArg);
       Assert.IsNull (instance2.SecondArg);
     }
@@ -144,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void OverridesGetPublicDomainObjectTypeToReturnBaseType ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType();
-      DOWithVirtualProperties instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
+      var instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
       Assert.AreEqual (typeof (DOWithVirtualProperties), instance.GetPublicDomainObjectType ());
       Assert.IsNotNull (type.GetMethod ("GetPublicDomainObjectType", _declaredPublicInstanceFlags));
     }
@@ -192,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void OverridesVirtualPropertiesSoThatCurrentPropertyWorks ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType();
-      DOWithVirtualProperties instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
+      var instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
 
       Assert.AreEqual (0, instance.PropertyWithGetterAndSetter);
       instance.PropertyWithGetterAndSetter = 17;
@@ -217,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void OverriddenPropertiesCleanUpCurrentPropertyName ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType();
-      DOWithVirtualProperties instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
+      var instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
 
       Assert.AreEqual (0, instance.PropertyWithGetterAndSetter);
       instance.GetAndCheckCurrentPropertyName();
@@ -228,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void OverriddenPropertiesCleanUpCurrentPropertyNameEvenOnExceptionInGetter ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType();
-      DOWithVirtualProperties instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
+      var instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
 
       try
       {
@@ -247,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void OverriddenPropertiesCleanUpCurrentPropertyNameEvenOnExceptionInSetter ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType();
-      DOWithVirtualProperties instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
+      var instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
 
       try
       {
@@ -266,7 +268,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void DoesNotOverridePropertiesNotInMapping ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType();
-      DOWithVirtualProperties instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
+      var instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
       Dev.Null = instance.PropertyNotInMapping;
     }
 
@@ -331,7 +333,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void ImplementsAbstractPropertiesSoThatCurrentPropertyWorks ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithAbstractProperties)).BuildType();
-      DOWithAbstractProperties instance = (DOWithAbstractProperties) Activator.CreateInstance (type);
+      var instance = (DOWithAbstractProperties) Activator.CreateInstance (type);
 
       Assert.AreEqual (0, instance.PropertyWithGetterAndSetter);
       instance.PropertyWithGetterAndSetter = 17;
@@ -356,7 +358,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void ImplementedAbstractPropertyGettersCleanUpCurrentPropertyName ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithAbstractProperties)).BuildType();
-      DOWithAbstractProperties instance = (DOWithAbstractProperties) Activator.CreateInstance (type);
+      var instance = (DOWithAbstractProperties) Activator.CreateInstance (type);
 
       Assert.AreEqual (0, instance.PropertyWithGetterAndSetter);
       instance.GetAndCheckCurrentPropertyName ();
@@ -367,7 +369,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void ImplementedAbstractPropertySettersCleanUpCurrentPropertyName ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithAbstractProperties)).BuildType();
-      DOWithAbstractProperties instance = (DOWithAbstractProperties) Activator.CreateInstance (type);
+      var instance = (DOWithAbstractProperties) Activator.CreateInstance (type);
 
       instance.PropertyWithGetterAndSetter = 17;
       instance.GetAndCheckCurrentPropertyName ();
@@ -406,7 +408,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void ImplementsAutomaticProperties_ViaPropertyIndexer ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithAutomaticProperties)).BuildType ();
-      DOWithAutomaticProperties instance = (DOWithAutomaticProperties) Activator.CreateInstance (type);
+      var instance = (DOWithAutomaticProperties) Activator.CreateInstance (type);
 
       Assert.AreEqual (0, instance.PropertyWithGetterAndSetter);
       instance.PropertyWithGetterAndSetter = 17;
@@ -433,7 +435,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage = "Cannot instantiate type Remotion.Data.UnitTests."
-        + "DomainObjects.Core.Interception.SampleTypes.NonInstantiableAbstractClassWithProps as its member get_Foo (on type NonInstantiableAbstractClassWithProps) is "
+        + "DomainObjects.Core.Interception.TestDomain.NonInstantiableAbstractClassWithProps as its member get_Foo (on type NonInstantiableAbstractClassWithProps) is "
         + "abstract (and not an automatic property).")]
     public void ThrowsOnAbstractPropertyNotInMapping ()
     {
@@ -442,7 +444,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage = "Cannot instantiate type Remotion.Data.UnitTests."
-       + "DomainObjects.Core.Interception.SampleTypes.NonInstantiableAbstractClass as its member Foo (on type NonInstantiableAbstractClass) is abstract (and not an "
+       + "DomainObjects.Core.Interception.TestDomain.NonInstantiableAbstractClass as its member Foo (on type NonInstantiableAbstractClass) is abstract (and not an "
         + "automatic property).")]
     public void ThrowsOnAbstractMethod ()
     {
@@ -452,7 +454,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException),
         ExpectedMessage = "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception."
-        + "SampleTypes.NonInstantiableSealedClass as it is sealed.")]
+        + "TestDomain.NonInstantiableSealedClass as it is sealed.")]
     public void ThrowsOnSealedBaseType ()
     {
       CreateTypeGenerator (typeof (NonInstantiableSealedClass)).BuildType();
@@ -460,7 +462,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage = "Cannot instantiate type Remotion.Data.UnitTests."
-        + "DomainObjects.Core.Interception.SampleTypes.NonInstantiableAbstractClassWithoutAttribute as it is abstract and not instantiable.")]
+        + "DomainObjects.Core.Interception.TestDomain.NonInstantiableAbstractClassWithoutAttribute as it is abstract and not instantiable.")]
     public void ThrowsOnAbstractClassWithoutInstantiableAttribute ()
     {
       CreateTypeGenerator (typeof (NonInstantiableAbstractClassWithoutAttribute)).BuildType ();
@@ -468,7 +470,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage = "Cannot instantiate type Remotion.Data.UnitTests."
-       + "DomainObjects.Core.Interception.SampleTypes.NonInstantiableNonDomainClass as it is not part of the mapping.")]
+       + "DomainObjects.Core.Interception.TestDomain.NonInstantiableNonDomainClass as it is not part of the mapping.")]
     public void ThrowsOnClassWithoutClassDefinition ()
     {
       CreateTypeGenerator (typeof (NonInstantiableNonDomainClass)).BuildType ();
@@ -476,7 +478,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage = "Cannot instantiate type 'Remotion.Data.UnitTests.DomainObjects." 
-        + "Core.Interception.SampleTypes.ClassWithNonVirtualAutomaticPropertyGetter' as its member 'RelatedObjects' has a non-virtual get accessor.")]
+        + "Core.Interception.TestDomain.ClassWithNonVirtualAutomaticPropertyGetter' as its member 'RelatedObjects' has a non-virtual get accessor.")]
     public void ThrowsOnNonVirtualAutomaticPropertyGetter ()
     {
       CreateTypeGenerator (typeof (ClassWithNonVirtualAutomaticPropertyGetter)).BuildType ();
@@ -484,7 +486,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage = "Cannot instantiate type 'Remotion.Data.UnitTests.DomainObjects."
-        + "Core.Interception.SampleTypes.ClassWithNonVirtualAutomaticPropertySetter' as its member 'RelatedObjects' has a non-virtual set accessor.")]
+        + "Core.Interception.TestDomain.ClassWithNonVirtualAutomaticPropertySetter' as its member 'RelatedObjects' has a non-virtual set accessor.")]
     public void ThrowsOnNonVirtualAutomaticPropertySetter ()
     {
       CreateTypeGenerator (typeof (ClassWithNonVirtualAutomaticPropertySetter)).BuildType ();
@@ -507,7 +509,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void GeneratedTypeCanBeSerialized ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType ();
-      DOWithVirtualProperties instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
+      var instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
       instance.PropertyWithGetterAndSetter = 17;
 
       Tuple<ClientTransaction, DOWithVirtualProperties> data =
@@ -524,7 +526,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void GeneratedTypeCanBeSerializedWhenItImplementsISerializable ()
     {
       Type type = CreateTypeGenerator (typeof (DOImplementingISerializable)).BuildType ();
-      DOImplementingISerializable instance = (DOImplementingISerializable) Activator.CreateInstance (type, "Start");
+      var instance = (DOImplementingISerializable) Activator.CreateInstance (type, "Start");
       instance.PropertyWithGetterAndSetter = 23;
       Assert.AreEqual ("Start", instance.MemberHeldAsField);
 
@@ -543,14 +545,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void SerializationConstructorPresentEvenIfBaseDoesntImplementISerializable ()
     {
       Type type = CreateTypeGenerator (typeof (NonSerializableDO)).BuildType();
-      Assert.IsNotNull (type.GetConstructor (_declaredInstanceFlags, null, new Type[] {typeof (SerializationInfo), typeof (StreamingContext)}, null));
+      Assert.IsNotNull (type.GetConstructor (_declaredInstanceFlags, null, new[] {typeof (SerializationInfo), typeof (StreamingContext)}, null));
     }
 
     [Test]
     public void ShadowedPropertiesAreSeparatelyOverridden ()
     {
       Type type = CreateTypeGenerator (typeof (DOHidingVirtualProperties)).BuildType ();
-      DOHidingVirtualProperties instance = (DOHidingVirtualProperties) Activator.CreateInstance (type);
+      var instance = (DOHidingVirtualProperties) Activator.CreateInstance (type);
       DOWithVirtualProperties instanceAsBase = instance;
 
       instance.PropertyWithGetterAndSetter = 1;
@@ -566,8 +568,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Type type = CreateTypeGenerator (typeof (DOWithRealRelationEndPoint)).BuildType ();
       Assert.IsNotNull (type.GetMethod (typeof (DOWithRealRelationEndPoint).FullName + ".get_RelatedObject", _declaredInstanceFlags));
 
-      DOWithRealRelationEndPoint instance = (DOWithRealRelationEndPoint) Activator.CreateInstance (type);
-      DOWithVirtualRelationEndPoint relatedObject = (DOWithVirtualRelationEndPoint) RepositoryAccessor.NewObject (typeof (DOWithVirtualRelationEndPoint)).With();
+      var instance = (DOWithRealRelationEndPoint) Activator.CreateInstance (type);
+      var relatedObject = (DOWithVirtualRelationEndPoint) RepositoryAccessor.NewObject (typeof (DOWithVirtualRelationEndPoint)).With();
       instance.RelatedObject = relatedObject;
       Assert.AreSame (relatedObject, instance.RelatedObject);
     }
@@ -578,8 +580,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Type type = CreateTypeGenerator (typeof (DOWithVirtualRelationEndPoint)).BuildType ();
       Assert.IsNotNull (type.GetMethod (typeof (DOWithVirtualRelationEndPoint).FullName + ".get_RelatedObject", _declaredInstanceFlags));
 
-      DOWithVirtualRelationEndPoint instance = (DOWithVirtualRelationEndPoint) Activator.CreateInstance (type);
-      DOWithRealRelationEndPoint relatedObject = (DOWithRealRelationEndPoint) RepositoryAccessor.NewObject (typeof (DOWithRealRelationEndPoint)).With();
+      var instance = (DOWithVirtualRelationEndPoint) Activator.CreateInstance (type);
+      var relatedObject = (DOWithRealRelationEndPoint) RepositoryAccessor.NewObject (typeof (DOWithRealRelationEndPoint)).With();
       instance.RelatedObject = relatedObject;
       Assert.AreSame (relatedObject, instance.RelatedObject);
     }
@@ -590,8 +592,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Type type = CreateTypeGenerator (typeof (DOWithUnidirectionalRelationEndPoint)).BuildType ();
       Assert.IsNotNull (type.GetMethod (typeof (DOWithUnidirectionalRelationEndPoint).FullName + ".get_RelatedObject", _declaredInstanceFlags));
 
-      DOWithUnidirectionalRelationEndPoint instance = (DOWithUnidirectionalRelationEndPoint) Activator.CreateInstance (type);
-      DOWithVirtualProperties relatedObject = (DOWithVirtualProperties) RepositoryAccessor.NewObject (typeof (DOWithVirtualProperties)).With();
+      var instance = (DOWithUnidirectionalRelationEndPoint) Activator.CreateInstance (type);
+      var relatedObject = (DOWithVirtualProperties) RepositoryAccessor.NewObject (typeof (DOWithVirtualProperties)).With();
       instance.RelatedObject = relatedObject;
       Assert.AreSame (relatedObject, instance.RelatedObject);
     }
@@ -623,7 +625,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Type type = CreateTypeGenerator (typeof (DOImplementingAbstractPropertyAccessors)).BuildType ();
       Assert.IsNotNull (type.GetMethod (typeof (DOImplementingAbstractPropertyAccessors).FullName + ".get_PropertyWithGetterAndSetter",
           _declaredInstanceFlags));
-      DOImplementingAbstractPropertyAccessors instance = (DOImplementingAbstractPropertyAccessors) Activator.CreateInstance (type);
+      var instance = (DOImplementingAbstractPropertyAccessors) Activator.CreateInstance (type);
       
       // assert that getter and setter are correctly propagated to base implementation
       instance.PropertyWithGetterAndSetter = 3;
@@ -636,7 +638,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Type type = _scope.CreateTypeGenerator (typeof (DOWithVirtualProperties), typeof (DerivedDO)).BuildType();
       Assert.IsTrue (typeof (DerivedDO).IsAssignableFrom (type));
 
-      DerivedDO instance = (DerivedDO) Activator.CreateInstance (type);
+      var instance = (DerivedDO) Activator.CreateInstance (type);
       Assert.AreEqual (typeof (DOWithVirtualProperties), instance.GetPublicDomainObjectType ());
     }
 
@@ -682,7 +684,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [Test]
     public void Overrides_PerformConstructorCheck_WithNoOp ()
     {
-      DOWithVirtualStorageClassNoneProperties instance = 
+      var instance = 
           (DOWithVirtualStorageClassNoneProperties) RepositoryAccessor.NewObject (typeof (DOWithVirtualStorageClassNoneProperties)).With ();
       PrivateInvoke.InvokeNonPublicMethod (instance, "PerformConstructorCheck");
     }

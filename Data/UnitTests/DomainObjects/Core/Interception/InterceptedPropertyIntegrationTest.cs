@@ -13,11 +13,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.Development;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Mapping.Configuration;
-using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.UnitTests.DomainObjects.Core.Interception.SampleTypes;
+using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -27,25 +23,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
   [TestFixture]
   public class InterceptedPropertyIntegrationTest : ClientTransactionBaseTest
   {
-    [SetUp]
-    public override void SetUp ()
-    {
-      base.SetUp();
-      DomainObjectsConfiguration.SetCurrent (
-          new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration(), DomainObjectsConfiguration.Current.Storage, new QueryConfiguration()));
-    }
-
-    [TearDown]
-    public override void TearDown ()
-    {
-      base.TearDown();
-    }
-
-    private bool WasCreatedByFactory (object o)
-    {
-      return DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.WasCreatedByFactory (o.GetType());
-    }
-
     [Test]
     public void LoadOfSimpleObjectWorks ()
     {
@@ -68,7 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void ConstructedObjectIsDerived ()
     {
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.NewObject();
-      Assert.IsTrue (classWithAllDataTypes is ClassWithAllDataTypes);
       Assert.IsFalse (((object) classWithAllDataTypes).GetType().Equals (typeof (ClassWithAllDataTypes)));
     }
 
@@ -122,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception.SampleTypes.NonInstantiableAbstractClass "
+        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain.NonInstantiableAbstractClass "
         + "as its member Foo (on type NonInstantiableAbstractClass) is abstract (and not an "
         + "automatic property).", MatchType = MessageMatch.Contains)]
     public void AbstractWithMethodCannotBeInstantiated ()
@@ -132,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception.SampleTypes.NonInstantiableAbstractClassWithProps "
+        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain.NonInstantiableAbstractClassWithProps "
         + "as its member get_Foo (on type NonInstantiableAbstractClassWithProps) is abstract (and not an automatic property).",
         MatchType = MessageMatch.Contains)]
     public void AbstractWithNonAutoPropertiesCannotBeInstantiated ()
@@ -142,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception.SampleTypes.NonInstantiableSealedClass as it is sealed.",
+        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain.NonInstantiableSealedClass as it is sealed.",
         MatchType = MessageMatch.Contains)]
     public void SealedCannotBeInstantiated ()
     {
@@ -163,7 +139,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void WrongConstructorCannotBeInstantiated ()
     {
       Type t = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (typeof (Order));
-      ;
       DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetTypesafeConstructorInvoker<DomainObject> (t)
           .With ("foo", "bar", "foobar", (object) null);
     }
@@ -178,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage =
         "Type Remotion.Data.UnitTests.DomainObjects.Core.Interception."
-        + "SampleTypes.ClassWithWrongConstructor does not support the requested constructor with signature ().")]
+        + "TestDomain.ClassWithWrongConstructor does not support the requested constructor with signature ().")]
     public void ConstructorMismatch1 ()
     {
       ClassWithWrongConstructor.NewObject();
@@ -187,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage =
         "Type Remotion.Data.UnitTests.DomainObjects.Core.Interception."
-        + "SampleTypes.ClassWithWrongConstructor does not support the requested constructor with signature (System.Double).")]
+        + "TestDomain.ClassWithWrongConstructor does not support the requested constructor with signature (System.Double).")]
     public void ConstructorMismatch2 ()
     {
       ClassWithWrongConstructor.NewObject (3.0);
@@ -339,7 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void CurrentPropertyThrowsWhenNotInitializes ()
     {
       Order order = Order.NewObject();
-      PropertyAccessor accessor = order.CurrentProperty;
+      Dev.Null = order.CurrentProperty;
       Assert.Fail ("Expected exception");
     }
 
@@ -366,6 +341,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       order.PreparePropertyAccess ("Bla");
+    }
+
+    private bool WasCreatedByFactory (object o)
+    {
+      return DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.WasCreatedByFactory (o.GetType ());
     }
   }
 }

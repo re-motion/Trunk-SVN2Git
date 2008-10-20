@@ -11,7 +11,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
@@ -40,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     private static readonly MethodInfo s_getPropertiesMethod =
         typeof (DomainObject).GetMethod ("get_Properties", _infrastructureBindingFlags);
     private static readonly MethodInfo s_getPropertyAccessorMethod =
-        typeof (PropertyIndexer).GetMethod ("get_Item", _infrastructureBindingFlags, null, new Type[] {typeof (string)}, null);
+        typeof (PropertyIndexer).GetMethod ("get_Item", _infrastructureBindingFlags, null, new[] {typeof (string)}, null);
     private static readonly MethodInfo s_propertyGetValueMethod =
         typeof (PropertyAccessor).GetMethod ("GetValue", _infrastructureBindingFlags);
     private static readonly MethodInfo s_propertySetValueMethod =
@@ -75,8 +74,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       Set<Tuple<PropertyInfo, string>> properties = new InterceptedPropertyCollector (publicDomainObjectType).GetProperties ();
 
       string typeName = typeToDeriveFrom.FullName + "_WithInterception_" + Guid.NewGuid ().ToString ("N");
-      Type[] interfaces = new Type[] { typeof (IInterceptedDomainObject), typeof (ISerializable) };
-      TypeAttributes flags = TypeAttributes.Public | TypeAttributes.Serializable;
+      var interfaces = new[] { typeof (IInterceptedDomainObject), typeof (ISerializable) };
+      const TypeAttributes flags = TypeAttributes.Public | TypeAttributes.Serializable;
 
       _classEmitter = new CustomClassEmitter (scope, typeName, typeToDeriveFrom, interfaces, flags, false);
 
@@ -160,7 +159,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       }
     }
 
-    private CustomMethodEmitter OverrideAccessor (MethodInfo accessor, string propertyIdentifier)
+    private void OverrideAccessor (MethodInfo accessor, string propertyIdentifier)
     {
       ArgumentUtility.CheckNotNull ("accessor", accessor);
       ArgumentUtility.CheckNotNull ("propertyIdentifier", propertyIdentifier);
@@ -169,15 +168,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       Assertion.IsTrue (InterceptedPropertyCollector.IsOverridable (accessor));
 
       CustomMethodEmitter emitter = _classEmitter.CreatePrivateMethodOverride (accessor);
-      MethodInvocationExpression baseCallExpression =
-          new MethodInvocationExpression (SelfReference.Self, accessor, emitter.GetArgumentExpressions());
+      var baseCallExpression = new MethodInvocationExpression (SelfReference.Self, accessor, emitter.GetArgumentExpressions());
 
       ImplementWrappedAccessor (emitter, propertyIdentifier, baseCallExpression, accessor.ReturnType);
-
-      return emitter;
     }
 
-    private CustomMethodEmitter ImplementAbstractGetAccessor (MethodInfo accessor, string propertyIdentifier)
+    private void ImplementAbstractGetAccessor (MethodInfo accessor, string propertyIdentifier)
     {
       ArgumentUtility.CheckNotNull ("accessor", accessor);
       ArgumentUtility.CheckNotNull ("propertyIdentifier", propertyIdentifier);
@@ -187,16 +183,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       CustomMethodEmitter emitter = _classEmitter.CreatePrivateMethodOverride (accessor);
 
       ExpressionReference propertyAccessorReference = CreatePropertyAccessorReference (propertyIdentifier, emitter);
-      TypedMethodInvocationExpression getValueMethodCall = new TypedMethodInvocationExpression (
-          propertyAccessorReference,
-          s_propertyGetValueMethod.MakeGenericMethod (accessor.ReturnType));
+      var getValueMethodCall = 
+          new TypedMethodInvocationExpression (propertyAccessorReference, s_propertyGetValueMethod.MakeGenericMethod (accessor.ReturnType));
 
       ImplementWrappedAccessor (emitter, propertyIdentifier, getValueMethodCall, accessor.ReturnType);
-
-      return emitter;
     }
 
-    private CustomMethodEmitter ImplementAbstractSetAccessor (MethodInfo accessor, string propertyIdentifier, Type propertyType)
+    private void ImplementAbstractSetAccessor (MethodInfo accessor, string propertyIdentifier, Type propertyType)
     {
       ArgumentUtility.CheckNotNull ("accessor", accessor);
       ArgumentUtility.CheckNotNull ("propertyIdentifier", propertyIdentifier);
@@ -210,19 +203,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       Reference valueArgumentReference = emitter.ArgumentReferences[emitter.ArgumentReferences.Length - 1];
 
       ExpressionReference propertyAccessorReference = CreatePropertyAccessorReference (propertyIdentifier, emitter);
-      TypedMethodInvocationExpression setValueMethodCall = new TypedMethodInvocationExpression (
+      var setValueMethodCall = new TypedMethodInvocationExpression (
           propertyAccessorReference,
           s_propertySetValueMethod.MakeGenericMethod (propertyType),
           valueArgumentReference.ToExpression());
 
       ImplementWrappedAccessor (emitter, propertyIdentifier, setValueMethodCall, typeof (void));
 
-      return emitter;
+      return;
     }
 
     private ExpressionReference CreatePropertyAccessorReference (string propertyIdentifier, CustomMethodEmitter emitter)
     {
-      ExpressionReference propertiesReference = new ExpressionReference (
+      var propertiesReference = new ExpressionReference (
           typeof (PropertyIndexer),
           new MethodInvocationExpression (SelfReference.Self, s_getPropertiesMethod),
           emitter);
@@ -259,7 +252,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       Statement propertyAccessFinishedStatement = new ExpressionStatement (
           new MethodInvocationExpression (SelfReference.Self, s_propertyAccessFinishedMethod));
 
-      emitter.AddStatement (new TryFinallyStatement (new Statement[] {baseCallStatement}, new Statement[] {propertyAccessFinishedStatement}));
+      emitter.AddStatement (new TryFinallyStatement (new[] {baseCallStatement}, new[] {propertyAccessFinishedStatement}));
 
       if (returnType != typeof (void))
         emitter.AddStatement (new ReturnStatement (returnValueLocal));

@@ -12,91 +12,16 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
+using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 {
   [TestFixture]
   public class SerializationHelperTest : ClientTransactionBaseTest
   {
-    [Serializable]
-    [DBTable]
-    public class SerializableClass : DomainObject
-    {
-      private int _i;
-
-      [StorageClassNone]
-      public int I
-      {
-        get { return _i; }
-        set { _i = value; }
-      }
-    }
-
-    [Serializable]
-    [DBTable]
-    public class SerializableClassImplementingISerializable : DomainObject, ISerializable
-    {
-      public bool ISerializableCtorCalled = false;
-      public int I;
-
-      public SerializableClassImplementingISerializable ()
-      {
-      }
-
-      protected SerializableClassImplementingISerializable (SerializationInfo info, StreamingContext context)
-          : base (info, context)
-      {
-        ISerializableCtorCalled = true;
-        I = info.GetInt32 ("I");
-      }
-
-      public void GetObjectData (SerializationInfo info, StreamingContext context)
-      {
-        info.AddValue ("I", I);
-        BaseGetObjectData (info, context);
-      }
-    }
-
-    [Serializable]
-    [DBTable]
-    public class SerializableClassImplementingISerializableNotCallingBaseCtor : DomainObject, ISerializable
-    {
-      public SerializableClassImplementingISerializableNotCallingBaseCtor ()
-      {
-      }
-
-      protected SerializableClassImplementingISerializableNotCallingBaseCtor (SerializationInfo info, StreamingContext context)
-      {
-      }
-
-      public void GetObjectData (SerializationInfo info, StreamingContext context)
-      {
-        BaseGetObjectData (info, context);
-      }
-    }
-
-    [Serializable]
-    [DBTable]
-    public class SerializableClassImplementingISerializableNotCallingBaseGetObjectData : DomainObject, ISerializable
-    {
-      public SerializableClassImplementingISerializableNotCallingBaseGetObjectData ()
-      {
-      }
-
-      protected SerializableClassImplementingISerializableNotCallingBaseGetObjectData (SerializationInfo info, StreamingContext context)
-        : base (info, context)
-      {
-      }
-
-      public void GetObjectData (SerializationInfo info, StreamingContext context)
-      {
-      }
-    }
-
     private SerializationInfo _info;
     private StreamingContext _context;
     private InterceptedDomainObjectFactory _factory;
@@ -105,26 +30,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     private SerializableClassImplementingISerializableNotCallingBaseCtor _serializableInstanceImplementingISerializableNotCallingBaseCtor;
     private SerializableClassImplementingISerializableNotCallingBaseGetObjectData _serializableInstanceImplementingISerializableNotCallingGetObjectData;
 
+
+    public override void TestFixtureSetUp ()
+    {
+      base.TestFixtureSetUp ();
+      _factory = new InterceptedDomainObjectFactory (Environment.CurrentDirectory);
+    }
+
     public override void SetUp ()
     {
       base.SetUp ();
-
-      _info = new SerializationInfo (typeof (SerializableClass), new FormatterConverter ());
-      _context = new StreamingContext();
-      _factory = new InterceptedDomainObjectFactory (Environment.CurrentDirectory);
       
+      _info = new SerializationInfo (typeof (SerializableClass), new FormatterConverter ());
+      _context = new StreamingContext ();
+
       Type concreteType = _factory.GetConcreteDomainObjectType (typeof (SerializableClass));
-      _serializableInstance = _factory.GetTypesafeConstructorInvoker<SerializableClass> (concreteType).With();
+      _serializableInstance = _factory.GetTypesafeConstructorInvoker<SerializableClass> (concreteType).With ();
 
       Type concreteTypeImplementingISerializable = _factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializable));
       _serializableInstanceImplementingISerializable =
-          _factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializable> (concreteTypeImplementingISerializable).With();
+          _factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializable> (concreteTypeImplementingISerializable).With ();
 
       Type concreteTypeImplementingISerializableNotCallingBaseCtor =
           _factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializableNotCallingBaseCtor));
       _serializableInstanceImplementingISerializableNotCallingBaseCtor =
           _factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializableNotCallingBaseCtor> (
-              concreteTypeImplementingISerializableNotCallingBaseCtor).With();
+              concreteTypeImplementingISerializableNotCallingBaseCtor).With ();
       Type concreteTypeImplementingISerializableNotCallingBaseGetObjectData =
           _factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializableNotCallingBaseGetObjectData));
       _serializableInstanceImplementingISerializableNotCallingGetObjectData =
@@ -154,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     {
       _serializableInstance.I = 0x400dd00d;
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, true);
-      object[] members = (object[]) _info.GetValue ("baseMemberValues", typeof (object[]));
+      var members = (object[]) _info.GetValue ("baseMemberValues", typeof (object[]));
       Assert.IsNotNull (members);
       Assert.Contains (0x400dd00d, members);
     }
@@ -164,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     {
       _serializableInstance.I = 0x400dd00d;
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, false);
-      object[] members = (object[]) _info.GetValue ("baseMemberValues", typeof (object[]));
+      var members = (object[]) _info.GetValue ("baseMemberValues", typeof (object[]));
       Assert.IsNull (members);
     }
 
@@ -173,8 +104,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     {
       _serializableInstance.I = 13;
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, true);
-      SerializationHelper helper = new SerializationHelper (_info, _context);
-      SerializableClass realObject = (SerializableClass) helper.GetRealObject (_context);
+      var helper = new SerializationHelper (_info, _context);
+      var realObject = (SerializableClass) helper.GetRealObject (_context);
       Assert.IsNotNull (realObject);
       Assert.AreEqual (13, _serializableInstance.I);
       Assert.AreNotEqual (13, realObject.I);
@@ -188,8 +119,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Assert.IsFalse (_serializableInstanceImplementingISerializable.ISerializableCtorCalled);
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstanceImplementingISerializable, false);
       _serializableInstanceImplementingISerializable.GetObjectData (_info, _context);
-      SerializationHelper helper = new SerializationHelper (_info, _context);
-      SerializableClassImplementingISerializable realObject = (SerializableClassImplementingISerializable) helper.GetRealObject (_context);
+      var helper = new SerializationHelper (_info, _context);
+      var realObject = (SerializableClassImplementingISerializable) helper.GetRealObject (_context);
       Assert.IsTrue (realObject.ISerializableCtorCalled);
     }
 
@@ -198,8 +129,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     {
       _serializableInstance.I = 13;
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, true);
-      SerializationHelper helper = new SerializationHelper (_info, _context);
-      SerializableClass realObject = (SerializableClass) helper.GetRealObject (_context);
+      var helper = new SerializationHelper (_info, _context);
+      var realObject = (SerializableClass) helper.GetRealObject (_context);
       helper.OnDeserialization (null);
 
       Assert.AreEqual (13, realObject.I);
@@ -213,8 +144,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstanceImplementingISerializable, false);
       _serializableInstanceImplementingISerializable.GetObjectData (_info, _context);
 
-      SerializationHelper helper = new SerializationHelper (_info, _context);
-      SerializableClassImplementingISerializable realObject = (SerializableClassImplementingISerializable) helper.GetRealObject (_context);
+      var helper = new SerializationHelper (_info, _context);
+      var realObject = (SerializableClassImplementingISerializable) helper.GetRealObject (_context);
 
       Assert.AreEqual (4, realObject.I);
 
@@ -225,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage = "The deserialization constructor on type "
-        + "Remotion.Data.UnitTests.DomainObjects.Core.Interception.SerializationHelperTest+SerializableClassImplementingISerializableNotCallingBaseCtor "
+        + "Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain.SerializableClassImplementingISerializableNotCallingBaseCtor "
         + "did not call DomainObject's base deserialization constructor.")]
     public void OnDeserializationThrowsIfISerializableBaseCtorNotCalled ()
     {
@@ -236,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage = "The GetObjectData method on type "
-        + "Remotion.Data.UnitTests.DomainObjects.Core.Interception.SerializationHelperTest+SerializableClassImplementingISerializableNotCallingBaseGetObjectData"
+        + "Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain.SerializableClassImplementingISerializableNotCallingBaseGetObjectData"
         +" did not call DomainObject's BaseGetObjectData method.")]
     public void DeserializationCtorThrowsIfBaseGetObjectDataNotCalled ()
     {
@@ -257,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void GetObjectDataThrows ()
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, true);
-      SerializationHelper helper = new SerializationHelper (_info, _context);
+      var helper = new SerializationHelper (_info, _context);
       helper.GetObjectData (_info, _context);
     }
 
@@ -265,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void DeserializerUsesConfigFactory ()
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, true);
-      SerializationHelper helper = new SerializationHelper (_info, _context);
+      var helper = new SerializationHelper (_info, _context);
       Assert.AreSame (DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (typeof (SerializableClass)),
           helper.GetRealObject (_context).GetType ());
     }

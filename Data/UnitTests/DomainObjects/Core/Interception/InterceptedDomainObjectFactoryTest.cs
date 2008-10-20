@@ -12,10 +12,9 @@ using System;
 using System.IO;
 using System.Runtime.Serialization;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Interception.SampleTypes;
+using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -27,14 +26,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
   public class InterceptedDomainObjectFactoryTest : ClientTransactionBaseTest
   {
     private InterceptedDomainObjectFactory _factory;
-    private readonly string _assemblyDirectory = Path.Combine (Environment.CurrentDirectory, "Interception.InterceptedDomainObjectFactoryTest.Dlls");
+    private string _assemblyDirectory;
 
-    public override void SetUp ()
+    public override void TestFixtureSetUp ()
     {
-      base.SetUp();
+      base.TestFixtureSetUp ();
+
+      _assemblyDirectory = Path.Combine (Environment.CurrentDirectory, "Interception.InterceptedDomainObjectFactoryTest.Dlls");
       if (!Directory.Exists (_assemblyDirectory))
         Directory.CreateDirectory (_assemblyDirectory);
       _factory = new InterceptedDomainObjectFactory (_assemblyDirectory);
+    }
+
+    public override void TestFixtureTearDown ()
+    {
+      Directory.Delete (_assemblyDirectory, true);
+      base.TestFixtureTearDown ();
     }
 
     [Test]
@@ -49,10 +56,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     {
       Type concreteType = _factory.GetConcreteDomainObjectType (typeof (Order));
       Assert.AreNotEqual (typeof (Order), concreteType);
-    }
-
-    public abstract class SpecificDerivedDO : DerivedDO
-    {
     }
 
     [Test]
@@ -97,8 +100,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     {
       _factory.GetConcreteDomainObjectType (typeof (Order));
       _factory.SaveGeneratedAssemblies();
-      _factory.GetConcreteDomainObjectType (typeof (OrderItem));
-      _factory.SaveGeneratedAssemblies();
       _factory.GetConcreteDomainObjectType (typeof (ClassWithAllDataTypes));
     }
 
@@ -123,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception.SampleTypes.NonInstantiableAbstractClass "
+        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain.NonInstantiableAbstractClass "
         + "as its member Foo (on type NonInstantiableAbstractClass) is abstract (and not an automatic property).\r\nParameter name: baseType")]
     public void AbstractWithMethodCannotBeInstantiated ()
     {
@@ -132,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception.SampleTypes.NonInstantiableAbstractClassWithProps as its "
+        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain.NonInstantiableAbstractClassWithProps as its "
         + "member get_Foo (on type NonInstantiableAbstractClassWithProps) is abstract (and not an automatic property)."
         + "\r\nParameter name: baseType")]
     public void AbstractWithNonAutoPropertiesCannotBeInstantiated ()
@@ -143,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Interception."
-        + "SampleTypes.NonInstantiableSealedClass as it is sealed.\r\nParameter name: baseType")]
+        + "TestDomain.NonInstantiableSealedClass as it is sealed.\r\nParameter name: baseType")]
     public void SealedCannotBeInstantiated ()
     {
       _factory.GetConcreteDomainObjectType (typeof (NonInstantiableSealedClass));
@@ -211,19 +212,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The domain object's type Remotion.Data.UnitTests.DomainObjects.Core.Interception."
-        + "InterceptedDomainObjectFactoryTest+DirectlyInstantiableDO was not created by "
+        + "TestDomain.DirectlyInstantiableDO was not created by "
         + "InterceptedDomainObjectFactory.GetConcreteDomainObjectType.\r\nParameter name: instance")]
     public void PrepareUnconstructedInstanceThrowsOnTypeNotCreatedByFactory ()
     {
       _factory.PrepareUnconstructedInstance (new DirectlyInstantiableDO());
-    }
-
-    [DBTable]
-    private class DirectlyInstantiableDO : DomainObject
-    {
-      protected override void PerformConstructorCheck ()
-      {
-      }
     }
   }
 }
