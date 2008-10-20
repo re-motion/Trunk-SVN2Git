@@ -84,12 +84,12 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
     public ModuleScope Scope
     {
-      get { return SetupFixture.Scope; }
+      get { return SetUpFixture.Scope; }
     }
 
     public ModuleScope UnsavedScope
     {
-      get { return SetupFixture.UnsavedScope; }
+      get { return SetUpFixture.UnsavedScope; }
     }
 
     public string UniqueName

@@ -198,9 +198,9 @@
     <Compile Include="Reflection\AssemblyFinderTest.cs" />
     <Compile Include="Reflection\AssemblyLoaderTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\FileLoadExceptionConsoleApplication\Program.cs" />
-    <Compile Include="Reflection\CodeGeneration\SetupFixture.cs" />
     <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttributeTest.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\SimpleAttribute.cs" />
+    <Compile Include="Reflection\CodeGeneration\SetUpFixture.cs" />
     <Compile Include="Reflection\ConstructorLookupInfoTest.cs" />
     <Compile Include="Reflection\MethodLookupInfoTest.cs" />
     <Compile Include="Reflection\PropertyTest.cs" />

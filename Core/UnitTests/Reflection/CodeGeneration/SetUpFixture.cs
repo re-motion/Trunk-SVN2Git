@@ -20,7 +20,7 @@ using System.Diagnostics;
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
   [SetUpFixture]
-  public class SetupFixture
+  public class SetUpFixture
   {
     private static ModuleScope s_scope;
     private static ModuleScope s_unsavedScope;
