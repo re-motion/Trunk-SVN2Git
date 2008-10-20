@@ -8,50 +8,23 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
-using System.Collections;
-using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ControlReplacing
 {
   /// <summary>
-  /// The <see cref="ReplacingStateSelectionStrategy"/> type is used when the state of a <see cref="ControlReplacer"/>'s control tree should be 
-  /// restored to reflect a previously used state.
+  /// The <see cref="StateLoadingStrategy"/> type is used when the state of a <see cref="ControlReplacer"/>'s control tree should be 
+  /// loaded during a regular page-lifecycle, i.e. when the view state is to be loaded without modification
   /// </summary>
-  public class ReplacingStateSelectionStrategy : IStateModificationStrategy
+  public class StateLoadingStrategy : IStateModificationStrategy
   {
-    private readonly IDictionary _controlState;
-    private readonly object _viewState;
-
-    public ReplacingStateSelectionStrategy (string serializedState)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("serializedState", serializedState);
-
-      var formatter = new LosFormatter ();
-      var state = (Pair) formatter.Deserialize (serializedState);
-
-      _controlState = (IDictionary) state.First;
-      _viewState = state.Second;
-    }
-
-    public IDictionary ControlState
-    {
-      get { return _controlState; }
-    }
-
-    public object ViewState
-    {
-      get { return _viewState; }
-    }
-
     public void LoadControlState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
     {
       ArgumentUtility.CheckNotNull ("replacer", replacer);
       ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
 
-      memberCaller.SetChildControlState (replacer, _controlState);
+      //NOP
     }
 
     public void LoadViewState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
@@ -59,7 +32,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       ArgumentUtility.CheckNotNull ("replacer", replacer);
       ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
 
-      memberCaller.LoadViewStateRecursive (replacer, _viewState);
+      //NOP
     }
   }
 }

@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
@@ -16,16 +17,41 @@ using Remotion.Web.Utilities;
 namespace Remotion.Web.UI.Controls.ControlReplacing
 {
   /// <summary>
-  /// The <see cref="ClearingStateSelectionStrategy"/> type is used when the state of a <see cref="ControlReplacer"/>'s control tree should be reset.
+  /// The <see cref="StateReplacingStrategy"/> type is used when the state of a <see cref="ControlReplacer"/>'s control tree should be 
+  /// restored to reflect a previously used state.
   /// </summary>
-  public class ClearingStateSelectionStrategy:IStateModificationStrategy
+  public class StateReplacingStrategy : IStateModificationStrategy
   {
+    private readonly IDictionary _controlState;
+    private readonly object _viewState;
+
+    public StateReplacingStrategy (string serializedState)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("serializedState", serializedState);
+
+      var formatter = new LosFormatter ();
+      var state = (Pair) formatter.Deserialize (serializedState);
+
+      _controlState = (IDictionary) state.First;
+      _viewState = state.Second;
+    }
+
+    public IDictionary ControlState
+    {
+      get { return _controlState; }
+    }
+
+    public object ViewState
+    {
+      get { return _viewState; }
+    }
+
     public void LoadControlState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
     {
       ArgumentUtility.CheckNotNull ("replacer", replacer);
       ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
 
-      memberCaller.ClearChildControlState (replacer);
+      memberCaller.SetChildControlState (replacer, _controlState);
     }
 
     public void LoadViewState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
@@ -33,9 +59,7 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       ArgumentUtility.CheckNotNull ("replacer", replacer);
       ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
 
-      bool enableViewStateBackup = replacer.ControlToWrap.EnableViewState;
-      replacer.ControlToWrap.EnableViewState = false;
-      replacer.ControlToWrap.Load += delegate (object sender, EventArgs args ){ ((Control)sender).EnableViewState = enableViewStateBackup; };
+      memberCaller.LoadViewStateRecursive (replacer, _viewState);
     }
   }
 }

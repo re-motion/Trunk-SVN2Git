@@ -30,7 +30,7 @@ namespace Remotion.Web.ExecutionEngine
     public WxeUserControl2 ()
     {
       _wxeInfo = new WxeTemplateControlInfo (this);
-      _lazyContainer = new LazyInitializationContainer ();
+      _lazyContainer = new LazyInitializationContainer();
     }
 
     protected override sealed void OnInit (EventArgs e)
@@ -56,9 +56,9 @@ namespace Remotion.Web.ExecutionEngine
 
           IStateModificationStrategy stateModificationStrategy;
           if (!CurrentUserControlStep.IsPostBack)
-            stateModificationStrategy = new ClearingStateSelectionStrategy();
+            stateModificationStrategy = new StateClearingStrategy();
           else
-            stateModificationStrategy = new LoadingStateSelectionStrategy();
+            stateModificationStrategy = new StateLoadingStrategy();
 
           replacer.ReplaceAndWrap (this, control, stateModificationStrategy);
         }
@@ -66,24 +66,22 @@ namespace Remotion.Web.ExecutionEngine
         {
           IStateModificationStrategy stateModificationStrategy;
           if (CurrentPageStep.IsReturningInnerFunction)
-            stateModificationStrategy = new ReplacingStateSelectionStrategy (CurrentPageStep.UserControlState);
+            stateModificationStrategy = new StateReplacingStrategy (CurrentPageStep.UserControlState);
           else
-            stateModificationStrategy = new LoadingStateSelectionStrategy();
+            stateModificationStrategy = new StateLoadingStrategy();
 
           replacer.ReplaceAndWrap (this, this, stateModificationStrategy);
         }
       }
       else
-      {
-        CompleteInitialization ();
-      }
+        CompleteInitialization();
     }
 
     private void CompleteInitialization ()
     {
       Assertion.IsNotNull (Parent, "The control has not been wrapped by the ControlReplacer during initialization or control replacement.");
 
-      _lazyContainer.Ensure(base.Controls);
+      _lazyContainer.Ensure (base.Controls);
 
       OnInitComplete (EventArgs.Empty);
     }
@@ -97,16 +95,16 @@ namespace Remotion.Web.ExecutionEngine
     {
       get
       {
-        EnsureChildControls ();
+        EnsureChildControls();
 
-        return _lazyContainer.GetControls(base.Controls);
+        return _lazyContainer.GetControls (base.Controls);
       }
     }
 
     protected override sealed void CreateChildControls ()
     {
       if (ControlHelper.IsDesignMode (this, Context))
-        _lazyContainer.Ensure(base.Controls);
+        _lazyContainer.Ensure (base.Controls);
     }
 
     public void ExecuteFunction (WxeFunction function)

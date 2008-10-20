@@ -69,7 +69,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 
     protected object CreateViewState (TestPageHolder testPageHolder)
     {
-      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new LoadingStateSelectionStrategy());
+      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new StateLoadingStrategy());
       testPageHolder.PageInvoker.InitRecursive();
       if (testPageHolder.Page.IsPostBack)
         new ControlInvoker (testPageHolder.NamingContainer).LoadControlState (null);
@@ -85,7 +85,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 
     protected object CreateControlState (TestPageHolder testPageHolder)
     {
-      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new LoadingStateSelectionStrategy ());
+      ControlReplacer replacer = SetupControlReplacerForIntegrationTest (testPageHolder.NamingContainer, new StateLoadingStrategy ());
       testPageHolder.PageInvoker.InitRecursive();
       if (testPageHolder.Page.IsPostBack)
         new ControlInvoker (testPageHolder.NamingContainer).LoadControlState (null);

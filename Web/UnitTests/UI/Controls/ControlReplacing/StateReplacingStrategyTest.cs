@@ -20,7 +20,7 @@ using Rhino.Mocks;
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 {
   [TestFixture]
-  public class ReplacingStateSelectionStrategyTest : TestBase
+  public class StateReplacingStrategyTest : TestBase
   {
     private ControlReplacer _replacer;
     private IStateModificationStrategy _stateModificationStrategy;
@@ -37,14 +37,14 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
       StringWriter writer = new StringWriter ();
       formatter.Serialize (writer, state);
 
-      _stateModificationStrategy = new ReplacingStateSelectionStrategy (writer.ToString ());
+      _stateModificationStrategy = new StateReplacingStrategy (writer.ToString ());
     }
 
     [Test]
     public void Initialize ()
     {
-      Assert.That (((ReplacingStateSelectionStrategy)_stateModificationStrategy).ViewState, Is.Not.Null);
-      Assert.That (((ReplacingStateSelectionStrategy) _stateModificationStrategy).ControlState, Is.Not.Null);
+      Assert.That (((StateReplacingStrategy)_stateModificationStrategy).ViewState, Is.Not.Null);
+      Assert.That (((StateReplacingStrategy) _stateModificationStrategy).ControlState, Is.Not.Null);
     }
 
     [Test]

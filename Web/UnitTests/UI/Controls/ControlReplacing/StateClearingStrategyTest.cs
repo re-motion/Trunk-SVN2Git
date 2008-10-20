@@ -11,23 +11,27 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
 {
   [TestFixture]
-  public class LoadingStateSelectionStrategyTest : TestBase
+  public class StateClearingStrategyTest : TestBase
   {
     [Test]
     public void LoadControlState ()
     {
       var testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
-      IStateModificationStrategy stateModificationStrategy = new LoadingStateSelectionStrategy ();
+      IStateModificationStrategy stateModificationStrategy = new StateClearingStrategy ();
       var replacer = new ControlReplacer (MemberCallerMock);
       replacer.StateModificationStrategy = stateModificationStrategy;
       replacer.Controls.Add (testPageHolder.NamingContainer);
 
+      MemberCallerMock.Expect (mock => mock.ClearChildControlState (replacer));
       MockRepository.ReplayAll ();
 
       stateModificationStrategy.LoadControlState (replacer, MemberCallerMock);
@@ -39,16 +43,23 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
     public void LoadViewState ()
     {
       var testPageHolder = new TestPageHolder (false, RequestMode.PostBack);
-      IStateModificationStrategy stateModificationStrategy = new LoadingStateSelectionStrategy ();
+      IStateModificationStrategy stateModificationStrategy = new StateClearingStrategy ();
       var replacer = new ControlReplacer (MemberCallerMock);
       replacer.StateModificationStrategy = stateModificationStrategy;
       replacer.Controls.Add (testPageHolder.NamingContainer);
+      var controlToReplace = new ControlMock();
+      PrivateInvoke.SetNonPublicField (replacer, "_controlToWrap", controlToReplace);
 
-      MockRepository.ReplayAll ();
+      Assert.That (controlToReplace.EnableViewState, Is.True);
 
       stateModificationStrategy.LoadViewState (replacer, MemberCallerMock);
 
-      MockRepository.VerifyAll ();
+      Assert.That (controlToReplace.EnableViewState, Is.False);
+
+      ControlInvoker controlToReplaceInvoker = new ControlInvoker (controlToReplace);
+      controlToReplaceInvoker.LoadRecursive ();
+
+      Assert.That (controlToReplace.EnableViewState, Is.True);
     }
   }
 }
