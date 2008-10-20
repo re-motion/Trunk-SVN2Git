@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using Castle.DynamicProxy;
 using Remotion.Utilities;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
