@@ -34,53 +34,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     private const BindingFlags _declaredPublicInstanceFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance;
     private const BindingFlags _declaredInstanceFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-    private ModuleManager _scope;
-    private string _directory;
-
     public override void TestFixtureSetUp ()
     {
       base.TestFixtureSetUp ();
 
-      _directory = Path.Combine (Environment.CurrentDirectory, "Interception.TypeGeneratorTest.Dlls");
-      SetupAssemblyDirectory (_directory);
-
-      _scope = new ModuleManager (_directory);
+      SetupAssemblyDirectory ();
 
       // setup mixin builder to generate files into the same directory
       ConcreteTypeBuilder.SetCurrent (null); // reinitialize ConcreteTypeBuilder
-      ConcreteTypeBuilder.Current.Scope.SignedModulePath = Path.Combine (_directory, ConcreteTypeBuilder.Current.Scope.SignedAssemblyName + ".dll");
-      ConcreteTypeBuilder.Current.Scope.UnsignedModulePath = Path.Combine (_directory, ConcreteTypeBuilder.Current.Scope.UnsignedAssemblyName + ".dll");
+      ConcreteTypeBuilder.Current.Scope.SignedModulePath = Path.Combine (AssemblyDirectory, ConcreteTypeBuilder.Current.Scope.SignedAssemblyName + ".dll");
+      ConcreteTypeBuilder.Current.Scope.UnsignedModulePath = Path.Combine (AssemblyDirectory, ConcreteTypeBuilder.Current.Scope.UnsignedAssemblyName + ".dll");
     }
 
-    private void SetupAssemblyDirectory (string directory)
+    private string AssemblyDirectory
     {
-      if (Directory.Exists (directory))
-        Directory.Delete (directory, true);
+      get { return SetUpFixture.AssemblyDirectory; }
+    }
 
-      Directory.CreateDirectory (directory);
+    private InterceptedDomainObjectFactory Factory
+    {
+      get { return SetUpFixture.Factory; }
+    }
+
+    private void SetupAssemblyDirectory ()
+    {
+      SetUpFixture.SetupAssemblyDirectory ();
 
       Module unitTestAssemblyModule = Assembly.GetExecutingAssembly ().ManifestModule;
-      File.Copy (unitTestAssemblyModule.FullyQualifiedName, Path.Combine (directory, unitTestAssemblyModule.Name));
+      File.Copy (unitTestAssemblyModule.FullyQualifiedName, Path.Combine (AssemblyDirectory, unitTestAssemblyModule.Name));
 
       Module domainObjectAssemblyModule = typeof (DomainObject).Assembly.ManifestModule;
-      File.Copy (domainObjectAssemblyModule.FullyQualifiedName, Path.Combine (directory, domainObjectAssemblyModule.Name));
+      File.Copy (domainObjectAssemblyModule.FullyQualifiedName, Path.Combine (AssemblyDirectory, domainObjectAssemblyModule.Name));
 
       Module mixinAssemblyModule = typeof (Mixin).Assembly.ManifestModule;
-      File.Copy (mixinAssemblyModule.FullyQualifiedName, Path.Combine (directory, mixinAssemblyModule.Name));
+      File.Copy (mixinAssemblyModule.FullyQualifiedName, Path.Combine (AssemblyDirectory, mixinAssemblyModule.Name));
 
       Module coreAssemblyModule = typeof (ArgumentUtility).Assembly.ManifestModule;
-      File.Copy (coreAssemblyModule.FullyQualifiedName, Path.Combine (directory, coreAssemblyModule.Name));
+      File.Copy (coreAssemblyModule.FullyQualifiedName, Path.Combine (AssemblyDirectory, coreAssemblyModule.Name));
 
       Module objectBindingInterfacesModule = typeof (IBusinessObject).Assembly.ManifestModule;
-      File.Copy (objectBindingInterfacesModule.FullyQualifiedName, Path.Combine (directory, objectBindingInterfacesModule.Name));
+      File.Copy (objectBindingInterfacesModule.FullyQualifiedName, Path.Combine (AssemblyDirectory, objectBindingInterfacesModule.Name));
 
       Module objectBindingModule = typeof (BindableObjectBase).Assembly.ManifestModule;
-      File.Copy (objectBindingModule.FullyQualifiedName, Path.Combine (directory, objectBindingModule.Name));
+      File.Copy (objectBindingModule.FullyQualifiedName, Path.Combine (AssemblyDirectory, objectBindingModule.Name));
     }
 
     public override void TestFixtureTearDown ()
     {
-      string[] paths = _scope.SaveAssemblies ();
+      string[] paths = Factory.SaveGeneratedAssemblies ();
       // save mixins as well, we need those files if the intercepted types depend on mixed types
       ConcreteTypeBuilder.Current.SaveAndResetDynamicScope ();
 
@@ -94,7 +95,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     private TypeGenerator CreateTypeGenerator (Type baseType)
     {
-      return _scope.CreateTypeGenerator (baseType, baseType);
+      return Factory.Scope.CreateTypeGenerator (baseType, baseType);
+    }
+
+    private TypeGenerator CreateTypeGenerator (Type publicDomainObjectType, Type typeToDeriveFrom)
+    {
+      return Factory.Scope.CreateTypeGenerator (publicDomainObjectType, typeToDeriveFrom);
     }
 
     [Test]
@@ -278,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Type mixedBaseType = TypeFactory.GetConcreteType (typeof (TargetClassForPersistentMixin));
       // save mixin scope to enable peverifying the intercepted type
       Assert.IsTrue (MixinTypeUtility.HasMixin (mixedBaseType, typeof (MixinAddingPersistentProperties)));
-      Type type = _scope.CreateTypeGenerator (typeof (TargetClassForPersistentMixin), mixedBaseType).BuildType ();
+      Type type = CreateTypeGenerator (typeof (TargetClassForPersistentMixin), mixedBaseType).BuildType ();
       Assert.That (type.GetProperties (_declaredInstanceFlags), Is.Empty);
     }
 
@@ -635,7 +641,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [Test]
     public void DifferentPublicAndBaseType ()
     {
-      Type type = _scope.CreateTypeGenerator (typeof (DOWithVirtualProperties), typeof (DerivedDO)).BuildType();
+      Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties), typeof (DerivedDO)).BuildType();
       Assert.IsTrue (typeof (DerivedDO).IsAssignableFrom (type));
 
       var instance = (DerivedDO) Activator.CreateInstance (type);
@@ -645,7 +651,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [Test]
     public void PublicTypeIsUsedForOverrideAnalysis ()
     {
-      Type type = _scope.CreateTypeGenerator (typeof (DOWithVirtualProperties), typeof (DerivedDO)).BuildType ();
+      Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties), typeof (DerivedDO)).BuildType ();
       Assert.IsNull (type.GetMethod (typeof (DerivedDO).FullName + ".get_VirtualPropertyOnDerivedClass", _declaredInstanceFlags));
     }
 

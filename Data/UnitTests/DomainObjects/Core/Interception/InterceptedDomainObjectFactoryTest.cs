@@ -25,36 +25,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
   [TestFixture]
   public class InterceptedDomainObjectFactoryTest : ClientTransactionBaseTest
   {
-    private InterceptedDomainObjectFactory _factory;
-    private string _assemblyDirectory;
 
     public override void TestFixtureSetUp ()
     {
       base.TestFixtureSetUp ();
-
-      _assemblyDirectory = Path.Combine (Environment.CurrentDirectory, "Interception.InterceptedDomainObjectFactoryTest.Dlls");
-      if (!Directory.Exists (_assemblyDirectory))
-        Directory.CreateDirectory (_assemblyDirectory);
-      _factory = new InterceptedDomainObjectFactory (_assemblyDirectory);
+      SetUpFixture.SetupAssemblyDirectory();
     }
 
     public override void TestFixtureTearDown ()
     {
-      Directory.Delete (_assemblyDirectory, true);
+      SetUpFixture.CleanupAssemblyDirectory();
       base.TestFixtureTearDown ();
+    }
+
+    public static string AssemblyDirectory
+    {
+      get { return SetUpFixture.AssemblyDirectory; }
+    }
+
+    public InterceptedDomainObjectFactory Factory
+    {
+      get { return SetUpFixture.Factory; }
     }
 
     [Test]
     public void GetConcreteDomainObjectTypeReturnsAssignableType ()
     {
-      Type concreteType = _factory.GetConcreteDomainObjectType (typeof (Order));
+      Type concreteType = Factory.GetConcreteDomainObjectType (typeof (Order));
       Assert.IsTrue (typeof (Order).IsAssignableFrom (concreteType));
     }
 
     [Test]
     public void GetConcreteDomainObjectTypeReturnsDifferentType ()
     {
-      Type concreteType = _factory.GetConcreteDomainObjectType (typeof (Order));
+      Type concreteType = Factory.GetConcreteDomainObjectType (typeof (Order));
       Assert.AreNotEqual (typeof (Order), concreteType);
     }
 
@@ -62,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void GetConcreteDomainObjectTypeForSpecificBaseType ()
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (DerivedDO));
-      Type concreteType = _factory.GetConcreteDomainObjectType (classDefinition, typeof (SpecificDerivedDO));
+      Type concreteType = Factory.GetConcreteDomainObjectType (classDefinition, typeof (SpecificDerivedDO));
       Assert.AreNotEqual (typeof (DerivedDO), concreteType.BaseType);
       Assert.AreEqual (typeof (SpecificDerivedDO), concreteType.BaseType);
     }
@@ -74,33 +78,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void GetConcreteDomainObjectTypeForSpecificBaseType_ThrowsOnInvalidSpecificType ()
     {
       ClassDefinition orderDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
-      _factory.GetConcreteDomainObjectType (orderDefinition, typeof (Official));
+      Factory.GetConcreteDomainObjectType (orderDefinition, typeof (Official));
     }
 
     [Test]
     public void FactoryCachesGeneratedTypes ()
     {
-      Type concreteType1 = _factory.GetConcreteDomainObjectType (typeof (Order));
-      Type concreteType2 = _factory.GetConcreteDomainObjectType (typeof (Order));
+      Type concreteType1 = Factory.GetConcreteDomainObjectType (typeof (Order));
+      Type concreteType2 = Factory.GetConcreteDomainObjectType (typeof (Order));
       Assert.AreSame (concreteType1, concreteType2);
     }
 
     [Test]
     public void SaveReturnsPathOfGeneratedAssemblySigned ()
     {
-      _factory.GetConcreteDomainObjectType (typeof (Order));
-      string[] paths = _factory.SaveGeneratedAssemblies();
+      Factory.GetConcreteDomainObjectType (typeof (Order));
+      string[] paths = Factory.SaveGeneratedAssemblies();
       Assert.AreEqual (1, paths.Length);
-      Assert.AreEqual (Path.Combine (_assemblyDirectory, "Remotion.Data.DomainObjects.Generated.Signed.dll"), paths[0]);
+      Assert.AreEqual (Path.Combine (AssemblyDirectory, "Remotion.Data.DomainObjects.Generated.Signed.dll"), paths[0]);
       Assert.IsTrue (File.Exists (paths[0]));
     }
 
     [Test]
     public void CanContinueToGenerateTypesAfterSave ()
     {
-      _factory.GetConcreteDomainObjectType (typeof (Order));
-      _factory.SaveGeneratedAssemblies();
-      _factory.GetConcreteDomainObjectType (typeof (ClassWithAllDataTypes));
+      Factory.GetConcreteDomainObjectType (typeof (Order));
+      Factory.SaveGeneratedAssemblies();
+      Factory.GetConcreteDomainObjectType (typeof (ClassWithAllDataTypes));
     }
 
     [Test]
@@ -109,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
         + "for classes with automatic properties, InstantiableAttribute must be used.\r\nParameter name: baseType")]
     public void AbstractWithoutInstantiableAttributeCannotBeInstantiated ()
     {
-      _factory.GetConcreteDomainObjectType (typeof (AbstractClass));
+      Factory.GetConcreteDomainObjectType (typeof (AbstractClass));
     }
 
     [Test]
@@ -118,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
         + "for classes with automatic properties, InstantiableAttribute must be used.\r\nParameter name: baseTypeClassDefinition")]
     public void AbstractWithoutInstantiableAttributeCannotBeInstantiated_WithSpecificType ()
     {
-      _factory.GetConcreteDomainObjectType (
+      Factory.GetConcreteDomainObjectType (
           MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (AbstractClass)), typeof (AbstractClass));
     }
 
@@ -128,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
         + "as its member Foo (on type NonInstantiableAbstractClass) is abstract (and not an automatic property).\r\nParameter name: baseType")]
     public void AbstractWithMethodCannotBeInstantiated ()
     {
-      _factory.GetConcreteDomainObjectType (typeof (NonInstantiableAbstractClass));
+      Factory.GetConcreteDomainObjectType (typeof (NonInstantiableAbstractClass));
     }
 
     [Test]
@@ -138,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
         + "\r\nParameter name: baseType")]
     public void AbstractWithNonAutoPropertiesCannotBeInstantiated ()
     {
-      _factory.GetConcreteDomainObjectType (typeof (NonInstantiableAbstractClassWithProps));
+      Factory.GetConcreteDomainObjectType (typeof (NonInstantiableAbstractClassWithProps));
     }
 
     [Test]
@@ -147,38 +151,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
         + "TestDomain.NonInstantiableSealedClass as it is sealed.\r\nParameter name: baseType")]
     public void SealedCannotBeInstantiated ()
     {
-      _factory.GetConcreteDomainObjectType (typeof (NonInstantiableSealedClass));
+      Factory.GetConcreteDomainObjectType (typeof (NonInstantiableSealedClass));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
     public void NonDomainCannotBeInstantiated ()
     {
-      _factory.GetConcreteDomainObjectType (typeof (NonInstantiableNonDomainClass));
+      Factory.GetConcreteDomainObjectType (typeof (NonInstantiableNonDomainClass));
     }
 
     [Test]
     public void WasCreatedByFactory ()
     {
-      Assert.IsTrue (_factory.WasCreatedByFactory (_factory.GetConcreteDomainObjectType (typeof (Order))));
-      Assert.IsFalse (_factory.WasCreatedByFactory (typeof (Order)));
+      Assert.IsTrue (Factory.WasCreatedByFactory (Factory.GetConcreteDomainObjectType (typeof (Order))));
+      Assert.IsFalse (Factory.WasCreatedByFactory (typeof (Order)));
     }
 
     [Test]
     public void GetTypesafeConstructorInvoker ()
     {
-      IFuncInvoker<Order> invoker = _factory.GetTypesafeConstructorInvoker<Order> (_factory.GetConcreteDomainObjectType (typeof (Order)));
+      IFuncInvoker<Order> invoker = Factory.GetTypesafeConstructorInvoker<Order> (Factory.GetConcreteDomainObjectType (typeof (Order)));
       Order order = invoker.With();
       Assert.IsNotNull (order);
-      Assert.AreSame (_factory.GetConcreteDomainObjectType (typeof (Order)), ((object) order).GetType());
+      Assert.AreSame (Factory.GetConcreteDomainObjectType (typeof (Order)), ((object) order).GetType());
     }
 
     [Test]
     public void GetTypesafeConstructorInvokerWithConstructors ()
     {
       IFuncInvoker<DOWithConstructors> invoker =
-          _factory.GetTypesafeConstructorInvoker<DOWithConstructors> (
-              _factory.GetConcreteDomainObjectType (typeof (DOWithConstructors)));
+          Factory.GetTypesafeConstructorInvoker<DOWithConstructors> (
+              Factory.GetConcreteDomainObjectType (typeof (DOWithConstructors)));
       DOWithConstructors instance = invoker.With ("17", "4");
       Assert.IsNotNull (instance);
       Assert.AreEqual ("17", instance.FirstArg);
@@ -191,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
         + "created by InterceptedDomainObjectFactory.GetConcreteDomainObjectType.\r\nParameter name: dynamicType")]
     public void GetTypesafeConstructorInvokerThrowsOnTypeNotCreatedByFactory ()
     {
-      _factory.GetTypesafeConstructorInvoker<Order> (typeof (Order));
+      Factory.GetTypesafeConstructorInvoker<Order> (typeof (Order));
     }
 
     [Test]
@@ -200,14 +204,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
         MatchType = MessageMatch.Regex)]
     public void GetTypesafeConstructorInvokerThrowsOnInvalidTMinimimal ()
     {
-      _factory.GetTypesafeConstructorInvoker<OrderTicket> (_factory.GetConcreteDomainObjectType (typeof (Order)));
+      Factory.GetTypesafeConstructorInvoker<OrderTicket> (Factory.GetConcreteDomainObjectType (typeof (Order)));
     }
 
     [Test]
     public void PrepareUnconstructedInstance ()
     {
-      Order order = (Order) FormatterServices.GetSafeUninitializedObject (_factory.GetConcreteDomainObjectType (typeof (Order)));
-      _factory.PrepareUnconstructedInstance (order);
+      Order order = (Order) FormatterServices.GetSafeUninitializedObject (Factory.GetConcreteDomainObjectType (typeof (Order)));
+      Factory.PrepareUnconstructedInstance (order);
     }
 
     [Test]
@@ -216,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
         + "InterceptedDomainObjectFactory.GetConcreteDomainObjectType.\r\nParameter name: instance")]
     public void PrepareUnconstructedInstanceThrowsOnTypeNotCreatedByFactory ()
     {
-      _factory.PrepareUnconstructedInstance (new DirectlyInstantiableDO());
+      Factory.PrepareUnconstructedInstance (new DirectlyInstantiableDO());
     }
   }
 }

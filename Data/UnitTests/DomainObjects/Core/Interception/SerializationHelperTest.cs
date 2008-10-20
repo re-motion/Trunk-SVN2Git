@@ -24,17 +24,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
   {
     private SerializationInfo _info;
     private StreamingContext _context;
-    private InterceptedDomainObjectFactory _factory;
+    
     private SerializableClass _serializableInstance;
     private SerializableClassImplementingISerializable _serializableInstanceImplementingISerializable;
     private SerializableClassImplementingISerializableNotCallingBaseCtor _serializableInstanceImplementingISerializableNotCallingBaseCtor;
     private SerializableClassImplementingISerializableNotCallingBaseGetObjectData _serializableInstanceImplementingISerializableNotCallingGetObjectData;
 
-
-    public override void TestFixtureSetUp ()
+    public InterceptedDomainObjectFactory Factory
     {
-      base.TestFixtureSetUp ();
-      _factory = new InterceptedDomainObjectFactory (Environment.CurrentDirectory);
+      get { return SetUpFixture.Factory; }
     }
 
     public override void SetUp ()
@@ -44,22 +42,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       _info = new SerializationInfo (typeof (SerializableClass), new FormatterConverter ());
       _context = new StreamingContext ();
 
-      Type concreteType = _factory.GetConcreteDomainObjectType (typeof (SerializableClass));
-      _serializableInstance = _factory.GetTypesafeConstructorInvoker<SerializableClass> (concreteType).With ();
+      Type concreteType = Factory.GetConcreteDomainObjectType (typeof (SerializableClass));
+      _serializableInstance = Factory.GetTypesafeConstructorInvoker<SerializableClass> (concreteType).With ();
 
-      Type concreteTypeImplementingISerializable = _factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializable));
+      Type concreteTypeImplementingISerializable = Factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializable));
       _serializableInstanceImplementingISerializable =
-          _factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializable> (concreteTypeImplementingISerializable).With ();
+          Factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializable> (concreteTypeImplementingISerializable).With ();
 
       Type concreteTypeImplementingISerializableNotCallingBaseCtor =
-          _factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializableNotCallingBaseCtor));
+          Factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializableNotCallingBaseCtor));
       _serializableInstanceImplementingISerializableNotCallingBaseCtor =
-          _factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializableNotCallingBaseCtor> (
+          Factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializableNotCallingBaseCtor> (
               concreteTypeImplementingISerializableNotCallingBaseCtor).With ();
       Type concreteTypeImplementingISerializableNotCallingBaseGetObjectData =
-          _factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializableNotCallingBaseGetObjectData));
+          Factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializableNotCallingBaseGetObjectData));
       _serializableInstanceImplementingISerializableNotCallingGetObjectData =
-          _factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializableNotCallingBaseGetObjectData> (
+          Factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializableNotCallingBaseGetObjectData> (
               concreteTypeImplementingISerializableNotCallingBaseGetObjectData).With ();
     }
 
@@ -109,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Assert.IsNotNull (realObject);
       Assert.AreEqual (13, _serializableInstance.I);
       Assert.AreNotEqual (13, realObject.I);
-      Assert.IsTrue (_factory.WasCreatedByFactory (((object)realObject).GetType()));
+      Assert.IsTrue (Factory.WasCreatedByFactory (((object)realObject).GetType()));
       Assert.AreSame (typeof (SerializableClass), ((object) realObject).GetType ().BaseType);
     }
 
