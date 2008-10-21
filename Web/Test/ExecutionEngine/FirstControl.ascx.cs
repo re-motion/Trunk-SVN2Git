@@ -17,7 +17,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       if (!WxePage.IsReturningPostBack)
       {
         ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Executed";
-        ExecuteFunction (new ShowSecondUserControlFormFunction());
+        ExecuteFunction (new ShowSecondUserControlFormFunction(), (Control)sender, null);
       }
       else
       {

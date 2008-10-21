@@ -20,7 +20,7 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     protected void ExecuteSubFunctionButton_Click (object sender, EventArgs e)
     {
-      //throw new InvalidOperationException ("This event handler should never be called.");
+      throw new InvalidOperationException ("This event handler should never be called.");
     }
 
     protected override void OnInitComplete (EventArgs e)

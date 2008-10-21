@@ -31,15 +31,11 @@ namespace Remotion.Web.ExecutionEngine
     private readonly string _pageToken;
     private string _pageState;
 
-    private WxeFunction _innerFunction;
-    private string _userControlID;
-    private string _userControlState;
-
     [NonSerialized]
     private WxeHandler _wxeHandler;
 
-    private bool _isReturningInnerFunction;
     private IExecutionState _executionState = NullExecutionState.Null;
+    private IUserControlExecutor _userControlExecutor = NullUserControlExecutor.Null;
 
     /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
     /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Ctor/param[@name="page"]' />
@@ -69,6 +65,19 @@ namespace Remotion.Web.ExecutionEngine
       get { return _page.GetResourcePath (Variables); }
     }
 
+    /// <summary> Gets the currently executing <see cref="WxeStep"/>. </summary>
+    /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/ExecutingStep/*' />
+    public override WxeStep ExecutingStep
+    {
+      get
+      {
+        if (_executionState.IsExecuting)
+          return _executionState.Parameters.SubFunction.ExecutingStep;
+        else
+          return this;
+      }
+    }
+
     /// <summary> 
     ///   Displays the <see cref="WxePageStep"/>'s page or the sub-function that has been invoked by the 
     ///   <see cref="ExecuteFunction"/> method.
@@ -86,24 +95,11 @@ namespace Remotion.Web.ExecutionEngine
 
       if (!_executionState.IsExecuting)
       {
-        //  This is the PageStep if it isn't executing a sub-function
-
         //  Use the Page's postback data
         context.PostBackCollection = null;
         context.SetIsReturningPostBack (false);
 
-        if (_innerFunction != null)
-        {
-          bool isPostBackBackUp = context.IsPostBack;
-          try
-          {
-            _innerFunction.Execute (context);
-          }
-          catch (WxeExecuteUserControlStepException)
-          {
-            context.SetIsPostBack (isPostBackBackUp);
-          }
-        }
+        _userControlExecutor.Execute (context);
       }
       else
       {
@@ -117,7 +113,7 @@ namespace Remotion.Web.ExecutionEngine
       }
       catch (WxeExecuteUserControlNextStepException)
       {
-        _isReturningInnerFunction = true;
+        _userControlExecutor.Return (context);
 
         try
         {
@@ -125,24 +121,8 @@ namespace Remotion.Web.ExecutionEngine
         }
         finally
         {
-          _userControlID = null;
-          _innerFunction = null;
-          _userControlState = null;
-          _isReturningInnerFunction = false;
+          _userControlExecutor = NullUserControlExecutor.Null;
         }
-      }
-    }
-
-    /// <summary> Gets the currently executing <see cref="WxeStep"/>. </summary>
-    /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/ExecutingStep/*' />
-    public override WxeStep ExecutingStep
-    {
-      get
-      {
-        if (_executionState.IsExecuting)
-          return _executionState.Parameters.SubFunction.ExecutingStep;
-        else
-          return this;
       }
     }
 
@@ -173,22 +153,19 @@ namespace Remotion.Web.ExecutionEngine
       _wxeHandler = parameters.Page.WxeHandler;
 
       _executionState = new ExecuteByRedirect_PreProcessingSubFunctionState (this, parameters, returnOptions);
-
       Execute();
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void ExecuteFunction (WxeUserControl2 userControl, WxeFunction function)
+    public void ExecuteFunction (WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
     {
       ArgumentUtility.CheckNotNull ("userControl", userControl);
-      ArgumentUtility.CheckNotNull ("function", function);
-
-      _userControlState = userControl.SaveAllState ();
-      _innerFunction = function;
-      _userControlID = userControl.UniqueID;
-      function.SetParentStep (this);
+      ArgumentUtility.CheckNotNull ("subFunction", subFunction);
+      ArgumentUtility.CheckNotNull ("sender", sender);
 
       _wxeHandler = userControl.WxePage.WxeHandler;
+      
+      _userControlExecutor = new UserControlExecutor (this, userControl, subFunction, sender, usesEventTarget);
       Execute ();
     }
 
@@ -235,29 +212,14 @@ namespace Remotion.Web.ExecutionEngine
         _executionState.Parameters.SubFunction.Abort();
     }
 
-    public string UserControlID
-    {
-      get { return _userControlID; }
-    }
-
-    public WxeFunction InnerFunction
-    {
-      get { return _innerFunction; }
-    }
-
-    public string UserControlState
-    {
-      get { return _userControlState; }
-    }
-
-    public bool IsReturningInnerFunction
-    {
-      get { return _isReturningInnerFunction; }
-    }
-
     public IWxePageExecutor PageExecutor
     {
       get { return _pageExecutor; }
+    }
+
+    public IUserControlExecutor UserControlExecutor
+    {
+      get { return _userControlExecutor; }
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]

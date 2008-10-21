@@ -11,10 +11,12 @@
 using System;
 using System.Collections.Specialized;
 using System.Web.SessionState;
+using System.Web.UI.WebControls;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
@@ -75,17 +77,16 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
     [Test]
     public void HandlesWxeExecuteUserControlNextStepException ()
     {
-      PrivateInvoke.SetNonPublicField (_pageStep, "_isReturningInnerFunction", false);
-      PrivateInvoke.SetNonPublicField (_pageStep, "_innerFunction", _subFunction);
-      PrivateInvoke.SetNonPublicField (_pageStep, "_userControlID", "TheUserControlID");
-      PrivateInvoke.SetNonPublicField (_pageStep, "_userControlState", "TheUserControlState");
+      var userControlExecutorMock = _mockRepository.StrictMock<IUserControlExecutor> ();
+      PrivateInvoke.SetNonPublicField (_pageStep, "_userControlExecutor", userControlExecutorMock);
 
       using (_mockRepository.Ordered ())
       {
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException());
+        userControlExecutorMock.Expect (mock => mock.Execute (_wxeContext));
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException ());
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Do (
-            invocation => Assert.That (_pageStep.IsReturningInnerFunction, Is.True));
+        userControlExecutorMock.Expect (mock => mock.Return(_wxeContext));
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage"));
       }
 
       _mockRepository.ReplayAll();
@@ -93,20 +94,15 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       _pageStep.Execute (_wxeContext);
 
       _mockRepository.VerifyAll();
-      Assert.That (_pageStep.IsReturningInnerFunction, Is.False);
-      Assert.That (_pageStep.InnerFunction, Is.Null);
-      Assert.That (_pageStep.UserControlID, Is.Null);
-      Assert.That (_pageStep.UserControlState, Is.Null);
+      Assert.That (_pageStep.UserControlExecutor.IsNull);
     }
 
     [Test]
     [ExpectedException (typeof (ApplicationException))]
     public void CleanUpAndRethrowException ()
     {
-      PrivateInvoke.SetNonPublicField (_pageStep, "_isReturningInnerFunction", false);
-      PrivateInvoke.SetNonPublicField (_pageStep, "_innerFunction", _subFunction);
-      PrivateInvoke.SetNonPublicField (_pageStep, "_userControlID", "TheUserControlID");
-      PrivateInvoke.SetNonPublicField (_pageStep, "_userControlState", "TheUserControlState");
+      var userControlExecutorStub = MockRepository.GenerateStub<IUserControlExecutor>();
+      PrivateInvoke.SetNonPublicField (_pageStep, "_userControlExecutor", userControlExecutorStub);
      
       using (_mockRepository.Ordered ())
       {
@@ -123,10 +119,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       finally
       {
         _pageExecutorMock.VerifyAllExpectations();
-        Assert.That (_pageStep.IsReturningInnerFunction, Is.False);
-        Assert.That (_pageStep.InnerFunction, Is.Null);
-        Assert.That (_pageStep.UserControlID, Is.Null);
-        Assert.That (_pageStep.UserControlState, Is.Null);
+        Assert.That (_pageStep.UserControlExecutor.IsNull);
       }
     }
   }

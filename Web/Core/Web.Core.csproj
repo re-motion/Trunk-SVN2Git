@@ -114,6 +114,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateRootTransactionMode.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\IUserControlExecutor.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\IWxeFunctionExecutionContext.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\IWxeFunctionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ITransactionStrategy.cs" />
@@ -121,11 +122,13 @@
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionMode.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\NullTransactionStrategy.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\NullUserControlExecutor.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\SecurityExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\TransactionStrategyBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ScopedTransactionStrategyBase.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\UserControlExecutor.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxeExceptionHandler.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxeVariablesContainer.cs" />
     <Compile Include="ExecutionEngine\ITransactionMode.cs" />

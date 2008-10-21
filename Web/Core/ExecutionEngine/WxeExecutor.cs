@@ -112,6 +112,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   Gets a flag describing whether the post back was most likely caused by the ASP.NET post back mechanism.
     /// </summary>
     /// <value> <see langword="true"/> if the post back collection contains the <b>__EVENTTARGET</b> field. </value>
+    //TODO: Code duplication with WxeExecutor.UsesEventTarget
     private bool UsesEventTarget
     {
       get
