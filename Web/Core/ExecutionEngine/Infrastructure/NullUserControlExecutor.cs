@@ -9,10 +9,12 @@
  */
 
 using System;
+using System.Runtime.Serialization;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
-  public class NullUserControlExecutor : IUserControlExecutor
+  [Serializable]
+  public class NullUserControlExecutor : IUserControlExecutor, IObjectReference
   {
     public static readonly IUserControlExecutor Null = new NullUserControlExecutor();
 
@@ -53,6 +55,11 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public bool IsReturningInnerFunction
     {
       get { return false; }
+    }
+
+    object IObjectReference.GetRealObject (StreamingContext context)
+    {
+      return NullUserControlExecutor.Null;
     }
   }
 }

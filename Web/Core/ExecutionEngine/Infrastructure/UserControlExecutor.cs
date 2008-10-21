@@ -8,6 +8,7 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using System.Collections.Specialized;
 using System.Web.UI;
 using Remotion.Utilities;
@@ -15,6 +16,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
+  [Serializable]
   public class UserControlExecutor : IUserControlExecutor
   {
     private readonly WxeFunction _subFunction;

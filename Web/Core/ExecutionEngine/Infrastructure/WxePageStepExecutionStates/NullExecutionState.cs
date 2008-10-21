@@ -50,9 +50,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
     {
     }
 
-    public object GetRealObject (StreamingContext context)
+    object IObjectReference.GetRealObject (StreamingContext context)
     {
-      return Null;
+      return NullExecutionState.Null;
     }
   }
 }
