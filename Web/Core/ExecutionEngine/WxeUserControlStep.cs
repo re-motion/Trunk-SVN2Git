@@ -9,17 +9,22 @@
  */
 
 using System;
-using System.Web;
+using System.ComponentModel;
+using System.Threading;
+using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  [Serializable]
   public class WxeUserControlStep : WxeStep
   {
     private bool _isExecutionStarted;
     private bool _isPostBack;
-    private string _userControl;
+    private readonly string _userControl;
     private WxePageStep _pageStep;
+    private IUserControlExecutor _userControlExecutor = NullUserControlExecutor.Null;
 
     public WxeUserControlStep (string userControl)
     {
@@ -40,8 +45,19 @@ namespace Remotion.Web.ExecutionEngine
       {
         _isPostBack = true;
       }
-
+      _userControlExecutor.Execute (context);
       throw new WxeExecuteUserControlStepException();
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void ExecuteFunction (WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
+    {
+      ArgumentUtility.CheckNotNull ("userControl", userControl);
+      ArgumentUtility.CheckNotNull ("subFunction", subFunction);
+      ArgumentUtility.CheckNotNull ("sender", sender);
+
+      _userControlExecutor = new UserControlExecutor (this, userControl, subFunction, sender, usesEventTarget);
+      Execute ();
     }
 
     public bool IsPostBack
@@ -52,6 +68,18 @@ namespace Remotion.Web.ExecutionEngine
     public string UserControl
     {
       get { return _userControl; }
+    }
+
+    public IUserControlExecutor UserControlExecutor
+    {
+      get { return _userControlExecutor; }
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void SetUserControlExecutor (IUserControlExecutor userControlExecutor)
+    {
+      ArgumentUtility.CheckNotNull ("userControlExecutor", userControlExecutor);
+      _userControlExecutor = userControlExecutor;
     }
 
     public override string ToString ()

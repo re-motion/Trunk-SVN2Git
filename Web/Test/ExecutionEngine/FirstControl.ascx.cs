@@ -12,7 +12,7 @@ namespace Remotion.Web.Test.ExecutionEngine
 {
   public partial class FirstControl : WxeUserControl2
   {
-    protected void ExecuteSubFunctionButton_Click (object sender, EventArgs e)
+    protected void ExecuteSecondUserControlButton_Click (object sender, EventArgs e)
     {
       if (!WxePage.IsReturningPostBack)
       {

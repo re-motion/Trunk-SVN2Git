@@ -11,10 +11,12 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
+using Remotion.Web.Utilities;
 using PreProcessingSubFunctionState = Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.Execute.PreProcessingSubFunctionState;
 using ExecuteByRedirect_PreProcessingSubFunctionState = 
   Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.ExecuteExternalByRedirect.PreProcessingSubFunctionState;
@@ -111,18 +113,19 @@ namespace Remotion.Web.ExecutionEngine
       {
         _pageExecutor.ExecutePage (context, Page);
       }
-      catch (WxeExecuteUserControlNextStepException)
+      catch (HttpException e)
       {
-        _userControlExecutor.Return (context);
-
-        try
-        {
+        Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (e);
+        if (unwrappedException is WxeExecuteUserControlStepException)
           _pageExecutor.ExecutePage (context, Page);
-        }
-        finally
-        {
-          _userControlExecutor = NullUserControlExecutor.Null;
-        }
+        else
+          throw;
+      }
+      catch (WxeExecuteUserControlNextStepException e)
+      {
+        e.UserControlExecutor.BeginReturn (context);
+        _pageExecutor.ExecutePage (context, Page);
+        e.UserControlExecutor.EndReturn (context);
       }
     }
 
@@ -227,6 +230,13 @@ namespace Remotion.Web.ExecutionEngine
     {
       ArgumentUtility.CheckNotNull ("pageExecutor", pageExecutor);
       _pageExecutor = pageExecutor;
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void SetUserControlExecutor (IUserControlExecutor userControlExecutor)
+    {
+      ArgumentUtility.CheckNotNull ("userControlExecutor", userControlExecutor);
+      _userControlExecutor = userControlExecutor;
     }
 
     WxeStep IExecutionStateContext.CurrentStep

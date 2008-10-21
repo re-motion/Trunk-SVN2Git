@@ -32,6 +32,15 @@ namespace Remotion.Web.Test.ExecutionEngine {
         protected global::Remotion.Web.UI.Controls.WebButton ExecuteNextStepButton;
         
         /// <summary>
+        /// ExecuteThirdUserControlButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton ExecuteThirdUserControlButton;
+        
+        /// <summary>
         /// PostbackButton control.
         /// </summary>
         /// <remarks>
@@ -59,12 +68,12 @@ namespace Remotion.Web.Test.ExecutionEngine {
         protected global::System.Web.UI.WebControls.Label ControlStateLabel;
         
         /// <summary>
-        /// ExecuteSubFunctionButton control.
+        /// ExecuteSecondUserControlButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton ExecuteSubFunctionButton;
+        protected global::Remotion.Web.UI.Controls.WebButton ExecuteSecondUserControlButton;
     }
 }

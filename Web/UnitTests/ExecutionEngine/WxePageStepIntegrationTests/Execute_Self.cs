@@ -78,15 +78,16 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
     public void HandlesWxeExecuteUserControlNextStepException ()
     {
       var userControlExecutorMock = _mockRepository.StrictMock<IUserControlExecutor> ();
-      PrivateInvoke.SetNonPublicField (_pageStep, "_userControlExecutor", userControlExecutorMock);
+      _pageStep.SetUserControlExecutor (userControlExecutorMock);
 
       using (_mockRepository.Ordered ())
       {
         userControlExecutorMock.Expect (mock => mock.Execute (_wxeContext));
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException ());
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException (userControlExecutorMock));
 
-        userControlExecutorMock.Expect (mock => mock.Return(_wxeContext));
+        userControlExecutorMock.Expect (mock => mock.BeginReturn(_wxeContext));
         _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage"));
+        userControlExecutorMock.Expect (mock => mock.EndReturn (_wxeContext));
       }
 
       _mockRepository.ReplayAll();
@@ -94,21 +95,22 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       _pageStep.Execute (_wxeContext);
 
       _mockRepository.VerifyAll();
-      Assert.That (_pageStep.UserControlExecutor.IsNull);
     }
 
     [Test]
     [ExpectedException (typeof (ApplicationException))]
     public void CleanUpAndRethrowException ()
     {
-      var userControlExecutorStub = MockRepository.GenerateStub<IUserControlExecutor>();
-      PrivateInvoke.SetNonPublicField (_pageStep, "_userControlExecutor", userControlExecutorStub);
+      var userControlExecutorMock = _mockRepository.StrictMock<IUserControlExecutor> ();
+      _pageStep.SetUserControlExecutor (userControlExecutorMock);
      
       using (_mockRepository.Ordered ())
       {
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException());
+        userControlExecutorMock.Expect (mock => mock.Execute (_wxeContext));
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException (userControlExecutorMock));
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new ApplicationException());
+        userControlExecutorMock.Expect (mock => mock.BeginReturn (_wxeContext));
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new ApplicationException ());
       }
       _mockRepository.ReplayAll();
 
@@ -119,7 +121,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       finally
       {
         _pageExecutorMock.VerifyAllExpectations();
-        Assert.That (_pageStep.UserControlExecutor.IsNull);
       }
     }
   }

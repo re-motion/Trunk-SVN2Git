@@ -32,17 +32,27 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       //NOP
     }
 
-    public void Return (WxeContext context)
+    public void BeginReturn (WxeContext context)
     {
       //NOP
     }
 
-    public WxeFunction SubFunction
+    public void EndReturn (WxeContext context)
+    {
+      //NOP
+    }
+
+    public WxeFunction Function
     {
       get { return null; }
     }
 
-    public string UserControlState
+    public string BackedUpUserControlState
+    {
+      get { return null; }
+    }
+
+    public string BackedUpUserControl
     {
       get { return null; }
     }

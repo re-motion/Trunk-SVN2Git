@@ -15,10 +15,12 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   public interface IUserControlExecutor:INullObject
   {
     void Execute (WxeContext context);
-    void Return (WxeContext context);
-    WxeFunction SubFunction { get; }
-    string UserControlState { get; }
+    void BeginReturn (WxeContext context);
+    void EndReturn (WxeContext context);
+    WxeFunction Function { get; }
+    string BackedUpUserControlState { get; }
     string UserControlID { get; }
     bool IsReturningInnerFunction { get; }
+    string BackedUpUserControl { get; }
   }
 }

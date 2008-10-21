@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using Remotion.Collections;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.Utilities;
@@ -27,6 +28,7 @@ namespace Remotion.Web.ExecutionEngine
     private ControlReplacer _replacer;
     private bool _executeNextStep;
     private bool _isWxeInfoInitialized;
+    private WxeUserControlStep _currentUserControlStep;
 
     public WxeUserControl2 ()
     {
@@ -39,6 +41,16 @@ namespace Remotion.Web.ExecutionEngine
       if (!_isWxeInfoInitialized)
       {
         _wxeInfo.Initialize (Context);
+
+        IUserControlExecutor userControlExecutor = _wxeInfo.CurrentPageStep.UserControlExecutor;
+        while (userControlExecutor.Function.ExecutingStep is WxeUserControlStep
+               && !((WxeUserControlStep) userControlExecutor.Function.ExecutingStep).UserControlExecutor.IsNull)
+        {
+          userControlExecutor = ((WxeUserControlStep) userControlExecutor.Function.ExecutingStep).UserControlExecutor;
+        }
+
+        _currentUserControlStep = (WxeUserControlStep) userControlExecutor.Function.ExecutingStep;
+        
         _isWxeInfoInitialized = true;
       }
 
@@ -49,33 +61,41 @@ namespace Remotion.Web.ExecutionEngine
 
         string uniqueID = UniqueID.Insert (UniqueID.Length - ID.Length, replacer.ID + IdSeparator);
 
-        if (CurrentPageStep.UserControlExecutor.UserControlID == uniqueID && !CurrentPageStep.UserControlExecutor.IsReturningInnerFunction)
-        {
-          var currentUserControlStep = (WxeUserControlStep) CurrentPageStep.UserControlExecutor.SubFunction.ExecutingStep;
-          var control = (WxeUserControl2) Page.LoadControl (currentUserControlStep.UserControl);
-          control.ID = ID;
+        IUserControlExecutor userControlExecutor = GetUserControlExecutor();
 
-          IStateModificationStrategy stateModificationStrategy;
+        WxeUserControl2 control;
+        IStateModificationStrategy stateModificationStrategy;
+        if (userControlExecutor.UserControlID == uniqueID && !userControlExecutor.IsReturningInnerFunction)
+        {
+          var currentUserControlStep = (WxeUserControlStep) userControlExecutor.Function.ExecutingStep;
+          control = (WxeUserControl2) Page.LoadControl (currentUserControlStep.UserControl);
+
           if (!currentUserControlStep.IsPostBack)
             stateModificationStrategy = new StateClearingStrategy();
           else
             stateModificationStrategy = new StateLoadingStrategy();
-
-          replacer.ReplaceAndWrap (this, control, stateModificationStrategy);
         }
         else
         {
-          IStateModificationStrategy stateModificationStrategy;
-          if (CurrentPageStep.UserControlExecutor.IsReturningInnerFunction)
-            stateModificationStrategy = new StateReplacingStrategy (CurrentPageStep.UserControlExecutor.UserControlState);
+          if (userControlExecutor.IsReturningInnerFunction)
+          {
+            control = (WxeUserControl2) Page.LoadControl (userControlExecutor.BackedUpUserControl);
+            stateModificationStrategy = new StateReplacingStrategy (userControlExecutor.BackedUpUserControlState);
+          }
           else
+          {
+            control = this;
             stateModificationStrategy = new StateLoadingStrategy();
-
-          replacer.ReplaceAndWrap (this, this, stateModificationStrategy);
+          }
         }
+
+        control.ID = ID;
+        replacer.ReplaceAndWrap (this, control, stateModificationStrategy);
       }
       else
+      {
         CompleteInitialization();
+      }
     }
 
     private void CompleteInitialization ()
@@ -110,7 +130,10 @@ namespace Remotion.Web.ExecutionEngine
 
     public void ExecuteFunction (WxeFunction function, Control sender, bool? usesEventTarget)
     {
-      CurrentPageStep.ExecuteFunction (this, function, sender, usesEventTarget ?? UsesEventTarget);
+      if (CurrentPageStep.UserControlExecutor.IsNull)
+        CurrentPageStep.ExecuteFunction (this, function, sender, usesEventTarget ?? UsesEventTarget);
+
+      CurrentUserControlStep.ExecuteFunction (this, function, sender, usesEventTarget ?? UsesEventTarget);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -122,6 +145,19 @@ namespace Remotion.Web.ExecutionEngine
     public WxePageStep CurrentPageStep
     {
       get { return _wxeInfo.CurrentPageStep; }
+    }
+
+    public WxeUserControlStep CurrentUserControlStep
+    {
+      get { return _currentUserControlStep; }
+    }
+
+    private IUserControlExecutor GetUserControlExecutor ()
+    {
+      IUserControlExecutor userControlExecutor = CurrentPageStep.UserControlExecutor;
+      if (!userControlExecutor.IsNull && !CurrentUserControlStep.UserControlExecutor.IsNull)
+        userControlExecutor = CurrentUserControlStep.UserControlExecutor;
+      return userControlExecutor;
     }
 
     public WxeFunction CurrentFunction
@@ -154,7 +190,7 @@ namespace Remotion.Web.ExecutionEngine
       {
         if (Context != null)
           Context.Response.Clear(); // throw away page trace output
-        throw new WxeExecuteUserControlNextStepException();
+        throw new WxeExecuteUserControlNextStepException(GetUserControlExecutor());
       }
     }
 

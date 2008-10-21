@@ -19,12 +19,13 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   [Serializable]
   public class UserControlExecutor : IUserControlExecutor
   {
-    private readonly WxeFunction _subFunction;
-    private readonly string _userControlState;
+    private readonly WxeFunction _function;
+    private readonly string _backedUpUserControlState;
+    private readonly string _backedUpUserControl;
     private readonly string _userControlID;
     private bool _isReturningInnerFunction;
     private NameValueCollection _postBackCollection;
-    private NameValueCollection _backupPostBackData;
+    private NameValueCollection _backedUpPostBackData;
 
     public UserControlExecutor (WxeStep parentStep, WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
     {
@@ -33,25 +34,26 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       ArgumentUtility.CheckNotNull ("subFunction", subFunction);
       ArgumentUtility.CheckNotNull ("sender", sender);
       
-      _userControlState = userControl.SaveAllState ();
+      _backedUpUserControlState = userControl.SaveAllState ();
+      _backedUpUserControl = userControl.AppRelativeVirtualPath;
       _userControlID = userControl.UniqueID;
-      _subFunction = subFunction;
+      _function = subFunction;
 
-      _subFunction.SetParentStep (parentStep);
+      _function.SetParentStep (parentStep);
 
       _postBackCollection = userControl.WxePage.GetPostBackCollection ().Clone ();
-      _backupPostBackData = new NameValueCollection();
+      _backedUpPostBackData = new NameValueCollection();
 
       if (usesEventTarget)
       {
-        _backupPostBackData.Add (ControlHelper.PostEventSourceID, _postBackCollection[ControlHelper.PostEventSourceID]);
-        _backupPostBackData.Add (ControlHelper.PostEventArgumentID, _postBackCollection[ControlHelper.PostEventArgumentID]);
+        _backedUpPostBackData.Add (ControlHelper.PostEventSourceID, _postBackCollection[ControlHelper.PostEventSourceID]);
+        _backedUpPostBackData.Add (ControlHelper.PostEventArgumentID, _postBackCollection[ControlHelper.PostEventArgumentID]);
         _postBackCollection.Remove (ControlHelper.PostEventSourceID);
         _postBackCollection.Remove (ControlHelper.PostEventArgumentID);
       }
       else
       {
-        _backupPostBackData.Add (sender.UniqueID, _postBackCollection[sender.UniqueID]);
+        _backedUpPostBackData.Add (sender.UniqueID, _postBackCollection[sender.UniqueID]);
         _postBackCollection.Remove (sender.UniqueID);
       }
     }
@@ -60,7 +62,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      if (!_subFunction.IsExecutionStarted)
+      if (!_function.IsExecutionStarted)
       {
         context.PostBackCollection = _postBackCollection;
         _postBackCollection = null;
@@ -69,7 +71,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       bool isPostBackBackUp = context.IsPostBack;
       try
       {
-        _subFunction.Execute (context);
+        _function.Execute (context);
       }
       catch (WxeExecuteUserControlStepException)
       {
@@ -77,7 +79,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
     }
 
-    public void Return (WxeContext context)
+    public void BeginReturn (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
@@ -88,23 +90,38 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         collection = context.HttpContext.Request.QueryString;
 
       collection = collection.Clone();
-      foreach (var key in _backupPostBackData.AllKeys)
-        collection[key] = _backupPostBackData[key];
+      foreach (var key in _backedUpPostBackData.AllKeys)
+        collection[key] = _backedUpPostBackData[key];
       context.PostBackCollection = collection;
-      _backupPostBackData = null;
+      _backedUpPostBackData = null;
 
       context.SetIsReturningPostBack (true);
       _isReturningInnerFunction = true;
     }
 
-    public WxeFunction SubFunction
+    public void EndReturn (WxeContext context)
     {
-      get { return _subFunction; }
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      if (_function.ParentStep is WxePageStep)
+        ((WxePageStep) _function.ParentStep).SetUserControlExecutor (NullUserControlExecutor.Null);
+      else if (_function.ParentStep is WxeUserControlStep)
+        ((WxeUserControlStep) _function.ParentStep).SetUserControlExecutor (NullUserControlExecutor.Null);
     }
 
-    public string UserControlState
+    public WxeFunction Function
     {
-      get { return _userControlState; }
+      get { return _function; }
+    }
+
+    public string BackedUpUserControlState
+    {
+      get { return _backedUpUserControlState; }
+    }
+
+    public string BackedUpUserControl
+    {
+      get { return _backedUpUserControl; }
     }
 
     public string UserControlID

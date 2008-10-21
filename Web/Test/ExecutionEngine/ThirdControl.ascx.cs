@@ -10,7 +10,7 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
-  public partial class SecondControl : WxeUserControl2
+  public partial class ThirdControl : WxeUserControl2
   {
     protected void ExecuteNextStep_Click (object sender, EventArgs e)
     {
@@ -18,22 +18,9 @@ namespace Remotion.Web.Test.ExecutionEngine
       ExecuteNextStep ();
     }
 
-    protected void ExecuteSecondUserControlButton_Click (object sender, EventArgs e)
-    {
-      throw new InvalidOperationException ("This event handler should never be called.");
-    }
-
     protected void ExecuteThirdUserControlButton_Click (object sender, EventArgs e)
     {
-      if (!WxePage.IsReturningPostBack)
-      {
-        ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Executed";
-        ExecuteFunction (new ShowThirdUserControlFormFunction (), (Control) sender, null);
-      }
-      else
-      {
-        ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Returned";
-      }
+      throw new InvalidOperationException ("This event handler should never be called.");
     }
 
     protected override void OnInitComplete (EventArgs e)
@@ -60,12 +47,12 @@ namespace Remotion.Web.Test.ExecutionEngine
       var controlState = (Tuple<object, int, Type>) savedState;
       base.LoadControlState (controlState.A);
       ControlStateValue = controlState.B;
-      Assertion.IsTrue (controlState.C == typeof (SecondControl), "Expected ControlState from 'SecondControl' but was '{0}'.", controlState.C.Name);
+      Assertion.IsTrue (controlState.C == typeof (ThirdControl), "Expected ControlState from 'ThirdControl' but was '{0}'.", controlState.C.Name);
     }
 
     protected override object SaveControlState ()
     {
-      return new Tuple<object, int, Type> (base.SaveControlState (), ControlStateValue, typeof (SecondControl));
+      return new Tuple<object, int, Type> (base.SaveControlState (), ControlStateValue, typeof (ThirdControl));
     }
 
     protected override void LoadViewState (object savedState)
@@ -75,12 +62,12 @@ namespace Remotion.Web.Test.ExecutionEngine
       var  statePair =  (Tuple<object, Type>) savedState;
       base.LoadViewState (statePair.A);
 
-      Assertion.IsTrue (statePair.B == typeof (SecondControl), "Expected ViewState from 'SecondControl' but was '{0}'.", statePair.B.Name);
+      Assertion.IsTrue (statePair.B == typeof (ThirdControl), "Expected ViewState from 'ThirdControl' but was '{0}'.", statePair.B.Name);
     }
 
     protected override object SaveViewState ()
     {
-      return new Tuple<object, Type> (base.SaveViewState (), typeof (SecondControl));
+      return new Tuple<object, Type> (base.SaveViewState (), typeof (ThirdControl));
     }
 
     private int ViewStateValue
