@@ -1,3 +1,7 @@
+1.11.8
+======
+- BocList: Switched order of RowMenu-Event-Execution to support delete operations while inside the row.
+
 1.11.2
 ======
 - ObjectBinding.Web.UI.Controls.BocAllPropertiesPlacehoderColumnDefinition renamed to BocAllPropertiesPlaceholderColumnDefinition

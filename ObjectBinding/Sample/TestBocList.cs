@@ -77,6 +77,7 @@ namespace Remotion.ObjectBinding.Sample
       base.OnClick ();
       System.Diagnostics.Debug.WriteLine ("Clicked menu item '" + ItemID + "' for BusinessObject '" + _businessObject.ToString() + "'.");
       // handle the click
+      base.OwnerControl.LoadValue (true);
     }
 
     protected override void PreRender()

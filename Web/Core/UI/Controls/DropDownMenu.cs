@@ -107,15 +107,15 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Fires the <see cref="EventCommandClick"/> event. </summary>
     protected virtual void OnEventCommandClick (WebMenuItem item)
     {
-      if (item != null && item.Command != null)
-        item.Command.OnClick ();
-
       WebMenuItemClickEventHandler clickHandler = (WebMenuItemClickEventHandler) Events[s_eventCommandClickEvent];
       if (clickHandler != null)
       {
         WebMenuItemClickEventArgs e = new WebMenuItemClickEventArgs (item);
         clickHandler (this, e);
       }
+
+      if (item != null && item.Command != null)
+        item.Command.OnClick ();
     }
 
     /// <summary> Fires the <see cref="WxeFunctionCommandClick"/> event. </summary>
