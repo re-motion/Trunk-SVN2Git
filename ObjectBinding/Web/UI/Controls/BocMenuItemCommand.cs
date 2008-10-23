@@ -12,6 +12,7 @@ using System;
 using System.ComponentModel;
 using System.Web.UI;
 using Remotion.Collections;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
 
@@ -141,7 +142,8 @@ public class BocMenuItemCommand: BocCommand
   /// </param>
   public void ExecuteWxeFunction (IWxePage wxePage, int[] listIndices, IBusinessObject[] businessObjects)
   {
-    if (! WxeContext.Current.IsReturningPostBack)
+    ArgumentUtility.CheckNotNull ("wxePage", wxePage);
+    if (!wxePage.IsReturningPostBack)
     {
       NameObjectCollection parameters = PrepareWxeFunctionParameters (listIndices, businessObjects);
       ExecuteWxeFunction (wxePage, parameters);

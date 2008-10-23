@@ -15,6 +15,7 @@ using Remotion.Collections;
 using Remotion.Security;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -160,7 +161,8 @@ public class BocCommand: Command
   /// </param>
   public void ExecuteWxeFunction (IWxePage wxePage, IBusinessObject businessObject)
   {
-    if (! WxeContext.Current.IsReturningPostBack)
+    ArgumentUtility.CheckNotNull ("wxePage", wxePage);
+    if (! wxePage.IsReturningPostBack)
     {
       NameObjectCollection parameters = PrepareWxeFunctionParameters (businessObject);
       ExecuteWxeFunction (wxePage, parameters);

@@ -1,3 +1,7 @@
+1.11.8
+======
+- WxeContext/WxePageStep: Moved IsPostBack, IsReturningPostBack from WxeContext to WxePageStep
+
 1.11.7
 ======
 - Unified WxeScopedTransactedFunction and WxeFunction

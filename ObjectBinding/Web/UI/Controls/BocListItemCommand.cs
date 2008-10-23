@@ -175,7 +175,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </param>
     public void ExecuteWxeFunction (IWxePage wxePage, int listIndex, IBusinessObject businessObject)
     {
-      if (!WxeContext.Current.IsReturningPostBack)
+      ArgumentUtility.CheckNotNull ("wxePage", wxePage);
+      if (!wxePage.IsReturningPostBack)
       {
         NameObjectCollection parameters = PrepareWxeFunctionParameters (listIndex, businessObject);
         ExecuteWxeFunction (wxePage, parameters);

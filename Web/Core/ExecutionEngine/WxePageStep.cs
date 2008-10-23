@@ -34,6 +34,7 @@ namespace Remotion.Web.ExecutionEngine
     private readonly string _pageToken;
     private string _pageState;
     private bool _isPostBack;
+    private bool _isReturningPostBack;
     private bool _isExecutionStarted;
 
     [NonSerialized]
@@ -112,7 +113,7 @@ namespace Remotion.Web.ExecutionEngine
 
       //  Use the Page's postback data
       context.PostBackCollection = null;
-      context.SetIsReturningPostBack (false);
+      _isReturningPostBack = false;
 
       while (_executionState.IsExecuting)
         _executionState.ExecuteSubFunction (context);
@@ -187,6 +188,22 @@ namespace Remotion.Web.ExecutionEngine
     public bool IsPostBack
     {
       get { return _isPostBack; }
+    }
+
+    //TODO: Move to WxePage
+    /// <summary>
+    ///   During the execution of a page, specifies whether the current postback cycle was caused by returning from a 
+    ///   <see cref="WxeFunction"/>.
+    /// </summary>
+    public bool IsReturningPostBack
+    {
+      get { return _isReturningPostBack; }
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Advanced)]
+    public void SetIsReturningPostBack (bool value)
+    {
+      _isReturningPostBack = value;
     }
 
     public override string ToString ()

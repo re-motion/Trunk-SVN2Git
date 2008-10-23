@@ -207,7 +207,6 @@ namespace Remotion.Web.ExecutionEngine
 
     private readonly IHttpContext _httpContext;
     private readonly WxeFunctionStateManager _functionStateManager;
-    private bool _isReturningPostBack;
     private bool _isOutOfSequencePostBack;
     private NameValueCollection _postBackCollection;
     private WxeFunction _returningFunction;
@@ -244,22 +243,6 @@ namespace Remotion.Web.ExecutionEngine
     public WxeFunctionStateManager FunctionStateManager
     {
       get { return _functionStateManager; }
-    }
-
-    //TODO: Move to WxePage
-    /// <summary>
-    ///   During the execution of a page, specifies whether the current postback cycle was caused by returning from a 
-    ///   <see cref="WxeFunction"/>.
-    /// </summary>
-    public bool IsReturningPostBack
-    {
-      get { return _isReturningPostBack; }
-    }
-
-    [EditorBrowsable (EditorBrowsableState.Advanced)]
-    public void SetIsReturningPostBack (bool value)
-    {
-      _isReturningPostBack = value;
     }
 
     /// <summary>

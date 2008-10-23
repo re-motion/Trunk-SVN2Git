@@ -209,7 +209,7 @@ namespace Remotion.Web.ExecutionEngine
         if (functionState != null)
         {
           wxeContext.ReturningFunction = functionState.Function;
-          wxeContext.SetIsReturningPostBack (true);
+          CurrentPageStep.SetIsReturningPostBack (true);
           _returningFunctionState = functionState;
         }
       }
@@ -391,11 +391,7 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> Implements <see cref="IWxePage.IsReturningPostBack">IWxePage.IsReturningPostBack</see>. </summary>
     public bool IsReturningPostBack
     {
-      get
-      {
-        WxeContext wxeContext = WxeContext.Current;
-        return ((wxeContext == null) ? false : wxeContext.IsReturningPostBack);
-      }
+      get { return CurrentPageStep.IsReturningPostBack; }
     }
 
     /// <summary> Implements <see cref="IWxePage.ReturningFunction">IWxePage.ReturningFunction</see>. </summary>

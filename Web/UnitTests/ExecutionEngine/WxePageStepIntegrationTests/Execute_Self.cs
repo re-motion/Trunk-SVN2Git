@@ -65,7 +65,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
           invocation =>
           {
             Assert.That (_wxeContext.PostBackCollection, Is.Null);
-            Assert.That (_wxeContext.IsReturningPostBack, Is.False);
+            Assert.That (_pageStep.IsReturningPostBack, Is.False);
           });
 
       _mockRepository.ReplayAll();
@@ -87,7 +87,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
           invocation =>
           {
             Assert.That (_wxeContext.PostBackCollection, Is.Null);
-            Assert.That (_wxeContext.IsReturningPostBack, Is.False);
+            Assert.That (_pageStep.IsReturningPostBack, Is.False);
           });
 
       _mockRepository.ReplayAll ();

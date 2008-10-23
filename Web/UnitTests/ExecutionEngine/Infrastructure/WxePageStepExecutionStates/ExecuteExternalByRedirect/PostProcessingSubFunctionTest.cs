@@ -40,11 +40,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     public void ExecuteSubFunction_WithGetRequest ()
     {
       WxeContext.PostBackCollection = null;
-      WxeContext.SetIsReturningPostBack (false);
       PrivateInvoke.SetNonPublicField (FunctionState, "_postBackID", 100);
       RequestMock.Stub (stub => stub.HttpMethod).Return ("GET").Repeat.Any();
 
-      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (NullExecutionState.Null));
+      using (MockRepository.Ordered())
+      {
+        ExecutionStateContextMock.Expect (mock => mock.SetIsReturningPostBack (true));
+        ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (NullExecutionState.Null));
+      }
 
       MockRepository.ReplayAll();
 
@@ -55,16 +58,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       Assert.That (WxeContext.ReturningFunction, Is.SameAs (SubFunction));
       Assert.That (WxeContext.PostBackCollection, Is.SameAs (PostBackCollection));
       Assert.That (WxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
-      Assert.That (WxeContext.IsReturningPostBack, Is.True);
     }
 
     [Test]
     public void ExecuteSubFunction_WithPostRequest ()
     {
       WxeContext.PostBackCollection = null;
-      WxeContext.SetIsReturningPostBack (false);
       PrivateInvoke.SetNonPublicField (FunctionState, "_postBackID", 100);
-      RequestMock.Stub (stub => stub.HttpMethod).Return ("POST").Repeat.Any ();
+      RequestMock.Stub (stub => stub.HttpMethod).Return ("POST").Repeat.Any();
 
       ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (NullExecutionState.Null));
 
@@ -76,7 +77,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
 
       Assert.That (WxeContext.ReturningFunction, Is.SameAs (SubFunction));
       Assert.That (WxeContext.PostBackCollection, Is.Null);
-      Assert.That (WxeContext.IsReturningPostBack, Is.False);
     }
   }
 }

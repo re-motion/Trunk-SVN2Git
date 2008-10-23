@@ -26,5 +26,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
 
     /// <summary> Getst the <see cref="WxeStep"/> that is executing the <see cref="WxeFunction"/>. </summary>
     WxeStep CurrentStep { get; }
+
+    //TODO: Refactor to get rid of this member
+    void SetIsReturningPostBack (bool value);
   }
 }

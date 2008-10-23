@@ -40,10 +40,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     public void ExecuteSubFunction ()
     {
       WxeContext.PostBackCollection = null;
-      WxeContext.SetIsReturningPostBack (false);
       PrivateInvoke.SetNonPublicField (FunctionState, "_postBackID", 100);
 
-      ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (NullExecutionState.Null));
+      using (MockRepository.Ordered ())
+      {
+        ExecutionStateContextMock.Expect (mock => mock.SetIsReturningPostBack (true));
+        ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (NullExecutionState.Null));
+      }
 
       MockRepository.ReplayAll();
 
@@ -54,7 +57,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       Assert.That (WxeContext.ReturningFunction, Is.SameAs (SubFunction));
       Assert.That (WxeContext.PostBackCollection, Is.SameAs (PostBackCollection));
       Assert.That (WxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
-      Assert.That (WxeContext.IsReturningPostBack, Is.True);
     }
   }
 }
