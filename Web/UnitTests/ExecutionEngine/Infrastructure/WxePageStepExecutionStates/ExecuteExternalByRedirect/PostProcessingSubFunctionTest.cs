@@ -39,13 +39,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     [Test]
     public void ExecuteSubFunction_WithGetRequest ()
     {
-      WxeContext.PostBackCollection = null;
       PrivateInvoke.SetNonPublicField (FunctionState, "_postBackID", 100);
       RequestMock.Stub (stub => stub.HttpMethod).Return ("GET").Repeat.Any();
 
       using (MockRepository.Ordered())
       {
-        ExecutionStateContextMock.Expect (mock => mock.SetReturnState (SubFunction, true));
+        ExecutionStateContextMock.Expect (mock => mock.SetReturnState (SubFunction, true, PostBackCollection));
         ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (NullExecutionState.Null));
       }
 
@@ -55,20 +54,18 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
 
       MockRepository.VerifyAll();
 
-      Assert.That (WxeContext.PostBackCollection, Is.SameAs (PostBackCollection));
-      Assert.That (WxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
+      Assert.That (PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
     }
 
     [Test]
     public void ExecuteSubFunction_WithPostRequest ()
     {
-      WxeContext.PostBackCollection = null;
       PrivateInvoke.SetNonPublicField (FunctionState, "_postBackID", 100);
       RequestMock.Stub (stub => stub.HttpMethod).Return ("POST").Repeat.Any();
 
       using (MockRepository.Ordered ())
       {
-        ExecutionStateContextMock.Expect (mock => mock.SetReturnState (SubFunction, false));
+        ExecutionStateContextMock.Expect (mock => mock.SetReturnState (SubFunction, false, null));
         ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (NullExecutionState.Null));
       }
 
@@ -77,8 +74,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       _executionState.ExecuteSubFunction (WxeContext);
 
       MockRepository.VerifyAll();
-
-      Assert.That (WxeContext.PostBackCollection, Is.Null);
     }
   }
 }

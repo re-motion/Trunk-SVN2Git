@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Web;
@@ -17,6 +18,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
+using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 using PreProcessingSubFunctionState = Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.Execute.PreProcessingSubFunctionState;
 using ExecuteByRedirect_PreProcessingSubFunctionState = 
@@ -33,11 +35,12 @@ namespace Remotion.Web.ExecutionEngine
     private readonly ResourceObjectBase _page;
     private readonly string _pageToken;
     private string _pageState;
-    private WxeFunction _returningFunction;
     private bool _isPostBack;
-    private bool _isReturningPostBack;
     private bool _isOutOfSequencePostBack;
     private bool _isExecutionStarted;
+    private bool _isReturningPostBack;
+    private WxeFunction _returningFunction;
+    private NameValueCollection _postBackCollection;
 
     [NonSerialized]
     private WxeHandler _wxeHandler;
@@ -118,7 +121,7 @@ namespace Remotion.Web.ExecutionEngine
       _returningFunction = null;
 
       //  Use the Page's postback data
-      context.PostBackCollection = null;
+      _postBackCollection = null;
 
       while (_executionState.IsExecuting)
         _executionState.ExecuteSubFunction (context);
@@ -218,15 +221,41 @@ namespace Remotion.Web.ExecutionEngine
       get { return _returningFunction; }
     }
 
-    public void SetReturnState (WxeFunction returningFunction, bool isReturningPostBack)
+    /// <summary> Gets or sets the postback data for the page if it has executed a sub-function. </summary>
+    /// <value> The postback data generated during the roundtrip that led to the execution of the sub-function. </value>
+    /// <remarks> 
+    ///   <para>
+    ///     This property is used only for transfering the postback data from the backup location to the page's
+    ///     initialization infrastructure.
+    ///   </para><para>
+    ///     Application developers should only use the 
+    ///     <see cref="ISmartPage.GetPostBackCollection">ISmartPage.GetPostBackCollection</see> method to access the
+    ///     postback data.
+    ///   </para><para>
+    ///     Control developers should either implement <see cref="System.Web.UI.IPostBackDataHandler"/> to access 
+    ///     postback data relevant to their control or, if they develop a composite control, use the child controls' 
+    ///     integrated data handling features to access the data.
+    ///   </para>
+    /// </remarks>
+    public NameValueCollection PostBackCollection
+    {
+      get { return _postBackCollection; }
+    }
+
+    public void SetPostBackCollection (NameValueCollection postBackCollection)
+    {
+      _postBackCollection = postBackCollection;
+    }
+
+    public void SetReturnState (WxeFunction returningFunction, bool isReturningPostBack, NameValueCollection previousPostBackCollection)
     {
       ArgumentUtility.CheckNotNull ("returningFunction", returningFunction);
 
       _returningFunction = returningFunction;
       _isReturningPostBack = isReturningPostBack;
+      _postBackCollection = previousPostBackCollection;
     }
 
-    [EditorBrowsable (EditorBrowsableState.Never)]
     public void SetIsOutOfSequencePostBack (bool value)
     {
       _isOutOfSequencePostBack = value;

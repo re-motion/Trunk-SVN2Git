@@ -64,7 +64,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", false)).Do (
           invocation =>
           {
-            Assert.That (_wxeContext.PostBackCollection, Is.Null);
+            Assert.That (_pageStep.PostBackCollection, Is.Null);
             Assert.That (_pageStep.IsReturningPostBack, Is.False);
           });
 
@@ -86,7 +86,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
       _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true)).Do (
           invocation =>
           {
-            Assert.That (_wxeContext.PostBackCollection, Is.Null);
+            Assert.That (_pageStep.PostBackCollection, Is.Null);
             Assert.That (_pageStep.IsReturningPostBack, Is.False);
           });
 

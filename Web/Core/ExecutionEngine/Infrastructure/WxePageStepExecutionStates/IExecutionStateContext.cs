@@ -8,6 +8,8 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System.Collections.Specialized;
+
 namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
 {
   /// <summary>
@@ -28,6 +30,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
     WxeStep CurrentStep { get; }
 
     //TODO: Refactor to get rid of this member
-    void SetReturnState (WxeFunction returningFunction, bool isReturningPostBack);
+    void SetReturnState (WxeFunction returningFunction, bool isReturningPostBack, NameValueCollection previousPostBackCollection);
   }
 }

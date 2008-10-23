@@ -148,8 +148,8 @@ namespace Remotion.Web.ExecutionEngine
         return null;
       if (!CurrentPageStep.IsPostBack)
         return null;
-      if (wxeContext.PostBackCollection != null)
-        return wxeContext.PostBackCollection;
+      if (CurrentPageStep.PostBackCollection != null)
+        return CurrentPageStep.PostBackCollection;
       if (httpContext.Request == null)
         return null;
 
@@ -208,7 +208,7 @@ namespace Remotion.Web.ExecutionEngine
         WxeFunctionState functionState = functionStates.GetItem (returningToken);
         if (functionState != null)
         {
-          CurrentPageStep.SetReturnState (functionState.Function, true);
+          CurrentPageStep.SetReturnState (functionState.Function, true, null);
           _returningFunctionState = functionState;
         }
       }

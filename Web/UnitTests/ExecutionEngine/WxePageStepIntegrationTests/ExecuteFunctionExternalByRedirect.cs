@@ -115,8 +115,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
             invocation =>
             {
               PrivateInvoke.SetNonPublicField (_functionState, "_postBackID", 100);
-              _wxeContext.PostBackCollection = new NameValueCollection();
-              Thread.CurrentThread.Abort();
+              _pageStep.SetPostBackCollection (new NameValueCollection ());
+              Thread.CurrentThread.Abort ();
             });
 
         //Return from external sub function
@@ -127,8 +127,8 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
             invocation =>
             {
               Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));
-              Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
-              Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
+              Assert.That (_pageStep.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
+              Assert.That (_pageStep.PostBackCollection.AllKeys, List.Contains ("Key"));
               Assert.That (_pageStep.ReturningFunction, Is.SameAs (_subFunction));
               Assert.That (_pageStep.IsReturningPostBack, Is.True);
             });

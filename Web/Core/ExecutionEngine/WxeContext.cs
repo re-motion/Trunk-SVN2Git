@@ -207,7 +207,6 @@ namespace Remotion.Web.ExecutionEngine
 
     private readonly IHttpContext _httpContext;
     private readonly WxeFunctionStateManager _functionStateManager;
-    private NameValueCollection _postBackCollection;
     private readonly WxeFunctionState _functionState;
     private readonly NameValueCollection _queryString;
 
@@ -241,29 +240,6 @@ namespace Remotion.Web.ExecutionEngine
     public WxeFunctionStateManager FunctionStateManager
     {
       get { return _functionStateManager; }
-    }
-
-    /// <summary> Gets or sets the postback data for the page if it has executed a sub-function. </summary>
-    /// <value> The postback data generated during the roundtrip that led to the execution of the sub-function. </value>
-    /// <remarks> 
-    ///   <para>
-    ///     This property is used only for transfering the postback data from the backup location to the page's
-    ///     initialization infrastructure.
-    ///   </para><para>
-    ///     Application developers should only use the 
-    ///     <see cref="ISmartPage.GetPostBackCollection">ISmartPage.GetPostBackCollection</see> method to access the
-    ///     postback data.
-    ///   </para><para>
-    ///     Control developers should either implement <see cref="System.Web.UI.IPostBackDataHandler"/> to access 
-    ///     postback data relevant to their control or, if they develop a composite control, use the child controls' 
-    ///     integrated data handling features to access the data.
-    ///   </para>
-    /// </remarks>
-    [EditorBrowsable (EditorBrowsableState.Advanced)]
-    public NameValueCollection PostBackCollection
-    {
-      get { return _postBackCollection; }
-      set { _postBackCollection = value; }
     }
 
     protected WxeFunctionState FunctionState

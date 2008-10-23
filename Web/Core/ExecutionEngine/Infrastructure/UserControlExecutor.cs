@@ -64,7 +64,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       if (!_function.IsExecutionStarted)
       {
-        context.PostBackCollection = _postBackCollection;
+        ((WxePageStep) _function.ParentStep).SetPostBackCollection (_postBackCollection);
         _postBackCollection = null;
       }
 
@@ -86,10 +86,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       collection = collection.Clone();
       foreach (var key in _backedUpPostBackData.AllKeys)
         collection[key] = _backedUpPostBackData[key];
-      context.PostBackCollection = collection;
       _backedUpPostBackData = null;
 
-      ((WxePageStep) _function.ParentStep).SetReturnState (_function, true);
+      ((WxePageStep) _function.ParentStep).SetReturnState (_function, true, collection);
       _isReturningInnerFunction = true;
     }
 

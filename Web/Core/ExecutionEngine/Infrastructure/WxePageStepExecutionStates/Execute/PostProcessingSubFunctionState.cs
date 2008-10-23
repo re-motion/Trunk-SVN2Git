@@ -34,11 +34,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
       // Correct the PostBack-Sequence number
       Parameters.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString();
 
-      //  Provide the backed up postback data to the executing page
-      context.PostBackCollection = Parameters.PostBackCollection;
-
-      //  Provide the executed sub-function to the executing page
-      ExecutionStateContext.SetReturnState (Parameters.SubFunction, true);
+      //  Provide the executed sub-function and backed up postback data to the executing page
+      ExecutionStateContext.SetReturnState (Parameters.SubFunction, true, Parameters.PostBackCollection);
 
       ExecutionStateContext.SetExecutionState (NullExecutionState.Null);
     }
