@@ -12,6 +12,32 @@ namespace Remotion.Web.Test.ExecutionEngine
 {
   public partial class SecondControl : WxeUserControl2
   {
+    public static void Call (IWxePage page, WxeUserControl2 userControl, Control sender)
+    {
+      ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("userControl", userControl);
+      ArgumentUtility.CheckNotNull ("sender", sender);
+
+      ShowSecondUserControlFormFunction function;
+      if ((page.IsReturningPostBack == false))
+      {
+        function = new ShowSecondUserControlFormFunction ();
+        function.ExceptionHandler.SetCatchExceptionTypes (typeof (System.Exception));
+        WxeUserControl2 actualUserControl = (WxeUserControl2) page.FindControl (userControl.PermanentUniqueID);
+        Assertion.IsNotNull (actualUserControl);
+        actualUserControl.ExecuteFunction (function, sender, null);
+        throw new System.Exception ("(Unreachable code)");
+      }
+      else
+      {
+        function = ((ShowSecondUserControlFormFunction) (page.ReturningFunction));
+        if ((function.ExceptionHandler.Exception != null))
+        {
+          throw function.ExceptionHandler.Exception;
+        }
+      }
+    }
+
     protected void ExecuteNextStep_Click (object sender, EventArgs e)
     {
       ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss");

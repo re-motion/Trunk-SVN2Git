@@ -127,6 +127,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExecutionEngine\ShowFourthUserControlFormFunction.cs" />
+    <Compile Include="ExecutionEngine\FourthControl.ascx.cs">
+      <DependentUpon>FourthControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\FourthControl.ascx.designer.cs">
+      <DependentUpon>FourthControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ExecutionEngine\ThirdControl.ascx.cs">
       <DependentUpon>ThirdControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -266,6 +274,7 @@
     <Compile Include="UpdatePanelTests\SutUserControl.ascx.designer.cs">
       <DependentUpon>SutUserControl.ascx</DependentUpon>
     </Compile>
+    <Content Include="ExecutionEngine\FourthControl.ascx" />
     <Content Include="ExecutionEngine\ThirdControl.ascx" />
     <Content Include="ExecutionEngine\SecondControl.ascx" />
     <Content Include="ExecutionEngine\FirstControl.ascx" />

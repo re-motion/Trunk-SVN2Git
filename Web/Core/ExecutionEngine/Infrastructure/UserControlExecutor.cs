@@ -77,16 +77,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      try
-      {
-        _pageStep.SetPostBackCollection (_postBackCollection);
-        _postBackCollection = null;
-        _function.Execute (context);
-      }
-      finally
-      {
-        _postBackCollection = null;
-      }
+      _pageStep.SetPostBackCollection (_postBackCollection);
+      _postBackCollection = null;
+      _function.Execute (context);
 
       Return (context);
     }
@@ -104,7 +97,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       postBackCollection = postBackCollection.Clone ();
       foreach (var key in _backedUpPostBackData.AllKeys)
         postBackCollection[key] = _backedUpPostBackData[key];
-      postBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = postBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID];
       _pageStep.SetReturnState(_function, true, postBackCollection);
 
       _backedUpPostBackData = null;

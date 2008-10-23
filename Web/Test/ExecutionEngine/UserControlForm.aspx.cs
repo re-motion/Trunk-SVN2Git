@@ -50,6 +50,11 @@ namespace Remotion.Web.Test.ExecutionEngine
       StackLabel.Text = stringBuilder.ToString();
     }
 
+    protected void ExecuteSecondUserControlButton_Click (object sender, EventArgs e)
+    {
+      SecondControl.Call (this, FirstControl, (Control) sender);
+    }
+
     protected override void LoadControlState (object savedState)
     {
       var controlState = (Tuple<object, int>) savedState;

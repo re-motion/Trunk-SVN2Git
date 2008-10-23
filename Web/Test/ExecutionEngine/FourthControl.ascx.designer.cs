@@ -11,7 +11,7 @@
 namespace Remotion.Web.Test.ExecutionEngine {
     
     
-    public partial class ThirdControl {
+    public partial class FourthControl {
         
         /// <summary>
         /// ControlLabel control.
@@ -32,13 +32,13 @@ namespace Remotion.Web.Test.ExecutionEngine {
         protected global::Remotion.Web.UI.Controls.WebButton ExecuteNextStepButton;
         
         /// <summary>
-        /// ExecuteFourthUserControlButton control.
+        /// ExecuteThirdUserControlButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton ExecuteFourthUserControlButton;
+        protected global::Remotion.Web.UI.Controls.WebButton ExecuteThirdUserControlButton;
         
         /// <summary>
         /// PostbackButton control.
@@ -68,12 +68,12 @@ namespace Remotion.Web.Test.ExecutionEngine {
         protected global::System.Web.UI.WebControls.Label ControlStateLabel;
         
         /// <summary>
-        /// ExecuteThirdUserControlButton control.
+        /// ExecuteThridUserControlButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton ExecuteThirdUserControlButton;
+        protected global::Remotion.Web.UI.Controls.WebButton ExecuteThridUserControlButton;
     }
 }

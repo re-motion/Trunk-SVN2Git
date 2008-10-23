@@ -34,6 +34,7 @@
       Last postback on page:
       <asp:Label ID="PageLabel" runat="server" /><br />
       <remotion:WebButton ID="PageButton" runat="server" Text="Postback to Page" OnClick="PageButton_Click" />
+      <remotion:WebButton ID="ExecuteSecondUserControlButton" runat="server" Text="Execute Second User Control" OnClick="ExecuteSecondUserControlButton_Click" />
       <br />
       ViewState:
       <asp:Label ID="ViewStateLabel" runat="server" /><br />

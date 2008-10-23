@@ -29,6 +29,7 @@ namespace Remotion.Web.ExecutionEngine
     private bool _executeNextStep;
     private bool _isWxeInfoInitialized;
     private WxeUserControlStep _currentUserControlStep;
+    private string _permanentUniqueID;
 
     public WxeUserControl2 ()
     {
@@ -51,14 +52,15 @@ namespace Remotion.Web.ExecutionEngine
         var replacer = new ControlReplacer (new InternalControlMemberCaller());
         replacer.ID = ID + "_Parent";
 
-        string uniqueID = UniqueID.Insert (UniqueID.Length - ID.Length, replacer.ID + IdSeparator);
+        _permanentUniqueID = UniqueID.Insert (UniqueID.Length - ID.Length, replacer.ID + IdSeparator);
 
         IUserControlExecutor userControlExecutor = GetUserControlExecutor();
 
         WxeUserControl2 control;
         IStateModificationStrategy stateModificationStrategy;
-        if (userControlExecutor.UserControlID == uniqueID && !userControlExecutor.IsReturningPostBack)
+        if (!userControlExecutor.IsNull && !userControlExecutor.IsReturningPostBack)
         {
+          Assertion.IsTrue (userControlExecutor.UserControlID == _permanentUniqueID);
           var currentUserControlStep = (WxeUserControlStep) userControlExecutor.Function.ExecutingStep;
           control = (WxeUserControl2) Page.LoadControl (currentUserControlStep.UserControl);
 
@@ -165,6 +167,11 @@ namespace Remotion.Web.ExecutionEngine
     public IWxePage WxePage
     {
       get { return (IWxePage) base.Page; }
+    }
+
+    public string PermanentUniqueID
+    {
+      get { return _permanentUniqueID; }
     }
 
     /// <summary> Implements <see cref="IWxePage.ExecuteNextStep">IWxePage.ExecuteNextStep</see>. </summary>

@@ -14,15 +14,19 @@ namespace Remotion.Web.Test.ExecutionEngine
   {
     protected void ExecuteSecondUserControlButton_Click (object sender, EventArgs e)
     {
-      if (!WxePage.IsReturningPostBack)
-      {
-        ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Executed";
-        ExecuteFunction (new ShowSecondUserControlFormFunction(), (Control)sender, null);
-      }
-      else
-      {
-        ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Returned";
-      }
+      ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Executed";
+      SecondControl.Call (WxePage, this, (Control) sender);
+      ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Returned";
+
+      //if (!WxePage.IsReturningPostBack)
+      //{
+      //  ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Executed";
+      //  ExecuteFunction (new ShowSecondUserControlFormFunction(), (Control)sender, null);
+      //}
+      //else
+      //{
+      //  ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Returned";
+      //}
     }
 
     protected override void OnInitComplete (EventArgs e)
