@@ -96,10 +96,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
         _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", false)).Do (
             invocation =>
             {
-              Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
               Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));
               Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
               Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
+              Assert.That (_pageStep.ReturningFunction, Is.SameAs (_subFunction));
               Assert.That (_pageStep.IsReturningPostBack, Is.True);
             });
       }
@@ -239,10 +239,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
         _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true)).Do (
             invocation =>
             {
-              Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
               Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));
               Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
               Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
+              Assert.That (_pageStep.ReturningFunction, Is.SameAs (_subFunction));
               Assert.That (_pageStep.IsReturningPostBack, Is.True);
             });
       }

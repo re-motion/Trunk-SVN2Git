@@ -31,16 +31,14 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      //  Provide the executed sub-function to the executing page
-      context.ReturningFunction = Parameters.SubFunction;
-
       // Correct the PostBack-Sequence number
       Parameters.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = context.PostBackID.ToString();
 
       //  Provide the backed up postback data to the executing page
       context.PostBackCollection = Parameters.PostBackCollection;
 
-      ExecutionStateContext.SetIsReturningPostBack (true);
+      //  Provide the executed sub-function to the executing page
+      ExecutionStateContext.SetReturnState (Parameters.SubFunction, true);
 
       ExecutionStateContext.SetExecutionState (NullExecutionState.Null);
     }

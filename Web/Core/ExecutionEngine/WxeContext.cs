@@ -207,9 +207,7 @@ namespace Remotion.Web.ExecutionEngine
 
     private readonly IHttpContext _httpContext;
     private readonly WxeFunctionStateManager _functionStateManager;
-    private bool _isOutOfSequencePostBack;
     private NameValueCollection _postBackCollection;
-    private WxeFunction _returningFunction;
     private readonly WxeFunctionState _functionState;
     private readonly NameValueCollection _queryString;
 
@@ -243,21 +241,6 @@ namespace Remotion.Web.ExecutionEngine
     public WxeFunctionStateManager FunctionStateManager
     {
       get { return _functionStateManager; }
-    }
-
-    /// <summary>
-    ///   Gets a flag that describes whether the current postback cycle was caused by resubmitting a page from the 
-    ///   client's cache.
-    /// </summary>
-    public bool IsOutOfSequencePostBack
-    {
-      get { return _isOutOfSequencePostBack; }
-    }
-
-    [EditorBrowsable (EditorBrowsableState.Advanced)]
-    public void SetIsOutOfSequencePostBack (bool value)
-    {
-      _isOutOfSequencePostBack = value;
     }
 
     /// <summary> Gets or sets the postback data for the page if it has executed a sub-function. </summary>
@@ -301,12 +284,6 @@ namespace Remotion.Web.ExecutionEngine
     public NameValueCollection QueryString
     {
       get { return _queryString; }
-    }
-
-    public WxeFunction ReturningFunction
-    {
-      get { return _returningFunction; }
-      set { _returningFunction = value; }
     }
 
     /// <summary> Gets the URL that resumes the current function. </summary>

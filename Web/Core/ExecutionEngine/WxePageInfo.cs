@@ -175,7 +175,7 @@ namespace Remotion.Web.ExecutionEngine
         throw new InvalidOperationException ("The IWxePage has no PostBackCollection even though this is a post back.");
       EnsurePostDataHandled (postBackCollection);
 
-      if (WxeContext.Current.IsOutOfSequencePostBack && !_page.AreOutOfSequencePostBacksEnabled)
+      if (CurrentPageStep.IsOutOfSequencePostBack && !_page.AreOutOfSequencePostBacksEnabled)
         throw new WxePostbackOutOfSequenceException ();
     }
 
@@ -199,7 +199,7 @@ namespace Remotion.Web.ExecutionEngine
 
       int postBackID = int.Parse (postBackCollection[WxePageInfo<TWxePage>.PostBackSequenceNumberID]);
       if (postBackID != wxeContext.PostBackID)
-        wxeContext.SetIsOutOfSequencePostBack (true);
+        CurrentPageStep.SetIsOutOfSequencePostBack (true);
 
       string returningToken = postBackCollection[WxePageInfo<TWxePage>.ReturningTokenID];
       if (!StringUtility.IsNullOrEmpty (returningToken))
@@ -208,8 +208,7 @@ namespace Remotion.Web.ExecutionEngine
         WxeFunctionState functionState = functionStates.GetItem (returningToken);
         if (functionState != null)
         {
-          wxeContext.ReturningFunction = functionState.Function;
-          CurrentPageStep.SetIsReturningPostBack (true);
+          CurrentPageStep.SetReturnState (functionState.Function, true);
           _returningFunctionState = functionState;
         }
       }
@@ -381,11 +380,7 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> Implements <see cref="IWxePage.IsOutOfSequencePostBack">IWxePage.IsOutOfSequencePostBack</see>. </summary>
     public bool IsOutOfSequencePostBack
     {
-      get
-      {
-        WxeContext wxeContext = WxeContext.Current;
-        return ((wxeContext == null) ? false : wxeContext.IsOutOfSequencePostBack);
-      }
+      get { return CurrentPageStep.IsOutOfSequencePostBack; }
     }
 
     /// <summary> Implements <see cref="IWxePage.IsReturningPostBack">IWxePage.IsReturningPostBack</see>. </summary>
@@ -397,11 +392,7 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> Implements <see cref="IWxePage.ReturningFunction">IWxePage.ReturningFunction</see>. </summary>
     public WxeFunction ReturningFunction
     {
-      get
-      {
-        WxeContext wxeContext = WxeContext.Current;
-        return ((wxeContext == null) ? null : wxeContext.ReturningFunction);
-      }
+      get { return CurrentPageStep.ReturningFunction; }
     }
 
     /// <summary> Saves the viewstate into the executing <see cref="WxePageStep"/>. </summary>

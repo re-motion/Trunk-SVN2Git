@@ -118,7 +118,7 @@ public class MyFunction: WxeFunction
       </para><para>
         During the execution of a sub-function, the <see cref="WxePageStep"/> will transfer control to the 
         sub-function and resume execution after the function has returned. The completed sub-function will then 
-        be available via the <see cref="WxeContext.ReturningFunction">WxeContext.ReturningFunction</see> property 
+        be available via the <see cref="ReturningFunction"/> property 
         for the remainder or the current post back cycle.
         <note>
           The current <see cref="WxePageStep"/>'s <b>Execute</b> method will still be invoked during each post back, 

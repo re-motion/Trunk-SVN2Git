@@ -33,8 +33,10 @@ namespace Remotion.Web.ExecutionEngine
     private readonly ResourceObjectBase _page;
     private readonly string _pageToken;
     private string _pageState;
+    private WxeFunction _returningFunction;
     private bool _isPostBack;
     private bool _isReturningPostBack;
+    private bool _isOutOfSequencePostBack;
     private bool _isExecutionStarted;
 
     [NonSerialized]
@@ -111,9 +113,12 @@ namespace Remotion.Web.ExecutionEngine
         _isPostBack = true;
       }
 
+      _isReturningPostBack = false;
+      _isOutOfSequencePostBack = false;
+      _returningFunction = null;
+
       //  Use the Page's postback data
       context.PostBackCollection = null;
-      _isReturningPostBack = false;
 
       while (_executionState.IsExecuting)
         _executionState.ExecuteSubFunction (context);
@@ -190,7 +195,6 @@ namespace Remotion.Web.ExecutionEngine
       get { return _isPostBack; }
     }
 
-    //TODO: Move to WxePage
     /// <summary>
     ///   During the execution of a page, specifies whether the current postback cycle was caused by returning from a 
     ///   <see cref="WxeFunction"/>.
@@ -200,10 +204,32 @@ namespace Remotion.Web.ExecutionEngine
       get { return _isReturningPostBack; }
     }
 
-    [EditorBrowsable (EditorBrowsableState.Advanced)]
-    public void SetIsReturningPostBack (bool value)
+    /// <summary>
+    ///   Gets a flag that describes whether the current postback cycle was caused by resubmitting a page from the 
+    ///   client's cache.
+    /// </summary>
+    public bool IsOutOfSequencePostBack
     {
-      _isReturningPostBack = value;
+      get { return _isOutOfSequencePostBack; }
+    }
+
+    public WxeFunction ReturningFunction
+    {
+      get { return _returningFunction; }
+    }
+
+    public void SetReturnState (WxeFunction returningFunction, bool isReturningPostBack)
+    {
+      ArgumentUtility.CheckNotNull ("returningFunction", returningFunction);
+
+      _returningFunction = returningFunction;
+      _isReturningPostBack = isReturningPostBack;
+    }
+
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public void SetIsOutOfSequencePostBack (bool value)
+    {
+      _isOutOfSequencePostBack = value;
     }
 
     public override string ToString ()

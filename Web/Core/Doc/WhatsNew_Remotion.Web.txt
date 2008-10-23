@@ -1,6 +1,6 @@
 1.11.8
 ======
-- WxeContext/WxePageStep: Moved IsPostBack, IsReturningPostBack from WxeContext to WxePageStep
+- WxeContext/WxePageStep: Moved IsPostBack, IsReturningPostBack, ReturningFunction from WxeContext to WxePageStep
 
 1.11.7
 ======

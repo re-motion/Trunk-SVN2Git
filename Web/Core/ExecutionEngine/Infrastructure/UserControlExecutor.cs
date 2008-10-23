@@ -89,7 +89,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       context.PostBackCollection = collection;
       _backedUpPostBackData = null;
 
-      ((WxePageStep) _function.ParentStep).SetIsReturningPostBack (true);
+      ((WxePageStep) _function.ParentStep).SetReturnState (_function, true);
       _isReturningInnerFunction = true;
     }
 

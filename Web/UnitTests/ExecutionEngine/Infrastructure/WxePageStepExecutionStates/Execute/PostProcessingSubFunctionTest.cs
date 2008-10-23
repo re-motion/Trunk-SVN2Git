@@ -44,7 +44,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
 
       using (MockRepository.Ordered ())
       {
-        ExecutionStateContextMock.Expect (mock => mock.SetIsReturningPostBack (true));
+        ExecutionStateContextMock.Expect (mock => mock.SetReturnState (SubFunction, true));
         ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (NullExecutionState.Null));
       }
 
@@ -54,7 +54,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
 
       MockRepository.VerifyAll();
 
-      Assert.That (WxeContext.ReturningFunction, Is.SameAs (SubFunction));
       Assert.That (WxeContext.PostBackCollection, Is.SameAs (PostBackCollection));
       Assert.That (WxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
     }
