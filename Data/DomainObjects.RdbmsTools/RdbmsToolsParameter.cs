@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
     [CommandLineStringArgument ("config", true,
         Description = 
             "The config file holding the application's configuration. "
-            + "Unless the path is rooted, the config file is located relative to the curent directory.",
+            + "Unless the path is rooted, the config file is located relative to the current directory.",
         Placeholder = "app.config")]
     public string ConfigFile = string.Empty;
 
