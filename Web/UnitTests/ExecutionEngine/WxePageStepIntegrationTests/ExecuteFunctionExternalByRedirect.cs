@@ -123,12 +123,11 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
         _subFunction.Expect (mock => mock.Execute (_wxeContext)).Throw (new WxeExecuteNextStepException());
 
         _requestMock.Expect (mock => mock.HttpMethod).Return ("GET");
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Do (
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true)).Do (
             invocation =>
             {
               Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
               Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));
-              Assert.That (_wxeContext.IsPostBack, Is.True);
               Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
               Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
               Assert.That (_wxeContext.IsReturningPostBack, Is.True);

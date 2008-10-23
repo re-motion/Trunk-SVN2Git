@@ -131,6 +131,8 @@ namespace Remotion.Web.ExecutionEngine
 
       if (!_postbackCollectionInitialized)
       {
+        Initialize (context);
+
         _postbackCollection = DeterminePostBackMode (context);
         _postbackCollectionInitialized = true;
         if (_postbackCollection != null)
@@ -144,7 +146,7 @@ namespace Remotion.Web.ExecutionEngine
       WxeContext wxeContext = WxeContext.Current;
       if (wxeContext == null)
         return null;
-      if (!wxeContext.IsPostBack)
+      if (!CurrentPageStep.IsPostBack)
         return null;
       if (wxeContext.PostBackCollection != null)
         return wxeContext.PostBackCollection;

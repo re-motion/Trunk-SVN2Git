@@ -32,16 +32,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       //NOP
     }
 
-    public void BeginReturn (WxeContext context)
-    {
-      //NOP
-    }
-
-    public void EndReturn (WxeContext context)
-    {
-      //NOP
-    }
-
     public WxeFunction Function
     {
       get { return null; }

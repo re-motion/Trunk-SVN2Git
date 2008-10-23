@@ -40,7 +40,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     public void ExecuteSubFunction_WithGetRequest ()
     {
       WxeContext.PostBackCollection = null;
-      WxeContext.SetIsPostBack (false);
       WxeContext.SetIsReturningPostBack (false);
       PrivateInvoke.SetNonPublicField (FunctionState, "_postBackID", 100);
       RequestMock.Stub (stub => stub.HttpMethod).Return ("GET").Repeat.Any();
@@ -56,7 +55,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       Assert.That (WxeContext.ReturningFunction, Is.SameAs (SubFunction));
       Assert.That (WxeContext.PostBackCollection, Is.SameAs (PostBackCollection));
       Assert.That (WxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
-      Assert.That (WxeContext.IsPostBack, Is.True);
       Assert.That (WxeContext.IsReturningPostBack, Is.True);
     }
 
@@ -64,7 +62,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     public void ExecuteSubFunction_WithPostRequest ()
     {
       WxeContext.PostBackCollection = null;
-      WxeContext.SetIsPostBack (false);
       WxeContext.SetIsReturningPostBack (false);
       PrivateInvoke.SetNonPublicField (FunctionState, "_postBackID", 100);
       RequestMock.Stub (stub => stub.HttpMethod).Return ("POST").Repeat.Any ();
@@ -79,7 +76,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
 
       Assert.That (WxeContext.ReturningFunction, Is.SameAs (SubFunction));
       Assert.That (WxeContext.PostBackCollection, Is.Null);
-      Assert.That (WxeContext.IsPostBack, Is.True);
       Assert.That (WxeContext.IsReturningPostBack, Is.False);
     }
   }

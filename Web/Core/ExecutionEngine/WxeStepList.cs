@@ -67,7 +67,6 @@ namespace Remotion.Web.ExecutionEngine
     {
       for (int i = _nextStep; i < _steps.Count; ++i)
       {
-        context.SetIsPostBack (i == _lastExecutedStep);
         _lastExecutedStep = i;
         WxeStep currentStep = this[i];
         if (currentStep.IsAborted)

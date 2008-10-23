@@ -40,7 +40,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
       //  Provide the backed up postback data to the executing page
       context.PostBackCollection = Parameters.PostBackCollection;
 
-      context.SetIsPostBack (true);
       context.SetIsReturningPostBack (true);
 
       ExecutionStateContext.SetExecutionState (NullExecutionState.Null);

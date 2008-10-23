@@ -168,7 +168,6 @@ namespace Remotion.Web.ExecutionEngine
     protected override NameValueCollection DeterminePostBackMode ()
     {
       NameValueCollection result = _wxePageInfo.EnsurePostBackModeDetermined (Context);
-      _wxePageInfo.Initialize (Context);
 
       return result;
     }

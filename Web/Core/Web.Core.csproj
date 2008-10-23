@@ -149,7 +149,6 @@
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectWithVarRef.cs" />
     <Compile Include="ExecutionEngine\WxeExecuteUserControlNextStepException.cs" />
-    <Compile Include="ExecutionEngine\WxeExecuteUserControlStepException.cs" />
     <Compile Include="ExecutionEngine\WxeExecutionControlExceptionBase.cs" />
     <Compile Include="ExecutionEngine\WxePageExecutor.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\PostProcessingSubFunctionState.cs" />

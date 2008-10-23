@@ -35,7 +35,7 @@ namespace Remotion.Web.ExecutionEngine
     public override void Execute (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
-
+      
       if (!_isExecutionStarted)
       {
         _isExecutionStarted = true;
@@ -45,8 +45,8 @@ namespace Remotion.Web.ExecutionEngine
       {
         _isPostBack = true;
       }
-      _userControlExecutor.Execute (context);
-      throw new WxeExecuteUserControlStepException();
+
+      PageStep.PageExecutor.ExecutePage (context, PageStep.Page, PageStep.IsPostBack);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -93,6 +93,7 @@ namespace Remotion.Web.ExecutionEngine
       {
         if (_pageStep == null)
           _pageStep = WxeStep.GetStepByType<WxePageStep> (this);
+        Assertion.IsNotNull (_pageStep);
         return _pageStep;
       }
     }

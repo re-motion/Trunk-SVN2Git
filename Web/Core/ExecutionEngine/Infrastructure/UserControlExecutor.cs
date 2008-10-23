@@ -23,9 +23,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     private readonly string _backedUpUserControlState;
     private readonly string _backedUpUserControl;
     private readonly string _userControlID;
-    private bool _isReturningInnerFunction;
     private NameValueCollection _postBackCollection;
     private NameValueCollection _backedUpPostBackData;
+    private bool _isReturningInnerFunction;
 
     public UserControlExecutor (WxeStep parentStep, WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
     {
@@ -68,18 +68,12 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         _postBackCollection = null;
       }
 
-      bool isPostBackBackUp = context.IsPostBack;
-      try
-      {
-        _function.Execute (context);
-      }
-      catch (WxeExecuteUserControlStepException)
-      {
-        context.SetIsPostBack (isPostBackBackUp);
-      }
+      _function.Execute (context);
+
+      Return (context);
     }
 
-    public void BeginReturn (WxeContext context)
+    private void Return (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
@@ -97,16 +91,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       context.SetIsReturningPostBack (true);
       _isReturningInnerFunction = true;
-    }
-
-    public void EndReturn (WxeContext context)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      if (_function.ParentStep is WxePageStep)
-        ((WxePageStep) _function.ParentStep).SetUserControlExecutor (NullUserControlExecutor.Null);
-      else if (_function.ParentStep is WxeUserControlStep)
-        ((WxeUserControlStep) _function.ParentStep).SetUserControlExecutor (NullUserControlExecutor.Null);
     }
 
     public WxeFunction Function

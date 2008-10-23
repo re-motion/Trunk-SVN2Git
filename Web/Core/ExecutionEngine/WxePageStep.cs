@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Web;
@@ -32,6 +33,8 @@ namespace Remotion.Web.ExecutionEngine
     private readonly ResourceObjectBase _page;
     private readonly string _pageToken;
     private string _pageState;
+    private bool _isPostBack;
+    private bool _isExecutionStarted;
 
     [NonSerialized]
     private WxeHandler _wxeHandler;
@@ -75,6 +78,8 @@ namespace Remotion.Web.ExecutionEngine
       {
         if (_executionState.IsExecuting)
           return _executionState.Parameters.SubFunction.ExecutingStep;
+        else if (!_userControlExecutor.IsNull)
+          return _userControlExecutor.Function.ExecutingStep;
         else
           return this;
       }
@@ -95,37 +100,33 @@ namespace Remotion.Web.ExecutionEngine
         _wxeHandler = null;
       }
 
-      if (!_executionState.IsExecuting)
+      if (!_isExecutionStarted)
       {
-        //  Use the Page's postback data
-        context.PostBackCollection = null;
-        context.SetIsReturningPostBack (false);
-
-        _userControlExecutor.Execute (context);
+        _isExecutionStarted = true;
+        _isPostBack = false;
       }
       else
       {
-        while (_executionState.IsExecuting)
-          _executionState.ExecuteSubFunction (context);
+        _isPostBack = true;
       }
+
+      //  Use the Page's postback data
+      context.PostBackCollection = null;
+      context.SetIsReturningPostBack (false);
+
+      while (_executionState.IsExecuting)
+        _executionState.ExecuteSubFunction (context);
+
+      _userControlExecutor.Execute (context);
 
       try
       {
-        _pageExecutor.ExecutePage (context, Page);
+        _pageExecutor.ExecutePage (context, Page, _isPostBack);
       }
-      catch (HttpException e)
+      finally
       {
-        Exception unwrappedException = PageUtility.GetUnwrappedExceptionFromHttpException (e);
-        if (unwrappedException is WxeExecuteUserControlStepException)
-          _pageExecutor.ExecutePage (context, Page);
-        else
-          throw;
-      }
-      catch (WxeExecuteUserControlNextStepException e)
-      {
-        e.UserControlExecutor.BeginReturn (context);
-        _pageExecutor.ExecutePage (context, Page);
-        e.UserControlExecutor.EndReturn (context);
+        if (_userControlExecutor.IsReturningInnerFunction)
+          _userControlExecutor = NullUserControlExecutor.Null;
       }
     }
 
@@ -177,6 +178,15 @@ namespace Remotion.Web.ExecutionEngine
     public string PageToken
     {
       get { return _pageToken; }
+    }
+
+    /// <summary>
+    ///   Gets a flag that corresponds to the <see cref="System.Web.UI.Page.IsPostBack">Page.IsPostBack</see> flag, but is 
+    ///   available from the beginning of the execution cycle, i.e. even before <b>OnInit</b>.
+    /// </summary>
+    public bool IsPostBack
+    {
+      get { return _isPostBack; }
     }
 
     public override string ToString ()

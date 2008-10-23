@@ -61,7 +61,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
     [Test]
     public void Execute ()
     {
-      _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Do (
+      _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", false)).Do (
           invocation =>
           {
             Assert.That (_wxeContext.PostBackCollection, Is.Null);
@@ -72,56 +72,30 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
       _pageStep.Execute (_wxeContext);
       _mockRepository.VerifyAll();
+      Assert.That (_pageStep.IsPostBack, Is.False);
     }
 
     [Test]
-    public void HandlesWxeExecuteUserControlNextStepException ()
+    public void Execute_WithPostBack ()
     {
-      var userControlExecutorMock = _mockRepository.StrictMock<IUserControlExecutor> ();
-      _pageStep.SetUserControlExecutor (userControlExecutorMock);
+      _pageExecutorMock.Stub (stub => stub.ExecutePage (_wxeContext, "ThePage", false));
+      _mockRepository.ReplayAll ();
+      _pageStep.Execute (_wxeContext);
+      _mockRepository.BackToRecordAll();
 
-      using (_mockRepository.Ordered ())
-      {
-        userControlExecutorMock.Expect (mock => mock.Execute (_wxeContext));
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException (userControlExecutorMock));
+      _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true)).Do (
+          invocation =>
+          {
+            Assert.That (_wxeContext.PostBackCollection, Is.Null);
+            Assert.That (_wxeContext.IsReturningPostBack, Is.False);
+          });
 
-        userControlExecutorMock.Expect (mock => mock.BeginReturn(_wxeContext));
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage"));
-        userControlExecutorMock.Expect (mock => mock.EndReturn (_wxeContext));
-      }
-
-      _mockRepository.ReplayAll();
+      _mockRepository.ReplayAll ();
 
       _pageStep.Execute (_wxeContext);
 
-      _mockRepository.VerifyAll();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ApplicationException))]
-    public void CleanUpAndRethrowException ()
-    {
-      var userControlExecutorMock = _mockRepository.StrictMock<IUserControlExecutor> ();
-      _pageStep.SetUserControlExecutor (userControlExecutorMock);
-     
-      using (_mockRepository.Ordered ())
-      {
-        userControlExecutorMock.Expect (mock => mock.Execute (_wxeContext));
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new WxeExecuteUserControlNextStepException (userControlExecutorMock));
-
-        userControlExecutorMock.Expect (mock => mock.BeginReturn (_wxeContext));
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Throw (new ApplicationException ());
-      }
-      _mockRepository.ReplayAll();
-
-      try
-      {
-        _pageStep.Execute (_wxeContext);
-      }
-      finally
-      {
-        _pageExecutorMock.VerifyAllExpectations();
-      }
+      _mockRepository.VerifyAll ();
+      Assert.That (_pageStep.IsPostBack, Is.True);
     }
   }
 }

@@ -14,6 +14,6 @@ namespace Remotion.Web.ExecutionEngine
 {
   public interface IWxePageExecutor
   {
-    void ExecutePage (WxeContext context, string page);
+    void ExecutePage (WxeContext context, string page, bool isPostBack);
   }
 }

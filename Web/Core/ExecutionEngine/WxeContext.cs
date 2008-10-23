@@ -207,7 +207,6 @@ namespace Remotion.Web.ExecutionEngine
 
     private readonly IHttpContext _httpContext;
     private readonly WxeFunctionStateManager _functionStateManager;
-    private bool _isPostBack;
     private bool _isReturningPostBack;
     private bool _isOutOfSequencePostBack;
     private NameValueCollection _postBackCollection;
@@ -247,21 +246,7 @@ namespace Remotion.Web.ExecutionEngine
       get { return _functionStateManager; }
     }
 
-    /// <summary>
-    ///   Gets a flag that corresponds to the <see cref="System.Web.UI.Page.IsPostBack">Page.IsPostBack</see> flag, but is 
-    ///   available from the beginning of the execution cycle, i.e. even before <b>OnInit</b>.
-    /// </summary>
-    public bool IsPostBack
-    {
-      get { return _isPostBack; }
-    }
-
-    [EditorBrowsable (EditorBrowsableState.Advanced)]
-    public void SetIsPostBack (bool value)
-    {
-      _isPostBack = value;
-    }
-
+    //TODO: Move to WxePage
     /// <summary>
     ///   During the execution of a page, specifies whether the current postback cycle was caused by returning from a 
     ///   <see cref="WxeFunction"/>.

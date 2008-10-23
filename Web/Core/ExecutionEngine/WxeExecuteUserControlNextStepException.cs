@@ -10,8 +10,6 @@
 
 using System;
 using System.Runtime.Serialization;
-using Remotion.Utilities;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -19,37 +17,17 @@ namespace Remotion.Web.ExecutionEngine
   [Serializable]
   public class WxeExecuteUserControlNextStepException : WxeExecutionControlExceptionBase
   {
-    private readonly IUserControlExecutor _userControlExecutor;
-
-    public WxeExecuteUserControlNextStepException (IUserControlExecutor userControlExecutor)
+    public WxeExecuteUserControlNextStepException ()
       : base (
       "This exception does not indicate an error. It is used to roll back the call stack. "
       + "It is recommended to disable breaking on this exeption type while debugging."
       )
     {
-      ArgumentUtility.CheckNotNull ("userControlExecutor", userControlExecutor);
-      _userControlExecutor = userControlExecutor;
     }
 
     protected WxeExecuteUserControlNextStepException (SerializationInfo info, StreamingContext context)
       : base (info, context)
     {
-      ArgumentUtility.CheckNotNull ("info", info);
-      _userControlExecutor = (IUserControlExecutor) info.GetValue ("_userControlExecutor", typeof (IUserControlExecutor));
-    }
-
-    public IUserControlExecutor UserControlExecutor
-    {
-      get { return _userControlExecutor; }
-    }
-
-    public override void GetObjectData (SerializationInfo info, StreamingContext context)
-    {
-      ArgumentUtility.CheckNotNull ("info", info);
-
-      base.GetObjectData (info, context);
-      
-      info.AddValue ("_userControlExecutor", _userControlExecutor);
     }
   }
 }

@@ -34,8 +34,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
       //  Provide the executed sub-function to the executing page
       context.ReturningFunction = Parameters.SubFunction;
 
-      context.SetIsPostBack (true);
-
       bool isPostRequest = string.Equals (context.HttpContext.Request.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase);
       if (isPostRequest)
       {

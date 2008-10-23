@@ -93,14 +93,13 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
               _wxeContext.PostBackCollection = new NameValueCollection();
             });
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Do (
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", false)).Do (
             invocation =>
             {
               Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
               Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));
               Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
               Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
-              Assert.That (_wxeContext.IsPostBack, Is.True);
               Assert.That (_wxeContext.IsReturningPostBack, Is.True);
             });
       }
@@ -130,7 +129,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
         _subFunction.Expect (mock => mock.Execute (_wxeContext)).Do (invocation => Thread.CurrentThread.Abort());
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage"));
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true));
       }
 
       _mockRepository.ReplayAll();
@@ -169,7 +168,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
         _subFunction.Expect (mock => mock.Execute (_wxeContext));
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage"));
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true));
       }
 
       _mockRepository.ReplayAll();
@@ -237,7 +236,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
               Thread.CurrentThread.Abort();
             });
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage")).Do (
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true)).Do (
             invocation =>
             {
               Assert.That (_wxeContext.ReturningFunction, Is.SameAs (_subFunction));
@@ -245,7 +244,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
               Assert.That (_wxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
               Assert.That (_wxeContext.PostBackCollection.AllKeys, List.Contains ("Key"));
               Assert.That (_wxeContext.IsReturningPostBack, Is.True);
-              Assert.That (_wxeContext.IsPostBack, Is.True);
             });
       }
 

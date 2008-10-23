@@ -59,8 +59,14 @@ namespace Remotion.Web.ExecutionEngine
             _control.Page.GetType ()));
       }
 
-      _currentPageStep = (WxePageStep) _wxeHandler.RootFunction.ExecutingStep;
-      _currentFunction = WxeStep.GetFunction (_currentPageStep);
+
+      WxeStep executingStep = _wxeHandler.RootFunction.ExecutingStep;
+      if (executingStep is WxeUserControlStep)
+        _currentPageStep = ((WxeUserControlStep) executingStep).PageStep;
+      else
+        _currentPageStep = (WxePageStep) executingStep;
+
+      _currentFunction = WxeStep.GetFunction (executingStep);
     }
 
     public WxeHandler WxeHandler

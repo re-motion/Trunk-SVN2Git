@@ -21,7 +21,7 @@ namespace Remotion.Web.ExecutionEngine
     {
     }
 
-    public void ExecutePage (WxeContext context, string page)
+    public void ExecutePage (WxeContext context, string page, bool isPostBack)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNullOrEmpty ("page", page);
@@ -41,7 +41,7 @@ namespace Remotion.Web.ExecutionEngine
       Assertion.IsNotNull (wxeHandlerBackUp, "The HttpHandler must be of type WxeHandler.");
       try
       {
-        context.HttpContext.Server.Transfer (url, context.IsPostBack);
+        context.HttpContext.Server.Transfer (url, isPostBack);
       }
       catch (HttpException e)
       {
@@ -49,7 +49,7 @@ namespace Remotion.Web.ExecutionEngine
         if (unwrappedException is WxeExecuteNextStepException)
           return;
         if (unwrappedException is WxeExecuteUserControlNextStepException)
-          throw unwrappedException;
+          return;
         throw;
       }
       finally

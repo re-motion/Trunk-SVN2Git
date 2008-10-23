@@ -15,8 +15,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   public interface IUserControlExecutor:INullObject
   {
     void Execute (WxeContext context);
-    void BeginReturn (WxeContext context);
-    void EndReturn (WxeContext context);
     WxeFunction Function { get; }
     string BackedUpUserControlState { get; }
     string UserControlID { get; }

@@ -40,7 +40,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     public void ExecuteSubFunction ()
     {
       WxeContext.PostBackCollection = null;
-      WxeContext.SetIsPostBack (false);
       WxeContext.SetIsReturningPostBack (false);
       PrivateInvoke.SetNonPublicField (FunctionState, "_postBackID", 100);
 
@@ -55,7 +54,6 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       Assert.That (WxeContext.ReturningFunction, Is.SameAs (SubFunction));
       Assert.That (WxeContext.PostBackCollection, Is.SameAs (PostBackCollection));
       Assert.That (WxeContext.PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
-      Assert.That (WxeContext.IsPostBack, Is.True);
       Assert.That (WxeContext.IsReturningPostBack, Is.True);
     }
   }

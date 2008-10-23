@@ -40,17 +40,9 @@ namespace Remotion.Web.ExecutionEngine
     {
       if (!_isWxeInfoInitialized)
       {
-        _wxeInfo.Initialize (Context);
-
-        IUserControlExecutor userControlExecutor = _wxeInfo.CurrentPageStep.UserControlExecutor;
-        while (userControlExecutor.Function.ExecutingStep is WxeUserControlStep
-               && !((WxeUserControlStep) userControlExecutor.Function.ExecutingStep).UserControlExecutor.IsNull)
-        {
-          userControlExecutor = ((WxeUserControlStep) userControlExecutor.Function.ExecutingStep).UserControlExecutor;
-        }
-
-        _currentUserControlStep = (WxeUserControlStep) userControlExecutor.Function.ExecutingStep;
-        
+        _wxeInfo.Initialize (Context);  
+      
+        _currentUserControlStep = _wxeInfo.WxeHandler.RootFunction.ExecutingStep as WxeUserControlStep;
         _isWxeInfoInitialized = true;
       }
 
@@ -132,8 +124,9 @@ namespace Remotion.Web.ExecutionEngine
     {
       if (CurrentPageStep.UserControlExecutor.IsNull)
         CurrentPageStep.ExecuteFunction (this, function, sender, usesEventTarget ?? UsesEventTarget);
-
-      CurrentUserControlStep.ExecuteFunction (this, function, sender, usesEventTarget ?? UsesEventTarget);
+      else
+        throw new InvalidOperationException();
+      //CurrentUserControlStep.ExecuteFunction (this, function, sender, usesEventTarget ?? UsesEventTarget);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -155,8 +148,8 @@ namespace Remotion.Web.ExecutionEngine
     private IUserControlExecutor GetUserControlExecutor ()
     {
       IUserControlExecutor userControlExecutor = CurrentPageStep.UserControlExecutor;
-      if (!userControlExecutor.IsNull && !CurrentUserControlStep.UserControlExecutor.IsNull)
-        userControlExecutor = CurrentUserControlStep.UserControlExecutor;
+      //if (!userControlExecutor.IsNull && !CurrentUserControlStep.UserControlExecutor.IsNull)
+      //  userControlExecutor = CurrentUserControlStep.UserControlExecutor;
       return userControlExecutor;
     }
 
@@ -190,7 +183,7 @@ namespace Remotion.Web.ExecutionEngine
       {
         if (Context != null)
           Context.Response.Clear(); // throw away page trace output
-        throw new WxeExecuteUserControlNextStepException(GetUserControlExecutor());
+        throw new WxeExecuteUserControlNextStepException();
       }
     }
 
