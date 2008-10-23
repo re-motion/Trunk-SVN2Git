@@ -57,7 +57,7 @@ namespace Remotion.Web.ExecutionEngine
 
         WxeUserControl2 control;
         IStateModificationStrategy stateModificationStrategy;
-        if (userControlExecutor.UserControlID == uniqueID && !userControlExecutor.IsReturningInnerFunction)
+        if (userControlExecutor.UserControlID == uniqueID && !userControlExecutor.IsReturningPostBack)
         {
           var currentUserControlStep = (WxeUserControlStep) userControlExecutor.Function.ExecutingStep;
           control = (WxeUserControl2) Page.LoadControl (currentUserControlStep.UserControl);
@@ -69,7 +69,7 @@ namespace Remotion.Web.ExecutionEngine
         }
         else
         {
-          if (userControlExecutor.IsReturningInnerFunction)
+          if (userControlExecutor.IsReturningPostBack)
           {
             control = (WxeUserControl2) Page.LoadControl (userControlExecutor.BackedUpUserControl);
             stateModificationStrategy = new StateReplacingStrategy (userControlExecutor.BackedUpUserControlState);
@@ -125,8 +125,7 @@ namespace Remotion.Web.ExecutionEngine
       if (CurrentPageStep.UserControlExecutor.IsNull)
         CurrentPageStep.ExecuteFunction (this, function, sender, usesEventTarget ?? UsesEventTarget);
       else
-        throw new InvalidOperationException();
-      //CurrentUserControlStep.ExecuteFunction (this, function, sender, usesEventTarget ?? UsesEventTarget);
+        CurrentUserControlStep.ExecuteFunction (this, function, sender, usesEventTarget ?? UsesEventTarget);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -148,8 +147,8 @@ namespace Remotion.Web.ExecutionEngine
     private IUserControlExecutor GetUserControlExecutor ()
     {
       IUserControlExecutor userControlExecutor = CurrentPageStep.UserControlExecutor;
-      //if (!userControlExecutor.IsNull && !CurrentUserControlStep.UserControlExecutor.IsNull)
-      //  userControlExecutor = CurrentUserControlStep.UserControlExecutor;
+      if (!userControlExecutor.IsNull && !CurrentUserControlStep.UserControlExecutor.IsNull)
+        userControlExecutor = CurrentUserControlStep.UserControlExecutor;
       return userControlExecutor;
     }
 

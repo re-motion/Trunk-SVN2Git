@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Specialized;
 using System.Runtime.Serialization;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
@@ -52,7 +53,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       get { return null; }
     }
 
-    public bool IsReturningInnerFunction
+    public bool IsReturningPostBack
     {
       get { return false; }
     }

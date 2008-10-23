@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Specialized;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
@@ -18,7 +19,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     WxeFunction Function { get; }
     string BackedUpUserControlState { get; }
     string UserControlID { get; }
-    bool IsReturningInnerFunction { get; }
+    bool IsReturningPostBack { get; }
     string BackedUpUserControl { get; }
   }
 }

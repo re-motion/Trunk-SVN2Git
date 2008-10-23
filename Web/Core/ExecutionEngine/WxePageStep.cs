@@ -134,7 +134,7 @@ namespace Remotion.Web.ExecutionEngine
       }
       finally
       {
-        if (_userControlExecutor.IsReturningInnerFunction)
+        if (_userControlExecutor.IsReturningPostBack)
           _userControlExecutor = NullUserControlExecutor.Null;
       }
     }
@@ -199,21 +199,21 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     /// <summary>
-    ///   During the execution of a page, specifies whether the current postback cycle was caused by returning from a 
-    ///   <see cref="WxeFunction"/>.
-    /// </summary>
-    public bool IsReturningPostBack
-    {
-      get { return _isReturningPostBack; }
-    }
-
-    /// <summary>
     ///   Gets a flag that describes whether the current postback cycle was caused by resubmitting a page from the 
     ///   client's cache.
     /// </summary>
     public bool IsOutOfSequencePostBack
     {
       get { return _isOutOfSequencePostBack; }
+    }
+
+    /// <summary>
+    ///   During the execution of a page, specifies whether the current postback cycle was caused by returning from a 
+    ///   <see cref="WxeFunction"/>.
+    /// </summary>
+    public bool IsReturningPostBack
+    {
+      get { return _isReturningPostBack; }
     }
 
     public WxeFunction ReturningFunction

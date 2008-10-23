@@ -26,6 +26,9 @@ namespace Remotion.Web.ExecutionEngine
     private WxePageStep _pageStep;
     private IUserControlExecutor _userControlExecutor = NullUserControlExecutor.Null;
 
+    [NonSerialized]
+    private WxeHandler _wxeHandler;
+
     public WxeUserControlStep (string userControl)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("userControl", userControl);
@@ -35,6 +38,12 @@ namespace Remotion.Web.ExecutionEngine
     public override void Execute (WxeContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
+
+      if (_wxeHandler != null)
+      {
+        context.HttpContext.Handler = _wxeHandler;
+        _wxeHandler = null;
+      }
 
       if (!_isExecutionStarted)
       {
@@ -46,7 +55,17 @@ namespace Remotion.Web.ExecutionEngine
         _isPostBack = true;
       }
 
-      PageStep.PageExecutor.ExecutePage (context, PageStep.Page, PageStep.IsPostBack);
+      _userControlExecutor.Execute (context);
+
+      try
+      {
+        PageStep.PageExecutor.ExecutePage (context, PageStep.Page, PageStep.IsPostBack);
+      }
+      finally
+      {
+        if (_userControlExecutor.IsReturningPostBack)
+          _userControlExecutor = NullUserControlExecutor.Null;
+      }
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -56,8 +75,22 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("subFunction", subFunction);
       ArgumentUtility.CheckNotNull ("sender", sender);
 
+      _wxeHandler = userControl.WxePage.WxeHandler;
+      
       _userControlExecutor = new UserControlExecutor (this, userControl, subFunction, sender, usesEventTarget);
+      
       Execute ();
+    }
+
+    public override WxeStep ExecutingStep
+    {
+      get
+      {
+        if (!_userControlExecutor.IsNull && !_userControlExecutor.IsReturningPostBack)
+          return _userControlExecutor.Function.ExecutingStep;
+        else
+          return this;
+      }
     }
 
     public bool IsPostBack

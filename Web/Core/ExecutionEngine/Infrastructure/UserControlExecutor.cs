@@ -25,9 +25,20 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     private readonly string _userControlID;
     private NameValueCollection _postBackCollection;
     private NameValueCollection _backedUpPostBackData;
-    private bool _isReturningInnerFunction;
+    private bool _isReturningPostBack;
+    private WxePageStep _pageStep;
 
-    public UserControlExecutor (WxeStep parentStep, WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
+    public UserControlExecutor (WxePageStep parentStep, WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
+      : this ((WxeStep) parentStep, userControl, subFunction, sender, usesEventTarget)
+    {
+    }
+
+    public UserControlExecutor (WxeUserControlStep parentStep, WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
+      : this ((WxeStep) parentStep, userControl, subFunction, sender, usesEventTarget)
+    {
+    }
+
+    protected UserControlExecutor (WxeStep parentStep, WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
     {
       ArgumentUtility.CheckNotNull ("parentStep", parentStep);
       ArgumentUtility.CheckNotNull ("userControl", userControl);
@@ -40,6 +51,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _function = subFunction;
 
       _function.SetParentStep (parentStep);
+      if (parentStep is WxeUserControlStep)
+        _pageStep = ((WxeUserControlStep) parentStep).PageStep;
+      else
+        _pageStep = ((WxePageStep) parentStep);
 
       _postBackCollection = userControl.WxePage.GetPostBackCollection ().Clone ();
       _backedUpPostBackData = new NameValueCollection();
@@ -62,13 +77,16 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      if (!_function.IsExecutionStarted)
+      try
       {
-        ((WxePageStep) _function.ParentStep).SetPostBackCollection (_postBackCollection);
+        _pageStep.SetPostBackCollection (_postBackCollection);
+        _postBackCollection = null;
+        _function.Execute (context);
+      }
+      finally
+      {
         _postBackCollection = null;
       }
-
-      _function.Execute (context);
 
       Return (context);
     }
@@ -77,19 +95,21 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      NameValueCollection collection;
+      NameValueCollection postBackCollection;
       if (StringUtility.AreEqual (context.HttpContext.Request.HttpMethod, "POST", false))
-        collection = context.HttpContext.Request.Form;
+        postBackCollection = context.HttpContext.Request.Form;
       else
-        collection = context.HttpContext.Request.QueryString;
+        postBackCollection = context.HttpContext.Request.QueryString;
 
-      collection = collection.Clone();
+      postBackCollection = postBackCollection.Clone ();
       foreach (var key in _backedUpPostBackData.AllKeys)
-        collection[key] = _backedUpPostBackData[key];
+        postBackCollection[key] = _backedUpPostBackData[key];
+      postBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID] = postBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID];
+      _pageStep.SetReturnState(_function, true, postBackCollection);
+
       _backedUpPostBackData = null;
 
-      ((WxePageStep) _function.ParentStep).SetReturnState (_function, true, collection);
-      _isReturningInnerFunction = true;
+      _isReturningPostBack = true;
     }
 
     public WxeFunction Function
@@ -112,9 +132,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       get { return _userControlID; }
     }
 
-    public bool IsReturningInnerFunction
+    public bool IsReturningPostBack
     {
-      get { return _isReturningInnerFunction; }
+      get { return _isReturningPostBack; }
     }
 
     public bool IsNull
