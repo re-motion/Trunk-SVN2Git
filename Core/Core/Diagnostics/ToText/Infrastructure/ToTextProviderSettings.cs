@@ -31,9 +31,13 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
 
       UseInterfaceHandlers = true;
 
+      //ParentHandlerSearchDepth = 0;
+      //ParentHandlerSearchUpToRoot = false;
+      //UseParentHandlers = false;
+
       ParentHandlerSearchDepth = 0;
-      ParentHandlerSearchUpToRoot = false;
-      UseParentHandlers = false;
+      ParentHandlerSearchUpToRoot = true;
+      UseParentHandlers = true;
     }
 
     public bool UseAutomaticObjectToText { get; set; }

@@ -34,7 +34,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _htmlWriter = new HtmlWriter (xmlWriter);
     }
 
-    // Spike implementation using HtmlWriter
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       WriteAclExpansionAsHtml (aclExpansion);
@@ -43,33 +42,31 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void WriteAclExpansionAsHtml (List<AclExpansionEntry> aclExpansion)
     {
-      var html = _htmlWriter;
-
       WriteStartPage ();
 
       //html.value ("re-motion ACL Expansion body");
 
-      WriteTableStart (html);
-      WriteTableHeaders (html);
+      WriteTableStart ();
+      WriteTableHeaders ();
       WriteTableBody (aclExpansion);
-      WriteTableEnd (html);
+      WriteTableEnd ();
 
-      WriteEndPage (html);
+      WriteEndPage ();
     }
 
-    private void WriteTableEnd (HtmlWriter html)
+    private void WriteTableEnd ()
     {
-      html.tableEnd ();
+      _htmlWriter.tableEnd ();
     }
 
-    private void WriteTableStart (HtmlWriter html)
+    private void WriteTableStart ()
     {
-      html.table ().a ("style", "width: 100%;").a ("class", "aclExpansionTable").a ("id", "remotion-ACL-expansion-table");
+      _htmlWriter.table ().a ("style", "width: 100%;").a ("class", "aclExpansionTable").a ("id", "remotion-ACL-expansion-table");
     }
 
-    private void WriteTableHeaders (HtmlWriter html)
+    private void WriteTableHeaders ()
     {
-      html.tr ();
+      _htmlWriter.tr ();
       WriteHeaderCell ("User");
       WriteHeaderCell ("Role");
       WriteHeaderCell ("Class");
@@ -79,15 +76,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteHeaderCell ("Tenant Must Own");
       WriteHeaderCell ("User Must Have Abstract Role");
       WriteHeaderCell ("Access Rights");
-      html.trEnd ();
+      _htmlWriter.trEnd ();
     }
 
-    private void WriteEndPage (HtmlWriter html)
+    private void WriteEndPage ()
     {
-      html.TagEnd ("body");
-      html.TagEnd ("html");
+      _htmlWriter.TagEnd ("body");
+      _htmlWriter.TagEnd ("html");
 
-      html.Close ();
+      _htmlWriter.Close ();
     }
 
     private HtmlWriter WriteStartPage ()
@@ -227,9 +224,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    public void WriteTableBody_ProcessUserGroup (LinqGroup<User, AclExpansionEntry> userGroup)
+    public void WriteTableBody_ProcessUserGroup (IGrouping<User, AclExpansionEntry> userGroup)
     {
-      WriteTableDataWithRowCount (userGroup.Key.DisplayName, userGroup.Items.Count ());
+      WriteTableDataWithRowCount (userGroup.Key.DisplayName, userGroup.Count ());
   
       var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
 
@@ -239,9 +236,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    public void WriteTableBody_ProcessRoleGroup (LinqGroup<Role, AclExpansionEntry> roleGroup)
+    public void WriteTableBody_ProcessRoleGroup (IGrouping<Role, AclExpansionEntry> roleGroup)
     {
-      WriteTableDataForRole (roleGroup.Key, roleGroup.Items.Count ());
+      WriteTableDataForRole (roleGroup.Key, roleGroup.Count ());
  
       var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
 
@@ -251,11 +248,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    public void WriteTableBody_ProcessClassGroup (LinqGroup<SecurableClassDefinition, AclExpansionEntry> classGroup)
+    public void WriteTableBody_ProcessClassGroup (IGrouping<SecurableClassDefinition, AclExpansionEntry> classGroup)
     {
-      WriteTableDataWithRowCount (classGroup.Key.DisplayName, classGroup.Items.Count ());
+      WriteTableDataWithRowCount (classGroup.Key.DisplayName, classGroup.Count ());
       
-      foreach (var aclExpansionEntry in classGroup.Items)
+      foreach (var aclExpansionEntry in classGroup)
       {
         WriteTableRowBeginIfNotInTableRow ();
 
@@ -284,24 +281,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public IEnumerable<LinqGroup<T, AclExpansionEntry>> GetAclExpansionGrouping<T, TIn> (
-      LinqGroup<TIn, AclExpansionEntry> linqGroup,
+    public IEnumerable<IGrouping<T, AclExpansionEntry>> GetAclExpansionGrouping<T, TIn> (
+      IGrouping<TIn, AclExpansionEntry> linqGroup,
       Func<AclExpansionEntry, T> groupingKeyFunc)
     {
-      return from aee in linqGroup.Items
-             group aee by groupingKeyFunc (aee)
-               into groupEntries
-               select ObjectMother.LinqGroup.New (groupEntries);
+      return from aee in linqGroup
+             group aee by groupingKeyFunc (aee);
     }
 
 
-    public IEnumerable<LinqGroup<User, AclExpansionEntry>> GetAclExpansionGrouping (IEnumerable<AclExpansionEntry> aclExpansion,
+    public IEnumerable<IGrouping<User, AclExpansionEntry>> GetAclExpansionGrouping (IEnumerable<AclExpansionEntry> aclExpansion,
       Func<AclExpansionEntry, User> groupingKeyFunc)
     {
       return from aee in aclExpansion
-             group aee by groupingKeyFunc (aee)
-             into groupEntries
-                 select ObjectMother.LinqGroup.New(groupEntries);
+             group aee by groupingKeyFunc (aee);    
     }
   }
 }

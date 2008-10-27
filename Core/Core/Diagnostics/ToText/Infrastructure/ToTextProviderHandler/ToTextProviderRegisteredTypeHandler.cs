@@ -75,12 +75,11 @@ namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
       Infrastructure.ToTextProviderHandler.ToTextProviderHandler.CheckNotNull (toTextParameters, toTextProviderHandlerFeedback);
 
       Object obj = toTextParameters.Object;
-      //Type type = toTextParameters.Type;
+      Type type = toTextParameters.Type;
 
-      // For mixin types we currently use the type handler for the target type.
-      // TODO: Search for exact type handler first, do fallback to GetUnderlyingTargetType if none can be found.
-      // TODO: Make work for OPF-generated types
-      Type type = GetUnderlyingMixinType(toTextParameters.Type);
+      //// For mixin types we currently use the type handler for the target type.
+      //// T ODO: Search for exact type handler first, do fallback to GetUnderlyingTargetType if none can be found.
+      //Type type = GetUnderlyingMixinType(toTextParameters.Type);
 
       IToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
       var settings = toTextParameters.ToTextBuilder.ToTextProvider.Settings;
@@ -115,9 +114,9 @@ namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
       }
     }
 
-    private static Type GetUnderlyingMixinType (Type type)
-    {
-      return MixinTypeUtility.GetUnderlyingTargetType (type);
-    }
+    //private static Type GetUnderlyingMixinType (Type type)
+    //{
+    //  return MixinTypeUtility.GetUnderlyingTargetType (type);
+    //}
   }
 }
