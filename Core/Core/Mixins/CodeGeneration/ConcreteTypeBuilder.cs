@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Threading;
 using Remotion.Collections;
@@ -232,9 +233,22 @@ namespace Remotion.Mixins.CodeGeneration
     /// <param name="assembly">The assembly whose public types to load into the cache.</param>
     public void LoadAssemblyIntoCache (Assembly assembly)
     {
+      LoadAssemblyIntoCache ((_Assembly) assembly);
+    }
+
+    /// <summary>
+    /// Loads an assembly with the given name and adds its mixed types to this builder's cache.
+    /// </summary>
+    /// <param name="assembly">The assembly whose public types to load into the cache.</param>
+    /// <remarks>
+    /// This overload exists primarily for testing purposes; it has the same functionality as <see cref="LoadAssemblyIntoCache(Assembly)"/>.
+    /// </remarks>
+    [CLSCompliant (false)]
+    public void LoadAssemblyIntoCache (_Assembly assembly)
+    {
       ArgumentUtility.CheckNotNull ("assembly", assembly);
 
-      AssemblyName assemblyName = assembly.GetName();
+      AssemblyName assemblyName = assembly.GetName ();
       if (assemblyName.Name == Scope.SignedAssemblyName || assemblyName.Name == Scope.UnsignedAssemblyName)
       {
         string message = string.Format (
@@ -244,10 +258,8 @@ namespace Remotion.Mixins.CodeGeneration
         throw new ArgumentException (message, "assembly");
       }
 
-      Cache.ImportTypes(assembly.GetExportedTypes (), new AttributeBasedMetadataImporter());
+      Cache.ImportTypes (assembly.GetExportedTypes (), new AttributeBasedMetadataImporter ());
     }
-
- 
 
     /// <summary>
     /// Initializes a mixin target instance which was created without its constructor having been called.

@@ -45,7 +45,9 @@ namespace Remotion.Utilities
   {
     public static T CheckNotNull<T> (string argumentName, T actualValue)
     {
+// ReSharper disable CompareNonConstrainedGenericWithNull
       if (actualValue == null)
+// ReSharper restore CompareNonConstrainedGenericWithNull
         throw new ArgumentNullException (argumentName);
 
       return actualValue;
@@ -94,25 +96,32 @@ namespace Remotion.Utilities
       return enumerable;
     }
 
-    private static T CheckNotEmpty<T> (string argumentName, T enumerable)
+    private static void CheckNotEmpty<T> (string argumentName, T enumerable)
         where T: IEnumerable
     {
+// ReSharper disable CompareNonConstrainedGenericWithNull
       if (enumerable != null)
+// ReSharper restore CompareNonConstrainedGenericWithNull
       {
-        ICollection collection = enumerable as ICollection;
-        if (collection != null && collection.Count == 0)
-          throw new ArgumentEmptyException (argumentName);
+        var collection = enumerable as ICollection;
+        if (collection != null)
+        {
+          if (collection.Count == 0)
+            throw new ArgumentEmptyException (argumentName);
+          else
+            return;
+        }
 
         IEnumerator enumerator = enumerable.GetEnumerator();
-        IDisposable disposeableEnumerator = enumerator as IDisposable;
-        using (disposeableEnumerator)
+        var disposableEnumerator = enumerator as IDisposable;
+        using (disposableEnumerator) // using (null) is allowed in C#
         {
           if (!enumerator.MoveNext())
             throw new ArgumentEmptyException (argumentName);
         }
       }
 
-      return enumerable;
+      return;
     }
 
     public static void ThrowEnumArgumentOutOfRangeException (string argumentName, Enum actualValue)
@@ -240,7 +249,9 @@ namespace Remotion.Utilities
     public static T CheckItemsType<T> (string argumentName, T collection, Type itemType)
         where T: ICollection
     {
+// ReSharper disable CompareNonConstrainedGenericWithNull
       if (collection != null)
+// ReSharper restore CompareNonConstrainedGenericWithNull
       {
         int index = 0;
         foreach (object item in collection)
@@ -260,7 +271,9 @@ namespace Remotion.Utilities
     public static T CheckItemsNotNullAndType<T> (string argumentName, T collection, Type itemType)
         where T: ICollection
     {
+// ReSharper disable CompareNonConstrainedGenericWithNull
       if (collection != null)
+// ReSharper restore CompareNonConstrainedGenericWithNull
       {
         int index = 0;
         foreach (object item in collection)

@@ -24,6 +24,7 @@ namespace Remotion.Mixins.Validation.Rules
       visitor.MixinRules.Add (new DelegateValidationRule<MixinDefinition> (MixinWithOverriddenMembersMustHavePublicOrProtectedDefaultCtor));
       visitor.MixinRules.Add (new DelegateValidationRule<MixinDefinition> (MixinCannotMixItself));
       visitor.MixinRules.Add (new DelegateValidationRule<MixinDefinition> (MixinCannotMixItsBase));
+      visitor.MixinRules.Add (new DelegateValidationRule<MixinDefinition> (MixinNeedingDerivedTypeMustBeDerivedFromMixinBase));
     }
 
     [DelegateRuleDescription (Message = "An interface is configured as a mixin, but mixins must be classes or value types.")]
@@ -57,6 +58,12 @@ namespace Remotion.Mixins.Validation.Rules
     private void MixinCannotMixItsBase (DelegateValidationRule<MixinDefinition>.Args args)
     {
       SingleMust (!args.Definition.TargetClass.Type.IsAssignableFrom (args.Definition.Type), args.Log, args.Self);
+    }
+
+    [DelegateRuleDescription (Message = "A mixin for which a concrete subtype must be generated is not derived from one of the generic Mixin classes.")]
+    private void MixinNeedingDerivedTypeMustBeDerivedFromMixinBase (DelegateValidationRule<MixinDefinition>.Args args)
+    {
+      SingleMust (!args.Definition.NeedsDerivedMixinType() || MixinReflector.GetMixinBaseType (args.Definition.Type) != null, args.Log, args.Self);
     }
   }
 }

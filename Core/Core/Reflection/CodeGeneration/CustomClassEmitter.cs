@@ -303,8 +303,7 @@ namespace Remotion.Reflection.CodeGeneration
         propertyName = baseOrInterfaceProperty.Name;
       else
         propertyName = string.Format ("{0}.{1}", baseOrInterfaceProperty.DeclaringType.FullName, baseOrInterfaceProperty.Name);
-      Type[] indexParameterTypes =
-          Array.ConvertAll<ParameterInfo, Type> (baseOrInterfaceProperty.GetIndexParameters(), delegate (ParameterInfo p) { return p.ParameterType; });
+      Type[] indexParameterTypes = Array.ConvertAll (baseOrInterfaceProperty.GetIndexParameters(), p => p.ParameterType);
 
       CustomPropertyEmitter newProperty = CreateProperty (
           propertyName,
@@ -376,31 +375,32 @@ namespace Remotion.Reflection.CodeGeneration
       return member.IsPublic || member.IsFamily || member.IsFamilyOrAssembly;
     }
 
-    public void ReplicateBaseTypeConstructors (params Statement[] postBaseCallInitializationStatements)
+    public void ReplicateBaseTypeConstructors (Action<ConstructorEmitter> preStatementsAdder, Action<ConstructorEmitter> postStatementsAdder)
     {
-      ArgumentUtility.CheckNotNull ("postBaseCallInitializationStatements", postBaseCallInitializationStatements);
+      ArgumentUtility.CheckNotNull ("preStatementsAdder", preStatementsAdder);
+      ArgumentUtility.CheckNotNull ("postStatementsAdder", postStatementsAdder);
 
       ConstructorInfo[] constructors = BaseType.GetConstructors (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
       foreach (ConstructorInfo constructor in constructors)
       {
         if (IsPublicOrProtected (constructor))
-          ReplicateBaseTypeConstructor (constructor, postBaseCallInitializationStatements);
+          ReplicateBaseTypeConstructor (constructor, preStatementsAdder, postStatementsAdder);
       }
     }
 
-    private void ReplicateBaseTypeConstructor (ConstructorInfo constructor, params Statement[] postBaseCallInitializationStatements)
+    private void ReplicateBaseTypeConstructor (ConstructorInfo constructor, Action<ConstructorEmitter> preStatementsAdder, Action<ConstructorEmitter> postStatementsAdder)
     {
       ArgumentUtility.CheckNotNull ("constructor", constructor);
-      ArgumentUtility.CheckNotNull ("postBaseCallInitializationStatements", postBaseCallInitializationStatements);
+      ArgumentUtility.CheckNotNull ("preStatementsAdder", preStatementsAdder);
+      ArgumentUtility.CheckNotNull ("postStatementsAdder", postStatementsAdder);
 
       ArgumentReference[] arguments = ArgumentsUtil.ConvertToArgumentReference (constructor.GetParameters());
       ConstructorEmitter newConstructor = InnerEmitter.CreateConstructor (arguments);
 
+      preStatementsAdder (newConstructor);
       Expression[] argumentExpressions = ArgumentsUtil.ConvertArgumentReferenceToExpression (arguments);
       newConstructor.CodeBuilder.AddStatement (new ConstructorInvocationStatement (constructor, argumentExpressions));
-
-      foreach (Statement statement in postBaseCallInitializationStatements)
-        newConstructor.CodeBuilder.AddStatement (statement);
+      postStatementsAdder (newConstructor);
 
       newConstructor.CodeBuilder.AddStatement (new ReturnStatement());
     }

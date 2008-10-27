@@ -71,16 +71,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private static MixinDefinition GetMixinDefinitionFromMixinInstance (object mixinInstance, TargetClassDefinition targetClassDefinition)
     {
       Type mixinType = mixinInstance.GetType();
-      ConcreteMixinTypeAttribute[] mixinTypeAttributes =
-          (ConcreteMixinTypeAttribute[]) mixinType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false);
-          
-      if (mixinTypeAttributes.Length > 0)
-      {
-        Assertion.IsTrue (mixinTypeAttributes.Length == 1, "AllowMultiple == false");
-        return mixinTypeAttributes[0].GetMixinDefinition(TargetClassDefinitionCache.Current);
-      }
-      else
-        return targetClassDefinition.Mixins[mixinType];
+      while (MixinTypeUtility.IsGeneratedByMixinEngine (mixinType))
+        mixinType = mixinType.BaseType;
+
+      return targetClassDefinition.Mixins[mixinType];
     }
 
     private static void FillUpExtensionsWithNewMixinInstances (object[] extensions, TargetClassDefinition configuration)
@@ -125,10 +119,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       for (int i = 0; i < mixins.Length; ++i)
       {
-        object baseCallProxyInstance = mixinTargetInstance.CreateBaseCallProxy (i + 1);
         var initializableMixin = mixins[i] as IInitializableMixin;
         if (initializableMixin != null)
+        {
+          object baseCallProxyInstance = mixinTargetInstance.CreateBaseCallProxy (i + 1);
           initializableMixin.Initialize (mixinTargetInstance, baseCallProxyInstance, deserialization);
+        }
       }
     }
   }

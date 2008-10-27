@@ -118,7 +118,10 @@ namespace Remotion.Development.UnitTesting
           throw new PEVerifyException ("PEVerify needed more than ten seconds to complete. Output was: " + output);
 
         if (process.ExitCode != 0)
+        {
+          Console.WriteLine (output);
           throw new PEVerifyException (process.ExitCode, output);
+        }
 
       }
     }

@@ -116,6 +116,7 @@
     <Compile Include="UnitTesting\IO\TempFile.cs" />
     <Compile Include="UnitTesting\ISerializationEventReceiver.cs" />
     <Compile Include="UnitTesting\MethodNotFoundException.cs" />
+    <Compile Include="UnitTesting\MixinWithSerializationCallbacks.cs" />
     <Compile Include="UnitTesting\ObjectMother\Dictionary.cs" />
     <Compile Include="UnitTesting\ObjectMother\List.cs" />
     <Compile Include="UnitTesting\ObjectMother\Queue.cs" />

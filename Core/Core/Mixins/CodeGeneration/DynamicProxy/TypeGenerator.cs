@@ -82,8 +82,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder, FieldAttributes.Private);
       HideFieldFromDebugger (_firstField);
 
-      Statement initializationStatement = GetInitializationStatement();
-      _emitter.ReplicateBaseTypeConstructors (initializationStatement);
+      _emitter.ReplicateBaseTypeConstructors (delegate { }, EmitInitializationStatements);
 
       AddTypeInitializer ();
 
@@ -101,15 +100,21 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ImplementOverrides ();
     }
 
-    private Statement GetInitializationStatement ()
+    private void EmitInitializationStatements (ConstructorEmitter emitter)
+    {
+      IfStatement ifStatement = GetInitializationStatement();
+      emitter.CodeBuilder.AddStatement (ifStatement);
+    }
+
+    private IfStatement GetInitializationStatement()
     {
       ConditionExpression condition = new SameConditionExpression (_extensionsField.ToExpression (), NullExpression.Instance);
-      var initializationMethodCall = new ExpressionStatement (new MethodInvocationExpression (null, s_concreteTypeInitializationMethod,
-          new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression ()),
-          new ConstReference (false).ToExpression ()));
-      
-      var ifStatement = new IfStatement (condition, initializationMethodCall);
-      return ifStatement;
+      var initializationMethodCall = new ExpressionStatement (
+          new MethodInvocationExpression (null, s_concreteTypeInitializationMethod,
+                                          new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression()),
+                                          new ConstReference (false).ToExpression()));
+
+      return new IfStatement (condition, initializationMethodCall);
     }
 
     private void HideFieldFromDebugger (FieldReference field)

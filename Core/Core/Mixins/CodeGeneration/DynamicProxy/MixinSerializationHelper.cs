@@ -23,14 +23,22 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   {
     // Always remember: the whole configuration must be serialized as one single, flat object (or SerializationInfo), we cannot rely on any
     // nested objects to be deserialized in the right order
-    public static void GetObjectDataForGeneratedTypes (SerializationInfo info, StreamingContext context, object mixin, MixinDefinition configuration,
+    public static void GetObjectDataForGeneratedTypes (SerializationInfo info, StreamingContext context, object mixin, IMixinTarget targetObject,
         bool serializeBaseMembers)
     {
+      ArgumentUtility.CheckNotNull ("info", info);
+      ArgumentUtility.CheckNotNull ("mixin", mixin);
+      ArgumentUtility.CheckNotNull ("targetObject", targetObject);
+
       info.SetType (typeof (MixinSerializationHelper));
 
-      ClassContext targetClassContext = configuration.TargetClass.ConfigurationContext;
+      ClassContext targetClassContext = targetObject.Configuration.ConfigurationContext;
+      int mixinIndex = Array.IndexOf (targetObject.Mixins, mixin);
+      if (mixinIndex == -1)
+        throw new ArgumentException ("The given mixin is not part of the given targetObject.", "targetObject");
+
       info.AddValue ("__configuration.TargetClass.ConfigurationContext", targetClassContext);
-      info.AddValue ("__configuration.MixinIndex", configuration.MixinIndex);
+      info.AddValue ("__configuration.MixinIndex", mixinIndex);
 
       object[] baseMemberValues;
       if (serializeBaseMembers)
@@ -55,7 +63,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _context = context;
 
-      ClassContext targetClassContext = (ClassContext) info.GetValue ("__configuration.TargetClass.ConfigurationContext", typeof (ClassContext));
+      var targetClassContext = (ClassContext) info.GetValue ("__configuration.TargetClass.ConfigurationContext", typeof (ClassContext));
       TargetClassDefinition targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (targetClassContext);
 
       int mixinIndex = info.GetInt32 ("__configuration.MixinIndex");

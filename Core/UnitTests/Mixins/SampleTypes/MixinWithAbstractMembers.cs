@@ -9,7 +9,9 @@
  */
 
 using System;
+using System.Reflection;
 using Remotion.Mixins;
+using Remotion.Mixins.Definitions;
 
 namespace Remotion.UnitTests.Mixins.SampleTypes
 {

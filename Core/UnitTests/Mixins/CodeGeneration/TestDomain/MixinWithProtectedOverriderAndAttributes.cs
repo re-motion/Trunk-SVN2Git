@@ -26,7 +26,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
   [Inheritable]
   [NonInheritable]
   [CopyCustomAttributes (typeof (CopyTemplate))]
-  public class MixinWithProtectedOverriderAndAttributes
+  public class MixinWithProtectedOverriderAndAttributes : Mixin<object>
   {
     [OverrideTarget]
     protected new string ToString ()

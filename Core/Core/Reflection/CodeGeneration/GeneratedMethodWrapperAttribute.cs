@@ -23,6 +23,11 @@ namespace Remotion.Reflection.CodeGeneration
     private readonly int _wrappedMethodRefToken;
     private readonly Type[] _genericTypeArguments;
 
+    public GeneratedMethodWrapperAttribute (int wrappedMethodRefToken)
+      : this (wrappedMethodRefToken, Type.EmptyTypes)
+    {
+    }
+    
     public GeneratedMethodWrapperAttribute (int wrappedMethodRefToken, Type[] genericTypeArguments)
     {
       ArgumentUtility.CheckNotNull ("genericTypeArguments", genericTypeArguments);

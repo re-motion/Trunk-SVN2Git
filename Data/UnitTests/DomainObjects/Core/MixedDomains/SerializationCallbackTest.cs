@@ -21,22 +21,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
   [TestFixture]
   public class SerializationCallbackTest : ClientTransactionBaseTest
   {
-    [Serializable]
-    public class MixinWithSerializationCallbacks : ClassWithSerializationCallbacksBase
-    {
-      private static ISerializationEventReceiver s_receiver;
-
-      public static void SetReceiver (ISerializationEventReceiver receiver)
-      {
-        s_receiver = receiver;
-      }
-
-      protected override ISerializationEventReceiver StaticReceiver
-      {
-        get { return s_receiver; }
-      }
-    }
-
     [Test]
     public void SerializationEvents_OnTarget ()
     {

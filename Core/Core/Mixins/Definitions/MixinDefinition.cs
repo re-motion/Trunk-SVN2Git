@@ -11,7 +11,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Remotion.Collections;
 using Remotion.Utilities;
+using System.Reflection;
 
 namespace Remotion.Mixins.Definitions
 {
@@ -40,6 +42,8 @@ namespace Remotion.Mixins.Definitions
     private readonly TargetClassDefinition _targetClass;
     private readonly MixinKind _mixinKind;
     private readonly bool _acceptsAlphabeticOrdering;
+
+    private object _concreteTypeCacheKey;
     
     public MixinDefinition (MixinKind mixinKind, Type type, TargetClassDefinition targetClass, bool acceptsAlphabeticOrdering)
         : base (type)
@@ -154,26 +158,27 @@ namespace Remotion.Mixins.Definitions
     }
 
     public object GetConcreteMixinTypeCacheKey ()
-    { 
+    {
       // for each overridden member, find its topmost definition
-      // from the topmost definitions, find the lowest class in the inheritance hierarchy
-      // use this class as cache key
-      
-      Type lowestOverrider = null;
+      // these are used as the cache key (together with the mixin type), ie. we will always use the same concrete type given the same combination
+      // of overriding methods for the same mixin.
+
+      if (_concreteTypeCacheKey == null)
+        _concreteTypeCacheKey = CalculateConcreteMixinTypeCacheKey();
+      return _concreteTypeCacheKey;
+    }
+
+    private object CalculateConcreteMixinTypeCacheKey()
+    {
+      var topMostOverriders = new Set<MethodInfo> ();
       foreach (var member in GetAllMethods())
       {
         foreach (var overrider in member.Overrides)
-        {
-          var topMostDeclaringType = overrider.MethodInfo.GetBaseDefinition ().DeclaringType;
-          if (lowestOverrider == null || lowestOverrider.IsAssignableFrom (topMostDeclaringType))
-            lowestOverrider = topMostDeclaringType;
-          else
-            Assertion.IsTrue (topMostDeclaringType.IsAssignableFrom (lowestOverrider), "only linear type hierarchy supported");
-        }
+          topMostOverriders.Add (overrider.MethodInfo.GetBaseDefinition ());
       }
 
-      if (lowestOverrider != null)
-        return lowestOverrider;
+      if (topMostOverriders.Count != 0)
+        return Tuple.NewTuple (Type, new SetBasedCacheKey<MethodInfo> (topMostOverriders));
       else // if no overrides, use the mixin definition as a cache
         return this;
     }

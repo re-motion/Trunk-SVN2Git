@@ -15,7 +15,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
-using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Collections;
 using Remotion.Mixins.Definitions;
@@ -29,14 +28,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public class MixinTypeGenerator : IMixinTypeGenerator
   {
-    private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor =
+    private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor = 
         typeof (DebuggerDisplayAttribute).GetConstructor (new[] { typeof (string) });
 
     private readonly ICodeGenerationModule _module;
     private readonly ITypeGenerator _targetGenerator;
     private readonly MixinDefinition _configuration;
     private readonly IClassEmitter _emitter;
-    private readonly FieldReference _configurationField;
 
     public MixinTypeGenerator (ICodeGenerationModule module, ITypeGenerator targetGenerator, MixinDefinition configuration, INameProvider nameProvider)
     {
@@ -59,8 +57,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       bool forceUnsigned = !targetGenerator.IsAssemblySigned;
       _emitter = _module.CreateClassEmitter (typeName, configuration.Type, interfaces, flags, forceUnsigned);
-
-      _configurationField = _emitter.CreateStaticField ("__configuration", typeof (MixinDefinition));
     }
 
     public IClassEmitter Emitter
@@ -93,9 +89,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     protected virtual void Generate ()
     {
-      AddTypeInitializer();
-
-      _emitter.ReplicateBaseTypeConstructors();
+      _emitter.ReplicateBaseTypeConstructors (delegate { }, delegate { });
 
       ImplementGetObjectData();
 
@@ -113,33 +107,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
                                select m;
       return from m in methodsToBeWrapped
              select Tuple.NewTuple (m, Emitter.GetPublicMethodWrapper (m));
-    }
-
-    private void AddTypeInitializer ()
-    {
-      ConstructorEmitter emitter = _emitter.CreateTypeConstructor();
-
-      Expression attributeExpression =
-          ConcreteMixinTypeAttributeUtility.CreateNewAttributeExpression (
-              Configuration.MixinIndex,
-              Configuration.TargetClass.ConfigurationContext,
-              emitter.CodeBuilder);
-      LocalReference attributeLocal = emitter.CodeBuilder.DeclareLocal (typeof (ConcreteMixinTypeAttribute));
-      emitter.CodeBuilder.AddStatement (new AssignStatement (attributeLocal, attributeExpression));
-
-      MethodInfo getMixinDefinitionMethod = typeof (ConcreteMixinTypeAttribute).GetMethod ("GetMixinDefinition");
-      Assertion.IsNotNull (getMixinDefinitionMethod);
-
-      var currentCacheProperty = typeof (TargetClassDefinitionCache).BaseType.GetProperty ("Current");
-      Assertion.IsNotNull (currentCacheProperty);
-      var currentCachePropertyReference = new PropertyReference (null, currentCacheProperty);
-
-      emitter.CodeBuilder.AddStatement (
-          new AssignStatement (
-              _configurationField,
-              new VirtualMethodInvocationExpression (attributeLocal, getMixinDefinitionMethod, currentCachePropertyReference.ToExpression())));
-
-      emitter.CodeBuilder.AddStatement (new ReturnStatement());
     }
 
     private void AddMixinTypeAttribute ()
@@ -162,15 +129,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       if (!_configuration.HasOverriddenMembers())
         return;
 
-      PropertyInfo targetProperty = MixinReflector.GetTargetProperty (Emitter.TypeBuilder.BaseType);
-      var targetReference = new PropertyReference (SelfReference.Self, targetProperty);
-
-      if (targetProperty == null)
-      {
-        throw new NotSupportedException (
-            "The code generator does not support mixin methods being overridden if the mixin doesn't derive from the Mixin base classes.");
-      }
-
+      PropertyReference targetReference = GetTargetReference();
       foreach (MethodDefinition method in _configuration.GetAllMethods())
       {
         if (method.Overrides.Count > 1)
@@ -186,6 +145,19 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           AddCallToOverrider (methodOverride, targetReference, methodToCall);
         }
       }
+    }
+
+    private PropertyReference GetTargetReference()
+    {
+      PropertyInfo targetProperty = MixinReflector.GetTargetProperty (Emitter.TypeBuilder.BaseType);
+      if (targetProperty == null)
+      {
+        throw new NotSupportedException (
+            "The code generator does not support mixins with overridden methods or non-public overriders if the mixin doesn't derive from the "
+            + "generic Mixin base classes.");
+      }
+
+      return new PropertyReference (SelfReference.Self, targetProperty);
     }
 
     private MethodInfo GetOverriderMethodToCall (MethodDefinition overrider)
@@ -219,6 +191,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementGetObjectData ()
     {
+      var targetReferenceExpression = new ConvertExpression (typeof (IMixinTarget), GetTargetReference ().ToExpression());
       SerializationImplementer.ImplementGetObjectDataByDelegation (
           Emitter,
           (newMethod, baseIsISerializable) =>
@@ -228,7 +201,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
               new ReferenceExpression (newMethod.ArgumentReferences[0]),
               new ReferenceExpression (newMethod.ArgumentReferences[1]),
               new ReferenceExpression (SelfReference.Self),
-              new ReferenceExpression (_configurationField),
+              targetReferenceExpression,
               new ReferenceExpression (new ConstReference (!baseIsISerializable))));
     }
   }

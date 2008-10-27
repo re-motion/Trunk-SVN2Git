@@ -12,6 +12,7 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
@@ -59,22 +60,33 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void GetConcreteMixinTypeCacheKey_Overrides_TypeOverridesMethod ()
     {
+      var overrider = typeof (DerivedClassOverridingMixinMethod).GetMethod ("M1");
+
       var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedClassOverridingMixinMethod)).Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
-      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.SameAs (typeof (DerivedClassOverridingMixinMethod)));
+      var key = Tuple.NewTuple (typeof (MixinWithMethodsOverriddenByDifferentClasses), new SetBasedCacheKey<MethodInfo> (overrider));
+      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.EqualTo (key));
     }
 
     [Test]
     public void GetConcreteMixinTypeCacheKey_Overrides_TypeOverridesMethod_AndBaseOverridesOtherMethod ()
     {
+      var overrider1 = typeof (DerivedClassOverridingMixinMethod).GetMethod ("M1");
+      var overrider2 = typeof (DerivedDerivedClassOverridingMixinMethod).GetMethod ("M2");
+
       var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedDerivedClassOverridingMixinMethod)).Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
-      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.SameAs (typeof (DerivedDerivedClassOverridingMixinMethod)));
+      var key = Tuple.NewTuple (typeof (MixinWithMethodsOverriddenByDifferentClasses), new SetBasedCacheKey<MethodInfo> (overrider1, overrider2));
+      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.EqualTo (key));
     }
 
     [Test]
     public void GetConcreteMixinTypeCacheKey_Overrides_BaseOverrides ()
     {
+      var overrider1 = typeof (DerivedClassOverridingMixinMethod).GetMethod ("M1");
+      var overrider2 = typeof (DerivedDerivedClassOverridingMixinMethod).GetMethod ("M2");
+
       var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedDerivedDerivedClassOverridingMixinMethod)).Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
-      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.SameAs (typeof (DerivedDerivedClassOverridingMixinMethod)));
+      var key = Tuple.NewTuple (typeof (MixinWithMethodsOverriddenByDifferentClasses), new SetBasedCacheKey<MethodInfo> (overrider1, overrider2));
+      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.EqualTo (key));
     }
 
     [Test]
