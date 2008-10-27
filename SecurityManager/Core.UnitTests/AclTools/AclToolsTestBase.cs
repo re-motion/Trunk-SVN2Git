@@ -8,6 +8,8 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -99,13 +101,27 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       TestHelper.AttachAccessType (Ace3, DeleteAccessType, null);
 
 
-      Acl = TestHelper.CreateAcl (Ace, Ace2, Ace3);
+
+      //--------------------------------
+      // Create ACLs
+      //--------------------------------
+
+      //Acl = TestHelper.CreateAcl (Ace, Ace2, Ace3);
+
+      System.Collections.Generic.List<AccessControlList> aclList =
+          TestHelper.CreateAclsForOrderAndPaymentAndDeliveryStates (TestHelper.CreateOrderClassDefinitionWithProperties());
+      Assert.That (aclList.Count, Is.GreaterThanOrEqualTo (2));
+      
+      Acl = aclList[0];
+      TestHelper.AttachAces (Acl, Ace, Ace2, Ace3);
+
 
       var ace2_1 = TestHelper.CreateAceWithAbstractRole();
       var ace2_2 = TestHelper.CreateAceWithPosition (Position2, GroupSelection.OwningGroup);
 
-      Acl2 = TestHelper.CreateAcl (ace2_1, ace2_2, Ace3);
-
+      //Acl2 = TestHelper.CreateAcl (ace2_1, ace2_2, Ace3);
+      Acl2 = aclList[1];
+      TestHelper.AttachAces (Acl2, ace2_1, ace2_2, Ace3);
 
 
       // Additional roles for users
@@ -122,8 +138,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       TestHelper.CreateRole (User3, Group, Position3);
       TestHelper.CreateRole (User3, Group2, Position);
 
-      TestHelper.CreateClassDefinition ("Class1");
-      TestHelper.CreateStateProperty ("State1");
+      //TestHelper.CreateClassDefinition ("Class1");
+      //TestHelper.CreateDeliveryStateProperty .CreateStateProperty ("State1");
     }
 
 

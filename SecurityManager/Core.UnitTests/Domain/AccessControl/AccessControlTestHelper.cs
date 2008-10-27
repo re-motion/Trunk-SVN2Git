@@ -642,5 +642,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
 
+    public void AttachAces (AccessControlList acl, params AccessControlEntry[] aces)
+    {
+      foreach (AccessControlEntry ace in aces)
+      {
+        acl.AccessControlEntries.Add (ace);
+      }
+    }
   }
 }
