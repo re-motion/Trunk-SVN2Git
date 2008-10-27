@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl,Acl2);
 
       var numberRoles = users.SelectMany (x => x.Roles).Count();
-      Assert.That (numberRoles, Is.GreaterThanOrEqualTo (13));
+      Assert.That (numberRoles, Is.GreaterThanOrEqualTo (11));
       var numberAces = acls.SelectMany (x => x.AccessControlEntries).Count ();
       Assert.That (numberAces, Is.GreaterThanOrEqualTo (5));
      

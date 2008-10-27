@@ -9,6 +9,8 @@
  */
 
 using System;
+using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
@@ -17,6 +19,7 @@ using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using System.Collections.Generic;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Utilities;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting.ObjectMother;
 
@@ -370,6 +373,43 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
+    [Test]
+    [Explicit]
+    public void GetAclExpansionEntryList_ComplexExpansionTest ()
+    {
+      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+
+      var numberRoles = users.SelectMany (x => x.Roles).Count ();
+      To.ConsoleLine.e (() => numberRoles);
+      
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+
+      var numberAces = acls.SelectMany (x => x.AccessControlEntries).Count ();
+      To.ConsoleLine.e (() => numberAces);
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+      WriteAclExpansionAsHtmlSpikeToStreamWriter (aclExpansionEntryList);
+    }
+
+
+    public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion)
+    {
+      string aclExpansionFileName = "c:\\temp\\AclExpansionTest_" + FileNameTimestamp (DateTime.Now) + ".html";
+      using (var streamWriter = new StreamWriter (aclExpansionFileName))
+      {
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true);
+        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+      }
+    }
+
+    private string FileNameTimestamp (DateTime dt)
+    {
+      return StringUtility.ConcatWithSeparator (new[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond }, "_");
+    }
+
+
+
 
     /// <summary>
     /// NUnit-Asserts that the passed <see cref="AclExpansionEntry"/> has the passed <see cref="AccessTypeDefinition"/>|s and the
@@ -386,7 +426,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     private List<AclExpansionEntry> GetAclExpansionEntryList_UserList_AceList (
       List<User> userList, List<AccessControlList> aclList)
     {
-      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); //new TestAclExpanderUserFinder (userList);
+      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
       userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
 
       var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();

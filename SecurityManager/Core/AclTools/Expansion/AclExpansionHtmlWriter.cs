@@ -250,8 +250,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void WriteTableBody_ProcessClassGroup (IGrouping<SecurableClassDefinition, AclExpansionEntry> classGroup)
     {
-      WriteTableDataWithRowCount (classGroup.Key.DisplayName, classGroup.Count ());
-      
+      if (classGroup.Key != null)
+      {
+        WriteTableDataWithRowCount (classGroup.Key.DisplayName, classGroup.Count ());
+      }
+      else
+      {
+        WriteTableDataWithRowCount ("_NO_CLASSES_DEFINED_", classGroup.Count ());
+      }
+
       foreach (var aclExpansionEntry in classGroup)
       {
         WriteTableRowBeginIfNotInTableRow ();

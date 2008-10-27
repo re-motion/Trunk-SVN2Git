@@ -109,8 +109,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
 
 
       // Additional roles for users
-      TestHelper.CreateRole (User, Group2, Position2);
-      TestHelper.CreateRole (User, Group3, Position3);
+      //TestHelper.CreateRole (User, Group2, Position2);
+      //TestHelper.CreateRole (User, Group3, Position3);
 
       TestHelper.CreateRole (User2, Group, Position2);
       TestHelper.CreateRole (User2, Group2, Position);
@@ -122,6 +122,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       TestHelper.CreateRole (User3, Group, Position3);
       TestHelper.CreateRole (User3, Group2, Position);
 
+      TestHelper.CreateClassDefinition ("Class1");
+      TestHelper.CreateStateProperty ("State1");
     }
 
 
