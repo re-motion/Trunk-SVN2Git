@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
@@ -640,37 +639,24 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ReplicateBaseTypeConstructors ()
     {
-      var classEmitter = new CustomClassEmitter (Scope, "ReplicateBaseTypeConstructors", typeof (List<int>));
-      FieldReference field = classEmitter.CreateStaticField ("s_ctorsCalled", typeof (int));
+      var classEmitter = new CustomClassEmitter (Scope, "ReplicateBaseTypeConstructors", typeof (ClassWithReplicatableConstructors));
+      var fieldReference = new FieldInfoReference (SelfReference.Self, typeof (ClassWithReplicatableConstructors).GetField ("CtorString"));
+
+      var concatMethod = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
+      var preConcatExpression = new MethodInvocationExpression (null, concatMethod, fieldReference.ToExpression (), new ConstReference ("pre").ToExpression ());
+      var postConcatExpression = new MethodInvocationExpression (null, concatMethod, fieldReference.ToExpression (), new ConstReference ("post").ToExpression ());
 
       classEmitter.ReplicateBaseTypeConstructors (
-          new ILStatement (delegate (IMemberEmitter member, ILGenerator generator)
-          {
-            field.LoadReference (generator);
-            generator.Emit (OpCodes.Ldc_I4_1);
-            generator.Emit (OpCodes.Add);
-            field.StoreReference (generator);
-          }));
+        emitter => emitter.CodeBuilder.AddStatement (new AssignStatement (fieldReference, preConcatExpression)),
+        emitter => emitter.CodeBuilder.AddStatement (new AssignStatement (fieldReference, postConcatExpression)));
 
       Type builtType = classEmitter.BuildType ();
-      Assert.AreEqual (0, builtType.GetField ("s_ctorsCalled").GetValue (null));
 
-      Activator.CreateInstance (builtType); // default ctor
+      var instance1 = (ClassWithReplicatableConstructors) Activator.CreateInstance (builtType); // default ctor
+      Assert.That (instance1.CtorString, Is.EqualTo ("preClassWithReplicatableConstructors()post"));
 
-      Assert.AreEqual (1, builtType.GetField ("s_ctorsCalled").GetValue (null));
-
-      var list = (List<int>) Activator.CreateInstance (builtType, 5); // capacity
-      Assert.AreEqual (5, list.Capacity);
-
-      Assert.AreEqual (2, builtType.GetField ("s_ctorsCalled").GetValue (null));
-
-      list = (List<int>) Activator.CreateInstance (builtType, new[] { 1, 2, 3 }); // IEnumerable
-      Assert.AreEqual (3, list.Count);
-      Assert.AreEqual (1, list[0]);
-      Assert.AreEqual (2, list[1]);
-      Assert.AreEqual (3, list[2]);
-
-      Assert.AreEqual (3, builtType.GetField ("s_ctorsCalled").GetValue (null));
+      var instance2 = (ClassWithReplicatableConstructors) Activator.CreateInstance (builtType, 7); // int ctor
+      Assert.That (instance2.CtorString, Is.EqualTo ("preClassWithReplicatableConstructors(7)post"));
     }
 
     [Test]

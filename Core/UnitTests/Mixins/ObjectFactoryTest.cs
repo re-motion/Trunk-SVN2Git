@@ -14,7 +14,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.UnitTests.Mixins.ValidationTests.ValidationSampleTypes;
+using Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes;
 
 namespace Remotion.UnitTests.Mixins
 {
@@ -246,7 +246,7 @@ namespace Remotion.UnitTests.Mixins
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Cannot instantiate mixin Remotion.UnitTests.Mixins."
-        + "ValidationTests.ValidationSampleTypes.MixinWithPrivateCtorAndVirtualMethod, there is no visible default constructor.")]
+        + "Validation.ValidationSampleTypes.MixinWithPrivateCtorAndVirtualMethod, there is no visible default constructor.")]
     public void ThrowsWhenMixinWithoutPublicDefaultCtorShouldBeInstantiated ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithPrivateCtorAndVirtualMethod)).EnterScope())

@@ -26,8 +26,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementGetObjectDataByDelegationBaseNonSerializable ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationBaseNonSerializable", typeof (object),
-          new Type[] {typeof (ISerializable)}, TypeAttributes.Public, false );
+      var classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationBaseNonSerializable", typeof (object),
+          new[] {typeof (ISerializable)}, TypeAttributes.Public, false );
 
       FieldReference delegationTargetCalled = classEmitter.CreateField ("DelegationTargetCalled", typeof (bool));
 
@@ -60,7 +60,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementGetObjectDataByDelegationBaseSerializable ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationBaseSerializable", typeof (SerializableClass));
+      var classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationBaseSerializable", typeof (SerializableClass));
       SerializationImplementer.ImplementGetObjectDataByDelegation (classEmitter,
           delegate (CustomMethodEmitter getObjectDataMethod, bool baseIsISerializeable)
           {
@@ -72,9 +72,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
               getObjectDataMethod.ArgumentReferences[1].ToExpression());
           });
 
-      SerializableClass instance = (SerializableClass) Activator.CreateInstance (classEmitter.BuildType ());
-      SerializationInfo info = new SerializationInfo (typeof (SerializableClass), new FormatterConverter());
-      StreamingContext context = new StreamingContext();
+      var instance = (SerializableClass) Activator.CreateInstance (classEmitter.BuildType ());
+      var info = new SerializationInfo (typeof (SerializableClass), new FormatterConverter());
+      var context = new StreamingContext();
 
       instance.GetObjectData (info, context);
 
@@ -87,10 +87,10 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         + "Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes.SerializableClassWithoutCtor - serialization is not supported.")]
     public void ImplementGetObjectDataByDelegationThrowsIfBaseHasNoDeserializationCtor ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationThrowsIfBaseHasNoDeserializationCtor", typeof (SerializableClassWithoutCtor),
-          new Type[] {typeof (ISerializable)}, TypeAttributes.Public | TypeAttributes.Serializable, false);
+      var classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationThrowsIfBaseHasNoDeserializationCtor", typeof (SerializableClassWithoutCtor),
+          new[] {typeof (ISerializable)}, TypeAttributes.Public | TypeAttributes.Serializable, false);
       SerializationImplementer.ImplementGetObjectDataByDelegation (classEmitter, delegate { return null; });
-      SerializableClassWithoutCtor instance = (SerializableClassWithoutCtor) Activator.CreateInstance (classEmitter.BuildType ());
+      var instance = (SerializableClassWithoutCtor) Activator.CreateInstance (classEmitter.BuildType ());
 
       Serializer.Serialize (instance);
     }
@@ -100,12 +100,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         + "Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes.SerializableClassWithPrivateGetObjectData - serialization is not supported.")]
     public void ImplementGetObjectDataByDelegationThrowsIfBaseHasPrivateGetObjectData ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationThrowsIfBaseHasPrivateGetObjectData", typeof (SerializableClassWithPrivateGetObjectData),
-          new Type[] { typeof (ISerializable) }, TypeAttributes.Public | TypeAttributes.Serializable, false);
+      var classEmitter = new CustomClassEmitter (Scope, "ImplementGetObjectDataByDelegationThrowsIfBaseHasPrivateGetObjectData", typeof (SerializableClassWithPrivateGetObjectData),
+          new[] { typeof (ISerializable) }, TypeAttributes.Public | TypeAttributes.Serializable, false);
 
       SerializationImplementer.ImplementGetObjectDataByDelegation (classEmitter, delegate { return null; });
-      SerializableClassWithPrivateGetObjectData instance =
-          (SerializableClassWithPrivateGetObjectData) Activator.CreateInstance (classEmitter.BuildType ());
+      var instance = (SerializableClassWithPrivateGetObjectData) Activator.CreateInstance (classEmitter.BuildType ());
 
       Serializer.Serialize (instance);
     }
@@ -115,7 +114,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         ExpectedMessage = "The deserialization constructor should never be called; generated types are deserialized via IObjectReference helpers.")]
     public void ImplementDeserializationConstructorByThrowingWhenBaseHasNoCtor ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowingWhenBaseHasNoCtor", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowingWhenBaseHasNoCtor", typeof (object));
       ConstructorEmitter emitter = SerializationImplementer.ImplementDeserializationConstructorByThrowing (classEmitter);
       Assert.IsNotNull (emitter);
 
@@ -134,7 +133,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         ExpectedMessage = "The deserialization constructor should never be called; generated types are deserialized via IObjectReference helpers.")]
     public void ImplementDeserializationConstructorByThrowingWhenBaseHasCtor ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowing", typeof (SerializableClass));
+      var classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowing", typeof (SerializableClass));
       ConstructorEmitter emitter = SerializationImplementer.ImplementDeserializationConstructorByThrowing (classEmitter);
       Assert.IsNotNull (emitter);
 
@@ -153,7 +152,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         ExpectedMessage = "The deserialization constructor should never be called; generated types are deserialized via IObjectReference helpers.")]
     public void ImplementDeserializationConstructorByThrowingIfNotExistsOnBaseWhenBaseHasNoCtor ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowingIfNotExistsOnBase", typeof (object));
+      var classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowingIfNotExistsOnBase", typeof (object));
       ConstructorEmitter emitter = SerializationImplementer.ImplementDeserializationConstructorByThrowingIfNotExistsOnBase (classEmitter);
       Assert.IsNotNull (emitter);
 
@@ -170,15 +169,15 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementDeserializationConstructorByThrowingIfNotExistsOnBaseWhenBaseHasCtor ()
     {
-      CustomClassEmitter classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowingIfNotExistsOnBase", typeof (SerializableClass));
-      classEmitter.ReplicateBaseTypeConstructors ();
+      var classEmitter = new CustomClassEmitter (Scope, "ImplementDeserializationConstructorByThrowingIfNotExistsOnBase", typeof (SerializableClass));
+      classEmitter.ReplicateBaseTypeConstructors (delegate { }, delegate { });
 
       ConstructorEmitter emitter = SerializationImplementer.ImplementDeserializationConstructorByThrowingIfNotExistsOnBase (classEmitter);
       Assert.IsNull (emitter);
 
-      SerializationInfo info = new SerializationInfo (typeof (SerializableClass), new FormatterConverter ());
-      StreamingContext context = new StreamingContext ();
-      SerializableClass instance = (SerializableClass) Activator.CreateInstance (classEmitter.BuildType (), new object[] { info, context });
+      var info = new SerializationInfo (typeof (SerializableClass), new FormatterConverter ());
+      var context = new StreamingContext ();
+      var instance = (SerializableClass) Activator.CreateInstance (classEmitter.BuildType (), new object[] { info, context });
 
       Assert.AreEqual (info, instance.Info);
       Assert.AreEqual (context, instance.Context);
@@ -187,7 +186,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void OnDeserializationWithFormatter ()
     {
-      ClassWithDeserializationEvents instance = new ClassWithDeserializationEvents ();
+      var instance = new ClassWithDeserializationEvents ();
       Assert.IsFalse (instance.OnBaseDeserializingCalled);
       Assert.IsFalse (instance.OnBaseDeserializedCalled);
       Assert.IsFalse (instance.OnDeserializingCalled);
@@ -206,7 +205,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void RaiseOnDeserialization ()
     {
-      ClassWithDeserializationEvents instance = new ClassWithDeserializationEvents ();
+      var instance = new ClassWithDeserializationEvents ();
       Assert.IsFalse (instance.OnBaseDeserializingCalled);
       Assert.IsFalse (instance.OnBaseDeserializedCalled);
       Assert.IsFalse (instance.OnDeserializingCalled);
@@ -225,7 +224,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void RaiseOnDeserializing ()
     {
-      ClassWithDeserializationEvents instance = new ClassWithDeserializationEvents ();
+      var instance = new ClassWithDeserializationEvents ();
       Assert.IsFalse (instance.OnBaseDeserializingCalled);
       Assert.IsFalse (instance.OnBaseDeserializedCalled);
       Assert.IsFalse (instance.OnDeserializingCalled);
@@ -244,7 +243,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void RaiseOnDeserialized ()
     {
-      ClassWithDeserializationEvents instance = new ClassWithDeserializationEvents ();
+      var instance = new ClassWithDeserializationEvents ();
       Assert.IsFalse (instance.OnBaseDeserializingCalled);
       Assert.IsFalse (instance.OnBaseDeserializedCalled);
       Assert.IsFalse (instance.OnDeserializingCalled);
