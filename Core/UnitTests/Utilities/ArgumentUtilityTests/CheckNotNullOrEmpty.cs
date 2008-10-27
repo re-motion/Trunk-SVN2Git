@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Utilities;
@@ -24,7 +23,8 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     [ExpectedExceptionAttribute (typeof (ArgumentNullException))]
     public void Fail_NullString()
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("arg", (string) null);
+      const string value = null;
+      ArgumentUtility.CheckNotNullOrEmpty ("arg", value);
     }
 
     [Test]
@@ -56,6 +56,14 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     }
 
     [Test]
+    [ExpectedExceptionAttribute (typeof (ArgumentEmptyException))]
+    public void Fail_NonDisposableEnumerable ()
+    {
+      IEnumerable enumerable = new NonDisposableEnumerable (false);
+      ArgumentUtility.CheckNotNullOrEmpty ("arg", enumerable);
+    }
+
+    [Test]
     public void Succeed_String()
     {
       string result = ArgumentUtility.CheckNotNullOrEmpty ("arg", "Test");
@@ -65,7 +73,7 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     [Test]
     public void Succeed_Array()
     {
-      string[] array = new string[] {"test"};
+      var array = new[] {"test"};
       string[] result = ArgumentUtility.CheckNotNullOrEmpty ("arg", array);
       Assert.That (result, Is.SameAs (array));
     }
@@ -73,8 +81,7 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     [Test]
     public void Succeed_Collection()
     {
-      ArrayList list = new ArrayList();
-      list.Add ("test");
+      var list = new ArrayList {"test"};
       ArrayList result = ArgumentUtility.CheckNotNullOrEmpty ("arg", list);
       Assert.That (result, Is.SameAs (list));
     }
@@ -86,6 +93,15 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
       IEnumerable result = ArgumentUtility.CheckNotNullOrEmpty ("arg", enumerable);
       Assert.That (result, Is.SameAs (enumerable));
       Assert.That (result.GetEnumerator().MoveNext(), Is.True);
+    }
+
+    [Test]
+    public void Succeed_NonDisposableEnumerable ()
+    {
+      IEnumerable enumerable = new NonDisposableEnumerable (true);
+      IEnumerable result = ArgumentUtility.CheckNotNullOrEmpty ("arg", enumerable);
+      Assert.That (result, Is.SameAs (enumerable));
+      Assert.That (result.GetEnumerator ().MoveNext (), Is.True);
     }
 
     private IEnumerable GetEnumerableWithValue ()
