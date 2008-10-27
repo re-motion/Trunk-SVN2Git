@@ -18,6 +18,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
+using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
@@ -27,22 +28,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
   [TestFixture]
   public class TypeFeatureTest : CodeGenerationBaseTest
   {
-    [Uses (typeof (NullMixin))]
-    public class ClassWithCtors
-    {
-      public object O;
-
-      public ClassWithCtors (int i)
-      {
-        O = i;
-      }
-
-      public ClassWithCtors (string s)
-      {
-        O = s;
-      }
-    }
-
     [Test]
     public void GeneratedTypeIsAssignableButDifferent ()
     {
@@ -100,7 +85,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void ConstructorsAreReplicated5 ()
     {
-      NullMixin nullMixin = new NullMixin ();
+      var nullMixin = new NullMixin ();
       ClassWithCtors c = ObjectFactory.Create<ClassWithCtors> (nullMixin).With ("a");
       Assert.AreEqual ("a", c.O);
       Assert.AreSame (nullMixin, Mixin.Get<NullMixin> (c));
@@ -112,7 +97,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
       Assert.IsTrue (generatedType.IsDefined (typeof (ConcreteMixedTypeAttribute), false));
 
-      ConcreteMixedTypeAttribute[] attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
+      var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
       Assert.AreEqual (1, attributes.Length);
     }
 
@@ -122,7 +107,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
       Assert.IsTrue (generatedType.IsDefined (typeof (DebuggerDisplayAttribute), false));
 
-      DebuggerDisplayAttribute[] attributes = (DebuggerDisplayAttribute[]) generatedType.GetCustomAttributes (typeof (DebuggerDisplayAttribute), false);
+      var attributes = (DebuggerDisplayAttribute[]) generatedType.GetCustomAttributes (typeof (DebuggerDisplayAttribute), false);
       Assert.AreEqual (1, attributes.Length);
     }
 
@@ -130,7 +115,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void DebuggerDisplayAttribute_NotAddedIfExistsViaMixin ()
     {
       Type generatedType = CreateMixedType (typeof (NullTarget), typeof (MixinAddingDebuggerDisplay));
-      DebuggerDisplayAttribute[] attributes = (DebuggerDisplayAttribute[]) generatedType.GetCustomAttributes (typeof (DebuggerDisplayAttribute), false);
+      var attributes = (DebuggerDisplayAttribute[]) generatedType.GetCustomAttributes (typeof (DebuggerDisplayAttribute), false);
       Assert.AreEqual (1, attributes.Length);
       Assert.AreEqual ("Y", attributes[0].Value);
     }
@@ -139,7 +124,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void MixedTypeAttributeCanBeUsedToGetClassContext ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
-      ConcreteMixedTypeAttribute[] attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
+      var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
       ClassContext context = attributes[0].GetClassContext ();
       Assert.AreEqual (context, TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).ConfigurationContext);
     }
@@ -148,7 +133,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void MixedTypeAttributeCanBeUsedToGetTargetClassDefinition ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
-      ConcreteMixedTypeAttribute[] attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
+      var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
       TargetClassDefinition definition = attributes[0].GetTargetClassDefinition (TargetClassDefinitionCache.Current);
       Assert.AreSame (definition, TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)));
     }
@@ -163,9 +148,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void NameProviderIsUsedWhenTypeIsGenerated ()
     {
-      MockRepository repository = new MockRepository ();
-      INameProvider nameProviderMock = repository.StrictMock<INameProvider> ();
-      ConcreteTypeBuilder.Current.TypeNameProvider = nameProviderMock;
+      var builder = new ConcreteTypeBuilder {Scope = SavedTypeBuilder.Scope};
+      var repository = new MockRepository ();
+      var nameProviderMock = repository.StrictMock<INameProvider> ();
+      builder.TypeNameProvider = nameProviderMock;
+      ConcreteTypeBuilder.SetCurrent (builder);
 
       TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
 
@@ -183,9 +170,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void NamesOfNestedTypesAreFlattened ()
     {
-      MockRepository repository = new MockRepository ();
-      INameProvider nameProviderMock = repository.StrictMock<INameProvider> ();
-      ConcreteTypeBuilder.Current.TypeNameProvider = nameProviderMock;
+      var builder = new ConcreteTypeBuilder { Scope = SavedTypeBuilder.Scope };
+      var repository = new MockRepository ();
+      var nameProviderMock = repository.StrictMock<INameProvider> ();
+      builder.TypeNameProvider = nameProviderMock;
+      ConcreteTypeBuilder.SetCurrent (builder);
 
       TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
 
@@ -206,9 +195,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Type concreteType = CreateMixedType (typeof (AbstractBaseType), typeof (MixinOverridingClassMethod));
       Assert.IsNotNull (concreteType);
       Assert.IsTrue (concreteType.IsAbstract);
-      MethodInfo[] abstractMethods = Array.FindAll (concreteType.GetMethods (), delegate (MethodInfo method) { return method.IsAbstract; });
-      string[] abstractMethodNames = Array.ConvertAll<MethodInfo, string> (abstractMethods, delegate (MethodInfo method) { return method.Name; });
-      Assert.That (abstractMethodNames, Is.EquivalentTo (new string[] { "VirtualMethod", "get_VirtualProperty", "set_VirtualProperty",
+      MethodInfo[] abstractMethods = Array.FindAll (concreteType.GetMethods (), method => method.IsAbstract);
+      string[] abstractMethodNames = Array.ConvertAll (abstractMethods, method => method.Name);
+      Assert.That (abstractMethodNames, Is.EquivalentTo (new[] { "VirtualMethod", "get_VirtualProperty", "set_VirtualProperty",
           "add_VirtualEvent", "remove_VirtualEvent" }));
     }
 
@@ -217,9 +206,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       Type concreteType = CreateMixedType (typeof (BaseType1));
       Assert.IsNull (typeof (BaseType1).GetConstructor (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-          null, new Type[] {typeof (SerializationInfo), typeof (StreamingContext)}, null));
+          null, new[] {typeof (SerializationInfo), typeof (StreamingContext)}, null));
       Assert.IsNotNull (concreteType.GetConstructor (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-          null, new Type[] { typeof (SerializationInfo), typeof (StreamingContext) }, null));
+          null, new[] { typeof (SerializationInfo), typeof (StreamingContext) }, null));
     }
 
     [Test]

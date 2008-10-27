@@ -31,7 +31,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void CreateBaseCallProxy_InstantiatesCorrectType ()
     {
-      IInitializableMixinTarget instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin)).With();
+      var instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin)).With();
       object baseCallProxy = instance.CreateBaseCallProxy (0);
       Assert.IsNotNull (baseCallProxy);
       Assert.That (baseCallProxy, Is.InstanceOfType (MixinReflector.GetBaseCallProxyType (instance)));
@@ -40,7 +40,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void CreateBaseCallProxy_SetsDepthCorrectly ()
     {
-      IInitializableMixinTarget instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin)).With ();
+      var instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin)).With ();
       object baseCallProxy = instance.CreateBaseCallProxy (0);
       Assert.That (PrivateInvoke.GetPublicField (baseCallProxy, "__depth"), Is.EqualTo (0));
 
@@ -51,7 +51,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void SetFirstBaseCallProxy ()
     {
-      IInitializableMixinTarget instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin)).With ();
+      var instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin)).With ();
       object baseCallProxy = instance.CreateBaseCallProxy (0);
 
       Assert.That (instance.FirstBaseCallProxy, Is.Not.SameAs (baseCallProxy));
@@ -62,8 +62,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void SetExtensions ()
     {
-      IInitializableMixinTarget instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin)).With ();
-      object[] extensions = new object[1];
+      var instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin)).With ();
+      var extensions = new object[1];
 
       Assert.That (instance.Mixins, Is.Not.SameAs (extensions));
       instance.SetExtensions (extensions);

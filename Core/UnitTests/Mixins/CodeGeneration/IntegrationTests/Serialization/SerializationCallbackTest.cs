@@ -26,39 +26,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       _instance = ObjectFactory.Create<TargetTypeWithSerializationCallbacks> ().With ();
     }
 
-    [Serializable]
-    [Uses (typeof (MixinWithSerializationCallbacks))]
-    public class TargetTypeWithSerializationCallbacks : ClassWithSerializationCallbacksBase
-    {
-      private static ISerializationEventReceiver s_receiver;
-
-      public static void SetStaticReceiver (ISerializationEventReceiver receiver)
-      {
-        s_receiver = receiver;
-      }
-
-      protected override ISerializationEventReceiver StaticReceiver
-      {
-        get { return s_receiver; }
-      }
-    }
-
-    [Serializable]
-    public class MixinWithSerializationCallbacks : ClassWithSerializationCallbacksBase
-    {
-      private static ISerializationEventReceiver s_receiver;
-
-      public static void SetStaticReceiver (ISerializationEventReceiver receiver)
-      {
-        s_receiver = receiver;
-      }
-
-      protected override ISerializationEventReceiver StaticReceiver
-      {
-        get { return s_receiver; }
-      }
-    }
-
     [Test]
     public void SerializationCallbacks_AreInvokedOnTargetClass ()
     {
@@ -91,28 +58,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [Serializable]
     public class TargetClassForAbstractMixinWithSerializationCallbacks
     {
-    }
-
-    [Serializable]
-    public abstract class AbstractMixinWithSerializationCallbacks : ClassWithSerializationCallbacksBase
-    {
-      private static ISerializationEventReceiver s_receiver;
-
-      public static void SetStaticReceiver (ISerializationEventReceiver receiver)
-      {
-        s_receiver = receiver;
-      }
-
-      protected override ISerializationEventReceiver StaticReceiver
-      {
-        get { return s_receiver; }
-      }
-
-      [OverrideTarget]
-      protected new string ToString () // protected overrider to force class to be derived
-      {
-        return "";
-      }
     }
 
     [Test]

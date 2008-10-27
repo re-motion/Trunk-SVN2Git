@@ -23,24 +23,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
   [TestFixture]
   public class StrongNameTest : CodeGenerationBaseTest
   {
-    public class UnsignedClass
-    {
-      [OverrideMixin]
-      public new string ToString ()
-      {
-        return "Overridden";
-      }
-    }
-
-    public class UnsignedMixin : Mixin<object>
-    {
-      [OverrideTarget]
-      protected new string ToString ()
-      {
-        return "Overridden";
-      }
-    }
-
     [Test]
     public void SignedMixinWithSignedTargetClassGeneratedIntoSignedAssembly ()
     {
@@ -88,6 +70,24 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
 
         Assert.AreEqual ("Overridden", ObjectFactory.Create<NullTarget>().With().ToString());
       }
+    }
+  }
+
+  public class UnsignedMixin : Mixin<object>
+  {
+    [OverrideTarget]
+    protected new string ToString ()
+    {
+      return "Overridden";
+    }
+  }
+
+  public class UnsignedClass
+  {
+    [OverrideMixin]
+    public new string ToString ()
+    {
+      return "Overridden";
     }
   }
 }

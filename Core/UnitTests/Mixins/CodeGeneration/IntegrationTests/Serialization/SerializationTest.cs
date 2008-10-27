@@ -14,6 +14,7 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
+using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serialization.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serialization
@@ -21,39 +22,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
   [TestFixture]
   public class SerializationTest : CodeGenerationBaseTest
   {
-    [Serializable]
-    [Uses(typeof(NullMixin))]
-    public class ClassImplementingISerializable : ISerializable
-    {
-      public int I;
-
-      public ClassImplementingISerializable ()
-      {
-      }
-
-      public ClassImplementingISerializable (SerializationInfo info, StreamingContext context)
-      {
-        I = 13 + info.GetInt32("I");
-      }
-
-      public void GetObjectData (SerializationInfo info, StreamingContext context)
-      {
-        info.AddValue ("I", I);
-      }
-    }
-
-    [Serializable]
-    [Uses (typeof (NullMixin))]
-    public class ClassWithoutDefaultCtor
-    {
-      public string S;
-
-      public ClassWithoutDefaultCtor (int i)
-      {
-        S = i.ToString();
-      }
-    }
-
     [Test]
     public void GeneratedTypeHasConfigurationField ()
     {
@@ -78,7 +46,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       Assert.IsTrue (bt1.GetType ().IsSerializable);
 
       bt1.I = 25;
-      Serializer.Serialize ((object) bt1);
+      Serializer.Serialize (bt1);
     }
 
     [Test]
@@ -90,15 +58,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       bt1.I = 25;
       Serializer.SerializeAndDeserialize (bt1);
       Assert.AreEqual (25, bt1.I);
-    }
-
-    [Serializable]
-    public class OverridableBaseType
-    {
-      public virtual string OverridableMethod (int i)
-      {
-        return "OverridableBaseType.OverridableMethod(" + i + ")";
-      }
     }
 
     [Test]
@@ -146,10 +105,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     public void ExtensionsAndConfigurationSerializedFirstFits ()
     {
       BaseType1 bt1 = ObjectFactory.Create<BaseType1> ().With ();
-      IMixinTarget mixinTarget = (IMixinTarget) bt1;
+      var mixinTarget = (IMixinTarget) bt1;
 
       BaseType1 bt1a = Serializer.SerializeAndDeserialize (bt1);
-      IMixinTarget mixinTargetA = (IMixinTarget) bt1a;
+      var mixinTargetA = (IMixinTarget) bt1a;
 
       Assert.IsNotNull (mixinTargetA.Configuration);
       Assert.AreEqual (mixinTarget.Configuration.Type, mixinTargetA.Configuration.Type);
@@ -179,10 +138,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       Assert.AreEqual (28, c2.I);
     }
 
-    public class NotSerializableClass
-    {
-    }
-
     [Test]
     [ExpectedException (typeof (SerializationException), ExpectedMessage = "is not marked as serializable", MatchType = MessageMatch.Contains)]
     public void ThrowsIfClassNotSerializable ()
@@ -190,21 +145,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       NotSerializableClass targetInstance = CreateMixedObject<NotSerializableClass> ().With ();
 
       Serializer.SerializeAndDeserialize (targetInstance);
-    }
-
-    public class NotSerializableClassWithISerializable : ISerializable
-    {
-      public NotSerializableClassWithISerializable ()
-      {
-      }
-
-      public NotSerializableClassWithISerializable (SerializationInfo info, StreamingContext context)
-      {
-      }
-
-      public void GetObjectData (SerializationInfo info, StreamingContext context)
-      {
-      }
     }
 
     [Test]
@@ -226,31 +166,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       ClassWithoutDefaultCtor c2 = Serializer.SerializeAndDeserialize (c);
       Assert.AreNotEqual (c, c2);
       Assert.AreEqual ("35", c2.S);
-    }
-
-    [Serializable]
-    public class MixinWithOnInitializedAndOnDeserialized : Mixin<object, object>
-    {
-      [NonSerialized]
-      public bool OnInitializedCalled;
-      [NonSerialized]
-      public bool OnDeserializedCalled;
-
-      protected override void OnInitialized ()
-      {
-        OnInitializedCalled = true;
-        Assert.IsNotNull (This);
-        Assert.IsNotNull (Base);
-        base.OnInitialized ();
-      }
-
-      protected override void OnDeserialized ()
-      {
-        OnDeserializedCalled = true;
-        Assert.IsNotNull (This);
-        Assert.IsNotNull (Base);
-        base.OnDeserialized ();
-      }
     }
 
     [Test]
@@ -290,7 +205,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
         serializedData = Serializer.Serialize (instance);
       }
 
-      NullTarget deserializedInstance = (NullTarget) Serializer.Deserialize (serializedData);
+      var deserializedInstance = (NullTarget) Serializer.Deserialize (serializedData);
       Assert.IsNotNull (Mixin.Get<NullMixin> (deserializedInstance));
     }
   }

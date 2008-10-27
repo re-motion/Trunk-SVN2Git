@@ -8,7 +8,6 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -21,10 +20,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void CircularThisDependenciesWork ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithCircularThisDependency1), typeof (MixinWithCircularThisDependency2)).EnterScope())
+      using (MixinConfiguration.BuildFromActive()
+          .ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithCircularThisDependency1), typeof (MixinWithCircularThisDependency2))
+          .EnterScope())
       {
         object o = ObjectFactory.Create<NullTarget> ().With ();
-        ICircular2 c1 = (ICircular2) o;
+        var c1 = (ICircular2) o;
         Assert.AreEqual ("MixinWithCircularThisDependency2.Circular12-MixinWithCircularThisDependency1.Circular1-"
             + "MixinWithCircularThisDependency2.Circular2", c1.Circular12 ());
       }
@@ -34,7 +35,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void ThisCallToClassImplementingInternalInterface ()
     {
       ClassImplementingInternalInterface ciii = ObjectFactory.Create<ClassImplementingInternalInterface> ().With ();
-      MixinWithClassFaceImplementingInternalInterface mixin = Mixin.Get<MixinWithClassFaceImplementingInternalInterface> (ciii);
+      var mixin = Mixin.Get<MixinWithClassFaceImplementingInternalInterface> (ciii);
       Assert.AreEqual ("ClassImplementingInternalInterface.Foo", mixin.GetStringViaThis ());
     }
 
@@ -42,7 +43,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void ThisCallsToIndirectlyRequiredInterfaces ()
     {
       ClassImplementingIndirectRequirements ciir = ObjectFactory.Create<ClassImplementingIndirectRequirements> ().With ();
-      MixinWithIndirectRequirements mixin = Mixin.Get<MixinWithIndirectRequirements> (ciir);
+      var mixin = Mixin.Get<MixinWithIndirectRequirements> (ciir);
       Assert.AreEqual ("ClassImplementingIndirectRequirements.Method1-ClassImplementingIndirectRequirements.BaseMethod1-"
           + "ClassImplementingIndirectRequirements.Method3", mixin.GetStuffViaThis ());
     }

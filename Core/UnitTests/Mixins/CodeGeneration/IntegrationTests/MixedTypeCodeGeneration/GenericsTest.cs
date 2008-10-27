@@ -8,7 +8,6 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins;
@@ -49,7 +48,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void MuchGenericityWithoutOverriding ()
     {
       BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (VeryGenericMixin<,>), typeof (BT3Mixin4)).With ();
-      IVeryGenericMixin m = bt3 as IVeryGenericMixin;
+      var m = bt3 as IVeryGenericMixin;
       Assert.IsNotNull (m);
       Assert.AreEqual ("IVeryGenericMixin.GenericIfcMethod-5", m.GetMessage ("5"));
     }
@@ -62,7 +61,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       ClassOverridingUltraGenericStuff cougs = CreateMixedObject<ClassOverridingUltraGenericStuff> (typeof (AbstractDerivedUltraGenericMixin<,>),
           typeof (BT3Mixin4)).With ();
-      IUltraGenericMixin m = cougs as IUltraGenericMixin;
+      var m = cougs as IUltraGenericMixin;
       Assert.IsNotNull (m);
       Assert.AreEqual ("String-IVeryGenericMixin.GenericIfcMethod-5", m.GetMessage ("5"));
     }

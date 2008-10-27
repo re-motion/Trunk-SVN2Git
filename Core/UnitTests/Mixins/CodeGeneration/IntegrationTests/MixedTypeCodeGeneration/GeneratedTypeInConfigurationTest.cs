@@ -22,29 +22,29 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
   public class GeneratedTypeInConfigurationTest : CodeGenerationBaseTest
   {
     [Test]
-    public void GeneratedMixinTypeWorks ()
+    public void GeneratedMixinTypeWorks()
     {
-      CustomClassEmitter typeEmitter = new CustomClassEmitter (((ModuleManager)ConcreteTypeBuilder.Current.Scope).Scope,
-          "GeneratedType", typeof (object));
-      Type generatedType = typeEmitter.BuildType ();
+      var typeEmitter = new CustomClassEmitter (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope,
+                                                "GeneratedTypeInConfigurationTest.GeneratedMixinTypeWorks", typeof (object));
+      Type generatedType = typeEmitter.BuildType();
 
-      using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (generatedType).EnterScope())
+      using (MixinConfiguration.BuildFromActive().ForClass<NullTarget>().Clear().AddMixins (generatedType).EnterScope())
       {
-        object instance = ObjectFactory.Create (typeof (NullTarget)).With ();
+        object instance = ObjectFactory.Create (typeof (NullTarget)).With();
         Assert.IsNotNull (Mixin.Get (generatedType, instance));
       }
     }
 
     [Test]
-    public void GeneratedTargetTypeWorks ()
+    public void GeneratedTargetTypeWorks()
     {
-      CustomClassEmitter typeEmitter = new CustomClassEmitter (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope,
-          "GeneratedType", typeof (object));
-      Type generatedType = typeEmitter.BuildType ();
+      var typeEmitter = new CustomClassEmitter (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope,
+                                                "GeneratedTypeInConfigurationTest.GeneratedTargetTypeWorks", typeof (object));
+      Type generatedType = typeEmitter.BuildType();
 
       using (MixinConfiguration.BuildFromActive().ForClass (generatedType).Clear().AddMixins (typeof (NullMixin)).EnterScope())
       {
-        object instance = ObjectFactory.Create (generatedType).With ();
+        object instance = ObjectFactory.Create (generatedType).With();
         Assert.IsNotNull (Mixin.Get (typeof (NullMixin), instance));
       }
     }

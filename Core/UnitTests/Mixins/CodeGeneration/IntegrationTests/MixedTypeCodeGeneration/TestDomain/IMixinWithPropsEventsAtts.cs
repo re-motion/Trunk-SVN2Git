@@ -9,16 +9,12 @@
  */
 
 using System;
-using NUnit.Framework;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration
+namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration.TestDomain
 {
-  [TestFixture]
-  public class CheckPEVerify : CodeGenerationBaseTest
+  public interface IMixinWithPropsEventsAtts
   {
-    [Test]
-    public void Foo ()
-    {
-    }
+    int Property { get; set; }
+    event EventHandler Event;
   }
 }

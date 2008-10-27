@@ -14,7 +14,6 @@ using System.Reflection.Emit;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -28,7 +27,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void GeneratedTypeCanBeInstantiatedViaCtorCall ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
-      BaseType3 bt3 = (BaseType3) Activator.CreateInstance (generatedType);
+      var bt3 = (BaseType3) Activator.CreateInstance (generatedType);
       Assert.IsNotNull (bt3);
       Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3));
       Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3).This);
@@ -52,7 +51,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 
       Type evenDerivedType = typeBuilder.CreateType ();
 
-      BaseType3 bt3 = (BaseType3) Activator.CreateInstance (evenDerivedType);
+      var bt3 = (BaseType3) Activator.CreateInstance (evenDerivedType);
       Assert.AreSame (generatedType, bt3.GetType ().BaseType);
       Assert.IsNotNull (bt3);
       Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3));
@@ -65,11 +64,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void CtorsRespectMixedTypeInstantiationScope ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
-      BT3Mixin1 suppliedMixinInstance = new BT3Mixin1 ();
+      var suppliedMixinInstance = new BT3Mixin1 ();
 
       using (new MixedObjectInstantiationScope (suppliedMixinInstance))
       {
-        BaseType3 bt3 = (BaseType3) Activator.CreateInstance (generatedType);
+        var bt3 = (BaseType3) Activator.CreateInstance (generatedType);
         Assert.IsNotNull (Mixin.Get<BT3Mixin1> (bt3));
         Assert.AreSame (suppliedMixinInstance, Mixin.Get<BT3Mixin1> (bt3));
         Assert.AreSame (bt3, suppliedMixinInstance.This);
@@ -84,7 +83,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void ThrowsIfWrongMixinInstancesInScope ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType1));
-      BT3Mixin1 suppliedMixinInstance = new BT3Mixin1 ();
+      var suppliedMixinInstance = new BT3Mixin1 ();
 
       using (new MixedObjectInstantiationScope (suppliedMixinInstance))
       {
@@ -104,7 +103,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       TargetClassCallingOverriddenMethodFromCtor instance =
           CreateMixedObject<TargetClassCallingOverriddenMethodFromCtor> (typeof (MixinOverridingMethodCalledFromCtor)).With ();
-      MixinOverridingMethodCalledFromCtor mixin = Mixin.Get<MixinOverridingMethodCalledFromCtor> (instance);
+      var mixin = Mixin.Get<MixinOverridingMethodCalledFromCtor> (instance);
       Assert.That (instance.Result, Is.SameAs (mixin));
       Assert.That (mixin.MyThis, Is.SameAs (instance));
       Assert.That (mixin.MyBase, Is.Not.Null);
@@ -116,7 +115,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       TargetClassCallingIntroducedMethodFromCtor instance =
           CreateMixedObject<TargetClassCallingIntroducedMethodFromCtor> (typeof (MixinIntroducingMethodCalledFromCtor)).With ();
       
-      MixinIntroducingMethodCalledFromCtor mixin = Mixin.Get<MixinIntroducingMethodCalledFromCtor> (instance);
+      var mixin = Mixin.Get<MixinIntroducingMethodCalledFromCtor> (instance);
       Assert.That (instance.Result, Is.SameAs (mixin));
       Assert.That (mixin.MyThis, Is.SameAs (instance));
       Assert.That (mixin.MyBase, Is.Not.Null);

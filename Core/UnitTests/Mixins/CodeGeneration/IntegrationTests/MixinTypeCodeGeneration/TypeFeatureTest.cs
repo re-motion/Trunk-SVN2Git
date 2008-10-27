@@ -15,6 +15,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
@@ -44,8 +45,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
       Assert.IsTrue (generatedType.IsDefined (typeof (ConcreteMixinTypeAttribute), false));
 
-      ConcreteMixinTypeAttribute[] attributes =
-          (ConcreteMixinTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false);
+      var attributes = (ConcreteMixinTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false);
       Assert.AreEqual (1, attributes.Length);
     }
 
@@ -59,25 +59,18 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
       Assert.IsTrue (generatedType.IsDefined (typeof (ConcreteMixinTypeAttribute), false));
 
-      ConcreteMixinTypeAttribute[] attributes =
-          (ConcreteMixinTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false);
+      var attributes = (ConcreteMixinTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false);
       Assert.AreSame (mixinDefinition, attributes[0].GetMixinDefinition (TargetClassDefinitionCache.Current));
-    }
-
-    [Test]
-    public void GeneratedMixinTypeHasTypeInitializer ()
-    {
-      ClassOverridingMixinMembers com = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers)).With ();
-      Type generatedType = ((IMixinTarget) com).Mixins[0].GetType ();
-      Assert.IsNotNull (generatedType.GetConstructor (BindingFlags.Static | BindingFlags.NonPublic, null, Type.EmptyTypes, null));
     }
 
     [Test]
     public void NameProviderIsUsedWhenTypeIsGenerated ()
     {
-      MockRepository repository = new MockRepository ();
-      INameProvider nameProviderMock = repository.StrictMock<INameProvider> ();
-      ConcreteTypeBuilder.Current.MixinTypeNameProvider = nameProviderMock;
+      var builder = new ConcreteTypeBuilder { Scope = SavedTypeBuilder.Scope };
+      var repository = new MockRepository ();
+      var nameProviderMock = repository.StrictMock<INameProvider> ();
+      builder.MixinTypeNameProvider = nameProviderMock;
+      ConcreteTypeBuilder.SetCurrent (builder);
 
       MixinDefinition mixinDefinition =
           TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
@@ -97,9 +90,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void NamesOfNestedTypesAreFlattened ()
     {
-      MockRepository repository = new MockRepository ();
-      INameProvider nameProviderMock = repository.StrictMock<INameProvider> ();
-      ConcreteTypeBuilder.Current.MixinTypeNameProvider = nameProviderMock;
+      var builder = new ConcreteTypeBuilder { Scope = SavedTypeBuilder.Scope };
+      var repository = new MockRepository ();
+      var nameProviderMock = repository.StrictMock<INameProvider> ();
+      builder.MixinTypeNameProvider = nameProviderMock;
+      ConcreteTypeBuilder.SetCurrent (builder);
 
       MixinDefinition mixinDefinition =
           TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];

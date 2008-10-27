@@ -9,67 +9,42 @@
  */
 
 using System;
-using System.IO;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection;
-using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
   public abstract class CodeGenerationBaseTest
   {
+    private IModuleManager _savedScope;
+    private IModuleManager _alternativeScope;
+
     [SetUp]
     public virtual void SetUp()
     {
-      ResetGeneratedAssemblies ();
-      ConcreteTypeBuilder.SetCurrent (null);
-    }
-
-    private void ResetGeneratedAssemblies ()
-    {
-      string weakModulePath = ModuleManager.DefaultWeakModulePath.Replace ("{counter}", "*");
-      string strongModulePath = ModuleManager.DefaultStrongModulePath.Replace ("{counter}", "*");
-      string weakPdbPath = Path.GetFileNameWithoutExtension (weakModulePath) + ".pdb";
-      string strongPdbPath = Path.GetFileNameWithoutExtension (strongModulePath) + ".pdb";
-
-      DeleteFiles (weakModulePath);
-      DeleteFiles (strongModulePath);
-      DeleteFiles (weakPdbPath);
-      DeleteFiles (strongPdbPath);
-    }
-
-    private void DeleteFiles (string searchPattern)
-    {
-      foreach (string file in Directory.GetFiles (Environment.CurrentDirectory, searchPattern))
-        FileUtility.DeleteAndWaitForCompletion (file);
+      _savedScope = SavedTypeBuilder.Scope;
+      _alternativeScope = AlternativeTypeBuilder.Scope;
+      ConcreteTypeBuilder.SetCurrent (SavedTypeBuilder);
     }
 
     [TearDown]
     public virtual void TearDown()
     {
-
-#if !NO_PEVERIFY
-      string[] paths;
-      try
-      {
-        paths = ConcreteTypeBuilder.Current.SaveAndResetDynamicScope ();
-      }
-      catch (Exception ex)
-      {
-        Assert.Fail ("Error when saving assemblies: {0}", ex);
-        return;
-      }
-
-      foreach (string path in paths)
-        PEVerifier.VerifyPEFile (path);
-
-#endif
-      ResetGeneratedAssemblies (); // delete assemblies if everything went fine
       ConcreteTypeBuilder.SetCurrent (null);
+      SavedTypeBuilder.Scope = _savedScope;
+      AlternativeTypeBuilder.Scope = _alternativeScope;
+    }
+
+    public ConcreteTypeBuilder SavedTypeBuilder
+    {
+      get { return SetUpFixture.SavedTypeBuilder; }
+    }
+
+    public ConcreteTypeBuilder AlternativeTypeBuilder
+    {
+      get { return SetUpFixture.AlternativeTypeBuilder; }
     }
 
     public Type CreateMixedType (Type targetType, params Type[] mixinTypes)
@@ -80,7 +55,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     public FuncInvokerWrapper<T> CreateMixedObject<T> (params Type[] mixinTypes)
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<T> ().Clear().AddMixins (mixinTypes).EnterScope())
+      using (MixinConfiguration.BuildNew().ForClass<T> ().AddMixins (mixinTypes).EnterScope())
         return ObjectFactory.Create<T>(GenerationPolicy.ForceGeneration);
     }
   }

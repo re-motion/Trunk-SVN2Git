@@ -17,30 +17,18 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection.CodeGeneration;
+using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration
 {
   [TestFixture]
   public class GeneratedTypeInConfigurationTest : CodeGenerationBaseTest
   {
-    public class ClassOverridingMixinMethod
-    {
-      [OverrideMixin]
-      public new string ToString ()
-      {
-        return "Overridden!";
-      }
-    }
-
-    public class SimpleMixin : Mixin<object>
-    {
-    }
-
     [Test]
     public void GeneratedMixinTypeWithOverriddenMethodWorks ()
     {
-      CustomClassEmitter typeEmitter = new CustomClassEmitter (((ModuleManager)ConcreteTypeBuilder.Current.Scope).Scope,
-          "GeneratedType", typeof (Mixin<object>));
+      var typeEmitter = new CustomClassEmitter (((ModuleManager)ConcreteTypeBuilder.Current.Scope).Scope,
+          "GeneratedMixinTypeWithOverriddenMethodWorks", typeof (Mixin<object>));
       Type generatedType = typeEmitter.BuildType ();
 
       using (MixinConfiguration.BuildFromActive().ForClass<ClassOverridingMixinMethod> ().Clear().AddMixins (generatedType).EnterScope())
@@ -53,8 +41,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void GeneratedTargetTypeOverridingMixinMethodWorks ()
     {
-      CustomClassEmitter typeEmitter = new CustomClassEmitter (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope,
-          "GeneratedType", typeof (object));
+      var typeEmitter = new CustomClassEmitter (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope,
+          "GeneratedTargetTypeOverridingMixinMethodWorks", typeof (object));
       typeEmitter.CreateMethod ("ToString", MethodAttributes.Public)
           .SetReturnType (typeof (string))
           .ImplementByReturning (new ConstReference ("Generated _and_ overridden").ToExpression ())
