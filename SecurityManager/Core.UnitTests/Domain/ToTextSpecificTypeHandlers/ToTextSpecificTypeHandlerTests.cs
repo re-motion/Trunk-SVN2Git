@@ -20,7 +20,6 @@ using List = Remotion.Development.UnitTesting.ObjectMother.List;
 namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
 {
   [TestFixture]
-  [Ignore ("TODO MGi: Make handlers work without mixin")]
   public class ToTextSpecificTypeHandlerTests  : AclToolsTestBase
   {
     [Test]
