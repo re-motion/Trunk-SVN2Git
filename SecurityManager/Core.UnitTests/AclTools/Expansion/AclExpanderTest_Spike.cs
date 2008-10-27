@@ -358,7 +358,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     /// <summary>
-    /// NUnit-Asserts that the passed <see cref="AclExpansionEntry"/> has the passed <see cref="AccessTypeDefinition"/>|s and the
+    /// NUnit-asserts that the passed <see cref="AclExpansionEntry"/> has the passed <see cref="AccessTypeDefinition"/>|s and the
     /// passed <see cref="AclExpansionAccessConditions"/>.
     /// </summary>
     private void AssertAclExpansionEntry (AclExpansionEntry aclExpansionEntry, AccessTypeDefinition[] accessTypeDefinitions,

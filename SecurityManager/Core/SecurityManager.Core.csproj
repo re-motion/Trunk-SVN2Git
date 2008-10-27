@@ -75,7 +75,6 @@
     <Compile Include="AclTools\Expansion\IAclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderUserFinder.cs" />
     <Compile Include="AclTools\Expansion\IUserRoleAclAceCombinations.cs" />
-    <Compile Include="AclTools\Expansion\LinqGroup.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilderFast.cs" />
     <Compile Include="AclTools\Expansion\UserRoleAclAceCombination.cs" />
     <Compile Include="AclTools\Expansion\UserRoleAclAceCombinations.cs" />

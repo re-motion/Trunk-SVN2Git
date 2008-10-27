@@ -19,6 +19,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
   public class AclToolsTestBase : DomainTest
   {
     public AccessControlList Acl { get; private set; }
+    public AccessControlList Acl2 { get; private set; }
+    
     public AccessTypeDefinition DeleteAccessType { get; private set; }
     public AccessTypeDefinition WriteAccessType { get; private set; }
     public AccessTypeDefinition ReadAccessType { get; private set; }
@@ -98,6 +100,28 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
 
 
       Acl = TestHelper.CreateAcl (Ace, Ace2, Ace3);
+
+      var ace2_1 = TestHelper.CreateAceWithAbstractRole();
+      var ace2_2 = TestHelper.CreateAceWithPosition (Position2, GroupSelection.OwningGroup);
+
+      Acl2 = TestHelper.CreateAcl (ace2_1, ace2_2, Ace3);
+
+
+
+      // Additional roles for users
+      TestHelper.CreateRole (User, Group2, Position2);
+      TestHelper.CreateRole (User, Group3, Position3);
+
+      TestHelper.CreateRole (User2, Group, Position2);
+      TestHelper.CreateRole (User2, Group2, Position);
+      TestHelper.CreateRole (User2, Group3, Position2);
+
+      TestHelper.CreateRole (User3, Group, Position);
+      TestHelper.CreateRole (User3, Group2, Position2);
+      TestHelper.CreateRole (User3, Group3, Position3);
+      TestHelper.CreateRole (User3, Group, Position3);
+      TestHelper.CreateRole (User3, Group2, Position);
+
     }
 
 
