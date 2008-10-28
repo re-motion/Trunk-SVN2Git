@@ -13,6 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>$PROJECT_ROOTNAMESPACE$</RootNamespace>
     <AssemblyName>$WebClientAssembly$</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -35,35 +36,35 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Remotion, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+    <Reference Include="Remotion, $STRONG_SUPPLEMENT$, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$RemotionAssembly$\Remotion.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Interfaces, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+    <Reference Include="Remotion.Interfaces, $STRONG_SUPPLEMENT$, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$RemotionAssembly$\Remotion.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Data.DomainObjects, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+    <Reference Include="Remotion.Data.DomainObjects, $STRONG_SUPPLEMENT$, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$RemotionAssembly$\Remotion.Data.DomainObjects.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.ObjectBinding, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+    <Reference Include="Remotion.ObjectBinding, $STRONG_SUPPLEMENT$, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$RemotionAssembly$\Remotion.ObjectBinding.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Data.Interfaces, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+    <Reference Include="Remotion.Data.Interfaces, $STRONG_SUPPLEMENT$, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$RemotionAssembly$\Remotion.Data.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.ObjectBinding.Interfaces, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+    <Reference Include="Remotion.ObjectBinding.Interfaces, $STRONG_SUPPLEMENT$, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$RemotionAssembly$\Remotion.ObjectBinding.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.ObjectBinding.Web, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+    <Reference Include="Remotion.ObjectBinding.Web, $STRONG_SUPPLEMENT$, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$RemotionAssembly$\Remotion.ObjectBinding.Web.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Web, Version=1.4.16.202, Culture=neutral, PublicKeyToken=ad97c3e83e217fcd, processorArchitecture=MSIL">
+    <Reference Include="Remotion.Web, $STRONG_SUPPLEMENT$, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$RemotionAssembly$\Remotion.Web.dll</HintPath>
     </Reference>
@@ -74,10 +75,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\$DomainProjectName$\queries.xml">
+    <!-- Content Include="..\$DomainProjectName$\queries.xml">
       <Link>queries.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </Content -->
   </ItemGroup>
 
   <ItemGroup>
