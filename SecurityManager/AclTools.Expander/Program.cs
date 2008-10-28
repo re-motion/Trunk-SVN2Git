@@ -23,7 +23,7 @@ namespace Remotion.SecurityManager.AclTools.Expander
   {
     public static int Main (string[] args)
     {
-      CommandLineArguments arguments = GetArguments (args);
+      AclExpanderCommandLineArguments arguments = GetArguments (args);
       if (arguments == null)
       {
         To.Console.nl().s ("No arguments passed => aborting. Press any-key...");
@@ -38,13 +38,13 @@ namespace Remotion.SecurityManager.AclTools.Expander
       return result;
     }
 
-    private static CommandLineArguments GetArguments (string[] args)
+    private static AclExpanderCommandLineArguments GetArguments (string[] args)
     {
-      CommandLineClassParser parser = new CommandLineClassParser (typeof (CommandLineArguments));
+      CommandLineClassParser parser = new CommandLineClassParser (typeof (AclExpanderCommandLineArguments));
 
       try
       {
-        return (CommandLineArguments) parser.Parse (args);
+        return (AclExpanderCommandLineArguments) parser.Parse (args);
       }
       catch (CommandLineArgumentException e)
       {
@@ -63,9 +63,9 @@ namespace Remotion.SecurityManager.AclTools.Expander
       Console.WriteLine (parser.GetAsciiSynopsis (commandName, Console.BufferWidth));
     }
 
-    readonly CommandLineArguments _arguments;
+    readonly AclExpanderCommandLineArguments _arguments;
 
-    private Program (CommandLineArguments arguments)
+    private Program (AclExpanderCommandLineArguments arguments)
     {
       ArgumentUtility.CheckNotNull ("arguments", arguments);
       _arguments = arguments;

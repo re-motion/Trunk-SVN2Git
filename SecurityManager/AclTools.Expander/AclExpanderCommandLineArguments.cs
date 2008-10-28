@@ -13,16 +13,14 @@ using Remotion.Text.CommandLine;
 
 namespace Remotion.SecurityManager.AclTools.Expander
 {
-  public class CommandLineArguments
+  public class AclExpanderCommandLineArguments
   {
-    //[CommandLineStringArgument (false,
-    //    Description = "The name of the XML metadata file.",
-    //    Placeholder = "metadata")]
-    //public string MetadataFile = string.Empty;
+    [CommandLineStringArgument (true, Placeholder = "user", Description = "User to query access types for.")]
+    public string SpecificUser;
 
-    [CommandLineFlagArgument ("verbose", false,
-        Description = "Verbose output")]
-    public bool Verbose;
+    //[CommandLineFlagArgument ("verbose", false,
+    //    Description = "Verbose output")]
+    //public bool Verbose;
 
   }
 }

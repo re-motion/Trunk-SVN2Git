@@ -15,14 +15,32 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpanderUserFinder : IAclExpanderUserFinder
   {
+    private string _firstName;
+    private string _lastName;
+    private string _userName;
+
+    public AclExpanderUserFinder () : this(null,null,null) {}
+
+    public AclExpanderUserFinder (string firstName, string lastName, string userName)
+    {
+      _firstName = firstName;
+      _lastName = lastName;
+      _userName = userName;
+    }
+
     public List<User> FindUsers ()
     {
       var findAllUsersQuery = from u in QueryFactory.CreateLinqQuery<User>()
+                              where 
+                                (_lastName == null || u.LastName == _lastName) && 
+                                (_firstName == null || u.FirstName == _firstName) &&
+                                (_userName == null || u.UserName == _userName) 
                               orderby u.LastName , u.FirstName
                               select u;
       return findAllUsersQuery.ToList();
