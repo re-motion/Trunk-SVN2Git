@@ -194,12 +194,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         }
 
         string stateName = Settings.UseShortNames ? stateDefiniton.ShortName () : stateDefiniton.DisplayName;
-        //To.ConsoleLine.e ("stateDefiniton.DisplayName",stateDefiniton.DisplayName);
-        //To.ConsoleLine.e ("stateDefiniton.Name", stateDefiniton.Name);
-        To.ConsoleLine.e ("stateDefiniton.ShortName()", stateDefiniton.ShortName ());
-        To.ConsoleLine.e (() => stateName);
+        //To.ConsoleLine.e (() => stateName);
 
-        //_htmlWriter.Value (stateDefiniton.DisplayName);
         _htmlWriter.Value (stateName);
         firstElement = false;
       }
@@ -280,7 +276,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       if (classGroup.Key != null)
       {
         string className = Settings.UseShortNames ? classGroup.Key.ShortName () : classGroup.Key.DisplayName;
-        To.ConsoleLine.e (() => className);
+        //To.ConsoleLine.e (() => className);
         WriteTableDataWithRowCount (className, classGroup.Count ());
       }
       else

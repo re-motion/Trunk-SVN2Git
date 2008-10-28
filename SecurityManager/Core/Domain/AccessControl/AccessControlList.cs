@@ -152,7 +152,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     // gets read access from one ACE and write access AND denied read access from another ACE, then having
     // both abstract roles will only get him write access but NOT read access, since the deny of read access
     // in the second ACE overrides the allow in the first ACE).
-    public AccessTypeDefinition[] GetAccessTypes (SecurityToken token)
+    public AccessTypeDefinition[] GetAccessTypes (SecurityToken token, AccessTypeStatistics accessTypeStatistics)
     {
       ArgumentUtility.CheckNotNull ("token", token);
 
@@ -163,12 +163,33 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         foreach (var allowedAccessType in ace.GetAllowedAccessTypes())
         {
           if (!accessTypes.Contains (allowedAccessType))
+          {
             accessTypes.Add (allowedAccessType);
+          }
+
+          // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
+          // Note that the access control logic is not modified by this code. Recorded information allows
+          // deduction of whether the probing ACE was matched for ACL-expansion code (see AclExpander.AddAclExpansionEntry).
+          if (accessTypeStatistics != null)
+          {
+            accessTypeStatistics.AddAccessRightSupplyingAce (ace);
+          }
+
         }
       }
 
       return accessTypes.ToArray();
     }
+
+
+    public AccessTypeDefinition[] GetAccessTypes (SecurityToken token)
+    {
+      ArgumentUtility.CheckNotNull ("token", token);
+      return GetAccessTypes (token, null);
+    }
+
+
+
 
     //TODO: Rewrite with test
 
@@ -216,6 +237,25 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       accessControlEntry.AccessControlList = this;
 
       return accessControlEntry;
+    }
+  }
+
+
+  public class AccessTypeStatistics
+  {
+    private readonly List<AccessControlEntry> _accessRightSupplyingAces = new List<AccessControlEntry>();
+
+    public void AddAccessRightSupplyingAce (AccessControlEntry ace)
+    {
+      if (!IsInAccessRightSupplyingAces(ace))
+      {
+        _accessRightSupplyingAces.Add (ace);
+      }
+    }
+
+    public bool IsInAccessRightSupplyingAces (AccessControlEntry ace)
+    {
+      return _accessRightSupplyingAces.Find (x => (x == ace)) != null;
     }
   }
 }

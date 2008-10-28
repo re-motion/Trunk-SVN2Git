@@ -67,7 +67,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void AddAclExpansionEntry (List<AclExpansionEntry> aclExpansionEntries, UserRoleAclAceCombination userRoleAclAce)
     {
-      AclProbe aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);
+      AccessControlEntry ace = userRoleAclAce.Ace;
+      AclProbe aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, ace);
       //To.ConsoleLine.s ("\t\t\t").e (() => aclProbe);
 
       // NOTTODO: Check if we already queried with an identical token.
@@ -82,9 +83,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // in the near future (to be replaced by a deny concept), which transforms the problem, since any matching ACE
       // will contribute to the access rights result (deny rights can still lead to it not having any impact, though)
       // it was therefore decided to ignore these (up to 9 = 2^4+1) "double entries" for now.
-      AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken);
+      // AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken);
 
-      if (accessTypeDefinitions.Length > 0)
+
+      var accessTypeStatistics = new AccessTypeStatistics();
+      AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
+
+
+      //if (accessTypeDefinitions.Length > 0)
+      if (accessTypeStatistics.IsInAccessRightSupplyingAces (ace) && accessTypeDefinitions.Length > 0)
       {
         var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions, accessTypeDefinitions);
         //To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
