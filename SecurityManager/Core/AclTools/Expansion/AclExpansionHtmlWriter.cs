@@ -24,20 +24,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     private readonly HtmlWriter _htmlWriter;
     private bool _inTableRow;
+    private AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
 
     public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml)
     {
-      UseShortNames = true;
       _htmlWriter = new HtmlWriter (textWriter, indentXml);
     }
 
     public AclExpansionHtmlWriter (XmlWriter xmlWriter)
     {
-      UseShortNames = true;
       _htmlWriter = new HtmlWriter (xmlWriter);
     }
 
-    public bool UseShortNames { get; set; }
+
+    public AclExpansionHtmlWriterSettings Settings
+    {
+      get { return _settings; }
+    }
+
 
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
@@ -141,9 +145,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _htmlWriter.td ();
       WriteRowspanAttribute(rowCount);
       _htmlWriter.Value (value);
-      WriteTableDataAddendum (rowCount);
+      if (Settings.OutputRowCount)
+      {
+        WriteTableDataAddendum (rowCount);
+      }
       _htmlWriter.tdEnd ();
     }
+
+
 
     private HtmlWriter WriteRowspanAttribute (int rowCount)
     {
@@ -162,7 +171,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _htmlWriter.Value (role.Group.DisplayName);
       _htmlWriter.Value (", ");
       _htmlWriter.Value (role.Position.DisplayName);
-      WriteTableDataAddendum (rowCount);
+      if (Settings.OutputRowCount)
+      {
+        WriteTableDataAddendum (rowCount);
+      }
       _htmlWriter.tdEnd ();
     }
   
@@ -181,7 +193,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           _htmlWriter.Value (", ");
         }
 
-        string stateName = UseShortNames ? stateDefiniton.ShortName() : stateDefiniton.DisplayName;
+        string stateName = Settings.UseShortNames ? stateDefiniton.ShortName () : stateDefiniton.DisplayName;
         //To.ConsoleLine.e ("stateDefiniton.DisplayName",stateDefiniton.DisplayName);
         //To.ConsoleLine.e ("stateDefiniton.Name", stateDefiniton.Name);
         To.ConsoleLine.e ("stateDefiniton.ShortName()", stateDefiniton.ShortName ());
@@ -267,7 +279,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       if (classGroup.Key != null)
       {
-        string className = UseShortNames ? classGroup.Key.ShortName() : classGroup.Key.DisplayName;
+        string className = Settings.UseShortNames ? classGroup.Key.ShortName () : classGroup.Key.DisplayName;
         To.ConsoleLine.e (() => className);
         WriteTableDataWithRowCount (className, classGroup.Count ());
       }

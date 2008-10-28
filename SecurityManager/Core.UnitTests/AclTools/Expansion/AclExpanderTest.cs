@@ -389,16 +389,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
-      WriteAclExpansionAsHtmlSpikeToStreamWriter (aclExpansionEntryList);
+      WriteAclExpansionAsHtmlSpikeToStreamWriter (aclExpansionEntryList, true);
     }
 
 
-    public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion)
+    public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion, bool outputRowCount)
     {
       string aclExpansionFileName = "c:\\temp\\AclExpansionTest_" + FileNameTimestamp (DateTime.Now) + ".html";
       using (var streamWriter = new StreamWriter (aclExpansionFileName))
       {
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true);
+        aclExpansionHtmlWriter.Settings.OutputRowCount = outputRowCount;
         aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
       }
     }
@@ -423,25 +424,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    //private List<AclExpansionEntry> GetAclExpansionEntryList_UserList_AceList (
-    //  List<User> userList, List<AccessControlList> aclList)
-    //{
-    //  var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
-    //  userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
-
-    //  var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
-    //  aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
-
-    //  var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
-    //  var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
-    //  To.ConsoleLine.e (() => aclExpansionEntryList);
-    //  userFinderMock.VerifyAllExpectations ();
-    //  aclFinderMock.VerifyAllExpectations ();
-    //  return aclExpansionEntryList;
-    //}
-
-
-
+ 
 
     // Returns a list of AclExpansionEntry for the passed User, ACE with the passed Positon and passed GroupSelection
     private List<AclExpansionEntry> GetAclExpansionEntryList_UserPositionGroupSelection (

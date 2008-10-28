@@ -106,13 +106,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var stringWriter = new StringWriter ();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
-      aclExpansionHtmlWriter.UseShortNames = false;
+      aclExpansionHtmlWriter.Settings.UseShortNames = false;
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
       string result = stringWriter.ToString ();
       //To.ConsoleLine.e (() => result);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Dhl|Remotion.SecurityManager.UnitTests.TestDomain.Delivery, Remotion.SecurityManager.UnitTests"));
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
-      
     }
 
     [Test]
@@ -125,7 +124,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var stringWriter = new StringWriter ();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
-      aclExpansionHtmlWriter.UseShortNames = true;
+      aclExpansionHtmlWriter.Settings.UseShortNames = true;
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
       string result = stringWriter.ToString ();
       //To.ConsoleLine.e (() => result);
@@ -134,6 +133,44 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Order"));
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.DoesNotContain ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
     }
+
+
+    [Test]
+    public void OutputRowCountTest ()
+    {
+      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+      var stringWriter = new StringWriter ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+      aclExpansionHtmlWriter.Settings.OutputRowCount = true;
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+      string result = stringWriter.ToString ();
+      To.ConsoleLine.e (() => result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Usa Da, Dr. (2)"));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Da Group, Supreme Being (2)"));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Order (2)"));
+    }
+
+    [Test]
+    public void DontOutputRowCountTest ()
+    {
+      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+      var stringWriter = new StringWriter ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+      aclExpansionHtmlWriter.Settings.OutputRowCount = false;
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+      string result = stringWriter.ToString ();
+      To.ConsoleLine.e (() => result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.DoesNotContain ("(2)"));
+    }
+
 
 
     public static XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
