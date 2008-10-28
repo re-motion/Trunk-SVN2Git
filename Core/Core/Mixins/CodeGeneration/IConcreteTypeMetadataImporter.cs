@@ -25,6 +25,7 @@ namespace Remotion.Mixins.CodeGeneration
   public interface IConcreteTypeMetadataImporter
   {
     IEnumerable<TargetClassDefinition> GetMetadataForMixedType (Type concreteMixedType, ITargetClassDefinitionCache targetClassDefinitionCache);
+    // Note: Will not return all matching MixinDefinitions, but only the ones that were used when the type was originally created.
     IEnumerable<MixinDefinition> GetMetadataForMixinType (Type concreteMixinType, ITargetClassDefinitionCache targetClassDefinitionCache);
     IEnumerable<Tuple<MethodInfo, MethodInfo>> GetMethodWrappersForMixinType (Type concreteMixinType);
   }
