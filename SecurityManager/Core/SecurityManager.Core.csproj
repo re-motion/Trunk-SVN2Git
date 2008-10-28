@@ -90,6 +90,7 @@
     <Compile Include="Domain\AccessControl\AccessControlList.cs" />
     <Compile Include="Domain\AccessControl\AccessControlListFinder.cs" />
     <Compile Include="Domain\AccessControl\AccessControlObject.cs" />
+    <Compile Include="Domain\AccessControl\AccessTypeStatistics.cs" />
     <Compile Include="Domain\AccessControl\IStateCombinationBuilder.cs" />
     <Compile Include="Domain\AccessControl\PropertyStateTuple.cs" />
     <Compile Include="Domain\SecurityManagerSearchServiceBase.cs" />

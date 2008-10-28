@@ -172,7 +172,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           // deduction of whether the probing ACE was matched for ACL-expansion code (see AclExpander.AddAclExpansionEntry).
           if (accessTypeStatistics != null)
           {
-            accessTypeStatistics.AddAccessRightSupplyingAce (ace);
+            accessTypeStatistics.AddAccessTypesSupplyingAce (ace);
           }
 
         }
@@ -237,25 +237,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       accessControlEntry.AccessControlList = this;
 
       return accessControlEntry;
-    }
-  }
-
-
-  public class AccessTypeStatistics
-  {
-    private readonly List<AccessControlEntry> _accessRightSupplyingAces = new List<AccessControlEntry>();
-
-    public void AddAccessRightSupplyingAce (AccessControlEntry ace)
-    {
-      if (!IsInAccessRightSupplyingAces(ace))
-      {
-        _accessRightSupplyingAces.Add (ace);
-      }
-    }
-
-    public bool IsInAccessRightSupplyingAces (AccessControlEntry ace)
-    {
-      return _accessRightSupplyingAces.Find (x => (x == ace)) != null;
     }
   }
 }

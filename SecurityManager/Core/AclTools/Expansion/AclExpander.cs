@@ -83,15 +83,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // in the near future (to be replaced by a deny concept), which transforms the problem, since any matching ACE
       // will contribute to the access rights result (deny rights can still lead to it not having any impact, though)
       // it was therefore decided to ignore these (up to 9 = 2^4+1) "double entries" for now.
+      // See below for a solution which does not change the access right logic but only records the contributing ACEs.
+      
       // AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken);
 
-
+      // Call extended AccessControlList.GetAccessTypes-method which returns information about the ACEs which contributed to
+      // the resulting AccessType|s.
       var accessTypeStatistics = new AccessTypeStatistics();
       AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
 
 
+
+      // We only create an AclExpansionEntry if the current probe ACE contributed to the returned AccessTypes
+      if (accessTypeStatistics.IsInAccessTypesSupplyingAces (ace) && accessTypeDefinitions.Length > 0)
       //if (accessTypeDefinitions.Length > 0)
-      if (accessTypeStatistics.IsInAccessRightSupplyingAces (ace) && accessTypeDefinitions.Length > 0)
       {
         var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions, accessTypeDefinitions);
         //To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
