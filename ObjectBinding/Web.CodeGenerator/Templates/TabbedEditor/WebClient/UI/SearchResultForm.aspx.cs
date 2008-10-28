@@ -21,11 +21,13 @@ namespace $PROJECT_ROOTNAMESPACE$.UI
     {
       if (!IsPostBack)
       {
+        /*
         if (query == null)
           query = new Query ("All$DOMAIN_CLASSNAME$s");
         searchResult = ClientTransaction.Current.QueryManager.GetCollection (query);
+        */
       }
-      $DOMAIN_CLASSNAME$List.LoadUnboundValue (searchResult, IsPostBack);
+      $DOMAIN_CLASSNAME$List.LoadUnboundValue ($DOMAIN_CLASSNAME$.All$DOMAIN_CLASSNAME$s(), IsPostBack);
     }
 
     protected void $DOMAIN_CLASSNAME$List_ListItemCommandClick (object sender, BocListItemCommandClickEventArgs e)
