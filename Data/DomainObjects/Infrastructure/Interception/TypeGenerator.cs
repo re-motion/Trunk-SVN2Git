@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       _classEmitter = new CustomClassEmitter (scope, typeName, typeToDeriveFrom, interfaces, flags, false);
 
-      _classEmitter.ReplicateBaseTypeConstructors ();
+      _classEmitter.ReplicateBaseTypeConstructors (delegate { }, delegate { });
       OverrideGetPublicDomainObjectType ();
       OverridePerformConstructorCheck ();
       ProcessProperties (properties);
