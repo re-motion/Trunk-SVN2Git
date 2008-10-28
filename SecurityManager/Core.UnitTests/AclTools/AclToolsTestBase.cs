@@ -8,13 +8,17 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.ObjectMother;
+using Remotion.Diagnostics.ToText;
+using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools
 {
@@ -155,5 +159,24 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     {
       return TestHelper.CreateUser ("JoDo", "John", "Doe", "Prof.", userGroup, userTenant);
     }
+
+
+    protected List<AclExpansionEntry> GetAclExpansionEntryList_UserList_AceList (
+      List<User> userList, List<AccessControlList> aclList)
+    {
+      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
+      userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
+
+      var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
+      aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
+
+      var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
+      var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
+      To.ConsoleLine.e (() => aclExpansionEntryList);
+      userFinderMock.VerifyAllExpectations ();
+      aclFinderMock.VerifyAllExpectations ();
+      return aclExpansionEntryList;
+    }
+
   }
 }

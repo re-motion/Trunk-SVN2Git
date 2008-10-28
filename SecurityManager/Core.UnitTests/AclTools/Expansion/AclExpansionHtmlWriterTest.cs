@@ -8,7 +8,9 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -85,12 +87,52 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       using (new CultureScope ("de","de"))
       {
         var aclExpander = new AclExpander();
-        var aclExpansion = aclExpander.GetAclExpansionEntryList();
+        var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
         var stringWriter = new StringWriter();
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
-        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
         To.ConsoleLine.s (stringWriter.ToString());
       }
+    }
+
+
+    [Test]
+    public void FullNameTest ()
+    {
+      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+      var stringWriter = new StringWriter ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+      aclExpansionHtmlWriter.UseShortNames = false;
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+      string result = stringWriter.ToString ();
+      //To.ConsoleLine.e (() => result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Dhl|Remotion.SecurityManager.UnitTests.TestDomain.Delivery, Remotion.SecurityManager.UnitTests"));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
+      
+    }
+
+    [Test]
+    public void ShortNameTest ()
+    {
+      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+      var stringWriter = new StringWriter ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+      aclExpansionHtmlWriter.UseShortNames = true;
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+      string result = stringWriter.ToString ();
+      //To.ConsoleLine.e (() => result);
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Dhl"));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.DoesNotContain ("Remotion.SecurityManager.UnitTests.TestDomain.Delivery, Remotion.SecurityManager.UnitTests"));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Order"));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.DoesNotContain ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
     }
 
 

@@ -376,16 +376,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     [Explicit]
     public void GetAclExpansionEntryList_ComplexExpansionTest ()
-    {
-      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+    { 
+      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User,User2,User3);
 
       var numberRoles = users.SelectMany (x => x.Roles).Count ();
       To.ConsoleLine.e (() => numberRoles);
       
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl,Acl2);
 
       var numberAces = acls.SelectMany (x => x.AccessControlEntries).Count ();
-      To.ConsoleLine.e (() => numberAces);
+      To.ConsoleLine.e (() => numberAces); 
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
@@ -423,22 +423,22 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    private List<AclExpansionEntry> GetAclExpansionEntryList_UserList_AceList (
-      List<User> userList, List<AccessControlList> aclList)
-    {
-      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
-      userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
+    //private List<AclExpansionEntry> GetAclExpansionEntryList_UserList_AceList (
+    //  List<User> userList, List<AccessControlList> aclList)
+    //{
+    //  var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
+    //  userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
 
-      var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
-      aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
+    //  var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
+    //  aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
 
-      var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
-      var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
-      To.ConsoleLine.e (() => aclExpansionEntryList);
-      userFinderMock.VerifyAllExpectations ();
-      aclFinderMock.VerifyAllExpectations ();
-      return aclExpansionEntryList;
-    }
+    //  var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
+    //  var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
+    //  To.ConsoleLine.e (() => aclExpansionEntryList);
+    //  userFinderMock.VerifyAllExpectations ();
+    //  aclFinderMock.VerifyAllExpectations ();
+    //  return aclExpansionEntryList;
+    //}
 
 
 

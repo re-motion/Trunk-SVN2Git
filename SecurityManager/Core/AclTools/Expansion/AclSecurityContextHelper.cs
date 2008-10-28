@@ -166,4 +166,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return stateDefinition.Name.LeftUntilChar ('|');
     }
   }
+
+  static class SecurableClassDefinitionExtensions
+  {
+    public static string ShortName (this SecurableClassDefinition securableClassDefinition)
+    {
+      return securableClassDefinition.Name.RightUntilChar ('.');
+    }
+  }
 }
