@@ -19,15 +19,17 @@ namespace $PROJECT_ROOTNAMESPACE$.UI
   {
     private void Page_Load(object sender, System.EventArgs e)
     {
+      /*
       if (!IsPostBack)
       {
-        /*
+        
         if (query == null)
           query = new Query ("All$DOMAIN_CLASSNAME$s");
         searchResult = ClientTransaction.Current.QueryManager.GetCollection (query);
-        */
       }
-      $DOMAIN_CLASSNAME$List.LoadUnboundValue ($DOMAIN_CLASSNAME$.All$DOMAIN_CLASSNAME$s(), IsPostBack);
+      */
+      // SearchAllObjectsService.SearchAllObjects<Person>()
+      $DOMAIN_CLASSNAME$List.LoadUnboundValue (SearchAllObjectsService.SearchAllObjects<$DOMAIN_CLASSNAME$>(), IsPostBack);
     }
 
     protected void $DOMAIN_CLASSNAME$List_ListItemCommandClick (object sender, BocListItemCommandClickEventArgs e)
