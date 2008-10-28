@@ -14,14 +14,14 @@ using Remotion.Data.DomainObjects;
 
 namespace $PROJECT_ROOTNAMESPACE$.Classes
 {
-  public abstract class BaseFunction : WxeScopedTransactedFunction<ClientTransaction, ClientTransactionScope, ClientTransactionScopeManager>
+  public abstract class BaseFunction : WxeFunction
   {
     protected BaseFunction (params object[] args)
-      : this (WxeTransactionMode.CreateChildIfParent, args)
+      : this ((WxeTransactionMode<ClientTransactionFactory>)WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent, args)
     {
     }
 
-    protected BaseFunction (WxeTransactionMode transactionMode, params object[] args)
+    protected BaseFunction (WxeTransactionMode<ClientTransactionFactory> transactionMode, params object[] args)
       : base (transactionMode, args)
     {
     }
