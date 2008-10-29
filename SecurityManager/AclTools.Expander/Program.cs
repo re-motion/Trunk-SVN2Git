@@ -19,57 +19,148 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expander
 {
-  public class Program
+  //public class Program
+  //{
+  //  public static int Main (string[] args)
+  //  {
+  //    AclExpanderApplicationSettings arguments = GetArguments (args);
+  //    if (arguments == null)
+  //    {
+  //      To.Console.nl().s ("No arguments passed => aborting. Press any-key...");
+  //      Console.ReadKey ();
+  //      return 1;
+  //    }
+
+  //    AclExpanderApplication program = new AclExpanderApplication (arguments);
+  //    int result = program.Run ();
+  //    To.Console.nl ().s ("Press any-key...");
+  //    Console.ReadKey ();
+  //    return result;
+  //  }
+  //}
+
+  public interface IApplicationRunner<TApplicationSettings>
   {
-    public static int Main (string[] args)
+    void Init (TApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter);
+    //int Run (TApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter);
+    int Run ();
+  }
+
+
+  public class ConsoleApplication<TApplication, TApplicationSettings> 
+    where TApplication: IApplicationRunner<TApplicationSettings>, new()
+    where TApplicationSettings : class
+  {
+    public static int MainDo (string[] args)
     {
-      AclExpanderCommandLineArguments arguments = GetArguments (args);
-      if (arguments == null)
+      int result = 0;
+
+      TApplicationSettings settings = null;
+      CommandLineClassParser<TApplicationSettings> parser = new CommandLineClassParser<TApplicationSettings> ();
+      try
       {
-        To.Console.nl().s ("No arguments passed => aborting. Press any-key...");
-        Console.ReadKey ();
-        return 1;
+        settings = parser.Parse (args);
+      }
+      catch (CommandLineArgumentException e)
+      {
+        System.Console.WriteLine (e.Message);
+        System.Console.WriteLine ("Usage:");
+        System.Console.WriteLine (parser.GetAsciiSynopsis (Environment.GetCommandLineArgs ()[0], System.Console.BufferWidth));
+        result = 1;
       }
 
-      Program program = new Program (arguments);
-      int result = program.Run ();
+      if (result == 0)
+      {
+        try
+        {
+          TApplication application = new TApplication();
+          application.Init (settings, System.Console.Error, System.Console.Out);
+          result = application.Run();
+        }
+        catch (Exception e)
+        {
+          using (ConsoleUtility.EnterColorScope (ConsoleColor.White, ConsoleColor.DarkRed))
+          {
+            System.Console.Error.WriteLine ("Execution aborted. Exception stack:");
+            for (; e != null; e = e.InnerException)
+              System.Console.Error.WriteLine ("{0}: {1}\n{2}", e.GetType().FullName, e.Message, e.StackTrace);
+          }
+          result = 1;
+        }
+      }
+
       To.Console.nl ().s ("Press any-key...");
       Console.ReadKey ();
       return result;
     }
+  }
 
-    private static AclExpanderCommandLineArguments GetArguments (string[] args)
+
+  public class Program : ConsoleApplication<AclExpanderApplication, AclExpanderApplicationSettings>
+  {
+    public static int Main (string[] args)
     {
-      CommandLineClassParser parser = new CommandLineClassParser (typeof (AclExpanderCommandLineArguments));
+      return MainDo (args);
+    }
+  }
+  
 
-      try
-      {
-        return (AclExpanderCommandLineArguments) parser.Parse (args);
-      }
-      catch (CommandLineArgumentException e)
-      {
-        Console.WriteLine (e.Message);
-        WriteUsage (parser);
 
-        return null;
-      }
+  public class AclExpanderApplication : IApplicationRunner<AclExpanderApplicationSettings> 
+  {
+    AclExpanderApplicationSettings _settings;
+    private TextWriter _errorWriter;
+    private TextWriter _logWriter;
+
+    public AclExpanderApplication ()
+    {
     }
 
-    private static void WriteUsage (CommandLineClassParser parser)
-    {
-      Console.WriteLine ("Usage:");
 
-      string commandName = Environment.GetCommandLineArgs ()[0];
-      Console.WriteLine (parser.GetAsciiSynopsis (commandName, Console.BufferWidth));
+    //public AclExpanderApplication (AclExpanderApplicationSettings arguments)
+    //{
+    //  ArgumentUtility.CheckNotNull ("arguments", arguments);
+    //  _settings = arguments;
+    //}
+
+
+    //public static AclExpanderApplicationSettings GetArguments (string[] args)
+    //{
+    //  CommandLineClassParser parser = new CommandLineClassParser (typeof (AclExpanderApplicationSettings));
+
+    //  try
+    //  {
+    //    return (AclExpanderApplicationSettings) parser.Parse (args);
+    //  }
+    //  catch (CommandLineArgumentException e)
+    //  {
+    //    Console.WriteLine (e.Message);
+    //    WriteUsage (parser);
+
+    //    return null;
+    //  }
+    //}
+
+    //private static void WriteUsage (CommandLineClassParser parser)
+    //{
+    //  Console.WriteLine ("Usage:");
+
+    //  string commandName = Environment.GetCommandLineArgs ()[0];
+    //  Console.WriteLine (parser.GetAsciiSynopsis (commandName, Console.BufferWidth));
+    //}
+
+
+    public void Init (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)
+    {
+      ArgumentUtility.CheckNotNull ("settings", settings);
+      ArgumentUtility.CheckNotNull ("errorWriter", errorWriter);
+      ArgumentUtility.CheckNotNull ("logWriter", logWriter);
+
+      _settings = settings;
+      _errorWriter = errorWriter;
+      _logWriter = logWriter;
     }
 
-    readonly AclExpanderCommandLineArguments _arguments;
-
-    private Program (AclExpanderCommandLineArguments arguments)
-    {
-      ArgumentUtility.CheckNotNull ("arguments", arguments);
-      _arguments = arguments;
-    }
 
     public int Run ()
     {
@@ -104,7 +195,7 @@ namespace Remotion.SecurityManager.AclTools.Expander
 
     public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion)
     {
-      string aclExpansionFileName = "c:\\temp\\AclExpansion_" + FileNameTimestamp(DateTime.Now) + ".html";
+      string aclExpansionFileName = "c:\\temp\\AclExpansion_" + FileNameTimestampNow () + ".html";
       using (var streamWriter = new StreamWriter (aclExpansionFileName))
       {
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true);
@@ -117,9 +208,18 @@ namespace Remotion.SecurityManager.AclTools.Expander
       return StringUtility.ConcatWithSeparator (new [] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond }, "_");
     }
 
+    private string FileNameTimestampNow ()
+    {
+      return FileNameTimestamp (DateTime.Now);
+    }
+
+
     private List<AclExpansionEntry> GetAclExpansion ()
     {
-      var aclExpander = new AclExpander ();
+      var aclExpander = 
+        new AclExpander (
+          new AclExpanderUserFinder (_settings.UserFirstName, _settings.UserLastName, _settings.UserName), new AclExpanderAclFinder ()
+        );
 
       return aclExpander.GetAclExpansionEntryListSortedAndDistinct();
       //return aclExpander.GetAclExpansionEntryList ();
@@ -128,27 +228,34 @@ namespace Remotion.SecurityManager.AclTools.Expander
  
     private void HandleException (Exception exception)
     {
-      if (_arguments.Verbose)
+      Assertion.IsNotNull (_errorWriter, "Error writer not initialzed.");
+      if (_settings.Verbose)
       {
-        Console.Error.WriteLine ("Execution aborted. Exception stack:");
+        _errorWriter.WriteLine ("Execution aborted. Exception stack:");
 
         for (; exception != null; exception = exception.InnerException)
         {
-          Console.Error.WriteLine ("{0}: {1}\n{2}", exception.GetType ().FullName, exception.Message, exception.StackTrace);
+          _errorWriter.WriteLine ("{0}: {1}\n{2}", exception.GetType ().FullName, exception.Message, exception.StackTrace);
         }
       }
       else
       {
-        Console.Error.WriteLine ("Execution aborted: {0}", exception.Message);
+        _errorWriter.WriteLine ("Execution aborted: {0}", exception.Message);
       }
     }
 
     //private void WriteInfo (string text, params object[] args)
     //{
-    //  if (_arguments.Verbose)
+    //  if (_settings.Verbose)
     //    Console.WriteLine (text, args);
     //}
-  }
 
+
+    //public void Run (AclExpanderApplicationSettings parameters)
+    //{
+    //  throw new System.NotImplementedException();
+    //}
+
+  }
 
 }

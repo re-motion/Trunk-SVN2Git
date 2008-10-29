@@ -32,10 +32,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
     /// <summary>
-    /// Default bahvior is to use all <see cref="User"/>|s and all <see cref="AccessControlList"/>|s.
+    /// Default behavior is to use all <see cref="User"/>|s and all <see cref="AccessControlList"/>|s.
     /// </summary>
     public AclExpander () : this (new AclExpanderUserFinder (), new AclExpanderAclFinder ()) {}
 
+
+    ///// <summary>
+    ///// Filter  <see cref="User"/>|s by the passed first-, last- and fully qualified user name. Pass <c>null</c> to not filter
+    ///// for the respective name. Uses all <see cref="AccessControlList"/>|s.
+    ///// </summary>
+    //public AclExpander (string userFirstName, string userLastName, string userName) : 
+    //  this (new AclExpanderUserFinder (userFirstName, userLastName, userName), new AclExpanderAclFinder ()) 
+    //{ }
 
 
     public List<AclExpansionEntry> GetAclExpansionEntryListSortedAndDistinct ()

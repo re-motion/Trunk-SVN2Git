@@ -20,10 +20,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   public class AclExpanderUserFinderTest : AclToolsTestBase
   {
     [Test]
-    public void FindAllUsersTest ()
+    [Explicit]
+    public void ListAllUsers ()
     {
-      var userFinder = new AclExpanderUserFinder();
-      foreach (var user in userFinder.FindUsers())
+      var userFinder = new AclExpanderUserFinder ();
+      var users = userFinder.FindUsers ();
+      foreach (var user in users)
       {
         To.ConsoleLine.sb ().e (() => user).e (user.FirstName).e (user.LastName).e (user.UserName).e (user.DisplayName).se ();
       }
@@ -34,11 +36,20 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       //(user=["group0/user1"],"","user1","group0/user1","user1")
       //(user=["group0/user2"],"","user2","group0/user2","user2")
       //(user=["group1/user2"],"","user2","group1/user2","user2")
-
     }
 
+
     [Test]
-    public void FirstNameTest ()
+    public void FindAllUsersTest ()
+    {
+      var userFinder = new AclExpanderUserFinder();
+      var users = userFinder.FindUsers ();
+      Assert.That (users.Count, Is.EqualTo (6));
+    }
+
+
+    [Test]
+    public void FirstNameFilterTest ()
     {
       const string firstName = "test";
       var userFinder = new AclExpanderUserFinder (firstName, null, null);
@@ -49,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
     [Test]
-    public void LastNameTest ()
+    public void LastNameFilterTest ()
     {
       const string lastName = "user2";
       var userFinder = new AclExpanderUserFinder (null, lastName, null);
@@ -64,7 +75,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
     [Test]
-    public void UserNameTest ()
+    public void UserNameFilterTest ()
     {
       const string userName = "group0/user1";
       var userFinder = new AclExpanderUserFinder (null, null, userName);
@@ -75,7 +86,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
     [Test]
-    public void AllNameTest ()
+    public void AllNamesFilterTest ()
     {
       const string firstName = "User";
       const string lastName = "Tenant 2";

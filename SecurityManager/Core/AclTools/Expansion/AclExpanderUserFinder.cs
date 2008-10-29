@@ -17,13 +17,14 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
+
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpanderUserFinder : IAclExpanderUserFinder
   {
-    private string _firstName;
-    private string _lastName;
-    private string _userName;
+    private readonly string _firstName;
+    private readonly string _lastName;
+    private readonly string _userName;
 
     public AclExpanderUserFinder () : this(null,null,null) {}
 
