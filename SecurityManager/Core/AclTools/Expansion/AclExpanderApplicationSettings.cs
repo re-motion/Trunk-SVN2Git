@@ -11,7 +11,7 @@
 using System;
 using Remotion.Text.CommandLine;
 
-namespace Remotion.SecurityManager.AclTools.Expander
+namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpanderApplicationSettings
   {

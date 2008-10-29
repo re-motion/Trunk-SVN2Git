@@ -60,6 +60,8 @@
     <None Include="SecurityManager.Core.build" />
     <Compile Include="AclTools\Expansion\AclExpander.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderAclFinder.cs" />
+    <Compile Include="AclTools\Expansion\AclExpanderApplication.cs" />
+    <Compile Include="AclTools\Expansion\AclExpanderApplicationSettings.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderUserFinder.cs" />
     <Compile Include="AclTools\Expansion\AclExpansion.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditions.cs" />
@@ -72,9 +74,11 @@
     <Compile Include="AclTools\Expansion\AclSecurityContextHelper.cs" />
     <Compile Include="AclTools\Expansion\ClassStateDictionary.cs" />
     <Compile Include="AclTools\Expansion\ClassStateTuple.cs" />
+    <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplication.cs" />
     <Compile Include="AclTools\Expansion\HtmlWriter.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderUserFinder.cs" />
+    <Compile Include="AclTools\Expansion\ConsoleApplication\IApplicationRunner.cs" />
     <Compile Include="AclTools\Expansion\IUserRoleAclAceCombinations.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilderFast.cs" />
     <Compile Include="AclTools\Expansion\UserRoleAclAceCombination.cs" />

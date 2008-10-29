@@ -23,8 +23,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclExpansionHtmlWriter : AclExpansionWriter
   {
     private readonly HtmlWriter _htmlWriter;
-    private bool _inTableRow;
-    private AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
+    private bool _isInTableRow;
+    private readonly AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
 
     public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml)
     {
@@ -299,17 +299,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void WriteTableRowBeginIfNotInTableRow ()
     {
-      if (!_inTableRow)
+      if (!_isInTableRow)
       {
         _htmlWriter.tr ();
-        _inTableRow = true;
+        _isInTableRow = true;
       }
     }
 
     public void WriteTableRowEnd ()
     {
       _htmlWriter.trEnd ();
-      _inTableRow = false;
+      _isInTableRow = false;
     }
 
 

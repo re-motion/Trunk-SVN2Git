@@ -9,18 +9,15 @@
 //  WITHOUT WARRANTY OF ANY KIND, either express or implied. 
 // 
 // 
-using Remotion.SecurityManager.AclTools.Expansion;
-using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
+using System;
+using System.IO;
 
-namespace Remotion.SecurityManager.AclTools.Expander
+namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
 {
-
-  public class Program : ConsoleApplication<AclExpanderApplication, AclExpanderApplicationSettings>
+  public interface IApplicationRunner<TApplicationSettings>
   {
-    public static int Main (string[] args)
-    {
-      return MainDo (args);
-    }
+    void Init (TApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter);
+    //int Run (TApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter);
+    void Run ();
   }
-
 }
