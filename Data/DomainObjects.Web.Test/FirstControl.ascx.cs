@@ -23,6 +23,13 @@ namespace Remotion.Data.DomainObjects.Web.Test
     protected override void OnLoad (EventArgs e)
     {
       base.OnLoad (e);
+      if (CurrentPageStep.IsReturningPostBack)
+      {
+        var function = (ShowSecondUserControlFunction) CurrentPageStep.ReturningFunction;
+        if (function.ExceptionHandler.Exception != null)
+          throw function.ExceptionHandler.Exception;
+        MyFunction.ObjectReadFromSecondControl = function.ReturnedObjectWithAllDataTypes;
+      }
       RefreshText();
     }
 
@@ -53,6 +60,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
 
     private void ExecuteSecondControl (ITransactionMode transactionMode)
     {
+      // Note: assigning return value doesn't work
       MyFunction.ObjectReadFromSecondControl = SecondControl.Call (WxePage, this, this, transactionMode, MyFunction.ObjectPassedIntoSecondControl);
     }
 
