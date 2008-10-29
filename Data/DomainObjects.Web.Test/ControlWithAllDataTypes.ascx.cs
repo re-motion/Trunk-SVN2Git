@@ -23,6 +23,8 @@ namespace Remotion.Data.DomainObjects.Web.Test
 {
 public class ControlWithAllDataTypes : System.Web.UI.UserControl
 {
+  public event EventHandler Saved;
+
   protected Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValue BocBooleanValue1;
   protected Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue BocEnumValue2;
   protected Remotion.ObjectBinding.Web.UI.Controls.BocTextValue BocTextValue10;
@@ -112,19 +114,24 @@ public class ControlWithAllDataTypes : System.Web.UI.UserControl
   protected Remotion.ObjectBinding.Web.UI.Controls.BocMultilineTextValue BocMultilineTextValue1;
   protected Remotion.ObjectBinding.Web.UI.Controls.BocMultilineTextValue BocMultilineTextValue2;
 
-  private ClassWithAllDataTypes _objectWithAllDataTypes;
+  public ClassWithAllDataTypes ObjectWithAllDataTypes { get; set; }
+  public bool PerformNextStepOnSave { get; set; }
 
-  public ClassWithAllDataTypes ObjectWithAllDataTypes
+  public ControlWithAllDataTypes()
   {
-    get { return _objectWithAllDataTypes; }
-    set { _objectWithAllDataTypes = value; }
+    PerformNextStepOnSave = true;
   }
 
-	private void Page_Load(object sender, System.EventArgs e)
+  private void Page_Load(object sender, System.EventArgs e)
 	{
-		CurrentObject.BusinessObject = (IBusinessObject) ObjectWithAllDataTypes;
-    CurrentObject.LoadValues (IsPostBack);
+	  LoadValues(IsPostBack);
 	}
+
+  public void LoadValues(bool interim)
+  {
+    CurrentObject.BusinessObject = (IBusinessObject) ObjectWithAllDataTypes;
+    CurrentObject.LoadValues (interim);
+  }
 
   public bool Validate ()
   {
@@ -143,11 +150,14 @@ public class ControlWithAllDataTypes : System.Web.UI.UserControl
       Save ();
       
       ClientTransactionScope.CurrentTransaction.Commit ();
-      ((WxePage) this.Page).ExecuteNextStep ();
+      if (Saved != null)
+        Saved (this, EventArgs.Empty);
+      if (PerformNextStepOnSave)
+        ((WxePage) this.Page).ExecuteNextStep ();
     }
   }
 
-	#region Web Form Designer generated code
+  #region Web Form Designer generated code
 	override protected void OnInit(EventArgs e)
 	{
 		//
