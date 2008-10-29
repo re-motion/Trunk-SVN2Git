@@ -24,15 +24,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     //public string UserNamePlaceholder { get { return _userNamePlaceholder; } }
 
 
-    [CommandLineStringArgument (true, Placeholder = "first", Description = "First name of user(s) to query access types for.")]
-    public string UserFirstName;
+    [CommandLineStringArgument (true, Placeholder = "user", Description = "Fully qualified name of user(s) to query access types for.")]
+    public string UserName;
 
     [CommandLineStringArgument (true, Placeholder = "last", Description = "Last name of user(s) to query access types for.")]
     public string UserLastName;
 
-    [CommandLineStringArgument (true, Placeholder = "user", Description = "Fully qualified name of user(s) to query access types for.")]
-    public string UserName;
-    
+    [CommandLineStringArgument (true, Placeholder = "first", Description = "First name of user(s) to query access types for.")]
+    public string UserFirstName;
+
+    //[CommandLineModeArgumentAttribute (true, Placeholder = "user", Description = "Fully qualified name of user(s) to query access types for.")]
+    //public string xxx;
+         
     
     [CommandLineFlagArgument ("verbose", false, Description = "Verbose output")]
     public bool Verbose;

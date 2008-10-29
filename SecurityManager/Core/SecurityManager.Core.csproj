@@ -69,6 +69,7 @@
     <Compile Include="AclTools\Expansion\AclExpansionConsoleTextWriter.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriter.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterSettings.cs" />
+    <Compile Include="AclTools\Expansion\AclExpansionMultiFileHtmlWriter.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionWriter.cs" />
     <Compile Include="AclTools\Expansion\AclProbe.cs" />
     <Compile Include="AclTools\Expansion\AclSecurityContextHelper.cs" />

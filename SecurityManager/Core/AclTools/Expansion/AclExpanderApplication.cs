@@ -48,6 +48,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
+        _logToTextBuilder.nl (2).s ("AclExpander").nl().s("==========").nl();
+        _logToTextBuilder.sbLiteral("Filter: ",", ","").e("user first name",_settings.UserFirstName).e("user last name",_settings.UserLastName).e("user name",_settings.UserName).se();
         List<AclExpansionEntry> aclExpansion = GetAclExpansion ();
         WriteAclExpansionAsHtmlSpikeToStreamWriter (aclExpansion);
         LogAclExpansion(aclExpansion);
