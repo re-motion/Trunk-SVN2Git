@@ -67,8 +67,10 @@
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditionsTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionEntryTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterTest.cs" />
+    <Compile Include="AclTools\Expansion\AclExpansionMultiFileHtmlWriterTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionTest.cs" />
     <Compile Include="AclTools\Expansion\AclProbeTest.cs" />
+    <Compile Include="AclTools\Expansion\HtmlWriterTest.cs" />
     <Compile Include="AclTools\Expansion\UserRoleAclAceCombinationsTest.cs" />
     <Compile Include="AclTools\SetUpFixture.cs" />
     <Compile Include="Configuration\SecurityConfigurationMock.cs" />

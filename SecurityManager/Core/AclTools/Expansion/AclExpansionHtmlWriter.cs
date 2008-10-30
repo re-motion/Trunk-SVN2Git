@@ -98,22 +98,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private HtmlWriter WriteStartPage ()
     {
-      // DOCTYPE
-      _htmlWriter.XmlWriter.WriteDocType ("HTML", "-//W3C//DTD HTML 4.0 Transitional//EN", null, null);
-      // HTML
-      _htmlWriter.Tag ("html");
-      // HEAD
-      _htmlWriter.Tag ("head");
-      // TITLE
-      _htmlWriter.Tag ("title");
-      _htmlWriter.Value ("re-motion ACL Expansion");
-      _htmlWriter.TagEnd ("title");
+      //// DOCTYPE
+      //_htmlWriter.XmlWriter.WriteDocType ("HTML", "-//W3C//DTD HTML 4.0 Transitional//EN", null, null);
+      //// HTML
+      //_htmlWriter.Tag ("html");
+      //// HEAD
+      //_htmlWriter.Tag ("head");
+      //// TITLE
+      //_htmlWriter.Tag ("title");
+      //_htmlWriter.Value ("re-motion ACL Expansion");
+      //_htmlWriter.TagEnd ("title");
 
-      // STYLE
-      _htmlWriter.Tag ("style");
-      _htmlWriter.Value ("@import \"AclExpansion.css\";");
-      _htmlWriter.TagEnd ("style");
-      _htmlWriter.TagEnd ("head");
+      //// STYLE
+      //_htmlWriter.Tag ("style");
+      //_htmlWriter.Value ("@import \"AclExpansion.css\";");
+      //_htmlWriter.TagEnd ("style");
+      //_htmlWriter.TagEnd ("head");
+
+      _htmlWriter.WritePageHeader ("re-motion ACL Expansion", "AclExpansion.css");
 
       // BODY
       _htmlWriter.Tag ("body");

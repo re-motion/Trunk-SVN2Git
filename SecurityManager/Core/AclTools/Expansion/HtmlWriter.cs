@@ -144,6 +144,37 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
+    public HtmlWriter WritePageHeader (string pageTitle, string cssFileName)
+    {
+      // DOCTYPE
+      XmlWriter.WriteDocType ("HTML", "-//W3C//DTD HTML 4.0 Transitional//EN", null, null);
+      // HTML
+      Tag ("html");
+      // HEAD
+      Tag ("head");
+      // TITLE
+      if (pageTitle != null)
+      {
+        Tag ("title");
+        Value (pageTitle);
+        TagEnd ("title");
+      }
+
+      // STYLE
+      if (cssFileName != null)
+      {
+        Tag ("style");
+        Value ("@import \"" + cssFileName + "\";");
+        TagEnd ("style");
+        TagEnd ("head");
+      }
+
+      return this;
+    }
+
+
+
+
     //------------------------------------------------------------
     // Dispose
     //------------------------------------------------------------

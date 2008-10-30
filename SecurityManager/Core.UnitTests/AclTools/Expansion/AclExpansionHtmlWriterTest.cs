@@ -84,7 +84,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Explicit]
     public void WriteAclExpansionAsHtmlSpikeTest ()
     {
-      using (new CultureScope ("de","de"))
+      using (new CultureScope ("de-AT","de-AT"))
       {
         var aclExpander = new AclExpander();
         var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();

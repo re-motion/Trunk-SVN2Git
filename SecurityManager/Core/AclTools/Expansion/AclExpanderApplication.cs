@@ -83,12 +83,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    private string FileNameTimestamp (DateTime dt)
+    public static string FileNameTimestamp (DateTime dt)
     {
       return StringUtility.ConcatWithSeparator (new [] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond }, "_");
     }
 
-    private string FileNameTimestampNow ()
+    public static string FileNameTimestampNow ()
     {
       return FileNameTimestamp (DateTime.Now);
     }
