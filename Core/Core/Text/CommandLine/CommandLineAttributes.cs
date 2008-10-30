@@ -15,6 +15,29 @@ using Remotion.Utilities;
 
 namespace Remotion.Text.CommandLine
 {
+  /// <summary>
+  /// Use descendants of <see cref="CommandLineArgumentAttribute"/> (<see cref="CommandLineStringArgument"/>, <see cref="CommandLineFlagArgument"/>,...)
+  /// to qualify class properties as command line arguments, to be able to be
+  /// filled from a <c>string[] args</c> by a <see cref="CommandLineClassParser"/>.
+  /// </summary>
+  /// <example>
+  /// <code>
+  /// <![CDATA[
+  /// // [CommandLineStringArgument (argumentName, isOptional, Placeholder = argumentExample, Description = argumentHelpDescription)]
+  /// [CommandLineStringArgument ("user", true, Placeholder = "accountants/john.doe", Description = "Fully qualified name of user(s) to query access types for.")]
+  /// public string UserName;
+  /// ]]>
+  /// </code>
+  /// </example>
+  /// <example>
+  /// <code>
+  /// <![CDATA[
+  /// [CommandLineFlagArgument ("keepTypeNames", false,
+  /// Description = "Specifies that the mixer should not use GUIDs to name the generated types.")]
+  /// public bool KeepTypeNames;
+  /// ]]>
+  /// </code>
+  /// </example>
   [AttributeUsage (AttributeTargets.Field | AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
   public abstract class CommandLineArgumentAttribute : Attribute
   {
@@ -80,6 +103,41 @@ namespace Remotion.Text.CommandLine
     }
   }
 
+  /// <summary>
+  /// Use <see cref="CommandLineStringArgumentAttribute"/> to qualify positional or named string command line arguments.
+  /// </summary>
+  /// <remarks>
+  /// <para>Pass named arguments using e.g. <c>app.exe /user:john.doe</c>.</para>
+  /// <para>Pass positional arguments using e.g. <c>app.exe input.csv output.xml</c>.</para>
+  /// <para>
+  /// <example>
+  /// Named argument example:
+  /// <code>
+  /// <![CDATA[
+  /// // [CommandLineStringArgument (argumentName, isOptional, Placeholder = argumentExample, Description = argumentHelpDescription)]
+  /// [CommandLineStringArgument ("user", true, Placeholder = "accountants/john.doe", Description = "Fully qualified name of user(s) to query access types for.")]
+  /// public string UserName;
+  /// ]]>
+  /// </code>
+  /// </example>
+  /// </para>
+  /// <para>
+  /// <example>
+  /// Positional argument example.
+  /// Argument order corresponds to the order of 
+  /// <see cref="CommandLineArgument"/> qualified properties in the C# sourcefile:
+  /// <code>
+  /// <![CDATA[
+  /// // [CommandLineStringArgument (isOptional, Placeholder = argumentExample, Description = argumentHelpDescription)]
+  /// [CommandLineStringArgument (false, Placeholder = "input.csv", Description = "The input CSV file to be transformed to XML.")]
+  /// public string InputFileName;
+  /// [CommandLineStringArgument (false, Placeholder = "output.xml", Description = "The resulting XML file.")]
+  /// public string OutputFileName;
+  /// ]]>
+  /// </code>
+  /// </example>
+  /// </para>
+  /// </remarks>
   [AttributeUsage (AttributeTargets.Field | AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
   public class CommandLineStringArgumentAttribute : CommandLineArgumentAttribute
   {
