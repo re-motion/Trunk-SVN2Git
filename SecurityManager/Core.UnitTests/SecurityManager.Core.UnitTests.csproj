@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
+    <Compile Include="AclTools\Expansion\AclExpanderApplicationSettingsTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplicationTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest_Spike.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest.cs" />

@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Remotion.Diagnostics.ToText;
-using Remotion.SecurityManager.Domain.AccessControl.TextWriterFactory;
+using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -29,7 +29,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// </summary>
   public class AclExpansionMultiFileHtmlWriter : AclExpansionWriter
   {
-    private const string _masterFileName = "AclExpansionMain.html";
+    //private const string _masterFileName = "AclExpansionMain.html";
+    private const string _masterFileName = "AclExpansionMain";
 
     private readonly HtmlWriter _htmlWriter;
     private readonly ITextWriterFactory _textWriterFactory;
@@ -182,7 +183,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteTableData (user.LastName);
       //WriteTableData ("Permissions be here");
 
-      string userDetailFileName = ToFileName (user.UserName) + ".html";
+      string userDetailFileName = ToValidFileName (user.UserName); //+".html";
       var detailTextWriter = _textWriterFactory.NewTextWriter (userDetailFileName);
       //detailTextWriter.WriteLine("user display name = " + user.DisplayName);
 
@@ -201,18 +202,21 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _htmlWriter.tdEnd ();
     }
 
-    public static string ToFileName (string name)
+    public static string ToValidFileName (string name)
     {
-      var sb = new StringBuilder(); 
+      var sb = new StringBuilder();
+      List<char> invalidFileNameCharsSortedList = Path.GetInvalidFileNameChars ().ToList ();
+      invalidFileNameCharsSortedList.Sort();
       foreach (char c in name)
       {
-        if (Char.IsLetterOrDigit(c))
-        {
-          sb.Append (c);
-        }
-        else
+        if (invalidFileNameCharsSortedList.BinarySearch (c) >= 0)
+        //if (invalidFileNameCharsSortedList.FindIndex (x => (x == c)) >= 0)
         {
           sb.Append ('_');
+        }
+        else 
+        {
+          sb.Append (c);
         }
       }
       return sb.ToString();

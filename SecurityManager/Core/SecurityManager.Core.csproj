@@ -98,7 +98,7 @@
     <Compile Include="Domain\AccessControl\AccessTypeStatistics.cs" />
     <Compile Include="Domain\AccessControl\IStateCombinationBuilder.cs" />
     <Compile Include="Domain\AccessControl\PropertyStateTuple.cs" />
-    <Compile Include="Domain\AccessControl\TextWriterFactory\StringWriterFactory.cs" />
+    <Compile Include="AclTools\Expansion\TextWriterFactory\StringWriterFactory.cs" />
     <Compile Include="Domain\SecurityManagerSearchServiceBase.cs" />
     <Compile Include="Domain\AccessControl\TenantSelection.cs" />
     <Compile Include="Domain\AccessControl\GroupSelection.cs" />

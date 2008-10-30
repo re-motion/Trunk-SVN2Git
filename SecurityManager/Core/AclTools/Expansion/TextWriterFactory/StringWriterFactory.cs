@@ -14,26 +14,30 @@ using System.Collections.Generic;
 using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
-namespace Remotion.SecurityManager.Domain.AccessControl.TextWriterFactory
+namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
   public interface ITextWriterFactory
   {
     TextWriter NewTextWriter (string name);
     string GetRelativePath (string fromName, string toName);
+
+    string Directory { get; set; }
+    string Extension { get; set; }
   }
 
-  public class StringWriterFactory : ITextWriterFactory, IToText
+  public class StringWriterFactory : TextWriterFactoryBase, IToText
   {
     private readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData>();
 
-    public TextWriter NewTextWriter (string name)
+    public override TextWriter NewTextWriter (string name)
     {
-      var textWriterData = new TextWriterData (new StringWriter());
+      //string nameWithExtension = AppendExtension (name);
+      var textWriterData = new TextWriterData (new StringWriter(),Directory,Extension);
       nameToTextWriterData[name] = textWriterData;
       return textWriterData.TextWriter;
     }
 
-    public string GetRelativePath (string fromName, string toName)
+    public override string GetRelativePath (string fromName, string toName)
     {
       if (!nameToTextWriterData.ContainsKey (toName))
       {
@@ -41,7 +45,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl.TextWriterFactory
       }
       return ".\\" + toName;
     }
-
 
     public void ToText (IToTextBuilder toTextBuilder)
     {
@@ -61,33 +64,52 @@ namespace Remotion.SecurityManager.Domain.AccessControl.TextWriterFactory
     }
   }
 
+  public abstract class TextWriterFactoryBase : ITextWriterFactory
+  {
+    public abstract TextWriter NewTextWriter (string name);
+    public abstract string GetRelativePath (string fromName, string toName);
+    public string Directory { get; set; }
+    public string Extension { get; set; }
+    protected string AppendExtension(string name)
+    {
+      return name + "." + Extension;
+    }
+  }
 
-
-
-  public class StreamWriterFactory : ITextWriterFactory, IToText
+  public class StreamWriterFactory : TextWriterFactoryBase, ITextWriterFactory, IToText
   {
     private readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData> ();
-    private readonly string _directory;
 
-    public StreamWriterFactory (string directory)
+    //public StreamWriterFactory (string directory)
+    //{
+    //  ArgumentUtility.CheckNotNull ("directory", directory);
+    //  Directory.CreateDirectory (directory);
+    //  _directory = directory;
+    //}
+
+    public StreamWriterFactory ()
     {
-      ArgumentUtility.CheckNotNull ("directory", directory);
-      Directory.CreateDirectory (directory);
-      _directory = directory;
     }
 
-    public TextWriter NewTextWriter (string name)
+
+    public override TextWriter NewTextWriter (string name)
     {
+      Assertion.IsNotNull (Directory, "Directory must not be null. Set using \"Directory\"-property before calling \"NewTextWriter\"");
+      if (!System.IO.Directory.Exists (Directory))
+      {
+        System.IO.Directory.CreateDirectory (Directory);
+      }
+
       if (nameToTextWriterData.ContainsKey (name))
       {
         throw new ArgumentException (To.String.s ("TextWriter with name ").e (name).s (" already exists.").CheckAndConvertToString ());
       }
-      var textWriterData = new TextWriterData (new StreamWriter (Path.Combine (_directory, name)));
+      var textWriterData = new TextWriterData (new StreamWriter (Path.Combine (Directory, AppendExtension(name))), Directory, Extension);
       nameToTextWriterData[name] = textWriterData;
       return textWriterData.TextWriter;
     }
 
-    public string GetRelativePath (string fromName, string toName)
+    public override string GetRelativePath (string fromName, string toName)
     {
       if (!nameToTextWriterData.ContainsKey (toName))
       {
@@ -115,17 +137,17 @@ namespace Remotion.SecurityManager.Domain.AccessControl.TextWriterFactory
     }
   }
 
-
-
-
-
   public class TextWriterData
   {
-    public TextWriterData (TextWriter textWriter)
+    public TextWriterData (TextWriter textWriter, string directory, string extension)
     {
       TextWriter = textWriter;
+      Directory = directory;
+      Extension = extension;
     }
 
     public TextWriter TextWriter { get; private set; }
+    public string Directory { get; private set; }
+    public string Extension { get; private set; }
   }
 }

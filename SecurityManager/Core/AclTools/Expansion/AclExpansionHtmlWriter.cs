@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Remotion.Diagnostics.ToText;
+using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -35,6 +36,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       _htmlWriter = new HtmlWriter (xmlWriter);
     }
+
+
+    //public AclExpansionMultiFileHtmlWriter (ITextWriterFactory textWriterFactory, bool indentXml)
+    //{
+    //  _textWriterFactory = textWriterFactory;
+    //  var textWriter = _textWriterFactory.NewTextWriter (_masterFileName);
+    //  _htmlWriter = new HtmlWriter (textWriter, indentXml);
+    //}
 
 
     public AclExpansionHtmlWriterSettings Settings

@@ -15,7 +15,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
-using Remotion.SecurityManager.Domain.AccessControl.TextWriterFactory;
+using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -48,7 +48,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var aclExpander = new AclExpander();
         var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
         //var stringWriter = new StringWriter();
-        var stringWriterFactory = new StreamWriterFactory (Path.Combine("c:\\temp\\AclExpansions","AclExpansion_" + AclExpanderApplication.FileNameTimestampNow()));
+        var stringWriterFactory = new StreamWriterFactory ();
+        stringWriterFactory.Directory = Path.Combine ("c:\\temp\\AclExpansions", "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ());
         var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (stringWriterFactory, true);
         aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
         //var result = stringWriter.ToString();
@@ -62,11 +63,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void ToFileNameTest ()
     {
       const string unityInput = "µabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      const string forbiddenInput = "!\"§$%&/()=?²³{[]}\\´`*+~'#;,:.-_";
+      const string forbiddenInput =  "\"?/\\*:"; 
       string forbiddenInputResult = new String ('_', forbiddenInput.Length);
-      Assert.That (AclExpansionMultiFileHtmlWriter.ToFileName (unityInput), Is.EqualTo (unityInput));
-      Assert.That (AclExpansionMultiFileHtmlWriter.ToFileName (forbiddenInput), Is.EqualTo (forbiddenInputResult));
-      Assert.That (AclExpansionMultiFileHtmlWriter.ToFileName (forbiddenInput + unityInput + forbiddenInput + unityInput), Is.EqualTo (forbiddenInputResult + unityInput + forbiddenInputResult  + unityInput));
+      Assert.That (AclExpansionMultiFileHtmlWriter.ToValidFileName (unityInput), Is.EqualTo (unityInput));
+      Assert.That (AclExpansionMultiFileHtmlWriter.ToValidFileName (forbiddenInput), Is.EqualTo (forbiddenInputResult));
+      Assert.That (AclExpansionMultiFileHtmlWriter.ToValidFileName (forbiddenInput + unityInput + forbiddenInput + unityInput), Is.EqualTo (forbiddenInputResult + unityInput + forbiddenInputResult  + unityInput));
     }
     
   }

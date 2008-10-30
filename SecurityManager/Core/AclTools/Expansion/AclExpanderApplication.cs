@@ -16,6 +16,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
+using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
@@ -26,10 +27,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private ToTextBuilder _logToTextBuilder;
     private ToTextBuilder _errorToTextBuilder;
 
-    public AclExpanderApplication ()
+    private readonly ITextWriterFactory _textWriterFactory;
+
+    public AclExpanderApplication (ITextWriterFactory textWriterFactory)
     {
+      _textWriterFactory = textWriterFactory;
     }
 
+    public AclExpanderApplication () : this(new StreamWriterFactory())
+    {
+    }
 
 
     public void Init (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)
@@ -75,13 +82,36 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion)
     {
-      string aclExpansionFileName = "c:\\temp\\AclExpansion_" + FileNameTimestampNow () + ".html";
-      using (var streamWriter = new StreamWriter (aclExpansionFileName))
+      if (_settings.UseMultipleFileOutput)
       {
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true);
+        //throw new NotImplementedException();
+        //var stringWriterFactory = new StreamWriterFactory (Path.Combine (_settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ()));
+        _textWriterFactory.Directory = Path.Combine (_settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow());
+        _textWriterFactory.Extension = "html";
+        var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (_textWriterFactory, true);
+        aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+      }
+      else
+      {
+        //string aclExpansionFileName = "c:\\temp\\AclExpansion_" + FileNameTimestampNow () + ".html";
+
+        ////string aclExpansionFileName = Path.Combine(_settings.Directory, "AclExpansion_" + FileNameTimestampNow () + ".html");
+
+        //using (var streamWriter = new StreamWriter (aclExpansionFileName))
+        //{
+        //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true);
+        //  aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+        //}
+        
+        
+        _textWriterFactory.Directory = _settings.Directory;
+        _textWriterFactory.Extension = "html";
+
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (_textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow ()), true);
         aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
       }
     }
+
 
     public static string FileNameTimestamp (DateTime dt)
     {

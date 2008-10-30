@@ -15,15 +15,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpanderApplicationSettings
   {
-    //public const string UserFirstNamePlaceholder = "first";
-    //public const string UserLastNamePlaceholder = "last";
-    //public const string UserNamePlaceholder = "user";
-
-    //public string UserFirstNamePlaceholder { get { return _userFirstNamePlaceholder; } }
-    //public string UserLastNamePlaceholder { get { return _userLastNamePlaceholder; } }
-    //public string UserNamePlaceholder { get { return _userNamePlaceholder; } }
-
-
     [CommandLineStringArgument ("user", true, Placeholder = "accountants/john.doe", Description = "Fully qualified name of user(s) to query access types for.")]
     public string UserName;
 
@@ -33,10 +24,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     [CommandLineStringArgument ("first", true, Placeholder = "John", Description = "First name of user(s) to query access types for.")]
     public string UserFirstName;
 
-    //[CommandLineModeArgumentAttribute (true, Placeholder = "user", Description = "Fully qualified name of user(s) to query access types for.")]
-    //public string xxx;
-         
-    
+    [CommandLineStringArgument ("dir", true, Placeholder = "c:\\temp", Description = "Directory where the ACL-expansion gets written.")]
+    public string Directory = ".";
+
+    [CommandLineFlagArgument ("multifile", true, Description = "Whether to create a single file for all users + permissions or a master file and several detail files.")]
+    public bool UseMultipleFileOutput = false;
+
     [CommandLineFlagArgument ("verbose", false, Description = "Verbose output")]
     public bool Verbose;
 
