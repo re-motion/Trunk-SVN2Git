@@ -23,7 +23,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   public class AclExpansionMultiFileHtmlWriterTest : AclToolsTestBase
   {
     [Test]
-    public void WriteUserStringTest ()
+    public void TextWriterFactoryResultTest ()
     {
       using (new CultureScope ("de-AT", "de-AT"))
       {
@@ -47,6 +47,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         AssertTextWriterFactoryMemberEquals (stringWriterFactory, "group1_user2", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"1\">user2</td><td rowspan=\"1\">parentGroup1, Official</td><td rowspan=\"1\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr></table></body></html>");
       }
     }
+
+
 
     private void AssertTextWriterFactoryMemberEquals (StringWriterFactory stringWriterFactory, string name, string resultExpected)
     {

@@ -37,14 +37,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       return textWriterData.TextWriter;
     }
 
-    public override string GetRelativePath (string fromName, string toName)
-    {
-      if (!nameToTextWriterData.ContainsKey (toName))
-      {
-        throw new ArgumentException (To.String.s ("No TextWriter with name ").e (toName).s (" registered => no relative path exists.").CheckAndConvertToString ());
-      }
-      return ".\\" + toName;
-    }
+    //public override string GetRelativePath (string fromName, string toName)
+    //{
+    //  if (!nameToTextWriterData.ContainsKey (toName))
+    //  {
+    //    throw new ArgumentException (To.String.s ("No TextWriter with name ").e (toName).s (" registered => no relative path exists.").CheckAndConvertToString ());
+    //  }
+    //  return ".\\" + toName;
+    //}
 
     public void ToText (IToTextBuilder toTextBuilder)
     {
@@ -68,12 +68,28 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
   {
     protected readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData> ();
     public abstract TextWriter NewTextWriter (string name);
-    public abstract string GetRelativePath (string fromName, string toName);
+    //public abstract string GetRelativePath (string fromName, string toName);
     public string Directory { get; set; }
     public string Extension { get; set; }
     protected string AppendExtension(string name)
     {
-      return name + "." + Extension;
+      if (String.IsNullOrEmpty (Extension))
+      {
+        return name;
+      }
+      else
+      {
+        return name + "." + Extension;
+      }
+    }
+
+    public string GetRelativePath (string fromName, string toName)
+    {
+      if (!nameToTextWriterData.ContainsKey (toName))
+      {
+        throw new ArgumentException (To.String.s ("No TextWriter with name ").e (toName).s (" registered => no relative path exists.").CheckAndConvertToString ());
+      }
+      return ".\\" + AppendExtension(toName);
     }
 
     public TextWriterData GetTextWriterData (string name)
@@ -117,14 +133,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       return textWriterData.TextWriter;
     }
 
-    public override string GetRelativePath (string fromName, string toName)
-    {
-      if (!nameToTextWriterData.ContainsKey (toName))
-      {
-        throw new ArgumentException (To.String.s ("No TextWriter with name ").e (toName).s (" exists => no relative path exists.").CheckAndConvertToString ());
-      }
-      return ".\\" + toName;
-    }
+    //public override string GetRelativePath (string fromName, string toName)
+    //{
+    //  if (!nameToTextWriterData.ContainsKey (toName))
+    //  {
+    //    throw new ArgumentException (To.String.s ("No TextWriter with name ").e (toName).s (" exists => no relative path exists.").CheckAndConvertToString ());
+    //  }
+    //  return ".\\" + toName;
+    //}
 
 
     public void ToText (IToTextBuilder toTextBuilder)

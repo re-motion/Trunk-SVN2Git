@@ -10,15 +10,15 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Utilities;
+using Rhino.Mocks;
 using User=Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 using System.Collections.Generic;
 
@@ -50,10 +50,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public List<AclExpansionEntry> CreateAclExpanderApplicationAndCallGetAclExpansion (AclExpanderApplicationSettings settings)
     {
       var application = new AclExpanderApplication();
-      //var settings = new AclExpanderApplicationSettings();
-      //settings.UserFirstName = 
       application.Init (settings, new StringWriter(), new StringWriter());
       return  (List<AclExpansionEntry>) PrivateInvoke.InvokeNonPublicMethod (application, "GetAclExpansion");
+      
       //foreach (AclExpansionEntry entry in aclExpansion)
       //{
       //  To.ConsoleLine.e (entry);
@@ -148,6 +147,74 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       settings.UserName = userName;
       var aclExpansion = CreateAclExpanderApplicationAndCallGetAclExpansion (settings);
       Assert.That (aclExpansion.Count, Is.EqualTo (0));
+    }
+
+
+    //[Test]
+    //public void VerboseSettingTest ()
+    //{
+    //  const string firstName = "test";
+    //  const string lastName = "user";
+    //  const string userName = "group1/user2";
+    //  var settings = new AclExpanderApplicationSettings ();
+    //  settings.UserFirstName = firstName;
+    //  settings.UserLastName = lastName;
+    //  settings.UserName = userName;
+    //  var aclExpansion = CreateAclExpanderApplicationAndCallGetAclExpansion (settings);
+    //  Assert.That (aclExpansion.Count, Is.EqualTo (0));
+    //}
+
+    // DONE: Test if directory & extension setting is correctly passed to TextWriterFactory
+    // DONE: test if StreamWriterFactory creates stream which writes to the set directory. 
+
+    [Test]
+    public void RunSingleFileOutputDirectoryAndExtensionSettingTest ()
+    {
+      const string directory = "The Directory";
+      const string extension = "html";
+
+      var textWriterFactoryMock = MockRepository.GenerateMock<ITextWriterFactory> ();
+
+      textWriterFactoryMock.Expect (mock => mock.Directory = directory); //.Do (invocation => Assert.That (invocation.Arguments[0], Is.SameAs (directory)));
+      textWriterFactoryMock.Expect (mock => mock.Extension = extension); //.Do (invocation => Assert.That (invocation.Arguments[0], Is.SameAs (directory)));
+      textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (TextWriter.Null);
+      
+      textWriterFactoryMock.Replay();
+
+      var settings = new AclExpanderApplicationSettings ();
+      settings.UseMultipleFileOutput = false;
+      settings.Directory = directory;
+      var application = new AclExpanderApplication (textWriterFactoryMock);
+
+      application.Init (settings, TextWriter.Null, TextWriter.Null);
+      Assert.That (application.Settings.Directory, Is.EqualTo (directory));
+      application.Run();
+
+      textWriterFactoryMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void CssFileCopyTest ()
+    {
+      string directory = Path.GetTempPath();
+
+      File.Create (AclExpanderApplication.CssFileName);
+
+      try
+      {
+        var settings = new AclExpanderApplicationSettings ();
+        settings.UseMultipleFileOutput = true;
+        settings.Directory = directory;
+        var application = new AclExpanderApplication ();
+        application.Init (settings, TextWriter.Null, TextWriter.Null);
+        application.Run ();
+
+        Assert.That (File.Exists (Path.Combine (application.DirectoryUsed, AclExpanderApplication.CssFileName)), Is.True);
+      }
+      finally
+      {
+        File.Delete (AclExpanderApplication.CssFileName);
+      }
     }
 
 

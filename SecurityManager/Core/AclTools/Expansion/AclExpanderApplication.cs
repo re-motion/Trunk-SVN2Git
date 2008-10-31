@@ -23,11 +23,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpanderApplication : IApplicationRunner<AclExpanderApplicationSettings> 
   {
+    public const string CssFileName = "AclExpansion.css";
     private AclExpanderApplicationSettings _settings;
     private ToTextBuilder _logToTextBuilder;
     private ToTextBuilder _errorToTextBuilder;
 
     private readonly ITextWriterFactory _textWriterFactory;
+    public string DirectoryUsed { get; private set; }
 
     public AclExpanderApplication (ITextWriterFactory textWriterFactory)
     {
@@ -36,6 +38,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public AclExpanderApplication () : this(new StreamWriterFactory())
     {
+    }
+
+    public AclExpanderApplicationSettings Settings
+    {
+      get { return _settings; }
     }
 
 
@@ -55,12 +62,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        _logToTextBuilder.nl (2).s ("AclExpander").nl().s("==========").nl();
-        //_logToTextBuilder.sbLiteral("Filter: ",", ","").e("user first name",_settings.UserFirstName).e("user last name",_settings.UserLastName).e("user name",_settings.UserName).se();
-        _logToTextBuilder.e (_settings);
         List<AclExpansionEntry> aclExpansion = GetAclExpansion ();
+
+        if (Settings.Verbose)
+        {
+          _logToTextBuilder.nl (2).s ("AclExpander").nl ().s ("==========").nl ();
+          _logToTextBuilder.e (Settings);
+          LogAclExpansion (aclExpansion);
+        }
+
         WriteAclExpansionAsHtmlSpikeToStreamWriter (aclExpansion);
-        LogAclExpansion(aclExpansion);
       }
     }
 
@@ -73,44 +84,44 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public void WriteAclExpansionAsHtmlSpikeToStringWriter (List<AclExpansionEntry> aclExpansion)
-    {
-      var stringWriter = new StringWriter ();
-      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
-      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
-      _logToTextBuilder.s (stringWriter.ToString ());
-    }
+    //public void WriteAclExpansionAsHtmlSpikeToStringWriter (List<AclExpansionEntry> aclExpansion)
+    //{
+    //  var stringWriter = new StringWriter ();
+    //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+    //  aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+    //  _logToTextBuilder.s (stringWriter.ToString ());
+    //}
 
     public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion)
     {
-      if (_settings.UseMultipleFileOutput)
+      if (Settings.UseMultipleFileOutput)
       {
-        //throw new NotImplementedException();
-        //var stringWriterFactory = new StreamWriterFactory (Path.Combine (_settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ()));
-        _textWriterFactory.Directory = Path.Combine (_settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow());
-        _textWriterFactory.Extension = "html";
-        var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (_textWriterFactory, true);
-        aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+        WriteAclExpansionAsMultiFileHtml(aclExpansion);
       }
       else
       {
-        //string aclExpansionFileName = "c:\\temp\\AclExpansion_" + FileNameTimestampNow () + ".html";
-
-        ////string aclExpansionFileName = Path.Combine(_settings.Directory, "AclExpansion_" + FileNameTimestampNow () + ".html");
-
-        //using (var streamWriter = new StreamWriter (aclExpansionFileName))
-        //{
-        //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true);
-        //  aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
-        //}
-        
-        
-        _textWriterFactory.Directory = _settings.Directory;
-        _textWriterFactory.Extension = "html";
-
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (_textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow ()), true);
-        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+        WriteAclExpansionAsSingleFileHtml(aclExpansion);
       }
+    }
+
+    private void WriteAclExpansionAsSingleFileHtml (List<AclExpansionEntry> aclExpansion)
+    {
+      _textWriterFactory.Extension = "html";
+      DirectoryUsed = Settings.Directory;
+      _textWriterFactory.Directory = DirectoryUsed;
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (_textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow ()), true);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+    }
+
+    private void WriteAclExpansionAsMultiFileHtml (List<AclExpansionEntry> aclExpansion)
+    {
+      _textWriterFactory.Extension = "html";
+      DirectoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ());
+      _textWriterFactory.Directory = DirectoryUsed;
+      var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (_textWriterFactory, true);
+      aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+      //const string cssFileName = _cssFileName;
+      File.Copy (Path.Combine (".", CssFileName), Path.Combine (DirectoryUsed, CssFileName), true);
     }
 
 
@@ -129,7 +140,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       var aclExpander = 
           new AclExpander (
-            new AclExpanderUserFinder (_settings.UserFirstName, _settings.UserLastName, _settings.UserName), new AclExpanderAclFinder ()
+            new AclExpanderUserFinder (Settings.UserFirstName, Settings.UserLastName, Settings.UserName), new AclExpanderAclFinder ()
           );
 
       return aclExpander.GetAclExpansionEntryListSortedAndDistinct();
