@@ -69,6 +69,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (computers, DomainObjectIDs.Computer1, DomainObjectIDs.Computer2, DomainObjectIDs.Computer3);
     }
 
+    //[Test]
+    //public void QueryWithWhereAndNullWithOr ()
+    //{
+    //  var computers =
+    //      from c in QueryFactory.CreateLinqQuery<Company>()
+    //      where c.C
+    //      select c;
+      
+    //  CheckQueryResult (computers, DomainObjectIDs.Computer2, DomainObjectIDs.Computer5);
+    //}
+
     [Test]
     public void QueryWithWhereConditionAndStartsWith ()
     {
