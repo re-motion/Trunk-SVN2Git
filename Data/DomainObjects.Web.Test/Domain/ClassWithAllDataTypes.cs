@@ -36,19 +36,19 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
 
     public static ClassWithAllDataTypes NewObject ()
     {
-      return DomainObject.NewObject<ClassWithAllDataTypes> ().With();
+      return NewObject<ClassWithAllDataTypes>().With();
     }
 
     public static ClassWithAllDataTypes GetObject (ObjectID id)
     {
-      return DomainObject.GetObject<ClassWithAllDataTypes> (id);
+      return GetObject<ClassWithAllDataTypes> (id);
     }
 
     public static ClassWithAllDataTypes GetObject (ObjectID id, ClientTransaction clientTransaction)
     {
       using (clientTransaction.EnterNonDiscardingScope())
       {
-        return DomainObject.GetObject<ClassWithAllDataTypes> (id);
+        return GetObject<ClassWithAllDataTypes> (id);
       }
     }
 
@@ -63,9 +63,9 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
       set
       {
         if (value == null)
-          DelimitedStringArrayProperty = string.Empty;
+          DelimitedStringArrayProperty = String.Empty;
         else
-          DelimitedStringArrayProperty = string.Join (";", value);
+          DelimitedStringArrayProperty = String.Join (";", value);
       }
     }
 
@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
         if (value == null)
           DelimitedNullStringArrayProperty = null;
         else
-          DelimitedNullStringArrayProperty = string.Join (";", value);
+          DelimitedNullStringArrayProperty = String.Join (";", value);
       }
     }
 
@@ -256,5 +256,27 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
     [ObjectBinding (ReadOnly = true)]
     [DBBidirectionalRelation ("ClassWithAllDataTypesOptional")]
     public abstract ObjectList<ClassForRelationTest> ClassesForRelationTestOptionalNavigateOnly { get; }
+
+    public void FillMandatoryProperties()
+    {
+      BooleanProperty = true;
+      ByteProperty = 8;
+      DateProperty = DateTime.Now;
+      DateTimeProperty = DateTime.Now;
+      DecimalProperty = 10.3m;
+      DoubleProperty = 2.0;
+      EnumProperty = EnumType.Value1;
+      GuidProperty = Guid.NewGuid ();
+      Int16Property = 16;
+      Int32Property = 32;
+      Int64Property = 64;
+      SingleProperty = 1.0f;
+      StringProperty = "string";
+      StringPropertyWithoutMaxLength = "string without max length";
+      BinaryProperty = new byte[] { 1, 2, 3 };
+      var oppositeObject = ClassForRelationTest.NewObject ();
+      ClassForRelationTestMandatory = oppositeObject;
+      ClassesForRelationTestMandatoryNavigateOnly.Add (oppositeObject);
+    }
   }
 }

@@ -47,7 +47,16 @@ namespace Remotion.Data.DomainObjects.Web.Test {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button NonTransactionUserControlStepButton;
+        protected global::Remotion.Web.UI.Controls.WebButton NonTransactionUserControlStepButton;
+        
+        /// <summary>
+        /// RootTransactionUserControlStepButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton RootTransactionUserControlStepButton;
         
         /// <summary>
         /// SubTransactionUserControlStepButton control.
@@ -56,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Web.Test {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button SubTransactionUserControlStepButton;
+        protected global::Remotion.Web.UI.Controls.WebButton SubTransactionUserControlStepButton;
         
         /// <summary>
         /// SaveButton control.
@@ -65,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Web.Test {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button SaveButton;
+        protected global::Remotion.Web.UI.Controls.WebButton SaveButton;
         
         /// <summary>
         /// ReturnButton control.
@@ -74,6 +83,6 @@ namespace Remotion.Data.DomainObjects.Web.Test {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button ReturnButton;
+        protected global::Remotion.Web.UI.Controls.WebButton ReturnButton;
     }
 }

@@ -6,17 +6,20 @@
   <label>Input parameter: </label><asp:Label id="GuidInLabel" runat="server" /><BR />
   <label>Output parameter: </label><asp:Label id="GuidOutLabel" runat="server" /><BR />
   <label>ClientTransaction: </label><asp:Label id="ClientTransactionLabel" runat="server" /><BR />
-  <asp:Button id="NonTransactionUserControlStepButton" runat="server" 
+  <remotion:WebButton id="NonTransactionUserControlStepButton" runat="server" 
     Text="Call non-transacted control" 
     onclick="NonTransactionUserControlStepButton_Click" />
-  <asp:Button id="SubTransactionUserControlStepButton" runat="server" 
-    Text="Call transacted control" 
+  <remotion:WebButton id="RootTransactionUserControlStepButton" runat="server" 
+    Text="Call root-transacted control" 
+    onclick="RootTransactionUserControlStepButton_Click" />
+  <remotion:WebButton id="SubTransactionUserControlStepButton" runat="server" 
+    Text="Call sub-transacted control" 
     onclick="SubTransactionUserControlStepButton_Click" />
   <br />
-  <asp:Button id="SaveButton" runat="server" 
+  <remotion:WebButton id="SaveButton" runat="server" 
     Text="Save" 
     onclick="SaveButton_Click" />
-  <asp:Button id="ReturnButton" runat="server" 
+  <remotion:WebButton id="ReturnButton" runat="server" 
     Text="Return" 
     onclick="ReturnButton_Click" />
 </div>

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Web.UI;
 using Remotion.Collections;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
 using Remotion.Data.DomainObjects.Web.Test.WxeFunctions;
 using Remotion.Utilities;
@@ -23,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
         var actualUserControl = (WxeUserControl2) page.FindControl (userControl.PermanentUniqueID);
         Assertion.IsNotNull (actualUserControl);
         actualUserControl.ExecuteFunction (function, sender, null);
-        throw new System.Exception ("(Unreachable code)");
+        throw new Exception ("(Unreachable code)");
       }
       else
       {
@@ -50,8 +52,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
     protected override void OnLoad (EventArgs e)
     {
       base.OnLoad (e);
-      LoadObjectFromFunction ((bool) (Variables["IsInitialized"] ?? false));
-      Variables["IsInitialized"] = true;
+      LoadObjectFromFunction (CurrentUserControlStep.IsPostBack);
       RefreshText ();
     }
 
@@ -87,9 +88,17 @@ namespace Remotion.Data.DomainObjects.Web.Test
 
     protected void NewObjectButton_Click (object sender, EventArgs e)
     {
-      MyFunction.ObjectWithAllDataTypes = ClassWithAllDataTypes.NewObject ();
+      MyFunction.ObjectWithAllDataTypes = CreateSaveableNewObject();
       LoadObjectFromFunction (false);
+      MyFunction.ReturnedObjectWithAllDataTypes = ControlWithAllDataTypes.ObjectWithAllDataTypes;
       RefreshText ();
+    }
+
+    private ClassWithAllDataTypes CreateSaveableNewObject()
+    {
+      var result = ClassWithAllDataTypes.NewObject ();
+      result.FillMandatoryProperties();
+      return result;
     }
 
     protected void RefreshButton_Click (object sender, EventArgs e)

@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
 using Remotion.Data.DomainObjects.Web.Test.WxeFunctions;
 using Remotion.Web.ExecutionEngine;
@@ -23,13 +18,6 @@ namespace Remotion.Data.DomainObjects.Web.Test
     protected override void OnLoad (EventArgs e)
     {
       base.OnLoad (e);
-      if (CurrentPageStep.IsReturningPostBack)
-      {
-        var function = (ShowSecondUserControlFunction) CurrentPageStep.ReturningFunction;
-        if (function.ExceptionHandler.Exception != null)
-          throw function.ExceptionHandler.Exception;
-        MyFunction.ObjectReadFromSecondControl = function.ReturnedObjectWithAllDataTypes;
-      }
       RefreshText();
     }
 
@@ -48,20 +36,20 @@ namespace Remotion.Data.DomainObjects.Web.Test
 
     protected void NonTransactionUserControlStepButton_Click (object sender, EventArgs e)
     {
-      ExecuteSecondControl (WxeTransactionMode.None);
+      MyFunction.ObjectReadFromSecondControl = SecondControl.Call (WxePage, this, this, WxeTransactionMode.None, MyFunction.ObjectPassedIntoSecondControl);
+      RefreshText ();
+    }
+
+    protected void RootTransactionUserControlStepButton_Click (object sender, EventArgs e)
+    {
+      MyFunction.ObjectReadFromSecondControl = SecondControl.Call (WxePage, this, this, WxeTransactionMode.CreateRoot, MyFunction.ObjectPassedIntoSecondControl);
       RefreshText ();
     }
 
     protected void SubTransactionUserControlStepButton_Click (object sender, EventArgs e)
     {
-      ExecuteSecondControl (WxeTransactionMode.CreateChildIfParent);
+      MyFunction.ObjectReadFromSecondControl = SecondControl.Call (WxePage, this, this, WxeTransactionMode.CreateChildIfParent, MyFunction.ObjectPassedIntoSecondControl);
       RefreshText ();
-    }
-
-    private void ExecuteSecondControl (ITransactionMode transactionMode)
-    {
-      // Note: assigning return value doesn't work
-      MyFunction.ObjectReadFromSecondControl = SecondControl.Call (WxePage, this, this, transactionMode, MyFunction.ObjectPassedIntoSecondControl);
     }
 
     protected void SaveButton_Click (object sender, EventArgs e)

@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Web.Test {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button RefreshButton;
+        protected global::Remotion.Web.UI.Controls.WebButton RefreshButton;
         
         /// <summary>
         /// ControlWithAllDataTypes control.
@@ -65,15 +65,15 @@ namespace Remotion.Data.DomainObjects.Web.Test {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button NewObjectButton;
+        protected global::Remotion.Web.UI.Controls.WebButton NewObjectButton;
         
         /// <summary>
-        /// ReturnButton2 control.
+        /// ReturnButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button ReturnButton2;
+        protected global::Remotion.Web.UI.Controls.WebButton ReturnButton;
     }
 }
