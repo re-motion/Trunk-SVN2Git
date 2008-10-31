@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -16,11 +17,12 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
   [TestFixture]
-  public class ClientTransactionAsITransactionTest : ClientTransactionBaseTest
+  public class ClientTransactionWrapperTest : ClientTransactionBaseTest
   {
     private ITransaction _transaction;
 
@@ -34,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void To_ClientTransaction ()
     {
-      ClientTransactionMock actual = _transaction.To<ClientTransactionMock>();
+      var actual = _transaction.To<ClientTransactionMock>();
 
       Assert.That (actual, Is.SameAs (ClientTransactionMock));
     }
@@ -353,6 +355,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       //  Order.GetObject (DomainObjectIDs.Order1).OrderItems.Clear ();
       //  PrivateInvoke.InvokeNonPublicMethod (tx, "CheckCurrentTransactionResettable");
       //}
+    }
+
+    [Test]
+    public void CanBeDerivedFrom ()
+    {
+      var ctor =  typeof (ClientTransactionWrapper).GetConstructor (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, 
+          new[] {typeof (ClientTransaction)}, null);
+      Assert.That (typeof (ClientTransactionWrapper).IsSealed, Is.False);
+      Assert.That (ctor.IsFamilyOrAssembly);
     }
   }
 }

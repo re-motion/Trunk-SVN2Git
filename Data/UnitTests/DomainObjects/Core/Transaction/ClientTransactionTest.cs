@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DomainObject domainObject1 = ClientTransactionMock.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
-      DomainObjectCollection domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (domainObject1, domainObjects[0]);
       _eventReceiver.Clear ();
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DomainObject domainObject1 = ClientTransactionMock.GetObject (id1);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
-      DomainObjectCollection domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (domainObject1, domainObjects[0]);
       _eventReceiver.Clear ();
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
-      DomainObjectCollection domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (order, domainObjects[0]);
     }
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (DomainObjectIDs.OrderTicket1, orderTicket.ID);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
 
-      DomainObjectCollection domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (1, domainObjects.Count);
       Assert.AreSame (orderTicket, domainObjects[0]);
     }
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetOptionalRelatedObject ()
     {
-      ObjectID id = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
+      var id = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
 
       DomainObject classWithValidRelation = ClientTransactionMock.GetObject (id);
       _eventReceiver.Clear ();
@@ -164,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetOptionalRelatedObjectOverVirtualEndPoint ()
     {
-      ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
+      var id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
 
       DomainObject classWithGuidKey = ClientTransactionMock.GetObject (id);
       _eventReceiver.Clear ();
@@ -178,9 +178,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetOptionalRelatedObjectTwice ()
     {
-      ObjectID id = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
+      var id = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
 
-      ClientTransactionMock clientTransactionMock = new ClientTransactionMock ();
+      var clientTransactionMock = new ClientTransactionMock ();
 
       DomainObject classWithValidRelation = clientTransactionMock.GetObject (id);
       Assert.AreEqual (1, clientTransactionMock.NumberOfCallsToLoadDataContainer);
@@ -202,9 +202,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetOptionalRelatedObjectOverVirtualEndPointTwice ()
     {
-      ObjectID id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
+      var id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
 
-      ClientTransactionMock clientTransactionMock = new ClientTransactionMock ();
+      var clientTransactionMock = new ClientTransactionMock ();
 
       DomainObject classWithGuidKey = clientTransactionMock.GetObject (id);
       Assert.AreEqual (1, clientTransactionMock.NumberOfCallsToLoadDataContainer);
@@ -246,7 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.AreEqual (typeof (OrderCollection), orders.GetType (), "Type of collection");
       Assert.AreEqual (2, orders.Count);
 
-      DomainObjectCollection domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (2, domainObjects.Count);
     }
 
@@ -265,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.IsTrue (ReferenceEquals (orders1, orders2));
 
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
-      DomainObjectCollection domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = (DomainObjectCollection) _eventReceiver.LoadedDomainObjects[0];
       Assert.AreEqual (2, domainObjects.Count);
     }
 
@@ -358,7 +358,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ObjectList<DomainObject> objects = ClientTransactionMock.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2,
           DomainObjectIDs.OrderItem1);
-      object[] expectedObjects = new object[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2),
+      var expectedObjects = new object[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2),
           OrderItem.GetObject (DomainObjectIDs.OrderItem1)};
       Assert.That (objects, Is.EqualTo (expectedObjects));
     }
@@ -375,7 +375,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetObjects_LoadedObjects ()
     {
-      object[] expectedObjects = new object[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2),
+      var expectedObjects = new object[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2),
           OrderItem.GetObject (DomainObjectIDs.OrderItem1)};
       ObjectList<DomainObject> objects = ClientTransactionMock.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2,
           DomainObjectIDs.OrderItem1);
@@ -398,7 +398,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetObjects_NewObjects ()
     {
-      DomainObject[] expectedObjects = new DomainObject[] { Order.NewObject (), OrderItem.NewObject () };
+      var expectedObjects = new DomainObject[] { Order.NewObject (), OrderItem.NewObject () };
       ObjectList<DomainObject> objects = ClientTransactionMock.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
       Assert.That (objects, Is.EqualTo (expectedObjects));
     }
@@ -406,7 +406,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetObjects_NewObjects_Events ()
     {
-      DomainObject[] expectedObjects = new DomainObject[] { Order.NewObject (), OrderItem.NewObject () };
+      var expectedObjects = new DomainObject[] { Order.NewObject (), OrderItem.NewObject () };
       _eventReceiver.Clear ();
 
       ClientTransactionMock.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
@@ -418,7 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         + "Object 'Order|33333333-3333-3333-3333-333333333333|System.Guid' could not be found.\r\n")]
     public void GetObjects_NotFound ()
     {
-      Guid guid = new Guid("33333333333333333333333333333333");
+      var guid = new Guid("33333333333333333333333333333333");
       ClientTransactionMock.GetObjects<DomainObject> (new ObjectID(typeof (Order), guid));
     }
 
@@ -426,13 +426,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void TryGetObjects_NotFound ()
     {
       Order newObject = Order.NewObject();
-      Guid guid = new Guid ("33333333333333333333333333333333");
+      var guid = new Guid ("33333333333333333333333333333333");
       ObjectList<Order> objects = ClientTransactionMock.TryGetObjects<Order> (
           DomainObjectIDs.Order1,
           newObject.ID,
           new ObjectID (typeof (Order), guid),
           DomainObjectIDs.Order2);
-      DomainObject[] expectedObjects =
+      var expectedObjects =
           new DomainObject[] { Order.GetObject (DomainObjectIDs.Order1), newObject, Order.GetObject (DomainObjectIDs.Order2) };
       Assert.That (objects, Is.EqualTo (expectedObjects));
     }
@@ -606,7 +606,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       computer.Delete ();
       ClientTransactionMock.Commit ();
 
-      string serialNumber = computer.SerialNumber;
+      Dev.Null = computer.SerialNumber;
     }
 
     [Test]
@@ -690,7 +690,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (ClientTransactionScope.EnterNullScope())
       {
         Assert.IsFalse (ClientTransactionScope.HasCurrentTransaction);
-        ClientTransaction transaction = ClientTransactionScope.CurrentTransaction;
+        Dev.Null = ClientTransactionScope.CurrentTransaction;
       }
     }
 
@@ -804,8 +804,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ClientTransactionGetObjectIsIndependentOfCurrentTransaction ()
     {
-      ClientTransactionMock clientTransactionMock = new ClientTransactionMock ();
-      Order order = (Order) clientTransactionMock.GetObject (DomainObjectIDs.Order1);
+      var clientTransactionMock = new ClientTransactionMock ();
+      var order = (Order) clientTransactionMock.GetObject (DomainObjectIDs.Order1);
       Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
       Assert.IsTrue (order.CanBeUsedInTransaction (clientTransactionMock));
 
@@ -820,13 +820,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ClientTransactionEventsTriggeredInRightTransaction ()
     {
-      ClientTransactionMock mock = new ClientTransactionMock();
+      var mock = new ClientTransactionMock();
       int events = 0;
+// ReSharper disable AccessToModifiedClosure
       mock.Committed += delegate { ++events; Assert.AreSame (mock, ClientTransactionScope.CurrentTransaction); };
       mock.Committing += delegate { ++events; Assert.AreSame (mock, ClientTransactionScope.CurrentTransaction); };
       mock.Loaded += delegate { ++events; Assert.AreSame (mock, ClientTransactionScope.CurrentTransaction); };
       mock.RolledBack += delegate { ++events; Assert.AreSame (mock, ClientTransactionScope.CurrentTransaction); };
       mock.RollingBack += delegate { ++events; Assert.AreSame (mock, ClientTransactionScope.CurrentTransaction); };
+// ReSharper restore AccessToModifiedClosure
 
       Assert.AreEqual (0, events);
       mock.GetObject (DomainObjectIDs.Order1);
@@ -844,7 +846,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ReadOnly ()
     {
-      ClientTransactionMock clientTransaction = new ClientTransactionMock ();
+      var clientTransaction = new ClientTransactionMock ();
       Assert.IsFalse (clientTransaction.IsReadOnly);
       clientTransaction.IsReadOnly = true;
       Assert.IsTrue (clientTransaction.IsReadOnly);
@@ -946,8 +948,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInOriginalTransaction ()
     {
-      MockRepository mockRepository = new MockRepository ();
-      IClientTransactionListener listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+      var mockRepository = new MockRepository ();
+      var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
       // no calls are expected
       mockRepository.ReplayAll ();
 
@@ -971,15 +973,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Ignore ("TODO: Optimize CopyCollectionEventHandlers")]
     public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInDestinationTransaction_IfNotRequiredTo ()
     {
-      MockRepository mockRepository = new MockRepository ();
-      IClientTransactionListener listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+      var mockRepository = new MockRepository ();
+      var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
       // no calls are expected
       mockRepository.ReplayAll ();
 
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Dev.Null = order.OrderItems; // load relation in source transaction, but do not attach event handlers
 
-      ClientTransactionMock innerTransaction = new ClientTransactionMock();
+      var innerTransaction = new ClientTransactionMock();
       using (innerTransaction.EnterDiscardingScope ())
       {
         innerTransaction.EnlistDomainObject (order);
@@ -996,8 +998,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void CopyCollectionEventHandlers_DoesLoadRelatedObjectsInDestinationTransaction_IfRequiredTo ()
     {
-      MockRepository mockRepository = new MockRepository ();
-      IClientTransactionListener listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+      var mockRepository = new MockRepository ();
+      var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
 
       listenerMock.ObjectLoading (DomainObjectIDs.OrderItem1);
       listenerMock.ObjectLoading (DomainObjectIDs.OrderItem2);
@@ -1015,7 +1017,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       order.OrderItems.Added += delegate { };
 
-      ClientTransactionMock innerTransaction = new ClientTransactionMock ();
+      var innerTransaction = new ClientTransactionMock ();
       using (innerTransaction.EnterDiscardingScope ())
       {
         innerTransaction.EnlistDomainObject (order);
@@ -1114,9 +1116,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Assert.That (((ClientTransactionWrapper) transaction).WrappedInstance, Is.SameAs (ClientTransactionMock));
     }
 
+    [Test]
+    public void ToITransaction_Override ()
+    {
+      var wrapperStub = MockRepository.GenerateMock<ITransaction> ();
+      var transaction = new ClientTransactionWithCustomITransaction (wrapperStub);
+      Assert.That (transaction.ToITransation (), Is.SameAs (wrapperStub));
+    }
+
     private bool HasEventHandler (object instance, string eventName, Delegate handler)
     {
-      Delegate eventField = (Delegate) PrivateInvoke.GetNonPublicField (instance, eventName);
+      var eventField = (Delegate) PrivateInvoke.GetNonPublicField (instance, eventName);
       return eventField != null && Array.IndexOf (eventField.GetInvocationList (), handler) != -1;
     }
   }

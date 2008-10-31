@@ -1497,7 +1497,7 @@ public abstract class ClientTransaction
     OnRolledBack (new ClientTransactionEventArgs (changedDomainObjects.Clone (true)));
   }
 
-  public ITransaction ToITransation ()
+  public virtual ITransaction ToITransation ()
   {
     return new ClientTransactionWrapper (this);
   }

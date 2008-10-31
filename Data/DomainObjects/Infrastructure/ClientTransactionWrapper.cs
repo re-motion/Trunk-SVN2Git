@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     private ClientTransaction _wrappedInstance;
 
-    internal ClientTransactionWrapper (ClientTransaction wrappedInstance)
+    protected internal ClientTransactionWrapper (ClientTransaction wrappedInstance)
     {
       ArgumentUtility.CheckNotNull ("wrappedInstance", wrappedInstance);
       _wrappedInstance = wrappedInstance;
@@ -43,13 +43,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     /// <summary> Commits the transaction. </summary>
-    public void Commit ()
+    public virtual void Commit ()
     {
       _wrappedInstance.Commit();
     }
 
     /// <summary> Rolls the transaction back. </summary>
-    public void Rollback ()
+    public virtual void Rollback ()
     {
       _wrappedInstance.Rollback();
     }
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     ///   Gets a flag that describes whether the transaction supports creating child transactions by invoking
     ///   <see cref="ITransaction.CreateChild"/>.
     /// </summary>
-    public bool CanCreateChild
+    public virtual bool CanCreateChild
     {
       get { return true; }
     }
@@ -71,14 +71,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="NotSupportedException"> 
     ///   Thrown if the method is invoked while <see cref="ITransaction.CanCreateChild"/> is <see langword="false"/>.
     /// </exception>
-    public ITransaction CreateChild ()
+    public virtual ITransaction CreateChild ()
     {
       return new ClientTransactionWrapper (_wrappedInstance.CreateSubTransaction());
     }
 
     /// <summary> Allows the transaction to implement clean up logic. </summary>
     /// <remarks> This method is called when the transaction is no longer needed. </remarks>
-    public void Release ()
+    public virtual void Release ()
     {
       _wrappedInstance.Discard();
     }
@@ -88,21 +88,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     ///   An instance of the of a type implementing <see cref="ITransaction"/> or <see langword="null"/> if the
     ///   transaction is a root transaction.
     /// </value>
-    public ITransaction Parent
+    public virtual ITransaction Parent
     {
       get { return new ClientTransactionWrapper (_wrappedInstance.ParentTransaction); }
     }
 
     /// <summary>Gets a flag describing whether the transaction is a child transaction.</summary>
     /// <value> <see langword="true"/> if the transaction is a child transaction. </value>
-    public bool IsChild
+    public virtual bool IsChild
     {
       get { return _wrappedInstance.ParentTransaction != null; }
     }
 
     /// <summary>Gets a flag describing whether the transaction has been changed since the last commit or rollback.</summary>
     /// <value> <see langword="true"/> if the transaction has uncommitted changes. </value>
-    public bool HasUncommittedChanges
+    public virtual bool HasUncommittedChanges
     {
       get { return _wrappedInstance.HasChanged(); }
     }
@@ -110,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>Gets a flag describing whether the transaction is in a read-only state.</summary>
     /// <value> <see langword="true"/> if the transaction cannot be modified. </value>
     /// <remarks>Implementations that do not support read-only transactions should always return false.</remarks>
-    public bool IsReadOnly
+    public virtual bool IsReadOnly
     {
       get { return _wrappedInstance.IsReadOnly; }
     }
@@ -120,7 +120,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <returns>The scope keeping the transaction active.</returns>
     /// <remarks>The scope must not discard the transaction when it is left.</remarks>
-    public ITransactionScope EnterScope ()
+    public virtual ITransactionScope EnterScope ()
     {
       return _wrappedInstance.EnterNonDiscardingScope();
     }
@@ -128,7 +128,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>Registers the <paramref name="objects"/> with the transaction.</summary>
     /// <param name="objects">The objects to be registered. Must not be <see langword="null" />.</param>
     /// <remarks>If the type of of of the objects is not supported by the transaction, the object must be ignored.</remarks>
-    public void RegisterObjects (IEnumerable objects)
+    public virtual void RegisterObjects (IEnumerable objects)
     {
       ArgumentUtility.CheckNotNull ("objects", objects);
 
@@ -137,7 +137,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _wrappedInstance.GetObjects<DomainObject> (domainObjects.Select (domainObject => domainObject.ID).ToArray());
     }
 
-    public void Reset()
+    public virtual void Reset ()
     {
       if (_wrappedInstance.IsReadOnly)
       {
