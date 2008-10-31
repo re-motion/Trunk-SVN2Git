@@ -172,6 +172,71 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    [Test]
+    public void UserSortOrderTest ()
+    {
+      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User, User2, User3);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl, Acl2);
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+      var stringWriter = new StringWriter ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+      aclExpansionHtmlWriter.Settings.UseShortNames = true;
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+      string result = stringWriter.ToString ();
+      //To.ConsoleLine.e (() => result);
+
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("James Ryan"));
+      Assert.That (result.IndexOf ("James Ryan"), Is.LessThan (result.IndexOf ("Smith, Mr.")));
+    }
+
+    [Test]
+    public void SortOrderTest ()
+    {
+      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User3);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+      var stringWriter = new StringWriter ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+      aclExpansionHtmlWriter.Settings.UseShortNames = true;
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+      string result = stringWriter.ToString ();
+      //To.ConsoleLine.e (() => result);
+
+      // Roles
+      const string firstRoleText = "Anotha Group, Supreme Being";
+      const string secondRoleText = "Anotha Group, Working Drone";
+      const string thirdRoleText = "Da 3rd Group, Combatant";
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains (firstRoleText));
+      Assert.That (result.IndexOf (firstRoleText), Is.LessThan (result.IndexOf (secondRoleText)));
+      Assert.That (result.IndexOf (secondRoleText), Is.LessThan (result.IndexOf (thirdRoleText)));
+
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Dhl, None, Received"));
+      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Delete, Read, Write"));
+    }
+
+
+    [Test]
+    public void ResultTest ()
+    {
+      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User,User2,User3);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl2,Acl);
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+      var stringWriter = new StringWriter ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, false);
+      aclExpansionHtmlWriter.Settings.UseShortNames = true;
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+      string result = stringWriter.ToString ();
+      To.ConsoleLine.e (() => result);
+      const string resultExpected = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"18\">James Ryan</td><td rowspan=\"3\">Anotha Group, Supreme Being</td><td rowspan=\"3\">Order</td><td>Dhl, Paid, Received</td><td></td><td></td><td></td><td></td><td>Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td>X</td><td></td><td>Delete, Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>Delete, Read, Write</td></tr><tr><td rowspan=\"3\">Anotha Group, Working Drone</td><td rowspan=\"3\">Order</td><td>Dhl, Paid, Received</td><td></td><td></td><td></td><td></td><td>Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td>X</td><td></td><td>Delete, Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>Delete, Read, Write</td></tr><tr><td rowspan=\"3\">Da 3rd Group, Combatant</td><td rowspan=\"3\">Order</td><td>Dhl, Paid, Received</td><td></td><td></td><td></td><td></td><td>Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td>X</td><td></td><td>Delete, Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>Delete, Read, Write</td></tr><tr><td rowspan=\"3\">Da 3rd Group, Combatant</td><td rowspan=\"3\">Order</td><td>Dhl, Paid, Received</td><td></td><td></td><td></td><td></td><td>Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td>X</td><td></td><td>Delete, Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>Delete, Read, Write</td></tr><tr><td rowspan=\"3\">Da Group, Combatant</td><td rowspan=\"3\">Order</td><td>Dhl, Paid, Received</td><td></td><td></td><td></td><td></td><td>Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td>X</td><td></td><td>Delete, Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>Delete, Read, Write</td></tr><tr><td rowspan=\"3\">Da Group, Supreme Being</td><td rowspan=\"3\">Order</td><td>Dhl, Paid, Received</td><td></td><td></td><td></td><td></td><td>Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td>X</td><td></td><td>Delete, Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>Delete, Read, Write</td></tr><tr><td rowspan=\"8\">Smith, Mr.</td><td rowspan=\"2\">Anotha Group, Supreme Being</td><td rowspan=\"2\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td>X</td><td></td><td>Delete, Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>Delete, Read, Write</td></tr><tr><td rowspan=\"2\">Anotha Group, Working Drone</td><td rowspan=\"2\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td>X</td><td></td><td>Delete, Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>Delete, Read, Write</td></tr><tr><td rowspan=\"2\">Da 3rd Group, Working Drone</td><td rowspan=\"2\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td>X</td><td></td><td>Delete, Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>Delete, Read, Write</td></tr><tr><td rowspan=\"2\">Da Group, Working Drone</td><td rowspan=\"2\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td>X</td><td></td><td>Delete, Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>Delete, Read, Write</td></tr><tr><td rowspan=\"2\">Usa Da, Dr.</td><td rowspan=\"2\">Da Group, Supreme Being</td><td rowspan=\"2\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td>X</td><td></td><td>Delete, Read, Write</td></tr><tr><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>Delete, Read, Write</td></tr></table></body></html>";
+      Assert.That (result, Is.EqualTo(resultExpected));
+    }
+
 
     public static XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
     {

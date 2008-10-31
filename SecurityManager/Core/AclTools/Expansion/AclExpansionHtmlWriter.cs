@@ -193,7 +193,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     void tdBodyStates (AclExpansionEntry aclExpansionEntry) // params StateDefinition[] stateDefinitions)
     {
       //To.ConsoleLine.s ("tdBodyStates").e (aclExpansionEntry);
-      var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
+      var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).OrderBy(x => x.DisplayName).ToArray ();
       _htmlWriter.td ();
       bool firstElement = true;
       foreach (StateDefinition stateDefiniton in stateDefinitions)
@@ -215,9 +215,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void tdBodyAccessTypes (AccessTypeDefinition[] accessTypeDefinitions)
     {
+      var accessTypeDefinitionsSorted = from atd in accessTypeDefinitions
+                                        orderby atd.DisplayName
+                                        select atd;
+
       _htmlWriter.td ();
       bool firstElement = true;
-      foreach (AccessTypeDefinition accessTypeDefinition in accessTypeDefinitions)
+      foreach (AccessTypeDefinition accessTypeDefinition in accessTypeDefinitionsSorted)
       {
         if (!firstElement)
         {
