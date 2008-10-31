@@ -62,6 +62,18 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
+    public void ResolveWrappedMethod_GenType_RefType_Object ()
+    {
+      var module = new ModuleManager ().Scope.ObtainDynamicModuleWithStrongName ();
+      MethodInfo wrappedMethod = typeof (List<object>).GetMethod ("Add");
+      int token = module.GetMethodToken (wrappedMethod).Token;
+      var attribute = new GeneratedMethodWrapperAttribute (token, new[] { typeof (object) });
+      var resolvedMethod = attribute.ResolveWrappedMethod (module);
+
+      Assert.That (resolvedMethod, Is.EqualTo (wrappedMethod));
+    }
+
+    [Test]
     public void ResolveWrappedMethod_GenType_ValueType ()
     {
       MethodInfo wrappedMethod = typeof (List<int>).GetMethod ("Add");

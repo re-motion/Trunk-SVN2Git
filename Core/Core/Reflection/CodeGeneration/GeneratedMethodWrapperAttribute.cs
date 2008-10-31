@@ -49,10 +49,10 @@ namespace Remotion.Reflection.CodeGeneration
     {
       var method = module.ResolveMethod (WrappedMethodRefToken);
       
-      // If we have a generic type, ResolveMethod returned the method on the generic type definition, not the closed generic type.
+      // If we have a generic type, ResolveMethod sometimes returns the method on the generic type definition, not the closed generic type.
       // To retrieve the method on the closed generic type, we use GetMethodFromHandle.
       // (We could also iterate over the methods to search the one with the right token, but going via RuntimeMethodHandle seems more elegant.)
-      if (_genericTypeArguments.Length > 0)
+      if (_genericTypeArguments.Length > 0 && method.DeclaringType.IsGenericTypeDefinition)
       {
         var surroundingType = method.DeclaringType.MakeGenericType (_genericTypeArguments).TypeHandle;
         return (MethodInfo) MethodBase.GetMethodFromHandle (method.MethodHandle, surroundingType);
