@@ -284,6 +284,8 @@
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectImplementationTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\BindableDomainObjectWithMixedPersistentProperties.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\TestDomain\ClassDerivedFromBindableObjectBaseOverridingMixinMethod.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\TestDomain\MixinWithOverridableMethod.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObject_ImplementingISerializable.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObjectWithOverriddenDisplayName.cs" />
     <Compile Include="DomainObjects\ObjectBinding\TestDomain\SampleBindableDomainObject.cs" />

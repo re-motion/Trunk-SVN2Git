@@ -101,10 +101,13 @@
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBase.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBaseOverridingDisplayName.cs" />
     <Compile Include="Core\TestDomain\ClassWithReferenceToClassDerivedFromBindableObjectBase.cs" />
+    <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBaseOverridingMixinMethod.cs" />
+    <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBaseOverridingMixinMethod.cs" />
     <Compile Include="Core\TestDomain\MixinAddingResources2.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttributeFromMixin.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttribute.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithoutAttributeAndWithSpecificBusinessObjectProviderAttribute.cs" />
+    <Compile Include="Core\TestDomain\MixinWithOverridableMethod.cs" />
     <Compile Include="Core\TestDomain\OtherBusinessObjectImplementationProvider.cs" />
     <Compile Include="Core\TestDomain\DerivedStubBusinessObjectProviderAttribute.cs" />
     <Compile Include="Core\TestDomain\OtherBusinessObjectImplementationProviderAttribute.cs" />

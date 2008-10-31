@@ -8,12 +8,11 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
-using Remotion.ObjectBinding;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
@@ -88,6 +87,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (
           BindableObjectProvider.GetProviderForBindableObjectType (typeof (ClassDerivedFromBindableObjectBase)),
           Is.Not.SameAs (BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute> ()));
+    }
+
+    [Test]
+    public void ClassDerivedFromBindableObjectBaseOverridingMixinMethod()
+    {
+      var instance = new ClassDerivedFromBindableObjectBaseOverridingMixinMethod ();
+      Assert.That (instance.BusinessObjectClass, Is.InstanceOfType (typeof (BindableObjectClass)));
+      Assert.That (((BindableObjectClass) instance.BusinessObjectClass).TargetType, Is.SameAs (typeof (ClassDerivedFromBindableObjectBaseOverridingMixinMethod)));
+      Assert.That (((BindableObjectClass) instance.BusinessObjectClass).ConcreteType, Is.SameAs (TypeFactory.GetConcreteType (typeof (ClassDerivedFromBindableObjectBaseOverridingMixinMethod))));
     }
   }
 }

@@ -17,6 +17,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -161,5 +162,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       foreach (PropertyBase property in properties)
         Assert.That (property.PropertyInfo.DeclaringType, Is.Not.EqualTo (typeof (BindableDomainObject)));
     }
+
+    [Test]
+    public void ClassDerivedFromBindableDomainObjectOverridingMixinMethod ()
+    {
+      var instance = (IBusinessObject) TestDomain.ClassDerivedFromBindableDomainObjectOverridingMixinMethod.NewObject ();
+      Assert.That (instance.BusinessObjectClass, Is.InstanceOfType (typeof (BindableObjectClass)));
+      Assert.That (((BindableObjectClass) instance.BusinessObjectClass).TargetType, Is.SameAs (typeof (ClassDerivedFromBindableDomainObjectOverridingMixinMethod)));
+      Assert.That (((BindableObjectClass) instance.BusinessObjectClass).ConcreteType, Is.SameAs (TypeFactory.GetConcreteType (typeof (ClassDerivedFromBindableDomainObjectOverridingMixinMethod))));
+    }
+
   }
 }

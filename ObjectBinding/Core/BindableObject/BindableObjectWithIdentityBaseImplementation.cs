@@ -23,7 +23,9 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNull ("wrapper", wrapper);
       Assertion.DebugAssert (!ReflectionUtility.CanAscribe (typeof (BindableObjectWithIdentityBaseImplementation), typeof (Mixin<,>)),
           "we assume the mixin does not have a base object");
-      return MixinTargetMockUtility.CreateMixinWithMockedTarget<BindableObjectWithIdentityBaseImplementation, object> (wrapper, wrapper);
+      var impl = new BindableObjectWithIdentityBaseImplementation (wrapper);
+      ((IInitializableMixin) impl).Initialize (wrapper, null, false);
+      return impl;
     }
 
     private readonly BindableObjectWithIdentityBase _wrapper;

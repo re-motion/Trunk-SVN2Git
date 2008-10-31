@@ -23,7 +23,9 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNull ("wrapper", wrapper);
       Assertion.DebugAssert (!ReflectionUtility.CanAscribe (typeof (BindableObjectBaseImplementation), typeof (Mixin<,>)),
           "we assume the mixin does not have a base object");
-      return MixinTargetMockUtility.CreateMixinWithMockedTarget<BindableObjectBaseImplementation, object> (wrapper, wrapper);
+      var impl = new BindableObjectBaseImplementation (wrapper);
+      ((IInitializableMixin) impl).Initialize (wrapper, null, false);
+      return impl;
     }
 
     private readonly BindableObjectBase _wrapper;
@@ -38,7 +40,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       Assertion.DebugAssert (!ReflectionUtility.CanAscribe (typeof (BindableObjectMixin), typeof (Mixin<,>)),
           "we assume the mixin does not have a base object");
-      MixinTargetMockUtility.SignalOnDeserialization (this, _wrapper);
+      ((IInitializableMixin) this).Initialize (_wrapper, null, true);
     }
 
     public string BaseDisplayName
