@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
@@ -126,7 +127,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public HtmlWriter Value (string s)
     {
-      _xmlWriter.WriteValue(s);
+      //_xmlWriter.WriteValue(s);
+      _xmlWriter.WriteValue (StringUtility.NullToEmpty(s));
       return this;
     }
 

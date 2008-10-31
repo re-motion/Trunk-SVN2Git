@@ -9,11 +9,12 @@
  */
 
 using System;
+using Remotion.Diagnostics.ToText;
 using Remotion.Text.CommandLine;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public class AclExpanderApplicationSettings
+  public class AclExpanderApplicationSettings : IToText
   {
     [CommandLineStringArgument ("user", true, Placeholder = "accountants/john.doe", Description = "Fully qualified name of user(s) to query access types for.")]
     public string UserName;
@@ -27,11 +28,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     [CommandLineStringArgument ("dir", true, Placeholder = "c:\\temp", Description = "Directory where the ACL-expansion gets written.")]
     public string Directory = ".";
 
-    [CommandLineFlagArgument ("multifile", true, Description = "Whether to create a single file for all users + permissions or a master file and several detail files.")]
-    public bool UseMultipleFileOutput = false;
+    [CommandLineFlagArgument ("multifile", false, Description = "Whether to create a single file for all users + permissions or a master file and several detail files.")]
+    public bool UseMultipleFileOutput;
 
     [CommandLineFlagArgument ("verbose", false, Description = "Verbose output")]
     public bool Verbose;
 
+    public void ToText (IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.sb().e ("user", UserName).e ("last", UserLastName).e ("first", UserFirstName).e ("dir", Directory).e ("multifile", UseMultipleFileOutput).e ("verbose", Verbose).se();
+    }
   }
 }

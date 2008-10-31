@@ -243,7 +243,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       return (from aee in aclExpansion
              let user = aee.User
-             orderby user.LastName, user.FirstName
+             orderby user.LastName, user.FirstName, user.UserName
              select user).Distinct();
     }
 

@@ -250,7 +250,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void WriteTableBody (List<AclExpansionEntry> aclExpansion)
     {
-      var aclExpansionUserGrouping = GetAclExpansionGrouping (aclExpansion, (aee => aee.User));
+      //var aclExpansionUserGrouping = GetAclExpansionGrouping (aclExpansion, (aee => aee.User));
+
+      var aclExpansionUserGrouping = from aee in aclExpansion
+                                     orderby aee.User.DisplayName
+                                     group aee by aee.User;
 
       foreach (var userGroup in aclExpansionUserGrouping)
       {
@@ -262,7 +266,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       WriteTableDataWithRowCount (userGroup.Key.DisplayName, userGroup.Count ());
   
-      var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
+      //var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
+      var aclExpansionRoleGrouping = from aee in userGroup
+                                     orderby aee.Role.Group.DisplayName, aee.Role.Position.DisplayName
+                                     group aee by aee.Role;
 
       foreach (var roleGroup in aclExpansionRoleGrouping)
       {
@@ -274,7 +281,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       WriteTableDataForRole (roleGroup.Key, roleGroup.Count ());
  
-      var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
+      //var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
+      var aclExpansionClassGrouping = from aee in roleGroup
+                                      orderby aee.Class.DisplayName
+                                      group aee by aee.Class;
+
 
       foreach (var classGroup in aclExpansionClassGrouping)
       {
@@ -294,6 +305,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         WriteTableDataWithRowCount ("_NO_CLASSES_DEFINED_", classGroup.Count ());
       }
+
+      //var classGroupSorted = from c in classGroup
+      //                       orderby c.StateCombinations, c.AccessConditions, c.
+      //                       select c.AccessTypeDefinitions;
+
 
       foreach (var aclExpansionEntry in classGroup)
       {

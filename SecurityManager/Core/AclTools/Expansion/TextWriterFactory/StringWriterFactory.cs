@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 
   public class StringWriterFactory : TextWriterFactoryBase, IToText
   {
-    private readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData>();
+    //private readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData>();
 
     public override TextWriter NewTextWriter (string name)
     {
@@ -66,6 +66,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 
   public abstract class TextWriterFactoryBase : ITextWriterFactory
   {
+    protected readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData> ();
     public abstract TextWriter NewTextWriter (string name);
     public abstract string GetRelativePath (string fromName, string toName);
     public string Directory { get; set; }
@@ -74,11 +75,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
     {
       return name + "." + Extension;
     }
+
+    public TextWriterData GetTextWriterData (string name)
+    {
+      return nameToTextWriterData[name];
+    }
+
+    public int Count { get { return nameToTextWriterData.Count; } }
   }
 
   public class StreamWriterFactory : TextWriterFactoryBase, ITextWriterFactory, IToText
   {
-    private readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData> ();
+    //private readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData> ();
 
     //public StreamWriterFactory (string directory)
     //{
