@@ -9,12 +9,11 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Reflection.Emit;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
@@ -28,28 +27,29 @@ using Remotion.Reflection.CodeGeneration;
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
   [TestFixture]
-  public class ModuleManagerTest
+  public class ModuleManagerTest : CodeGenerationBaseTest
   {
-    private IModuleManager _moduleManager;
+    private ModuleManager _emptyModuleManager;
     private const string c_signedAssemblyFileName = "Remotion.Mixins.Generated.ModuleManagerTest.Signed.dll";
     private const string c_unsignedAssemblyFileName = "Remotion.Mixins.Generated.ModuleManagerTest.Unsigned.dll";
 
+    private ModuleManager _savedModuleManager;
+    private ModuleManager _unsavedModuleManager;
+    private string _signedSavedModulePath;
+    private string _unsignedSavedModulePath;
+    private string[] _savedModulePaths;
+    private Type _signedSavedType;
+    private Type _unsignedSavedType;
+
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
-      ConcreteTypeBuilder.SetCurrent (null);
-      _moduleManager = ConcreteTypeBuilder.Current.Scope;
-      _moduleManager.SignedAssemblyName = Path.GetFileNameWithoutExtension (c_signedAssemblyFileName);
-      _moduleManager.UnsignedAssemblyName = Path.GetFileNameWithoutExtension (c_unsignedAssemblyFileName);
-      _moduleManager.SignedModulePath = c_signedAssemblyFileName;
-      _moduleManager.UnsignedModulePath = c_unsignedAssemblyFileName;
-      DeleteSavedAssemblies();
+      _emptyModuleManager = new ModuleManager ();
     }
 
     [TearDown]
-    public void TearDown ()
+    public override void TearDown ()
     {
-      DeleteSavedAssemblies();
     }
 
     private void DeleteSavedAssemblies ()
@@ -60,237 +60,154 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         File.Delete (c_unsignedAssemblyFileName);
     }
 
+    [TestFixtureSetUp]
+    public void TestFixtureSetUp ()
+    {
+      DeleteSavedAssemblies ();
+
+      _unsavedModuleManager = new ModuleManager();
+
+      _savedModuleManager = new ModuleManager
+      {
+        SignedAssemblyName = Path.GetFileNameWithoutExtension (c_signedAssemblyFileName),
+        UnsignedAssemblyName = Path.GetFileNameWithoutExtension (c_unsignedAssemblyFileName),
+        SignedModulePath = c_signedAssemblyFileName,
+        UnsignedModulePath = c_unsignedAssemblyFileName
+      };
+      var savedBuilder = new ConcreteTypeBuilder {Scope = _savedModuleManager};
+
+      var signedConfiguration = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (object), GenerationPolicy.ForceGeneration);
+      var unsignedConfiguration = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1), GenerationPolicy.ForceGeneration);
+
+      _signedSavedType = savedBuilder.GetConcreteType (signedConfiguration);
+      _unsignedSavedType = savedBuilder.GetConcreteType (unsignedConfiguration);
+
+      _savedModulePaths = _savedModuleManager.SaveAssemblies ();
+      
+      _signedSavedModulePath = _savedModulePaths[0];
+      _unsignedSavedModulePath = _savedModulePaths[1];
+    }
+
+    [TestFixtureTearDown]
+    public void TestFixtureTearDown()
+    {
+      DeleteSavedAssemblies ();
+    }
+
     [Test]
     public void CreateTypeGenerator ()
     {
       TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
 
-      ITypeGenerator generator = _moduleManager.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache, bt1, GuidNameProvider.Instance, GuidNameProvider.Instance);
+      ITypeGenerator generator = SavedTypeBuilder.Scope.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache, bt1, GuidNameProvider.Instance, GuidNameProvider.Instance);
       Assert.IsNotNull (generator);
       Assert.IsTrue (bt1.Type.IsAssignableFrom (generator.GetBuiltType()));
     }
 
     [Test]
-    public void HasAssemblyFromUnsignedType ()
+    public void HasAssemblies_False ()
     {
-      Assert.IsFalse (_moduleManager.HasUnsignedAssembly);
-      Assert.IsFalse (_moduleManager.HasSignedAssembly);
-      Assert.IsFalse (_moduleManager.HasAssemblies);
-
-      GetUnsignedConcreteType(); // type from unsigned assembly
-
-      Assert.IsTrue (_moduleManager.HasUnsignedAssembly);
-      Assert.IsFalse (_moduleManager.HasSignedAssembly);
-      Assert.IsTrue (_moduleManager.HasAssemblies);
+      Assert.That (_emptyModuleManager.HasUnsignedAssembly, Is.False);
+      Assert.That (_emptyModuleManager.HasSignedAssembly, Is.False);
+      Assert.That (_emptyModuleManager.HasAssemblies, Is.False);
     }
 
     [Test]
-    public void HasAssemblyFromSignedType ()
+    public void HasAssemblies_True ()
     {
-      Assert.IsFalse (_moduleManager.HasUnsignedAssembly);
-      Assert.IsFalse (_moduleManager.HasSignedAssembly);
-      Assert.IsFalse (_moduleManager.HasAssemblies);
-
-      GetSignedConcreteType(); // type from signed assembly
-
-      Assert.IsFalse (_moduleManager.HasUnsignedAssembly);
-      Assert.IsTrue (_moduleManager.HasSignedAssembly);
-      Assert.IsTrue (_moduleManager.HasAssemblies);
+      Assert.That (_savedModuleManager.HasUnsignedAssembly, Is.True);
+      Assert.That (_savedModuleManager.HasSignedAssembly, Is.True);
+      Assert.That (_savedModuleManager.HasAssemblies, Is.True);
     }
 
     [Test]
     public void SaveAssemblies ()
     {
-      GetUnsignedConcreteType();
-      GetSignedConcreteType();
+      Assert.AreEqual (2, _savedModulePaths.Length);
+      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, c_signedAssemblyFileName), _savedModulePaths[0]);
+      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, c_unsignedAssemblyFileName), _savedModulePaths[1]);
 
-      Assert.IsFalse (File.Exists (c_signedAssemblyFileName));
-      Assert.IsFalse (File.Exists (c_unsignedAssemblyFileName));
-
-      string[] paths = _moduleManager.SaveAssemblies();
-
-      Assert.AreEqual (2, paths.Length);
-      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, c_signedAssemblyFileName), paths[0]);
-      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, c_unsignedAssemblyFileName), paths[1]);
-
-      Assert.IsTrue (File.Exists (c_signedAssemblyFileName));
-      Assert.IsTrue (File.Exists (c_unsignedAssemblyFileName));
+      Assert.IsTrue (File.Exists (_savedModulePaths[0]));
+      Assert.IsTrue (File.Exists (_savedModulePaths[1]));
     }
 
     [Test]
-    public void SaveUnsignedAssemblyWithDifferentNameAndPath ()
+    public void SavedAssemblyNameAndPath ()
     {
-      _moduleManager.UnsignedAssemblyName = "Foo";
-      string path = Path.GetTempFileName();
-      _moduleManager.UnsignedModulePath = path;
-      File.Delete (path);
+      AssemblyName signedName = AssemblyName.GetAssemblyName (_signedSavedModulePath);
+      Assert.AreEqual (Path.GetFileNameWithoutExtension (c_signedAssemblyFileName), signedName.Name);
 
-      GetUnsignedConcreteType();
-
-      Assert.IsFalse (File.Exists (path));
-      string[] actualPaths = _moduleManager.SaveAssemblies();
-
-      Assert.AreEqual (1, actualPaths.Length);
-      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, path), actualPaths[0]);
-
-      Assert.IsTrue (File.Exists (path));
-
-      try
-      {
-        AssemblyName name = AssemblyName.GetAssemblyName (path);
-        Assert.AreEqual ("Foo", name.Name);
-      }
-      finally
-      {
-        File.Delete (path);
-      }
-    }
-
-    [Test]
-    public void SaveSignedAssemblyWithDifferentNameAndPath ()
-    {
-      _moduleManager.SignedAssemblyName = "Bar";
-      string path = Path.GetTempFileName();
-      _moduleManager.SignedModulePath = path;
-      File.Delete (path);
-
-      GetSignedConcreteType();
-
-      Assert.IsFalse (File.Exists (path));
-      string[] actualPaths = _moduleManager.SaveAssemblies();
-
-      Assert.AreEqual (1, actualPaths.Length);
-      Assert.AreEqual (Path.Combine (Environment.CurrentDirectory, path), actualPaths[0]);
-
-      Assert.IsTrue (File.Exists (path));
-
-      try
-      {
-        AssemblyName name = AssemblyName.GetAssemblyName (path);
-        Assert.AreEqual ("Bar", name.Name);
-      }
-      finally
-      {
-        File.Delete (path);
-      }
+      AssemblyName unsignedName = AssemblyName.GetAssemblyName (_unsignedSavedModulePath);
+      Assert.AreEqual (Path.GetFileNameWithoutExtension (c_unsignedAssemblyFileName), unsignedName.Name);
     }
 
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The name can only be set before the first type is built.")]
     public void SettingSignedNameThrowsWhenTypeGenerated ()
     {
-      GetUnsignedConcreteType();
-      _moduleManager.SignedAssemblyName = "Foo";
+      _savedModuleManager.SignedAssemblyName = "Foo";
     }
 
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The module path can only be set before the first type is built.")]
     public void SettingSignedPathThrowsWhenTypeGenerated ()
     {
-      GetUnsignedConcreteType();
-      _moduleManager.SignedModulePath = "Foo.dll";
+      _savedModuleManager.SignedModulePath = "Foo.dll";
     }
 
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The name can only be set before the first type is built.")]
     public void SettingUnsignedNameThrowsWhenTypeGenerated ()
     {
-      GetUnsignedConcreteType();
-      _moduleManager.UnsignedAssemblyName = "Foo";
+      _savedModuleManager.UnsignedAssemblyName = "Foo";
     }
 
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The module path can only be set before the first type is built.")]
     public void SettingUnsignedPathThrowsWhenTypeGenerated ()
     {
-      GetUnsignedConcreteType();
-      _moduleManager.UnsignedModulePath = "Foo.dll";
+      _savedModuleManager.UnsignedModulePath = "Foo.dll";
     }
 
     [Test]
     public void SavedSignedAssemblyHasStrongName ()
     {
-      GetSignedConcreteType();
-
-      _moduleManager.SaveAssemblies();
-      AssemblyName assemblyName = AssemblyName.GetAssemblyName (c_signedAssemblyFileName);
-
+      AssemblyName assemblyName = AssemblyName.GetAssemblyName (_signedSavedModulePath);
       Assert.IsTrue (ReflectionUtility.IsAssemblySigned (assemblyName));
     }
 
     [Test]
     public void SavedUnsignedAssemblyHasWeakName ()
     {
-      GetUnsignedConcreteType();
-
-      _moduleManager.SaveAssemblies();
-      AssemblyName assemblyName = AssemblyName.GetAssemblyName (c_unsignedAssemblyFileName);
-
+      AssemblyName assemblyName = AssemblyName.GetAssemblyName (_unsignedSavedModulePath);
       Assert.IsFalse (ReflectionUtility.IsAssemblySigned (assemblyName));
     }
 
     [Test]
-    public void SavedUnsignedAssemblyHasMixinAssemblyName ()
+    public void SavedAssembliesContainGeneratedTypes_AndHaveAssemblyAttributes ()
     {
-      GetUnsignedConcreteType();
-
-      _moduleManager.SaveAssemblies();
-      AssemblyName assemblyName = AssemblyName.GetAssemblyName (c_unsignedAssemblyFileName);
-
-      Assert.AreEqual (Path.GetFileNameWithoutExtension (c_unsignedAssemblyFileName), assemblyName.Name);
-    }
-
-    [Test]
-    public void SavedSignedAssemblyHasMixinAssemblyName ()
-    {
-      GetSignedConcreteType();
-
-      _moduleManager.SaveAssemblies();
-      AssemblyName assemblyName = AssemblyName.GetAssemblyName (c_signedAssemblyFileName);
-
-      Assert.AreEqual (Path.GetFileNameWithoutExtension (c_signedAssemblyFileName), assemblyName.Name);
-    }
-
-    [Test]
-    public void SavedUnsignedAssemblyContainsGeneratedType ()
-    {
-      Type concreteType = GetUnsignedConcreteType();
-      _moduleManager.SaveAssemblies();
-
-      CheckForTypeInAssembly (concreteType.FullName, AssemblyName.GetAssemblyName (c_unsignedAssemblyFileName));
-    }
-
-    [Test]
-    public void SavedSignedAssemblyContainsGeneratedType ()
-    {
-      Type concreteType = GetSignedConcreteType();
-      _moduleManager.SaveAssemblies();
-
-      CheckForTypeInAssembly (concreteType.FullName, AssemblyName.GetAssemblyName (c_signedAssemblyFileName));
+      AppDomainRunner.Run (
+          delegate (object[] args)
+          {
+            foreach (Tuple<string, string> assemblyAndTypeName in args)
+            {
+              Assembly loadedAssembly = Assembly.LoadFile (assemblyAndTypeName.A);
+              Assert.IsNotNull (loadedAssembly.GetType (assemblyAndTypeName.B));
+              Assert.That (loadedAssembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
+            }
+          },
+          Tuple.NewTuple (_signedSavedModulePath, _signedSavedType.FullName),
+          Tuple.NewTuple (_unsignedSavedModulePath, _unsignedSavedType.FullName));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No types have been built, so no assembly has been generated.")]
     public void SaveThrowsWhenNoTypeCreated ()
     {
-      _moduleManager.SaveAssemblies();
+      _emptyModuleManager.SaveAssemblies();
     }
 
     [Test]
     public void GeneratedAssemblies_NonApplicationAssemblyAttribute ()
     {
-      Type t1 = GetUnsignedConcreteType();
-      Type t2 = GetSignedConcreteType();
-
-      Assert.IsTrue (t1.Assembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
-      Assert.IsTrue (t2.Assembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
-    }
-
-    [Test]
-    public void SavedAssemblies_NonApplicationAssemblyAttribute ()
-    {
-      GetUnsignedConcreteType();
-      GetSignedConcreteType();
-
-      string[] assemblyPaths = _moduleManager.SaveAssemblies();
-      CheckForAttributeOnAssembly (typeof (NonApplicationAssemblyAttribute), AssemblyName.GetAssemblyName (assemblyPaths[0]));
-      CheckForAttributeOnAssembly (typeof (NonApplicationAssemblyAttribute), AssemblyName.GetAssemblyName (assemblyPaths[1]));
+      Assert.IsTrue (_signedSavedType.Assembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
+      Assert.IsTrue (_unsignedSavedType.Assembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
     }
 
     [Test]
@@ -342,101 +259,46 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void SignedModule_Null ()
     {
-      var scope1 = new ModuleManager { UnsignedAssemblyName = "abc{counter}", UnsignedModulePath = "xyz{counter}" };
-      Assert.That (scope1.SignedModule, Is.Null);
+      Assert.That (_emptyModuleManager.SignedModule, Is.Null);
     }
 
     [Test]
     public void UnsignedModule_Null ()
     {
-      var scope1 = new ModuleManager { UnsignedAssemblyName = "abc{counter}", UnsignedModulePath = "xyz{counter}" };
-      Assert.That (scope1.UnsignedModule, Is.Null);
+      Assert.That (_emptyModuleManager.UnsignedModule, Is.Null);
     }
 
     [Test]
     public void SignedModule_NonNull ()
     {
-      var scope1 = new ModuleManager { SignedModulePath = "xyz{counter}.dll" };
-      scope1.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache,
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (object), GenerationPolicy.ForceGeneration), GuidNameProvider.Instance, GuidNameProvider.Instance);
-      Assert.That (scope1.SignedModule, Is.Not.Null);
-      Assert.That (scope1.SignedModule.FullyQualifiedName, Is.EqualTo (Path.GetFullPath (scope1.SignedModulePath)));
+      Assert.That (_savedModuleManager.SignedModule, Is.Not.Null);
+      Assert.That (_savedModuleManager.SignedModule.FullyQualifiedName, Is.EqualTo (Path.GetFullPath (_savedModuleManager.SignedModulePath)));
     }
 
     [Test]
     public void UnsignedModule_NonNull ()
     {
-      var scope1 = new ModuleManager { UnsignedModulePath = "xyz{counter}.dll" };
-      scope1.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache,
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)), GuidNameProvider.Instance, GuidNameProvider.Instance);
-      Assert.That (scope1.UnsignedModule, Is.Not.Null);
-      Assert.That (scope1.UnsignedModule.FullyQualifiedName, Is.EqualTo (Path.GetFullPath (scope1.UnsignedModulePath)));
+      Assert.That (_savedModuleManager.UnsignedModule, Is.Not.Null);
+      Assert.That (_savedModuleManager.UnsignedModule.FullyQualifiedName, Is.EqualTo (Path.GetFullPath (_savedModuleManager.UnsignedModulePath)));
     }
 
     [Test]
     public void CreatedAssemblyBuilders ()
     {
-      var scope1 = new ModuleManager { UnsignedModulePath = "xyz{counter}.dll" };
-      Type t = scope1.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache,
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)), GuidNameProvider.Instance, GuidNameProvider.Instance).GetBuiltType();
-      Assert.That (ModuleManager.CreatedAssemblies.Contains (t.Assembly), Is.True);
+      Assert.That (ModuleManager.CreatedAssemblies.Contains (_signedSavedType.Assembly), Is.True);
+      Assert.That (ModuleManager.CreatedAssemblies.Contains (_unsignedSavedType.Assembly), Is.True);
     }
 
     [Test]
     public void CreateClassEmitter ()
     {
-      IClassEmitter emitter = 
-          _moduleManager.CreateClassEmitter ("X", typeof (BaseType2), new[] { typeof (IMarkerInterface) }, TypeAttributes.Public, true);
+      IClassEmitter emitter = _unsavedModuleManager.CreateClassEmitter ("X", typeof (BaseType2), new[] { typeof (IMarkerInterface) }, TypeAttributes.Public, true);
       Type type = emitter.BuildType();
       Assert.That (emitter, Is.InstanceOfType (typeof (CustomClassEmitter)));
       Assert.That (type.BaseType, Is.SameAs (typeof (BaseType2)));
       Assert.That (type.GetInterface (typeof (IMarkerInterface).FullName), Is.SameAs (typeof (IMarkerInterface)));
       Assert.That (type.Attributes, Is.EqualTo (TypeAttributes.Public));
       Assert.That (ReflectionUtility.IsAssemblySigned (type.Assembly), Is.False);
-    }
-
-    private Type GetUnsignedConcreteType ()
-    {
-      Type t = TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
-      Assert.IsFalse (ReflectionUtility.IsAssemblySigned (t.Assembly));
-      return t;
-    }
-
-    private Type GetSignedConcreteType ()
-    {
-      Type t = TypeFactory.GetConcreteType (typeof (List<int>), GenerationPolicy.ForceGeneration);
-      Assert.IsTrue (ReflectionUtility.IsAssemblySigned (t.Assembly));
-      return t;
-    }
-
-    private void CheckForTypeInAssembly (string typeName, AssemblyName assemblyName)
-    {
-      AppDomainRunner.Run (
-          delegate (object[] args)
-          {
-            AssemblyName assemblyToLoad = (AssemblyName) args[0];
-            string typeToFind = (string) args[1];
-
-            Assembly loadedAssembly = Assembly.Load (assemblyToLoad);
-            Assert.IsNotNull (loadedAssembly.GetType (typeToFind));
-          },
-          assemblyName,
-          typeName);
-    }
-
-    private void CheckForAttributeOnAssembly (Type attributeType, AssemblyName assemblyName)
-    {
-      AppDomainRunner.Run (
-          delegate (object[] args)
-          {
-            AssemblyName assemblyToLoad = (AssemblyName) args[0];
-            Type attributeToFind = (Type) args[1];
-
-            Assembly loadedAssembly = Assembly.Load (assemblyToLoad);
-            Assert.IsTrue (loadedAssembly.IsDefined (attributeToFind, false));
-          },
-          assemblyName,
-          attributeType);
     }
   }
 }
