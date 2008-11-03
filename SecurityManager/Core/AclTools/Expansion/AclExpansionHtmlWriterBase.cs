@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     protected virtual void WriteTableStart (string tableId)
     {
-      htmlWriter.Tags.table ().a ("style", "width: 100%;").a ("class", "aclExpansionTable").a ("id", tableId);
+      htmlWriter.Tags.table ().Attribute ("style", "width: 100%;").Attribute ("class", "aclExpansionTable").Attribute ("id", tableId);
     }
 
 
@@ -76,7 +76,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     protected virtual void WriteHeaderCell (string columnName)
     {
-      htmlWriter.Tags.th ().a ("class", "header");
+      htmlWriter.Tags.th ().Attribute ("class", "header");
       htmlWriter.Value (columnName);
       htmlWriter.Tags.thEnd ();
     }

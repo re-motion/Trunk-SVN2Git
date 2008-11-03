@@ -57,13 +57,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       string ElementNameExpected = _openElementStack.Pop();
       if (ElementNameExpected != elementName)
       {
-        throw new XmlException (String.Format ("Wrong closing tag in XML: Expected {0} but was {1}:\n{2}", ElementNameExpected, elementName, _xmlWriter.ToString()));
+        throw new XmlException (String.Format ("Wrong closing tag in HTML: Expected {0} but was {1}:\n{2}", ElementNameExpected, elementName, _xmlWriter.ToString()));
       }
       _xmlWriter.WriteEndElement ();
       return this;
     }
 
-    public HtmlWriter a (string attributeName, string attributeValue)
+    public HtmlWriter Attribute (string attributeName, string attributeValue)
     {
       _xmlWriter.WriteAttributeString (attributeName,attributeValue);
       return this;

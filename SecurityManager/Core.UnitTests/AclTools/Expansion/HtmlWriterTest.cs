@@ -66,7 +66,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void SpecificTagsTest ()
     {
-      string[] tagNames = new [] { "body", "table", "tr", "td", "th" };
+      string[] tagNames = new[] { "html", "head", "title", "style", "body", "table", "th", "tr", "td", "p"  };
       foreach (string tagName in tagNames)
       {
         AssertTagNameOpenCloseHtml (tagName);
@@ -92,6 +92,39 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         PrivateInvoke.InvokePublicMethod (htmlWriterTagWriter, tagName + "End");
       }
       return stringWriter.ToString ();
+    }
+
+
+    [Test]
+    public void HtmlPageTest ()
+    {
+      var stringWriter = new StringWriter ();
+      using (var htmlWriter = new HtmlWriter (stringWriter, false))
+      {
+        htmlWriter.Tags.html ();
+          htmlWriter.Tags.head ();
+            htmlWriter.Tags.title ();
+              htmlWriter.Value ("Title: My HTML Page");
+            htmlWriter.Tags.titleEnd ();
+          htmlWriter.Tags.headEnd ();
+          htmlWriter.Tags.body ();
+            htmlWriter.Tags.p ();
+              htmlWriter.Attribute ("id", "first_paragraph");
+              htmlWriter.Value ("Smells like...");
+              htmlWriter.Tags.br ();
+              htmlWriter.Value ("Victory");
+              htmlWriter.Tags.table ().Attribute ("class", "myTable");
+                htmlWriter.Tags.tr().Tags.th().Value("1st column").Tags.thEnd().Tags.trEnd();
+                htmlWriter.Tags.tr ().Tags.td ().Value ("some data").Tags.tdEnd ().Tags.trEnd ();
+                htmlWriter.Tags.tr ().Tags.td ().Value ("some more data").Tags.tdEnd ().Tags.trEnd ();
+              htmlWriter.Tags.tableEnd ();
+            htmlWriter.Tags.pEnd ();
+          htmlWriter.Tags.bodyEnd ();
+        htmlWriter.Tags.htmlEnd ();
+      }
+      var result = stringWriter.ToString ();
+      To.ConsoleLine.e (() => result);
+      Assert.That (result, Is.EqualTo ("<html><head><title>Title: My HTML Page</title></head><body><p id=\"first_paragraph\">Smells like...<br />Victory<table class=\"myTable\"><tr><th>1st column</th></tr><tr><td>some data</td></tr><tr><td>some more data</td></tr></table></p></body></html>"));
     }
 
   }

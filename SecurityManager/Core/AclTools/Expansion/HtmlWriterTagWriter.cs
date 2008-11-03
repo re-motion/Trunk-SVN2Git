@@ -10,9 +10,24 @@
 // 
 // 
 using System;
+using System.IO;
+using Remotion.SecurityManager.AclTools.Expansion;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  /// <summary>
+  /// Helper class for convenient writing of opening/closing HTML-tags to a <see cref="HtmlWriter"/>.
+  /// <example>
+  /// Example writing HTML to <see cref="StringWriter"/>
+  /// <code><![CDATA[
+  /// var textWriter = new StringWriter ();
+  /// using (var htmlWriter = new HtmlWriter (textWriter, false))
+  /// {
+  ///   htmlWriter.Tags.head();
+  /// }
+  /// ]]></code>
+  /// </example>
+  /// </summary>
   public class HtmlWriterTagWriter
   {
     private readonly HtmlWriter _htmlWriter;
@@ -92,5 +107,67 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _htmlWriter.TagEnd ("th");
       return _htmlWriter;
     }
+
+    public HtmlWriter head ()
+    {
+      _htmlWriter.Tag ("head");
+      return _htmlWriter;
+    }
+
+    public HtmlWriter headEnd ()
+    {
+      _htmlWriter.TagEnd ("head");
+      return _htmlWriter;
+    }
+
+    public HtmlWriter title ()
+    {
+      _htmlWriter.Tag ("title");
+      return _htmlWriter;
+    }
+
+    public HtmlWriter titleEnd ()
+    {
+      _htmlWriter.TagEnd ("title");
+      return _htmlWriter;
+    }
+
+    public HtmlWriter html ()
+    {
+      _htmlWriter.Tag ("html");
+      return _htmlWriter;
+    }
+
+    public HtmlWriter htmlEnd ()
+    {
+      _htmlWriter.TagEnd ("html");
+      return _htmlWriter;
+    }
+
+
+    public HtmlWriter style ()
+    {
+      _htmlWriter.Tag ("style");
+      return _htmlWriter;
+    }
+
+    public HtmlWriter styleEnd ()
+    {
+      _htmlWriter.TagEnd ("style");
+      return _htmlWriter;
+    }
+
+    public HtmlWriter p ()
+    {
+      _htmlWriter.Tag ("p");
+      return _htmlWriter;
+    }
+
+    public HtmlWriter pEnd ()
+    {
+      _htmlWriter.TagEnd ("p");
+      return _htmlWriter;
+    }
+
   }
 }

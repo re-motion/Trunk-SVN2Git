@@ -96,8 +96,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteTableRowBeginIfNotInTableRow ();
       htmlWriter.Tags.td ();
       htmlWriter.Tag ("a");
-      htmlWriter.a ("href", relativePath);
-      htmlWriter.a ("target", "_blank");
+      htmlWriter.Attribute ("href", relativePath);
+      htmlWriter.Attribute ("target", "_blank");
       htmlWriter.Value (relativePath);
       htmlWriter.TagEnd ("a");
       htmlWriter.Tags.tdEnd ();

@@ -115,7 +115,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       if (rowCount > 0)
       {
-        htmlWriter.a ("rowspan", Convert.ToString (rowCount));
+        htmlWriter.Attribute ("rowspan", Convert.ToString (rowCount));
       }
       return htmlWriter;
     }
