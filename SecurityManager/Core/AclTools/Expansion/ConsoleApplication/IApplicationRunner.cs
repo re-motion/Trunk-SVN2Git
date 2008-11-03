@@ -16,8 +16,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
 {
   public interface IApplicationRunner<TApplicationSettings>
   {
-    void Init (TApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter);
-    //int Run (TApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter);
-    void Run ();
+    void Run (TApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter);
   }
 }

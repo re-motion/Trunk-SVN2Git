@@ -82,6 +82,10 @@
     <Compile Include="AclTools\Expansion\ConsoleApplication\IApplicationRunner.cs" />
     <Compile Include="AclTools\Expansion\IUserRoleAclAceCombinations.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilderFast.cs" />
+    <Compile Include="AclTools\Expansion\TextWriterFactory\ITextWriterFactory.cs" />
+    <Compile Include="AclTools\Expansion\TextWriterFactory\StreamWriterFactory.cs" />
+    <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterData.cs" />
+    <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterFactoryBase.cs" />
     <Compile Include="AclTools\Expansion\UserRoleAclAceCombination.cs" />
     <Compile Include="AclTools\Expansion\UserRoleAclAceCombinations.cs" />
     <Compile Include="Configuration\SecurityManagerConfiguration.cs">

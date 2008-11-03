@@ -11,8 +11,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.SecurityManager.Domain.AccessControl;
 
@@ -23,12 +21,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     public List<AccessControlList> FindAccessControlLists ()
     {
-      //using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      //{
-        var findAllAclsQuery = from acl in QueryFactory.CreateLinqQuery<AccessControlList> ()
-                               select acl;
-        return findAllAclsQuery.ToList ();
-      //}
+      var findAllAclsQuery = from acl in QueryFactory.CreateLinqQuery<AccessControlList> ()
+                             select acl;
+      return findAllAclsQuery.ToList ();
     }
   }
 }

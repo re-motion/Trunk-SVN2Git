@@ -30,6 +30,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var aclExpander = new AclExpander();
         var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
         var stringWriterFactory = new StringWriterFactory();
+        stringWriterFactory.Directory = "";
         var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (stringWriterFactory, false);
         aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
         To.ConsoleLine.e (stringWriterFactory);

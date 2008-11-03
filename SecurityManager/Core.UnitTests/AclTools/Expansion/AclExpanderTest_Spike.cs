@@ -152,7 +152,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var ace = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
       List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList_UserList_AceList (
+        GetAclExpansionEntryList_UserList_AceList_Extended (
           List.New (User),
           List.New (TestHelper.CreateAcl (ace))
         );
@@ -185,7 +185,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       //To.ConsoleLine.e (() => aceGroupAll);
 
       List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList_UserList_AceList (
+        GetAclExpansionEntryList_UserList_AceList_Extended (
           List.New (User),
           List.New (TestHelper.CreateAcl (aceGroupOwning, aceAbstractRole, aceGroupAll))
         );
@@ -220,7 +220,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       To.ConsoleLine.e (() => aceGroupSpecificTenant);
 
       List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList_UserList_AceList (
+        GetAclExpansionEntryList_UserList_AceList_Extended (
           List.New (otherTenantUser),
           List.New (TestHelper.CreateAcl (aceGroupSpecificTenant))
         );
@@ -254,7 +254,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       //To.ConsoleLine.e (() => otherTenantAceSpecificTenant);
 
       List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList_UserList_AceList (
+        GetAclExpansionEntryList_UserList_AceList_Extended (
           List.New (otherTenantUser, User),
         //List.New (otherTenantUser),
           List.New (TestHelper.CreateAcl (otherTenantAceSpecificTenant, aceGroupOwning))
@@ -287,7 +287,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
 
       List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList_UserList_AceList (
+        GetAclExpansionEntryList_UserList_AceList_Extended (
           List.New (User),
           List.New (TestHelper.CreateAcl (aceOwningTenant, aceSpecificTenant, aceGroupOwning))
         );
@@ -328,7 +328,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
 
       List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList_UserList_AceList (
+        GetAclExpansionEntryList_UserList_AceList_Extended (
           List.New (User),
         //List.New (TestHelper.CreateAcl (aceMatchAll, aceSpecificTenant, aceGroupOwning))
           List.New (TestHelper.CreateAcl (aceOwningTenant), TestHelper.CreateAcl (aceSpecificTenant), TestHelper.CreateAcl (aceGroupOwning))
@@ -369,7 +369,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    private List<AclExpansionEntry> GetAclExpansionEntryList_UserList_AceList (
+    private List<AclExpansionEntry> GetAclExpansionEntryList_UserList_AceList_Extended (
       List<User> userList, List<AccessControlList> aclList)
     {
       var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); //new TestAclExpanderUserFinder (userList);

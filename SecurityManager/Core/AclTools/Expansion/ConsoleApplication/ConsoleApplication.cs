@@ -43,8 +43,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
         try
         {
           TApplication application = new TApplication();
-          application.Init (settings, System.Console.Error, System.Console.Out);
-          application.Run();
+          //application.Init (settings, System.Console.Error, System.Console.Out);
+          application.Run (settings, System.Console.Error, System.Console.Out);
         }
         catch (Exception e)
         {

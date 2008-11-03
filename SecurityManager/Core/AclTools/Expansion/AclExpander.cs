@@ -14,6 +14,7 @@ using System.Linq;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
@@ -23,11 +24,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public AclExpander (IUserRoleAclAceCombinations userRoleAclAceCombinations)
     {
+      ArgumentUtility.CheckNotNull ("userRoleAclAceCombinations", userRoleAclAceCombinations);
       _userRoleAclAceCombinations = userRoleAclAceCombinations;
     }
 
     public AclExpander (IAclExpanderUserFinder userFinder, IAclExpanderAclFinder accessControlListFinder)
     {
+      ArgumentUtility.CheckNotNull ("userFinder", userFinder);
+      ArgumentUtility.CheckNotNull ("accessControlListFinder", accessControlListFinder);
       _userRoleAclAceCombinations = new UserRoleAclAceCombinations (userFinder, accessControlListFinder);
     }
 
@@ -35,15 +39,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// Default behavior is to use all <see cref="User"/>|s and all <see cref="AccessControlList"/>|s.
     /// </summary>
     public AclExpander () : this (new AclExpanderUserFinder (), new AclExpanderAclFinder ()) {}
-
-
-    ///// <summary>
-    ///// Filter  <see cref="User"/>|s by the passed first-, last- and fully qualified user name. Pass <c>null</c> to not filter
-    ///// for the respective name. Uses all <see cref="AccessControlList"/>|s.
-    ///// </summary>
-    //public AclExpander (string userFirstName, string userLastName, string userName) : 
-    //  this (new AclExpanderUserFinder (userFirstName, userLastName, userName), new AclExpanderAclFinder ()) 
-    //{ }
 
 
     public List<AclExpansionEntry> GetAclExpansionEntryListSortedAndDistinct ()
@@ -91,20 +86,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // in the near future (to be replaced by a deny concept), which transforms the problem, since any matching ACE
       // will contribute to the access rights result (deny rights can still lead to it not having any impact, though)
       // it was therefore decided to ignore these (up to 9 = 2^4+1) "double entries" for now.
-      // See below for a solution which does not change the access right logic but only records the contributing ACEs.
+      // See below for a solution which does not change the access right logic but only records the contributing ACEs,
+      // allowing filtering of the permisssion-result if the current ACE fromt he AclProbe did not contribute.
       
       // AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken);
 
       // Call extended AccessControlList.GetAccessTypes-method which returns information about the ACEs which contributed to
-      // the resulting AccessType|s.
+      // the resulting AccessType|s => we can filter out the permisssion-result if the current ACE did not contribute.
       var accessTypeStatistics = new AccessTypeStatistics();
       AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
 
-
-
       // We only create an AclExpansionEntry if the current probe ACE contributed to the returned AccessTypes
       if (accessTypeStatistics.IsInAccessTypesSupplyingAces (ace) && accessTypeDefinitions.Length > 0)
-      //if (accessTypeDefinitions.Length > 0)
       {
         var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions, accessTypeDefinitions);
         //To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);

@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.IO;
 using Remotion.Data.DomainObjects;
 using Remotion.Diagnostics.ToText;
-using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.Utilities;
@@ -33,12 +32,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public AclExpanderApplication (ITextWriterFactory textWriterFactory)
     {
+      ArgumentUtility.CheckNotNull ("textWriterFactory", textWriterFactory);
       _textWriterFactory = textWriterFactory;
     }
 
-    public AclExpanderApplication () : this(new StreamWriterFactory())
-    {
-    }
+    public AclExpanderApplication () : this(new StreamWriterFactory()) {}
+
 
     public AclExpanderApplicationSettings Settings
     {
@@ -46,20 +45,21 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public void Init (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)
+    private void Init (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)
     {
-      ArgumentUtility.CheckNotNull ("settings", settings);
-      ArgumentUtility.CheckNotNull ("errorWriter", errorWriter);
-      ArgumentUtility.CheckNotNull ("logWriter", logWriter);
-
       _settings = settings;
       _logToTextBuilder = new ToTextBuilder (To.ToTextProvider, logWriter);
       _errorToTextBuilder = new ToTextBuilder (To.ToTextProvider, errorWriter);
     }
 
 
-    public void Run ()
+    public void Run (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)
     {
+      ArgumentUtility.CheckNotNull ("settings", settings);
+      ArgumentUtility.CheckNotNull ("errorWriter", errorWriter);
+      ArgumentUtility.CheckNotNull ("logWriter", logWriter);
+      Init (settings, errorWriter, logWriter);
+
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         List<AclExpansionEntry> aclExpansion = GetAclExpansion ();
@@ -84,16 +84,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    //public void WriteAclExpansionAsHtmlSpikeToStringWriter (List<AclExpansionEntry> aclExpansion)
-    //{
-    //  var stringWriter = new StringWriter ();
-    //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
-    //  aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
-    //  _logToTextBuilder.s (stringWriter.ToString ());
-    //}
-
     public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion)
     {
+      ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       if (Settings.UseMultipleFileOutput)
       {
         WriteAclExpansionAsMultiFileHtml(aclExpansion);

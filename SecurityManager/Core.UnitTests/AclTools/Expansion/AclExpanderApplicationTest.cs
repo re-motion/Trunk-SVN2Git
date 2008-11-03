@@ -10,11 +10,9 @@
 
 using System;
 using System.IO;
-using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -51,7 +49,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public List<AclExpansionEntry> CreateAclExpanderApplicationAndCallGetAclExpansion (AclExpanderApplicationSettings settings)
     {
       var application = new AclExpanderApplication();
-      application.Init (settings, new StringWriter(), new StringWriter());
+      //application.Init (settings, new StringWriter(), new StringWriter());
+      PrivateInvoke.InvokeNonPublicMethod (application, "Init", settings, TextWriter.Null,TextWriter.Null);
       return  (List<AclExpansionEntry>) PrivateInvoke.InvokeNonPublicMethod (application, "GetAclExpansion");
       
       //foreach (AclExpansionEntry entry in aclExpansion)
@@ -187,9 +186,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       settings.Directory = directory;
       var application = new AclExpanderApplication (textWriterFactoryMock);
 
-      application.Init (settings, TextWriter.Null, TextWriter.Null);
-      Assert.That (application.Settings.Directory, Is.EqualTo (directory));
-      application.Run();
+      //application.Init (settings, TextWriter.Null, TextWriter.Null);
+      application.Run (settings, TextWriter.Null, TextWriter.Null);
+      //Assert.That (application.Settings.Directory, Is.EqualTo (directory));
 
       textWriterFactoryMock.VerifyAllExpectations ();
     }
@@ -199,7 +198,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       string directory = Path.GetTempPath();
 
-      File.Create (AclExpanderApplication.CssFileName);
+      using (File.Create (AclExpanderApplication.CssFileName))
+      {
+      }
 
       try
       {
@@ -207,8 +208,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         settings.UseMultipleFileOutput = true;
         settings.Directory = directory;
         var application = new AclExpanderApplication ();
-        application.Init (settings, TextWriter.Null, TextWriter.Null);
-        application.Run ();
+        //application.Init (settings, TextWriter.Null, TextWriter.Null);
+        application.Run (settings, TextWriter.Null, TextWriter.Null);
 
         Assert.That (File.Exists (Path.Combine (application.DirectoryUsed, AclExpanderApplication.CssFileName)), Is.True);
       }
