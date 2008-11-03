@@ -10,9 +10,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -24,23 +22,21 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// of users linking to detail HTML tables conaining the access rights of the respective user. All HTML files are written
   /// into an automatically generated directory.
   /// </summary>
-  public class AclExpansionMultiFileHtmlWriter : IAclExpansionWriter
+  public class AclExpansionMultiFileHtmlWriter : AclExpansionHtmlWriterBase
   {
     private const string _masterFileName = "AclExpansionMain";
 
-    private readonly HtmlWriter _htmlWriter;
     private readonly ITextWriterFactory _textWriterFactory;
-    private bool _isInTableRow;
 
     public AclExpansionMultiFileHtmlWriter (ITextWriterFactory textWriterFactory, bool indentXml)
     {
       _textWriterFactory = textWriterFactory;
       var textWriter = _textWriterFactory.NewTextWriter (_masterFileName);
-      _htmlWriter = new HtmlWriter (textWriter, indentXml);
+      htmlWriter = new HtmlWriter (textWriter, indentXml);
     }
    
 
-    public void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
+    public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       WriteAclExpansionAsHtml (aclExpansion);
     }
@@ -50,7 +46,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       WritePageStart ();
 
-      WriteTableStart ();
+      WriteTableStart ("remotion-user-table");
       WriteTableHeaders ();
       WriteTableBody (aclExpansion);
       WriteTableEnd ();
@@ -58,58 +54,23 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WritePageEnd ();
     }
 
-    private void WriteTableEnd ()
-    {
-      _htmlWriter.tableEnd ();
-    }
-
-    private void WriteTableStart ()
-    {
-      _htmlWriter.table ().a ("style", "width: 100%;").a ("class", "aclExpansionTable").a ("id", "remotion-user-table");
-    }
-
     private void WriteTableHeaders ()
     {
-      _htmlWriter.tr ();
+      htmlWriter.tr ();
       WriteHeaderCell ("User");
       WriteHeaderCell ("First Name");
       WriteHeaderCell ("Last Name");
       WriteHeaderCell ("Access Rights");
-      _htmlWriter.trEnd ();
-    }
-
-    private void WritePageEnd ()
-    {
-      _htmlWriter.TagEnd ("body");
-      _htmlWriter.TagEnd ("html");
-
-      _htmlWriter.Close ();
+      htmlWriter.trEnd ();
     }
 
     private HtmlWriter WritePageStart ()
     {
-      _htmlWriter.WritePageHeader ("re-motion ACL Expansion - User Master Table", "AclExpansion.css");
+      htmlWriter.WritePageHeader ("re-motion ACL Expansion - User Master Table", "AclExpansion.css");
 
       // BODY
-      _htmlWriter.Tag ("body");
-      return _htmlWriter;
-    }
-
-
-    private void WriteHeaderCell (string columnName)
-    {
-      _htmlWriter.th ().a ("class", "header");
-      _htmlWriter.Value (columnName);
-      _htmlWriter.thEnd ();
-    }
-
-
-    private void WriteTableData (string value)
-    {
-      WriteTableRowBeginIfNotInTableRow ();
-      _htmlWriter.td ();
-      _htmlWriter.Value (value);
-      _htmlWriter.tdEnd ();
+      htmlWriter.Tag ("body");
+      return htmlWriter;
     }
 
 
@@ -140,48 +101,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       string relativePath = _textWriterFactory.GetRelativePath (_masterFileName, userDetailFileName);
       WriteTableRowBeginIfNotInTableRow ();
-      _htmlWriter.td ();
-      _htmlWriter.Tag ("a");
-      _htmlWriter.a ("href", relativePath);
-      _htmlWriter.a ("target", "_blank");
-      _htmlWriter.Value (relativePath);
-      _htmlWriter.TagEnd ("a");
-      _htmlWriter.tdEnd ();
-    }
-
-    public static string ToValidFileName (string name)
-    {
-      var sb = new StringBuilder();
-      List<char> invalidFileNameCharsSortedList = Path.GetInvalidFileNameChars ().ToList ();
-      invalidFileNameCharsSortedList.Sort();
-      foreach (char c in name)
-      {
-        if (invalidFileNameCharsSortedList.BinarySearch (c) >= 0)
-        {
-          sb.Append ('_');
-        }
-        else 
-        {
-          sb.Append (c);
-        }
-      }
-      return sb.ToString();
-    }
-
-
-    public void WriteTableRowBeginIfNotInTableRow ()
-    {
-      if (!_isInTableRow)
-      {
-        _htmlWriter.tr ();
-        _isInTableRow = true;
-      }
-    }
-
-    public void WriteTableRowEnd ()
-    {
-      _htmlWriter.trEnd ();
-      _isInTableRow = false;
+      htmlWriter.td ();
+      htmlWriter.Tag ("a");
+      htmlWriter.a ("href", relativePath);
+      htmlWriter.a ("target", "_blank");
+      htmlWriter.Value (relativePath);
+      htmlWriter.TagEnd ("a");
+      htmlWriter.tdEnd ();
     }
 
 
