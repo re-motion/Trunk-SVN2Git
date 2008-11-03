@@ -17,6 +17,9 @@ using System.Text;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  /// <summary>
+  /// Abstract base class for <see cref="IAclExpansionWriter"/>|s which write HTML format.
+  /// </summary>
   public abstract class AclExpansionHtmlWriterBase : IAclExpansionWriter
   {
     public static string ToValidFileName (string name)

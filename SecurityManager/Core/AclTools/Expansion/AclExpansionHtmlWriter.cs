@@ -26,8 +26,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// </summary>
   public class AclExpansionHtmlWriter : AclExpansionHtmlWriterBase
   {
-    //private readonly HtmlWriter htmlWriter;
-    private bool _isInTableRow;
     private readonly AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
 
     public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml)
@@ -68,15 +66,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WritePageEnd ();
     }
 
-    //private void WriteTableEnd ()
-    //{
-    //  _htmlWriter.tableEnd ();
-    //}
-
-    //private void WriteTableStart ()
-    //{
-    //  _htmlWriter.table ().a ("style", "width: 100%;").a ("class", "aclExpansionTable").a ("id", "remotion-ACL-expansion-table");
-    //}
 
     private void WriteTableHeaders ()
     {
@@ -93,30 +82,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlWriter.trEnd ();
     }
 
-    //private void WritePageEnd ()
-    //{
-    //  _htmlWriter.TagEnd ("body");
-    //  _htmlWriter.TagEnd ("html");
 
-    //  _htmlWriter.Close ();
-    //}
-
-    //private HtmlWriter WritePageStart ()
-    //{
-    //  _htmlWriter.WritePageHeader ("re-motion ACL Expansion", "AclExpansion.css");
-
-    //  // BODY
-    //  _htmlWriter.Tag ("body");
-    //  return _htmlWriter;
-    //}
-
-
-    //private void WriteHeaderCell (string columnName)
-    //{
-    //  _htmlWriter.th ().a ("class", "header");
-    //  _htmlWriter.Value (columnName);
-    //  _htmlWriter.thEnd ();
-    //}
 
     private void WriteTableDataAddendum (Object addendum)
     {
@@ -296,23 +262,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableRowEnd ();
       }
     }
-
-
-    //public void WriteTableRowBeginIfNotInTableRow ()
-    //{
-    //  if (!_isInTableRow)
-    //  {
-    //    _htmlWriter.tr ();
-    //    _isInTableRow = true;
-    //  }
-    //}
-
-    //public void WriteTableRowEnd ()
-    //{
-    //  _htmlWriter.trEnd ();
-    //  _isInTableRow = false;
-    //}
-
 
   }
 }
