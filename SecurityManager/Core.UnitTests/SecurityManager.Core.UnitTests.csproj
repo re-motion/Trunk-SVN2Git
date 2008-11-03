@@ -63,7 +63,7 @@
     <Compile Include="AclTools\Expansion\AclExpanderApplicationTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest_Spike.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest.cs" />
-    <Compile Include="AclTools\Expansion\AclExpanderTestOld.cs" />
+    <Compile Include="AclTools\Expansion\StateCombinationBuilder\AclExpanderTestOld.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderUserFinderTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditionsTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionEntryTest.cs" />

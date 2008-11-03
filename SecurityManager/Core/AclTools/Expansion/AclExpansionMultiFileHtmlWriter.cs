@@ -56,12 +56,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteTableHeaders ()
     {
-      htmlWriter.tr ();
+      htmlWriter.Tags.tr ();
       WriteHeaderCell ("User");
       WriteHeaderCell ("First Name");
       WriteHeaderCell ("Last Name");
       WriteHeaderCell ("Access Rights");
-      htmlWriter.trEnd ();
+      htmlWriter.Tags.trEnd ();
     }
 
 
@@ -94,13 +94,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       string relativePath = _textWriterFactory.GetRelativePath (_masterFileName, userDetailFileName);
       WriteTableRowBeginIfNotInTableRow ();
-      htmlWriter.td ();
+      htmlWriter.Tags.td ();
       htmlWriter.Tag ("a");
       htmlWriter.a ("href", relativePath);
       htmlWriter.a ("target", "_blank");
       htmlWriter.Value (relativePath);
       htmlWriter.TagEnd ("a");
-      htmlWriter.tdEnd ();
+      htmlWriter.Tags.tdEnd ();
     }
 
 

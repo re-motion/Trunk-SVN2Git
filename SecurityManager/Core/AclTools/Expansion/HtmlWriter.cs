@@ -24,20 +24,29 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private readonly XmlWriter _xmlWriter;
     private readonly Stack<string> _openElementStack = new Stack<string>();
 
+    private readonly HtmlWriterTagWriter _htmlTagWriter;
+
 
     public HtmlWriter (TextWriter textWriter, bool indentXml)
+      : this (CreateXmlWriter (textWriter, indentXml))
     {
-      _xmlWriter = CreateXmlWriter (textWriter, indentXml);
+      //_xmlWriter = CreateXmlWriter (textWriter, indentXml);
     }
 
     public HtmlWriter (XmlWriter xmlWriter)
     {
       _xmlWriter = xmlWriter;
+      _htmlTagWriter = new HtmlWriterTagWriter (this);
     }
 
     public XmlWriter XmlWriter
     {
       get { return _xmlWriter; }
+    }
+
+    public HtmlWriterTagWriter Tags
+    {
+      get { return _htmlTagWriter; }
     }
 
     public HtmlWriter Tag (string elementName)
@@ -64,56 +73,56 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return this;
     }
 
-    public HtmlWriter table ()
-    {
-      Tag ("table");
-      return this;
-    }
+    //public HtmlWriter table ()
+    //{
+    //  Tag ("table");
+    //  return this;
+    //}
 
-    public HtmlWriter tableEnd ()
-    {
-      TagEnd ("table");
-      return this;
-    }
+    //public HtmlWriter tableEnd ()
+    //{
+    //  TagEnd ("table");
+    //  return this;
+    //}
 
-    public HtmlWriter tr ()
-    {
-      Tag ("tr");
-      return this;
-    }
+    //public HtmlWriter tr ()
+    //{
+    //  Tag ("tr");
+    //  return this;
+    //}
 
-    public HtmlWriter trEnd ()
-    {
-      TagEnd ("tr");
-      return this;
-    }
+    //public HtmlWriter trEnd ()
+    //{
+    //  TagEnd ("tr");
+    //  return this;
+    //}
 
-    public HtmlWriter td ()
-    {
-      Tag ("td");
-      return this;
-    }
+    //public HtmlWriter td ()
+    //{
+    //  Tag ("td");
+    //  return this;
+    //}
 
-    public HtmlWriter tdEnd ()
-    {
-      TagEnd ("td");
-      return this;
-    }
+    //public HtmlWriter tdEnd ()
+    //{
+    //  TagEnd ("td");
+    //  return this;
+    //}
 
-    public HtmlWriter th ()
-    {
-      Tag ("th");
-      return this;
-    }
+    //public HtmlWriter th ()
+    //{
+    //  Tag ("th");
+    //  return this;
+    //}
 
-    public HtmlWriter thEnd ()
-    {
-      TagEnd ("th");
-      return this;
-    }
+    //public HtmlWriter thEnd ()
+    //{
+    //  TagEnd ("th");
+    //  return this;
+    //}
 
 
-    public XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
+    public static XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
     {
       XmlWriterSettings settings = new XmlWriterSettings ();
 
