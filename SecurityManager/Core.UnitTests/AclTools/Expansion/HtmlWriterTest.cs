@@ -49,19 +49,18 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    public void TagsTest ()
+    public void BreakTagTest ()
     {
       var stringWriter = new StringWriter ();
       using (var htmlWriter = new HtmlWriter (stringWriter, false))
       {
-        htmlWriter.Tags.body();
-        htmlWriter.Value ("hahaha");
-        htmlWriter.Tags.bodyEnd ();
+        htmlWriter.Tags.br();
       }
       var result = stringWriter.ToString ();
       To.ConsoleLine.e (() => result);
-      Assert.That (result, Is.EqualTo ("<body>hahaha</body>"));
+      Assert.That (result, Is.EqualTo ("<br />"));
     }
+
 
 
     [Test]

@@ -17,8 +17,6 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  // Spike
-  // TODO: Write tests
   public class HtmlWriter : IDisposable
   {
     private readonly XmlWriter _xmlWriter;
@@ -29,9 +27,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public HtmlWriter (TextWriter textWriter, bool indentXml)
       : this (CreateXmlWriter (textWriter, indentXml))
-    {
-      //_xmlWriter = CreateXmlWriter (textWriter, indentXml);
-    }
+    {}
 
     public HtmlWriter (XmlWriter xmlWriter)
     {
@@ -73,55 +69,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return this;
     }
 
-    //public HtmlWriter table ()
-    //{
-    //  Tag ("table");
-    //  return this;
-    //}
-
-    //public HtmlWriter tableEnd ()
-    //{
-    //  TagEnd ("table");
-    //  return this;
-    //}
-
-    //public HtmlWriter tr ()
-    //{
-    //  Tag ("tr");
-    //  return this;
-    //}
-
-    //public HtmlWriter trEnd ()
-    //{
-    //  TagEnd ("tr");
-    //  return this;
-    //}
-
-    //public HtmlWriter td ()
-    //{
-    //  Tag ("td");
-    //  return this;
-    //}
-
-    //public HtmlWriter tdEnd ()
-    //{
-    //  TagEnd ("td");
-    //  return this;
-    //}
-
-    //public HtmlWriter th ()
-    //{
-    //  Tag ("th");
-    //  return this;
-    //}
-
-    //public HtmlWriter thEnd ()
-    //{
-    //  TagEnd ("th");
-    //  return this;
-    //}
-
-
     public static XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
     {
       XmlWriterSettings settings = new XmlWriterSettings ();
@@ -147,12 +94,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return this;
     }
 
-    public HtmlWriter br ()
-    {
-      _xmlWriter.WriteStartElement ("br");
-      _xmlWriter.WriteEndElement ();
-      return this;
-    }
+
 
 
     public HtmlWriter WritePageHeader (string pageTitle, string cssFileName)

@@ -22,6 +22,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _htmlWriter = htmlWriter;
     }
 
+    public HtmlWriter br ()
+    {
+      //_xmlWriter.WriteStartElement ("br");
+      //_xmlWriter.WriteEndElement ();
+
+      _htmlWriter.Tag ("br");
+      _htmlWriter.TagEnd ("br");
+
+      return _htmlWriter;
+    }
+
     public HtmlWriter body ()
     {
       _htmlWriter.Tag ("body");
