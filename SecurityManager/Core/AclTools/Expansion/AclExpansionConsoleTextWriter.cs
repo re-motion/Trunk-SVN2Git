@@ -15,9 +15,9 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public class AclExpansionConsoleTextWriter : AclExpansionWriter
+  public class AclExpansionConsoleTextWriter : IAclExpansionWriter
   {
-    public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
+    public void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       WriteHierarchical (aclExpansion);

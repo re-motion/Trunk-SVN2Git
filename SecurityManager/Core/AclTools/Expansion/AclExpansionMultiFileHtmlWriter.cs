@@ -13,34 +13,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
-using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   /// <summary>
-  /// Write a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/> as a master HTML table containing
-  /// only the users linking to detail HTML tables conatining the access rights of the respective user
-  /// to the given directory.
+  /// <see cref="IAclExpansionWriter"/> which outputs a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/> as a master HTML table containing
+  /// of users linking to detail HTML tables conaining the access rights of the respective user. All HTML files are written
+  /// into an automatically generated directory.
   /// </summary>
-  public class AclExpansionMultiFileHtmlWriter : AclExpansionWriter
+  public class AclExpansionMultiFileHtmlWriter : IAclExpansionWriter
   {
-    //private const string _masterFileName = "AclExpansionMain.html";
     private const string _masterFileName = "AclExpansionMain";
 
     private readonly HtmlWriter _htmlWriter;
     private readonly ITextWriterFactory _textWriterFactory;
     private bool _isInTableRow;
-    //private readonly AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
-
-    //public AclExpansionMultiFileHtmlWriter (TextWriter textWriter, bool indentXml)
-    //{
-    //  _htmlWriter = new HtmlWriter (textWriter, indentXml);
-    //}
 
     public AclExpansionMultiFileHtmlWriter (ITextWriterFactory textWriterFactory, bool indentXml)
     {
@@ -50,19 +40,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
    
 
-    //public AclExpansionMultiFileHtmlWriter (XmlWriter xmlWriter)
-    //{
-    //  _htmlWriter = new HtmlWriter (xmlWriter);
-    //}
-
-
-    //public AclExpansionHtmlWriterSettings Settings
-    //{
-    //  get { return _settings; }
-    //}
-
-
-    public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
+    public void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       WriteAclExpansionAsHtml (aclExpansion);
     }
@@ -70,16 +48,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void WriteAclExpansionAsHtml (List<AclExpansionEntry> aclExpansion)
     {
-      WriteStartPage ();
-
-      //html.value ("re-motion ACL Expansion body");
+      WritePageStart ();
 
       WriteTableStart ();
       WriteTableHeaders ();
       WriteTableBody (aclExpansion);
       WriteTableEnd ();
 
-      WriteEndPage ();
+      WritePageEnd ();
     }
 
     private void WriteTableEnd ()
@@ -102,7 +78,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _htmlWriter.trEnd ();
     }
 
-    private void WriteEndPage ()
+    private void WritePageEnd ()
     {
       _htmlWriter.TagEnd ("body");
       _htmlWriter.TagEnd ("html");
@@ -110,25 +86,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _htmlWriter.Close ();
     }
 
-    private HtmlWriter WriteStartPage ()
+    private HtmlWriter WritePageStart ()
     {
-      //// DOCTYPE
-      //_htmlWriter.XmlWriter.WriteDocType ("HTML", "-//W3C//DTD HTML 4.0 Transitional//EN", null, null);
-      //// HTML
-      //_htmlWriter.Tag ("html");
-      //// HEAD
-      //_htmlWriter.Tag ("head");
-      //// TITLE
-      //_htmlWriter.Tag ("title");
-      //_htmlWriter.Value ("re-motion ACL Expansion - User Master Table");
-      //_htmlWriter.TagEnd ("title");
-
-      //// STYLE
-      //_htmlWriter.Tag ("style");
-      //_htmlWriter.Value ("@import \"AclExpansion.css\";");
-      //_htmlWriter.TagEnd ("style");
-      //_htmlWriter.TagEnd ("head");
-
       _htmlWriter.WritePageHeader ("re-motion ACL Expansion - User Master Table", "AclExpansion.css");
 
       // BODY
@@ -137,25 +96,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    void WriteHeaderCell (string columnName)
+    private void WriteHeaderCell (string columnName)
     {
       _htmlWriter.th ().a ("class", "header");
       _htmlWriter.Value (columnName);
       _htmlWriter.thEnd ();
     }
 
-    //void WriteTableDataAddendum (Object addendum)
-    //{
-    //  if (addendum != null)
-    //  {
-    //    _htmlWriter.Value (" (");
-    //    _htmlWriter.Value (addendum);
-    //    _htmlWriter.Value (") ");
-    //  }
-    //}
 
-
-    void WriteTableData (string value)
+    private void WriteTableData (string value)
     {
       WriteTableRowBeginIfNotInTableRow ();
       _htmlWriter.td ();
@@ -164,7 +113,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public void WriteTableBody (List<AclExpansionEntry> aclExpansion)
+    private void WriteTableBody (List<AclExpansionEntry> aclExpansion)
     {
       var users = GetUsers (aclExpansion);
 
@@ -176,16 +125,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    public void WriteTableBody_ProcessUser (User user, List<AclExpansionEntry> aclExpansion)
+    private void WriteTableBody_ProcessUser (User user, List<AclExpansionEntry> aclExpansion)
     {
       WriteTableData (user.UserName);
       WriteTableData (user.FirstName);
       WriteTableData (user.LastName);
-      //WriteTableData ("Permissions be here");
 
       string userDetailFileName = ToValidFileName (user.UserName); //+".html";
       var detailTextWriter = _textWriterFactory.NewTextWriter (userDetailFileName);
-      //detailTextWriter.WriteLine("user display name = " + user.DisplayName);
 
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (detailTextWriter, false);
       var aclExpansionSingleUser = GetAccessControlEntriesForUser (aclExpansion, user);
@@ -210,7 +157,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       foreach (char c in name)
       {
         if (invalidFileNameCharsSortedList.BinarySearch (c) >= 0)
-        //if (invalidFileNameCharsSortedList.FindIndex (x => (x == c)) >= 0)
         {
           sb.Append ('_');
         }

@@ -12,8 +12,11 @@ using System.Collections.Generic;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public abstract class AclExpansionWriter
+  /// <summary>
+  /// Interface that allows outputting a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/> through <see cref="WriteAclExpansion"/> method.
+  /// </summary>
+  interface IAclExpansionWriter
   {
-    public abstract void WriteAclExpansion (List<AclExpansionEntry> aclExpansion);
+    void WriteAclExpansion (List<AclExpansionEntry> aclExpansion);
   }
 }

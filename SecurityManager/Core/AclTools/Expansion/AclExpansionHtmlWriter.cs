@@ -21,10 +21,10 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   /// <summary>
-  /// <see cref="AclExpansionWriter"/> which outputs a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>
+  /// <see cref="IAclExpansionWriter"/> which outputs a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>
   /// as a single HTML table.
   /// </summary>
-  public class AclExpansionHtmlWriter : AclExpansionWriter
+  public class AclExpansionHtmlWriter : IAclExpansionWriter
   {
     private readonly HtmlWriter _htmlWriter;
     private bool _isInTableRow;
@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
+    public void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       WriteAclExpansionAsHtml (aclExpansion);
@@ -317,22 +317,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _isInTableRow = false;
     }
 
-
-    //public IEnumerable<IGrouping<T, AclExpansionEntry>> GetAclExpansionGrouping<T, TIn> (
-    //  IGrouping<TIn, AclExpansionEntry> linqGroup,
-    //  Func<AclExpansionEntry, T> groupingKeyFunc)
-    //{
-    //  return from aee in linqGroup
-    //         group aee by groupingKeyFunc (aee);
-    //}
-
-
-    //public IEnumerable<IGrouping<User, AclExpansionEntry>> GetAclExpansionGrouping (IEnumerable<AclExpansionEntry> aclExpansion,
-    //  Func<AclExpansionEntry, User> groupingKeyFunc)
-    //{
-    //  return from aee in aclExpansion
-    //         group aee by groupingKeyFunc (aee);    
-    //}
 
   }
 }
