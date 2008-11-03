@@ -1,3 +1,14 @@
+// 
+//  Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+// 
+//  This program is free software: you can redistribute it and/or modify it under 
+//  the terms of the re:motion license agreement in license.txt. If you did not 
+//  receive it, please visit http://www.re-motion.org/licensing.
+//  
+//  Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+//  WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+// 
+// 
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -5,7 +16,7 @@ using Remotion.Collections;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 
-namespace Remotion.SecurityManager.AclTools.Expansion
+namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
 {
   /// <summary>
   /// Tuple of security context class and state, that supports the necessary interfaces to be stored in a Dictionary (<see cref="ClassStateDictionary"/>)
@@ -13,13 +24,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class ClassStateTuple : Tuple<SecurableClassDefinition, List<StateDefinition>>, IComparable<ClassStateTuple>
   {
     public ClassStateTuple (SecurableClassDefinition classDefinition, List<StateDefinition> stateCombinationList) :
-      base (classDefinition, stateCombinationList.GetRange (0, stateCombinationList.Count))
+        base (classDefinition, stateCombinationList.GetRange (0, stateCombinationList.Count))
     { 
       
     }
 
     public ClassStateTuple(SecurableClassDefinition classDefinition, StateCombination stateCombination) : 
-      base(classDefinition, new List<StateDefinition> (stateCombination.GetStates()))
+        base(classDefinition, new List<StateDefinition> (stateCombination.GetStates()))
     {
       //StateList.Sort()
     }

@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections;
+﻿// 
+//  Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
+// 
+//  This program is free software: you can redistribute it and/or modify it under 
+//  the terms of the re:motion license agreement in license.txt. If you did not 
+//  receive it, please visit http://www.re-motion.org/licensing.
+//  
+//  Unless otherwise provided, this software is distributed on an "AS IS" basis, 
+//  WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+// 
+// 
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
 
-namespace Remotion.SecurityManager.AclTools.Expansion
+namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
 {
   /// <summary>
   /// Creates the outer prodcut of all state-property states of the passed SecurableClassDefinition.
@@ -20,7 +29,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   // StateCombinationBuilderFast.CalculateOuterProduct6 (numberProperty=8,numberState=4): 152 ms = 0,152 s = 0,00253333333333333 min
   // StateCombinationBuilder.CreatePropertyProduct (numberProperty=8,numberState=4): 3958 ms = 3,958 s = 0,0659666666666667 min
 
-  public class StateCombinationBuilderFast : IStateCombinationBuilder //: IEnumerator<AclSecurityContextHelper>, IEnumerable<AclSecurityContextHelper>
+  public class StateCombinationBuilderFast : IStateCombinationBuilder 
   {
     public SecurableClassDefinition ClassDefinition
     {
@@ -179,30 +188,30 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
 
       for (int iStateCombinations = 0; iStateCombinations < nrStateCombinations; ++iStateCombinations)
+      {
+        for (int iStateProperty = 0; iStateProperty < numberStateProperties; ++iStateProperty)
         {
-          for (int iStateProperty = 0; iStateProperty < numberStateProperties; ++iStateProperty)
-          {
-            var stateProperty = stateProperties[iStateProperty];
-            var stateDefinitionsForProperty = stateDefinitions[iStateProperty];
-            PropertyStateTuple newTuple = new PropertyStateTuple (stateProperty, stateDefinitionsForProperty[aStatePropertyDefinedStateIndex[numberStateProperties - 1 - iStateProperty]]);
-            outerProductOfStateProperties[iStateCombinations, iStateProperty] = newTuple;
-          }
+          var stateProperty = stateProperties[iStateProperty];
+          var stateDefinitionsForProperty = stateDefinitions[iStateProperty];
+          PropertyStateTuple newTuple = new PropertyStateTuple (stateProperty, stateDefinitionsForProperty[aStatePropertyDefinedStateIndex[numberStateProperties - 1 - iStateProperty]]);
+          outerProductOfStateProperties[iStateCombinations, iStateProperty] = newTuple;
+        }
 
-          // Do the "next"-step in the for-loop-indices array (aStatePropertyDefinedStateIndex)
-          // This also updates stateOuterProductHasMore 
-          for (int iStateProperty2 = 0; iStateProperty2 < numberStateProperties; ++iStateProperty2)
+        // Do the "next"-step in the for-loop-indices array (aStatePropertyDefinedStateIndex)
+        // This also updates stateOuterProductHasMore 
+        for (int iStateProperty2 = 0; iStateProperty2 < numberStateProperties; ++iStateProperty2)
+        {
+          ++aStatePropertyDefinedStateIndex[iStateProperty2];
+          if (aStatePropertyDefinedStateIndex[iStateProperty2] < stateDefinitions[iStateProperty2].Length)
           {
-            ++aStatePropertyDefinedStateIndex[iStateProperty2];
-            if (aStatePropertyDefinedStateIndex[iStateProperty2] < stateDefinitions[iStateProperty2].Length)
-            {
-              break;
-            }
-            else
-            {
-              aStatePropertyDefinedStateIndex[iStateProperty2] = 0;
-            }
+            break;
+          }
+          else
+          {
+            aStatePropertyDefinedStateIndex[iStateProperty2] = 0;
           }
         }
+      }
 
       return outerProductOfStateProperties;
     }

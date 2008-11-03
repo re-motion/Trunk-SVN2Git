@@ -14,6 +14,9 @@ using System.Collections.Generic;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  /// <summary>
+  /// Interface for an enumeration that returns <see cref="UserRoleAclAceCombination"/>|s.
+  /// </summary>
   public interface IUserRoleAclAceCombinations : IEnumerable<UserRoleAclAceCombination>
   {
     new IEnumerator<UserRoleAclAceCombination> GetEnumerator ();

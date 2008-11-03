@@ -15,6 +15,10 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  /// <summary>
+  /// A tuple of (<see cref="User"/>, <see cref="Role"/>, <see cref="AccessControlList"/>, <see cref="AccessControlEntry"/>).
+  /// Returned by the enumerator of <see cref="UserRoleAclAceCombinations"/>.
+  /// </summary>
   public class UserRoleAclAceCombination
   {
     public UserRoleAclAceCombination (Role role, AccessControlEntry ace)

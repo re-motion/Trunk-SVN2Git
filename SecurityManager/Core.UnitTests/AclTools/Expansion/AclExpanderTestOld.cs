@@ -15,10 +15,10 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
+using Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
-using Remotion.SecurityManager.AclTools.Expansion;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
