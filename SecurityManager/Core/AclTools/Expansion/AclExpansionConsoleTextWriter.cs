@@ -11,6 +11,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Diagnostics.ToText;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
@@ -18,12 +19,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
+      ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       WriteHierarchical (aclExpansion);
     }
 
 
     public void WriteHierarchical (List<AclExpansionEntry> aclExpansion)
     {
+      ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
+      
       const bool repeatHierarchyEntriesInEachRow = false;
 
       var aclExpansionHierarchy =
@@ -75,7 +79,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                 To.Console.e ("role", aclExpansionEntry.Role);
                 To.Console.e ("class", aclExpansionEntry.Class);
               }
-              //To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
               To.Console.e ("states", stateArray);
               To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
               To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
@@ -93,18 +96,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void WriteSimple (List<AclExpansionEntry> aclExpansion)
     {
+      ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       To.ConsoleLine.nl (10).s ("ACL Expansion");
       To.ConsoleLine.s ("====START====");
       foreach (AclExpansionEntry aclExpansionEntry in aclExpansion)
       {
         var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
 
-        //To.ConsoleLine.e (aclExpansionEntry);
         To.ConsoleLine.sb ();
         To.Console.e ("user", aclExpansionEntry.User.UserName);
         To.Console.e ("role", aclExpansionEntry.Role);
         To.Console.e ("class", aclExpansionEntry.Class);
-        //To.Console.e (aclExpansionEntry.StateCombinations[0].GetStates());
         To.Console.e ("states", stateArray);
         To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
         To.Console.e ("conditions", aclExpansionEntry.AccessConditions);

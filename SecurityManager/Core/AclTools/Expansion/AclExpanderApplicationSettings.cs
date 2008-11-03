@@ -11,6 +11,7 @@
 using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.Text.CommandLine;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
@@ -36,6 +37,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void ToText (IToTextBuilder toTextBuilder)
     {
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
       toTextBuilder.sb().e ("user", UserName).e ("last", UserLastName).e ("first", UserFirstName).e ("dir", Directory).e ("multifile", UseMultipleFileOutput).e ("verbose", Verbose).se();
     }
   }

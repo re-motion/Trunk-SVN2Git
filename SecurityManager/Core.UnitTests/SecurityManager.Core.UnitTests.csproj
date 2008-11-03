@@ -69,7 +69,6 @@
     <Compile Include="AclTools\Expansion\AclExpansionEntryTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionMultiFileHtmlWriterTest.cs" />
-    <Compile Include="AclTools\Expansion\AclExpansionTest.cs" />
     <Compile Include="AclTools\Expansion\AclProbeTest.cs" />
     <Compile Include="AclTools\Expansion\HtmlWriterTest.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\StreamWriterFactoryTest.cs" />

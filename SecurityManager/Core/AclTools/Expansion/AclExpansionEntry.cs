@@ -9,11 +9,11 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   /// <summary>
-  /// Represents a row in an access control list expansion (see <see cref="AclExpander"/>, <see cref="AclExpansion"/>).
+  /// Represents a row in an access control list expansion (see <see cref="AclExpander"/>).
   /// </summary>
   public class AclExpansionEntry : IToText
   {
-    private AccessControlList _accessControlList;
+    private readonly AccessControlList _accessControlList;
 
     public AclExpansionEntry (User user, Role role, AccessControlList accessControlList,
                               AclExpansionAccessConditions accessConditions, AccessTypeDefinition[] accessTypeDefinitions)
@@ -48,6 +48,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void ToText (IToTextBuilder toTextBuilder)
     {
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
       toTextBuilder.ib<AclExpansionEntry> ("").e ("user", User.UserName).e ("role", Role).e (AccessTypeDefinitions).e ("conditions", AccessConditions).ie ();
     }
   }

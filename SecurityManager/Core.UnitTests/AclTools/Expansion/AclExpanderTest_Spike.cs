@@ -50,9 +50,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AccessControlList> aclList = new List<AccessControlList> ();
 
       AccessControlEntry ace = AccessControlEntry.NewObject ();
-      //AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, true);
-      //AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace, true);
-      //AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace, true);
 
       AccessControlList acl = TestHelper.CreateAcl (ace);
       aclList.Add (acl);

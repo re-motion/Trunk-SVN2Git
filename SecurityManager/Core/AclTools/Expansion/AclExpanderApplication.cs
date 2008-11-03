@@ -113,7 +113,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _textWriterFactory.Directory = DirectoryUsed;
       var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (_textWriterFactory, true);
       aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
-      //const string cssFileName = _cssFileName;
       File.Copy (Path.Combine (".", CssFileName), Path.Combine (DirectoryUsed, CssFileName), true);
     }
 
@@ -137,7 +136,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           );
 
       return aclExpander.GetAclExpansionEntryListSortedAndDistinct();
-      //return aclExpander.GetAclExpansionEntryList ();
     }
     
 

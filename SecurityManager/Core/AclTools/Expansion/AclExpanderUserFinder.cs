@@ -11,11 +11,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Utilities;
 
 
 namespace Remotion.SecurityManager.AclTools.Expansion
@@ -28,7 +25,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public AclExpanderUserFinder () : this(null,null,null) {}
 
-    //TODO MGI: Only use UserName. This value is authoritive and must be unique
+    // TODO MGI: Only use UserName. This value is authoritive and must be unique
+    // MGI Comment: To be able to filter for first and last name is an additional, orthogonal feature. It
+    // It was not introduced for convenience and is already implemeted.
     public AclExpanderUserFinder (string firstName, string lastName, string userName)
     {
       _firstName = firstName;
