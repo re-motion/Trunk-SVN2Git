@@ -24,20 +24,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// <see cref="IAclExpansionWriter"/> which outputs a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>
   /// as a single HTML table.
   /// </summary>
-  public class AclExpansionHtmlWriter : IAclExpansionWriter
+  public class AclExpansionHtmlWriter : AclExpansionHtmlWriterBase
   {
-    private readonly HtmlWriter _htmlWriter;
+    //private readonly HtmlWriter htmlWriter;
     private bool _isInTableRow;
     private readonly AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
 
     public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml)
     {
-      _htmlWriter = new HtmlWriter (textWriter, indentXml);
+      htmlWriter = new HtmlWriter (textWriter, indentXml);
     }
 
     public AclExpansionHtmlWriter (XmlWriter xmlWriter)
     {
-      _htmlWriter = new HtmlWriter (xmlWriter);
+      htmlWriter = new HtmlWriter (xmlWriter);
     }
 
 
@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
+    public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       WriteAclExpansionAsHtml (aclExpansion);
@@ -58,9 +58,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
 
-      WritePageStart ();
+      WritePageStart ("re-motion ACL Expansion");
 
-      WriteTableStart ();
+      WriteTableStart ("remotion-ACL-expansion-table");
       WriteTableHeaders ();
       WriteTableBody (aclExpansion);
       WriteTableEnd ();
@@ -68,19 +68,19 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WritePageEnd ();
     }
 
-    private void WriteTableEnd ()
-    {
-      _htmlWriter.tableEnd ();
-    }
+    //private void WriteTableEnd ()
+    //{
+    //  _htmlWriter.tableEnd ();
+    //}
 
-    private void WriteTableStart ()
-    {
-      _htmlWriter.table ().a ("style", "width: 100%;").a ("class", "aclExpansionTable").a ("id", "remotion-ACL-expansion-table");
-    }
+    //private void WriteTableStart ()
+    //{
+    //  _htmlWriter.table ().a ("style", "width: 100%;").a ("class", "aclExpansionTable").a ("id", "remotion-ACL-expansion-table");
+    //}
 
     private void WriteTableHeaders ()
     {
-      _htmlWriter.tr ();
+      htmlWriter.tr ();
       WriteHeaderCell ("User");
       WriteHeaderCell ("Role");
       WriteHeaderCell ("Class");
@@ -90,41 +90,41 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteHeaderCell ("Tenant Must Own");
       WriteHeaderCell ("User Must Have Abstract Role");
       WriteHeaderCell ("Access Rights");
-      _htmlWriter.trEnd ();
+      htmlWriter.trEnd ();
     }
 
-    private void WritePageEnd ()
-    {
-      _htmlWriter.TagEnd ("body");
-      _htmlWriter.TagEnd ("html");
+    //private void WritePageEnd ()
+    //{
+    //  _htmlWriter.TagEnd ("body");
+    //  _htmlWriter.TagEnd ("html");
 
-      _htmlWriter.Close ();
-    }
+    //  _htmlWriter.Close ();
+    //}
 
-    private HtmlWriter WritePageStart ()
-    {
-      _htmlWriter.WritePageHeader ("re-motion ACL Expansion", "AclExpansion.css");
+    //private HtmlWriter WritePageStart ()
+    //{
+    //  _htmlWriter.WritePageHeader ("re-motion ACL Expansion", "AclExpansion.css");
 
-      // BODY
-      _htmlWriter.Tag ("body");
-      return _htmlWriter;
-    }
+    //  // BODY
+    //  _htmlWriter.Tag ("body");
+    //  return _htmlWriter;
+    //}
 
 
-    private void WriteHeaderCell (string columnName)
-    {
-      _htmlWriter.th ().a ("class", "header");
-      _htmlWriter.Value (columnName);
-      _htmlWriter.thEnd ();
-    }
+    //private void WriteHeaderCell (string columnName)
+    //{
+    //  _htmlWriter.th ().a ("class", "header");
+    //  _htmlWriter.Value (columnName);
+    //  _htmlWriter.thEnd ();
+    //}
 
     private void WriteTableDataAddendum (Object addendum)
     {
       if (addendum != null)
       {
-        _htmlWriter.Value (" (");
-        _htmlWriter.Value (addendum);
-        _htmlWriter.Value (") ");
+        htmlWriter.Value (" (");
+        htmlWriter.Value (addendum);
+        htmlWriter.Value (") ");
       }
     }
 
@@ -132,14 +132,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableDataWithRowCount (string value, int rowCount)
     {
       WriteTableRowBeginIfNotInTableRow ();
-      _htmlWriter.td ();
+      htmlWriter.td ();
       WriteRowspanAttribute(rowCount);
-      _htmlWriter.Value (value);
+      htmlWriter.Value (value);
       if (Settings.OutputRowCount)
       {
         WriteTableDataAddendum (rowCount);
       }
-      _htmlWriter.tdEnd ();
+      htmlWriter.tdEnd ();
     }
 
 
@@ -148,47 +148,47 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       if (rowCount > 0)
       {
-        _htmlWriter.a ("rowspan", Convert.ToString (rowCount));
+        htmlWriter.a ("rowspan", Convert.ToString (rowCount));
       }
-      return _htmlWriter;
+      return htmlWriter;
     }
 
     private void WriteTableDataForRole (Role role, int rowCount)
     {
       WriteTableRowBeginIfNotInTableRow();
-      _htmlWriter.td ();
+      htmlWriter.td ();
       WriteRowspanAttribute (rowCount);
-      _htmlWriter.Value (role.Group.DisplayName);
-      _htmlWriter.Value (", ");
-      _htmlWriter.Value (role.Position.DisplayName);
+      htmlWriter.Value (role.Group.DisplayName);
+      htmlWriter.Value (", ");
+      htmlWriter.Value (role.Position.DisplayName);
       if (Settings.OutputRowCount)
       {
         WriteTableDataAddendum (rowCount);
       }
-      _htmlWriter.tdEnd ();
+      htmlWriter.tdEnd ();
     }
 
 
     private void WriteTableDataForBodyStates (AclExpansionEntry aclExpansionEntry)
     {
       var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).OrderBy(x => x.DisplayName).ToArray ();
-      _htmlWriter.td ();
+      htmlWriter.td ();
       bool firstElement = true;
       foreach (StateDefinition stateDefiniton in stateDefinitions)
       {
         if (!firstElement)
         {
           //_htmlWriter.br ();
-          _htmlWriter.Value (", ");
+          htmlWriter.Value (", ");
         }
 
         string stateName = Settings.UseShortNames ? stateDefiniton.ShortName () : stateDefiniton.DisplayName;
         //To.ConsoleLine.e (() => stateName);
 
-        _htmlWriter.Value (stateName);
+        htmlWriter.Value (stateName);
         firstElement = false;
       }
-      _htmlWriter.tdEnd ();
+      htmlWriter.tdEnd ();
     }
 
     private void WriteTableDataForAccessTypes (AccessTypeDefinition[] accessTypeDefinitions)
@@ -197,18 +197,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                                         orderby atd.DisplayName
                                         select atd;
 
-      _htmlWriter.td ();
+      htmlWriter.td ();
       bool firstElement = true;
       foreach (AccessTypeDefinition accessTypeDefinition in accessTypeDefinitionsSorted)
       {
         if (!firstElement)
         {
-          _htmlWriter.Value (", ");
+          htmlWriter.Value (", ");
         }
-        _htmlWriter.Value (accessTypeDefinition.DisplayName);
+        htmlWriter.Value (accessTypeDefinition.DisplayName);
         firstElement = false;
       }
-      _htmlWriter.tdEnd ();
+      htmlWriter.tdEnd ();
     }
 
     private void WriteTableDataForBodyConditions (AclExpansionAccessConditions conditions)
@@ -217,23 +217,22 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteTableDataForBooleanCondition (conditions.IsOwningGroupRequired);
       WriteTableDataForBooleanCondition (conditions.IsOwningTenantRequired);
 
-      _htmlWriter.td ();
-      _htmlWriter.Value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");
-      _htmlWriter.tdEnd ();
+      htmlWriter.td ();
+      htmlWriter.Value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");
+      htmlWriter.tdEnd ();
     }
 
     private void WriteTableDataForBooleanCondition (bool required)
     {
-      _htmlWriter.td ();
-      _htmlWriter.Value (required ? "X" : "");
-      _htmlWriter.tdEnd ();
+      htmlWriter.td ();
+      htmlWriter.Value (required ? "X" : "");
+      htmlWriter.tdEnd ();
     }
 
 
     private void WriteTableBody (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
-      //var aclExpansionUserGrouping = GetAclExpansionGrouping (aclExpansion, (aee => aee.User));
 
       var aclExpansionUserGrouping = from aee in aclExpansion
                                      orderby aee.User.DisplayName
@@ -249,7 +248,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       WriteTableDataWithRowCount (userGroup.Key.DisplayName, userGroup.Count ());
   
-      //var aclExpansionRoleGrouping = GetAclExpansionGrouping (userGroup, (x => x.Role));
       var aclExpansionRoleGrouping = from aee in userGroup
                                      orderby aee.Role.Group.DisplayName, aee.Role.Position.DisplayName
                                      group aee by aee.Role;
@@ -264,7 +262,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       WriteTableDataForRole (roleGroup.Key, roleGroup.Count ());
  
-      //var aclExpansionClassGrouping = GetAclExpansionGrouping (roleGroup, (x => x.Class));
       var aclExpansionClassGrouping = from aee in roleGroup
                                       orderby aee.Class.DisplayName
                                       group aee by aee.Class;
@@ -281,7 +278,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       if (classGroup.Key != null)
       {
         string className = Settings.UseShortNames ? classGroup.Key.ShortName () : classGroup.Key.DisplayName;
-        //To.ConsoleLine.e (() => className);
         WriteTableDataWithRowCount (className, classGroup.Count ());
       }
       else
@@ -302,20 +298,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public void WriteTableRowBeginIfNotInTableRow ()
-    {
-      if (!_isInTableRow)
-      {
-        _htmlWriter.tr ();
-        _isInTableRow = true;
-      }
-    }
+    //public void WriteTableRowBeginIfNotInTableRow ()
+    //{
+    //  if (!_isInTableRow)
+    //  {
+    //    _htmlWriter.tr ();
+    //    _isInTableRow = true;
+    //  }
+    //}
 
-    public void WriteTableRowEnd ()
-    {
-      _htmlWriter.trEnd ();
-      _isInTableRow = false;
-    }
+    //public void WriteTableRowEnd ()
+    //{
+    //  _htmlWriter.trEnd ();
+    //  _isInTableRow = false;
+    //}
 
 
   }

@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public void WriteAclExpansionAsHtml (List<AclExpansionEntry> aclExpansion)
     {
-      WritePageStart ();
+      WritePageStart ("re-motion ACL Expansion - User Master Table");
 
       WriteTableStart ("remotion-user-table");
       WriteTableHeaders ();
@@ -64,14 +64,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlWriter.trEnd ();
     }
 
-    private HtmlWriter WritePageStart ()
-    {
-      htmlWriter.WritePageHeader ("re-motion ACL Expansion - User Master Table", "AclExpansion.css");
 
-      // BODY
-      htmlWriter.Tag ("body");
-      return htmlWriter;
-    }
 
 
     private void WriteTableBody (List<AclExpansionEntry> aclExpansion)

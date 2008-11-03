@@ -41,17 +41,29 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     protected HtmlWriter htmlWriter;
     private bool _isInTableRow;
 
+
     protected void WriteTableEnd ()
     {
       htmlWriter.tableEnd ();
     }
 
-    protected void WriteTableStart (string tableId)
+    protected virtual void WriteTableStart (string tableId)
     {
       htmlWriter.table ().a ("style", "width: 100%;").a ("class", "aclExpansionTable").a ("id", tableId);
     }
 
-    protected void WritePageEnd ()
+
+    protected virtual HtmlWriter WritePageStart (string pageTitle)
+    {
+      htmlWriter.WritePageHeader (pageTitle, "AclExpansion.css");
+
+      // BODY
+      htmlWriter.Tag ("body");
+      return htmlWriter;
+    }
+
+
+    protected virtual void WritePageEnd ()
     {
       htmlWriter.TagEnd ("body");
       htmlWriter.TagEnd ("html");
@@ -59,14 +71,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlWriter.Close ();
     }
 
-    protected void WriteHeaderCell (string columnName)
+    protected virtual void WriteHeaderCell (string columnName)
     {
       htmlWriter.th ().a ("class", "header");
       htmlWriter.Value (columnName);
       htmlWriter.thEnd ();
     }
 
-    protected void WriteTableData (string value)
+    protected virtual void WriteTableData (string value)
     {
       WriteTableRowBeginIfNotInTableRow ();
       htmlWriter.td ();
@@ -76,7 +88,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
-    public void WriteTableRowBeginIfNotInTableRow ()
+    public virtual void WriteTableRowBeginIfNotInTableRow ()
     {
       if (!_isInTableRow)
       {
@@ -85,7 +97,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    public void WriteTableRowEnd ()
+    public virtual void WriteTableRowEnd ()
     {
       htmlWriter.trEnd ();
       _isInTableRow = false;
