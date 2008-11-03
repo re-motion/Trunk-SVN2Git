@@ -28,6 +28,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public AclExpanderUserFinder () : this(null,null,null) {}
 
+    //TODO MGI: Only use UserName. This value is authoritive and must be unique
     public AclExpanderUserFinder (string firstName, string lastName, string userName)
     {
       _firstName = firstName;
