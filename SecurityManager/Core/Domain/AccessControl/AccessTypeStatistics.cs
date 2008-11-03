@@ -18,6 +18,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// Used to collect information about matching <see cref="AccessControlEntry"/>|s in calls
   /// to <see cref="AccessControlList.GetAccessTypes(SecurityToken, AccessTypeStatistics)"/>.
   /// </summary>
+  //TODO MGI: Where are the unit tests?
+  //TODO MGI: Where are the argument checks?
   public class AccessTypeStatistics
   {
     private readonly List<AccessControlEntry> _accessTypesSupplyingAces = new List<AccessControlEntry>();
@@ -32,6 +34,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public bool IsInAccessTypesSupplyingAces (AccessControlEntry ace)
     {
+      //TODO MGI: Why not use contains?
       return _accessTypesSupplyingAces.Find (x => (x == ace)) != null;
     }
   }
