@@ -17,6 +17,24 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  /// <summary>
+  /// Supports convenient writing of HTML to a <see cref="TextWriter"/> / <see cref="XmlWriter"/>.
+  /// <example>
+  /// Example writing HTML to <see cref="StringWriter"/>
+  /// <code><![CDATA[
+  /// var textWriter = new StringWriter ();
+  /// using (var htmlWriter = new HtmlWriter (textWriter, false))
+  /// {
+  ///   htmlWriter.WritePageHeader("My Page Title","myPage.css");
+  ///   htmlWriter.Tags.body();
+  ///   htmlWriter.Value("some text");
+  ///   htmlWriter.Tags.bodyEnd();
+  ///   htmlWriter.Tags.htmlEnd();
+  /// }
+  /// string htmlText = stringWriter.ToString ();
+  /// ]]></code>
+  /// </example>
+  /// </summary>
   public class HtmlTagWriter : IDisposable
   {
     private readonly XmlWriter _xmlWriter;

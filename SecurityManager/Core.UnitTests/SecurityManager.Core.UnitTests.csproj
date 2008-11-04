@@ -70,7 +70,7 @@
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionMultiFileHtmlWriterTest.cs" />
     <Compile Include="AclTools\Expansion\AclProbeTest.cs" />
-    <Compile Include="AclTools\Expansion\HtmlWriterTest.cs" />
+    <Compile Include="AclTools\Expansion\HtmlTagWriterTest.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\StreamWriterFactoryTest.cs" />
     <Compile Include="AclTools\Expansion\UserRoleAclAceCombinationsTest.cs" />
     <Compile Include="AclTools\SetUpFixture.cs" />

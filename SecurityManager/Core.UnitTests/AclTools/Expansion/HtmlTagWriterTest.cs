@@ -19,7 +19,7 @@ using Remotion.Diagnostics.ToText;
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
   [TestFixture]
-  public class HtmlWriterTest
+  public class HtmlTagWriterTest
   {
     [Test]
     public void WriteTagTest ()
