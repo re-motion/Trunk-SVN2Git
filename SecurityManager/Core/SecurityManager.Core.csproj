@@ -70,6 +70,7 @@
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterSettings.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionMultiFileHtmlWriter.cs" />
+    <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplicationSettings.cs" />
     <Compile Include="AclTools\Expansion\HtmlTagWriterTags.cs" />
     <Compile Include="AclTools\Expansion\IAclExpansionWriter.cs" />
     <Compile Include="AclTools\Expansion\AclProbe.cs" />

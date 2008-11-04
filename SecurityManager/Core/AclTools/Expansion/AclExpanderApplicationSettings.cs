@@ -10,13 +10,23 @@
 
 using System;
 using Remotion.Diagnostics.ToText;
+using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
 using Remotion.Text.CommandLine;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public class AclExpanderApplicationSettings : IToText
+  public class AclExpanderApplicationSettings : ConsoleApplicationSettings, IToText
   {
+    //public enum ShowUsageMode
+    //{
+    //  [CommandLineMode ("?", Description = "Show usage")]
+    //  ShowUsage
+    //};
+    
+    //[CommandLineModeArgument (true)]
+    //public ShowUsageMode Mode = ShowUsageMode.ShowUsage;
+
     [CommandLineStringArgument ("user", true, Placeholder = "accountants/john.doe", Description = "Fully qualified name of user(s) to query access types for.")]
     public string UserName;
 
@@ -29,6 +39,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     [CommandLineStringArgument ("dir", true, Placeholder = "c:\\temp", Description = "Directory where the ACL-expansion gets written.")]
     public string Directory = ".";
 
+    [CommandLineStringArgument ("culture", true, Placeholder = "", Description = "Culture to set for output (e.g. en-US, de-AT).")]
+    public string CultureName = "de-AT";
+
     [CommandLineFlagArgument ("multifile", false, Description = "Whether to create a single file for all users + permissions or a master file and several detail files.")]
     public bool UseMultipleFileOutput;
 
@@ -38,7 +51,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public void ToText (IToTextBuilder toTextBuilder)
     {
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-      toTextBuilder.sb().e ("user", UserName).e ("last", UserLastName).e ("first", UserFirstName).e ("dir", Directory).e ("multifile", UseMultipleFileOutput).e ("verbose", Verbose).se();
+      toTextBuilder.sb ().e ("user", UserName).e ("last", UserLastName).e ("first", UserFirstName).e ("dir", Directory).e ("culture", CultureName).e ("multifile", UseMultipleFileOutput).e ("verbose", Verbose).se ();
     }
   }
 }

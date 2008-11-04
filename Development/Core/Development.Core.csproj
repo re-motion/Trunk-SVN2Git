@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B719A305-0493-4C72-88FE-9A2FC6964578}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -96,7 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UnitTesting\AmbiguousMethodNameException.cs" />
-    <Compile Include="UnitTesting\CultureScope.cs" />
     <Compile Include="UnitTesting\Logging\ISimpleLogger.cs" />
     <Compile Include="UnitTesting\Logging\SimpleLogger.cs" />
     <Compile Include="UnitTesting\Logging\SimpleLoggerNull.cs" />

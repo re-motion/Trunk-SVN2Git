@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       }
       var result = stringWriter.ToString ();
       To.ConsoleLine.e (() => result);
-      Assert.That (result, Is.EqualTo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>Page Header Test</title><style>@import \"pageHeaderTest.css\";</style></head></html>"));
+      Assert.That (result, Is.EqualTo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>Page Header Test</title><style>@import \"pageHeaderTest.css\";</style><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head></html>"));
     }
 
 

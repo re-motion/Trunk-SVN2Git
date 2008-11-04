@@ -23,6 +23,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   public class AclExpansionMultiFileHtmlWriterTest : AclToolsTestBase
   {
     [Test]
+    [Ignore]
     public void TextWriterFactoryResultTest ()
     {
       using (new CultureScope ("de-AT", "de-AT"))

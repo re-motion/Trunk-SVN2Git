@@ -10,6 +10,7 @@
 // 
 // 
 using System;
+using System.IO;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
 using Remotion.Text.CommandLine;
@@ -19,9 +20,29 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
 {
   public class ConsoleApplication<TApplication, TApplicationSettings> 
       where TApplication: IApplicationRunner<TApplicationSettings>, new()
-      where TApplicationSettings : class
+      where TApplicationSettings : ConsoleApplicationSettings
   {
-    public static int MainDo (string[] args)
+
+    private readonly ToTextBuilder _logToTextBuilder;
+    private readonly ToTextBuilder _errorToTextBuilder;
+    private readonly CommandLineClassParser<TApplicationSettings> _parser = new CommandLineClassParser<TApplicationSettings> ();
+    private readonly int _bufferWidth;
+    private readonly IWait _waitAtEnd;
+
+
+    public ConsoleApplication (TextWriter errorWriter, TextWriter logWriter, int bufferWidth, IWait waitAtEnd)
+    {
+      _logToTextBuilder = new ToTextBuilder (To.ToTextProvider, logWriter);
+      _errorToTextBuilder = new ToTextBuilder (To.ToTextProvider, errorWriter);
+      _bufferWidth = bufferWidth;
+      _waitAtEnd = waitAtEnd;
+    }
+
+
+    public ConsoleApplication () : this (System.Console.Error, System.Console.Out, System.Console.BufferWidth, new WaitForConsoleKeypress()) {}
+
+
+    public int Main (string[] args)
     {
       int result = 0;
       TApplicationSettings settings = ParseCommandLineArguments(args, ref result);
@@ -30,13 +51,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       return result;
     }
 
-    private static void WaitForKeypress ()
+    private void WaitForKeypress ()
     {
-      To.ConsoleLine.nl(2).s ("Press any-key...");
-      Console.ReadKey ();
+      _logToTextBuilder.nl (2).s ("Press any-key...");
+      //Console.ReadKey ();
+      _waitAtEnd.Wait();
     }
 
-    private static void RunApplication (ref int result, TApplicationSettings settings)
+    private void RunApplication (ref int result, TApplicationSettings settings)
     {
       if (result == 0)
       {
@@ -63,22 +85,49 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       }
     }
 
-    private static TApplicationSettings ParseCommandLineArguments (string[] args, ref int result)
+    private TApplicationSettings ParseCommandLineArguments (string[] args, ref int result)
     {
       TApplicationSettings settings = null;
-      CommandLineClassParser<TApplicationSettings> parser = new CommandLineClassParser<TApplicationSettings> ();
+      //_parser = new CommandLineClassParser<TApplicationSettings> ();
       try
       {
-        settings = parser.Parse (args);
+        settings = _parser.Parse (args);
+        if (settings.Mode == ConsoleApplicationSettings.ShowUsageMode.ShowUsage)
+        {
+          _logToTextBuilder.nl (2).s ("Application Usage: ");
+          _logToTextBuilder.nl().s (GetSynopsis (args));
+        }
       }
       catch (CommandLineArgumentException e)
       {
-        To.ConsoleLine.s (e.Message);
-        To.ConsoleLine.s ("Usage:");
-        To.ConsoleLine.s (parser.GetAsciiSynopsis (Environment.GetCommandLineArgs ()[0], System.Console.BufferWidth));
+        _errorToTextBuilder.s (e.Message);
+        _errorToTextBuilder.s ("Usage:");
+        _errorToTextBuilder.s (GetSynopsis (args));
         result = 1;
       }
+
       return settings;
     }
+
+    //public string GetSynopsis (CommandLineClassParser<TApplicationSettings> parser)
+    public string GetSynopsis (string[] args)
+    {
+      //return _parser.GetAsciiSynopsis (Environment.GetCommandLineArgs ()[0], System.Console.BufferWidth);
+      return _parser.GetAsciiSynopsis (args[0], _bufferWidth);
+    }
   }
+
+  public interface IWait
+  {
+    void Wait ();
+  }
+
+  public class WaitForConsoleKeypress : IWait
+  {
+    public void Wait ()
+    {
+      Console.ReadKey ();
+    }
+  }
+
 }

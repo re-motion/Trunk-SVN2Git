@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
@@ -60,18 +61,29 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       ArgumentUtility.CheckNotNull ("logWriter", logWriter);
       Init (settings, errorWriter, logWriter);
 
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      string cultureName = Settings.CultureName;
+      if (String.IsNullOrEmpty (cultureName))
       {
-        List<AclExpansionEntry> aclExpansion = GetAclExpansion ();
+        cultureName = null; // Passing null to CultureScope-ctor below means "keep current culture".
+      }
 
-        if (Settings.Verbose)
+      //using (new CultureScope ("de-DE", "de-DE"))
+      //using (new CultureScope ("en-US", "en-US"))
+      using (new CultureScope (cultureName))
+      {
+        using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
         {
-          _logToTextBuilder.nl (2).s ("AclExpander").nl ().s ("==========").nl ();
-          _logToTextBuilder.e (Settings);
-          LogAclExpansion (aclExpansion);
-        }
+          List<AclExpansionEntry> aclExpansion = GetAclExpansion();
 
-        WriteAclExpansionAsHtmlSpikeToStreamWriter (aclExpansion);
+          if (Settings.Verbose)
+          {
+            _logToTextBuilder.nl (2).s ("AclExpander").nl().s ("==========").nl();
+            _logToTextBuilder.e (Settings);
+            LogAclExpansion (aclExpansion);
+          }
+
+          WriteAclExpansionAsHtmlSpikeToStreamWriter (aclExpansion);
+        }
       }
     }
 

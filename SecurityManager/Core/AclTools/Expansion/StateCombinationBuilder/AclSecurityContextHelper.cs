@@ -172,7 +172,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
   {
     public static string ShortName (this StateDefinition stateDefinition)
     {
-      return stateDefinition.Name.LeftUntilChar ('|');
+      //return stateDefinition.Name.LeftUntilChar ('|');
+      //return stateDefinition.DisplayName + "_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+      return stateDefinition.DisplayName;
     }
   }
 
@@ -180,7 +182,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
   {
     public static string ShortName (this SecurableClassDefinition securableClassDefinition)
     {
-      return securableClassDefinition.Name.RightUntilChar ('.');
+      //return securableClassDefinition.Name.RightUntilChar ('.');
+      //return securableClassDefinition.DisplayName + "_BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+      return securableClassDefinition.DisplayName;
     }
   }
 }

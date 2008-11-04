@@ -58,6 +58,14 @@ namespace Remotion.Development.UnitTesting
       }
     }
 
+
+    /// <summary>
+    /// Intialize both the culture and UI-culture with the same culture-name
+    /// </summary>
+    /// <param name="cultureAndUiCultureName">Culture and User interface culture name string.</param>
+    public CultureScope (string cultureAndUiCultureName) : this (cultureAndUiCultureName, cultureAndUiCultureName) { }
+
+
     /// <summary>
     /// Intialize <see cref="CultureScope"/> from <see cref="CultureInfo"/> instances.
     /// </summary>
@@ -66,6 +74,8 @@ namespace Remotion.Development.UnitTesting
     public CultureScope (CultureInfo cultureInfo, CultureInfo uiCultureInfo)
       : this (cultureInfo.Name, uiCultureInfo.Name)
     {}
+
+
 
 
     public void Dispose ()

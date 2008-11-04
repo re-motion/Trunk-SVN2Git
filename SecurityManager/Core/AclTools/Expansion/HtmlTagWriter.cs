@@ -123,6 +123,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       Tag ("html");
       // HEAD
       Tag ("head");
+
       // TITLE
       if (pageTitle != null)
       {
@@ -137,8 +138,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         Tag ("style");
         Value ("@import \"" + cssFileName + "\";");
         TagEnd ("style");
-        TagEnd ("head");
       }
+
+      // META
+      //   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+      Tag ("meta");
+      Attribute ("http-equiv", "Content-Type");
+      Attribute ("content", "text/html; charset=UTF-8");
+      TagEnd ("meta");
+
+      TagEnd ("head");
 
       return this;
     }

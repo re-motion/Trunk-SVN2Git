@@ -53,9 +53,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
           ace.Permissions[0].Allowed = true; // FirstAccessType
           s_orderClassID = orderClass.ID;
 
-          Culture cultureDe = Culture.NewObject ("de");
+          //Culture cultureDe = Culture.NewObject ("de");
+          Culture cultureDe = Culture.NewObject ("de-DE");
           LocalizedName.NewObject ("Bestellung", cultureDe, orderClass);
           LocalizedName.NewObject ("Rechnung", cultureDe, accessControlTestHelper.CreateInvoiceClassDefinition());
+
+          //LocalizedName.NewObject ("Bestellung", cultureDe, orderClass);
 
           ClientTransaction.Current.Commit();
         }
