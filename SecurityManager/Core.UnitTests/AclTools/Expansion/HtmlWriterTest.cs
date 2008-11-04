@@ -25,7 +25,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void WriteTagTest ()
     {
       var stringWriter = new StringWriter();
-      using (var htmlWriter = new HtmlWriter (stringWriter, false))
+      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
       {
         htmlWriter.Tag ("div").Value ("xxx").TagEnd ("div");
       }
@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void WritePageHeaderTest ()
     {
       var stringWriter = new StringWriter ();
-      using (var htmlWriter = new HtmlWriter (stringWriter, false))
+      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
       {
         htmlWriter.WritePageHeader("Page Header Test","pageHeaderTest.css");
       }
@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void BreakTagTest ()
     {
       var stringWriter = new StringWriter ();
-      using (var htmlWriter = new HtmlWriter (stringWriter, false))
+      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
       {
         htmlWriter.Tags.br();
       }
@@ -84,12 +84,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public string GetSpecificTagOpenCloseHtml (string tagName)
     {
       var stringWriter = new StringWriter ();
-      using (var htmlWriter = new HtmlWriter (stringWriter, false))
+      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
       {
-        HtmlWriterTagWriter htmlWriterTagWriter = htmlWriter.Tags;
-        PrivateInvoke.InvokePublicMethod (htmlWriterTagWriter, tagName);
+        HtmlTagWriterTags htmlTagWriterTags = htmlWriter.Tags;
+        PrivateInvoke.InvokePublicMethod (htmlTagWriterTags, tagName);
         htmlWriter.Value ("abc");
-        PrivateInvoke.InvokePublicMethod (htmlWriterTagWriter, tagName + "End");
+        PrivateInvoke.InvokePublicMethod (htmlTagWriterTags, tagName + "End");
       }
       return stringWriter.ToString ();
     }
@@ -99,7 +99,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void HtmlPageTest ()
     {
       var stringWriter = new StringWriter ();
-      using (var htmlWriter = new HtmlWriter (stringWriter, false))
+      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
       {
         htmlWriter.Tags.html ();
           htmlWriter.Tags.head ();
@@ -126,6 +126,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       To.ConsoleLine.e (() => result);
       Assert.That (result, Is.EqualTo ("<html><head><title>Title: My HTML Page</title></head><body><p id=\"first_paragraph\">Smells like...<br />Victory<table class=\"myTable\"><tr><th>1st column</th></tr><tr><td>some data</td></tr><tr><td>some more data</td></tr></table></p></body></html>"));
     }
+
+
+
 
   }
 }

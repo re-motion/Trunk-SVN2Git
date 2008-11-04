@@ -17,22 +17,22 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public class HtmlWriter : IDisposable
+  public class HtmlTagWriter : IDisposable
   {
     private readonly XmlWriter _xmlWriter;
     private readonly Stack<string> _openElementStack = new Stack<string>();
 
-    private readonly HtmlWriterTagWriter _htmlTagWriter;
+    private readonly HtmlTagWriterTags _htmlTagWriterTags;
 
 
-    public HtmlWriter (TextWriter textWriter, bool indentXml)
+    public HtmlTagWriter (TextWriter textWriter, bool indentXml)
       : this (CreateXmlWriter (textWriter, indentXml))
     {}
 
-    public HtmlWriter (XmlWriter xmlWriter)
+    public HtmlTagWriter (XmlWriter xmlWriter)
     {
       _xmlWriter = xmlWriter;
-      _htmlTagWriter = new HtmlWriterTagWriter (this);
+      _htmlTagWriterTags = new HtmlTagWriterTags (this);
     }
 
     public XmlWriter XmlWriter
@@ -40,19 +40,19 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       get { return _xmlWriter; }
     }
 
-    public HtmlWriterTagWriter Tags
+    public HtmlTagWriterTags Tags
     {
-      get { return _htmlTagWriter; }
+      get { return _htmlTagWriterTags; }
     }
 
-    public HtmlWriter Tag (string elementName)
+    public HtmlTagWriter Tag (string elementName)
     {
       _xmlWriter.WriteStartElement (elementName);
       _openElementStack.Push (elementName);
       return this;
     }
 
-    public HtmlWriter TagEnd (string elementName)
+    public HtmlTagWriter TagEnd (string elementName)
     {
       string ElementNameExpected = _openElementStack.Pop();
       if (ElementNameExpected != elementName)
@@ -63,7 +63,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return this;
     }
 
-    public HtmlWriter Attribute (string attributeName, string attributeValue)
+    public HtmlTagWriter Attribute (string attributeName, string attributeValue)
     {
       _xmlWriter.WriteAttributeString (attributeName,attributeValue);
       return this;
@@ -81,14 +81,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return XmlWriter.Create (textWriter, settings);
     }
 
-    public HtmlWriter Value (string s)
+    public HtmlTagWriter Value (string s)
     {
       //_xmlWriter.WriteValue(s);
       _xmlWriter.WriteValue (StringUtility.NullToEmpty(s));
       return this;
     }
 
-    public HtmlWriter Value (object obj)
+    public HtmlTagWriter Value (object obj)
     {
       _xmlWriter.WriteValue (obj);
       return this;
@@ -97,7 +97,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
-    public HtmlWriter WritePageHeader (string pageTitle, string cssFileName)
+    public HtmlTagWriter WritePageHeader (string pageTitle, string cssFileName)
     {
       // DOCTYPE
       XmlWriter.WriteDocType ("HTML", "-//W3C//DTD HTML 4.0 Transitional//EN", null, null);

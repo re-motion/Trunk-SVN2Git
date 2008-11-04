@@ -31,12 +31,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml)
     {
-      htmlWriter = new HtmlWriter (textWriter, indentXml);
+      htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
 
     public AclExpansionHtmlWriter (XmlWriter xmlWriter)
     {
-      htmlWriter = new HtmlWriter (xmlWriter);
+      htmlTagWriter = new HtmlTagWriter (xmlWriter);
     }
 
 
@@ -70,7 +70,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteTableHeaders ()
     {
-      htmlWriter.Tags.tr ();
+      htmlTagWriter.Tags.tr ();
       WriteHeaderCell ("User");
       WriteHeaderCell ("Role");
       WriteHeaderCell ("Class");
@@ -80,7 +80,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteHeaderCell ("Tenant Must Own");
       WriteHeaderCell ("User Must Have Abstract Role");
       WriteHeaderCell ("Access Rights");
-      htmlWriter.Tags.trEnd ();
+      htmlTagWriter.Tags.trEnd ();
     }
 
 
@@ -89,9 +89,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       if (addendum != null)
       {
-        htmlWriter.Value (" (");
-        htmlWriter.Value (addendum);
-        htmlWriter.Value (") ");
+        htmlTagWriter.Value (" (");
+        htmlTagWriter.Value (addendum);
+        htmlTagWriter.Value (") ");
       }
     }
 
@@ -99,63 +99,63 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableDataWithRowCount (string value, int rowCount)
     {
       WriteTableRowBeginIfNotInTableRow ();
-      htmlWriter.Tags.td ();
+      htmlTagWriter.Tags.td ();
       WriteRowspanAttribute(rowCount);
-      htmlWriter.Value (value);
+      htmlTagWriter.Value (value);
       if (Settings.OutputRowCount)
       {
         WriteTableDataAddendum (rowCount);
       }
-      htmlWriter.Tags.tdEnd ();
+      htmlTagWriter.Tags.tdEnd ();
     }
 
 
 
-    private HtmlWriter WriteRowspanAttribute (int rowCount)
+    private HtmlTagWriter WriteRowspanAttribute (int rowCount)
     {
       if (rowCount > 0)
       {
-        htmlWriter.Attribute ("rowspan", Convert.ToString (rowCount));
+        htmlTagWriter.Attribute ("rowspan", Convert.ToString (rowCount));
       }
-      return htmlWriter;
+      return htmlTagWriter;
     }
 
     private void WriteTableDataForRole (Role role, int rowCount)
     {
       WriteTableRowBeginIfNotInTableRow();
-      htmlWriter.Tags.td ();
+      htmlTagWriter.Tags.td ();
       WriteRowspanAttribute (rowCount);
-      htmlWriter.Value (role.Group.DisplayName);
-      htmlWriter.Value (", ");
-      htmlWriter.Value (role.Position.DisplayName);
+      htmlTagWriter.Value (role.Group.DisplayName);
+      htmlTagWriter.Value (", ");
+      htmlTagWriter.Value (role.Position.DisplayName);
       if (Settings.OutputRowCount)
       {
         WriteTableDataAddendum (rowCount);
       }
-      htmlWriter.Tags.tdEnd ();
+      htmlTagWriter.Tags.tdEnd ();
     }
 
 
     private void WriteTableDataForBodyStates (AclExpansionEntry aclExpansionEntry)
     {
       var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).OrderBy(x => x.DisplayName).ToArray ();
-      htmlWriter.Tags.td ();
+      htmlTagWriter.Tags.td ();
       bool firstElement = true;
       foreach (StateDefinition stateDefiniton in stateDefinitions)
       {
         if (!firstElement)
         {
           //_htmlWriter.br ();
-          htmlWriter.Value (", ");
+          htmlTagWriter.Value (", ");
         }
 
         string stateName = Settings.UseShortNames ? stateDefiniton.ShortName () : stateDefiniton.DisplayName;
         //To.ConsoleLine.e (() => stateName);
 
-        htmlWriter.Value (stateName);
+        htmlTagWriter.Value (stateName);
         firstElement = false;
       }
-      htmlWriter.Tags.tdEnd ();
+      htmlTagWriter.Tags.tdEnd ();
     }
 
     private void WriteTableDataForAccessTypes (AccessTypeDefinition[] accessTypeDefinitions)
@@ -164,18 +164,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                                         orderby atd.DisplayName
                                         select atd;
 
-      htmlWriter.Tags.td ();
+      htmlTagWriter.Tags.td ();
       bool firstElement = true;
       foreach (AccessTypeDefinition accessTypeDefinition in accessTypeDefinitionsSorted)
       {
         if (!firstElement)
         {
-          htmlWriter.Value (", ");
+          htmlTagWriter.Value (", ");
         }
-        htmlWriter.Value (accessTypeDefinition.DisplayName);
+        htmlTagWriter.Value (accessTypeDefinition.DisplayName);
         firstElement = false;
       }
-      htmlWriter.Tags.tdEnd ();
+      htmlTagWriter.Tags.tdEnd ();
     }
 
     private void WriteTableDataForBodyConditions (AclExpansionAccessConditions conditions)
@@ -184,16 +184,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteTableDataForBooleanCondition (conditions.IsOwningGroupRequired);
       WriteTableDataForBooleanCondition (conditions.IsOwningTenantRequired);
 
-      htmlWriter.Tags.td ();
-      htmlWriter.Value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");
-      htmlWriter.Tags.tdEnd ();
+      htmlTagWriter.Tags.td ();
+      htmlTagWriter.Value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");
+      htmlTagWriter.Tags.tdEnd ();
     }
 
     private void WriteTableDataForBooleanCondition (bool required)
     {
-      htmlWriter.Tags.td ();
-      htmlWriter.Value (required ? "X" : "");
-      htmlWriter.Tags.tdEnd ();
+      htmlTagWriter.Tags.td ();
+      htmlTagWriter.Value (required ? "X" : "");
+      htmlTagWriter.Tags.tdEnd ();
     }
 
 

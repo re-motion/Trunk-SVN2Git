@@ -41,52 +41,52 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return sb.ToString ();
     }
 
-    protected HtmlWriter htmlWriter;
+    protected HtmlTagWriter htmlTagWriter;
     private bool _isInTableRow;
 
 
     protected void WriteTableEnd ()
     {
-      htmlWriter.Tags.tableEnd ();
+      htmlTagWriter.Tags.tableEnd ();
     }
 
     protected virtual void WriteTableStart (string tableId)
     {
-      htmlWriter.Tags.table ().Attribute ("style", "width: 100%;").Attribute ("class", "aclExpansionTable").Attribute ("id", tableId);
+      htmlTagWriter.Tags.table ().Attribute ("style", "width: 100%;").Attribute ("class", "aclExpansionTable").Attribute ("id", tableId);
     }
 
 
-    protected virtual HtmlWriter WritePageStart (string pageTitle)
+    protected virtual HtmlTagWriter WritePageStart (string pageTitle)
     {
-      htmlWriter.WritePageHeader (pageTitle, "AclExpansion.css");
+      htmlTagWriter.WritePageHeader (pageTitle, "AclExpansion.css");
 
       // BODY
-      htmlWriter.Tag ("body");
-      return htmlWriter;
+      htmlTagWriter.Tag ("body");
+      return htmlTagWriter;
     }
 
 
     protected virtual void WritePageEnd ()
     {
-      htmlWriter.TagEnd ("body");
-      htmlWriter.TagEnd ("html");
+      htmlTagWriter.TagEnd ("body");
+      htmlTagWriter.TagEnd ("html");
 
-      htmlWriter.Close ();
+      htmlTagWriter.Close ();
     }
 
     protected virtual void WriteHeaderCell (string columnName)
     {
-      htmlWriter.Tags.th ().Attribute ("class", "header");
-      htmlWriter.Value (columnName);
-      htmlWriter.Tags.thEnd ();
+      htmlTagWriter.Tags.th ().Attribute ("class", "header");
+      htmlTagWriter.Value (columnName);
+      htmlTagWriter.Tags.thEnd ();
     }
 
     protected virtual void WriteTableData (string value)
     {
       WriteTableRowBeginIfNotInTableRow ();
-      htmlWriter.Tags.td ();
-      htmlWriter.Value (value);
-      htmlWriter.Tags.tdEnd ();
+      htmlTagWriter.Tags.td ();
+      htmlTagWriter.Value (value);
+      htmlTagWriter.Tags.tdEnd ();
     }
 
 
@@ -95,14 +95,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       if (!_isInTableRow)
       {
-        htmlWriter.Tags.tr ();
+        htmlTagWriter.Tags.tr ();
         _isInTableRow = true;
       }
     }
 
     public virtual void WriteTableRowEnd ()
     {
-      htmlWriter.Tags.trEnd ();
+      htmlTagWriter.Tags.trEnd ();
       _isInTableRow = false;
     }
 

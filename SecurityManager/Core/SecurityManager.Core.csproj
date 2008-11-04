@@ -70,14 +70,14 @@
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterSettings.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionMultiFileHtmlWriter.cs" />
-    <Compile Include="AclTools\Expansion\HtmlWriterTagWriter.cs" />
+    <Compile Include="AclTools\Expansion\HtmlTagWriterTags.cs" />
     <Compile Include="AclTools\Expansion\IAclExpansionWriter.cs" />
     <Compile Include="AclTools\Expansion\AclProbe.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\AclSecurityContextHelper.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\ClassStateDictionary.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\ClassStateTuple.cs" />
     <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplication.cs" />
-    <Compile Include="AclTools\Expansion\HtmlWriter.cs" />
+    <Compile Include="AclTools\Expansion\HtmlTagWriter.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderUserFinder.cs" />
     <Compile Include="AclTools\Expansion\ConsoleApplication\IApplicationRunner.cs" />

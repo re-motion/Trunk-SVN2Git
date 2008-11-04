@@ -32,7 +32,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       _textWriterFactory = textWriterFactory;
       var textWriter = _textWriterFactory.NewTextWriter (_masterFileName);
-      htmlWriter = new HtmlWriter (textWriter, indentXml);
+      htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
    
 
@@ -56,12 +56,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteTableHeaders ()
     {
-      htmlWriter.Tags.tr ();
+      htmlTagWriter.Tags.tr ();
       WriteHeaderCell ("User");
       WriteHeaderCell ("First Name");
       WriteHeaderCell ("Last Name");
       WriteHeaderCell ("Access Rights");
-      htmlWriter.Tags.trEnd ();
+      htmlTagWriter.Tags.trEnd ();
     }
 
 
@@ -94,13 +94,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       string relativePath = _textWriterFactory.GetRelativePath (_masterFileName, userDetailFileName);
       WriteTableRowBeginIfNotInTableRow ();
-      htmlWriter.Tags.td ();
-      htmlWriter.Tag ("a");
-      htmlWriter.Attribute ("href", relativePath);
-      htmlWriter.Attribute ("target", "_blank");
-      htmlWriter.Value (relativePath);
-      htmlWriter.TagEnd ("a");
-      htmlWriter.Tags.tdEnd ();
+      htmlTagWriter.Tags.td ();
+      htmlTagWriter.Tag ("a");
+      htmlTagWriter.Attribute ("href", relativePath);
+      htmlTagWriter.Attribute ("target", "_blank");
+      htmlTagWriter.Value (relativePath);
+      htmlTagWriter.TagEnd ("a");
+      htmlTagWriter.Tags.tdEnd ();
     }
 
 
