@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.UI;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
 using Remotion.Data.DomainObjects.Web.Test.WxeFunctions;
 using Remotion.Web.ExecutionEngine;
@@ -36,19 +37,19 @@ namespace Remotion.Data.DomainObjects.Web.Test
 
     protected void NonTransactionUserControlStepButton_Click (object sender, EventArgs e)
     {
-      MyFunction.ObjectReadFromSecondControl = SecondControl.Call (WxePage, this, this, WxeTransactionMode.None, MyFunction.ObjectPassedIntoSecondControl);
+      MyFunction.ObjectReadFromSecondControl = SecondControl.Call (WxePage, this, (Control)sender, WxeTransactionMode.None, MyFunction.ObjectPassedIntoSecondControl);
       RefreshText ();
     }
 
     protected void RootTransactionUserControlStepButton_Click (object sender, EventArgs e)
     {
-      MyFunction.ObjectReadFromSecondControl = SecondControl.Call (WxePage, this, this, WxeTransactionMode.CreateRoot, MyFunction.ObjectPassedIntoSecondControl);
+      MyFunction.ObjectReadFromSecondControl = SecondControl.Call (WxePage, this, (Control) sender, WxeTransactionMode.CreateRoot, MyFunction.ObjectPassedIntoSecondControl);
       RefreshText ();
     }
 
     protected void SubTransactionUserControlStepButton_Click (object sender, EventArgs e)
     {
-      MyFunction.ObjectReadFromSecondControl = SecondControl.Call (WxePage, this, this, WxeTransactionMode.CreateChildIfParent, MyFunction.ObjectPassedIntoSecondControl);
+      MyFunction.ObjectReadFromSecondControl = SecondControl.Call (WxePage, this, (Control) sender, WxeTransactionMode.CreateChildIfParent, MyFunction.ObjectPassedIntoSecondControl);
       RefreshText ();
     }
 

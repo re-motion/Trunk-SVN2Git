@@ -61,6 +61,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       if (usesEventTarget)
       {
+        //TODO: Update PreProcessingSubFunctionState with this check as well.
+        if (sender.UniqueID.Contains (":"))
+          throw new InvalidOperationException("Executing WxeUserControls are only supported on pages not rendered in XhtmlConformanceMode.Legacy.");
+
         if (_postBackCollection[ControlHelper.PostEventSourceID] != sender.UniqueID)
         {
           throw new ArgumentException(
