@@ -28,17 +28,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     private bool _isReturningPostBack;
     private WxePageStep _pageStep;
 
-    public UserControlExecutor (WxePageStep parentStep, WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
+    public UserControlExecutor (WxePageStep parentStep, WxeUserControl userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
       : this ((WxeStep) parentStep, userControl, subFunction, sender, usesEventTarget)
     {
     }
 
-    public UserControlExecutor (WxeUserControlStep parentStep, WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
+    public UserControlExecutor (WxeUserControlStep parentStep, WxeUserControl userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
       : this ((WxeStep) parentStep, userControl, subFunction, sender, usesEventTarget)
     {
     }
 
-    protected UserControlExecutor (WxeStep parentStep, WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
+    protected UserControlExecutor (WxeStep parentStep, WxeUserControl userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
     {
       ArgumentUtility.CheckNotNull ("parentStep", parentStep);
       ArgumentUtility.CheckNotNull ("userControl", userControl);

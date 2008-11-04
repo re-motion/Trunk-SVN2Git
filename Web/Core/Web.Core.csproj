@@ -183,7 +183,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\WxeParameterAttribute.cs" />
     <Compile Include="ExecutionEngine\WxeReturnOptions.cs" />
-    <Compile Include="ExecutionEngine\WxeUserControl2.cs">
+    <Compile Include="ExecutionEngine\WxeUserControl.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\IWxeExecutor.cs" />
@@ -322,9 +322,6 @@
     </Compile>
     <Compile Include="ExecutionEngine\WxeUserCancelException.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExecutionEngine\WxeUserControl.cs">
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="IResourceUrlResolver.cs">
       <SubType>Code</SubType>

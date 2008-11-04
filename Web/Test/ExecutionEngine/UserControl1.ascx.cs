@@ -41,13 +41,13 @@ namespace Remotion.Web.Test.ExecutionEngine
     }
 
     #region Web Form Designer generated code
-    override protected void OnInit(EventArgs e)
+    override protected void OnInitComplete(EventArgs e)
     {
       //
       // CODEGEN: This call is required by the ASP.NET Web Form Designer.
       //
       InitializeComponent();
-      base.OnInit(e);
+      base.OnInitComplete(e);
     }
 	
     /// <summary>

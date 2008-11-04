@@ -168,7 +168,7 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void ExecuteFunction (WxeUserControl2 userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
+    public void ExecuteFunction (WxeUserControl userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
     {
       ArgumentUtility.CheckNotNull ("userControl", userControl);
       ArgumentUtility.CheckNotNull ("subFunction", subFunction);

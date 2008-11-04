@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,9 +10,9 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
-  public partial class SecondControl : WxeUserControl2
+  public partial class SecondControl : WxeUserControl
   {
-    public static void Call (IWxePage page, WxeUserControl2 userControl, Control sender)
+    public static void Call (IWxePage page, WxeUserControl userControl, Control sender)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("userControl", userControl);
@@ -23,7 +23,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       {
         function = new ShowSecondUserControlFormFunction ();
         function.ExceptionHandler.SetCatchExceptionTypes (typeof (System.Exception));
-        WxeUserControl2 actualUserControl = (WxeUserControl2) page.FindControl (userControl.PermanentUniqueID);
+        WxeUserControl actualUserControl = (WxeUserControl) page.FindControl (userControl.PermanentUniqueID);
         Assertion.IsNotNull (actualUserControl);
         actualUserControl.ExecuteFunction (function, sender, null);
         throw new System.Exception ("(Unreachable code)");

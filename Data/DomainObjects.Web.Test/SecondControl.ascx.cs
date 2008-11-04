@@ -10,9 +10,9 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test
 {
-  public partial class SecondControl : WxeUserControl2
+  public partial class SecondControl : WxeUserControl
   {
-    public static ClassWithAllDataTypes Call (IWxePage page, WxeUserControl2 userControl, Control sender, ITransactionMode transactionMode, ClassWithAllDataTypes inParameter)
+    public static ClassWithAllDataTypes Call (IWxePage page, WxeUserControl userControl, Control sender, ITransactionMode transactionMode, ClassWithAllDataTypes inParameter)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("userControl", userControl);
@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
       {
         var function = new ShowSecondUserControlFunction (transactionMode, inParameter);
         function.ExceptionHandler.SetCatchExceptionTypes (typeof (System.Exception));
-        var actualUserControl = (WxeUserControl2) page.FindControl (userControl.PermanentUniqueID);
+        var actualUserControl = (WxeUserControl) page.FindControl (userControl.PermanentUniqueID);
         Assertion.IsNotNull (actualUserControl);
         actualUserControl.ExecuteFunction (function, sender, null);
         throw new Exception ("(Unreachable code)");

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web.UI;
 using Remotion.Data.DomainObjects.Web.Test.Domain;
 using Remotion.Data.DomainObjects.Web.Test.WxeFunctions;
@@ -6,7 +6,7 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Data.DomainObjects.Web.Test
 {
-  public partial class FirstControl : WxeUserControl2
+  public partial class FirstControl : WxeUserControl
   {
     public WxeUserControlTestPageFunction MyFunction
     {

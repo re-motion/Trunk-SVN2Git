@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,7 +10,7 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
-  public partial class ThirdControl : WxeUserControl2
+  public partial class ThirdControl : WxeUserControl
   {
     protected void ExecuteNextStep_Click (object sender, EventArgs e)
     {
