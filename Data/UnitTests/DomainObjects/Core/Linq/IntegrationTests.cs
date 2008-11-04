@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       CheckQueryResult (employees, DomainObjectIDs.Employee3);
     }
-
+    
     [Test]
     public void QueryWithVirtualKeySide_NotEqualsOuterObject ()
     {
@@ -539,6 +539,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (query, DomainObjectIDs.OrderTicket1);
     }
 
+    [Test]
+    public void Query_WithSupportForObjectList ()
+    {
+      var orders =
+          (from o in QueryFactory.CreateLinqQuery<Order> ()
+          from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
+          where oi.Order == o
+          // where ...
+          select o).Distinct();
+
+      CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4);
+    }
+
+    
     [Test]
     public void Query_WithCastOnResultSet ()
     {
