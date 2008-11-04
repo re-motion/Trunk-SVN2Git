@@ -24,10 +24,15 @@ namespace Remotion.Web.ExecutionEngine
   {
     private WxeHandler _wxeHandler;
     private WxePageStep _currentPageStep;
-    private WxeFunction _currentFunction;
-    private IWxeTemplateControl _control;
+    private WxeUserControlStep _currentUserControlStep;
+    private WxeFunction _currentPageFunction;
+    private WxeFunction _currentUserControlFunction;
+
+    private readonly IWxeTemplateControl _control;
     /// <summary> Caches the <see cref="ResourceManagerSet"/> for this control. </summary>
     private ResourceManagerSet _cachedResourceManager;
+
+
 
     public WxeTemplateControlInfo (IWxeTemplateControl control)
     {
@@ -62,11 +67,19 @@ namespace Remotion.Web.ExecutionEngine
 
       WxeStep executingStep = _wxeHandler.RootFunction.ExecutingStep;
       if (executingStep is WxeUserControlStep)
-        _currentPageStep = ((WxeUserControlStep) executingStep).PageStep;
+      {
+        _currentUserControlStep = (WxeUserControlStep) executingStep;
+        _currentUserControlFunction = WxeStep.GetFunction (_currentUserControlStep);
+        _currentPageStep = _currentUserControlStep.PageStep;
+      }
       else
+      {
+        _currentUserControlStep = null;
+        _currentUserControlFunction = null;
         _currentPageStep = (WxePageStep) executingStep;
+      }
 
-      _currentFunction = WxeStep.GetFunction (executingStep);
+      _currentPageFunction = WxeStep.GetFunction (_currentPageStep);
     }
 
     public WxeHandler WxeHandler
@@ -79,14 +92,37 @@ namespace Remotion.Web.ExecutionEngine
       get { return _currentPageStep; }
     }
 
+    public WxeUserControlStep CurrentUserControlStep
+    {
+      get { return _currentUserControlStep; }
+    }
+
+    public WxeFunction CurrentPageFunction
+    {
+      get { return _currentPageFunction; }
+    }
+
     public WxeFunction CurrentFunction
     {
-      get { return _currentFunction; }
+      get { return _currentUserControlFunction ?? _currentPageFunction; }
+    }
+
+    public NameObjectCollection PageVariables
+    {
+      get
+      {
+        Assertion.IsNotNull (_currentPageStep);
+        return _currentPageStep.Variables;
+      }
     }
 
     public NameObjectCollection Variables
     {
-      get { return (_currentPageStep == null) ? null : _currentPageStep.Variables; }
+      get 
+      {
+        Assertion.IsNotNull (_currentPageStep);
+        return ((WxeStep) _currentUserControlStep ?? _currentPageStep).Variables;
+      }
     }
 
     /// <summary> Find the <see cref="IResourceManager"/> for this control info. </summary>

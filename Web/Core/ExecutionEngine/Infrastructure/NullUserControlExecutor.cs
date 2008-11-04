@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections.Specialized;
 using System.Runtime.Serialization;
 
 namespace Remotion.Web.ExecutionEngine.Infrastructure
@@ -21,8 +20,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     private NullUserControlExecutor ()
     {
-      
     }
+
     public bool IsNull
     {
       get { return true; }
@@ -60,7 +59,12 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     object IObjectReference.GetRealObject (StreamingContext context)
     {
-      return NullUserControlExecutor.Null;
+      return Null;
+    }
+
+    public WxeStep ExecutingStep
+    {
+      get { return null; }
     }
   }
 }

@@ -84,13 +84,7 @@ namespace Remotion.Web.ExecutionEngine
 
     public override WxeStep ExecutingStep
     {
-      get
-      {
-        if (!_userControlExecutor.IsNull && !_userControlExecutor.IsReturningPostBack)
-          return _userControlExecutor.Function.ExecutingStep;
-        else
-          return this;
-      }
+      get { return _userControlExecutor.ExecutingStep ?? this; }
     }
 
     public bool IsPostBack

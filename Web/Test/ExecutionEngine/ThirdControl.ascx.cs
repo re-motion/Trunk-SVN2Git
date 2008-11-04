@@ -47,6 +47,20 @@ namespace Remotion.Web.Test.ExecutionEngine
     {
       base.OnLoad (e);
 
+      if (ControlStateValue == 0)
+      {
+        Assertion.IsTrue (IsPostBack);
+        Assertion.IsFalse (IsUserControlPostBack);
+      }
+      else
+      {
+        Assertion.IsTrue (IsPostBack);
+        Assertion.IsTrue (IsUserControlPostBack);
+      }
+      Assertion.IsTrue (WxePage.CurrentFunction is ShowUserControlFormFunction);
+      Assertion.IsTrue (CurrentFunction is ShowThirdUserControlFormFunction);
+      Assertion.IsTrue (WxePage.Variables != this.Variables);
+
       ViewStateValue++;
       ViewStateLabel.Text = ViewStateValue.ToString ();
 

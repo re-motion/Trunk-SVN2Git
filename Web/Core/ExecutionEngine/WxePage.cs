@@ -246,7 +246,7 @@ namespace Remotion.Web.ExecutionEngine
     [Browsable (false)]
     public WxeFunction CurrentFunction
     {
-      get { return _wxePageInfo.CurrentFunction; }
+      get { return _wxePageInfo.CurrentPageFunction; }
     }
 
     /// <summary> Gets the <see cref="WxeStep.Variables"/> collection of the <see cref="CurrentPageStep"/>. </summary>
@@ -257,7 +257,7 @@ namespace Remotion.Web.ExecutionEngine
     [Browsable (false)]
     public NameObjectCollection Variables
     {
-      get { return _wxePageInfo.Variables; }
+      get { return _wxePageInfo.PageVariables; }
     }
 
 

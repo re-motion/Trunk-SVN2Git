@@ -40,7 +40,21 @@ namespace Remotion.Web.Test.ExecutionEngine
     protected override void OnLoad (EventArgs e)
     {
       base.OnLoad (e);
-      
+
+      if (ControlStateValue == 0)
+      {
+        Assertion.IsFalse (IsPostBack);
+        Assertion.IsFalse (IsUserControlPostBack);
+      }
+      else
+      {
+        Assertion.IsTrue (IsPostBack);
+        Assertion.IsTrue (IsUserControlPostBack);
+      }
+      Assertion.IsTrue (WxePage.CurrentFunction == this.CurrentFunction);
+      Assertion.IsTrue (CurrentFunction is ShowUserControlFormFunction);
+      Assertion.IsTrue (WxePage.Variables == this.Variables);
+
       ViewStateValue++;
       ViewStateLabel.Text = ViewStateValue.ToString();
 

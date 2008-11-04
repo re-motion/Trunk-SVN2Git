@@ -37,12 +37,12 @@ public class WxeUserControl: UserControl, IWxeTemplateControl
   
   public WxeFunction CurrentFunction
   {
-    get { return _wxeInfo.CurrentFunction; }
+    get { return _wxeInfo.CurrentPageFunction; }
   }
 
   public NameObjectCollection Variables 
   {
-    get { return _wxeInfo.Variables; }
+    get { return _wxeInfo.PageVariables; }
   }
 
   public IWxePage WxePage

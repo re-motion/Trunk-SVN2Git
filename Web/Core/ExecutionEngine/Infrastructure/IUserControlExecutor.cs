@@ -21,5 +21,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     string UserControlID { get; }
     bool IsReturningPostBack { get; }
     string BackedUpUserControl { get; }
+    WxeStep ExecutingStep { get; }
   }
 }

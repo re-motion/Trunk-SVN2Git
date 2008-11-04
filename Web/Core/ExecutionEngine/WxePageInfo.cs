@@ -344,7 +344,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </summary>
     public NameValueCollection GetPermanentUrlParameters ()
     {
-      NameValueCollection urlParameters = CurrentFunction.VariablesContainer.SerializeParametersForQueryString ();
+      NameValueCollection urlParameters = CurrentPageFunction.VariablesContainer.SerializeParametersForQueryString ();
 
       ISmartNavigablePage smartNavigablePage = _page as ISmartNavigablePage;
       if (smartNavigablePage != null)
@@ -358,7 +358,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </summary>
     public string GetPermanentUrl ()
     {
-      return GetPermanentUrl (CurrentFunction.GetType (), GetPermanentUrlParameters ());
+      return GetPermanentUrl (CurrentPageFunction.GetType (), GetPermanentUrlParameters ());
     }
 
     /// <summary>
@@ -366,7 +366,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </summary>
     public string GetPermanentUrl (NameValueCollection urlParameters)
     {
-      return GetPermanentUrl (CurrentFunction.GetType (), urlParameters);
+      return GetPermanentUrl (CurrentPageFunction.GetType (), urlParameters);
     }
 
     /// <summary>
@@ -469,11 +469,11 @@ namespace Remotion.Web.ExecutionEngine
       get
       {
         NameObjectCollection windowState =
-            (NameObjectCollection) CurrentFunction.RootFunction.Variables["WxeWindowState"];
+            (NameObjectCollection) CurrentPageFunction.RootFunction.Variables["WxeWindowState"];
         if (windowState == null)
         {
           windowState = new NameObjectCollection ();
-          CurrentFunction.RootFunction.Variables["WxeWindowState"] = windowState;
+          CurrentPageFunction.RootFunction.Variables["WxeWindowState"] = windowState;
         }
         return windowState;
       }

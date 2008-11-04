@@ -28,7 +28,6 @@ namespace Remotion.Web.ExecutionEngine
     private ControlReplacer _replacer;
     private bool _executeNextStep;
     private bool _isWxeInfoInitialized;
-    private WxeUserControlStep _currentUserControlStep;
     private string _permanentUniqueID;
 
     public WxeUserControl2 ()
@@ -42,8 +41,6 @@ namespace Remotion.Web.ExecutionEngine
       if (!_isWxeInfoInitialized)
       {
         _wxeInfo.Initialize (Context);  
-      
-        _currentUserControlStep = _wxeInfo.WxeHandler.RootFunction.ExecutingStep as WxeUserControlStep;
         _isWxeInfoInitialized = true;
       }
 
@@ -143,13 +140,13 @@ namespace Remotion.Web.ExecutionEngine
 
     public WxeUserControlStep CurrentUserControlStep
     {
-      get { return _currentUserControlStep; }
+      get { return _wxeInfo.CurrentUserControlStep; }
     }
 
     private IUserControlExecutor GetUserControlExecutor ()
     {
       IUserControlExecutor userControlExecutor = CurrentPageStep.UserControlExecutor;
-      if (!userControlExecutor.IsNull && !CurrentUserControlStep.UserControlExecutor.IsNull)
+      if (!userControlExecutor.IsNull && !userControlExecutor.IsReturningPostBack && !CurrentUserControlStep.UserControlExecutor.IsNull)
         userControlExecutor = CurrentUserControlStep.UserControlExecutor;
       return userControlExecutor;
     }
@@ -169,6 +166,10 @@ namespace Remotion.Web.ExecutionEngine
       get { return (IWxePage) base.Page; }
     }
 
+    public bool IsUserControlPostBack
+    {
+      get { return CurrentUserControlStep != null ? CurrentUserControlStep.IsPostBack : CurrentPageStep.IsPostBack; }
+    }
     public string PermanentUniqueID
     {
       get { return _permanentUniqueID; }

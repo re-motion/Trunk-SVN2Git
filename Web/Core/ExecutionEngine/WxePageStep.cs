@@ -84,10 +84,8 @@ namespace Remotion.Web.ExecutionEngine
       {
         if (_executionState.IsExecuting)
           return _executionState.Parameters.SubFunction.ExecutingStep;
-        else if (!_userControlExecutor.IsNull)
-          return _userControlExecutor.Function.ExecutingStep;
         else
-          return this;
+          return _userControlExecutor.ExecutingStep ?? this;
       }
     }
 

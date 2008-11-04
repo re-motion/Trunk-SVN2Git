@@ -61,6 +61,12 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       if (usesEventTarget)
       {
+        if (_postBackCollection[ControlHelper.PostEventSourceID] != sender.UniqueID)
+        {
+          throw new ArgumentException(
+              "The 'sender' does not match the value in __EventTarget. Please pass the control that orignated the postback.", "sender");
+        }
+
         _backedUpPostBackData.Add (ControlHelper.PostEventSourceID, _postBackCollection[ControlHelper.PostEventSourceID]);
         _backedUpPostBackData.Add (ControlHelper.PostEventArgumentID, _postBackCollection[ControlHelper.PostEventArgumentID]);
         _postBackCollection.Remove (ControlHelper.PostEventSourceID);
@@ -68,6 +74,8 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       }
       else
       {
+        throw new InvalidOperationException (
+            "The WxeUserControl does not support controls that do not use __EventTarget for signaling a postback event.");
         _backedUpPostBackData.Add (sender.UniqueID, _postBackCollection[sender.UniqueID]);
         _postBackCollection.Remove (sender.UniqueID);
       }
@@ -132,6 +140,19 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     public bool IsNull
     {
       get { return false; }
+    }
+
+    public WxeStep ExecutingStep
+    {
+      get
+      {
+        ArgumentUtility.CheckNotNull ("userControlExecutor", this);
+
+        if (!_isReturningPostBack)
+          return _function.ExecutingStep;
+        else
+          return null;
+      }
     }
   }
 }
