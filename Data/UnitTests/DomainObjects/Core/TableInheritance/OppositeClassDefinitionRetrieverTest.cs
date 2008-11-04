@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Incorrect database format encountered. Entity '' must have column "
         + "'ParentFolderIDClassID' defined, because opposite class 'TI_Folder' is part of an inheritance hierarchy.")]
-    public void GetMandatoryOppositeClassDefinition_NoOrdinal ()
+    public void GetMandatoryOppositeClassDefinition_NoOrdinal_DataReaderThrowsIndexOutOfRangeException ()
     {
       OppositeClassDefinitionRetriever retriever = new OppositeClassDefinitionRetriever (Provider, _fileSystemItemDefinition, _parentFolderPropertyDefinition);
       Expect.Call (_readerMock.GetOrdinal ("ParentFolderIDClassID")).Throw (new IndexOutOfRangeException ());
@@ -121,7 +121,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    public void GetMandatoryOppositeClassDefinition_NoInheritanceHierarchy_NoOrdinal ()
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "Incorrect database format encountered. Entity '' must have column "
+        + "'ParentFolderIDClassID' defined, because opposite class 'TI_Folder' is part of an inheritance hierarchy.")]
+    public void GetMandatoryOppositeClassDefinition_NoOrdinal_DataReaderReturnsMinusOne ()
+    {
+      OppositeClassDefinitionRetriever retriever = new OppositeClassDefinitionRetriever (Provider, _fileSystemItemDefinition, _parentFolderPropertyDefinition);
+      Expect.Call (_readerMock.GetOrdinal ("ParentFolderIDClassID")).Return (-1);
+      _mockRepository.ReplayAll ();
+
+      retriever.GetMandatoryOppositeClassDefinition (_readerMock, 0);
+    }
+
+    [Test]
+    public void GetMandatoryOppositeClassDefinition_NoInheritanceHierarchy_NoOrdinal_DataReaderThrowsIndexOutOfRangeException ()
     {
       OppositeClassDefinitionRetriever retriever = new OppositeClassDefinitionRetriever (Provider, _customerDefinition, _regionPropertyDefinition);
       Expect.Call (_readerMock.GetOrdinal ("RegionIDClassID")).Throw (new IndexOutOfRangeException());
@@ -134,11 +146,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    public void GetMandatoryOppositeClassDefinition_NoInheritanceHierarchy_NoOrdinal_CheckCache ()
+    public void GetMandatoryOppositeClassDefinition_NoInheritanceHierarchy_NoOrdinal_DataReaderReturnsMinusOne ()
+    {
+      OppositeClassDefinitionRetriever retriever = new OppositeClassDefinitionRetriever (Provider, _customerDefinition, _regionPropertyDefinition);
+      Expect.Call (_readerMock.GetOrdinal ("RegionIDClassID")).Return (-1);
+      _mockRepository.ReplayAll ();
+
+      ClassDefinition opposite = retriever.GetMandatoryOppositeClassDefinition (_readerMock, 0);
+      Assert.AreSame (_regionDefinition, opposite);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void GetMandatoryOppositeClassDefinition_NoInheritanceHierarchy_NoOrdinal_CheckCache_DataReaderThrowsIndexOutOfRangeException ()
     {
       OppositeClassDefinitionRetriever retriever1 = new OppositeClassDefinitionRetriever (Provider, _customerDefinition, _regionPropertyDefinition);
       OppositeClassDefinitionRetriever retriever2 = new OppositeClassDefinitionRetriever (Provider, _customerDefinition, _regionPropertyDefinition);
       Expect.Call (_readerMock.GetOrdinal ("RegionIDClassID")).Throw (new IndexOutOfRangeException ());
+      _mockRepository.ReplayAll ();
+
+      ClassDefinition opposite1 = retriever1.GetMandatoryOppositeClassDefinition (_readerMock, 0);
+      ClassDefinition opposite2 = retriever1.GetMandatoryOppositeClassDefinition (_readerMock, 0);
+      ClassDefinition opposite3 = retriever2.GetMandatoryOppositeClassDefinition (_readerMock, 0);
+      Assert.AreSame (_regionDefinition, opposite1);
+      Assert.AreSame (_regionDefinition, opposite2);
+      Assert.AreSame (_regionDefinition, opposite3);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void GetMandatoryOppositeClassDefinition_NoInheritanceHierarchy_NoOrdinal_CheckCache_DataReaderReturnsMinusOne ()
+    {
+      OppositeClassDefinitionRetriever retriever1 = new OppositeClassDefinitionRetriever (Provider, _customerDefinition, _regionPropertyDefinition);
+      OppositeClassDefinitionRetriever retriever2 = new OppositeClassDefinitionRetriever (Provider, _customerDefinition, _regionPropertyDefinition);
+      Expect.Call (_readerMock.GetOrdinal ("RegionIDClassID")).Return (-1);
       _mockRepository.ReplayAll ();
 
       ClassDefinition opposite1 = retriever1.GetMandatoryOppositeClassDefinition (_readerMock, 0);

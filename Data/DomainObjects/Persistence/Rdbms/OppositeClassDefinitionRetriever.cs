@@ -19,7 +19,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public class OppositeClassDefinitionRetriever
   {
     private static readonly InterlockedCache<Tuple<ClassDefinition, PropertyDefinition>, bool> s_hasClassIDColumnCache =
-      new InterlockedCache<Tuple<ClassDefinition, PropertyDefinition>, bool> ();
+        new InterlockedCache<Tuple<ClassDefinition, PropertyDefinition>, bool>();
 
     public static void ResetCache ()
     {
@@ -56,7 +56,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private ClassDefinition GetOppositeClassDefinitionInInheritanceHierarchy (IDataReader dataReader, int objectIDColumnOrdinal)
     {
-      int classIDColumnOrdinal = GetClassIDColumnOrdinal (dataReader);
+      int classIDColumnOrdinal = TryGetClassIDColumnOrdinal (dataReader);
       CheckConsistentIDs (dataReader, objectIDColumnOrdinal, classIDColumnOrdinal);
 
       if (dataReader.IsDBNull (classIDColumnOrdinal))
@@ -65,22 +65,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         return MappingConfiguration.Current.ClassDefinitions.GetMandatory (dataReader.GetString (classIDColumnOrdinal));
     }
 
-    private int GetClassIDColumnOrdinal (IDataReader dataReader)
+    private int TryGetClassIDColumnOrdinal (IDataReader dataReader)
     {
       int classIDColumnOrdinal;
-      try
-      {
-        classIDColumnOrdinal = dataReader.GetOrdinal (RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName));
-      }
-      catch (IndexOutOfRangeException)
+      bool hasClassIDColumn = TryGetClassIDColumnOrdinal (dataReader, out classIDColumnOrdinal);
+
+      if (!hasClassIDColumn)
       {
         throw _provider.CreateRdbmsProviderException (
             "Incorrect database format encountered."
-                + " Entity '{0}' must have column '{1}' defined, because opposite class '{2}' is part of an inheritance hierarchy.",
-            _classDefinition.GetEntityName (),
+            + " Entity '{0}' must have column '{1}' defined, because opposite class '{2}' is part of an inheritance hierarchy.",
+            _classDefinition.GetEntityName(),
             RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName),
             _relatedClassDefinition.ID);
       }
+
       return classIDColumnOrdinal;
     }
 
@@ -91,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         throw _provider.CreateRdbmsProviderException (
             "Incorrect database value encountered. Column '{0}' of entity '{1}' must not contain a value.",
             RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName),
-            _classDefinition.GetEntityName ());
+            _classDefinition.GetEntityName());
       }
 
       if (!dataReader.IsDBNull (objectIDColumnOrdinal) && dataReader.IsDBNull (classIDColumnOrdinal))
@@ -99,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         throw _provider.CreateRdbmsProviderException (
             "Incorrect database value encountered. Column '{0}' of entity '{1}' must not contain null.",
             RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName),
-            _classDefinition.GetEntityName ());
+            _classDefinition.GetEntityName());
       }
     }
 
@@ -114,24 +113,36 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
               Tuple.NewTuple (_classDefinition, _propertyDefinition),
               delegate
               {
-                try
-                {
-                  dataReader.GetOrdinal (RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName));
-                  return true;
-                }
-                catch (IndexOutOfRangeException)
-                {
-                  return false;
-                }
+                int classIDColumnOrdinal;
+                return TryGetClassIDColumnOrdinal (dataReader, out classIDColumnOrdinal);
               });
 
       if (hasClassIDColumn)
       {
         throw _provider.CreateRdbmsProviderException (
-            "Incorrect database format encountered. Entity '{0}' must not contain column '{1}', because opposite class '{2}' is not part of an inheritance hierarchy.",
-            _classDefinition.GetEntityName (),
+            "Incorrect database format encountered."
+            + " Entity '{0}' must not contain column '{1}', because opposite class '{2}' is not part of an inheritance hierarchy.",
+            _classDefinition.GetEntityName(),
             RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName),
             _relatedClassDefinition.ID);
+      }
+    }
+
+    private bool TryGetClassIDColumnOrdinal (IDataReader dataReader, out int classIDColumnOrdinal)
+    {
+      //Note: Despite the IDataReaders documentation, some implementations of IDataReader.GetOrdinal return -1 instead of throwing an IndexOutOfRangeException
+      try
+      {
+        classIDColumnOrdinal = dataReader.GetOrdinal (RdbmsProvider.GetClassIDColumnName (_propertyDefinition.StorageSpecificName));
+        if (classIDColumnOrdinal == -1)
+          return false;
+        else
+          return true;
+      }
+      catch (IndexOutOfRangeException)
+      {
+        classIDColumnOrdinal = -1;
+        return false;
       }
     }
   }
