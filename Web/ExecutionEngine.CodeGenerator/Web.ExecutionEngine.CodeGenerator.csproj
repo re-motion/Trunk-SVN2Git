@@ -72,8 +72,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arguments.cs" />
+    <Compile Include="Schema\ParameterDeclaration.cs" />
+    <Compile Include="Schema\ReturnValueDeclaration.cs" />
+    <Compile Include="Schema\VariableDeclaration.cs" />
+    <Compile Include="TemplateControlFunctionGeneratorBase.cs" />
     <Compile Include="InputException.cs" />
     <Compile Include="LanguageProvider.cs" />
+    <Compile Include="PageFunctionGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
