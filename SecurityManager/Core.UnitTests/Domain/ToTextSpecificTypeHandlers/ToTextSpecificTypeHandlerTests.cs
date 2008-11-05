@@ -11,17 +11,108 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.AclTools;
-
+using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
 {
   [TestFixture]
-  public class ToTextSpecificTypeHandlerTests  : AclToolsTestBase
+  public class ToTextSpecificTypeHandlerTests  //: AclToolsTestBase
   {
+    public AccessControlTestHelper TestHelper { get; private set; }
+
+    public AccessControlList Acl { get; private set; }
+    public AccessControlList Acl2 { get; private set; }
+
+    public AccessTypeDefinition DeleteAccessType { get; private set; }
+    public AccessTypeDefinition WriteAccessType { get; private set; }
+    public AccessTypeDefinition ReadAccessType { get; private set; }
+
+    public AccessTypeDefinition[] AccessTypeDefinitionArray { get; private set; }
+    public Tenant Tenant { get; private set; }
+    public Group Group { get; private set; }
+    public Position Position { get; private set; }
+    public Role Role { get; private set; }
+    public User User { get; private set; }
+    public AccessControlEntry Ace { get; private set; }
+
+    //public AccessTypeDefinition[] AccessTypeDefinitions2 { get; private set; }
+    public AccessControlEntry Ace2 { get; private set; }
+    public Role Role2 { get; private set; }
+    public User User2 { get; private set; }
+    public Position Position2 { get; private set; }
+    public Group Group2 { get; private set; }
+
+    //public AccessTypeDefinition[] AccessTypeDefinitions3 { get; private set; }
+    public AccessControlEntry Ace3 { get; private set; }
+    public Role Role3 { get; private set; }
+    public User User3 { get; private set; }
+    public Position Position3 { get; private set; }
+    public Group Group3 { get; private set; }
+
+    [SetUp]
+    public void SetUp ()
+    {
+      TestHelper = new AccessControlTestHelper ();
+      TestHelper.Transaction.EnterNonDiscardingScope ();
+
+      ReadAccessType = TestHelper.CreateReadAccessType ();  // read access
+      WriteAccessType = TestHelper.CreateWriteAccessType ();  // write access
+      DeleteAccessType = TestHelper.CreateDeleteAccessType ();  // delete permission
+
+      AccessTypeDefinitionArray = new[] { ReadAccessType, WriteAccessType, DeleteAccessType };
+
+
+      Tenant = TestHelper.CreateTenant ("Da Tenant");
+      Group = TestHelper.CreateGroup ("Da Group", null, Tenant);
+      Position = TestHelper.CreatePosition ("Supreme Being");
+      User = TestHelper.CreateUser ("DaUs", "Da", "Usa", "Dr.", Group, Tenant);
+      Role = TestHelper.CreateRole (User, Group, Position);
+      Ace = TestHelper.CreateAceWithOwningTenant ();
+
+      TestHelper.AttachAccessType (Ace, ReadAccessType, null);
+      TestHelper.AttachAccessType (Ace, WriteAccessType, true);
+      TestHelper.AttachAccessType (Ace, DeleteAccessType, null);
+
+
+      Group2 = TestHelper.CreateGroup ("Anotha Group", null, Tenant);
+      Position2 = TestHelper.CreatePosition ("Working Drone");
+      User2 = TestHelper.CreateUser ("mr.smith", "", "Smith", "Mr.", Group2, Tenant);
+      Role2 = TestHelper.CreateRole (User2, Group2, Position2);
+      Ace2 = TestHelper.CreateAceWithSpecficTenant (Tenant);
+
+      TestHelper.AttachAccessType (Ace2, ReadAccessType, true);
+      TestHelper.AttachAccessType (Ace2, WriteAccessType, null);
+      TestHelper.AttachAccessType (Ace2, DeleteAccessType, true);
+
+
+      Group3 = TestHelper.CreateGroup ("Da 3rd Group", null, Tenant);
+      Position3 = TestHelper.CreatePosition ("Combatant");
+      User3 = TestHelper.CreateUser ("ryan_james", "Ryan", "James", "", Group3, Tenant);
+      Role3 = TestHelper.CreateRole (User3, Group3, Position3);
+      // DO NOT use TestHelper.CreateAceWithOwningGroup() here; functionality for group matching is
+      // incomplete and therefore the ACE entry will always match.
+      Ace3 = TestHelper.CreateAceWithPosition (Position3, GroupSelection.All);
+
+      TestHelper.AttachAccessType (Ace3, ReadAccessType, true);
+      TestHelper.AttachAccessType (Ace3, WriteAccessType, true);
+      TestHelper.AttachAccessType (Ace3, DeleteAccessType, null);
+    }
+
+    [TearDown]
+    public virtual void TearDown ()
+    {
+      ClientTransactionScope.ResetActiveScope ();
+    }
+
+
+
     [Test]
     public void AbstractRoleDefinitionTest ()
     {

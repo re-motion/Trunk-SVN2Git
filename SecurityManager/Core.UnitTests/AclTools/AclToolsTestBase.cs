@@ -54,11 +54,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     public Position Position3 { get; private set; }
     public Group Group3 { get; private set; }
 
-
+    // Called before each test gets executed.
     public override void SetUp ()
     {
       base.SetUp ();
       TestHelper = new AccessControlTestHelper ();
+
+      // Base class TearDown()-method (executed after each test) calls ClientTransactionScope.ResetActiveScope(),
+      // discarding the transaction opened by EnterNonDiscardingScope below.
       TestHelper.Transaction.EnterNonDiscardingScope ();
 
 
@@ -112,13 +115,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
 
       //Acl = TestHelper.CreateAcl (Ace, Ace2, Ace3);
 
-      System.Collections.Generic.List<AccessControlList> aclList =
-          TestHelper.CreateAclsForOrderAndPaymentAndDeliveryStates (TestHelper.CreateOrderClassDefinitionWithProperties());
+      var aclList =SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID).AccessControlLists;
       Assert.That (aclList.Count, Is.GreaterThanOrEqualTo (2));
       
       Acl = aclList[0];
       TestHelper.AttachAces (Acl, Ace, Ace2, Ace3);
-
 
       var ace2_1 = TestHelper.CreateAceWithAbstractRole();
       var ace2_2 = TestHelper.CreateAceWithPosition (Position2, GroupSelection.OwningGroup);
