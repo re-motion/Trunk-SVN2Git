@@ -16,6 +16,7 @@ using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.Domain;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
+using Remotion.SecurityManager.UnitTests.TestDomain;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools
 {
@@ -42,13 +43,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
           _dbFixtures = new DatabaseFixtures();
           _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
 
-          Culture cultureDe = Culture.NewObject ("de-DE");
-          Culture cultureEn = Culture.NewObject ("en-US");
 
           SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
           OrderClassID = orderClass.ID;
-          LocalizedName.NewObject ("Bestellung", cultureDe, orderClass);
-          LocalizedName.NewObject ("Order", cultureEn, orderClass);
 
           testHelper.AttachAccessType (orderClass, Guid.NewGuid (), "FirstAccessType", 0);
           testHelper.AttachAccessType (orderClass, Guid.NewGuid(), "FirstAccessType2", 2);
@@ -62,15 +59,23 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
 
           var invoiceClass = testHelper.CreateInvoiceClassDefinition();
           InvoiceClassID = invoiceClass.ID;
-          LocalizedName.NewObject ("Rechnung", cultureDe, invoiceClass);
+          //LocalizedName.NewObject ("Rechnung", cultureDe, invoiceClass);
 
-          //var orderReceivedState = orderClass.StateProperties;
-          //OrderReceivedStateID = orderReceivedState.ID;
-          //LocalizedName.NewObject ("erhalten", cultureDe, orderReceivedState);
+          LocalizeClassEnDe (orderClass, "Order", "Bestellung");
+          
+          LocalizeStatePropertyEnDe (orderClass, "Payment", "Payment", "Bezahlstatus");
+          LocalizeStateEnDe (orderClass, "Payment", (int) PaymentState.None, "None", "Offen");
+          LocalizeStateEnDe (orderClass, "Payment", (int) PaymentState.Paid, "Paid", "Bezahlt");
+          
+          LocalizeStatePropertyEnDe (orderClass, "State", "Order State", "Bestellstatus");
+          LocalizeStateEnDe (orderClass, "State", (int) OrderState.Delivered, "Delivered", "Ausgelifert");
+          LocalizeStateEnDe (orderClass, "State", (int) OrderState.Received, "Received", "Erhalten");
+
+          LocalizeStatePropertyEnDe (orderClass, "Delivery", "Delivery Provider", "Auslieferer");
+          LocalizeStateEnDe (orderClass, "Delivery", (int) Delivery.Dhl, "DHL", "DHL");
+          LocalizeStateEnDe (orderClass, "Delivery", (int) Delivery.Post, "Mail", "Post");
 
 
-
-          //LocalizedName.NewObject ("Bestellung", cultureDe, orderClass);
 
           ClientTransaction.Current.Commit();
         }
@@ -82,5 +87,35 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       }
     }
 
+
+    private void LocalizeMetadateObjectEnDe (MetadataObject metadataObject, string nameEnglish, string nameGerman)
+    {
+      Culture cultureDe = Culture.NewObject ("de-DE");
+      Culture cultureEn = Culture.NewObject ("en-US");
+      LocalizedName.NewObject (nameGerman, cultureDe, metadataObject);
+      LocalizedName.NewObject (nameEnglish, cultureEn, metadataObject);
+    }
+  
+    private void LocalizeClassEnDe (SecurableClassDefinition classDefinition, string nameEnglish, string nameGerman)
+    {
+      LocalizeMetadateObjectEnDe (classDefinition, nameEnglish, nameGerman);
+    }
+
+    private StatePropertyDefinition LocalizeStatePropertyEnDe (SecurableClassDefinition classDefinition, 
+      string statePropertyName, string nameEnglish, string nameGerman)
+    {
+      var stateProperty = classDefinition.GetStateProperty (statePropertyName);
+      LocalizeMetadateObjectEnDe (stateProperty, nameEnglish, nameGerman);
+      return stateProperty;
+    }
+
+    private StateDefinition LocalizeStateEnDe (SecurableClassDefinition classDefinition,
+      string statePropertyName, int stateEnumValue, string nameEnglish, string nameGerman)
+    {
+      var stateProperty = classDefinition.GetStateProperty (statePropertyName);
+      var state = stateProperty.GetState (stateEnumValue);
+      LocalizeMetadateObjectEnDe (state, nameEnglish, nameGerman);
+      return state;
+    }
   }
 }

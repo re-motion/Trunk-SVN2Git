@@ -149,7 +149,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           htmlTagWriter.Value (", ");
         }
 
-        string stateName = Settings.UseShortNames ? stateDefiniton.ShortName () : stateDefiniton.DisplayName;
+        string stateName = Settings.ShortenNames ? stateDefiniton.ShortName () : stateDefiniton.DisplayName;
         //To.ConsoleLine.e (() => stateName);
 
         htmlTagWriter.Value (stateName);
@@ -244,7 +244,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       if (classGroup.Key != null)
       {
-        string className = Settings.UseShortNames ? classGroup.Key.ShortName () : classGroup.Key.DisplayName;
+        string className = Settings.ShortenNames ? classGroup.Key.ShortName () : classGroup.Key.DisplayName;
         WriteTableDataWithRowCount (className, classGroup.Count ());
       }
       else

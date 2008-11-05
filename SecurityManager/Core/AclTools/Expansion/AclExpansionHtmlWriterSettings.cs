@@ -14,11 +14,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     public AclExpansionHtmlWriterSettings ()
     {
-      UseShortNames = true;
+      ShortenNames = false;
       OutputRowCount = false;
     }
 
-    public bool UseShortNames { get; set; }
+    public bool ShortenNames { get; set; }
     public bool OutputRowCount { get; set; }
   }
 }

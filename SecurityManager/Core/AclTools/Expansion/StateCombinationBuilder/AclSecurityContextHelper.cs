@@ -168,23 +168,21 @@ namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
     }
   }
 
-  static class StateDefinitionExtensions
+  public static class StateDefinitionExtensions
   {
     public static string ShortName (this StateDefinition stateDefinition)
     {
-      //return stateDefinition.Name.LeftUntilChar ('|');
-      //return stateDefinition.DisplayName + "_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-      return stateDefinition.DisplayName;
+      return stateDefinition.Name.LeftUntilChar ('|');
+      //return stateDefinition.DisplayName;
     }
   }
 
-  static class SecurableClassDefinitionExtensions
+  public static class SecurableClassDefinitionExtensions
   {
     public static string ShortName (this SecurableClassDefinition securableClassDefinition)
     {
-      //return securableClassDefinition.Name.RightUntilChar ('.');
-      //return securableClassDefinition.DisplayName + "_BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
-      return securableClassDefinition.DisplayName;
+      return securableClassDefinition.Name.RightUntilChar ('.');
+      //return securableClassDefinition.DisplayName;
     }
   }
 }
