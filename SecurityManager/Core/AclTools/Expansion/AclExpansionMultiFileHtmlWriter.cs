@@ -24,7 +24,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// </summary>
   public class AclExpansionMultiFileHtmlWriter : AclExpansionHtmlWriterBase
   {
-    private const string _masterFileName = "AclExpansionMain";
+    private const string _masterFileName = "_AclExpansionMain_";
 
     private readonly ITextWriterFactory _textWriterFactory;
 

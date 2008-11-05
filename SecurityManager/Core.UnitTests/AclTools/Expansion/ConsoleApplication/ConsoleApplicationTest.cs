@@ -26,10 +26,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
     [Test]
     public void CommandLineSwitcheShowUsageTest ()
     {
-      //var args = new [] {"ConsoleApplicationTest", "/?"};
       var args = new [] {"/?"};
-      //var applicationRunnerMock = MockRepository.GenerateMock<ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings>> ();
-      //applicationRunnerMock.Expect (mock => mock.GetSynopsis (args));
 
       var waitMock = MockRepository.GenerateMock<IWait> ();
       waitMock.Expect (mock => mock.Wait());

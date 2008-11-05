@@ -18,15 +18,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpanderApplicationSettings : ConsoleApplicationSettings, IToText
   {
-    //public enum ShowUsageMode
-    //{
-    //  [CommandLineMode ("?", Description = "Show usage")]
-    //  ShowUsage
-    //};
-    
-    //[CommandLineModeArgument (true)]
-    //public ShowUsageMode Mode = ShowUsageMode.ShowUsage;
-
     [CommandLineStringArgument ("user", true, Placeholder = "accountants/john.doe", Description = "Fully qualified name of user(s) to query access types for.")]
     public string UserName;
 
@@ -36,7 +27,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     [CommandLineStringArgument ("first", true, Placeholder = "John", Description = "First name of user(s) to query access types for.")]
     public string UserFirstName;
 
-    [CommandLineStringArgument ("dir", true, Placeholder = "c:\\temp", Description = "Directory where the ACL-expansion gets written.")]
+    [CommandLineStringArgument ("dir", true, Placeholder = "c:\\temp", Description = "Directory the ACL-expansion gets written to.")]
     public string Directory = ".";
 
     [CommandLineStringArgument ("culture", true, Placeholder = "", Description = "Culture to set for output (e.g. en-US, de-AT).")]
@@ -47,6 +38,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     [CommandLineFlagArgument ("verbose", false, Description = "Verbose output")]
     public bool Verbose;
+
 
     public void ToText (IToTextBuilder toTextBuilder)
     {
