@@ -154,10 +154,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       //TestHelper.CreateDeliveryStateProperty .CreateStateProperty ("State1");
 
       //var orderReceivedState = orderClass.StateProperties;
-      To.ConsoleLine.s (">>>>>>>>>>>> StateProperties <<<<<<<<<<<<<<");
+      //To.ConsoleLine.s (">>>>>>>>>>>> StateProperties <<<<<<<<<<<<<<");
 
-      To.ConsoleLine.e ("orderClass.Name",orderClass.Name);
-      To.ConsoleLine.e ("orderClass.ShortName", orderClass.ShortName ());
+      //To.ConsoleLine.e ("orderClass.Name",orderClass.Name);
+      //To.ConsoleLine.e ("orderClass.ShortName", orderClass.ShortName ());
 
       ////var stateProperty = GetStateProperty (orderClass, "Delivery");
       //To.ConsoleLine.s ("$$$$$$$$$$$$$$$$ ").e (orderClass.GetStateProperty ("Payment").Name);

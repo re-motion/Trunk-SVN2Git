@@ -13,6 +13,7 @@ using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -23,7 +24,6 @@ using System.Collections.Generic;
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
   [TestFixture]
-  [Ignore ("TODO MGi: Fix build")]
   public class AclExpanderApplicationTest : AclToolsTestBase
   {
     private readonly List<AccessControlList> _aclList = new List<AccessControlList>();
@@ -64,7 +64,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var settings = new AclExpanderApplicationSettings();
       var aclExpansion = CreateAclExpanderApplicationAndCallGetAclExpansion (settings);
-      Assert.That (aclExpansion.Count, Is.EqualTo (8));
+      To.ConsoleLine.e (() => aclExpansion);
+      Assert.That (aclExpansion.Count, Is.EqualTo (16));
     }
 
 
@@ -75,7 +76,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var settings = new AclExpanderApplicationSettings ();
       settings.UserFirstName = firstName;
       var aclExpansion = CreateAclExpanderApplicationAndCallGetAclExpansion (settings);
-      Assert.That (aclExpansion.Count, Is.EqualTo (4));
+      Assert.That (aclExpansion.Count, Is.EqualTo (8));
       foreach (AclExpansionEntry entry in aclExpansion)
       {
         Assert.That (entry.User.FirstName, Is.EqualTo (firstName));
@@ -90,7 +91,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var settings = new AclExpanderApplicationSettings ();
       settings.UserLastName = lastName;
       var aclExpansion = CreateAclExpanderApplicationAndCallGetAclExpansion (settings);
-      Assert.That (aclExpansion.Count, Is.EqualTo (2));
+      Assert.That (aclExpansion.Count, Is.EqualTo (4));
       foreach (AclExpansionEntry entry in aclExpansion)
       {
         Assert.That (entry.User.LastName, Is.EqualTo (lastName));
@@ -105,7 +106,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var settings = new AclExpanderApplicationSettings ();
       settings.UserName = userName;
       var aclExpansion = CreateAclExpanderApplicationAndCallGetAclExpansion (settings);
-      Assert.That (aclExpansion.Count, Is.EqualTo (4));
+      Assert.That (aclExpansion.Count, Is.EqualTo (8));
       foreach (AclExpansionEntry entry in aclExpansion)
       {
         Assert.That (entry.User.UserName, Is.EqualTo (userName));
@@ -125,15 +126,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       settings.UserLastName = lastName;
       settings.UserName = userName;
       var aclExpansion = CreateAclExpanderApplicationAndCallGetAclExpansion (settings);
-      Assert.That (aclExpansion.Count, Is.EqualTo (4));
+      Assert.That (aclExpansion.Count, Is.EqualTo (8));
       foreach (AclExpansionEntry entry in aclExpansion)
       {
+        To.ConsoleLine.e (() => entry);
         Assert.That (entry.User.FirstName, Is.EqualTo (firstName));
         Assert.That (entry.User.LastName, Is.EqualTo (lastName));
         Assert.That (entry.User.UserName, Is.EqualTo (userName));
       }
-
     }
+
 
     [Test]
     public void AllNamesFilterTest2 ()
@@ -164,8 +166,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     //  Assert.That (aclExpansion.Count, Is.EqualTo (0));
     //}
 
-    // DONE: Test if directory & extension setting is correctly passed to TextWriterFactory
-    // DONE: test if StreamWriterFactory creates stream which writes to the set directory. 
 
     [Test]
     public void RunSingleFileOutputDirectoryAndExtensionSettingTest ()
