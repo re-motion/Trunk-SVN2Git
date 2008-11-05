@@ -8,11 +8,16 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+
 namespace Remotion.Web.ExecutionEngine.CodeGenerator
 {
-  public abstract class LanguageProvider
+  public enum CodeLineType
   {
-    public abstract CodeLineType ParseLine (string line, out string argument);
-    public abstract string ConvertTypeName (string type);
+    Other,
+    LineComment,
+    NamespaceImport,
+    NamespaceDeclaration,
+    ClassDeclaration
   }
 }

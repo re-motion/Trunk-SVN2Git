@@ -8,11 +8,25 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+
 namespace Remotion.Web.ExecutionEngine.CodeGenerator
 {
-  public abstract class LanguageProvider
+  public class CaseInsensitiveStringComparer: StringComparer
   {
-    public abstract CodeLineType ParseLine (string line, out string argument);
-    public abstract string ConvertTypeName (string type);
+    public override int Compare (string x, string y)
+    {
+      return string.Compare (x, y, true);
+    }
+
+    public override bool Equals (string x, string y)
+    {
+      return string.Compare (x, y, true) == 0;
+    }
+
+    public override int GetHashCode (string obj)
+    {
+      return obj.ToLowerInvariant().GetHashCode();
+    }
   }
 }

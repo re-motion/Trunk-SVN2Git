@@ -72,6 +72,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arguments.cs" />
+    <Compile Include="CaseInsensitiveStringComparer.cs" />
+    <Compile Include="CodeLineType.cs" />
+    <Compile Include="CSharpProvider.cs" />
+    <Compile Include="FileProcessor.cs" />
+    <Compile Include="RegexProvider.cs" />
     <Compile Include="Schema\ParameterDeclaration.cs" />
     <Compile Include="Schema\ReturnValueDeclaration.cs" />
     <Compile Include="Schema\VariableDeclaration.cs" />
@@ -83,6 +88,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="Schema\FunctionDeclaration.cs" />
+    <Compile Include="VBProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
