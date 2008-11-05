@@ -13,11 +13,10 @@ using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
-using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
 using Remotion.Text.CommandLine;
-using Remotion.Utilities;
 using Rhino.Mocks;
+using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplication
 {
@@ -49,12 +48,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
       To.ConsoleLine.e (() => errorResult);
 
       waitMock.VerifyAllExpectations();
-      Assert.That (outResult,NUnit.Framework.SyntaxHelpers.Text.Contains ("Application Usage:"));
-      Assert.That (outResult,NUnit.Framework.SyntaxHelpers.Text.Contains ("/? [/stringArg:string_arg_sample] [/flagArg] [{/?}]"));
-      Assert.That (outResult,NUnit.Framework.SyntaxHelpers.Text.Contains ("/stringArg  stringArg description."));
-      Assert.That (outResult,NUnit.Framework.SyntaxHelpers.Text.Contains ("/flagArg    flagArg description."));
-      Assert.That (outResult,NUnit.Framework.SyntaxHelpers.Text.Contains ("/?          Show usage"));
-      Assert.That (outResult, NUnit.Framework.SyntaxHelpers.Text.Contains ("Press any-key..."));
+      Assert.That (outResult,NUnitText.Contains ("Application Usage:"));
+      Assert.That (outResult,NUnitText.Contains ("/? [/stringArg:string_arg_sample] [/flagArg] [{/?}]"));
+      Assert.That (outResult,NUnitText.Contains ("/stringArg  stringArg description."));
+      Assert.That (outResult,NUnitText.Contains ("/flagArg    flagArg description."));
+      Assert.That (outResult,NUnitText.Contains ("/?          Show usage"));
+      Assert.That (outResult, NUnitText.Contains ("Press any-key..."));
 
       Assert.That (errorResult, Is.EqualTo (""));
 

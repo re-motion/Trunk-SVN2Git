@@ -152,20 +152,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    //[Test]
-    //public void VerboseSettingTest ()
-    //{
-    //  const string firstName = "test";
-    //  const string lastName = "user";
-    //  const string userName = "group1/user2";
-    //  var settings = new AclExpanderApplicationSettings ();
-    //  settings.UserFirstName = firstName;
-    //  settings.UserLastName = lastName;
-    //  settings.UserName = userName;
-    //  var aclExpansion = CreateAclExpanderApplicationAndCallGetAclExpansion (settings);
-    //  Assert.That (aclExpansion.Count, Is.EqualTo (0));
-    //}
-
 
     [Test]
     public void RunSingleFileOutputDirectoryAndExtensionSettingTest ()

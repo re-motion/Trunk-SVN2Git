@@ -14,6 +14,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
 using Remotion.Reflection;
 using Remotion.SecurityManager.AclTools.Expansion;
+using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -80,7 +81,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       accessConditions.IsOwningUserRequired = true;
       var result = To.String.e (accessConditions).CheckAndConvertToString ();
       //To.Console.s (result);
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("userMustOwn=True,groupMustOwn=True,tenantMustOwn=True,abstractRoleMustMatch=True,abstractRole="));
+      Assert.That (result, NUnitText.Contains ("userMustOwn=True,groupMustOwn=True,tenantMustOwn=True,abstractRoleMustMatch=True,abstractRole="));
     }
 
 

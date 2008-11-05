@@ -17,6 +17,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
+using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -109,8 +110,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
         string result = stringWriter.ToString();
         //To.ConsoleLine.e (() => result);
-        Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Dhl|Remotion.SecurityManager.UnitTests.TestDomain.Delivery, Remotion.SecurityManager.UnitTests"));
-        Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
+        Assert.That (result, NUnitText.Contains ("Dhl|Remotion.SecurityManager.UnitTests.TestDomain.Delivery, Remotion.SecurityManager.UnitTests"));
+        Assert.That (result, NUnitText.Contains ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
       }
     }
 
@@ -130,13 +131,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
         string result = stringWriter.ToString ();
         To.ConsoleLine.e (() => result);
-        Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Dhl"));
+        Assert.That (result, NUnitText.Contains ("Dhl"));
         Assert.That (
             result,
-            NUnit.Framework.SyntaxHelpers.Text.DoesNotContain (
+            NUnitText.DoesNotContain (
                 "Remotion.SecurityManager.UnitTests.TestDomain.Delivery, Remotion.SecurityManager.UnitTests"));
-        Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Order"));
-        Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.DoesNotContain ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
+        Assert.That (result, NUnitText.Contains ("Order"));
+        Assert.That (result, NUnitText.DoesNotContain ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
       }
     }
 
@@ -155,9 +156,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
       string result = stringWriter.ToString ();
       To.ConsoleLine.e (() => result);
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Usa Da, Dr. (2)"));
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Da Group, Supreme Being (2)"));
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Order (2)"));
+      Assert.That (result, NUnitText.Contains ("Usa Da, Dr. (2)"));
+      Assert.That (result, NUnitText.Contains ("Da Group, Supreme Being (2)"));
+      Assert.That (result, NUnitText.Contains ("Order (2)"));
     }
 
     [Test]
@@ -174,7 +175,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
       string result = stringWriter.ToString ();
       To.ConsoleLine.e (() => result);
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.DoesNotContain ("(2)"));
+      Assert.That (result, NUnitText.DoesNotContain ("(2)"));
     }
 
 
@@ -193,7 +194,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       string result = stringWriter.ToString ();
       //To.ConsoleLine.e (() => result);
 
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("James Ryan"));
+      Assert.That (result, NUnitText.Contains ("James Ryan"));
       Assert.That (result.IndexOf ("James Ryan"), Is.LessThan (result.IndexOf ("Smith, Mr.")));
     }
 
@@ -216,12 +217,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       const string firstRoleText = "Anotha Group, Supreme Being";
       const string secondRoleText = "Anotha Group, Working Drone";
       const string thirdRoleText = "Da 3rd Group, Combatant";
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains (firstRoleText));
+      Assert.That (result, NUnitText.Contains (firstRoleText));
       Assert.That (result.IndexOf (firstRoleText), Is.LessThan (result.IndexOf (secondRoleText)));
       Assert.That (result.IndexOf (secondRoleText), Is.LessThan (result.IndexOf (thirdRoleText)));
 
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Dhl, None, Received"));
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Delete, Read, Write"));
+      Assert.That (result, NUnitText.Contains ("Dhl, None, Received"));
+      Assert.That (result, NUnitText.Contains ("Delete, Read, Write"));
     }
 
 

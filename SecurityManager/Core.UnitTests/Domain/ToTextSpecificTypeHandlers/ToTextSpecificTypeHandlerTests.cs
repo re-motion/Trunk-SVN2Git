@@ -16,9 +16,10 @@ using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.SecurityManager.UnitTests.AclTools;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
+using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
+
 
 namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
 {
@@ -118,7 +119,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     {
       var x = TestHelper.CreateAbstractRoleDefinition ("xyz", 0);
       To.ConsoleLine.e (x);
-      Assert.That (To.String.e (x).CheckAndConvertToString(), NUnit.Framework.SyntaxHelpers.Text.Contains("xyz"));
+      Assert.That (To.String.e (x).CheckAndConvertToString(), NUnitText.Contains("xyz"));
     }
 
     [Test]
@@ -126,7 +127,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     {
       var x = TestHelper.CreateAceWithOwningTenant ();
       To.ConsoleLine.e (x);
-      Assert.That (To.String.e (x).CheckAndConvertToString (), NUnit.Framework.SyntaxHelpers.Text.Contains ("SelUser=All,SelGroup=All,SelTenant=OwningTenant"));
+      Assert.That (To.String.e (x).CheckAndConvertToString (), NUnitText.Contains ("SelUser=All,SelGroup=All,SelTenant=OwningTenant"));
     }
 
     [Test]
@@ -136,7 +137,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       var acl = TestHelper.CreateAcl (ace);
       To.ConsoleLine.e (acl);
       // Note: test string is similar to AccessControlEntry test above, since rest of test would retest standard ToText sequence output functionality
-      Assert.That (To.String.e (acl).CheckAndConvertToString (), NUnit.Framework.SyntaxHelpers.Text.Contains ("SelUser=All,SelGroup=OwningGroup,SelTenant=All"));
+      Assert.That (To.String.e (acl).CheckAndConvertToString (), NUnitText.Contains ("SelUser=All,SelGroup=OwningGroup,SelTenant=All"));
     }
 
     [Test]
@@ -147,10 +148,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       var complex = To.String.SetOutputComplexityToComplex().e (x).CheckAndConvertToString();
       To.ConsoleLine.e (() => basic);
       To.ConsoleLine.e (() => complex);
-      Assert.That (basic, NUnit.Framework.SyntaxHelpers.Text.Contains ("topsecret"));
-      Assert.That (basic, NUnit.Framework.SyntaxHelpers.Text.Not.Contains ("123"));
-      Assert.That (complex, NUnit.Framework.SyntaxHelpers.Text.Contains ("topsecret"));
-      Assert.That (complex, NUnit.Framework.SyntaxHelpers.Text.Contains ("123"));
+      Assert.That (basic, NUnitText.Contains ("topsecret"));
+      Assert.That (basic, NUnitText.Not.Contains ("123"));
+      Assert.That (complex, NUnitText.Contains ("topsecret"));
+      Assert.That (complex, NUnitText.Contains ("123"));
     }
 
 
@@ -159,7 +160,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     {
       var x = TestHelper.CreateGroup ("DieGruppe", null, TestHelper.CreateTenant("DasAmt"));
       To.ConsoleLine.e (x);
-      Assert.That (To.String.e (x).CheckAndConvertToString (), NUnit.Framework.SyntaxHelpers.Text.Contains ("DieGruppe"));
+      Assert.That (To.String.e (x).CheckAndConvertToString (), NUnitText.Contains ("DieGruppe"));
     }
 
     [Test]
@@ -170,8 +171,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       x.Allowed = true;
       var result = To.String.e (x).CheckAndConvertToString();
       To.ConsoleLine.e (() => result);
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("topsecret"));
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("True"));
+      Assert.That (result, NUnitText.Contains ("topsecret"));
+      Assert.That (result, NUnitText.Contains ("True"));
     }
 
    [Test]
@@ -179,7 +180,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     {
       var x = TestHelper.CreatePosition ("Praktikant");
       To.ConsoleLine.e (x);
-      Assert.That (To.String.e (x).CheckAndConvertToString (), NUnit.Framework.SyntaxHelpers.Text.Contains ("Praktikant"));
+      Assert.That (To.String.e (x).CheckAndConvertToString (), NUnitText.Contains ("Praktikant"));
     }
 
     [Test]
@@ -188,9 +189,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       var x = Role;
       To.ConsoleLine.e (x);
       var result = To.String.e (x).CheckAndConvertToString ();
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("DaUs"));
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Da Group"));
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Supreme Being"));
+      Assert.That (result, NUnitText.Contains ("DaUs"));
+      Assert.That (result, NUnitText.Contains ("Da Group"));
+      Assert.That (result, NUnitText.Contains ("Supreme Being"));
     }
 
     [Test]
@@ -199,14 +200,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       var x = new SecurityToken (User, Tenant, List.New (Group, Group2), List.New (TestHelper.CreateAbstractRoleDefinition("arole",456)));
       var result = To.String.e (x).CheckAndConvertToString ();
       To.ConsoleLine.e (() => result);
-      //Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("\"DaUs\"],tenant=[\"Da Tenant\"]," + Environment.NewLine + "roles={[\"DaUs\",\"Da Group\",\"Supreme Being\"]}],[\"Da Tenant\"],{[\"Da Group\"],[\"Anotha Group\"]},{[\"DaUs\",\"Da Group\",\"Supreme Being\"]},{[\"arole\"]}]"));
+      //Assert.That (result, NUnitText.Contains ("\"DaUs\"],tenant=[\"Da Tenant\"]," + Environment.NewLine + "roles={[\"DaUs\",\"Da Group\",\"Supreme Being\"]}],[\"Da Tenant\"],{[\"Da Group\"],[\"Anotha Group\"]},{[\"DaUs\",\"Da Group\",\"Supreme Being\"]},{[\"arole\"]}]"));
 
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("DaUs"));
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Da Tenant"));
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Da Group"));
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Anotha Group"));
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("Supreme Being"));
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains ("arole"));
+      Assert.That (result, NUnitText.Contains ("DaUs"));
+      Assert.That (result, NUnitText.Contains ("Da Tenant"));
+      Assert.That (result, NUnitText.Contains ("Da Group"));
+      Assert.That (result, NUnitText.Contains ("Anotha Group"));
+      Assert.That (result, NUnitText.Contains ("Supreme Being"));
+      Assert.That (result, NUnitText.Contains ("arole"));
     }
 
     [Test]
@@ -214,7 +215,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     {
       var x = TestHelper.CreateTenant ("Tenantative");
       To.ConsoleLine.e (x);
-      Assert.That (To.String.e (x).CheckAndConvertToString (), NUnit.Framework.SyntaxHelpers.Text.Contains ("Tenantative"));
+      Assert.That (To.String.e (x).CheckAndConvertToString (), NUnitText.Contains ("Tenantative"));
     }
 
     [Test]
@@ -226,9 +227,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       To.ConsoleLine.e (() => basic);
       To.ConsoleLine.e (() => complex);
       Assert.That (basic, Is.EqualTo("[\"DaUs\"]"));
-      Assert.That (complex, NUnit.Framework.SyntaxHelpers.Text.Contains ("Da Group"));
-      Assert.That (complex, NUnit.Framework.SyntaxHelpers.Text.Contains ("Da Tenant"));
-      Assert.That (complex, NUnit.Framework.SyntaxHelpers.Text.Contains ("Supreme Being"));
+      Assert.That (complex, NUnitText.Contains ("Da Group"));
+      Assert.That (complex, NUnitText.Contains ("Da Tenant"));
+      Assert.That (complex, NUnitText.Contains ("Supreme Being"));
     }
 
 

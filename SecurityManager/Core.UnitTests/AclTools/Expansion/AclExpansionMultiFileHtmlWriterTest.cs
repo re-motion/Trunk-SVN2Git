@@ -16,6 +16,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
+using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -63,7 +64,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var textWriterData = stringWriterFactory.GetTextWriterData (name);
       string result = textWriterData.TextWriter.ToString ();
-      Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains (resultExpected));
+      Assert.That (result, NUnitText.Contains (resultExpected));
     }
 
 
