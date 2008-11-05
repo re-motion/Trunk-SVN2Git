@@ -151,10 +151,10 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       return new CommentLineContext (xmlFragmentContext, declaration, true);
     }
 
-    private FunctionDeclaration ProcessXmlFragment (XmlFragmentContext xmlfFragmentContext, FileInfo file)
+    private FunctionDeclaration ProcessXmlFragment (XmlFragmentContext xmlFragmentContext, FileInfo file)
     {
       // fragment complete, process it
-      StringReader stringReader = new StringReader (xmlfFragmentContext.XmlFragment.ToString());
+      StringReader stringReader = new StringReader (xmlFragmentContext.XmlFragment.ToString());
 
       XmlSchemaSet schemas = new XmlSchemaSet();
       schemas.Add (FunctionDeclaration.SchemaUri, FunctionDeclaration.GetSchemaReader());
@@ -164,7 +164,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       settings.ValidationType = ValidationType.Schema;
       settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
 
-      var schemaValidationObject = new SchemaValidationObject (file, xmlfFragmentContext.FirstLineNumber, xmlfFragmentContext.Indents);
+      var schemaValidationObject = new SchemaValidationObject (file, xmlFragmentContext.FirstLineNumber, xmlFragmentContext.Indents);
       settings.ValidationEventHandler += schemaValidationObject.CreateValidationHandler();
 
       XmlReader xmlReader = XmlReader.Create (stringReader, settings, file.FullName);
@@ -187,8 +187,8 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
           throw new InputException (
               InputError.XmlError,
               file.FullName,
-              xmlException.LineNumber + xmlfFragmentContext.FirstLineNumber - 1,
-              xmlException.LinePosition + xmlfFragmentContext.Indents[xmlException.LineNumber - 1],
+              xmlException.LineNumber + xmlFragmentContext.FirstLineNumber - 1,
+              xmlException.LinePosition + xmlFragmentContext.Indents[xmlException.LineNumber - 1],
               xmlException);
         }
         else
