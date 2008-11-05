@@ -198,7 +198,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
     [Test]
-    [Ignore]
     public void SortOrderTest ()
     {
       var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User3);
