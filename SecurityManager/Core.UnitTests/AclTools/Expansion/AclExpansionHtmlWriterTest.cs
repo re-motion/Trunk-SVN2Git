@@ -237,8 +237,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
         var stringWriter = new StringWriter();
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, false);
-        //var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+        //var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, false);
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
         aclExpansionHtmlWriter.Settings.UseShortNames = true;
         aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
         string result = stringWriter.ToString();

@@ -245,5 +245,27 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
       base.OnCommitting (args);
     }
+
+
+    /// <summary>
+    /// Retrieves the <see cref="StatePropertyDefinition"/> with the passed name; <c>null</c> if the <see cref="SecurableClassDefinition"/> 
+    /// instance contains none with that name.
+    /// </summary>
+    /// <param name="propertyName">Name of the <see cref="StatePropertyDefinition"/> to retrieve.</param>
+    /// <returns> <c>null</c> if the <see cref="SecurableClassDefinition"/> does not contain a <see cref="StatePropertyDefinition"/>
+    /// with the passed <paramref name="propertyName"/>, the <see cref="StatePropertyDefinition"/> with the passed <paramref name="propertyName"/>
+    /// otherwise.</returns>
+    public StatePropertyDefinition GetStateProperty (string propertyName)
+    {
+      foreach (var property in StateProperties)
+      {
+        if (property.Name == propertyName)
+        {
+          return property;
+        }
+      }
+      return null;
+    }
+
   }
 }

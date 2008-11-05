@@ -23,14 +23,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
   public class SetUpFixture
   {
     private DatabaseFixtures _dbFixtures;
-    private static ObjectID s_orderClassID;
 
-    public static ObjectID OrderClassID
-    {
-      get { return s_orderClassID; }
-    }
+    public static ObjectID OrderClassID { get; private set; }
 
     static public List<AccessControlList> aclList { get; private set; }
+
+    public ObjectID InvoiceClassID { get; set; }
 
 
     [SetUp]
@@ -38,25 +36,39 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     {
       try
       {
-        AccessControlTestHelper accessControlTestHelper = new AccessControlTestHelper();
-        using (accessControlTestHelper.Transaction.EnterDiscardingScope())
+        AccessControlTestHelper testHelper = new AccessControlTestHelper();
+        using (testHelper.Transaction.EnterDiscardingScope())
         {
           _dbFixtures = new DatabaseFixtures();
           _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
 
-          SecurableClassDefinition orderClass = accessControlTestHelper.CreateOrderClassDefinition();
-          accessControlTestHelper.AttachAccessType (orderClass, Guid.NewGuid(), "FirstAccessType", 0);
-          accessControlTestHelper.AttachAccessType (orderClass, Guid.NewGuid(), "FirstAccessType2", 2);
-          accessControlTestHelper.AttachAccessType (orderClass, Guid.NewGuid(), "FirstAccessType3", 3);
-          aclList = accessControlTestHelper.CreateAclsForOrderAndPaymentAndDeliveryStates (orderClass);
+          Culture cultureDe = Culture.NewObject ("de-DE");
+          Culture cultureEn = Culture.NewObject ("en-US");
+
+          SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
+          OrderClassID = orderClass.ID;
+          LocalizedName.NewObject ("Bestellung", cultureDe, orderClass);
+          LocalizedName.NewObject ("Order", cultureEn, orderClass);
+
+          testHelper.AttachAccessType (orderClass, Guid.NewGuid (), "FirstAccessType", 0);
+          testHelper.AttachAccessType (orderClass, Guid.NewGuid(), "FirstAccessType2", 2);
+          testHelper.AttachAccessType (orderClass, Guid.NewGuid(), "FirstAccessType3", 3);
+          aclList = testHelper.CreateAclsForOrderAndPaymentAndDeliveryStates (orderClass);
           var ace = aclList[0].CreateAccessControlEntry ();
           ace.Permissions[0].Allowed = true; // FirstAccessType
-          s_orderClassID = orderClass.ID;
 
           //Culture cultureDe = Culture.NewObject ("de");
-          Culture cultureDe = Culture.NewObject ("de-DE");
-          LocalizedName.NewObject ("Bestellung", cultureDe, orderClass);
-          LocalizedName.NewObject ("Rechnung", cultureDe, accessControlTestHelper.CreateInvoiceClassDefinition());
+
+
+          var invoiceClass = testHelper.CreateInvoiceClassDefinition();
+          InvoiceClassID = invoiceClass.ID;
+          LocalizedName.NewObject ("Rechnung", cultureDe, invoiceClass);
+
+          //var orderReceivedState = orderClass.StateProperties;
+          //OrderReceivedStateID = orderReceivedState.ID;
+          //LocalizedName.NewObject ("erhalten", cultureDe, orderReceivedState);
+
+
 
           //LocalizedName.NewObject ("Bestellung", cultureDe, orderClass);
 

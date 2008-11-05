@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
@@ -594,5 +595,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         }
       }
     }
+
+
+    [Test]
+    public void GetStatePropertyTest ()
+    {
+      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      {
+        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
+        List<StateCombination> stateCombinations = testHelper.CreateOrderStateAndPaymentStateCombinations (orderClass);
+        StatePropertyDefinition orderStateProperty = stateCombinations[0].StateUsages[0].StateDefinition.StateProperty;
+        StatePropertyDefinition paymentProperty = stateCombinations[0].StateUsages[1].StateDefinition.StateProperty;
+
+        Assert.That (orderClass.GetStateProperty (orderStateProperty.Name), Is.EqualTo (orderStateProperty));
+        Assert.That (orderClass.GetStateProperty (paymentProperty.Name), Is.EqualTo (paymentProperty));
+        Assert.That (orderClass.GetStateProperty ("Aglitchintaglitchinthematrix"), Is.Null);
+      }
+    }
+
   }
 }

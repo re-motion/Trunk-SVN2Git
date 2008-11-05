@@ -8,16 +8,20 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
+using Remotion.Security;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
+using Remotion.SecurityManager.UnitTests.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools
@@ -115,7 +119,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
 
       //Acl = TestHelper.CreateAcl (Ace, Ace2, Ace3);
 
-      var aclList =SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID).AccessControlLists;
+      SecurableClassDefinition orderClass = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID);
+      //var aclList = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID).AccessControlLists;
+      var aclList = orderClass.AccessControlLists;
       Assert.That (aclList.Count, Is.GreaterThanOrEqualTo (2));
       
       Acl = aclList[0];
@@ -145,7 +151,47 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
 
       //TestHelper.CreateClassDefinition ("Class1");
       //TestHelper.CreateDeliveryStateProperty .CreateStateProperty ("State1");
+
+      //var orderReceivedState = orderClass.StateProperties;
+      To.ConsoleLine.s (">>>>>>>>>>>> StateProperties <<<<<<<<<<<<<<");
+
+      //var stateProperty = GetStateProperty (orderClass, "Delivery");
+      To.ConsoleLine.s ("$$$$$$$$$$$$$$$$ ").e (GetStateProperty (orderClass, "Payment").Name);
+      To.ConsoleLine.s ("$$$$$$$$$$$$$$$$ ").e (GetStateProperty (orderClass, "State").Name);
+      To.ConsoleLine.s ("$$$$$$$$$$$$$$$$ ").e (GetStateProperty (orderClass, "Delivery").Name);
+
+
+      foreach (var statePropertyDefinition in orderClass.StateProperties)
+      {
+        if (statePropertyDefinition.Name == "Delivery")
+        {
+          To.ConsoleLine.s ("!!!!!!!!!!!!!!!!!!!!!!!! ").e (statePropertyDefinition.GetState (new EnumWrapper (Delivery.Post).Name));
+          To.ConsoleLine.s ("!!!!!!!!!!!!!!!!!!!!!!!! ").e (statePropertyDefinition.GetState ((int) Delivery.Post));
+        }
+        To.ConsoleLine.sb().e(statePropertyDefinition.Name ).e (statePropertyDefinition.DisplayName).e (statePropertyDefinition.DefinedStates).se();
+        foreach (var stateDefinition in statePropertyDefinition.DefinedStates)
+        {
+          To.ConsoleLine.sb().e(stateDefinition.DisplayName).e (stateDefinition.Value).e ((int) Delivery.Dhl).se();
+        }
+
+        //new EnumWrapper (Delivery.Post).Name
+        
+      }
+
     }
+
+    private StatePropertyDefinition GetStateProperty (SecurableClassDefinition classDefinition, string propertyName)
+    {
+      foreach (var property in classDefinition.StateProperties)
+      {
+        if (property.Name == propertyName)
+        {
+          return property;
+        }
+      }
+      return null;
+    }
+
 
 
     public void AttachAccessTypeReadWriteDelete (AccessControlEntry ace, bool? allowRead, bool? allowWrite, bool? allowDelete)
