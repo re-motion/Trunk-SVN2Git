@@ -31,13 +31,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public abstract int Index { get; set; }
 
-    [StorageClassNone]
-    public bool BinaryAllowed
-    {
-      get { return Allowed ?? false; }
-      set { Allowed = value ? (bool?) true : null; }
-    }
-
     public abstract bool? Allowed { get; set; }
 
     [DBBidirectionalRelation ("Permissions")]

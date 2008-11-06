@@ -25,51 +25,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void GetBinaryAllowed_WithAllowedTrue ()
-    {
-      Permission permission = Permission.NewObject();
-      permission.Allowed = true;
-
-      Assert.IsTrue (permission.BinaryAllowed);
-    }
-
-    [Test]
-    public void GetBinaryAllowed_WithAllowedFalse ()
-    {
-      Permission permission = Permission.NewObject();
-      permission.Allowed = false;
-
-      Assert.IsFalse (permission.BinaryAllowed);
-    }
-
-    [Test]
-    public void GetBinaryAllowed_WithAllowedNull ()
-    {
-      Permission permission = Permission.NewObject();
-      permission.Allowed = null;
-
-      Assert.IsFalse (permission.BinaryAllowed);
-    }
-
-    [Test]
-    public void SetBinaryAllowed_FromTrue()
-    {
-      Permission permission = Permission.NewObject();
-      permission.BinaryAllowed = true;
-
-      Assert.AreEqual (true, permission.Allowed);
-    }
-
-    [Test]
-    public void SetBinaryAllowed_FromFalse ()
-    {
-      Permission permission = Permission.NewObject();
-      permission.BinaryAllowed = false;
-
-      Assert.IsNull (permission.Allowed);
-    }
-
-    [Test]
     public void SetAndGet_Index ()
     {
       Permission permission = Permission.NewObject();

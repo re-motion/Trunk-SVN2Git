@@ -12,5 +12,5 @@
 
 <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.AccessControl.Permission, Remotion.SecurityManager" />
 <remotion:BusinessObjectReferenceDataSourceControl ID="AccessType" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="AccessType" />
-<remotion:BocBooleanValue ID="AllowedField" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="BinaryAllowed" ShowDescription="False" Width="1em" />
+<remotion:BocBooleanValue ID="AllowedField" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Allowed" ShowDescription="False" Width="1em" />
 <remotion:BocTextValue ID="NameField" runat="server" DataSourceControl="AccessType" PropertyIdentifier="DisplayName" ReadOnly="True" />
