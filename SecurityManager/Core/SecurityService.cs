@@ -82,8 +82,8 @@ namespace Remotion.SecurityManager
 
       using (transaction.EnterNonDiscardingScope())
       {
-        AccessTypeDefinition[] accessTypes = acl.GetAccessTypes (token);
-        return Array.ConvertAll<AccessTypeDefinition, AccessType> (accessTypes, ConvertToAccessType);
+        AccessInformation accessInformation = acl.GetAccessTypes (token);
+        return Array.ConvertAll<AccessTypeDefinition, AccessType> (accessInformation.AllowedAccessTypes, ConvertToAccessType);
       }
     }
 

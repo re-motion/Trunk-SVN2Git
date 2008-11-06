@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
@@ -146,26 +147,18 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           delegate (AccessControlEntry current) { return current.ActualPriority == highestPriority; });
     }
 
-    // MK reminder: Include "deny" information in output for AclExpander (e.g. return tuple of allow and deny lists).
-    // Information is needed so that aggregation of AclExpansionEntry|s by sys admin does not lead to 
-    // false assumption about access rights (e.g. if user is in two different abstract roles and
-    // gets read access from one ACE and write access AND denied read access from another ACE, then having
-    // both abstract roles will only get him write access but NOT read access, since the deny of read access
-    // in the second ACE overrides the allow in the first ACE).
-    public AccessTypeDefinition[] GetAccessTypes (SecurityToken token, AccessTypeStatistics accessTypeStatistics)
+    public AccessInformation GetAccessTypes (SecurityToken token, AccessTypeStatistics accessTypeStatistics)
     {
       ArgumentUtility.CheckNotNull ("token", token);
 
-      var accessTypes = new List<AccessTypeDefinition>();
+      var allowedAccessTypes = new Set<AccessTypeDefinition>();
+      var deniedAccessTypes = new Set<AccessTypeDefinition> ();
 
       foreach (var ace in FilterAcesByPriority (FindMatchingEntries (token)))
       {
         foreach (var allowedAccessType in ace.GetAllowedAccessTypes())
         {
-          if (!accessTypes.Contains (allowedAccessType))
-          {
-            accessTypes.Add (allowedAccessType);
-          }
+          allowedAccessTypes.Add (allowedAccessType);
 
           // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
           // Note that the access control logic is not modified by this code. Recorded information allows
@@ -174,23 +167,35 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           {
             accessTypeStatistics.AddAccessTypesSupplyingAce (ace);
           }
+        }
 
+        foreach (var deniedAccessType in ace.GetDeniedAccessTypes())
+        {
+          deniedAccessTypes.Add (deniedAccessType);
+
+          // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
+          // Note that the access control logic is not modified by this code. Recorded information allows
+          // deduction of whether the probing ACE was matched for ACL-expansion code (see AclExpander.AddAclExpansionEntry).
+          if (accessTypeStatistics != null)
+          {
+            accessTypeStatistics.AddAccessTypesSupplyingAce (ace);
+          }
         }
       }
+      
+      foreach (var deniedAccessType in deniedAccessTypes)
+        allowedAccessTypes.Remove (deniedAccessType);
 
-      return accessTypes.ToArray();
+      return new AccessInformation (allowedAccessTypes.ToArray(), deniedAccessTypes.ToArray());
     }
 
 
-    public AccessTypeDefinition[] GetAccessTypes (SecurityToken token)
+    public AccessInformation GetAccessTypes (SecurityToken token)
     {
       ArgumentUtility.CheckNotNull ("token", token);
       return GetAccessTypes (token, null);
     }
-
-
-
-
+    
     //TODO: Rewrite with test
 
     protected override void OnDeleting (EventArgs args)

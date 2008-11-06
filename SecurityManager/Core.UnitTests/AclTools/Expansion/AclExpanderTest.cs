@@ -60,8 +60,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       aclList.Add (acl);
 
       SecurityToken securityToken = new SecurityToken (user, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
-      AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
-      //To.ConsoleLine.sb ().e (accessTypeDefinitions.Length).e (() => accessTypeDefinitions).se ();
+      AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
+      To.ConsoleLine.sb ().e (accessInformation.AllowedAccessTypes.Length).e (() => accessInformation.AllowedAccessTypes).se ();
     }
 
 
@@ -73,11 +73,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var acl = TestHelper.CreateAcl (Ace3);
       Assert.That (Ace3.Validate().IsValid);
       SecurityToken securityToken = new SecurityToken (user, user.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
-      AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
+      AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
       //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
 
-      var accessTypeDefinitionsExpected = new[] { ReadAccessType, WriteAccessType };
-      Assert.That (accessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
+      Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, WriteAccessType }));
     }
 
     [Test]
@@ -90,12 +89,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       
       var acl = TestHelper.CreateAcl (ace);
       SecurityToken securityToken = new SecurityToken (User, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
-      AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
+      AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
    
       //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
 
-      var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
-      Assert.That (accessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
+      Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
     }
 
     [Test]
@@ -109,12 +107,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var acl = TestHelper.CreateAcl (ace);
       // We pass the Group used in the ace Position above in the owningGroups-list => ACE will match.
       SecurityToken securityToken = new SecurityToken (User, User.Tenant, List.New (Group), new List<AbstractRoleDefinition> ());
-      AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
+      AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
 
       //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
 
-      var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
-      Assert.That (accessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
+      Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
     }
 
 

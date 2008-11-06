@@ -133,7 +133,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return Permissions.Where (p => (p.Allowed.HasValue && p.Allowed.Value)).Select (p => p.AccessType).ToArray();
     }
 
-    public object GetDeniedAccessTypes ()
+    public AccessTypeDefinition[] GetDeniedAccessTypes ()
     {
       return Permissions.Where (p => (p.Allowed.HasValue && !p.Allowed.Value)).Select (p => p.AccessType).ToArray ();
     }

@@ -94,12 +94,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // Call extended AccessControlList.GetAccessTypes-method which returns information about the ACEs which contributed to
       // the resulting AccessType|s => we can filter out the permisssion-result if the current ACE did not contribute.
       var accessTypeStatistics = new AccessTypeStatistics();
-      AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
+      AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
 
       // We only create an AclExpansionEntry if the current probe ACE contributed to the returned AccessTypes
-      if (accessTypeStatistics.IsInAccessTypesSupplyingAces (ace) && accessTypeDefinitions.Length > 0)
+      if (accessTypeStatistics.IsInAccessTypesSupplyingAces (ace) && accessInformation.AllowedAccessTypes.Length > 0)
       {
-        var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions, accessTypeDefinitions);
+        var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions, accessInformation.AllowedAccessTypes);
         //To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
         aclExpansionEntries.Add (aclExpansionEntry);
       }
