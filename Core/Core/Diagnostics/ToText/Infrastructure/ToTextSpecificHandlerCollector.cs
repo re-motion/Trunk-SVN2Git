@@ -26,6 +26,7 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
   /// </summary>
   public class ToTextSpecificHandlerCollector
   {
+    // TODO: Move down (public methods are more important)
     private ToTextSpecificHandlerAttribute RetrieveTextHandlerAttribute (Type type)
     {
       return AttributeUtility.GetCustomAttribute<ToTextSpecificHandlerAttribute> (type, false);
@@ -45,6 +46,7 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
     {
       var handlerMap = new ToTextSpecificHandlerMap<T> ();
       const bool excludeGlobalTypes = true;
+      // TODO: Use ContextAwareTypeDiscoveryUtility.GetInstance() instead to make use of assembly caching
       ITypeDiscoveryService _typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
           new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, excludeGlobalTypes));
 
@@ -56,11 +58,13 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
         {
           Type baseType = type.BaseType;
           //Assertion.IsTrue (baseType.Name == "ToTextSpecificTypeHandler`1");
-          Assertion.IsTrue (baseType.Name == baseTypeName);
+          Assertion.IsTrue (baseType.Name == baseTypeName); // Note: This check disallows use of derived type handlers
+          // TODO: Refactor check to use Type objects and IsAssignableFrom instead.
+          // TODO: Throw exception instead if attribute is attached to wrong type
+          // Idea: If IToTextSpecificHandler had a membler "HandledType", the check (and the following two lines) could be removed.
           Type[] genericArguments = baseType.GetGenericArguments ();
           Type handledType = genericArguments[0];
 
-          //toTextProvider.RegisterSpecificTypeHandler (handledType, (IToTextSpecificTypeHandler) Activator.CreateInstance (type));
           handlerMap[handledType] = (T) Activator.CreateInstance (type);
         }
       }
