@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
@@ -31,11 +30,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     // types
 
     // static members and constants
-
-    public const int UserPriority = 8;
-    public const int AbstractRolePriority = 4;
-    public const int GroupPriority = 2;
-    public const int TenantPriority = 1;
 
     public static AccessControlEntry NewObject ()
     {
@@ -72,20 +66,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public abstract GroupSelection GroupSelection { get; set; }
 
     public abstract UserSelection UserSelection { get; set; }
-
-    public abstract int? Priority { get; set; }
-
-    [StorageClassNone]
-    public int ActualPriority
-    {
-      get
-      {
-        if (!Priority.HasValue)
-          return CalculatePriority();
-
-        return Priority.Value;
-      }
-    }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
     [DBColumn ("TenantID")]
@@ -283,25 +263,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
 
       return null;
-    }
-
-    private int CalculatePriority ()
-    {
-      int priority = 0;
-
-      if (UserSelection != UserSelection.All)
-        priority += UserPriority;
-
-      if (SpecificAbstractRole != null)
-        priority += AbstractRolePriority;
-
-      if (GroupSelection != GroupSelection.All)
-        priority += GroupPriority;
-
-      if (TenantSelection != TenantSelection.All)
-        priority += TenantPriority;
-
-      return priority;
     }
 
     //TODO: Rewrite with test

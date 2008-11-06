@@ -128,25 +128,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return entries.ToArray();
     }
 
-    public AccessControlEntry[] FilterAcesByPriority (AccessControlEntry[] aces)
-    {
-      ArgumentUtility.CheckNotNullOrItemsNull ("aces", aces);
-
-      if (aces.Length == 0)
-        return aces;
-
-      var sortedAces = (AccessControlEntry[]) aces.Clone();
-
-      Array.Sort (sortedAces, new AccessControlEntryPriorityComparer());
-      Array.Reverse (sortedAces);
-
-      int highestPriority = sortedAces[0].ActualPriority;
-
-      return Array.FindAll (
-          sortedAces,
-          delegate (AccessControlEntry current) { return current.ActualPriority == highestPriority; });
-    }
-
     public AccessInformation GetAccessTypes (SecurityToken token, AccessTypeStatistics accessTypeStatistics)
     {
       ArgumentUtility.CheckNotNull ("token", token);
@@ -154,7 +135,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       var allowedAccessTypes = new Set<AccessTypeDefinition>();
       var deniedAccessTypes = new Set<AccessTypeDefinition> ();
 
-      foreach (var ace in FilterAcesByPriority (FindMatchingEntries (token)))
+      foreach (var ace in FindMatchingEntries (token))
       {
         foreach (var allowedAccessType in ace.GetAllowedAccessTypes())
         {

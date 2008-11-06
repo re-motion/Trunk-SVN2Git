@@ -58,8 +58,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     {
       base.OnPreRender (e);
       SpecificPositionAndGroupLinkingLabel.Text = AccessControlResources.SpecificPositionAndGroupLinkingLabelText;
-
-      UpdateActualPriority ();
     }
 
     public override void LoadValues (bool interim)
@@ -146,27 +144,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         SpecificPositionAndGroupLinkingLabel.Visible = true;
         GroupSelectionField.Visible = true;
       }
-    }
-
-    private void UpdateActualPriority ()
-    {
-      foreach (IBusinessObjectBoundEditableWebControl control in CurrentObject.BoundControls)
-      {
-        if (control.IsDirty)
-        {
-          BocTextValue bocTextValue = control as BocTextValue;
-          if (bocTextValue != null && !bocTextValue.IsValidValue)
-            continue;
-
-          using (new SecurityFreeSection ())
-          {
-            control.SaveValue (false);
-          }
-          control.IsDirty = true;
-        }
-      }
-
-      ActualPriorityLabel.Text = string.Format (AccessControlResources.ActualPriorityLabelText, CurrentAccessControlEntry.ActualPriority);
     }
 
     private void LoadPermissions (bool interim)

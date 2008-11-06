@@ -71,15 +71,6 @@
     </td>
   </tr>
   <tr>
-    <td><remotion:SmartLabel ID="PriorityLabel" runat="server" ForControl="PriorityField"/></td>
-    <td>
-      <remotion:BocTextValue ID="PriorityField" runat="server" PropertyIdentifier="Priority" DataSourceControl="CurrentObject" Width="10em" >
-        <TextBoxStyle AutoPostBack="True" />
-      </remotion:BocTextValue>
-      / <asp:label id="ActualPriorityLabel" runat="server" Text="###" />
-    </td>
-  </tr>
-  <tr>
     <td><remotion:FormGridLabel ID="PermissionsLabel" runat="server" Text="###" /></td>
     <td>
       <asp:PlaceHolder ID="PermissionsPlaceHolder" runat="server" />

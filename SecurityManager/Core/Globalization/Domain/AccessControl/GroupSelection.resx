@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Remotion.SecurityManager.Domain.AccessControl.GroupSelection.All" xml:space="preserve">
-    <value>Any Group (0)</value>
+    <value>Any Group</value>
   </data>
   <data name="Remotion.SecurityManager.Domain.AccessControl.GroupSelection.OwningGroup" xml:space="preserve">
-    <value>Group of the Object or parent groups (2)</value>
+    <value>Group of the Object or parent groups</value>
   </data>
 </root>

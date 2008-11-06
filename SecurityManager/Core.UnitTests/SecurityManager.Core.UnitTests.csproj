@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{65B86B2E-D54D-425B-B681-82449E31BA01}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -61,7 +61,6 @@
     <Compile Include="AclTools\AclToolsTestBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplicationSettingsTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplicationTest.cs" />
-    <Compile Include="AclTools\Expansion\AclExpanderTest_Spike.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest.cs" />
     <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplicationTest.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\AclExpanderTestOld.cs" />
@@ -80,7 +79,6 @@
     <Compile Include="Configuration\TestOrganizationalStructureFactory.cs" />
     <Compile Include="Configuration\TestSecurityManagerConfiguration.cs" />
     <Compile Include="DomainTest.cs" />
-    <Compile Include="Domain\AccessControl\AccessControlEntryPriorityComparerTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchPosition.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchAbstractRoleDefinition.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchOtherProperty.cs" />
@@ -88,7 +86,6 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SetUpFixture.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\SearchServiceTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\ValidationTest.cs" />
-    <Compile Include="Domain\AccessControl\AccessControlEntryTests\GetActualPriorityTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\MatchesTokenTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\Test.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryValidationResultTest.cs" />

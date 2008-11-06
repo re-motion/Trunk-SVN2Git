@@ -153,7 +153,6 @@ CREATE TABLE [dbo].[AccessControlEntry]
   [TenantSelection] int NOT NULL,
   [GroupSelection] int NOT NULL,
   [UserSelection] int NOT NULL,
-  [Priority] int NULL,
   [TenantID] uniqueidentifier NULL,
   [GroupID] uniqueidentifier NULL,
   [GroupTypeID] uniqueidentifier NULL,
@@ -509,9 +508,9 @@ ALTER TABLE [dbo].[User] ADD
 GO
 
 -- Create a view for every class
-CREATE VIEW [dbo].[AccessControlEntryView] ([ID], [ClassID], [Timestamp], [Index], [TenantSelection], [GroupSelection], [UserSelection], [Priority], [TenantID], [GroupID], [GroupTypeID], [PositionID], [UserID], [AbstractRoleID], [AbstractRoleIDClassID], [AccessControlListID])
+CREATE VIEW [dbo].[AccessControlEntryView] ([ID], [ClassID], [Timestamp], [Index], [TenantSelection], [GroupSelection], [UserSelection], [TenantID], [GroupID], [GroupTypeID], [PositionID], [UserID], [AbstractRoleID], [AbstractRoleIDClassID], [AccessControlListID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [TenantSelection], [GroupSelection], [UserSelection], [Priority], [TenantID], [GroupID], [GroupTypeID], [PositionID], [UserID], [AbstractRoleID], [AbstractRoleIDClassID], [AccessControlListID]
+  SELECT [ID], [ClassID], [Timestamp], [Index], [TenantSelection], [GroupSelection], [UserSelection], [TenantID], [GroupID], [GroupTypeID], [PositionID], [UserID], [AbstractRoleID], [AbstractRoleIDClassID], [AccessControlListID]
     FROM [dbo].[AccessControlEntry]
     WHERE [ClassID] IN ('AccessControlEntry')
   WITH CHECK OPTION

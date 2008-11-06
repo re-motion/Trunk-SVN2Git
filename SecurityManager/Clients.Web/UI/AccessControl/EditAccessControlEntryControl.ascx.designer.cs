@@ -140,33 +140,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue GroupSelectionField;
         
         /// <summary>
-        /// PriorityLabel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.Web.UI.Controls.SmartLabel PriorityLabel;
-        
-        /// <summary>
-        /// PriorityField control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocTextValue PriorityField;
-        
-        /// <summary>
-        /// ActualPriorityLabel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label ActualPriorityLabel;
-        
-        /// <summary>
         /// PermissionsLabel control.
         /// </summary>
         /// <remarks>
