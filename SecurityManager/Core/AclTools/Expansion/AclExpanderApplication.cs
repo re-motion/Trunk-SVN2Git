@@ -67,8 +67,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         cultureName = null; // Passing null to CultureScope-ctor below means "keep current culture".
       }
 
-      //using (new CultureScope ("de-DE", "de-DE"))
-      //using (new CultureScope ("en-US", "en-US"))
       using (new CultureScope (cultureName))
       {
         using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())

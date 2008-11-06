@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     public AccessTypeDefinition WriteAccessType { get; private set; }
     public AccessTypeDefinition ReadAccessType { get; private set; }
 
-    public AccessTypeDefinition[] AccessTypeDefinitionArray { get; private set; }
+    public AccessTypeDefinition[] AccessTypeDefinitions { get; private set; }
     public AccessControlTestHelper TestHelper { get; private set; }
     public Tenant Tenant { get; private set; }
     public Group Group { get; private set; }
@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     public User User { get; private set; }
     public AccessControlEntry Ace { get; private set; }
 
-    //public AccessTypeDefinition[] AccessTypeDefinitions2 { get; private set; }
+    public AccessTypeDefinition[] AccessTypeDefinitions2 { get; private set; }
     public AccessControlEntry Ace2 { get; private set; }
     public Role Role2 { get; private set; }
     public User User2 { get; private set; }
@@ -74,7 +74,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       WriteAccessType = TestHelper.CreateWriteAccessType ();  // write access
       DeleteAccessType = TestHelper.CreateDeleteAccessType ();  // delete permission
 
-      AccessTypeDefinitionArray = new[] { ReadAccessType, WriteAccessType, DeleteAccessType };
+      AccessTypeDefinitions = new[] { ReadAccessType, WriteAccessType, DeleteAccessType };
+      AccessTypeDefinitions2 = new[] { ReadAccessType, DeleteAccessType };
 
 
       Tenant = TestHelper.CreateTenant ("Da Tenant");

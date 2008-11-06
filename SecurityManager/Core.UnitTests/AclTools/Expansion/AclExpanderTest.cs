@@ -125,7 +125,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
       var accessConditions = new AclExpansionAccessConditions();
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
-      Assert.That (aclExpansionEntryList[0].AccessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
+      Assert.That (aclExpansionEntryList[0].AllowedAccessTypes, Is.EquivalentTo (accessTypeDefinitionsExpected));
       Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
     }
 
@@ -140,7 +140,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         IsOwningGroupRequired = true, //  GroupSelection.OwningGroup => group must be owner
       };
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
-      Assert.That (aclExpansionEntryList[0].AccessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
+      Assert.That (aclExpansionEntryList[0].AllowedAccessTypes, Is.EquivalentTo (accessTypeDefinitionsExpected));
       Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
     }
 
@@ -161,7 +161,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         IsOwningGroupRequired = true, //  GroupSelection.OwningGroup => group must be owner
       };
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
-      Assert.That (aclExpansionEntryList[0].AccessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
+      Assert.That (aclExpansionEntryList[0].AllowedAccessTypes, Is.EquivalentTo (accessTypeDefinitionsExpected));
       Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
     }
 
@@ -420,7 +420,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     private void AssertAclExpansionEntry (AclExpansionEntry aclExpansionEntry, AccessTypeDefinition[] accessTypeDefinitions,
       AclExpansionAccessConditions aclExpansionAccessConditions)
     {
-      Assert.That (aclExpansionEntry.AccessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitions));
+      Assert.That (aclExpansionEntry.AllowedAccessTypes, Is.EquivalentTo (accessTypeDefinitions));
       Assert.That (aclExpansionEntry.AccessConditions, Is.EqualTo (aclExpansionAccessConditions));
     }
 

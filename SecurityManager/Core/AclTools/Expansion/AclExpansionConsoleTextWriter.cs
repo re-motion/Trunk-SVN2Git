@@ -80,7 +80,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                 To.Console.e ("class", aclExpansionEntry.Class);
               }
               To.Console.e ("states", stateArray);
-              To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
+              To.Console.e ("access", aclExpansionEntry.AllowedAccessTypes);
               To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
               To.Console.se ();
               To.Console.unindent ();
@@ -108,7 +108,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         To.Console.e ("role", aclExpansionEntry.Role);
         To.Console.e ("class", aclExpansionEntry.Class);
         To.Console.e ("states", stateArray);
-        To.Console.e ("access", aclExpansionEntry.AccessTypeDefinitions);
+        To.Console.e ("access", aclExpansionEntry.AllowedAccessTypes);
         To.Console.e ("conditions", aclExpansionEntry.AccessConditions);
         To.Console.se ();
       }

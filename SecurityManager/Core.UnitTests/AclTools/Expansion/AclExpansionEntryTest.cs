@@ -12,8 +12,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.SecurityManager.AclTools.Expansion;
-using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -21,16 +19,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   public class AclExpansionEntryTest : AclToolsTestBase
   {
     [Test]
-    public void Ctor ()
+    public void CtorTest ()
     {
       var accessConditions = new AclExpansionAccessConditions();
-      var aclExpansionEntry = new AclExpansionEntry (User,Role,Acl,accessConditions,AccessTypeDefinitionArray);
+      var aclExpansionEntry = new AclExpansionEntry (User, Role, Acl, accessConditions, AccessTypeDefinitions, AccessTypeDefinitions2);
       Assert.That (aclExpansionEntry.User, Is.EqualTo (User));
       Assert.That (aclExpansionEntry.Role, Is.EqualTo (Role));
       Assert.That (aclExpansionEntry.Class, Is.EqualTo (Acl.Class));
       Assert.That (aclExpansionEntry.StateCombinations, Is.EqualTo (Acl.StateCombinations));
       Assert.That (aclExpansionEntry.AccessConditions, Is.EqualTo (accessConditions));
-      Assert.That (aclExpansionEntry.AccessTypeDefinitions, Is.EqualTo (AccessTypeDefinitionArray));
+      Assert.That (aclExpansionEntry.AllowedAccessTypes, Is.EqualTo (AccessTypeDefinitions));
+      Assert.That (aclExpansionEntry.DeniedAccessTypes, Is.EqualTo (AccessTypeDefinitions2));
     }
   }
 }

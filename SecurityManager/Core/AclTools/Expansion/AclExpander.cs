@@ -99,7 +99,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // We only create an AclExpansionEntry if the current probe ACE contributed to the returned AccessTypes
       if (accessTypeStatistics.IsInAccessTypesSupplyingAces (ace) && accessInformation.AllowedAccessTypes.Length > 0)
       {
-        var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions, accessInformation.AllowedAccessTypes);
+        var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions,
+          accessInformation.AllowedAccessTypes, accessInformation.DeniedAccessTypes);
         //To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
         aclExpansionEntries.Add (aclExpansionEntry);
       }

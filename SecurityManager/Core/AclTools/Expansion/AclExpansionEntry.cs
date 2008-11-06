@@ -15,19 +15,21 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     private readonly AccessControlList _accessControlList;
 
-    public AclExpansionEntry (User user, Role role, AccessControlList accessControlList,
-                              AclExpansionAccessConditions accessConditions, AccessTypeDefinition[] accessTypeDefinitions)
+    public AclExpansionEntry (User user, Role role, AccessControlList accessControlList, 
+      AclExpansionAccessConditions accessConditions,
+      AccessTypeDefinition[] allowedAccessTypes, AccessTypeDefinition[] deniedAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("user", user);
       ArgumentUtility.CheckNotNull ("role", role);
       ArgumentUtility.CheckNotNull ("accessControlList", accessControlList);
       ArgumentUtility.CheckNotNull ("accessConditions", accessConditions);
-      ArgumentUtility.CheckNotNull ("accessTypeDefinitions", accessTypeDefinitions);
+      ArgumentUtility.CheckNotNull ("accessTypeDefinitions", allowedAccessTypes);
       User = user;
       Role = role;
       _accessControlList = accessControlList;
       AccessConditions = accessConditions;
-      AccessTypeDefinitions = accessTypeDefinitions;
+      AllowedAccessTypes = allowedAccessTypes;
+      DeniedAccessTypes = deniedAccessTypes;
     }
 
     public User User { get; set; }
@@ -42,14 +44,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
     public AclExpansionAccessConditions AccessConditions { get; set; }
-    public AccessTypeDefinition[] AccessTypeDefinitions { get; set; }
+    public AccessTypeDefinition[] AllowedAccessTypes { get; set; }
+    public AccessTypeDefinition[] DeniedAccessTypes { get; set; }
 
 
 
     public void ToText (IToTextBuilder toTextBuilder)
     {
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-      toTextBuilder.ib<AclExpansionEntry> ("").e ("user", User.UserName).e ("role", Role).e (AccessTypeDefinitions).e ("conditions", AccessConditions).ie ();
+      toTextBuilder.ib<AclExpansionEntry> ("").e ("user", User.UserName).e ("role", Role).e (AllowedAccessTypes).e ("conditions", AccessConditions).ie ();
     }
   }
 }

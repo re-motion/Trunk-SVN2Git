@@ -258,7 +258,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
         WriteTableDataForBodyStates (aclExpansionEntry);
         WriteTableDataForBodyConditions (aclExpansionEntry.AccessConditions);
-        WriteTableDataForAccessTypes (aclExpansionEntry.AccessTypeDefinitions);
+        WriteTableDataForAccessTypes (aclExpansionEntry.AllowedAccessTypes);
 
         WriteTableRowEnd ();
       }
