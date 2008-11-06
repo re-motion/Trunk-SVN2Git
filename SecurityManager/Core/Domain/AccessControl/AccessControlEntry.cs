@@ -10,11 +10,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -130,15 +130,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public AccessTypeDefinition[] GetAllowedAccessTypes ()
     {
-      List<AccessTypeDefinition> allowedAccessTypes = new List<AccessTypeDefinition>();
+      return Permissions.Where (p => (p.Allowed.HasValue && p.Allowed.Value)).Select (p => p.AccessType).ToArray();
+    }
 
-      foreach (Permission permission in Permissions)
-      {
-        if (permission.Allowed ?? false)
-          allowedAccessTypes.Add (permission.AccessType);
-      }
-
-      return allowedAccessTypes.ToArray();
+    public object GetDeniedAccessTypes ()
+    {
+      return Permissions.Where (p => (p.Allowed.HasValue && !p.Allowed.Value)).Select (p => p.AccessType).ToArray ();
     }
 
     public void AttachAccessType (AccessTypeDefinition accessType)
@@ -171,6 +168,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       permission.Allowed = true;
     }
 
+    public void DenyAccess (AccessTypeDefinition accessType)
+    {
+      ArgumentUtility.CheckNotNull ("accessType", accessType);
+
+      var permission = GetPermission (accessType);
+      permission.Allowed = false;
+    }
+
     public void RemoveAccess (AccessTypeDefinition accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
@@ -194,7 +199,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       return true;
     }
-
 
     private bool MatchesTenant (SecurityToken token)
     {

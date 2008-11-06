@@ -487,19 +487,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    public void AttachAccessType (AccessControlEntry ace, AccessTypeDefinition accessType, bool? allowed)
+    public void AttachAccessType (AccessControlEntry ace, AccessTypeDefinition accessType, bool? allowAccess)
     {
       using (_transaction.EnterNonDiscardingScope())
       {
         ace.AttachAccessType (accessType);
-        if (allowed.HasValue && allowed.Value)
+        if (!allowAccess.HasValue)
+          ace.RemoveAccess (accessType);
+        else if (allowAccess.Value)
           ace.AllowAccess (accessType);
+        else
+          ace.DenyAccess(accessType);        
       }
     }
 
-    public AccessTypeDefinition CreateReadAccessTypeAndSetWithValueAtAce (AccessControlEntry ace, bool? allowAccess)
+    public AccessTypeDefinition CreateReadAccessTypeAndAttachToAce (AccessControlEntry ace, bool? allowAccess)
     {
-      //return CreateAccessTypeForAce (ace, allowAccess, Guid.NewGuid (), "Read", 0);
       using (_transaction.EnterNonDiscardingScope ())
       {
         AccessTypeDefinition accessType = CreateReadAccessType ();
@@ -509,9 +512,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    public AccessTypeDefinition CreateWriteAccessTypeAndSetWithValueAtAce (AccessControlEntry ace, bool? allowAccess)
+    public AccessTypeDefinition CreateWriteAccessTypeAndAttachToAce (AccessControlEntry ace, bool? allowAccess)
     {
-      //return CreateAccessTypeForAce (ace, allowAccess, Guid.NewGuid (), "Write", 1);
       using (_transaction.EnterNonDiscardingScope ())
       {
         AccessTypeDefinition accessType = CreateWriteAccessType ();
@@ -521,9 +523,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    public AccessTypeDefinition CreateDeleteAccessTypeAndSetWithValueAtAce (AccessControlEntry ace, bool? allowAccess)
+    public AccessTypeDefinition CreateDeleteAccessTypeAndAttachToAce (AccessControlEntry ace, bool? allowAccess)
     {
-      //return CreateAccessTypeForAce (ace, allowAccess, Guid.NewGuid (), "Delete", 2);
       using (_transaction.EnterNonDiscardingScope ())
       {
         AccessTypeDefinition accessType = CreateDeleteAccessType ();

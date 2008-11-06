@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -42,21 +43,29 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void GetAllowedAccessTypes_ReadAllowed ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, true);
-      _testHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace, null);
-      _testHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace, null);
+      AccessTypeDefinition readAccessType = _testHelper.CreateReadAccessTypeAndAttachToAce (ace, true);
+      _testHelper.CreateWriteAccessTypeAndAttachToAce (ace, null);
+      _testHelper.CreateDeleteAccessTypeAndAttachToAce (ace, false);
 
-      AccessTypeDefinition[] accessTypes = ace.GetAllowedAccessTypes();
+      Assert.That (ace.GetAllowedAccessTypes(), Is.EquivalentTo (new[] { readAccessType }));
+    }
 
-      Assert.AreEqual (1, accessTypes.Length);
-      Assert.Contains (readAccessType, accessTypes);
+    [Test]
+    public void GetDeniedAccessTypes_DeleteDenied ()
+    {
+      AccessControlEntry ace = AccessControlEntry.NewObject();
+      _testHelper.CreateReadAccessTypeAndAttachToAce (ace, true);
+      _testHelper.CreateWriteAccessTypeAndAttachToAce (ace, null);
+      AccessTypeDefinition deleteAccessType = _testHelper.CreateDeleteAccessTypeAndAttachToAce (ace, false);
+
+      Assert.That (ace.GetDeniedAccessTypes(), Is.EquivalentTo (new[] { deleteAccessType }));
     }
 
     [Test]
     public void AllowAccess_Read ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      AccessTypeDefinition accessType = _testHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, null);
+      AccessTypeDefinition accessType = _testHelper.CreateReadAccessTypeAndAttachToAce (ace, null);
 
       ace.AllowAccess (accessType);
 
@@ -66,9 +75,20 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-                                                    "The access type 'Test' is not assigned to this access control entry.\r\nParameter name: accessType"
-        )]
+    public void DenyAccess_Read ()
+    {
+      AccessControlEntry ace = AccessControlEntry.NewObject();
+      AccessTypeDefinition accessType = _testHelper.CreateReadAccessTypeAndAttachToAce (ace, null);
+
+      ace.DenyAccess (accessType);
+
+      AccessTypeDefinition[] allowedAccessTypes = ace.GetAllowedAccessTypes();
+      Assert.That (allowedAccessTypes, Is.Empty);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException),
+        ExpectedMessage = "The access type 'Test' is not assigned to this access control entry.\r\nParameter name: accessType")]
     public void AllowAccess_InvalidAccessType ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
@@ -81,7 +101,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void RemoveAccess_Read ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
-      AccessTypeDefinition accessType = _testHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, true);
+      AccessTypeDefinition accessType = _testHelper.CreateReadAccessTypeAndAttachToAce (ace, true);
 
       ace.RemoveAccess (accessType);
 
@@ -115,7 +135,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-                                                    "The access type 'Test' has already been attached to this access control entry.\r\nParameter name: accessType"
+        "The access type 'Test' has already been attached to this access control entry.\r\nParameter name: accessType"
         )]
     public void AttachAccessType_ExistingAccessType ()
     {
