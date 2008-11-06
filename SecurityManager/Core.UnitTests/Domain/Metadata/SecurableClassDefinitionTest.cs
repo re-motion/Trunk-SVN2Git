@@ -596,23 +596,35 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       }
     }
 
-
     [Test]
-    public void GetStatePropertyTest ()
+    public void GetStatePropertyTest_ValidName ()
     {
-      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
-      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      AccessControlTestHelper testHelper = new AccessControlTestHelper();
+      using (testHelper.Transaction.EnterNonDiscardingScope())
       {
-        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
+        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
         List<StateCombination> stateCombinations = testHelper.CreateOrderStateAndPaymentStateCombinations (orderClass);
         StatePropertyDefinition orderStateProperty = stateCombinations[0].StateUsages[0].StateDefinition.StateProperty;
         StatePropertyDefinition paymentProperty = stateCombinations[0].StateUsages[1].StateDefinition.StateProperty;
 
         Assert.That (orderClass.GetStateProperty (orderStateProperty.Name), Is.EqualTo (orderStateProperty));
         Assert.That (orderClass.GetStateProperty (paymentProperty.Name), Is.EqualTo (paymentProperty));
-        Assert.That (orderClass.GetStateProperty ("Aglitchintaglitchinthematrix"), Is.Null);
       }
     }
 
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "A state property with the name 'Invalid' is not defined for the secureable class definition 'Remotion.SecurityManager.UnitTests.TestDomain.Order'."
+        + "\r\nParameter name: propertyName")]
+    public void GetStatePropertyTest_InvalidName ()
+    {
+      AccessControlTestHelper testHelper = new AccessControlTestHelper();
+      using (testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
+
+        Assert.That (orderClass.GetStateProperty ("Invalid"), Is.Null);
+      }
+    }
   }
 }

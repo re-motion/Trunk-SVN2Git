@@ -9,15 +9,16 @@
  */
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.ObjectBinding;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
-using Remotion.Data.DomainObjects.Linq;
 
 namespace Remotion.SecurityManager.Domain.Metadata
 {
@@ -37,7 +38,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public new static SecurableClassDefinition GetObject (ObjectID id)
     {
-      return DomainObject.GetObject<SecurableClassDefinition> (id);
+      return GetObject<SecurableClassDefinition> (id);
     }
 
     public static SecurableClassDefinition FindByName (string name)
@@ -48,7 +49,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
                    where c.Name == name
                    select c;
 
-      return result.ToArray ().SingleOrDefault ();
+      return result.ToArray().SingleOrDefault();
     }
 
     public static ObjectList<SecurableClassDefinition> FindAll ()
@@ -121,7 +122,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    [DBBidirectionalRelationAttribute ("Class")]
+    [DBBidirectionalRelation ("Class")]
     protected abstract ObjectList<StatePropertyReference> StatePropertyReferences { get; }
 
     [StorageClassNone]
@@ -144,7 +145,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    [DBBidirectionalRelationAttribute ("Class", SortExpression = "[Index] ASC")]
+    [DBBidirectionalRelation ("Class", SortExpression = "[Index] ASC")]
     protected abstract ObjectList<AccessTypeReference> AccessTypeReferences { get; }
 
     [StorageClassNone]
@@ -197,9 +198,25 @@ namespace Remotion.SecurityManager.Domain.Metadata
       _stateProperties = null;
     }
 
+    /// <summary>Retrieves the <see cref="StatePropertyDefinition"/> with the passed name.</summary>
+    /// <param name="propertyName">Name of the <see cref="StatePropertyDefinition"/> to retrieve.Must not be <see langword="null" /> or empty. </param>
+    /// <exception cref="ArgumentException">Thrown if the specified property does not exist on this <see cref="SecurableClassDefinition"/>.</exception>
+    public StatePropertyDefinition GetStateProperty (string propertyName)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+
+      return StateProperties.Single (
+          p => p.Name == propertyName,
+          () => CreateArgumentException (
+                    "propertyName",
+                    "A state property with the name '{0}' is not defined for the secureable class definition '{1}'.",
+                    propertyName,
+                    Name));
+    }
+
     public StateCombination FindStateCombination (IList<StateDefinition> states)
     {
-      return StateCombinations.Where (sc => sc.MatchesStates (states)).SingleOrDefault ();
+      return StateCombinations.Where (sc => sc.MatchesStates (states)).SingleOrDefault();
     }
 
     public AccessControlList CreateAccessControlList ()
@@ -223,7 +240,8 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public void ValidateUniqueStateCombinations (SecurableClassValidationResult result)
     {
-      Assertion.IsTrue (State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object are not empty but the object is deleted.", ID);
+      Assertion.IsTrue (
+          State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object are not empty but the object is deleted.", ID);
 
       var dupblicateStateCombinations = StateCombinations
           .GroupBy (sc => sc, new StateCombinationComparer())
@@ -246,26 +264,9 @@ namespace Remotion.SecurityManager.Domain.Metadata
       base.OnCommitting (args);
     }
 
-
-    /// <summary>
-    /// Retrieves the <see cref="StatePropertyDefinition"/> with the passed name; <c>null</c> if the <see cref="SecurableClassDefinition"/> 
-    /// instance contains none with that name.
-    /// </summary>
-    /// <param name="propertyName">Name of the <see cref="StatePropertyDefinition"/> to retrieve.</param>
-    /// <returns> <c>null</c> if the <see cref="SecurableClassDefinition"/> does not contain a <see cref="StatePropertyDefinition"/>
-    /// with the passed <paramref name="propertyName"/>, the <see cref="StatePropertyDefinition"/> with the passed <paramref name="propertyName"/>
-    /// otherwise.</returns>
-    public StatePropertyDefinition GetStateProperty (string propertyName)
+    private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)
     {
-      foreach (var property in StateProperties)
-      {
-        if (property.Name == propertyName)
-        {
-          return property;
-        }
-      }
-      return null;
+      return new ArgumentException (string.Format (format, args), argumentName);
     }
-
   }
 }
