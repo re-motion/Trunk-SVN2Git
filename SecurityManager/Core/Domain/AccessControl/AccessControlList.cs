@@ -128,16 +128,19 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return entries.ToArray();
     }
 
+
+
+
     public AccessInformation GetAccessTypes (SecurityToken token, AccessTypeStatistics accessTypeStatistics)
     {
       ArgumentUtility.CheckNotNull ("token", token);
 
-      var allowedAccessTypes = new Set<AccessTypeDefinition>();
+      var allowedAccessTypes = new Set<AccessTypeDefinition> ();
       var deniedAccessTypes = new Set<AccessTypeDefinition> ();
 
       foreach (var ace in FindMatchingEntries (token))
       {
-        foreach (var allowedAccessType in ace.GetAllowedAccessTypes())
+        foreach (var allowedAccessType in ace.GetAllowedAccessTypes ())
         {
           allowedAccessTypes.Add (allowedAccessType);
 
@@ -150,7 +153,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           }
         }
 
-        foreach (var deniedAccessType in ace.GetDeniedAccessTypes())
+        foreach (var deniedAccessType in ace.GetDeniedAccessTypes ())
         {
           deniedAccessTypes.Add (deniedAccessType);
 
@@ -163,11 +166,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           }
         }
       }
-      
+
       foreach (var deniedAccessType in deniedAccessTypes)
         allowedAccessTypes.Remove (deniedAccessType);
 
-      return new AccessInformation (allowedAccessTypes.ToArray(), deniedAccessTypes.ToArray());
+      return new AccessInformation (allowedAccessTypes.ToArray (), deniedAccessTypes.ToArray ());
     }
 
 
@@ -176,6 +179,33 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       ArgumentUtility.CheckNotNull ("token", token);
       return GetAccessTypes (token, null);
     }
+
+
+    //public AccessInformation GetAccessTypes (SecurityToken token)
+    //{
+    //  ArgumentUtility.CheckNotNull ("token", token);
+
+    //  var allowedAccessTypes = new Set<AccessTypeDefinition> ();
+    //  var deniedAccessTypes = new Set<AccessTypeDefinition> ();
+
+    //  // Collect allowed and denied access types from each matching ACE
+    //  foreach (var ace in FindMatchingEntries (token))
+    //  {
+    //    allowedAccessTypes.AddRange (ace.GetAllowedAccessTypes());
+    //    deniedAccessTypes.AddRange (ace.GetDeniedAccessTypes ());
+    //  }
+
+    //  // Remove allowed access type entries which are denied
+    //  foreach (var deniedAccessType in deniedAccessTypes)
+    //  {
+    //    allowedAccessTypes.Remove (deniedAccessType);
+    //  }
+
+    //  return new AccessInformation (allowedAccessTypes.ToArray (), deniedAccessTypes.ToArray ());
+    //}
+
+
+
     
     //TODO: Rewrite with test
 

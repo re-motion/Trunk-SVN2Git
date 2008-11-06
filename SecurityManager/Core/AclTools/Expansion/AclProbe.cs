@@ -10,7 +10,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   /// <summary>
   /// <para>Contains a <see cref="SecurityToken"/> which can be used to query access rights through calling 
-  /// <see cref="AccessControlList.GetAccessTypes(Domain.AccessControl.SecurityToken,AccessTypeStatistics)"/>; the
+  /// <see cref="AccessControlList.GetAccessTypes(Domain.AccessControl.SecurityToken)"/>; the
   /// the permissions returned apply only if the <see cref="AclExpansionAccessConditions"/> of the <see cref="AclProbe"/> are satisfied.
   /// </para>
   /// <remarks><para>

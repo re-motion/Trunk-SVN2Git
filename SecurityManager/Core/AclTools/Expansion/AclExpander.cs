@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -72,36 +73,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       AccessControlEntry ace = userRoleAclAce.Ace;
       AclProbe aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, ace);
-      //To.ConsoleLine.s ("\t\t\t").e (() => aclProbe);
 
-      // NOTTODO: Check if we already queried with an identical token.
-      // Problem: If the same token was already used by an AclProbe which has conditions then it would be incorrect
-      // to skip it if it would now be coming from an AclProbe without (or with different) conditions.
-      // This problem stems from the fact that due to the current SecurityManager logic which uses priorities
-      // the SecurityToken of an AclProbe for an ACE can be "shadowed" by a different ACE (i.e. the ACE which is used for 
-      // deciding the access rights is not the one we are probing for). This could be solved if we extend the SecurityManager
-      // to support a mode where only a specific ACE shall be used for deciding the access rights and if that ACE is not
-      // in the set of ACEs used then no access rights shall be returned. MK is reluctant to allow these (small) changes due
-      // to code purity concerns; since it is planned to remove priorities from the SecurityManager 
-      // in the near future (to be replaced by a deny concept), which transforms the problem, since any matching ACE
-      // will contribute to the access rights result (deny rights can still lead to it not having any impact, though)
-      // it was therefore decided to ignore these (up to 9 = 2^4+1) "double entries" for now.
-      // See below for a solution which does not change the access right logic but only records the contributing ACEs,
-      // allowing filtering of the permisssion-result if the current ACE fromt he AclProbe did not contribute.
-      
-      // AccessTypeDefinition[] accessTypeDefinitions = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken);
 
-      // Call extended AccessControlList.GetAccessTypes-method which returns information about the ACEs which contributed to
-      // the resulting AccessType|s => we can filter out the permisssion-result if the current ACE did not contribute.
       var accessTypeStatistics = new AccessTypeStatistics();
       AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
 
-      // We only create an AclExpansionEntry if the current probe ACE contributed to the returned AccessTypes
+      //To.ConsoleLine.e (accessTypeStatistics.IsInAccessTypesSupplyingAces (ace) ? "Contributing ACE" : "Non-contributing ACE", ace);
+      
+      // Create an AclExpansionEntry, if the current probe ACE contributed to the result and returned allowed access types
       if (accessTypeStatistics.IsInAccessTypesSupplyingAces (ace) && accessInformation.AllowedAccessTypes.Length > 0)
       {
         var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions,
           accessInformation.AllowedAccessTypes, accessInformation.DeniedAccessTypes);
-        //To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
         aclExpansionEntries.Add (aclExpansionEntry);
       }
     }
