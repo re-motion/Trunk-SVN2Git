@@ -203,8 +203,6 @@ CREATE TABLE [dbo].[StateCombination]
 
   -- StateCombination columns
   [Index] int NOT NULL,
-  [SecurableClassID] uniqueidentifier NULL,
-  [SecurableClassIDClassID] varchar (100) NULL,
   [AccessControlListID] uniqueidentifier NULL,
 
   CONSTRAINT [PK_StateCombination] PRIMARY KEY CLUSTERED ([ID])
@@ -461,7 +459,6 @@ ALTER TABLE [dbo].[Permission] ADD
   CONSTRAINT [FK_Permission_AccessControlEntryID] FOREIGN KEY ([AccessControlEntryID]) REFERENCES [dbo].[AccessControlEntry] ([ID])
 
 ALTER TABLE [dbo].[StateCombination] ADD
-  CONSTRAINT [FK_StateCombination_SecurableClassID] FOREIGN KEY ([SecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID]),
   CONSTRAINT [FK_StateCombination_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
 
 ALTER TABLE [dbo].[StateUsage] ADD
@@ -532,9 +529,9 @@ CREATE VIEW [dbo].[PermissionView] ([ID], [ClassID], [Timestamp], [Index], [Allo
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[StateCombinationView] ([ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID], [AccessControlListID])
+CREATE VIEW [dbo].[StateCombinationView] ([ID], [ClassID], [Timestamp], [Index], [AccessControlListID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID], [AccessControlListID]
+  SELECT [ID], [ClassID], [Timestamp], [Index], [AccessControlListID]
     FROM [dbo].[StateCombination]
     WHERE [ClassID] IN ('StateCombination')
   WITH CHECK OPTION

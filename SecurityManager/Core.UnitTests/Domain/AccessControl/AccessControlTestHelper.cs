@@ -115,7 +115,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         StateCombination stateCombination = StateCombination.NewObject ();
         stateCombination.AccessControlList = acl;
-        stateCombination.Class = acl.Class;
 
         return stateCombination;
       }

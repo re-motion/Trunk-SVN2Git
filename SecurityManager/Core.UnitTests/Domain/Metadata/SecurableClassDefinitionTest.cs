@@ -19,6 +19,7 @@ using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 using Remotion.SecurityManager.UnitTests.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 {
@@ -584,7 +585,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
               ClientTransaction.Current,
               orderStateProperty[new EnumWrapper (OrderState.Received).Name],
               paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
-          Assert.IsNotEmpty (orderClass.StateCombinations);
+          Assert.That(orderClass.StateCombinations, Is.Not.Empty);
           orderClass.Delete();
 
           SecurableClassValidationResult result = new SecurableClassValidationResult();
@@ -624,6 +625,20 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
 
         Assert.That (orderClass.GetStateProperty ("Invalid"), Is.Null);
+      }
+    }
+
+    [Test]
+    public void GetStateCombinations_TwoCombinations ()
+    {
+      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      {
+        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
+        StateCombination stateCombination = testHelper.CreateStateCombination (orderClass);
+        List<StateCombination> stateCombinations = testHelper.CreateOrderStateAndPaymentStateCombinations (orderClass);
+
+        Assert.That (orderClass.StateCombinations, Is.EqualTo (ArrayUtility.Combine(stateCombination, stateCombinations.ToArray())));
       }
     }
   }

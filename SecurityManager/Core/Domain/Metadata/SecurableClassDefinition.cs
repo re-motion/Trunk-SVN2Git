@@ -167,9 +167,18 @@ namespace Remotion.SecurityManager.Domain.Metadata
       }
     }
 
-    [DBBidirectionalRelation ("Class")]
+    [StorageClassNone]
     [ObjectBinding (ReadOnly = true)]
-    public abstract ObjectList<StateCombination> StateCombinations { get; }
+    public IList<StateCombination> StateCombinations
+    {
+      get
+      {
+        var result = from acl in AccessControlLists 
+                     from sc in acl.StateCombinations 
+                     select sc;
+        return result.ToArray();
+      }
+    }
 
     [DBBidirectionalRelation ("Class", SortExpression = "[Index] ASC")]
     public abstract ObjectList<AccessControlList> AccessControlLists { get; }

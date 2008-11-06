@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
@@ -31,6 +32,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       base.SetUp();
       _testHelper = new AccessControlTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
+    }
+
+    [Test]
+    public void GetClass ()
+    {
+      StateCombination combination = _testHelper.GetStateCombinationWithoutStates ();
+
+      Assert.That (combination.AccessControlList.Class, Is.Not.Null);
+      Assert.That (combination.Class, Is.SameAs (combination.AccessControlList.Class));
     }
 
     [Test]

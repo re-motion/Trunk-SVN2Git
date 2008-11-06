@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
@@ -26,6 +27,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public int GetHashCode (StateCombination obj)
     {
+      Assertion.IsNotNull (obj.Class);
       int hashCode = obj.Class.GetHashCode ();
 
       foreach (StateDefinition state in obj.GetStates ())

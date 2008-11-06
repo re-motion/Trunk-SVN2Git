@@ -59,19 +59,20 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private void StateUsages_Added (object sender, DomainObjectCollectionChangeEventArgs args)
     {
-      if (Class != null)
+      if (Class != null )
         Class.Touch ();
     }
 
     public abstract int Index { get; set; }
 
-    [DBBidirectionalRelation ("StateCombinations")]
-    [DBColumn ("SecurableClassID")]
-    [Mandatory]
-    public abstract SecurableClassDefinition Class { get; set; }
-
     [DBBidirectionalRelation ("StateCombination")]
     public abstract ObjectList<StateUsage> StateUsages { get; }
+
+    [StorageClassNone]
+    public SecurableClassDefinition Class
+    {
+      get { return AccessControlList != null ? AccessControlList.Class : null; }
+    }
 
     [DBBidirectionalRelation ("StateCombinations")]
     [Mandatory]

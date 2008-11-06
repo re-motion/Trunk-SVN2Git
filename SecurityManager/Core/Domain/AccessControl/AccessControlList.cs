@@ -236,7 +236,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         throw new InvalidOperationException ("Cannot create StateCombination if no SecurableClassDefinition is assigned to this AccessControlList.");
 
       var stateCombination = StateCombination.NewObject();
-      stateCombination.Class = Class;
       stateCombination.AccessControlList = this;
 
       return stateCombination;
