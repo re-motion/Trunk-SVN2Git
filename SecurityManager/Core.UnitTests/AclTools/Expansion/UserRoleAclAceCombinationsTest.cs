@@ -54,8 +54,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var numberAces = acls.SelectMany (x => x.AccessControlEntries).Count ();
       Assert.That (numberAces, Is.GreaterThanOrEqualTo (5));
      
-      To.ConsoleLine.e (() => numberRoles);
-      To.ConsoleLine.e (() => numberAces);
+      //To.ConsoleLine.e (() => numberRoles);
+      //To.ConsoleLine.e (() => numberAces);
 
       var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
       aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (acls);

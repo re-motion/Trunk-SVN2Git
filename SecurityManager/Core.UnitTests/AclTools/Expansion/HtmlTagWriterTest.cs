@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         htmlWriter.Tag ("div").Value ("xxx").TagEnd ("div");
       }
       var result = stringWriter.ToString ();
-      To.ConsoleLine.e (() => result);
+      //To.ConsoleLine.e (() => result);
       Assert.That (result, Is.EqualTo ("<div>xxx</div>"));
     }
 
@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         htmlWriter.WritePageHeader("Page Header Test","pageHeaderTest.css");
       }
       var result = stringWriter.ToString ();
-      To.ConsoleLine.e (() => result);
+      //To.ConsoleLine.e (() => result);
       Assert.That (result, Is.EqualTo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>Page Header Test</title><style>@import \"pageHeaderTest.css\";</style><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head></html>"));
     }
 
@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         htmlWriter.Tags.br();
       }
       var result = stringWriter.ToString ();
-      To.ConsoleLine.e (() => result);
+      //To.ConsoleLine.e (() => result);
       Assert.That (result, Is.EqualTo ("<br />"));
     }
 
@@ -76,7 +76,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     private void AssertTagNameOpenCloseHtml (string tagName)
     {
       var tagNameHtmlResult = GetSpecificTagOpenCloseHtml (tagName);
-      To.ConsoleLine.sb().e(() => tagName).e (() => tagNameHtmlResult).se();
+      //To.ConsoleLine.sb().e(() => tagName).e (() => tagNameHtmlResult).se();
       Assert.That (tagNameHtmlResult, Is.EqualTo ("<" + tagName + ">abc</" + tagName + ">"));
     }
 
@@ -123,7 +123,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         htmlWriter.Tags.htmlEnd ();
       }
       var result = stringWriter.ToString ();
-      To.ConsoleLine.e (() => result);
+      //To.ConsoleLine.e (() => result);
       Assert.That (result, Is.EqualTo ("<html><head><title>Title: My HTML Page</title></head><body><p id=\"first_paragraph\">Smells like...<br />Victory<table class=\"myTable\"><tr><th>1st column</th></tr><tr><td>some data</td></tr><tr><td>some more data</td></tr></table></p></body></html>"));
     }
 

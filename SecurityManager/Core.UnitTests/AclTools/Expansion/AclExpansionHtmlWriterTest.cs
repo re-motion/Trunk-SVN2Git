@@ -74,7 +74,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       xmlWriter.Close();
 
-      To.ConsoleLine.s (stringWriter.ToString());
+      //To.ConsoleLine.s (stringWriter.ToString());
     }
 
 
@@ -89,7 +89,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var stringWriter = new StringWriter();
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
         aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
-        To.ConsoleLine.s (stringWriter.ToString());
+        //To.ConsoleLine.s (stringWriter.ToString());
       }
     }
 
@@ -130,7 +130,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         aclExpansionHtmlWriter.Settings.ShortenNames = true;
         aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
         string result = stringWriter.ToString ();
-        To.ConsoleLine.e (() => result);
+        //To.ConsoleLine.e (() => result);
         Assert.That (result, NUnitText.Contains ("Dhl"));
         Assert.That (
             result,
@@ -155,7 +155,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       aclExpansionHtmlWriter.Settings.OutputRowCount = true;
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
       string result = stringWriter.ToString ();
-      To.ConsoleLine.e (() => result);
+      //To.ConsoleLine.e (() => result);
       Assert.That (result, NUnitText.Contains ("Usa Da, Dr. (2)"));
       Assert.That (result, NUnitText.Contains ("Da Group, Supreme Being (2)"));
       Assert.That (result, NUnitText.Contains ("Order (2)"));
@@ -174,7 +174,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       aclExpansionHtmlWriter.Settings.OutputRowCount = false;
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
       string result = stringWriter.ToString ();
-      To.ConsoleLine.e (() => result);
+      //To.ConsoleLine.e (() => result);
       Assert.That (result, NUnitText.DoesNotContain ("(2)"));
     }
 

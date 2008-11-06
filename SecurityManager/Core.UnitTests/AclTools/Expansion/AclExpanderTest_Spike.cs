@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       SecurityToken securityToken = new SecurityToken (user, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
       AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
-      To.ConsoleLine.sb ().e (accessTypeDefinitions.Length).e (() => accessTypeDefinitions).se ();
+      //To.ConsoleLine.sb ().e (accessTypeDefinitions.Length).e (() => accessTypeDefinitions).se ();
     }
 
 
@@ -87,7 +87,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       SecurityToken securityToken = new SecurityToken (User, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
       AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
 
-      To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
+      //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
 
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
       Assert.That (accessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
@@ -106,7 +106,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       SecurityToken securityToken = new SecurityToken (User, User.Tenant, List.New (Group), new List<AbstractRoleDefinition> ());
       AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (securityToken);
 
-      To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
+      //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
 
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
       Assert.That (accessTypeDefinitions, Is.EquivalentTo (accessTypeDefinitionsExpected));
@@ -214,7 +214,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (aceGroupSpecificTenant, null, true, null);
 
 
-      To.ConsoleLine.e (() => aceGroupSpecificTenant);
+      //To.ConsoleLine.e (() => aceGroupSpecificTenant);
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList_Extended (
@@ -378,7 +378,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
       //var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList_Spike ();
       var aclExpansionEntryList = GetAclExpansionEntryList_Spike (aclExpander, userFinderMock, aclFinderMock);
-      To.ConsoleLine.e (() => aclExpansionEntryList);
+      //To.ConsoleLine.e (() => aclExpansionEntryList);
       userFinderMock.VerifyAllExpectations ();
       aclFinderMock.VerifyAllExpectations ();
       return aclExpansionEntryList;
@@ -411,7 +411,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       //var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList_Spike ();
       var aclExpansionEntryList = GetAclExpansionEntryList_Spike (aclExpander, userFinderMock, aclFinderMock);
 
-      To.ConsoleLine.e (() => aclExpansionEntryList);
+      //To.ConsoleLine.e (() => aclExpansionEntryList);
       userFinderMock.VerifyAllExpectations ();
       aclFinderMock.VerifyAllExpectations ();
       return aclExpansionEntryList;
@@ -429,18 +429,18 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       foreach (var user in users)
       {
-        To.ConsoleLine.e (() => user);
+        //To.ConsoleLine.e (() => user);
         foreach (var role in user.Roles)
         {
-          To.ConsoleLine.s ("\t").e (() => role);
+          //To.ConsoleLine.s ("\t").e (() => role);
           foreach (var acl in acls)
           {
-            To.ConsoleLine.s ("\t\t").e (() => acl);
+            //To.ConsoleLine.s ("\t\t").e (() => acl);
             foreach (var ace in acl.AccessControlEntries)
             {
-              To.ConsoleLine.s ("\t\t\t").e (() => ace);
+              //To.ConsoleLine.s ("\t\t\t").e (() => ace);
               AclProbe aclProbe = AclProbe.CreateAclProbe (user, role, ace);
-              To.ConsoleLine.s ("\t\t\t").e (() => aclProbe);
+              //To.ConsoleLine.s ("\t\t\t").e (() => aclProbe);
 
               // TODO(?): Check if we already queried with an identical token.
               AccessTypeDefinition[] accessTypeDefinitions = acl.GetAccessTypes (aclProbe.SecurityToken);
@@ -448,7 +448,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
               if (accessTypeDefinitions.Length > 0)
               {
                 var aclExpansionEntry = new AclExpansionEntry (user, role, acl, aclProbe.AccessConditions, accessTypeDefinitions);
-                To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
+                //To.ConsoleLine.s ("\t\t\t").e (() => aclExpansionEntry);
                 aclExpansionEntries.Add (aclExpansionEntry);
               }
             }

@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var users = userFinder.FindUsers ();
       foreach (var user in users)
       {
-        To.ConsoleLine.sb ().e (() => user).e (user.FirstName).e (user.LastName).e (user.UserName).e (user.DisplayName).se ();
+        //To.ConsoleLine.sb ().e (() => user).e (user.FirstName).e (user.LastName).e (user.UserName).e (user.DisplayName).se ();
       }
 
       //(user=["User.Tenant2"],"User","Tenant 2","User.Tenant2","Tenant 2 User")

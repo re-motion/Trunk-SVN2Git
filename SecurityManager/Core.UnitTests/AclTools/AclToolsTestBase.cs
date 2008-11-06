@@ -223,7 +223,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
 
       var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
       var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
-      To.ConsoleLine.e (() => aclExpansionEntryList);
+      //To.ConsoleLine.e (() => aclExpansionEntryList);
       userFinderMock.VerifyAllExpectations ();
       aclFinderMock.VerifyAllExpectations ();
       return aclExpansionEntryList;

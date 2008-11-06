@@ -35,7 +35,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         stringWriterFactory.Directory = "";
         var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (stringWriterFactory, false);
         aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
-        To.ConsoleLine.e (stringWriterFactory);
+        //To.ConsoleLine.e (stringWriterFactory);
 
         Assert.That (stringWriterFactory.Count, Is.EqualTo (6));
 
@@ -82,7 +82,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (streamWriterFactory, true);
         aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
         //var result = stringWriter.ToString();
-        To.ConsoleLine.e (streamWriterFactory);
+        //To.ConsoleLine.e (streamWriterFactory);
       }
     }
     

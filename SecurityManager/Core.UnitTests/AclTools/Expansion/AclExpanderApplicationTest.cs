@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var settings = new AclExpanderApplicationSettings();
       var aclExpansion = CreateAclExpanderApplicationAndCallGetAclExpansion (settings);
-      To.ConsoleLine.e (() => aclExpansion);
+      //To.ConsoleLine.e (() => aclExpansion);
       Assert.That (aclExpansion.Count, Is.EqualTo (16));
     }
 
@@ -129,7 +129,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansion.Count, Is.EqualTo (8));
       foreach (AclExpansionEntry entry in aclExpansion)
       {
-        To.ConsoleLine.e (() => entry);
+        //To.ConsoleLine.e (() => entry);
         Assert.That (entry.User.FirstName, Is.EqualTo (firstName));
         Assert.That (entry.User.LastName, Is.EqualTo (lastName));
         Assert.That (entry.User.UserName, Is.EqualTo (userName));
