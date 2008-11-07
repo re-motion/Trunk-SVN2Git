@@ -131,6 +131,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     }
 
     [Test]
+    public void AccessControlEntryTest2 ()
+    {
+      var x = TestHelper.CreateAceWithAbstractRole ();
+      //To.ConsoleLine.e (x);
+      Assert.That (To.String.e (x).CheckAndConvertToString (), NUnitText.Contains ("abstr.role=[\"Test\"]"));
+    }
+
+    [Test]
     public void AccessControlListTest ()
     {
       var ace = TestHelper.CreateAceWithOwningGroup ();

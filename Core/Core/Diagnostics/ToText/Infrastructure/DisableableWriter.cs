@@ -60,11 +60,6 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
       }
       TextWriter.Write (obj);
 
-      if (obj.Equals ("Enabled|Remotion.SecurityManager.Domain.OrganizationalStructure.Delegation, Remotion.SecurityManager"))
-      {
-        Debugger.Break(); // ("found Remotion.SecurityManager.Domain.OrganizationalStructure.OrganizationalStructureObject, Remotion.SecurityManager");
-      }
-
       return TextWriter;
     }
 
@@ -73,12 +68,6 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
     {
       if (Enabled)
       {
-        //if (DelayedPrefix != null)
-        //{
-        //  TextWriter.Write (DelayedPrefix);
-        //  DelayedPrefix = null;
-        //}
-        //TextWriter.Write (obj);
         WriteAlways (obj);
       }
       return TextWriter;

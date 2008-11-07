@@ -19,11 +19,16 @@ namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
   [ToTextSpecificHandler]
   public class AccessControlEntry_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<AccessControlEntry>
   {
-    public override void ToText (AccessControlEntry accessControlEntry, IToTextBuilder toTextBuilder)
+    public override void ToText (AccessControlEntry ace, IToTextBuilder toTextBuilder)
     {
-      ArgumentUtility.CheckNotNull ("accessControlEntry", accessControlEntry);
+      ArgumentUtility.CheckNotNull ("accessControlEntry", ace);
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-      toTextBuilder.ib<AccessControlEntry> ("").e (accessControlEntry.Permissions).e ("SelUser", accessControlEntry.UserSelection).e ("SelGroup", accessControlEntry.GroupSelection).e ("SelTenant", accessControlEntry.TenantSelection).eIfNotNull ("user", accessControlEntry.SpecificUser).eIfNotNull ("position", accessControlEntry.SpecificPosition).eIfNotNull ("group", accessControlEntry.SpecificGroup).eIfNotNull ("tenant", accessControlEntry.SpecificTenant).ie ();
+
+      toTextBuilder.ib<AccessControlEntry> ("").e (ace.Permissions).e ("SelUser", ace.UserSelection);
+      toTextBuilder.e ("SelGroup", ace.GroupSelection).e ("SelTenant", ace.TenantSelection).e ("abstr.role", ace.SpecificAbstractRole);
+      toTextBuilder.eIfNotNull ("user", ace.SpecificUser).eIfNotNull ("position", ace.SpecificPosition);
+      toTextBuilder.eIfNotNull ("group", ace.SpecificGroup).eIfNotNull ("tenant", ace.SpecificTenant);
+      toTextBuilder.ie ();
     }
   }
 }

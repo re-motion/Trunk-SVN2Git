@@ -612,6 +612,397 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       }
     }
 
+
+
+    [Test]
+    [Ignore]
+    // TODO: Complete & add functionality 
+    public void DenyRightsOptionalOutputTest ()
+    {
+      using (CultureScope_de_DE ())
+      {
+        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl2);
+
+        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+        //using (var textWriter = new StringWriter ())
+        using (var textWriter = new StreamWriter (Path.Combine("c:\\temp","DenyRightsOptionalOutputTest.html")))
+        {
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+          string result = textWriter.ToString ();
+          //To.ConsoleLine.e (() => result);
+          const string resultExpected =
+          #region
+ @"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"" """">
+<html>
+  <head>
+    <title>re-motion ACL Expansion</title>
+    <style>@import ""AclExpansion.css"";</style>
+    <meta http-equiv=""Content-Type"" content=""text/html; charset=UTF-8"" />
+  </head>
+  <body>
+    <table style=""width: 100%;"" class=""aclExpansionTable"" id=""remotion-ACL-expansion-table"">
+      <tr>
+        <th class=""header"">User</th>
+        <th class=""header"">Role</th>
+        <th class=""header"">Class</th>
+        <th class=""header"">States</th>
+        <th class=""header"">User Must Own</th>
+        <th class=""header"">Group Must Own</th>
+        <th class=""header"">Tenant Must Own</th>
+        <th class=""header"">User Must Have Abstract Role</th>
+        <th class=""header"">Access Rights</th>
+      </tr>
+      <tr>
+        <td rowspan=""24"">James Ryan</td>
+        <td rowspan=""4"">Anotha Group, Supreme Being</td>
+        <td rowspan=""4"">Bestellung</td>
+        <td>Bezahlt, DHL, Erhalten</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td>X</td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td rowspan=""4"">Anotha Group, Working Drone</td>
+        <td rowspan=""4"">Bestellung</td>
+        <td>Bezahlt, DHL, Erhalten</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td>X</td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td rowspan=""4"">Da 3rd Group, Combatant</td>
+        <td rowspan=""4"">Bestellung</td>
+        <td>Bezahlt, DHL, Erhalten</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td>X</td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td rowspan=""4"">Da 3rd Group, Combatant</td>
+        <td rowspan=""4"">Bestellung</td>
+        <td>Bezahlt, DHL, Erhalten</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td>X</td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td rowspan=""4"">Da Group, Combatant</td>
+        <td rowspan=""4"">Bestellung</td>
+        <td>Bezahlt, DHL, Erhalten</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td>X</td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td rowspan=""4"">Da Group, Supreme Being</td>
+        <td rowspan=""4"">Bestellung</td>
+        <td>Bezahlt, DHL, Erhalten</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td>X</td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td rowspan=""12"">Smith, Mr.</td>
+        <td rowspan=""3"">Anotha Group, Supreme Being</td>
+        <td rowspan=""3"">Bestellung</td>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td>X</td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td rowspan=""3"">Anotha Group, Working Drone</td>
+        <td rowspan=""3"">Bestellung</td>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td>X</td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td rowspan=""3"">Da 3rd Group, Working Drone</td>
+        <td rowspan=""3"">Bestellung</td>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td>X</td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td rowspan=""3"">Da Group, Working Drone</td>
+        <td rowspan=""3"">Bestellung</td>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td>X</td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td rowspan=""3"">Usa Da, Dr.</td>
+        <td rowspan=""3"">Da Group, Supreme Being</td>
+        <td rowspan=""3"">Bestellung</td>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td>X</td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+      <tr>
+        <td>DHL, Erhalten, Offen</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Delete, FirstAccessType, Read, Write</td>
+      </tr>
+    </table>
+  </body>
+</html>";
+          #endregion
+          //Assert.That (result, Is.EqualTo (resultExpected));
+        }
+      }
+    }
+
+
+
     private CultureScope CultureScope_de_DE ()
     {
       return new CultureScope ("de-DE");

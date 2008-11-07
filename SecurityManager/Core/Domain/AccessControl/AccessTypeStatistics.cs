@@ -16,26 +16,66 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
   /// <summary>
-  /// Used to collect information about matching <see cref="AccessControlEntry"/>|s in calls
+  /// Used to collect information about matching/contributing <see cref="AccessControlEntry"/>|s in calls
   /// to <see cref="AccessControlList.GetAccessTypes(SecurityToken, AccessTypeStatistics)"/>.
   /// </summary>
   public class AccessTypeStatistics
   {
     private readonly List<AccessControlEntry> _accessTypesSupplyingAces = new List<AccessControlEntry>();
+    private readonly List<AccessControlEntry> _matchingAces = new List<AccessControlEntry> ();
 
-    public void AddAccessTypesSupplyingAce (AccessControlEntry ace)
+    // TODO: Remove again after spike
+    public List<AccessControlEntry> AccessTypesSupplyingAces
+    {
+      get { return _accessTypesSupplyingAces; }
+    }
+
+    public List<AccessControlEntry> MatchingAces
+    {
+      get { return _matchingAces; }
+    }
+
+    public void AddAccessTypesContributingAce (AccessControlEntry ace)
     {
       ArgumentUtility.CheckNotNull ("ace", ace);
-      if (!IsInAccessTypesSupplyingAces(ace))
+      if (!IsInAccessTypesContributingAces(ace))
       {
-        _accessTypesSupplyingAces.Add (ace);
+        AccessTypesSupplyingAces.Add (ace);
       }
     }
 
-    public bool IsInAccessTypesSupplyingAces (AccessControlEntry ace)
+    /// <summary>
+    /// Returns true if the passed <see cref="AccessControlEntry"/> has contributed either to the allowing or denying access types
+    /// in the call to <see cref="AccessControlList.GetAccessTypes(SecurityToken,AccessTypeStatistics)"/>.
+    /// </summary>
+    public bool IsInAccessTypesContributingAces (AccessControlEntry ace)
     {
       ArgumentUtility.CheckNotNull ("ace", ace);
-      return _accessTypesSupplyingAces.Contains(ace);;
+      return AccessTypesSupplyingAces.Contains(ace);;
+    }
+
+
+    public void AddMatchingAce (AccessControlEntry ace)
+    {
+      ArgumentUtility.CheckNotNull ("ace", ace);
+      if (!IsInMatchingAces (ace))
+      {
+        _matchingAces.Add (ace);
+      }
+    }
+
+    /// <summary>
+    /// Returns true if the passed <see cref="AccessControlEntry"/> matched internally
+    /// in the call to <see cref="AccessControlList.GetAccessTypes(SecurityToken,AccessTypeStatistics)"/>.
+    /// </summary>
+    /// <remarks>
+    /// Note that an <see cref="AccessControlEntry"/> matching does not mean that it contributed to either 
+    /// allowing or denying resulting access types (see <see cref="IsInAccessTypesContributingAces"/> to check for this).
+    /// </remarks>
+    public bool IsInMatchingAces (AccessControlEntry ace)
+    {
+      ArgumentUtility.CheckNotNull ("ace", ace);
+      return _matchingAces.Contains (ace);
     }
   }
 }

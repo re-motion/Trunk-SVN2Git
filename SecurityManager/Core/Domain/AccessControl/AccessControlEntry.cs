@@ -11,6 +11,7 @@
 using System;
 using System.Linq;
 using Remotion.Data.DomainObjects;
+using Remotion.Diagnostics.ToText;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -168,14 +169,23 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("token", token);
 
-      if (!MatchesTenant (token))
+      //To.ConsoleLine.s ("AccessControList.FindMatchingEntries: ").e ("ACE", entry);
+      //To.ConsoleLine.sb().s ("AccessControEntry.MatchesToken: ").e (ToString ()).e ("ACE", this).se();
+
+      if (!MatchesTenant (token)) 
         return false;
+
+      //To.ConsoleLine.s ("AccessControEntry.MatchesToken: matched Tenant");
 
       if (!MatchesAbstractRole (token))
         return false;
 
+      //To.ConsoleLine.s ("AccessControEntry.MatchesToken: matched Role");
+
       if (!MatchesUserOrPosition (token))
         return false;
+
+      //To.ConsoleLine.s ("AccessControEntry.MatchesToken: matched UserOrPosition");
 
       return true;
     }

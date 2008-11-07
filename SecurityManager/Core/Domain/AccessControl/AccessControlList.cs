@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
 
@@ -102,7 +103,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       foreach (var entry in AccessControlEntries)
       {
         if (entry.MatchesToken (token))
+        {
           entries.Add (entry);
+        }
       }
 
       return entries.ToArray();
@@ -115,42 +118,60 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("token", token);
 
-      var allowedAccessTypes = new Set<AccessTypeDefinition> ();
-      var deniedAccessTypes = new Set<AccessTypeDefinition> ();
+      var allowedAccessTypesResult = new Set<AccessTypeDefinition> ();
+      var deniedAccessTypesResult = new Set<AccessTypeDefinition> ();
 
       foreach (var ace in FindMatchingEntries (token))
       {
-        foreach (var allowedAccessType in ace.GetAllowedAccessTypes ())
-        {
-          allowedAccessTypes.Add (allowedAccessType);
+        var allowedAccesTypesForCurrentAce = ace.GetAllowedAccessTypes();
+        var deniedAccessTypesForCurrentAce = ace.GetDeniedAccessTypes ();
 
-          // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
-          // Note that the access control logic is not modified by this code. Recorded information allows
-          // deduction of whether the probing ACE was matched for ACL-expansion code (see AclExpander.AddAclExpansionEntry).
-          if (accessTypeStatistics != null)
+        // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
+        // The recorded information allows deduction of whether the probing ACE was matched for ACL-expansion code
+        // (see AclExpander.AddAclExpansionEntry).
+        if (accessTypeStatistics != null)
+        {
+          accessTypeStatistics.AddMatchingAce (ace);
+          if (allowedAccesTypesForCurrentAce.Length > 0 || deniedAccessTypesForCurrentAce.Length > 0)
           {
-            accessTypeStatistics.AddAccessTypesSupplyingAce (ace);
+            accessTypeStatistics.AddAccessTypesContributingAce (ace);
           }
         }
 
-        foreach (var deniedAccessType in ace.GetDeniedAccessTypes ())
-        {
-          deniedAccessTypes.Add (deniedAccessType);
+        // Add allowed/denied access types of ACE to result
+        allowedAccessTypesResult.AddRange (allowedAccesTypesForCurrentAce);
+        deniedAccessTypesResult.AddRange (deniedAccessTypesForCurrentAce);
 
-          // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
-          // Note that the access control logic is not modified by this code. Recorded information allows
-          // deduction of whether the probing ACE was matched for ACL-expansion code (see AclExpander.AddAclExpansionEntry).
-          if (accessTypeStatistics != null)
-          {
-            accessTypeStatistics.AddAccessTypesSupplyingAce (ace);
-          }
-        }
+
+        //foreach (var allowedAccessType in ace.GetAllowedAccessTypes ())
+        //{
+        //  allowedAccessTypes.Add (allowedAccessType);
+
+        //  // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
+        //  // The recorded information allows deduction of whether the probing ACE was matched for ACL-expansion code (see AclExpander.AddAclExpansionEntry).
+        //  if (accessTypeStatistics != null)
+        //  {
+        //    accessTypeStatistics.AddAccessTypesContributingAce (ace);
+        //  }
+        //}
+
+        //foreach (var deniedAccessType in ace.GetDeniedAccessTypes ())
+        //{
+        //  deniedAccessTypes.Add (deniedAccessType);
+
+        //  // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
+        //  if (accessTypeStatistics != null)
+        //  {
+        //    accessTypeStatistics.AddAccessTypesContributingAce (ace);
+        //  }
+        //}
       }
 
-      foreach (var deniedAccessType in deniedAccessTypes)
-        allowedAccessTypes.Remove (deniedAccessType);
+      // Deny always wins => Remove allowed access types which are also denied from result.
+      foreach (var deniedAccessType in deniedAccessTypesResult)
+        allowedAccessTypesResult.Remove (deniedAccessType);
 
-      return new AccessInformation (allowedAccessTypes.ToArray (), deniedAccessTypes.ToArray ());
+      return new AccessInformation (allowedAccessTypesResult.ToArray (), deniedAccessTypesResult.ToArray ());
     }
 
 
@@ -159,31 +180,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       ArgumentUtility.CheckNotNull ("token", token);
       return GetAccessTypes (token, null);
     }
-
-
-    //public AccessInformation GetAccessTypes (SecurityToken token)
-    //{
-    //  ArgumentUtility.CheckNotNull ("token", token);
-
-    //  var allowedAccessTypes = new Set<AccessTypeDefinition> ();
-    //  var deniedAccessTypes = new Set<AccessTypeDefinition> ();
-
-    //  // Collect allowed and denied access types from each matching ACE
-    //  foreach (var ace in FindMatchingEntries (token))
-    //  {
-    //    allowedAccessTypes.AddRange (ace.GetAllowedAccessTypes());
-    //    deniedAccessTypes.AddRange (ace.GetDeniedAccessTypes ());
-    //  }
-
-    //  // Remove allowed access type entries which are denied
-    //  foreach (var deniedAccessType in deniedAccessTypes)
-    //  {
-    //    allowedAccessTypes.Remove (deniedAccessType);
-    //  }
-
-    //  return new AccessInformation (allowedAccessTypes.ToArray (), deniedAccessTypes.ToArray ());
-    //}
-
 
 
     
