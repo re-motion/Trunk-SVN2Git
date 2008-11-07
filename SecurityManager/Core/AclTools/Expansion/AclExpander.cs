@@ -88,7 +88,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    private AccessInformation GetAccessTypes (UserRoleAclAceCombination userRoleAclAce, 
+    public AccessInformation GetAccessTypes (UserRoleAclAceCombination userRoleAclAce, 
       out AclProbe aclProbe, out AccessTypeStatistics accessTypeStatistics)
     {
       aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);

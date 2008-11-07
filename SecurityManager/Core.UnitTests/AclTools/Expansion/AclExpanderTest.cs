@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -424,34 +425,37 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
     [Test]
-    [Explicit]
-    public void NonContributingAcesDebugTest_SpecificTenant ()
+    public void NonMatchingAceTest_SpecificTenant ()
     {
       // Together with User or User2 gives non-matching ACEs
       var otherTenant = TestHelper.CreateTenant ("OtherTenant");
-      var ace = TestHelper.CreateAceWithSpecficTenant (otherTenant);
-      AttachAccessTypeReadWriteDelete (ace, true, true, true);
+      var testAce = TestHelper.CreateAceWithSpecficTenant (otherTenant);
+      AttachAccessTypeReadWriteDelete (testAce, true, true, true);
 
-      Assert.That (ace.Validate ().IsValid);
+      Assert.That (testAce.Validate ().IsValid);
 
-      To.ConsoleLine.s (ace.ToString ());
+      //To.ConsoleLine.s (ace.ToString ());
+
+      var userList = List.New (User, User2);
+      var aclList = List.New (TestHelper.CreateAcl (testAce));
+
+      // Specific ACE with otherTenant should not match any AclProbe|s
+      AssertIsNotInMatchingAces(userList, aclList);
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
           List.New (User, User2),
-          List.New (TestHelper.CreateAcl (ace))
+          List.New (TestHelper.CreateAcl (testAce))
         );
 
-      To.ConsoleLine.e (() => aclExpansionEntryList);
+      // If ACE does not macth, the resulting aclExpansionEntryList must be empty.
+      Assert.That (aclExpansionEntryList, Is.Empty);
 
-      //var aclExpansionEntryListEnumerator = aclExpansionEntryList.GetEnumerator ();
-
-      //aclExpansionEntryListEnumerator.MoveNext ();
-      //AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, WriteAccessType },
-      //  new AclExpansionAccessConditions { IsOwningTenantRequired = true });
-
-      //Assert.That (aclExpansionEntryListEnumerator.MoveNext (), Is.EqualTo (false));
+      //To.ConsoleLine.e (() => aclExpansionEntryList);
     }
+
+
+
 
 
     [Test]
@@ -570,5 +574,34 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       aclFinderMock.VerifyAllExpectations ();
       return aclExpansionEntryList;
     }
+
+
+    private void AssertIsNotInMatchingAces (List<User> userList, List<AccessControlList> aclList)
+    {
+      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
+      userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
+
+      var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
+      aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
+
+      var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
+      foreach (User user in userList)
+      {
+        foreach (Role role in user.Roles)
+        {
+          foreach (AccessControlList acl in aclList)
+          {
+            foreach (AccessControlEntry ace in acl.AccessControlEntries)
+            {
+              AclProbe aclProbe;
+              AccessTypeStatistics accessTypeStatistics;
+              aclExpander.GetAccessTypes (new UserRoleAclAceCombination (role, ace), out aclProbe, out accessTypeStatistics);
+              Assert.That (accessTypeStatistics.IsInMatchingAces (ace), Is.False);
+            }
+          }
+        }
+      }
+    }
+
   }
 }
