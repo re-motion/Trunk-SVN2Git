@@ -79,7 +79,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       AccessInformation accessInformation = GetAccessTypes(userRoleAclAce, out aclProbe, out accessTypeStatistics);
 
 
-      // Create an AclExpansionEntry, if the current probe ACE contributed to the result and returned allowed access types
+      // Create an AclExpansionEntry, if the current probe ACE contributed to the result and returned allowed access types.
       if (accessTypeStatistics.IsInAccessTypesContributingAces (userRoleAclAce.Ace) && accessInformation.AllowedAccessTypes.Length > 0)
       {
         var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions,
@@ -93,83 +93,22 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);
 
-      // Note: It does not suffice to get the access types for the current ACE only, since these rights might be denied
-      // by another matching ACE in the current ACL. Instead to be able to filter non-contributing ACEs below,
-      // the contributing ACEs get recorded in the AccessTypeStatistics instance passed to Acl.GetAccessTypes.
+      // Note: The aclProbe created above will NOT always match the ACE it was designed to probe; the reason for this
+      // is that its SecurityToken is only designed to match the non-decideable access conditions
+      // (abstract role and owning tenant, group, etc) of the ACE
+      // (they are non-decideable in the information context of the AclExpander, not in general of course).
+      // For decideable access conditons (e.g. specific tenant or specific group), the created SecurityToken
+      // is not guaranteed to match. The AccessTypeStatistics returned by Acl.GetAccessTypes are used to filter out these cases.
+      //
+      // Note also that it does not suffice to get the access types for the current ACE only, since these rights might be denied
+      // by another matching ACE in the current ACL. 
       accessTypeStatistics = new AccessTypeStatistics ();
       AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
-
-      //Assertion.IsTrue (accessTypeStatistics.IsInMatchingAces (ace));
 
       // Non-contributing-ACE debugging
       //NonContributingAceDebugging (ace, aclProbe, accessTypeStatistics, userRoleAclAce.Acl);
 
       return accessInformation;
-    }
-
-
-    private void NonContributingAceDebugging (AccessControlEntry ace, AclProbe aclProbe,
-      AccessTypeStatistics accessTypeStatistics, AccessControlList acl)
-    {
-      if (false)
-      {
-        //To.ConsoleLine.sb().e(accessTypeStatistics.IsInAccessTypesSupplyingAces (ace) ? "Contributing ACE" : ">>> Non-contributing ACE", ace).e().se();
-        To.ConsoleLine.e ("========================================================================================================================");
-        To.ConsoleLine.sb().s (ace.ToString()).e (() => aclProbe);
-        To.ConsoleLine.e (accessTypeStatistics.IsInAccessTypesContributingAces (ace) ? "Contributing ACE" : ">>> Non-contributing ACE", ace);
-        To.ConsoleLine.e (accessTypeStatistics.AccessTypesSupplyingAces).se();
-      }
-      else if (false)
-      {
-        if (!accessTypeStatistics.IsInAccessTypesContributingAces (ace))
-        {
-          To.ConsoleLine.e (">>> Non-contributing ACE", ace);
-        }
-      }
-      else if (false)
-      {
-        bool aceContributed = accessTypeStatistics.IsInAccessTypesContributingAces (ace);
-        if (!aceContributed && ace.SpecificAbstractRole != null)
-        {
-          To.ConsoleLine.e (
-              "------------------------------------------------------------------------------------------------------------------------");
-          To.ConsoleLine.s (ace.ToString()).nl().e (() => aclProbe);
-          To.ConsoleLine.e (">>> Non-contributing ACE with specific abstract role", ace);
-          To.ConsoleLine.e (accessTypeStatistics.AccessTypesSupplyingAces);
-          To.ConsoleLine.e ("accessTypeStatistics.IsInMatchingAces (ace)", accessTypeStatistics.IsInMatchingAces (ace));
-
-          //Debugger.Break();
-          //acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
-          To.ConsoleLine.e (
-              "========================================================================================================================");
-        }
-      }
-      else if (false)
-      {
-        To.ConsoleLine.e ("========================================================================================================================");
-        To.ConsoleLine.sb().s (ace.ToString()).nl().e (() => aclProbe);
-        bool aceContributed = accessTypeStatistics.IsInAccessTypesContributingAces (ace);
-        To.ConsoleLine.e (aceContributed ? "Contributing ACE" : ">>> Non-contributing ACE", ace);
-        To.ConsoleLine.e (accessTypeStatistics.AccessTypesSupplyingAces).se();
-        if (!aceContributed && ace.SpecificAbstractRole == null && ace.SpecificPosition == null)
-        {
-          To.ConsoleLine.s (" !!!!!!!!!!!!! ACE has neither abstract role nor position !!!!!!!!!!!!!!!!!!!!!!!! ");
-        }
-      }
-      else if (true)
-      {
-        if (!accessTypeStatistics.IsInMatchingAces (ace))
-        {
-          To.ConsoleLine.e (
-              "------------------------------------------------------------------------------------------------------------------------");
-          To.ConsoleLine.s (ace.ToString()).nl().e (() => aclProbe);
-          To.ConsoleLine.e (">>> Non-matching ACE", ace);
-          To.ConsoleLine.e (accessTypeStatistics.AccessTypesSupplyingAces);
-          To.ConsoleLine.e (accessTypeStatistics.MatchingAces);
-          To.ConsoleLine.e (
-              "========================================================================================================================");
-        }
-      }
     }
 
   }
