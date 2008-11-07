@@ -12,11 +12,21 @@ using System;
 
 namespace Remotion.Implementation
 {
+  /// <summary>
+  /// Holds the <see cref="Version"/> object used by <see cref="VersionDependentImplementationBridge{T}"/> to retrieve types from
+  /// the re-motion implementation assemblies.
+  /// </summary>
   public static class FrameworkVersion
   {
     private static Version s_value;
     private static readonly object s_valueLock = new object();
 
+    /// <summary>
+    /// Gets or sets the framework version value.
+    /// </summary>
+    /// <value>The framework version value. If none has been set, the getter will attempt to retrieve the version automatically (and throw
+    /// an exception if it cannot do so). When one version has been set, no other version can be set unless <see cref="Reset"/> is called before.
+    /// (The same version can be set without an exception being thrown.)</value>
     public static Version Value
     {
       get
@@ -33,7 +43,7 @@ namespace Remotion.Implementation
         lock (s_valueLock)
         {
           ArgumentUtility.CheckNotNull ("value", value);
-          if (s_value != null)
+          if (s_value != null && s_value != value)
             throw new InvalidOperationException (
                 string.Format ("The framework version has already been set to {0}. It can only be set once.", s_value));
           s_value = value;
@@ -43,7 +53,7 @@ namespace Remotion.Implementation
 
     private static Version RetrieveFrameworkVersion ()
     {
-      FrameworkVersionRetriever retriever = new FrameworkVersionRetriever (AppDomain.CurrentDomain.GetAssemblies());
+      var retriever = new FrameworkVersionRetriever (AppDomain.CurrentDomain.GetAssemblies());
       try
       {
         return retriever.RetrieveVersion ();
@@ -56,9 +66,23 @@ namespace Remotion.Implementation
       }
     }
 
+    /// <summary>
+    /// Resets the version information so that the next retrieval of <see cref="Value"/> will trigger an automatic resolution. After calling this
+    /// method, <see cref="Value"/> can be used to set a different <see cref="Version"/> value.
+    /// </summary>
     public static void Reset ()
     {
       s_value = null;
+    }
+
+    /// <summary>
+    /// Retrieves from version information from the assembly defining the given type. This is a shortcut for the following statemnt:
+    /// <code>Value = frameworkType.Assembly.GetName ().Version;</code>
+    /// </summary>
+    /// <param name="frameworkType">A framework type to retrieve the version from.</param>
+    public static void RetrieveFromType (Type frameworkType)
+    {
+      Value = frameworkType.Assembly.GetName ().Version;
     }
   }
 }

@@ -49,7 +49,15 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     public void SetValue_Twice ()
     {
       FrameworkVersion.Value = new Version (1, 2, 3, 4);
+      FrameworkVersion.Value = new Version (1, 2, 3, 5);
+    }
+
+    [Test]
+    public void SetValue_Twice_SameVersion ()
+    {
       FrameworkVersion.Value = new Version (1, 2, 3, 4);
+      FrameworkVersion.Value = new Version (1, 2, 3, 4);
+      Assert.That (FrameworkVersion.Value, Is.EqualTo (new Version (1, 2, 3, 4)));
     }
 
     [Test]
@@ -72,10 +80,9 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     public void FailedAutomaticDiscovery ()
     {
       
-      ModuleScope scope = new ModuleScope (true, "VersionAccessorAssembly", "VersionAccessorAssembly.dll", "x", "x");
-      CustomClassEmitter versionAccessorTypeBuilder = new CustomClassEmitter (scope, "VersionAccessor", typeof (object));
-      CustomMethodEmitter versionAccessorMethod =
-          versionAccessorTypeBuilder.CreateMethod ("AccessVersion", MethodAttributes.Public | MethodAttributes.Static);
+      var scope = new ModuleScope (true, "VersionAccessorAssembly", "VersionAccessorAssembly.dll", "x", "x");
+      var versionAccessorTypeBuilder = new CustomClassEmitter (scope, "VersionAccessor", typeof (object));
+      CustomMethodEmitter versionAccessorMethod = versionAccessorTypeBuilder.CreateMethod ("AccessVersion", MethodAttributes.Public | MethodAttributes.Static);
       versionAccessorMethod.AddStatement (
           new ExpressionStatement (new MethodInvocationExpression (null, typeof (FrameworkVersion).GetProperty ("Value").GetGetMethod())));
       versionAccessorMethod.AddStatement (new PopStatement());
@@ -87,8 +94,7 @@ namespace Remotion.UnitTests.Interfaces.Implementation
 
       try
       {
-        CrossAppDomainDelegate action =
-            (CrossAppDomainDelegate) Delegate.CreateDelegate (typeof (CrossAppDomainDelegate), versionAccessorType, "AccessVersion");
+        var action = (CrossAppDomainDelegate) Delegate.CreateDelegate (typeof (CrossAppDomainDelegate), versionAccessorType, "AccessVersion");
         newDomain.DoCallBack (action);
       }
       finally
@@ -105,6 +111,30 @@ namespace Remotion.UnitTests.Interfaces.Implementation
       FrameworkVersion.Reset();
       FrameworkVersion.Value = new Version (4, 3, 2, 1);
       Assert.That (FrameworkVersion.Value, Is.EqualTo (new Version (4, 3, 2, 1)));
+    }
+
+    [Test]
+    public void RetrieveFromType()
+    {
+      FrameworkVersion.RetrieveFromType (typeof (FrameworkVersionTest));
+      Assert.That (FrameworkVersion.Value, Is.EqualTo (typeof (FrameworkVersionTest).Assembly.GetName ().Version));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The framework version has already been set to " 
+        + "1.2.3.45252345. It can only be set once.")]
+    public void RetrieveFromType_AfterSet ()
+    {
+      FrameworkVersion.Value = new Version (1, 2, 3, 45252345);
+      FrameworkVersion.RetrieveFromType (typeof (FrameworkVersionTest));
+    }
+
+    [Test]
+    public void RetrieveFromType_AfterSet_SameValue ()
+    {
+      FrameworkVersion.Value = typeof (FrameworkVersionTest).Assembly.GetName().Version;
+      FrameworkVersion.RetrieveFromType (typeof (FrameworkVersionTest));
+      Assert.That (FrameworkVersion.Value, Is.EqualTo (typeof (FrameworkVersionTest).Assembly.GetName ().Version));
     }
   }
 }
