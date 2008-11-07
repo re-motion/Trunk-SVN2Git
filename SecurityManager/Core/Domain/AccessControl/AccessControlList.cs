@@ -23,33 +23,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   [SecurityManagerStorageGroup]
   public abstract class AccessControlList : AccessControlObject
   {
-    // types
-
-    // static members and constants
-
-    public static AccessControlList NewObject ()
-    {
-      return NewObject<AccessControlList>().With();
-    }
-
-    public new static AccessControlList GetObject (ObjectID id)
-    {
-      return DomainObject.GetObject<AccessControlList> (id);
-    }
-
-    // member fields
-
     private ObjectList<AccessControlEntry> _accessControlEntriesToBeDeleted;
     private ObjectList<StateCombination> _stateCombinationsToBeDeleted;
-
-    // construction and disposing
 
     protected AccessControlList ()
     {
       SubscribeCollectionEvents();
     }
-
-    // methods and properties
 
     //TODO: Add test for initialize during on load
     protected override void OnLoaded (LoadMode loadMode)

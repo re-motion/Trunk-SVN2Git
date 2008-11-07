@@ -93,7 +93,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       using (transaction.EnterNonDiscardingScope ())
       {
-        AccessControlList acl = AccessControlList.NewObject ();
+        AccessControlList acl = StatefulAccessControlList.NewObject ();
         acl.Class = classDefinition;
         StateCombination stateCombination = CreateStateCombination (acl, transaction);
 
@@ -477,7 +477,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       using (_transaction.EnterNonDiscardingScope())
       {
-        AccessControlList acl = AccessControlList.NewObject ();
+        AccessControlList acl = StatefulAccessControlList.NewObject ();
 
         foreach (AccessControlEntry ace in aces)
           acl.AccessControlEntries.Add (ace);

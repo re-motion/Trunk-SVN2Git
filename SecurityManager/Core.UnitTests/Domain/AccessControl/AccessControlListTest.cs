@@ -206,7 +206,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     public void CreateStateCombination_TwoNewEntries ()
     {
-      AccessControlList acl = AccessControlList.NewObject();
+      AccessControlList acl = StatefulAccessControlList.NewObject ();
       acl.Class = _testHelper.CreateClassDefinition ("SecurableClass");
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
@@ -290,7 +290,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     public void SetAndGet_Index ()
     {
-      AccessControlList acl = AccessControlList.NewObject();
+      AccessControlList acl = StatefulAccessControlList.NewObject ();
 
       acl.Index = 1;
       Assert.AreEqual (1, acl.Index);
@@ -306,7 +306,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        AccessControlList actualAcl = AccessControlList.GetObject (expectedAcl.ID);
+        AccessControlList actualAcl = StatefulAccessControlList.GetObject (expectedAcl.ID);
 
         Assert.AreEqual (10, actualAcl.AccessControlEntries.Count);
         for (int i = 0; i < 10; i++)
@@ -323,7 +323,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        AccessControlList actualAcl = AccessControlList.GetObject (expectedAcl.ID);
+        AccessControlList actualAcl = StatefulAccessControlList.GetObject (expectedAcl.ID);
 
         Assert.AreEqual (10, actualAcl.StateCombinations.Count);
         for (int i = 0; i < 10; i++)
@@ -336,7 +336,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         ExpectedMessage = "Cannot create StateCombination if no SecurableClassDefinition is assigned to this AccessControlList.")]
     public void CreateStateCombination_BeforeClassIsSet ()
     {
-      AccessControlList acl = AccessControlList.NewObject();
+      AccessControlList acl = StatefulAccessControlList.NewObject ();
       acl.CreateStateCombination();
     }
 
@@ -345,7 +345,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         ExpectedMessage = "Cannot create AccessControlEntry if no SecurableClassDefinition is assigned to this AccessControlList.")]
     public void CreateAccessControlEntry_BeforeClassIsSet ()
     {
-      AccessControlList acl = AccessControlList.NewObject();
+      AccessControlList acl = StatefulAccessControlList.NewObject ();
       acl.CreateAccessControlEntry();
     }
   }

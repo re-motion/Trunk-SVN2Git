@@ -230,7 +230,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public AccessControlList CreateAccessControlList ()
     {
-      AccessControlList accessControlList = AccessControlList.NewObject();
+      var accessControlList = StatefulAccessControlList.NewObject();
       accessControlList.Class = this;
       accessControlList.CreateStateCombination();
       accessControlList.CreateAccessControlEntry();

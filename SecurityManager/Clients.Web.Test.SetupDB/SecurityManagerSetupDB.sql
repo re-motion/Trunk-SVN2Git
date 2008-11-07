@@ -5,14 +5,17 @@ GO
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AccessControlEntryView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[AccessControlEntryView]
 
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AccessControlListView' AND TABLE_SCHEMA = 'dbo')
-  DROP VIEW [dbo].[AccessControlListView]
-
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'PermissionView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[PermissionView]
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StateCombinationView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[StateCombinationView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AccessControlListView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[AccessControlListView]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StatefulAccessControlListView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[StatefulAccessControlListView]
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StateUsageView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[StateUsageView]
@@ -77,7 +80,7 @@ DECLARE @statement nvarchar (4000)
 SET @statement = ''
 SELECT @statement = @statement + 'ALTER TABLE [dbo].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' 
     FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id 
-    WHERE fk.xtype = 'F' AND t.name IN ('AccessControlEntry', 'AccessControlList', 'Permission', 'StateCombination', 'StateUsage', 'EnumValueDefinition', 'AccessTypeReference', 'Culture', 'LocalizedName', 'SecurableClassDefinition', 'StatePropertyDefinition', 'StatePropertyReference', 'Group', 'GroupType', 'GroupTypePosition', 'Position', 'Role', 'Tenant', 'User')
+    WHERE fk.xtype = 'F' AND t.name IN ('AccessControlEntry', 'Permission', 'StateCombination', 'AccessControlList', 'StateUsage', 'EnumValueDefinition', 'AccessTypeReference', 'Culture', 'LocalizedName', 'SecurableClassDefinition', 'StatePropertyDefinition', 'StatePropertyReference', 'Group', 'GroupType', 'GroupTypePosition', 'Position', 'Role', 'Tenant', 'User')
     ORDER BY t.name, fk.name
 exec sp_executesql @statement
 GO
@@ -86,14 +89,14 @@ GO
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'AccessControlEntry' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[AccessControlEntry]
 
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'AccessControlList' AND TABLE_SCHEMA = 'dbo')
-  DROP TABLE [dbo].[AccessControlList]
-
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Permission' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[Permission]
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'StateCombination' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[StateCombination]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'AccessControlList' AND TABLE_SCHEMA = 'dbo')
+  DROP TABLE [dbo].[AccessControlList]
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'StateUsage' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[StateUsage]
@@ -153,7 +156,6 @@ CREATE TABLE [dbo].[AccessControlEntry]
   [TenantSelection] int NOT NULL,
   [GroupSelection] int NOT NULL,
   [UserSelection] int NOT NULL,
-  [Priority] int NULL,
   [TenantID] uniqueidentifier NULL,
   [GroupID] uniqueidentifier NULL,
   [GroupTypeID] uniqueidentifier NULL,
@@ -162,22 +164,9 @@ CREATE TABLE [dbo].[AccessControlEntry]
   [AbstractRoleID] uniqueidentifier NULL,
   [AbstractRoleIDClassID] varchar (100) NULL,
   [AccessControlListID] uniqueidentifier NULL,
+  [AccessControlListIDClassID] varchar (100) NULL,
 
   CONSTRAINT [PK_AccessControlEntry] PRIMARY KEY CLUSTERED ([ID])
-)
-
-CREATE TABLE [dbo].[AccessControlList]
-(
-  [ID] uniqueidentifier NOT NULL,
-  [ClassID] varchar (100) NOT NULL,
-  [Timestamp] rowversion NOT NULL,
-
-  -- AccessControlList columns
-  [Index] int NOT NULL,
-  [SecurableClassID] uniqueidentifier NULL,
-  [SecurableClassIDClassID] varchar (100) NULL,
-
-  CONSTRAINT [PK_AccessControlList] PRIMARY KEY CLUSTERED ([ID])
 )
 
 CREATE TABLE [dbo].[Permission]
@@ -204,11 +193,26 @@ CREATE TABLE [dbo].[StateCombination]
 
   -- StateCombination columns
   [Index] int NOT NULL,
-  [SecurableClassID] uniqueidentifier NULL,
-  [SecurableClassIDClassID] varchar (100) NULL,
   [AccessControlListID] uniqueidentifier NULL,
+  [AccessControlListIDClassID] varchar (100) NULL,
 
   CONSTRAINT [PK_StateCombination] PRIMARY KEY CLUSTERED ([ID])
+)
+
+CREATE TABLE [dbo].[AccessControlList]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+
+  -- AccessControlList columns
+  [Index] int NOT NULL,
+  [SecurableClassID] uniqueidentifier NULL,
+  [SecurableClassIDClassID] varchar (100) NULL,
+
+  -- StatefulAccessControlList columns
+
+  CONSTRAINT [PK_AccessControlList] PRIMARY KEY CLUSTERED ([ID])
 )
 
 CREATE TABLE [dbo].[StateUsage]
@@ -454,16 +458,15 @@ ALTER TABLE [dbo].[AccessControlEntry] ADD
   CONSTRAINT [FK_AccessControlEntry_AbstractRoleID] FOREIGN KEY ([AbstractRoleID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
   CONSTRAINT [FK_AccessControlEntry_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
 
-ALTER TABLE [dbo].[AccessControlList] ADD
-  CONSTRAINT [FK_AccessControlList_SecurableClassID] FOREIGN KEY ([SecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
-
 ALTER TABLE [dbo].[Permission] ADD
   CONSTRAINT [FK_Permission_AccessTypeDefinitionID] FOREIGN KEY ([AccessTypeDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
   CONSTRAINT [FK_Permission_AccessControlEntryID] FOREIGN KEY ([AccessControlEntryID]) REFERENCES [dbo].[AccessControlEntry] ([ID])
 
 ALTER TABLE [dbo].[StateCombination] ADD
-  CONSTRAINT [FK_StateCombination_SecurableClassID] FOREIGN KEY ([SecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID]),
   CONSTRAINT [FK_StateCombination_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
+
+ALTER TABLE [dbo].[AccessControlList] ADD
+  CONSTRAINT [FK_AccessControlList_SecurableClassID] FOREIGN KEY ([SecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
 
 ALTER TABLE [dbo].[StateUsage] ADD
   CONSTRAINT [FK_StateUsage_StateDefinitionID] FOREIGN KEY ([StateDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
@@ -509,19 +512,11 @@ ALTER TABLE [dbo].[User] ADD
 GO
 
 -- Create a view for every class
-CREATE VIEW [dbo].[AccessControlEntryView] ([ID], [ClassID], [Timestamp], [Index], [TenantSelection], [GroupSelection], [UserSelection], [Priority], [TenantID], [GroupID], [GroupTypeID], [PositionID], [UserID], [AbstractRoleID], [AbstractRoleIDClassID], [AccessControlListID])
+CREATE VIEW [dbo].[AccessControlEntryView] ([ID], [ClassID], [Timestamp], [Index], [TenantSelection], [GroupSelection], [UserSelection], [TenantID], [GroupID], [GroupTypeID], [PositionID], [UserID], [AbstractRoleID], [AbstractRoleIDClassID], [AccessControlListID], [AccessControlListIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [TenantSelection], [GroupSelection], [UserSelection], [Priority], [TenantID], [GroupID], [GroupTypeID], [PositionID], [UserID], [AbstractRoleID], [AbstractRoleIDClassID], [AccessControlListID]
+  SELECT [ID], [ClassID], [Timestamp], [Index], [TenantSelection], [GroupSelection], [UserSelection], [TenantID], [GroupID], [GroupTypeID], [PositionID], [UserID], [AbstractRoleID], [AbstractRoleIDClassID], [AccessControlListID], [AccessControlListIDClassID]
     FROM [dbo].[AccessControlEntry]
     WHERE [ClassID] IN ('AccessControlEntry')
-  WITH CHECK OPTION
-GO
-
-CREATE VIEW [dbo].[AccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID])
-  WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID]
-    FROM [dbo].[AccessControlList]
-    WHERE [ClassID] IN ('AccessControlList')
   WITH CHECK OPTION
 GO
 
@@ -533,11 +528,27 @@ CREATE VIEW [dbo].[PermissionView] ([ID], [ClassID], [Timestamp], [Index], [Allo
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[StateCombinationView] ([ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID], [AccessControlListID])
+CREATE VIEW [dbo].[StateCombinationView] ([ID], [ClassID], [Timestamp], [Index], [AccessControlListID], [AccessControlListIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID], [AccessControlListID]
+  SELECT [ID], [ClassID], [Timestamp], [Index], [AccessControlListID], [AccessControlListIDClassID]
     FROM [dbo].[StateCombination]
     WHERE [ClassID] IN ('StateCombination')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[AccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID]
+    FROM [dbo].[AccessControlList]
+    WHERE [ClassID] IN ('AccessControlList', 'StatefulAccessControlList')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[StatefulAccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID]
+    FROM [dbo].[AccessControlList]
+    WHERE [ClassID] IN ('StatefulAccessControlList')
   WITH CHECK OPTION
 GO
 

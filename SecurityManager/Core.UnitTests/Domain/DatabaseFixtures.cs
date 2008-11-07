@@ -195,7 +195,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
         SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition ();
         for (int i = 0; i < accessControlLists; i++)
         {
-          AccessControlList acl = AccessControlList.NewObject ();
+          AccessControlList acl = StatefulAccessControlList.NewObject ();
           acl.Class = classDefinition;
           acl.CreateAccessControlEntry ();
           if (i == 0)
@@ -217,7 +217,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       using (transaction.EnterNonDiscardingScope ())
       {
         SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition ();
-        AccessControlList acl = AccessControlList.NewObject ();
+        AccessControlList acl = StatefulAccessControlList.NewObject ();
         acl.Class = classDefinition;
         acl.CreateStateCombination ();
 
@@ -236,7 +236,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       using (transaction.EnterNonDiscardingScope ())
       {
         SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition ();
-        AccessControlList acl = AccessControlList.NewObject ();
+        AccessControlList acl = StatefulAccessControlList.NewObject ();
         acl.Class = classDefinition;
         acl.CreateAccessControlEntry ();
 
