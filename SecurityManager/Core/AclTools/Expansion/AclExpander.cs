@@ -72,26 +72,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void AddAclExpansionEntry (List<AclExpansionEntry> aclExpansionEntries, UserRoleAclAceCombination userRoleAclAce)
     {
-      //To.ConsoleLine.s ("AddAclExpansionEntry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+      //To.ConsoleLine.s ("~~~~~ AddAclExpansionEntry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-      AccessControlEntry ace = userRoleAclAce.Ace;
-      AclProbe aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, ace);
+      AclProbe aclProbe;
+      AccessTypeStatistics accessTypeStatistics;
+      AccessInformation accessInformation = GetAccessTypes(userRoleAclAce, out aclProbe, out accessTypeStatistics);
 
-
-      // Note: It does not suffice to get the access types for the current ACE only, since these rights might be denied
-      // by another matching ACE in the current ACL. Instead to be able to filter non-contributing ACEs below,
-      // the contributing ACEs get recorded in the AccessTypeStatistics instance passed to Acl.GetAccessTypes.
-      var accessTypeStatistics = new AccessTypeStatistics();
-      AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
-
-      //Assertion.IsTrue (accessTypeStatistics.IsInMatchingAces (ace));
-      
-      // Non-contributing-ACE debugging
-      // TODO: Disable after problem cleared up
-      //NonContributingAceDebugging (ace, aclProbe, accessTypeStatistics, userRoleAclAce.Acl);
 
       // Create an AclExpansionEntry, if the current probe ACE contributed to the result and returned allowed access types
-      if (accessTypeStatistics.IsInAccessTypesContributingAces (ace) && accessInformation.AllowedAccessTypes.Length > 0)
+      if (accessTypeStatistics.IsInAccessTypesContributingAces (userRoleAclAce.Ace) && accessInformation.AllowedAccessTypes.Length > 0)
       {
         var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions,
           accessInformation.AllowedAccessTypes, accessInformation.DeniedAccessTypes);
@@ -99,6 +88,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
+    private AccessInformation GetAccessTypes (UserRoleAclAceCombination userRoleAclAce, 
+      out AclProbe aclProbe, out AccessTypeStatistics accessTypeStatistics)
+    {
+      aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);
+
+      // Note: It does not suffice to get the access types for the current ACE only, since these rights might be denied
+      // by another matching ACE in the current ACL. Instead to be able to filter non-contributing ACEs below,
+      // the contributing ACEs get recorded in the AccessTypeStatistics instance passed to Acl.GetAccessTypes.
+      accessTypeStatistics = new AccessTypeStatistics ();
+      AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
+
+      //Assertion.IsTrue (accessTypeStatistics.IsInMatchingAces (ace));
+
+      // Non-contributing-ACE debugging
+      //NonContributingAceDebugging (ace, aclProbe, accessTypeStatistics, userRoleAclAce.Acl);
+
+      return accessInformation;
+    }
 
 
     private void NonContributingAceDebugging (AccessControlEntry ace, AclProbe aclProbe,

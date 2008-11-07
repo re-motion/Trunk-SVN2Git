@@ -326,8 +326,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         );
 
 
-      //Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
-
       var aclExpansionEntryListEnumerator = aclExpansionEntryList.GetEnumerator ();
 
       aclExpansionEntryListEnumerator.MoveNext ();
@@ -383,24 +381,24 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    [Test]
-    [Explicit]
-    public void NonContributingAcesDebugTest ()
-    {
-      var ace = TestHelper.CreateAceWithAbstractRole();
-      //var ace = TestHelper.CreateAceWithGroupSelectionAll ();
-      AttachAccessTypeReadWriteDelete (ace, true, true, true);
+    //[Test]
+    //[Explicit]
+    //public void NonContributingAcesDebugTest ()
+    //{
+    //  var ace = TestHelper.CreateAceWithAbstractRole();
+    //  //var ace = TestHelper.CreateAceWithGroupSelectionAll ();
+    //  AttachAccessTypeReadWriteDelete (ace, true, true, true);
 
-      To.ConsoleLine.s (ace.ToString());
+    //  To.ConsoleLine.s (ace.ToString());
 
-      List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList_UserList_AceList (
-          List.New (User,User2),
-          //List.New (User),
-          //List.New (TestHelper.CreateAcl (Ace, Ace2, ace))
-          List.New (TestHelper.CreateAcl (ace))
-        );
-    }
+    //  List<AclExpansionEntry> aclExpansionEntryList =
+    //    GetAclExpansionEntryList_UserList_AceList (
+    //      List.New (User,User2),
+    //      //List.New (User),
+    //      //List.New (TestHelper.CreateAcl (Ace, Ace2, ace))
+    //      List.New (TestHelper.CreateAcl (ace))
+    //    );
+    //}
 
 
     [Test]
@@ -421,6 +419,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           List.New (User2),
           List.New (TestHelper.CreateAcl (ace))
         );
+
+
     }
 
     [Test]
@@ -441,6 +441,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           List.New (User, User2),
           List.New (TestHelper.CreateAcl (ace))
         );
+
+      To.ConsoleLine.e (() => aclExpansionEntryList);
+
+      //var aclExpansionEntryListEnumerator = aclExpansionEntryList.GetEnumerator ();
+
+      //aclExpansionEntryListEnumerator.MoveNext ();
+      //AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, WriteAccessType },
+      //  new AclExpansionAccessConditions { IsOwningTenantRequired = true });
+
+      //Assert.That (aclExpansionEntryListEnumerator.MoveNext (), Is.EqualTo (false));
     }
 
 
