@@ -209,9 +209,9 @@ CREATE TABLE [dbo].[AccessControlList]
   [Timestamp] rowversion NOT NULL,
 
   -- AccessControlList columns
-  [Index] int NOT NULL,
 
   -- StatefulAccessControlList columns
+  [Index] int NULL,
   [StatefulAcl_ClassID] uniqueidentifier NULL,
   [StatefulAcl_ClassIDClassID] varchar (100) NULL,
 

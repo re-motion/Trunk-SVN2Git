@@ -120,8 +120,8 @@
   <data name="auto:AccessControlEntryTitle:InnerText" xml:space="preserve">
     <value>ACE (Access Control Entry)</value>
   </data>
-  <data name="auto:AccessControlListTitle:InnerText" xml:space="preserve">
-    <value>ACL (Access Control List)</value>
+  <data name="auto:StatefulAccessControlListTitle:InnerText" xml:space="preserve">
+    <value>Objektbezogene ACL (Access Control List)</value>
   </data>
   <data name="auto:MissingStateCombinationsValidator:ErrorMessage" xml:space="preserve">
     <value>Bitte ordnen Sie einen Status zu.</value>
@@ -147,8 +147,8 @@
   <data name="NewAccessControlEntryButton" xml:space="preserve">
     <value>Neue ACE anlegen</value>
   </data>
-  <data name="NewAccessControlListButton" xml:space="preserve">
-    <value>Neue ACL anlegen</value>
+  <data name="NewStatefulAccessControlListButton" xml:space="preserve">
+    <value>Neue objektbezogene ACL anlegen</value>
   </data>
   <data name="NewStateCombinationButton" xml:space="preserve">
     <value>Status zuordnen</value>
@@ -158,5 +158,14 @@
   </data>
   <data name="Title" xml:space="preserve">
     <value>{0} - Berechtigungen bearbeiten</value>
+  </data>
+  <data name="NewStateAccessControlListButton" xml:space="preserve">
+    <value>Neue klassenbezogene ACL anlegen</value>
+  </data>
+  <data name="auto:RequiredStateCombinationValidator:ErrorMessage" xml:space="preserve">
+    <value>Bitte wählen sie einen Status aus.</value>
+  </data>
+  <data name="auto:StatelessAccessControlListTitle:InnerText" xml:space="preserve">
+    <value>Klassenbezogene ACL (Access Control List)</value>
   </data>
 </root>

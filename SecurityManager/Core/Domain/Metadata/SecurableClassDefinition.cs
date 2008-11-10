@@ -94,12 +94,12 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     private void SubscribeCollectionEvents ()
     {
-      StatefulAccessControlLists.Added += AccessControlLists_Added;
+      StatefulAccessControlLists.Added += StatefulAccessControlLists_Added;
     }
 
-    private void AccessControlLists_Added (object sender, DomainObjectCollectionChangeEventArgs args)
+    private void StatefulAccessControlLists_Added (object sender, DomainObjectCollectionChangeEventArgs args)
     {
-      var accessControlList = (AccessControlList) args.DomainObject;
+      var accessControlList = (StatefulAccessControlList) args.DomainObject;
       var accessControlLists = StatefulAccessControlLists;
       if (accessControlLists.Count == 1)
         accessControlList.Index = 0;
@@ -236,7 +236,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       if (StatelessAccessControlList != null)
         throw new InvalidOperationException ("A SecurableClassDefinition only supports a single StatelessAccessControlList at a time.");
 
-      var accessControlList = AccessControl.StatelessAccessControlList.NewObject();
+      var accessControlList = StatelessAccessControlList.NewObject();
       accessControlList.Class = this;
       accessControlList.CreateAccessControlEntry ();
 
@@ -259,6 +259,8 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
       ValidateUniqueStateCombinations (result);
 
+      ValidateStateCombinationsAgainstStateProperties (result);
+
       return result;
     }
 
@@ -267,12 +269,21 @@ namespace Remotion.SecurityManager.Domain.Metadata
       Assertion.IsTrue (
           State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object are not empty but the object is deleted.", ID);
 
-      var dupblicateStateCombinations = StateCombinations
+      var duplicateStateCombinations = StateCombinations
           .GroupBy (sc => sc, new StateCombinationComparer())
           .Where (g => g.Count() > 1)
           .SelectMany (g => g);
 
-      foreach (StateCombination stateCombination in dupblicateStateCombinations)
+      foreach (var stateCombination in duplicateStateCombinations)
+        result.AddDuplicateStateCombination (stateCombination);
+    }
+
+    public void ValidateStateCombinationsAgainstStateProperties (SecurableClassValidationResult result)
+    {
+      Assertion.IsTrue (
+          State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object are not empty but the object is deleted.", ID);
+
+      foreach (var stateCombination in StateCombinations.Where (sc => sc.StateUsages.Count != StateProperties.Count))
         result.AddInvalidStateCombination (stateCombination);
     }
 
@@ -281,8 +292,17 @@ namespace Remotion.SecurityManager.Domain.Metadata
       SecurableClassValidationResult result = Validate();
       if (!result.IsValid)
       {
-        throw new ConstraintViolationException (
-            string.Format ("The securable class definition '{0}' contains at least one state combination that has been defined twice.", Name));
+        if (result.DuplicateStateCombinations.Count > 0)
+        {
+          throw new ConstraintViolationException (
+              string.Format ("The securable class definition '{0}' contains at least one state combination that has been defined twice.", Name));
+        }
+        else
+        {
+          Assertion.IsTrue (result.InvalidStateCombinations.Count > 0);
+          throw new ConstraintViolationException (
+              string.Format ("The securable class definition '{0}' contains at least one state combination that does not match the class's properties.", Name));
+        }
       }
 
       base.OnCommitting (args);

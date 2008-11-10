@@ -71,15 +71,6 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ACL (Access Control List).
-        /// </summary>
-        internal static string auto_AccessControlListTitle_InnerText {
-            get {
-                return ResourceManager.GetString("auto:AccessControlListTitle:InnerText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please assign at least one state..
         /// </summary>
         internal static string auto_MissingStateCombinationsValidator_ErrorMessage {
@@ -98,11 +89,38 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select a state..
+        /// </summary>
+        internal static string auto_RequiredStateCombinationValidator_ErrorMessage {
+            get {
+                return ResourceManager.GetString("auto:RequiredStateCombinationValidator:ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select a tenant..
         /// </summary>
         internal static string auto_SpecificTenantField_ErrorMessage {
             get {
                 return ResourceManager.GetString("auto:SpecificTenantField:ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object-based ACL (Access Control List).
+        /// </summary>
+        internal static string auto_StatefulAccessControlListTitle_InnerText {
+            get {
+                return ResourceManager.GetString("auto:StatefulAccessControlListTitle:InnerText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Class-based ACL (Access Control List).
+        /// </summary>
+        internal static string auto_StatelessAccessControlListTitle_InnerText {
+            get {
+                return ResourceManager.GetString("auto:StatelessAccessControlListTitle:InnerText", resourceCulture);
             }
         }
         
@@ -152,20 +170,29 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New ACL.
-        /// </summary>
-        internal static string NewAccessControlListButton {
-            get {
-                return ResourceManager.GetString("NewAccessControlListButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Assign State.
         /// </summary>
         internal static string NewStateCombinationButton {
             get {
                 return ResourceManager.GetString("NewStateCombinationButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New object-based ACL.
+        /// </summary>
+        internal static string NewStatefulAccessControlListButton {
+            get {
+                return ResourceManager.GetString("NewStatefulAccessControlListButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New class-based ACL.
+        /// </summary>
+        internal static string NewStatelessAccessControlListButton {
+            get {
+                return ResourceManager.GetString("NewStatelessAccessControlListButton", resourceCulture);
             }
         }
         

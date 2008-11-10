@@ -120,8 +120,8 @@
   <data name="auto:AccessControlEntryTitle:InnerText" xml:space="preserve">
     <value>ACE (Access Control Entry)</value>
   </data>
-  <data name="auto:AccessControlListTitle:InnerText" xml:space="preserve">
-    <value>ACL (Access Control List)</value>
+  <data name="auto:StatefulAccessControlListTitle:InnerText" xml:space="preserve">
+    <value>Object-based ACL (Access Control List)</value>
   </data>
   <data name="auto:MissingStateCombinationsValidator:ErrorMessage" xml:space="preserve">
     <value>Please assign at least one state.</value>
@@ -147,8 +147,8 @@
   <data name="NewAccessControlEntryButton" xml:space="preserve">
     <value>New ACE</value>
   </data>
-  <data name="NewAccessControlListButton" xml:space="preserve">
-    <value>New ACL</value>
+  <data name="NewStatefulAccessControlListButton" xml:space="preserve">
+    <value>New object-based ACL</value>
   </data>
   <data name="NewStateCombinationButton" xml:space="preserve">
     <value>Assign State</value>
@@ -158,5 +158,14 @@
   </data>
   <data name="Title" xml:space="preserve">
     <value>{0} - Edit Permissions</value>
+  </data>
+  <data name="NewStatelessAccessControlListButton" xml:space="preserve">
+    <value>New class-based ACL</value>
+  </data>
+  <data name="auto:RequiredStateCombinationValidator:ErrorMessage" xml:space="preserve">
+    <value>Please select a state.</value>
+  </data>
+  <data name="auto:StatelessAccessControlListTitle:InnerText" xml:space="preserve">
+    <value>Class-based ACL (Access Control List)</value>
   </data>
 </root>

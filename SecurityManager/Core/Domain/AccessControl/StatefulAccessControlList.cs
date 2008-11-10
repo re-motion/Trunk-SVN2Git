@@ -60,6 +60,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         Class.Touch();
     }
 
+    public abstract int Index { get; set; }
+
     [DBBidirectionalRelation ("StatefulAccessControlLists")]
     [DBColumn ("StatefulAcl_ClassID")]
     [Mandatory]

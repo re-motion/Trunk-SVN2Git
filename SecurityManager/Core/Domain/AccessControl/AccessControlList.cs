@@ -58,8 +58,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         MarkAsChanged ();
     }
 
-    public abstract int Index { get; set; }
-
     [StorageClassNone]
     public abstract SecurableClassDefinition Class { get; set;  }
 

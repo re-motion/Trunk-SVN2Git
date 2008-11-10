@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Web.UI.WebControls;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
@@ -54,7 +55,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       deleteMenuItem.ItemID = "Delete";
       deleteMenuItem.Text = "$res:DeleteStateCombinationCommand";
       deleteMenuItem.Command.Type = CommandType.Event;
-      deleteMenuItem.Command.Click += new CommandClickEventHandler (DeleteStateCombinationCommand_Click);
+      deleteMenuItem.Command.Click += DeleteStateCombinationCommand_Click;
       StateDefinitionField.OptionsMenuItems.Add (deleteMenuItem);
     }
 
@@ -62,11 +63,19 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     {
       base.LoadValues (interim);
 
-      if (!interim)
-        FillStateDefinitionField ();
+      if (CurrentStateCombination.Class.StateProperties.Count == 1)
+      {
+        if (!interim)
+          FillStateDefinitionField();
 
-      StateDefinition currentStateDefinition = GetStateDefinition (CurrentStateCombination);
-      StateDefinitionField.LoadUnboundValue (currentStateDefinition, interim);
+        StateDefinition currentStateDefinition = GetStateDefinition (CurrentStateCombination);
+        StateDefinitionField.LoadUnboundValue (currentStateDefinition, interim);
+        StateDefinitionField.Visible = true;
+      }
+      else
+      {
+        StateDefinitionField.Visible = false;
+      }
     }
 
     private void FillStateDefinitionField ()
@@ -75,67 +84,64 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       if (stateProperties.Count > 1)
         throw new NotSupportedException ("Only classes with a zero or one StatePropertyDefinition are supported.");
 
-      //bool isRequired = IsEmptyStateDefinitionAlreadyInUse (CurrentStateCombination.ClassDefinition);
-      //StateDefinitionField.Required = isRequired ? NaBooleanEnum.True : NaBooleanEnum.False;
-
       List<StateDefinition> possibleStateDefinitions = new List<StateDefinition> ();
       if (stateProperties.Count > 0)
       {
         StatePropertyDefinition statePropertyDefinition = (StatePropertyDefinition) stateProperties[0];
         foreach (StateDefinition stateDefinition in statePropertyDefinition.DefinedStates)
         {
-          //if (!IsStateDefinitionAlreadyInUse (CurrentStateCombination.ClassDefinition, stateDefinition))
           possibleStateDefinitions.Add (stateDefinition);
         }
       }
       StateDefinitionField.SetBusinessObjectList (possibleStateDefinitions);
     }
 
-    //private bool IsStateDefinitionAlreadyInUse (SecurableClassDefinition classDefinition, params StateDefinition[] stateDefinitions)
-    //{
-    //  StateCombination stateCombination = classDefinition.FindStateCombination (new List<StateDefinition> (stateDefinitions));
-    //  if (stateCombination == CurrentStateCombination || stateCombination == null)
-    //    return false;
-    //  return true;
-    //}
-
-    //private bool IsEmptyStateDefinitionAlreadyInUse (SecurableClassDefinition classDefinition)
-    //{
-    //  StateCombination emptyStateCombination = classDefinition.FindStateCombination (new List<StateDefinition>());
-    //  return emptyStateCombination != null;
-    //}
-
     private StateDefinition GetStateDefinition (StateCombination stateCombination)
     {
       if (stateCombination.StateUsages.Count == 0)
         return null;
 
-      StateUsage stateUsage = (StateUsage) stateCombination.StateUsages[0];
+      StateUsage stateUsage = stateCombination.StateUsages[0];
       return stateUsage.StateDefinition;
+    }
+
+    public override bool Validate ()
+    {
+      bool isValid = base.Validate ();
+
+      isValid &= ValidateStateCombination ();
+
+      return isValid;
+    }
+
+    private bool ValidateStateCombination ()
+    {
+      bool isValid = true;
+      if (CurrentStateCombination.Class.StateProperties.Count == 1)
+      {
+        RequiredStateCombinationValidator.Validate();
+        isValid &= RequiredStateCombinationValidator.IsValid;
+      }
+      return isValid;
     }
 
     public override void SaveValues (bool interim)
     {
       base.SaveValues (interim);
 
-      string id = StateDefinitionField.BusinessObjectID;
-      if (StringUtility.IsNullOrEmpty (id))
+      if (CurrentStateCombination.Class.StateProperties.Count == 1)
       {
-        foreach (StateUsage stateUsage in CurrentStateCombination.StateUsages)
-          stateUsage.Delete ();
-      }
-      else 
-      {
+        string id = StateDefinitionField.BusinessObjectID;
         StateDefinition stateDefinition = StateDefinition.GetObject (ObjectID.Parse (id));
         StateUsage stateUsage;
         if (CurrentStateCombination.StateUsages.Count == 0)
         {
-          stateUsage = StateUsage.NewObject ();
+          stateUsage = StateUsage.NewObject();
           stateUsage.StateCombination = CurrentStateCombination;
         }
         else
         {
-          stateUsage = (StateUsage) CurrentStateCombination.StateUsages[0];
+          stateUsage = CurrentStateCombination.StateUsages[0];
         }
         if (stateUsage.StateDefinition != stateDefinition)
           stateUsage.StateDefinition = stateDefinition;
@@ -153,6 +159,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     {
       add { Events.AddHandler (s_deleteEvent, value); }
       remove { Events.RemoveHandler (s_deleteEvent, value); }
+    }
+
+    protected void RequiredStateCombinationValidator_ServerValidate (object source, ServerValidateEventArgs args)
+    {
+      args.IsValid = !StringUtility.IsNullOrEmpty (StateDefinitionField.BusinessObjectID);
     }
   }
 }

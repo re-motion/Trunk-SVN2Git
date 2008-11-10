@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
  
       DatabaseFixtures dbFixtures = new DatabaseFixtures ();
       _currentClassDefinitionTransaction = ClientTransaction.CreateRootTransaction ();
-      _currentClassDefinition = dbFixtures.CreateAndCommitSecurableClassDefinitionWithAccessControlLists (1, _currentClassDefinitionTransaction);
+      _currentClassDefinition = dbFixtures.CreateAndCommitSecurableClassDefinitionWithAccessControlLists (2, _currentClassDefinitionTransaction);
     }
 
     public override void SetUp ()

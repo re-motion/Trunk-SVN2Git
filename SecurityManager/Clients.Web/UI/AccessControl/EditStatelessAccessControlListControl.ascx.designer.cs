@@ -11,7 +11,7 @@
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
     
     
-    public partial class EditStatefulAccessControlListControl {
+    public partial class EditStatelessAccessControlListControl {
         
         /// <summary>
         /// CurrentObject control.
@@ -23,22 +23,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BindableObjectDataSourceControl CurrentObject;
         
         /// <summary>
-        /// StatefulAccessControlListTitle control.
+        /// StatelessAccessControlListTitle control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl StatefulAccessControlListTitle;
-        
-        /// <summary>
-        /// NewStateCombinationButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton NewStateCombinationButton;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl StatelessAccessControlListTitle;
         
         /// <summary>
         /// NewAccessControlEntryButton control.
@@ -57,24 +48,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Remotion.Web.UI.Controls.WebButton DeleteAccessControlListButton;
-        
-        /// <summary>
-        /// StateCombinationControls control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl StateCombinationControls;
-        
-        /// <summary>
-        /// MissingStateCombinationsValidator control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CustomValidator MissingStateCombinationsValidator;
         
         /// <summary>
         /// AccessControlEntryControls control.

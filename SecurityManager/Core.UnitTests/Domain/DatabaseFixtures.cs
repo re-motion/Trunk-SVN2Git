@@ -195,13 +195,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain
         SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition ();
         StatelessAccessControlList statelessAccessControlList = StatelessAccessControlList.NewObject();
         statelessAccessControlList.Class = classDefinition;
+        
+        var stateProperty = StatePropertyDefinition.NewObject (Guid.NewGuid (), "Property");
+        classDefinition.AddStateProperty (stateProperty);
 
         for (int i = 1; i < accessControlLists; i++)
         {
-          StatefulAccessControlList statefulAccessControlList = StatefulAccessControlList.NewObject ();
+          StatefulAccessControlList statefulAccessControlList = StatefulAccessControlList.NewObject();
           statefulAccessControlList.Class = classDefinition;
-          statefulAccessControlList.CreateAccessControlEntry ();
-          CreateStateCombination (statefulAccessControlList, string.Format ("Property {0}", i));
+          statefulAccessControlList.CreateAccessControlEntry();
+          CreateStateCombination (statefulAccessControlList, stateProperty, StateDefinition.NewObject (string.Format ("Value {0}", i), i));
         }
 
         ClientTransactionScope.CurrentTransaction.Commit ();
@@ -235,22 +238,20 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       CreateEmptyDomain ();
       using (transaction.EnterNonDiscardingScope ())
       {
-        SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition ();
-        StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
-        acl.Class = classDefinition;
-        acl.CreateAccessControlEntry ();
+        SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition();
+        StatefulAccessControlList statefulAccessControlList = StatefulAccessControlList.NewObject ();
+        statefulAccessControlList.Class = classDefinition;
+        statefulAccessControlList.CreateAccessControlEntry();
 
-        for (int i = 0; i < stateCombinations; i++)
-        {
-          if (i == 0)
-            CreateStateCombination (acl);
-          else
-            CreateStateCombination (acl, string.Format ("Property {0}", i));
-        }
+        var stateProperty = StatePropertyDefinition.NewObject (Guid.NewGuid (), "Property");
+        classDefinition.AddStateProperty (stateProperty);
 
-        ClientTransactionScope.CurrentTransaction.Commit ();
+        for (int i = 1; i < stateCombinations; i++)
+          CreateStateCombination (statefulAccessControlList, stateProperty, StateDefinition.NewObject (string.Format ("Value {0}", i), i));
+        
+        ClientTransactionScope.CurrentTransaction.Commit();
 
-        return acl;
+        return statefulAccessControlList;
       }
     }
 
@@ -439,17 +440,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       return accessType;
     }
 
-    private void CreateStateCombination (StatefulAccessControlList acl, params string[] propertyNames)
+    private void CreateStateCombination (StatefulAccessControlList acl, StatePropertyDefinition stateProperty, StateDefinition stateDefinition)
     {
       StateCombination stateCombination = acl.CreateStateCombination ();
-      foreach (string propertyName in propertyNames)
-      {
-        StatePropertyDefinition stateProperty = StatePropertyDefinition.NewObject (Guid.NewGuid (), propertyName);
-        StateDefinition stateDefinition = StateDefinition.NewObject ("value", 0);
-        stateProperty.AddState (stateDefinition);
-        acl.Class.AddStateProperty (stateProperty);
-        stateCombination.AttachState (stateDefinition);
-      }
+      stateProperty.AddState (stateDefinition);
+      stateCombination.AttachState (stateDefinition);
     }
   }
 }

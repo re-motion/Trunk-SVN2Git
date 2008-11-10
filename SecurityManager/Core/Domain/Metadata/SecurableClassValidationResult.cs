@@ -19,16 +19,30 @@ namespace Remotion.SecurityManager.Domain.Metadata
   public class SecurableClassValidationResult
   {
     private bool _isValid = true;
-    private List<StateCombination> _invalidStateCombinations = new List<StateCombination> ();
+    private readonly List<StateCombination> _duplicateStateCombinations = new List<StateCombination> ();
+    private readonly List<StateCombination> _invalidStateCombinations = new List<StateCombination> ();
 
     public bool IsValid
     {
       get { return _isValid; }
     }
 
+    public ReadOnlyCollection<StateCombination> DuplicateStateCombinations
+    {
+      get { return _duplicateStateCombinations.AsReadOnly(); }
+    }
+
+    public void AddDuplicateStateCombination (StateCombination duplicateStateCombination)
+    {
+      ArgumentUtility.CheckNotNull ("duplicateStateCombination", duplicateStateCombination);
+
+      _isValid = false;
+      _duplicateStateCombinations.Add (duplicateStateCombination);
+    }
+
     public ReadOnlyCollection<StateCombination> InvalidStateCombinations
     {
-      get { return _invalidStateCombinations.AsReadOnly(); }
+      get { return _invalidStateCombinations.AsReadOnly (); }
     }
 
     public void AddInvalidStateCombination (StateCombination invalidStateCombination)

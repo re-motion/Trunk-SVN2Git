@@ -24,10 +24,77 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     [Test]
     public void IsValid_Valid ()
     {
-      SecurableClassValidationResult result = new SecurableClassValidationResult ();
+      SecurableClassValidationResult result = new SecurableClassValidationResult();
 
       Assert.IsTrue (result.IsValid);
     }
+
+    [Test]
+    public void IsValid_DuplicateStateCombination ()
+    {
+      AccessControlTestHelper testHelper = new AccessControlTestHelper();
+      using (testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
+        StateCombination stateCombination = testHelper.CreateStateCombination (orderClass);
+
+        SecurableClassValidationResult result = new SecurableClassValidationResult();
+
+        result.AddDuplicateStateCombination (stateCombination);
+
+        Assert.IsFalse (result.IsValid);
+      }
+    }
+
+    [Test]
+    public void DuplicateStateCombinations_AllValid ()
+    {
+      SecurableClassValidationResult result = new SecurableClassValidationResult();
+
+      Assert.AreEqual (0, result.DuplicateStateCombinations.Count);
+    }
+
+    [Test]
+    public void DuplicateStateCombinations_OneInvalidStateCombination ()
+    {
+      AccessControlTestHelper testHelper = new AccessControlTestHelper();
+      using (testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
+        StateCombination stateCombination = testHelper.CreateStateCombination (orderClass);
+
+        SecurableClassValidationResult result = new SecurableClassValidationResult();
+
+        result.AddDuplicateStateCombination (stateCombination);
+
+        Assert.AreEqual (1, result.DuplicateStateCombinations.Count);
+        Assert.Contains (stateCombination, result.DuplicateStateCombinations);
+      }
+    }
+
+    [Test]
+    public void DuplicateStateCombinations_TwoInvalidStateCombinations ()
+    {
+      AccessControlTestHelper testHelper = new AccessControlTestHelper();
+      using (testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
+        StatePropertyDefinition paymentProperty = testHelper.CreatePaymentStateProperty (orderClass);
+        StateCombination statelessCombination = testHelper.CreateStateCombination (orderClass);
+        StateCombination paidStateCombination = testHelper.CreateStateCombination (
+            orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
+
+        SecurableClassValidationResult result = new SecurableClassValidationResult();
+
+        result.AddDuplicateStateCombination (statelessCombination);
+        result.AddDuplicateStateCombination (paidStateCombination);
+
+        Assert.AreEqual (2, result.DuplicateStateCombinations.Count);
+        Assert.Contains (statelessCombination, result.DuplicateStateCombinations);
+        Assert.Contains (paidStateCombination, result.DuplicateStateCombinations);
+      }
+    }
+
 
     [Test]
     public void IsValid_InvalidStateCombination ()
@@ -49,7 +116,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     [Test]
     public void InvalidStateCombinations_AllValid ()
     {
-      SecurableClassValidationResult result = new SecurableClassValidationResult ();
+      SecurableClassValidationResult result = new SecurableClassValidationResult();
 
       Assert.AreEqual (0, result.InvalidStateCombinations.Count);
     }
@@ -81,7 +148,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
         StatePropertyDefinition paymentProperty = testHelper.CreatePaymentStateProperty (orderClass);
         StateCombination statelessCombination = testHelper.CreateStateCombination (orderClass);
-        StateCombination paidStateCombination = testHelper.CreateStateCombination (orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
+        StateCombination paidStateCombination = testHelper.CreateStateCombination (
+            orderClass, paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
 
         SecurableClassValidationResult result = new SecurableClassValidationResult();
 

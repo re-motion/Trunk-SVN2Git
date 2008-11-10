@@ -234,15 +234,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void SetAndGet_Index ()
-    {
-      AccessControlList acl = StatefulAccessControlList.NewObject ();
-
-      acl.Index = 1;
-      Assert.AreEqual (1, acl.Index);
-    }
-
-    [Test]
     public void Get_AccessControlEntriesFromDatabase ()
     {
       DatabaseFixtures dbFixtures = new DatabaseFixtures();

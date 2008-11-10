@@ -12,7 +12,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 
@@ -37,6 +36,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StatefulAccessControlList acl = _testHelper.CreateStatefulAcl (classDefinition);
 
       Assert.That (acl.Class, Is.SameAs (classDefinition));
+    }
+
+    [Test]
+    public void SetAndGet_Index ()
+    {
+      StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
+
+      acl.Index = 1;
+      Assert.AreEqual (1, acl.Index);
     }
 
     [Test]
@@ -105,8 +113,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         StatefulAccessControlList actualAcl = StatefulAccessControlList.GetObject (expectedAcl.ID);
 
-        Assert.AreEqual (10, actualAcl.StateCombinations.Count);
-        for (int i = 0; i < 10; i++)
+        Assert.AreEqual (9, actualAcl.StateCombinations.Count);
+        for (int i = 0; i < 9; i++)
           Assert.AreEqual (expectedStateCombinations[i].ID, actualAcl.StateCombinations[i].ID);
       }
     }

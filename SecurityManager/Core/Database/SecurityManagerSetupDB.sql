@@ -209,9 +209,9 @@ CREATE TABLE [dbo].[AccessControlList]
   [Timestamp] rowversion NOT NULL,
 
   -- AccessControlList columns
-  [Index] int NOT NULL,
 
   -- StatefulAccessControlList columns
+  [Index] int NULL,
   [StatefulAcl_ClassID] uniqueidentifier NULL,
   [StatefulAcl_ClassIDClassID] varchar (100) NULL,
 
@@ -560,9 +560,9 @@ CREATE VIEW [dbo].[StatefulAccessControlListView] ([ID], [ClassID], [Timestamp],
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[StatelessAccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID])
+CREATE VIEW [dbo].[StatelessAccessControlListView] ([ID], [ClassID], [Timestamp], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID]
+  SELECT [ID], [ClassID], [Timestamp], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID]
     FROM [dbo].[AccessControlList]
     WHERE [ClassID] IN ('StatelessAccessControlList')
   WITH CHECK OPTION

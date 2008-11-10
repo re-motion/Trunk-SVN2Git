@@ -77,12 +77,21 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.Web.UI.Controls.WebButton CancelButton;
         
         /// <summary>
-        /// NewAccessControlListButton control.
+        /// NewStatefulAccessControlListButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton NewAccessControlListButton;
+        protected global::Remotion.Web.UI.Controls.WebButton NewStatefulAccessControlListButton;
+        
+        /// <summary>
+        /// NewStatelessAccessControlListButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton NewStatelessAccessControlListButton;
     }
 }

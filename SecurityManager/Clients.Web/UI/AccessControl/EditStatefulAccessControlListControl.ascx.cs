@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.Data.DomainObjects;
@@ -23,18 +24,15 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
   [WebMultiLingualResources (typeof (AccessControlResources))]
-  public partial class EditStatefulAccessControlListControl : BaseControl
+  public partial class EditStatefulAccessControlListControl : EditAccessControlListControlBase<StatefulAccessControlList>
   {
     // types
 
     // static members and constants
 
-    private static readonly object s_deleteEvent = new object ();
-
     // member fields
     
-    private List<EditStateCombinationControl> _editStateCombinationControls = new List<EditStateCombinationControl> ();
-    private List<EditAccessControlEntryControl> _editAccessControlEntryControls = new List<EditAccessControlEntryControl> ();
+    private readonly List<EditStateCombinationControl> _editStateCombinationControls = new List<EditStateCombinationControl> ();
     private bool _isCreatingNewStateCombination;
 
     // construction and disposing
@@ -46,9 +44,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       get { return CurrentObject; }
     }
 
-    protected StatefulAccessControlList CurrentAccessControlList
+    protected override ControlCollection GetAccessControlEntryControls ()
     {
-      get { return (StatefulAccessControlList) CurrentObject.BusinessObject; }
+      return AccessControlEntryControls.Controls;
     }
 
     protected override void OnPreRender (EventArgs e)
@@ -66,12 +64,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       int possibleStateCombinations = 1;
       if (stateProperties.Count > 0)
-        possibleStateCombinations += ((StatePropertyDefinition) stateProperties[0]).DefinedStates.Count;
-
-      if (CurrentAccessControlList.Class.StateCombinations.Count < possibleStateCombinations)
-        NewStateCombinationButton.Enabled = true;
-      else
-        NewStateCombinationButton.Enabled = false;
+        possibleStateCombinations = ((StatePropertyDefinition) stateProperties[0]).DefinedStates.Count;
+      NewStateCombinationButton.Enabled = CurrentAccessControlList.Class.StateCombinations.Count < possibleStateCombinations;
     }
 
     public override void LoadValues (bool interim)
@@ -79,29 +73,28 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       base.LoadValues (interim);
 
       LoadStateCombinations (interim);
-      LoadAccessControlEntries (interim);
     }
 
     private void LoadStateCombinations (bool interim)
     {
       CreateEditStateCombinationControls (CurrentAccessControlList.StateCombinations);
-      foreach (EditStateCombinationControl control in _editStateCombinationControls)
+      foreach (var control in _editStateCombinationControls)
         control.LoadValues (interim);
     }
 
-    private void CreateEditStateCombinationControls (DomainObjectCollection stateCombinations)
+    private void CreateEditStateCombinationControls (ObjectList<StateCombination> stateCombinations)
     {
       StateCombinationControls.Controls.Clear ();
       _editStateCombinationControls.Clear ();
 
       for (int i = 0; i < stateCombinations.Count; i++)
       {
-        StateCombination stateCombination = (StateCombination) stateCombinations[i];
+        StateCombination stateCombination = stateCombinations[i];
 
         EditStateCombinationControl editStateCombinationControl = (EditStateCombinationControl) LoadControl ("EditStateCombinationControl.ascx");
-        editStateCombinationControl.ID = "SC_" + i.ToString ();
+        editStateCombinationControl.ID = "SC_" + i;
         editStateCombinationControl.BusinessObject = stateCombination;
-        editStateCombinationControl.Delete += new EventHandler (EditStateCombinationControl_Delete);
+        editStateCombinationControl.Delete += EditStateCombinationControl_Delete;
 
         HtmlGenericControl div = new HtmlGenericControl ("div");
         div.Attributes.Add ("class", "stateCombinationContainer");
@@ -112,42 +105,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       }
     }
 
-    private void LoadAccessControlEntries (bool interim)
-    {
-      CreateEditAccessControlEntryControls (CurrentAccessControlList.AccessControlEntries);
-      foreach (EditAccessControlEntryControl control in _editAccessControlEntryControls)
-        control.LoadValues (interim);
-    }
-
-    private void CreateEditAccessControlEntryControls (DomainObjectCollection accessControlEntries)
-    {
-      AccessControlEntryControls.Controls.Clear ();
-      _editAccessControlEntryControls.Clear ();
-
-      for (int i = 0; i < accessControlEntries.Count; i++)
-      {
-        AccessControlEntry accessControlEntry = (AccessControlEntry) accessControlEntries[i];
-
-        EditAccessControlEntryControl editAccessControlEntryControl = (EditAccessControlEntryControl) LoadControl ("EditAccessControlEntryControl.ascx");
-        editAccessControlEntryControl.ID = "Ace_" + i.ToString ();
-        editAccessControlEntryControl.BusinessObject = accessControlEntry;
-        editAccessControlEntryControl.Delete += new EventHandler(EditAccessControlEntryControl_Delete);
-
-        HtmlGenericControl div = new HtmlGenericControl ("div");
-        div.Attributes.Add ("class", "accessControlEntryContainer");
-        AccessControlEntryControls.Controls.Add (div);
-        div.Controls.Add (editAccessControlEntryControl);
-
-        _editAccessControlEntryControls.Add (editAccessControlEntryControl);
-      }
-    }
-
     public override void SaveValues (bool interim)
     {
       base.SaveValues (interim);
 
       SaveStateCombinations (interim);
-      SaveAccessControlEntries (interim);
     }
 
     private void SaveStateCombinations (bool interim)
@@ -156,18 +118,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         control.SaveValues (interim);
     }
 
-    private void SaveAccessControlEntries (bool interim)
-    {
-      foreach (EditAccessControlEntryControl control in _editAccessControlEntryControls)
-        control.SaveValues (interim);
-    }
-
     public override bool Validate ()
     {
       bool isValid = base.Validate ();
 
       isValid &= ValidateStateCombinations ();
-      isValid &= ValidateAccessControlEntries ();
 
       return isValid;
     }
@@ -197,20 +152,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       args.IsValid = CurrentAccessControlList.StateCombinations.Count > 0;
     }
 
-    private bool ValidateAccessControlEntries (params EditAccessControlEntryControl[] excludedControls)
-    {
-      List<EditAccessControlEntryControl> excludedControlList = new List<EditAccessControlEntryControl> (excludedControls);
-
-      bool isValid = true;
-      foreach (EditAccessControlEntryControl control in _editAccessControlEntryControls)
-      {
-        if (!excludedControlList.Contains (control))
-          isValid &= control.Validate ();
-      }
-
-      return isValid;
-    }
-
     protected void NewStateCombinationButton_Click (object sender, EventArgs e)
     {
       _isCreatingNewStateCombination = true;
@@ -231,24 +172,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       _isCreatingNewStateCombination = false;
     }
 
-    protected void NewAccessControlEntryButton_Click (object sender, EventArgs e)
-    {
-      Page.PrepareValidation ();
-      bool isValid = Validate ();
-      if (!isValid)
-      {
-        return;
-      }
-      SaveValues (false);
-      Page.IsDirty = true;
-
-      CurrentAccessControlList.CreateAccessControlEntry ();
-
-      LoadAccessControlEntries (false);
-      //AccessControlEntriesRepeater.LoadValue (false);
-      //AccessControlEntriesRepeater.IsDirty = true;
-    }
-
     void EditStateCombinationControl_Delete (object sender, EventArgs e)
     {
       EditStateCombinationControl editStateCombinationControl = (EditStateCombinationControl) sender;
@@ -265,37 +188,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       Page.IsDirty = true;
 
       LoadStateCombinations (false);
-    }
-
-    private void EditAccessControlEntryControl_Delete (object sender, EventArgs e)
-    {
-      EditAccessControlEntryControl editAccessControlEntryControl = (EditAccessControlEntryControl) sender;
-      Page.PrepareValidation ();
-      bool isValid = ValidateAccessControlEntries (editAccessControlEntryControl);
-      if (!isValid)
-        return;
-
-      _editAccessControlEntryControls.Remove (editAccessControlEntryControl);
-      AccessControlEntry accessControlEntry = (AccessControlEntry) editAccessControlEntryControl.DataSource.BusinessObject;
-      accessControlEntry.Delete ();
-
-      SaveAccessControlEntries (false);
-      Page.IsDirty = true;
-
-      LoadAccessControlEntries (false);
-    }
-
-    protected void DeleteAccessControlListButton_Click (object sender, EventArgs e)
-    {
-      EventHandler handler = (EventHandler) Events[s_deleteEvent];
-      if (handler != null)
-        handler (this, e);
-    }
-
-    public event EventHandler Delete
-    {
-      add { Events.AddHandler (s_deleteEvent, value); }
-      remove { Events.RemoveHandler (s_deleteEvent, value); }
     }
   }
 }

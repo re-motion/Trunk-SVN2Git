@@ -18,9 +18,11 @@ using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
+using System.Linq;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
@@ -34,7 +36,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     // member fields
 
-    private List<EditStatefulAccessControlListControl> _editAccessControlListControls = new List<EditStatefulAccessControlListControl> ();
+    private readonly List<EditAccessControlListControlBase> _editAccessControlListControls = new List<EditAccessControlListControlBase> ();
 
     // construction and disposing
 
@@ -66,25 +68,31 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void LoadAccessControlLists (bool interim)
     {
-      CreateEditAccessControlListControls (CurrentFunction.SecurableClassDefinition.StatefulAccessControlLists);
-      foreach (EditStatefulAccessControlListControl control in _editAccessControlListControls)
+      var accessControlLists = new List<AccessControlList> (CurrentFunction.SecurableClassDefinition.StatefulAccessControlLists.Cast<AccessControlList>());
+      if (CurrentFunction.SecurableClassDefinition.StatelessAccessControlList != null)
+        accessControlLists.Insert (0, CurrentFunction.SecurableClassDefinition.StatelessAccessControlList);
+
+      CreateEditAccessControlListControls (accessControlLists.ToArray());
+      foreach (var control in _editAccessControlListControls)
         control.LoadValues (interim);
     }
 
-    private void CreateEditAccessControlListControls (DomainObjectCollection accessControlLists)
+    private void CreateEditAccessControlListControls (AccessControlList[] accessControlLists)
     {
       AccessControlListsPlaceHolder.Controls.Clear ();
       _editAccessControlListControls.Clear ();
-      for (int i = 0; i < accessControlLists.Count; i++)
+      for (int i = 0; i < accessControlLists.Length; i++)
       {
-        AccessControlList accessControlList = (AccessControlList) accessControlLists[i];
+        var accessControlList = accessControlLists[i];
 
-        EditStatefulAccessControlListControl editStatefulAccessControlListControl = (EditStatefulAccessControlListControl) LoadControl ("EditStatefulAccessControlListControl.ascx");
-        editStatefulAccessControlListControl.ID = "Acl_" + i.ToString ();
+        string controlName = string.Format ("Edit{0}Control.ascx", accessControlList.GetPublicDomainObjectType().Name);
+
+        var editStatefulAccessControlListControl = (EditAccessControlListControlBase) LoadControl (controlName);
+        editStatefulAccessControlListControl.ID = "Acl_" + i;
         editStatefulAccessControlListControl.BusinessObject = accessControlList;
-        editStatefulAccessControlListControl.Delete += new EventHandler (EditAccessControlListControl_Delete);
+        editStatefulAccessControlListControl.Delete += EditAccessControlListControl_Delete;
 
-        HtmlGenericControl div = new HtmlGenericControl ("div");
+        var div = new HtmlGenericControl ("div");
         div.Attributes.Add ("class", "accessControlListContainer");
         AccessControlListsPlaceHolder.Controls.Add (div);
         div.Controls.Add (editStatefulAccessControlListControl);
@@ -105,7 +113,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void SaveAccessControlLists (bool interim)
     {
-      foreach (EditStatefulAccessControlListControl control in _editAccessControlListControls)
+      foreach (var control in _editAccessControlListControls)
         control.SaveValues (interim);
     }
 
@@ -130,12 +138,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       return isValid;
     }
 
-    private bool ValidateAccessControlLists (params EditStatefulAccessControlListControl[] excludedControls)
+    private bool ValidateAccessControlLists (params EditAccessControlListControlBase[] excludedControls)
     {
-      List<EditStatefulAccessControlListControl> excludedControlList = new List<EditStatefulAccessControlListControl> (excludedControls);
+      var excludedControlList = new List<EditAccessControlListControlBase> (excludedControls);
 
       bool isValid = true;
-      foreach (EditStatefulAccessControlListControl control in _editAccessControlListControls)
+      foreach (var control in _editAccessControlListControls)
       {
         if (!excludedControlList.Contains (control))
         {
@@ -151,30 +159,18 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       if (CurrentFunction.SecurableClassDefinition.StateProperties.Count > 1)
         throw new NotSupportedException ("Only classes with a zero or one StatePropertyDefinition are supported.");
 
-      Dictionary<StateDefinition, object> usedStates = new Dictionary<StateDefinition, object> ();
-      bool hasEmptyStateUsage = false;
+      var usedStates = new Dictionary<StateDefinition, object> ();
       foreach (var accessControlList in CurrentFunction.SecurableClassDefinition.StatefulAccessControlLists)
       {
-        foreach (StateCombination stateCombination in accessControlList.StateCombinations)
+        foreach (var stateCombination in accessControlList.StateCombinations)
         {
-          if (stateCombination.StateUsages.Count == 0)
-          {
-            if (hasEmptyStateUsage)
-              args.IsValid = false;
-            else
-              hasEmptyStateUsage = true;
-          }
-          else
+          if (stateCombination.StateUsages.Count == 1)
           {
             StateUsage stateUsage = stateCombination.StateUsages[0];
             if (usedStates.ContainsKey (stateUsage.StateDefinition))
-            {
               args.IsValid = false;
-            }
             else
-            {
               usedStates.Add (stateUsage.StateDefinition, null);
-            }
           }
 
           if (!args.IsValid)
@@ -192,7 +188,24 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       throw new WxeUserCancelException ();
     }
 
-    protected void NewAccessControlListButton_Click (object sender, EventArgs e)
+    protected void NewStatelessAccessControlListButton_Click (object sender, EventArgs e)
+    {
+      PrepareValidation ();
+      bool isValid = ValidateAccessControlLists ();
+      if (!isValid)
+        return;
+
+      SaveAccessControlLists (false);
+      IsDirty = true;
+
+      CurrentFunction.SecurableClassDefinition.CreateStatelessAccessControlList ();
+
+      LoadAccessControlLists (false);
+      //AccessControlListsRepeater.LoadValue (false);
+      //AccessControlListsRepeater.IsDirty = true;
+    }
+
+    protected void NewStatefulAccessControlListButton_Click (object sender, EventArgs e)
     {
       PrepareValidation ();
       bool isValid = ValidateAccessControlLists ();
@@ -211,14 +224,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void EditAccessControlListControl_Delete (object sender, EventArgs e)
     {
-      EditStatefulAccessControlListControl editStatefulAccessControlListControl = (EditStatefulAccessControlListControl) sender;
+      var editStatefulAccessControlListControl = (EditAccessControlListControlBase) sender;
       PrepareValidation ();
       bool isValid = ValidateAccessControlLists (editStatefulAccessControlListControl);
       if (!isValid)
         return;
 
       _editAccessControlListControls.Remove (editStatefulAccessControlListControl);
-      AccessControlList accessControlList = (AccessControlList) editStatefulAccessControlListControl.DataSource.BusinessObject;
+      var accessControlList = (AccessControlList) editStatefulAccessControlListControl.DataSource.BusinessObject;
       accessControlList.Delete ();
 
       SaveAccessControlLists (false);
@@ -242,12 +255,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       int possibleStateCombinations = 1;
       if (stateProperties.Count > 0)
-        possibleStateCombinations += ((StatePropertyDefinition) stateProperties[0]).DefinedStates.Count;
+        possibleStateCombinations = ((StatePropertyDefinition) stateProperties[0]).DefinedStates.Count;
+      NewStatefulAccessControlListButton.Enabled = CurrentFunction.SecurableClassDefinition.StateCombinations.Count < possibleStateCombinations;
 
-      if (CurrentFunction.SecurableClassDefinition.StateCombinations.Count < possibleStateCombinations)
-        NewAccessControlListButton.Enabled = true;
-      else
-        NewAccessControlListButton.Enabled = false;
+      NewStatelessAccessControlListButton.Enabled = CurrentFunction.SecurableClassDefinition.StatelessAccessControlList == null;
     }
   }
 }

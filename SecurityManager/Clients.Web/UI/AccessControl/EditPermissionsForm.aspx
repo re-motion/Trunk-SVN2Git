@@ -34,5 +34,6 @@
 <asp:Content ID="ActualBottomControlsPlaceHolder" runat="server" ContentPlaceHolderID="BottomControlsPlaceHolder">
   <remotion:WebButton ID="SaveButton" runat="server" Text="$res:Save" OnClick="SaveButton_Click" CausesValidation="false" />
   <remotion:WebButton ID="CancelButton" runat="server" Text="$res:Cancel" Style="margin-left: 1em;" OnClick="CancelButton_Click" CausesValidation="false" />
-  <remotion:WebButton ID="NewAccessControlListButton" runat="server" Text="$res:NewAccessControlListButton" Style="margin-left: 1em;" OnClick="NewAccessControlListButton_Click" CausesValidation="False" />
+  <remotion:WebButton ID="NewStatefulAccessControlListButton" runat="server" Text="$res:NewStatefulAccessControlListButton" Style="margin-left: 1em;" OnClick="NewStatefulAccessControlListButton_Click" CausesValidation="False" />
+  <remotion:WebButton ID="NewStatelessAccessControlListButton" runat="server" Text="$res:NewStatelessAccessControlListButton" Style="margin-left: 1em;" OnClick="NewStatelessAccessControlListButton_Click" CausesValidation="False" />
 </asp:Content>

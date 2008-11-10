@@ -41,6 +41,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -58,6 +61,7 @@
     </None>
     <None Include="SecurityManager.Clients.Web.build" />
     <Content Include="Global.asax" />
+    <Content Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx" />
     <Content Include="UI\AccessControl\EditPermissionControl.ascx" />
     <Content Include="UI\AccessControl\EditAccessControlEntryControl.ascx" />
     <Content Include="UI\AccessControl\EditStateCombinationControl.ascx" />
@@ -100,6 +104,9 @@
     <Content Include="WxeHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\EditAccessControlListControlBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Classes\SecurableClassDefinitionTreeView.cs" />
     <Compile Include="Classes\BaseControl.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -283,6 +290,13 @@
       <DependentUpon>UserListFormResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx.cs">
+      <DependentUpon>EditStatelessAccessControlListControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx.designer.cs">
+      <DependentUpon>EditStatelessAccessControlListControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="UI\AccessControl\EditPermissionControl.ascx.cs">
       <DependentUpon>EditPermissionControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
