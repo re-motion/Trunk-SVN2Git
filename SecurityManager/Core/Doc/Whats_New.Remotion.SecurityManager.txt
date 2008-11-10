@@ -1,3 +1,8 @@
+1.11.12
+=======
+- SecurityManager now supports explict class-based (stateless) access control lists.
+- Database-schema has changed from 1.11.11 to support class-based access control lists and must be migrated.
+
 1.7.81
 ======
 - Global.asax für Clients.Web:
