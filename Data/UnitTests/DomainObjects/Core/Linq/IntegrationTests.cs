@@ -666,6 +666,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (query, DomainObjectIDs.Employee3);
     }
 
+    [Test]
+    [Ignore ("TODO: implement")]
+    public void QueryWithObjectList ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          from oi in o.OrderItems
+          select oi;
+      CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    [Ignore ("TODO: implement")]
+    public void QueryWithObjectList_Nested ()
+    {
+      var query =
+          from ot in QueryFactory.CreateLinqQuery<OrderTicket> ()
+          from oi in ot.Order.OrderItems
+          select oi;
+      CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : TestDomainBase
     {
