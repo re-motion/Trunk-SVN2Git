@@ -382,47 +382,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    //[Test]
-    //[Explicit]
-    //public void NonContributingAcesDebugTest ()
-    //{
-    //  var ace = TestHelper.CreateAceWithAbstractRole();
-    //  //var ace = TestHelper.CreateAceWithGroupSelectionAll ();
-    //  AttachAccessTypeReadWriteDelete (ace, true, true, true);
-
-    //  To.ConsoleLine.s (ace.ToString());
-
-    //  List<AclExpansionEntry> aclExpansionEntryList =
-    //    GetAclExpansionEntryList_UserList_AceList (
-    //      List.New (User,User2),
-    //      //List.New (User),
-    //      //List.New (TestHelper.CreateAcl (Ace, Ace2, ace))
-    //      List.New (TestHelper.CreateAcl (ace))
-    //    );
-    //}
-
-
-    [Test]
-    [Explicit]
-    public void NonContributingAcesDebugTest_SpecificPostitonWithOwningGroup ()
-    {
-      // Together with User2 gives non-matching ACEs
-      var ace = TestHelper.CreateAceWithPosition (Position,GroupSelection.OwningGroup);
-      AttachAccessTypeReadWriteDelete (ace, true, true, true);
-
-      Assert.That (ace.Validate ().IsValid);
-
-      To.ConsoleLine.s (ace.ToString ());
-
-      List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList_UserList_AceList (
-          //List.New (User, User2),
-          List.New (User2),
-          List.New (TestHelper.CreateStatefulAcl (ace))
-        );
-
-      To.ConsoleLine.e (() => aclExpansionEntryList);
-    }
 
     [Test]
     public void NonMatchingAceTest_SpecificTenant ()
@@ -555,16 +514,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       To.ConsoleLine.e ("aceSpecificTenantWithOtherTenant",aceSpecificTenantWithOtherTenant.ToString ());
       To.ConsoleLine.e ("aceGroupOwning", aceGroupOwning.ToString ());
 
+      //var userList = List.New (otherTenantUser, User);
+      var userList = List.New (User);
+      var aclList = List.New (TestHelper.CreateStatefulAcl (aceSpecificTenantWithOtherTenant, aceGroupOwning));
+
+      OutputAccessStatistics (userList, aclList);
 
       //To.ConsoleLine.e (() => otherTenantAceSpecificTenant);
 
-      List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList_UserList_AceList (
-          //List.New (otherTenantUser, User),
-          //List.New (User),
-          List.New (otherTenantUser),
-          List.New (TestHelper.CreateStatefulAcl (aceSpecificTenantWithOtherTenant, aceGroupOwning))
-        );
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
+
+      To.ConsoleLine.nl ().e (() => aclExpansionEntryList);
     }
 
 
