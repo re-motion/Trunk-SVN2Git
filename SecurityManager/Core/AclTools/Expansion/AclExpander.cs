@@ -101,7 +101,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // Note: The aclProbe created above will NOT always match the ACE it was designed to probe; the reason for this
       // is that its SecurityToken is only designed to match the non-decideable access conditions
       // (abstract role and owning tenant, group, etc) of the ACE
-      // (they are non-decideable in the information context of the AclExpander, not in general of course).
+      // (the "non-decideable" refers to the information context of the AclExpander, which is lacking some information).
       // For decideable access conditons (e.g. specific tenant or specific group), the created SecurityToken
       // is not guaranteed to match. The AccessTypeStatistics returned by Acl.GetAccessTypes are used to filter out these cases.
       //
@@ -124,8 +124,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
         if (probeForCurrentRoleOnly)
         {
-          // Exchanging the User.Roles-collection with a new one containing only the current Role would not work,
-          // so we empty the collection and add the current Role.
+          // Exchanging the User.Roles-collection with a new one containing only the current Role would not work (MK),
+          // so we empty the collection, then add back the current Role.
           aclProbe.SecurityToken.User.Roles.Clear();
           aclProbe.SecurityToken.User.Roles.Add (userRoleAclAce.Role);
         }

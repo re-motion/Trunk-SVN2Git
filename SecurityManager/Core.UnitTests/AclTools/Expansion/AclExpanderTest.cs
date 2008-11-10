@@ -442,15 +442,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       // ACE with specific otherTenant should not match any AclProbe|s
       AssertIsNotInMatchingAces(userList, aclList);
 
-//<<<<<<< .mine
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList,aclList);
-//=======
-//      List<AclExpansionEntry> aclExpansionEntryList =
-//        GetAclExpansionEntryList_UserList_AceList (
-//          List.New (User, User2),
-//          List.New (TestHelper.CreateStatefulAcl (testAce))
-//        );
-//>>>>>>> .r11783
 
       //To.ConsoleLine.e (() => aclExpansionEntryList);
 
@@ -497,21 +489,47 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    [Explicit]
-    public void NonContributingAcesDebugTest_AbstractRole ()
+    public void AbstractRoleAllContributingTest ()
     {
       var ace = TestHelper.CreateAceWithAbstractRole ();
       AttachAccessTypeReadWriteDelete (ace, true, true, true);
 
       Assert.That (ace.Validate ().IsValid);
 
-      To.ConsoleLine.s (ace.ToString ());
+      var userList = List.New (User, User2);
+      var aclList = List.New (TestHelper.CreateStatefulAcl (ace));
 
-      List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList_UserList_AceList (
-          List.New (User, User2),
-          List.New (TestHelper.CreateStatefulAcl (ace))
-        );
+      //OutputAccessStatistics (userList, aclList);
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
+
+      //To.ConsoleLine.nl ().e (() => aclExpansionEntryList);
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (User.Roles.Count + User2.Roles.Count));
+    }
+
+
+    [Test]
+    public void AbstractRoleAllContributingDenyTest ()
+    {
+      var ace = TestHelper.CreateAceWithAbstractRole ();
+      AttachAccessTypeReadWriteDelete (ace, true, true, true);
+
+      // In addition to AbstractRoleAllContributingTest, deny all rights again => 
+      // there should be no resulting AclExpansionEntry|s.
+      var aceDeny = TestHelper.CreateAceWithGroupSelectionAll ();
+      AttachAccessTypeReadWriteDelete (aceDeny, false, false, false);
+
+      Assert.That (ace.Validate ().IsValid);
+
+      var userList = List.New (User, User2);
+      var aclList = List.New (TestHelper.CreateStatefulAcl (ace, aceDeny));
+
+      //OutputAccessStatistics (userList, aclList);
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
+
+      //To.ConsoleLine.nl ().e (() => aclExpansionEntryList);
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (0));
     }
 
 
