@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6DEF9C11-1D5A-4B14-A4EB-F4C7E7CC3E7B}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -487,6 +487,7 @@
     <Compile Include="Linq\ClausesTest\JoinClauseTest.cs" />
     <Compile Include="Linq\ClausesTest\LetClauseTest.cs" />
     <Compile Include="Linq\ClausesTest\MainFromClauseTest.cs" />
+    <Compile Include="Linq\ClausesTest\MemberFromClauseTest.cs" />
     <Compile Include="Linq\ClausesTest\OrderByClauseTest.cs" />
     <Compile Include="Linq\ClausesTest\OrderingClauseTest.cs" />
     <Compile Include="Linq\ClausesTest\SelectClauseTest.cs" />
