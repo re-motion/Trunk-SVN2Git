@@ -667,23 +667,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO: implement")]
     public void QueryWithObjectList ()
     {
       var query =
           from o in QueryFactory.CreateLinqQuery<Order> ()
           from oi in o.OrderItems
+          where o.OrderNumber == 1
           select oi;
       CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
 
     [Test]
-    [Ignore ("TODO: implement")]
-    public void QueryWithObjectList_Nested ()
+    public void QueryWithObjectList_WithJoin ()
     {
       var query =
           from ot in QueryFactory.CreateLinqQuery<OrderTicket> ()
           from oi in ot.Order.OrderItems
+          where ot.Order.OrderNumber == 1
           select oi;
       CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
