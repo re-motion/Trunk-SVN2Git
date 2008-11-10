@@ -37,19 +37,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     public void GetClass ()
     {
-      StateCombination combination = _testHelper.GetStateCombinationWithoutStates ();
+      StateCombination combination = _testHelper.GetStateCombinationForDeliveredAndUnpaidOrder();
 
       Assert.That (combination.AccessControlList.Class, Is.Not.Null);
       Assert.That (combination.Class, Is.SameAs (combination.AccessControlList.Class));
-    }
-
-    [Test]
-    public void MatchesStates_StatelessAndWithoutDemandedStates ()
-    {
-      StateCombination combination = _testHelper.GetStateCombinationWithoutStates();
-      List<StateDefinition> states = CreateEmptyStateList();
-
-      Assert.IsTrue (combination.MatchesStates (states));
     }
 
     [Test]
@@ -68,16 +59,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StateDefinition[] states = combination.GetStates ();
 
       Assert.IsTrue (combination.MatchesStates (states));
-    }
-
-    [Test]
-    public void MatchesStates_StatelessAndDemandDeliveredAndUnpaid ()
-    {
-      StateCombination deliverdAndUnpaidCombination = _testHelper.GetStateCombinationForDeliveredAndUnpaidOrder();
-      StateDefinition[] states = deliverdAndUnpaidCombination.GetStates();
-      StateCombination statelessCombination = GetStatelessCombinationForClass (deliverdAndUnpaidCombination.Class);
-
-      Assert.IsFalse (statelessCombination.MatchesStates (states));
     }
 
     [Test]
@@ -227,17 +208,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       stateCombination.Index = 1;
       Assert.AreEqual (1, stateCombination.Index);
-    }
-
-    private StateCombination GetStatelessCombinationForClass (SecurableClassDefinition classDefinition)
-    {
-      foreach (StateCombination currentCombination in classDefinition.StateCombinations)
-      {
-        if (currentCombination.StateUsages.Count == 0)
-          return currentCombination;
-      }
-
-      return null;
     }
 
     private static List<StateDefinition> CreateEmptyStateList ()

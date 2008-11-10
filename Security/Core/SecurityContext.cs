@@ -33,7 +33,7 @@ namespace Remotion.Security
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (ISecurableObject));
 
-      return new SecurityContext (type, null, null, null, new Dictionary<string, EnumWrapper>(), new EnumWrapper[0]);
+      return new SecurityContext (type, null, null, null, true, new Dictionary<string, EnumWrapper>(), new EnumWrapper[0]);
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("states", states);
       ArgumentUtility.CheckNotNull ("abstractRoles", abstractRoles);
 
-      return new SecurityContext (type, owner, ownerGroup, ownerTenant, InitializeStates (states), InitializeAbstractRoles (abstractRoles));
+      return new SecurityContext (type, owner, ownerGroup, ownerTenant, false, InitializeStates (states), InitializeAbstractRoles (abstractRoles));
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("states", states);
       ArgumentUtility.CheckNotNull ("abstractRoles", abstractRoles);
 
-      return new SecurityContext (type, owner, ownerGroup, ownerTenant, new Dictionary<string, EnumWrapper> (states), abstractRoles.ToArray());
+      return new SecurityContext (type, owner, ownerGroup, ownerTenant, false, new Dictionary<string, EnumWrapper> (states), abstractRoles.ToArray());
     }
 
     private static EnumWrapper[] InitializeAbstractRoles (ICollection<Enum> abstractRoles)
@@ -153,6 +153,7 @@ namespace Remotion.Security
     private readonly string _owner;
     private readonly string _ownerGroup;
     private readonly string _ownerTenant;
+    private readonly bool _isStateless;
     private readonly Dictionary<string, EnumWrapper> _states;
     private readonly EnumWrapper[] _abstractRoles;
 
@@ -161,6 +162,7 @@ namespace Remotion.Security
         string owner,
         string ownerGroup,
         string ownerTenant,
+        bool isStateless,
         Dictionary<string, EnumWrapper> states,
         EnumWrapper[] abstractRoles)
     {
@@ -168,6 +170,7 @@ namespace Remotion.Security
       _owner = StringUtility.NullToEmpty (owner);
       _ownerGroup = StringUtility.NullToEmpty (ownerGroup);
       _ownerTenant = StringUtility.NullToEmpty (ownerTenant);
+      _isStateless = isStateless;
       _states = states;
       _abstractRoles = abstractRoles;
     }
@@ -209,7 +212,7 @@ namespace Remotion.Security
 
     public bool IsStateless
     {
-      get { return _states.Count == 0; }
+      get { return _isStateless; }
     }
 
     public int GetNumberOfStates ()
@@ -242,6 +245,9 @@ namespace Remotion.Security
         return false;
 
       if (!this._class.Equals (other._class, StringComparison.Ordinal))
+        return false;
+
+      if (this._isStateless != other._isStateless)
         return false;
 
       if (!string.Equals (this._owner, other._owner, StringComparison.Ordinal))

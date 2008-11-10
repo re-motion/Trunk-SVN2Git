@@ -216,7 +216,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         stateCombinations.Add (CreateStateCombination (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
         stateCombinations.Add (CreateStateCombination (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name]));
         stateCombinations.Add (CreateStateCombination (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
-        stateCombinations.Add (CreateStateCombination (classDefinition));
 
         return stateCombinations;
       }
@@ -228,15 +227,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         List<StateCombination> stateCombinations = CreateStateCombinationsForOrder();
         return stateCombinations[2];
-      }
-    }
-
-    public StateCombination GetStateCombinationWithoutStates ()
-    {
-      using (_transaction.EnterNonDiscardingScope())
-      {
-        List<StateCombination> stateCombinations = CreateStateCombinationsForOrder();
-        return stateCombinations[4];
       }
     }
 
@@ -252,7 +242,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
         acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name]));
         acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition));
+        acls.Add (CreateStatelessAcl (classDefinition));
 
         return acls;
       }
@@ -275,7 +265,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
         acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
         acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
-        acls.Add (CreateStatefulAcl (classDefinition));
+        acls.Add (CreateStatelessAcl (classDefinition));
 
         return acls;
       }
@@ -290,21 +280,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    public AccessControlList GetAclForDeliveredAndUnpaidStates (SecurableClassDefinition classDefinition)
+    public StatefulAccessControlList GetAclForDeliveredAndUnpaidStates (SecurableClassDefinition classDefinition)
     {
       using (_transaction.EnterNonDiscardingScope())
       {
         List<AccessControlList> acls = CreateAclsForOrderAndPaymentStates (classDefinition);
-        return acls[2];
+        return (StatefulAccessControlList) acls[2];
       }
     }
 
-    public AccessControlList GetAclForStateless (SecurableClassDefinition classDefinition)
+    public StatelessAccessControlList GetAclForStateless (SecurableClassDefinition classDefinition)
     {
       using (_transaction.EnterNonDiscardingScope())
       {
         List<AccessControlList> acls = CreateAclsForOrderAndPaymentStates (classDefinition);
-        return acls[4];
+        return (StatelessAccessControlList) acls[4];
       }
     }
 

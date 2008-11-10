@@ -45,7 +45,7 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
-    public void CreateSecurityContextWithNullAbstractRoles ()
+    public void CreateSecurityContextWithoutAbstractRoles ()
     {
       SecurityContext context = CreateTestSecurityContextWithAbstractRoles (new Enum[0]);
       Assert.AreEqual (0, context.AbstractRoles.Length);
@@ -130,7 +130,15 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void IsStateless_WithoutStates ()
     {
-      SecurityContext context = CreateTestSecurityContext();
+      SecurityContext context = CreateTestSecurityContextWithStates (new Dictionary<string, Enum> ());
+
+      Assert.IsFalse (context.IsStateless);
+    }
+
+    [Test]
+    public void IsStateless_Stateless ()
+    {
+      SecurityContext context = CreateStatelessTestSecurityContext();
 
       Assert.IsTrue (context.IsStateless);
     }
@@ -166,6 +174,14 @@ namespace Remotion.Security.UnitTests.Core
       SecurityContext context = CreateTestSecurityContextWithStates (states);
 
       Assert.AreEqual (1, context.GetNumberOfStates());
+    }
+
+    [Test]
+    public void GetNumberOfStates_Stateless ()
+    {
+      SecurityContext context = CreateStatelessTestSecurityContext ();
+
+      Assert.AreEqual (0, context.GetNumberOfStates ());
     }
 
     [Test]
@@ -326,6 +342,16 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
+    public void Equals_WithStatefulAndStateless ()
+    {
+      SecurityContext left = SecurityContext.CreateStateless (typeof (File));
+      SecurityContext right = SecurityContext.Create (typeof (File), null, null, null, new Dictionary<string, Enum>(), new Enum[0]);
+
+      Assert.IsFalse (left.Equals (right));
+      Assert.IsFalse (right.Equals (left));
+    }
+
+    [Test]
     public void EqualsObject_WithEqual ()
     {
       SecurityContext left = SecurityContext.CreateStateless (typeof (SecurableObject));
@@ -426,6 +452,11 @@ namespace Remotion.Security.UnitTests.Core
     private SecurityContext CreateTestSecurityContext (Type type, IDictionary<string, Enum> states, ICollection<Enum> abstractRoles)
     {
       return SecurityContext.Create (type, "owner", "group", "tenant", states, abstractRoles);
+    }
+
+    private SecurityContext CreateStatelessTestSecurityContext ()
+    {
+      return SecurityContext.CreateStateless (typeof (File));
     }
   }
 }

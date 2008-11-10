@@ -215,7 +215,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Assert.AreEqual (user.OwningGroup.UniqueIdentifier, securityContext.OwnerGroup);
       Assert.AreEqual (user.Tenant.UniqueIdentifier, securityContext.OwnerTenant);
       Assert.IsEmpty (securityContext.AbstractRoles);
-      Assert.IsTrue (securityContext.IsStateless);
+      Assert.IsFalse (securityContext.IsStateless);
     }
 
     [Test]
@@ -230,7 +230,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Assert.IsEmpty (securityContext.OwnerGroup);
       Assert.AreEqual (user.Tenant.UniqueIdentifier, securityContext.OwnerTenant);
       Assert.IsEmpty (securityContext.AbstractRoles);
-      Assert.IsTrue (securityContext.IsStateless);
+      Assert.IsFalse (securityContext.IsStateless);
     }
 
     [Test]
@@ -245,7 +245,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Assert.AreEqual (user.OwningGroup.UniqueIdentifier, securityContext.OwnerGroup);
       Assert.IsEmpty (securityContext.OwnerTenant);
       Assert.IsEmpty (securityContext.AbstractRoles);
-      Assert.IsTrue (securityContext.IsStateless);
+      Assert.IsFalse (securityContext.IsStateless);
     }
 
     [Test]

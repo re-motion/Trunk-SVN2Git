@@ -193,15 +193,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       using (transaction.EnterNonDiscardingScope ())
       {
         SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition ();
-        for (int i = 0; i < accessControlLists; i++)
+        StatelessAccessControlList statelessAccessControlList = StatelessAccessControlList.NewObject();
+        statelessAccessControlList.Class = classDefinition;
+
+        for (int i = 1; i < accessControlLists; i++)
         {
-          StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
-          acl.Class = classDefinition;
-          acl.CreateAccessControlEntry ();
-          if (i == 0)
-            CreateStateCombination (acl);
-          else
-            CreateStateCombination (acl, string.Format ("Property {0}", i));
+          StatefulAccessControlList statefulAccessControlList = StatefulAccessControlList.NewObject ();
+          statefulAccessControlList.Class = classDefinition;
+          statefulAccessControlList.CreateAccessControlEntry ();
+          CreateStateCombination (statefulAccessControlList, string.Format ("Property {0}", i));
         }
 
         ClientTransactionScope.CurrentTransaction.Commit ();

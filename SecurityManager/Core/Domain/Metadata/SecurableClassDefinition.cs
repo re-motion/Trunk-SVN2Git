@@ -231,6 +231,18 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return StateCombinations.Where (sc => sc.MatchesStates (states)).SingleOrDefault();
     }
 
+    public StatelessAccessControlList CreateStatelessAccessControlList ()
+    {
+      if (StatelessAccessControlList != null)
+        throw new InvalidOperationException ("A SecurableClassDefinition only supports a single StatelessAccessControlList at a time.");
+
+      var accessControlList = AccessControl.StatelessAccessControlList.NewObject();
+      accessControlList.Class = this;
+      accessControlList.CreateAccessControlEntry ();
+
+      return accessControlList;
+    }
+
     public StatefulAccessControlList CreateStatefulAccessControlList ()
     {
       var accessControlList = StatefulAccessControlList.NewObject ();

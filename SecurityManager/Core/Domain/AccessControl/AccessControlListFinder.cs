@@ -54,18 +54,28 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       using (transaction.EnterNonDiscardingScope())
       {
-        StateCombination foundStateCombination = null;
+        AccessControlList foundAccessControlList = null;
 
-        while (foundStateCombination == null && classDefinition != null)
+        while (foundAccessControlList == null && classDefinition != null)
         {
-          foundStateCombination = FindStateCombination (classDefinition, context);
+          if (context.IsStateless)
+          {
+            foundAccessControlList = classDefinition.StatelessAccessControlList;
+          }
+          else
+          {
+            var foundStateCombination = FindStateCombination (classDefinition, context);
+            if (foundStateCombination != null)
+              foundAccessControlList = foundStateCombination.AccessControlList;
+          }
+
           classDefinition = classDefinition.BaseClass;
         }
 
-        if (foundStateCombination == null)
+        if (foundAccessControlList == null)
           throw CreateAccessControlException ("The ACL for the securable class '{0}' could not be found.", context.Class);
 
-        return foundStateCombination.AccessControlList;
+        return foundAccessControlList;
       }
     }
 
@@ -81,9 +91,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private List<StateDefinition> GetStates (IList<StatePropertyDefinition> stateProperties, ISecurityContext context)
     {
       List<StateDefinition> states = new List<StateDefinition>();
-
-      if (context.IsStateless)
-        return states;
 
       if (context.GetNumberOfStates() > stateProperties.Count)
         return null;

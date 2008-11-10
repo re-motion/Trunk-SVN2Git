@@ -32,11 +32,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     }
 
     [Test]
-    public void Succeed_WithoutStateProperties ()
+    public void Succeed_WithoutStatePropertiesAndStateful ()
     {
       SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
-      AccessControlList acl = _testHelper.CreateStatefulAcl (classDefinition);
-      SecurityContext context = CreateStatelessContext();
+      StatefulAccessControlList acl = _testHelper.CreateStatefulAcl (classDefinition);
+      _testHelper.CreateStatelessAcl (classDefinition);
+      SecurityContext context = CreateContextWithoutStates ();
 
       AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
@@ -45,10 +46,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     }
 
     [Test]
-    public void Succeed_WithStates ()
+    public void Succeed_WithoutStatePropertiesAndStateless ()
+    {
+      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition ();
+      _testHelper.CreateStatefulAcl (classDefinition);
+      StatelessAccessControlList acl = _testHelper.CreateStatelessAcl (classDefinition);
+      SecurityContext context = CreateStatelessContext ();
+
+      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
+
+      Assert.AreSame (acl, foundAcl);
+    }
+
+    [Test]
+    public void Succeed_WithStatesAndStateful ()
     {
       SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
-      AccessControlList acl = _testHelper.GetAclForDeliveredAndUnpaidStates (classDefinition);
+      StatefulAccessControlList acl = _testHelper.GetAclForDeliveredAndUnpaidStates (classDefinition);
       SecurityContext context = CreateContextForDeliveredAndUnpaidOrder();
 
       AccessControlListFinder aclFinder = new AccessControlListFinder();
@@ -61,13 +76,27 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     public void Succeed_WithStatesAndStateless ()
     {
       SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
-      AccessControlList acl = _testHelper.GetAclForStateless (classDefinition);
+      StatelessAccessControlList acl = _testHelper.GetAclForStateless (classDefinition);
       SecurityContext context = CreateStatelessContext();
 
       AccessControlListFinder aclFinder = new AccessControlListFinder();
       AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, classDefinition, context);
 
       Assert.AreSame (acl, foundAcl);
+    }
+
+    [Test]
+    public void Succeed_WithDerivedClassAndStateless()
+    {
+      SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition ();
+      SecurableClassDefinition premiumOrderClass = _testHelper.CreatePremiumOrderClassDefinition (orderClass);
+      StatelessAccessControlList aclForOrder = _testHelper.GetAclForStateless (orderClass);
+      SecurityContext context = CreateStatelessContext ();
+
+      AccessControlListFinder aclFinder = new AccessControlListFinder ();
+      AccessControlList foundAcl = aclFinder.Find (ClientTransactionScope.CurrentTransaction, premiumOrderClass, context);
+
+      Assert.AreSame (aclForOrder, foundAcl);
     }
 
     [Test]
@@ -178,6 +207,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     }
 
     private SecurityContext CreateStatelessContext ()
+    {
+      return SecurityContext.CreateStateless (typeof (Order));
+    }
+
+    private SecurityContext CreateContextWithoutStates ()
     {
       return SecurityContext.Create (typeof (Order), "owner", "ownerGroup", "ownerTenant", new Dictionary<string, Enum>(), new Enum[0]);
     }

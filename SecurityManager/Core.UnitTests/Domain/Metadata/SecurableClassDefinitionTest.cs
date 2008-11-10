@@ -344,6 +344,43 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
+    public void CreateStatelessAccessControlList ()
+    {
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
+      {
+        SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
+        using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+        {
+          Assert.AreEqual (StateType.Unchanged, classDefinition.State);
+
+          StatelessAccessControlList accessControlList = classDefinition.CreateStatelessAccessControlList();
+
+          Assert.AreSame (classDefinition, accessControlList.Class);
+          Assert.IsNotEmpty (accessControlList.AccessControlEntries);
+          Assert.AreEqual (StateType.Changed, classDefinition.State);
+        }
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "A SecurableClassDefinition only supports a single StatelessAccessControlList at a time.")]
+    public void CreateStatelessAccessControlList_Twice ()
+    {
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
+      {
+        SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
+        using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+        {
+          Assert.AreEqual (StateType.Unchanged, classDefinition.State);
+
+          classDefinition.CreateStatelessAccessControlList();
+          classDefinition.CreateStatelessAccessControlList ();
+        }
+      }
+    }
+
+    [Test]
     public void CreateStatefulAccessControlList ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
@@ -426,8 +463,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       {
         SecurableClassDefinition actualClassDefinition = SecurableClassDefinition.GetObject (expectedClassDefinition.ID);
 
-        Assert.AreEqual (10, actualClassDefinition.StatefulAccessControlLists.Count);
-        for (int i = 0; i < 10; i++)
+        Assert.AreEqual (9, actualClassDefinition.StatefulAccessControlLists.Count);
+        for (int i = 0; i < 9; i++)
           Assert.AreEqual (expectedAcls[i].ID, actualClassDefinition.StatefulAccessControlLists[i].ID);
       }
     }
@@ -508,7 +545,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    public void ValidateUniqueStateCombinations_TwoStatelessCombinations ()
+    public void ValidateUniqueStateCombinations_TwoEmptyStateCombinations ()
     {
       AccessControlTestHelper testHelper = new AccessControlTestHelper();
       using (testHelper.Transaction.EnterNonDiscardingScope())
@@ -585,7 +622,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
               ClientTransaction.Current,
               orderStateProperty[new EnumWrapper (OrderState.Received).Name],
               paymentProperty[new EnumWrapper (PaymentState.Paid).Name]);
-          Assert.That(orderClass.StateCombinations, Is.Not.Empty);
+          Assert.That (orderClass.StateCombinations, Is.Not.Empty);
           orderClass.Delete();
 
           SecurableClassValidationResult result = new SecurableClassValidationResult();
@@ -631,14 +668,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     [Test]
     public void GetStateCombinations_TwoCombinations ()
     {
-      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
-      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      AccessControlTestHelper testHelper = new AccessControlTestHelper();
+      using (testHelper.Transaction.EnterNonDiscardingScope())
       {
-        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
+        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
         StateCombination stateCombination = testHelper.CreateStateCombination (orderClass);
         List<StateCombination> stateCombinations = testHelper.CreateOrderStateAndPaymentStateCombinations (orderClass);
 
-        Assert.That (orderClass.StateCombinations, Is.EqualTo (ArrayUtility.Combine(stateCombination, stateCombinations.ToArray())));
+        Assert.That (orderClass.StateCombinations, Is.EqualTo (ArrayUtility.Combine (stateCombination, stateCombinations.ToArray())));
       }
     }
   }

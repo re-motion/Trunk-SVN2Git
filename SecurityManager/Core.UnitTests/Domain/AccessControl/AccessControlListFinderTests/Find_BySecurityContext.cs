@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
       AccessControlList expectedAccessControlList;
       using (_currentClassDefinitionTransaction.EnterNonDiscardingScope ())
       {
-        expectedAccessControlList = _currentClassDefinition.StatefulAccessControlLists[0];
+        expectedAccessControlList = _currentClassDefinition.StatelessAccessControlList;
       }
       SecurityContext context = SecurityContext.CreateStateless(typeof (Order));
      
