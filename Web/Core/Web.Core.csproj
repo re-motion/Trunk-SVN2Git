@@ -134,6 +134,7 @@
     <Compile Include="ExecutionEngine\ITransactionMode.cs" />
     <Compile Include="ExecutionEngine\WxeFatalExecutionException.cs" />
     <Compile Include="ExecutionEngine\WxeFunction.cs" />
+    <Compile Include="ExecutionEngine\WxeResourceUserControlStep.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateClearingStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IStateModificationStrategy.cs" />

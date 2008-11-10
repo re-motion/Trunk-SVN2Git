@@ -51,7 +51,7 @@ namespace Remotion.Web.ExecutionEngine
     /// <summary> Initializes a new instance of the <b>WxePageStep</b> type. </summary>
     /// <include file='doc\include\ExecutionEngine\WxePageStep.xml' path='WxePageStep/Ctor/param[@name="page"]' />
     public WxePageStep (string page)
-        : this (new ResourceObject(null, page))
+      : this (new ResourceObject (null, ArgumentUtility.CheckNotNullOrEmpty("page", page)))
     {
     }
 

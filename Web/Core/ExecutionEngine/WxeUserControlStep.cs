@@ -22,7 +22,7 @@ namespace Remotion.Web.ExecutionEngine
   {
     private bool _isExecutionStarted;
     private bool _isPostBack;
-    private readonly string _userControl;
+    private readonly ResourceObjectBase _userControl;
     private WxePageStep _pageStep;
     private IUserControlExecutor _userControlExecutor = NullUserControlExecutor.Null;
 
@@ -30,8 +30,18 @@ namespace Remotion.Web.ExecutionEngine
     private WxeHandler _wxeHandler;
 
     public WxeUserControlStep (string userControl)
+      : this (new ResourceObject (null, ArgumentUtility.CheckNotNullOrEmpty ("userControl", userControl)))
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("userControl", userControl);
+    }
+
+    public WxeUserControlStep (WxeVariableReference pageref)
+        : this (new ResourceObjectWithVarRef (null, pageref))
+    {
+    }
+
+    public WxeUserControlStep (ResourceObjectBase userControl)
+    {
+      ArgumentUtility.CheckNotNull ("userControl", userControl);
       _userControl = userControl;
     }
 
@@ -94,7 +104,7 @@ namespace Remotion.Web.ExecutionEngine
 
     public string UserControl
     {
-      get { return _userControl; }
+      get { return _userControl.GetResourcePath (Variables); }
     }
 
     public IUserControlExecutor UserControlExecutor
