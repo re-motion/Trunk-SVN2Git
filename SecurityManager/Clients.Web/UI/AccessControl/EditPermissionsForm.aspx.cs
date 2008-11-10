@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     // member fields
 
-    private List<EditAccessControlListControl> _editAccessControlListControls = new List<EditAccessControlListControl> ();
+    private List<EditStatefulAccessControlListControl> _editAccessControlListControls = new List<EditStatefulAccessControlListControl> ();
 
     // construction and disposing
 
@@ -66,8 +66,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void LoadAccessControlLists (bool interim)
     {
-      CreateEditAccessControlListControls (CurrentFunction.SecurableClassDefinition.AccessControlLists);
-      foreach (EditAccessControlListControl control in _editAccessControlListControls)
+      CreateEditAccessControlListControls (CurrentFunction.SecurableClassDefinition.StatefulAccessControlLists);
+      foreach (EditStatefulAccessControlListControl control in _editAccessControlListControls)
         control.LoadValues (interim);
     }
 
@@ -79,17 +79,17 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       {
         AccessControlList accessControlList = (AccessControlList) accessControlLists[i];
 
-        EditAccessControlListControl editAccessControlListControl = (EditAccessControlListControl) LoadControl ("EditAccessControlListControl.ascx");
-        editAccessControlListControl.ID = "Acl_" + i.ToString ();
-        editAccessControlListControl.BusinessObject = accessControlList;
-        editAccessControlListControl.Delete += new EventHandler (EditAccessControlListControl_Delete);
+        EditStatefulAccessControlListControl editStatefulAccessControlListControl = (EditStatefulAccessControlListControl) LoadControl ("EditStatefulAccessControlListControl.ascx");
+        editStatefulAccessControlListControl.ID = "Acl_" + i.ToString ();
+        editStatefulAccessControlListControl.BusinessObject = accessControlList;
+        editStatefulAccessControlListControl.Delete += new EventHandler (EditAccessControlListControl_Delete);
 
         HtmlGenericControl div = new HtmlGenericControl ("div");
         div.Attributes.Add ("class", "accessControlListContainer");
         AccessControlListsPlaceHolder.Controls.Add (div);
-        div.Controls.Add (editAccessControlListControl);
+        div.Controls.Add (editStatefulAccessControlListControl);
 
-        _editAccessControlListControls.Add (editAccessControlListControl);
+        _editAccessControlListControls.Add (editStatefulAccessControlListControl);
       }
     }
 
@@ -105,7 +105,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void SaveAccessControlLists (bool interim)
     {
-      foreach (EditAccessControlListControl control in _editAccessControlListControls)
+      foreach (EditStatefulAccessControlListControl control in _editAccessControlListControls)
         control.SaveValues (interim);
     }
 
@@ -130,12 +130,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       return isValid;
     }
 
-    private bool ValidateAccessControlLists (params EditAccessControlListControl[] excludedControls)
+    private bool ValidateAccessControlLists (params EditStatefulAccessControlListControl[] excludedControls)
     {
-      List<EditAccessControlListControl> excludedControlList = new List<EditAccessControlListControl> (excludedControls);
+      List<EditStatefulAccessControlListControl> excludedControlList = new List<EditStatefulAccessControlListControl> (excludedControls);
 
       bool isValid = true;
-      foreach (EditAccessControlListControl control in _editAccessControlListControls)
+      foreach (EditStatefulAccessControlListControl control in _editAccessControlListControls)
       {
         if (!excludedControlList.Contains (control))
         {
@@ -153,7 +153,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       Dictionary<StateDefinition, object> usedStates = new Dictionary<StateDefinition, object> ();
       bool hasEmptyStateUsage = false;
-      foreach (AccessControlList accessControlList in CurrentFunction.SecurableClassDefinition.AccessControlLists)
+      foreach (var accessControlList in CurrentFunction.SecurableClassDefinition.StatefulAccessControlLists)
       {
         foreach (StateCombination stateCombination in accessControlList.StateCombinations)
         {
@@ -166,7 +166,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
           }
           else
           {
-            StateUsage stateUsage = (StateUsage) stateCombination.StateUsages[0];
+            StateUsage stateUsage = stateCombination.StateUsages[0];
             if (usedStates.ContainsKey (stateUsage.StateDefinition))
             {
               args.IsValid = false;
@@ -202,7 +202,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       SaveAccessControlLists (false);
       IsDirty = true;
 
-      CurrentFunction.SecurableClassDefinition.CreateAccessControlList ();
+      CurrentFunction.SecurableClassDefinition.CreateStatefulAccessControlList ();
 
       LoadAccessControlLists (false);
       //AccessControlListsRepeater.LoadValue (false);
@@ -211,14 +211,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void EditAccessControlListControl_Delete (object sender, EventArgs e)
     {
-      EditAccessControlListControl editAccessControlListControl = (EditAccessControlListControl) sender;
+      EditStatefulAccessControlListControl editStatefulAccessControlListControl = (EditStatefulAccessControlListControl) sender;
       PrepareValidation ();
-      bool isValid = ValidateAccessControlLists (editAccessControlListControl);
+      bool isValid = ValidateAccessControlLists (editStatefulAccessControlListControl);
       if (!isValid)
         return;
 
-      _editAccessControlListControls.Remove (editAccessControlListControl);
-      AccessControlList accessControlList = (AccessControlList) editAccessControlListControl.DataSource.BusinessObject;
+      _editAccessControlListControls.Remove (editStatefulAccessControlListControl);
+      AccessControlList accessControlList = (AccessControlList) editStatefulAccessControlListControl.DataSource.BusinessObject;
       accessControlList.Delete ();
 
       SaveAccessControlLists (false);

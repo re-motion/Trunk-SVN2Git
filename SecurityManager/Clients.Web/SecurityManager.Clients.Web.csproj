@@ -61,7 +61,7 @@
     <Content Include="UI\AccessControl\EditPermissionControl.ascx" />
     <Content Include="UI\AccessControl\EditAccessControlEntryControl.ascx" />
     <Content Include="UI\AccessControl\EditStateCombinationControl.ascx" />
-    <Content Include="UI\AccessControl\EditAccessControlListControl.ascx" />
+    <Content Include="UI\AccessControl\EditStatefulAccessControlListControl.ascx" />
     <Content Include="UI\AccessControl\EditPermissionsForm.aspx" />
     <Content Include="UI\AccessControl\SecurableClassDefinitionListForm.aspx" />
     <Content Include="UI\OrganizationalStructure\TenantListForm.aspx" />
@@ -304,12 +304,12 @@
     <Compile Include="UI\AccessControl\EditStateCombinationControl.ascx.designer.cs">
       <DependentUpon>EditStateCombinationControl.ascx</DependentUpon>
     </Compile>
-    <Compile Include="UI\AccessControl\EditAccessControlListControl.ascx.cs">
-      <DependentUpon>EditAccessControlListControl.ascx</DependentUpon>
+    <Compile Include="UI\AccessControl\EditStatefulAccessControlListControl.ascx.cs">
+      <DependentUpon>EditStatefulAccessControlListControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="UI\AccessControl\EditAccessControlListControl.ascx.designer.cs">
-      <DependentUpon>EditAccessControlListControl.ascx</DependentUpon>
+    <Compile Include="UI\AccessControl\EditStatefulAccessControlListControl.ascx.designer.cs">
+      <DependentUpon>EditStatefulAccessControlListControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\AccessControl\EditPermissionsForm.aspx.cs">
       <DependentUpon>EditPermissionsForm.aspx</DependentUpon>

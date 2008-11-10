@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); 
       userFinderMock.Expect (mock => mock.FindUsers ()).Return (users);
 
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl,Acl2);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,Acl2);
 
       var numberRoles = users.SelectMany (x => x.Roles).Count();
       Assert.That (numberRoles, Is.GreaterThanOrEqualTo (11));

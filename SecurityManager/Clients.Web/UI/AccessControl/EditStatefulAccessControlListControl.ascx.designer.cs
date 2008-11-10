@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
     /// <remarks>
     /// Auto-generated class.
     /// </remarks>
-    public partial class EditAccessControlListControl {
+    public partial class EditStatefulAccessControlListControl {
         
         /// <summary>
         /// CurrentObject control.

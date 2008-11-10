@@ -94,13 +94,13 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     private void SubscribeCollectionEvents ()
     {
-      AccessControlLists.Added += AccessControlLists_Added;
+      StatefulAccessControlLists.Added += AccessControlLists_Added;
     }
 
     private void AccessControlLists_Added (object sender, DomainObjectCollectionChangeEventArgs args)
     {
       var accessControlList = (AccessControlList) args.DomainObject;
-      var accessControlLists = AccessControlLists;
+      var accessControlLists = StatefulAccessControlLists;
       if (accessControlLists.Count == 1)
         accessControlList.Index = 0;
       else
@@ -173,15 +173,15 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       get
       {
-        var result = from acl in AccessControlLists 
+        var result = from acl in StatefulAccessControlLists 
                      from sc in acl.StateCombinations 
                      select sc;
         return result.ToArray();
       }
     }
 
-    [DBBidirectionalRelation ("Class", SortExpression = "[Index] ASC")]
-    public abstract ObjectList<AccessControlList> AccessControlLists { get; }
+    [DBBidirectionalRelation ("MyClass", SortExpression = "[Index] ASC")]
+    public abstract ObjectList<StatefulAccessControlList> StatefulAccessControlLists { get; }
 
     public void AddAccessType (AccessTypeDefinition accessType)
     {
@@ -228,10 +228,9 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return StateCombinations.Where (sc => sc.MatchesStates (states)).SingleOrDefault();
     }
 
-    public AccessControlList CreateAccessControlList ()
+    public StatefulAccessControlList CreateStatefulAccessControlList ()
     {
-      var accessControlList = StatefulAccessControlList.NewObject();
-      accessControlList.Class = this;
+      var accessControlList = StatefulAccessControlList.NewObject (this);
       accessControlList.CreateStateCombination();
       accessControlList.CreateAccessControlEntry();
 

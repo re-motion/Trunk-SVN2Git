@@ -17,6 +17,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.SecurityManager.Domain.AccessControl;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -100,7 +101,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       using (new CultureScope ("")) // Invariant culture
       {
         var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
         List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
@@ -121,7 +122,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       using (new CultureScope ("")) // Invariant culture
       {
         var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
         List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
@@ -146,7 +147,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void OutputRowCountTest ()
     {
       var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
@@ -165,7 +166,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void DontOutputRowCountTest ()
     {
       var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
@@ -183,7 +184,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void UserSortOrderTest ()
     {
       var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User, User2, User3);
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl, Acl2);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl, Acl2);
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
@@ -202,7 +203,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void SortOrderTest ()
     {
       var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User3);
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
@@ -233,7 +234,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       using (CultureScope_de_DE())
       {
         var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User, User2, User3);
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl2, Acl);
+        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl2, Acl);
 
         List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
@@ -622,7 +623,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       using (CultureScope_de_DE ())
       {
         var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl2);
+        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl2);
 
         List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 

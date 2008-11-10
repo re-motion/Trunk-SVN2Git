@@ -29,27 +29,27 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     [Test]
     public void DomainObjectsAreSerializable ()
     {
-      CheckDomainObjectSerializability<AccessControlEntry> (delegate { return AccessControlEntry.NewObject (); });
-      CheckDomainObjectSerializability<AccessControlList> (delegate { return StatefulAccessControlList.NewObject (); });
-      CheckDomainObjectSerializability<Permission> (delegate { return Permission.NewObject (); });
-      CheckDomainObjectSerializability<StateCombination> (delegate { return StateCombination.NewObject (); });
-      CheckDomainObjectSerializability<StateUsage> (delegate { return StateUsage.NewObject (); });
-      CheckDomainObjectSerializability<AbstractRoleDefinition> (delegate { return AbstractRoleDefinition.NewObject (); });
-      CheckDomainObjectSerializability<AccessTypeDefinition> (delegate { return AccessTypeDefinition.NewObject (); });
-      CheckDomainObjectSerializability<AccessTypeReference> (delegate { return AccessTypeReference.NewObject (); });
-      CheckDomainObjectSerializability<Culture> (delegate { return Culture.NewObject ("DE-DE"); });
-      CheckDomainObjectSerializability<LocalizedName> (delegate { return LocalizedName.NewObject ("foo", Culture.NewObject ("DE-DE"), SecurableClassDefinition.NewObject ()); });
-      CheckDomainObjectSerializability<SecurableClassDefinition> (delegate { return SecurableClassDefinition.NewObject (); });
-      CheckDomainObjectSerializability<StateDefinition> (delegate { return StateDefinition.NewObject (); });
-      CheckDomainObjectSerializability<StatePropertyDefinition> (delegate { return StatePropertyDefinition.NewObject (); });
-      CheckDomainObjectSerializability<StatePropertyReference> (delegate { return StatePropertyReference.NewObject (); });
-      CheckDomainObjectSerializability<Group> (delegate { return (Group) RepositoryAccessor.NewObject (typeof (Group)).With (); });
-      CheckDomainObjectSerializability<GroupType> (delegate { return (GroupType) RepositoryAccessor.NewObject (typeof (GroupType)).With (); });
-      CheckDomainObjectSerializability<GroupTypePosition> (delegate { return GroupTypePosition.NewObject (); });
-      CheckDomainObjectSerializability<Position> (delegate { return (Position) RepositoryAccessor.NewObject (typeof (Position)).With (); });
-      CheckDomainObjectSerializability<Role> (delegate { return Role.NewObject (); });
-      CheckDomainObjectSerializability<Tenant> (delegate { return (Tenant) RepositoryAccessor.NewObject (typeof (Tenant)).With (); });
-      CheckDomainObjectSerializability<User> (delegate { return (User) RepositoryAccessor.NewObject (typeof (User)).With(); });
+      CheckDomainObjectSerializability (delegate { return AccessControlEntry.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return StatefulAccessControlList.NewObject (SecurableClassDefinition.NewObject()); });
+      CheckDomainObjectSerializability (delegate { return Permission.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return StateCombination.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return StateUsage.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return AbstractRoleDefinition.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return AccessTypeDefinition.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return AccessTypeReference.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return Culture.NewObject ("DE-DE"); });
+      CheckDomainObjectSerializability (delegate { return LocalizedName.NewObject ("foo", Culture.NewObject ("DE-DE"), SecurableClassDefinition.NewObject ()); });
+      CheckDomainObjectSerializability (delegate { return SecurableClassDefinition.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return StateDefinition.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return StatePropertyDefinition.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return StatePropertyReference.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return (Group) RepositoryAccessor.NewObject (typeof (Group)).With (); });
+      CheckDomainObjectSerializability (delegate { return (GroupType) RepositoryAccessor.NewObject (typeof (GroupType)).With (); });
+      CheckDomainObjectSerializability (delegate { return GroupTypePosition.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return (Position) RepositoryAccessor.NewObject (typeof (Position)).With (); });
+      CheckDomainObjectSerializability (delegate { return Role.NewObject (); });
+      CheckDomainObjectSerializability (delegate { return (Tenant) RepositoryAccessor.NewObject (typeof (Tenant)).With (); });
+      CheckDomainObjectSerializability (delegate { return (User) RepositoryAccessor.NewObject (typeof (User)).With(); });
     }
 
     private void CheckDomainObjectSerializability<T> (Func<T> creator)

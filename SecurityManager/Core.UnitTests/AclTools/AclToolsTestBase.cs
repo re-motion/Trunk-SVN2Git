@@ -29,8 +29,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
 {
   public class AclToolsTestBase : DomainTest
   {
-    public AccessControlList Acl { get; private set; }
-    public AccessControlList Acl2 { get; private set; }
+    public StatefulAccessControlList Acl { get; private set; }
+    public StatefulAccessControlList Acl2 { get; private set; }
     
     public AccessTypeDefinition DeleteAccessType { get; private set; }
     public AccessTypeDefinition WriteAccessType { get; private set; }
@@ -123,7 +123,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
 
       SecurableClassDefinition orderClass = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID);
       //var aclList = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID).AccessControlLists;
-      var aclList = orderClass.AccessControlLists;
+      var aclList = orderClass.StatefulAccessControlLists;
       Assert.That (aclList.Count, Is.GreaterThanOrEqualTo (2));
       
       Acl = aclList[0];

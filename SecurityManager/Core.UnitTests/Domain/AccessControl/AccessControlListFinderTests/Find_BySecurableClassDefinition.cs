@@ -35,7 +35,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlL
     public void Succeed_WithoutStateProperties ()
     {
       SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
-      AccessControlList acl = _testHelper.CreateAcl (classDefinition);
+      AccessControlList acl = _testHelper.CreateStatefulAcl (classDefinition);
       SecurityContext context = CreateStatelessContext();
 
       AccessControlListFinder aclFinder = new AccessControlListFinder();

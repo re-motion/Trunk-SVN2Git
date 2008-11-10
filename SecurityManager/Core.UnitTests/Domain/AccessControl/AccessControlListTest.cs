@@ -12,6 +12,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 
@@ -33,7 +34,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void FindMatchingEntries_WithMatchingAce ()
     {
       AccessControlEntry entry = AccessControlEntry.NewObject();
-      AccessControlList acl = _testHelper.CreateAcl (entry);
+      AccessControlList acl = _testHelper.CreateStatefulAcl (entry);
       SecurityToken token = _testHelper.CreateEmptyToken();
 
       AccessControlEntry[] foundEntries = acl.FindMatchingEntries (token);
@@ -45,7 +46,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     public void FindMatchingEntries_WithoutMatchingAce ()
     {
-      AccessControlList acl = _testHelper.CreateAcl (_testHelper.CreateAceWithAbstractRole());
+      AccessControlList acl = _testHelper.CreateStatefulAcl (_testHelper.CreateAceWithAbstractRole());
       SecurityToken token = _testHelper.CreateEmptyToken();
 
       AccessControlEntry[] foundEntries = acl.FindMatchingEntries (token);
@@ -68,7 +69,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       _testHelper.AttachAccessType (ace2, writeAccessType, true);
       _testHelper.AttachAccessType (ace2, deleteAccessType, null);
 
-      AccessControlList acl = _testHelper.CreateAcl (ace1, ace2);
+      AccessControlList acl = _testHelper.CreateStatefulAcl (ace1, ace2);
       SecurityToken token = _testHelper.CreateTokenWithAbstractRole (role2);
 
       AccessControlEntry[] entries = acl.FindMatchingEntries (token);
@@ -88,7 +89,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       AccessTypeDefinition copyAccessType = _testHelper.CreateAccessTypeForAce (ace, true, Guid.NewGuid (), "Copy", 3);
       AccessTypeDefinition moveAccessType = _testHelper.CreateAccessTypeForAce (ace, false, Guid.NewGuid (), "Move", 4);
       
-      AccessControlList acl = _testHelper.CreateAcl (ace);
+      AccessControlList acl = _testHelper.CreateStatefulAcl (ace);
       SecurityToken token = _testHelper.CreateEmptyToken();
 
       AccessInformation accessInformation = acl.GetAccessTypes (token);
@@ -104,7 +105,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       _testHelper.CreateReadAccessTypeAndAttachToAce (ace, true);
       _testHelper.CreateWriteAccessTypeAndAttachToAce (ace, null);
       _testHelper.CreateDeleteAccessTypeAndAttachToAce (ace, false);
-      AccessControlList acl = _testHelper.CreateAcl (ace);
+      AccessControlList acl = _testHelper.CreateStatefulAcl (ace);
       SecurityToken token = _testHelper.CreateEmptyToken();
 
       AccessInformation accessInformation = acl.GetAccessTypes (token);
@@ -146,7 +147,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       _testHelper.AttachAccessType (ace2, deleteAccessType, false);
       _testHelper.AttachAccessType (ace2, findAccessType, null);
 
-      AccessControlList acl = _testHelper.CreateAcl (ace1, ace2);
+      AccessControlList acl = _testHelper.CreateStatefulAcl (ace1, ace2);
       SecurityToken token = _testHelper.CreateTokenWithAbstractRole (role1, role2);
 
       AccessInformation accessInformation = acl.GetAccessTypes (token);
@@ -170,67 +171,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void CreateStateCombination ()
-    {
-      SecurableClassDefinition classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
-      AccessControlList acl = _testHelper.CreateAcl (classDefinition);
-      using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
-      {
-        Assert.AreEqual (StateType.Unchanged, classDefinition.State);
-        Assert.AreEqual (StateType.Unchanged, acl.State);
-
-        StateCombination stateCombination = acl.CreateStateCombination();
-
-        Assert.AreSame (acl, stateCombination.AccessControlList);
-        Assert.AreEqual (acl.Class, stateCombination.Class);
-        Assert.IsEmpty (stateCombination.StateUsages);
-        Assert.AreEqual (StateType.Changed, classDefinition.State);
-        Assert.AreEqual (StateType.Changed, acl.State);
-      }
-    }
-
-    [Test]
-    public void CreateStateCombination_WithoutClassDefinition ()
-    {
-      AccessControlList acl = _testHelper.CreateAcl ((SecurableClassDefinition) null);
-      using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
-      {
-        Assert.AreEqual (StateType.Unchanged, acl.State);
-
-        acl.StateCombinations.Add (StateCombination.NewObject());
-
-        Assert.AreEqual (StateType.Changed, acl.State);
-      }
-    }
-
-    [Test]
-    public void CreateStateCombination_TwoNewEntries ()
-    {
-      AccessControlList acl = StatefulAccessControlList.NewObject ();
-      acl.Class = _testHelper.CreateClassDefinition ("SecurableClass");
-      using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
-      {
-        Assert.AreEqual (StateType.Unchanged, acl.State);
-
-        StateCombination stateCombination0 = acl.CreateStateCombination();
-        StateCombination stateCombination1 = acl.CreateStateCombination();
-
-        Assert.AreEqual (2, acl.StateCombinations.Count);
-        Assert.AreSame (stateCombination0, acl.StateCombinations[0]);
-        Assert.AreEqual (0, stateCombination0.Index);
-        Assert.AreSame (stateCombination1, acl.StateCombinations[1]);
-        Assert.AreEqual (1, stateCombination1.Index);
-        Assert.AreEqual (StateType.Changed, acl.State);
-      }
-    }
-
-    [Test]
     public void CreateAccessControlEntry ()
     {
       SecurableClassDefinition classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
       AccessTypeDefinition readAccessType = _testHelper.AttachAccessType (classDefinition, Guid.NewGuid(), "Read", 0);
       AccessTypeDefinition deleteAccessType = _testHelper.AttachAccessType (classDefinition, Guid.NewGuid(), "Delete", 1);
-      AccessControlList acl = _testHelper.CreateAcl (classDefinition);
+      AccessControlList acl = _testHelper.CreateStatefulAcl (classDefinition);
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.AreEqual (StateType.Unchanged, acl.State);
@@ -251,7 +197,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void CreateAccessControlEntry_TwoNewEntries ()
     {
       SecurableClassDefinition classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
-      AccessControlList acl = _testHelper.CreateAcl (classDefinition);
+      AccessControlList acl = _testHelper.CreateStatefulAcl (classDefinition);
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.AreEqual (StateType.Unchanged, acl.State);
@@ -271,7 +217,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     public void GetChangedAt_AfterCreation ()
     {
-      AccessControlList acl = _testHelper.CreateAcl (_testHelper.CreateOrderClassDefinitionWithProperties());
+      AccessControlList acl = _testHelper.CreateStatefulAcl (_testHelper.CreateOrderClassDefinitionWithProperties());
 
       Assert.AreEqual (StateType.New, acl.State);
     }
@@ -279,7 +225,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     public void Touch_AfterCreation ()
     {
-      AccessControlList acl = _testHelper.CreateAcl (_testHelper.CreateOrderClassDefinitionWithProperties());
+      AccessControlList acl = _testHelper.CreateStatefulAcl (_testHelper.CreateOrderClassDefinitionWithProperties());
 
       Assert.AreEqual (StateType.New, acl.State);
       acl.Touch();
@@ -290,7 +236,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     public void SetAndGet_Index ()
     {
-      AccessControlList acl = StatefulAccessControlList.NewObject ();
+      AccessControlList acl = StatefulAccessControlList.NewObject (_testHelper.CreateClassDefinition ("SecurableClass"));
 
       acl.Index = 1;
       Assert.AreEqual (1, acl.Index);
@@ -315,38 +261,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void Get_StateCombinationsFromDatabase ()
-    {
-      DatabaseFixtures dbFixtures = new DatabaseFixtures();
-      AccessControlList expectedAcl = dbFixtures.CreateAndCommitAccessControlListWithStateCombinations (10, ClientTransactionScope.CurrentTransaction);
-      ObjectList<StateCombination> expectedStateCombinations = expectedAcl.StateCombinations;
-
-      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
-      {
-        AccessControlList actualAcl = StatefulAccessControlList.GetObject (expectedAcl.ID);
-
-        Assert.AreEqual (10, actualAcl.StateCombinations.Count);
-        for (int i = 0; i < 10; i++)
-          Assert.AreEqual (expectedStateCombinations[i].ID, actualAcl.StateCombinations[i].ID);
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "Cannot create StateCombination if no SecurableClassDefinition is assigned to this AccessControlList.")]
-    public void CreateStateCombination_BeforeClassIsSet ()
-    {
-      AccessControlList acl = StatefulAccessControlList.NewObject ();
-      acl.CreateStateCombination();
-    }
-
-    [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage = "Cannot create AccessControlEntry if no SecurableClassDefinition is assigned to this AccessControlList.")]
     public void CreateAccessControlEntry_BeforeClassIsSet ()
     {
-      AccessControlList acl = StatefulAccessControlList.NewObject ();
-      acl.CreateAccessControlEntry();
+      AccessControlList acl = StatefulAccessControlList.NewObject (_testHelper.CreateClassDefinition ("SecurableClass"));
+      PropertyIndexer propertyIndexer = new PropertyIndexer (acl);
+      propertyIndexer[typeof (StatefulAccessControlList), "MyClass"].SetValue ((SecurableClassDefinition) null);
+      acl.CreateAccessControlEntry ();
     }
   }
 }

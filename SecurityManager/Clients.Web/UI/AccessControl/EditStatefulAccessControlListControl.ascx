@@ -7,12 +7,12 @@
  % Unless otherwise provided, this software is distributed on an "AS IS" basis, 
  % WITHOUT WARRANTY OF ANY KIND, either express or implied. 
 --%>
-<%@ Control Language="C#" AutoEventWireup="true" Codebehind="EditAccessControlListControl.ascx.cs" Inherits="Remotion.SecurityManager.Clients.Web.UI.AccessControl.EditAccessControlListControl" %>
+<%@ Control Language="C#" AutoEventWireup="true" Codebehind="EditStatefulAccessControlListControl.ascx.cs" Inherits="Remotion.SecurityManager.Clients.Web.UI.AccessControl.EditStatefulAccessControlListControl" %>
 <%@ Register TagPrefix="securityManager" Assembly="Remotion.SecurityManager.Clients.Web" Namespace="Remotion.SecurityManager.Clients.Web.Classes" %>
 <%@ Register TagPrefix="securityManager" Src="EditStateCombinationControl.ascx" TagName="EditStateCombinationControl" %>
 <%@ Register TagPrefix="securityManager" Src="EditAccessControlEntryControl.ascx" TagName="EditAccessControlEntryControl" %>
 
-<remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.AccessControl.AccessControlList, Remotion.SecurityManager" />
+<remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.AccessControl.StatefulAccessControlList, Remotion.SecurityManager" />
 <table class="accessControlList">
   <tr>
   <td class="accessControlListTitleCell" colspan="2">

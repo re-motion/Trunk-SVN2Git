@@ -207,10 +207,10 @@ CREATE TABLE [dbo].[AccessControlList]
 
   -- AccessControlList columns
   [Index] int NOT NULL,
-  [SecurableClassID] uniqueidentifier NULL,
-  [SecurableClassIDClassID] varchar (100) NULL,
 
   -- StatefulAccessControlList columns
+  [StatefulAcl_ClassID] uniqueidentifier NULL,
+  [StatefulAcl_ClassIDClassID] varchar (100) NULL,
 
   CONSTRAINT [PK_AccessControlList] PRIMARY KEY CLUSTERED ([ID])
 )
@@ -466,7 +466,7 @@ ALTER TABLE [dbo].[StateCombination] ADD
   CONSTRAINT [FK_StateCombination_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
 
 ALTER TABLE [dbo].[AccessControlList] ADD
-  CONSTRAINT [FK_AccessControlList_SecurableClassID] FOREIGN KEY ([SecurableClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
+  CONSTRAINT [FK_AccessControlList_StatefulAcl_ClassID] FOREIGN KEY ([StatefulAcl_ClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
 
 ALTER TABLE [dbo].[StateUsage] ADD
   CONSTRAINT [FK_StateUsage_StateDefinitionID] FOREIGN KEY ([StateDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
@@ -536,17 +536,17 @@ CREATE VIEW [dbo].[StateCombinationView] ([ID], [ClassID], [Timestamp], [Index],
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[AccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID])
+CREATE VIEW [dbo].[AccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [StatefulAcl_ClassID], [StatefulAcl_ClassIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID]
+  SELECT [ID], [ClassID], [Timestamp], [Index], [StatefulAcl_ClassID], [StatefulAcl_ClassIDClassID]
     FROM [dbo].[AccessControlList]
     WHERE [ClassID] IN ('AccessControlList', 'StatefulAccessControlList')
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[StatefulAccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID])
+CREATE VIEW [dbo].[StatefulAccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [StatefulAcl_ClassID], [StatefulAcl_ClassIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [SecurableClassID], [SecurableClassIDClassID]
+  SELECT [ID], [ClassID], [Timestamp], [Index], [StatefulAcl_ClassID], [StatefulAcl_ClassIDClassID]
     FROM [dbo].[AccessControlList]
     WHERE [ClassID] IN ('StatefulAccessControlList')
   WITH CHECK OPTION

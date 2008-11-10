@@ -109,7 +109,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       SecurableClassDefinition testClass = _orderClass;
 
       //var aceOwningTenant = _testHelper.CreateAceWithOwningTenant();
-      var acl = _testHelper.CreateAcl (testClass, testClass.StateProperties[0].DefinedStates[0]);
+      var acl = _testHelper.CreateStatefulAcl (testClass, testClass.StateProperties[0].DefinedStates[0]);
       //_testHelper.
       //testClass.
 

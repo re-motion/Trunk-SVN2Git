@@ -142,7 +142,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     public void AccessControlListTest ()
     {
       var ace = TestHelper.CreateAceWithOwningGroup ();
-      var acl = TestHelper.CreateAcl (ace);
+      var acl = TestHelper.CreateStatefulAcl (ace);
       //To.ConsoleLine.e (acl);
       // Note: test string is similar to AccessControlEntry test above, since rest of test would retest standard ToText sequence output functionality
       Assert.That (To.String.e (acl).CheckAndConvertToString (), NUnitText.Contains ("SelUser=All,SelGroup=OwningGroup,SelTenant=All"));

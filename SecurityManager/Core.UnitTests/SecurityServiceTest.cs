@@ -221,7 +221,7 @@ namespace Remotion.SecurityManager.UnitTests
     
     private AccessControlList CreateAcl (AccessControlEntry ace)
     {
-      AccessControlList acl = StatefulAccessControlList.NewObject ();
+      AccessControlList acl = StatefulAccessControlList.NewObject (SecurableClassDefinition.NewObject());
       acl.AccessControlEntries.Add (ace);
 
       return acl;

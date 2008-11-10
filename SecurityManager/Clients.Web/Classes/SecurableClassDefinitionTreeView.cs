@@ -43,12 +43,12 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       if (classDefinition == null)
         return text;
 
-      if (classDefinition.AccessControlLists.Count == 0)
+      if (classDefinition.StatefulAccessControlLists.Count == 0)
         return string.Format (SecurableClassDefinitionTreeViewResources.NoAclsText, text);
-      if (classDefinition.AccessControlLists.Count == 1)
+      if (classDefinition.StatefulAccessControlLists.Count == 1)
         return string.Format (SecurableClassDefinitionTreeViewResources.SingleAclText, text);
       else
-        return string.Format (SecurableClassDefinitionTreeViewResources.MultipleAclsText, text, classDefinition.AccessControlLists.Count);
+        return string.Format (SecurableClassDefinitionTreeViewResources.MultipleAclsText, text, classDefinition.StatefulAccessControlLists.Count);
     }
   }
 }

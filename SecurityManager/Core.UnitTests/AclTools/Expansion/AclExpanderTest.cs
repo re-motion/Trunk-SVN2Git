@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       base.SetUp();
 
       TestHelper.CreateAceWithSpecficTenant (Tenant);
-      _aclList.Add (TestHelper.CreateAcl());
+      _aclList.Add (TestHelper.CreateStatefulAcl());
     }
 
 
@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       //AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace, true);
       //AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace, true);
 
-      AccessControlList acl = TestHelper.CreateAcl (ace);
+      AccessControlList acl = TestHelper.CreateStatefulAcl (ace);
       aclList.Add (acl);
 
       SecurityToken securityToken = new SecurityToken (user, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
@@ -70,7 +70,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var user = User3;
       //var acl = TestHelper.CreateAcl (Ace3, Ace2, Ace);
-      var acl = TestHelper.CreateAcl (Ace3);
+      var acl = TestHelper.CreateStatefulAcl (Ace3);
       Assert.That (Ace3.Validate().IsValid);
       SecurityToken securityToken = new SecurityToken (user, user.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
@@ -87,7 +87,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       Assert.That (ace.Validate ().IsValid);
       
-      var acl = TestHelper.CreateAcl (ace);
+      var acl = TestHelper.CreateStatefulAcl (ace);
       SecurityToken securityToken = new SecurityToken (User, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
    
@@ -104,7 +104,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       Assert.That (ace.Validate ().IsValid);
 
-      var acl = TestHelper.CreateAcl (ace);
+      var acl = TestHelper.CreateStatefulAcl (ace);
       // We pass the Group used in the ace Position above in the owningGroups-list => ACE will match.
       SecurityToken securityToken = new SecurityToken (User, User.Tenant, List.New (Group), new List<AbstractRoleDefinition> ());
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
@@ -152,7 +152,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
           List.New (User),
-          List.New(TestHelper.CreateAcl(ace))  
+          List.New(TestHelper.CreateStatefulAcl(ace))  
         );
 
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
@@ -185,7 +185,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
           List.New (User),
-          List.New (TestHelper.CreateAcl (aceGroupOwning, aceAbstractRole, aceGroupAll))
+          List.New (TestHelper.CreateStatefulAcl (aceGroupOwning, aceAbstractRole, aceGroupAll))
         );
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
@@ -220,7 +220,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
           List.New (otherTenantUser),
-          List.New (TestHelper.CreateAcl (aceGroupSpecificTenant))
+          List.New (TestHelper.CreateStatefulAcl (aceGroupSpecificTenant))
         );
 
 
@@ -254,7 +254,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         GetAclExpansionEntryList_UserList_AceList (
           List.New (otherTenantUser, User),
           //List.New (otherTenantUser),
-          List.New (TestHelper.CreateAcl (aceSpecificTenantWithOtherTenant, aceGroupOwning))
+          List.New (TestHelper.CreateStatefulAcl (aceSpecificTenantWithOtherTenant, aceGroupOwning))
         );
 
 
@@ -290,7 +290,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
           List.New (User),
-          List.New (TestHelper.CreateAcl (aceOwningTenant, acePosition, aceGroupOwning))
+          List.New (TestHelper.CreateStatefulAcl (aceOwningTenant, acePosition, aceGroupOwning))
         );
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
@@ -323,7 +323,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         GetAclExpansionEntryList_UserList_AceList (
           List.New (User),
           //List.New (TestHelper.CreateAcl (aceMatchAll, aceSpecificTenant, aceGroupOwning))
-          List.New (TestHelper.CreateAcl (aceOwningTenant), TestHelper.CreateAcl (aceSpecificTenant), TestHelper.CreateAcl (aceGroupOwning))
+          List.New (TestHelper.CreateStatefulAcl (aceOwningTenant), TestHelper.CreateStatefulAcl (aceSpecificTenant), TestHelper.CreateStatefulAcl (aceGroupOwning))
         );
 
 
@@ -371,7 +371,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var numberRoles = users.SelectMany (x => x.Roles).Count ();
       //To.ConsoleLine.e (() => numberRoles);
       
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New (Acl,Acl2);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,Acl2);
 
       var numberAces = acls.SelectMany (x => x.AccessControlEntries).Count ();
       //To.ConsoleLine.e (() => numberAces); 
@@ -418,7 +418,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         GetAclExpansionEntryList_UserList_AceList (
           //List.New (User, User2),
           List.New (User2),
-          List.New (TestHelper.CreateAcl (ace))
+          List.New (TestHelper.CreateStatefulAcl (ace))
         );
 
 
@@ -437,7 +437,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       //To.ConsoleLine.s (ace.ToString ());
 
       var userList = List.New (User, User2);
-      var aclList = List.New (TestHelper.CreateAcl (testAce));
+      var aclList = List.New (TestHelper.CreateStatefulAcl (testAce));
 
       // Specific ACE with otherTenant should not match any AclProbe|s
       AssertIsNotInMatchingAces(userList, aclList);
@@ -445,7 +445,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
           List.New (User, User2),
-          List.New (TestHelper.CreateAcl (testAce))
+          List.New (TestHelper.CreateStatefulAcl (testAce))
         );
 
       // If ACE does not macth, the resulting aclExpansionEntryList must be empty.
@@ -472,7 +472,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
           List.New (User, User2),
-          List.New (TestHelper.CreateAcl (ace))
+          List.New (TestHelper.CreateStatefulAcl (ace))
         );
     }
 
@@ -507,7 +507,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           //List.New (otherTenantUser, User),
           //List.New (User),
           List.New (otherTenantUser),
-          List.New (TestHelper.CreateAcl (aceSpecificTenantWithOtherTenant, aceGroupOwning))
+          List.New (TestHelper.CreateStatefulAcl (aceSpecificTenantWithOtherTenant, aceGroupOwning))
         );
     }
 
@@ -561,7 +561,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var ace = TestHelper.CreateAceWithPosition (position, groupSelection);
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
       Assert.That (ace.Validate ().IsValid);
-      var acl = TestHelper.CreateAcl (ace);
+      var acl = TestHelper.CreateStatefulAcl (ace);
       aclList.Add (acl);
 
       var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();

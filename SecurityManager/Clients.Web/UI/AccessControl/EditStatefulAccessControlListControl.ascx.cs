@@ -23,7 +23,7 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
   [WebMultiLingualResources (typeof (AccessControlResources))]
-  public partial class EditAccessControlListControl : BaseControl
+  public partial class EditStatefulAccessControlListControl : BaseControl
   {
     // types
 
@@ -46,9 +46,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       get { return CurrentObject; }
     }
 
-    protected AccessControlList CurrentAccessControlList
+    protected StatefulAccessControlList CurrentAccessControlList
     {
-      get { return (AccessControlList) CurrentObject.BusinessObject; }
+      get { return (StatefulAccessControlList) CurrentObject.BusinessObject; }
     }
 
     protected override void OnPreRender (EventArgs e)

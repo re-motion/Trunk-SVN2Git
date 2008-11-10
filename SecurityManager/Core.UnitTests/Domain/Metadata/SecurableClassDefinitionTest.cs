@@ -344,7 +344,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    public void CreateAccessControlList ()
+    public void CreateStatefulAccessControlList ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
@@ -353,7 +353,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         {
           Assert.AreEqual (StateType.Unchanged, classDefinition.State);
 
-          AccessControlList accessControlList = classDefinition.CreateAccessControlList();
+          StatefulAccessControlList accessControlList = classDefinition.CreateStatefulAccessControlList();
 
           Assert.AreSame (classDefinition, accessControlList.Class);
           Assert.IsNotEmpty (accessControlList.AccessControlEntries);
@@ -364,7 +364,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    public void CreateAccessControlList_TwoNewAcls ()
+    public void CreateStatefulAccessControlList_TwoNewAcls ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
@@ -373,13 +373,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         {
           Assert.AreEqual (StateType.Unchanged, classDefinition.State);
 
-          AccessControlList acccessControlList0 = classDefinition.CreateAccessControlList();
-          AccessControlList acccessControlListl = classDefinition.CreateAccessControlList();
+          AccessControlList acccessControlList0 = classDefinition.CreateStatefulAccessControlList();
+          AccessControlList acccessControlListl = classDefinition.CreateStatefulAccessControlList();
 
-          Assert.AreEqual (2, classDefinition.AccessControlLists.Count);
-          Assert.AreSame (acccessControlList0, classDefinition.AccessControlLists[0]);
+          Assert.AreEqual (2, classDefinition.StatefulAccessControlLists.Count);
+          Assert.AreSame (acccessControlList0, classDefinition.StatefulAccessControlLists[0]);
           Assert.AreEqual (0, acccessControlList0.Index);
-          Assert.AreSame (acccessControlListl, classDefinition.AccessControlLists[1]);
+          Assert.AreSame (acccessControlListl, classDefinition.StatefulAccessControlLists[1]);
           Assert.AreEqual (1, acccessControlListl.Index);
           Assert.AreEqual (StateType.Changed, classDefinition.State);
         }
@@ -414,21 +414,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
 
       SecurableClassDefinition expectedClassDefinition;
-      ObjectList<AccessControlList> expectedAcls;
+      ObjectList<StatefulAccessControlList> expectedAcls;
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         expectedClassDefinition =
             dbFixtures.CreateAndCommitSecurableClassDefinitionWithAccessControlLists (10, ClientTransactionScope.CurrentTransaction);
-        expectedAcls = expectedClassDefinition.AccessControlLists;
+        expectedAcls = expectedClassDefinition.StatefulAccessControlLists;
       }
 
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         SecurableClassDefinition actualClassDefinition = SecurableClassDefinition.GetObject (expectedClassDefinition.ID);
 
-        Assert.AreEqual (10, actualClassDefinition.AccessControlLists.Count);
+        Assert.AreEqual (10, actualClassDefinition.StatefulAccessControlLists.Count);
         for (int i = 0; i < 10; i++)
-          Assert.AreEqual (expectedAcls[i].ID, actualClassDefinition.AccessControlLists[i].ID);
+          Assert.AreEqual (expectedAcls[i].ID, actualClassDefinition.StatefulAccessControlLists[i].ID);
       }
     }
 

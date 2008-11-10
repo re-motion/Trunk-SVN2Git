@@ -195,8 +195,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
         SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition ();
         for (int i = 0; i < accessControlLists; i++)
         {
-          AccessControlList acl = StatefulAccessControlList.NewObject ();
-          acl.Class = classDefinition;
+          StatefulAccessControlList acl = StatefulAccessControlList.NewObject (classDefinition);
           acl.CreateAccessControlEntry ();
           if (i == 0)
             CreateStateCombination (acl);
@@ -217,8 +216,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       using (transaction.EnterNonDiscardingScope ())
       {
         SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition ();
-        AccessControlList acl = StatefulAccessControlList.NewObject ();
-        acl.Class = classDefinition;
+        StatefulAccessControlList acl = StatefulAccessControlList.NewObject (classDefinition);
         acl.CreateStateCombination ();
 
         for (int i = 0; i < accessControlEntries; i++)
@@ -230,14 +228,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       }
     }
 
-    public AccessControlList CreateAndCommitAccessControlListWithStateCombinations (int stateCombinations, ClientTransaction transaction)
+    public StatefulAccessControlList CreateAndCommitAccessControlListWithStateCombinations (int stateCombinations, ClientTransaction transaction)
     {
       CreateEmptyDomain ();
       using (transaction.EnterNonDiscardingScope ())
       {
         SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition ();
-        AccessControlList acl = StatefulAccessControlList.NewObject ();
-        acl.Class = classDefinition;
+        StatefulAccessControlList acl = StatefulAccessControlList.NewObject (classDefinition);
         acl.CreateAccessControlEntry ();
 
         for (int i = 0; i < stateCombinations; i++)
@@ -275,7 +272,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       using (transaction.EnterNonDiscardingScope ())
       {
         SecurableClassDefinition classDefinition = CreateSecurableClassDefinitionWithAccessTypes (permissions);
-        AccessControlList acl = classDefinition.CreateAccessControlList ();
+        AccessControlList acl = classDefinition.CreateStatefulAccessControlList ();
         AccessControlEntry ace = acl.CreateAccessControlEntry ();
 
         ClientTransactionScope.CurrentTransaction.Commit ();
@@ -439,7 +436,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       return accessType;
     }
 
-    private void CreateStateCombination (AccessControlList acl, params string[] propertyNames)
+    private void CreateStateCombination (StatefulAccessControlList acl, params string[] propertyNames)
     {
       StateCombination stateCombination = acl.CreateStateCombination ();
       foreach (string propertyName in propertyNames)

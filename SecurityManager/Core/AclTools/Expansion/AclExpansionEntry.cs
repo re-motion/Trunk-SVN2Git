@@ -1,5 +1,5 @@
 using System;
-using Remotion.Data.DomainObjects;
+using System.Collections.Generic;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -15,9 +15,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     private readonly AccessControlList _accessControlList;
 
-    public AclExpansionEntry (User user, Role role, AccessControlList accessControlList, 
-      AclExpansionAccessConditions accessConditions,
-      AccessTypeDefinition[] allowedAccessTypes, AccessTypeDefinition[] deniedAccessTypes)
+    public AclExpansionEntry (
+        User user,
+        Role role,
+        AccessControlList accessControlList,
+        AclExpansionAccessConditions accessConditions,
+        AccessTypeDefinition[] allowedAccessTypes,
+        AccessTypeDefinition[] deniedAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("user", user);
       ArgumentUtility.CheckNotNull ("role", role);
@@ -35,12 +39,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public User User { get; set; }
     public Role Role { get; set; }
 
-    public SecurableClassDefinition Class {
+    public SecurableClassDefinition Class
+    {
       get { return _accessControlList.Class; }
     }
-    public ObjectList<StateCombination> StateCombinations
+
+    public IList<StateCombination> StateCombinations
     {
-      get { return _accessControlList.StateCombinations; }
+      get
+      {
+        if (_accessControlList is StatefulAccessControlList)
+          return ((StatefulAccessControlList) _accessControlList).StateCombinations;
+        else
+          return new StateCombination[0];
+      }
     }
 
     public AclExpansionAccessConditions AccessConditions { get; set; }
@@ -48,11 +60,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public AccessTypeDefinition[] DeniedAccessTypes { get; set; }
 
 
-
     public void ToText (IToTextBuilder toTextBuilder)
     {
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-      toTextBuilder.ib<AclExpansionEntry> ("").e ("user", User.UserName).e ("role", Role).e (AllowedAccessTypes).e ("conditions", AccessConditions).ie ();
+      toTextBuilder.ib<AclExpansionEntry> ("").e ("user", User.UserName).e ("role", Role).e (AllowedAccessTypes).e ("conditions", AccessConditions).ie();
     }
   }
 }

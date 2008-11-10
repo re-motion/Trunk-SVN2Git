@@ -83,18 +83,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       return classDefinition;
     }
 
-    public AccessControlList CreateAcl (SecurableClassDefinition classDefinition, params StateDefinition[] states)
+    public StatefulAccessControlList CreateStatefulAcl (SecurableClassDefinition classDefinition, params StateDefinition[] states)
     {
-      return CreateAcl (classDefinition, _transaction, states);
+      return CreateStatefulAcl (classDefinition, _transaction, states);
     }
 
 
-    private AccessControlList CreateAcl (SecurableClassDefinition classDefinition, ClientTransaction transaction, params StateDefinition[] states)
+    private StatefulAccessControlList CreateStatefulAcl (SecurableClassDefinition classDefinition, ClientTransaction transaction, params StateDefinition[] states)
     {
       using (transaction.EnterNonDiscardingScope ())
       {
-        AccessControlList acl = StatefulAccessControlList.NewObject ();
-        acl.Class = classDefinition;
+        var acl = StatefulAccessControlList.NewObject (classDefinition);
         StateCombination stateCombination = CreateStateCombination (acl, transaction);
 
         foreach (StateDefinition state in states)
@@ -104,12 +103,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    public StateCombination CreateStateCombination (AccessControlList acl)
+    public StateCombination CreateStateCombination (StatefulAccessControlList acl)
     {
       return CreateStateCombination (acl, _transaction);
     }
 
-    private StateCombination CreateStateCombination (AccessControlList acl, ClientTransaction transaction)
+    private StateCombination CreateStateCombination (StatefulAccessControlList acl, ClientTransaction transaction)
     {
       using (transaction.EnterNonDiscardingScope ())
       {
@@ -129,7 +128,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       using (transaction.EnterNonDiscardingScope())
       {
-        AccessControlList acl = CreateAcl (classDefinition, transaction, states);
+        StatefulAccessControlList acl = CreateStatefulAcl (classDefinition, transaction, states);
         return acl.StateCombinations[0];
       }    
     }
@@ -234,11 +233,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         StatePropertyDefinition paymentState = CreatePaymentStateProperty (classDefinition);
 
         List<AccessControlList> acls = new List<AccessControlList>();
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper(PaymentState.None).Name]));
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name]));
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
-        acls.Add (CreateAcl (classDefinition));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper(PaymentState.None).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition));
 
         return acls;
       }
@@ -253,15 +252,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         StatePropertyDefinition deliveryState = CreateDeliveryStateProperty (classDefinition);
 
         List<AccessControlList> acls = new List<AccessControlList>();
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
-        acls.Add (CreateAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
-        acls.Add (CreateAcl (classDefinition));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper(Delivery.Dhl).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Received).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper(PaymentState.None).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition, orderState[new EnumWrapper (OrderState.Delivered).Name], paymentState[new EnumWrapper (PaymentState.Paid).Name], deliveryState[new EnumWrapper (Delivery.Post).Name]));
+        acls.Add (CreateStatefulAcl (classDefinition));
 
         return acls;
       }
@@ -473,11 +472,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    public AccessControlList CreateAcl (params AccessControlEntry[] aces)
+    public AccessControlList CreateStatefulAcl (params AccessControlEntry[] aces)
     {
       using (_transaction.EnterNonDiscardingScope())
       {
-        AccessControlList acl = StatefulAccessControlList.NewObject ();
+        AccessControlList acl = StatefulAccessControlList.NewObject (CreateClassDefinition ("SecurableClass"));
 
         foreach (AccessControlEntry ace in aces)
           acl.AccessControlEntries.Add (ace);

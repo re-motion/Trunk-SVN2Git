@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{65B86B2E-D54D-425B-B681-82449E31BA01}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -95,6 +95,7 @@
     <Compile Include="Domain\AccessControl\AccessControlListTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlObjectAssert.cs" />
     <Compile Include="Domain\AccessControl\AccessControlTestHelper.cs" />
+    <Compile Include="Domain\AccessControl\StatefulAccessControlListTest.cs" />
     <Compile Include="Domain\AccessControl\StateUsageTest.cs" />
     <Compile Include="Domain\AccessControl\PermissionTest.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenBuilderTest.cs" />

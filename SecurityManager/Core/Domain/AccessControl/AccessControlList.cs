@@ -12,20 +12,17 @@ using System;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
   [Serializable]
-  [Instantiable]
   [DBTable]
   [SecurityManagerStorageGroup]
   public abstract class AccessControlList : AccessControlObject
   {
     private ObjectList<AccessControlEntry> _accessControlEntriesToBeDeleted;
-    private ObjectList<StateCombination> _stateCombinationsToBeDeleted;
 
     protected AccessControlList ()
     {
@@ -41,21 +38,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private void SubscribeCollectionEvents ()
     {
-      StateCombinations.Added += StateCombinations_Added;
       AccessControlEntries.Added += AccessControlEntries_Added;
-    }
-
-    private void StateCombinations_Added (object sender, DomainObjectCollectionChangeEventArgs args)
-    {
-      var stateCombination = (StateCombination) args.DomainObject;
-      var stateCombinations = StateCombinations;
-      if (stateCombinations.Count == 1)
-        stateCombination.Index = 0;
-      else
-        stateCombination.Index = stateCombinations[stateCombinations.Count - 2].Index + 1;
-      Touch();
-      if (Class != null)
-        Class.Touch();
     }
 
     private void AccessControlEntries_Added (object sender, DomainObjectCollectionChangeEventArgs args)
@@ -77,14 +60,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public abstract int Index { get; set; }
 
-    [DBBidirectionalRelation ("AccessControlLists")]
-    [DBColumn ("SecurableClassID")]
-    [Mandatory]
-    public abstract SecurableClassDefinition Class { get; set; }
-
-    [DBBidirectionalRelation ("AccessControlList", SortExpression = "[Index] ASC")]
-    [Mandatory]
-    public abstract ObjectList<StateCombination> StateCombinations { get; }
+    [StorageClassNone]
+    public abstract SecurableClassDefinition Class { get; }
 
     [DBBidirectionalRelation ("AccessControlList", SortExpression = "[Index] ASC")]
     public abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
@@ -103,16 +80,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       foreach (var entry in AccessControlEntries)
       {
         if (entry.MatchesToken (token))
-        {
           entries.Add (entry);
-        }
       }
 
       return entries.ToArray();
     }
-
-
-
 
     public AccessInformation GetAccessTypes (SecurityToken token, AccessTypeStatistics accessTypeStatistics)
     {
@@ -141,30 +113,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         // Add allowed/denied access types of ACE to result
         allowedAccessTypesResult.AddRange (allowedAccesTypesForCurrentAce);
         deniedAccessTypesResult.AddRange (deniedAccessTypesForCurrentAce);
-
-
-        //foreach (var allowedAccessType in ace.GetAllowedAccessTypes ())
-        //{
-        //  allowedAccessTypes.Add (allowedAccessType);
-
-        //  // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
-        //  // The recorded information allows deduction of whether the probing ACE was matched for ACL-expansion code (see AclExpander.AddAclExpansionEntry).
-        //  if (accessTypeStatistics != null)
-        //  {
-        //    accessTypeStatistics.AddAccessTypesContributingAce (ace);
-        //  }
-        //}
-
-        //foreach (var deniedAccessType in ace.GetDeniedAccessTypes ())
-        //{
-        //  deniedAccessTypes.Add (deniedAccessType);
-
-        //  // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
-        //  if (accessTypeStatistics != null)
-        //  {
-        //    accessTypeStatistics.AddAccessTypesContributingAce (ace);
-        //  }
-        //}
       }
 
       // Deny always wins => Remove allowed access types which are also denied from result.
@@ -174,25 +122,21 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return new AccessInformation (allowedAccessTypesResult.ToArray (), deniedAccessTypesResult.ToArray ());
     }
 
-
     public AccessInformation GetAccessTypes (SecurityToken token)
     {
       ArgumentUtility.CheckNotNull ("token", token);
       return GetAccessTypes (token, null);
     }
 
-
-    
     //TODO: Rewrite with test
-
     protected override void OnDeleting (EventArgs args)
     {
       base.OnDeleting (args);
 
       _accessControlEntriesToBeDeleted = AccessControlEntries.Clone();
-      _stateCombinationsToBeDeleted = StateCombinations.Clone();
     }
 
+    //TODO: Rewrite with test
     protected override void OnDeleted (EventArgs args)
     {
       base.OnDeleted (args);
@@ -200,21 +144,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       foreach (var accessControlEntry in _accessControlEntriesToBeDeleted)
         accessControlEntry.Delete();
       _accessControlEntriesToBeDeleted = null;
-
-      foreach (var stateCombination in _stateCombinationsToBeDeleted)
-        stateCombination.Delete();
-      _stateCombinationsToBeDeleted = null;
-    }
-
-    public StateCombination CreateStateCombination ()
-    {
-      if (Class == null)
-        throw new InvalidOperationException ("Cannot create StateCombination if no SecurableClassDefinition is assigned to this AccessControlList.");
-
-      var stateCombination = StateCombination.NewObject();
-      stateCombination.AccessControlList = this;
-
-      return stateCombination;
     }
 
     public AccessControlEntry CreateAccessControlEntry ()
