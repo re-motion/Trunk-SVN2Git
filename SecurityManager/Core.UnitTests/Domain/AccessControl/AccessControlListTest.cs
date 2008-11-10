@@ -236,7 +236,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     public void SetAndGet_Index ()
     {
-      AccessControlList acl = StatefulAccessControlList.NewObject (_testHelper.CreateClassDefinition ("SecurableClass"));
+      AccessControlList acl = StatefulAccessControlList.NewObject ();
 
       acl.Index = 1;
       Assert.AreEqual (1, acl.Index);
@@ -263,11 +263,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage = "Cannot create AccessControlEntry if no SecurableClassDefinition is assigned to this AccessControlList.")]
-    public void CreateAccessControlEntry_BeforeClassIsSet ()
+    public void CreateAccessControlEntry_BeforeClassIsSet_WithStatefulAccessControlList ()
     {
-      AccessControlList acl = StatefulAccessControlList.NewObject (_testHelper.CreateClassDefinition ("SecurableClass"));
-      PropertyIndexer propertyIndexer = new PropertyIndexer (acl);
-      propertyIndexer[typeof (StatefulAccessControlList), "MyClass"].SetValue ((SecurableClassDefinition) null);
+      AccessControlList acl = StatefulAccessControlList.NewObject ();
+      acl.CreateAccessControlEntry ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "Cannot create AccessControlEntry if no SecurableClassDefinition is assigned to this AccessControlList.")]
+    public void CreateAccessControlEntry_BeforeClassIsSet_WithStatelessAccessControlList ()
+    {
+      AccessControlList acl = StatelessAccessControlList.NewObject ();
       acl.CreateAccessControlEntry ();
     }
   }

@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public void DomainObjectsAreSerializable ()
     {
       CheckDomainObjectSerializability (delegate { return AccessControlEntry.NewObject (); });
-      CheckDomainObjectSerializability (delegate { return StatefulAccessControlList.NewObject (SecurableClassDefinition.NewObject()); });
+      CheckDomainObjectSerializability (delegate { return StatefulAccessControlList.NewObject (); });
       CheckDomainObjectSerializability (delegate { return Permission.NewObject (); });
       CheckDomainObjectSerializability (delegate { return StateCombination.NewObject (); });
       CheckDomainObjectSerializability (delegate { return StateUsage.NewObject (); });

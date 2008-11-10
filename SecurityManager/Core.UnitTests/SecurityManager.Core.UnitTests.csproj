@@ -96,6 +96,7 @@
     <Compile Include="Domain\AccessControl\AccessControlObjectAssert.cs" />
     <Compile Include="Domain\AccessControl\AccessControlTestHelper.cs" />
     <Compile Include="Domain\AccessControl\StatefulAccessControlListTest.cs" />
+    <Compile Include="Domain\AccessControl\StatelessAccessControlListTest.cs" />
     <Compile Include="Domain\AccessControl\StateUsageTest.cs" />
     <Compile Include="Domain\AccessControl\PermissionTest.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenBuilderTest.cs" />

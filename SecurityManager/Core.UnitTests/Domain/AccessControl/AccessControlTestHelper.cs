@@ -83,17 +83,32 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       return classDefinition;
     }
 
+    public StatelessAccessControlList CreateStatelessAcl (SecurableClassDefinition classDefinition)
+    {
+      return CreateStatelessAcl (classDefinition, _transaction);
+    }
+
+    public StatelessAccessControlList CreateStatelessAcl (SecurableClassDefinition classDefinition, ClientTransaction transaction)
+    {
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        var acl = StatelessAccessControlList.NewObject ();
+        acl.Class = classDefinition;
+        return acl;
+      }
+    }
+
     public StatefulAccessControlList CreateStatefulAcl (SecurableClassDefinition classDefinition, params StateDefinition[] states)
     {
       return CreateStatefulAcl (classDefinition, _transaction, states);
     }
 
-
     private StatefulAccessControlList CreateStatefulAcl (SecurableClassDefinition classDefinition, ClientTransaction transaction, params StateDefinition[] states)
     {
       using (transaction.EnterNonDiscardingScope ())
       {
-        var acl = StatefulAccessControlList.NewObject (classDefinition);
+        var acl = StatefulAccessControlList.NewObject ();
+        acl.Class = classDefinition;
         StateCombination stateCombination = CreateStateCombination (acl, transaction);
 
         foreach (StateDefinition state in states)
@@ -476,7 +491,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       using (_transaction.EnterNonDiscardingScope())
       {
-        AccessControlList acl = StatefulAccessControlList.NewObject (CreateClassDefinition ("SecurableClass"));
+        AccessControlList acl = StatefulAccessControlList.NewObject ();
 
         foreach (AccessControlEntry ace in aces)
           acl.AccessControlEntries.Add (ace);

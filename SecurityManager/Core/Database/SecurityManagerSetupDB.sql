@@ -17,6 +17,9 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'AccessCont
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StatefulAccessControlListView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[StatefulAccessControlListView]
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StatelessAccessControlListView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[StatelessAccessControlListView]
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StateUsageView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[StateUsageView]
 
@@ -211,6 +214,10 @@ CREATE TABLE [dbo].[AccessControlList]
   -- StatefulAccessControlList columns
   [StatefulAcl_ClassID] uniqueidentifier NULL,
   [StatefulAcl_ClassIDClassID] varchar (100) NULL,
+
+  -- StatelessAccessControlList columns
+  [StatelessAcl_ClassID] uniqueidentifier NULL,
+  [StatelessAcl_ClassIDClassID] varchar (100) NULL,
 
   CONSTRAINT [PK_AccessControlList] PRIMARY KEY CLUSTERED ([ID])
 )
@@ -466,7 +473,8 @@ ALTER TABLE [dbo].[StateCombination] ADD
   CONSTRAINT [FK_StateCombination_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
 
 ALTER TABLE [dbo].[AccessControlList] ADD
-  CONSTRAINT [FK_AccessControlList_StatefulAcl_ClassID] FOREIGN KEY ([StatefulAcl_ClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
+  CONSTRAINT [FK_AccessControlList_StatefulAcl_ClassID] FOREIGN KEY ([StatefulAcl_ClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID]),
+  CONSTRAINT [FK_AccessControlList_StatelessAcl_ClassID] FOREIGN KEY ([StatelessAcl_ClassID]) REFERENCES [dbo].[SecurableClassDefinition] ([ID])
 
 ALTER TABLE [dbo].[StateUsage] ADD
   CONSTRAINT [FK_StateUsage_StateDefinitionID] FOREIGN KEY ([StateDefinitionID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
@@ -536,11 +544,11 @@ CREATE VIEW [dbo].[StateCombinationView] ([ID], [ClassID], [Timestamp], [Index],
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[AccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [StatefulAcl_ClassID], [StatefulAcl_ClassIDClassID])
+CREATE VIEW [dbo].[AccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [StatefulAcl_ClassID], [StatefulAcl_ClassIDClassID], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [StatefulAcl_ClassID], [StatefulAcl_ClassIDClassID]
+  SELECT [ID], [ClassID], [Timestamp], [Index], [StatefulAcl_ClassID], [StatefulAcl_ClassIDClassID], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID]
     FROM [dbo].[AccessControlList]
-    WHERE [ClassID] IN ('AccessControlList', 'StatefulAccessControlList')
+    WHERE [ClassID] IN ('AccessControlList', 'StatefulAccessControlList', 'StatelessAccessControlList')
   WITH CHECK OPTION
 GO
 
@@ -549,6 +557,14 @@ CREATE VIEW [dbo].[StatefulAccessControlListView] ([ID], [ClassID], [Timestamp],
   SELECT [ID], [ClassID], [Timestamp], [Index], [StatefulAcl_ClassID], [StatefulAcl_ClassIDClassID]
     FROM [dbo].[AccessControlList]
     WHERE [ClassID] IN ('StatefulAccessControlList')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[StatelessAccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Index], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID]
+    FROM [dbo].[AccessControlList]
+    WHERE [ClassID] IN ('StatelessAccessControlList')
   WITH CHECK OPTION
 GO
 

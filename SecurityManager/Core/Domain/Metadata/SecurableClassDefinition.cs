@@ -180,6 +180,9 @@ namespace Remotion.SecurityManager.Domain.Metadata
       }
     }
 
+    [DBBidirectionalRelation ("MyClass")]
+    public abstract StatelessAccessControlList StatelessAccessControlList { get; set; }
+
     [DBBidirectionalRelation ("MyClass", SortExpression = "[Index] ASC")]
     public abstract ObjectList<StatefulAccessControlList> StatefulAccessControlLists { get; }
 
@@ -230,7 +233,8 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public StatefulAccessControlList CreateStatefulAccessControlList ()
     {
-      var accessControlList = StatefulAccessControlList.NewObject (this);
+      var accessControlList = StatefulAccessControlList.NewObject ();
+      accessControlList.Class = this;
       accessControlList.CreateStateCombination();
       accessControlList.CreateAccessControlEntry();
 

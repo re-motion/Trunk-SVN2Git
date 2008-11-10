@@ -11,7 +11,6 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
@@ -19,25 +18,20 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   [Instantiable]
   public abstract class StatefulAccessControlList : AccessControlList
   {
-    public static StatefulAccessControlList NewObject (SecurableClassDefinition securableClassDefinition)
+    public static StatefulAccessControlList NewObject ()
     {
-      return NewObject<StatefulAccessControlList> ().With (securableClassDefinition);
+      return NewObject<StatefulAccessControlList>().With ();
     }
 
     public new static StatefulAccessControlList GetObject (ObjectID id)
     {
-      return DomainObject.GetObject<StatefulAccessControlList> (id);
+      return GetObject<StatefulAccessControlList> (id);
     }
 
     private ObjectList<StateCombination> _stateCombinationsToBeDeleted;
 
-    protected StatefulAccessControlList (SecurableClassDefinition securableClassDefinition)
+    protected StatefulAccessControlList ()
     {
-      ArgumentUtility.CheckNotNull ("securableClassDefinition", securableClassDefinition);
-
-// ReSharper disable DoNotCallOverridableMethodsInConstructor
-      MyClass = securableClassDefinition;
-// ReSharper restore DoNotCallOverridableMethodsInConstructor
       SubscribeCollectionEvents();
     }
 
@@ -78,6 +72,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public override SecurableClassDefinition Class
     {
       get { return MyClass; }
+      set { MyClass = value; }
     }
 
     //TODO: Rewrite with test
@@ -85,7 +80,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       base.OnDeleting (args);
 
-      _stateCombinationsToBeDeleted = StateCombinations.Clone ();
+      _stateCombinationsToBeDeleted = StateCombinations.Clone();
     }
 
     //TODO: Rewrite with test
@@ -94,16 +89,17 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       base.OnDeleted (args);
 
       foreach (var stateCombination in _stateCombinationsToBeDeleted)
-        stateCombination.Delete ();
+        stateCombination.Delete();
       _stateCombinationsToBeDeleted = null;
     }
 
     public StateCombination CreateStateCombination ()
     {
       if (Class == null)
-        throw new InvalidOperationException ("Cannot create StateCombination if no SecurableClassDefinition is assigned to this StatefulAccessControlList.");
+        throw new InvalidOperationException (
+            "Cannot create StateCombination if no SecurableClassDefinition is assigned to this StatefulAccessControlList.");
 
-      var stateCombination = StateCombination.NewObject ();
+      var stateCombination = StateCombination.NewObject();
       stateCombination.AccessControlList = this;
 
       return stateCombination;

@@ -61,7 +61,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public abstract int Index { get; set; }
 
     [StorageClassNone]
-    public abstract SecurableClassDefinition Class { get; }
+    public abstract SecurableClassDefinition Class { get; set;  }
 
     [DBBidirectionalRelation ("AccessControlList", SortExpression = "[Index] ASC")]
     public abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
@@ -98,6 +98,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         var allowedAccesTypesForCurrentAce = ace.GetAllowedAccessTypes();
         var deniedAccessTypesForCurrentAce = ace.GetDeniedAccessTypes ();
 
+        // Add allowed/denied access types of ACE to result
+        allowedAccessTypesResult.AddRange (allowedAccesTypesForCurrentAce);
+        deniedAccessTypesResult.AddRange (deniedAccessTypesForCurrentAce);
+
         // Record the ACEs that contribute to the resulting AccessTypeDefinition-array.
         // The recorded information allows deduction of whether the probing ACE was matched for ACL-expansion code
         // (see AclExpander.AddAclExpansionEntry).
@@ -105,14 +109,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         {
           accessTypeStatistics.AddMatchingAce (ace);
           if (allowedAccesTypesForCurrentAce.Length > 0 || deniedAccessTypesForCurrentAce.Length > 0)
-          {
             accessTypeStatistics.AddAccessTypesContributingAce (ace);
-          }
         }
-
-        // Add allowed/denied access types of ACE to result
-        allowedAccessTypesResult.AddRange (allowedAccesTypesForCurrentAce);
-        deniedAccessTypesResult.AddRange (deniedAccessTypesForCurrentAce);
       }
 
       // Deny always wins => Remove allowed access types which are also denied from result.

@@ -106,6 +106,7 @@
     <Compile Include="Domain\AccessControl\PropertyStateTuple.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\StringWriterFactory.cs" />
     <Compile Include="Domain\AccessControl\StatefulAccessControlList.cs" />
+    <Compile Include="Domain\AccessControl\StatelessAccessControlList.cs" />
     <Compile Include="Domain\SecurityManagerSearchServiceBase.cs" />
     <Compile Include="Domain\AccessControl\TenantSelection.cs" />
     <Compile Include="Domain\AccessControl\GroupSelection.cs" />

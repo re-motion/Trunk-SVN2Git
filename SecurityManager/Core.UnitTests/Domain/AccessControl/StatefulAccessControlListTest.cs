@@ -76,7 +76,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     public void CreateStateCombination_TwoNewEntries ()
     {
-      StatefulAccessControlList acl = StatefulAccessControlList.NewObject (_testHelper.CreateClassDefinition ("SecurableClass"));
+      StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
+      acl.Class = _testHelper.CreateClassDefinition ("SecurableClass");
       using (_testHelper.Transaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.Unchanged, acl.State);
@@ -115,9 +116,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         ExpectedMessage = "Cannot create StateCombination if no SecurableClassDefinition is assigned to this StatefulAccessControlList.")]
     public void CreateStateCombination_BeforeClassIsSet ()
     {
-      StatefulAccessControlList acl = StatefulAccessControlList.NewObject (_testHelper.CreateClassDefinition ("SecurableClass"));
-      PropertyIndexer propertyIndexer = new PropertyIndexer (acl);
-      propertyIndexer[typeof (StatefulAccessControlList), "MyClass"].SetValue ((SecurableClassDefinition) null);
+      StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
       acl.CreateStateCombination ();
     }
   }
