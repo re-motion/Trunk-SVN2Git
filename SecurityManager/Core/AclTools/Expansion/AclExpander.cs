@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Remotion.Data.DomainObjects;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -88,9 +89,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
+
+
     public AccessInformation GetAccessTypes (UserRoleAclAceCombination userRoleAclAce, 
       out AclProbe aclProbe, out AccessTypeStatistics accessTypeStatistics)
     {
+      const bool probeForCurrentRoleOnly = true;
+
       aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);
 
       // Note: The aclProbe created above will NOT always match the ACE it was designed to probe; the reason for this
@@ -103,12 +108,34 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // Note also that it does not suffice to get the access types for the current ACE only, since these rights might be denied
       // by another matching ACE in the current ACL. 
       accessTypeStatistics = new AccessTypeStatistics ();
-      AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
 
-      // Non-contributing-ACE debugging
-      //NonContributingAceDebugging (ace, aclProbe, accessTypeStatistics, userRoleAclAce.Acl);
+      // Create a discarding sub-transaction so we can change the roles of the current user below without side effects.
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        // Set roles of user to contain only the role we currently probe for.
+        // If we don't do that another role of the user can match the ACE.SpecificPosition
+        // for case GroupSelection.All or GroupSelection.OwningGroup, giving access rights
+        // which the user does not have due to the currently tested role.
+        // (Note that the user is in fact always in all roles at the same time, so he will
+        // have the access rights returned without reducing the user's roles to
+        // the one probed for; it's just not the information we want to present in the 
+        // ACL-expansion, where we want to distinguish which role gives rise
+        // to which access rights).
 
-      return accessInformation;
+        if (probeForCurrentRoleOnly)
+        {
+          // Exchanging the User.Roles-collection with a new one containing only the current Role would not work,
+          // so we empty the collection and add the current Role.
+          aclProbe.SecurityToken.User.Roles.Clear();
+          aclProbe.SecurityToken.User.Roles.Add (userRoleAclAce.Role);
+        }
+        AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
+        
+        // Non-contributing-ACE debugging
+        //NonContributingAceDebugging (ace, aclProbe, accessTypeStatistics, userRoleAclAce.Acl);
+
+       return accessInformation;
+      }
     }
 
   }

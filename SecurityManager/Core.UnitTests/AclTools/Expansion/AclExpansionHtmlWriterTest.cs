@@ -19,6 +19,7 @@ using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
+using System.Windows;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -245,9 +246,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
           string result = textWriter.ToString();
           //To.ConsoleLine.e (() => result);
+          //Clipboard.SetText (result); 
+          
           const string resultExpected = 
             #region
-@"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"" """">
+ @"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"" """">
 <html>
   <head>
     <title>re-motion ACL Expansion</title>
@@ -268,17 +271,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <th class=""header"">Access Rights</th>
       </tr>
       <tr>
-        <td rowspan=""24"">James Ryan</td>
-        <td rowspan=""4"">Anotha Group, Supreme Being</td>
-        <td rowspan=""4"">Bestellung</td>
-        <td>Bezahlt, DHL, Erhalten</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Read, Write</td>
-      </tr>
-      <tr>
+        <td rowspan=""21"">James Ryan</td>
+        <td rowspan=""3"">Anotha Group, Supreme Being</td>
+        <td rowspan=""3"">Bestellung</td>
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
@@ -303,16 +298,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td rowspan=""4"">Anotha Group, Working Drone</td>
-        <td rowspan=""4"">Bestellung</td>
-        <td>Bezahlt, DHL, Erhalten</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Read, Write</td>
-      </tr>
-      <tr>
+        <td rowspan=""3"">Anotha Group, Working Drone</td>
+        <td rowspan=""3"">Bestellung</td>
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
@@ -439,16 +426,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td rowspan=""4"">Da Group, Supreme Being</td>
-        <td rowspan=""4"">Bestellung</td>
-        <td>Bezahlt, DHL, Erhalten</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Read, Write</td>
-      </tr>
-      <tr>
+        <td rowspan=""3"">Da Group, Supreme Being</td>
+        <td rowspan=""3"">Bestellung</td>
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>

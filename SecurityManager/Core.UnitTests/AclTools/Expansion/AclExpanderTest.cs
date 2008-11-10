@@ -421,7 +421,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           List.New (TestHelper.CreateStatefulAcl (ace))
         );
 
-
+      To.ConsoleLine.e (() => aclExpansionEntryList);
     }
 
     [Test]
@@ -439,22 +439,60 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var userList = List.New (User, User2);
       var aclList = List.New (TestHelper.CreateStatefulAcl (testAce));
 
-      // Specific ACE with otherTenant should not match any AclProbe|s
+      // ACE with specific otherTenant should not match any AclProbe|s
       AssertIsNotInMatchingAces(userList, aclList);
 
-      List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList_UserList_AceList (
-          List.New (User, User2),
-          List.New (TestHelper.CreateStatefulAcl (testAce))
-        );
+//<<<<<<< .mine
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList,aclList);
+//=======
+//      List<AclExpansionEntry> aclExpansionEntryList =
+//        GetAclExpansionEntryList_UserList_AceList (
+//          List.New (User, User2),
+//          List.New (TestHelper.CreateStatefulAcl (testAce))
+//        );
+//>>>>>>> .r11783
+
+      //To.ConsoleLine.e (() => aclExpansionEntryList);
 
       // If ACE does not macth, the resulting aclExpansionEntryList must be empty.
       Assert.That (aclExpansionEntryList, Is.Empty);
-
-      //To.ConsoleLine.e (() => aclExpansionEntryList);
     }
 
+    [Test]
+    public void CurrentRoleOnly_SpecificPostitonWithOwningGroupTest ()
+    {
+      var testAce = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      AttachAccessTypeReadWriteDelete (testAce, true, true, true);
 
+      Assert.That (testAce.Validate ().IsValid);
+
+      //To.ConsoleLine.s (ace.ToString ());
+
+      var userList = List.New (User2);
+      var aclList = List.New (TestHelper.CreateStatefulAcl (testAce));
+
+      // ACE with specific position should not match any AclProbe|s
+      OutputAccessStatistics (userList, aclList);
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
+
+      // To.ConsoleLine.nl().e (() => aclExpansionEntryList); To.ConsoleLine.nl().e (User2.Roles);
+
+      // Note: Without "current role only"-probing in AclExpander.GetAccessTypes, the role {"Anotha Group","Working Drone"}
+      // would also give an aclExpansionEntryList entry.
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
+
+
+      var aclExpansion = aclExpansionEntryList[0];
+
+      AssertAclExpansionEntry (aclExpansion, new[] { ReadAccessType, WriteAccessType, DeleteAccessType },
+        new AclExpansionAccessConditions { IsOwningGroupRequired = true });
+
+      Assert.That (aclExpansion.User, Is.EqualTo (User2));
+      // Note: With "current role only"-probing in AclExpander.GetAccessTypes returns only access types for the role
+      // {"Anotha Group","Supreme Being"} (and not also {"Anotha Group","Working Drone"}).
+      Assert.That (aclExpansion.Role, Is.EqualTo (User2.Roles[2])); //
+    }
 
 
 
@@ -597,6 +635,38 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
               AccessTypeStatistics accessTypeStatistics;
               aclExpander.GetAccessTypes (new UserRoleAclAceCombination (role, ace), out aclProbe, out accessTypeStatistics);
               Assert.That (accessTypeStatistics.IsInMatchingAces (ace), Is.False);
+            }
+          }
+        }
+      }
+    }
+
+
+    private void OutputAccessStatistics (List<User> userList, List<AccessControlList> aclList)
+    {
+      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
+      userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
+
+      var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
+      aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
+
+      var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
+      foreach (User user in userList)
+      {
+        foreach (Role role in user.Roles)
+        {
+          foreach (AccessControlList acl in aclList)
+          {
+            foreach (AccessControlEntry ace in acl.AccessControlEntries)
+            {
+              AclProbe aclProbe;
+              AccessTypeStatistics accessTypeStatistics;
+              aclExpander.GetAccessTypes (new UserRoleAclAceCombination (role, ace), out aclProbe, out accessTypeStatistics);
+             // Assert.That (accessTypeStatistics.IsInMatchingAces (ace), Is.False);
+              To.ConsoleLine.s ("--------------------------------------------------------------------------------");
+              To.ConsoleLine.sb ().e (() => user).e (() => role).e (() => ace).e (() => acl).se();
+              To.ConsoleLine.e ("MatchingAces", accessTypeStatistics.MatchingAces);
+              To.ConsoleLine.e ("AccessTypesSupplyingAces", accessTypeStatistics.AccessTypesSupplyingAces);
             }
           }
         }
