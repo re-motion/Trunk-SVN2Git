@@ -26,7 +26,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       Group group = TestHelper.CreateGroup ("Testgroup", null, tenant);
       User user = CreateUser (tenant, group);
       Role role = TestHelper.CreateRole (user, group, managerPosition);
-      AccessControlEntry entry = TestHelper.CreateAceWithPosition (managerPosition, GroupSelection.OwningGroup);
+      AccessControlEntry entry = TestHelper.CreateAceWithPosition (managerPosition, GroupCondition.OwningGroup);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
       SecurityToken token = TestHelper.CreateToken (user, null, new Group[] { group }, new[] { TestHelper.CreateTestAbstractRole () });
 

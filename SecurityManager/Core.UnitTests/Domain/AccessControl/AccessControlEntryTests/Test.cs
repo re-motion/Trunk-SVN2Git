@@ -194,7 +194,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
       ObjectID aceID = dbFixtures.CreateAndCommitAccessControlEntryWithPermissions (0, ClientTransaction.CreateRootTransaction());
       AccessControlEntry ace = AccessControlEntry.GetObject (aceID);
-      ace.TenantSelection = TenantSelection.OwningTenant;
+      ace.TenantCondition = TenantCondition.OwningTenant;
       ace.SpecificTenant = _testHelper.CreateTenant ("TestTenant");
 
       Assert.IsNotNull (ace.SpecificTenant);
@@ -208,13 +208,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
       ObjectID aceID = dbFixtures.CreateAndCommitAccessControlEntryWithPermissions (0, ClientTransaction.CreateRootTransaction());
       AccessControlEntry ace = AccessControlEntry.GetObject (aceID);
-      ace.TenantSelection = TenantSelection.SpecificTenant;
+      ace.TenantCondition = TenantCondition.SpecificTenant;
       ace.SpecificTenant = _testHelper.CreateTenant ("TestTenant");
       ClientTransactionScope.CurrentTransaction.Commit();
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         AccessControlEntry aceActual = AccessControlEntry.GetObject (aceID);
-        aceActual.TenantSelection = TenantSelection.OwningTenant;
+        aceActual.TenantCondition = TenantCondition.OwningTenant;
 
         Assert.IsNotNull (aceActual.SpecificTenant);
         aceActual.Delete();

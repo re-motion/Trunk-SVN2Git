@@ -68,13 +68,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.Web.UI.Controls.SmartLabel TenantLabel;
         
         /// <summary>
-        /// TenantSelectionField control.
+        /// TenantConditionField control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue TenantSelectionField;
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue TenantConditionField;
         
         /// <summary>
         /// SpecificTenantField control.
@@ -131,13 +131,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::System.Web.UI.WebControls.Label SpecificPositionAndGroupLinkingLabel;
         
         /// <summary>
-        /// GroupSelectionField control.
+        /// GroupConditionField control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue GroupSelectionField;
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue GroupConditionField;
         
         /// <summary>
         /// PermissionsLabel control.

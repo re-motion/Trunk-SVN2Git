@@ -63,9 +63,9 @@ namespace Remotion.SecurityManager.Globalization.Domain.AccessControl {
         /// <summary>
         ///   Looks up a localized string similar to Group.
         /// </summary>
-        internal static string property_GroupSelection {
+        internal static string property_GroupCondition {
             get {
-                return ResourceManager.GetString("property:GroupSelection", resourceCulture);
+                return ResourceManager.GetString("property:GroupCondition", resourceCulture);
             }
         }
         
@@ -108,9 +108,9 @@ namespace Remotion.SecurityManager.Globalization.Domain.AccessControl {
         /// <summary>
         ///   Looks up a localized string similar to Tenant.
         /// </summary>
-        internal static string property_TenantSelection {
+        internal static string property_TenantCondition {
             get {
-                return ResourceManager.GetString("property:TenantSelection", resourceCulture);
+                return ResourceManager.GetString("property:TenantCondition", resourceCulture);
             }
         }
     }

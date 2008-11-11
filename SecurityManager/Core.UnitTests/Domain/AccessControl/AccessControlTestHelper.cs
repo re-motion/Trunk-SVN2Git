@@ -412,7 +412,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         AccessControlEntry entry = AccessControlEntry.NewObject ();
-        entry.GroupSelection = GroupSelection.OwningGroup;
+        entry.GroupCondition = GroupCondition.OwningGroup;
 
         return entry;
       }
@@ -423,7 +423,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope ())
       {
         AccessControlEntry entry = AccessControlEntry.NewObject ();
-        entry.GroupSelection = GroupSelection.All;
+        entry.GroupCondition = GroupCondition.None;
 
         return entry;
       }
@@ -435,7 +435,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         AccessControlEntry entry = AccessControlEntry.NewObject ();
-        entry.TenantSelection = TenantSelection.OwningTenant;
+        entry.TenantCondition = TenantCondition.OwningTenant;
 
         return entry;
       }
@@ -446,7 +446,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         AccessControlEntry entry = AccessControlEntry.NewObject ();
-        entry.TenantSelection = TenantSelection.SpecificTenant;
+        entry.TenantCondition = TenantCondition.SpecificTenant;
         entry.SpecificTenant = tenant;
 
         return entry;
@@ -464,14 +464,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    public AccessControlEntry CreateAceWithPosition (Position position, GroupSelection groupSelection)
+    public AccessControlEntry CreateAceWithPosition (Position position, GroupCondition groupCondition)
     {
       using (_transaction.EnterNonDiscardingScope())
       {
         AccessControlEntry entry = AccessControlEntry.NewObject ();
-        entry.UserSelection = UserSelection.SpecificPosition;
+        entry.UserCondition = UserCondition.SpecificPosition;
         entry.SpecificPosition = position;
-        entry.GroupSelection = groupSelection;
+        entry.GroupCondition = groupCondition;
 
         return entry;
       }

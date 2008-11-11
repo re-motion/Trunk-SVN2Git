@@ -22,11 +22,11 @@
     </td>
   </tr>
   <tr>
-    <td><remotion:SmartLabel ID="TenantLabel" runat="server" ForControl="TenantSelectionField"/></td>
+    <td><remotion:SmartLabel ID="TenantLabel" runat="server" ForControl="TenantConditionField"/></td>
     <td>
       <table cellpadding="0" cellspacing="0">
         <tr>
-          <td><remotion:BocEnumValue ID="TenantSelectionField" runat="server" PropertyIdentifier="TenantSelection" DataSourceControl="CurrentObject" OnSelectionChanged="TenantField_SelectionChanged" Width="20em" >
+          <td><remotion:BocEnumValue ID="TenantConditionField" runat="server" PropertyIdentifier="TenantCondition" DataSourceControl="CurrentObject" OnSelectionChanged="TenantField_SelectionChanged" Width="20em" >
             <ListControlStyle AutoPostBack="True"/>
           </remotion:BocEnumValue></td>
           <td>
@@ -63,7 +63,7 @@
             </remotion:BocReferenceValue>
           </td>
           <td>&nbsp;<asp:label id="SpecificPositionAndGroupLinkingLabel" runat="server" Text="###" />&nbsp;</td>
-          <td><remotion:BocEnumValue ID="GroupSelectionField" runat="server" PropertyIdentifier="GroupSelection" DataSourceControl="CurrentObject" width="20em">
+          <td><remotion:BocEnumValue ID="GroupConditionField" runat="server" PropertyIdentifier="GroupCondition" DataSourceControl="CurrentObject" width="20em">
             <ListControlStyle AutoPostBack="True"/>
           </remotion:BocEnumValue></td>
         </tr>

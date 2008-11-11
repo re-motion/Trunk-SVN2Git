@@ -156,16 +156,17 @@ CREATE TABLE [dbo].[AccessControlEntry]
 
   -- AccessControlEntry columns
   [Index] int NOT NULL,
-  [TenantSelection] int NOT NULL,
-  [GroupSelection] int NOT NULL,
-  [UserSelection] int NOT NULL,
-  [TenantID] uniqueidentifier NULL,
-  [GroupID] uniqueidentifier NULL,
-  [GroupTypeID] uniqueidentifier NULL,
-  [PositionID] uniqueidentifier NULL,
-  [UserID] uniqueidentifier NULL,
-  [AbstractRoleID] uniqueidentifier NULL,
-  [AbstractRoleIDClassID] varchar (100) NULL,
+  [TenantCondition] int NOT NULL,
+  [GroupCondition] int NOT NULL,
+  [UserCondition] int NOT NULL,
+  [SpecificTenantID] uniqueidentifier NULL,
+  [SpecificGroupID] uniqueidentifier NULL,
+  [GroupHierarchyCondition] int NOT NULL,
+  [SpecificGroupTypeID] uniqueidentifier NULL,
+  [SpecificPositionID] uniqueidentifier NULL,
+  [SpecificUserID] uniqueidentifier NULL,
+  [SpecificAbstractRoleID] uniqueidentifier NULL,
+  [SpecificAbstractRoleIDClassID] varchar (100) NULL,
   [AccessControlListID] uniqueidentifier NULL,
   [AccessControlListIDClassID] varchar (100) NULL,
 
@@ -457,12 +458,12 @@ GO
 
 -- Create constraints for tables that were created above
 ALTER TABLE [dbo].[AccessControlEntry] ADD
-  CONSTRAINT [FK_AccessControlEntry_TenantID] FOREIGN KEY ([TenantID]) REFERENCES [dbo].[Tenant] ([ID]),
-  CONSTRAINT [FK_AccessControlEntry_GroupID] FOREIGN KEY ([GroupID]) REFERENCES [dbo].[Group] ([ID]),
-  CONSTRAINT [FK_AccessControlEntry_GroupTypeID] FOREIGN KEY ([GroupTypeID]) REFERENCES [dbo].[GroupType] ([ID]),
-  CONSTRAINT [FK_AccessControlEntry_PositionID] FOREIGN KEY ([PositionID]) REFERENCES [dbo].[Position] ([ID]),
-  CONSTRAINT [FK_AccessControlEntry_UserID] FOREIGN KEY ([UserID]) REFERENCES [dbo].[User] ([ID]),
-  CONSTRAINT [FK_AccessControlEntry_AbstractRoleID] FOREIGN KEY ([AbstractRoleID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_SpecificTenantID] FOREIGN KEY ([SpecificTenantID]) REFERENCES [dbo].[Tenant] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_SpecificGroupID] FOREIGN KEY ([SpecificGroupID]) REFERENCES [dbo].[Group] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_SpecificGroupTypeID] FOREIGN KEY ([SpecificGroupTypeID]) REFERENCES [dbo].[GroupType] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_SpecificPositionID] FOREIGN KEY ([SpecificPositionID]) REFERENCES [dbo].[Position] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_SpecificUserID] FOREIGN KEY ([SpecificUserID]) REFERENCES [dbo].[User] ([ID]),
+  CONSTRAINT [FK_AccessControlEntry_SpecificAbstractRoleID] FOREIGN KEY ([SpecificAbstractRoleID]) REFERENCES [dbo].[EnumValueDefinition] ([ID]),
   CONSTRAINT [FK_AccessControlEntry_AccessControlListID] FOREIGN KEY ([AccessControlListID]) REFERENCES [dbo].[AccessControlList] ([ID])
 
 ALTER TABLE [dbo].[Permission] ADD
@@ -520,9 +521,9 @@ ALTER TABLE [dbo].[User] ADD
 GO
 
 -- Create a view for every class
-CREATE VIEW [dbo].[AccessControlEntryView] ([ID], [ClassID], [Timestamp], [Index], [TenantSelection], [GroupSelection], [UserSelection], [TenantID], [GroupID], [GroupTypeID], [PositionID], [UserID], [AbstractRoleID], [AbstractRoleIDClassID], [AccessControlListID], [AccessControlListIDClassID])
+CREATE VIEW [dbo].[AccessControlEntryView] ([ID], [ClassID], [Timestamp], [Index], [TenantCondition], [GroupCondition], [UserCondition], [SpecificTenantID], [SpecificGroupID], [GroupHierarchyCondition], [SpecificGroupTypeID], [SpecificPositionID], [SpecificUserID], [SpecificAbstractRoleID], [SpecificAbstractRoleIDClassID], [AccessControlListID], [AccessControlListIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [TenantSelection], [GroupSelection], [UserSelection], [TenantID], [GroupID], [GroupTypeID], [PositionID], [UserID], [AbstractRoleID], [AbstractRoleIDClassID], [AccessControlListID], [AccessControlListIDClassID]
+  SELECT [ID], [ClassID], [Timestamp], [Index], [TenantCondition], [GroupCondition], [UserCondition], [SpecificTenantID], [SpecificGroupID], [GroupHierarchyCondition], [SpecificGroupTypeID], [SpecificPositionID], [SpecificUserID], [SpecificAbstractRoleID], [SpecificAbstractRoleIDClassID], [AccessControlListID], [AccessControlListIDClassID]
     FROM [dbo].[AccessControlEntry]
     WHERE [ClassID] IN ('AccessControlEntry')
   WITH CHECK OPTION
@@ -560,9 +561,9 @@ CREATE VIEW [dbo].[StatefulAccessControlListView] ([ID], [ClassID], [Timestamp],
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[StatelessAccessControlListView] ([ID], [ClassID], [Timestamp], [Index], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID])
+CREATE VIEW [dbo].[StatelessAccessControlListView] ([ID], [ClassID], [Timestamp], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID]
+  SELECT [ID], [ClassID], [Timestamp], [StatelessAcl_ClassID], [StatelessAcl_ClassIDClassID]
     FROM [dbo].[AccessControlList]
     WHERE [ClassID] IN ('StatelessAccessControlList')
   WITH CHECK OPTION

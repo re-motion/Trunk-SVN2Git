@@ -12,6 +12,7 @@ using System;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -51,7 +52,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     protected AccessControlEntry ()
     {
       // ReSharper disable DoNotCallOverridableMethodsInConstructor
-      TenantSelection = TenantSelection.All;
+      TenantCondition = AccessControl.TenantCondition.None;
       // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
       _matcher = new SecurityTokenMatcher (this);
@@ -75,36 +76,34 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public abstract int Index { get; set; }
 
-    public abstract TenantSelection TenantSelection { get; set; }
+    public abstract TenantCondition TenantCondition { get; set; }
 
-    public abstract GroupSelection GroupSelection { get; set; }
+    [DisableEnumValuesAttribute (GroupCondition.SpecificGroup, GroupCondition.BranchOfOwningGroup, GroupCondition.SpecificGroupType)]
+    public abstract GroupCondition GroupCondition { get; set; }
 
-    public abstract UserSelection UserSelection { get; set; }
+    public abstract UserCondition UserCondition { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
-    [DBColumn ("TenantID")]
     public abstract Tenant SpecificTenant { get; set; }
 
     [DBBidirectionalRelation ("AccessControlEntries")]
-    [DBColumn ("GroupID")]
     public abstract Group SpecificGroup { get; set; }
 
+    [DisableEnumValuesAttribute (GroupHierarchyCondition.This, GroupHierarchyCondition.ThisAndChildren, GroupHierarchyCondition.ThisAndParentAndChildren)]
+    public abstract GroupHierarchyCondition GroupHierarchyCondition { get; set; }
+
     [DBBidirectionalRelation ("AccessControlEntries")]
-    [DBColumn ("GroupTypeID")]
     public abstract GroupType SpecificGroupType { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
     [DBBidirectionalRelation ("AccessControlEntries")]
-    [DBColumn ("PositionID")]
     public abstract Position SpecificPosition { get; set; }
 
     [DBBidirectionalRelation ("AccessControlEntries")]
-    [DBColumn ("UserID")]
     public abstract User SpecificUser { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
     [DBBidirectionalRelation ("AccessControlEntries")]
-    [DBColumn ("AbstractRoleID")]
     public abstract AbstractRoleDefinition SpecificAbstractRole { get; set; }
 
     [DBBidirectionalRelation ("AccessControlEntries")]
@@ -119,7 +118,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private ObjectList<Permission> GetPermissions ()
     {
-      return Properties["Remotion.SecurityManager.Domain.AccessControl.AccessControlEntry.Permissions"].GetValue<ObjectList<Permission>>();
+      return Properties[typeof (AccessControlEntry), "Permissions"].GetValue<ObjectList<Permission>>();
     }
 
     public AccessTypeDefinition[] GetAllowedAccessTypes ()
@@ -233,7 +232,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       if (State != StateType.Deleted)
       {
-        if (TenantSelection == TenantSelection.SpecificTenant && SpecificTenant == null)
+        if (TenantCondition == TenantCondition.SpecificTenant && SpecificTenant == null)
           result.SetSpecificTenantMissing();
       }
 
@@ -255,8 +254,17 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         throw new ConstraintViolationException ("The access control entry is in an invalid state.");
       }
 
-      if (State != StateType.Deleted && TenantSelection != TenantSelection.SpecificTenant)
-        SpecificTenant = null;
+      if (State != StateType.Deleted)
+      {
+        if (TenantCondition != TenantCondition.SpecificTenant)
+          SpecificTenant = null;
+
+#warning By-Default setting of GroupHierarchyCondition. Untested. Remove after implementing new matching-logic
+        if (GroupCondition == GroupCondition.OwningGroup)
+          GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent;
+        else
+          GroupHierarchyCondition = GroupHierarchyCondition.Undefined;
+      }
 
       base.OnCommitting (args);
     }

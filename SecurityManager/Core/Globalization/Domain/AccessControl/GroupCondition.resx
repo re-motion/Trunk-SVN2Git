@@ -117,13 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Remotion.SecurityManager.Domain.AccessControl.TenantSelection.All" xml:space="preserve">
-    <value>Any Tenant</value>
+  <data name="Remotion.SecurityManager.Domain.AccessControl.GroupCondition.None" xml:space="preserve">
+    <value>Any Group</value>
   </data>
-  <data name="Remotion.SecurityManager.Domain.AccessControl.TenantSelection.OwningTenant" xml:space="preserve">
-    <value>Tenant of the Object or parents</value>
-  </data>
-  <data name="Remotion.SecurityManager.Domain.AccessControl.TenantSelection.SpecificTenant" xml:space="preserve">
-    <value>Specific Tenant</value>
+  <data name="Remotion.SecurityManager.Domain.AccessControl.GroupCondition.OwningGroup" xml:space="preserve">
+    <value>Group of the Object or parent groups</value>
   </data>
 </root>

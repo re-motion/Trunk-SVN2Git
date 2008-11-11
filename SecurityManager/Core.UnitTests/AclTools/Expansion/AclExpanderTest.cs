@@ -82,7 +82,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionAll ()
     {
-      var ace = TestHelper.CreateAceWithPosition (Position, GroupSelection.All);
+      var ace = TestHelper.CreateAceWithPosition (Position, GroupCondition.None);
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
 
       Assert.That (ace.Validate ().IsValid);
@@ -99,7 +99,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionOwningGroup ()
     {
-      var ace = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      var ace = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
 
       Assert.That (ace.Validate ().IsValid);
@@ -120,7 +120,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void GetAclExpansionEntryList_AceWithPosition_GroupSelectionAll ()
     {
       List<AclExpansionEntry> aclExpansionEntryList = 
-        GetAclExpansionEntryList_UserPositionGroupSelection(User,Position,GroupSelection.All);
+        GetAclExpansionEntryList_UserPositionGroupSelection(User,Position,GroupCondition.None);
 
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
       var accessConditions = new AclExpansionAccessConditions();
@@ -133,7 +133,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void GetAclExpansionEntryList_AceWithPosition_GroupSelectionOwningGroup ()
     {
       List<AclExpansionEntry> aclExpansionEntryList = 
-        GetAclExpansionEntryList_UserPositionGroupSelection (User, Position, GroupSelection.OwningGroup);
+        GetAclExpansionEntryList_UserPositionGroupSelection (User, Position, GroupCondition.OwningGroup);
 
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
       var accessConditions = new AclExpansionAccessConditions () { 
@@ -147,7 +147,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void GetAclExpansionEntryList_UserList_AceList ()
     {
-      var ace = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      var ace = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
@@ -169,7 +169,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void GetAclExpansionEntryList_UserList_AceList_MultipleAces ()
     {
-      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
 
       var aceAbstractRole = TestHelper.CreateAceWithAbstractRole ();
@@ -245,7 +245,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceSpecificTenantWithOtherTenant = TestHelper.CreateAceWithSpecficTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (aceSpecificTenantWithOtherTenant, true, true, null);
 
-      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
 
       //To.ConsoleLine.e (() => otherTenantAceSpecificTenant);
@@ -281,10 +281,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceOwningTenant = TestHelper.CreateAceWithOwningTenant();
       AttachAccessTypeReadWriteDelete (aceOwningTenant, true, true, null);
       
-      var acePosition = TestHelper.CreateAceWithPosition (Position2, GroupSelection.All);
+      var acePosition = TestHelper.CreateAceWithPosition (Position2, GroupCondition.None);
       AttachAccessTypeReadWriteDelete (acePosition, true, null, true);
 
-      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, false, null);
 
       List<AclExpansionEntry> aclExpansionEntryList =
@@ -316,7 +316,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceSpecificTenant = TestHelper.CreateAceWithSpecficTenant (Tenant);
       AttachAccessTypeReadWriteDelete (aceSpecificTenant, true, true, null);
 
-      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
 
       List<AclExpansionEntry> aclExpansionEntryList =
@@ -412,7 +412,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void CurrentRoleOnly_SpecificPostitonWithOwningGroupTest ()
     {
-      var testAce = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      var testAce = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (testAce, true, true, true);
 
       Assert.That (testAce.Validate ().IsValid);
@@ -508,7 +508,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceSpecificTenantWithOtherTenant = TestHelper.CreateAceWithSpecficTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (aceSpecificTenantWithOtherTenant, true, true, null);
 
-      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupSelection.OwningGroup);
+      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
 
       To.ConsoleLine.e ("aceSpecificTenantWithOtherTenant",aceSpecificTenantWithOtherTenant.ToString ());
@@ -565,7 +565,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
     // Returns a list of AclExpansionEntry for the passed User, ACE with the passed Positon and passed GroupSelection
     private List<AclExpansionEntry> GetAclExpansionEntryList_UserPositionGroupSelection (
-      User user, Position position, GroupSelection groupSelection)
+      User user, Position position, GroupCondition groupCondition)
     {
       List<User> userList = new List<User> ();
       userList.Add (user);
@@ -574,7 +574,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       userFinderMock.Expect (mock => mock.FindUsers()).Return (userList);
 
       List<AccessControlList> aclList = new List<AccessControlList>();
-      var ace = TestHelper.CreateAceWithPosition (position, groupSelection);
+      var ace = TestHelper.CreateAceWithPosition (position, groupCondition);
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
       Assert.That (ace.Validate ().IsValid);
       var acl = TestHelper.CreateStatefulAcl (ace);

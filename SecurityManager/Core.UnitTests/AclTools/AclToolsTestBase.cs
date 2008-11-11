@@ -107,7 +107,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       Role3 = TestHelper.CreateRole (User3, Group3, Position3);
       // DO NOT use TestHelper.CreateAceWithOwningGroup() here; functionality for group matching is
       // incomplete and therefore the ACE entry will always match.
-      Ace3 = TestHelper.CreateAceWithPosition (Position3, GroupSelection.All);
+      Ace3 = TestHelper.CreateAceWithPosition (Position3, GroupCondition.None);
 
       TestHelper.AttachAccessType (Ace3, ReadAccessType, true);
       TestHelper.AttachAccessType (Ace3, WriteAccessType, true);
@@ -130,7 +130,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       TestHelper.AttachAces (Acl, Ace, Ace2, Ace3);
 
       var ace2_1 = TestHelper.CreateAceWithAbstractRole();
-      var ace2_2 = TestHelper.CreateAceWithPosition (Position2, GroupSelection.OwningGroup);
+      var ace2_2 = TestHelper.CreateAceWithPosition (Position2, GroupCondition.OwningGroup);
 
       //Acl2 = TestHelper.CreateAcl (ace2_1, ace2_2, Ace3);
       Acl2 = aclList[1];

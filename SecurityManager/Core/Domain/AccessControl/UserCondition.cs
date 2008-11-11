@@ -9,28 +9,14 @@
  */
 
 using System;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
-  [EnumDescriptionResource ("Remotion.SecurityManager.Globalization.Domain.AccessControl.GroupSelection")]
-  public enum GroupSelection
+  public enum UserCondition
   {
-    All = 0,
-    OwningGroup = 1,
-    //SpecificGroup = 4,
-    //SpecificGroupType = 6,
+    None = 0,
+    Owner = 1,
+    SpecificUser = 2,
+    SpecificPosition = 3
   }
-
-  // OwningGroup, SpecificGroup
-  //  OnlyThisGroup
-  //  ThisGroupAndParentGroups
-  //  OnlyParentGroups
-  //  ThisGroupAndChildGroups
-  //  OnlyChildGroups
-
-  //  SpecificGroupType
-  //   GroupTypeofGroup
-  //   GroupTypeOfParentGroups
-  //   GroupTypeOfChildGroups
 }

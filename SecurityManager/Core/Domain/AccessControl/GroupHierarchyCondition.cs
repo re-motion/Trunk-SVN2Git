@@ -9,14 +9,17 @@
  */
 
 using System;
+using Remotion.ObjectBinding;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
-  public enum UserSelection
+  [UndefinedEnumValue (Undefined)]
+  public enum GroupHierarchyCondition
   {
-    All = 0,
-    Owner = 1,
-    SpecificUser = 2,
-    SpecificPosition = 3
+    Undefined = 0,
+    This = 1,
+    ThisAndParent = 1 | 2,
+    ThisAndChildren = 1 | 4,
+    ThisAndParentAndChildren = 1 | 2 | 4,
   }
 }

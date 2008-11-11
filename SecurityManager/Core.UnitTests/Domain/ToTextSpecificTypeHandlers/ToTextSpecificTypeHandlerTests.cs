@@ -99,7 +99,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       Role3 = TestHelper.CreateRole (User3, Group3, Position3);
       // DO NOT use TestHelper.CreateAceWithOwningGroup() here; functionality for group matching is
       // incomplete and therefore the ACE entry will always match.
-      Ace3 = TestHelper.CreateAceWithPosition (Position3, GroupSelection.All);
+      Ace3 = TestHelper.CreateAceWithPosition (Position3, GroupCondition.None);
 
       TestHelper.AttachAccessType (Ace3, ReadAccessType, true);
       TestHelper.AttachAccessType (Ace3, WriteAccessType, true);
@@ -127,7 +127,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     {
       var x = TestHelper.CreateAceWithOwningTenant ();
       //To.ConsoleLine.e (x);
-      Assert.That (To.String.e (x).CheckAndConvertToString (), NUnitText.Contains ("SelUser=All,SelGroup=All,SelTenant=OwningTenant"));
+      Assert.That (To.String.e (x).CheckAndConvertToString (), NUnitText.Contains ("SelUser=None,SelGroup=None,SelTenant=OwningTenant"));
     }
 
     [Test]
@@ -145,7 +145,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       var acl = TestHelper.CreateStatefulAcl (ace);
       //To.ConsoleLine.e (acl);
       // Note: test string is similar to AccessControlEntry test above, since rest of test would retest standard ToText sequence output functionality
-      Assert.That (To.String.e (acl).CheckAndConvertToString (), NUnitText.Contains ("SelUser=All,SelGroup=OwningGroup,SelTenant=All"));
+      Assert.That (To.String.e (acl).CheckAndConvertToString (), NUnitText.Contains ("SelUser=None,SelGroup=OwningGroup,SelTenant=None"));
     }
 
     [Test]

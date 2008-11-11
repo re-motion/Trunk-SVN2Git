@@ -59,18 +59,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private static Tenant CreateOwningTenantEntry (AclProbe aclProbe, User user, AccessControlEntry ace)
     {
       Tenant owningTenant;
-      switch (ace.TenantSelection)
+      switch (ace.TenantCondition)
       {
-        case TenantSelection.OwningTenant:
+        case TenantCondition.OwningTenant:
           owningTenant = user.Tenant;
           aclProbe.AccessConditions.IsOwningTenantRequired = true;
           break;
-        case TenantSelection.SpecificTenant:
-        case TenantSelection.All:
+        case TenantCondition.SpecificTenant:
+        case TenantCondition.None:
           owningTenant = ace.SpecificTenant;
           break;
         default:
-          throw new ArgumentException (String.Format ("ace.TenantSelection={0} is currently not supported by this method. Please extend method to handle the new TenantSelection state.", ace.TenantSelection));
+          throw new ArgumentException (String.Format ("ace.TenantSelection={0} is currently not supported by this method. Please extend method to handle the new TenantSelection state.", ace.TenantCondition));
       }
       return owningTenant;
     }
@@ -78,14 +78,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private static IList<Group> CreateOwningGroupsEntry (AclProbe aclProbe, Role role, AccessControlEntry ace)
     {
       IList<Group> owningGroups = new List<Group> ();
-      switch (ace.GroupSelection)
+      switch (ace.GroupCondition)
       {
-        case GroupSelection.OwningGroup:
+        case GroupCondition.OwningGroup:
           Assertion.IsNotNull (role.Group);
           owningGroups.Add (role.Group);
           aclProbe.AccessConditions.IsOwningGroupRequired = true;
           break;
-        case GroupSelection.All:
+        case GroupCondition.None:
           // If the ACE contains no specific group, then the probe's owningGroups collection is empty.
           if (ace.SpecificGroup != null)
           {
@@ -93,7 +93,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           }
           break;
         default:
-          throw new ArgumentException (String.Format ("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.", ace.GroupSelection));
+          throw new ArgumentException (String.Format ("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.", ace.GroupCondition));
       }
       return owningGroups;
     }

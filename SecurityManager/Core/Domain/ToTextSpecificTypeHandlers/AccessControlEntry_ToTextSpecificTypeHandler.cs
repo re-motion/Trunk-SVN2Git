@@ -24,8 +24,8 @@ namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
       ArgumentUtility.CheckNotNull ("accessControlEntry", ace);
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
 
-      toTextBuilder.ib<AccessControlEntry> ("").e (ace.Permissions).e ("SelUser", ace.UserSelection);
-      toTextBuilder.e ("SelGroup", ace.GroupSelection).e ("SelTenant", ace.TenantSelection).e ("abstr.role", ace.SpecificAbstractRole);
+      toTextBuilder.ib<AccessControlEntry> ("").e (ace.Permissions).e ("SelUser", ace.UserCondition);
+      toTextBuilder.e ("SelGroup", ace.GroupCondition).e ("SelTenant", ace.TenantCondition).e ("abstr.role", ace.SpecificAbstractRole);
       toTextBuilder.eIfNotNull ("user", ace.SpecificUser).eIfNotNull ("position", ace.SpecificPosition);
       toTextBuilder.eIfNotNull ("group", ace.SpecificGroup).eIfNotNull ("tenant", ace.SpecificTenant);
       toTextBuilder.ie ();

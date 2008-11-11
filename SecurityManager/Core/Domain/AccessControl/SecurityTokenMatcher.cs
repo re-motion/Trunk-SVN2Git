@@ -52,15 +52,15 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private bool MatchesTenant (SecurityToken token)
     {
-      switch (_accessControlEntry.TenantSelection)
+      switch (_accessControlEntry.TenantCondition)
       {
-        case TenantSelection.All:
+        case TenantCondition.None:
           return true;
 
-        case TenantSelection.OwningTenant:
+        case TenantCondition.OwningTenant:
           return token.OwningTenant != null && token.MatchesUserTenant (token.OwningTenant);
 
-        case TenantSelection.SpecificTenant:
+        case TenantCondition.SpecificTenant:
           return token.MatchesUserTenant (_accessControlEntry.SpecificTenant);
 
         default:
@@ -84,12 +84,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private bool MatchesUserOrPosition (SecurityToken token)
     {
-      switch (_accessControlEntry.UserSelection)
+      switch (_accessControlEntry.UserCondition)
       {
-        case UserSelection.All:
+        case UserCondition.None:
           return true;
 
-        case UserSelection.SpecificPosition:
+        case UserCondition.SpecificPosition:
           return MatchPosition (token);
 
         default:
@@ -99,12 +99,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private bool MatchPosition (SecurityToken token)
     {
-      switch (_accessControlEntry.GroupSelection)
+      switch (_accessControlEntry.GroupCondition)
       {
-        case GroupSelection.All:
+        case GroupCondition.None:
           return token.ContainsRoleForUserGroupAndPosition (_accessControlEntry.SpecificPosition);
 
-        case GroupSelection.OwningGroup:
+        case GroupCondition.OwningGroup:
           return token.ContainsRoleForOwningGroupAndPosition (_accessControlEntry.SpecificPosition);
 
         default:

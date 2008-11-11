@@ -73,7 +73,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       AccessControlEntry ace = TestHelper.CreateAceWithGroupSelectionAll();
       FleshOutAccessControlEntryForTest (ace);
-      ace.GroupSelection = (GroupSelection) int.MaxValue;
+      ace.GroupCondition = (GroupCondition) int.MaxValue;
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
     }
 
@@ -110,7 +110,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant();
       FleshOutAccessControlEntryForTest (ace);
-      ace.TenantSelection = (TenantSelection) (object) -1;
+      ace.TenantCondition = (TenantCondition) (object) -1;
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
     }
 

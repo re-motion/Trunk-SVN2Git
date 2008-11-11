@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     {
       Tenant tenant = TestHelper.CreateTenant ("Testtenant");
       Position managerPosition = TestHelper.CreatePosition ("Manager");
-      AccessControlEntry entry = TestHelper.CreateAceWithPosition (managerPosition, GroupSelection.OwningGroup);
+      AccessControlEntry entry = TestHelper.CreateAceWithPosition (managerPosition, GroupCondition.OwningGroup);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
       SecurityToken token = TestHelper.CreateEmptyToken ();
 
@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     {
       Tenant tenant = TestHelper.CreateTenant ("Testtenant");
       Position managerPosition = TestHelper.CreatePosition ("Manager");
-      AccessControlEntry entry = TestHelper.CreateAceWithPosition (managerPosition, GroupSelection.All);
+      AccessControlEntry entry = TestHelper.CreateAceWithPosition (managerPosition, GroupCondition.None);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
       SecurityToken token = TestHelper.CreateEmptyToken ();
 

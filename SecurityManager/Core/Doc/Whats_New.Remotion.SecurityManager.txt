@@ -1,3 +1,10 @@
+1.11.13
+=======
+- AccessControlEntry
+  * Updated column names (TenantID -> SpecificTenantID,...)
+  * Updated column names (TenantSelection -> TenantCondition,...)
+  * Introduced new column GroupHierarchyCondition; must be set to 3 where GroupCondition is set to 1, otherwise: 0
+  
 1.11.12
 =======
 - SecurityManager now supports explict class-based (stateless) access control lists.

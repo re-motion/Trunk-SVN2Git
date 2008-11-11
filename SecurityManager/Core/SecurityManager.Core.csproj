@@ -94,6 +94,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Domain\AccessControl\AccessControlEntry.cs" />
+    <Compile Include="Domain\AccessControl\GroupHierarchyCondition.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcher.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchService.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryValidationResult.cs" />
@@ -109,8 +110,8 @@
     <Compile Include="Domain\AccessControl\StatefulAccessControlList.cs" />
     <Compile Include="Domain\AccessControl\StatelessAccessControlList.cs" />
     <Compile Include="Domain\SecurityManagerSearchServiceBase.cs" />
-    <Compile Include="Domain\AccessControl\TenantSelection.cs" />
-    <Compile Include="Domain\AccessControl\GroupSelection.cs" />
+    <Compile Include="Domain\AccessControl\TenantCondition.cs" />
+    <Compile Include="Domain\AccessControl\GroupCondition.cs" />
     <Compile Include="Domain\AccessControl\IAccessControlListFinder.cs" />
     <Compile Include="Domain\AccessControl\ISecurityTokenBuilder.cs" />
     <Compile Include="Domain\AccessControl\Permission.cs" />
@@ -120,7 +121,7 @@
     <Compile Include="Domain\AccessControl\StateCombinationBuilder.cs" />
     <Compile Include="Domain\AccessControl\StateCombinationComparer.cs" />
     <Compile Include="Domain\AccessControl\StateUsage.cs" />
-    <Compile Include="Domain\AccessControl\UserSelection.cs" />
+    <Compile Include="Domain\AccessControl\UserCondition.cs" />
     <Compile Include="Domain\BaseSecurityManagerObject.cs" />
     <Compile Include="Domain\SecurityManagerObjectServiceFactoryMixin.cs" />
     <Compile Include="Domain\ConstraintViolationException.cs" />
@@ -178,16 +179,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AccessControlEntry.resx</DependentUpon>
     </Compile>
-    <Compile Include="Globalization\Domain\AccessControl\TenantSelection.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TenantSelection.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\Domain\AccessControl\GroupSelection.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GroupSelection.resx</DependentUpon>
-    </Compile>
     <Compile Include="Globalization\Domain\OrganizationalStructure\Tenant.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -244,22 +235,20 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AccessControlEntry.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\Domain\AccessControl\TenantSelection.de.resx">
+    <EmbeddedResource Include="Globalization\Domain\AccessControl\TenantCondition.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\Domain\AccessControl\TenantSelection.resx">
+    <EmbeddedResource Include="Globalization\Domain\AccessControl\TenantCondition.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TenantSelection.Designer.cs</LastGenOutput>
+      <LastGenOutput>TenantCondition.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\Domain\AccessControl\GroupSelection.de.resx">
+    <EmbeddedResource Include="Globalization\Domain\AccessControl\GroupCondition.de.resx">
       <SubType>Designer</SubType>
       <LastGenOutput>GroupSelection.de.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\Domain\AccessControl\GroupSelection.resx">
+    <EmbeddedResource Include="Globalization\Domain\AccessControl\GroupCondition.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>GroupSelection.Designer.cs</LastGenOutput>
+      <LastGenOutput>GroupCondition.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Tenant.resx">
       <SubType>Designer</SubType>

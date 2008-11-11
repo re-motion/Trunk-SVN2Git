@@ -32,7 +32,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     // member fields
 
-    private List<EditPermissionControl> _editPermissionControls = new List<EditPermissionControl> ();
+    private readonly List<EditPermissionControl> _editPermissionControls = new List<EditPermissionControl> ();
 
     // construction and disposing
 
@@ -114,7 +114,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void AdjustSpecificTenantField ()
     {
-      if ((TenantSelection?) TenantSelectionField.Value == TenantSelection.SpecificTenant)
+      if ((TenantCondition?) TenantConditionField.Value == TenantCondition.SpecificTenant)
       {
         SpecificTenantField.Visible = true;
       }
@@ -128,21 +128,21 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     private void AdjustPositionFields ()
     {
       if (SpecificPositionField.BusinessObjectID == null)
-        CurrentAccessControlEntry.UserSelection = UserSelection.All;
+        CurrentAccessControlEntry.UserCondition = UserCondition.None;
       else
-        CurrentAccessControlEntry.UserSelection = UserSelection.SpecificPosition;
+        CurrentAccessControlEntry.UserCondition = UserCondition.SpecificPosition;
 
       // TODO: Remove when Group can stand alone during ACE lookup.
       if (SpecificPositionField.BusinessObjectID == null)
       {
         SpecificPositionAndGroupLinkingLabel.Visible = false;
-        GroupSelectionField.Visible = false;
-        GroupSelectionField.Value = GroupSelection.All;
+        GroupConditionField.Visible = false;
+        GroupConditionField.Value = GroupCondition.None;
       }
       else
       {
         SpecificPositionAndGroupLinkingLabel.Visible = true;
-        GroupSelectionField.Visible = true;
+        GroupConditionField.Visible = true;
       }
     }
 
@@ -167,7 +167,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         Permission permission = (Permission) permissions[i];
 
         EditPermissionControl control = (EditPermissionControl) LoadControl ("EditPermissionControl.ascx");
-        control.ID = "P_" + i.ToString ();
+        control.ID = "P_" + i;
         control.BusinessObject = permission;
 
         HtmlGenericControl li = new HtmlGenericControl ("li");
