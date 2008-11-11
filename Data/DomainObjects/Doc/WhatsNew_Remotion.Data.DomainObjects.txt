@@ -1,18 +1,145 @@
+1.11.11
+=======
+- COMMONS-786 OppositeClassDefinitionRetriever should also support -1 in addition to IndexOutOfRangeExceptions for detecting missing columns.
+
+1.11.7
+======
+- COMMONS-770 Change BindableDomainObject to work without using mixins
+- COMMONS-766 Remove complicated Query constructors - use QueryFactory instead
+- COMMONS-762 Add QueryCache
+- COMMONS-761 Add QueryFactory.CreateQuery overloads
+
+1.11.6
+======
+- COMMONS-760 Move Linq entry point from DataContext to new Query factory class
+
+1.11.5
+======
+- COMMONS-758 QueryConfiguration reports duplicate queries.xml files if PrivateBinPath is string.Empty
+
 1.11.4
 ======
-- Enum-Property (ObjectBinding): Fixed issue with UndefinedEnumValue-attributed enums behaving differently than nullable enums. 
+- COMMONS-748 When mixing a persistent property where the virtual side is on a mixin and there are other mixins, RelationReflectorBase throws a MappingException
+- COMMONS-746 EnumProperty: Enums with UndefinedEnumValueAttribute should behave like nullable Enums (i.e. not be required)
+  Enum-Property (ObjectBinding): Fixed issue with UndefinedEnumValue-attributed enums behaving differently than nullable enums. 
   Now both enum-types will be treated as not required if they are nullable or have an undefined value.
 
 1.11.3
 ======
-- DomainObjectCollection: Dropped ICollection<DomainObject> from DomainObjectCollection to avoid conflicts with type inferencing in Linq-queries
+- COMMONS-718 Support persistent mixins applied above the inheritance root
+- COMMONS-717 Drop ICollection<T> from DomainObjectCollection to avoid type inferencing conficts in c# compiler when using ObjectList<T>
+  DomainObjectCollection: Dropped ICollection<DomainObject> from DomainObjectCollection to avoid conflicts with type inferencing in Linq-queries
   when using ObjectList<T>.
+
+1.11.2
+======
+- COMMONS-713 Allow "set" accessors for CollectionEndPoint-based properties
+- COMMONS-695 dbschema does not support StorageClass.Transaction
+- COMMONS-688 Throw exception in DomainObject constructor if object is instantiated without the responsible creator
 
 1.11.1
 ======
-- dbschema.exe now generated SQL Server 2005 syntax instead of SQL Server 2000:
+- COMMONS-694 Change default implementation for SQL data types genereted by dbschema.exe for string and binary data to nvarchar (n|max) and varbinary (n|max)
+  dbschema.exe now generated SQL Server 2005 syntax instead of SQL Server 2000:
   string without a maximum length is now generated as nvarchar (max) instead of ntext.
   byte[] is now generated as varbinary (n|max) instead of image.
+
+
+1.10.0
+======
+- COMMONS-686 Query files should be loaded relative to AppBase, default queries.xml should additionally be located in relative search paths
+
+1.9.2
+=====
+- COMMONS-683 dbschema.exe cannot handle domains without any types
+- COMMONS-684 Automatically implement virtual C#-3.0-automatic properties
+- COMMONS-675 PropertyIndexer.Find does not support properties declared on generic types
+- COMMONS-674 StorageClassTransaction
+- COMMONS-672 Derived persisten mixins should support diamond-style inheritance
+- COMMONS-671 ClassDefinition.ValidateCurrentMixinConfiguration doesn't check base class definition, so mixin changes to the base class aren't recognized
+- COMMONS-668 Reflection-based should check that persistence-relevant mixins introduced by a base type are not suppressed on the derived type
+- COMMONS-666 Open generic mixins are incorrectly reported to be relevant for persistence
+- COMMONS-558 Provide support for derived persistent mixins
+- COMMONS-476 Provide a Clone feature for DomainObjects
+- COMMONS-682 Support automatic properties
+
+1.9.0
+=====
+- COMMONS-646 Allow ClientTransaction.CopyCollectionEventHandlers to use discarded transactions as a source
+- COMMONS-640 Eliminate Data.DomainObjects.Web
+  - COMMONS-642 Add Remotion.Web.WxeScopedTransaction, Remotion.Data.ITransactionManager, and Remotion.Data.ITransactionScope"
+- COMMONS-639 Restructure DomainObject unit test folders
+- COMMONS-638 Rename Remotion.Security.Data.DomainObjects project to Remotion.Data.DomainObjects.Security
+- COMMONS-626 Remove NullableValueTypes
+- COMMONS-622 Add Data.Interfaces project
+- COMMONS-619 Remove Legacy projects
+- COMMONS-601 Rename Rubicon framework to Remotion
+- COMMONS-289 Reorganize folder structure in Data.DomainObjects.UnitTests
+
+1.7.87
+======
+- COMMONS-493 Make DomainObjectTransporter more efficient by only serializing those objects that really are transported
+- COMMONS-571 Provide simple XML serialization support for transported domain objects
+- COMMONS-569 Provide serialization hooks in DomainObjectTransporter and DomainObjectImporter
+- COMMONS-577 Use EncodedCodeBase in ReflectionUtility.GetAssemblyPath and rename GetExecutingAssemblyPath to something more sensible (it always returns the Data.DomainObjects assembly)
+- COMMONS-573 Ensure transport transaction cannot be rolled back or committed
+- COMMONS-572 Make binary DomainObject transport independent of framework version
+- COMMONS-499 Decide upon and implement error handling when two mixins add persistent relation properties referencing the same opposite property
+
+
+1.7.86
+======
+- COMMONS-566	Make IClientTransactionListener.PropertyValueChanging/Changed also fire for relation properties
+- COMMONS-243 Transport of domain objects + data to another system
+  - COMMONS-393	Add hook to manipulate exported objects
+- COMMONS-567	Mixed relation IDs are not unique over multiple target classes
+
+1.7.85
+======
+- COMMONS-565 SubClientTransaction should throw when it is used while its parent is writable (rather than throw assertions)
+- COMMONS-554 Rename ClientTransaction.NewTransaction to ClientTransaction.NewRootTransaction to avoid confusion
+- COMMONS-551 RelationReflector assigns wrong RelationIDs for mixed relation properties
+- COMMONS-547 Refactor ValueConverter.GetMandatoryOppositeClassDefinition
+- COMMONS-546 Fix error message when a query is executed that returns null values
+- COMMONS-543 SqlProvider should support null ClassID columns when ID column is also null
+- COMMONS-475 Define behavior of QueryManager.GetCollection with duplicates in the result set
+- COMMONS-563 Fehler beim Zugriff auf bereits geladenes Objekt in SubTransaction während im Aufruf von GetCollection in SubTransaction
+
+1.7.81
+======
+- COMMONS-496 Add support for mixed relation properties, where a mixin adds a relation to a DomainObject class
+- COMMONS-491 Wrong LoadMode in OnLoaded method is given when a DomainObject is loaded in a subtransaction after being newly created in the parent tx
+- COMMONS-490 Ensure _bindingTransaction is correctly serialized if concrete domain object implements ISerializable
+- COMMONS-489 Ensure DataContainer of an object is loaded when accessing its related objects
+- COMMONS-338 Add possibility to bind DomainObject instances or graphs to a specific ClientTransaction
+  - COMMONS-487 Add ClientTransaction.NewBindingTransaction
+  - COMMONS-488 Make DomainObjects created in scope of BindingClientTransaction automatically bound to that transaction
+- COMMONS-486 Remove SerializableAttributes from diverse data management classes
+- COMMONS-388 Add possibility to control traversal in GetFlattenedRelatedObjectGraph
+- COMMONS-389 Add filtered DomainObjectTransporter.LoadRecursive
+- COMMONS-381 Add affinity between TransportedDomainObjects.TransportedObjects and DataTransaction
+
+
+1.7.80
+======
+- COMMONS-474 Improve serialization performance by serializing a whole ClientTransaction as one flattened object array
+- COMMONS-473 Build performance tests for serialization
+- COMMONS-471 Commit ordering of DomainObjectCollections from subtransactions to parent transactions
+- COMMONS-469 Make mapping classes more efficient to serialize by removing ISerializable interface and requiring serialized instances to be part of the current mapping
+
+1.7.76
+======
+- COMMONS-452 DomainObject should provide BaseGetObjectData method for domain objects implementing ISerializable to work correctly
+- COMMONS-448 Remove LoadIntoTransaction
+- COMMONS-446 Derive SimpleDomainObject from DomainObject and provide public NewObject<>/GetObject<>
+- COMMONS-445 Remove non-generic New/GetObject methods from DomainObject and provide Infrastructure.RepositoryAccessor.New/Get/DeleteObject
+- COMMONS-438 Replace usages of AssemblyFinder with ContextAwareTypeDiscoveryService
+- COMMONS-361 Add DebuggerDisplayAttribute: IBusinessObject/WithIdentity implementations, DomainObject, OPF mapping
+
+
+1.7.75
+======
+- COMMONS-441 Inherit initial AutoEnlist value from parent transaction scope
 
 1.7.74.0
 ========
