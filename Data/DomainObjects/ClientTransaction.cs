@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -130,7 +129,6 @@ public abstract class ClientTransaction
   private readonly CompoundClientTransactionListener _listeners;
   private readonly ClientTransactionExtensionCollection _extensions;
 
-  private bool _isReadOnly;
   private bool _isDiscarded;
   
   // construction and disposing
@@ -140,7 +138,7 @@ public abstract class ClientTransaction
     ArgumentUtility.CheckNotNull ("applicationData", applicationData);
     ArgumentUtility.CheckNotNull ("extensions", extensions);
 
-    _isReadOnly = false;
+    IsReadOnly = false;
     _isDiscarded = false;
     _extensions = extensions;
    
@@ -352,11 +350,7 @@ public abstract class ClientTransaction
   /// operations that do not cause any change of transaction state. Most reading operations that do not require objects to be loaded
   /// from the data store are safe to be used on read-only transactions, but any method that would cause a state change will throw an exception.
   /// </remarks>
-  public bool IsReadOnly
-  {
-    get { return _isReadOnly; }
-    protected internal set { _isReadOnly = value; }
-  }
+  public bool IsReadOnly { get; protected internal set; }
 
   /// <summary>
   /// Returns whether this <see cref="ClientTransaction"/> has been discarded. A transaction is discarded when its <see cref="Discard"/> or
@@ -560,7 +554,7 @@ public abstract class ClientTransaction
   public void EnlistSameDomainObjects (ClientTransaction sourceTransaction, bool copyCollectionEventHandlers)
   {
     ArgumentUtility.CheckNotNull ("sourceTransaction", sourceTransaction);
-    Set<DomainObject> enlistedObjects = new Set<DomainObject> ();
+    var enlistedObjects = new Set<DomainObject> ();
 
     foreach (DomainObject domainObject in sourceTransaction.EnlistedDomainObjects)
     {
@@ -571,27 +565,20 @@ public abstract class ClientTransaction
 
     if (copyCollectionEventHandlers)
     {
-      try
+      foreach (DomainObject domainObject in enlistedObjects)
       {
-        foreach (DomainObject domainObject in enlistedObjects)
+        try
         {
-          try
-          {
-            CopyCollectionEventHandlers (domainObject, sourceTransaction);
-          }
-          catch (ObjectNotFoundException)
-          {
-            // ignore
-          }
-          catch (ObjectDiscardedException)
-          {
-            // ignore
-          }
+          CopyCollectionEventHandlers (domainObject, sourceTransaction);
         }
-      }
-      finally
-      {
-        
+        catch (ObjectNotFoundException)
+        {
+          // ignore
+        }
+        catch (ObjectDiscardedException)
+        {
+          // ignore
+        }
       }
     }
   }
@@ -653,11 +640,11 @@ public abstract class ClientTransaction
 
     foreach (PropertyAccessor property in domainObject.Properties)
     {
-      if (property.Kind == PropertyKind.RelatedObjectCollection)
+      if (property.PropertyData.Kind == PropertyKind.RelatedObjectCollection)
       {
         // access source property via RelationEndPointMap, we don't want to load any objects and we don't want to raise any events
-        RelationEndPointID endPointID = new RelationEndPointID(domainObject.ID, property.RelationEndPointDefinition);
-        CollectionEndPoint sourceEndPoint = (CollectionEndPoint) sourceTransaction.DataManager.RelationEndPointMap[endPointID];
+        var endPointID = new RelationEndPointID (domainObject.ID, property.PropertyData.RelationEndPointDefinition);
+        var sourceEndPoint = (CollectionEndPoint) sourceTransaction.DataManager.RelationEndPointMap[endPointID];
         if (sourceEndPoint != null)
         {
           DomainObjectCollection sourceRelatedObjectCollection = sourceEndPoint.OppositeDomainObjects;
@@ -723,7 +710,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       BeginCommit();
-      DomainObjectCollection changedButNotDeletedDomainObjects = _dataManager.GetDomainObjects (new StateType[] {StateType.Changed, StateType.New});
+      DomainObjectCollection changedButNotDeletedDomainObjects = _dataManager.GetDomainObjects (new[] {StateType.Changed, StateType.New});
 
       DataContainerCollection changedDataContainers = _dataManager.GetChangedDataContainersForCommit();
       PersistData (changedDataContainers);
@@ -741,7 +728,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       BeginRollback();
-      DomainObjectCollection changedButNotNewDomainObjects = _dataManager.GetDomainObjects (new StateType[] {StateType.Changed, StateType.Deleted});
+      DomainObjectCollection changedButNotNewDomainObjects = _dataManager.GetDomainObjects (new[] {StateType.Changed, StateType.Deleted});
 
       _dataManager.Rollback();
 
@@ -859,8 +846,8 @@ public abstract class ClientTransaction
 
     using (EnterNonDiscardingScope ())
     {
-      DomainObject[] loadedObjects = new DomainObject[objectIDs.Length];
-      List<ObjectID> idsToBeLoaded = new List<ObjectID> ();
+      var loadedObjects = new DomainObject[objectIDs.Length];
+      var idsToBeLoaded = new List<ObjectID> ();
 
       for (int i = 0; i < objectIDs.Length; i++)
       {
@@ -874,7 +861,7 @@ public abstract class ClientTransaction
       if (idsToBeLoaded.Count > 0)
       {
         DataContainerCollection additionalDataContainers = LoadDataContainers (idsToBeLoaded, throwOnNotFound);
-        DomainObjectCollection loadedDomainObjects = new DomainObjectCollection (additionalDataContainers, true);
+        var loadedDomainObjects = new DomainObjectCollection (additionalDataContainers, true);
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
         for (int i = 0; i < objectIDs.Length; i++)
@@ -895,7 +882,7 @@ public abstract class ClientTransaction
 
   private ObjectList<T> MakeObjectList<T> (DomainObject[] loadedObjects) where T : DomainObject
   {
-    ObjectList <T> objectList = new ObjectList<T> ();
+    var objectList = new ObjectList<T> ();
     foreach (DomainObject domainObject in loadedObjects)
     {
       if (domainObject != null)
@@ -1095,7 +1082,7 @@ public abstract class ClientTransaction
     {
       DataContainer dataContainer = LoadDataContainer (id);
 
-      DomainObjectCollection loadedDomainObjects = new DomainObjectCollection (new DomainObject[] {dataContainer.DomainObject}, true);
+      var loadedDomainObjects = new DomainObjectCollection (new[] {dataContainer.DomainObject}, true);
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
       return dataContainer.DomainObject;
@@ -1123,7 +1110,7 @@ public abstract class ClientTransaction
     {
       DataContainer dataContainer = LoadDataContainerForExistingObject (domainObject);
 
-      DomainObjectCollection loadedDomainObjects = new DomainObjectCollection (new DomainObject[] { dataContainer.DomainObject }, true);
+      var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, true);
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
       return dataContainer;
@@ -1199,7 +1186,7 @@ public abstract class ClientTransaction
       if (relationEndPointID != null)
         _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, domainObjects);
 
-      DomainObjectCollection newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers, true);
+      var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers, true);
       OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
 
       return domainObjects;
@@ -1388,11 +1375,11 @@ public abstract class ClientTransaction
     // If an object is changed back to its original state during the Committing phase, no Committed event will be raised,
     // because in this case the object won't be committed to the underlying backend (e.g. database).
 
-    DomainObjectCollection changedDomainObjects = _dataManager.GetChangedDomainObjects ();
-    DomainObjectCollection domainObjectComittingEventRaised = new DomainObjectCollection ();
-    DomainObjectCollection clientTransactionCommittingEventRaised = new DomainObjectCollection ();
+    var changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+    var domainObjectComittingEventRaised = new DomainObjectCollection ();
+    var clientTransactionCommittingEventRaised = new DomainObjectCollection ();
 
-    DomainObjectCollection clientTransactionCommittingEventNotRaised = changedDomainObjects;
+    DomainObjectCollection clientTransactionCommittingEventNotRaised;
     do
     {
       DomainObjectCollection domainObjectCommittingEventNotRaised = domainObjectComittingEventRaised.GetItemsNotInCollection (changedDomainObjects);
@@ -1450,11 +1437,11 @@ public abstract class ClientTransaction
     // If an object is changed back to its original state during the RollingBack phase, no RolledBack event will be raised,
     // because the object actually has never been changed from a ClientTransaction's perspective.
 
-    DomainObjectCollection changedDomainObjects = _dataManager.GetChangedDomainObjects ();
-    DomainObjectCollection domainObjectRollingBackEventRaised = new DomainObjectCollection ();
-    DomainObjectCollection clientTransactionRollingBackEventRaised = new DomainObjectCollection ();
+    var changedDomainObjects = _dataManager.GetChangedDomainObjects ();
+    var domainObjectRollingBackEventRaised = new DomainObjectCollection ();
+    var clientTransactionRollingBackEventRaised = new DomainObjectCollection ();
 
-    DomainObjectCollection clientTransactionRollingBackEventNotRaised = changedDomainObjects;
+    DomainObjectCollection clientTransactionRollingBackEventNotRaised;
     do
     {
       DomainObjectCollection domainObjectRollingBackEventNotRaised = domainObjectRollingBackEventRaised.GetItemsNotInCollection (changedDomainObjects);

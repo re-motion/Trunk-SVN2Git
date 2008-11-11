@@ -156,6 +156,8 @@
     <Compile Include="Infrastructure\BindingClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ClientTransactionWrapper.cs" />
     <Compile Include="Infrastructure\Interception\DomainObjectConstructorLookupInfo.cs" />
+    <Compile Include="Infrastructure\PropertyAccessorData.cs" />
+    <Compile Include="Infrastructure\PropertyKind.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedDeserializationInfo.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedSerializationReader.cs" />
     <Compile Include="Infrastructure\Serialization\FlattenedSerializableMarker.cs" />

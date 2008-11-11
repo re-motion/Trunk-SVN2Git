@@ -11,7 +11,6 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Collections;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -141,8 +140,8 @@ namespace Remotion.Data.DomainObjects.Cloning
     {
       foreach (PropertyAccessor cloneProperty in cloneProperties)
       {
-        PropertyAccessor sourceProperty = sourceProperties[cloneProperty.PropertyIdentifier];
-        if (cloneProperty.Kind == PropertyKind.PropertyValue)
+        PropertyAccessor sourceProperty = sourceProperties[cloneProperty.PropertyData.PropertyIdentifier];
+        if (cloneProperty.PropertyData.Kind == PropertyKind.PropertyValue)
         {
           object sourceValue = sourceProperty.GetValueWithoutTypeCheckTx (sourceTransaction);
           cloneProperty.SetValueWithoutTypeCheckTx (cloneTransaction, sourceValue);

@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -28,12 +29,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void WorksForExistingProperty()
     {
-      PropertyIndexer indexer = new PropertyIndexer (IndustrialSector.NewObject());
+      var indexer = new PropertyIndexer (IndustrialSector.NewObject());
       Assert.IsNotNull (indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"]);
       Assert.AreSame (
           MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)]
               .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"),
-          indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"].PropertyDefinition);
+          indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"].PropertyData.PropertyDefinition);
     }
 
     [Test]
@@ -41,8 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         + "IndustrialSector does not have a mapping property named 'Bla'.\r\nParameter name: propertyName")]
     public void ThrowsForNonExistingProperty ()
     {
-      PropertyIndexer indexer = new PropertyIndexer (IndustrialSector.NewObject ());
-      object o = indexer["Bla"];
+      var indexer = new PropertyIndexer (IndustrialSector.NewObject ());
+      Dev.Null = indexer["Bla"];
     }
 
     [Test]
@@ -62,13 +63,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetEnumeratorGeneric ()
     {
       Order order = Order.NewObject();
-      List<string> propertyNames = new List<string> ();
+      var propertyNames = new List<string> ();
       foreach (PropertyAccessor propertyAccessor in (IEnumerable<PropertyAccessor>)order.Properties)
       {
-        propertyNames.Add (propertyAccessor.PropertyIdentifier);
+        propertyNames.Add (propertyAccessor.PropertyData.PropertyIdentifier);
       }
 
-      Assert.That (propertyNames, Is.EquivalentTo (new string[] {
+      Assert.That (propertyNames, Is.EquivalentTo (new[] {
         "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber",
         "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate",
         "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official",
@@ -82,13 +83,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetEnumeratorNonGeneric ()
     {
       Order order = Order.NewObject ();
-      List<string> propertyNames = new List<string> ();
+      var propertyNames = new List<string> ();
       foreach (PropertyAccessor propertyAccessor in (IEnumerable)order.Properties)
       {
-        propertyNames.Add (propertyAccessor.PropertyIdentifier);
+        propertyNames.Add (propertyAccessor.PropertyData.PropertyIdentifier);
       }
 
-      Assert.That (propertyNames, Is.EquivalentTo (new string[] {
+      Assert.That (propertyNames, Is.EquivalentTo (new[] {
         "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber",
         "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate",
         "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official",
@@ -120,10 +121,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void ShortNameAndTypeWithShadowedProperties ()
     {
-      DerivedClassWithMixedProperties classWithMixedProperties =
-          (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (typeof (DerivedClassWithMixedProperties)).With();
+      var classWithMixedProperties = (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (typeof (DerivedClassWithMixedProperties)).With();
 
-      PropertyIndexer indexer = new PropertyIndexer(classWithMixedProperties);
+      var indexer = new PropertyIndexer(classWithMixedProperties);
       Assert.AreEqual (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"],
           indexer[typeof (DerivedClassWithMixedProperties), "String"]);
       Assert.AreEqual (indexer[typeof (ClassWithMixedProperties).FullName + ".String"],
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void FindFromGenericType ()
     {
-      ClosedGenericClassWithManySideRelationProperties instance = (ClosedGenericClassWithManySideRelationProperties)
+      var instance = (ClosedGenericClassWithManySideRelationProperties)
           RepositoryAccessor.NewObject (typeof (ClosedGenericClassWithManySideRelationProperties)).With();
       Assert.IsFalse (instance.Properties.Contains (typeof (ClosedGenericClassWithManySideRelationProperties), "BaseUnidirectional"));
       Assert.AreEqual (instance.Properties[typeof (GenericClassWithManySideRelationPropertiesNotInMapping<>), "BaseUnidirectional"],
@@ -167,10 +167,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void FindWithShadowedProperty ()
     {
-      DerivedClassWithMixedProperties classWithMixedProperties =
+      var classWithMixedProperties =
           (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (typeof (DerivedClassWithMixedProperties)).With();
       
-      PropertyIndexer indexer = new PropertyIndexer (classWithMixedProperties);
+      var indexer = new PropertyIndexer (classWithMixedProperties);
       Assert.AreEqual (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"],
           indexer.Find (typeof (DerivedClassWithMixedProperties), "String"));
       Assert.AreEqual (indexer[typeof (ClassWithMixedProperties).FullName + ".String"],
@@ -180,10 +180,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void FindWithShadowedPropertyAndInferredType ()
     {
-      DerivedClassWithMixedProperties classWithMixedProperties =
+      var classWithMixedProperties =
           (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (typeof (DerivedClassWithMixedProperties)).With();
 
-      PropertyIndexer indexer = new PropertyIndexer (classWithMixedProperties);
+      var indexer = new PropertyIndexer (classWithMixedProperties);
       Assert.AreEqual (indexer[typeof (DerivedClassWithMixedProperties).FullName + ".String"],
           indexer.Find (classWithMixedProperties, "String"));
       Assert.AreEqual (indexer[typeof (ClassWithMixedProperties).FullName + ".String"],
@@ -203,7 +203,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetAllRelatedObjects_DoesNotContainRoot ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      List<DomainObject> relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
+      var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, List.Not.Contains (order));
     }
 
@@ -211,7 +211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetAllRelatedObjects_DoesNotContainIndirectRelatedObjects ()
     {
       Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
-      List<DomainObject> relatedObjects = new List<DomainObject> (ceo.Properties.GetAllRelatedObjects ());
+      var relatedObjects = new List<DomainObject> (ceo.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, List.Not.Contains (ceo.Company.IndustrialSector));
     }
 
@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetAllRelatedObjects_DoesNotContainDuplicates ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      List<DomainObject> relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
+      var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, Is.EquivalentTo (new Set<DomainObject> (relatedObjects)));
     }
 
@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetAllRelatedObjects_DoesNotContainNulls ()
     {
       Order order = Order.NewObject ();
-      List<DomainObject> relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
+      var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, List.Not.Contains (null));
     }
 
@@ -235,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetAllRelatedObjects_ContainsSimpleRelatedObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      List<DomainObject> relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
+      var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, List.Contains (order.Official));
       Assert.That (relatedObjects, List.Contains (order.OrderTicket));
     }
@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetAllRelatedObjects_ContainsSimpleRelatedObjectBothSides ()
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
-      List<DomainObject> relatedObjects = new List<DomainObject> (computer.Properties.GetAllRelatedObjects ());
+      var relatedObjects = new List<DomainObject> (computer.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, List.Contains (computer.Employee));
 
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
@@ -257,7 +257,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetAllRelatedObjects_ContainsSimpleRelatedObjectUnidirectional ()
     {
       Client client = Client.GetObject (DomainObjectIDs.Client2);
-      List<DomainObject> relatedObjects = new List<DomainObject> (client.Properties.GetAllRelatedObjects ());
+      var relatedObjects = new List<DomainObject> (client.Properties.GetAllRelatedObjects ());
       Assert.That (relatedObjects, List.Contains (client.ParentClient));
     }
 
@@ -265,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetAllRelatedObjects_ContainsRelatedObjects ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      List<DomainObject> relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
+      var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (order.OrderItems, Is.SubsetOf (relatedObjects));
     }
   }

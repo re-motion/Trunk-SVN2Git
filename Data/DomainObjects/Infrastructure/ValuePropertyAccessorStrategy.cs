@@ -9,9 +9,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -35,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-      return propertyAccessor.DomainObject.GetDataContainerForTransaction (transaction).PropertyValues[propertyAccessor.PropertyIdentifier];
+      return propertyAccessor.DomainObject.GetDataContainerForTransaction (transaction).PropertyValues[propertyAccessor.PropertyData.PropertyIdentifier];
     }
 
     public bool HasChanged (PropertyAccessor propertyAccessor, ClientTransaction transaction)

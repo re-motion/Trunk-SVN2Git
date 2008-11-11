@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CreateCloneHull_CreatesObjectOfSameType ()
     {
-      DomainObject clone = _cloner.CreateCloneHull<DomainObject> (_classWithAllDataTypes);
+      var clone = _cloner.CreateCloneHull<DomainObject> (_classWithAllDataTypes);
       Assert.That (clone.GetPublicDomainObjectType (), Is.SameAs (typeof (ClassWithAllDataTypes)));
     }
 
@@ -195,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CreateClone_CreatesValueClone ()
     {
-      ICloneStrategy strategyMock = _mockRepository.Stub<ICloneStrategy> ();
+      var strategyMock = _mockRepository.Stub<ICloneStrategy> ();
       _mockRepository.ReplayAll ();
       
       Order clone = _cloner.CreateClone (_order1, strategyMock);
@@ -206,10 +206,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CreateClone_CallsStrategyForReferences ()
     {
-      ICloneStrategy strategyMock = _mockRepository.StrictMock<ICloneStrategy>();
-      CloneContext contextMock = _mockRepository.Stub<CloneContext>(_cloner);
+      var strategyMock = _mockRepository.StrictMock<ICloneStrategy>();
+      var contextMock = _mockRepository.Stub<CloneContext>(_cloner);
       Order clone = Order.NewObject();
-      Queue<Tuple<DomainObject, DomainObject>> shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
+      var shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
 
       SetupResult.For (contextMock.GetCloneFor (_order1)).Return (clone);
       shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1, clone));
@@ -231,11 +231,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CreateClone_CallsStrategyForReferences_OnReferencedObjectsToo ()
     {
-      ICloneStrategy strategyMock = _mockRepository.StrictMock<ICloneStrategy> ();
-      CloneContext contextMock = _mockRepository.Stub<CloneContext> (_cloner);
+      var strategyMock = _mockRepository.StrictMock<ICloneStrategy> ();
+      var contextMock = _mockRepository.Stub<CloneContext> (_cloner);
       Order clone = Order.NewObject ();
       OrderItem clone2 = OrderItem.NewObject ();
-      Queue<Tuple<DomainObject, DomainObject>> shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
+      var shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
 
       SetupResult.For (contextMock.GetCloneFor (_order1)).Return (clone);
       shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (_order1, clone));
@@ -260,11 +260,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CreateClone_CallsStrategyForReferences_OnlyWhenNotTouched ()
     {
-      ICloneStrategy strategyMock = _mockRepository.StrictMock<ICloneStrategy> ();
-      CloneContext contextMock = _mockRepository.Stub<CloneContext> (_cloner);
+      var strategyMock = _mockRepository.StrictMock<ICloneStrategy> ();
+      var contextMock = _mockRepository.Stub<CloneContext> (_cloner);
       Order clone = Order.NewObject ();
       OrderItem clone2 = OrderItem.NewObject ();
-      Queue<Tuple<DomainObject, DomainObject>> shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
+      var shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
 
       clone.OrderTicket = clone.OrderTicket;
       clone.Official = clone.Official;
@@ -298,8 +298,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
 
       _cloner.CloneTransaction = cloneTransaction;
 
-      ICloneStrategy strategyMock = _mockRepository.StrictMock<ICloneStrategy> ();
-      CloneContext contextMock = _mockRepository.Stub<CloneContext> (_cloner);
+      var strategyMock = _mockRepository.StrictMock<ICloneStrategy> ();
+      var contextMock = _mockRepository.Stub<CloneContext> (_cloner);
       
       Order source;
       using (sourceTransaction.EnterNonDiscardingScope ())
@@ -308,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       using (cloneTransaction.EnterNonDiscardingScope ())
         clone = Order.NewObject ();
 
-      Queue<Tuple<DomainObject, DomainObject>> shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
+      var shallowClonesFake = new Queue<Tuple<DomainObject, DomainObject>> ();
 
       SetupResult.For (contextMock.GetCloneFor (source)).Return (clone);
       shallowClonesFake.Enqueue (new Tuple<DomainObject, DomainObject> (source, clone));

@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Transport
       List<Tuple<TransportItem, DataContainer>> dataContainerMapping = GetTargetDataContainersForSourceObjects (targetTransaction);
 
       // grab enlisted objects _before_ properties are synchronized, as synchronizing might load some additional objects
-      List<DomainObject> transportedObjects = new List<DomainObject> (targetTransaction.EnlistedDomainObjects);
+      var transportedObjects = new List<DomainObject> (targetTransaction.EnlistedDomainObjects);
       SynchronizeData (dataContainerMapping);
 
       return new TransportedDomainObjects (targetTransaction, transportedObjects);
@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Transport
 
     private List<Tuple<TransportItem, DataContainer>> GetTargetDataContainersForSourceObjects (ClientTransaction targetTransaction)
     {
-      List<Tuple<TransportItem, DataContainer>> result = new List<Tuple<TransportItem, DataContainer>> ();
+      var result = new List<Tuple<TransportItem, DataContainer>> ();
       if (_transportItems.Length > 0)
       {
         using (targetTransaction.EnterNonDiscardingScope())
@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Transport
 
     private ObjectID[] GetIDs (TransportItem[] items)
     {
-      return Array.ConvertAll<TransportItem, ObjectID> (items, delegate (TransportItem item) { return item.ID; });
+      return Array.ConvertAll (items, item => item.ID);
     }
 
     private void SynchronizeData (IEnumerable<Tuple<TransportItem, DataContainer>> sourceToTargetMapping)
@@ -94,15 +94,15 @@ namespace Remotion.Data.DomainObjects.Transport
         foreach (KeyValuePair<string, object> sourceProperty in transportItem.Properties)
         {
           PropertyAccessor targetProperty = targetObject.Properties[sourceProperty.Key];
-          switch (targetProperty.Kind)
+          switch (targetProperty.PropertyData.Kind)
           {
             case PropertyKind.PropertyValue:
               targetProperty.SetValueWithoutTypeCheckTx (targetTransaction, sourceProperty.Value);
               break;
             case PropertyKind.RelatedObject:
-              if (!targetProperty.RelationEndPointDefinition.IsVirtual)
+              if (!targetProperty.PropertyData.RelationEndPointDefinition.IsVirtual)
               {
-                ObjectID relatedObjectID = (ObjectID) sourceProperty.Value;
+                var relatedObjectID = (ObjectID) sourceProperty.Value;
                 DomainObject targetRelatedObject = relatedObjectID != null ? targetTransaction.GetObject (relatedObjectID) : null;
                 targetProperty.SetValueWithoutTypeCheckTx (targetTransaction, targetRelatedObject);
               }

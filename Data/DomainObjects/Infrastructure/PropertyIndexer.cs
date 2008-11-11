@@ -11,7 +11,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Mapping;
 
@@ -23,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   public struct PropertyIndexer : IEnumerable<PropertyAccessor>
   {
-    // TODO: consider caching PropertyAccessors per object - or - introduce instance-independent flyweight and cache per class
+    // TODO: consider caching PropertyAccessorData objects
 
     private readonly DomainObject _domainObject;
 
@@ -55,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ArgumentUtility.CheckNotNull ("propertyName", propertyName);
         try
         {
-          return new PropertyAccessor (_domainObject, propertyName);
+          return new PropertyAccessor (_domainObject, new PropertyAccessorData (_domainObject.ID.ClassDefinition, propertyName));
         }
         catch (ArgumentException ex)
         {
@@ -138,7 +137,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public bool Contains (string propertyIdentifier)
     {
       ClassDefinition classDefinition = _domainObject.ID.ClassDefinition;
-      return PropertyAccessor.IsValidProperty (classDefinition, propertyIdentifier);
+      return PropertyAccessorData.IsValidProperty (classDefinition, propertyIdentifier);
     }
 
 
@@ -235,15 +234,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       foreach (PropertyAccessor property in _domainObject.Properties)
       {
-        switch (property.Kind)
+        switch (property.PropertyData.Kind)
         {
           case PropertyKind.RelatedObject:
-            DomainObject value = (DomainObject) property.GetValueWithoutTypeCheck ();
+            var value = (DomainObject) property.GetValueWithoutTypeCheck ();
             if (value != null)
               yield return value;
             break;
           case PropertyKind.RelatedObjectCollection:
-            DomainObjectCollection values = (DomainObjectCollection) property.GetValueWithoutTypeCheck ();
+            var values = (DomainObjectCollection) property.GetValueWithoutTypeCheck ();
             foreach (DomainObject relatedObject in values)
               yield return relatedObject;
             break;

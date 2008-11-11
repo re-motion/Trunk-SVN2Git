@@ -8,7 +8,6 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
@@ -57,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = GetTestGraph();
       Set<DomainObject> graph = order.GetGraphTraverser(FullGraphTraversalStrategy.Instance).GetFlattenedRelatedObjectGraph ();
 
-      Assert.That ((object) graph, List.Contains (order));
+      Assert.That (graph, List.Contains (order));
     }
 
     [Test]
@@ -67,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Set<DomainObject> graph = order.GetGraphTraverser(FullGraphTraversalStrategy.Instance).GetFlattenedRelatedObjectGraph ();
 
       foreach (DomainObject relatedObject in order.Properties.GetAllRelatedObjects())
-        Assert.That ((object) graph, List.Contains (relatedObject));
+        Assert.That (graph, List.Contains (relatedObject));
     }
 
     [Test]
@@ -76,16 +75,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = GetTestGraph();
       Set<DomainObject> graph = order.GetGraphTraverser(FullGraphTraversalStrategy.Instance).GetFlattenedRelatedObjectGraph ();
 
-      Assert.That ((object) graph, List.Contains (order.Customer.Ceo));
+      Assert.That (graph, List.Contains (order.Customer.Ceo));
     }
 
     [Test]
     public void GetFlattenedRelatedObjectGraph_TraversalFilter ()
     {
-      MockRepository repository = new MockRepository();
+      var repository = new MockRepository();
 
       Order order = GetDeepTestGraph();
-      IGraphTraversalStrategy strategy = repository.StrictMock<IGraphTraversalStrategy>();
+      var strategy = repository.StrictMock<IGraphTraversalStrategy>();
 
       using (repository.Unordered())
       {
@@ -134,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       repository.ReplayAll();
 
       Set<DomainObject> result = order.GetGraphTraverser (strategy).GetFlattenedRelatedObjectGraph();
-      Assert.That ((object) result, Is.EquivalentTo (new DomainObject[] {order, order.Official, order.OrderTicket, order.OrderItems[0], order.OrderItems[1],
+      Assert.That (result, Is.EquivalentTo (new DomainObject[] {order, order.Official, order.OrderTicket, order.OrderItems[0], order.OrderItems[1],
           order.Customer, order.Customer.Ceo, order.Customer.Ceo.Company, order.Customer.IndustrialSector,
           order.Customer.IndustrialSector.Companies[1], order.Customer.IndustrialSector.Companies[1].Ceo,
           order.Customer.IndustrialSector.Companies[2], order.Customer.IndustrialSector.Companies[2].Ceo }));
@@ -148,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Set<DomainObject> graph = order.GetGraphTraverser (new TestTraversalStrategy (true, false)).GetFlattenedRelatedObjectGraph ();
 
-      Set<DomainObject> expected = new Set<DomainObject> (
+      var expected = new Set<DomainObject> (
           order,
           RepositoryAccessor.GetObject (DomainObjectIDs.OrderTicket1, false),
           RepositoryAccessor.GetObject (DomainObjectIDs.OrderItem1, false),
@@ -165,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
           RepositoryAccessor.GetObject (DomainObjectIDs.Person3, false),
           RepositoryAccessor.GetObject (DomainObjectIDs.Person6, false));
 
-      Assert.That ((object) graph, Is.EquivalentTo(expected));
+      Assert.That (graph, Is.EquivalentTo(expected));
     }
 
     [Test]
@@ -174,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Set<DomainObject> graph = order.GetGraphTraverser (new TestTraversalStrategy (false, false)).GetFlattenedRelatedObjectGraph ();
 
-      Set<DomainObject> expected = new Set<DomainObject> (
+      var expected = new Set<DomainObject> (
           order,
           RepositoryAccessor.GetObject (DomainObjectIDs.OrderTicket1, false),
           RepositoryAccessor.GetObject (DomainObjectIDs.OrderItem1, false),
@@ -187,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
           RepositoryAccessor.GetObject (DomainObjectIDs.Supplier1, false),
           RepositoryAccessor.GetObject (DomainObjectIDs.Distributor2, false));
 
-      Assert.That ((object) graph, Is.EquivalentTo (expected));
+      Assert.That (graph, Is.EquivalentTo (expected));
     }
      
     [Test]
@@ -196,9 +195,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Set<DomainObject> graph = order.GetGraphTraverser (new TestTraversalStrategy (false, true)).GetFlattenedRelatedObjectGraph ();
 
-      Set<DomainObject> expected = new Set<DomainObject> (RepositoryAccessor.GetObject (DomainObjectIDs.Distributor2, false));
+      var expected = new Set<DomainObject> (RepositoryAccessor.GetObject (DomainObjectIDs.Distributor2, false));
 
-      Assert.That ((object) graph, Is.EquivalentTo (expected));
+      Assert.That (graph, Is.EquivalentTo (expected));
     }
 
     class TestTraversalStrategy : IGraphTraversalStrategy
@@ -220,9 +219,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       public bool ShouldFollowLink (DomainObject root, DomainObject currentObject, int currentDepth, PropertyAccessor linkProperty)
       {
-        return !typeof (Ceo).IsAssignableFrom (linkProperty.PropertyType)
-          && !typeof (Order).IsAssignableFrom (linkProperty.PropertyType)
-          && !typeof (ObjectList<Order>).IsAssignableFrom (linkProperty.PropertyType);
+        return !typeof (Ceo).IsAssignableFrom (linkProperty.PropertyData.PropertyType)
+          && !typeof (Order).IsAssignableFrom (linkProperty.PropertyData.PropertyType)
+          && !typeof (ObjectList<Order>).IsAssignableFrom (linkProperty.PropertyData.PropertyType);
       }
     }
   }

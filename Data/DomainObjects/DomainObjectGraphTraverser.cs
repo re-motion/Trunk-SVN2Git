@@ -8,7 +8,6 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -44,9 +43,9 @@ namespace Remotion.Data.DomainObjects
     // Note: Implemented nonrecursively in order to support very large graphs.
     public Set<DomainObject> GetFlattenedRelatedObjectGraph ()
     {
-      Set<DomainObject> visited = new Set<DomainObject> ();
-      Set<DomainObject> resultSet = new Set<DomainObject> ();
-      Set<Tuple<DomainObject, int>> objectsToBeProcessed = new Set<Tuple<DomainObject, int>> (Tuple.NewTuple (_rootObject, 0));
+      var visited = new Set<DomainObject> ();
+      var resultSet = new Set<DomainObject> ();
+      var objectsToBeProcessed = new Set<Tuple<DomainObject, int>> (Tuple.NewTuple (_rootObject, 0));
 
       while (objectsToBeProcessed.Count > 0)
       {
@@ -68,12 +67,12 @@ namespace Remotion.Data.DomainObjects
     {
       foreach (PropertyAccessor property in current.Properties)
       {
-        switch (property.Kind)
+        switch (property.PropertyData.Kind)
         {
           case PropertyKind.RelatedObject:
             if (strategy.ShouldFollowLink (_rootObject, current, currentDepth, property))
             {
-              DomainObject relatedObject = (DomainObject) property.GetValueWithoutTypeCheck ();
+              var relatedObject = (DomainObject) property.GetValueWithoutTypeCheck ();
               if (relatedObject != null)
                 yield return Tuple.NewTuple (relatedObject, currentDepth + 1);
             }

@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public RelationEndPointID CreateRelationEndPointID (PropertyAccessor propertyAccessor)
     {
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
-      return new RelationEndPointID (propertyAccessor.DomainObject.ID, propertyAccessor.RelationEndPointDefinition);
+      return new RelationEndPointID (propertyAccessor.DomainObject.ID, propertyAccessor.PropertyData.RelationEndPointDefinition);
     }
 
     public RelationEndPoint GetRelationEndPoint (PropertyAccessor propertyAccessor, ClientTransaction transaction)
@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("accessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-      if (propertyAccessor.RelationEndPointDefinition.IsVirtual)
+      if (propertyAccessor.PropertyData.RelationEndPointDefinition.IsVirtual)
         return GetValueWithoutTypeCheck (propertyAccessor, transaction) == null;
       else // for nonvirtual end points check out the ObjectID, which is stored in the DataContainer; this allows IsNull to avoid loading the object
         return ValuePropertyAccessorStrategy.Instance.GetValueWithoutTypeCheck (propertyAccessor, transaction) == null;

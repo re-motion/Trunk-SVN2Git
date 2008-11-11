@@ -8,8 +8,6 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
@@ -36,17 +34,17 @@ namespace Remotion.Data.DomainObjects.Cloning
         ClientTransaction cloneTransaction,
         CloneContext context)
     {
-      if (sourceReference.Kind == PropertyKind.RelatedObject)
+      if (sourceReference.PropertyData.Kind == PropertyKind.RelatedObject)
       {
-        DomainObject originalRelated = (DomainObject) sourceReference.GetValueWithoutTypeCheckTx (sourceTransaction);
+        var originalRelated = (DomainObject) sourceReference.GetValueWithoutTypeCheckTx (sourceTransaction);
         DomainObject cloneRelated = originalRelated != null ? context.GetCloneFor (originalRelated) : null;
         cloneReference.SetValueWithoutTypeCheckTx (cloneTransaction, cloneRelated);
       }
       else
       {
-        Assertion.IsTrue (sourceReference.Kind == PropertyKind.RelatedObjectCollection);
-        DomainObjectCollection originalRelatedCollection = (DomainObjectCollection) sourceReference.GetValueWithoutTypeCheckTx (sourceTransaction);
-        DomainObjectCollection cloneRelatedCollection = (DomainObjectCollection) cloneReference.GetValueWithoutTypeCheckTx (cloneTransaction);
+        Assertion.IsTrue (sourceReference.PropertyData.Kind == PropertyKind.RelatedObjectCollection);
+        var originalRelatedCollection = (DomainObjectCollection) sourceReference.GetValueWithoutTypeCheckTx (sourceTransaction);
+        var cloneRelatedCollection = (DomainObjectCollection) cloneReference.GetValueWithoutTypeCheckTx (cloneTransaction);
 
         foreach (DomainObject originalRelated in originalRelatedCollection)
         {

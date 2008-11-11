@@ -553,7 +553,7 @@ namespace Remotion.Data.DomainObjects
     protected internal virtual void PreparePropertyAccess (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      if (!PropertyAccessor.IsValidProperty (ID.ClassDefinition, propertyName))
+      if (!PropertyAccessorData.IsValidProperty (ID.ClassDefinition, propertyName))
       {
         string message = string.Format (
             "The property identifier '{0}' is not a valid property of domain object type {1}.",
