@@ -11,14 +11,17 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 using System.Windows;
@@ -621,6 +624,135 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           //To.ConsoleLine.e (() => result);
 
           Assert.That (result, NUnitText.Contains("<td>"+ stateLessAclStateHtmlText + @"</td>"));
+        }
+      }
+    }
+
+
+
+    [Test]
+    [Explicit]
+    public void SeperateGroupingClassTest ()
+    {
+      using (CultureScope_de_DE ())
+      {
+        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User2,User3,User);
+
+        // Create stateless-only ACL
+        SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
+        var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
+        TestHelper.AttachAces (statlessAcl, Ace);
+
+        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl, statlessAcl);
+
+        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+        //var aclExpansionUserGrouping = (from aee in aclExpansionEntryList
+        //                               orderby aee.User.DisplayName
+        //                               group aee by aee.User)
+        //                               group ;
+
+        //var aclExpansionUserGrouping = 
+        //    from aeeUser in aclExpansionEntryList
+        //    select
+        //        new {User = aeeUser.User, 
+        //             UserGroup = 
+        //                 from aeeRole in aeeUser.User.Roles
+        //                 group aeeUser by aeeUser.User into aeeRoles
+        //                 select
+        //                     new {Role = aeeRoles.Key,
+        //                          RoleGroup = aeeRoles
+        //                         }
+        //            };
+
+
+        //var aclExpansionUserGrouping =
+        //    (from aeeUser in aclExpansionEntryList
+        //     group aeeUser by aeeUser.User into aeeUsers
+        //     select
+        //        (from aeeRole in aeeUsers
+        //         group aeeRole by aeeRole.Role into aeeRoles 
+        //        select aeeRoles).ToList()).ToList();
+
+        //var aclExpansionUserGrouping =
+        //    from aeeUser in aclExpansionEntryList
+        //     group aeeUser by aeeUser.User into aeeUsers
+        //     select
+        //        (from aeeRole in aeeUsers
+        //         group aeeRole by aeeRole.Role into aeeRoles
+        //         select 
+        //          (from aeeClass in aeeRoles
+        //          group aeeClass by aeeClass.Class into aeeClasses
+        //          select aeeClasses.ToList()).ToList()).ToList ();
+
+
+        //var aclExpansionUserGrouping =
+        //    from aeeUser in aclExpansionEntryList
+        //    group aeeUser by aeeUser.User
+        //    into aeeUsers
+        //        select AclExpansionTreeNode.New (
+        //        aeeUsers.Key,
+        //        (from aeeRole in aeeUsers
+        //         group aeeRole by aeeRole.Role
+        //           into aeeRoles
+        //           select aeeRoles).ToList (),
+        //        //aeeUsers.ToList(),
+        //        aeeUsers.Count());
+        
+        
+        //var aclExpansionUserGrouping =
+        //    aclExpansionEntryList.GroupBy (aeeUser => aeeUser.User).Select (
+        //        aeeUsers => AclExpansionTreeNode.New (
+        //                        aeeUsers.Key,
+        //                        (from aeeRole in aeeUsers
+        //                         group aeeRole by aeeRole.Role
+        //                         into aeeRoles
+        //                             select aeeRoles).ToList(),
+        //                        //aeeUsers.ToList(),
+        //                        aeeUsers.Count()));
+
+        
+            
+
+        //var aclExpansionUserGrouping = aclExpansionEntryList.OrderBy (aee => aee.User.DisplayName).GroupBy (aee => aee.User);
+        //var aclExpansionRoleGrouping = aclExpansionUserGrouping.OrderBy (aee => aee.Key.R).GroupBy (aee => aee.User);
+        //To.Console.SetOutputComplexityToFull();
+        //To.ToTextProvider.Settings.
+ 
+        //foreach (var entries in aclExpansionUserGrouping)
+        //{
+        //  To.ConsoleLine.e (entries.);
+        //  To.ConsoleLine.e (entries[0][0]);
+        //  To.ConsoleLine.e (entries[0][0][0]);
+        //}
+      }
+    }
+
+
+    [Test]
+    public void StatelessAclOutputFirstTest ()
+    {
+      using (CultureScope_de_DE ())
+      {
+        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+
+        // Create stateless-only ACL
+        SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
+        var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
+        TestHelper.AttachAces (statlessAcl, Ace);
+
+        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,statlessAcl);
+
+        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+        using (var textWriter = new StringWriter ())
+        {
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+          string result = textWriter.ToString ();
+          To.ConsoleLine.e (() => result);
+
+          //Assert.That (result, NUnitText.Contains ("<td>" + stateLessAclStateHtmlText + @"</td>"));
         }
       }
     }
