@@ -38,6 +38,9 @@ namespace Remotion.Web.Test.ExecutionEngine
       //control.ID = "FirstControl";
       //FirstControlPlaceHoder.Controls.Add (control);
 
+      //if (!IsPostBack && CurrentPageStep.UserControlExecutor.IsNull)
+      //  FirstControl.ExecuteFunction (new ShowFirstUserControlFormFunction(), this, true);
+
       ViewStateValue++;
       ViewStateLabel.Text = ViewStateValue.ToString();
 

@@ -82,6 +82,7 @@ namespace Remotion.Web.ExecutionEngine
         }
 
         control.ID = ID;
+        control._permanentUniqueID = _permanentUniqueID;
         replacer.ReplaceAndWrap (this, control, stateModificationStrategy);
       }
       else

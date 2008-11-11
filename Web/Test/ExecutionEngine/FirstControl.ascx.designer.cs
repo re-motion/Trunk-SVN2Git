@@ -23,6 +23,15 @@ namespace Remotion.Web.Test.ExecutionEngine {
         protected global::System.Web.UI.WebControls.Label ControlLabel;
         
         /// <summary>
+        /// ExecuteNextStepButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton ExecuteNextStepButton;
+        
+        /// <summary>
         /// ExecuteSecondUserControlButton control.
         /// </summary>
         /// <remarks>

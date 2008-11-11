@@ -26,7 +26,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     private NameValueCollection _postBackCollection;
     private NameValueCollection _backedUpPostBackData;
     private bool _isReturningPostBack;
-    private WxePageStep _pageStep;
+    private readonly WxePageStep _pageStep;
 
     public UserControlExecutor (WxePageStep parentStep, WxeUserControl userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
       : this ((WxeStep) parentStep, userControl, subFunction, sender, usesEventTarget)
@@ -44,7 +44,10 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       ArgumentUtility.CheckNotNull ("userControl", userControl);
       ArgumentUtility.CheckNotNull ("subFunction", subFunction);
       ArgumentUtility.CheckNotNull ("sender", sender);
-      
+      if (userControl.WxePage == null)
+        throw new ArgumentException ("Execution of user controls that are no longer part of the control hierarchy is not supported.", "userControl");
+
+
       _backedUpUserControlState = userControl.SaveAllState ();
       _backedUpUserControl = userControl.AppRelativeVirtualPath;
       _userControlID = userControl.UniqueID;
@@ -56,32 +59,35 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       else
         _pageStep = ((WxePageStep) parentStep);
 
-      _postBackCollection = userControl.WxePage.GetPostBackCollection ().Clone ();
-      _backedUpPostBackData = new NameValueCollection();
-
-      if (usesEventTarget)
+      if (userControl.WxePage.IsPostBack)
       {
-        //TODO: Update PreProcessingSubFunctionState with this check as well.
-        if (sender.UniqueID.Contains (":"))
-          throw new InvalidOperationException("Executing WxeUserControls are only supported on pages not rendered in XhtmlConformanceMode.Legacy.");
+        _postBackCollection = userControl.WxePage.GetPostBackCollection().Clone();
+        _backedUpPostBackData = new NameValueCollection();
 
-        if (_postBackCollection[ControlHelper.PostEventSourceID] != sender.UniqueID)
+        if (usesEventTarget)
         {
-          throw new ArgumentException(
-              "The 'sender' does not match the value in __EventTarget. Please pass the control that orignated the postback.", "sender");
-        }
+          //TODO: Update PreProcessingSubFunctionState with this check as well.
+          if (sender.UniqueID.Contains (":"))
+            throw new InvalidOperationException ("Executing WxeUserControls are only supported on pages not rendered in XhtmlConformanceMode.Legacy.");
 
-        _backedUpPostBackData.Add (ControlHelper.PostEventSourceID, _postBackCollection[ControlHelper.PostEventSourceID]);
-        _backedUpPostBackData.Add (ControlHelper.PostEventArgumentID, _postBackCollection[ControlHelper.PostEventArgumentID]);
-        _postBackCollection.Remove (ControlHelper.PostEventSourceID);
-        _postBackCollection.Remove (ControlHelper.PostEventArgumentID);
-      }
-      else
-      {
-        throw new InvalidOperationException (
-            "The WxeUserControl does not support controls that do not use __EventTarget for signaling a postback event.");
-        _backedUpPostBackData.Add (sender.UniqueID, _postBackCollection[sender.UniqueID]);
-        _postBackCollection.Remove (sender.UniqueID);
+          if (_postBackCollection[ControlHelper.PostEventSourceID] != sender.UniqueID)
+          {
+            throw new ArgumentException (
+                "The 'sender' does not match the value in __EventTarget. Please pass the control that orignated the postback.", "sender");
+          }
+
+          _backedUpPostBackData.Add (ControlHelper.PostEventSourceID, _postBackCollection[ControlHelper.PostEventSourceID]);
+          _backedUpPostBackData.Add (ControlHelper.PostEventArgumentID, _postBackCollection[ControlHelper.PostEventArgumentID]);
+          _postBackCollection.Remove (ControlHelper.PostEventSourceID);
+          _postBackCollection.Remove (ControlHelper.PostEventArgumentID);
+        }
+        else
+        {
+          throw new InvalidOperationException (
+              "The WxeUserControl does not support controls that do not use __EventTarget for signaling a postback event.");
+          _backedUpPostBackData.Add (sender.UniqueID, _postBackCollection[sender.UniqueID]);
+          _postBackCollection.Remove (sender.UniqueID);
+        }
       }
     }
 
@@ -107,8 +113,16 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
         postBackCollection = context.HttpContext.Request.QueryString;
 
       postBackCollection = postBackCollection.Clone ();
-      foreach (var key in _backedUpPostBackData.AllKeys)
-        postBackCollection[key] = _backedUpPostBackData[key];
+      if (_backedUpPostBackData != null)
+      {
+        foreach (var key in _backedUpPostBackData.AllKeys)
+          postBackCollection[key] = _backedUpPostBackData[key];
+      }
+      else
+      {
+        postBackCollection.Remove (ControlHelper.PostEventSourceID);
+        postBackCollection.Remove (ControlHelper.PostEventArgumentID);
+      }
       _pageStep.SetReturnState(_function, true, postBackCollection);
 
       _backedUpPostBackData = null;

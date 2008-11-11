@@ -29,6 +29,12 @@ namespace Remotion.Web.Test.ExecutionEngine
       //}
     }
 
+    protected void ExecuteNextStep_Click (object sender, EventArgs e)
+    {
+      ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss");
+      ExecuteNextStep ();
+    }
+
     protected override void OnInitComplete (EventArgs e)
     {
       base.OnInitComplete (e);
@@ -51,9 +57,18 @@ namespace Remotion.Web.Test.ExecutionEngine
         Assertion.IsTrue (IsPostBack);
         Assertion.IsTrue (IsUserControlPostBack);
       }
-      Assertion.IsTrue (WxePage.CurrentFunction == this.CurrentFunction);
-      Assertion.IsTrue (CurrentFunction is ShowUserControlFormFunction);
-      Assertion.IsTrue (WxePage.Variables == this.Variables);
+
+      if (CurrentFunction is ShowFirstUserControlFormFunction)
+      {
+        Assertion.IsTrue (WxePage.CurrentFunction is ShowUserControlFormFunction);
+        Assertion.IsTrue (WxePage.Variables != this.Variables);
+      }
+      else
+      {
+        Assertion.IsTrue (WxePage.CurrentFunction == this.CurrentFunction);
+        Assertion.IsTrue (CurrentFunction is ShowUserControlFormFunction);
+        Assertion.IsTrue (WxePage.Variables == this.Variables);
+      }
 
       ViewStateValue++;
       ViewStateLabel.Text = ViewStateValue.ToString();
@@ -64,15 +79,16 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     protected override void LoadControlState (object savedState)
     {
-      var controlState = (Tuple<object, int, Type>) savedState;
+      var controlState = (Tuple<object, int, Type, bool>) savedState;
       base.LoadControlState (controlState.A);
       ControlStateValue = controlState.B;
       Assertion.IsTrue (controlState.C == typeof (FirstControl), "Expected ControlState from 'FirstControl' but was '{0}'.", controlState.C.Name);
+      HasLoaded = controlState.D;
     }
 
     protected override object SaveControlState ()
     {
-      return new Tuple<object, int, Type> (base.SaveControlState(), ControlStateValue, typeof (FirstControl));
+      return new Tuple<object, int, Type, bool> (base.SaveControlState(), ControlStateValue, typeof (FirstControl), HasLoaded);
     }
 
     protected override void LoadViewState (object savedState)
@@ -97,6 +113,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     }
 
     private int ControlStateValue { get; set; }
+    private bool HasLoaded { get; set; }
 
   }
 }
