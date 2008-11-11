@@ -621,7 +621,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           //To.ConsoleLine.e (() => result);
 
           Assert.That (result, NUnitText.Contains("<td>"+ stateLessAclStateHtmlText + @"</td>"));
-          // TODO: Assert number of returned rows
         }
       }
     }

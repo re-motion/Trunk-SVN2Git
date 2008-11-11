@@ -57,9 +57,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           //StateCombination stateCombination = StateCombination.NewObject ();
           //stateCombination.AccessControlList = _accessControlList;
           //return new StateCombination[] { stateCombination  };
-          return new StateCombination[0]; // MK
-          // TODO: Throw exception instead, to avoid silent failure
-          //throw new InvalidOperationException();
+          //return new StateCombination[0];
+
+          // Throw exception in case of StatelessAccessControlList, to avoid "silent failure" in calling code
+          throw new InvalidOperationException (@"StateCombinations not defined for StatelessAccessControlList. Test for ""is StatefulAccessControlList"" in calling code.");
         }
       }
     }

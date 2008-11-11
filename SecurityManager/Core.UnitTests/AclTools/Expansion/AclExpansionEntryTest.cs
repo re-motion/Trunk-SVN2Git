@@ -11,7 +11,9 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.SecurityManager.Domain.Metadata;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -31,5 +33,20 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntry.AllowedAccessTypes, Is.EqualTo (AccessTypeDefinitions));
       Assert.That (aclExpansionEntry.DeniedAccessTypes, Is.EqualTo (AccessTypeDefinitions2));
     }
+
+
+    [Test]
+    [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = @"StateCombinations not defined for StatelessAccessControlList. Test for ""is StatefulAccessControlList"" in calling code.") ]
+    public void StateCombinationsForStatelessAclThrowsTest ()
+    {
+      SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
+      var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
+
+      var accessConditions = new AclExpansionAccessConditions ();
+      var aclExpansionEntry = new AclExpansionEntry (User, Role, statlessAcl, accessConditions, AccessTypeDefinitions, AccessTypeDefinitions2);
+      To.ConsoleLine.e(aclExpansionEntry.StateCombinations);
+    }
+
+
   }
 }
