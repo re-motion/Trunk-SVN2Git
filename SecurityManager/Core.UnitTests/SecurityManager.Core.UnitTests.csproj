@@ -90,7 +90,8 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SetUpFixture.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\SearchServiceTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\ValidationTest.cs" />
-    <Compile Include="Domain\AccessControl\AccessControlEntryTests\MatchesTokenTest.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\EmptyToken.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\SecurityTokenMatcherTestBase.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\Test.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryValidationResultTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlListFinderTests\Find_BySecurableClassDefinition.cs" />
@@ -98,6 +99,10 @@
     <Compile Include="Domain\AccessControl\AccessControlListTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlObjectAssert.cs" />
     <Compile Include="Domain\AccessControl\AccessControlTestHelper.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\MixedTokens.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\TokenWithAbstractRole.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\TokenWithRole.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\TokenWithTenant.cs" />
     <Compile Include="Domain\AccessControl\StatefulAccessControlListTest.cs" />
     <Compile Include="Domain\AccessControl\StatelessAccessControlListTest.cs" />
     <Compile Include="Domain\AccessControl\StateUsageTest.cs" />

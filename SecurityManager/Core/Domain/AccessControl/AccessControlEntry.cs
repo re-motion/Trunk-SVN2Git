@@ -44,6 +44,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     // member fields
 
     private ObjectList<Permission> _permissionsToBeDeleted;
+    private SecurityTokenMatcher _matcher;
 
     // construction and disposing
 
@@ -52,9 +53,19 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       // ReSharper disable DoNotCallOverridableMethodsInConstructor
       TenantSelection = TenantSelection.All;
       // ReSharper restore DoNotCallOverridableMethodsInConstructor
+
+      _matcher = new SecurityTokenMatcher (this);
     }
 
     // methods and properties
+
+    protected override void OnLoaded (LoadMode loadMode)
+    {
+      base.OnLoaded (loadMode);
+
+      if (loadMode == LoadMode.WholeDomainObjectInitialized)
+        _matcher = new SecurityTokenMatcher (this);
+    }
 
     public void Touch ()
     {
@@ -171,87 +182,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("token", token);
 
-      //To.ConsoleLine.s ("AccessControList.FindMatchingEntries: ").e ("ACE", entry);
-      //To.ConsoleLine.sb().s ("AccessControEntry.MatchesToken: ").e (ToString ()).e ("ACE", this).se();
-
-      if (!MatchesTenant (token))
-        return false;
-
-      //To.ConsoleLine.s ("AccessControEntry.MatchesToken: matched Tenant");
-
-      if (!MatchesAbstractRole (token))
-        return false;
-
-      //To.ConsoleLine.s ("AccessControEntry.MatchesToken: matched Role");
-
-      if (!MatchesUserOrPosition (token))
-        return false;
-
-      //To.ConsoleLine.s ("AccessControEntry.MatchesToken: matched UserOrPosition");
-
-      return true;
-    }
-
-    private bool MatchesTenant (SecurityToken token)
-    {
-      switch (TenantSelection)
-      {
-        case TenantSelection.All:
-          return true;
-
-        case TenantSelection.OwningTenant:
-          return token.OwningTenant != null && token.MatchesUserTenant (token.OwningTenant);
-
-        case TenantSelection.SpecificTenant:
-          return token.MatchesUserTenant (SpecificTenant);
-
-        default:
-          return false;
-      }
-    }
-
-    private bool MatchesAbstractRole (SecurityToken token)
-    {
-      if (SpecificAbstractRole == null)
-        return true;
-
-      foreach (var abstractRole in token.AbstractRoles)
-      {
-        if (abstractRole.ID == SpecificAbstractRole.ID)
-          return true;
-      }
-
-      return false;
-    }
-
-    private bool MatchesUserOrPosition (SecurityToken token)
-    {
-      switch (UserSelection)
-      {
-        case UserSelection.All:
-          return true;
-
-        case UserSelection.SpecificPosition:
-          return MatchPosition (token);
-
-        default:
-          return false;
-      }
-    }
-
-    private bool MatchPosition (SecurityToken token)
-    {
-      switch (GroupSelection)
-      {
-        case GroupSelection.All:
-          return token.ContainsRoleForUserGroupAndPosition (SpecificPosition);
-
-        case GroupSelection.OwningGroup:
-          return token.ContainsRoleForOwningGroupAndPosition (SpecificPosition);
-
-        default:
-          return false;
-      }
+      return _matcher.MatchesToken (token);
     }
 
     private Permission GetPermission (AccessTypeDefinition accessType)
