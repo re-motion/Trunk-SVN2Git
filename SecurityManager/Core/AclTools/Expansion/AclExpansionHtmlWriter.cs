@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder;
+using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -28,6 +29,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclExpansionHtmlWriter : AclExpansionHtmlWriterBase
   {
     private readonly AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
+    private string _stateLessAclStateHtmlText = "(stateless)";
+
 
     public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml)
     {
@@ -39,6 +42,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlTagWriter = new HtmlTagWriter (xmlWriter);
     }
 
+    public string StateLessAclStateHtmlText
+    {
+      get { return _stateLessAclStateHtmlText; }
+      set { _stateLessAclStateHtmlText = value; }
+    }
 
     public AclExpansionHtmlWriterSettings Settings
     {
@@ -138,22 +146,30 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteTableDataForBodyStates (AclExpansionEntry aclExpansionEntry)
     {
-      var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).OrderBy(x => x.DisplayName).ToArray ();
       htmlTagWriter.Tags.td ();
-      bool firstElement = true;
-      foreach (StateDefinition stateDefiniton in stateDefinitions)
+
+      if (aclExpansionEntry.AccessControlList is StatelessAccessControlList)
       {
-        if (!firstElement)
+        htmlTagWriter.Value (StateLessAclStateHtmlText);
+      }
+      else
+      {
+        var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).OrderBy (x => x.DisplayName).ToArray();
+        bool firstElement = true;
+        foreach (StateDefinition stateDefiniton in stateDefinitions)
         {
-          //_htmlWriter.br ();
-          htmlTagWriter.Value (", ");
+          if (!firstElement)
+          {
+            //_htmlWriter.br ();
+            htmlTagWriter.Value (", ");
+          }
+
+          string stateName = Settings.ShortenNames ? stateDefiniton.ShortName() : stateDefiniton.DisplayName;
+          //To.ConsoleLine.e (() => stateName);
+
+          htmlTagWriter.Value (stateName);
+          firstElement = false;
         }
-
-        string stateName = Settings.ShortenNames ? stateDefiniton.ShortName () : stateDefiniton.DisplayName;
-        //To.ConsoleLine.e (() => stateName);
-
-        htmlTagWriter.Value (stateName);
-        firstElement = false;
       }
       htmlTagWriter.Tags.tdEnd ();
     }

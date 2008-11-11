@@ -222,7 +222,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
       aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
 
+
       var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
+
+
+
       var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
       //To.ConsoleLine.e (() => aclExpansionEntryList);
       userFinderMock.VerifyAllExpectations ();

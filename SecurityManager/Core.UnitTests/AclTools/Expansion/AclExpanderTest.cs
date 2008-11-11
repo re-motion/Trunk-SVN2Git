@@ -570,7 +570,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<User> userList = new List<User> ();
       userList.Add (user);
 
-      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); //new TestAclExpanderUserFinder (userList);
+      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); 
       userFinderMock.Expect (mock => mock.FindUsers()).Return (userList);
 
       List<AccessControlList> aclList = new List<AccessControlList>();

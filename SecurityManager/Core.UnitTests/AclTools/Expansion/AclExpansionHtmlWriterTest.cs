@@ -18,6 +18,8 @@ using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.Utilities;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 using System.Windows;
 
@@ -593,6 +595,38 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    [Test]
+    public void StatelessAclTest ()
+    {
+      using (CultureScope_de_DE ())
+      {
+        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+
+        // Create stateless-only ACL
+        SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
+        var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
+        TestHelper.AttachAces (statlessAcl, Ace);
+
+        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (statlessAcl);
+
+        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+        using (var textWriter = new StringWriter ())
+        {
+          const string stateLessAclStateHtmlText = "@*?stateless state?!?!?";
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
+          aclExpansionHtmlWriter.StateLessAclStateHtmlText = stateLessAclStateHtmlText;
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+          string result = textWriter.ToString ();
+          //To.ConsoleLine.e (() => result);
+
+          Assert.That (result, NUnitText.Contains("<td>"+ stateLessAclStateHtmlText + @"</td>"));
+          // TODO: Assert number of returned rows
+        }
+      }
+    }
+
+
 
     [Test]
     [Ignore]
@@ -1005,4 +1039,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       return XmlWriter.Create (textWriter, settings);
     }
   }
+
+
 }

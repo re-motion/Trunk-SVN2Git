@@ -41,23 +41,37 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public SecurableClassDefinition Class
     {
-      get { return _accessControlList.Class; }
+      get { return AccessControlList.Class; }
     }
 
     public IList<StateCombination> StateCombinations
     {
       get
       {
-        if (_accessControlList is StatefulAccessControlList)
-          return ((StatefulAccessControlList) _accessControlList).StateCombinations;
+        if (AccessControlList is StatefulAccessControlList)
+        {
+          return ((StatefulAccessControlList) AccessControlList).StateCombinations;
+        }
         else
-          return new StateCombination[0];
+        {
+          //StateCombination stateCombination = StateCombination.NewObject ();
+          //stateCombination.AccessControlList = _accessControlList;
+          //return new StateCombination[] { stateCombination  };
+          return new StateCombination[0]; // MK
+          // TODO: Throw exception instead, to avoid silent failure
+          //throw new InvalidOperationException();
+        }
       }
     }
 
     public AclExpansionAccessConditions AccessConditions { get; set; }
     public AccessTypeDefinition[] AllowedAccessTypes { get; set; }
     public AccessTypeDefinition[] DeniedAccessTypes { get; set; }
+
+    public AccessControlList AccessControlList
+    {
+      get { return _accessControlList; }
+    }
 
 
     public void ToText (IToTextBuilder toTextBuilder)
