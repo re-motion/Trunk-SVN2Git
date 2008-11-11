@@ -187,6 +187,9 @@ namespace Remotion.Data.DomainObjects
     private ObjectID _id;
     private bool _initialConstructionEventSignalled = false;
     private ClientTransaction _bindingTransaction; // null unless this object is bound to a fixed transaction
+    
+    [NonSerialized] // lazily initialized
+    private PropertyIndexer _properties;
 
     // construction and disposing
 
@@ -623,7 +626,12 @@ namespace Remotion.Data.DomainObjects
     /// <returns>A <see cref="PropertyIndexer"/> object which can be used to select a specific property of this <see cref="DomainObject"/>.</returns>
     protected internal PropertyIndexer Properties
     {
-      get { return new PropertyIndexer (this); }
+      get
+      { 
+        if (_properties == null)
+          _properties = new PropertyIndexer (this);
+        return _properties;
+      }
     }
 
     protected TransactionalAccessor<T> GetTransactionalAccessor<T> (PropertyAccessor property)

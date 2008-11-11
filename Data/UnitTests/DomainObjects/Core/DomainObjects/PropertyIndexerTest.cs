@@ -268,5 +268,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var relatedObjects = new List<DomainObject> (order.Properties.GetAllRelatedObjects ());
       Assert.That (order.OrderItems, Is.SubsetOf (relatedObjects));
     }
+
+    [Test]
+    public void PropertyIndexer_CachesPropertyData()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      var indexer = new PropertyIndexer (order);
+      Assert.That (indexer[typeof (Order), "OrderNumber"].PropertyData, Is.SameAs (indexer[typeof (Order), "OrderNumber"].PropertyData));
+    }
+
+    [Test]
+    public void DomainObject_CachesPropertyIndexer()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      Assert.That (order.Properties, Is.SameAs (order.Properties));
+    }
   }
 }

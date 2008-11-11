@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Mapping;
 
@@ -20,11 +21,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Provides an indexer to access a specific property of a domain object. Instances of this value type are returned by
   /// <see cref="DomainObject.Properties"/>.
   /// </summary>
-  public struct PropertyIndexer : IEnumerable<PropertyAccessor>
+  public class PropertyIndexer : IEnumerable<PropertyAccessor>
   {
-    // TODO: consider caching PropertyAccessorData objects
-
     private readonly DomainObject _domainObject;
+    private readonly Cache<string, PropertyAccessorData> _dataCache = new Cache<string, PropertyAccessorData> ();
 
     /// <summary>
     /// Initializes a new <see cref="PropertyIndexer"/> instance. This is usually not called from the outside; instead, <see cref="PropertyIndexer"/>
@@ -52,15 +52,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get
       {
         ArgumentUtility.CheckNotNull ("propertyName", propertyName);
-        try
-        {
-          return new PropertyAccessor (_domainObject, new PropertyAccessorData (_domainObject.ID.ClassDefinition, propertyName));
-        }
-        catch (ArgumentException ex)
-        {
-          throw new ArgumentException (string.Format ("The domain object type {0} does not have a mapping property named '{1}'.",
-            _domainObject.ID.ClassDefinition.ClassType.FullName, propertyName), "propertyName", ex);
-        }
+        PropertyAccessorData data = _dataCache.GetOrCreateValue (propertyName, CreatePropertyAccessorData);
+        return new PropertyAccessor (_domainObject, data);
+      }
+    }
+
+    private PropertyAccessorData CreatePropertyAccessorData(string name)
+    {
+      try
+      {
+        return new PropertyAccessorData (_domainObject.ID.ClassDefinition,
+                                         name);
+      }
+      catch (ArgumentException ex)
+      {
+        throw new ArgumentException (
+            string.Format (
+                "The domain object type {0} does not have a mapping property named '{1}'.",
+                _domainObject.ID.ClassDefinition.ClassType.FullName,
+                name), "propertyName", ex);
       }
     }
 
