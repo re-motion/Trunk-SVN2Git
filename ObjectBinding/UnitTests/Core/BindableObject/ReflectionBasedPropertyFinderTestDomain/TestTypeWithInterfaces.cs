@@ -12,6 +12,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReflectionBasedPr
   public class TestTypeWithInterfaces : ITestInterface, IExplicitTestInterface
   {
     public int InterfaceProperty { get { return 0; } }
+    public int NonGetterInterfaceProperty { set { } }
+
     int IExplicitTestInterface.InterfaceProperty { get { return 0; } }
   }
 }

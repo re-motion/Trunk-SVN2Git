@@ -74,7 +74,8 @@ namespace Remotion.ObjectBinding.BindableObject
       {
         PropertyInfo propertyOnInterface = 
             (from p in accessorOnInterface.DeclaringType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-            where p.GetGetMethod (true).Equals (accessorOnInterface)
+            let getter = p.GetGetMethod (true)
+            where getter != null && getter.Equals (accessorOnInterface)
             select p).Single();
         return propertyOnInterface;
       }

@@ -12,5 +12,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReflectionBasedPr
   public interface ITestInterface
   {
     int InterfaceProperty { get; }
+    int NonGetterInterfaceProperty { set; }
   }
 }

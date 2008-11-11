@@ -124,6 +124,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (interfaceProperty.InterfacePropertyInfo, Is.SameAs (typeof (IExplicitTestInterface).GetProperty ("InterfaceProperty")));
     }
 
+    [Test]
+    public void InterfaceProperties_PropertyWithoutGetter ()
+    {
+      var propertyInfos = new ReflectionBasedPropertyFinder (typeof (TestTypeWithInterfaces)).GetPropertyInfos ().ToArray ();
+      var interfaceProperty = (PropertyInfoAdapter) (from p in propertyInfos
+                                                     where p.Name == "NonGetterInterfaceProperty"
+                                                     select p).SingleOrDefault ();
+      Assert.That (interfaceProperty, Is.Null);
+    }
+
     private IEnumerable<PropertyInfo> UnwrapCollection (IEnumerable<IPropertyInformation> properties)
     {
       foreach (PropertyInfoAdapter adapter in properties)
