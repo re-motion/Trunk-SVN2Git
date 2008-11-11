@@ -615,7 +615,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         {
           const string stateLessAclStateHtmlText = "@*?stateless state?!?!?";
           var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
-          aclExpansionHtmlWriter.StateLessAclStateHtmlText = stateLessAclStateHtmlText;
+          aclExpansionHtmlWriter.StatelessAclStateHtmlText = stateLessAclStateHtmlText;
           aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
           string result = textWriter.ToString ();
           //To.ConsoleLine.e (() => result);

@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclExpansionHtmlWriter : AclExpansionHtmlWriterBase
   {
     private readonly AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
-    private string _stateLessAclStateHtmlText = "(stateless)";
+    private string _statelessAclStateHtmlText = "(stateless)";
 
 
     public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml)
@@ -42,10 +42,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlTagWriter = new HtmlTagWriter (xmlWriter);
     }
 
-    public string StateLessAclStateHtmlText
+    public string StatelessAclStateHtmlText
     {
-      get { return _stateLessAclStateHtmlText; }
-      set { _stateLessAclStateHtmlText = value; }
+      get { return _statelessAclStateHtmlText; }
+      set { _statelessAclStateHtmlText = value; }
     }
 
     public AclExpansionHtmlWriterSettings Settings
@@ -150,7 +150,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       if (aclExpansionEntry.AccessControlList is StatelessAccessControlList)
       {
-        htmlTagWriter.Value (StateLessAclStateHtmlText);
+        htmlTagWriter.Value (StatelessAclStateHtmlText);
       }
       else
       {
