@@ -18,12 +18,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     public AclExpansionTreeNode (TParent parent, int numberLeafNodes, IList<TChildren> children)
     {
-      Parent = parent;
+      Key = parent;
       Children = children;
       NumberLeafNodes = numberLeafNodes;
     }
 
-    public TParent Parent { get; private set; }
+    public TParent Key { get; private set; }
     public IList<TChildren> Children { get; private set; }
     public int NumberLeafNodes { get; private set; }
   }

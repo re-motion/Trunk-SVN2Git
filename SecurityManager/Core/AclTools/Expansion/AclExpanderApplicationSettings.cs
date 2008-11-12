@@ -27,17 +27,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     [CommandLineStringArgument ("first", true, Placeholder = "John", Description = "First name of user(s) to query access types for.")]
     public string UserFirstName;
 
-    [CommandLineStringArgument ("dir", true, Placeholder = "c:\\temp", Description = "Directory the ACL-expansion gets written to.")]
+    [CommandLineStringArgument ("dir", true, Placeholder = "c:\\temp", Description = "Directory the ACL-expansion gets written to (e.g. /dir:c:\temp).")]
     public string Directory = ".";
 
-    [CommandLineStringArgument ("culture", true, Placeholder = "", Description = "Culture to set for output (e.g. en-US, de-AT).")]
+    [CommandLineStringArgument ("culture", true, Placeholder = "", Description = "Culture to set for output (e.g. /culture:en-US, /culture:de-AT).")]
     public string CultureName = "de-AT";
 
     [CommandLineFlagArgument ("multifile", false, Description = "Whether to create a single file for all users + permissions or a master file and several detail files.")]
     public bool UseMultipleFileOutput;
 
-    [CommandLineFlagArgument ("verbose", false, Description = "Verbose output")]
+    [CommandLineFlagArgument ("verbose", false, Description = "Verbose output (e.g. /verbose+).")]
     public bool Verbose;
+
+    [CommandLineFlagArgument ("rc", false, Description = "Emit row count for user, role.... (/multifile- only)")]
+    public bool OutputRowCount;
 
 
     public void ToText (IToTextBuilder toTextBuilder)
