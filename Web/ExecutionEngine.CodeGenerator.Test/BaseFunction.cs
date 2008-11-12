@@ -10,5 +10,10 @@ namespace Test
       : base (new NoneTransactionMode (), arguments)
     {
     }
+
+    protected BaseFunction (ITransactionMode transactionMode, params object[] args)
+      : base (transactionMode, args)
+    {
+    }
   }
 }
