@@ -23,11 +23,19 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpansionTree
   {
+    private readonly Func<AclExpansionEntry, string> _orderbyForSecurableClass;
+
     List<AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>>>>
        _aclExpansionTree;
 
     public AclExpansionTree (List<AclExpansionEntry> aclExpansion)
+      : this (aclExpansion, (classEntry  => (classEntry.AccessControlList is StatelessAccessControlList) ? "" : classEntry.Class.DisplayName))
     {
+    }
+
+    public AclExpansionTree (List<AclExpansionEntry> aclExpansion, Func<AclExpansionEntry, string> orderbyForSecurableClass)
+    {
+      _orderbyForSecurableClass = orderbyForSecurableClass;
       CreateAclExpansionTree (aclExpansion);
     }
 
@@ -43,89 +51,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
 
-      //var aclExpansionUserGrouping = from aee in aclExpansion
-      //                               orderby aee.User.DisplayName
-      //                               group aee by aee.User;
-
-
-      //var aclExpansionUserGrouping = from entry in aclExpansion
-      //                               orderby entry.User.DisplayName
-      //                               group entry by entry.User
-      //                               into grouping
-      //                               select grouping;
-
-      //var aclExpansionUserGrouping = from entry in aclExpansion
-      //                               orderby entry.User.DisplayName
-      //                               group entry by entry.User
-      //                               into grouping
-      //                               select AclExpansionTreeNode.New (grouping.Key, grouping.ToList (), grouping.Count ());
-
-      //var aclExpansionUserGrouping = (from entry in aclExpansion
-      //                               orderby entry.User.DisplayName
-      //                               group entry by entry.User
-      //                                 into grouping
-      //                                 select AclExpansionTreeNode.New (grouping, grouping.ToList())).ToList();
-
-
-      //var aclExpansionUserGrouping = (from entry in aclExpansion
-      //                                orderby entry.User.DisplayName
-      //                                group entry by entry.User
-      //                                  into grouping
-      //                                  select AclExpansionTreeNode.New (grouping,
-      //                                  (from roleEntry in grouping
-      //                                   orderby roleEntry.Role.DisplayName
-      //                                   group roleEntry by roleEntry.Role
-      //                                   ).ToList ()
-      //                                  )).ToList ();
-
-
-      //var aclExpansionUserGrouping = (from entry in aclExpansion
-      //                                orderby entry.User.DisplayName
-      //                                group entry by entry.User
-      //                                  into grouping
-      //                                  select AclExpansionTreeNode.New (grouping.Key,grouping.Count(),
-      //                                  (from roleEntry in grouping
-      //                                   orderby roleEntry.Role.DisplayName
-      //                                   group roleEntry by roleEntry.Role
-      //                                   into roleGrouping
-      //                                   select AclExpansionTreeNode.New (roleGrouping.Key,roleGrouping.Count(),
-                                         
-      //                                    roleGrouping.ToList()
-
-      //                                   )
-
-      //                                   ).ToList ()
-      //                                  )).ToList ();
-
-
-      //var aclExpansionUserGrouping = (from entry in aclExpansion
-      //                                orderby entry.User.DisplayName
-      //                                group entry by entry.User
-      //                                  into grouping
-      //                                  select AclExpansionTreeNode.New (grouping.Key, grouping.Count (),
-      //                                  (from roleEntry in grouping
-      //                                   orderby roleEntry.Role.DisplayName
-      //                                   group roleEntry by roleEntry.Role
-      //                                     into roleGrouping
-      //                                     select AclExpansionTreeNode.New (roleGrouping.Key, roleGrouping.Count (),
-
-      //                                      (from classEntry in roleGrouping
-      //                                       orderby classEntry.Class.DisplayName
-      //                                       group classEntry by classEntry.Class
-      //                                         into classGrouping
-      //                                         select AclExpansionTreeNode.New (classGrouping.Key, classGrouping.Count (),
-
-      //                                          classGrouping.ToList ()
-
-      //                                         )
-
-      //                                   ).ToList ()
-
-      //                                     )
-
-      //                                   ).ToList ()
-      //                                  )).ToList ();
-
       _aclExpansionTree = (from entry in aclExpansion
                             orderby entry.User.DisplayName
                             group entry by entry.User
@@ -138,7 +63,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                                  select AclExpansionTreeNode.New (roleGrouping.Key, roleGrouping.Count (),
 
                                   (from classEntry in roleGrouping
-                                   orderby classEntry.Class.DisplayName // TODO: Order by stateless/stateful first, then by DisplayName (map stateless to "" name ?)
+                                   //orderby ((classEntry.AccessControlList is StatelessAccessControlList) ? "" : classEntry.Class.DisplayName) 
+                                   orderby _orderbyForSecurableClass (classEntry)
                                    group classEntry by classEntry.Class
                                      into classGrouping
                                      select AclExpansionTreeNode.New (classGrouping.Key, classGrouping.Count (),

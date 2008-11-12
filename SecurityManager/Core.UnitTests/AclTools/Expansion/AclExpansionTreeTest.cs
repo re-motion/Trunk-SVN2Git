@@ -124,6 +124,40 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    [Test]
+    public void StatelessAccessControlListSortOrderTest ()
+    {
+      using (new CultureScope ("de-DE"))
+      {
+        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+        
+        var statelessAcl = CreateStatelessAcl (Ace);
+        var acls = List.New (Acl, statelessAcl);
+
+        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+        var aclExpansionTreeInverseSorted = new AclExpansionTree (
+            aclExpansionEntryList,
+            (classEntry => (classEntry.AccessControlList is StatefulAccessControlList) ? "A" : "B"));
+        LogAclExpansionTree (aclExpansionTreeInverseSorted);
+        Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children.Count, Is.EqualTo (2));
+        Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (Acl));
+
+        var aclExpansionTreeDefaultSorted = new AclExpansionTree (aclExpansionEntryList);
+        LogAclExpansionTree (aclExpansionTreeDefaultSorted);
+        Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children.Count, Is.EqualTo (2));
+        Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (statelessAcl));
+
+      }
+    }
+
+    private static void LogAclExpansionTree (AclExpansionTree aclExpansionTree)
+    {
+      To.Console.IndentationString = "  ";
+      To.Console.AllowNewline = true;
+      To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
+    }
+
 
     private AccessControlList CreateStatelessAcl (params AccessControlEntry[] aces)
     {
