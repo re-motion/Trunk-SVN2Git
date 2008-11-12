@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -19,7 +20,7 @@ using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using System.Collections.Generic;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
-
+using NUnitList = NUnit.Framework.SyntaxHelpers.List;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -28,29 +29,112 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   {
     [Test]
     [Explicit]
-    public void SeperateGroupingClassTest ()
+    public void ExpansionTest ()
     {
       using (new CultureScope ("de-DE"))
       {
         var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User2, User3, User);
 
         // Create stateless-only ACL
-        SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
-        var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
-        TestHelper.AttachAces (statlessAcl, Ace);
+        //SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
+        //var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
+        //TestHelper.AttachAces (statlessAcl, Ace);
 
-        var acls = List.New<AccessControlList> (Acl, statlessAcl);
+        var statelessAcl = CreateStatelessAcl (Ace);
+
+        var acls = List.New<AccessControlList> (Acl, statelessAcl);
 
         List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+        using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
+        {
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
+          aclExpansionHtmlWriter.Settings.OutputRowCount = true;
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+          //string result = textWriter.ToString ();
+          //To.ConsoleLine.e (() => result);
+          //Clipboard.SetText (result); 
+        }
+
 
         var aclExpansionTree = new AclExpansionTree (aclExpansionEntryList);
 
         foreach (var userNode in aclExpansionTree.Tree)
         {
           To.ConsoleLine.sb().e (userNode.NumberLeafNodes).e (userNode.Key).se();
-        } 
+        }
+
+        To.Console.IndentationString = "  ";
+        To.Console.AllowNewline = true;
+        To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
 
       }
+    }
+
+    [Test]
+    public void SingleAclSingleUserExpansionTest ()
+    {
+      using (new CultureScope ("de-DE"))
+      {
+        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+
+        var acls = List.New<AccessControlList> (Acl);
+
+        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+        using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
+        {
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
+          aclExpansionHtmlWriter.Settings.OutputRowCount = true;
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+        }
+
+
+        var aclExpansionTree = new AclExpansionTree (aclExpansionEntryList);
+
+        foreach (var userNode in aclExpansionTree.Tree)
+        {
+          To.ConsoleLine.sb ().e (userNode.NumberLeafNodes).e (userNode.Key).se ();
+        }
+
+        To.Console.IndentationString = "  ";
+        To.Console.AllowNewline = true;
+        To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
+
+        var userNodes = aclExpansionTree.Tree;
+        Assert.That (userNodes.Count, Is.EqualTo (1)); // # users
+        Assert.That (userNodes[0].Key, Is.EqualTo (User));
+        
+        var roleNodes = userNodes[0].Children;
+        Assert.That (roleNodes.Count, Is.EqualTo (1)); // # roles
+        Assert.That (roleNodes[0].Key, Is.EqualTo (User.Roles[0]));
+        
+        var classNodes = roleNodes[0].Children;
+        Assert.That (classNodes.Count, Is.EqualTo (1)); // # classes
+        Assert.That (classNodes[0].Key.StatefulAccessControlLists, NUnitList.Contains (Acl));
+
+        var stateNodes = classNodes[0].Children;
+        Assert.That (stateNodes.Count, Is.EqualTo (3)); // # states
+        //Assert.That (stateNodes[0].StateCombinations, Is.SubsetOf (Acl.StateCombinations));
+        foreach (AclExpansionEntry aee in stateNodes)
+        {
+          Assert.That (aee.StateCombinations, Is.SubsetOf (Acl.StateCombinations));
+        }
+      }
+    }
+
+
+
+    private AccessControlList CreateStatelessAcl (params AccessControlEntry[] aces)
+    {
+      // Create stateless-only ACL
+      SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
+      var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
+      foreach (AccessControlEntry ace in aces)
+      {
+        TestHelper.AttachAces (statlessAcl, ace);
+      }
+      return statlessAcl;
     }
   }
 }

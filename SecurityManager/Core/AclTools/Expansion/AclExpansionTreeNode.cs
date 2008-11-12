@@ -10,11 +10,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public class AclExpansionTreeNode<TParent, TChildren>
+  public class AclExpansionTreeNode<TParent, TChildren> : IToText
   {
     public AclExpansionTreeNode (TParent parent, int numberLeafNodes, IList<TChildren> children)
     {
@@ -26,6 +27,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public TParent Key { get; private set; }
     public IList<TChildren> Children { get; private set; }
     public int NumberLeafNodes { get; private set; }
+    
+    public void ToText (IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.nl ().sb ().e (Key).e (NumberLeafNodes).nl ().indent ().e (Children).unindent ().se ();
+    }
   }
 }
 
@@ -34,12 +40,14 @@ namespace Remotion.Development.UnitTesting.ObjectMother
   /// <summary>
   /// Supplies factories to create <see cref="AclExpansionTreeNode{T0,T1}"/> instances.
   /// </summary>
-  public class AclExpansionTreeNode
+  public class AclExpansionTreeNode 
   {
     public static AclExpansionTreeNode<TParent, TChildren> New<TParent, TChildren> (TParent parent, int numberLeafNodes, IList<TChildren> children)
     {
       return new AclExpansionTreeNode<TParent, TChildren> (parent, numberLeafNodes, children);
     }
+
+
   }
 }
 
