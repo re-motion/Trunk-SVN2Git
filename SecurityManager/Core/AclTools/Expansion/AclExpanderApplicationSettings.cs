@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     [CommandLineStringArgument ("first", true, Placeholder = "John", Description = "First name of user(s) to query access types for.")]
     public string UserFirstName;
 
-    [CommandLineStringArgument ("dir", true, Placeholder = "c:\\temp", Description = "Directory the ACL-expansion gets written to (e.g. /dir:c:\temp).")]
+    [CommandLineStringArgument ("dir", true, Placeholder = "c:\\temp", Description = "Directory the ACL-expansion gets written to (e.g. /dir:c:\\temp).")]
     public string Directory = ".";
 
     [CommandLineStringArgument ("culture", true, Placeholder = "", Description = "Culture to set for output (e.g. /culture:en-US, /culture:de-AT).")]
