@@ -112,9 +112,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _textWriterFactory.Extension = "html";
       DirectoryUsed = Settings.Directory;
       _textWriterFactory.Directory = DirectoryUsed;
-      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (_textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow ()), true);
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, _textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow ()), true);
       aclExpansionHtmlWriter.Settings.OutputRowCount = Settings.OutputRowCount;
-      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
     }
 
     private void WriteAclExpansionAsMultiFileHtml (List<AclExpansionEntry> aclExpansion)

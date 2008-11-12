@@ -44,20 +44,20 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         var acls = List.New<AccessControlList> (Acl, statelessAcl);
 
-        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
         using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
         {
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
           aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
           //string result = textWriter.ToString ();
           //To.ConsoleLine.e (() => result);
           //Clipboard.SetText (result); 
         }
 
 
-        var aclExpansionTree = new AclExpansionTree (aclExpansionEntryList);
+        var aclExpansionTree = new AclExpansionTree (aclExpansion);
 
         foreach (var userNode in aclExpansionTree.Tree)
         {
@@ -80,17 +80,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         var acls = List.New<AccessControlList> (Acl);
 
-        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
         using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
         {
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
           aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
         }
 
 
-        var aclExpansionTree = new AclExpansionTree (aclExpansionEntryList);
+        var aclExpansionTree = new AclExpansionTree (aclExpansion);
 
         foreach (var userNode in aclExpansionTree.Tree)
         {

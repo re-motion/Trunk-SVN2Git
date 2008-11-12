@@ -28,19 +28,23 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// </summary>
   public class AclExpansionHtmlWriter : AclExpansionHtmlWriterBase
   {
+    private readonly AclExpansionTree _aclExpansionTree;
     private readonly AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
     private string _statelessAclStateHtmlText = "(stateless)";
 
 
-    public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml)
+    public AclExpansionHtmlWriter (List<AclExpansionEntry> aclExpansion, TextWriter textWriter, bool indentXml)
     {
+      _aclExpansionTree = new AclExpansionTree (aclExpansion);
       htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
 
-    public AclExpansionHtmlWriter (XmlWriter xmlWriter)
+    public AclExpansionHtmlWriter (AclExpansionTree aclExpansionTree, TextWriter textWriter, bool indentXml)
     {
-      htmlTagWriter = new HtmlTagWriter (xmlWriter);
+      _aclExpansionTree = aclExpansionTree;
+      htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
+
 
     public string StatelessAclStateHtmlText
     {
@@ -57,19 +61,23 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
-      WriteAclExpansionAsHtml (aclExpansion);
+      //WriteAclExpansionAsHtml ();
+      throw new NotImplementedException();
     }
 
 
-    public void WriteAclExpansionAsHtml (List<AclExpansionEntry> aclExpansion)
+    public void WriteAclExpansionAsHtml ()
     {
-      ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
+      //ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
+
+      //var aclExpansionTree = new AclExpansionTree (aclExpansion);
+
 
       WritePageStart ("re-motion ACL Expansion");
 
       WriteTableStart ("remotion-ACL-expansion-table");
       WriteTableHeaders ();
-      WriteTableBody (aclExpansion);
+      WriteTableBody ();
       WriteTableEnd ();
 
       WritePageEnd ();
@@ -213,62 +221,63 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    private void WriteTableBody (List<AclExpansionEntry> aclExpansion)
+    private void WriteTableBody ()
     {
-      ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
+      //var aclExpansionUserGrouping = from aee in aclExpansion
+      //                               orderby aee.User.DisplayName
+      //                               group aee by aee.User;
 
-      var aclExpansionUserGrouping = from aee in aclExpansion
-                                     orderby aee.User.DisplayName
-                                     group aee by aee.User;
-
-      foreach (var userGroup in aclExpansionUserGrouping)
+      foreach (var userNode in _aclExpansionTree.Tree)
       {
-        WriteTableBody_ProcessUserGroup(userGroup);
+//        AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>>> x = userNode;
+        WriteTableBody_ProcessUserGroup(userNode);
       }
     }
 
-    private void WriteTableBody_ProcessUserGroup (IGrouping<User, AclExpansionEntry> userGroup)
+    private void WriteTableBody_ProcessUserGroup (AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>>> userNode)
     {
-      WriteTableDataWithRowCount (userGroup.Key.DisplayName, userGroup.Count ());
+      WriteTableDataWithRowCount (userNode.Key.DisplayName, userNode.NumberLeafNodes);
   
-      var aclExpansionRoleGrouping = from aee in userGroup
-                                     orderby aee.Role.Group.DisplayName, aee.Role.Position.DisplayName
-                                     group aee by aee.Role;
+      //var aclExpansionRoleGrouping = from aee in userNode
+      //                               orderby aee.Role.Group.DisplayName, aee.Role.Position.DisplayName
+      //                               group aee by aee.Role;
 
-      foreach (var roleGroup in aclExpansionRoleGrouping)
+      foreach (var roleNode in userNode.Children)
       {
-        WriteTableBody_ProcessRoleGroup(roleGroup);
+        //AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>> x = roleNode;
+        WriteTableBody_ProcessRoleGroup(roleNode);
       }
     }
 
-    private void WriteTableBody_ProcessRoleGroup (IGrouping<Role, AclExpansionEntry> roleGroup)
+    private void WriteTableBody_ProcessRoleGroup (AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>> roleNode)
     {
-      WriteTableDataForRole (roleGroup.Key, roleGroup.Count ());
+      WriteTableDataForRole (roleNode.Key, roleNode.NumberLeafNodes);
  
-      var aclExpansionClassGrouping = from aee in roleGroup
-                                      orderby aee.Class.DisplayName
-                                      group aee by aee.Class;
+      //var aclExpansionClassGrouping = from aee in roleNode
+      //                                orderby aee.Class.DisplayName
+      //                                group aee by aee.Class;
 
 
-      foreach (var classGroup in aclExpansionClassGrouping)
+      foreach (var classGroup in roleNode.Children)
       {
+        //AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry> x = classGroup;
         WriteTableBody_ProcessClassGroup(classGroup);
       }
     }
 
-    private void WriteTableBody_ProcessClassGroup (IGrouping<SecurableClassDefinition, AclExpansionEntry> classGroup)
+    private void WriteTableBody_ProcessClassGroup (AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry> classNode)
     {
-      if (classGroup.Key != null)
+      if (classNode.Key != null)
       {
-        string className = Settings.ShortenNames ? classGroup.Key.ShortName () : classGroup.Key.DisplayName;
-        WriteTableDataWithRowCount (className, classGroup.Count ());
+        string className = Settings.ShortenNames ? classNode.Key.ShortName () : classNode.Key.DisplayName;
+        WriteTableDataWithRowCount (className, classNode.NumberLeafNodes);
       }
       else
       {
-        WriteTableDataWithRowCount ("_NO_CLASSES_DEFINED_", classGroup.Count ());
+        WriteTableDataWithRowCount ("_NO_CLASSES_DEFINED_", classNode.NumberLeafNodes);
       }
 
-      foreach (var aclExpansionEntry in classGroup)
+      foreach (var aclExpansionEntry in classNode.Children)
       {
         WriteTableRowBeginIfNotInTableRow ();
 

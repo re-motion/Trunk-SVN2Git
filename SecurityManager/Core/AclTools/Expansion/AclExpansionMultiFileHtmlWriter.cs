@@ -88,9 +88,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       string userDetailFileName = ToValidFileName (user.UserName); //+".html";
       var detailTextWriter = _textWriterFactory.NewTextWriter (userDetailFileName);
 
-      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (detailTextWriter, false);
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, detailTextWriter, false);
       var aclExpansionSingleUser = GetAccessControlEntriesForUser (aclExpansion, user);
-      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionSingleUser);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
 
       string relativePath = _textWriterFactory.GetRelativePath (_masterFileName, userDetailFileName);
       WriteTableRowBeginIfNotInTableRow ();

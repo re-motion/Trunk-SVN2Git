@@ -535,9 +535,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       string aclExpansionFileName = "c:\\temp\\AclExpansionTest_" + FileNameTimestamp (DateTime.Now) + ".html";
       using (var streamWriter = new StreamWriter (aclExpansionFileName))
       {
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true);
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, streamWriter, true);
         aclExpansionHtmlWriter.Settings.OutputRowCount = outputRowCount;
-        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+        aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
       }
     }
 

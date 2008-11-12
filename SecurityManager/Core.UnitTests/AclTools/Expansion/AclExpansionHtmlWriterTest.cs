@@ -25,6 +25,7 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 using System.Windows;
+using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -92,10 +93,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       using (new CultureScope ("de-AT","de-AT"))
       {
         var aclExpander = new AclExpander();
-        var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
+        var aclExpansion = aclExpander.GetAclExpansionEntryList ();
         var stringWriter = new StringWriter();
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
-        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, stringWriter, true);
+        aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
         //To.ConsoleLine.s (stringWriter.ToString());
       }
     }
@@ -109,12 +110,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
         var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
-        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
         var stringWriter = new StringWriter();
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, stringWriter, true);
         aclExpansionHtmlWriter.Settings.ShortenNames = false;
-        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+        aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
         string result = stringWriter.ToString();
         //To.ConsoleLine.e (() => result);
         Assert.That (result, NUnitText.Contains ("Dhl|Remotion.SecurityManager.UnitTests.TestDomain.Delivery, Remotion.SecurityManager.UnitTests"));
@@ -130,12 +131,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
         var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
-        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
         var stringWriter = new StringWriter ();
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, stringWriter, true);
         aclExpansionHtmlWriter.Settings.ShortenNames = true;
-        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+        aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
         string result = stringWriter.ToString ();
         //To.ConsoleLine.e (() => result);
         Assert.That (result, NUnitText.Contains ("Dhl"));
@@ -155,12 +156,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
       var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
-      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+      List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
       var stringWriter = new StringWriter ();
-      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, stringWriter, true);
       aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
       string result = stringWriter.ToString ();
       //To.ConsoleLine.e (() => result);
       Assert.That (result, NUnitText.Contains ("Usa Da, Dr. (3)"));
@@ -174,12 +175,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
       var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
-      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+      List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
       var stringWriter = new StringWriter ();
-      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, stringWriter, true);
       aclExpansionHtmlWriter.Settings.OutputRowCount = false;
-      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
       string result = stringWriter.ToString ();
       //To.ConsoleLine.e (() => result);
       Assert.That (result, NUnitText.DoesNotContain ("(2)"));
@@ -192,12 +193,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User, User2, User3);
       var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl, Acl2);
 
-      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+      List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
       var stringWriter = new StringWriter ();
-      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, stringWriter, true);
       aclExpansionHtmlWriter.Settings.ShortenNames = true;
-      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
       string result = stringWriter.ToString ();
       //To.ConsoleLine.e (() => result);
 
@@ -211,14 +212,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User3);
       var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
-      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+      List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
       var stringWriter = new StringWriter ();
-      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true);
+      var aclExpansionTree = new AclExpansionTree (aclExpansion);
+      To.ConsoleLine.e (() => aclExpansionTree).nl();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionTree, stringWriter, true);
       aclExpansionHtmlWriter.Settings.ShortenNames = true;
-      aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
       string result = stringWriter.ToString ();
-      //To.ConsoleLine.e (() => result);
+      //To.ConsoleLine.e (() => result); Clipboard.SetText (result);
 
       // Roles
       const string firstRoleText = "Anotha Group, Supreme Being";
@@ -242,13 +245,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User, User2, User3);
         var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl2, Acl);
 
-        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
         using (var textWriter = new StringWriter())
         //using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
         {
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
-          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
           string result = textWriter.ToString();
           //To.ConsoleLine.e (() => result);
           //Clipboard.SetText (result); 
@@ -612,14 +615,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (statlessAcl);
 
-        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
         using (var textWriter = new StringWriter ())
         {
           const string stateLessAclStateHtmlText = "@*?stateless state?!?!?";
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
           aclExpansionHtmlWriter.StatelessAclStateHtmlText = stateLessAclStateHtmlText;
-          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
           string result = textWriter.ToString ();
           //To.ConsoleLine.e (() => result);
 
@@ -743,12 +746,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,statlessAcl);
 
-        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
         using (var textWriter = new StringWriter ())
         {
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
-          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
           string result = textWriter.ToString ();
           To.ConsoleLine.e (() => result);
 
@@ -756,6 +759,29 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         }
       }
     }
+
+
+    [Test]
+    public void AclExpansionTreeCtorEquivalenceTest ()
+    {
+      var aclExpansionEntry = new AclExpansionEntry (
+          User, Role, Acl, new AclExpansionAccessConditions (), AccessTypeDefinitions, AccessTypeDefinitions2);
+      var aclExpansionEntryList = List.New (aclExpansionEntry);
+      var textWriterAclExpansionEntryList = new StringWriter ();
+      //{
+      //  var aclExpansionHtmlWriterAclExpansionEntryList = new AclExpansionHtmlWriter (aclExpansionEntryList, textWriterAclExpansionEntryList, false);
+      //  aclExpansionHtmlWriterAclExpansionEntryList.WriteAclExpansionAsHtml();
+        new AclExpansionHtmlWriter (aclExpansionEntryList, textWriterAclExpansionEntryList, false).WriteAclExpansionAsHtml();
+      var aclExpansionTree = new AclExpansionTree (aclExpansionEntryList);
+      var textWriterAclExpansionTree = new StringWriter ();
+      new AclExpansionHtmlWriter (aclExpansionTree, textWriterAclExpansionTree, false).WriteAclExpansionAsHtml();
+
+      string resultAclExpansionEntryList = textWriterAclExpansionEntryList.ToString();
+      string resultAclExpansionTree = textWriterAclExpansionTree.ToString ();
+
+      Assert.That (resultAclExpansionEntryList, Is.EqualTo (resultAclExpansionTree));
+    }
+
 
 
 
@@ -769,13 +795,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
         var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl2);
 
-        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
         //using (var textWriter = new StringWriter ())
         using (var textWriter = new StreamWriter (Path.Combine("c:\\temp","DenyRightsOptionalOutputTest.html")))
         {
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
-          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
           string result = textWriter.ToString ();
           //To.ConsoleLine.e (() => result);
           const string resultExpected =

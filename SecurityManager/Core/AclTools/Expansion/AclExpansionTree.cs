@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -21,7 +22,7 @@ using Remotion.Development.UnitTesting.ObjectMother;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public class AclExpansionTree
+  public class AclExpansionTree : IToText
   {
     private readonly Func<AclExpansionEntry, string> _orderbyForSecurableClass;
 
@@ -39,7 +40,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       CreateAclExpansionTree (aclExpansion);
     }
 
-    // TODO: Finish & test 
     public List<AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>>>> Tree
     {
       get { return _aclExpansionTree; }
@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                               into grouping
                               select AclExpansionTreeNode.New (grouping.Key, grouping.Count (),
                               (from roleEntry in grouping
-                               orderby roleEntry.Role.DisplayName
+                               orderby roleEntry.Role.Group.DisplayName, roleEntry.Role.Position.DisplayName
                                group roleEntry by roleEntry.Role
                                  into roleGrouping
                                  select AclExpansionTreeNode.New (roleGrouping.Key, roleGrouping.Count (),
@@ -99,6 +99,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-
+    public void ToText (IToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.e (Tree);
+    }
   }
 }
