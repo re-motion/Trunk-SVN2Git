@@ -10,8 +10,11 @@
 <%@ Control Language="C#" AutoEventWireup="true" Codebehind="EditAccessControlEntryControl.ascx.cs" Inherits="Remotion.SecurityManager.Clients.Web.UI.AccessControl.EditAccessControlEntryControl" %>
 <%@ Register TagPrefix="securityManager" Assembly="Remotion.SecurityManager.Clients.Web" Namespace="Remotion.SecurityManager.Clients.Web.Classes" %>
 <%@ Register TagPrefix="securityManager" Src="EditPermissionControl.ascx" TagName="EditPermissionControl" %>
+<asp:UpdatePanel runat="server">
+<ContentTemplate>
 <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.AccessControl.AccessControlEntry, Remotion.SecurityManager" />
-<remotion:FormGridManager ID="FormGridManager" runat="server" ShowHelpProviders="False" ShowRequiredMarkers="False" />
+<remotion:FormGridManager ID="FormGridManager" runat="server" ShowHelpProviders="False" />
+<asp:ScriptManagerProxy runat="server" />
 <table id="FormGrid" runat="server" class="accessControlEntry">
   <tr>
     <td class="accessControlEntryTitleCell" colspan="2">
@@ -30,14 +33,41 @@
             <ListControlStyle AutoPostBack="True"/>
           </remotion:BocEnumValue></td>
           <td>
-            <remotion:BocReferenceValue ID="SpecificTenantField" runat="server" PropertyIdentifier="SpecificTenant" DataSourceControl="CurrentObject" Required="True" >
+            <remotion:BocReferenceValue ID="SpecificTenantField" runat="server" PropertyIdentifier="SpecificTenant" DataSourceControl="CurrentObject" Required="True" OnSelectionChanged="SpecificTenantField_SelectionChanged">
               <PersistedCommand>
                 <remotion:BocCommand />
               </PersistedCommand>
+              <DropDownListStyle AutoPostBack="true" />
             </remotion:BocReferenceValue>
           </td>
         </tr>
       </table>
+    </td>
+  </tr>
+  <tr>
+    <td><remotion:SmartLabel ID="GroupConditionLabel" runat="server" ForControl="GroupConditionField"/></td>
+    <td>
+      <remotion:BocEnumValue ID="GroupConditionField" runat="server" PropertyIdentifier="GroupCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="GroupConditionField_SelectionChanged" Width="12em">
+        <ListControlStyle AutoPostBack="True"/>
+      </remotion:BocEnumValue>
+      <remotion:BocAutoCompleteReferenceValue ID="SpecificGroupField" runat="server" PropertyIdentifier="SpecificGroup" DataSourceControl="CurrentObject" Required="true">
+      </remotion:BocAutoCompleteReferenceValue>
+      <remotion:BocEnumValue ID="GroupHierarchyConditionField" runat="server" PropertyIdentifier="GroupHierarchyCondition" DataSourceControl="CurrentObject" Required="true"/>
+      <remotion:BocReferenceValue ID="SpecificGroupTypeField" runat="server" PropertyIdentifier="SpecificGroupType" DataSourceControl="CurrentObject" Required="true">
+        <PersistedCommand>
+          <remotion:BocCommand />
+        </PersistedCommand>
+      </remotion:BocReferenceValue>
+    </td>      
+  </tr>
+  <tr>
+    <td><remotion:SmartLabel ID="SpecificPositionLabel" runat="server" ForControl="SpecificPositionField"/></td>
+    <td>
+      <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" OnSelectionChanged="SpecificPositionField_SelectionChanged" >
+        <PersistedCommand>
+          <remotion:BocCommand />
+        </PersistedCommand>
+      </remotion:BocReferenceValue>
     </td>
   </tr>
   <tr>
@@ -48,27 +78,6 @@
       </PersistedCommand>
       <DropDownListStyle AutoPostBack="True" />
     </remotion:BocReferenceValue></td>
- </tr>
-  <tr>
-    <td><remotion:SmartLabel ID="SpecificPositionLabel" runat="server" ForControl="SpecificPositionField"/></td>
-    <td>
-      <table cellpadding="0" cellspacing="0">
-        <tr>
-          <td>
-            <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" OnSelectionChanged="SpecificPositionField_SelectionChanged" >
-              <PersistedCommand>
-                <remotion:BocCommand />
-              </PersistedCommand>
-              <DropDownListStyle AutoPostBack="True" />
-            </remotion:BocReferenceValue>
-          </td>
-          <td>&nbsp;<asp:label id="SpecificPositionAndGroupLinkingLabel" runat="server" Text="###" />&nbsp;</td>
-          <td><remotion:BocEnumValue ID="GroupConditionField" runat="server" PropertyIdentifier="GroupCondition" DataSourceControl="CurrentObject" width="20em">
-            <ListControlStyle AutoPostBack="True"/>
-          </remotion:BocEnumValue></td>
-        </tr>
-      </table>
-    </td>
   </tr>
   <tr>
     <td><remotion:FormGridLabel ID="PermissionsLabel" runat="server" Text="###" /></td>
@@ -85,5 +94,5 @@
     </td>
   </tr>
 </table>
-
-
+</ContentTemplate>
+</asp:UpdatePanel>

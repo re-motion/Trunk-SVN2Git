@@ -18,6 +18,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryTests
 {
@@ -35,7 +36,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
       BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (AccessControlEntryPropertiesSearchService), new AccessControlEntryPropertiesSearchService ());
-  
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (ISearchAvailableObjectsService), MockRepository.GenerateStub<ISearchAvailableObjectsService>());
+
       _dbFixtures = new DatabaseFixtures ();
       _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction ());
     }
@@ -65,6 +67,39 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       Assert.That (property, Is.Not.Null);
 
       ObjectList<Tenant> expected = Tenant.FindAll();
+      Assert.That (expected, Is.Not.Empty);
+
+      Assert.That (property.SupportsSearchAvailableObjects, Is.True);
+
+      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, null);
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void SearchSpecificGroups ()
+    {
+      var property = (IBusinessObjectReferenceProperty) _aceClass.GetPropertyDefinition ("SpecificGroup");
+      Assert.That (property, Is.Not.Null);
+
+      var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
+      Assert.That (tenant, Is.Not.Null);
+
+      ObjectList<Group> expected = Group.FindByTenantID (tenant.ID);
+      Assert.That (expected, Is.Not.Empty);
+
+      Assert.That (property.SupportsSearchAvailableObjects, Is.True);
+
+      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, tenant.ID.ToString());
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void SearchSpecificGroupType ()
+    {
+      var property = (IBusinessObjectReferenceProperty) _aceClass.GetPropertyDefinition ("SpecificGroupType");
+      Assert.That (property, Is.Not.Null);
+
+      ObjectList<GroupType> expected = GroupType.FindAll ();
       Assert.That (expected, Is.Not.Empty);
 
       Assert.That (property.SupportsSearchAvailableObjects, Is.True);

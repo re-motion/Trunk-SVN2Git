@@ -10,9 +10,11 @@
 
 using System;
 using Remotion.ObjectBinding;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
+  [EnumDescriptionResource ("Remotion.SecurityManager.Globalization.Domain.AccessControl.GroupHierarchyCondition")]
   [UndefinedEnumValue (Undefined)]
   public enum GroupHierarchyCondition
   {

@@ -23,7 +23,7 @@
   </td>
   </tr>
   <tr>
-    <td class="stateCombinationsContainer" style="width:25%">
+    <td class="stateCombinationsContainer" style="width:12em">
     </td>
     <td class="accessControlEntriesContainer">
       <div id="AccessControlEntryControls" runat="server" class="accessControlEntriesContainer"><%-- 

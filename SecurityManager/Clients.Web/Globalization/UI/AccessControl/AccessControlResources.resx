@@ -153,9 +153,6 @@
   <data name="NewStateCombinationButton" xml:space="preserve">
     <value>Assign State</value>
   </data>
-  <data name="SpecificPositionAndGroupLinkingLabelText" xml:space="preserve">
-    <value>for</value>
-  </data>
   <data name="Title" xml:space="preserve">
     <value>{0} - Edit Permissions</value>
   </data>

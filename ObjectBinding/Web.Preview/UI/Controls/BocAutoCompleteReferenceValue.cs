@@ -530,7 +530,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         {
           _extender.TextBoxID = _textBox.ClientID;
           _extender.HiddenFieldID = _hiddenField.ClientID;
-          _extender.TargetControlID = ID;
+          _extender.TargetControlID = UniqueID;
           _extender.ServiceUrl = ResolveClientUrl (_servicePath);
           _extender.ServiceMethod = _serviceMethod;
           _extender.MinimumPrefixLength = 0;

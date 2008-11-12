@@ -10,9 +10,11 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
@@ -28,8 +30,18 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public AccessControlEntryPropertiesSearchService ()
     {
       AddSearchDelegate ("SpecificTenant", delegate { return Tenant.FindAll().ToArray(); });
+      AddSearchDelegate ("SpecificGroup", SearchGroups);
       AddSearchDelegate ("SpecificPosition", delegate { return Position.FindAll().ToArray(); });
-      AddSearchDelegate ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll().ToArray(); });
+      AddSearchDelegate ("SpecificGroupType", delegate { return GroupType.FindAll ().ToArray (); });
+      AddSearchDelegate ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll ().ToArray (); });
+    }
+
+    private IBusinessObject[] SearchGroups (AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, string selectStatement)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("selectStatement", selectStatement);
+      ObjectID tenantID = ObjectID.Parse (selectStatement);
+
+      return Group.FindByTenantID (tenantID).ToArray ();
     }
   }
 }

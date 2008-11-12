@@ -117,52 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="auto:AccessControlEntryTitle:InnerText" xml:space="preserve">
-    <value>ACE (Access Control Entry)</value>
+  <data name="Remotion.SecurityManager.Domain.AccessControl.GroupHierarchyCondition.This" xml:space="preserve">
+    <value>Only this group</value>
   </data>
-  <data name="auto:StatefulAccessControlListTitle:InnerText" xml:space="preserve">
-    <value>Objektbezogene ACL (Access Control List)</value>
+  <data name="Remotion.SecurityManager.Domain.AccessControl.GroupHierarchyCondition.ThisAndChildren" xml:space="preserve">
+    <value>or parents</value>
   </data>
-  <data name="auto:MissingStateCombinationsValidator:ErrorMessage" xml:space="preserve">
-    <value>Bitte ordnen Sie einen Status zu.</value>
+  <data name="Remotion.SecurityManager.Domain.AccessControl.GroupHierarchyCondition.ThisAndParent" xml:space="preserve">
+    <value>or children</value>
   </data>
-  <data name="auto:PermissionsLabel:Text" xml:space="preserve">
-    <value>Berechtigungen</value>
-  </data>
-  <data name="auto:SpecificTenantField:ErrorMessage" xml:space="preserve">
-    <value>Bitte wählen Sie einen Mandanten aus.</value>
-  </data>
-  <data name="DeleteAccessControlEntryButton" xml:space="preserve">
-    <value>ACE Löschen</value>
-  </data>
-  <data name="DeleteAccessControlListButton" xml:space="preserve">
-    <value>ACL Löschen</value>
-  </data>
-  <data name="DeleteStateCombinationCommand" xml:space="preserve">
-    <value>Status entfernen</value>
-  </data>
-  <data name="DuplicateStateCombinationsValidatorErrorMessage" xml:space="preserve">
-    <value>Es dürfen keine doppelten Stati zugewiesen werden.</value>
-  </data>
-  <data name="NewAccessControlEntryButton" xml:space="preserve">
-    <value>Neue ACE anlegen</value>
-  </data>
-  <data name="NewStatefulAccessControlListButton" xml:space="preserve">
-    <value>Neue objektbezogene ACL anlegen</value>
-  </data>
-  <data name="NewStateCombinationButton" xml:space="preserve">
-    <value>Status zuordnen</value>
-  </data>
-  <data name="Title" xml:space="preserve">
-    <value>{0} - Berechtigungen bearbeiten</value>
-  </data>
-  <data name="NewStateAccessControlListButton" xml:space="preserve">
-    <value>Neue klassenbezogene ACL anlegen</value>
-  </data>
-  <data name="auto:RequiredStateCombinationValidator:ErrorMessage" xml:space="preserve">
-    <value>Bitte wählen sie einen Status aus.</value>
-  </data>
-  <data name="auto:StatelessAccessControlListTitle:InnerText" xml:space="preserve">
-    <value>Klassenbezogene ACL (Access Control List)</value>
+  <data name="Remotion.SecurityManager.Domain.AccessControl.GroupHierarchyCondition.ThisAndParentAndChildren" xml:space="preserve">
+    <value>or parents and children</value>
   </data>
 </root>

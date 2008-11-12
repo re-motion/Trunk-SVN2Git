@@ -62,6 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchGroupType.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchGroup.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionTreeNodeTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionTreeTest.cs" />
     <Compile Include="Domain\AccessControl\AccessTypeStatisticsTest.cs" />

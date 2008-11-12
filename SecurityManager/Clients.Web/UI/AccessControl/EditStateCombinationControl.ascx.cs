@@ -18,6 +18,7 @@ using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 
@@ -51,12 +52,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     {
       base.OnInit (e);
 
-      BocMenuItem deleteMenuItem = new BocMenuItem ();
-      deleteMenuItem.ItemID = "Delete";
-      deleteMenuItem.Text = "$res:DeleteStateCombinationCommand";
-      deleteMenuItem.Command.Type = CommandType.Event;
-      deleteMenuItem.Command.Click += DeleteStateCombinationCommand_Click;
-      StateDefinitionField.OptionsMenuItems.Add (deleteMenuItem);
+      DeleteStateDefinitionButton.Icon =
+          new IconInfo (ResourceUrlResolver.GetResourceUrl (this, typeof (EditStateCombinationControl), ResourceType.Image, "DeleteItem.gif"));
+      DeleteStateDefinitionButton.ToolTip = "$res:DeleteStateCombinationCommand";
     }
 
     public override void LoadValues (bool interim)
@@ -70,11 +68,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
         StateDefinition currentStateDefinition = GetStateDefinition (CurrentStateCombination);
         StateDefinitionField.LoadUnboundValue (currentStateDefinition, interim);
-        StateDefinitionField.Visible = true;
+        StateDefinitionContainer.Visible = true;
       }
       else
       {
-        StateDefinitionField.Visible = false;
+        StateDefinitionContainer.Visible = false;
       }
     }
 
@@ -148,7 +146,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       }
     }
 
-    protected void DeleteStateCombinationCommand_Click (object sender, CommandClickEventArgs e)
+    protected void DeleteStateDefinitionButton_Click (object sender, EventArgs e)
     {
       EventHandler handler = (EventHandler) Events[s_deleteEvent];
       if (handler != null)

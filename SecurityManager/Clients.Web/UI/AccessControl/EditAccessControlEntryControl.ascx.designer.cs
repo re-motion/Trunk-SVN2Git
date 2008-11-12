@@ -86,22 +86,49 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificTenantField;
         
         /// <summary>
-        /// SpecificAbstractRoleLabel control.
+        /// GroupConditionLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.SmartLabel SpecificAbstractRoleLabel;
+        protected global::Remotion.Web.UI.Controls.SmartLabel GroupConditionLabel;
         
         /// <summary>
-        /// SpecificAbstractRoleField control.
+        /// GroupConditionField control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificAbstractRoleField;
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue GroupConditionField;
+        
+        /// <summary>
+        /// SpecificGroupField control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue SpecificGroupField;
+        
+        /// <summary>
+        /// GroupHierarchyConditionField control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue GroupHierarchyConditionField;
+        
+        /// <summary>
+        /// SpecificGroupTypeField control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificGroupTypeField;
         
         /// <summary>
         /// SpecificPositionLabel control.
@@ -122,22 +149,22 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificPositionField;
         
         /// <summary>
-        /// SpecificPositionAndGroupLinkingLabel control.
+        /// SpecificAbstractRoleLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label SpecificPositionAndGroupLinkingLabel;
+        protected global::Remotion.Web.UI.Controls.SmartLabel SpecificAbstractRoleLabel;
         
         /// <summary>
-        /// GroupConditionField control.
+        /// SpecificAbstractRoleField control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue GroupConditionField;
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificAbstractRoleField;
         
         /// <summary>
         /// PermissionsLabel control.

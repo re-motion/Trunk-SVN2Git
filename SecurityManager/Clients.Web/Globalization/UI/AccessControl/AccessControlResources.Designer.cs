@@ -197,15 +197,6 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to for.
-        /// </summary>
-        internal static string SpecificPositionAndGroupLinkingLabelText {
-            get {
-                return ResourceManager.GetString("SpecificPositionAndGroupLinkingLabelText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} - Edit Permissions.
         /// </summary>
         internal static string Title {

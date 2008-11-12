@@ -237,6 +237,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AccessControlEntry.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Domain\AccessControl\GroupHierarchyCondition.resx" />
+    <EmbeddedResource Include="Globalization\Domain\AccessControl\GroupHierarchyCondition.de.resx">
+    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\AccessControl\TenantCondition.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

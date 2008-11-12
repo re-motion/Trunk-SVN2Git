@@ -17,6 +17,7 @@ using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.Web;
 using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
@@ -57,7 +58,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-      SpecificPositionAndGroupLinkingLabel.Text = AccessControlResources.SpecificPositionAndGroupLinkingLabelText;
+      SpecificGroupField.ServicePath = ResourceUrlResolver.GetResourceUrl (
+          this, Context, typeof (SecurityManagerSearchWebService), ResourceType.UI, "SecurityManagerSearchWebService.asmx");
+      SpecificGroupField.ServiceMethod = "GetBusinessObjects";
     }
 
     public override void LoadValues (bool interim)
@@ -66,6 +69,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       LoadPermissions (interim);
       AdjustSpecificTenantField ();
+      AdjustSpecificGroupField();
+      AdjustGroupHierarchyConditionField();
+      AdjustSpecificGroupTypeField ();
       AdjustPositionFields ();
     }
 
@@ -107,6 +113,50 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       AdjustSpecificTenantField ();
     }
 
+    protected void SpecificTenantField_SelectionChanged (object sender, EventArgs e)
+    {
+      AdjustSpecificGroupField();
+    }
+
+    protected void GroupConditionField_SelectionChanged (object sender, EventArgs e)
+    {
+      AdjustSpecificGroupField ();
+      AdjustGroupHierarchyConditionField ();
+      AdjustSpecificGroupTypeField ();
+    }
+
+    private void AdjustSpecificGroupField ()
+    {
+      if (SpecificTenantField.BusinessObjectID != null && SpecificGroupField.BusinessObjectID != null)
+        SpecificGroupField.Value = null;
+
+      if (CurrentFunction.TenantID == null)
+        throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
+      SpecificGroupField.Args = SpecificTenantField.BusinessObjectID ?? CurrentFunction.TenantID.ToString ();
+
+      SpecificGroupField.Visible = (GroupCondition?)GroupConditionField.Value == GroupCondition.SpecificGroup;
+    }
+
+    private void AdjustGroupHierarchyConditionField ()
+    {
+      bool isSpecificGroupSelected = (GroupCondition?) GroupConditionField.Value == GroupCondition.SpecificGroup;
+      bool isOwningGroupSelected = (GroupCondition?) GroupConditionField.Value == GroupCondition.OwningGroup;
+
+      if (isSpecificGroupSelected || isOwningGroupSelected)
+        GroupHierarchyConditionField.Value = GroupHierarchyCondition.ThisAndParent;
+      else
+        GroupHierarchyConditionField.Value = GroupHierarchyCondition.Undefined;
+
+      GroupHierarchyConditionField.Visible = isSpecificGroupSelected || isOwningGroupSelected;
+    }
+
+    private void AdjustSpecificGroupTypeField ()
+    {
+      bool isSpecificGroupTypeSelected = (GroupCondition?) GroupConditionField.Value == GroupCondition.SpecificGroupType;
+      bool isBranchOfOwningGroupSelected = (GroupCondition?) GroupConditionField.Value == GroupCondition.BranchOfOwningGroup;
+      SpecificGroupTypeField.Visible = isSpecificGroupTypeSelected || isBranchOfOwningGroupSelected;
+    }
+
     protected void SpecificPositionField_SelectionChanged (object sender, EventArgs e)
     {
       AdjustPositionFields ();
@@ -133,17 +183,17 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         CurrentAccessControlEntry.UserCondition = UserCondition.SpecificPosition;
 
       // TODO: Remove when Group can stand alone during ACE lookup.
-      if (SpecificPositionField.BusinessObjectID == null)
-      {
-        SpecificPositionAndGroupLinkingLabel.Visible = false;
-        GroupConditionField.Visible = false;
-        GroupConditionField.Value = GroupCondition.None;
-      }
-      else
-      {
-        SpecificPositionAndGroupLinkingLabel.Visible = true;
-        GroupConditionField.Visible = true;
-      }
+      //if (SpecificPositionField.BusinessObjectID == null)
+      //{
+      //  SpecificPositionAndGroupLinkingLabel.Visible = false;
+      //  GroupConditionField.Visible = false;
+      //  GroupConditionField.Value = GroupCondition.None;
+      //}
+      //else
+      //{
+      //  SpecificPositionAndGroupLinkingLabel.Visible = true;
+      //  GroupConditionField.Visible = true;
+      //}
     }
 
     private void LoadPermissions (bool interim)

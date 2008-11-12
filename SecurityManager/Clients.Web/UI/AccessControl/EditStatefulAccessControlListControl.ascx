@@ -25,7 +25,7 @@
   </td>
   </tr>
   <tr>
-    <td class="stateCombinationsContainer" style="width:25%">
+    <td class="stateCombinationsContainer" style="width:12em">
       <div id="StateCombinationControls" runat="server" class="stateCombinationsContainer"><%-- 
         <securityManager:ObjectBoundRepeater ID="StateCombinationsRepeater" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="StateCombinations">
           <HeaderTemplate><table><tr><td></HeaderTemplate>

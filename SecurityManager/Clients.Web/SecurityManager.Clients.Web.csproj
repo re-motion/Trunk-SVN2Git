@@ -48,6 +48,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Extensions.Design, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +64,8 @@
     </None>
     <None Include="SecurityManager.Clients.Web.build" />
     <Content Include="Global.asax" />
+    <Content Include="res\Image\DeleteItem.gif" />
+    <Content Include="UI\SecurityManagerSearchWebService.asmx" />
     <Content Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx" />
     <Content Include="UI\AccessControl\EditPermissionControl.ascx" />
     <Content Include="UI\AccessControl\EditAccessControlEntryControl.ascx" />
@@ -290,6 +295,10 @@
       <DependentUpon>UserListFormResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\SecurityManagerSearchWebService.asmx.cs">
+      <DependentUpon>SecurityManagerSearchWebService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx.cs">
       <DependentUpon>EditStatelessAccessControlListControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -596,6 +605,10 @@
     <ProjectReference Include="..\..\ObjectBinding\Interfaces\ObjectBinding.Interfaces.csproj">
       <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
       <Name>ObjectBinding.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ObjectBinding\Web.Preview\ObjectBinding.Web.Preview.csproj">
+      <Project>{6D58BB53-8709-48F9-8EF9-0D65B11A162C}</Project>
+      <Name>ObjectBinding.Web.Preview</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ObjectBinding\Web\ObjectBinding.Web.csproj">
       <Project>{390FBB93-A757-47A7-B769-A64A7465FF84}</Project>

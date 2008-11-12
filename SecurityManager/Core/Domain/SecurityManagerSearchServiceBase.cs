@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
