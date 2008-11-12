@@ -126,35 +126,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void GetUserGroups_WithoutUser ()
-    {
-      Tenant tenant = CreateTenant ("Testtenant");
-      Group group1 = CreateGroup ("Group1", null, tenant);
-      Group group2 = CreateGroup ("Group2", null, tenant);
-      User user = null;
-
-      SecurityToken token = new SecurityToken (user, null, CreateOwningGroups (group2), CreateAbstractRoles ());
-
-      Assert.IsEmpty (token.UserGroups);
-    }
-
-    [Test]
-    public void GetUserGroups_WithUser ()
-    {
-      Tenant tenant = CreateTenant ("Testtenant");
-      Group parentGroup1 = CreateGroup ("ParentGroup1", null, tenant);
-      Group group1 = CreateGroup ("Group1", parentGroup1, tenant);
-      Group group2 = CreateGroup ("Group2", null, tenant);
-      User user = CreateUser ("test.user", group1, tenant);
-
-      SecurityToken token = new SecurityToken (user, null, CreateOwningGroups (group2), CreateAbstractRoles ());
-
-      Assert.AreEqual (2, token.UserGroups.Count);
-      Assert.Contains (group1, token.UserGroups);
-      Assert.Contains (parentGroup1, token.UserGroups);
-    }
-
-    [Test]
     public void MatchesUserTenant_MatchesUserInTenant ()
     {
       Tenant tenant = CreateTenant ("TestTenant");

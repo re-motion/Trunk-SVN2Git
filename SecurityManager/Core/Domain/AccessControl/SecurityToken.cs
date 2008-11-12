@@ -25,7 +25,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private readonly ReadOnlyCollection<Group> _owningGroups;
     private readonly ReadOnlyCollection<AbstractRoleDefinition> _abstractRoles;
 
-    private ReadOnlyCollection<Group> _cachedUserGroups;
     private ReadOnlyCollection<Role> _cachedUserRolesForOwningGroups;
 
     public SecurityToken (User user, Tenant owningTenant, IList<Group> owningGroups, IList<AbstractRoleDefinition> abstractRoles)
@@ -43,16 +42,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public User User
     {
       get { return _user; }
-    }
-
-    public ReadOnlyCollection<Group> UserGroups
-    {
-      get
-      {
-        if (_cachedUserGroups == null)
-          _cachedUserGroups = GetGroups (_user);
-        return _cachedUserGroups;
-      }
     }
 
     public Tenant OwningTenant
@@ -112,19 +101,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         return false;
 
       return ContainsRoleForPosition (User.Roles, position);
-    }
-
-    private ReadOnlyCollection<Group> GetGroups (User user)
-    {
-      List<Group> groups = new List<Group> ();
-
-      if (user != null)
-      {
-        for (Group group = user.OwningGroup; group != null; group = group.Parent)
-          groups.Add (group);
-      }
-
-      return groups.AsReadOnly ();
     }
 
     private ReadOnlyCollection<Role> GetRoles (User user, IList<Group> groups)
