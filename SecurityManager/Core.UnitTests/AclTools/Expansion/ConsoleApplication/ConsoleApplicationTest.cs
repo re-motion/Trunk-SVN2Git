@@ -65,37 +65,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
 
       var stringWriterOut = new StringWriter ();
       var stringWriterError = new StringWriter ();
-      //var consoleApplication = new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (stringWriterError, stringWriterOut, 80, consoleApplicationMock);
 
       var waitMock = MockRepository.GenerateMock<IWait> ();
-
-      //ConsoleApplicationTestSettings consoleApplicationTestSettingsExpected = new ConsoleApplicationTestSettings();
-      //consoleApplicationTestSettingsExpected.StringArg = "someText";
-      //consoleApplicationTestSettingsExpected.FlagArg = true;
-
-      //var consoleApplicationMock = 
-      //  MockRepository.GenerateMock<ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings>> (
-      //    stringWriterError, stringWriterOut, 80, waitMock
-      //  );
-
-      //var consoleApplicationMock =
-      //  new MockRepository ().PartialMock<ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings>> (
-      //    stringWriterError, stringWriterOut, 80, waitMock
-      //  );
 
       var consoleApplication =
         new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (
           stringWriterError, stringWriterOut, 80, waitMock
         );
 
-
-      //consoleApplicationMock.Expect (mock =>
-      //  //PrivateInvoke.InvokeNonPublicMethod (mock, "RunApplication", Arg < ConsoleApplicationTestSettings >.Is.Equal(consoleApplicationTestSettingsExpected))); //.Return (0);
-      //  //PrivateInvoke.InvokeNonPublicMethod (mock, "RunApplication", Arg<ConsoleApplicationTestSettings>.Is.Anything)).Return (0);
-      //  //PrivateInvoke.InvokeNonPublicMethod (mock, "RunApplication", Arg<ConsoleApplicationTestSettings>.Matches(p => (p.StringArg == "someText" && p.FlagArg == true)))).Return (0);
-      //  mock.RunApplication(Arg<ConsoleApplicationTestSettings>.Matches(p => (p.StringArg == "someText" && p.FlagArg == true)))).Return (0);
-
-      //consoleApplicationMock.Replay ();
 
       consoleApplication.Main (args);
 
@@ -104,7 +81,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
       To.ConsoleLine.e (() => outResult);
       To.ConsoleLine.e (() => errorResult);
 
-      //consoleApplicationMock.VerifyAllExpectations ();
       Assert.That (errorResult, Is.EqualTo (""));
     }
 
@@ -116,14 +92,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
 
       var stringWriterOut = new StringWriter ();
       var stringWriterError = new StringWriter ();
-      //var consoleApplication = new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (stringWriterError, stringWriterOut, 80, consoleApplicationMock);
 
       var waitMock = MockRepository.GenerateMock<IWait> ();
-
-      //var consoleApplicationMock = 
-      //  MockRepository.GenerateStub<ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings>> (
-      //    stringWriterError, stringWriterOut, 80, waitMock
-      //  );
 
       var consoleApplication =
         new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (
@@ -131,24 +101,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
         );
 
 
-      //consoleApplicationMock.Expect (mock =>
-      //  PrivateInvoke.InvokeNonPublicMethod (mock, "ParseCommandLineArguments", args, 0)).Return (1);
-
-      //int resultDummy = 0;
-      //consoleApplicationMock.Expect (mock => mock.ParseCommandLineArguments (args, ref resultDummy)).Expect(null);
-
-      //consoleApplicationMock.Expect (mock =>
-      //  PrivateInvoke.InvokeNonPublicMethod (mock, "RunApplication", consoleApplicationTestSettingsExpected)).Return (0);
-
-      //consoleApplication.Replay ();
-
       consoleApplication.Main (args);
 
       var errorResult = stringWriterError.ToString ();
-      //To.ConsoleLine.e (() => outResult);
-      To.ConsoleLine.e (() => errorResult);
+      //To.ConsoleLine.e (() => errorResult);
 
-      //waitMock.VerifyAllExpectations ();
       Assert.That (errorResult, NUnitText.StartsWith (@"Argument /UNKNOWN_ARGUMENT: invalid argument name"));
     }
 
