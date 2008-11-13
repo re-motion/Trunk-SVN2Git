@@ -469,6 +469,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         entry.UserCondition = UserCondition.SpecificPosition;
         entry.SpecificPosition = position;
         entry.GroupCondition = groupCondition;
+        if (groupCondition == GroupCondition.OwningGroup)
+          entry.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent;
 
         return entry;
       }

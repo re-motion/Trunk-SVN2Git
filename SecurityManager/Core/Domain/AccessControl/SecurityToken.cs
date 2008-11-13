@@ -109,7 +109,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       if (user != null)
       {
-        for (Group currentGroup = group; group != null; group = group.Parent)
+        for (Group currentGroup = group; currentGroup != null; currentGroup = currentGroup.Parent)
           roles.AddRange (user.GetRolesForGroup (currentGroup));
       }
 

@@ -95,6 +95,10 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\SearchServiceTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\ValidationTest.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForOwningGroupAndParents.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForOwningGroup.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForOwningGroupAndChildren.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForOwningGroupAndParentsAndChildren.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForGroupAndPosition.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\EmptyToken.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\CompanyStructureHelper.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\SecurityTokenMatcherTestBase.cs" />
