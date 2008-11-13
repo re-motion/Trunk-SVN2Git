@@ -101,7 +101,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (token.User == null)
         return false;
 
-      return GetMatchingUserRoles (token.User).FirstOrDefault() != null;
+      return GetMatchingUserRoles (token.User).Any();
     }
 
     private bool MatchesGroupCondition (SecurityToken token)
@@ -173,7 +173,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           break;
       }
 
-      return userGroups.Intersect (objectGroups).FirstOrDefault() != null;
+      return userGroups.Intersect (objectGroups).Any();
     }
 
     private IEnumerable<Role> GetMatchingUserRoles (User user)
