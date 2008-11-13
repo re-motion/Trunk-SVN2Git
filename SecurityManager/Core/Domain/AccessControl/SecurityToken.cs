@@ -9,13 +9,11 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
@@ -86,26 +84,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return false;
     }
 
-    public bool ContainsRoleForOwningGroupAndPosition (Position position)
-    {
-      ArgumentUtility.CheckNotNull ("position", position);
-
-      return ContainsRoleForPosition (OwningGroupRoles, position);
-    }
-
-    public bool ContainsRoleForUserGroupAndPosition (Position position)
-    {
-      ArgumentUtility.CheckNotNull ("position", position);
-
-      if (User == null)
-        return false;
-
-      return ContainsRoleForPosition (User.Roles, position);
-    }
-
     private ReadOnlyCollection<Role> GetRoles (User user, Group group)
     {
-      List<Role> roles = new List<Role> ();
+      List<Role> roles = new List<Role>();
 
       if (user != null)
       {
@@ -113,18 +94,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           roles.AddRange (user.GetRolesForGroup (currentGroup));
       }
 
-      return roles.AsReadOnly ();
-    }
-
-    private bool ContainsRoleForPosition (IList roles, Position position)
-    {
-      foreach (Role role in roles)
-      {
-        if (role.Position.ID == position.ID)
-          return true;
-      }
-
-      return false;
+      return roles.AsReadOnly();
     }
   }
 }
