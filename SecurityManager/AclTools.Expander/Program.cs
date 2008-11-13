@@ -15,15 +15,6 @@ using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
 namespace Remotion.SecurityManager.AclTools.Expander
 {
 
-  //public class Program : ConsoleApplication<AclExpanderApplication, AclExpanderApplicationSettings>
-  //{
-  //  public static int Main (string[] args)
-  //  {
-  //    return MainDo (args);
-  //  }
-  //}
-
-
   public class Program 
   {
     public static int Main (string[] args)

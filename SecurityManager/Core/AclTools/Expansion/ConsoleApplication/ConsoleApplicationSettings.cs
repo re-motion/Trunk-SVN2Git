@@ -12,6 +12,11 @@ using Remotion.Text.CommandLine;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
 {
+  /// <summary>
+  /// Supplies command line arguments for <see cref="ConsoleApplication{TApplication, TApplicationSettings}"/>|s:
+  /// <para>/? ... output usage information</para>
+  /// <para>/wait+ ... wait for a keypress at the end of program execution</para>
+  /// </summary>
   public class ConsoleApplicationSettings
   {
     // "/?"-command-line-switch outputs usage information.

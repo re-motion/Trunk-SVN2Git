@@ -18,6 +18,35 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
 {
+  /// <summary>
+  /// Console application class: Supplies command line parsing (including standard command line switches; 
+  /// see <see cref="ConsoleApplicationSettings"/>) and standardized error handling and output.
+  /// </summary>
+  /// <remarks>
+  /// Standard command line switches: "/?" to show the usage information, "/wait+" to wait for a keypress at the end of program execution.
+  /// </remarks>
+  /// <example>
+  /// <code>
+  /// <![CDATA[
+  /// public class Program 
+  /// {
+  ///   public static int Main (string[] args)
+  ///   {
+  ///     var consoleApplication = new ConsoleApplication<AclExpanderApplication, AclExpanderApplicationSettings>();
+  ///     return consoleApplication.Main (args);
+  ///   }
+  /// }
+  /// ]]>
+  /// </code>
+  /// </example>
+  /// <typeparam name="TApplication">The application implementation class. Supplied with an log- and error-output-stream
+  /// by the <see cref="ConsoleApplication"/>.
+  /// Needs to implement <see cref="IApplicationRunner{TApplicationSettings}"/>.
+  /// </typeparam>
+  /// <typeparam name="TApplicationSettings">The settings for the <see cref="TApplication"/>. 
+  /// Needs to derive from <see cref="ConsoleApplicationSettings"/>.
+  /// </typeparam>
+  
   public class ConsoleApplication<TApplication, TApplicationSettings> 
       where TApplication: IApplicationRunner<TApplicationSettings>, new()
       where TApplicationSettings : ConsoleApplicationSettings, new()
@@ -28,6 +57,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
     private readonly CommandLineClassParser<TApplicationSettings> _parser = new CommandLineClassParser<TApplicationSettings> ();
     private readonly int _bufferWidth;
     private readonly IWait _waitAtEnd;
+    private int _result;
 
 
     public ConsoleApplication (TextWriter errorWriter, TextWriter logWriter, int bufferWidth, IWait waitAtEnd)
@@ -46,17 +76,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
 
     public int Main (string[] args)
     {
-      int result = 0;
-      To.ConsoleLine.e (() => result);
-      //TApplicationSettings settings = ParseCommandLineArguments(args, ref result);
-      ParseCommandLineArguments (args, ref result);
-      if (result == 0)
+      _result = 0;
+      ParseCommandLineArguments (args);
+      if (_result == 0)
       {
-        //result = RunApplication (settings);
-        result = RunApplication (Settings);
+        RunApplication (Settings);
       }
       WaitForKeypress();
-      return result;
+      return _result;
     }
 
     private void WaitForKeypress ()
@@ -68,36 +95,29 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       }
     }
 
-    public virtual int RunApplication (TApplicationSettings settings)
+    public virtual void RunApplication (TApplicationSettings settings)
     {
-      int result = 0;
       try
       {
         TApplication application = new TApplication();
-        //application.Init (settings, System.Console.Error, System.Console.Out);
         application.Run (settings, System.Console.Error, System.Console.Out);
       }
       catch (Exception e)
       {
-        result = 1;
+        _result = 1;
         using (ConsoleUtility.EnterColorScope (ConsoleColor.White, ConsoleColor.DarkRed))
         {
-          //System.Console.Error.WriteLine ("Execution aborted. Exception stack:");
           To.Error.s("Execution aborted. Exception stack:");
           for (; e != null; e = e.InnerException)
           {
-            //System.Console.Error.WriteLine ("{0}: {1}\n{2}", e.GetType().FullName, e.Message, e.StackTrace);
             To.Error.s(e.GetType ().FullName).s(": ").s(e.Message).s(e.StackTrace);
           }
         }
       }
-      return result;
     }
 
-    //public virtual TApplicationSettings ParseCommandLineArguments (string[] args, ref int result)
-    public virtual void ParseCommandLineArguments (string[] args, ref int result)
+    public virtual void ParseCommandLineArguments (string[] args)
     {
-      //_parser = new CommandLineClassParser<TApplicationSettings> ();
       try
       {
         Settings = _parser.Parse (args);
@@ -106,16 +126,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
           _logToTextBuilder.nl (2).s ("Application Usage: ");
           _logToTextBuilder.nl().s (GetSynopsis (args));
         }
-        result = 0;
-        //return Settings;
       }
       catch (CommandLineArgumentException e)
       {
         _errorToTextBuilder.s (e.Message);
         _errorToTextBuilder.s ("Usage:");
         _errorToTextBuilder.s (GetSynopsis (args));
-        result = 1;
-        //return Settings;
+        _result = 1;
         Settings = new TApplicationSettings(); // Use default settings
       }
     }

@@ -119,13 +119,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
 
       var waitMock = MockRepository.GenerateMock<IWait> ();
       waitMock.Expect (mock => mock.Wait ());
-
       waitMock.Replay ();
 
-      var stringWriterOut = new StringWriter ();
-      var stringWriterError = new StringWriter ();
-      var consoleApplication =
-        new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (stringWriterError, stringWriterOut, 80, waitMock);
+      var consoleApplication = new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (
+        TextWriter.Null, TextWriter.Null, 80, waitMock);
+      
       consoleApplication.Main (args);
 
       Assert.That (consoleApplication.Settings.WaitForKeypress, Is.True);
