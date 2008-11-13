@@ -262,12 +262,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       {
         if (TenantCondition != TenantCondition.SpecificTenant)
           SpecificTenant = null;
-
-#warning By-Default setting of GroupHierarchyCondition. Untested. Remove after implementing new matching-logic
-        if (GroupCondition == GroupCondition.OwningGroup)
-          GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent;
-        else
-          GroupHierarchyCondition = GroupHierarchyCondition.Undefined;
       }
 
       base.OnCommitting (args);

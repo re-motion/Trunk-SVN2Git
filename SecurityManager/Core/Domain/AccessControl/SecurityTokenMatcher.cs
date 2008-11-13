@@ -115,6 +115,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         case GroupCondition.OwningGroup:
           return MatchUserAgainstGroup (token.User, token.OwningGroup);
 
+        case GroupCondition.SpecificGroup:
+          return MatchUserAgainstGroup (token.User, _accessControlEntry.SpecificGroup);
+
         default:
           return false;
       }

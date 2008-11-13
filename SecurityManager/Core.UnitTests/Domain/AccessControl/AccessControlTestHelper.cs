@@ -16,6 +16,7 @@ using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 {
@@ -415,6 +416,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
+    public AccessControlEntry CreateAceWithSpecificGroup (Group group)
+    {
+      ArgumentUtility.CheckNotNull ("group", group);
+
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        AccessControlEntry entry = AccessControlEntry.NewObject ();
+        entry.GroupCondition = GroupCondition.SpecificGroup;
+        entry.SpecificGroup = group;
+        entry.GroupHierarchyCondition = GroupHierarchyCondition.This;
+
+        return entry;
+      }
+    }
+
     public AccessControlEntry CreateAceWithGroupSelectionAll ()
     {
       using (_transaction.EnterNonDiscardingScope ())
@@ -440,6 +456,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     public AccessControlEntry CreateAceWithSpecficTenant (Tenant tenant)
     {
+      ArgumentUtility.CheckNotNull ("tenant", tenant);
+
       using (_transaction.EnterNonDiscardingScope())
       {
         AccessControlEntry entry = AccessControlEntry.NewObject ();
