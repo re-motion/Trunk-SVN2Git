@@ -19,8 +19,8 @@ namespace Remotion.Utilities
   [Serializable]
   public class ArgumentEmptyException : ArgumentException
   {
-    public ArgumentEmptyException (string argumentName)
-        : base (FormatMessage (argumentName))
+    public ArgumentEmptyException (string paramName)
+      : base (FormatMessage (paramName), paramName)
     {
     }
 
@@ -29,9 +29,9 @@ namespace Remotion.Utilities
     {
     }
 
-    private static string FormatMessage (string argumentName)
+    private static string FormatMessage (string paramName)
     {
-      return string.Format ("Argument {0} is empty.", argumentName);
+      return string.Format ("Parameter '{0}' cannot be empty.", paramName);
     }
   }
 }

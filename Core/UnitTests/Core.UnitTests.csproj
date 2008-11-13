@@ -733,6 +733,7 @@
     <Compile Include="Utilities\AdvancedEnumConverterTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\ArgumentEmptyExceptionTest.cs" />
     <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNull.cs" />
     <Compile Include="Utilities\ArgumentUtilityTests\CheckType.cs" />
     <Compile Include="Utilities\ArgumentUtilityTests\CheckTypeObsolete.cs" />
