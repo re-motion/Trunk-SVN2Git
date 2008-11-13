@@ -10,22 +10,22 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
   [Serializable]
   public class SecurityTokenMatcher
   {
-    private readonly AccessControlEntry _accessControlEntry;
+    private readonly AccessControlEntry _ace;
 
-    public SecurityTokenMatcher (AccessControlEntry accessControlEntry)
+    public SecurityTokenMatcher (AccessControlEntry ace)
     {
-      ArgumentUtility.CheckNotNull ("accessControlEntry", accessControlEntry);
+      ArgumentUtility.CheckNotNull ("ace", ace);
 
-      _accessControlEntry = accessControlEntry;
+      _ace = ace;
     }
 
     public bool MatchesToken (SecurityToken token)
@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private bool MatchesTenantCondition (SecurityToken token)
     {
       Assertion.IsNotNull (token);
-      switch (_accessControlEntry.TenantCondition)
+      switch (_ace.TenantCondition)
       {
         case TenantCondition.None:
           return true;
@@ -59,7 +59,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return token.OwningTenant != null && token.MatchesUserTenant (token.OwningTenant);
 
         case TenantCondition.SpecificTenant:
-          return token.MatchesUserTenant (_accessControlEntry.SpecificTenant);
+          return token.MatchesUserTenant (_ace.SpecificTenant);
 
         default:
           return false;
@@ -69,12 +69,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private bool MatchesAbstractRole (SecurityToken token)
     {
       Assertion.IsNotNull (token);
-      if (_accessControlEntry.SpecificAbstractRole == null)
+      if (_ace.SpecificAbstractRole == null)
         return true;
 
       foreach (var abstractRole in token.AbstractRoles)
       {
-        if (abstractRole.ID == _accessControlEntry.SpecificAbstractRole.ID)
+        if (abstractRole.ID == _ace.SpecificAbstractRole.ID)
           return true;
       }
 
@@ -83,7 +83,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private bool MatchesUserCondition (SecurityToken token)
     {
-      switch (_accessControlEntry.UserCondition)
+      switch (_ace.UserCondition)
       {
         case UserCondition.None:
           return true;
@@ -107,19 +107,22 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private bool MatchesGroupCondition (SecurityToken token)
     {
       Assertion.IsNotNull (token);
-      switch (_accessControlEntry.GroupCondition)
+      switch (_ace.GroupCondition)
       {
         case GroupCondition.None:
           return true;
 
         case GroupCondition.OwningGroup:
-          return MatchUserAgainstGroup (token.User, token.OwningGroup, _accessControlEntry.GroupHierarchyCondition);
+          return MatchUserAgainstGroup (token.User, token.OwningGroup, _ace.GroupHierarchyCondition);
 
         case GroupCondition.SpecificGroup:
-          return MatchUserAgainstGroup (token.User, _accessControlEntry.SpecificGroup, _accessControlEntry.GroupHierarchyCondition);
+          return MatchUserAgainstGroup (token.User, _ace.SpecificGroup, _ace.GroupHierarchyCondition);
 
         case GroupCondition.BranchOfOwningGroup:
           return MatchUserAgainstGroup (token.User, FindBranchRoot (token.OwningGroup), GroupHierarchyCondition.ThisAndChildren);
+
+        case GroupCondition.AnyGroupWithSpecificGroupType:
+          return MatchPosition (token);
 
         default:
           return false;
@@ -128,9 +131,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private Group FindBranchRoot (Group groupOfTheObject)
     {
-      Assertion.IsNotNull (_accessControlEntry.GroupCondition == GroupCondition.BranchOfOwningGroup);
+      Assertion.IsNotNull (_ace.GroupCondition == GroupCondition.BranchOfOwningGroup);
 
-      return GetParents (groupOfTheObject).Where (g => g.GroupType == _accessControlEntry.SpecificGroupType).FirstOrDefault ();
+      return GetParents (groupOfTheObject).Where (g => g.GroupType == _ace.SpecificGroupType).FirstOrDefault();
     }
 
     private bool MatchUserAgainstGroup (User user, Group groupOfTheObject, GroupHierarchyCondition groupHierarchyCondition)
@@ -141,7 +144,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (groupOfTheObject == null)
         return false;
 
-      IEnumerable<Role> userRoles = GetMatchingUserRoles(user);
+      IEnumerable<Role> userRoles = GetMatchingUserRoles (user);
 
       var userGroups = userRoles.Select (r => r.Group);
       var objectGroups = (IEnumerable<Group>) new[] { groupOfTheObject };
@@ -150,23 +153,27 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       {
         case GroupHierarchyCondition.This:
           break;
+        
         case GroupHierarchyCondition.ThisAndParent:
           objectGroups = objectGroups.SelectMany (g => GetParents (g));
           break;
+        
         case GroupHierarchyCondition.ThisAndChildren:
           userGroups = userGroups.SelectMany (g => GetParents (g));
           break;
+        
         case GroupHierarchyCondition.ThisAndParentAndChildren:
           objectGroups = objectGroups.SelectMany (g => GetParents (g));
           userGroups = userGroups.SelectMany (g => GetParents (g));
           break;
+        
         default:
           objectGroups = new Group[0];
           userGroups = new Group[0];
-          break;       
+          break;
       }
 
-      return userGroups.Intersect (objectGroups).FirstOrDefault () != null;
+      return userGroups.Intersect (objectGroups).FirstOrDefault() != null;
     }
 
     private IEnumerable<Role> GetMatchingUserRoles (User user)
@@ -174,8 +181,16 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       Assertion.IsNotNull (user);
 
       var userRoles = (IEnumerable<Role>) user.Roles;
-      if (_accessControlEntry.UserCondition == UserCondition.SpecificPosition)
-        userRoles = userRoles.Where (r => r.Position == _accessControlEntry.SpecificPosition);
+      if (_ace.UserCondition == UserCondition.SpecificPosition)
+        userRoles = userRoles.Where (r => r.Position == _ace.SpecificPosition);
+
+
+      bool hasSpecificPositionAndGroupType =
+          _ace.UserCondition == UserCondition.SpecificPosition && _ace.GroupCondition == GroupCondition.BranchOfOwningGroup
+          || _ace.GroupCondition == GroupCondition.AnyGroupWithSpecificGroupType;
+
+      if (hasSpecificPositionAndGroupType)
+        userRoles = userRoles.Where (r => r.Group.GroupType == _ace.SpecificGroupType);
 
       return userRoles;
     }

@@ -16,39 +16,8 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenMatcherTests
 {
   [TestFixture]
-  public class TokenWithRole : SecurityTokenMatcherTestBase
+  public class MixedAces : SecurityTokenMatcherTestBase
   {
-    [Test]
-    public void AceForPositionFromOwningGroup_Matches ()
-    {
-      Tenant tenant = TestHelper.CreateTenant ("Testtenant");
-      Position managerPosition = TestHelper.CreatePosition ("Manager");
-      Group group = TestHelper.CreateGroup ("Testgroup", null, tenant);
-      User user = CreateUser (tenant, group);
-      Role role = TestHelper.CreateRole (user, group, managerPosition);
-      AccessControlEntry entry = TestHelper.CreateAceWithPosition (managerPosition, GroupCondition.OwningGroup);
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateTokenWithOwningGroups (user, group);
-
-      Assert.IsTrue (matcher.MatchesToken (token));
-    }
-
-    [Test]
-    public void AceForPositionFromAllGroups_Matches ()
-    {
-      Tenant tenant = TestHelper.CreateTenant ("Testtenant");
-      Position managerPosition = TestHelper.CreatePosition ("Manager");
-      Group group = TestHelper.CreateGroup ("Testgroup", null, tenant);
-      User user = CreateUser (tenant, group);
-      Role role = TestHelper.CreateRole (user, group, managerPosition);
-      AccessControlEntry entry = TestHelper.CreateAceWithPosition (managerPosition, GroupCondition.None);
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateToken (user, null, null, null);
-
-      Assert.IsTrue (matcher.MatchesToken (token));
-    }
-
-
     [Test]
     public void AceForPositionFromOwningGroupAndAbstractRole_DoesNotMatch ()
     {

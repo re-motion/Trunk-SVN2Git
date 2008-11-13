@@ -101,6 +101,10 @@
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForGroupAndPosition.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForSpecificGroup.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForBranchOfOwningGroup.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForAnyGroupWithSpecificGroupType.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForAnyGroupWithSpecificGroupTypeAndPosition.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForBranchOfOwningGroupAndPosition.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\MixedAces.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\EmptyToken.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\CompanyStructureHelper.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\SecurityTokenMatcherTestBase.cs" />
@@ -113,7 +117,7 @@
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\MixedTokens.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\SetUpFixture.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\TokenWithAbstractRole.cs" />
-    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\TokenWithRole.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForPosition.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\TokenWithTenant.cs" />
     <Compile Include="Domain\AccessControl\StatefulAccessControlListTest.cs" />
     <Compile Include="Domain\AccessControl\StatelessAccessControlListTest.cs" />
