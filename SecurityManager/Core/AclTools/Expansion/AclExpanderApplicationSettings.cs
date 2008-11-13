@@ -33,13 +33,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     [CommandLineStringArgument ("culture", true, Placeholder = "", Description = "Culture to set for output (e.g. /culture:en-US, /culture:de-AT).")]
     public string CultureName = "de-AT";
 
-    [CommandLineFlagArgument ("multifile", false, Description = "Whether to create a single file for all users + permissions or a master file and several detail files.")]
+    [CommandLineFlagArgument ("denied", false, Description = "Output the denied access rights (e.g. /denied+).")]
+    public bool OutputDeniedRights;
+
+    [CommandLineFlagArgument ("multifile", false, Description = "Create a single file for all users + permissions or a master file and several detail files.")]
     public bool UseMultipleFileOutput;
 
     [CommandLineFlagArgument ("verbose", false, Description = "Verbose output (e.g. /verbose+).")]
     public bool Verbose;
 
-    [CommandLineFlagArgument ("rc", false, Description = "Emit row count for user, role.... (/multifile- only)")]
+    [CommandLineFlagArgument ("rc", false, Description = "Output row count for user, role.... (/multifile- only)")]
     public bool OutputRowCount;
 
 

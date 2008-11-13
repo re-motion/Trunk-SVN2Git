@@ -114,6 +114,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _textWriterFactory.Directory = DirectoryUsed;
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, _textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow ()), true);
       aclExpansionHtmlWriter.Settings.OutputRowCount = Settings.OutputRowCount;
+      aclExpansionHtmlWriter.Settings.OutputDeniedRights = Settings.OutputDeniedRights;
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
     }
 

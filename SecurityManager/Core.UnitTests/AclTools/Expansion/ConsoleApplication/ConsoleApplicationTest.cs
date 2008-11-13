@@ -30,9 +30,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
       var args = new[] { "/?" };
 
       var waitMock = MockRepository.GenerateMock<IWait> ();
-      waitMock.Expect (mock => mock.Wait ());
+      //waitMock.Expect (mock => mock.Wait ());
 
-      waitMock.Replay ();
+      //waitMock.Replay ();
 
       var stringWriterOut = new StringWriter ();
       var stringWriterError = new StringWriter ();
@@ -45,17 +45,18 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
       //To.ConsoleLine.e (() => outResult);
       //To.ConsoleLine.e (() => errorResult);
 
-      waitMock.VerifyAllExpectations ();
+      //waitMock.VerifyAllExpectations ();
       Assert.That (outResult, NUnitText.Contains ("Application Usage:"));
       Assert.That (outResult, NUnitText.Contains ("/? [/stringArg:string_arg_sample] [/flagArg] [{/?}]"));
       Assert.That (outResult, NUnitText.Contains ("/stringArg  stringArg description."));
       Assert.That (outResult, NUnitText.Contains ("/flagArg    flagArg description."));
       Assert.That (outResult, NUnitText.Contains ("/?          Show usage"));
-      Assert.That (outResult, NUnitText.Contains ("Press any-key..."));
+      //Assert.That (outResult, NUnitText.Contains ("Press any-key..."));
 
       Assert.That (errorResult, Is.EqualTo (""));
 
     }
+
 
 
     [Test]
@@ -86,7 +87,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
 
 
     [Test]
-    public void CommandLineSwitchErrorTest ()
+    public void UnknownCommandLineSwitchTest ()
     {
       var args = new[] { "/UNKNOWN_ARGUMENT" };
 

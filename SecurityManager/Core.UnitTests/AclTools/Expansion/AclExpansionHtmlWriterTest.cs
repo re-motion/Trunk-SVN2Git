@@ -755,13 +755,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       using (var textWriter = new StringWriter ())
       {
         var aclExpansionWriter = new AclExpansionHtmlWriter (aclExpansionEntryList, textWriter, true);
-        aclExpansionWriter.Settings.OutputDenyRights = true;
+        aclExpansionWriter.Settings.OutputDeniedRights = true;
         aclExpansionWriter.WriteAclExpansionAsHtml();
 
 
         string result = textWriter.ToString ();
-        To.ConsoleLine.e (() => result);
-        Clipboard.SetText (result);
+        //To.ConsoleLine.e (() => result);
+        //Clipboard.SetText (result);
 
         // Detail tests 
         Assert.That (result, NUnitText.Contains ("Denied Rights</th>")); // Denied rights header

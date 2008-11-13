@@ -16,12 +16,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       ShortenNames = false;
       OutputRowCount = false;
-      OutputDenyRights = false;
+      OutputDeniedRights = false;
     }
 
     public bool ShortenNames { get; set; }
     public bool OutputRowCount { get; set; }
-    public bool OutputDenyRights { get; set; }
+    public bool OutputDeniedRights { get; set; }
     
   }
 }

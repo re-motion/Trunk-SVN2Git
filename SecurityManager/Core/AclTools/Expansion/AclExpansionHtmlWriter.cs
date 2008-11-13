@@ -95,7 +95,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteHeaderCell ("Tenant Must Own");
       WriteHeaderCell ("User Must Have Abstract Role");
       WriteHeaderCell ("Access Rights");
-      if (Settings.OutputDenyRights)
+      if (Settings.OutputDeniedRights)
       {
         WriteHeaderCell ("Denied Rights");
       }
@@ -287,7 +287,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableDataForBodyStates (aclExpansionEntry);
         WriteTableDataForBodyConditions (aclExpansionEntry.AccessConditions);
         WriteTableDataForAccessTypes (aclExpansionEntry.AllowedAccessTypes);
-        if (Settings.OutputDenyRights)
+        if (Settings.OutputDeniedRights)
         {
           WriteTableDataForAccessTypes (aclExpansionEntry.DeniedAccessTypes);
         }
