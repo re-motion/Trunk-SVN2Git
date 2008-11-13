@@ -18,7 +18,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
   public class TokenWithAbstractRole : SecurityTokenMatcherTestBase
   {
     [Test]
-    public void TokenWithAbstractRole_EmptyAce_Matches ()
+    public void EmptyAce_Matches ()
     {
       AccessControlEntry entry = AccessControlEntry.NewObject();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
@@ -28,7 +28,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithAbstractRole_AceForAbstractRole_Matches ()
+    public void AceForAbstractRole_Matches ()
     {
       AccessControlEntry entry = TestHelper.CreateAceWithAbstractRole ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithAbstractRole_AceForOtherAbstractRole_DoesNotMatch ()
+    public void AceForOtherAbstractRole_DoesNotMatch ()
     {
       AccessControlEntry entry = TestHelper.CreateAceWithAbstractRole ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);

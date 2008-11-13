@@ -34,11 +34,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     public void Initialize_Empty ()
     {
-      SecurityToken token = new SecurityToken (null, null, CreateOwningGroups (), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (null, null, null, CreateAbstractRoles ());
 
       Assert.IsNull (token.OwningTenant);
       Assert.IsNull (token.User);
-      Assert.IsEmpty (token.OwningGroups);
+      Assert.IsNull (token.OwningGroup);
       Assert.IsEmpty (token.AbstractRoles);
       Assert.IsEmpty (token.OwningGroupRoles);
     }
@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Tenant tenant = CreateTenant ("Testtenant");
       User user = null;
 
-      SecurityToken token = new SecurityToken (user, tenant, CreateOwningGroups (), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (user, tenant, null, CreateAbstractRoles ());
 
       Assert.AreSame (tenant, token.OwningTenant);
     }
@@ -60,9 +60,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Tenant tenant = CreateTenant ("Testtenant");
       User user = null;
 
-      SecurityToken token = new SecurityToken (user, null, CreateOwningGroups (), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (user, null, null, CreateAbstractRoles ());
 
-      Assert.IsEmpty (token.OwningGroups);
+      Assert.IsNull(token.OwningGroup);
     }
 
     [Test]
@@ -72,10 +72,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Group group = CreateGroup ("Testgroup", null, tenant);
       User user = null;
 
-      SecurityToken token = new SecurityToken (user, null, CreateOwningGroups (group), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (user, null, group, CreateAbstractRoles ());
 
-      Assert.AreEqual (1, token.OwningGroups.Count);
-      Assert.Contains (group, token.OwningGroups);
+      Assert.AreSame (group, token.OwningGroup);
     }
 
     [Test]
@@ -85,7 +84,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Group group = CreateGroup ("Testgroup", null, tenant);
       User user = CreateUser ("test.user", group, tenant);
 
-      SecurityToken token = new SecurityToken (user, null, CreateOwningGroups (group), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (user, null, group, CreateAbstractRoles ());
 
       Assert.AreEqual (0, token.OwningGroupRoles.Count);
     }
@@ -99,7 +98,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Position officialPosition = CreatePosition ("Official");
       Role officialInGroup1 = CreateRole (user, group1, officialPosition);
 
-      SecurityToken token = new SecurityToken (null, null, CreateOwningGroups (group1), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (null, null, group1, CreateAbstractRoles ());
 
       Assert.IsNull (token.User);
       Assert.IsEmpty (token.OwningGroupRoles);
@@ -118,7 +117,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Role managerInGroup1 = CreateRole (user, group1, managerPosition);
       Role officialInGroup2 = CreateRole (user, group2, officialPosition);
 
-      SecurityToken token = new SecurityToken (user, null, CreateOwningGroups (group1), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (user, null, group1, CreateAbstractRoles ());
 
       Assert.AreEqual (2, token.OwningGroupRoles.Count);
       Assert.Contains (officialInGroup1, token.OwningGroupRoles);
@@ -132,7 +131,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Group group = CreateGroup ("Testgroup", null, tenant);
       User user = CreateUser ("test.user", group, tenant);
 
-      SecurityToken token = new SecurityToken (user, null, CreateOwningGroups (), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (user, null, null, CreateAbstractRoles ());
 
       Assert.IsTrue (token.MatchesUserTenant (tenant));
     }
@@ -146,7 +145,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Group group = CreateGroup ("Testgroup", null, parentTenant);
       User user = CreateUser ("test.user", group, parentTenant);
 
-      SecurityToken token = new SecurityToken (user, null, CreateOwningGroups (), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (user, null, null, CreateAbstractRoles ());
 
       Assert.IsTrue (token.MatchesUserTenant (tenant));
     }
@@ -156,7 +155,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       Tenant tenant = CreateTenant ("Testtenant");
 
-      SecurityToken token = new SecurityToken (null, null, CreateOwningGroups (), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (null, null, null, CreateAbstractRoles ());
 
       Assert.IsFalse (token.MatchesUserTenant (tenant));
     }
@@ -174,7 +173,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Role managerInGroup1 = CreateRole (user, group1, managerPosition);
       Role officialInGroup2 = CreateRole (user, group2, officialPosition);
 
-      SecurityToken token = new SecurityToken (user, null, CreateOwningGroups (group2), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (user, null, group2, CreateAbstractRoles ());
 
       Assert.IsFalse (token.ContainsRoleForOwningGroupAndPosition (managerPosition));
     }
@@ -192,7 +191,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Role managerInGroup1 = CreateRole (user, group1, managerPosition);
       Role officialInGroup2 = CreateRole (user, group2, officialPosition);
 
-      SecurityToken token = new SecurityToken (user, null, CreateOwningGroups (group1), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (user, null, group1, CreateAbstractRoles ());
 
       Assert.IsTrue (token.ContainsRoleForOwningGroupAndPosition (managerPosition));
     }
@@ -211,7 +210,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Role user2ManagerInGroup1 = CreateRole (user2, group1, managerPosition);
       Role user1OfficialInGroup2 = CreateRole (user1, group2, officialPosition);
 
-      SecurityToken token = new SecurityToken (user1, null, CreateOwningGroups (group1), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (user1, null, group1, CreateAbstractRoles ());
 
       Assert.IsFalse (token.ContainsRoleForUserGroupAndPosition (managerPosition));
     }
@@ -230,7 +229,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Role user2ManagerInGroup1 = CreateRole (user2, group1, managerPosition);
       Role user1OfficialInGroup2 = CreateRole (user1, group2, officialPosition);
 
-      SecurityToken token = new SecurityToken (user1, null, CreateOwningGroups (group1), CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (user1, null, group1, CreateAbstractRoles ());
 
       Assert.IsTrue (token.ContainsRoleForUserGroupAndPosition (officialPosition));
     }
@@ -287,16 +286,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     private List<AbstractRoleDefinition> CreateAbstractRoles ()
     {
       return new List<AbstractRoleDefinition> ();
-    }
-
-    private List<Group> CreateOwningGroups (params Group[] groups)
-    {
-      return new List<Group> (groups);
-    }
-
-    private List<Tenant> CreateOwningTenants (params Tenant[] tenants)
-    {
-      return new List<Tenant> (tenants);
     }
   }
 }

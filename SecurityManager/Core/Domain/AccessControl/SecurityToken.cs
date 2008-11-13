@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
@@ -22,19 +23,18 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   {
     private readonly User _user; // principial, NOT owning user (owning user will be introduced in future)
     private readonly Tenant _owningTenant;
-    private readonly ReadOnlyCollection<Group> _owningGroups;
+    private readonly Group _owningGroup;
     private readonly ReadOnlyCollection<AbstractRoleDefinition> _abstractRoles;
 
     private ReadOnlyCollection<Role> _cachedUserRolesForOwningGroups;
 
-    public SecurityToken (User user, Tenant owningTenant, IList<Group> owningGroups, IList<AbstractRoleDefinition> abstractRoles)
+    public SecurityToken (User user, Tenant owningTenant, Group owningGroup, IList<AbstractRoleDefinition> abstractRoles)
     {
-      ArgumentUtility.CheckNotNullOrItemsNull ("owningGroups", owningGroups);
       ArgumentUtility.CheckNotNullOrItemsNull ("abstractRoles", abstractRoles);
 
       _user = user;
       _owningTenant = owningTenant;
-      _owningGroups = new ReadOnlyCollection<Group> (owningGroups);
+      _owningGroup = owningGroup;
       _abstractRoles = new ReadOnlyCollection<AbstractRoleDefinition> (abstractRoles);
     }
 
@@ -49,9 +49,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       get { return _owningTenant; }
     }
 
-    public ReadOnlyCollection<Group> OwningGroups
+    public Group OwningGroup
     {
-      get { return _owningGroups; }
+      get { return _owningGroup; }
     }
 
     public ReadOnlyCollection<Role> OwningGroupRoles
@@ -59,7 +59,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       get
       {
         if (_cachedUserRolesForOwningGroups == null)
-          _cachedUserRolesForOwningGroups = GetRoles (User, OwningGroups);
+          _cachedUserRolesForOwningGroups = GetRoles (User, OwningGroup);
         return _cachedUserRolesForOwningGroups;
       }
     }
@@ -103,14 +103,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return ContainsRoleForPosition (User.Roles, position);
     }
 
-    private ReadOnlyCollection<Role> GetRoles (User user, IList<Group> groups)
+    private ReadOnlyCollection<Role> GetRoles (User user, Group group)
     {
       List<Role> roles = new List<Role> ();
 
       if (user != null)
       {
-        foreach (Group group in groups)
-          roles.AddRange (user.GetRolesForGroup (group));
+        for (Group currentGroup = group; group != null; group = group.Parent)
+          roles.AddRange (user.GetRolesForGroup (currentGroup));
       }
 
       return roles.AsReadOnly ();

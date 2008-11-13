@@ -41,10 +41,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       {
         User user = GetUser (principal.Identity.Name);
         Tenant owningTenant = GetTenant (context.OwnerTenant);
-        IList<Group> owningGroups = GetGroups (context.OwnerGroup);
+        Group owningGroup = GetGroup (context.OwnerGroup);
         IList<AbstractRoleDefinition> abstractRoles = GetAbstractRoles (context.AbstractRoles);
 
-        return new SecurityToken (user, owningTenant, owningGroups, abstractRoles);
+        return new SecurityToken (user, owningTenant, owningGroup, abstractRoles);
       }
     }
 
@@ -72,26 +72,16 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return user;
     }
 
-    private List<Group> GetGroups (string groupUniqueIdentifier)
+    private Group GetGroup (string groupUniqueIdentifier)
     {
-      List<Group> groups = new List<Group>();
-
       if (StringUtility.IsNullOrEmpty (groupUniqueIdentifier))
-        return groups;
+        return null;
 
       Group group = Group.FindByUnqiueIdentifier (groupUniqueIdentifier);
       if (group == null)
         throw CreateAccessControlException ("The group '{0}' could not be found.", groupUniqueIdentifier);
 
-      groups.Add (group);
-
-      while (group.Parent != null)
-      {
-        group = group.Parent;
-        groups.Add (group);
-      }
-
-      return groups;
+      return group;
     }
 
     private IList<AbstractRoleDefinition> GetAbstractRoles (EnumWrapper[] abstractRoleNames)

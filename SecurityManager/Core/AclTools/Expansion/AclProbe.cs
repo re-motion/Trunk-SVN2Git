@@ -34,11 +34,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       ArgumentUtility.CheckNotNull ("ace", ace);
 
       var aclProbe = new AclProbe ();
-      IList<Group> owningGroups = CreateOwningGroupsEntry (aclProbe, role, ace);
+      Group owningGroup = CreateOwningGroupEntry (aclProbe, role, ace);
       Tenant owningTenant = CreateOwningTenantEntry (aclProbe, user, ace);
       IList<AbstractRoleDefinition> abstractRoles = CreateAbstractRolesEntry (aclProbe, ace);
 
-      aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroups, abstractRoles);
+      aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroup, abstractRoles);
       //aclProbe._securityToken.SpecificAce = ace;
       return aclProbe;
     }
@@ -75,27 +75,23 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return owningTenant;
     }
 
-    private static IList<Group> CreateOwningGroupsEntry (AclProbe aclProbe, Role role, AccessControlEntry ace)
+    private static Group CreateOwningGroupEntry (AclProbe aclProbe, Role role, AccessControlEntry ace)
     {
-      IList<Group> owningGroups = new List<Group> ();
+      Group owningGroup;
       switch (ace.GroupCondition)
       {
         case GroupCondition.OwningGroup:
           Assertion.IsNotNull (role.Group);
-          owningGroups.Add (role.Group);
+          owningGroup = role.Group;
           aclProbe.AccessConditions.IsOwningGroupRequired = true;
           break;
         case GroupCondition.None:
-          // If the ACE contains no specific group, then the probe's owningGroups collection is empty.
-          if (ace.SpecificGroup != null)
-          {
-            owningGroups.Add (ace.SpecificGroup);
-          }
+          owningGroup = ace.SpecificGroup;
           break;
         default:
           throw new ArgumentException (String.Format ("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.", ace.GroupCondition));
       }
-      return owningGroups;
+      return owningGroup;
     }
 
     // The SecurityToken that will be used in the call to AccessControlList.GetAccessTypes

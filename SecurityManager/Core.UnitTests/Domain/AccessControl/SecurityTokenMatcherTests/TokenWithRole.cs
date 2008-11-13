@@ -19,7 +19,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
   public class TokenWithRole : SecurityTokenMatcherTestBase
   {
     [Test]
-    public void TokenWithRole_AceForPositionFromOwningGroup_Matches ()
+    public void AceForPositionFromOwningGroup_Matches ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Testtenant");
       Position managerPosition = TestHelper.CreatePosition ("Manager");
@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRole_AceForPositionFromAllGroups_Matches ()
+    public void AceForPositionFromAllGroups_Matches ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Testtenant");
       Position managerPosition = TestHelper.CreatePosition ("Manager");
@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
 
     [Test]
-    public void TokenWithRole_AceForPositionFromOwningGroupAndAbstractRole_DoesNotMatch ()
+    public void AceForPositionFromOwningGroupAndAbstractRole_DoesNotMatch ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Testtenant");
       Position managerPosition = TestHelper.CreatePosition ("Manager");

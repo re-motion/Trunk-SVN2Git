@@ -374,23 +374,19 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       return CreateToken (null, null, null, roleDefinitions);
     }
 
-    public SecurityToken CreateTokenWithOwningGroups (User user, params Group[] owningGroups)
+    public SecurityToken CreateTokenWithOwningGroups (User user, Group owningGroup)
     {
-      return CreateToken (user, null, owningGroups, null);
+      return CreateToken (user, null, owningGroup, null);
     }
 
-    public SecurityToken CreateToken (User user, Tenant owningTenant, Group[] owningGroups, AbstractRoleDefinition[] abstractRoleDefinitions)
+    public SecurityToken CreateToken (User user, Tenant owningTenant, Group owningGroup, AbstractRoleDefinition[] abstractRoleDefinitions)
     {
-      List<Group> owningGroupList = new List<Group> ();
       List<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition> ();
-
-      if (owningGroups != null)
-        owningGroupList.AddRange (owningGroups);
 
       if (abstractRoleDefinitions != null)
         abstractRoles.AddRange (abstractRoleDefinitions);
 
-      return new SecurityToken (user, owningTenant, owningGroupList, abstractRoles);
+      return new SecurityToken (user, owningTenant, owningGroup, abstractRoles);
     }
 
     public AbstractRoleDefinition CreateTestAbstractRole ()
@@ -413,6 +409,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         AccessControlEntry entry = AccessControlEntry.NewObject ();
         entry.GroupCondition = GroupCondition.OwningGroup;
+        entry.GroupHierarchyCondition = GroupHierarchyCondition.This;
 
         return entry;
       }

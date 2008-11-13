@@ -12,9 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Security.Principal;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.TestDomain;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
@@ -151,7 +153,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityTokenBuilder builder = new SecurityTokenBuilder ();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
 
-      AccessControlObjectAssert.ContainsGroup ("UID: testOwningGroup", token.OwningGroups);
+      Group group = token.OwningGroup;
+      Assert.That (group, Is.Not.Null);
+      Assert.That (group.UniqueIdentifier, Is.EqualTo ("UID: testOwningGroup"));
     }
 
     [Test]
@@ -163,7 +167,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityTokenBuilder builder = new SecurityTokenBuilder ();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
 
-      Assert.IsEmpty (token.OwningGroups);
+      Assert.IsNull(token.OwningGroup);
     }
 
     [Test]
@@ -175,18 +179,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder ();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
-    }
-
-    [Test]
-    public void Create_WithParentOwningGroup ()
-    {
-      SecurityContext context = CreateContext ();
-      IPrincipal user = CreateTestUser ();
-
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
-
-      AccessControlObjectAssert.ContainsGroup ("UID: testRootGroup", token.OwningGroups);
     }
 
     private IPrincipal CreateTestUser ()

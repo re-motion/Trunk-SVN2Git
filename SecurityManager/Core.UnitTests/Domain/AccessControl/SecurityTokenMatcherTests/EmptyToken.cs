@@ -19,7 +19,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
   public class EmptyToken : SecurityTokenMatcherTestBase
   {
     [Test]
-    public void EmptyToken_EmptyAce_Matches ()
+    public void EmptyAce_Matches ()
     {
       AccessControlEntry entry = AccessControlEntry.NewObject ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void EmptyToken_AceForOwningTenant_DoesNotMatch ()
+    public void AceForOwningTenant_DoesNotMatch ()
     {
       AccessControlEntry entry = TestHelper.CreateAceWithOwningTenant ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
@@ -39,7 +39,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void EmptyToken_AceForAbstractRole_DoesNotMatch ()
+    public void AceForAbstractRole_DoesNotMatch ()
     {
       AccessControlEntry entry = TestHelper.CreateAceWithAbstractRole ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void EmptyToken_AceForPositionFromOwningGroup_DoesNotMatch ()
+    public void AceForPositionFromOwningGroup_DoesNotMatch ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Testtenant");
       Position managerPosition = TestHelper.CreatePosition ("Manager");
@@ -61,7 +61,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void EmptyToken_AceForPositionFromAllGroups_DoesNotMatch ()
+    public void AceForPositionFromAllGroups_DoesNotMatch ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Testtenant");
       Position managerPosition = TestHelper.CreatePosition ("Manager");

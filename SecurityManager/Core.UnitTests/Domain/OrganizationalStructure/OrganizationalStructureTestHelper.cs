@@ -11,6 +11,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 {
@@ -20,8 +21,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     private readonly OrganizationalStructureFactory _factory;
 
     public OrganizationalStructureTestHelper ()
+      : this (ClientTransaction.CreateRootTransaction ())
     {
-      _transaction = ClientTransaction.CreateRootTransaction();
+    }
+
+    public OrganizationalStructureTestHelper (ClientTransaction transaction)
+    {
+      ArgumentUtility.CheckNotNull ("transaction", transaction);
+      _transaction = transaction;
       _factory = new OrganizationalStructureFactory ();
     }
 
@@ -45,6 +52,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         return tenant;
       }
+    }
+
+    public Group CreateGroup (string name, Group parent, Tenant tenant)
+    {
+      return CreateGroup (_transaction, name, Guid.NewGuid().ToString(), parent, tenant);
     }
 
     public Group CreateGroup (string name, string uniqueIdentifier, Group parent, Tenant tenant)

@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AccessControlEntry ace = TestHelper.CreateAceWithOwningGroup();
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      Assert.That (aclProbe.SecurityToken.OwningGroups, List.Contains (Role.Group));
+      Assert.That (aclProbe.SecurityToken.OwningGroup, Is.SameAs (Role.Group));
 
       var accessConditionsExpected = new AclExpansionAccessConditions();
       accessConditionsExpected.IsOwningGroupRequired = true;
@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AccessControlEntry ace = TestHelper.CreateAceWithGroupSelectionAll();
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      Assert.That (aclProbe.SecurityToken.OwningGroups, List.Contains (ace.SpecificGroup));
+      Assert.That (aclProbe.SecurityToken.OwningGroup, Is.SameAs (ace.SpecificGroup));
 
       var accessConditionsExpected = new AclExpansionAccessConditions();
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));

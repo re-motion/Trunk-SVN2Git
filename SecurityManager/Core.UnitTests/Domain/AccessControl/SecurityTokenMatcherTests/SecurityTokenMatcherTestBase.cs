@@ -32,7 +32,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
     protected User CreateUser (Tenant tenant, Group group)
     {
-      return _testHelper.CreateUser ("test.user", "Test", "User", "Dipl.Ing.(FH)", group, tenant);
+      return _testHelper.CreateUser ("test.user", "Test", "User", null, group, tenant);
     }
   }
 }

@@ -59,7 +59,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AccessControlList acl = TestHelper.CreateStatefulAcl (ace);
       aclList.Add (acl);
 
-      SecurityToken securityToken = new SecurityToken (user, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
+      SecurityToken securityToken = new SecurityToken (user, User.Tenant, null, new List<AbstractRoleDefinition> ());
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
       To.ConsoleLine.sb ().e (accessInformation.AllowedAccessTypes.Length).e (() => accessInformation.AllowedAccessTypes).se ();
     }
@@ -72,7 +72,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       //var acl = TestHelper.CreateAcl (Ace3, Ace2, Ace);
       var acl = TestHelper.CreateStatefulAcl (Ace3);
       Assert.That (Ace3.Validate().IsValid);
-      SecurityToken securityToken = new SecurityToken (user, user.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
+      SecurityToken securityToken = new SecurityToken (user, user.Tenant, null, new List<AbstractRoleDefinition> ());
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
       //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
 
@@ -88,7 +88,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (ace.Validate ().IsValid);
       
       var acl = TestHelper.CreateStatefulAcl (ace);
-      SecurityToken securityToken = new SecurityToken (User, User.Tenant, new List<Group> (), new List<AbstractRoleDefinition> ());
+      SecurityToken securityToken = new SecurityToken (User, User.Tenant, null, new List<AbstractRoleDefinition> ());
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
    
       //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
@@ -106,7 +106,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var acl = TestHelper.CreateStatefulAcl (ace);
       // We pass the Group used in the ace Position above in the owningGroups-list => ACE will match.
-      SecurityToken securityToken = new SecurityToken (User, User.Tenant, List.New (Group), new List<AbstractRoleDefinition> ());
+      SecurityToken securityToken = new SecurityToken (User, User.Tenant, Group, new List<AbstractRoleDefinition> ());
       AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
 
       //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();

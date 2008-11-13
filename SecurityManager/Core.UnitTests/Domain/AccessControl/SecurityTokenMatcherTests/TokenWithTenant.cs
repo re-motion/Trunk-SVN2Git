@@ -20,7 +20,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
   public class TokenWithTenant : SecurityTokenMatcherTestBase
   {
     [Test]
-    public void TokenWithTenant_EmptyAce_Matches ()
+    public void EmptyAce_Matches ()
     {
       AccessControlEntry entry = AccessControlEntry.NewObject();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithTenant_AceForOwningTenant_Matches ()
+    public void AceForOwningTenant_Matches ()
     {
       AccessControlEntry entry = TestHelper.CreateAceWithOwningTenant ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithTenant_AceForOtherOwningTenant_DoesNotMatch ()
+    public void AceForOtherOwningTenant_DoesNotMatch ()
     {
       AccessControlEntry entry = TestHelper.CreateAceWithOwningTenant ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
@@ -56,33 +56,33 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithTenant_AceForSpecificTenant_Matches ()
+    public void AceForSpecificTenant_Matches ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Testtenant");
       Group group = TestHelper.CreateGroup ("Testgroup", null, tenant);
       User user = CreateUser (tenant, group);
       AccessControlEntry entry = TestHelper.CreateAceWithSpecficTenant (tenant);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateToken (user, null, new Group[0], new AbstractRoleDefinition[0]);
+      SecurityToken token = TestHelper.CreateToken (user, null, null, new AbstractRoleDefinition[0]);
 
       Assert.IsTrue (matcher.MatchesToken (token));
     }
 
     [Test]
-    public void TokenWithTenant_AceForOtherSpecificTenant_DoesNotMatch ()
+    public void AceForOtherSpecificTenant_DoesNotMatch ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Testtenant");
       Group group = TestHelper.CreateGroup ("Testgroup", null, tenant);
       User user = CreateUser (tenant, group);
       AccessControlEntry entry = TestHelper.CreateAceWithSpecficTenant (TestHelper.CreateTenant ("Other Tenant"));
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateToken (user, null, new Group[0], new AbstractRoleDefinition[0]);
+      SecurityToken token = TestHelper.CreateToken (user, null, null, new AbstractRoleDefinition[0]);
 
       Assert.IsFalse (matcher.MatchesToken (token));
     }
 
     [Test]
-    public void TokenWithTenant_AceForOwningTenantAndAbstractRole_DoesNotMatch ()
+    public void AceForOwningTenantAndAbstractRole_DoesNotMatch ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Testtenant");
       Group group = TestHelper.CreateGroup ("Testgroup", null, tenant);
