@@ -52,7 +52,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     protected AccessControlEntry ()
     {
       // ReSharper disable DoNotCallOverridableMethodsInConstructor
-      TenantCondition = AccessControl.TenantCondition.None;
+      TenantCondition = TenantCondition.None;
+      GroupCondition = GroupCondition.None;
+      UserCondition = UserCondition.None;
       // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
       _matcher = new SecurityTokenMatcher (this);

@@ -130,6 +130,6 @@
     <value>Specific Group</value>
   </data>
   <data name="Remotion.SecurityManager.Domain.AccessControl.GroupCondition.SpecificGroupType" xml:space="preserve">
-    <value>Specific Group Type</value>
+    <value>Group with Type</value>
   </data>
 </root>
