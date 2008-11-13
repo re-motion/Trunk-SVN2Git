@@ -431,7 +431,20 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    public AccessControlEntry CreateAceWithGroupSelectionAll ()
+    public AccessControlEntry CreateAceWithBranchOfOwningGroup (GroupType groupType)
+    {
+      ArgumentUtility.CheckNotNull ("groupType", groupType);
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        AccessControlEntry entry = AccessControlEntry.NewObject ();
+        entry.GroupCondition = GroupCondition.BranchOfOwningGroup;
+        entry.SpecificGroupType = groupType;
+
+        return entry;
+      }
+    }
+
+    public AccessControlEntry CreateAceWithoutGroupCondition ()
     {
       using (_transaction.EnterNonDiscardingScope ())
       {

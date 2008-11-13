@@ -32,7 +32,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       Assert.That (_ace.TenantCondition, Is.EqualTo (TenantCondition.None));
       Assert.That (_ace.GroupCondition, Is.EqualTo (GroupCondition.SpecificGroup));
-      Assert.That (_ace.SpecificGroup, Is.Not.Null);
+      Assert.That (_ace.SpecificGroup, Is.SameAs (_companyHelper.AustrianProjectsDepartment));
       Assert.That (_ace.GroupHierarchyCondition, Is.EqualTo (GroupHierarchyCondition.This));
       Assert.That (_ace.UserCondition, Is.EqualTo (UserCondition.None));
       Assert.That (_ace.SpecificAbstractRole, Is.Null);

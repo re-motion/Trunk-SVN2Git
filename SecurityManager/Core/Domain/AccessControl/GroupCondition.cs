@@ -19,7 +19,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     None = 0,
     OwningGroup = 1,
     SpecificGroup = 2,
-    BranchOfOwningGroup = 3,
-    SpecificGroupType = 4
+    AnyGroupWithSpecificGroupType = 3,
+    BranchOfOwningGroup = 4,
   }
 }

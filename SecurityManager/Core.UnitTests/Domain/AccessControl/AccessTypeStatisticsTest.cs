@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       AccessTypeStatistics accessTypeStatistics = new AccessTypeStatistics();
       var ace = _testHelper.CreateAceWithAbstractRole();
-      var ace2 = _testHelper.CreateAceWithGroupSelectionAll ();
+      var ace2 = _testHelper.CreateAceWithoutGroupCondition();
 
       Assert.That (accessTypeStatistics.IsInAccessTypesContributingAces (ace), Is.False);
       Assert.That (accessTypeStatistics.IsInAccessTypesContributingAces (ace2), Is.False);
@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       AccessTypeStatistics accessTypeStatistics = new AccessTypeStatistics ();
       var ace = _testHelper.CreateAceWithAbstractRole ();
-      var ace2 = _testHelper.CreateAceWithGroupSelectionAll ();
+      var ace2 = _testHelper.CreateAceWithoutGroupCondition ();
 
       Assert.That (accessTypeStatistics.IsInMatchingAces (ace), Is.False);
       Assert.That (accessTypeStatistics.IsInMatchingAces (ace2), Is.False);

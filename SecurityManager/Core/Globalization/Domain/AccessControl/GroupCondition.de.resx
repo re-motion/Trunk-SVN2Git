@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Remotion.SecurityManager.Domain.AccessControl.GroupCondition.AnyGroupWithSpecificGroupType" xml:space="preserve">
+    <value>Gruppe mit Struktureinheit</value>
+  </data>
   <data name="Remotion.SecurityManager.Domain.AccessControl.GroupCondition.BranchOfOwningGroup" xml:space="preserve">
     <value>Selbe Struktureinheit</value>
   </data>
@@ -128,8 +131,5 @@
   </data>
   <data name="Remotion.SecurityManager.Domain.AccessControl.GroupCondition.SpecificGroup" xml:space="preserve">
     <value>Bestimmte Gruppe</value>
-  </data>
-  <data name="Remotion.SecurityManager.Domain.AccessControl.GroupCondition.SpecificGroupType" xml:space="preserve">
-    <value>Gruppe mit Struktureinheit</value>
   </data>
 </root>

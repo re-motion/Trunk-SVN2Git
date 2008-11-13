@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void CreateAclProbe_GroupSelectionAll_Test ()
     {
-      AccessControlEntry ace = TestHelper.CreateAceWithGroupSelectionAll();
+      AccessControlEntry ace = TestHelper.CreateAceWithoutGroupCondition ();
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningGroup, Is.SameAs (ace.SpecificGroup));
@@ -71,7 +71,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         "ace.GroupSelection=2147483647 is currently not supported by this method. Please extend method to handle the new GroupSelection state.")]
     public void CreateAclProbe_UnsupportedGroupSelection_Test ()
     {
-      AccessControlEntry ace = TestHelper.CreateAceWithGroupSelectionAll();
+      AccessControlEntry ace = TestHelper.CreateAceWithoutGroupCondition ();
       FleshOutAccessControlEntryForTest (ace);
       ace.GroupCondition = (GroupCondition) int.MaxValue;
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);

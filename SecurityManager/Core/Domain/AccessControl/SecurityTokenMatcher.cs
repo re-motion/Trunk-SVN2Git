@@ -113,17 +113,27 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return true;
 
         case GroupCondition.OwningGroup:
-          return MatchUserAgainstGroup (token.User, token.OwningGroup);
+          return MatchUserAgainstGroup (token.User, token.OwningGroup, _accessControlEntry.GroupHierarchyCondition);
 
         case GroupCondition.SpecificGroup:
-          return MatchUserAgainstGroup (token.User, _accessControlEntry.SpecificGroup);
+          return MatchUserAgainstGroup (token.User, _accessControlEntry.SpecificGroup, _accessControlEntry.GroupHierarchyCondition);
+
+        case GroupCondition.BranchOfOwningGroup:
+          return MatchUserAgainstGroup (token.User, FindBranchRoot (token.OwningGroup), GroupHierarchyCondition.ThisAndChildren);
 
         default:
           return false;
       }
     }
 
-    private bool MatchUserAgainstGroup (User user, Group groupOfTheObject)
+    private Group FindBranchRoot (Group groupOfTheObject)
+    {
+      Assertion.IsNotNull (_accessControlEntry.GroupCondition == GroupCondition.BranchOfOwningGroup);
+
+      return GetParents (groupOfTheObject).Where (g => g.GroupType == _accessControlEntry.SpecificGroupType).FirstOrDefault ();
+    }
+
+    private bool MatchUserAgainstGroup (User user, Group groupOfTheObject, GroupHierarchyCondition groupHierarchyCondition)
     {
       if (user == null)
         return false;
@@ -136,7 +146,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       var userGroups = userRoles.Select (r => r.Group);
       var objectGroups = (IEnumerable<Group>) new[] { groupOfTheObject };
 
-      switch (_accessControlEntry.GroupHierarchyCondition)
+      switch (groupHierarchyCondition)
       {
         case GroupHierarchyCondition.This:
           break;

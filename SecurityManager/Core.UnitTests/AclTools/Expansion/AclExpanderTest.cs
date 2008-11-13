@@ -175,7 +175,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceAbstractRole = TestHelper.CreateAceWithAbstractRole ();
       AttachAccessTypeReadWriteDelete (aceAbstractRole, null, false, true);
 
-      var aceGroupAll = TestHelper.CreateAceWithGroupSelectionAll ();
+      var aceGroupAll = TestHelper.CreateAceWithoutGroupCondition ();
       AttachAccessTypeReadWriteDelete (aceGroupAll, true, true, null);
 
       //To.ConsoleLine.e (() => aceGroupOwning);
@@ -476,7 +476,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       // In addition to AbstractRoleAllContributingTest, deny all rights again => 
       // there should be no resulting AclExpansionEntry|s.
-      var aceDeny = TestHelper.CreateAceWithGroupSelectionAll ();
+      var aceDeny = TestHelper.CreateAceWithoutGroupCondition ();
       AttachAccessTypeReadWriteDelete (aceDeny, false, false, false);
       Assert.That (aceDeny.Validate ().IsValid);
 
@@ -495,12 +495,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void AclExpansionEntryDeniedRightsTest ()
     {
-      var ace = TestHelper.CreateAceWithGroupSelectionAll ();
+      var ace = TestHelper.CreateAceWithoutGroupCondition();
       AttachAccessTypeReadWriteDelete (ace, true, true, true);
       Assert.That (ace.Validate ().IsValid);
 
       // Deny read and delete rights
-      var aceDeny = TestHelper.CreateAceWithGroupSelectionAll ();
+      var aceDeny = TestHelper.CreateAceWithoutGroupCondition ();
       AttachAccessTypeReadWriteDelete (aceDeny, false, true, false);
       Assert.That (aceDeny.Validate ().IsValid);
 

@@ -85,7 +85,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleInChild_DoesNotMatch ()
+    public void TokenWithRoleInChild_Matches ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group childGroup = _companyHelper.AustrianCarTeam;
