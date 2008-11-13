@@ -117,10 +117,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         // for case GroupSelection.All or GroupSelection.OwningGroup, giving access rights
         // which the user does not have due to the currently tested role.
         // (Note that the user is in fact always in all roles at the same time, so he will
-        // have the access rights returned without reducing the user's roles to
-        // the one probed for; it's just not the information we want to present in the 
+        // have the access rights returned if the user's roles are not artificially reduced
+        // to contain only the role probed for; it's just not the information we want to present in the 
         // ACL-expansion, where we want to distinguish which role gives rise
-        // to which access rights).
+        // to what access rights).
 
         if (probeForCurrentRoleOnly)
         {

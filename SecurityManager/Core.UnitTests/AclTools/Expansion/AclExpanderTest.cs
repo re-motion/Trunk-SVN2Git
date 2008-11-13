@@ -472,13 +472,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var ace = TestHelper.CreateAceWithAbstractRole ();
       AttachAccessTypeReadWriteDelete (ace, true, true, true);
+      Assert.That (ace.Validate ().IsValid);
 
       // In addition to AbstractRoleAllContributingTest, deny all rights again => 
       // there should be no resulting AclExpansionEntry|s.
       var aceDeny = TestHelper.CreateAceWithGroupSelectionAll ();
       AttachAccessTypeReadWriteDelete (aceDeny, false, false, false);
-
-      Assert.That (ace.Validate ().IsValid);
+      Assert.That (aceDeny.Validate ().IsValid);
 
       var userList = List.New (User, User2);
       var aclList = List.New (TestHelper.CreateStatefulAcl (ace, aceDeny));
@@ -489,6 +489,33 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       //To.ConsoleLine.nl ().e (() => aclExpansionEntryList);
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (0));
+    }
+
+
+    [Test]
+    public void AclExpansionEntryDeniedRightsTest ()
+    {
+      var ace = TestHelper.CreateAceWithGroupSelectionAll ();
+      AttachAccessTypeReadWriteDelete (ace, true, true, true);
+      Assert.That (ace.Validate ().IsValid);
+
+      // Deny read and delete rights
+      var aceDeny = TestHelper.CreateAceWithGroupSelectionAll ();
+      AttachAccessTypeReadWriteDelete (aceDeny, false, true, false);
+      Assert.That (aceDeny.Validate ().IsValid);
+
+      var userList = List.New (User); 
+      var aclList = List.New (TestHelper.CreateStatefulAcl (ace, aceDeny));
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
+
+      //To.ConsoleLine.nl ().e (() => aclExpansionEntryList);
+
+      foreach (AclExpansionEntry aee in aclExpansionEntryList)
+      {
+        Assert.That (aee.AllowedAccessTypes, Is.EquivalentTo (new[] { WriteAccessType }));
+        Assert.That (aee.DeniedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
+      }
     }
 
 

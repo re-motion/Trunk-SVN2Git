@@ -78,7 +78,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public void ToText (IToTextBuilder toTextBuilder)
     {
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-      toTextBuilder.ib<AclExpansionEntry> ("").e ("user", User.UserName).e ("role", Role).e (AllowedAccessTypes).e ("conditions", AccessConditions).ie();
+      toTextBuilder.ib<AclExpansionEntry> ("").e ("user", User.UserName).e ("role", Role);
+      toTextBuilder.e ("allowed",AllowedAccessTypes).e ("denied",DeniedAccessTypes);
+      toTextBuilder.e ("conditions", AccessConditions).ie ();
     }
   }
 }

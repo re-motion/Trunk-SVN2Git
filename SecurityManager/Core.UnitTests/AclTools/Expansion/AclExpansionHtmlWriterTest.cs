@@ -744,44 +744,32 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    public void DeniedRightsHeaderTest ()
+    public void DeniedRightsTest ()
     {
       var aclExpansionEntry = new AclExpansionEntry (
-          User, Role, Acl, new AclExpansionAccessConditions (), AccessTypeDefinitions, AccessTypeDefinitions2);
+          User, Role, Acl, new AclExpansionAccessConditions (), new[] { DeleteAccessType }, new[] { ReadAccessType, WriteAccessType });
       var aclExpansionEntryList = List.New (aclExpansionEntry);
 
-      var textWriterAclExpansionEntryList = new StringWriter ();
-      var aclExpansionWriter = new AclExpansionHtmlWriter (aclExpansionEntryList, textWriterAclExpansionEntryList, false);
-      aclExpansionWriter.Settings.OutputDenyRights = true;
-      aclExpansionWriter.WriteAclExpansionAsHtml ();
-
-      string result = textWriterAclExpansionEntryList.ToString ();
-
-      Assert.That (result, NUnitText.Contains ("Denied Rights</th>"));
-    }
-
-
-    [Test]
-    [Explicit]
-    // TODO: Complete & add functionality 
-    public void DenyRightsOptionalOutputTest ()
-    {
-      using (CultureScope_de_DE ())
+      //var textWriterAclExpansionEntryList = new StringWriter ();
+      //using (var textWriter = new StreamWriter (Path.Combine ("c:\\temp", "DenyRightsOptionalOutputTest2.html")))
+      using (var textWriter = new StringWriter ())
       {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User,User2,User3);
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,Acl2);
+        var aclExpansionWriter = new AclExpansionHtmlWriter (aclExpansionEntryList, textWriter, true);
+        aclExpansionWriter.Settings.OutputDenyRights = true;
+        aclExpansionWriter.WriteAclExpansionAsHtml();
 
-        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
-        //using (var textWriter = new StringWriter ())
-        using (var textWriter = new StreamWriter (Path.Combine("c:\\temp","DenyRightsOptionalOutputTest.html")))
-        {
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
-          aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
-          string result = textWriter.ToString ();
-          //To.ConsoleLine.e (() => result);
-          const string resultExpected =
-          #region
+        string result = textWriter.ToString ();
+        To.ConsoleLine.e (() => result);
+        Clipboard.SetText (result);
+
+        // Detail tests 
+        Assert.That (result, NUnitText.Contains ("Denied Rights</th>")); // Denied rights header
+        Assert.That (result, NUnitText.Contains ("<td>Delete</td>")); // allowed rights
+        Assert.That (result, NUnitText.Contains ("<td>Read, Write</td>")); // denied rights
+
+        const string resultExpected =
+        #region
  @"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"" """">
 <html>
   <head>
@@ -801,352 +789,57 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <th class=""header"">Tenant Must Own</th>
         <th class=""header"">User Must Have Abstract Role</th>
         <th class=""header"">Access Rights</th>
+        <th class=""header"">Denied Rights</th>
       </tr>
       <tr>
-        <td rowspan=""24"">James Ryan</td>
-        <td rowspan=""4"">Anotha Group, Supreme Being</td>
-        <td rowspan=""4"">Bestellung</td>
-        <td>Bezahlt, DHL, Erhalten</td>
+        <td rowspan=""1"">Usa Da, Dr.</td>
+        <td rowspan=""1"">Da Group, Supreme Being</td>
+        <td rowspan=""1"">Order</td>
+        <td>DHL, None, Received</td>
         <td></td>
         <td></td>
         <td></td>
         <td></td>
+        <td>Delete</td>
         <td>Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td>X</td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td rowspan=""4"">Anotha Group, Working Drone</td>
-        <td rowspan=""4"">Bestellung</td>
-        <td>Bezahlt, DHL, Erhalten</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td>X</td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td rowspan=""4"">Da 3rd Group, Combatant</td>
-        <td rowspan=""4"">Bestellung</td>
-        <td>Bezahlt, DHL, Erhalten</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td>X</td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td rowspan=""4"">Da 3rd Group, Combatant</td>
-        <td rowspan=""4"">Bestellung</td>
-        <td>Bezahlt, DHL, Erhalten</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td>X</td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td rowspan=""4"">Da Group, Combatant</td>
-        <td rowspan=""4"">Bestellung</td>
-        <td>Bezahlt, DHL, Erhalten</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td>X</td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td rowspan=""4"">Da Group, Supreme Being</td>
-        <td rowspan=""4"">Bestellung</td>
-        <td>Bezahlt, DHL, Erhalten</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td>X</td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td rowspan=""12"">Smith, Mr.</td>
-        <td rowspan=""3"">Anotha Group, Supreme Being</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td>X</td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td rowspan=""3"">Anotha Group, Working Drone</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td>X</td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td rowspan=""3"">Da 3rd Group, Working Drone</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td>X</td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td rowspan=""3"">Da Group, Working Drone</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td>X</td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td rowspan=""3"">Usa Da, Dr.</td>
-        <td rowspan=""3"">Da Group, Supreme Being</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td>X</td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
     </table>
   </body>
 </html>";
-          #endregion
-          //Assert.That (result, Is.EqualTo (resultExpected));
-        }
+        #endregion
+
+        // Full test
+        Assert.That (result, Is.EqualTo(resultExpected));
       }
     }
+
+
+
+    //[Test]
+    //[Explicit]
+    //// TODO: Complete & add functionality 
+    //public void DenyRightsOptionalOutputTest ()
+    //{
+    //  using (CultureScope_de_DE ())
+    //  {
+    //    var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User,User2,User3);
+    //    var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,Acl2);
+
+    //    List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+    //    //using (var textWriter = new StringWriter ())
+    //    using (var textWriter = new StreamWriter (Path.Combine("c:\\temp","DenyRightsOptionalOutputTest.html")))
+    //    {
+    //      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
+    //      aclExpansionHtmlWriter.Settings.OutputDenyRights = true;
+    //      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+    //      string result = textWriter.ToString ();
+    //      //To.ConsoleLine.e (() => result);
+    //      Assert.That (result, NUnitText.Contains ("Denied Rights</th>"));
+    //      //Assert.That (result, NUnitText.Contains ("x,y,z</td><td>a,b</td>"));
+    //    }
+    //  }
+    //}
 
 
 
