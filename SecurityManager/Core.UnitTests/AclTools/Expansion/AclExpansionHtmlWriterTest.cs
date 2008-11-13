@@ -743,16 +743,33 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
+    [Test]
+    public void DeniedRightsHeaderTest ()
+    {
+      var aclExpansionEntry = new AclExpansionEntry (
+          User, Role, Acl, new AclExpansionAccessConditions (), AccessTypeDefinitions, AccessTypeDefinitions2);
+      var aclExpansionEntryList = List.New (aclExpansionEntry);
+
+      var textWriterAclExpansionEntryList = new StringWriter ();
+      var aclExpansionWriter = new AclExpansionHtmlWriter (aclExpansionEntryList, textWriterAclExpansionEntryList, false);
+      aclExpansionWriter.Settings.OutputDenyRights = true;
+      aclExpansionWriter.WriteAclExpansionAsHtml ();
+
+      string result = textWriterAclExpansionEntryList.ToString ();
+
+      Assert.That (result, NUnitText.Contains ("Denied Rights</th>"));
+    }
+
 
     [Test]
-    [Ignore]
+    [Explicit]
     // TODO: Complete & add functionality 
     public void DenyRightsOptionalOutputTest ()
     {
       using (CultureScope_de_DE ())
       {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl2);
+        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User,User2,User3);
+        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,Acl2);
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 

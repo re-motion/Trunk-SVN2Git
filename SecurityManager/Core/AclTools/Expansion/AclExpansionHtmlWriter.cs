@@ -32,7 +32,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private readonly AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
     private string _statelessAclStateHtmlText = "(stateless)";
 
-
     public AclExpansionHtmlWriter (List<AclExpansionEntry> aclExpansion, TextWriter textWriter, bool indentXml)
     {
       _aclExpansionTree = new AclExpansionTree (aclExpansion);
@@ -96,6 +95,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteHeaderCell ("Tenant Must Own");
       WriteHeaderCell ("User Must Have Abstract Role");
       WriteHeaderCell ("Access Rights");
+      if (Settings.OutputDenyRights)
+      {
+        WriteHeaderCell ("Denied Rights");
+      }
       htmlTagWriter.Tags.trEnd ();
     }
 
