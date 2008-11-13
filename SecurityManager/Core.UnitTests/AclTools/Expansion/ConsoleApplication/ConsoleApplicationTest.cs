@@ -110,6 +110,27 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
       Assert.That (errorResult, NUnitText.StartsWith (@"Argument /UNKNOWN_ARGUMENT: invalid argument name"));
     }
 
+
+
+    [Test]
+    public void WaitForKeypressTest ()
+    {
+      var args = new[] { "/wait+" };
+
+      var waitMock = MockRepository.GenerateMock<IWait> ();
+      waitMock.Expect (mock => mock.Wait ());
+
+      waitMock.Replay ();
+
+      var stringWriterOut = new StringWriter ();
+      var stringWriterError = new StringWriter ();
+      var consoleApplication =
+        new ConsoleApplication<ConsoleApplicationTestApplicationRunner, ConsoleApplicationTestSettings> (stringWriterError, stringWriterOut, 80, waitMock);
+      consoleApplication.Main (args);
+
+      Assert.That (consoleApplication.Settings.WaitForKeypress, Is.True);
+      waitMock.VerifyAllExpectations ();
+    }
   }
 
 

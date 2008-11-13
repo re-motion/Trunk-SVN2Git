@@ -20,7 +20,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
 {
   public class ConsoleApplication<TApplication, TApplicationSettings> 
       where TApplication: IApplicationRunner<TApplicationSettings>, new()
-      where TApplicationSettings : ConsoleApplicationSettings
+      where TApplicationSettings : ConsoleApplicationSettings, new()
   {
 
     private readonly ToTextBuilder _logToTextBuilder;
@@ -48,10 +48,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
     {
       int result = 0;
       To.ConsoleLine.e (() => result);
-      TApplicationSettings settings = ParseCommandLineArguments(args, ref result);
+      //TApplicationSettings settings = ParseCommandLineArguments(args, ref result);
+      ParseCommandLineArguments (args, ref result);
       if (result == 0)
       {
-        result = RunApplication (settings);
+        //result = RunApplication (settings);
+        result = RunApplication (Settings);
       }
       WaitForKeypress();
       return result;
@@ -59,10 +61,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
 
     private void WaitForKeypress ()
     {
-      if (false)
+      if (Settings.WaitForKeypress)
       {
         _logToTextBuilder.nl (2).s ("Press any-key...");
-        //Console.ReadKey ();
         _waitAtEnd.Wait();
       }
     }
@@ -93,7 +94,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       return result;
     }
 
-    public virtual TApplicationSettings ParseCommandLineArguments (string[] args, ref int result)
+    //public virtual TApplicationSettings ParseCommandLineArguments (string[] args, ref int result)
+    public virtual void ParseCommandLineArguments (string[] args, ref int result)
     {
       //_parser = new CommandLineClassParser<TApplicationSettings> ();
       try
@@ -105,7 +107,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
           _logToTextBuilder.nl().s (GetSynopsis (args));
         }
         result = 0;
-        return Settings;
+        //return Settings;
       }
       catch (CommandLineArgumentException e)
       {
@@ -113,7 +115,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
         _errorToTextBuilder.s ("Usage:");
         _errorToTextBuilder.s (GetSynopsis (args));
         result = 1;
-        return null;
+        //return Settings;
+        Settings = new TApplicationSettings(); // Use default settings
       }
     }
 

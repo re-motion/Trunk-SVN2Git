@@ -26,7 +26,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
     [CommandLineModeArgument (true)]
     public ShowUsageMode Mode = (ShowUsageMode) 987654321;
 
-    [CommandLineFlagArgument ("wait", true, Description = "Wait for keypress at end of program execution.")]
+    [CommandLineFlagArgument ("wait", false, Description = "Wait for keypress at end of program execution.")]
     public bool WaitForKeypress;
   }
 }
