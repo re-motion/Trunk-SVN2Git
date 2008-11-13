@@ -138,7 +138,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         var aclExpansionTreeInverseSorted = new AclExpansionTree (
             aclExpansionEntryList,
-            (classEntry => (classEntry.AccessControlList is StatefulAccessControlList) ? "A" : "B"));
+            (classEntry => (classEntry.AccessControlList is StatefulAccessControlList) ? "A" : "B")); // sort stateful before stateless
         LogAclExpansionTree (aclExpansionTreeInverseSorted);
         Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children.Count, Is.EqualTo (2));
         Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (Acl));

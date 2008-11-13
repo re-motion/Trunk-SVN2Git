@@ -633,132 +633,53 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
-    [Test]
-    [Explicit]
-    public void SeperateGroupingClassTest ()
-    {
-      using (CultureScope_de_DE ())
-      {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User2,User3,User);
+    //[Test]
+    //[Explicit]
+    //public void SeperateGroupingClassTest ()
+    //{
+    //  using (CultureScope_de_DE ())
+    //  {
+    //    var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User2,User3,User);
 
-        // Create stateless-only ACL
-        SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
-        var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
-        TestHelper.AttachAces (statlessAcl, Ace);
+    //    // Create stateless-only ACL
+    //    SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
+    //    var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
+    //    TestHelper.AttachAces (statlessAcl, Ace);
 
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl, statlessAcl);
+    //    var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl, statlessAcl);
 
-        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
-
-        //var aclExpansionUserGrouping = (from aee in aclExpansionEntryList
-        //                               orderby aee.User.DisplayName
-        //                               group aee by aee.User)
-        //                               group ;
-
-        //var aclExpansionUserGrouping = 
-        //    from aeeUser in aclExpansionEntryList
-        //    select
-        //        new {User = aeeUser.User, 
-        //             UserGroup = 
-        //                 from aeeRole in aeeUser.User.Roles
-        //                 group aeeUser by aeeUser.User into aeeRoles
-        //                 select
-        //                     new {Role = aeeRoles.Key,
-        //                          RoleGroup = aeeRoles
-        //                         }
-        //            };
+    //    List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
+    //  }
+    //}
 
 
-        //var aclExpansionUserGrouping =
-        //    (from aeeUser in aclExpansionEntryList
-        //     group aeeUser by aeeUser.User into aeeUsers
-        //     select
-        //        (from aeeRole in aeeUsers
-        //         group aeeRole by aeeRole.Role into aeeRoles 
-        //        select aeeRoles).ToList()).ToList();
+    //[Test]
+    //public void StatelessAclOutputFirstTest ()
+    //{
+    //  using (CultureScope_de_DE ())
+    //  {
+    //    var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
 
-        //var aclExpansionUserGrouping =
-        //    from aeeUser in aclExpansionEntryList
-        //     group aeeUser by aeeUser.User into aeeUsers
-        //     select
-        //        (from aeeRole in aeeUsers
-        //         group aeeRole by aeeRole.Role into aeeRoles
-        //         select 
-        //          (from aeeClass in aeeRoles
-        //          group aeeClass by aeeClass.Class into aeeClasses
-        //          select aeeClasses.ToList()).ToList()).ToList ();
+    //    // Create stateless-only ACL
+    //    SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
+    //    var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
+    //    TestHelper.AttachAces (statlessAcl, Ace);
 
+    //    var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,statlessAcl);
 
-        //var aclExpansionUserGrouping =
-        //    from aeeUser in aclExpansionEntryList
-        //    group aeeUser by aeeUser.User
-        //    into aeeUsers
-        //        select AclExpansionTreeNode.New (
-        //        aeeUsers.Key,
-        //        (from aeeRole in aeeUsers
-        //         group aeeRole by aeeRole.Role
-        //           into aeeRoles
-        //           select aeeRoles).ToList (),
-        //        //aeeUsers.ToList(),
-        //        aeeUsers.Count());
-        
-        
-        //var aclExpansionUserGrouping =
-        //    aclExpansionEntryList.GroupBy (aeeUser => aeeUser.User).Select (
-        //        aeeUsers => AclExpansionTreeNode.New (
-        //                        aeeUsers.Key,
-        //                        (from aeeRole in aeeUsers
-        //                         group aeeRole by aeeRole.Role
-        //                         into aeeRoles
-        //                             select aeeRoles).ToList(),
-        //                        //aeeUsers.ToList(),
-        //                        aeeUsers.Count()));
+    //    List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
-        
-            
+    //    using (var textWriter = new StringWriter ())
+    //    {
+    //      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
+    //      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+    //      string result = textWriter.ToString ();
+    //      To.ConsoleLine.e (() => result);
 
-        //var aclExpansionUserGrouping = aclExpansionEntryList.OrderBy (aee => aee.User.DisplayName).GroupBy (aee => aee.User);
-        //var aclExpansionRoleGrouping = aclExpansionUserGrouping.OrderBy (aee => aee.Key.R).GroupBy (aee => aee.User);
-        //To.Console.SetOutputComplexityToFull();
-        //To.ToTextProvider.Settings.
- 
-        //foreach (var entries in aclExpansionUserGrouping)
-        //{
-        //  To.ConsoleLine.e (entries.);
-        //  To.ConsoleLine.e (entries[0][0]);
-        //  To.ConsoleLine.e (entries[0][0][0]);
-        //}
-      }
-    }
-
-
-    [Test]
-    public void StatelessAclOutputFirstTest ()
-    {
-      using (CultureScope_de_DE ())
-      {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-
-        // Create stateless-only ACL
-        SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
-        var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
-        TestHelper.AttachAces (statlessAcl, Ace);
-
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,statlessAcl);
-
-        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
-
-        using (var textWriter = new StringWriter ())
-        {
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
-          aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
-          string result = textWriter.ToString ();
-          To.ConsoleLine.e (() => result);
-
-          //Assert.That (result, NUnitText.Contains ("<td>" + stateLessAclStateHtmlText + @"</td>"));
-        }
-      }
-    }
+    //      //Assert.That (result, NUnitText.Contains ("<td>" + stateLessAclStateHtmlText + @"</td>"));
+    //    }
+    //  }
+    //}
 
 
     [Test]
@@ -767,11 +688,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aclExpansionEntry = new AclExpansionEntry (
           User, Role, Acl, new AclExpansionAccessConditions (), AccessTypeDefinitions, AccessTypeDefinitions2);
       var aclExpansionEntryList = List.New (aclExpansionEntry);
+      
       var textWriterAclExpansionEntryList = new StringWriter ();
-      //{
-      //  var aclExpansionHtmlWriterAclExpansionEntryList = new AclExpansionHtmlWriter (aclExpansionEntryList, textWriterAclExpansionEntryList, false);
-      //  aclExpansionHtmlWriterAclExpansionEntryList.WriteAclExpansionAsHtml();
-        new AclExpansionHtmlWriter (aclExpansionEntryList, textWriterAclExpansionEntryList, false).WriteAclExpansionAsHtml();
+      new AclExpansionHtmlWriter (aclExpansionEntryList, textWriterAclExpansionEntryList, false).WriteAclExpansionAsHtml();
+
       var aclExpansionTree = new AclExpansionTree (aclExpansionEntryList);
       var textWriterAclExpansionTree = new StringWriter ();
       new AclExpansionHtmlWriter (aclExpansionTree, textWriterAclExpansionTree, false).WriteAclExpansionAsHtml();
@@ -780,6 +700,45 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       string resultAclExpansionTree = textWriterAclExpansionTree.ToString ();
 
       Assert.That (resultAclExpansionEntryList, Is.EqualTo (resultAclExpansionTree));
+    }
+
+
+    [Test]
+    public void EmptyAclExpansionTreeResultTest ()
+    {
+      var aclExpansionTree = new AclExpansionTree (new List<AclExpansionEntry>());
+      var textWriter = new StringWriter ();
+      new AclExpansionHtmlWriter (aclExpansionTree, textWriter, true).WriteAclExpansionAsHtml ();
+      string result = textWriter.ToString ();
+      //To.ConsoleLine.e (() => result);
+
+      const string resultExpected =
+      #region
+ @"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"" """">
+<html>
+  <head>
+    <title>re-motion ACL Expansion</title>
+    <style>@import ""AclExpansion.css"";</style>
+    <meta http-equiv=""Content-Type"" content=""text/html; charset=UTF-8"" />
+  </head>
+  <body>
+    <table style=""width: 100%;"" class=""aclExpansionTable"" id=""remotion-ACL-expansion-table"">
+      <tr>
+        <th class=""header"">User</th>
+        <th class=""header"">Role</th>
+        <th class=""header"">Class</th>
+        <th class=""header"">States</th>
+        <th class=""header"">User Must Own</th>
+        <th class=""header"">Group Must Own</th>
+        <th class=""header"">Tenant Must Own</th>
+        <th class=""header"">User Must Have Abstract Role</th>
+        <th class=""header"">Access Rights</th>
+      </tr>
+    </table>
+  </body>
+</html>";
+      #endregion
+      Assert.That (result, Is.EqualTo (resultExpected));    
     }
 
 
