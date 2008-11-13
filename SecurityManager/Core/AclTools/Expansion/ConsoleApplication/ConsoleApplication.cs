@@ -45,8 +45,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
     public int Main (string[] args)
     {
       int result = 0;
+      To.ConsoleLine.e (() => result);
       TApplicationSettings settings = ParseCommandLineArguments(args, ref result);
-      RunApplication(ref result, settings);
+      if (result == 0)
+      {
+        result = RunApplication (settings);
+      }
       WaitForKeypress();
       return result;
     }
@@ -58,45 +62,49 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       _waitAtEnd.Wait();
     }
 
-    private void RunApplication (ref int result, TApplicationSettings settings)
+    public virtual int RunApplication (TApplicationSettings settings)
     {
-      if (result == 0)
+      int result = 0;
+      try
       {
-        try
+        TApplication application = new TApplication();
+        //application.Init (settings, System.Console.Error, System.Console.Out);
+        application.Run (settings, System.Console.Error, System.Console.Out);
+      }
+      catch (Exception e)
+      {
+        result = 1;
+        using (ConsoleUtility.EnterColorScope (ConsoleColor.White, ConsoleColor.DarkRed))
         {
-          TApplication application = new TApplication();
-          //application.Init (settings, System.Console.Error, System.Console.Out);
-          application.Run (settings, System.Console.Error, System.Console.Out);
-        }
-        catch (Exception e)
-        {
-          using (ConsoleUtility.EnterColorScope (ConsoleColor.White, ConsoleColor.DarkRed))
+          //System.Console.Error.WriteLine ("Execution aborted. Exception stack:");
+          To.Error.s("Execution aborted. Exception stack:");
+          for (; e != null; e = e.InnerException)
           {
-            //System.Console.Error.WriteLine ("Execution aborted. Exception stack:");
-            To.Error.s("Execution aborted. Exception stack:");
-            for (; e != null; e = e.InnerException)
-            {
-              //System.Console.Error.WriteLine ("{0}: {1}\n{2}", e.GetType().FullName, e.Message, e.StackTrace);
-              To.Error.s(e.GetType ().FullName).s(": ").s(e.Message).s(e.StackTrace);
-            }
+            //System.Console.Error.WriteLine ("{0}: {1}\n{2}", e.GetType().FullName, e.Message, e.StackTrace);
+            To.Error.s(e.GetType ().FullName).s(": ").s(e.Message).s(e.StackTrace);
           }
-          result = 1;
         }
       }
+      return result;
     }
 
-    private TApplicationSettings ParseCommandLineArguments (string[] args, ref int result)
+    public virtual TApplicationSettings ParseCommandLineArguments (string[] args, ref int result)
     {
-      TApplicationSettings settings = null;
+      To.ConsoleLine.s ("ParseCommandLineArguments");
+      //TApplicationSettings settings = null;
       //_parser = new CommandLineClassParser<TApplicationSettings> ();
       try
       {
-        settings = _parser.Parse (args);
+        To.ConsoleLine.e (() => _parser);
+        TApplicationSettings settings = _parser.Parse (args);
+        To.ConsoleLine.e (() => settings);
         if (settings.Mode == ConsoleApplicationSettings.ShowUsageMode.ShowUsage)
         {
           _logToTextBuilder.nl (2).s ("Application Usage: ");
           _logToTextBuilder.nl().s (GetSynopsis (args));
         }
+        result = 0;
+        return settings;
       }
       catch (CommandLineArgumentException e)
       {
@@ -104,30 +112,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
         _errorToTextBuilder.s ("Usage:");
         _errorToTextBuilder.s (GetSynopsis (args));
         result = 1;
+        return null;
       }
-
-      return settings;
     }
 
-    //public string GetSynopsis (CommandLineClassParser<TApplicationSettings> parser)
     public string GetSynopsis (string[] args)
     {
-      //return _parser.GetAsciiSynopsis (Environment.GetCommandLineArgs ()[0], System.Console.BufferWidth);
       return _parser.GetAsciiSynopsis (args[0], _bufferWidth);
     }
   }
-
-  public interface IWait
-  {
-    void Wait ();
-  }
-
-  public class WaitForConsoleKeypress : IWait
-  {
-    public void Wait ()
-    {
-      Console.ReadKey ();
-    }
-  }
-
 }

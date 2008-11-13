@@ -73,6 +73,8 @@
     <Compile Include="AclTools\Expansion\AclExpansionTree.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionTreeNode.cs" />
     <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplicationSettings.cs" />
+    <Compile Include="AclTools\Expansion\ConsoleApplication\IWait.cs" />
+    <Compile Include="AclTools\Expansion\ConsoleApplication\WaitForConsoleKeypress.cs" />
     <Compile Include="AclTools\Expansion\HtmlTagWriterTags.cs" />
     <Compile Include="AclTools\Expansion\IAclExpansionWriter.cs" />
     <Compile Include="AclTools\Expansion\AclProbe.cs" />
