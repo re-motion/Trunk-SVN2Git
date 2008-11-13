@@ -113,9 +113,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       DirectoryUsed = Settings.Directory;
       _textWriterFactory.Directory = DirectoryUsed;
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, _textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow ()), true);
-      aclExpansionHtmlWriter.Settings.OutputRowCount = Settings.OutputRowCount;
-      aclExpansionHtmlWriter.Settings.OutputDeniedRights = Settings.OutputDeniedRights;
+      aclExpansionHtmlWriter.Settings = CreateAclExpansionHtmlWriterSettings();
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+    }
+
+    // Returns an AclExpansionHtmlWriterSettings initialized from the AclExpanderApplication Settings.
+    private AclExpansionHtmlWriterSettings CreateAclExpansionHtmlWriterSettings ()
+    {
+      var aclExpansionHtmlWriterSettings = new AclExpansionHtmlWriterSettings ();
+      aclExpansionHtmlWriterSettings.OutputRowCount = Settings.OutputRowCount;
+      aclExpansionHtmlWriterSettings.OutputDeniedRights = Settings.OutputDeniedRights;
+      return aclExpansionHtmlWriterSettings;
     }
 
     private void WriteAclExpansionAsMultiFileHtml (List<AclExpansionEntry> aclExpansion)
@@ -123,7 +131,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _textWriterFactory.Extension = "html";
       DirectoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ());
       _textWriterFactory.Directory = DirectoryUsed;
+
+      //var aclExpansionHtmlWriterSettings = new AclExpansionHtmlWriterSettings ();
+      //aclExpansionHtmlWriterSettings.
+
       var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (_textWriterFactory, true);
+      //aclExpansionMultiFileHtmlWriter.DetailHtmlWriterSettings = CreateAclExpansionHtmlWriterSettings();
       aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
       File.Copy (Path.Combine (".", CssFileName), Path.Combine (DirectoryUsed, CssFileName), true);
     }

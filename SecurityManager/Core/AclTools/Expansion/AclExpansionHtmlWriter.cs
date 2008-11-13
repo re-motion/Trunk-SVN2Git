@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclExpansionHtmlWriter : AclExpansionHtmlWriterBase
   {
     private readonly AclExpansionTree _aclExpansionTree;
-    private readonly AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
+    private AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
     private string _statelessAclStateHtmlText = "(stateless)";
 
     public AclExpansionHtmlWriter (List<AclExpansionEntry> aclExpansion, TextWriter textWriter, bool indentXml)
@@ -54,6 +54,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public AclExpansionHtmlWriterSettings Settings
     {
       get { return _settings; }
+      set { _settings = value; }
     }
 
 

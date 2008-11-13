@@ -33,7 +33,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     [CommandLineStringArgument ("culture", true, Placeholder = "", Description = "Culture to set for output (e.g. /culture:en-US, /culture:de-AT).")]
     public string CultureName = "de-AT";
 
-    [CommandLineFlagArgument ("denied", false, Description = "Output the denied access rights (e.g. /denied+).")]
+    [CommandLineFlagArgument ("denied", true, Description = "Output the denied access rights (e.g. /denied+).")]
     public bool OutputDeniedRights;
 
     [CommandLineFlagArgument ("multifile", false, Description = "Create a single file for all users + permissions or a master file and several detail files.")]
