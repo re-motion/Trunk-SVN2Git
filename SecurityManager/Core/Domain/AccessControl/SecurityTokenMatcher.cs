@@ -109,7 +109,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return MatchPrincipalAgainstPosition (token.Principal);
 
         default:
-          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'UserCondition'", _ace.UserCondition);
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'UserCondition'.", _ace.UserCondition);
       }
     }
 
@@ -153,7 +153,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return MatchPrincipalAgainstPosition (token.Principal);
 
         default:
-          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupCondition'", _ace.GroupCondition);
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupCondition'.", _ace.GroupCondition);
       }
     }
 
@@ -201,7 +201,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           break;
 
         default:
-          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupHierarchyCondition'", _ace.GroupHierarchyCondition);
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupHierarchyCondition'.", _ace.GroupHierarchyCondition);
       }
 
       return userGroups.Intersect (objectGroups).Any();

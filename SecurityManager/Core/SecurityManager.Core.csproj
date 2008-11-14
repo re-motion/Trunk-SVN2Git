@@ -113,6 +113,7 @@
     <Compile Include="AclTools\Expansion\TextWriterFactory\StringWriterFactory.cs" />
     <Compile Include="Domain\AccessControl\StatefulAccessControlList.cs" />
     <Compile Include="Domain\AccessControl\StatelessAccessControlList.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilter.cs" />
     <Compile Include="Domain\SecurityManagerSearchServiceBase.cs" />
     <Compile Include="Domain\AccessControl\TenantCondition.cs" />
     <Compile Include="Domain\AccessControl\GroupCondition.cs" />

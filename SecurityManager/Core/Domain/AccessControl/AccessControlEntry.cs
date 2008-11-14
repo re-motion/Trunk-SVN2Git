@@ -84,6 +84,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public abstract GroupHierarchyCondition GroupHierarchyCondition { get; set; }
 
+    [DisableEnumValues(typeof (AccessControlEntryPropertiesEnumerationValueFilter))]
     public abstract UserCondition UserCondition { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
