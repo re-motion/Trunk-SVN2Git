@@ -100,17 +100,28 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return true;
 
         case UserCondition.Owner:
-          return false;
+          return MatchPrincipalAgainstUser (token.Principal, token.OwningUser);
 
         case UserCondition.SpecificUser:
-          return false;
+          return MatchPrincipalAgainstUser (token.Principal, _ace.SpecificUser);
 
         case UserCondition.SpecificPosition:
           return MatchPosition (token);
 
         default:
-          throw CreateInvalidOperationException ("The value '{0}' is not a valid enum value for 'UserCondition'", _ace.UserCondition);
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'UserCondition'", _ace.UserCondition);
       }
+    }
+
+    private bool MatchPrincipalAgainstUser (User principal, User referenceUser)
+    {
+      if (principal == null)
+        return false;
+
+      if (referenceUser == null)
+        return false;
+
+      return principal == referenceUser;
     }
 
     private bool MatchPosition (SecurityToken token)
@@ -142,7 +153,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return MatchPosition (token);
 
         default:
-          throw CreateInvalidOperationException ("The value '{0}' is not a valid enum value for 'GroupCondition'", _ace.GroupCondition);
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupCondition'", _ace.GroupCondition);
       }
     }
 
@@ -190,8 +201,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           break;
 
         default:
-          throw CreateInvalidOperationException (
-              "The value '{0}' is not a valid enum value for 'GroupHierarchyCondition'", _ace.GroupHierarchyCondition);
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupHierarchyCondition'", _ace.GroupHierarchyCondition);
       }
 
       return userGroups.Intersect (objectGroups).Any();

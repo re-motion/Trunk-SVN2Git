@@ -105,5 +105,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       Assert.IsFalse (matcher.MatchesToken (token));
     }
+
+    [Test]
+    public void TokenWithoutRoleAndWithoutOwningGroup_DoesNotMatch ()
+    {     
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (null, null);
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
+
+      Assert.IsFalse (matcher.MatchesToken (token));
+    }
   }
 }

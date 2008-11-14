@@ -49,6 +49,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     public Group AustrianCarTeam { get; private set; }
     public Group AustrianPlaneTeam { get; private set; }
     public Group AustrianAccountingTeam { get; private set; }
+    public Group OwningGroup { get; private set; }
+    public User CarTeamMember { get; private set; }
 
     private void Build ()
     {
@@ -77,6 +79,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       AustrianCarTeam = CreateGroup ("Car Developers", AustrianProjectsDepartment, CompanyTenant, TeamGroupType);
       AustrianPlaneTeam = CreateGroup ("Plane Developers", AustrianProjectsDepartment, CompanyTenant, TeamGroupType);
       AustrianAccountingTeam = CreateGroup ("Accounts", AustrianFinanceDepartment, CompanyTenant, TeamGroupType);
+
+      OwningGroup = CreateGroup ("Users", null, CompanyTenant, null);
+
+      CarTeamMember = CreateUser ("CarTeamMember", OwningGroup, CompanyTenant);
+      _testHelper.CreateRole (CarTeamMember, AustrianCarTeam, MemberPosition);
+    }
+
+    private User CreateUser (string userName, Group group, Tenant tenant)
+    {
+      return _testHelper.CreateUser (userName, "First", "Last", null, group, tenant);
     }
 
     private Group CreateGroup (string name, Group parentGroup, Tenant tenant, GroupType groupType)

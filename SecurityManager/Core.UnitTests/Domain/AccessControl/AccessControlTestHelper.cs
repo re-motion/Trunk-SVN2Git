@@ -380,6 +380,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       return CreateToken (user, null, owningGroup, null, null);
     }
 
+    public SecurityToken CreateTokenWithOwningUser (User principal, User owningUser)
+    {
+      return CreateToken (principal, null, null, owningUser, null);
+    }
+
     public SecurityToken CreateToken (User user, Tenant owningTenant, Group owningGroup, User owningUser, AbstractRoleDefinition[] abstractRoleDefinitions)
     {
       List<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition> ();
@@ -403,6 +408,28 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
+    public AccessControlEntry CreateAceWithOwningUser ()
+    {
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        AccessControlEntry entry = AccessControlEntry.NewObject ();
+        entry.UserCondition = UserCondition.Owner;
+
+        return entry;
+      }
+    }
+
+    public AccessControlEntry CreateAceWithSpecificUser (User user)
+    {
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        AccessControlEntry entry = AccessControlEntry.NewObject ();
+        entry.UserCondition = UserCondition.SpecificUser;
+        entry.SpecificUser = user;
+
+        return entry;
+      }
+    }
 
     public AccessControlEntry CreateAceWithOwningGroup ()
     {
