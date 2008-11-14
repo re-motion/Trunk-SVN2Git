@@ -53,6 +53,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       return ace;
     }
 
+    protected AccessControlEntry CreateAceForStateful ()
+    {
+      var ace = AccessControlEntry.NewObject ();
+      ace.AccessControlList = StatefulAccessControlList.NewObject ();
+
+      return ace;
+    }
+
     protected IBusinessObjectEnumerationProperty GetPropertyDefinition (AccessControlEntry ace, string propertyName)
     {
       var property = (IBusinessObjectEnumerationProperty) ((IBusinessObject) ace).BusinessObjectClass.GetPropertyDefinition (propertyName);

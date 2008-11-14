@@ -28,10 +28,48 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       switch (property.Identifier)
       {
+        case "TenantCondition":
+          return value.IsEnabled && IsTenantConditionEnabled ((TenantCondition) value.Value, isStateless);
+        case "GroupCondition":
+          return value.IsEnabled && IsGroupConditionEnabled ((GroupCondition) value.Value, isStateless);
         case "UserCondition":
           return value.IsEnabled && IsUserConditionEnabled ((UserCondition) value.Value, isStateless);
         default:
-          throw CreateInvalidOperationException ("value");
+          throw CreateInvalidOperationException (property.Identifier);
+      }
+    }
+
+    private bool IsTenantConditionEnabled (TenantCondition value, bool isStateless)
+    {
+      switch (value)
+      {
+        case TenantCondition.None:
+          return true;
+        case TenantCondition.OwningTenant:
+          return !isStateless;
+        case TenantCondition.SpecificTenant:
+          return true;
+        default:
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'TenantCondition'.", value);
+      }
+    }
+
+    private bool IsGroupConditionEnabled (GroupCondition value, bool isStateless)
+    {
+      switch (value)
+      {
+        case GroupCondition.None:
+          return true;
+        case GroupCondition.OwningGroup:
+          return !isStateless;
+        case GroupCondition.SpecificGroup:
+          return true;
+        case GroupCondition.AnyGroupWithSpecificGroupType:
+          return true;
+        case GroupCondition.BranchOfOwningGroup:
+          return !isStateless;
+        default:
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupCondition'.", value);
       }
     }
 

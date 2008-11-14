@@ -78,8 +78,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public abstract int Index { get; set; }
 
+    [DisableEnumValues (typeof (AccessControlEntryPropertiesEnumerationValueFilter))]
     public abstract TenantCondition TenantCondition { get; set; }
 
+    [DisableEnumValues (typeof (AccessControlEntryPropertiesEnumerationValueFilter))]
     public abstract GroupCondition GroupCondition { get; set; }
 
     public abstract GroupHierarchyCondition GroupHierarchyCondition { get; set; }

@@ -25,7 +25,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public override void SetUp ()
     {
       base.SetUp();
-      _ace = CreateAceForStateless();
+      _ace = CreateAceForStateful();
       _property = GetPropertyDefinition (_ace, "UserCondition");
     }
 
@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void Owner ()
     {
-      Assert.That (Filter.IsEnabled (CreateEnumValueInfo (UserCondition.Owner), _ace, _property), Is.False);
+      Assert.That (Filter.IsEnabled (CreateEnumValueInfo (UserCondition.Owner), _ace, _property), Is.True);
     }
 
     [Test]
