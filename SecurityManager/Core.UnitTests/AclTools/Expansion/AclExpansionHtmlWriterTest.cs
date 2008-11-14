@@ -254,10 +254,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
           string result = textWriter.ToString();
           //To.ConsoleLine.e (() => result);
-          //Clipboard.SetText (result); 
-          
-          const string resultExpected = 
-            #region
+          //Clipboard.SetText (CreateLiteralResultExpectedString(result));
+
+          const string resultExpected =
+          #region
  @"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"" """">
 <html>
   <head>
@@ -303,7 +303,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td></td>
         <td></td>
         <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
+        <td>Delete, FirstAccessType, Read</td>
       </tr>
       <tr>
         <td rowspan=""3"">Anotha Group, Working Drone</td>
@@ -329,7 +329,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td></td>
         <td></td>
         <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
+        <td>Delete, FirstAccessType, Read</td>
       </tr>
       <tr>
         <td rowspan=""4"">Da 3rd Group, Combatant</td>
@@ -363,7 +363,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td></td>
         <td></td>
         <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
+        <td>Delete, FirstAccessType, Read</td>
       </tr>
       <tr>
         <td rowspan=""4"">Da 3rd Group, Combatant</td>
@@ -397,7 +397,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td></td>
         <td></td>
         <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
+        <td>Delete, FirstAccessType, Read</td>
       </tr>
       <tr>
         <td rowspan=""4"">Da Group, Combatant</td>
@@ -431,7 +431,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td></td>
         <td></td>
         <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
+        <td>Delete, FirstAccessType, Read</td>
       </tr>
       <tr>
         <td rowspan=""3"">Da Group, Supreme Being</td>
@@ -457,7 +457,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td></td>
         <td></td>
         <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
+        <td>Delete, FirstAccessType, Read</td>
       </tr>
       <tr>
         <td rowspan=""12"">Smith, Mr.</td>
@@ -484,7 +484,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td></td>
         <td></td>
         <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
+        <td>Delete, FirstAccessType, Read</td>
       </tr>
       <tr>
         <td rowspan=""3"">Anotha Group, Working Drone</td>
@@ -510,7 +510,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td></td>
         <td></td>
         <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
+        <td>Delete, FirstAccessType, Read</td>
       </tr>
       <tr>
         <td rowspan=""3"">Da 3rd Group, Working Drone</td>
@@ -536,7 +536,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td></td>
         <td></td>
         <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
+        <td>Delete, FirstAccessType, Read</td>
       </tr>
       <tr>
         <td rowspan=""3"">Da Group, Working Drone</td>
@@ -562,7 +562,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td></td>
         <td></td>
         <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
+        <td>Delete, FirstAccessType, Read</td>
       </tr>
       <tr>
         <td rowspan=""3"">Usa Da, Dr.</td>
@@ -589,15 +589,22 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td></td>
         <td></td>
         <td></td>
-        <td>Delete, FirstAccessType, Read, Write</td>
+        <td>Delete, FirstAccessType, Read</td>
       </tr>
     </table>
   </body>
 </html>";
           #endregion
+
           Assert.That (result, Is.EqualTo (resultExpected));
         }
       }
+    }
+
+    private string CreateLiteralResultExpectedString (string result)
+    {
+      var resultDoubleQuoted = result.Replace ("\"", "\"\"");
+      return "\nconst string resultExpected =\n#region\n@\"" + resultDoubleQuoted + "\";\n#endregion\n";
     }
 
 

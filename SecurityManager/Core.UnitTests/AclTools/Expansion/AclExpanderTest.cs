@@ -231,6 +231,44 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    [Test]
+    public void SpecificTenantAndOwningTenantTest ()
+    {
+      // A 2nd tenant + user, etc
+      var otherTenant = TestHelper.CreateTenant ("OtherTenant");
+      var otherTenantGroup = TestHelper.CreateGroup ("GroupForOtherTenant", null, otherTenant);
+      var otherTenantPosition = TestHelper.CreatePosition ("Head Honcho");
+      var otherTenantUser = TestHelper.CreateUser ("UserForOtherTenant", "User", "Other", "Chief", otherTenantGroup, otherTenant);
+      var otherTenantRole = TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
+
+      var aceGroupSpecificTenant = TestHelper.CreateAceWithSpecficTenant (otherTenant);
+      AttachAccessTypeReadWriteDelete (aceGroupSpecificTenant, null, true, null);
+
+      var aceGroupOwningTenant = TestHelper.CreateAceWithOwningTenant ();
+      AttachAccessTypeReadWriteDelete (aceGroupOwningTenant, null, null, true);
+
+      //To.ConsoleLine.e (() => aceGroupSpecificTenant);
+
+      List<AclExpansionEntry> aclExpansionEntryList =
+        GetAclExpansionEntryList_UserList_AceList (
+          List.New (otherTenantUser),
+          List.New (TestHelper.CreateStatefulAcl (aceGroupSpecificTenant, aceGroupOwningTenant))
+        );
+
+
+      To.ConsoleLine.e (() => aclExpansionEntryList);
+
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
+
+      // Test of specific-tenant-ACE: gives write-access
+      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+
+      // Test of owning-tenant-ACE (specific-tenant-ACE matches also): gives write-access + delete-access with condition: tenant-must-own
+      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType }, 
+        new AclExpansionAccessConditions { IsOwningTenantRequired = true });
+    }
+
+
 
     [Test]
     public void GetAclExpansionEntryList_UserList_AceList_TwoDifferentTenants ()

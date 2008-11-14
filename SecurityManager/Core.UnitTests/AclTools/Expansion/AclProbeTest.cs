@@ -84,7 +84,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AccessControlEntry ace = TestHelper.CreateAceWithSpecficTenant (Tenant);
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (ace.SpecificTenant));
+      Assert.That (aclProbe.SecurityToken.OwningTenant, Is.Null);
 
       var accessConditionsExpected = new AclExpansionAccessConditions();
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));

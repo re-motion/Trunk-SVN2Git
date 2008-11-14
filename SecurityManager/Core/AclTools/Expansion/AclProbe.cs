@@ -65,9 +65,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           owningTenant = user.Tenant;
           aclProbe.AccessConditions.IsOwningTenantRequired = true;
           break;
+        //case TenantCondition.SpecificTenant:
+        //case TenantCondition.None:
+        //  owningTenant = ace.SpecificTenant;
+        //  break;
         case TenantCondition.SpecificTenant:
         case TenantCondition.None:
-          owningTenant = ace.SpecificTenant;
+          owningTenant = null; // Decideable constraint => no condition. Either Principal.Tenant matches or he does not
           break;
         default:
           throw new ArgumentException (String.Format ("ace.TenantSelection={0} is currently not supported by this method. Please extend method to handle the new TenantSelection state.", ace.TenantCondition));
