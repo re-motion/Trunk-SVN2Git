@@ -181,6 +181,43 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
     }
 
+    [Test]
+    public void Create_WithValidOwningUser ()
+    {
+      SecurityContext context = CreateContext ();
+      IPrincipal user = CreateTestUser ();
+
+      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
+      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+
+      User owningUser = token.OwningUser;
+      Assert.That (owningUser, Is.Not.Null);
+      Assert.That (owningUser.UserName, Is.EqualTo ("group0/user1"));
+    }
+
+    [Test]
+    public void Create_WithoutOwningUser ()
+    {
+      SecurityContext context = CreateContextWithoutOwningUser ();
+      IPrincipal user = CreateTestUser ();
+
+      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
+      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+
+      Assert.IsNull (token.OwningUser);
+    }
+
+    [Test]
+    [ExpectedException (typeof (AccessControlException), ExpectedMessage = "The user 'notExistingUser' could not be found.")]
+    public void Create_WithNotExistingOwningUser ()
+    {
+      SecurityContext context = CreateContextWithNotExistingOwningUser ();
+      IPrincipal user = CreateTestUser ();
+
+      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
+      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+    }
+
     private IPrincipal CreateTestUser ()
     {
       return CreateUser ("test.user");
@@ -198,27 +235,37 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     private SecurityContext CreateContext (params Enum[] abstractRoles)
     {
-      return SecurityContext.Create(typeof (Order), "owner", "UID: testOwningGroup", "UID: testTenant", new Dictionary<string, Enum>(), abstractRoles);
+      return SecurityContext.Create (typeof (Order), "group0/user1", "UID: testOwningGroup", "UID: testTenant", new Dictionary<string, Enum> (), abstractRoles);
     }
 
     private SecurityContext CreateContextWithoutOwningTenant ()
     {
-      return SecurityContext.Create(typeof (Order), "owner", "UID: testOwningGroup", null, new Dictionary<string, Enum> (), new Enum[0]);
+      return SecurityContext.Create (typeof (Order), "group0/user1", "UID: testOwningGroup", null, new Dictionary<string, Enum> (), new Enum[0]);
     }
 
     private SecurityContext CreateContextWithNotExistingOwningTenant ()
     {
-      return SecurityContext.Create(typeof (Order), "owner", "UID: testOwningGroup", "UID: NotExistingTenant", new Dictionary<string, Enum> (), new Enum[0]);
+      return SecurityContext.Create (typeof (Order), "group0/user1", "UID: testOwningGroup", "UID: NotExistingTenant", new Dictionary<string, Enum> (), new Enum[0]);
     }
 
     private SecurityContext CreateContextWithoutOwningGroup ()
     {
-      return SecurityContext.Create(typeof (Order), "owner", null, "UID: testTenant", new Dictionary<string, Enum> (), new Enum[0]);
+      return SecurityContext.Create (typeof (Order), "group0/user1", null, "UID: testTenant", new Dictionary<string, Enum> (), new Enum[0]);
     }
 
     private SecurityContext CreateContextWithNotExistingOwningGroup ()
     {
-      return SecurityContext.Create(typeof (Order), "owner", "UID: NotExistingGroup", "UID: testTenant", new Dictionary<string, Enum> (), new Enum[0]);
+      return SecurityContext.Create (typeof (Order), "group0/user1", "UID: NotExistingGroup", "UID: testTenant", new Dictionary<string, Enum> (), new Enum[0]);
+    }
+
+    private SecurityContext CreateContextWithoutOwningUser ()
+    {
+      return SecurityContext.Create (typeof (Order), null, "UID: testOwningGroup", "UID: testTenant", new Dictionary<string, Enum> (), new Enum[0]);
+    }
+
+    private SecurityContext CreateContextWithNotExistingOwningUser ()
+    {
+      return SecurityContext.Create (typeof (Order), "notExistingUser", "UID: testOwningGroup", "UID: testTenant", new Dictionary<string, Enum> (), new Enum[0]);
     }
   }
 }
