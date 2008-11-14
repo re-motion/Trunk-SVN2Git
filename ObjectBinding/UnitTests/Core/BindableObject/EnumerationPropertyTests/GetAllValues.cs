@@ -38,13 +38,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     public void Enum ()
     {
       IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithValueType<TestEnum>), "Scalar");
-      EnumerationValueInfo[] expected = new EnumerationValueInfo[]
+      EnumerationValueInfo[] expected = new[]
           {
               new EnumerationValueInfo (TestEnum.Value1, "Value1", "Value1", true),
               new EnumerationValueInfo (TestEnum.Value2, "Value2", "Value2", true),
               new EnumerationValueInfo (TestEnum.Value3, "Value3", "Value3", true),
               new EnumerationValueInfo (TestEnum.Value4, "Value4", "Value4", true),
-              new EnumerationValueInfo (TestEnum.Value5, "Value5", "Value5", true)
+              new EnumerationValueInfo (TestEnum.Value5, "Value5", "Value5", false)
           };
 
       CheckEnumerationValueInfos (expected, property.GetAllValues (null));
@@ -54,7 +54,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     public void NullableEnum ()
     {
       IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithValueType<TestEnum>), "NullableScalar");
-      EnumerationValueInfo[] expected = new EnumerationValueInfo[]
+      EnumerationValueInfo[] expected = new[]
           {
               new EnumerationValueInfo (TestEnum.Value1, "Value1", "Value1", true),
               new EnumerationValueInfo (TestEnum.Value2, "Value2", "Value2", true),
@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     public void UndefinedValueEnum ()
     {
       IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithValueType<EnumWithUndefinedValue>), "Scalar");
-      EnumerationValueInfo[] expected = new EnumerationValueInfo[]
+      EnumerationValueInfo[] expected = new[]
           {
               new EnumerationValueInfo (EnumWithUndefinedValue.Value1, "Value1", "Value1", true),
               new EnumerationValueInfo (EnumWithUndefinedValue.Value2, "Value2", "Value2", true),
@@ -87,13 +87,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
       IBindableObjectGlobalizationService mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
       _businessObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
 
-      EnumerationValueInfo[] expected = new EnumerationValueInfo[]
+      EnumerationValueInfo[] expected = new[]
           {
               new EnumerationValueInfo (TestEnum.Value1, "Value1", "MockValue1", true),
               new EnumerationValueInfo (TestEnum.Value2, "Value2", "MockValue2", true),
               new EnumerationValueInfo (TestEnum.Value3, "Value3", "MockValue3", true),
               new EnumerationValueInfo (TestEnum.Value4, "Value4", "MockValue4", true),
-              new EnumerationValueInfo (TestEnum.Value5, "Value5", "MockValue5", true)
+              new EnumerationValueInfo (TestEnum.Value5, "Value5", "MockValue5", false)
          };
 
       Expect.Call (mockGlobalizationService.GetEnumerationValueDisplayName (TestEnum.Value1)).Return ("MockValue1");

@@ -31,11 +31,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       ArgumentUtility.CheckNotNull ("expected", expected);
 
-      Assert.That (actual, Is.InstanceOfType (expected.GetType()));
-      Assert.That (actual.Value, Is.EqualTo (expected.Value));
-      Assert.That (actual.Identifier, Is.EqualTo (expected.Identifier));
-      Assert.That (actual.IsEnabled, Is.EqualTo (expected.IsEnabled));
-      Assert.That (actual.DisplayName, Is.EqualTo (expected.DisplayName));
+      Assert.That (actual, Is.InstanceOfType (expected.GetType()), expected.DisplayName);
+      Assert.That (actual.Value, Is.EqualTo (expected.Value), expected.DisplayName);
+      Assert.That (actual.Identifier, Is.EqualTo (expected.Identifier), expected.DisplayName);
+      Assert.That (actual.IsEnabled, Is.EqualTo (expected.IsEnabled), expected.DisplayName);
+      Assert.That (actual.DisplayName, Is.EqualTo (expected.DisplayName), expected.DisplayName);
     }
   }
 }

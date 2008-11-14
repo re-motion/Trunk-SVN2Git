@@ -12,6 +12,7 @@ using System;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
+  [DisableEnumValues (TestEnum.Value5)]
   public enum TestEnum
   {
     Value1 = 1,

@@ -16,7 +16,7 @@ using Remotion.Utilities;
 namespace Remotion.ObjectBinding
 {
   //TODO: doc
-  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+  [AttributeUsage (AttributeTargets.Enum | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   public sealed class DisableEnumValuesAttribute : Attribute
   {
     private IEnumerationValueFilter _filter;

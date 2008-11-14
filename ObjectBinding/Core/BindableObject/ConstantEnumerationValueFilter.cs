@@ -33,7 +33,10 @@ namespace Remotion.ObjectBinding.BindableObject
 
     public bool IsEnabled (IEnumerationValueInfo value, IBusinessObject businessObject, IBusinessObjectEnumerationProperty property)
     {
-      return !Array.Exists (_disabledEnumValues, delegate (Enum disabledValue) { return disabledValue.Equals (value.Value); });
+      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("property", property);
+
+      return !Array.Exists (_disabledEnumValues, disabledValue => disabledValue.Equals (value.Value));
     }
   }
 }

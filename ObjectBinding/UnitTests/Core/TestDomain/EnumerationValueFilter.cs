@@ -8,23 +8,20 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
+using Remotion.ObjectBinding.BindableObject;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 {
-  [BindableObject]
-  public class ClassWithDisabledEnumValue
+  public class EnumerationValueFilter:IEnumerationValueFilter
   {
-    public ClassWithDisabledEnumValue ()
+    public bool IsEnabled (IEnumerationValueInfo value, IBusinessObject businessObject, IBusinessObjectEnumerationProperty property)
     {
+      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+      ArgumentUtility.CheckNotNull ("property", property);
+
+      return (int) value.Value % 2 == 1;
     }
-
-    [DisableEnumValues (TestEnum.Value1)]
-    public TestEnum DisabledFromProperty { get; set; }
-
-    public TestEnum DisabledFromPropertyType { get; set; }
-
-    [DisableEnumValues (typeof (EnumerationValueFilter))]
-    public TestEnum DisabledWithObject { get; set; }
   }
 }

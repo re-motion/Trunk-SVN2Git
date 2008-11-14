@@ -18,7 +18,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
   public class EnumerationProperty : PropertyBase, IBusinessObjectEnumerationProperty
   {
     private readonly Enum _undefinedValue;
-    private IEnumerationValueFilter _enumerationValueFilter;
+    private readonly IEnumerationValueFilter _enumerationValueFilter;
 
     /// <exception cref="InvalidOperationException">
     /// The enum type has an UndefinedEnumValueAttribute with a value that does not match the enum's type.
@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       List<IEnumerationValueInfo> valueInfos = new List<IEnumerationValueInfo>();
       foreach (Enum value in Enum.GetValues (UnderlyingType))
       {
-        IEnumerationValueInfo enumerationValueInfo = GetValueInfoByValue (value, null);
+        IEnumerationValueInfo enumerationValueInfo = GetValueInfoByValue (value, businessObject);
         if (enumerationValueInfo != null)
           valueInfos.Add (enumerationValueInfo);
       }
@@ -54,7 +54,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <remarks> CLS type enums do not inherently support the disabling of its values. </remarks>
     public IEnumerationValueInfo[] GetEnabledValues (IBusinessObject businessObject)
     {
-      return Array.FindAll (GetAllValues (businessObject), delegate (IEnumerationValueInfo current) { return current.IsEnabled; });
+      return Array.FindAll (GetAllValues (businessObject), current => current.IsEnabled);
     }
 
     /// <overloads> Returns a specific enumeration value. </overloads>
@@ -175,7 +175,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       DisableEnumValuesAttribute disableEnumValuesAttribute = PropertyInfo.GetCustomAttribute<DisableEnumValuesAttribute> (true);
 
       if (disableEnumValuesAttribute == null)
-        disableEnumValuesAttribute = AttributeUtility.GetCustomAttribute<DisableEnumValuesAttribute> (PropertyInfo.DeclaringType, true);
+        disableEnumValuesAttribute = AttributeUtility.GetCustomAttribute<DisableEnumValuesAttribute> (PropertyInfo.PropertyType, true);
 
       if (disableEnumValuesAttribute == null)
         return null;
