@@ -24,29 +24,29 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       ArgumentUtility.CheckNotNull ("property", property);
 
       AccessControlEntry ace = (AccessControlEntry) businessObject;
-      bool isStateless = ace.AccessControlList is StatelessAccessControlList;
+      bool isStateful = ace.AccessControlList is StatefulAccessControlList;
 
       switch (property.Identifier)
       {
         case "TenantCondition":
-          return value.IsEnabled && IsTenantConditionEnabled ((TenantCondition) value.Value, isStateless);
+          return value.IsEnabled && IsTenantConditionEnabled ((TenantCondition) value.Value, isStateful);
         case "GroupCondition":
-          return value.IsEnabled && IsGroupConditionEnabled ((GroupCondition) value.Value, isStateless);
+          return value.IsEnabled && IsGroupConditionEnabled ((GroupCondition) value.Value, isStateful);
         case "UserCondition":
-          return value.IsEnabled && IsUserConditionEnabled ((UserCondition) value.Value, isStateless);
+          return value.IsEnabled && IsUserConditionEnabled ((UserCondition) value.Value, isStateful);
         default:
           throw CreateInvalidOperationException (property.Identifier);
       }
     }
 
-    private bool IsTenantConditionEnabled (TenantCondition value, bool isStateless)
+    private bool IsTenantConditionEnabled (TenantCondition value, bool isStateful)
     {
       switch (value)
       {
         case TenantCondition.None:
           return true;
         case TenantCondition.OwningTenant:
-          return !isStateless;
+          return isStateful;
         case TenantCondition.SpecificTenant:
           return true;
         default:
@@ -54,33 +54,33 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
-    private bool IsGroupConditionEnabled (GroupCondition value, bool isStateless)
+    private bool IsGroupConditionEnabled (GroupCondition value, bool isStateful)
     {
       switch (value)
       {
         case GroupCondition.None:
           return true;
         case GroupCondition.OwningGroup:
-          return !isStateless;
+          return isStateful;
         case GroupCondition.SpecificGroup:
           return true;
         case GroupCondition.AnyGroupWithSpecificGroupType:
           return true;
         case GroupCondition.BranchOfOwningGroup:
-          return !isStateless;
+          return isStateful;
         default:
           throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupCondition'.", value);
       }
     }
 
-    private bool IsUserConditionEnabled (UserCondition value, bool isStateless)
+    private bool IsUserConditionEnabled (UserCondition value, bool isStateful)
     {
       switch (value)
       {
         case UserCondition.None:
           return true;
         case UserCondition.Owner:
-          return !isStateless;
+          return isStateful;
         case UserCondition.SpecificUser:
           return true;
         case UserCondition.SpecificPosition:

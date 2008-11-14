@@ -85,6 +85,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       AdjustSpecificGroupTypeField();
       AdjustSpecificUserField();
       AdjustSpecificPositionField();
+      AdjustSpecificAbstractRoleField();
     }
 
     public override void SaveValues (bool interim)
@@ -202,6 +203,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     {
       bool isPositionSelected = (UserCondition?) UserConditionField.Value == UserCondition.SpecificPosition;
       SpecificPositionField.Visible = isPositionSelected;
+    }
+
+    private void AdjustSpecificAbstractRoleField ()
+    {
+      SpecificAbstractRoleField.Visible = CurrentAccessControlEntry.AccessControlList is StatefulAccessControlList;
     }
 
     private void LoadPermissions (bool interim)
