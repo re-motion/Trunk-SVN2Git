@@ -106,7 +106,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return MatchPrincipalAgainstUser (token.Principal, _ace.SpecificUser);
 
         case UserCondition.SpecificPosition:
-          return MatchPosition (token);
+          return MatchPrincipalAgainstPosition (token.Principal);
 
         default:
           throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'UserCondition'", _ace.UserCondition);
@@ -124,12 +124,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return principal == referenceUser;
     }
 
-    private bool MatchPosition (SecurityToken token)
+    private bool MatchPrincipalAgainstPosition (User principal)
     {
-      if (token.Principal == null)
+      if (principal == null)
         return false;
 
-      return GetMatchingPrincipalRoles (token.Principal).Any();
+      return GetMatchingPrincipalRoles (principal).Any();
     }
 
     private bool MatchesGroupCondition (SecurityToken token)
@@ -150,7 +150,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return MatchPrincipalAgainstGroup (token.Principal, FindBranchRoot (token.OwningGroup), GroupHierarchyCondition.ThisAndChildren);
 
         case GroupCondition.AnyGroupWithSpecificGroupType:
-          return MatchPosition (token);
+          return MatchPrincipalAgainstPosition (token.Principal);
 
         default:
           throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupCondition'", _ace.GroupCondition);
@@ -234,8 +234,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     //TODO MK: Move to Linq-Extensions
     private IEnumerable<Group> GetParents (Group group)
     {
-      for (var currentGroup = group; currentGroup != null; currentGroup = currentGroup.Parent)
-        yield return currentGroup;
+      for (var current = group; current != null; current = current.Parent)
+        yield return current;
     }
 
     private IEnumerable<Tenant> GetParents (Tenant tenant)
