@@ -31,7 +31,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       AddSearchDelegate ("SpecificTenant", delegate { return Tenant.FindAll().ToArray(); });
       AddSearchDelegate ("SpecificGroup", SearchGroups);
-      AddSearchDelegate ("SpecificPosition", delegate { return Position.FindAll().ToArray(); });
+      AddSearchDelegate ("SpecificUser", SearchUsers);
+      AddSearchDelegate ("SpecificPosition", delegate { return Position.FindAll ().ToArray (); });
       AddSearchDelegate ("SpecificGroupType", delegate { return GroupType.FindAll ().ToArray (); });
       AddSearchDelegate ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll ().ToArray (); });
     }
@@ -42,6 +43,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       ObjectID tenantID = ObjectID.Parse (selectStatement);
 
       return Group.FindByTenantID (tenantID).ToArray ();
+    }
+
+    private IBusinessObject[] SearchUsers (AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, string selectStatement)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("selectStatement", selectStatement);
+      ObjectID tenantID = ObjectID.Parse (selectStatement);
+
+      return User.FindByTenantID (tenantID).ToArray ();
     }
   }
 }

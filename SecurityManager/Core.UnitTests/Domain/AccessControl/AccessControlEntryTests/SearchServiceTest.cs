@@ -109,6 +109,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
+    public void SearchSpecificUsers ()
+    {
+      var property = (IBusinessObjectReferenceProperty) _aceClass.GetPropertyDefinition ("SpecificUser");
+      Assert.That (property, Is.Not.Null);
+
+      var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
+      Assert.That (tenant, Is.Not.Null);
+
+      ObjectList<User> expected = User.FindByTenantID (tenant.ID);
+      Assert.That (expected, Is.Not.Empty);
+
+      Assert.That (property.SupportsSearchAvailableObjects, Is.True);
+
+      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, tenant.ID.ToString ());
+      Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
     public void SearchSpecificPositions ()
     {
       var property = (IBusinessObjectReferenceProperty) _aceClass.GetPropertyDefinition ("SpecificPosition");

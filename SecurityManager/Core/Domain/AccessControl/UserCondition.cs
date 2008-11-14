@@ -9,9 +9,11 @@
  */
 
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
+  [EnumDescriptionResource ("Remotion.SecurityManager.Globalization.Domain.AccessControl.UserCondition")]
   public enum UserCondition
   {
     None = 0,

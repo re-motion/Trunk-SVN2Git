@@ -117,31 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="property:TenantCondition" xml:space="preserve">
-    <value>Tenant Condition</value>
+  <data name="Remotion.SecurityManager.Domain.AccessControl.UserCondition.None" xml:space="preserve">
+    <value>Any User</value>
   </data>
-  <data name="property:GroupCondition" xml:space="preserve">
-    <value>Group Condition</value>
+  <data name="Remotion.SecurityManager.Domain.AccessControl.UserCondition.Owner" xml:space="preserve">
+    <value>Owner</value>
   </data>
-  <data name="property:Priority" xml:space="preserve">
-    <value>Priority</value>
+  <data name="Remotion.SecurityManager.Domain.AccessControl.UserCondition.SpecificPosition" xml:space="preserve">
+    <value>User with Position</value>
   </data>
-  <data name="property:SpecificAbstractRole" xml:space="preserve">
-    <value>Abstract Role</value>
-  </data>
-  <data name="property:SpecificTenant" xml:space="preserve">
-    <value>Tenant</value>
-  </data>
-  <data name="property:SpecificPosition" xml:space="preserve">
-    <value>Position</value>
-  </data>
-  <data name="property:SpecificGroup" xml:space="preserve">
-    <value>Group</value>
-  </data>
-  <data name="property:SpecificGroupType" xml:space="preserve">
-    <value>Group Type</value>
-  </data>
-  <data name="property:UserCondition" xml:space="preserve">
-    <value>User Condition</value>
+  <data name="Remotion.SecurityManager.Domain.AccessControl.UserCondition.SpecificUser" xml:space="preserve">
+    <value>Specific User</value>
   </data>
 </root>

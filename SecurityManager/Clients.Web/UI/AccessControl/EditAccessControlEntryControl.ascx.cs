@@ -29,11 +29,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     // static members and constants
 
-    private static readonly object s_deleteEvent = new object ();
+    private static readonly object s_deleteEvent = new object();
 
     // member fields
 
-    private readonly List<EditPermissionControl> _editPermissionControls = new List<EditPermissionControl> ();
+    private readonly List<EditPermissionControl> _editPermissionControls = new List<EditPermissionControl>();
 
     // construction and disposing
 
@@ -58,9 +58,20 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-      SpecificGroupField.ServicePath = ResourceUrlResolver.GetResourceUrl (
-          this, Context, typeof (SecurityManagerSearchWebService), ResourceType.UI, "SecurityManagerSearchWebService.asmx");
-      SpecificGroupField.ServiceMethod = "GetBusinessObjects";
+
+      if (string.IsNullOrEmpty (SpecificGroupField.ServicePath))
+      {
+        SpecificGroupField.ServicePath = ResourceUrlResolver.GetResourceUrl (
+            this, Context, typeof (SecurityManagerSearchWebService), ResourceType.UI, "SecurityManagerSearchWebService.asmx");
+        SpecificGroupField.ServiceMethod = "GetBusinessObjects";
+      }
+
+      if (string.IsNullOrEmpty (SpecificUserField.ServicePath))
+      {
+        SpecificUserField.ServicePath = ResourceUrlResolver.GetResourceUrl (
+            this, Context, typeof (SecurityManagerSearchWebService), ResourceType.UI, "SecurityManagerSearchWebService.asmx");
+        SpecificUserField.ServiceMethod = "GetBusinessObjects";
+      }
     }
 
     public override void LoadValues (bool interim)
@@ -68,16 +79,17 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       base.LoadValues (interim);
 
       LoadPermissions (interim);
-      AdjustSpecificTenantField ();
+      AdjustSpecificTenantField();
       AdjustSpecificGroupField();
       AdjustGroupHierarchyConditionField();
-      AdjustSpecificGroupTypeField ();
-      AdjustPositionFields ();
+      AdjustSpecificGroupTypeField();
+      AdjustSpecificUserField();
+      AdjustSpecificPositionField();
     }
 
     public override void SaveValues (bool interim)
     {
-      using (new SecurityFreeSection ())
+      using (new SecurityFreeSection())
       {
         base.SaveValues (interim);
       }
@@ -93,10 +105,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     public override bool Validate ()
     {
-      bool isValid = base.Validate ();
+      bool isValid = base.Validate();
 
-      isValid &= FormGridManager.Validate ();
-      isValid &= ValidatePermissions ();
+      isValid &= FormGridManager.Validate();
+      isValid &= ValidatePermissions();
 
       return isValid;
     }
@@ -110,7 +122,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected void TenantField_SelectionChanged (object sender, EventArgs e)
     {
-      AdjustSpecificTenantField ();
+      AdjustSpecificTenantField();
     }
 
     protected void SpecificTenantField_SelectionChanged (object sender, EventArgs e)
@@ -120,9 +132,26 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected void GroupConditionField_SelectionChanged (object sender, EventArgs e)
     {
-      AdjustSpecificGroupField ();
-      AdjustGroupHierarchyConditionField ();
-      AdjustSpecificGroupTypeField ();
+      AdjustSpecificGroupField();
+      AdjustGroupHierarchyConditionField();
+      AdjustSpecificGroupTypeField();
+    }
+
+    protected void UserConditionField_SelectionChanged (object sender, EventArgs e)
+    {
+      AdjustSpecificUserField();
+      AdjustSpecificPositionField();
+    }
+
+    private void AdjustSpecificTenantField ()
+    {
+      if ((TenantCondition?) TenantConditionField.Value == TenantCondition.SpecificTenant)
+        SpecificTenantField.Visible = true;
+      else
+      {
+        SpecificTenantField.Visible = false;
+        SpecificTenantField.Value = null;
+      }
     }
 
     private void AdjustSpecificGroupField ()
@@ -132,9 +161,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       if (CurrentFunction.TenantID == null)
         throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
-      SpecificGroupField.Args = SpecificTenantField.BusinessObjectID ?? CurrentFunction.TenantID.ToString ();
+      SpecificGroupField.Args = SpecificTenantField.BusinessObjectID ?? CurrentFunction.TenantID.ToString();
 
-      SpecificGroupField.Visible = (GroupCondition?)GroupConditionField.Value == GroupCondition.SpecificGroup;
+      SpecificGroupField.Visible = (GroupCondition?) GroupConditionField.Value == GroupCondition.SpecificGroup;
     }
 
     private void AdjustGroupHierarchyConditionField ()
@@ -157,43 +186,22 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       SpecificGroupTypeField.Visible = isSpecificGroupTypeSelected || isBranchOfOwningGroupSelected;
     }
 
-    protected void SpecificPositionField_SelectionChanged (object sender, EventArgs e)
+    private void AdjustSpecificUserField ()
     {
-      AdjustPositionFields ();
+      if (SpecificTenantField.BusinessObjectID != null && SpecificUserField.BusinessObjectID != null)
+        SpecificUserField.Value = null;
+
+      if (CurrentFunction.TenantID == null)
+        throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
+      SpecificUserField.Args = SpecificTenantField.BusinessObjectID ?? CurrentFunction.TenantID.ToString();
+
+      SpecificUserField.Visible = (UserCondition?) UserConditionField.Value == UserCondition.SpecificUser;
     }
 
-    private void AdjustSpecificTenantField ()
+    private void AdjustSpecificPositionField ()
     {
-      if ((TenantCondition?) TenantConditionField.Value == TenantCondition.SpecificTenant)
-      {
-        SpecificTenantField.Visible = true;
-      }
-      else
-      {
-        SpecificTenantField.Visible = false;
-        SpecificTenantField.Value = null;
-      }
-    }
-
-    private void AdjustPositionFields ()
-    {
-      if (SpecificPositionField.BusinessObjectID == null)
-        CurrentAccessControlEntry.UserCondition = UserCondition.None;
-      else
-        CurrentAccessControlEntry.UserCondition = UserCondition.SpecificPosition;
-
-      // TODO: Remove when Group can stand alone during ACE lookup.
-      //if (SpecificPositionField.BusinessObjectID == null)
-      //{
-      //  SpecificPositionAndGroupLinkingLabel.Visible = false;
-      //  GroupConditionField.Visible = false;
-      //  GroupConditionField.Value = GroupCondition.None;
-      //}
-      //else
-      //{
-      //  SpecificPositionAndGroupLinkingLabel.Visible = true;
-      //  GroupConditionField.Visible = true;
-      //}
+      bool isPositionSelected = (UserCondition?) UserConditionField.Value == UserCondition.SpecificPosition;
+      SpecificPositionField.Visible = isPositionSelected;
     }
 
     private void LoadPermissions (bool interim)
@@ -205,8 +213,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void CreateEditPermissionControls (DomainObjectCollection permissions)
     {
-      PermissionsPlaceHolder.Controls.Clear ();
-      _editPermissionControls.Clear ();
+      PermissionsPlaceHolder.Controls.Clear();
+      _editPermissionControls.Clear();
 
       HtmlGenericControl ul = new HtmlGenericControl ("ul");
       ul.Attributes.Add ("class", "permissionsList");
@@ -233,7 +241,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     {
       bool isValid = true;
       foreach (EditPermissionControl control in _editPermissionControls)
-        isValid &= control.Validate ();
+        isValid &= control.Validate();
 
       return isValid;
     }

@@ -82,6 +82,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public abstract GroupCondition GroupCondition { get; set; }
 
+    public abstract GroupHierarchyCondition GroupHierarchyCondition { get; set; }
+
     public abstract UserCondition UserCondition { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
@@ -91,8 +93,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DBBidirectionalRelation ("AccessControlEntries")]
     public abstract Group SpecificGroup { get; set; }
 
-    public abstract GroupHierarchyCondition GroupHierarchyCondition { get; set; }
-
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
     [DBBidirectionalRelation ("AccessControlEntries")]
     public abstract GroupType SpecificGroupType { get; set; }
@@ -101,6 +101,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DBBidirectionalRelation ("AccessControlEntries")]
     public abstract Position SpecificPosition { get; set; }
 
+    [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
     [DBBidirectionalRelation ("AccessControlEntries")]
     public abstract User SpecificUser { get; set; }
 

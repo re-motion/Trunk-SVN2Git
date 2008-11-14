@@ -61,9 +61,14 @@
     </td>      
   </tr>
   <tr>
-    <td><remotion:SmartLabel ID="SpecificPositionLabel" runat="server" ForControl="SpecificPositionField"/></td>
+    <td><remotion:SmartLabel ID="UserConditionLabel" runat="server" ForControl="UserConditionField"/></td>
     <td>
-      <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" OnSelectionChanged="SpecificPositionField_SelectionChanged" >
+      <remotion:BocEnumValue ID="UserConditionField" runat="server" PropertyIdentifier="UserCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="UserConditionField_SelectionChanged" Width="14em">
+        <ListControlStyle AutoPostBack="True"/>
+      </remotion:BocEnumValue>
+      <remotion:BocAutoCompleteReferenceValue ID="SpecificUserField" runat="server" PropertyIdentifier="SpecificUser" DataSourceControl="CurrentObject" Required="true">
+      </remotion:BocAutoCompleteReferenceValue>
+      <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject">
         <PersistedCommand>
           <remotion:BocCommand />
         </PersistedCommand>

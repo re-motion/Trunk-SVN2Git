@@ -158,10 +158,10 @@ CREATE TABLE [dbo].[AccessControlEntry]
   [Index] int NOT NULL,
   [TenantCondition] int NOT NULL,
   [GroupCondition] int NOT NULL,
+  [GroupHierarchyCondition] int NOT NULL,
   [UserCondition] int NOT NULL,
   [SpecificTenantID] uniqueidentifier NULL,
   [SpecificGroupID] uniqueidentifier NULL,
-  [GroupHierarchyCondition] int NOT NULL,
   [SpecificGroupTypeID] uniqueidentifier NULL,
   [SpecificPositionID] uniqueidentifier NULL,
   [SpecificUserID] uniqueidentifier NULL,
@@ -521,9 +521,9 @@ ALTER TABLE [dbo].[User] ADD
 GO
 
 -- Create a view for every class
-CREATE VIEW [dbo].[AccessControlEntryView] ([ID], [ClassID], [Timestamp], [Index], [TenantCondition], [GroupCondition], [UserCondition], [SpecificTenantID], [SpecificGroupID], [GroupHierarchyCondition], [SpecificGroupTypeID], [SpecificPositionID], [SpecificUserID], [SpecificAbstractRoleID], [SpecificAbstractRoleIDClassID], [AccessControlListID], [AccessControlListIDClassID])
+CREATE VIEW [dbo].[AccessControlEntryView] ([ID], [ClassID], [Timestamp], [Index], [TenantCondition], [GroupCondition], [GroupHierarchyCondition], [UserCondition], [SpecificTenantID], [SpecificGroupID], [SpecificGroupTypeID], [SpecificPositionID], [SpecificUserID], [SpecificAbstractRoleID], [SpecificAbstractRoleIDClassID], [AccessControlListID], [AccessControlListIDClassID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [TenantCondition], [GroupCondition], [UserCondition], [SpecificTenantID], [SpecificGroupID], [GroupHierarchyCondition], [SpecificGroupTypeID], [SpecificPositionID], [SpecificUserID], [SpecificAbstractRoleID], [SpecificAbstractRoleIDClassID], [AccessControlListID], [AccessControlListIDClassID]
+  SELECT [ID], [ClassID], [Timestamp], [Index], [TenantCondition], [GroupCondition], [GroupHierarchyCondition], [UserCondition], [SpecificTenantID], [SpecificGroupID], [SpecificGroupTypeID], [SpecificPositionID], [SpecificUserID], [SpecificAbstractRoleID], [SpecificAbstractRoleIDClassID], [AccessControlListID], [AccessControlListIDClassID]
     FROM [dbo].[AccessControlEntry]
     WHERE [ClassID] IN ('AccessControlEntry')
   WITH CHECK OPTION

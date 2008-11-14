@@ -131,13 +131,31 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificGroupTypeField;
         
         /// <summary>
-        /// SpecificPositionLabel control.
+        /// UserConditionLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.SmartLabel SpecificPositionLabel;
+        protected global::Remotion.Web.UI.Controls.SmartLabel UserConditionLabel;
+        
+        /// <summary>
+        /// UserConditionField control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue UserConditionField;
+        
+        /// <summary>
+        /// SpecificUserField control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue SpecificUserField;
         
         /// <summary>
         /// SpecificPositionField control.

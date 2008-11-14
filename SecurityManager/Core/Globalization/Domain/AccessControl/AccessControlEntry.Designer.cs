@@ -131,5 +131,14 @@ namespace Remotion.SecurityManager.Globalization.Domain.AccessControl {
                 return ResourceManager.GetString("property:TenantCondition", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Condition.
+        /// </summary>
+        internal static string property_UserCondition {
+            get {
+                return ResourceManager.GetString("property:UserCondition", resourceCulture);
+            }
+        }
     }
 }

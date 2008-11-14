@@ -141,4 +141,7 @@
   <data name="property:TenantCondition" xml:space="preserve">
     <value>Mandantenzugehörigkeit</value>
   </data>
+  <data name="property:UserCondition" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
 </root>
