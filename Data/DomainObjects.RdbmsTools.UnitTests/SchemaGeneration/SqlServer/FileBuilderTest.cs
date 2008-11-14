@@ -58,8 +58,10 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.SchemaGeneration.SqlS
     private string GetEmbeddedStringResource (string name)
     {
       Assembly assembly = GetType().Assembly;
-      StreamReader reader = new StreamReader (assembly.GetManifestResourceStream (typeof (FileBuilderTest), name));
-      return reader.ReadToEnd();
+      using (StreamReader reader = new StreamReader (assembly.GetManifestResourceStream (typeof (FileBuilderTest), name)))
+      {
+        return reader.ReadToEnd();
+      }
     }
 
     public override void TearDown ()
