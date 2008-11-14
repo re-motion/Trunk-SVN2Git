@@ -80,7 +80,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public abstract TenantCondition TenantCondition { get; set; }
 
-    //[DisableEnumValuesAttribute (GroupCondition.SpecificGroup, GroupCondition.BranchOfOwningGroup, GroupCondition.SpecificGroupType)]
     public abstract GroupCondition GroupCondition { get; set; }
 
     public abstract UserCondition UserCondition { get; set; }
@@ -92,7 +91,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DBBidirectionalRelation ("AccessControlEntries")]
     public abstract Group SpecificGroup { get; set; }
 
-    //[DisableEnumValuesAttribute (GroupHierarchyCondition.This, GroupHierarchyCondition.ThisAndChildren, GroupHierarchyCondition.ThisAndParentAndChildren)]
     public abstract GroupHierarchyCondition GroupHierarchyCondition { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]

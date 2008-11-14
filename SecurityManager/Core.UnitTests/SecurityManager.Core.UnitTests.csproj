@@ -106,6 +106,7 @@
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForBranchOfOwningGroupAndPosition.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForOwningUser.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForSpecificUser.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForGroupAndUser.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\MixedAces.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\EmptyToken.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\CompanyStructureHelper.cs" />
