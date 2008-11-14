@@ -22,15 +22,17 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private readonly User _principal;
     private readonly Tenant _owningTenant;
     private readonly Group _owningGroup;
+    private readonly User _owningUser;
     private readonly ReadOnlyCollection<AbstractRoleDefinition> _abstractRoles;
 
-    public SecurityToken (User principal, Tenant owningTenant, Group owningGroup, IList<AbstractRoleDefinition> abstractRoles)
+    public SecurityToken (User principal, Tenant owningTenant, Group owningGroup, User owningUser, IList<AbstractRoleDefinition> abstractRoles)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("abstractRoles", abstractRoles);
 
       _principal = principal;
       _owningTenant = owningTenant;
       _owningGroup = owningGroup;
+      _owningUser = owningUser;
       _abstractRoles = new ReadOnlyCollection<AbstractRoleDefinition> (abstractRoles);
     }
 
@@ -47,6 +49,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public Group OwningGroup
     {
       get { return _owningGroup; }
+    }
+
+    public User OwningUser
+    {
+      get { return _owningUser; }
     }
 
     public ReadOnlyCollection<AbstractRoleDefinition> AbstractRoles

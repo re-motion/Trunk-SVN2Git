@@ -102,7 +102,7 @@ namespace Remotion.SecurityManager.UnitTests
     {
       using (_clientTransaction.EnterNonDiscardingScope ())
       {
-        SecurityToken token = new SecurityToken (null, null, null, new List<AbstractRoleDefinition>());
+        SecurityToken token = new SecurityToken (null, null, null, null, new List<AbstractRoleDefinition> ());
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
         Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principal, _context)).Return (token);
@@ -122,7 +122,7 @@ namespace Remotion.SecurityManager.UnitTests
       {
         List<AbstractRoleDefinition> roles = new List<AbstractRoleDefinition>();
         roles.Add (_ace.SpecificAbstractRole);
-        SecurityToken token = new SecurityToken (null, null, null, roles);
+        SecurityToken token = new SecurityToken (null, null, null, null, roles);
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
         Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principal, _context)).Return (token);
@@ -143,7 +143,7 @@ namespace Remotion.SecurityManager.UnitTests
       {
         List<AbstractRoleDefinition> roles = new List<AbstractRoleDefinition>();
         roles.Add (_ace.SpecificAbstractRole);
-        SecurityToken token = new SecurityToken (null, null, null, roles);
+        SecurityToken token = new SecurityToken (null, null, null, null, roles);
 
         Expect.Call (_mockAclFinder.Find (null, null)).Return (CreateAcl (_ace)).Constraints (
             Mocks_Is.NotNull(),

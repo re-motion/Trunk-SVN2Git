@@ -362,32 +362,32 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     public SecurityToken CreateEmptyToken ()
     {
-      return CreateToken (null, null, null, null);
+      return CreateToken (null, null, null, null, null);
     }
 
     public SecurityToken CreateTokenWithOwningTenant (User user, Tenant owningTenant)
     {
-      return CreateToken (user, owningTenant, null, null);
+      return CreateToken (user, owningTenant, null, null, null);
     }
 
     public SecurityToken CreateTokenWithAbstractRole (params AbstractRoleDefinition[] roleDefinitions)
     {
-      return CreateToken (null, null, null, roleDefinitions);
+      return CreateToken (null, null, null, null, roleDefinitions);
     }
 
-    public SecurityToken CreateTokenWithOwningGroups (User user, Group owningGroup)
+    public SecurityToken CreateTokenWithOwningGroup (User user, Group owningGroup)
     {
-      return CreateToken (user, null, owningGroup, null);
+      return CreateToken (user, null, owningGroup, null, null);
     }
 
-    public SecurityToken CreateToken (User user, Tenant owningTenant, Group owningGroup, AbstractRoleDefinition[] abstractRoleDefinitions)
+    public SecurityToken CreateToken (User user, Tenant owningTenant, Group owningGroup, User owningUser, AbstractRoleDefinition[] abstractRoleDefinitions)
     {
       List<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition> ();
 
       if (abstractRoleDefinitions != null)
         abstractRoles.AddRange (abstractRoleDefinitions);
 
-      return new SecurityToken (user, owningTenant, owningGroup, abstractRoles);
+      return new SecurityToken (user, owningTenant, owningGroup, owningUser, abstractRoles);
     }
 
     public AbstractRoleDefinition CreateTestAbstractRole ()

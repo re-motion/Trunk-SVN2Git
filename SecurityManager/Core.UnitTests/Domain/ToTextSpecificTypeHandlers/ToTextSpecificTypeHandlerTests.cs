@@ -205,7 +205,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     [Test]
     public void SecurityTokenTest ()
     {
-      var x = new SecurityToken (User, Tenant, Group, List.New (TestHelper.CreateAbstractRoleDefinition("arole",456)));
+      var x = new SecurityToken (User, Tenant, Group, User2, List.New (TestHelper.CreateAbstractRoleDefinition("arole",456)));
       var result = To.String.e (x).CheckAndConvertToString ();
       //To.ConsoleLine.e (() => result);
       //Assert.That (result, NUnitText.Contains ("\"DaUs\"],tenant=[\"Da Tenant\"]," + Environment.NewLine + "roles={[\"DaUs\",\"Da Group\",\"Supreme Being\"]}],[\"Da Tenant\"],{[\"Da Group\"],[\"Anotha Group\"]},{[\"DaUs\",\"Da Group\",\"Supreme Being\"]},{[\"arole\"]}]"));
@@ -213,6 +213,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       Assert.That (result, NUnitText.Contains ("DaUs"));
       Assert.That (result, NUnitText.Contains ("Da Tenant"));
       Assert.That (result, NUnitText.Contains ("Da Group"));
+      Assert.That (result, NUnitText.Contains ("mr.smith"));
       Assert.That (result, NUnitText.Contains ("arole"));
     }
 

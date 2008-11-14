@@ -42,9 +42,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         User user = GetUser (principal.Identity.Name);
         Tenant owningTenant = GetTenant (context.OwnerTenant);
         Group owningGroup = GetGroup (context.OwnerGroup);
+        User owningUser = null;
         IList<AbstractRoleDefinition> abstractRoles = GetAbstractRoles (context.AbstractRoles);
 
-        return new SecurityToken (user, owningTenant, owningGroup, abstractRoles);
+        return new SecurityToken (user, owningTenant, owningGroup, owningUser, abstractRoles);
       }
     }
 

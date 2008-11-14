@@ -63,7 +63,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       User user = CreateUser (tenant, group);
       AccessControlEntry entry = TestHelper.CreateAceWithSpecficTenant (tenant);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateToken (user, null, null, new AbstractRoleDefinition[0]);
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, null);
 
       Assert.IsTrue (matcher.MatchesToken (token));
     }
@@ -76,7 +76,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       User user = CreateUser (tenant, group);
       AccessControlEntry entry = TestHelper.CreateAceWithSpecficTenant (TestHelper.CreateTenant ("Other Tenant"));
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateToken (user, null, null, new AbstractRoleDefinition[0]);
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, null);
 
       Assert.IsFalse (matcher.MatchesToken (token));
     }

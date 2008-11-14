@@ -86,7 +86,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void Create_WithValidUser ()
+    public void Create_WithValidPrincipal ()
     {
       SecurityContext context = CreateContext ();
       IPrincipal user = CreateTestUser ();
@@ -99,7 +99,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     [Test]
     [ExpectedException (typeof (AccessControlException), ExpectedMessage = "The user 'notexisting.user' could not be found.")]
-    public void Create_WithNotExistingUser ()
+    public void Create_WithNotExistingPrincipal ()
     {
       SecurityContext context = CreateContext ();
       IPrincipal user = CreateNotExistingUser ();

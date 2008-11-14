@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       AccessControlEntry entry = TestHelper.CreateAceWithPosition (managerPosition, GroupCondition.OwningGroup);
       entry.SpecificAbstractRole = TestHelper.CreateTestAbstractRole ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateTokenWithOwningGroups (user, group);
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, group);
 
       Assert.IsFalse (matcher.MatchesToken (token));
     }

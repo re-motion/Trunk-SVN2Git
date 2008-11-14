@@ -39,24 +39,27 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       User principal = CreateUser ("principal", CreateGroup ("principalGroup", null, principalTenant), principalTenant);
       Tenant owningTenant = CreateTenant ("owningTenant");
       Group owningGroup = CreateGroup ("owningGroup", null, owningTenant);
-      AbstractRoleDefinition abstractRole1 = AbstractRoleDefinition.NewObject(Guid.NewGuid(), "role1", 0);
+      User owningUser = CreateUser ("owningUser", CreateGroup ("owningUserGroup", null, owningTenant), owningTenant);
+      AbstractRoleDefinition abstractRole1 = AbstractRoleDefinition.NewObject (Guid.NewGuid (), "role1", 0);
       AbstractRoleDefinition abstractRole2 = AbstractRoleDefinition.NewObject (Guid.NewGuid (), "role2", 1);
-      SecurityToken token = new SecurityToken (principal, owningTenant, owningGroup, new List<AbstractRoleDefinition> { abstractRole1,abstractRole2});
+      SecurityToken token = new SecurityToken (principal, owningTenant, owningGroup, owningUser, new [] { abstractRole1,abstractRole2});
 
       Assert.That (token.Principal, Is.SameAs (principal));
       Assert.That (token.OwningTenant, Is.SameAs (owningTenant));
       Assert.That (token.OwningGroup, Is.SameAs (owningGroup));
-      Assert.That (token.AbstractRoles, Is.EquivalentTo (new []{abstractRole1, abstractRole2}));
+      Assert.That (token.OwningUser, Is.SameAs (owningUser));
+      Assert.That (token.AbstractRoles, Is.EquivalentTo (new[] { abstractRole1, abstractRole2 }));
     }
 
     [Test]
     public void Initialize_Empty ()
     {
-      SecurityToken token = new SecurityToken (null, null, null, new List<AbstractRoleDefinition> ());
+      SecurityToken token = new SecurityToken (null, null, null, null, new List<AbstractRoleDefinition> ());
 
       Assert.IsNull (token.Principal);
       Assert.IsNull (token.OwningTenant);
       Assert.IsNull (token.OwningGroup);
+      Assert.IsNull (token.OwningUser);
       Assert.IsEmpty (token.AbstractRoles);
     }
 

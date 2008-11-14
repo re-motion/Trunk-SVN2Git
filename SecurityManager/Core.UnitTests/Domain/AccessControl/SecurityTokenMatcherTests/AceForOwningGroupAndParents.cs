@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       Group owningGroup = _companyHelper.AustrianProjectsDepartment;
       TestHelper.CreateRole (user, owningGroup, _companyHelper.HeadPosition);
 
-      SecurityToken token = TestHelper.CreateToken (user, null, owningGroup, null);
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, owningGroup);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
@@ -61,7 +61,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       Assert.That (parentGroup, Is.Not.Null);
       TestHelper.CreateRole (user, parentGroup, _companyHelper.HeadPosition);
 
-      SecurityToken token = TestHelper.CreateToken (user, null, owningGroup, null);
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, owningGroup);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
@@ -77,7 +77,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       Assert.That (grandParentGroup, Is.Not.Null);
       TestHelper.CreateRole (user, grandParentGroup, _companyHelper.HeadPosition);
 
-      SecurityToken token = TestHelper.CreateToken (user, null, owningGroup, null);
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, owningGroup);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
@@ -93,7 +93,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       Assert.That (owningGroup, Is.Not.Null);
       TestHelper.CreateRole (user, childGroup, _companyHelper.HeadPosition);
 
-      SecurityToken token = TestHelper.CreateToken (user, null, owningGroup, null);
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, owningGroup);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 

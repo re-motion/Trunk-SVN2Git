@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       Tenant owningTenant = CreateOwningTenantEntry (aclProbe, user, ace);
       IList<AbstractRoleDefinition> abstractRoles = CreateAbstractRolesEntry (aclProbe, ace);
 
-      aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroup, abstractRoles);
+      aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroup, null, abstractRoles);
       //aclProbe._securityToken.SpecificAce = ace;
       return aclProbe;
     }

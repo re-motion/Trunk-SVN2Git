@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       TestHelper.CreateRole (user, _companyHelper.AustrianProjectsDepartment, _companyHelper.HeadPosition);
 
-      SecurityToken token = TestHelper.CreateToken (user, null, null, null);
+      SecurityToken token = TestHelper.CreateToken (user, null, null, null, null);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       TestHelper.CreateRole (user, _companyHelper.AustrianProjectsDepartment, _companyHelper.MemberPosition);
 
-      SecurityToken token = TestHelper.CreateToken (user, null, null, null);
+      SecurityToken token = TestHelper.CreateToken (user, null, null, null, null);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
