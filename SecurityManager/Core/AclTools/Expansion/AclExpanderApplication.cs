@@ -117,15 +117,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
     }
 
-    // Returns an AclExpansionHtmlWriterSettings initialized from the AclExpanderApplication Settings.
-    private AclExpansionHtmlWriterSettings CreateAclExpansionHtmlWriterSettings ()
-    {
-      var aclExpansionHtmlWriterSettings = new AclExpansionHtmlWriterSettings ();
-      aclExpansionHtmlWriterSettings.OutputRowCount = Settings.OutputRowCount;
-      aclExpansionHtmlWriterSettings.OutputDeniedRights = Settings.OutputDeniedRights;
-      return aclExpansionHtmlWriterSettings;
-    }
-
     private void WriteAclExpansionAsMultiFileHtml (List<AclExpansionEntry> aclExpansion)
     {
       _textWriterFactory.Extension = "html";
@@ -136,9 +127,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       //aclExpansionHtmlWriterSettings.
 
       var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (_textWriterFactory, true);
-      //aclExpansionMultiFileHtmlWriter.DetailHtmlWriterSettings = CreateAclExpansionHtmlWriterSettings();
+      aclExpansionMultiFileHtmlWriter.DetailHtmlWriterSettings = CreateAclExpansionHtmlWriterSettings();
       aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
       File.Copy (Path.Combine (".", CssFileName), Path.Combine (DirectoryUsed, CssFileName), true);
+    }
+
+
+
+    // Returns an AclExpansionHtmlWriterSettings initialized from the AclExpanderApplication Settings.
+    private AclExpansionHtmlWriterSettings CreateAclExpansionHtmlWriterSettings ()
+    {
+      var aclExpansionHtmlWriterSettings = new AclExpansionHtmlWriterSettings ();
+      aclExpansionHtmlWriterSettings.OutputRowCount = Settings.OutputRowCount;
+      aclExpansionHtmlWriterSettings.OutputDeniedRights = Settings.OutputDeniedRights;
+      return aclExpansionHtmlWriterSettings;
     }
 
 

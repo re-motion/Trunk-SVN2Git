@@ -24,17 +24,25 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// </summary>
   public class AclExpansionMultiFileHtmlWriter : AclExpansionHtmlWriterBase
   {
-    private const string _masterFileName = "_AclExpansionMain_";
+    public const string MasterFileName = "_AclExpansionMain_";
 
     private readonly ITextWriterFactory _textWriterFactory;
+    private AclExpansionHtmlWriterSettings _detailHtmlWriterSettings = new AclExpansionHtmlWriterSettings();
 
     public AclExpansionMultiFileHtmlWriter (ITextWriterFactory textWriterFactory, bool indentXml)
     {
       _textWriterFactory = textWriterFactory;
-      var textWriter = _textWriterFactory.NewTextWriter (_masterFileName);
+      var textWriter = _textWriterFactory.NewTextWriter (MasterFileName);
       htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
-   
+
+
+    public AclExpansionHtmlWriterSettings DetailHtmlWriterSettings
+    {
+      get { return _detailHtmlWriterSettings; }
+      set { _detailHtmlWriterSettings = value; }
+    }
+
 
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
@@ -85,14 +93,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteTableData (user.FirstName);
       WriteTableData (user.LastName);
 
-      string userDetailFileName = ToValidFileName (user.UserName); //+".html";
+      string userDetailFileName = ToValidFileName (user.UserName); 
       var detailTextWriter = _textWriterFactory.NewTextWriter (userDetailFileName);
 
-      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, detailTextWriter, false);
       var aclExpansionSingleUser = GetAccessControlEntriesForUser (aclExpansion, user);
-      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+      var detailAclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionSingleUser, detailTextWriter, false);
+      detailAclExpansionHtmlWriter.Settings = _detailHtmlWriterSettings;
+      detailAclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
 
-      string relativePath = _textWriterFactory.GetRelativePath (_masterFileName, userDetailFileName);
+      string relativePath = _textWriterFactory.GetRelativePath (MasterFileName, userDetailFileName);
       WriteTableRowBeginIfNotInTableRow ();
       htmlTagWriter.Tags.td ();
       htmlTagWriter.Tag ("a");

@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -16,6 +17,9 @@ using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
+using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.Text.StringExtensions;
+using Remotion.Utilities;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -24,10 +28,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   public class AclExpansionMultiFileHtmlWriterTest : AclToolsTestBase
   {
     [Test]
-    [Ignore]
+    //[Ignore]
     public void TextWriterFactoryResultTest ()
     {
-      using (new CultureScope ("de-AT", "de-AT"))
+      //using (new CultureScope ("de-AT", "de-AT"))
+      using (new CultureScope ("en-US"))
       {
         var aclExpander = new AclExpander();
         var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
@@ -36,35 +41,47 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (stringWriterFactory, false);
         aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
         //To.ConsoleLine.e (stringWriterFactory);
+        //WriteStringWriterFactory (stringWriterFactory, To.Console);
 
         Assert.That (stringWriterFactory.Count, Is.EqualTo (6));
 
-        // Master file
-        AssertTextWriterFactoryMemberEquals(stringWriterFactory,"AclExpansionMain","<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion - User Master Table</title><style>@import \"AclExpansion.css\";</style></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-user-table\"><tr><th class=\"header\">User</th><th class=\"header\">First Name</th><th class=\"header\">Last Name</th><th class=\"header\">Access Rights</th></tr><tr><td>test.user</td><td>test</td><td>user</td><td><a href=\".\\test.user\" target=\"_blank\">.\\test.user</a></td></tr><tr><td>group0/user1</td><td></td><td>user1</td><td><a href=\".\\group0_user1\" target=\"_blank\">.\\group0_user1</a></td></tr><tr><td>group1/user1</td><td></td><td>user1</td><td><a href=\".\\group1_user1\" target=\"_blank\">.\\group1_user1</a></td></tr><tr><td>group0/user2</td><td></td><td>user2</td><td><a href=\".\\group0_user2\" target=\"_blank\">.\\group0_user2</a></td></tr><tr><td>group1/user2</td><td></td><td>user2</td><td><a href=\".\\group1_user2\" target=\"_blank\">.\\group1_user2</a></td></tr></table></body></html>");
-
-        // Detail files
-        AssertTextWriterFactoryMemberEquals (stringWriterFactory, "test.user", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"4\">user test, Dipl.Ing.(FH)</td><td rowspan=\"1\">testGroup, Manager</td><td rowspan=\"1\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr><tr><td rowspan=\"1\">testGroup, Official</td><td rowspan=\"1\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr><tr><td rowspan=\"1\">testOwningGroup, Manager</td><td rowspan=\"1\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr><tr><td rowspan=\"1\">testRootGroup, Official</td><td rowspan=\"1\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr></table></body></html>");
-        AssertTextWriterFactoryMemberEquals (stringWriterFactory, "group0_user1", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"1\">user1</td><td rowspan=\"1\">parentGroup0, Manager</td><td rowspan=\"1\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr></table></body></html>");
-        AssertTextWriterFactoryMemberEquals (stringWriterFactory, "group1_user1", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"1\">user1</td><td rowspan=\"1\">parentGroup1, Manager</td><td rowspan=\"1\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr></table></body></html>");
-        AssertTextWriterFactoryMemberEquals (stringWriterFactory, "group0_user2", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"1\">user2</td><td rowspan=\"1\">parentGroup0, Official</td><td rowspan=\"1\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr></table></body></html>");
-        AssertTextWriterFactoryMemberEquals (stringWriterFactory, "group1_user2", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"1\">user2</td><td rowspan=\"1\">parentGroup1, Official</td><td rowspan=\"1\">Order</td><td>Dhl, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr></table></body></html>");
+        AssertTextWriterFactoryMemberEquals (stringWriterFactory, "_AclExpansionMain_", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion - User Master Table</title><style>@import \"AclExpansion.css\";</style><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-user-table\"><tr><th class=\"header\">User</th><th class=\"header\">First Name</th><th class=\"header\">Last Name</th><th class=\"header\">Access Rights</th></tr><tr><td>test.user</td><td>test</td><td>user</td><td><a href=\".\\test.user\" target=\"_blank\">.\\test.user</a></td></tr><tr><td>group0/user1</td><td></td><td>user1</td><td><a href=\".\\group0_user1\" target=\"_blank\">.\\group0_user1</a></td></tr><tr><td>group1/user1</td><td></td><td>user1</td><td><a href=\".\\group1_user1\" target=\"_blank\">.\\group1_user1</a></td></tr><tr><td>group0/user2</td><td></td><td>user2</td><td><a href=\".\\group0_user2\" target=\"_blank\">.\\group0_user2</a></td></tr><tr><td>group1/user2</td><td></td><td>user2</td><td><a href=\".\\group1_user2\" target=\"_blank\">.\\group1_user2</a></td></tr></table></body></html>");
+        AssertTextWriterFactoryMemberEquals (stringWriterFactory, "test.user", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"8\">user test, Dipl.Ing.(FH)</td><td rowspan=\"2\">testGroup, Manager</td><td rowspan=\"2\">Order</td><td>DHL, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr><tr><td>DHL, None, Received</td><td></td><td></td><td>X</td><td></td><td>FirstAccessType, Write</td></tr><tr><td rowspan=\"2\">testGroup, Official</td><td rowspan=\"2\">Order</td><td>DHL, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr><tr><td>DHL, None, Received</td><td></td><td></td><td>X</td><td></td><td>FirstAccessType, Write</td></tr><tr><td rowspan=\"2\">testOwningGroup, Manager</td><td rowspan=\"2\">Order</td><td>DHL, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr><tr><td>DHL, None, Received</td><td></td><td></td><td>X</td><td></td><td>FirstAccessType, Write</td></tr><tr><td rowspan=\"2\">testRootGroup, Official</td><td rowspan=\"2\">Order</td><td>DHL, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr><tr><td>DHL, None, Received</td><td></td><td></td><td>X</td><td></td><td>FirstAccessType, Write</td></tr></table></body></html>");
+        AssertTextWriterFactoryMemberEquals (stringWriterFactory, "group0_user1", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"2\">user1</td><td rowspan=\"2\">parentGroup0, Manager</td><td rowspan=\"2\">Order</td><td>DHL, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr><tr><td>DHL, None, Received</td><td></td><td></td><td>X</td><td></td><td>FirstAccessType, Write</td></tr></table></body></html>");
+        AssertTextWriterFactoryMemberEquals (stringWriterFactory, "group1_user1", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"2\">user1</td><td rowspan=\"2\">parentGroup1, Manager</td><td rowspan=\"2\">Order</td><td>DHL, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr><tr><td>DHL, None, Received</td><td></td><td></td><td>X</td><td></td><td>FirstAccessType, Write</td></tr></table></body></html>");
+        AssertTextWriterFactoryMemberEquals (stringWriterFactory, "group0_user2", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"2\">user2</td><td rowspan=\"2\">parentGroup0, Official</td><td rowspan=\"2\">Order</td><td>DHL, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr><tr><td>DHL, None, Received</td><td></td><td></td><td>X</td><td></td><td>FirstAccessType, Write</td></tr></table></body></html>");
+        AssertTextWriterFactoryMemberEquals (stringWriterFactory, "group1_user2", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"\"><html><head><title>re-motion ACL Expansion</title><style>@import \"AclExpansion.css\";</style><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head><body><table style=\"width: 100%;\" class=\"aclExpansionTable\" id=\"remotion-ACL-expansion-table\"><tr><th class=\"header\">User</th><th class=\"header\">Role</th><th class=\"header\">Class</th><th class=\"header\">States</th><th class=\"header\">User Must Own</th><th class=\"header\">Group Must Own</th><th class=\"header\">Tenant Must Own</th><th class=\"header\">User Must Have Abstract Role</th><th class=\"header\">Access Rights</th></tr><tr><td rowspan=\"2\">user2</td><td rowspan=\"2\">parentGroup1, Official</td><td rowspan=\"2\">Order</td><td>DHL, None, Received</td><td></td><td></td><td></td><td></td><td>FirstAccessType</td></tr><tr><td>DHL, None, Received</td><td></td><td></td><td>X</td><td></td><td>FirstAccessType, Write</td></tr></table></body></html>");
       }
     }
-
 
 
     private void AssertTextWriterFactoryMemberEquals (StringWriterFactory stringWriterFactory, string name, string resultExpected)
     {
       var textWriterData = stringWriterFactory.GetTextWriterData (name);
       string result = textWriterData.TextWriter.ToString();
+
+      //To.ConsoleLine.e ("resultExpected", resultExpected);
+      //To.ConsoleLine.e ("result        ", result);
+
       Assert.That (result, Is.EqualTo (resultExpected));
     }
+
 
     private void AssertTextWriterFactoryMemberContains (StringWriterFactory stringWriterFactory, string name, string resultExpected)
     {
       var textWriterData = stringWriterFactory.GetTextWriterData (name);
       string result = textWriterData.TextWriter.ToString ();
       Assert.That (result, NUnitText.Contains (resultExpected));
+    }
+
+    public void WriteStringWriterFactory (StringWriterFactory stringWriterFactory, IToTextBuilder toTextBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
+      foreach (KeyValuePair<string, TextWriterData> pair in stringWriterFactory.NameToTextWriterData)
+      {
+        toTextBuilder.nl ().s ("AssertTextWriterFactoryMemberEquals(stringWriterFactory,").e (pair.Key).s (", ").e (pair.Value.TextWriter.ToString ().Escape ()).s(");");
+      }
+
     }
 
 
@@ -98,6 +115,29 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (AclExpansionMultiFileHtmlWriter.ToValidFileName (forbiddenInput), Is.EqualTo (forbiddenInputResult));
       Assert.That (AclExpansionMultiFileHtmlWriter.ToValidFileName (forbiddenInput + unityInput + forbiddenInput + unityInput), Is.EqualTo (forbiddenInputResult + unityInput + forbiddenInputResult  + unityInput));
     }
+
+
+
+    //[Test]
+    //public void OutputRowCountTest ()
+    //{
+    //  var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+    //  var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
+
+    //  List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+    //  var stringWriter = new StringWriter ();
+    //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, stringWriter, true);
+    //  aclExpansionHtmlWriter.Settings.OutputRowCount = true;
+    //  aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+    //  string result = stringWriter.ToString ();
+    //  //To.ConsoleLine.e (() => result);
+    //  Assert.That (result, NUnitText.Contains ("Usa Da, Dr. (3)"));
+    //  Assert.That (result, NUnitText.Contains ("Da Group, Supreme Being (3)"));
+    //  Assert.That (result, NUnitText.Contains ("Order (3)"));
+    //}
     
+
+
   }
 }

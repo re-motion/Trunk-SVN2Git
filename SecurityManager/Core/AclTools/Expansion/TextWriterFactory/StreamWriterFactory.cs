@@ -28,12 +28,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
         System.IO.Directory.CreateDirectory (Directory);
       }
 
-      if (nameToTextWriterData.ContainsKey (name))
+      if (NameToTextWriterData.ContainsKey (name))
       {
         throw new ArgumentException (To.String.s ("TextWriter with name ").e (name).s (" already exists.").CheckAndConvertToString ());
       }
       var textWriterData = new TextWriterData (new StreamWriter (Path.Combine (Directory, AppendExtension(name))), Directory, Extension);
-      nameToTextWriterData[name] = textWriterData;
+      NameToTextWriterData[name] = textWriterData;
       return textWriterData.TextWriter;
     }
 
@@ -43,13 +43,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
       toTextBuilder.s ("StringWriterFactory");
       toTextBuilder.sb ();
-      foreach (KeyValuePair<string, TextWriterData> pair in nameToTextWriterData)
+      foreach (KeyValuePair<string, TextWriterData> pair in NameToTextWriterData)
       {
         toTextBuilder.e (pair.Key);
       }
       toTextBuilder.se ();
 
-      foreach (KeyValuePair<string, TextWriterData> pair in nameToTextWriterData)
+      foreach (KeyValuePair<string, TextWriterData> pair in NameToTextWriterData)
       {
         toTextBuilder.nl ().e (pair.Key).nl ().e (pair.Value.TextWriter.ToString ()).nl ();
       }

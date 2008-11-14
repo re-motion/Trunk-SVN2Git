@@ -22,7 +22,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
     {
       ArgumentUtility.CheckNotNull ("name", name);
       var textWriterData = new TextWriterData (new StringWriter(),Directory,Extension);
-      nameToTextWriterData[name] = textWriterData;
+      NameToTextWriterData[name] = textWriterData;
       return textWriterData.TextWriter;
     }
 
@@ -31,13 +31,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
       toTextBuilder.s ("StringWriterFactory");
       toTextBuilder.sb();
-      foreach (KeyValuePair<string, TextWriterData> pair in nameToTextWriterData)
+      foreach (KeyValuePair<string, TextWriterData> pair in NameToTextWriterData)
       {
         toTextBuilder.e (pair.Key);
       }
       toTextBuilder.se ();
 
-      foreach (KeyValuePair<string, TextWriterData> pair in nameToTextWriterData)
+      foreach (KeyValuePair<string, TextWriterData> pair in NameToTextWriterData)
       {
         toTextBuilder.nl().e (pair.Key).nl().e(pair.Value.TextWriter.ToString()).nl();
       }

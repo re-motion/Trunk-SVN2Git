@@ -19,10 +19,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
   public abstract class TextWriterFactoryBase : ITextWriterFactory
   {
-    protected readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData> ();
+    private readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData> ();
     public abstract TextWriter NewTextWriter (string name);
     public string Directory { get; set; }
     public string Extension { get; set; }
+
+    public Dictionary<string, TextWriterData> NameToTextWriterData
+    {
+      get { return nameToTextWriterData; }
+    }
+
+
     protected string AppendExtension(string name)
     {
       ArgumentUtility.CheckNotNull ("name", name);
@@ -35,6 +42,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
         return name + "." + Extension;
       }
     }
+
 
     public string GetRelativePath (string fromName, string toName)
     {
@@ -54,5 +62,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
     }
 
     public int Count { get { return nameToTextWriterData.Count; } }
+
+
   }
 }

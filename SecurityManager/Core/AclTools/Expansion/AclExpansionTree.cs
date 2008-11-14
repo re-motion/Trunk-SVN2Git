@@ -61,14 +61,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                                group roleEntry by roleEntry.Role
                                  into roleGrouping
                                  select AclExpansionTreeNode.New (roleGrouping.Key, roleGrouping.Count (),
-
                                   (from classEntry in roleGrouping
                                    //orderby ((classEntry.AccessControlList is StatelessAccessControlList) ? "" : classEntry.Class.DisplayName) 
                                    orderby _orderbyForSecurableClass (classEntry)
                                    group classEntry by classEntry.Class
                                      into classGrouping
                                      select AclExpansionTreeNode.New (classGrouping.Key, classGrouping.Count (),
-                                      classGrouping.ToList() // States, i.e. final AclExpansion detail level
+                                      classGrouping.ToList () // States, i.e. final AclExpansion detail level
+                                     //select AclExpansionTreeNode.New (classGrouping.Key, classGrouping.Count (),
+                                     // (from stateEntry in classGrouping orderby stateEntry. select stateEntry).ToList () // States, i.e. final AclExpansion detail level
+
 
                                       // TODO: Move StateCombinations flattening to its own class for testing
                                        // OR TODO: Create AclExpansionTreeNode for each state which contains IList<StateCombination>

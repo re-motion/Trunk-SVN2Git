@@ -166,18 +166,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
       else
       {
+        // Get the states by flattening the StateCombinations of the AccessControlEntry ACL 
         var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).OrderBy (x => x.DisplayName).ToArray();
         bool firstElement = true;
         foreach (StateDefinition stateDefiniton in stateDefinitions)
         {
           if (!firstElement)
           {
-            //_htmlWriter.br ();
             htmlTagWriter.Value (", ");
           }
 
           string stateName = Settings.ShortenNames ? stateDefiniton.ShortName() : stateDefiniton.DisplayName;
-          //To.ConsoleLine.e (() => stateName);
 
           htmlTagWriter.Value (stateName);
           firstElement = false;
