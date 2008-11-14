@@ -80,19 +80,5 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       Assert.IsFalse (matcher.MatchesToken (token));
     }
-
-    [Test]
-    public void AceForOwningTenantAndAbstractRole_DoesNotMatch ()
-    {
-      Tenant tenant = TestHelper.CreateTenant ("Testtenant");
-      Group group = TestHelper.CreateGroup ("Testgroup", null, tenant);
-      User user = CreateUser (tenant, group);
-      AccessControlEntry entry = TestHelper.CreateAceWithOwningTenant ();
-      entry.SpecificAbstractRole = TestHelper.CreateTestAbstractRole ();
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateTokenWithOwningTenant (user, tenant);
-
-      Assert.IsFalse (matcher.MatchesToken (token));
-    }
   }
 }

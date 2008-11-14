@@ -115,7 +115,6 @@
     <Compile Include="Domain\AccessControl\AccessControlListTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlTestHelper.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\MixedTokens.cs" />
-    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\SetUpFixture.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\TokenWithAbstractRole.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForPosition.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\TokenWithTenant.cs" />

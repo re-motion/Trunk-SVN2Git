@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -32,134 +33,32 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
+    public void Initialize_Values ()
+    {
+      Tenant principalTenant = CreateTenant ("principalTenant");
+      User principal = CreateUser ("principal", CreateGroup ("principalGroup", null, principalTenant), principalTenant);
+      Tenant owningTenant = CreateTenant ("owningTenant");
+      Group owningGroup = CreateGroup ("owningGroup", null, owningTenant);
+      AbstractRoleDefinition abstractRole1 = AbstractRoleDefinition.NewObject(Guid.NewGuid(), "role1", 0);
+      AbstractRoleDefinition abstractRole2 = AbstractRoleDefinition.NewObject (Guid.NewGuid (), "role2", 1);
+      SecurityToken token = new SecurityToken (principal, owningTenant, owningGroup, new List<AbstractRoleDefinition> { abstractRole1,abstractRole2});
+
+      Assert.That (token.Principal, Is.SameAs (principal));
+      Assert.That (token.OwningTenant, Is.SameAs (owningTenant));
+      Assert.That (token.OwningGroup, Is.SameAs (owningGroup));
+      Assert.That (token.AbstractRoles, Is.EquivalentTo (new []{abstractRole1, abstractRole2}));
+    }
+
+    [Test]
     public void Initialize_Empty ()
     {
-      SecurityToken token = new SecurityToken (null, null, null, CreateAbstractRoles ());
+      SecurityToken token = new SecurityToken (null, null, null, new List<AbstractRoleDefinition> ());
 
+      Assert.IsNull (token.Principal);
       Assert.IsNull (token.OwningTenant);
-      Assert.IsNull (token.User);
       Assert.IsNull (token.OwningGroup);
       Assert.IsEmpty (token.AbstractRoles);
-      Assert.IsEmpty (token.OwningGroupRoles);
     }
-
-    [Test]
-    public void GetOwningTenant ()
-    {
-      Tenant tenant = CreateTenant ("Testtenant");
-      User user = null;
-
-      SecurityToken token = new SecurityToken (user, tenant, null, CreateAbstractRoles ());
-
-      Assert.AreSame (tenant, token.OwningTenant);
-    }
-
-    [Test]
-    public void GetOwningGroups_Empty ()
-    {
-      Tenant tenant = CreateTenant ("Testtenant");
-      User user = null;
-
-      SecurityToken token = new SecurityToken (user, null, null, CreateAbstractRoles ());
-
-      Assert.IsNull(token.OwningGroup);
-    }
-
-    [Test]
-    public void GetOwningGroups ()
-    {
-      Tenant tenant = CreateTenant ("Testtenant");
-      Group group = CreateGroup ("Testgroup", null, tenant);
-      User user = null;
-
-      SecurityToken token = new SecurityToken (user, null, group, CreateAbstractRoles ());
-
-      Assert.AreSame (group, token.OwningGroup);
-    }
-
-    [Test]
-    public void GetOwningGroupRoles_Empty ()
-    {
-      Tenant tenant = CreateTenant ("Testtenant");
-      Group group = CreateGroup ("Testgroup", null, tenant);
-      User user = CreateUser ("test.user", group, tenant);
-
-      SecurityToken token = new SecurityToken (user, null, group, CreateAbstractRoles ());
-
-      Assert.AreEqual (0, token.OwningGroupRoles.Count);
-    }
-
-    [Test]
-    public void GetOwningGroupRoles_WithoutUser ()
-    {
-      Tenant tenant = CreateTenant ("Testtenant");
-      Group group1 = CreateGroup ("Testgroup", null, tenant);
-      User user = CreateUser ("test.user", group1, tenant);
-      Position officialPosition = CreatePosition ("Official");
-      Role officialInGroup1 = CreateRole (user, group1, officialPosition);
-
-      SecurityToken token = new SecurityToken (null, null, group1, CreateAbstractRoles ());
-
-      Assert.IsNull (token.User);
-      Assert.IsEmpty (token.OwningGroupRoles);
-    }
-
-    [Test]
-    public void GetOwningGroupRoles_WithRoles ()
-    {
-      Tenant tenant = CreateTenant ("Testtenant");
-      Group group1 = CreateGroup ("Testgroup", null, tenant);
-      Group group2 = CreateGroup ("Other group", null, tenant);
-      User user = CreateUser ("test.user", group1, tenant);
-      Position officialPosition = CreatePosition ("Official");
-      Position managerPosition = CreatePosition ("Manager");
-      Role officialInGroup1 = CreateRole (user, group1, officialPosition);
-      Role managerInGroup1 = CreateRole (user, group1, managerPosition);
-      Role officialInGroup2 = CreateRole (user, group2, officialPosition);
-
-      SecurityToken token = new SecurityToken (user, null, group1, CreateAbstractRoles ());
-
-      Assert.AreEqual (2, token.OwningGroupRoles.Count);
-      Assert.Contains (officialInGroup1, token.OwningGroupRoles);
-      Assert.Contains (managerInGroup1, token.OwningGroupRoles);
-    }
-
-    [Test]
-    public void MatchesUserTenant_MatchesUserInTenant ()
-    {
-      Tenant tenant = CreateTenant ("TestTenant");
-      Group group = CreateGroup ("Testgroup", null, tenant);
-      User user = CreateUser ("test.user", group, tenant);
-
-      SecurityToken token = new SecurityToken (user, null, null, CreateAbstractRoles ());
-
-      Assert.IsTrue (token.MatchesUserTenant (tenant));
-    }
-
-    [Test]
-    public void MatchesUserTenant_MatchesUserInParentTenant ()
-    {
-      Tenant parentTenant = CreateTenant ("ParentTenant");
-      Tenant tenant = CreateTenant ("TestTenant");
-      tenant.Parent = parentTenant;
-      Group group = CreateGroup ("Testgroup", null, parentTenant);
-      User user = CreateUser ("test.user", group, parentTenant);
-
-      SecurityToken token = new SecurityToken (user, null, null, CreateAbstractRoles ());
-
-      Assert.IsTrue (token.MatchesUserTenant (tenant));
-    }
-
-    [Test]
-    public void MatchesUserTenant_DoesNotMatchWithoutUser ()
-    {
-      Tenant tenant = CreateTenant ("Testtenant");
-
-      SecurityToken token = new SecurityToken (null, null, null, CreateAbstractRoles ());
-
-      Assert.IsFalse (token.MatchesUserTenant (tenant));
-    }
-
 
     private Tenant CreateTenant (string name)
     {
@@ -190,29 +89,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       user.OwningGroup = owningGroup;
 
       return user;
-    }
-
-    private Position CreatePosition (string name)
-    {
-      Position position = _factory.CreatePosition ();
-      position.Name = name;
-
-      return position;
-    }
-
-    private Role CreateRole (User user, Group group, Position position)
-    {
-      Role role = Role.NewObject();
-      role.User = user;
-      role.Group = group;
-      role.Position = position;
-
-      return role;
-    }
-
-    private List<AbstractRoleDefinition> CreateAbstractRoles ()
-    {
-      return new List<AbstractRoleDefinition> ();
     }
   }
 }

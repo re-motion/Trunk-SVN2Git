@@ -56,14 +56,25 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return true;
 
         case TenantCondition.OwningTenant:
-          return token.OwningTenant != null && token.MatchesUserTenant (token.OwningTenant);
+          return MatchesUserTenant (token.Principal, token.OwningTenant);
 
         case TenantCondition.SpecificTenant:
-          return token.MatchesUserTenant (_ace.SpecificTenant);
+          return MatchesUserTenant (token.Principal, _ace.SpecificTenant);
 
         default:
-          return false;
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid enum value for 'TenantCondition'", _ace.TenantCondition);
       }
+    }
+
+    private bool MatchesUserTenant (User principal, Tenant referenceTenant)
+    {
+      if (principal == null)
+        return false;
+
+      if (referenceTenant == null)
+        return false;
+
+      return GetParents (referenceTenant).Contains (principal.Tenant);
     }
 
     private bool MatchesAbstractRole (SecurityToken token)
@@ -88,20 +99,26 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         case UserCondition.None:
           return true;
 
+        case UserCondition.Owner:
+          return false;
+
+        case UserCondition.SpecificUser:
+          return false;
+
         case UserCondition.SpecificPosition:
           return MatchPosition (token);
 
         default:
-          return false;
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid enum value for 'UserCondition'", _ace.UserCondition);
       }
     }
 
     private bool MatchPosition (SecurityToken token)
     {
-      if (token.User == null)
+      if (token.Principal == null)
         return false;
 
-      return GetMatchingUserRoles (token.User).Any();
+      return GetMatchingPrincipalRoles (token.Principal).Any();
     }
 
     private bool MatchesGroupCondition (SecurityToken token)
@@ -113,76 +130,80 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return true;
 
         case GroupCondition.OwningGroup:
-          return MatchUserAgainstGroup (token.User, token.OwningGroup, _ace.GroupHierarchyCondition);
+          return MatchPrincipalAgainstGroup (token.Principal, token.OwningGroup, _ace.GroupHierarchyCondition);
 
         case GroupCondition.SpecificGroup:
-          return MatchUserAgainstGroup (token.User, _ace.SpecificGroup, _ace.GroupHierarchyCondition);
+          return MatchPrincipalAgainstGroup (token.Principal, _ace.SpecificGroup, _ace.GroupHierarchyCondition);
 
         case GroupCondition.BranchOfOwningGroup:
-          return MatchUserAgainstGroup (token.User, FindBranchRoot (token.OwningGroup), GroupHierarchyCondition.ThisAndChildren);
+          return MatchPrincipalAgainstGroup (token.Principal, FindBranchRoot (token.OwningGroup), GroupHierarchyCondition.ThisAndChildren);
 
         case GroupCondition.AnyGroupWithSpecificGroupType:
           return MatchPosition (token);
 
         default:
-          return false;
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid enum value for 'GroupCondition'", _ace.GroupCondition);
       }
     }
 
-    private Group FindBranchRoot (Group groupOfTheObject)
+    private Group FindBranchRoot (Group referenceGroup)
     {
       Assertion.IsNotNull (_ace.GroupCondition == GroupCondition.BranchOfOwningGroup);
 
-      return GetParents (groupOfTheObject).Where (g => g.GroupType == _ace.SpecificGroupType).FirstOrDefault();
+      return GetParents (referenceGroup).Where (g => g.GroupType == _ace.SpecificGroupType).FirstOrDefault();
     }
 
-    private bool MatchUserAgainstGroup (User user, Group groupOfTheObject, GroupHierarchyCondition groupHierarchyCondition)
+    private bool MatchPrincipalAgainstGroup (User principal, Group referenceGroup, GroupHierarchyCondition groupHierarchyCondition)
     {
-      if (user == null)
+      if (principal == null)
         return false;
 
-      if (groupOfTheObject == null)
+      if (referenceGroup == null)
         return false;
 
-      IEnumerable<Role> userRoles = GetMatchingUserRoles (user);
+      IEnumerable<Role> roles = GetMatchingPrincipalRoles (principal);
 
-      var userGroups = userRoles.Select (r => r.Group);
-      var objectGroups = (IEnumerable<Group>) new[] { groupOfTheObject };
+      var userGroups = roles.Select (r => r.Group);
+      var objectGroups = (IEnumerable<Group>) new[] { referenceGroup };
 
       switch (groupHierarchyCondition)
       {
+        case GroupHierarchyCondition.Undefined:
+          objectGroups = new Group[0];
+          userGroups = new Group[0];
+          break;
+
         case GroupHierarchyCondition.This:
           break;
-        
+
         case GroupHierarchyCondition.ThisAndParent:
           objectGroups = objectGroups.SelectMany (g => GetParents (g));
           break;
-        
+
         case GroupHierarchyCondition.ThisAndChildren:
           userGroups = userGroups.SelectMany (g => GetParents (g));
           break;
-        
+
         case GroupHierarchyCondition.ThisAndParentAndChildren:
           objectGroups = objectGroups.SelectMany (g => GetParents (g));
           userGroups = userGroups.SelectMany (g => GetParents (g));
           break;
-        
+
         default:
-          objectGroups = new Group[0];
-          userGroups = new Group[0];
-          break;
+          throw CreateInvalidOperationException (
+              "The value '{0}' is not a valid enum value for 'GroupHierarchyCondition'", _ace.GroupHierarchyCondition);
       }
 
       return userGroups.Intersect (objectGroups).Any();
     }
 
-    private IEnumerable<Role> GetMatchingUserRoles (User user)
+    private IEnumerable<Role> GetMatchingPrincipalRoles (User principal)
     {
-      Assertion.IsNotNull (user);
+      Assertion.IsNotNull (principal);
 
-      var userRoles = (IEnumerable<Role>) user.Roles;
+      var roles = (IEnumerable<Role>) principal.Roles;
       if (_ace.UserCondition == UserCondition.SpecificPosition)
-        userRoles = userRoles.Where (r => r.Position == _ace.SpecificPosition);
+        roles = roles.Where (r => r.Position == _ace.SpecificPosition);
 
 
       bool hasSpecificPositionAndGroupType =
@@ -190,16 +211,27 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           || _ace.GroupCondition == GroupCondition.AnyGroupWithSpecificGroupType;
 
       if (hasSpecificPositionAndGroupType)
-        userRoles = userRoles.Where (r => r.Group.GroupType == _ace.SpecificGroupType);
+        roles = roles.Where (r => r.Group.GroupType == _ace.SpecificGroupType);
 
-      return userRoles;
+      return roles;
+    }
+
+    private InvalidOperationException CreateInvalidOperationException (string message, params object[] args)
+    {
+      return new InvalidOperationException (string.Format (message, args));
     }
 
     //TODO MK: Move to Linq-Extensions
     private IEnumerable<Group> GetParents (Group group)
     {
-      for (Group currentGroup = group; currentGroup != null; currentGroup = currentGroup.Parent)
+      for (var currentGroup = group; currentGroup != null; currentGroup = currentGroup.Parent)
         yield return currentGroup;
+    }
+
+    private IEnumerable<Tenant> GetParents (Tenant tenant)
+    {
+      for (var current = tenant; current != null; current = current.Parent)
+        yield return current;
     }
   }
 }

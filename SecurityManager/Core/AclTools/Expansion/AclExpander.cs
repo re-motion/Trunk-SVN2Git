@@ -126,8 +126,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         {
           // Exchanging the User.Roles-collection with a new one containing only the current Role would not work (MK),
           // so we empty the collection, then add back the current Role.
-          aclProbe.SecurityToken.User.Roles.Clear();
-          aclProbe.SecurityToken.User.Roles.Add (userRoleAclAce.Role);
+          aclProbe.SecurityToken.Principal.Roles.Clear();
+          aclProbe.SecurityToken.Principal.Roles.Add (userRoleAclAce.Role);
         }
         AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
         

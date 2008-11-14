@@ -28,7 +28,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AccessControlEntry ace = TestHelper.CreateAceWithAbstractRole();
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      Assert.That (aclProbe.SecurityToken.User, Is.EqualTo (User));
+      Assert.That (aclProbe.SecurityToken.Principal, Is.EqualTo (User));
     }
 
     // TODO: Enable as soon as GroupSelection supports SpecificGroup state.

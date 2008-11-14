@@ -94,7 +94,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurityTokenBuilder builder = new SecurityTokenBuilder ();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
 
-      Assert.AreEqual ("test.user", token.User.UserName);
+      Assert.AreEqual ("test.user", token.Principal.UserName);
     }
 
     [Test]

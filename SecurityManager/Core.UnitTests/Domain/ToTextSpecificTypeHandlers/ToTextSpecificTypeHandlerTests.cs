@@ -213,7 +213,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       Assert.That (result, NUnitText.Contains ("DaUs"));
       Assert.That (result, NUnitText.Contains ("Da Tenant"));
       Assert.That (result, NUnitText.Contains ("Da Group"));
-      Assert.That (result, NUnitText.Contains ("Supreme Being"));
       Assert.That (result, NUnitText.Contains ("arole"));
     }
 
