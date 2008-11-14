@@ -27,62 +27,42 @@
   <tr>
     <td><remotion:SmartLabel ID="TenantLabel" runat="server" ForControl="TenantConditionField"/></td>
     <td>
-      <table cellpadding="0" cellspacing="0">
-        <tr>
-          <td><remotion:BocEnumValue ID="TenantConditionField" runat="server" PropertyIdentifier="TenantCondition" DataSourceControl="CurrentObject" OnSelectionChanged="TenantField_SelectionChanged" Width="20em" >
-            <ListControlStyle AutoPostBack="True"/>
-          </remotion:BocEnumValue></td>
-          <td>
-            <remotion:BocReferenceValue ID="SpecificTenantField" runat="server" PropertyIdentifier="SpecificTenant" DataSourceControl="CurrentObject" Required="True" OnSelectionChanged="SpecificTenantField_SelectionChanged">
-              <PersistedCommand>
-                <remotion:BocCommand />
-              </PersistedCommand>
-              <DropDownListStyle AutoPostBack="true" />
-            </remotion:BocReferenceValue>
-          </td>
-        </tr>
-      </table>
+      <remotion:BocEnumValue ID="TenantConditionField" runat="server" PropertyIdentifier="TenantCondition" DataSourceControl="CurrentObject" OnSelectionChanged="TenantField_SelectionChanged" Width="20em" Style="display:block; float:left; margin-top:0.2em" >
+        <ListControlStyle AutoPostBack="True"/>
+      </remotion:BocEnumValue>
+      <remotion:BocReferenceValue ID="SpecificTenantField" runat="server" PropertyIdentifier="SpecificTenant" DataSourceControl="CurrentObject" Required="True" OnSelectionChanged="SpecificTenantField_SelectionChanged" Style="display:block; float:left; margin-top:0.05em">
+        <DropDownListStyle AutoPostBack="true" />
+      </remotion:BocReferenceValue>
     </td>
   </tr>
   <tr>
     <td><remotion:SmartLabel ID="GroupConditionLabel" runat="server" ForControl="GroupConditionField"/></td>
     <td>
-      <remotion:BocEnumValue ID="GroupConditionField" runat="server" PropertyIdentifier="GroupCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="GroupConditionField_SelectionChanged" Width="14em">
+      <remotion:BocEnumValue ID="GroupConditionField" runat="server" PropertyIdentifier="GroupCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="GroupConditionField_SelectionChanged" Width="14em" Style="display:block; float:left; margin-top:0.05em">
         <ListControlStyle AutoPostBack="True"/>
       </remotion:BocEnumValue>
-      <remotion:BocAutoCompleteReferenceValue ID="SpecificGroupField" runat="server" PropertyIdentifier="SpecificGroup" DataSourceControl="CurrentObject" Required="true">
-      </remotion:BocAutoCompleteReferenceValue>
-      <remotion:BocEnumValue ID="GroupHierarchyConditionField" runat="server" PropertyIdentifier="GroupHierarchyCondition" DataSourceControl="CurrentObject" Required="true"/>
-      <remotion:BocReferenceValue ID="SpecificGroupTypeField" runat="server" PropertyIdentifier="SpecificGroupType" DataSourceControl="CurrentObject" Required="true">
-        <PersistedCommand>
-          <remotion:BocCommand />
-        </PersistedCommand>
-      </remotion:BocReferenceValue>
+      <remotion:BocAutoCompleteReferenceValue ID="SpecificGroupField" runat="server" PropertyIdentifier="SpecificGroup" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-bottom:0.2em"/>
+      <remotion:BocEnumValue ID="GroupHierarchyConditionField" runat="server" PropertyIdentifier="GroupHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-bottom:0.2em"/>
+      <remotion:BocReferenceValue ID="SpecificGroupTypeField" runat="server" PropertyIdentifier="SpecificGroupType" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-bottom:0.2em"/>
     </td>      
   </tr>
   <tr>
     <td><remotion:SmartLabel ID="UserConditionLabel" runat="server" ForControl="UserConditionField"/></td>
     <td>
-      <remotion:BocEnumValue ID="UserConditionField" runat="server" PropertyIdentifier="UserCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="UserConditionField_SelectionChanged" Width="14em">
+      <remotion:BocEnumValue ID="UserConditionField" runat="server" PropertyIdentifier="UserCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="UserConditionField_SelectionChanged" Width="14em" Style="display:block; float:left; margin-top:0.05em">
         <ListControlStyle AutoPostBack="True"/>
       </remotion:BocEnumValue>
-      <remotion:BocAutoCompleteReferenceValue ID="SpecificUserField" runat="server" PropertyIdentifier="SpecificUser" DataSourceControl="CurrentObject" Required="true">
-      </remotion:BocAutoCompleteReferenceValue>
-      <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject">
-        <PersistedCommand>
-          <remotion:BocCommand />
-        </PersistedCommand>
-      </remotion:BocReferenceValue>
+      <remotion:BocAutoCompleteReferenceValue ID="SpecificUserField" runat="server" PropertyIdentifier="SpecificUser" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-bottom:0.2em"/>
+      <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" Style="display:block; float:left;"/>
     </td>
   </tr>
   <tr>
     <td><remotion:SmartLabel ID="SpecificAbstractRoleLabel" runat="server" ForControl="SpecificAbstractRoleField"/></td>
-    <td><remotion:BocReferenceValue ID="SpecificAbstractRoleField" runat="server" PropertyIdentifier="SpecificAbstractRole" DataSourceControl="CurrentObject" >
-      <PersistedCommand>
-        <remotion:BocCommand />
-      </PersistedCommand>
+    <td>
+      <remotion:BocReferenceValue ID="SpecificAbstractRoleField" runat="server" PropertyIdentifier="SpecificAbstractRole" DataSourceControl="CurrentObject" >
       <DropDownListStyle AutoPostBack="True" />
-    </remotion:BocReferenceValue></td>
+        </remotion:BocReferenceValue>
+    </td>
   </tr>
   <tr>
     <td><remotion:FormGridLabel ID="PermissionsLabel" runat="server" Text="###" /></td>
