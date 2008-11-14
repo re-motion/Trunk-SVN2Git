@@ -19,12 +19,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
 {
   public class AclSecurityContextHelper : ISecurityContext
   {
-    private Dictionary<string, EnumWrapper> _states = new Dictionary<string, EnumWrapper> ();
-    //protected List<StateDefinition> stateDefinitions = new List<StateDefinition> ();
-    //protected StateCombination stateCombination = StateCombination.NewObject ();
-    private List<StateDefinition> _stateDefinitionList = new List<StateDefinition>();
-
-    
+    private readonly Dictionary<string, EnumWrapper> _states = new Dictionary<string, EnumWrapper> ();
+    private readonly List<StateDefinition> _stateDefinitionList = new List<StateDefinition>();
 
     public AclSecurityContextHelper (string className)
     {
@@ -74,13 +70,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
 
     public bool IsStateless
     {
-      //get { throw new System.NotImplementedException(); }
       get { return _states.Count == 0; }
     }
 
     public int GetNumberOfStates ()
     {
-      //throw new System.NotImplementedException();
       return _states.Count;
     }
 
@@ -91,25 +85,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
       _stateDefinitionList.Add (stateDefinition);
     }
 
-    /*
-    public StateDefinition[] GetStateDefinitions ()
-    {
-      StateDefinition[] stateDefinitionsArray = new StateDefinition[stateDefinitions.Count];
-      stateDefinitions.CopyTo (stateDefinitionsArray);
-      return stateDefinitionsArray;
-    }
-
-    public StateCombination GetStateCombination ()
-    {
-      // ...create a StateCombination
-      var stateCombination = StateCombination.NewObject();
-      foreach (var stateDefinition in this.stateDefinitions)
-      {
-        stateCombination.AttachState (stateDefinition);
-      }
-      return stateCombination;
-    }
-    */
 
     /// <summary>
     /// Returns the list of StateDefinition|s stored in the class.
