@@ -235,7 +235,7 @@ namespace Remotion.Web.Utilities
     }
 
     /// <summary>Returns the control states for all controls that are child-controls of the passed <see cref="Control"/>.</summary>
-    public static Dictionary<string, object> GetChildControlState<TNamingContainer> (TNamingContainer control) where TNamingContainer: Control, INamingContainer
+    public static IDictionary GetChildControlState<TNamingContainer> (TNamingContainer control) where TNamingContainer: Control, INamingContainer
     {
       return s_memberCaller.GetChildControlState(control);
     }

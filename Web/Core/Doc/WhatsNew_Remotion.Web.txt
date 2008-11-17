@@ -1,3 +1,7 @@
+1.11.13
+=======
+- Fixed Issue with LazyContainer and WxeUserControl: Types only marked with a TypeConverter instead of as Serializable broke the ViewState-persistence.
+
 1.11.8
 ======
 - WxeContext/WxePageStep: Moved IsPostBack, IsReturningPostBack, ReturningFunction, PostBackCollection from WxeContext to WxePageStep

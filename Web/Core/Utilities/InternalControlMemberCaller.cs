@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Reflection;
 using System.Web.UI;
 using Remotion.Reflection;
@@ -77,7 +78,7 @@ namespace Remotion.Web.Utilities
 
     /// <summary>Encapsulates the invocation of <see cref="Control"/>'s SaveChildControlState method.</summary>
     /// <param name="control">The <see cref="Control"/> for which SaveChildControlState will be invoked. Must not be <see langword="null" />.</param>
-    public Dictionary<string, object> SaveChildControlState<TNamingContainer> (TNamingContainer control)
+    public IDictionary SaveChildControlState<TNamingContainer> (TNamingContainer control)
         where TNamingContainer: Control, INamingContainer
     {
       ArgumentUtility.CheckNotNull ("control", control);
@@ -86,7 +87,8 @@ namespace Remotion.Web.Utilities
       var registeredControlsRequiringControlStateFieldInfo = typeof (Page).GetField ("_registeredControlsRequiringControlState", c_bindingFlags);
       var registeredControlsRequiringControlState = (ICollection) registeredControlsRequiringControlStateFieldInfo.GetValue (control.Page);
 
-      Dictionary<string, object> dictionary = new Dictionary<string, object>();
+      //LosFormatter only supports Hashtable and HybridDictionary without using native serialization
+      var dictionary = new HybridDictionary ();
       if (registeredControlsRequiringControlState != null)
       {
         foreach (Control registeredControl in registeredControlsRequiringControlState)
@@ -114,12 +116,13 @@ namespace Remotion.Web.Utilities
     }
 
     /// <summary>Returns the control states for all controls that are child-controls of the passed <see cref="Control"/>.</summary>
-    public Dictionary<string, object> GetChildControlState<TNamingContainer> (TNamingContainer control)
+    public IDictionary GetChildControlState<TNamingContainer> (TNamingContainer control)
         where TNamingContainer: Control, INamingContainer
     {
       ArgumentUtility.CheckNotNull ("control", control);
 
-      var childControlState = new Dictionary<string, object>();
+      //LosFormatter only supports Hashtable and HybridDictionary without using native serialization
+      var childControlState = new HybridDictionary ();
 
       var pageStatePersister = GetPageStatePersister (control.Page);
       var controlStates = (IDictionary) pageStatePersister.ControlState;

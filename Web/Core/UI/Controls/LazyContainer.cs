@@ -32,7 +32,7 @@ namespace Remotion.Web.UI.Controls
     private bool _isEnsured;
     private EmptyControlCollection _emptyControlCollection;
     private PlaceHolder _placeHolder;
-    private Dictionary<string, object> _childControlStatesBackUp;
+    private IDictionary _childControlStatesBackUp;
     private bool _hasControlStateLoaded;
     private object _recursiveViewState;
     private bool _isSavingViewStateRecursive;

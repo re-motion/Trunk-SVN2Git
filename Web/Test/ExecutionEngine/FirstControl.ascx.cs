@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -79,16 +80,17 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     protected override void LoadControlState (object savedState)
     {
-      var controlState = (Tuple<object, int, Type, bool>) savedState;
-      base.LoadControlState (controlState.A);
-      ControlStateValue = controlState.B;
-      Assertion.IsTrue (controlState.C == typeof (FirstControl), "Expected ControlState from 'FirstControl' but was '{0}'.", controlState.C.Name);
-      HasLoaded = controlState.D;
+      var controlState = (object[]) savedState;
+      base.LoadControlState (controlState[0]);
+      ControlStateValue = (int) controlState[1];
+      Assertion.IsTrue ((Type) controlState[2] == typeof (FirstControl), "Expected ControlState from 'FirstControl' but was '{0}'.", ((Type)controlState[2]).Name);
+      HasLoaded = (bool) controlState[3];
+      Assertion.IsTrue (((NonSerializeableObject)controlState[4]).Value == "TheValue");
     }
 
     protected override object SaveControlState ()
     {
-      return new Tuple<object, int, Type, bool> (base.SaveControlState(), ControlStateValue, typeof (FirstControl), HasLoaded);
+      return new [] {base.SaveControlState(), ControlStateValue, typeof (FirstControl), HasLoaded, new NonSerializeableObject ("TheValue")};
     }
 
     protected override void LoadViewState (object savedState)

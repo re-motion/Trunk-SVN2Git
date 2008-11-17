@@ -38,7 +38,7 @@ namespace Remotion.Web.Utilities
 
     /// <summary>Encapsulates the invocation of <see cref="Control"/>'s SaveChildControlState method.</summary>
     /// <param name="control">The <see cref="Control"/> for which SaveChildControlState will be invoked. Must not be <see langword="null" />.</param>
-    Dictionary<string, object> SaveChildControlState<TNamingContainer> (TNamingContainer control)
+    IDictionary SaveChildControlState<TNamingContainer> (TNamingContainer control)
         where TNamingContainer : Control, INamingContainer;
 
     /// <summary>Encapsulates the invocation of <see cref="Control"/>'s SaveControlStateInternal method.</summary>
@@ -46,7 +46,7 @@ namespace Remotion.Web.Utilities
     object SaveControlStateInternal (Control control);
 
     /// <summary>Returns the control states for all controls that are child-controls of the passed <see cref="Control"/>.</summary>
-    Dictionary<string, object> GetChildControlState<TNamingContainer> (TNamingContainer control)
+    IDictionary GetChildControlState<TNamingContainer> (TNamingContainer control)
         where TNamingContainer : Control, INamingContainer;
 
     /// <summary>Sets the control states for the child control of the passed <see cref="Control"/>.</summary>

@@ -197,9 +197,9 @@ namespace Remotion.Web.UnitTests.Utilities
       _page.SetPageStatePersister (pageStatePersister);
       pageStatePersister.ControlState = null;
 
-      Dictionary<string, object> childControlState = _memberCaller.SaveChildControlState (_namingContainer);
+      IDictionary childControlState = _memberCaller.SaveChildControlState (_namingContainer);
 
-      Assert.That (childControlState, Is.Not.Null);
+      Assert.That (childControlState, Is.InstanceOfType (typeof (HybridDictionary)));
       Assert.That (childControlState.Count, Is.EqualTo (2));
       Assert.That (childControlState[_parent.UniqueID], new PairConstraint (new Pair ("ParentValue", null)));
       Assert.That (childControlState[_child.UniqueID], new PairConstraint (new Pair ("ChildValue", null)));
@@ -226,9 +226,9 @@ namespace Remotion.Web.UnitTests.Utilities
       _page.SetPageStatePersister (pageStatePersister);
       pageStatePersister.ControlState = null;
 
-      Dictionary<string, object> childControlState = _memberCaller.SaveChildControlState (_namingContainer);
+      IDictionary childControlState = _memberCaller.SaveChildControlState (_namingContainer);
 
-      Assert.That (childControlState, Is.Not.Null);
+      Assert.That (childControlState, Is.InstanceOfType (typeof (HybridDictionary)));
       Assert.That (childControlState.Count, Is.EqualTo (1));
       Assert.That (childControlState[_child.UniqueID], new PairConstraint (new Pair ("ChildValue", null)));
     }
@@ -246,9 +246,9 @@ namespace Remotion.Web.UnitTests.Utilities
       _page.SetPageStatePersister (pageStatePersister);
       pageStatePersister.ControlState = null;
 
-      Dictionary<string, object> childControlState = _memberCaller.SaveChildControlState (_namingContainer);
+      IDictionary childControlState = _memberCaller.SaveChildControlState (_namingContainer);
 
-      Assert.That (childControlState, Is.Not.Null);
+      Assert.That (childControlState, Is.InstanceOfType (typeof (HybridDictionary)));
       Assert.That (childControlState.Count, Is.EqualTo (1));
       Assert.That (childControlState[_child.UniqueID], new PairConstraint (new Pair ("ChildValue", null)));
     }
@@ -265,9 +265,9 @@ namespace Remotion.Web.UnitTests.Utilities
       controlState[_child.UniqueID] = "ChildValue";
       controlState[_otherControl.UniqueID] = "OtherValue";
 
-      Dictionary<string, object> childControlState = _memberCaller.GetChildControlState (_namingContainer);
+      IDictionary childControlState = _memberCaller.GetChildControlState (_namingContainer);
 
-      Assert.That (childControlState, Is.Not.Null);
+      Assert.That (childControlState, Is.InstanceOfType (typeof (HybridDictionary)));
       Assert.That (childControlState.Count, Is.EqualTo (2));
       Assert.That (childControlState[_parent.UniqueID], Is.EqualTo ("ParentValue"));
       Assert.That (childControlState[_child.UniqueID], Is.EqualTo ("ChildValue"));
