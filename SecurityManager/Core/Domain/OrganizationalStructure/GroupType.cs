@@ -55,6 +55,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       throw new NotImplementedException ("This method is only intended for framework support and should never be called.");
     }
 
+    private ObjectList<AccessControlEntry> _accessControlEntriesToBeDeleted;
+    private ObjectList<GroupTypePosition> _groupTypePositionsToBeDeleted;
+
     protected GroupType ()
     {
     }
@@ -72,7 +75,27 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [DBBidirectionalRelation ("SpecificGroupType")]
     protected abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
 
-    //TODO: UnitTests
+    protected override void OnDeleting (EventArgs args)
+    {
+      base.OnDeleting (args);
+
+      _accessControlEntriesToBeDeleted = AccessControlEntries.Clone ();
+      _groupTypePositionsToBeDeleted = Positions.Clone ();
+    }
+
+    protected override void OnDeleted (EventArgs args)
+    {
+      base.OnDeleted (args);
+
+      foreach (AccessControlEntry accessControlEntry in _accessControlEntriesToBeDeleted)
+        accessControlEntry.Delete ();
+      _accessControlEntriesToBeDeleted = null;
+
+      foreach (GroupTypePosition groupTypePosition in _groupTypePositionsToBeDeleted)
+        groupTypePosition.Delete ();
+      _groupTypePositionsToBeDeleted = null;
+    }
+
     public override string DisplayName
     {
       get { return Name; }

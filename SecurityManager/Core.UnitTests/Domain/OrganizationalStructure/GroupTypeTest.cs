@@ -11,7 +11,9 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 {
@@ -34,6 +36,37 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       DomainObjectCollection groupTypes = GroupType.FindAll ();
 
       Assert.AreEqual (2, groupTypes.Count);
+    }
+
+    [Test]
+    public void DeleteGroupType_WithAccessControlEntry ()
+    {
+      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      {
+        GroupType groupType = GroupType.NewObject();
+        AccessControlEntry ace = testHelper.CreateAceWithBranchOfOwningGroup (groupType);
+
+        groupType.Delete ();
+
+        Assert.IsTrue (ace.IsDiscarded);
+      }
+    }
+
+    [Test]
+    public void DeletePosition_WithGroupTypePosition ()
+    {
+      OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      {
+        GroupType groupType = testHelper.CreateGroupType ("GroupType");
+        Position position = testHelper.CreatePosition ("Position");
+        GroupTypePosition concretePosition = testHelper.CreateGroupTypePosition (groupType, position);
+
+        groupType.Delete ();
+
+        Assert.IsTrue (concretePosition.IsDiscarded);
+      }
     }
 
     [Test]
