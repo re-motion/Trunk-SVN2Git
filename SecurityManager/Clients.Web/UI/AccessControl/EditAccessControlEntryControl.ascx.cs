@@ -80,10 +80,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       LoadPermissions (interim);
       AdjustSpecificTenantField();
-      AdjustSpecificGroupField();
+      AdjustSpecificGroupField (false);
       AdjustGroupHierarchyConditionField();
       AdjustSpecificGroupTypeField();
-      AdjustSpecificUserField();
+      AdjustSpecificUserField (false);
       AdjustSpecificPositionField();
       AdjustSpecificAbstractRoleField();
     }
@@ -128,19 +128,19 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected void SpecificTenantField_SelectionChanged (object sender, EventArgs e)
     {
-      AdjustSpecificGroupField();
+      AdjustSpecificGroupField (true);
     }
 
     protected void GroupConditionField_SelectionChanged (object sender, EventArgs e)
     {
-      AdjustSpecificGroupField();
+      AdjustSpecificGroupField (false);
       AdjustGroupHierarchyConditionField();
       AdjustSpecificGroupTypeField();
     }
 
     protected void UserConditionField_SelectionChanged (object sender, EventArgs e)
     {
-      AdjustSpecificUserField();
+      AdjustSpecificUserField (false);
       AdjustSpecificPositionField();
     }
 
@@ -155,9 +155,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       }
     }
 
-    private void AdjustSpecificGroupField ()
+    private void AdjustSpecificGroupField (bool resetValue)
     {
-      if (SpecificTenantField.BusinessObjectID != null && SpecificGroupField.BusinessObjectID != null)
+      if (resetValue)
         SpecificGroupField.Value = null;
 
       if (CurrentFunction.TenantID == null)
@@ -187,9 +187,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       SpecificGroupTypeField.Visible = isSpecificGroupTypeSelected || isBranchOfOwningGroupSelected;
     }
 
-    private void AdjustSpecificUserField ()
+    private void AdjustSpecificUserField (bool resetValue)
     {
-      if (SpecificTenantField.BusinessObjectID != null && SpecificUserField.BusinessObjectID != null)
+      if (resetValue)
         SpecificUserField.Value = null;
 
       if (CurrentFunction.TenantID == null)
