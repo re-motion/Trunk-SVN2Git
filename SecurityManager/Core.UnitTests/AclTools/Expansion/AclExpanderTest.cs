@@ -256,7 +256,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         );
 
 
-      To.ConsoleLine.e (() => aclExpansionEntryList);
+      //To.ConsoleLine.e (() => aclExpansionEntryList);
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
 
@@ -592,6 +592,48 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       To.ConsoleLine.nl ().e (() => aclExpansionEntryList);
     }
 
+
+
+    //--------------------------------------------------------------------------------------------------------------------------------
+    // 2008-11-17 New SecurityManager ACE Features Tests
+    //--------------------------------------------------------------------------------------------------------------------------------
+
+    [Test]
+    public void SpecificGroupTest ()
+    {
+      // A 2nd tenant + user, etc
+      var otherTenant = TestHelper.CreateTenant ("OtherTenant");
+      var otherTenantGroup = TestHelper.CreateGroup ("GroupForOtherTenant", null, otherTenant);
+      var otherTenantPosition = TestHelper.CreatePosition ("Head Honcho");
+      var otherTenantUser = TestHelper.CreateUser ("UserForOtherTenant", "User", "Other", "Chief", otherTenantGroup, otherTenant);
+      var otherTenantRole = TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
+
+      var aceSpecificGroup = TestHelper.CreateAceWithSpecificGroup (otherTenantGroup);
+      AttachAccessTypeReadWriteDelete (aceSpecificGroup, null, true, null);
+      Assert.That (aceSpecificGroup.Validate ().IsValid);
+
+      var aceOwningGroup = TestHelper.CreateAceWithOwningGroup ();
+      AttachAccessTypeReadWriteDelete (aceOwningGroup, null, null, true);
+      Assert.That (aceOwningGroup.Validate ().IsValid);
+
+      //To.ConsoleLine.e (() => aceSpecificGroup);
+
+      var userList = List.New (otherTenantUser);
+      var aclList = List.New (TestHelper.CreateStatefulAcl (aceSpecificGroup, aceOwningGroup));
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
+
+      //To.ConsoleLine.e (() => aclExpansionEntryList);
+
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
+
+      // Test of specific-group-ACE: gives write-access
+      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+
+      // Test of owning-group-ACE (specific-group-ACE matches also): gives write-access + delete-access with condition: group-must-own
+      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType },
+        new AclExpansionAccessConditions { IsOwningGroupRequired = true });
+    }
 
 
 

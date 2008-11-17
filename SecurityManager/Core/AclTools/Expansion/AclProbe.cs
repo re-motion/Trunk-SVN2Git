@@ -62,16 +62,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       switch (ace.TenantCondition)
       {
         case TenantCondition.OwningTenant:
-          owningTenant = user.Tenant;
-          aclProbe.AccessConditions.IsOwningTenantRequired = true;
+          // Undecideable constraint: For ACE to match the SecurityToken.OwningTenant must be equal to the user's tenant.
+          // Since this is undeciadeable, set the owning tenant so he will match, and record the constraint as an access condition.
+          owningTenant = user.Tenant; 
+          aclProbe.AccessConditions.IsOwningTenantRequired = true; 
           break;
-        //case TenantCondition.SpecificTenant:
-        //case TenantCondition.None:
-        //  owningTenant = ace.SpecificTenant;
-        //  break;
         case TenantCondition.SpecificTenant:
+          owningTenant = null; // Decideable constraint => no condition. Either Principal.Tenant matches or he does not.
+          break;
         case TenantCondition.None:
-          owningTenant = null; // Decideable constraint => no condition. Either Principal.Tenant matches or he does not
+          owningTenant = null; // No constraint => no condition. Will always match.
           break;
         default:
           throw new ArgumentException (String.Format ("ace.TenantSelection={0} is currently not supported by this method. Please extend method to handle the new TenantSelection state.", ace.TenantCondition));
@@ -89,8 +89,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           owningGroup = role.Group;
           aclProbe.AccessConditions.IsOwningGroupRequired = true;
           break;
+        case GroupCondition.SpecificGroup:
+          owningGroup = null; // Decideable constraint => no condition. Either the Principal's groups contain the specifc group or not.
+          break;
         case GroupCondition.None:
-          owningGroup = ace.SpecificGroup;
+          owningGroup = null; // No constraint => no condition. Will always match.
           break;
         default:
           throw new ArgumentException (String.Format ("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.", ace.GroupCondition));

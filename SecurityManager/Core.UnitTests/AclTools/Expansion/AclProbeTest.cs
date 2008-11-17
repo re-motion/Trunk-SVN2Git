@@ -60,7 +60,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AccessControlEntry ace = TestHelper.CreateAceWithoutGroupCondition ();
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      Assert.That (aclProbe.SecurityToken.OwningGroup, Is.SameAs (ace.SpecificGroup));
+      //Assert.That (aclProbe.SecurityToken.OwningGroup, Is.SameAs (ace.SpecificGroup));
+      Assert.That (aclProbe.SecurityToken.OwningGroup, Is.Null);
 
       var accessConditionsExpected = new AclExpansionAccessConditions();
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
@@ -132,28 +133,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
-    //[Test]
-    //[Explicit]
-    //public void GeneralAccessTypesTextHandlerTest ()
-    //{
-    //  //var generalAccessType = Remotion.Security.GeneralAccessTypes.Delete;
-    //  //To.ConsoleLine.e (generalAccessType.ToString());
-    //  //To.ConsoleLine.e (generalAccessType);
 
-    //  var accessTypeDefinition = TestHelper.CreateAccessType ("xyz", 123);
-    //  To.ConsoleLine.e (accessTypeDefinition.Name);
-    //  To.ConsoleLine.e (accessTypeDefinition.ToString ());
-    //  To.ConsoleLine.e (accessTypeDefinition);
-    //}
-
-    //[ToTextSpecificHandler]
-    //public class GeneralAccessTypes_ToTextSpecificTypeHandler : ToTextSpecificTypeHandler<Remotion.Security.GeneralAccessTypes>
-    //{
-    //  public override void ToText (Remotion.Security.GeneralAccessTypes x, IToTextBuilder toTextBuilder)
-    //  {
-    //    toTextBuilder.ib<Remotion.Security.GeneralAccessTypes> ("!!!!!!!!!!!!!!!!!!!!!!!").e (x.ToString ().LeftUntilChar ('|')).ie ();
-    //  }
-    //}
 
 
 
