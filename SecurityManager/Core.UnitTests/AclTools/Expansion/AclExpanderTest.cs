@@ -635,6 +635,50 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         new AclExpansionAccessConditions { IsOwningGroupRequired = true });
     }
 
+    [Test]
+    public void SpecificGroupTypeTest ()
+    {
+      // A 2nd tenant + user, etc
+      var otherTenant = TestHelper.CreateTenant ("OtherTenant");
+      //var otherTenantParentGroup = TestHelper.CreateGroup ("ParentGroupForOtherTenant", null, otherTenant);
+
+      GroupType groupType1 = TestHelper.CreateGroupType ("GroupType1");
+      GroupType groupType2 = TestHelper.CreateGroupType ("GroupType2");
+
+      var groupWithGroupType1 = TestHelper.CreateGroup ("GroupWithGroupType1", null, otherTenant, groupType1);
+      var groupWithGroupType2 = TestHelper.CreateGroup ("GroupWithGroupType2", null, otherTenant, groupType2);
+      var anotherGroupWithGroupType1 = TestHelper.CreateGroup ("AnotherGroupWithGroupType1", null, otherTenant, groupType1);
+
+      var otherTenantPosition = TestHelper.CreatePosition ("Head Honcho");
+      var otherTenantUser = TestHelper.CreateUser ("UserForOtherTenant", "User", "Other", "Chief", groupWithGroupType1, otherTenant);
+      var otherTenantRole = TestHelper.CreateRole (otherTenantUser, groupWithGroupType1, otherTenantPosition);
+      TestHelper.CreateRole (otherTenantUser, groupWithGroupType2, otherTenantPosition);
+      TestHelper.CreateRole (otherTenantUser, anotherGroupWithGroupType1, otherTenantPosition);
+
+      var aceSpecificGroupType1 = TestHelper.CreateAceWithSpecificGroupType (groupType1);
+      AttachAccessTypeReadWriteDelete (aceSpecificGroupType1, null, true, null);
+      Assert.That (aceSpecificGroupType1.Validate ().IsValid);
+
+      var aceSpecificGroupType2 = TestHelper.CreateAceWithSpecificGroupType (groupType2);
+      AttachAccessTypeReadWriteDelete (aceSpecificGroupType2, null, null, true);
+      Assert.That (aceSpecificGroupType2.Validate ().IsValid);
+
+      //To.ConsoleLine.e (() => aceSpecificGroup);
+
+      var userList = List.New (otherTenantUser);
+      var aclList = List.New (TestHelper.CreateStatefulAcl (aceSpecificGroupType1, aceSpecificGroupType2));
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
+
+      To.ConsoleLine.e (() => aclExpansionEntryList);
+
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
+
+      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { DeleteAccessType }, new AclExpansionAccessConditions ());
+      AssertAclExpansionEntry (aclExpansionEntryList[2], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+    }
+
 
 
     public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion, bool outputRowCount)

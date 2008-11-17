@@ -675,6 +675,32 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
+    public Group CreateGroup (string name, Group parent, Tenant tenant, GroupType groupType)
+    {
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        Group group = _factory.CreateGroup ();
+        group.Name = name;
+        group.Parent = parent;
+        group.Tenant = tenant;
+        group.GroupType = groupType;
+
+        return group;
+      }
+    }
+
+
+    public GroupType CreateGroupType (string name)
+    {
+      using (_transaction.EnterNonDiscardingScope())
+      {
+        GroupType groupType = GroupType.NewObject ();
+        groupType.Name = name;
+        return groupType;
+      }
+    }      
+
+
     public User CreateUser (string userName, string firstName, string lastName, string title, Group owningGroup, Tenant tenant)
     {
       using (_transaction.EnterNonDiscardingScope())

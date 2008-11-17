@@ -92,6 +92,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         case GroupCondition.SpecificGroup:
           owningGroup = null; // Decideable constraint => no condition. Either the Principal's groups contain the specifc group or not.
           break;
+        case GroupCondition.AnyGroupWithSpecificGroupType:
+          owningGroup = null; // Decideable constraint => no condition. Either one of the Principal's groups is of the specifc group type or not.
+          break;
         case GroupCondition.None:
           owningGroup = null; // No constraint => no condition. Will always match.
           break;
