@@ -99,5 +99,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       Assert.IsFalse (matcher.MatchesToken (token));
     }
+
+    [Test]
+    public void TokenWithRoleInSibling_DoesNotMatch ()
+    {
+      User user = CreateUser (_companyHelper.CompanyTenant, null);
+      Group branchRoot = _companyHelper.AustrianDivsion;
+      Group userGroup = branchRoot.Children[0];
+      Group owningGroup = branchRoot.Children[1];
+      TestHelper.CreateRole (user, userGroup, _companyHelper.HeadPosition);
+
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, owningGroup);
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
+
+      Assert.IsFalse (matcher.MatchesToken (token));
+    }
   }
 }

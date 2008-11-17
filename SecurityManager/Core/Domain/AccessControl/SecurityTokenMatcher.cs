@@ -74,7 +74,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (referenceTenant == null)
         return false;
 
-      return GetParents (referenceTenant).Contains (principal.Tenant);
+      return GetThisAndParents (referenceTenant).Contains (principal.Tenant);
     }
 
     private bool MatchesAbstractRole (SecurityToken token)
@@ -161,7 +161,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       Assertion.IsNotNull (_ace.GroupCondition == GroupCondition.BranchOfOwningGroup);
 
-      return GetParents (referenceGroup).Where (g => g.GroupType == _ace.SpecificGroupType).FirstOrDefault();
+      return GetThisAndParents (referenceGroup).Where (g => g.GroupType == _ace.SpecificGroupType).FirstOrDefault ();
     }
 
     private bool MatchPrincipalAgainstGroup (User principal, Group referenceGroup, GroupHierarchyCondition groupHierarchyCondition)
@@ -175,36 +175,32 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       IEnumerable<Role> roles = GetMatchingPrincipalRoles (principal);
 
       var userGroups = roles.Select (r => r.Group);
-      var objectGroups = (IEnumerable<Group>) new[] { referenceGroup };
+      var userAndParentGroups = userGroups.SelectMany (g => GetThisAndParents (g));
+      var referenceAndParentGroups = GetThisAndParents (referenceGroup);
+
+      Func<bool> hasMatchInThisAndChildren = () => userAndParentGroups.Contains (referenceGroup);
+      Func<bool> hasMatchInThisAndParents = () => userGroups.Intersect (referenceAndParentGroups).Any ();
 
       switch (groupHierarchyCondition)
       {
         case GroupHierarchyCondition.Undefined:
-          objectGroups = new Group[0];
-          userGroups = new Group[0];
-          break;
+          return false;
 
         case GroupHierarchyCondition.This:
-          break;
+          return userGroups.Contains (referenceGroup);
 
         case GroupHierarchyCondition.ThisAndParent:
-          objectGroups = objectGroups.SelectMany (g => GetParents (g));
-          break;
+          return hasMatchInThisAndParents();
 
         case GroupHierarchyCondition.ThisAndChildren:
-          userGroups = userGroups.SelectMany (g => GetParents (g));
-          break;
+          return hasMatchInThisAndChildren();
 
         case GroupHierarchyCondition.ThisAndParentAndChildren:
-          objectGroups = objectGroups.SelectMany (g => GetParents (g));
-          userGroups = userGroups.SelectMany (g => GetParents (g));
-          break;
+          return hasMatchInThisAndParents() || hasMatchInThisAndChildren();
 
         default:
           throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupHierarchyCondition'.", _ace.GroupHierarchyCondition);
       }
-
-      return userGroups.Intersect (objectGroups).Any();
     }
 
     private IEnumerable<Role> GetMatchingPrincipalRoles (User principal)
@@ -232,13 +228,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     }
 
     //TODO MK: Move to Linq-Extensions
-    private IEnumerable<Group> GetParents (Group group)
+    private IEnumerable<Group> GetThisAndParents (Group group)
     {
       for (var current = group; current != null; current = current.Parent)
         yield return current;
     }
 
-    private IEnumerable<Tenant> GetParents (Tenant tenant)
+    private IEnumerable<Tenant> GetThisAndParents (Tenant tenant)
     {
       for (var current = tenant; current != null; current = current.Parent)
         yield return current;
