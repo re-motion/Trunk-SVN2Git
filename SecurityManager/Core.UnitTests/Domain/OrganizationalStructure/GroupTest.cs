@@ -21,6 +21,7 @@ using Remotion.Security;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using System.Collections.Generic;
+using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 {
@@ -290,6 +291,40 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
       IBusinessObject[] actualParentGroups = parentGroupProperty.SearchAvailableObjects (group, null);
       Assert.That (actualParentGroups, Is.EquivalentTo (expectedParentGroups));
+    }
+
+    [Test]
+    public void DeleteGroup_WithAccessControlEntry ()
+    {
+      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      {
+        var group = testHelper.CreateGroup("group", null, testHelper.CreateTenant ("tenant"));
+        var ace = testHelper.CreateAceWithSpecificGroup(group);
+
+        group.Delete ();
+
+        Assert.IsTrue (ace.IsDiscarded);
+      }
+    }
+
+    [Test]
+    public void DeleteGroup_WithRole ()
+    {
+      OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      {
+        Tenant tenant = testHelper.CreateTenant ("TestTenant", "UID: testTenant");
+        Group userGroup = testHelper.CreateGroup ("UserGroup", Guid.NewGuid ().ToString (), null, tenant);
+        Group roleGroup = testHelper.CreateGroup ("RoleGroup", Guid.NewGuid ().ToString (), null, tenant);
+        User user = testHelper.CreateUser ("user", "Firstname", "Lastname", "Title", userGroup, tenant);
+        Position position = testHelper.CreatePosition ("Position");
+        Role role = testHelper.CreateRole (user, roleGroup, position);
+
+        roleGroup.Delete ();
+
+        Assert.IsTrue (role.IsDiscarded);
+      }
     }
 
     private Group CreateGroup ()

@@ -114,6 +114,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     // member fields
 
+    private ObjectList<AccessControlEntry> _accessControlEntriesToBeDeleted;
+    private ObjectList<Role> _rolesToBeDeleted;
+
     // construction and disposing
 
     protected Group ()
@@ -153,6 +156,27 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [EditorBrowsable (EditorBrowsableState.Never)]
     [DBBidirectionalRelation ("SpecificGroup")]
     protected abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
+
+    protected override void OnDeleting (EventArgs args)
+    {
+      base.OnDeleting (args);
+
+      _accessControlEntriesToBeDeleted = AccessControlEntries.Clone ();
+      _rolesToBeDeleted = Roles.Clone ();
+    }
+
+    protected override void OnDeleted (EventArgs args)
+    {
+      base.OnDeleted (args);
+
+      foreach (AccessControlEntry accessControlEntry in _accessControlEntriesToBeDeleted)
+        accessControlEntry.Delete ();
+      _accessControlEntriesToBeDeleted = null;
+
+      foreach (Role role in _rolesToBeDeleted)
+        role.Delete ();
+      _rolesToBeDeleted = null;
+    }
 
     public override string DisplayName
     {
