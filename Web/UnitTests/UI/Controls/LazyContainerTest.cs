@@ -373,8 +373,8 @@ namespace Remotion.Web.UnitTests.UI.Controls
 
       Assert.IsTrue (controlState is Triplet);
       Triplet values = (Triplet) controlState;
-      Assert.IsTrue (values.Third is Dictionary<string, object>);
-      Dictionary<string, object> actualControlStates = (Dictionary<string, object>) values.Third;
+      Assert.IsInstanceOfType((typeof (HybridDictionary)), values.Third);
+      IDictionary actualControlStates = (IDictionary) values.Third;
       Assert.AreEqual (2, actualControlStates.Count);
 
       foreach (string expectedKey in expectedControlStates.Keys)

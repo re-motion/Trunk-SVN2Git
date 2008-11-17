@@ -173,7 +173,7 @@ namespace Remotion.Web.UI.Controls
       bool hasChildControlStatesBackUp = (bool) values.Second;
 
       if (hasChildControlStatesBackUp)
-        _childControlStatesBackUp = (Dictionary<string, object>) values.Third;
+        _childControlStatesBackUp = (IDictionary) values.Third;
       else if (_isLazyLoadingEnabled)
         BackUpChildControlState ();
 
