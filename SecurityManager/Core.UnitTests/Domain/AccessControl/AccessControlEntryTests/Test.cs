@@ -12,8 +12,10 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryTests
 {
@@ -135,8 +137,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The access type 'Test' has already been attached to this access control entry.\r\nParameter name: accessType"
-        )]
+        "The access type 'Test' has already been attached to this access control entry.\r\nParameter name: accessType")]
     public void AttachAccessType_ExistingAccessType ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
@@ -191,34 +192,152 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void ClearSpecificTenantOnCommit ()
     {
-      DatabaseFixtures dbFixtures = new DatabaseFixtures();
-      ObjectID aceID = dbFixtures.CreateAndCommitAccessControlEntryWithPermissions (0, ClientTransaction.CreateRootTransaction());
-      AccessControlEntry ace = AccessControlEntry.GetObject (aceID);
-      ace.TenantCondition = TenantCondition.OwningTenant;
-      ace.SpecificTenant = _testHelper.CreateTenant ("TestTenant");
+      var tenant = _testHelper.CreateTenant ("TestTenant");
+      var ace = _testHelper.CreateAceWithSpecficTenant (tenant);
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.TenantCondition = TenantCondition.OwningTenant;
 
-      Assert.IsNotNull (ace.SpecificTenant);
-      ClientTransactionScope.CurrentTransaction.Commit();
-      Assert.IsNull (ace.SpecificTenant);
+        Assert.IsNotNull (ace.SpecificTenant);
+        ClientTransactionScope.CurrentTransaction.Commit();
+        Assert.IsNull (ace.SpecificTenant);
+      }
     }
 
     [Test]
-    public void ClearSpecificTenantOnCommitWhenObjectIsDeleted ()
+    public void ClearSpecificGroupOnCommit ()
     {
-      DatabaseFixtures dbFixtures = new DatabaseFixtures();
-      ObjectID aceID = dbFixtures.CreateAndCommitAccessControlEntryWithPermissions (0, ClientTransaction.CreateRootTransaction());
-      AccessControlEntry ace = AccessControlEntry.GetObject (aceID);
-      ace.TenantCondition = TenantCondition.SpecificTenant;
-      ace.SpecificTenant = _testHelper.CreateTenant ("TestTenant");
-      ClientTransactionScope.CurrentTransaction.Commit();
-      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
+      var group = _testHelper.CreateGroup ("TestGroup", null, _testHelper.CreateTenant ("TestTenant"));
+      var ace = _testHelper.CreateAceWithSpecificGroup (group);
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        AccessControlEntry aceActual = AccessControlEntry.GetObject (aceID);
-        aceActual.TenantCondition = TenantCondition.OwningTenant;
+        ace.GroupCondition = GroupCondition.OwningGroup;
 
-        Assert.IsNotNull (aceActual.SpecificTenant);
-        aceActual.Delete();
+        Assert.IsNotNull (ace.SpecificGroup);
         ClientTransactionScope.CurrentTransaction.Commit();
+        Assert.IsNull (ace.SpecificGroup);
+      }
+    }
+
+    [Test]
+    public void ClearSpecificGroupTypeOnCommit ()
+    {
+      var groupType = GroupType.NewObject ();
+      var ace = _testHelper.CreateAceWithSpecificGroupType (groupType);
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.GroupCondition = GroupCondition.AnyGroupWithSpecificGroupType;
+
+        ClientTransactionScope.CurrentTransaction.Commit ();
+        Assert.IsNotNull (ace.SpecificGroupType);
+      }
+    }
+
+    [Test]
+    public void DoNotClearSpecificGroupTypeOnCommit_IfAnyGroupWithSpecificGroupType ()
+    {
+      var groupType = GroupType.NewObject();
+      var ace = _testHelper.CreateAceWithSpecificGroupType (groupType);
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.GroupCondition = GroupCondition.BranchOfOwningGroup;
+
+        ClientTransactionScope.CurrentTransaction.Commit ();
+        Assert.IsNotNull (ace.SpecificGroupType);
+      }
+    }
+
+    [Test]
+    public void DoNotClearSpecificGroupTypeOnCommit_IfBranchOfOwningGroup ()
+    {
+      var groupType = GroupType.NewObject ();
+      var ace = _testHelper.CreateAceWithSpecificGroupType (groupType);
+      ace.GroupCondition = GroupCondition.BranchOfOwningGroup;
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.GroupCondition = GroupCondition.OwningGroup;
+
+        Assert.IsNotNull (ace.SpecificGroupType);
+        ClientTransactionScope.CurrentTransaction.Commit ();
+        Assert.IsNull (ace.SpecificGroupType);
+      }
+    }
+
+    [Test]
+    public void ClearSpecificUserOnCommit ()
+    {
+      var tenant = _testHelper.CreateTenant ("TestTenant");
+      var user = _testHelper.CreateUser ("TestUser", "user", "user", null, _testHelper.CreateGroup ("TestGroup", null, tenant), tenant);
+      var ace = _testHelper.CreateAceWithSpecificUser (user);
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.UserCondition = UserCondition.Owner;
+
+        Assert.IsNotNull (ace.SpecificUser);
+        ClientTransactionScope.CurrentTransaction.Commit ();
+        Assert.IsNull (ace.SpecificUser);
+      }
+    }
+
+    [Test]
+    public void ClearSpecificPositionOnCommit ()
+    {
+      var ace = _testHelper.CreateAceWithOwningUser ();
+      ace.UserCondition = UserCondition.SpecificUser;
+      ace.SpecificPosition = _testHelper.CreatePosition ("Position");
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.UserCondition = UserCondition.Owner;
+
+        Assert.IsNotNull (ace.SpecificPosition);
+        ClientTransactionScope.CurrentTransaction.Commit ();
+        Assert.IsNull (ace.SpecificPosition);
+      }
+    }
+
+    [Test]
+    public void DoNotAccessTenantConditionOnCommitWhenObjectIsDeleted_DoesNotThrow ()
+    {
+      var tenant = _testHelper.CreateTenant ("TestTenant");
+      var ace = _testHelper.CreateAceWithSpecficTenant (tenant);
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.TenantCondition = TenantCondition.OwningTenant;
+
+        Assert.IsNotNull (ace.SpecificTenant);
+        ace.Delete ();
+        ClientTransactionScope.CurrentTransaction.Commit ();
+      }
+    }
+
+    [Test]
+    public void DoNotAccessGroupConditionOnCommitWhenObjectIsDeleted_DoesNotThrow ()
+    {
+      var group = _testHelper.CreateGroup ("TestGroup", null, _testHelper.CreateTenant ("TestTenant"));
+      var ace = _testHelper.CreateAceWithSpecificGroup (group);
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.GroupCondition = GroupCondition.OwningGroup;
+
+        Assert.IsNotNull (ace.SpecificGroup);
+        ace.Delete ();
+        ClientTransactionScope.CurrentTransaction.Commit ();
+      }
+    }
+
+    [Test]
+    public void DoNotAccessUserConditionOnCommitWhenObjectIsDeleted_DoesNotThrow ()
+    {
+      var tenant = _testHelper.CreateTenant ("TestTenant");
+      var user = _testHelper.CreateUser ("TestUser", "user", "user", null, _testHelper.CreateGroup ("TestGroup", null, tenant), tenant);
+      var ace = _testHelper.CreateAceWithSpecificUser (user);
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.UserCondition = UserCondition.Owner;
+
+        Assert.IsNotNull (ace.SpecificUser);
+        ace.Delete ();
+        ClientTransactionScope.CurrentTransaction.Commit ();
       }
     }
   }

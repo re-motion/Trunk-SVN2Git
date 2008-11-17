@@ -264,6 +264,18 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       {
         if (TenantCondition != TenantCondition.SpecificTenant)
           SpecificTenant = null;
+
+        if (GroupCondition != GroupCondition.SpecificGroup)
+          SpecificGroup = null;
+
+        if (GroupCondition != GroupCondition.AnyGroupWithSpecificGroupType && GroupCondition != GroupCondition.BranchOfOwningGroup)
+          SpecificGroupType = null;
+
+        if (UserCondition != UserCondition.SpecificUser)
+          SpecificUser = null;
+
+        if (UserCondition != UserCondition.SpecificPosition)
+          SpecificPosition = null;
       }
 
       base.OnCommitting (args);
