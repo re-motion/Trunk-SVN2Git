@@ -104,6 +104,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       throw new NotImplementedException ("This method is only intended for framework support and should never be called.");
     }
 
+    private ObjectList<AccessControlEntry> _accessControlEntriesToBeDeleted;
+    private ObjectList<Role> _rolesToBeDeleted;
+
     protected User ()
     {
     }
@@ -136,19 +139,25 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [DBBidirectionalRelation ("SpecificUser")]
     protected abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
 
-    public List<Role> GetRolesForGroup (Group group)
+    protected override void OnDeleting (EventArgs args)
     {
-      ArgumentUtility.CheckNotNull ("group", group);
+      base.OnDeleting (args);
 
-      List<Role> roles = new List<Role>();
+      _accessControlEntriesToBeDeleted = AccessControlEntries.Clone ();
+      _rolesToBeDeleted = Roles.Clone ();
+    }
 
-      foreach (Role role in Roles)
-      {
-        if (role.Group.ID == group.ID)
-          roles.Add (role);
-      }
+    protected override void OnDeleted (EventArgs args)
+    {
+      base.OnDeleted (args);
 
-      return roles;
+      foreach (AccessControlEntry accessControlEntry in _accessControlEntriesToBeDeleted)
+        accessControlEntry.Delete ();
+      _accessControlEntriesToBeDeleted = null;
+
+      foreach (Role role in _rolesToBeDeleted)
+        role.Delete ();
+      _rolesToBeDeleted = null;
     }
 
     public override string DisplayName

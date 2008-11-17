@@ -68,10 +68,11 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       throw new NotImplementedException ("This method is only intended for framework support and should never be called.");
     }
-    
-    private DomainObjectCollection _accessControlEntriesToBeDeleted;
-    private DomainObjectCollection _rolesToBeDeleted;
-    private DomainObjectCollection _groupTypePositionsToBeDeleted;
+
+    private ObjectList<AccessControlEntry> _accessControlEntriesToBeDeleted;
+    private ObjectList<Role> _rolesToBeDeleted;
+    private ObjectList<GroupTypePosition> _groupTypePositionsToBeDeleted;
+
     protected Position ()
     {
     }

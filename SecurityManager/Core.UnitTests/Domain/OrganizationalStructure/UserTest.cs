@@ -21,7 +21,9 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
 using Remotion.Data.DomainObjects.Security;
+using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 {
@@ -69,26 +71,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       User foundUser = User.FindByUserName ("not.existing");
 
       Assert.IsNull (foundUser);
-    }
-
-    [Test]
-    public void GetRolesForGroup_Empty ()
-    {
-      User testUser = User.FindByUserName ("test.user");
-      Group parentOfOwnerGroup = Group.FindByUnqiueIdentifier ("UID: testParentOfOwningGroup");
-      List<Role> roles = testUser.GetRolesForGroup (parentOfOwnerGroup);
-
-      Assert.AreEqual (0, roles.Count);
-    }
-
-    [Test]
-    public void GetRolesForGroup_TwoRoles ()
-    {
-      User testUser = User.FindByUserName ("test.user");
-      Group testgroup = Group.FindByUnqiueIdentifier ("UID: testgroup");
-      List<Role> roles = testUser.GetRolesForGroup (testgroup);
-
-      Assert.AreEqual (2, roles.Count);
     }
 
     [Test]
@@ -300,6 +282,40 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       IBusinessObject[] actualOwningGroups = owningGroupProperty.SearchAvailableObjects(user, null);
       Assert.That (actualOwningGroups, Is.EquivalentTo (expectedOwningGroups));
 
+    }
+
+    [Test]
+    public void DeleteUser_WithAccessControlEntry ()
+    {
+      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      {
+        var user = testHelper.CreateUser ("user", null, "user", null, null, testHelper.CreateTenant ("tenant"));
+        var ace = testHelper.CreateAceWithSpecificUser (user);
+
+        user.Delete();
+
+        Assert.IsTrue (ace.IsDiscarded);
+      }
+    }
+
+    [Test]
+    public void DeleteUser_WithRole ()
+    {
+      OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      {
+        Tenant tenant = testHelper.CreateTenant ("TestTenant", "UID: testTenant");
+        Group userGroup = testHelper.CreateGroup ("UserGroup", Guid.NewGuid ().ToString (), null, tenant);
+        Group roleGroup = testHelper.CreateGroup ("RoleGroup", Guid.NewGuid ().ToString (), null, tenant);
+        User user = testHelper.CreateUser ("user", "Firstname", "Lastname", "Title", userGroup, tenant);
+        Position position = testHelper.CreatePosition ("Position");
+        Role role = testHelper.CreateRole (user, roleGroup, position);
+
+        user.Delete ();
+
+        Assert.IsTrue (role.IsDiscarded);
+      }
     }
 
     private User CreateUser ()

@@ -12,7 +12,6 @@ using System;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -204,13 +203,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private Permission FindPermission (AccessTypeDefinition accessType)
     {
-      foreach (var permission in Permissions)
-      {
-        if (permission.AccessType.ID == accessType.ID)
-          return permission;
-      }
-
-      return null;
+      return Permissions.Where (p => p.AccessType.ID == accessType.ID).SingleOrDefault();
     }
 
     //TODO: Rewrite with test
