@@ -1,3 +1,8 @@
+1.11.13
+=======
+- ISearchAvailableObjectService.Search now accepts objects of type ISearchAvailableObjectsService instead of a string argument.
+  BocReferenceValue supplies a DefaultSearchArguments object for this interface containing the search statement.
+
 1.11.8
 ======
 - BocList: Switched order of RowMenu-Event-Execution to support delete operations while inside the row.

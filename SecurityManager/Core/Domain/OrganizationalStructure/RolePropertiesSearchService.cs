@@ -9,7 +9,6 @@
  */
 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 
@@ -30,14 +29,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       AddSearchDelegate ("User", FindPossibleUsers);
     }
 
-    private IBusinessObject[] FindPossibleGroups (Role role, IBusinessObjectReferenceProperty property, string searchStatement)
+    private IBusinessObject[] FindPossibleGroups (Role role, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       if (role.User == null || role.User.Tenant == null)
         return new IBusinessObject[0];
       return role.GetPossibleGroups (role.User.Tenant.ID).ToArray();
     }
 
-    private IBusinessObject[] FindPossibleUsers (Role role, IBusinessObjectReferenceProperty property, string searchStatement)
+    private IBusinessObject[] FindPossibleUsers (Role role, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       if (role.Group == null || role.Group.Tenant == null)
         return new IBusinessObject[0];

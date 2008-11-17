@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void SearchViaReferencePropertyWithIdentity ()
     {
       Assert.IsTrue (_property.SupportsSearchAvailableObjects);
-      IBusinessObjectWithIdentity[] results = (IBusinessObjectWithIdentity[]) _property.SearchAvailableObjects (_orderItem, "QueryWithSpecificCollectionType");
+      IBusinessObjectWithIdentity[] results = (IBusinessObjectWithIdentity[]) _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments("QueryWithSpecificCollectionType"));
       Assert.That (results, Is.EqualTo (ClientTransactionMock.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType"))));
     }
 
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void SearchViaReferencePropertyWithoutIdentity ()
     {
       Assert.IsTrue (_property.SupportsSearchAvailableObjects);
-      IBusinessObject[] results = _property.SearchAvailableObjects (_orderItem, "QueryWithSpecificCollectionType");
+      IBusinessObject[] results = _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
       Assert.That (results, Is.EqualTo (ClientTransactionMock.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType"))));
     }
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        IBusinessObject[] results = _property.SearchAvailableObjects (_orderItem, "QueryWithSpecificCollectionType");
+        IBusinessObject[] results = _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
 
         Assert.IsNotNull (results);
         Assert.IsTrue (results.Length > 0);
@@ -85,14 +85,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void SearchAvailableObjectsWithDifferentObject ()
     {
       IBusinessObject[] businessObjects =
-          _property.SearchAvailableObjects ((IBusinessObject) Order.NewObject (), "QueryWithSpecificCollectionType");
+          _property.SearchAvailableObjects ((IBusinessObject) Order.NewObject(), new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
 
       Assert.IsNotNull (businessObjects);
       Assert.IsTrue (businessObjects.Length > 0);
     }
 
     [Test]
-    public void SearchAvailableObjectsWithNullQuery ()
+    public void SearchAvailableObjectsWithNullSearchArguments ()
     {
       IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_orderItem, null);
 
@@ -101,9 +101,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     }
 
     [Test]
+    public void SearchAvailableObjectsWithNullQuery ()
+    {
+      IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments (null));
+
+      Assert.IsNotNull (businessObjects);
+      Assert.AreEqual (0, businessObjects.Length);
+    }
+
+    [Test]
     public void SearchAvailableObjectsWithEmptyQuery ()
     {
-      IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_orderItem, "");
+      IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments (""));
 
       Assert.IsNotNull (businessObjects);
       Assert.AreEqual (0, businessObjects.Length);

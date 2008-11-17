@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     /// <summary>
     /// Retrieves the list of <see cref="IBusinessObject"/> intances for the specified <paramref name="referencingObject"/>, 
-    /// <paramref name="property"/>, and <paramref name="searchStatement"/>. 
+    /// <paramref name="property"/>, and <paramref name="searchArguments"/>. 
     /// </summary>
     /// <param name="referencingObject">
     /// The object containing the <paramref name="property"/> for which the list of possible values is to be retrieved.
@@ -40,8 +40,8 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <param name="property">
     /// The <see cref="IBusinessObjectReferenceProperty"/> that will be assigned with one of the objects from the result. Must not be <see langword="null" />.
     /// </param>
-    /// <param name="searchStatement">An optional <see cref="string"/> that can be used to further qualify the search.</param>
+    /// <param name="searchArguments">A parameter-object containing additional information for executing the search. Can be <see langword="null"/>.</param>
     /// <returns>A list of <see cref="IBusinessObject"/> instances. The result may be empty.</returns>
-    IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement);
+    IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments);
   }
 }

@@ -16,9 +16,9 @@ namespace Remotion.SecurityManager.Domain
   public abstract class SecurityManagerSearchServiceBase<T> : ISearchAvailableObjectsService
       where T: BaseSecurityManagerObject
   {
-    private readonly Dictionary<string, Func<T, IBusinessObjectReferenceProperty, string, IBusinessObject[]>> _searchDelegates = new Dictionary<string, Func<T, IBusinessObjectReferenceProperty, string, IBusinessObject[]>>();
+    private readonly Dictionary<string, Func<T, IBusinessObjectReferenceProperty, ISearchAvailableObjectsArguments, IBusinessObject[]>> _searchDelegates = new Dictionary<string, Func<T, IBusinessObjectReferenceProperty, ISearchAvailableObjectsArguments, IBusinessObject[]>>();
 
-    protected void AddSearchDelegate (string propertyName, Func<T, IBusinessObjectReferenceProperty, string, IBusinessObject[]> searchDelegate)
+    protected void AddSearchDelegate (string propertyName, Func<T, IBusinessObjectReferenceProperty, ISearchAvailableObjectsArguments, IBusinessObject[]> searchDelegate)
     {
       _searchDelegates.Add (propertyName, searchDelegate);
     }
@@ -30,14 +30,14 @@ namespace Remotion.SecurityManager.Domain
       return _searchDelegates.ContainsKey (property.Identifier);
     }
 
-    public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement)
+    public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       T referencingSecurityManagerObject = ArgumentUtility.CheckNotNullAndType<T> ("referencingObject", referencingObject);
       ArgumentUtility.CheckNotNull ("property", property);
 
-      Func<T, IBusinessObjectReferenceProperty, string, IBusinessObject[]> searchDelegate;
+      Func<T, IBusinessObjectReferenceProperty, ISearchAvailableObjectsArguments, IBusinessObject[]> searchDelegate;
       if (_searchDelegates.TryGetValue (property.Identifier, out searchDelegate))
-        return searchDelegate (referencingSecurityManagerObject, property, searchStatement);
+        return searchDelegate (referencingSecurityManagerObject, property, searchArguments);
 
       throw new ArgumentException (string.Format ("The property '{0}' is not supported by the '{1}' type.", property.DisplayName, GetType().FullName));
     }

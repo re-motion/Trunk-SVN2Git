@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Sample
       return true;
     }
 
-    public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement)
+    public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       ReferenceProperty referenceProperty = ArgumentUtility.CheckNotNullAndType<ReferenceProperty> ("property", property);
       BindableObjectClass bindableObjectClass = (BindableObjectClass) referenceProperty.ReferenceClass;

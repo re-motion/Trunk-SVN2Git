@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       ObjectList<User> expected = User.FindByTenantID (tenant.ID);
       Assert.That (expected, Is.Not.Empty);
 
-      IBusinessObject[] actual = _searchService.Search (ace, _property, tenant.ID.ToString());
+      IBusinessObject[] actual = _searchService.Search (ace, _property, new DefaultSearchArguments(tenant.ID.ToString()));
 
       Assert.That (actual, Is.EqualTo (expected));
     }

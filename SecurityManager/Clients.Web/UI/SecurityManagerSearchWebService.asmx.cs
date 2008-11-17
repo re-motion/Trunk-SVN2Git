@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        var result = referenceProperty.SearchAvailableObjects ((IBusinessObject)RepositoryAccessor.NewObject (type).With(), args);
+        var result = referenceProperty.SearchAvailableObjects ((IBusinessObject)RepositoryAccessor.NewObject (type).With(), new DefaultSearchArguments (args));
         if (completionSetCount.HasValue)
           result.Take (completionSetCount.Value);
         return result.Cast<IBusinessObjectWithIdentity>().Select (o => new BusinessObjectWithIdentityProxy (o)).ToArray();

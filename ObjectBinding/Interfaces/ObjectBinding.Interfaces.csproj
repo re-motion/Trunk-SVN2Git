@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -13,7 +13,8 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AssemblyOriginatorKeyFile>..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
@@ -56,6 +57,7 @@
     <Compile Include="IBusinessObjectWithIdentity.cs" />
     <Compile Include="IEnumerationValueInfo.cs" />
     <Compile Include="IListInfo.cs" />
+    <Compile Include="ISearchAvailableObjectsArguments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="ObjectBinding.Interfaces.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />

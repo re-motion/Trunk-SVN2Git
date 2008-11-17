@@ -32,25 +32,29 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       AddSearchDelegate ("SpecificTenant", delegate { return Tenant.FindAll().ToArray(); });
       AddSearchDelegate ("SpecificGroup", SearchGroups);
       AddSearchDelegate ("SpecificUser", SearchUsers);
-      AddSearchDelegate ("SpecificPosition", delegate { return Position.FindAll ().ToArray (); });
-      AddSearchDelegate ("SpecificGroupType", delegate { return GroupType.FindAll ().ToArray (); });
-      AddSearchDelegate ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll ().ToArray (); });
+      AddSearchDelegate ("SpecificPosition", delegate { return Position.FindAll().ToArray(); });
+      AddSearchDelegate ("SpecificGroupType", delegate { return GroupType.FindAll().ToArray(); });
+      AddSearchDelegate ("SpecificAbstractRole", delegate { return AbstractRoleDefinition.FindAll().ToArray(); });
     }
 
-    private IBusinessObject[] SearchGroups (AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, string selectStatement)
+    private IBusinessObject[] SearchGroups (
+        AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("selectStatement", selectStatement);
-      ObjectID tenantID = ObjectID.Parse (selectStatement);
+      var defaultSearchArguments = ArgumentUtility.CheckNotNullAndType<DefaultSearchArguments> ("searchArguments", searchArguments);
+      ArgumentUtility.CheckNotNullOrEmpty ("defaultSearchArguments.SearchStatement", defaultSearchArguments.SearchStatement);
+      ObjectID tenantID = ObjectID.Parse (defaultSearchArguments.SearchStatement);
 
-      return Group.FindByTenantID (tenantID).ToArray ();
+      return Group.FindByTenantID (tenantID).ToArray();
     }
 
-    private IBusinessObject[] SearchUsers (AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, string selectStatement)
+    private IBusinessObject[] SearchUsers (
+        AccessControlEntry referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("selectStatement", selectStatement);
-      ObjectID tenantID = ObjectID.Parse (selectStatement);
+      var defaultSearchArguments = ArgumentUtility.CheckNotNullAndType<DefaultSearchArguments> ("searchArguments", searchArguments);
+      ArgumentUtility.CheckNotNullOrEmpty ("defaultSearchArguments.SearchStatement", defaultSearchArguments.SearchStatement);
+      ObjectID tenantID = ObjectID.Parse (defaultSearchArguments.SearchStatement);
 
-      return User.FindByTenantID (tenantID).ToArray ();
+      return User.FindByTenantID (tenantID).ToArray();
     }
   }
 }

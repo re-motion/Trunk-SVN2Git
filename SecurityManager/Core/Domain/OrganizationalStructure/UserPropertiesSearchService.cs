@@ -9,7 +9,6 @@
  */
 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 
@@ -28,7 +27,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       AddSearchDelegate ("OwningGroup", FindPossibleOwningGroups);
     }
 
-    private IBusinessObject[] FindPossibleOwningGroups (User user, IBusinessObjectReferenceProperty property, string searchStatement)
+    private IBusinessObject[] FindPossibleOwningGroups (User user, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       if (user.Tenant == null)
         return new IBusinessObject[0];

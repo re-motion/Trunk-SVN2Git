@@ -17,6 +17,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.Logging;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -1073,7 +1074,7 @@ public class BocReferenceValue:
 
     //  Get all matching business objects
     if (DataSource != null)
-      businessObjects = Property.SearchAvailableObjects (DataSource.BusinessObject, _select);
+      businessObjects = Property.SearchAvailableObjects (DataSource.BusinessObject, new DefaultSearchArguments (_select));
 
     RefreshBusinessObjectList (ArrayUtility.Convert<IBusinessObject, IBusinessObjectWithIdentity> (businessObjects));
   }

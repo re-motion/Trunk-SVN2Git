@@ -24,14 +24,15 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       return true;
     }
 
-    public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, string searchStatement)
+    public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
-      if (string.IsNullOrEmpty (searchStatement))
+      DefaultSearchArguments defaultSearchArguments = searchArguments as DefaultSearchArguments;
+      if (defaultSearchArguments == null || string.IsNullOrEmpty (defaultSearchArguments.SearchStatement))
         return new IBusinessObjectWithIdentity[] { };
 
-      QueryDefinition definition = DomainObjectsConfiguration.Current.Query.QueryDefinitions.GetMandatory (searchStatement);
+      QueryDefinition definition = DomainObjectsConfiguration.Current.Query.QueryDefinitions.GetMandatory (defaultSearchArguments.SearchStatement);
       if (definition.QueryType != QueryType.Collection)
-        throw new ArgumentException (string.Format ("The query '{0}' is not a collection query.", searchStatement), "searchStatement");
+        throw new ArgumentException (string.Format ("The query '{0}' is not a collection query.", defaultSearchArguments.SearchStatement));
 
       ClientTransaction clientTransaction = ClientTransactionScope.CurrentTransaction;
 

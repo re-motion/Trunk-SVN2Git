@@ -89,7 +89,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       Assert.That (property.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, tenant.ID.ToString());
+      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, new DefaultSearchArguments (tenant.ID.ToString()));
       Assert.That (actual, Is.EquivalentTo (expected));
     }
 
@@ -122,7 +122,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       Assert.That (property.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, tenant.ID.ToString ());
+      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, new DefaultSearchArguments (tenant.ID.ToString ()));
       Assert.That (actual, Is.EquivalentTo (expected));
     }
 

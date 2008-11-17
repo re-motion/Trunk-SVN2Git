@@ -135,6 +135,7 @@
     <Compile Include="BindableObjectWithIdentityBase.cs" />
     <Compile Include="BindableObject\IBindableObjectBaseImplementation.cs" />
     <Compile Include="BusinessObjectExtensions.cs" />
+    <Compile Include="DefaultSearchArguments.cs" />
     <Compile Include="IBusinessObjectProviderWithIdentity.cs" />
     <Compile Include="IBusinessObjectServiceFactory.cs" />
     <Compile Include="BindableObject\IClassReflector.cs" />

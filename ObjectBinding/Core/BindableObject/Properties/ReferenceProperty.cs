@@ -10,8 +10,6 @@
 
 using System;
 using Remotion.Collections;
-using Remotion.Mixins;
-using Remotion.ObjectBinding.Design.BindableObject;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject.Properties
@@ -69,12 +67,12 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     /// <summary>Searches the object model for the <see cref="IBusinessObject"/> instances that can be assigned to this property.</summary>
     /// <param name="referencingObject"> The business object for which to search for the possible objects to be referenced. </param>
-    /// <param name="searchStatement">A <see cref="string"/> containing a search statement. Can be <see langword="null"/>.</param>
+    /// <param name="searchArguments">A parameter-object containing additional information for executing the search. Can be <see langword="null"/>.</param>
     /// <returns>A list of the <see cref="IBusinessObject"/> instances available. Must not return <see langword="null"/>.</returns>
     /// <exception cref="NotSupportedException">
     ///   Thrown if <see cref="SupportsSearchAvailableObjects"/> evaluated <see langword="false"/> but this method has been called anyways.
     /// </exception>
-    public IBusinessObject[] SearchAvailableObjects (IBusinessObject referencingObject, string searchStatement)
+    public IBusinessObject[] SearchAvailableObjects (IBusinessObject referencingObject, ISearchAvailableObjectsArguments searchArguments)
     {
       if (!SupportsSearchAvailableObjects)
       {
@@ -88,7 +86,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       ISearchAvailableObjectsService searchService = GetSearchService ();
       Assertion.IsNotNull (searchService, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceDefinition.B.FullName);
 
-      return searchService.Search (referencingObject, this, searchStatement);
+      return searchService.Search (referencingObject, this, searchArguments);
     }
 
     /// <summary>
