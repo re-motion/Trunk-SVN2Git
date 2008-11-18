@@ -50,8 +50,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclProbe.SecurityToken.OwningGroup, Is.SameAs (Role.Group));
 
       var accessConditionsExpected = new AclExpansionAccessConditions();
-      accessConditionsExpected.HasOwningGroupCondition = true;
-      Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
+      accessConditionsExpected.OwningGroup = Group;
+     Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
 
     [Test]

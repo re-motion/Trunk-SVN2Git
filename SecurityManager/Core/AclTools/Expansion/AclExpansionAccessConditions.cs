@@ -12,6 +12,7 @@
 using System;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
@@ -19,14 +20,23 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclExpansionAccessConditions  : IToText  
   {
     public bool IsOwningUserRequired { get; set; }
-    public bool HasOwningGroupCondition { get; set; }
     public bool IsOwningTenantRequired { get; set; }
+
     public bool IsAbstractRoleRequired
     {
       get { return AbstractRole != null; }
     }
-    public AbstractRoleDefinition AbstractRole { get; set; }
     
+    public AbstractRoleDefinition AbstractRole { get; set; }
+
+
+    public bool HasOwningGroupCondition
+    {
+      get { return OwningGroup != null; }
+    }
+
+    public Group OwningGroup { get; set; }
+
 
     public override bool Equals (object obj)
     {

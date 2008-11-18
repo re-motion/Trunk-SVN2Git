@@ -87,13 +87,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         case GroupCondition.OwningGroup:
           Assertion.IsNotNull (role.Group);
           owningGroup = role.Group;
-          aclProbe.AccessConditions.HasOwningGroupCondition = true;
+          aclProbe.AccessConditions.OwningGroup = owningGroup;
           break;
-        case GroupCondition.BranchOfOwningGroup:
-          Assertion.IsNotNull (role.Group);
-          owningGroup = role.Group;
-          aclProbe.AccessConditions.HasOwningGroupCondition = true;
-          break;
+        //case GroupCondition.BranchOfOwningGroup:
+        //  Assertion.IsNotNull (role.Group);
+        //  owningGroup = role.Group; // TODO: Change to "first parent groupo for which GroupType = ACE.GroupType"
+        //  aclProbe.AccessConditions.HasOwningGroupCondition = true;
+        //  break;
         case GroupCondition.SpecificGroup:
           owningGroup = null; // Decideable constraint => no condition. Either the Principal's groups contain the specifc group or not.
           break;
