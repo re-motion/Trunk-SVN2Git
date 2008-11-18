@@ -80,6 +80,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DisableEnumValues (typeof (AccessControlEntryPropertiesEnumerationValueFilter))]
     public abstract TenantCondition TenantCondition { get; set; }
 
+    public abstract TenantHierarchyCondition TenantHierarchyCondition { get; set; }
+
     [DisableEnumValues (typeof (AccessControlEntryPropertiesEnumerationValueFilter))]
     public abstract GroupCondition GroupCondition { get; set; }
 

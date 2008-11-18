@@ -121,7 +121,7 @@
     <value>Beliebiger Mandant</value>
   </data>
   <data name="Remotion.SecurityManager.Domain.AccessControl.TenantCondition.OwningTenant" xml:space="preserve">
-    <value>Mandant des Objekts oder übergeordnete</value>
+    <value>Mandant des Objekts</value>
   </data>
   <data name="Remotion.SecurityManager.Domain.AccessControl.TenantCondition.SpecificTenant" xml:space="preserve">
     <value>Bestimmter Mandant</value>

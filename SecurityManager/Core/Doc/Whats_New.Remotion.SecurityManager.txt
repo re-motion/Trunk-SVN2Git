@@ -1,9 +1,21 @@
+1.11.14
+=======
+- AccessControlEntry
+  * Introduced new column TenantHierarchyCondition.
+    Values required for data migration:
+      TenantCondition = 0: TenantHierarchyCondition = 0
+      TenantCondition = 1: TenantHierarchyCondition = 3
+      TenantCondition = 2: TenantHierarchyCondition = 1
+
 1.11.13
 =======
 - AccessControlEntry
   * Updated column names (TenantID -> SpecificTenantID,...)
   * Updated column names (TenantSelection -> TenantCondition,...)
-  * Introduced new column GroupHierarchyCondition; must be set to 3 where GroupCondition is set to 1, otherwise: 0
+  * Introduced new column GroupHierarchyCondition:
+    Values required for data migration:
+      GroupCondition = 0: GroupHierarchyCondition = 0
+      GroupCondition = 1: GroupHierarchyCondition = 3
   
 1.11.12
 =======

@@ -27,12 +27,13 @@
   <tr>
     <td><remotion:SmartLabel ID="TenantLabel" runat="server" ForControl="TenantConditionField"/></td>
     <td>
-      <remotion:BocEnumValue ID="TenantConditionField" runat="server" PropertyIdentifier="TenantCondition" DataSourceControl="CurrentObject" OnSelectionChanged="TenantField_SelectionChanged" Width="20em" Style="display:block; float:left; margin-top:0.2em" >
+      <remotion:BocEnumValue ID="TenantConditionField" runat="server" PropertyIdentifier="TenantCondition" DataSourceControl="CurrentObject" OnSelectionChanged="TenantConditionField_SelectionChanged" Width="14em" Style="display:block; float:left; margin-top:0.2em" >
         <ListControlStyle AutoPostBack="True"/>
       </remotion:BocEnumValue>
       <remotion:BocReferenceValue ID="SpecificTenantField" runat="server" PropertyIdentifier="SpecificTenant" DataSourceControl="CurrentObject" Required="True" OnSelectionChanged="SpecificTenantField_SelectionChanged" Style="display:block; float:left; margin-top:0.05em">
         <DropDownListStyle AutoPostBack="true" />
       </remotion:BocReferenceValue>
+      <remotion:BocEnumValue ID="TenantHierarchyConditionField" runat="server" PropertyIdentifier="TenantHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-top:0.2em"/>
     </td>
   </tr>
   <tr>

@@ -98,6 +98,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Domain\AccessControl\AccessControlEntry.cs" />
+    <Compile Include="Domain\AccessControl\TenantHierarchyCondition.cs" />
     <Compile Include="Domain\AccessControl\GroupHierarchyCondition.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcher.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchService.cs" />
@@ -239,6 +240,12 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AccessControlEntry.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Domain\AccessControl\TenantHierarchyCondition.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Domain\AccessControl\TenantHierarchyCondition.resx">
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\AccessControl\UserCondition.de.resx">
       <SubType>Designer</SubType>

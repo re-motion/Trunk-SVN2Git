@@ -86,6 +86,15 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificTenantField;
         
         /// <summary>
+        /// TenantHierarchyConditionField control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue TenantHierarchyConditionField;
+        
+        /// <summary>
         /// GroupConditionLabel control.
         /// </summary>
         /// <remarks>

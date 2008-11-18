@@ -80,6 +80,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       LoadPermissions (interim);
       AdjustSpecificTenantField();
+      AdjustTenantHierarchyConditionField ();
       AdjustSpecificGroupField (false);
       AdjustGroupHierarchyConditionField();
       AdjustSpecificGroupTypeField();
@@ -121,9 +122,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         handler (this, e);
     }
 
-    protected void TenantField_SelectionChanged (object sender, EventArgs e)
+    protected void TenantConditionField_SelectionChanged (object sender, EventArgs e)
     {
       AdjustSpecificTenantField();
+      AdjustTenantHierarchyConditionField ();
     }
 
     protected void SpecificTenantField_SelectionChanged (object sender, EventArgs e)
@@ -153,6 +155,21 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         SpecificTenantField.Visible = false;
         SpecificTenantField.Value = null;
       }
+    }
+
+    private void AdjustTenantHierarchyConditionField ()
+    {
+      bool isSpecificTenantSelected = (TenantCondition?) TenantConditionField.Value == TenantCondition.SpecificTenant;
+      bool isOwningTenantSelected = (TenantCondition?) TenantConditionField.Value == TenantCondition.OwningTenant;
+
+      if (isOwningTenantSelected)
+        TenantHierarchyConditionField.Value = TenantHierarchyCondition.ThisAndParent;
+      else if (isSpecificTenantSelected)
+        TenantHierarchyConditionField.Value = TenantHierarchyCondition.This;
+      else
+        TenantHierarchyConditionField.Value = TenantHierarchyCondition.Undefined;
+
+      TenantHierarchyConditionField.Visible = isSpecificTenantSelected || isOwningTenantSelected;
     }
 
     private void AdjustSpecificGroupField (bool resetValue)
