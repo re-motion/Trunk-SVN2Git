@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRole_Matches ()
+    public void TokenWithPrincipal_Matches ()
     {
       User principal = CreateUser (_companyHelper.CompanyTenant, null);
       Tenant owningTenant = _companyHelper.CompanyTenant;
@@ -48,7 +48,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleAndDifferentOwningTenant_DoesNotMatch ()
+    public void TokenWithPrincipalAndDifferentOwningTenant_DoesNotMatch ()
     {
       User principal = CreateUser (TestHelper.CreateTenant ("Tenant"), null);
       Tenant owningTenant = _companyHelper.CompanyTenant;
@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithoutRole_DoesNotMatch ()
+    public void TokenWithoutPrincipal_DoesNotMatch ()
     {
       SecurityToken token = TestHelper.CreateTokenWithOwningTenant (null, _companyHelper.CompanyTenant);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
@@ -78,7 +78,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleWithoutTenantAndOwningTenant_DoesNotMatch ()
+    public void TokenWithPrincipalWithoutTenantAndOwningTenant_DoesNotMatch ()
     {
       User principal = CreateUser (null, null);
       Tenant owningTenant = _companyHelper.CompanyTenant;

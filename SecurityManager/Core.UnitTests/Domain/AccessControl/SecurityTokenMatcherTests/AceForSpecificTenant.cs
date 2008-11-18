@@ -39,7 +39,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRole_Matches ()
+    public void TokenWithPrincipal_Matches ()
     {
       User principal = CreateUser (_companyHelper.CompanyTenant, null);
       SecurityToken token = TestHelper.CreateTokenWithOwningUser (principal, null);
@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleAndDifferentSpecificTenant_DoesNotMatch ()
+    public void TokenWithPrincipalAndDifferentSpecificTenant_DoesNotMatch ()
     {
       User principal = CreateUser (TestHelper.CreateTenant ("Tenant"), null);
       SecurityToken token = TestHelper.CreateTokenWithOwningUser (principal, null);

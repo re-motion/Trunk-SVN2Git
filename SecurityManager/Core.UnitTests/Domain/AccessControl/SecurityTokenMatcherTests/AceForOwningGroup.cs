@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRole_Matches ()
+    public void TokenWithPrincipal_Matches ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group owningGroup = _companyHelper.AustrianProjectsDepartment;
@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleInParent_DoesNotMatch ()
+    public void TokenWithPrincipalInParent_DoesNotMatch ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group owningGroup = _companyHelper.AustrianProjectsDepartment;
@@ -68,7 +68,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleInChild_DoesNotMatch ()
+    public void TokenWithPrincipalInChild_DoesNotMatch ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group childGroup = _companyHelper.AustrianCarTeam;
@@ -84,7 +84,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithoutRole_DoesNotMatch ()
+    public void TokenWithoutPrincipal_DoesNotMatch ()
     {
       SecurityToken token = TestHelper.CreateTokenWithOwningGroup (null, _companyHelper.AustrianProjectsDepartment);
 

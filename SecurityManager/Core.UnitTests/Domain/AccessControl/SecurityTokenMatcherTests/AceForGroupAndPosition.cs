@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void AceWithExactGroup_TokenWithRoleAndPosition_Matches ()
+    public void AceWithExactGroup_TokenWithPrincipalAndPosition_Matches ()
     {
       _ace.GroupHierarchyCondition = GroupHierarchyCondition.This;
       User user = CreateUser (_companyHelper.CompanyTenant, null);
@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void AceWithExactGroup_TokenWithRoleAndOtherPosition_DoesNotMatch ()
+    public void AceWithExactGroup_TokenWithPrincipalAndOtherPosition_DoesNotMatch ()
     {
       _ace.GroupHierarchyCondition = GroupHierarchyCondition.This;
       User user = CreateUser (_companyHelper.CompanyTenant, null);
@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void AceWithExactGroup_TokenWithRoleAndPositionInParent_DoesNotMatch ()
+    public void AceWithExactGroup_TokenWithPrincipalAndPositionInParent_DoesNotMatch ()
     {
       _ace.GroupHierarchyCondition = GroupHierarchyCondition.This;
       User user = CreateUser (_companyHelper.CompanyTenant, null);
@@ -85,7 +85,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void AceWithExactGroup_TokenWithRoleAndPositionInChild_DoesNotMatch ()
+    public void AceWithExactGroup_TokenWithPrincipalAndPositionInChild_DoesNotMatch ()
     {
       _ace.GroupHierarchyCondition = GroupHierarchyCondition.This;
       User user = CreateUser (_companyHelper.CompanyTenant, null);
@@ -103,7 +103,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void AceWithGroupAndParentGroup_TokenWithRoleAndPositionInParent_Matches ()
+    public void AceWithGroupAndParentGroup_TokenWithPrincipalAndPositionInParent_Matches ()
     {
       _ace.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent;
       User user = CreateUser (_companyHelper.CompanyTenant, null);
@@ -120,7 +120,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void AceWithGroupAndParentGroup_TokenWithRoleAndOtherPositionInParent_DoesNotMatch ()
+    public void AceWithGroupAndParentGroup_TokenWithPrincipalAndOtherPositionInParent_DoesNotMatch ()
     {
       _ace.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent;
       User user = CreateUser (_companyHelper.CompanyTenant, null);
@@ -137,7 +137,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void AceWithGroupAndChildGroup_TokenWithRoleAndPositionInChild_Matches ()
+    public void AceWithGroupAndChildGroup_TokenWithPrincipalAndPositionInChild_Matches ()
     {
       _ace.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndChildren;
       User user = CreateUser (_companyHelper.CompanyTenant, null);
@@ -154,7 +154,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void AceWithGroupAndChildGroup_TokenWithRoleAndOtherPositionInChild_DoesNotMatch ()
+    public void AceWithGroupAndChildGroup_TokenWithPrincipalAndOtherPositionInChild_DoesNotMatch ()
     {
       _ace.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndChildren;
       User user = CreateUser (_companyHelper.CompanyTenant, null);

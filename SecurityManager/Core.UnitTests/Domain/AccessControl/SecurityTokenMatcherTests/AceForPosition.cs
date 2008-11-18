@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleAndPosition_Matches ()
+    public void TokenWithPrincipalAndPosition_Matches ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       TestHelper.CreateRole (user, _companyHelper.AustrianProjectsDepartment, _companyHelper.HeadPosition);
@@ -51,7 +51,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleAndOtherPosition_DoesNotMatch ()
+    public void TokenWithPrincipalAndOtherPosition_DoesNotMatch ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       TestHelper.CreateRole (user, _companyHelper.AustrianProjectsDepartment, _companyHelper.MemberPosition);

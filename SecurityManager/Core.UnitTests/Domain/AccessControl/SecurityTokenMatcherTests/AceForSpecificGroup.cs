@@ -39,7 +39,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRole_Matches ()
+    public void TokenWithPrincipal_Matches ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       TestHelper.CreateRole (user, _ace.SpecificGroup, _companyHelper.HeadPosition);
@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleInParent_DoesNotMatch ()
+    public void TokenWithPrincipalInParent_DoesNotMatch ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group parentGroup = _ace.SpecificGroup.Parent;
@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleInChild_DoesNotMatch ()
+    public void TokenWithPrincipalInChild_DoesNotMatch ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group childGroup = _ace.SpecificGroup.Children[0];

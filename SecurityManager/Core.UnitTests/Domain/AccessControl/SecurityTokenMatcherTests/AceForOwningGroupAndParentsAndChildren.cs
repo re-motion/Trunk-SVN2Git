@@ -39,7 +39,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRole_Matches ()
+    public void TokenWithPrincipal_Matches ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group owningGroup = _companyHelper.AustrianProjectsDepartment;
@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleInParent_Matches ()
+    public void TokenWithPrincipalInParent_Matches ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group owningGroup = _companyHelper.AustrianProjectsDepartment;
@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleInGrandParent_Matches ()
+    public void TokenWithPrincipalInGrandParent_Matches ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group owningGroup = _companyHelper.AustrianCarTeam;
@@ -85,7 +85,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleInChild_Matches ()
+    public void TokenWithPrincipalInChild_Matches ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group childGroup = _companyHelper.AustrianCarTeam;
@@ -101,7 +101,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleInGrandChild_Matches ()
+    public void TokenWithPrincipalInGrandChild_Matches ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group childGroup = _companyHelper.AustrianCarTeam;
@@ -117,7 +117,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithRoleInSibling_DoesNotMatch ()
+    public void TokenWithPrincipalInSibling_DoesNotMatch ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group branchRoot = _companyHelper.AustrianDivsion;
