@@ -821,28 +821,39 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    //[Test]
+    //public void OwningGroupTest ()
+    //{
+    //  var group = Group;
+    //  var accessConditions = new AclExpansionAccessConditions { OwningGroup = group, GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParentAndChildren };
+    //  var aclExpansionEntry = new AclExpansionEntry (
+    //      User, Role, Acl, accessConditions, new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
+    //  List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
+
+    //  var stringWriter = new StringWriter ();
+    //  var aclExpansionTree = new AclExpansionTree (aclExpansion);
+    //  //To.ConsoleLine.e (() => aclExpansionTree).nl ();
+    //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionTree, stringWriter, true);
+    //  aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+    //  string result = stringWriter.ToString ();
+    //  To.ConsoleLine.e (() => result); Clipboard.SetText (result);
+
+    //  //Assert.That (result, NUnitText.Contains ("role group (" + group.DisplayName + ")"));
+    //  Assert.That (result, NUnitText.Contains (group.DisplayName + "<br />or its parents<br />or its children"));
+    //}
+
     [Test]
-    [Explicit]
-    //public void OwningGroupAndGroupHierarchyConditionTest ()
-    public void OwningGroupTest ()
+    public void GroupHierarchyConditionTest ()
     {
       var group = Group;
-      var accessConditions = new AclExpansionAccessConditions { OwningGroup = group, GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParentAndChildren };
-      var aclExpansionEntry = new AclExpansionEntry (
-          User, Role, Acl, accessConditions, new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
-      List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
-
-      var stringWriter = new StringWriter ();
-      var aclExpansionTree = new AclExpansionTree (aclExpansion);
-      //To.ConsoleLine.e (() => aclExpansionTree).nl ();
-      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionTree, stringWriter, true);
-      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
-      string result = stringWriter.ToString ();
-      To.ConsoleLine.e (() => result); Clipboard.SetText (result);
-
-      //Assert.That (result, NUnitText.Contains ("role group (" + group.DisplayName + ")"));
-      Assert.That (result, NUnitText.Contains (group.DisplayName));
+      const string orItsChildrenText = "or its children";
+      const string orItsParentsText = "or its parents";
+      AssertGroupHierarchyCondition (group, GroupHierarchyCondition.This, group.DisplayName, new[] { orItsChildrenText, orItsParentsText });
+      AssertGroupHierarchyCondition (group, GroupHierarchyCondition.ThisAndParent, group.DisplayName + "<br />" + orItsParentsText, new[] { orItsChildrenText });
+      AssertGroupHierarchyCondition (group, GroupHierarchyCondition.ThisAndChildren, group.DisplayName + "<br />" + orItsChildrenText, new[] { orItsParentsText });
+      AssertGroupHierarchyCondition (group, GroupHierarchyCondition.ThisAndParentAndChildren, group.DisplayName + "<br />" + orItsParentsText + "<br />" + orItsChildrenText, new string[0]);
     }
+
 
 
     //[Test]
@@ -871,6 +882,33 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     //  }
     //}
 
+
+
+    public void AssertGroupHierarchyCondition (Group owningGroup, GroupHierarchyCondition groupHierarchyCondition, string inResultingHtmlString,
+      string[] notInResultingHtmlStrings)
+    {
+      //var group = Group;
+      var accessConditions = new AclExpansionAccessConditions { OwningGroup = owningGroup, GroupHierarchyCondition = groupHierarchyCondition };
+      var aclExpansionEntry = new AclExpansionEntry (
+          User, Role, Acl, accessConditions, new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
+      List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
+
+      var stringWriter = new StringWriter ();
+      var aclExpansionTree = new AclExpansionTree (aclExpansion);
+      //To.ConsoleLine.e (() => aclExpansionTree).nl ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionTree, stringWriter, true);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+      string result = stringWriter.ToString ();
+      To.ConsoleLine.e (() => result);
+      Clipboard.SetText (result);
+
+      //Assert.That (result, NUnitText.Contains ("role group (" + group.DisplayName + ")"));
+      Assert.That (result, NUnitText.Contains (inResultingHtmlString));
+      foreach (string notInResultingHtml in notInResultingHtmlStrings)
+      {
+        Assert.That (result, NUnitText.DoesNotContain (notInResultingHtml));
+      }
+    }
 
 
     private CultureScope CultureScope_de_DE ()
