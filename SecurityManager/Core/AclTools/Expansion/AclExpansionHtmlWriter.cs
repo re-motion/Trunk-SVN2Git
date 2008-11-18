@@ -209,8 +209,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       WriteTableDataForBooleanCondition (conditions.IsOwningUserRequired);
       
-      WriteTableDataForBooleanCondition (conditions.HasOwningGroupCondition);
-      //WriteTableDataForOwningGroupCondition (conditions);
+      //WriteTableDataForBooleanCondition (conditions.HasOwningGroupCondition);
+      WriteTableDataForOwningGroupCondition (conditions);
       
       WriteTableDataForBooleanCondition (conditions.IsOwningTenantRequired);
 
@@ -223,6 +223,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       Assertion.IsFalse (conditions.GroupHierarchyCondition == GroupHierarchyCondition.Undefined && conditions.OwningGroup != null);
       htmlTagWriter.Tags.td();
+      htmlTagWriter.Value (""); // To force <td></td> instead of </td >
       var owningGroup = conditions.OwningGroup;
       if (owningGroup != null)
       {
