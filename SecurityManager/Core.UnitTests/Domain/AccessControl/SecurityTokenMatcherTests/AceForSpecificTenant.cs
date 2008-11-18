@@ -33,6 +33,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       Assert.That (_ace.TenantCondition, Is.EqualTo (TenantCondition.SpecificTenant));
       Assert.That (_ace.SpecificTenant, Is.SameAs (_companyHelper.CompanyTenant));
+      Assert.That (_ace.TenantHierarchyCondition, Is.EqualTo (TenantHierarchyCondition.This));
       Assert.That (_ace.GroupCondition, Is.EqualTo (GroupCondition.None));
       Assert.That (_ace.UserCondition, Is.EqualTo (UserCondition.None));
       Assert.That (_ace.SpecificAbstractRole, Is.Null);
@@ -53,6 +54,36 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     {
       User principal = CreateUser (TestHelper.CreateTenant ("Tenant"), null);
       SecurityToken token = TestHelper.CreateTokenWithOwningUser (principal, null);
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
+
+      Assert.IsFalse (matcher.MatchesToken (token));
+    }
+
+    [Test]
+    public void TokenWithPrincipalInParent_DoesNotMatch ()
+    {
+      Tenant owningTenant = _companyHelper.CompanyTenant;
+      Tenant principalTenant = TestHelper.CreateTenant ("Tenant");
+      owningTenant.Parent = principalTenant;
+      User principal = CreateUser (principalTenant, null);
+
+      SecurityToken token = TestHelper.CreateTokenWithOwningUser (principal, null);
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
+
+      Assert.IsFalse (matcher.MatchesToken (token));
+    }
+
+    [Test]
+    public void TokenWithPrincipalInChild_DoesNotMatch ()
+    {
+      Tenant owningTenant = _companyHelper.CompanyTenant;
+      Tenant principalTenant = TestHelper.CreateTenant ("Tenant");
+      principalTenant.Parent = owningTenant;
+      User principal = CreateUser (principalTenant, null);
+
+      SecurityToken token = TestHelper.CreateTokenWithOwningUser (principal, null);
+
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
       Assert.IsFalse (matcher.MatchesToken (token));

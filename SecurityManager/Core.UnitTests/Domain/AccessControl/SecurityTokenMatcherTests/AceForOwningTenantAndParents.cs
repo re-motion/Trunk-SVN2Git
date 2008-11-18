@@ -17,21 +17,22 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenMatcherTests
 {
   [TestFixture]
-  public class AceForOwningTenant : SecurityTokenMatcherTestBase
+  public class AceForOwningTenantAndParents : SecurityTokenMatcherTestBase
   {
     private CompanyStructureHelper _companyHelper;
     private AccessControlEntry _ace;
 
     public override void SetUp ()
     {
-      base.SetUp();
-
+      base.SetUp ();
+      
       _companyHelper = new CompanyStructureHelper (TestHelper.Transaction);
 
-      _ace = TestHelper.CreateAceWithOwningTenant();
+      _ace = TestHelper.CreateAceWithOwningTenant ();
+      _ace.TenantHierarchyCondition = TenantHierarchyCondition.ThisAndParent;
 
       Assert.That (_ace.TenantCondition, Is.EqualTo (TenantCondition.OwningTenant));
-      Assert.That (_ace.TenantHierarchyCondition, Is.EqualTo (TenantHierarchyCondition.This));
+      Assert.That (_ace.TenantHierarchyCondition, Is.EqualTo (TenantHierarchyCondition.ThisAndParent));
       Assert.That (_ace.GroupCondition, Is.EqualTo (GroupCondition.None));
       Assert.That (_ace.UserCondition, Is.EqualTo (UserCondition.None));
       Assert.That (_ace.SpecificAbstractRole, Is.Null);
@@ -42,25 +43,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     {
       User principal = CreateUser (_companyHelper.CompanyTenant, null);
       Tenant owningTenant = _companyHelper.CompanyTenant;
+      
       SecurityToken token = TestHelper.CreateTokenWithOwningTenant (principal, owningTenant);
+
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
       Assert.IsTrue (matcher.MatchesToken (token));
     }
 
     [Test]
-    public void TokenWithPrincipalAndDifferentOwningTenant_DoesNotMatch ()
-    {
-      User principal = CreateUser (TestHelper.CreateTenant ("Tenant"), null);
-      Tenant owningTenant = _companyHelper.CompanyTenant;
-      SecurityToken token = TestHelper.CreateTokenWithOwningTenant (principal, owningTenant);
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
-
-      Assert.IsFalse (matcher.MatchesToken (token));
-    }
-
-    [Test]
-    public void TokenWithPrincipalInParent_DoesNotMatch ()
+    public void TokenWithPrincipalInParent_Matches ()
     {
       Tenant owningTenant = _companyHelper.CompanyTenant;
       Tenant principalTenant = TestHelper.CreateTenant ("Tenant");
@@ -71,7 +63,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.IsTrue (matcher.MatchesToken (token));
+    }
+
+    [Test]
+    public void TokenWithPrincipalInGrandParent_Matches ()
+    {
+      Tenant owningTenant = _companyHelper.CompanyTenant;
+      Tenant parentTenant = TestHelper.CreateTenant ("Parent");
+      owningTenant.Parent = parentTenant;
+      Tenant grandParentTenant = TestHelper.CreateTenant ("GrangParent");
+      parentTenant.Parent = grandParentTenant;
+      User principal = CreateUser (grandParentTenant, null);
+
+      SecurityToken token = TestHelper.CreateTokenWithOwningTenant (principal, owningTenant);
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
+
+      Assert.IsTrue (matcher.MatchesToken (token));
     }
 
     [Test]
@@ -90,39 +99,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithoutOwningTenant_DoesNotMatch ()
+    public void TokenWithPrincipalInSibling_DoesNotMatch ()
     {
-      User principal = CreateUser (_companyHelper.CompanyTenant, null);
-      SecurityToken token = TestHelper.CreateTokenWithOwningTenant (principal, null);
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
-
-      Assert.IsFalse (matcher.MatchesToken (token));
-    }
-
-    [Test]
-    public void TokenWithoutPrincipal_DoesNotMatch ()
-    {
-      SecurityToken token = TestHelper.CreateTokenWithOwningTenant (null, _companyHelper.CompanyTenant);
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
-
-      Assert.IsFalse (matcher.MatchesToken (token));
-    }
-
-    [Test]
-    public void TokenWithPrincipalWithoutTenantAndOwningTenant_DoesNotMatch ()
-    {
-      User principal = CreateUser (null, null);
       Tenant owningTenant = _companyHelper.CompanyTenant;
+      Tenant parentTenant = TestHelper.CreateTenant ("Parent");
+      owningTenant.Parent = parentTenant;
+      Tenant siblingTenant = TestHelper.CreateTenant ("Sibling");
+      siblingTenant.Parent = parentTenant;
+      User principal = CreateUser (siblingTenant, null);
+
       SecurityToken token = TestHelper.CreateTokenWithOwningTenant (principal, owningTenant);
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
-    }
-
-    [Test]
-    public void EmptyToken_DoesNotMatch ()
-    {
-      SecurityToken token = TestHelper.CreateEmptyToken ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
       Assert.IsFalse (matcher.MatchesToken (token));

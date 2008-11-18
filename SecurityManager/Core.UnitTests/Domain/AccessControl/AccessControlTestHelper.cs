@@ -502,6 +502,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         AccessControlEntry entry = AccessControlEntry.NewObject ();
         entry.TenantCondition = TenantCondition.OwningTenant;
+        entry.TenantHierarchyCondition = TenantHierarchyCondition.This;
 
         return entry;
       }
@@ -516,6 +517,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         AccessControlEntry entry = AccessControlEntry.NewObject ();
         entry.TenantCondition = TenantCondition.SpecificTenant;
         entry.SpecificTenant = tenant;
+        entry.TenantHierarchyCondition = TenantHierarchyCondition.This;
 
         return entry;
       }

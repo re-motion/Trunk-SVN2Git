@@ -117,6 +117,7 @@
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForGroupAndUser.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceWithInvalidValues.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForSpecificTenant.cs" />
+    <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForOwningTenantAndParents.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\EmptyAce.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\MixedAces.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\CompanyStructureHelper.cs" />

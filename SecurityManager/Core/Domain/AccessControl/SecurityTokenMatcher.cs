@@ -74,7 +74,20 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (referenceTenant == null)
         return false;
 
-      return GetThisAndParents (referenceTenant).Contains (principal.Tenant);
+      switch (_ace.TenantHierarchyCondition)
+      {
+        case TenantHierarchyCondition.Undefined:
+          throw CreateInvalidOperationException ("The value 'Undefined' is not a valid value for matching the 'TenantHierarchyCondition'.");
+
+        case TenantHierarchyCondition.This:
+          return referenceTenant == principal.Tenant;
+        
+        case TenantHierarchyCondition.ThisAndParent:
+          return GetThisAndParents (referenceTenant).Contains (principal.Tenant);
+
+        default:
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'TenantHierarchyCondition'.", _ace.TenantHierarchyCondition);
+      }
     }
 
     private bool MatchesAbstractRole (SecurityToken token)
