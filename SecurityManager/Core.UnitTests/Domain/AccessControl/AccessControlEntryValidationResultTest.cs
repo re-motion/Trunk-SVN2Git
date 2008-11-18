@@ -10,6 +10,8 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.SecurityManager.Domain.AccessControl;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
@@ -20,22 +22,87 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     [Test]
     public void IsValid_Valid ()
     {
-      AccessControlEntryValidationResult result = new AccessControlEntryValidationResult ();
+      AccessControlEntryValidationResult result = new AccessControlEntryValidationResult();
 
-      Assert.IsTrue (result.IsValid);
-      Assert.IsFalse (result.IsSpecificTenantMissing);
+      Assert.That (result.IsValid, Is.True);
+      Assert.That (result.GetErrors(), Is.Empty);
     }
 
     [Test]
-    public void IsValid_IsSpecificTenantMissing ()
+    public void IsValid_NotValid ()
     {
-      AccessControlEntryValidationResult result = new AccessControlEntryValidationResult ();
+      AccessControlEntryValidationResult result = new AccessControlEntryValidationResult();
 
-      result.SetSpecificTenantMissing ();
+      result.SetError (AccessControlEntryValidationError.IsSpecificTenantMissing);
 
-      Assert.IsFalse (result.IsValid);
-      Assert.IsTrue (result.IsSpecificTenantMissing);
+      Assert.That (result.IsValid, Is.False);
     }
 
+    [Test]
+    public void SetError ()
+    {
+      AccessControlEntryValidationResult result = new AccessControlEntryValidationResult();
+
+      result.SetError (AccessControlEntryValidationError.IsSpecificTenantMissing);
+
+      Assert.That (result.GetErrors(), Is.EquivalentTo (new[] { AccessControlEntryValidationError.IsSpecificTenantMissing }));
+    }
+
+    [Test]
+    public void SetError_SameTwice ()
+    {
+      AccessControlEntryValidationResult result = new AccessControlEntryValidationResult();
+
+      result.SetError (AccessControlEntryValidationError.IsSpecificTenantMissing);
+      result.SetError (AccessControlEntryValidationError.IsSpecificTenantMissing);
+
+      Assert.That (result.GetErrors(), Is.EquivalentTo (new[] { AccessControlEntryValidationError.IsSpecificTenantMissing }));
+    }
+
+    [Test]
+    public void SetError_DifferentValues ()
+    {
+      AccessControlEntryValidationResult result = new AccessControlEntryValidationResult();
+
+      result.SetError (AccessControlEntryValidationError.IsSpecificTenantMissing);
+      result.SetError (AccessControlEntryValidationError.IsSpecificGroupMissing);
+
+      Assert.That (
+          result.GetErrors(),
+          Is.EquivalentTo (
+              new[] { AccessControlEntryValidationError.IsSpecificTenantMissing, AccessControlEntryValidationError.IsSpecificGroupMissing }));
+    }
+
+    [Test]
+    public void GetErrors ()
+    {
+      AccessControlEntryValidationResult result = new AccessControlEntryValidationResult();
+
+      result.SetError (AccessControlEntryValidationError.IsSpecificGroupMissing);
+      result.SetError (AccessControlEntryValidationError.IsSpecificTenantMissing);
+
+      Assert.That (
+          result.GetErrors(),
+          Is.EqualTo (new[] { AccessControlEntryValidationError.IsSpecificTenantMissing, AccessControlEntryValidationError.IsSpecificGroupMissing }));
+    }
+
+    [Test]
+    public void GetErrorMessage ()
+    {
+      AccessControlEntryValidationResult result = new AccessControlEntryValidationResult();
+
+      result.SetError (AccessControlEntryValidationError.IsSpecificGroupMissing);
+      result.SetError (AccessControlEntryValidationError.IsSpecificTenantMissing);
+
+      using (new CultureScope (""))
+      {
+        Assert.That (
+            result.GetErrorMessage(),
+            Is.EqualTo (
+                "The access control entry is in an invalid state:\r\n"
+                + "  The TenantCondition property is set to SpecificTenant, but no SpecificTenant is assigned.\r\n"
+                + "  The GroupCondition property is set to SpecificGroup, but no SpecificGroup is assigned."));
+      }
+    }
   }
 }

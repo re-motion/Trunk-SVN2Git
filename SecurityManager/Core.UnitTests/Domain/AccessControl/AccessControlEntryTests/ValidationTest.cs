@@ -10,6 +10,7 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -60,13 +61,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       AccessControlEntryValidationResult result = ace.Validate();
 
       Assert.IsFalse (result.IsValid);
-      Assert.IsTrue (result.IsSpecificTenantMissing);
+      Assert.That (result.GetErrors(), List.Contains (AccessControlEntryValidationError.IsSpecificTenantMissing));
     }
 
     [Test]
-    [ExpectedException (typeof (ConstraintViolationException),
-        ExpectedMessage = "The access control entry has the Tenant property set to SpecificTenant, but no Tenant is assigned.")]
-    public void Commit_SpecificTenantIsNull ()
+    [ExpectedException (typeof (ConstraintViolationException), ExpectedMessage =
+        "The access control entry is in an invalid state:\r\n"
+        + "  The TenantCondition property is set to SpecificTenant, but no SpecificTenant is assigned.")]
+    public void Commit_OneError ()
     {
       Tenant tenant = _testHelper.CreateTenant ("TestTenant");
       AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);

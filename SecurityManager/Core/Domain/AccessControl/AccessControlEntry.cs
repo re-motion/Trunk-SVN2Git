@@ -234,7 +234,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (State != StateType.Deleted)
       {
         if (TenantCondition == TenantCondition.SpecificTenant && SpecificTenant == null)
-          result.SetSpecificTenantMissing();
+          result.SetError(AccessControlEntryValidationError.IsSpecificTenantMissing);
       }
 
       return result;
@@ -244,16 +244,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       AccessControlEntryValidationResult result = Validate();
       if (!result.IsValid)
-      {
-        if (result.IsSpecificTenantMissing)
-        {
-          throw new ConstraintViolationException (
-              "The access control entry has the Tenant property set to SpecificTenant, but no Tenant is assigned.");
-        }
-
-        //TODO: Move the message into the validation logic.
-        throw new ConstraintViolationException ("The access control entry is in an invalid state.");
-      }
+        throw new ConstraintViolationException (result.GetErrorMessage());
 
       if (State != StateType.Deleted)
       {

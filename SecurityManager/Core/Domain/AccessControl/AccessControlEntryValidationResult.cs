@@ -9,42 +9,48 @@
  */
 
 using System;
+using System.Text;
+using Remotion.Collections;
+using System.Linq;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
   public class AccessControlEntryValidationResult
   {
-    // types
-
-    // static members
-
-    // member fields
-
-    private bool _isValid = true;
-    private bool _isSpecificTenantMissing = false;
-
-    // construction and disposing
+    private readonly Set<AccessControlEntryValidationError> _errors = new Set<AccessControlEntryValidationError>();
 
     public AccessControlEntryValidationResult ()
     {
     }
 
-    // methods and properties
-
     public bool IsValid
     {
-      get { return _isValid; }
+      get { return _errors.Count == 0; }
     }
 
-    public bool IsSpecificTenantMissing
+    public AccessControlEntryValidationError[] GetErrors ()
     {
-      get { return _isSpecificTenantMissing; }
+      return _errors.OrderBy (e => (int) e).ToArray();
     }
 
-    public void SetSpecificTenantMissing ()
+    public void SetError (AccessControlEntryValidationError error)
     {
-      _isValid = false;
-      _isSpecificTenantMissing = true;
+      _errors.Add (error);
+    }
+
+    public string GetErrorMessage ()
+    {
+      StringBuilder errorMessageBuilder = new StringBuilder(_errors.Count * 100);
+      errorMessageBuilder.Append ("The access control entry is in an invalid state:");
+      foreach (var error in GetErrors())
+      {
+        errorMessageBuilder.AppendLine();
+        errorMessageBuilder.Append ("  ");
+        errorMessageBuilder.Append (EnumDescription.GetDescription (error));
+      }
+
+      return errorMessageBuilder.ToString();
     }
   }
 }
