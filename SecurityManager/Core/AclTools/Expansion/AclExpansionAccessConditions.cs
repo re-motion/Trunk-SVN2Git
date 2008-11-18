@@ -47,13 +47,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
 
       return (ac.AbstractRole == AbstractRole) &&
-        (ac.HasOwningGroupCondition == HasOwningGroupCondition) && (ac.IsOwningTenantRequired == IsOwningTenantRequired) &&
+        //(ac.HasOwningGroupCondition == HasOwningGroupCondition) && 
+        (ac.OwningGroup == OwningGroup) && 
+        (ac.IsOwningTenantRequired == IsOwningTenantRequired) &&
         (ac.IsOwningUserRequired == IsOwningUserRequired);
     }
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (AbstractRole,HasOwningGroupCondition,IsOwningTenantRequired,IsOwningUserRequired);
+      //return EqualityUtility.GetRotatedHashCode (AbstractRole,HasOwningGroupCondition,IsOwningTenantRequired,IsOwningUserRequired);
+      return EqualityUtility.GetRotatedHashCode (AbstractRole, OwningGroup, IsOwningTenantRequired, IsOwningUserRequired);
     }
 
 
