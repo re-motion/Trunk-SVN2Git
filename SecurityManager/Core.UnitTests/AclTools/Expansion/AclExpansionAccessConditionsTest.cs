@@ -14,6 +14,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
 using Remotion.Reflection;
 using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.SecurityManager.Domain.AccessControl;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -30,6 +31,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (accessConditions.HasOwningGroupCondition, Is.EqualTo (false));
       Assert.That (accessConditions.IsOwningTenantRequired, Is.EqualTo (false));
       Assert.That (accessConditions.IsOwningUserRequired, Is.EqualTo (false));
+
+      Assert.That (accessConditions.OwningGroup, Is.EqualTo (null));
+      Assert.That (accessConditions.GroupHierarchyCondition, Is.EqualTo (GroupHierarchyCondition.Undefined));
     }
 
     [Test]
@@ -61,6 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.IsOwningUserRequired), true);
       CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.AbstractRole), TestHelper.CreateAbstractRoleDefinition ("titatutest", 11235));
       CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.OwningGroup), Group3);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.GroupHierarchyCondition), GroupHierarchyCondition.ThisAndParentAndChildren);
     }
 
 
@@ -115,8 +120,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var accessConditions0 = new AclExpansionAccessConditions ();
       var accessConditions1 = new AclExpansionAccessConditions ();
       Assert.That (accessConditions0.Equals (accessConditions1), Is.True);
+      Assert.That (accessConditions0.GetHashCode (), Is.EqualTo (accessConditions1.GetHashCode ()));
       boolProperty.Set (accessConditions1, notEqualValue);
       Assert.That (accessConditions0.Equals (accessConditions1), Is.False);
+      Assert.That (accessConditions0.GetHashCode (), Is.Not.EqualTo (accessConditions1.GetHashCode ()));
     }
 
 

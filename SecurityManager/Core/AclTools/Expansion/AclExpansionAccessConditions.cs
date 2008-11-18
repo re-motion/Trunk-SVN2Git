@@ -11,6 +11,7 @@
 // 
 using System;
 using Remotion.Diagnostics.ToText;
+using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -36,6 +37,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
     public Group OwningGroup { get; set; }
+    public GroupHierarchyCondition GroupHierarchyCondition { get; set; }
 
 
     public override bool Equals (object obj)
@@ -47,16 +49,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
 
       return (ac.AbstractRole == AbstractRole) &&
-        //(ac.HasOwningGroupCondition == HasOwningGroupCondition) && 
-        (ac.OwningGroup == OwningGroup) && 
+        (ac.OwningGroup == OwningGroup) &&
+        (ac.GroupHierarchyCondition == GroupHierarchyCondition) &&
         (ac.IsOwningTenantRequired == IsOwningTenantRequired) &&
         (ac.IsOwningUserRequired == IsOwningUserRequired);
     }
 
     public override int GetHashCode ()
     {
-      //return EqualityUtility.GetRotatedHashCode (AbstractRole,HasOwningGroupCondition,IsOwningTenantRequired,IsOwningUserRequired);
-      return EqualityUtility.GetRotatedHashCode (AbstractRole, OwningGroup, IsOwningTenantRequired, IsOwningUserRequired);
+      return EqualityUtility.GetRotatedHashCode (AbstractRole, OwningGroup, GroupHierarchyCondition, IsOwningTenantRequired, IsOwningUserRequired);
     }
 
 
