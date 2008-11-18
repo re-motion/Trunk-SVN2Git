@@ -88,6 +88,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           Assertion.IsNotNull (role.Group);
           owningGroup = role.Group;
           aclProbe.AccessConditions.OwningGroup = owningGroup;
+          aclProbe.AccessConditions.GroupHierarchyCondition = ace.GroupHierarchyCondition;
           break;
         //case GroupCondition.BranchOfOwningGroup:
         //  Assertion.IsNotNull (role.Group);

@@ -49,9 +49,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningGroup, Is.SameAs (Role.Group));
 
-      var accessConditionsExpected = new AclExpansionAccessConditions();
-      accessConditionsExpected.OwningGroup = Group;
-     Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
+      var accessConditionsExpected = new AclExpansionAccessConditions
+                                     {
+                                         OwningGroup = Group,
+                                         GroupHierarchyCondition = GroupHierarchyCondition.ThisAndChildren
+                                     };
+      Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
 
     [Test]
@@ -140,6 +143,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     private void FleshOutAccessControlEntryForTest (AccessControlEntry ace)
     {
       ace.SpecificGroup = TestHelper.CreateGroup ("Specific Group for an ACE", null, Tenant);
+      ace.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndChildren;
     }
   }
 }
