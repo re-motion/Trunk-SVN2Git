@@ -92,7 +92,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteHeaderCell ("Class");
       WriteHeaderCell ("States");
       WriteHeaderCell ("User Must Own");
-      WriteHeaderCell ("Group Must Own");
+      WriteHeaderCell ("Has Owning Group Condition");
       WriteHeaderCell ("Tenant Must Own");
       WriteHeaderCell ("User Must Have Abstract Role");
       WriteHeaderCell ("Access Rights");
@@ -208,7 +208,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableDataForBodyConditions (AclExpansionAccessConditions conditions)
     {
       WriteTableDataForBooleanCondition (conditions.IsOwningUserRequired);
-      WriteTableDataForBooleanCondition (conditions.IsOwningGroupRequired);
+      WriteTableDataForBooleanCondition (conditions.HasOwningGroupCondition);
       WriteTableDataForBooleanCondition (conditions.IsOwningTenantRequired);
 
       htmlTagWriter.Tags.td ();

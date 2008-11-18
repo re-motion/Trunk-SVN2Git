@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var accessConditions = new AclExpansionAccessConditions ();
       Assert.That (accessConditions.AbstractRole, Is.Null);
       Assert.That (accessConditions.IsAbstractRoleRequired, Is.EqualTo(false));
-      Assert.That (accessConditions.IsOwningGroupRequired, Is.EqualTo (false));
+      Assert.That (accessConditions.HasOwningGroupCondition, Is.EqualTo (false));
       Assert.That (accessConditions.IsOwningTenantRequired, Is.EqualTo (false));
       Assert.That (accessConditions.IsOwningUserRequired, Is.EqualTo (false));
     }
@@ -35,7 +35,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void Equals ()
     {
-      BooleanMemberTest ((aeac, b) => aeac.IsOwningGroupRequired = b);
+      BooleanMemberTest ((aeac, b) => aeac.HasOwningGroupCondition = b);
       BooleanMemberTest ((aeac, b) => aeac.IsOwningTenantRequired = b);
       BooleanMemberTest ((aeac, b) => aeac.IsOwningUserRequired = b);
     }
@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void Equals_UsingLambda ()
     {
-      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.IsOwningGroupRequired = true);
+      CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.HasOwningGroupCondition = true);
       CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.IsOwningTenantRequired = true);
       CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.IsOwningUserRequired = true);
       CheckIfPassedPropertyChangeChangesEquality<AclExpansionAccessConditions> (aeac => aeac.AbstractRole = TestHelper.CreateAbstractRoleDefinition ("titatutest", 11235));
@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void Equals_UsingPropertyObject ()
     {
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.IsOwningGroupRequired), true);
+      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.HasOwningGroupCondition), true);
       CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.IsOwningTenantRequired), true);
       CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.IsOwningUserRequired), true);
       CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.AbstractRole), TestHelper.CreateAbstractRoleDefinition ("titatutest", 11235));
@@ -76,7 +76,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var accessConditions = new AclExpansionAccessConditions ();
       accessConditions.AbstractRole = TestHelper.CreateAbstractRoleDefinition ("xyz", 123);
-      accessConditions.IsOwningGroupRequired = true;
+      accessConditions.HasOwningGroupCondition = true;
       accessConditions.IsOwningTenantRequired = true;
       accessConditions.IsOwningUserRequired = true;
       var result = To.String.e (accessConditions).CheckAndConvertToString ();

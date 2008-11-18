@@ -159,6 +159,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         case GroupCondition.SpecificGroup:
           return MatchPrincipalAgainstGroup (token.Principal, _ace.SpecificGroup, _ace.GroupHierarchyCondition);
 
+        // BranchOfOwningGroup matches the ACE iff: The (security token) owning group or any of its parent-groups has the 
+        // group type stored in the ACE - and - the principal is a member of any of the groups which come below the first
+        // group in the group hierarchy including and above the owning group whose group type is equal to the ACE-group-type.
+        // Algorithmically the matcher first walks upward the group hierarchy of the owning group (including the owning group itself),
+        // returning the first group whose group type is equal to the group type stored in the ACE. 
+        // Starting with this group, it then traverses the group hierarchy downward and checks if any of the groups is a member
+        // of the principal's groups; if yes, the ACE matches, otherwise it does not.
         case GroupCondition.BranchOfOwningGroup:
           return MatchPrincipalAgainstGroup (token.Principal, FindBranchRoot (token.OwningGroup), GroupHierarchyCondition.ThisAndChildren);
 
@@ -170,6 +177,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
+    // Starting at the passed group, returns the first group in the parent hierarchy of the passed group whose
+    // GroupType is equal to the ACE specific GroupType.
     private Group FindBranchRoot (Group referenceGroup)
     {
       Assertion.IsNotNull (_ace.GroupCondition == GroupCondition.BranchOfOwningGroup);
