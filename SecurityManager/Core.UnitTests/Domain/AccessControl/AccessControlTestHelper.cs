@@ -508,7 +508,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    public AccessControlEntry CreateAceWithSpecficTenant (Tenant tenant)
+    public AccessControlEntry CreateAceWithSpecificTenant (Tenant tenant)
     {
       ArgumentUtility.CheckNotNull ("tenant", tenant);
 

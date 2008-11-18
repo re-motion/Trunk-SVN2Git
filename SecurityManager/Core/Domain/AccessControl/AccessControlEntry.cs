@@ -260,11 +260,17 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         if (TenantCondition != TenantCondition.SpecificTenant)
           SpecificTenant = null;
 
+        if (TenantCondition != TenantCondition.OwningTenant && TenantCondition != TenantCondition.SpecificTenant)
+          TenantHierarchyCondition = TenantHierarchyCondition.Undefined;
+
         if (GroupCondition != GroupCondition.SpecificGroup)
           SpecificGroup = null;
 
         if (GroupCondition != GroupCondition.AnyGroupWithSpecificGroupType && GroupCondition != GroupCondition.BranchOfOwningGroup)
           SpecificGroupType = null;
+
+        if (GroupCondition != GroupCondition.OwningGroup && GroupCondition != GroupCondition.SpecificGroup)
+          GroupHierarchyCondition = GroupHierarchyCondition.Undefined;
 
         if (UserCondition != UserCondition.SpecificUser)
           SpecificUser = null;

@@ -73,6 +73,7 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SearchGroup.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionTreeNodeTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionTreeTest.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlEntryTests\OnCommitTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\EnumerationValueFilterTest.cs" />
     <Compile Include="Domain\AccessControl\AccessTypeStatisticsTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplicationSettingsTest.cs" />

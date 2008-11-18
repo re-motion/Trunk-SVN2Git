@@ -43,7 +43,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void ValidateSpecificTenant_IsValid ()
     {
       Tenant tenant = _testHelper.CreateTenant ("TestTenant");
-      AccessControlEntry ace = _testHelper.CreateAceWithSpecficTenant (tenant);
+      AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
 
       AccessControlEntryValidationResult result = ace.Validate();
 
@@ -54,7 +54,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void ValidateSpecificTenant_IsNull ()
     {
       Tenant tenant = _testHelper.CreateTenant ("TestTenant");
-      AccessControlEntry ace = _testHelper.CreateAceWithSpecficTenant (tenant);
+      AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
       ace.SpecificTenant = null;
 
       AccessControlEntryValidationResult result = ace.Validate();
@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void Commit_SpecificTenantIsNull ()
     {
       Tenant tenant = _testHelper.CreateTenant ("TestTenant");
-      AccessControlEntry ace = _testHelper.CreateAceWithSpecficTenant (tenant);
+      AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
       ace.SpecificTenant = null;
 
       ClientTransactionScope.CurrentTransaction.Commit();
@@ -79,7 +79,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     public void ValidateSpecificTenant_IsNullAndObjectIsDeleted ()
     {
       Tenant tenant = _testHelper.CreateTenant ("TestTenant");
-      AccessControlEntry ace = _testHelper.CreateAceWithSpecficTenant (tenant);
+      AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         ace.SpecificTenant = null;

@@ -82,7 +82,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void CreateAclProbe_SpecificTenant_Test ()
     {
-      AccessControlEntry ace = TestHelper.CreateAceWithSpecficTenant (Tenant);
+      AccessControlEntry ace = TestHelper.CreateAceWithSpecificTenant (Tenant);
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningTenant, Is.Null);

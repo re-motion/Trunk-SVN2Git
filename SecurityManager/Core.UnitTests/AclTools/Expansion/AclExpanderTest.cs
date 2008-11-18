@@ -39,7 +39,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       base.SetUp();
 
-      TestHelper.CreateAceWithSpecficTenant (Tenant);
+      TestHelper.CreateAceWithSpecificTenant (Tenant);
       _aclList.Add (TestHelper.CreateStatefulAcl());
     }
 
@@ -211,7 +211,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var otherTenantUser = TestHelper.CreateUser ("UserForOtherTenant", "User", "Other", "Chief", otherTenantGroup, otherTenant);
       var otherTenantRole = TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
 
-      var aceGroupSpecificTenant = TestHelper.CreateAceWithSpecficTenant (otherTenant);
+      var aceGroupSpecificTenant = TestHelper.CreateAceWithSpecificTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (aceGroupSpecificTenant, null, true, null);
 
 
@@ -241,7 +241,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var otherTenantUser = TestHelper.CreateUser ("UserForOtherTenant", "User", "Other", "Chief", otherTenantGroup, otherTenant);
       var otherTenantRole = TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
 
-      var aceGroupSpecificTenant = TestHelper.CreateAceWithSpecficTenant (otherTenant);
+      var aceGroupSpecificTenant = TestHelper.CreateAceWithSpecificTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (aceGroupSpecificTenant, null, true, null);
 
       var aceGroupOwningTenant = TestHelper.CreateAceWithOwningTenant ();
@@ -280,7 +280,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var otherTenantUser = TestHelper.CreateUser ("UserForOtherTenant", "User", "Other", "Chief", otherTenantGroup, otherTenant);
       var otherTenantRole = TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
 
-      var aceSpecificTenantWithOtherTenant = TestHelper.CreateAceWithSpecficTenant (otherTenant);
+      var aceSpecificTenantWithOtherTenant = TestHelper.CreateAceWithSpecificTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (aceSpecificTenantWithOtherTenant, true, true, null);
 
       var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
@@ -351,7 +351,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceOwningTenant = TestHelper.CreateAceWithOwningTenant ();
       AttachAccessTypeReadWriteDelete (aceOwningTenant, true, true, null);
 
-      var aceSpecificTenant = TestHelper.CreateAceWithSpecficTenant (Tenant);
+      var aceSpecificTenant = TestHelper.CreateAceWithSpecificTenant (Tenant);
       AttachAccessTypeReadWriteDelete (aceSpecificTenant, true, true, null);
 
       var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
@@ -426,7 +426,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       // Together with User or User2 gives non-matching ACEs
       var otherTenant = TestHelper.CreateTenant ("OtherTenant");
-      var testAce = TestHelper.CreateAceWithSpecficTenant (otherTenant);
+      var testAce = TestHelper.CreateAceWithSpecificTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (testAce, true, true, true);
 
       Assert.That (testAce.Validate ().IsValid);
@@ -570,7 +570,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       //var user2 = TestHelper.CreateUser ("NonContributingAcesDebugTest2", "User", "Other", "Chief", otherTenantGroup, otherTenant);
 
-      var aceSpecificTenantWithOtherTenant = TestHelper.CreateAceWithSpecficTenant (otherTenant);
+      var aceSpecificTenantWithOtherTenant = TestHelper.CreateAceWithSpecificTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (aceSpecificTenantWithOtherTenant, true, true, null);
 
       var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);

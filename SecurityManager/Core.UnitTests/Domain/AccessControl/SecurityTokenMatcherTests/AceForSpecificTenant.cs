@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       _companyHelper = new CompanyStructureHelper (TestHelper.Transaction);
 
-      _ace = TestHelper.CreateAceWithSpecficTenant (_companyHelper.CompanyTenant);
+      _ace = TestHelper.CreateAceWithSpecificTenant (_companyHelper.CompanyTenant);
 
       Assert.That (_ace.TenantCondition, Is.EqualTo (TenantCondition.SpecificTenant));
       Assert.That (_ace.SpecificTenant, Is.SameAs (_companyHelper.CompanyTenant));

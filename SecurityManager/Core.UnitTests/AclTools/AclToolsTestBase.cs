@@ -94,7 +94,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       Position2 = TestHelper.CreatePosition ("Working Drone");
       User2 = TestHelper.CreateUser ("mr.smith", "", "Smith", "Mr.", Group2, Tenant);
       Role2 = TestHelper.CreateRole (User2, Group2, Position2);
-      Ace2 = TestHelper.CreateAceWithSpecficTenant (Tenant);
+      Ace2 = TestHelper.CreateAceWithSpecificTenant (Tenant);
 
       TestHelper.AttachAccessType (Ace2, ReadAccessType, true);
       TestHelper.AttachAccessType (Ace2, WriteAccessType, null);
