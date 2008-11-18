@@ -17,6 +17,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 {
   public class AccessControlEntryPropertiesEnumerationValueFilter : IEnumerationValueFilter
   {
+    public AccessControlEntryPropertiesEnumerationValueFilter ()
+    {
+    }
+
     public bool IsEnabled (IEnumerationValueInfo value, IBusinessObject businessObject, IBusinessObjectEnumerationProperty property)
     {
       ArgumentUtility.CheckNotNull ("value", value);
@@ -35,7 +39,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         case "UserCondition":
           return value.IsEnabled && IsUserConditionEnabled ((UserCondition) value.Value, isStateful);
         default:
-          throw CreateInvalidOperationException (property.Identifier);
+          throw CreateInvalidOperationException ("The property '{0}' is not supported by the '{1}'.", property.Identifier, typeof (AccessControlEntryPropertiesEnumerationValueFilter).FullName);
       }
     }
 

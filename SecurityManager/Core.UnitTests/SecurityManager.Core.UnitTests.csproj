@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\AccessControlEntryPropertiesEnumerationValueFilterTestBase.cs" />
+    <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\NotSupportedProperty.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\TeantConditionStateful.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\TenantConditionStateless.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\GroupConditionStateless.cs" />
