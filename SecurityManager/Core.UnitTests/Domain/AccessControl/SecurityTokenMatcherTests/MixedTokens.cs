@@ -19,6 +19,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
   public class MixedTokens : SecurityTokenMatcherTestBase
   {
     [Test]
+    public void EmptyAce_Matches ()
+    {
+      AccessControlEntry entry = AccessControlEntry.NewObject ();
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
+      SecurityToken token = TestHelper.CreateTokenWithOwningTenant (null, entry.SpecificTenant);
+
+      Assert.IsTrue (matcher.MatchesToken (token));
+    }
+
+    [Test]
     public void TokenWithRoleAndAbstractRole_AceForPositionFromOwningGroup_Matches ()
     {
       Tenant tenant = TestHelper.CreateTenant ("Testtenant");

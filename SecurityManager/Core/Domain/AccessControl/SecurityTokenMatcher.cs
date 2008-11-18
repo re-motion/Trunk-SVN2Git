@@ -56,17 +56,17 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           return true;
 
         case TenantCondition.OwningTenant:
-          return MatchesUserTenant (token.Principal, token.OwningTenant);
+          return MatchPrincipalAgainstTenant (token.Principal, token.OwningTenant);
 
         case TenantCondition.SpecificTenant:
-          return MatchesUserTenant (token.Principal, _ace.SpecificTenant);
+          return MatchPrincipalAgainstTenant (token.Principal, _ace.SpecificTenant);
 
         default:
-          throw CreateInvalidOperationException ("The value '{0}' is not a valid enum value for 'TenantCondition'", _ace.TenantCondition);
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'TenantCondition'.", _ace.TenantCondition);
       }
     }
 
-    private bool MatchesUserTenant (User principal, Tenant referenceTenant)
+    private bool MatchPrincipalAgainstTenant (User principal, Tenant referenceTenant)
     {
       if (principal == null)
         return false;
@@ -172,34 +172,31 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (referenceGroup == null)
         return false;
 
-      IEnumerable<Role> roles = GetMatchingPrincipalRoles (principal);
+      var roles = GetMatchingPrincipalRoles (principal);
+      var principalGroups = roles.Select (r => r.Group);
 
-      var userGroups = roles.Select (r => r.Group);
-      var userAndParentGroups = userGroups.SelectMany (g => GetThisAndParents (g));
-      var referenceAndParentGroups = GetThisAndParents (referenceGroup);
-
-      Func<bool> hasMatchInThisAndChildren = () => userAndParentGroups.Contains (referenceGroup);
-      Func<bool> hasMatchInThisAndParents = () => userGroups.Intersect (referenceAndParentGroups).Any ();
+      Func<bool> isPrincipalMatchingReferenceGroupOrParents = () => principalGroups.Intersect (GetThisAndParents (referenceGroup)).Any();
+      Func<bool> isPrincipalMatchingReferenceGroupOrChildren = () => principalGroups.SelectMany (g => GetThisAndParents (g)).Contains (referenceGroup);
 
       switch (groupHierarchyCondition)
       {
         case GroupHierarchyCondition.Undefined:
-          return false;
+          throw CreateInvalidOperationException ("The value 'Undefined' is not a valid value for matching the 'GroupHierarchyCondition'.");
 
         case GroupHierarchyCondition.This:
-          return userGroups.Contains (referenceGroup);
+          return principalGroups.Contains (referenceGroup);
 
         case GroupHierarchyCondition.ThisAndParent:
-          return hasMatchInThisAndParents();
+          return isPrincipalMatchingReferenceGroupOrParents();
 
         case GroupHierarchyCondition.ThisAndChildren:
-          return hasMatchInThisAndChildren();
+          return isPrincipalMatchingReferenceGroupOrChildren();
 
         case GroupHierarchyCondition.ThisAndParentAndChildren:
-          return hasMatchInThisAndParents() || hasMatchInThisAndChildren();
+          return isPrincipalMatchingReferenceGroupOrParents() || isPrincipalMatchingReferenceGroupOrChildren();
 
         default:
-          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupHierarchyCondition'.", _ace.GroupHierarchyCondition);
+          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'GroupHierarchyCondition'.", groupHierarchyCondition);
       }
     }
 

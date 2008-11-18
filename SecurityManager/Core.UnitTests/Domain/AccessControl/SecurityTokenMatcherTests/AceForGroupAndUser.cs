@@ -102,5 +102,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       Assert.IsTrue (matcher.MatchesToken (token));
     }
+
+    [Test]
+    public void EmptyToken_DoesNotMatch ()
+    {
+      _ace.GroupHierarchyCondition = GroupHierarchyCondition.This;
+
+      SecurityToken token = TestHelper.CreateEmptyToken ();
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
+
+      Assert.IsFalse (matcher.MatchesToken (token));
+    }
   }
 }

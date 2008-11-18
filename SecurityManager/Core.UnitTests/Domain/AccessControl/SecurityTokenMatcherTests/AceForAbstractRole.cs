@@ -15,20 +15,10 @@ using Remotion.SecurityManager.Domain.AccessControl;
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenMatcherTests
 {
   [TestFixture]
-  public class TokenWithAbstractRole : SecurityTokenMatcherTestBase
+  public class AceForAbstractRole : SecurityTokenMatcherTestBase
   {
     [Test]
-    public void EmptyAce_Matches ()
-    {
-      AccessControlEntry entry = AccessControlEntry.NewObject();
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateTokenWithAbstractRole (TestHelper.CreateTestAbstractRole ());
-
-      Assert.IsTrue (matcher.MatchesToken (token));
-    }
-
-    [Test]
-    public void AceForAbstractRole_Matches ()
+    public void TokenWithAbstractRole_Matches ()
     {
       AccessControlEntry entry = TestHelper.CreateAceWithAbstractRole ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
@@ -38,11 +28,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void AceForOtherAbstractRole_DoesNotMatch ()
+    public void TokenWithOtherAbstractRole_DoesNotMatch ()
     {
       AccessControlEntry entry = TestHelper.CreateAceWithAbstractRole ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
       SecurityToken token = TestHelper.CreateTokenWithAbstractRole (TestHelper.CreateTestAbstractRole ());
+
+      Assert.IsFalse (matcher.MatchesToken (token));
+    }
+
+    [Test]
+    public void EmptyToken_DoesNotMatch ()
+    {
+      AccessControlEntry entry = TestHelper.CreateAceWithAbstractRole ();
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
+      SecurityToken token = TestHelper.CreateEmptyToken ();
 
       Assert.IsFalse (matcher.MatchesToken (token));
     }
