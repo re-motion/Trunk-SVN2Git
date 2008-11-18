@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate();
 
-      Assert.IsTrue (result.IsValid);
+      Assert.That (result.IsValid, Is.True);
     }
 
     [Test]
@@ -60,8 +60,262 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       AccessControlEntryValidationResult result = ace.Validate();
 
-      Assert.IsFalse (result.IsValid);
-      Assert.That (result.GetErrors(), List.Contains (AccessControlEntryValidationError.IsSpecificTenantMissing));
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsSpecificTenantMissing }));
+    }
+
+    [Test]
+    public void ValidateTenantHierarchyCondition_IsValid_IfSpecificTenant ()
+    {
+      Tenant tenant = _testHelper.CreateTenant ("TestTenant");
+      AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.IsTrue (result.IsValid);
+    }
+
+    [Test]
+    public void ValidateTenantHierarchyCondition_IsUndefined_IfSpecificTenant ()
+    {
+      Tenant tenant = _testHelper.CreateTenant ("TestTenant");
+      AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
+      ace.TenantHierarchyCondition = TenantHierarchyCondition.Undefined;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsTenantHierarchyConditionMissing }));
+    }
+
+    [Test]
+    public void ValidateTenantHierarchyCondition_IsValid_IfOwningTenant ()
+    {
+      AccessControlEntry ace = _testHelper.CreateAceWithOwningTenant ();
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.IsTrue (result.IsValid);
+    }
+
+    [Test]
+    public void ValidateTenantHierarchyCondition_IsUndefined_IfOwningTenant ()
+    {
+      AccessControlEntry ace = _testHelper.CreateAceWithOwningTenant();
+      ace.TenantHierarchyCondition = TenantHierarchyCondition.Undefined;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsTenantHierarchyConditionMissing }));
+    }
+
+    [Test]
+    public void ValidateSpecificGroup_IsValid ()
+    {
+      var group = _testHelper.CreateGroup ("TestGroup", null, _testHelper.CreateTenant ("TestTenant"));
+      var ace = _testHelper.CreateAceWithSpecificGroup (group);
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.IsTrue (result.IsValid);
+    }
+
+    [Test]
+    public void ValidateSpecificGroup_IsNull ()
+    {
+      var group = _testHelper.CreateGroup ("TestGroup", null, _testHelper.CreateTenant ("TestTenant"));
+      var ace = _testHelper.CreateAceWithSpecificGroup (group);
+      ace.SpecificGroup = null;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[]{AccessControlEntryValidationError.IsSpecificGroupMissing}));
+    }
+
+    [Test]
+    public void ValidateSpecificGroupType_IsValid_IfAnyGroupWithSpecificGroupType ()
+    {
+      var groupType = GroupType.NewObject ();
+      var ace = _testHelper.CreateAceWithSpecificGroupType (groupType);
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.IsTrue (result.IsValid);
+    }
+
+    [Test]
+    public void ValidateSpecificGroupType_IsNull_IfAnyGroupWithSpecificGroupType ()
+    {
+      var groupType = GroupType.NewObject ();
+      var ace = _testHelper.CreateAceWithSpecificGroupType (groupType);
+      ace.SpecificGroupType = null;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsSpecificGroupTypeMissing }));
+    }
+
+    [Test]
+    public void ValidateSpecificGroupType_IsValid_IfBranchOfOwningGroup ()
+    {
+      var groupType = GroupType.NewObject ();
+      var ace = _testHelper.CreateAceWithBranchOfOwningGroup (groupType);
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.IsTrue (result.IsValid);
+    }
+
+    [Test]
+    public void ValidateSpecificGroupType_IsNull_IfBranchOfOwningGroup ()
+    {
+      var groupType = GroupType.NewObject ();
+      var ace = _testHelper.CreateAceWithBranchOfOwningGroup(groupType);
+      ace.SpecificGroupType = null;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsSpecificGroupTypeMissing }));
+    }
+
+    [Test]
+    public void ValidateGroupHierarchyCondition_IsValid_IfSpecificGroup ()
+    {
+      var group = _testHelper.CreateGroup ("TestGroup", null, _testHelper.CreateTenant ("TestTenant"));
+      var ace = _testHelper.CreateAceWithSpecificGroup (group);
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.IsTrue (result.IsValid);
+    }
+
+    [Test]
+    public void ValidateGroupHierarchyCondition_IsUndefined_IfSpecificGroup ()
+    {
+      var group = _testHelper.CreateGroup ("TestGroup", null, _testHelper.CreateTenant ("TestTenant"));
+      var ace = _testHelper.CreateAceWithSpecificGroup (group);
+      ace.GroupHierarchyCondition = GroupHierarchyCondition.Undefined;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsGroupHierarchyConditionMissing }));
+    }
+
+    [Test]
+    public void ValidateGroupHierarchyCondition_IsValid_IfOwningGroup ()
+    {
+      AccessControlEntry ace = _testHelper.CreateAceWithOwningGroup ();
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.IsTrue (result.IsValid);
+    }
+
+    [Test]
+    public void ValidateGroupHierarchyCondition_IsUndefined_IfOwningGroup ()
+    {
+      AccessControlEntry ace = _testHelper.CreateAceWithOwningGroup ();
+      ace.GroupHierarchyCondition = GroupHierarchyCondition.Undefined;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsGroupHierarchyConditionMissing }));
+    }
+    
+    [Test]
+    public void ValidateSpecificUser_IsValid ()
+    {
+      var tenant = _testHelper.CreateTenant ("TestTenant");
+      var user = _testHelper.CreateUser ("TestUser", "user", "user", null, _testHelper.CreateGroup ("TestGroup", null, tenant), tenant);
+      var ace = _testHelper.CreateAceWithSpecificUser (user);
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.IsTrue (result.IsValid);
+    }
+
+    [Test]
+    public void ValidateSpecificUser_IsNull ()
+    {
+      var tenant = _testHelper.CreateTenant ("TestTenant");
+      var user = _testHelper.CreateUser ("TestUser", "user", "user", null, _testHelper.CreateGroup ("TestGroup", null, tenant), tenant);
+      var ace = _testHelper.CreateAceWithSpecificUser (user);
+      ace.SpecificUser = null;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsSpecificUserMissing }));
+    }
+
+    [Test]
+    public void ValidateSpecificPosition_IsValid ()
+    {
+      var ace = _testHelper.CreateAceWithPosition (_testHelper.CreatePosition ("Position"), GroupCondition.None);
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.IsTrue (result.IsValid);
+    }
+
+    [Test]
+    public void ValidateSpecificPosition_IsNull ()
+    {
+      var ace = _testHelper.CreateAceWithPosition (_testHelper.CreatePosition ("Position"), GroupCondition.None);
+      ace.SpecificPosition = null;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsSpecificPositionMissing }));
+    }
+
+    [Test]
+    public void ValidateTenantConditionWhenObjectIsDeleted_DoesNotThrow ()
+    {
+      Tenant tenant = _testHelper.CreateTenant ("TestTenant");
+      AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.SpecificTenant = null;
+        ace.Delete ();
+
+        AccessControlEntryValidationResult result = ace.Validate ();
+
+        Assert.That (result.IsValid, Is.True);
+        Assert.That (ace.State, Is.EqualTo (StateType.Deleted));
+      }
+    }
+
+    [Test]
+    public void ValidateGroupConditionWhenObjectIsDeleted_DoesNotThrow ()
+    {
+      var group = _testHelper.CreateGroup ("TestGroup", null, _testHelper.CreateTenant ("TestTenant"));
+      var ace = _testHelper.CreateAceWithSpecificGroup (group);
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.SpecificGroup = null;
+        ace.Delete ();
+
+        AccessControlEntryValidationResult result = ace.Validate ();
+
+        Assert.That (result.IsValid, Is.True);
+        Assert.That (ace.State, Is.EqualTo (StateType.Deleted));
+      }
+    }
+
+    [Test]
+    public void ValidateUserConditionWhenObjectIsDeleted_DoesNotThrow ()
+    {
+      var tenant = _testHelper.CreateTenant ("TestTenant");
+      var user = _testHelper.CreateUser ("TestUser", "user", "user", null, _testHelper.CreateGroup ("TestGroup", null, tenant), tenant);
+      var ace = _testHelper.CreateAceWithSpecificUser (user);
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        ace.SpecificUser = null;
+        ace.Delete ();
+
+        AccessControlEntryValidationResult result = ace.Validate ();
+
+        Assert.That (result.IsValid, Is.True);
+        Assert.That (ace.State, Is.EqualTo (StateType.Deleted));
+      }
     }
 
     [Test]
@@ -74,24 +328,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
       ace.SpecificTenant = null;
 
-      ClientTransactionScope.CurrentTransaction.Commit();
-    }
-
-    [Test]
-    public void ValidateSpecificTenant_IsNullAndObjectIsDeleted ()
-    {
-      Tenant tenant = _testHelper.CreateTenant ("TestTenant");
-      AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
-      {
-        ace.SpecificTenant = null;
-        ace.Delete();
-
-        AccessControlEntryValidationResult result = ace.Validate();
-
-        Assert.IsTrue (result.IsValid);
-        Assert.AreEqual (StateType.Deleted, ace.State);
-      }
+      ClientTransactionScope.CurrentTransaction.Commit ();
     }
   }
 }

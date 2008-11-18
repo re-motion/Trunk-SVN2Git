@@ -15,6 +15,13 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
+  /// <summary>
+  /// Implementation of <see cref="IEnumerationValueFilter"/> for the <see cref="AccessControlEntry"/> type.
+  /// </summary>
+  /// <remarks>
+  /// The service is applied to the <see cref="AccessControlEntry.TenantCondition"/>, <see cref="AccessControlEntry.GroupCondition"/>, 
+  /// and <see cref="AccessControlEntry.UserCondition"/> properties via the <see cref="DisableEnumValuesAttribute"/>.
+  /// </remarks>
   public class AccessControlEntryPropertiesEnumerationValueFilter : IEnumerationValueFilter
   {
     public AccessControlEntryPropertiesEnumerationValueFilter ()

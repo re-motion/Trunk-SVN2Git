@@ -16,6 +16,9 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
+  /// <summary>
+  /// The <see cref="AccessControlEntryValidationResult"/> type collects validation state for the <see cref="AccessControlEntry"/> type.
+  /// </summary>
   public class AccessControlEntryValidationResult
   {
     private readonly Set<AccessControlEntryValidationError> _errors = new Set<AccessControlEntryValidationError>();

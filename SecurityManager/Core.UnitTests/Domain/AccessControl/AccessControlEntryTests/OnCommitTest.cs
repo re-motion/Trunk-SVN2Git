@@ -111,7 +111,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var ace = _testHelper.CreateAceWithSpecificGroup (group);
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        ace.GroupCondition = GroupCondition.BranchOfOwningGroup;
+        ace.GroupCondition = GroupCondition.None;
 
         Assert.That (ace.GroupHierarchyCondition, Is.Not.EqualTo (GroupHierarchyCondition.Undefined));
         ClientTransactionScope.CurrentTransaction.Commit ();
@@ -155,7 +155,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       ace.GroupCondition = GroupCondition.BranchOfOwningGroup;
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        ace.GroupCondition = GroupCondition.OwningGroup;
+        ace.GroupCondition = GroupCondition.None;
 
         Assert.IsNotNull (ace.SpecificGroupType);
         ClientTransactionScope.CurrentTransaction.Commit ();
@@ -210,9 +210,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void ClearSpecificPosition ()
     {
-      var ace = _testHelper.CreateAceWithOwningUser ();
-      ace.UserCondition = UserCondition.SpecificUser;
-      ace.SpecificPosition = _testHelper.CreatePosition ("Position");
+      var ace = _testHelper.CreateAceWithPosition (_testHelper.CreatePosition ("Position"), GroupCondition.None);
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         ace.UserCondition = UserCondition.Owner;

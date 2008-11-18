@@ -13,6 +13,9 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
+  /// <summary>
+  /// This enum lists the possible validation errors for an <see cref="AccessControlEntry"/>.
+  /// </summary>
   public enum AccessControlEntryValidationError
   {
     [EnumDescription ("The TenantCondition property is set to SpecificTenant, but no SpecificTenant is assigned.")]
@@ -21,7 +24,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [EnumDescription ("The GroupCondition property is set to SpecificGroup, but no SpecificGroup is assigned.")]
     IsSpecificGroupMissing,
     
-    [EnumDescription ("The GroupCondition property is set to SpecificGroupType, but no SpecificGroupType is assigned.")]
+    [EnumDescription ("The GroupCondition property is set to BranchOfOwningGroup or AnyGroupWithSpecificGroupType, but no SpecificGroupType is assigned.")]
     IsSpecificGroupTypeMissing,
     
     [EnumDescription ("The UserCondition property is set to SpecificUser, but no SpecificUser is assigned.")]

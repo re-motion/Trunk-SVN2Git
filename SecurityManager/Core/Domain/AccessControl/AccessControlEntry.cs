@@ -87,7 +87,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public abstract GroupHierarchyCondition GroupHierarchyCondition { get; set; }
 
-    [DisableEnumValues(typeof (AccessControlEntryPropertiesEnumerationValueFilter))]
+    [DisableEnumValues (typeof (AccessControlEntryPropertiesEnumerationValueFilter))]
     public abstract UserCondition UserCondition { get; set; }
 
     [SearchAvailableObjectsServiceType (typeof (AccessControlEntryPropertiesSearchService))]
@@ -234,7 +234,34 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (State != StateType.Deleted)
       {
         if (TenantCondition == TenantCondition.SpecificTenant && SpecificTenant == null)
-          result.SetError(AccessControlEntryValidationError.IsSpecificTenantMissing);
+          result.SetError (AccessControlEntryValidationError.IsSpecificTenantMissing);
+
+        if (TenantCondition == TenantCondition.OwningTenant && TenantHierarchyCondition == TenantHierarchyCondition.Undefined)
+          result.SetError (AccessControlEntryValidationError.IsTenantHierarchyConditionMissing);
+
+        if (TenantCondition == TenantCondition.SpecificTenant && TenantHierarchyCondition == TenantHierarchyCondition.Undefined)
+          result.SetError (AccessControlEntryValidationError.IsTenantHierarchyConditionMissing);
+
+        if (GroupCondition == GroupCondition.SpecificGroup && SpecificGroup == null)
+          result.SetError (AccessControlEntryValidationError.IsSpecificGroupMissing);
+
+        if (GroupCondition == GroupCondition.AnyGroupWithSpecificGroupType && SpecificGroupType == null)
+          result.SetError (AccessControlEntryValidationError.IsSpecificGroupTypeMissing);
+
+        if (GroupCondition == GroupCondition.BranchOfOwningGroup && SpecificGroupType == null)
+          result.SetError (AccessControlEntryValidationError.IsSpecificGroupTypeMissing);
+
+        if (GroupCondition == GroupCondition.OwningGroup && GroupHierarchyCondition == GroupHierarchyCondition.Undefined)
+          result.SetError (AccessControlEntryValidationError.IsGroupHierarchyConditionMissing);
+
+        if (GroupCondition == GroupCondition.SpecificGroup && GroupHierarchyCondition == GroupHierarchyCondition.Undefined)
+          result.SetError (AccessControlEntryValidationError.IsGroupHierarchyConditionMissing);
+
+        if (UserCondition == UserCondition.SpecificUser && SpecificUser == null)
+          result.SetError (AccessControlEntryValidationError.IsSpecificUserMissing);
+
+        if (UserCondition == UserCondition.SpecificPosition && SpecificPosition == null)
+          result.SetError (AccessControlEntryValidationError.IsSpecificPositionMissing);
       }
 
       return result;
