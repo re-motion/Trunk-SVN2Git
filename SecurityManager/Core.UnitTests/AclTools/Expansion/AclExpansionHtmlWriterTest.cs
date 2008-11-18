@@ -821,6 +821,29 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    [Test]
+    [Explicit]
+    //public void OwningGroupAndGroupHierarchyConditionTest ()
+    public void OwningGroupTest ()
+    {
+      var group = Group;
+      var accessConditions = new AclExpansionAccessConditions { OwningGroup = group, GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParentAndChildren };
+      var aclExpansionEntry = new AclExpansionEntry (
+          User, Role, Acl, accessConditions, new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
+      List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
+
+      var stringWriter = new StringWriter ();
+      var aclExpansionTree = new AclExpansionTree (aclExpansion);
+      //To.ConsoleLine.e (() => aclExpansionTree).nl ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionTree, stringWriter, true);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+      string result = stringWriter.ToString ();
+      To.ConsoleLine.e (() => result); Clipboard.SetText (result);
+
+      //Assert.That (result, NUnitText.Contains ("role group (" + group.DisplayName + ")"));
+      Assert.That (result, NUnitText.Contains (group.DisplayName));
+    }
+
 
     //[Test]
     //[Explicit]

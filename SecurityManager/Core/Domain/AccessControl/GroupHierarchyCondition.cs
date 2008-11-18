@@ -16,12 +16,23 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 {
   [EnumDescriptionResource ("Remotion.SecurityManager.Globalization.Domain.AccessControl.GroupHierarchyCondition")]
   [UndefinedEnumValue (Undefined)]
+  [Flags]
   public enum GroupHierarchyCondition
   {
     Undefined = 0,
-    This = 1,
-    ThisAndParent = 1 | 2,
-    ThisAndChildren = 1 | 4,
-    ThisAndParentAndChildren = 1 | 2 | 4,
+    This = GroupHierarchyConditionPureStates.This,
+    ThisAndParent = GroupHierarchyConditionPureStates.This | GroupHierarchyConditionPureStates.Parent,
+    ThisAndChildren = GroupHierarchyConditionPureStates.This | GroupHierarchyConditionPureStates.Children,
+    ThisAndParentAndChildren = 
+      GroupHierarchyConditionPureStates.This | GroupHierarchyConditionPureStates.Parent | GroupHierarchyConditionPureStates.Children,
   }
+
+  //public enum GroupHierarchyCondition
+  //{
+  //  Undefined = 0,
+  //  This = 1,
+  //  ThisAndParent = 1 | 2,
+  //  ThisAndChildren = 1 | 4,
+  //  ThisAndParentAndChildren = 1 | 2 | 4,
+  //}
 }

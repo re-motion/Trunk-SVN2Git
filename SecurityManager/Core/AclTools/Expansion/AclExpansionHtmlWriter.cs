@@ -208,11 +208,42 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableDataForBodyConditions (AclExpansionAccessConditions conditions)
     {
       WriteTableDataForBooleanCondition (conditions.IsOwningUserRequired);
+      
       WriteTableDataForBooleanCondition (conditions.HasOwningGroupCondition);
+      //WriteTableDataForOwningGroupCondition (conditions);
+      
       WriteTableDataForBooleanCondition (conditions.IsOwningTenantRequired);
 
       htmlTagWriter.Tags.td ();
       htmlTagWriter.Value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");
+      htmlTagWriter.Tags.tdEnd ();
+    }
+
+    private void WriteTableDataForOwningGroupCondition (AclExpansionAccessConditions conditions)
+    {
+      Assertion.IsFalse (conditions.GroupHierarchyCondition == GroupHierarchyCondition.Undefined && conditions.OwningGroup != null);
+      htmlTagWriter.Tags.td();
+      var owningGroup = conditions.OwningGroup;
+      if (owningGroup != null)
+      {
+        htmlTagWriter.Value (owningGroup.DisplayName);
+      }
+
+      var groupHierarchyCondition = conditions.GroupHierarchyCondition;
+      if (((GroupHierarchyConditionPureStates) groupHierarchyCondition & GroupHierarchyConditionPureStates.Parent) != 0)
+      {
+        //htmlTagWriter.Value (",");
+        htmlTagWriter.Tags.br ();
+        htmlTagWriter.Value ("or its parents");
+      }
+
+      if (((GroupHierarchyConditionPureStates) groupHierarchyCondition & GroupHierarchyConditionPureStates.Children) != 0)
+      {
+        //htmlTagWriter.Value (",");
+        htmlTagWriter.Tags.br ();
+        htmlTagWriter.Value ("or its children");
+      }
+
       htmlTagWriter.Tags.tdEnd ();
     }
 
