@@ -273,7 +273,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <th class=""header"">Class</th>
         <th class=""header"">States</th>
         <th class=""header"">User Must Own</th>
-        <th class=""header"">Has Owning Group Condition</th>
+        <th class=""header"">Owning Group Equals</th>
         <th class=""header"">Tenant Must Own</th>
         <th class=""header"">User Must Have Abstract Role</th>
         <th class=""header"">Access Rights</th>
@@ -736,7 +736,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <th class=""header"">Class</th>
         <th class=""header"">States</th>
         <th class=""header"">User Must Own</th>
-        <th class=""header"">Has Owning Group Condition</th>
+        <th class=""header"">Owning Group Equals</th>
         <th class=""header"">Tenant Must Own</th>
         <th class=""header"">User Must Have Abstract Role</th>
         <th class=""header"">Access Rights</th>
@@ -792,7 +792,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <th class=""header"">Class</th>
         <th class=""header"">States</th>
         <th class=""header"">User Must Own</th>
-        <th class=""header"">Has Owning Group Condition</th>
+        <th class=""header"">Owning Group Equals</th>
         <th class=""header"">Tenant Must Own</th>
         <th class=""header"">User Must Have Abstract Role</th>
         <th class=""header"">Access Rights</th>

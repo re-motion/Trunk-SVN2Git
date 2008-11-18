@@ -92,7 +92,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteHeaderCell ("Class");
       WriteHeaderCell ("States");
       WriteHeaderCell ("User Must Own");
-      WriteHeaderCell ("Has Owning Group Condition");
+      WriteHeaderCell ("Owning Group Equals");
       WriteHeaderCell ("Tenant Must Own");
       WriteHeaderCell ("User Must Have Abstract Role");
       WriteHeaderCell ("Access Rights");
