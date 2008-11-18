@@ -137,6 +137,7 @@
     <copy todir="${build.basedir}/res/${project.output}" >
       <fileset basedir="${project.basedir}">
         <include name="**/*.ascx" />
+        <include name="**/*.asmx" />
         <include name="**/*.aspx" />
         <include name="**/*.master" />
         <exclude name="**/res/**" />
