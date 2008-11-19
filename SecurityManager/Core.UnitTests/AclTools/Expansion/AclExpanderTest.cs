@@ -740,18 +740,25 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       //TestHelper.CreateRole (otherTenantUser, groupWithGroupType2, otherTenantPosition);
       //TestHelper.CreateRole (otherTenantUser, anotherGroupWithGroupType1, otherTenantPosition);
 
-      var ace = TestHelper.CreateAceWithBranchOfOwningGroup (groupTypeInAce);
-      AttachAccessTypeReadWriteDelete (ace, null, true, null);
-      Assert.That (ace.Validate ().IsValid);
+      var aceWithBranchOfOwningGroup = TestHelper.CreateAceWithBranchOfOwningGroup (groupTypeInAce);
+      AttachAccessTypeReadWriteDelete (aceWithBranchOfOwningGroup, null, true, null);
+      Assert.That (aceWithBranchOfOwningGroup.Validate ().IsValid);
 
-      //var aceSpecificGroupType2 = TestHelper.CreateAceWithSpecificGroupType (groupType2);
-      //AttachAccessTypeReadWriteDelete (aceSpecificGroupType2, null, null, true);
-      //Assert.That (aceSpecificGroupType2.Validate ().IsValid);
+      // Negative test: This ACE should not match
+      var aceSpecificGroupType2 = TestHelper.CreateAceWithSpecificGroupType (groupTypeInAce);
+      AttachAccessTypeReadWriteDelete (aceSpecificGroupType2, null, null, true);
+      Assert.That (aceSpecificGroupType2.Validate ().IsValid);
 
+      // Negative test: This ACE should not match
+      var aceSpecificGroupType3 = TestHelper.CreateAceWithSpecificGroup (groupWithGroupTypeInAce);
+      AttachAccessTypeReadWriteDelete (aceSpecificGroupType3, true, null, null);
+      Assert.That (aceSpecificGroupType3.Validate ().IsValid);
+ 
+      
       //To.ConsoleLine.e (() => aceSpecificGroup);
 
       var userList = List.New (otherTenantUser);
-      var aclList = List.New (TestHelper.CreateStatefulAcl (ace));
+      var aclList = List.New (TestHelper.CreateStatefulAcl (aceWithBranchOfOwningGroup, aceSpecificGroupType2, aceSpecificGroupType3));
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
 
