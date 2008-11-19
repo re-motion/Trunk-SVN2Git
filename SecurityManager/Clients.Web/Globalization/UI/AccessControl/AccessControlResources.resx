@@ -165,4 +165,19 @@
   <data name="auto:StatelessAccessControlListTitle:InnerText" xml:space="preserve">
     <value>Class-based ACL (Access Control List)</value>
   </data>
+  <data name="auto:AllPermissionsLabel:Text" xml:space="preserve">
+    <value>Update all permissions</value>
+  </data>
+  <data name="auto:SpecificGroupField:ErrorMessage" xml:space="preserve">
+    <value>Please select a group.</value>
+  </data>
+  <data name="auto:SpecificGroupTypeField:ErrorMessage" xml:space="preserve">
+    <value>Please select a group type.</value>
+  </data>
+  <data name="auto:SpecificPositionField:ErrorMessage" xml:space="preserve">
+    <value>Please select a position.</value>
+  </data>
+  <data name="auto:SpecificUserField:ErrorMessage" xml:space="preserve">
+    <value>Please select a user.</value>
+  </data>
 </root>

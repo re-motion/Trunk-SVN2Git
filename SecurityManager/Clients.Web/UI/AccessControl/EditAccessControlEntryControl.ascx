@@ -20,7 +20,8 @@
     <td class="accessControlEntryTitleCell" colspan="2">
       <h3 ID="AccessControlEntryTitle" runat="server">###</h3>
       <div class="accessControlEntryButtons">
-        <remotion:WebButton ID="DeleteAccessControlEntryButton" runat="server" Text="$res:DeleteAccessControlEntryButton" OnClick="DeleteAccessControlEntryButton_Click" CausesValidation="false" />
+        <remotion:WebButton ID="DeleteAccessControlEntryButton" runat="server" Text="$res:DeleteAccessControlEntryButton" 
+          OnClick="DeleteAccessControlEntryButton_Click" CausesValidation="false" RequiresSynchronousPostBack="True" />
       </div>
     </td>
   </tr>
@@ -34,27 +35,30 @@
         <DropDownListStyle AutoPostBack="true" />
       </remotion:BocReferenceValue>
       <remotion:BocEnumValue ID="TenantHierarchyConditionField" runat="server" PropertyIdentifier="TenantHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-top:0.2em"/>
+      <br style="clear:both;"/>
     </td>
   </tr>
   <tr>
     <td><remotion:SmartLabel ID="GroupConditionLabel" runat="server" ForControl="GroupConditionField"/></td>
     <td>
-      <remotion:BocEnumValue ID="GroupConditionField" runat="server" PropertyIdentifier="GroupCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="GroupConditionField_SelectionChanged" Width="14em" Style="display:block; float:left; margin-top:0.05em">
+      <remotion:BocEnumValue ID="GroupConditionField" runat="server" PropertyIdentifier="GroupCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="GroupConditionField_SelectionChanged" Width="14em" Style="display:block; float:left; margin-top:0.2em">
         <ListControlStyle AutoPostBack="True"/>
       </remotion:BocEnumValue>
-      <remotion:BocAutoCompleteReferenceValue ID="SpecificGroupField" runat="server" PropertyIdentifier="SpecificGroup" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-bottom:0.2em"/>
-      <remotion:BocEnumValue ID="GroupHierarchyConditionField" runat="server" PropertyIdentifier="GroupHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-bottom:0.2em"/>
-      <remotion:BocReferenceValue ID="SpecificGroupTypeField" runat="server" PropertyIdentifier="SpecificGroupType" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-bottom:0.2em"/>
+      <remotion:BocAutoCompleteReferenceValue ID="SpecificGroupField" runat="server" PropertyIdentifier="SpecificGroup" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-top:0.2em"/>
+      <remotion:BocEnumValue ID="GroupHierarchyConditionField" runat="server" PropertyIdentifier="GroupHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-top:0.2em"/>
+      <remotion:BocReferenceValue ID="SpecificGroupTypeField" runat="server" PropertyIdentifier="SpecificGroupType" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-top:0.05em"/>
+      <br style="clear:both;"/>
     </td>      
   </tr>
   <tr>
     <td><remotion:SmartLabel ID="UserConditionLabel" runat="server" ForControl="UserConditionField"/></td>
     <td>
-      <remotion:BocEnumValue ID="UserConditionField" runat="server" PropertyIdentifier="UserCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="UserConditionField_SelectionChanged" Width="14em" Style="display:block; float:left; margin-top:0.05em">
+      <remotion:BocEnumValue ID="UserConditionField" runat="server" PropertyIdentifier="UserCondition" DataSourceControl="CurrentObject"  OnSelectionChanged="UserConditionField_SelectionChanged" Width="14em" Style="display:block; float:left; margin-top:0.2em">
         <ListControlStyle AutoPostBack="True"/>
       </remotion:BocEnumValue>
-      <remotion:BocAutoCompleteReferenceValue ID="SpecificUserField" runat="server" PropertyIdentifier="SpecificUser" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-bottom:0.2em"/>
-      <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" Style="display:block; float:left;"/>
+      <remotion:BocAutoCompleteReferenceValue ID="SpecificUserField" runat="server" PropertyIdentifier="SpecificUser" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-top:0.2em"/>
+      <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" Required="true" Style="display:block; float:left; margin-top:0.05em"/>
+      <br style="clear:both;"/>
     </td>
   </tr>
   <tr>
@@ -68,15 +72,22 @@
   <tr>
     <td><remotion:FormGridLabel ID="PermissionsLabel" runat="server" Text="###" /></td>
     <td>
-      <asp:PlaceHolder ID="PermissionsPlaceHolder" runat="server" />
-      <%--
-      <securityManager:ObjectBoundRepeater ID="PermissionsRepeater" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Permissions">
-        <HeaderTemplate><ul class="permissionsList"><li class="permissionsList"></HeaderTemplate>
-        <SeparatorTemplate></li><li class="permissionsList"></SeparatorTemplate>
-        <FooterTemplate></li></ul></FooterTemplate>
-        <ItemTemplate><securityManager:EditPermissionControl id="EditPermissionControl" runat="server"/></ItemTemplate>
-      </securityManager:ObjectBoundRepeater>
-      --%>
+      <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+        <ContentTemplate>
+          <asp:PlaceHolder ID="PermissionsPlaceHolder" runat="server" />
+          <br style="clear:both;"/>
+          <remotion:BocBooleanValue ID="AllPermissionsField" runat="server" ShowDescription="false" AutoPostBack="true" Width="1em" OnCheckedChanged="AllPermissionsField_CheckedChange"/>
+          <asp:Label ID="AllPermissionsLabel" runat="server" Text="###"/>
+          <%--
+          <securityManager:ObjectBoundRepeater ID="PermissionsRepeater" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Permissions">
+            <HeaderTemplate><ul class="permissionsList"><li class="permissionsList"></HeaderTemplate>
+            <SeparatorTemplate></li><li class="permissionsList"></SeparatorTemplate>
+            <FooterTemplate></li></ul></FooterTemplate>
+            <ItemTemplate><securityManager:EditPermissionControl id="EditPermissionControl" runat="server"/></ItemTemplate>
+          </securityManager:ObjectBoundRepeater>
+          --%>
+        </ContentTemplate>
+      </asp:UpdatePanel>
     </td>
   </tr>
 </table>

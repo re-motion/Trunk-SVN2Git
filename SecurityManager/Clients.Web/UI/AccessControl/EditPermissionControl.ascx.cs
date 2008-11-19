@@ -32,5 +32,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     {
       get { return CurrentObject; }
     }
+
+    public void SetPermissionValue (bool? allowed)
+    {
+      AllowedField.Value = allowed;
+    }
   }
 }

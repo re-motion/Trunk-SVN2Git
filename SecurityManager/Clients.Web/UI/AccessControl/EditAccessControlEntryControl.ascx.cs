@@ -230,7 +230,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     private void LoadPermissions (bool interim)
     {
       CreateEditPermissionControls (CurrentAccessControlEntry.Permissions);
-      foreach (EditPermissionControl control in _editPermissionControls)
+      foreach (var control in _editPermissionControls)
         control.LoadValues (interim);
     }
 
@@ -263,10 +263,17 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     private bool ValidatePermissions ()
     {
       bool isValid = true;
-      foreach (EditPermissionControl control in _editPermissionControls)
+      foreach (var control in _editPermissionControls)
         isValid &= control.Validate();
 
       return isValid;
+    }
+
+    protected void AllPermissionsField_CheckedChange (object sender, EventArgs e)
+    {
+      bool? isAllowed = ((BocBooleanValue) sender).Value;
+      foreach (var control in _editPermissionControls)
+        control.SetPermissionValue (isAllowed);
     }
   }
 }

@@ -71,6 +71,15 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update all permissions.
+        /// </summary>
+        internal static string auto_AllPermissionsLabel_Text {
+            get {
+                return ResourceManager.GetString("auto:AllPermissionsLabel:Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please assign at least one state..
         /// </summary>
         internal static string auto_MissingStateCombinationsValidator_ErrorMessage {
@@ -98,11 +107,47 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select a group..
+        /// </summary>
+        internal static string auto_SpecificGroupField_ErrorMessage {
+            get {
+                return ResourceManager.GetString("auto:SpecificGroupField:ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a group type..
+        /// </summary>
+        internal static string auto_SpecificGroupTypeField_ErrorMessage {
+            get {
+                return ResourceManager.GetString("auto:SpecificGroupTypeField:ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a position..
+        /// </summary>
+        internal static string auto_SpecificPositionField_ErrorMessage {
+            get {
+                return ResourceManager.GetString("auto:SpecificPositionField:ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select a tenant..
         /// </summary>
         internal static string auto_SpecificTenantField_ErrorMessage {
             get {
                 return ResourceManager.GetString("auto:SpecificTenantField:ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a user..
+        /// </summary>
+        internal static string auto_SpecificUserField_ErrorMessage {
+            get {
+                return ResourceManager.GetString("auto:SpecificUserField:ErrorMessage", resourceCulture);
             }
         }
         
