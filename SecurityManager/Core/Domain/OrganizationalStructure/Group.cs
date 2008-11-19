@@ -31,7 +31,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   [Instantiable]
   [DBTable]
   [SecurityManagerStorageGroup]
-  public abstract class Group : OrganizationalStructureObject, IHasParent<Group>
+  public abstract class Group : OrganizationalStructureObject
   {
     // types
 
