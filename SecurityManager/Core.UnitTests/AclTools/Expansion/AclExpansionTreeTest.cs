@@ -82,12 +82,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
-        using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
-        {
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
-          aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-          aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
-        }
+        //using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
+        //{
+        //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
+        //  aclExpansionHtmlWriter.Settings.OutputRowCount = true;
+        //  aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+        //}
 
 
         var aclExpansionTree = new AclExpansionTree (aclExpansion);

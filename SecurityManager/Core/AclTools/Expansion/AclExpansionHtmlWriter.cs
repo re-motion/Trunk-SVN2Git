@@ -256,51 +256,36 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
+
     private void WriteTableBody ()
     {
-      //var aclExpansionUserGrouping = from aee in aclExpansion
-      //                               orderby aee.User.DisplayName
-      //                               group aee by aee.User;
-
       foreach (var userNode in _aclExpansionTree.Tree)
       {
-//        AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>>> x = userNode;
-        WriteTableBody_ProcessUserGroup(userNode);
+        WriteTableBody_ProcessUser(userNode);
       }
     }
 
-    private void WriteTableBody_ProcessUserGroup (AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>>> userNode)
+    private void WriteTableBody_ProcessUser (AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>>> userNode)
     {
       WriteTableDataWithRowCount (userNode.Key.DisplayName, userNode.NumberLeafNodes);
   
-      //var aclExpansionRoleGrouping = from aee in userNode
-      //                               orderby aee.Role.Group.DisplayName, aee.Role.Position.DisplayName
-      //                               group aee by aee.Role;
-
       foreach (var roleNode in userNode.Children)
       {
-        //AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>> x = roleNode;
-        WriteTableBody_ProcessRoleGroup(roleNode);
+        WriteTableBody_ProcessRole(roleNode);
       }
     }
 
-    private void WriteTableBody_ProcessRoleGroup (AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>> roleNode)
+    private void WriteTableBody_ProcessRole (AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>> roleNode)
     {
       WriteTableDataForRole (roleNode.Key, roleNode.NumberLeafNodes);
  
-      //var aclExpansionClassGrouping = from aee in roleNode
-      //                                orderby aee.Class.DisplayName
-      //                                group aee by aee.Class;
-
-
-      foreach (var classGroup in roleNode.Children)
+      foreach (var classNode in roleNode.Children)
       {
-        //AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry> x = classGroup;
-        WriteTableBody_ProcessClassGroup(classGroup);
+        WriteTableBody_ProcessClass(classNode);
       }
     }
 
-    private void WriteTableBody_ProcessClassGroup (AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry> classNode)
+    private void WriteTableBody_ProcessClass (AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry> classNode)
     {
       if (classNode.Key != null)
       {
@@ -312,7 +297,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableDataWithRowCount ("_NO_CLASSES_DEFINED_", classNode.NumberLeafNodes);
       }
 
-      foreach (var aclExpansionEntry in classNode.Children)
+      WriteTableBody_ProcessStates(classNode.Children);
+    }
+
+
+    //private void WriteTableBody_ProcessStates (AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry> classNode)
+    private void WriteTableBody_ProcessStates (IList<AclExpansionEntry> states)
+    {
+      // States Output
+      foreach (var aclExpansionEntry in states)
       {
         WriteTableRowBeginIfNotInTableRow ();
 
@@ -327,7 +320,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableRowEnd ();
       }
     }
-
   }
 }
 
