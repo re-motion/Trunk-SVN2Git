@@ -65,7 +65,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
       toTextBuilder.ib<AclExpansionAccessConditions>("");
-      toTextBuilder.eIfNotEqualTo ("userMustOwn", IsOwningUserRequired, false).eIfNotEqualTo ("groupMustOwn", HasOwningGroupCondition, false);
+      toTextBuilder.eIfNotEqualTo ("userMustOwn", IsOwningUserRequired, false);
+      
+      //toTextBuilder.eIfNotEqualTo ("groupMustOwn", HasOwningGroupCondition, false);
+      toTextBuilder.eIfNotNull ("owningGroup", OwningGroup);
+      toTextBuilder.eIfNotEqualTo ("groupHierarchyCondition", GroupHierarchyCondition, GroupHierarchyCondition.Undefined);
+
       toTextBuilder.eIfNotEqualTo ("tenantMustOwn", IsOwningTenantRequired, false);
       toTextBuilder.eIfNotEqualTo ("abstractRoleMustMatch", IsAbstractRoleRequired, false).eIfNotNull ("abstractRole", AbstractRole);
       toTextBuilder.ie ();
