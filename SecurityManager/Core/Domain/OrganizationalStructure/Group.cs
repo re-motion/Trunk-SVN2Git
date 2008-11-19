@@ -18,6 +18,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
+using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Linq;
@@ -30,7 +31,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   [Instantiable]
   [DBTable]
   [SecurityManagerStorageGroup]
-  public abstract class Group : OrganizationalStructureObject
+  public abstract class Group : OrganizationalStructureObject, IHasParent<Group>
   {
     // types
 
@@ -213,5 +214,10 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       return UniqueIdentifier;
     }
+
+    //public Group GetParent ()
+    //{
+    //  return Parent;
+    //}
   }
 }

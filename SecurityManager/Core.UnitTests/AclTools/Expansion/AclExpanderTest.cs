@@ -722,7 +722,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    [Explicit]
     public void BranchOfOwningGroupTest ()
     {
       // A 2nd tenant + user, etc
@@ -758,11 +757,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       To.ConsoleLine.e (() => aclExpansionEntryList);
 
-      //Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
-
-      //AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
-      //AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { DeleteAccessType }, new AclExpansionAccessConditions ());
-      //AssertAclExpansionEntry (aclExpansionEntryList[2], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
+      AssertAclExpansionEntry (aclExpansionEntryList[0], 
+        new[] { WriteAccessType }, 
+        new AclExpansionAccessConditions  {
+          OwningGroup = groupWithGroupTypeInAce,
+          GroupHierarchyCondition = GroupHierarchyCondition.ThisAndChildren 
+        }
+      );
     }
 
 

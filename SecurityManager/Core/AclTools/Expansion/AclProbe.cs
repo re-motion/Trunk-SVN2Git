@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -90,11 +92,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           aclProbe.AccessConditions.OwningGroup = owningGroup;
           aclProbe.AccessConditions.GroupHierarchyCondition = ace.GroupHierarchyCondition;
           break;
-        //case GroupCondition.BranchOfOwningGroup:
+        case GroupCondition.BranchOfOwningGroup:
         //  Assertion.IsNotNull (role.Group);
         //  owningGroup = role.Group; // TODO: Change to "first parent groupo for which GroupType = ACE.GroupType"
         //  aclProbe.AccessConditions.HasOwningGroupCondition = true;
         //  break;
+          Assertion.IsNotNull (role.Group);
+          owningGroup = FindFirstGroupInThisAndParentHierarchyWhichHasGroupType (role.Group, ace.SpecificGroupType);
+          aclProbe.AccessConditions.OwningGroup = owningGroup;
+          aclProbe.AccessConditions.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndChildren;
+          break;
         case GroupCondition.SpecificGroup:
           owningGroup = null; // Decideable constraint => no condition. Either the Principal's groups contain the specifc group or not.
           break;
@@ -109,6 +116,41 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
       return owningGroup;
     }
+
+    private static Group FindFirstGroupInThisAndParentHierarchyWhichHasGroupType (Group group, GroupType groupType)
+    {
+      //while (group != null)
+      //{
+      //  To.ConsoleLine.s (group.DisplayName);
+      //  group = group.Parent;
+      //}
+
+      //var thisAndParents = GetThisAndParents(group);
+      //foreach (Group node in thisAndParents)
+      //{
+      //  To.ConsoleLine.s (node.DisplayName);
+      //}
+
+
+      //var thisAndParents2 = IHasParent.GetThisAndParents (group);
+      //var thisAndParents2 = group.GetThisAndParents();
+      //foreach (Group node in thisAndParents2)
+      //{
+      //  To.ConsoleLine.s (">>>>>>>>>>>>>>>>>>>>>>>>>>>!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      //  To.ConsoleLine.s (node.DisplayName);
+      //}
+
+      To.ConsoleLine.e ("group.GetThisAndParents()", group.GetThisAndParents ());
+      To.ConsoleLine.e (group.GetThisAndParents ().Where (g => g.GroupType == groupType).FirstOrDefault ()).nl ();
+      return group.GetThisAndParents ().Where (g => g.GroupType == groupType).FirstOrDefault ();
+    }
+
+    private static IEnumerable<Group> GetThisAndParents (Group group)
+    {
+      for (var current = group; current != null; current = current.Parent)
+        yield return current;
+    }
+
 
     // The SecurityToken that will be used in the call to AccessControlList.GetAccessTypes
     private SecurityToken _securityToken;
@@ -132,4 +174,36 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
   }
+
+
+  public interface IHasParent<T>
+  {
+    T Parent { get; set; }
+    //T GetParent ();
+  }
+
+  public static class IHasParent
+  {
+    public static IEnumerable<T> GetThisAndParents<T> (this T node) where T : class, IHasParent<T>
+    {
+      //for (var current = node; current != null; current = node.GetParent())
+      //{
+      //  yield return current;
+      //}
+
+      //while (node != null)
+      //{
+      //  yield return node;
+      //  node = node.GetParent ();
+      //}
+
+      while (node != null)
+      {
+        yield return node;
+        node = node.Parent;
+      }
+
+    }
+  }
+
 }
