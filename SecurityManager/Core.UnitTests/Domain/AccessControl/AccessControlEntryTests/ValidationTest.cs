@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void ValidateSpecificTenant_IsNull ()
+    public void ValidateSpecificTenant_IsNotValidWithNull ()
     {
       Tenant tenant = _testHelper.CreateTenant ("TestTenant");
       AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
@@ -75,7 +75,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void ValidateTenantHierarchyCondition_IsUndefined_IfSpecificTenant ()
+    public void ValidateTenantHierarchyCondition_IsNotValidWithUndefined_IfSpecificTenant ()
     {
       Tenant tenant = _testHelper.CreateTenant ("TestTenant");
       AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
@@ -84,6 +84,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       AccessControlEntryValidationResult result = ace.Validate ();
 
       Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsTenantHierarchyConditionMissing }));
+    }
+
+    [Test]
+    public void ValidateTenantHierarchyCondition_IsNotValidWithParent_IfSpecificTenant ()
+    {
+      Tenant tenant = _testHelper.CreateTenant ("TestTenant");
+      AccessControlEntry ace = _testHelper.CreateAceWithSpecificTenant (tenant);
+      ace.TenantHierarchyCondition = TenantHierarchyCondition.Parent;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsTenantHierarchyConditionOnlyParent }));
     }
 
     [Test]
@@ -97,7 +109,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void ValidateTenantHierarchyCondition_IsUndefined_IfOwningTenant ()
+    public void ValidateTenantHierarchyCondition_IsNotValidWithUndefined_IfOwningTenant ()
     {
       AccessControlEntry ace = _testHelper.CreateAceWithOwningTenant();
       ace.TenantHierarchyCondition = TenantHierarchyCondition.Undefined;
@@ -105,6 +117,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       AccessControlEntryValidationResult result = ace.Validate ();
 
       Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsTenantHierarchyConditionMissing }));
+    }
+
+    [Test]
+    public void ValidateTenantHierarchyCondition_IsNotValidWithParent_IfOwningTenant ()
+    {
+      AccessControlEntry ace = _testHelper.CreateAceWithOwningTenant ();
+      ace.TenantHierarchyCondition = TenantHierarchyCondition.Parent;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsTenantHierarchyConditionOnlyParent }));
     }
 
     [Test]
@@ -119,7 +142,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void ValidateSpecificGroup_IsNull ()
+    public void ValidateSpecificGroup_IsNotValidWithNull ()
     {
       var group = _testHelper.CreateGroup ("TestGroup", null, _testHelper.CreateTenant ("TestTenant"));
       var ace = _testHelper.CreateAceWithSpecificGroup (group);
@@ -142,7 +165,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void ValidateSpecificGroupType_IsNull_IfAnyGroupWithSpecificGroupType ()
+    public void ValidateSpecificGroupType_IsNotValidWithNull_IfAnyGroupWithSpecificGroupType ()
     {
       var groupType = GroupType.NewObject ();
       var ace = _testHelper.CreateAceWithSpecificGroupType (groupType);
@@ -165,7 +188,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void ValidateSpecificGroupType_IsNull_IfBranchOfOwningGroup ()
+    public void ValidateSpecificGroupType_IsNotValidWithNull_IfBranchOfOwningGroup ()
     {
       var groupType = GroupType.NewObject ();
       var ace = _testHelper.CreateAceWithBranchOfOwningGroup(groupType);
@@ -188,7 +211,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void ValidateGroupHierarchyCondition_IsUndefined_IfSpecificGroup ()
+    public void ValidateGroupHierarchyCondition_IsNotValidWithUndefined_IfSpecificGroup ()
     {
       var group = _testHelper.CreateGroup ("TestGroup", null, _testHelper.CreateTenant ("TestTenant"));
       var ace = _testHelper.CreateAceWithSpecificGroup (group);
@@ -197,6 +220,30 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       AccessControlEntryValidationResult result = ace.Validate ();
 
       Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsGroupHierarchyConditionMissing }));
+    }
+
+    [Test]
+    public void ValidateGroupHierarchyCondition_IsNotValidWithParent_IfSpecificGroup ()
+    {
+      var group = _testHelper.CreateGroup ("TestGroup", null, _testHelper.CreateTenant ("TestTenant"));
+      var ace = _testHelper.CreateAceWithSpecificGroup (group);
+      ace.GroupHierarchyCondition = GroupHierarchyCondition.Parent;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsGroupHierarchyConditionOnlyParent }));
+    }
+
+    [Test]
+    public void ValidateGroupHierarchyCondition_IsNotValidWithChildren_IfSpecificGroup ()
+    {
+      var group = _testHelper.CreateGroup ("TestGroup", null, _testHelper.CreateTenant ("TestTenant"));
+      var ace = _testHelper.CreateAceWithSpecificGroup (group);
+      ace.GroupHierarchyCondition = GroupHierarchyCondition.Children;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsGroupHierarchyConditionOnlyChildren }));
     }
 
     [Test]
@@ -210,7 +257,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void ValidateGroupHierarchyCondition_IsUndefined_IfOwningGroup ()
+    public void ValidateGroupHierarchyCondition_IsNotValidWithUndefined_IfOwningGroup ()
     {
       AccessControlEntry ace = _testHelper.CreateAceWithOwningGroup ();
       ace.GroupHierarchyCondition = GroupHierarchyCondition.Undefined;
@@ -219,7 +266,29 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
       Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsGroupHierarchyConditionMissing }));
     }
-    
+
+    [Test]
+    public void ValidateGroupHierarchyCondition_IsNotValidWithParent_IfOwningGroup ()
+    {
+      AccessControlEntry ace = _testHelper.CreateAceWithOwningGroup ();
+      ace.GroupHierarchyCondition = GroupHierarchyCondition.Parent;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsGroupHierarchyConditionOnlyParent }));
+    }
+
+    [Test]
+    public void ValidateGroupHierarchyCondition_IsNotValidWithChildren_IfOwningGroup ()
+    {
+      AccessControlEntry ace = _testHelper.CreateAceWithOwningGroup ();
+      ace.GroupHierarchyCondition = GroupHierarchyCondition.Children;
+
+      AccessControlEntryValidationResult result = ace.Validate ();
+
+      Assert.That (result.GetErrors (), Is.EqualTo (new object[] { AccessControlEntryValidationError.IsGroupHierarchyConditionOnlyChildren }));
+    }
+   
     [Test]
     public void ValidateSpecificUser_IsValid ()
     {
@@ -233,7 +302,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void ValidateSpecificUser_IsNull ()
+    public void ValidateSpecificUser_IsNotValidWithNull ()
     {
       var tenant = _testHelper.CreateTenant ("TestTenant");
       var user = _testHelper.CreateUser ("TestUser", "user", "user", null, _testHelper.CreateGroup ("TestGroup", null, tenant), tenant);
@@ -256,7 +325,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void ValidateSpecificPosition_IsNull ()
+    public void ValidateSpecificPosition_IsNotValidWithNull ()
     {
       var ace = _testHelper.CreateAceWithPosition (_testHelper.CreatePosition ("Position"), GroupCondition.None);
       ace.SpecificPosition = null;

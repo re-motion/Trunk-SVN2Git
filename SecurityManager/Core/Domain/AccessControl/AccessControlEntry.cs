@@ -233,17 +233,20 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       if (State != StateType.Deleted)
       {
-        if (TenantCondition == TenantCondition.SpecificTenant && SpecificTenant == null)
-          result.SetError (AccessControlEntryValidationError.IsSpecificTenantMissing);
-
         if (TenantCondition == TenantCondition.OwningTenant && TenantHierarchyCondition == TenantHierarchyCondition.Undefined)
           result.SetError (AccessControlEntryValidationError.IsTenantHierarchyConditionMissing);
+
+        if (TenantCondition == TenantCondition.OwningTenant && TenantHierarchyCondition == TenantHierarchyCondition.Parent)
+          result.SetError (AccessControlEntryValidationError.IsTenantHierarchyConditionOnlyParent);
+
+        if (TenantCondition == TenantCondition.SpecificTenant && SpecificTenant == null)
+          result.SetError (AccessControlEntryValidationError.IsSpecificTenantMissing);
 
         if (TenantCondition == TenantCondition.SpecificTenant && TenantHierarchyCondition == TenantHierarchyCondition.Undefined)
           result.SetError (AccessControlEntryValidationError.IsTenantHierarchyConditionMissing);
 
-        if (GroupCondition == GroupCondition.SpecificGroup && SpecificGroup == null)
-          result.SetError (AccessControlEntryValidationError.IsSpecificGroupMissing);
+        if (TenantCondition == TenantCondition.SpecificTenant && TenantHierarchyCondition == TenantHierarchyCondition.Parent)
+          result.SetError (AccessControlEntryValidationError.IsTenantHierarchyConditionOnlyParent);
 
         if (GroupCondition == GroupCondition.AnyGroupWithSpecificGroupType && SpecificGroupType == null)
           result.SetError (AccessControlEntryValidationError.IsSpecificGroupTypeMissing);
@@ -254,8 +257,23 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         if (GroupCondition == GroupCondition.OwningGroup && GroupHierarchyCondition == GroupHierarchyCondition.Undefined)
           result.SetError (AccessControlEntryValidationError.IsGroupHierarchyConditionMissing);
 
+        if (GroupCondition == GroupCondition.OwningGroup && GroupHierarchyCondition == GroupHierarchyCondition.Parent)
+          result.SetError (AccessControlEntryValidationError.IsGroupHierarchyConditionOnlyParent);
+
+        if (GroupCondition == GroupCondition.OwningGroup && GroupHierarchyCondition == GroupHierarchyCondition.Children)
+          result.SetError (AccessControlEntryValidationError.IsGroupHierarchyConditionOnlyChildren);
+
+        if (GroupCondition == GroupCondition.SpecificGroup && SpecificGroup == null)
+          result.SetError (AccessControlEntryValidationError.IsSpecificGroupMissing);
+
         if (GroupCondition == GroupCondition.SpecificGroup && GroupHierarchyCondition == GroupHierarchyCondition.Undefined)
           result.SetError (AccessControlEntryValidationError.IsGroupHierarchyConditionMissing);
+
+        if (GroupCondition == GroupCondition.SpecificGroup && GroupHierarchyCondition == GroupHierarchyCondition.Parent)
+          result.SetError (AccessControlEntryValidationError.IsGroupHierarchyConditionOnlyParent);
+
+        if (GroupCondition == GroupCondition.SpecificGroup && GroupHierarchyCondition == GroupHierarchyCondition.Children)
+          result.SetError (AccessControlEntryValidationError.IsGroupHierarchyConditionOnlyChildren);
 
         if (UserCondition == UserCondition.SpecificUser && SpecificUser == null)
           result.SetError (AccessControlEntryValidationError.IsSpecificUserMissing);

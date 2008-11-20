@@ -14,7 +14,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
-using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.AccessControl;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryTests
@@ -24,105 +23,110 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
   {
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
-
+      ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
     }
 
     [Test]
-    public void UserConditionStateless ()
+    public void GetEnabledEnumValuesFor_UserCondition_Stateful ()
     {
-      var ace = CreateAceForStateless();
+      var ace = CreateAceForStateful();
       var property = GetPropertyDefinition (ace, "UserCondition");
 
       Assert.That (
           property.GetEnabledValues (ace).Select (value => value.Value).ToArray(),
-          List.Not.Contains (new[] { UserCondition.Owner }));
-    }
-
-    [Test]
-    public void UserConditionStateful ()
-    {
-      var ace = CreateAceForStateful ();
-      var property = GetPropertyDefinition (ace, "UserCondition");
-
-      Assert.That (
-          property.GetEnabledValues (ace).Select (value => value.Value).ToArray (),
           Is.EquivalentTo (Enum.GetValues (typeof (UserCondition))));
     }
 
     [Test]
-    public void GroupConditionStateful ()
+    public void GetEnabledEnumValuesFor_UserCondition_Stateless ()
     {
-      var ace = CreateAceForStateful ();
-      var property = GetPropertyDefinition (ace, "GroupCondition");
+      var ace = CreateAceForStateless();
+      var property = GetPropertyDefinition (ace, "UserCondition");
 
-      Assert.That (
-          property.GetEnabledValues (ace).Select (value => value.Value).ToArray (),
-          List.Not.Contains (new[] { GroupCondition.OwningGroup, GroupCondition.BranchOfOwningGroup}));
+      Assert.That (property.GetEnabledValues (ace).Select (value => value.Value).ToArray(), List.Not.Contains (UserCondition.Owner));
     }
 
     [Test]
-    public void GroupConditionStateless ()
+    public void GetEnabledEnumValuesFor_GroupCondition_Stateful ()
     {
-      var ace = CreateAceForStateful ();
+      var ace = CreateAceForStateful();
       var property = GetPropertyDefinition (ace, "GroupCondition");
 
       Assert.That (
-          property.GetEnabledValues (ace).Select (value => value.Value).ToArray (),
+          property.GetEnabledValues (ace).Select (value => value.Value).ToArray(),
           Is.EquivalentTo (Enum.GetValues (typeof (GroupCondition))));
     }
 
     [Test]
-    public void TenantConditionStateful ()
+    public void GetEnabledEnumValuesFor_GroupCondition_Stateless ()
     {
-      var ace = CreateAceForStateful ();
-      var property = GetPropertyDefinition (ace, "TenantCondition");
+      var ace = CreateAceForStateless();
+      var property = GetPropertyDefinition (ace, "GroupCondition");
 
-      Assert.That (
-          property.GetEnabledValues (ace).Select (value => value.Value).ToArray (),
-          List.Not.Contains (new[] { TenantCondition.OwningTenant }));
+      var actual = property.GetEnabledValues (ace).Select (value => value.Value).ToArray();
+      Assert.That (actual, List.Not.Contains (GroupCondition.OwningGroup));
+      Assert.That (actual, List.Not.Contains (GroupCondition.BranchOfOwningGroup));
     }
 
     [Test]
-    public void TenantConditionStateless ()
+    public void GetEnabledEnumValuesFor_TenantCondition_Statefull ()
     {
-      var ace = CreateAceForStateful ();
+      var ace = CreateAceForStateful();
       var property = GetPropertyDefinition (ace, "TenantCondition");
 
       Assert.That (
-          property.GetEnabledValues (ace).Select (value => value.Value).ToArray (),
+          property.GetEnabledValues (ace).Select (value => value.Value).ToArray(),
           Is.EquivalentTo (Enum.GetValues (typeof (TenantCondition))));
     }
 
-    protected IEnumerationValueInfo CreateEnumValueInfo (Enum enumValue)
+    [Test]
+    public void GetEnabledEnumValuesFor_TenantCondition_Stateless ()
     {
-      return new EnumerationValueInfo (enumValue, "ID", "Name", true);
+      var ace = CreateAceForStateless();
+      var property = GetPropertyDefinition (ace, "TenantCondition");
+
+      Assert.That (property.GetEnabledValues (ace).Select (value => value.Value).ToArray(), List.Not.Contains (TenantCondition.OwningTenant));
     }
 
-    protected IEnumerationValueInfo CreateEnumValueInfo_Disabled (Enum enumValue)
+    [Test]
+    public void GetEnabledEnumValuesFor_TenantHierarchyCondition ()
     {
-      return new EnumerationValueInfo (enumValue, "ID", "Name", false);
+      var ace = CreateAceForStateful();
+      var property = GetPropertyDefinition (ace, "TenantHierarchyCondition");
+
+      Assert.That (property.GetEnabledValues (ace).Select (value => value.Value).ToArray(), List.Not.Contains (TenantHierarchyCondition.Parent));
     }
 
-    protected AccessControlEntry CreateAceForStateless ()
+    [Test]
+    public void GetEnabledEnumValuesFor_GroupHierarchyCondition ()
     {
-      var ace = AccessControlEntry.NewObject ();
-      ace.AccessControlList = StatelessAccessControlList.NewObject ();
+      var ace = CreateAceForStateful();
+      var property = GetPropertyDefinition (ace, "GroupHierarchyCondition");
+
+      var actual = property.GetEnabledValues (ace).Select (value => value.Value).ToArray();
+      Assert.That (actual, List.Not.Contains (GroupHierarchyCondition.Parent));
+      Assert.That (actual, List.Not.Contains (GroupHierarchyCondition.Children));
+    }
+
+    private AccessControlEntry CreateAceForStateless ()
+    {
+      var ace = AccessControlEntry.NewObject();
+      ace.AccessControlList = StatelessAccessControlList.NewObject();
 
       return ace;
     }
 
-    protected AccessControlEntry CreateAceForStateful ()
+    private AccessControlEntry CreateAceForStateful ()
     {
-      var ace = AccessControlEntry.NewObject ();
-      ace.AccessControlList = StatefulAccessControlList.NewObject ();
+      var ace = AccessControlEntry.NewObject();
+      ace.AccessControlList = StatefulAccessControlList.NewObject();
 
       return ace;
     }
 
-    protected IBusinessObjectEnumerationProperty GetPropertyDefinition (AccessControlEntry ace, string propertyName)
+    private IBusinessObjectEnumerationProperty GetPropertyDefinition (AccessControlEntry ace, string propertyName)
     {
       var property = (IBusinessObjectEnumerationProperty) ((IBusinessObject) ace).BusinessObjectClass.GetPropertyDefinition (propertyName);
       Assert.That (property, Is.Not.Null, propertyName);

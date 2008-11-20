@@ -81,7 +81,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
         case TenantHierarchyCondition.This:
           return referenceTenant == principal.Tenant;
-        
+
+        case TenantHierarchyCondition.Parent:
+          throw CreateInvalidOperationException ("The value 'Parent' is not a valid value for matching the 'TenantHierarchyCondition'.");
+
         case TenantHierarchyCondition.ThisAndParent:
           return GetThisAndParents (referenceTenant).Contains (principal.Tenant);
 
@@ -207,6 +210,12 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
         case GroupHierarchyCondition.This:
           return principalGroups.Contains (referenceGroup);
+
+        case GroupHierarchyCondition.Parent:
+          throw CreateInvalidOperationException ("The value 'Parent' is not a valid value for matching the 'GroupHierarchyCondition'.");
+
+        case GroupHierarchyCondition.Children:
+          throw CreateInvalidOperationException ("The value 'Children' is not a valid value for matching the 'GroupHierarchyCondition'.");
 
         case GroupHierarchyCondition.ThisAndParent:
           return isPrincipalMatchingReferenceGroupOrParents();

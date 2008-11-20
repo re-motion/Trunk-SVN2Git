@@ -231,14 +231,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
 
       var groupHierarchyCondition = conditions.GroupHierarchyCondition;
-      if (((GroupHierarchyConditionPureStates) groupHierarchyCondition & GroupHierarchyConditionPureStates.Parent) != 0)
+      if ((groupHierarchyCondition & GroupHierarchyCondition.Parent) != 0)
       {
         //htmlTagWriter.Value (",");
         htmlTagWriter.Tags.br ();
         htmlTagWriter.Value ("or its parents");
       }
 
-      if (((GroupHierarchyConditionPureStates) groupHierarchyCondition & GroupHierarchyConditionPureStates.Children) != 0)
+      if ((groupHierarchyCondition & GroupHierarchyCondition.Children) != 0)
       {
         //htmlTagWriter.Value (",");
         htmlTagWriter.Tags.br ();

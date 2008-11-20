@@ -36,7 +36,16 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [EnumDescription ("The TenantCondition property is set to SpecificTenant or OwningTenant, but the TenantHierarchyCondition is not set.")]
     IsTenantHierarchyConditionMissing,
 
+    [EnumDescription ("The TenantCondition property is set to SpecificTenant or OwningTenant, but the TenantHierarchyCondition is set to 'Parent', which is not supported.")]
+    IsTenantHierarchyConditionOnlyParent,
+
     [EnumDescription ("The GroupCondition property is set to SpecificGroup or OwningGroup, but the GroupHierarchyCondition is not set.")]
     IsGroupHierarchyConditionMissing,
+    
+    [EnumDescription ("The GroupCondition property is set to SpecificGroup or OwningGroup, but the GroupHierarchyCondition is set to 'Parent', which is not supported.")]
+    IsGroupHierarchyConditionOnlyParent,
+
+    [EnumDescription ("The GroupCondition property is set to SpecificGroup or OwningGroup, but the GroupHierarchyCondition is set to 'Children', which is not supported.")]
+    IsGroupHierarchyConditionOnlyChildren,
   }
 }

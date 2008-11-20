@@ -48,6 +48,44 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The value 'Parent' is not a valid value for matching the 'GroupHierarchyCondition'.")]
+    public void GroupHierarchyCondition_Parent ()
+    {
+      User user = CreateUser (_companyHelper.CompanyTenant, null);
+      Group owningGroup = _companyHelper.AustrianProjectsDepartment;
+      TestHelper.CreateRole (user, owningGroup, _companyHelper.HeadPosition);
+
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, owningGroup);
+
+      AccessControlEntry ace = TestHelper.CreateAceWithOwningGroup ();
+      ace.GroupHierarchyCondition = GroupHierarchyCondition.Parent;
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (ace);
+
+      matcher.MatchesToken (token);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The value 'Children' is not a valid value for matching the 'GroupHierarchyCondition'.")]
+    public void GroupHierarchyCondition_Children ()
+    {
+      User user = CreateUser (_companyHelper.CompanyTenant, null);
+      Group owningGroup = _companyHelper.AustrianProjectsDepartment;
+      TestHelper.CreateRole (user, owningGroup, _companyHelper.HeadPosition);
+
+      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, owningGroup);
+
+      AccessControlEntry ace = TestHelper.CreateAceWithOwningGroup ();
+      ace.GroupHierarchyCondition = GroupHierarchyCondition.Children;
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (ace);
+
+      matcher.MatchesToken (token);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The value '1000' is not a valid value for 'GroupHierarchyCondition'.")]
     public void GroupHierarchyCondition_InvalidValue ()
     {
@@ -77,6 +115,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant ();
       ace.TenantHierarchyCondition = TenantHierarchyCondition.Undefined;
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (ace);
+
+      matcher.MatchesToken (token);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The value 'Parent' is not a valid value for matching the 'TenantHierarchyCondition'.")]
+    public void TenantHierarchyCondition_Parent ()
+    {
+      User user = CreateUser (_companyHelper.CompanyTenant, null);
+      Tenant owningTenant = _companyHelper.CompanyTenant;
+
+      SecurityToken token = TestHelper.CreateTokenWithOwningTenant (user, owningTenant);
+
+      AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant ();
+      ace.TenantHierarchyCondition = TenantHierarchyCondition.Parent;
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (ace);
 

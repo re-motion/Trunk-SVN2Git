@@ -16,10 +16,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 {
   [EnumDescriptionResource ("Remotion.SecurityManager.Globalization.Domain.AccessControl.TenantHierarchyCondition")]
   [UndefinedEnumValue (Undefined)]
+  [Flags]
+  [DisableEnumValues (Parent)]
   public enum TenantHierarchyCondition
   {
     Undefined = 0,
     This = 1,
-    ThisAndParent = 1 | 2,
+    Parent = 2,
+    ThisAndParent = This | Parent,
   }
 }
