@@ -576,7 +576,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Infrastructure\SubClientTransaction.cs" />
-    <Compile Include="TransactionalAccessor.cs" />
     <Compile Include="Transport\BinaryImportStrategy.cs" />
     <Compile Include="Transport\IExportStrategy.cs" />
     <Compile Include="Transport\IImportStrategy.cs" />

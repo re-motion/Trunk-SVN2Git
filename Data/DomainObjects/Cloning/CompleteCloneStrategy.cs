@@ -23,28 +23,21 @@ namespace Remotion.Data.DomainObjects.Cloning
     /// Sets the <paramref name="cloneReference"/> to hold clones of the objects referenced by <paramref name="sourceReference"/>.
     /// </summary>
     /// <param name="sourceReference">The reference on the source object.</param>
-    /// <param name="sourceTransaction">The source transaction used for cloning.</param>
     /// <param name="cloneReference">The reference on the cloned object.</param>
-    /// <param name="cloneTransaction">The transaction used for the cloned object.</param>
     /// <param name="context">The <see cref="CloneContext"/> that is used to obtain clones of objects held by <paramref name="sourceReference"/>.</param>
-    public void HandleReference (
-        PropertyAccessor sourceReference,
-        ClientTransaction sourceTransaction,
-        PropertyAccessor cloneReference,
-        ClientTransaction cloneTransaction,
-        CloneContext context)
+    public void HandleReference (PropertyAccessor sourceReference, PropertyAccessor cloneReference, CloneContext context)
     {
       if (sourceReference.PropertyData.Kind == PropertyKind.RelatedObject)
       {
-        var originalRelated = (DomainObject) sourceReference.GetValueWithoutTypeCheckTx (sourceTransaction);
+        var originalRelated = (DomainObject) sourceReference.GetValueWithoutTypeCheck ();
         DomainObject cloneRelated = originalRelated != null ? context.GetCloneFor (originalRelated) : null;
-        cloneReference.SetValueWithoutTypeCheckTx (cloneTransaction, cloneRelated);
+        cloneReference.SetValueWithoutTypeCheck (cloneRelated);
       }
       else
       {
         Assertion.IsTrue (sourceReference.PropertyData.Kind == PropertyKind.RelatedObjectCollection);
-        var originalRelatedCollection = (DomainObjectCollection) sourceReference.GetValueWithoutTypeCheckTx (sourceTransaction);
-        var cloneRelatedCollection = (DomainObjectCollection) cloneReference.GetValueWithoutTypeCheckTx (cloneTransaction);
+        var originalRelatedCollection = (DomainObjectCollection) sourceReference.GetValueWithoutTypeCheck ();
+        var cloneRelatedCollection = (DomainObjectCollection) cloneReference.GetValueWithoutTypeCheck ();
 
         foreach (DomainObject originalRelated in originalRelatedCollection)
         {

@@ -35,10 +35,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       Expect.Call (ContextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
 
       MockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      _strategy.HandleReference (sourceReference, cloneReference, ContextMock);
       MockRepository.VerifyAll ();
 
-      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction), Is.SameAs (cloneRelated));
+      Assert.That (cloneReference.GetValueWithoutTypeCheck (), Is.SameAs (cloneRelated));
     }
 
     protected override void HandleReference_OneOne_RealSide_Checks_Null (Employee sourceRelated, PropertyAccessor sourceReference, Employee cloneRelated, PropertyAccessor cloneReference)
@@ -46,10 +46,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       // expect no call
 
       MockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      _strategy.HandleReference (sourceReference, cloneReference, ContextMock);
       MockRepository.VerifyAll ();
 
-      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction), Is.Null);
+      Assert.That (cloneReference.GetValueWithoutTypeCheck (), Is.Null);
     }
 
     protected override void HandleReference_OneOne_VirtualSide_Checks (Computer sourceRelated, PropertyAccessor sourceReference, Computer cloneRelated, PropertyAccessor cloneReference)
@@ -57,10 +57,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       Expect.Call (ContextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
 
       MockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      _strategy.HandleReference (sourceReference, cloneReference, ContextMock);
       MockRepository.VerifyAll ();
 
-      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction), Is.SameAs (cloneRelated));
+      Assert.That (cloneReference.GetValueWithoutTypeCheck (), Is.SameAs (cloneRelated));
     }
 
     protected override void HandleReference_OneOne_VirtualSide_Checks_Null (Computer sourceRelated, PropertyAccessor sourceReference, Computer cloneRelated, PropertyAccessor cloneReference)
@@ -68,10 +68,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       // expect no call
 
       MockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      _strategy.HandleReference (sourceReference, cloneReference, ContextMock);
       MockRepository.VerifyAll ();
 
-      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction), Is.Null);
+      Assert.That (cloneReference.GetValueWithoutTypeCheck (), Is.Null);
     }
 
     protected override void HandleReference_OneMany_RealSide_Checks (Order sourceRelated, PropertyAccessor sourceReference, Order cloneRelated, PropertyAccessor cloneReference)
@@ -79,10 +79,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       Expect.Call (ContextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
 
       MockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      _strategy.HandleReference (sourceReference, cloneReference, ContextMock);
       MockRepository.VerifyAll ();
 
-      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction), Is.SameAs (cloneRelated));
+      Assert.That (cloneReference.GetValueWithoutTypeCheck (), Is.SameAs (cloneRelated));
     }
 
     protected override void HandleReference_OneMany_RealSide_Checks_Null (Order sourceRelated, PropertyAccessor sourceReference, Order cloneRelated, PropertyAccessor cloneReference)
@@ -90,10 +90,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       // expect no call
 
       MockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      _strategy.HandleReference (sourceReference, cloneReference, ContextMock);
       MockRepository.VerifyAll ();
 
-      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction), Is.Null);
+      Assert.That (cloneReference.GetValueWithoutTypeCheck (), Is.Null);
     }
 
     protected override void HandleReference_OneMany_VirtualSide_Checks (OrderItem sourceRelated, PropertyAccessor sourceReference, OrderItem cloneRelated, PropertyAccessor cloneReference)
@@ -101,10 +101,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       Expect.Call (ContextMock.GetCloneFor<DomainObject> (sourceRelated)).Return (cloneRelated);
 
       MockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      _strategy.HandleReference (sourceReference, cloneReference, ContextMock);
       MockRepository.VerifyAll ();
 
-      Assert.That (((DomainObjectCollection)cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction))[0], Is.SameAs (cloneRelated));
+      Assert.That (((DomainObjectCollection)cloneReference.GetValueWithoutTypeCheck ())[0], Is.SameAs (cloneRelated));
     }
 
     protected override void HandleReference_OneMany_VirtualSide_Checks_Null (PropertyAccessor sourceReference, PropertyAccessor cloneReference)
@@ -112,10 +112,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       // expect no call
 
       MockRepository.ReplayAll ();
-      _strategy.HandleReference (sourceReference, SourceTransaction, cloneReference, CloneTransaction, ContextMock);
+      _strategy.HandleReference (sourceReference, cloneReference, ContextMock);
       MockRepository.VerifyAll ();
 
-      Assert.That (cloneReference.GetValueWithoutTypeCheckTx (CloneTransaction), Is.Empty);
+      Assert.That (cloneReference.GetValueWithoutTypeCheck (), Is.Empty);
     }
   }
 }

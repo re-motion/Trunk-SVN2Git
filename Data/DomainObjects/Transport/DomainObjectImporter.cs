@@ -93,18 +93,18 @@ namespace Remotion.Data.DomainObjects.Transport
 
         foreach (KeyValuePair<string, object> sourceProperty in transportItem.Properties)
         {
-          PropertyAccessor targetProperty = targetObject.Properties[sourceProperty.Key];
+          PropertyAccessor targetProperty = targetObject.Properties[sourceProperty.Key, targetTransaction];
           switch (targetProperty.PropertyData.Kind)
           {
             case PropertyKind.PropertyValue:
-              targetProperty.SetValueWithoutTypeCheckTx (targetTransaction, sourceProperty.Value);
+              targetProperty.SetValueWithoutTypeCheck (sourceProperty.Value);
               break;
             case PropertyKind.RelatedObject:
               if (!targetProperty.PropertyData.RelationEndPointDefinition.IsVirtual)
               {
                 var relatedObjectID = (ObjectID) sourceProperty.Value;
                 DomainObject targetRelatedObject = relatedObjectID != null ? targetTransaction.GetObject (relatedObjectID) : null;
-                targetProperty.SetValueWithoutTypeCheckTx (targetTransaction, targetRelatedObject);
+                targetProperty.SetValueWithoutTypeCheck (targetRelatedObject);
               }
               break;
           }

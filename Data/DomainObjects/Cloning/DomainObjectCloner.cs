@@ -133,21 +133,21 @@ namespace Remotion.Data.DomainObjects.Cloning
         where T : DomainObject
     {
       ClientTransaction sourceTransaction = source.GetNonNullClientTransaction ();
-      CopyProperties (source.Properties, sourceTransaction, clone.Properties.AsEnumerable (CloneTransaction), CloneTransaction, strategy, context);
+      CopyProperties (source.Properties, sourceTransaction, clone.Properties.AsEnumerable (CloneTransaction), strategy, context);
     }
 
-    private void CopyProperties (PropertyIndexer sourceProperties, ClientTransaction sourceTransaction, IEnumerable<PropertyAccessor> cloneProperties, ClientTransaction cloneTransaction, ICloneStrategy strategy, CloneContext context)
+    private void CopyProperties (PropertyIndexer sourceProperties, ClientTransaction sourceTransaction, IEnumerable<PropertyAccessor> cloneProperties, ICloneStrategy strategy, CloneContext context)
     {
       foreach (PropertyAccessor cloneProperty in cloneProperties)
       {
-        PropertyAccessor sourceProperty = sourceProperties[cloneProperty.PropertyData.PropertyIdentifier];
+        PropertyAccessor sourceProperty = sourceProperties[cloneProperty.PropertyData.PropertyIdentifier, sourceTransaction];
         if (cloneProperty.PropertyData.Kind == PropertyKind.PropertyValue)
         {
-          object sourceValue = sourceProperty.GetValueWithoutTypeCheckTx (sourceTransaction);
-          cloneProperty.SetValueWithoutTypeCheckTx (cloneTransaction, sourceValue);
+          object sourceValue = sourceProperty.GetValueWithoutTypeCheck ();
+          cloneProperty.SetValueWithoutTypeCheck (sourceValue);
         }
-        else if (strategy != null && !cloneProperty.HasBeenTouchedTx (cloneTransaction))
-          strategy.HandleReference (sourceProperty, sourceTransaction, cloneProperty, cloneTransaction, context);
+        else if (strategy != null && !cloneProperty.HasBeenTouched)
+          strategy.HandleReference (sourceProperty, cloneProperty, context);
       }
     }
   }

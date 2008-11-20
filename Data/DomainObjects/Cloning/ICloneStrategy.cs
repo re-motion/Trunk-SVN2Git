@@ -73,9 +73,7 @@ namespace Remotion.Data.DomainObjects.Cloning
     /// Called when <see cref="DomainObjectCloner"/> encounters a reference that might need to be cloned.
     /// </summary>
     /// <param name="sourceReference">The reference on the source object.</param>
-    /// <param name="sourceTransaction">The source transaction used for cloning.</param>
     /// <param name="cloneReference">The reference on the cloned object.</param>
-    /// <param name="cloneTransaction">The transaction used for the cloned object.</param>
     /// <param name="context">A <see cref="CloneContext"/> that should be used to obtain clones of objects held by <paramref name="sourceReference"/>.</param>
     /// <remarks>
     /// <para>
@@ -90,8 +88,6 @@ namespace Remotion.Data.DomainObjects.Cloning
     /// When the  <paramref name="context"/> is used to obtain the clones, no object will be cloned twice.
     /// </para>
     /// </remarks>
-    void HandleReference (PropertyAccessor sourceReference, ClientTransaction sourceTransaction, 
-        PropertyAccessor cloneReference, ClientTransaction cloneTransaction,
-        CloneContext context);
+    void HandleReference (PropertyAccessor sourceReference, PropertyAccessor cloneReference, CloneContext context);
   }
 }

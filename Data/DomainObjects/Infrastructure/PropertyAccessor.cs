@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <value>True if the property's value has changed; false otherwise.</value>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
-    public bool HasChangedTx (ClientTransaction transaction)
+    private bool HasChangedTx (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       CheckTransactionalStatus (transaction);
@@ -133,7 +133,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// same value it originally had. This can be useful to determine whether the property has been written once since the last load, commit, or
     /// rollback operation.
     /// </remarks>
-    public bool HasBeenTouchedTx (ClientTransaction transaction)
+    private bool HasBeenTouchedTx (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       CheckTransactionalStatus (transaction);
@@ -217,7 +217,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
-    public T GetValueTx<T> (ClientTransaction transaction)
+    private T GetValueTx<T> (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
@@ -242,7 +242,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// relation end point (i.e. the other side of the relation holds the foreign key).</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
-    public ObjectID GetRelatedObjectIDTx (ClientTransaction transaction)
+    private ObjectID GetRelatedObjectIDTx (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
@@ -299,7 +299,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="InvalidOperationException">The property is a related object collection; such properties cannot be set.</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
-    public void SetValueTx<T> (ClientTransaction transaction, T value)
+    private void SetValueTx<T> (ClientTransaction transaction, T value)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       CheckType (typeof (T));
@@ -340,7 +340,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="InvalidOperationException">The property is a related object collection; such properties cannot be set.</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
-    public void SetValueWithoutTypeCheckTx (ClientTransaction transaction, object value)
+    private void SetValueWithoutTypeCheckTx (ClientTransaction transaction, object value)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
@@ -371,7 +371,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="ArgumentNullException">The <paramref name="transaction"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
-    public object GetValueWithoutTypeCheckTx (ClientTransaction transaction)
+    private object GetValueWithoutTypeCheckTx (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
@@ -417,7 +417,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="ArgumentNullException">The <paramref name="transaction"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
-    public T GetOriginalValueTx<T> (ClientTransaction transaction)
+    private T GetOriginalValueTx<T> (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       CheckType(typeof (T));
@@ -443,7 +443,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="ArgumentNullException">The <paramref name="transaction"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
-    public object GetOriginalValueWithoutTypeCheckTx (ClientTransaction transaction)
+    private object GetOriginalValueWithoutTypeCheckTx (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
@@ -474,7 +474,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// relation end point (i.e. the other side of the relation holds the foreign key).</exception>
     /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
-    public ObjectID GetOriginalRelatedObjectIDTx (ClientTransaction transaction)
+    private ObjectID GetOriginalRelatedObjectIDTx (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 

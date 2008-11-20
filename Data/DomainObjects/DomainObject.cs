@@ -634,11 +634,6 @@ namespace Remotion.Data.DomainObjects
       }
     }
 
-    protected TransactionalAccessor<T> GetTransactionalAccessor<T> (PropertyAccessor property)
-    {
-      return new TransactionalAccessor<T> (property);
-    }
-
     protected internal DomainObjectGraphTraverser GetGraphTraverser (IGraphTraversalStrategy strategy)
     {
       return new DomainObjectGraphTraverser (this, strategy);

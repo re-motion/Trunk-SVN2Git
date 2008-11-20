@@ -48,12 +48,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [DBColumn ("OrderNo")]
     public abstract int OrderNumber { get; set; }
 
-    [StorageClassNone]
-    public TransactionalAccessor<int> OrderNumberTx
-    {
-      get { return GetTransactionalAccessor<int> (Properties[typeof (Order), "OrderNumber"]); }
-    }
-
     public abstract DateTime DeliveryDate { get; set; }
 
     [Mandatory]

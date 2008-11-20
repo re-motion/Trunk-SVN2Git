@@ -330,12 +330,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     private void ExpectHandleReference (ICloneStrategy strategyMock, TestDomainBase original, TestDomainBase clone, string propertyName,
         ClientTransaction sourceTransaction, ClientTransaction cloneTransaction)
     {
-      strategyMock.HandleReference (new PropertyAccessor(), null, new PropertyAccessor(), null, null);
+      strategyMock.HandleReference (new PropertyAccessor(), new PropertyAccessor(), null);
       LastCall.Constraints (
           Mocks_Is.Equal (original.Properties[original.GetPublicDomainObjectType (), propertyName]),
-          Mocks_Is.Same (sourceTransaction),
           Mocks_Is.Equal (clone.Properties[clone.GetPublicDomainObjectType (), propertyName, cloneTransaction]),
-          Mocks_Is.Same (cloneTransaction),
           Mocks_Is.Anything ());
     }
   }
