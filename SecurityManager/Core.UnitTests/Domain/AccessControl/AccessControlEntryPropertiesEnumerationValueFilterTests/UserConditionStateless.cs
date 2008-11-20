@@ -12,7 +12,10 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding;
+using Remotion.Security.Configuration;
+using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.UnitTests.Configuration;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryPropertiesEnumerationValueFilterTests
 {
@@ -27,6 +30,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       base.SetUp();
       _ace = CreateAceForStateless();
       _property = GetPropertyDefinition (_ace, "UserCondition");
+    }
+
+    public override void TearDown ()
+    {
+      base.TearDown ();
+      SecurityConfigurationMock.SetCurrent (null);
     }
 
     [Test]
@@ -56,13 +65,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void SpecificUser ()
     {
+      Assert.That (SecurityManagerConfiguration.Current.AccessControl.DisableSpecificUser, Is.False);
       Assert.That (Filter.IsEnabled (CreateEnumValueInfo (UserCondition.SpecificUser), _ace, _property), Is.True);
     }
 
     [Test]
     public void SpecificUser_Disabled ()
     {
+      Assert.That (SecurityManagerConfiguration.Current.AccessControl.DisableSpecificUser, Is.False);
       Assert.That (Filter.IsEnabled (CreateEnumValueInfo_Disabled (UserCondition.SpecificUser), _ace, _property), Is.False);
+    }
+
+    [Test]
+    public void SpecificUser_DisabledFromConfiguration ()
+    {
+      SecurityManagerConfiguration.Current.AccessControl.DisableSpecificUser = true;
+      Assert.That (Filter.IsEnabled (CreateEnumValueInfo (UserCondition.SpecificUser), _ace, _property), Is.False);
     }
 
     [Test]

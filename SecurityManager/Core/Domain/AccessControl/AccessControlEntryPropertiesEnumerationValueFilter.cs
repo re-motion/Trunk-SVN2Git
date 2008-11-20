@@ -11,6 +11,7 @@
 using System;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.SecurityManager.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
@@ -93,7 +94,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         case UserCondition.Owner:
           return isStateful;
         case UserCondition.SpecificUser:
-          return true;
+          return !SecurityManagerConfiguration.Current.AccessControl.DisableSpecificUser;
         case UserCondition.SpecificPosition:
           return true;
         default:
