@@ -528,9 +528,9 @@ namespace Remotion.Data.DomainObjects
       if (!CanBeUsedInTransaction (transaction))
       {
         string message = string.Format (
-            "Domain object '{0}' cannot be used in the current transaction as it was loaded or created in another "
-                + "transaction. Use a ClientTransactionScope to set the right transaction, or call EnlistInTransaction to enlist the object "
-                    + "in the current transaction.",
+            "Domain object '{0}' cannot be used in the given transaction as it was loaded or created in another "
+            + "transaction. Enter a scope for the transaction, or call EnlistInTransaction to enlist the object "
+            + "in the transaction. (If no transaction was explicitly given, ClientTransaction.Current was used.)",
             ID);
         throw new ClientTransactionsDifferException (message);
       }

@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Provides an indexer to access a specific property of a domain object. Instances of this value type are returned by
   /// <see cref="DomainObject.Properties"/>.
   /// </summary>
-  public class PropertyIndexer : IEnumerable<PropertyAccessor>
+  public class PropertyIndexer
   {
     private readonly DomainObject _domainObject;
     private readonly Cache<string, PropertyAccessorData> _dataCache = new Cache<string, PropertyAccessorData> ();
@@ -53,24 +53,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         ArgumentUtility.CheckNotNull ("propertyName", propertyName);
         PropertyAccessorData data = _dataCache.GetOrCreateValue (propertyName, CreatePropertyAccessorData);
-        return new PropertyAccessor (_domainObject, data);
-      }
-    }
-
-    private PropertyAccessorData CreatePropertyAccessorData(string name)
-    {
-      try
-      {
-        return new PropertyAccessorData (_domainObject.ID.ClassDefinition,
-                                         name);
-      }
-      catch (ArgumentException ex)
-      {
-        throw new ArgumentException (
-            string.Format (
-                "The domain object type {0} does not have a mapping property named '{1}'.",
-                _domainObject.ID.ClassDefinition.ClassType.FullName,
-                name), "propertyName", ex);
+        return new PropertyAccessor (_domainObject, data, GetDefaultTransaction());
       }
     }
 
@@ -95,6 +78,71 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
+    /// <summary>
+    /// Selects the property of the domain object with the given name.
+    /// </summary>
+    /// <param name="propertyName">The name of the property to be accessed.</param>
+    /// <param name="transaction">The transaction to use for accessing the property.</param>
+    /// <returns>A <see cref="PropertyAccessor"/> instance encapsulating the requested property.</returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="propertyName"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// The <paramref name="propertyName"/> parameter does not denote a valid mapping property of the domain object.
+    /// </exception>
+    public PropertyAccessor this[string propertyName, ClientTransaction transaction]
+    {
+      get
+      {
+        ArgumentUtility.CheckNotNull ("propertyName", propertyName);
+        ArgumentUtility.CheckNotNull ("transaction", transaction);
+        PropertyAccessorData data = _dataCache.GetOrCreateValue (propertyName, CreatePropertyAccessorData);
+        return new PropertyAccessor (_domainObject, data, transaction);
+      }
+    }
+
+    /// <summary>
+    /// Selects the property of the domain object with the given short name and declaring type.
+    /// </summary>
+    /// <param name="shortPropertyName">The short name of the property to be accessed.</param>
+    /// <param name="domainObjectType">The type declaring the property.</param>
+    /// <param name="transaction">The transaction to use for accessing the property.</param>
+    /// <returns>A <see cref="PropertyAccessor"/> instance encapsulating the requested property.</returns>
+    /// <exception cref="ArgumentNullException">One or more of the parameters passed to this indexer are null.</exception>
+    /// <exception cref="ArgumentException">
+    /// The <paramref name="shortPropertyName"/> parameter does not denote a valid mapping property declared on the <paramref name="domainObjectType"/>.
+    /// </exception>
+    public PropertyAccessor this[Type domainObjectType, string shortPropertyName, ClientTransaction transaction]
+    {
+      get
+      {
+        ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
+        ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
+        ArgumentUtility.CheckNotNull ("transaction", transaction);
+
+        return this[GetIdentifierFromTypeAndShortName (domainObjectType, shortPropertyName), transaction];
+      }
+    }
+
+    private ClientTransaction GetDefaultTransaction ()
+    {
+      return _domainObject.GetNonNullClientTransaction ();
+    }
+
+    private PropertyAccessorData CreatePropertyAccessorData (string propertyName)
+    {
+      try
+      {
+        return new PropertyAccessorData (_domainObject.ID.ClassDefinition,
+                                         propertyName);
+      }
+      catch (ArgumentException ex)
+      {
+        throw new ArgumentException (
+            string.Format (
+                "The domain object type {0} does not have a mapping property named '{1}'.",
+                _domainObject.ID.ClassDefinition.ClassType.FullName, propertyName), "propertyName", ex);
+      }
+    }
+
     private string GetIdentifierFromTypeAndShortName (Type domainObjectType, string shortPropertyName)
     {
       return domainObjectType.FullName + "." + shortPropertyName;
@@ -102,7 +150,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     /// <summary>
     /// Gets the number of properties defined by the domain object. This corresponds to the number of <see cref="PropertyAccessor"/> objects
-    /// indexable by this structure and enumerated by <see cref="GetEnumerator"/>.
+    /// indexable by this structure and enumerated by <see cref="AsEnumerable()"/>.
     /// </summary>
     /// <returns>The number of properties defined by the domain object.</returns>
     public int GetPropertyCount ()
@@ -118,23 +166,40 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return count;
     }
 
-    public IEnumerator<PropertyAccessor> GetEnumerator ()
+    /// <summary>
+    /// Returns an implementation of <see cref="IEnumerable{T}"/> that enumerates over all the properties indexed by this <see cref="PropertyIndexer"/>
+    /// in the <see cref="DomainObject"/>'s transaction. That is either the <see cref="ClientTransaction.Current"/> transaction or the object's
+    /// <see cref="BindingClientTransaction"/> (if any).
+    /// </summary>
+    /// <returns>A sequence containing <see cref="PropertyAccessor"/> objects for each property of this <see cref="PropertyIndexer"/>'s 
+    /// <see cref="DomainObject"/>.</returns>
+    public IEnumerable<PropertyAccessor> AsEnumerable ()
     {
+      return AsEnumerable (_domainObject.GetNonNullClientTransaction());
+    }
+
+    /// <summary>
+    /// Returns an implementation of <see cref="IEnumerable{T}"/> that enumerates over all the properties indexed by this <see cref="PropertyIndexer"/>
+    /// in the given <see cref="ClientTransaction"/>.
+    /// </summary>
+    /// <param name="transaction">The transaction to be used to enumerate the properties.</param>
+    /// <returns>A sequence containing <see cref="PropertyAccessor"/> objects for each property of this <see cref="PropertyIndexer"/>'s 
+    /// <see cref="DomainObject"/>.</returns>
+    public IEnumerable<PropertyAccessor> AsEnumerable (ClientTransaction transaction)
+    {
+      ArgumentUtility.CheckNotNull ("transaction", transaction);
+      _domainObject.CheckIfRightTransaction (transaction);
+
       ClassDefinition classDefinition = _domainObject.ID.ClassDefinition;
 
-      foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions())
-        yield return this[propertyDefinition.PropertyName];
+      foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions ())
+        yield return this[propertyDefinition.PropertyName, transaction];
 
       foreach (IRelationEndPointDefinition endPointDefinition in classDefinition.GetRelationEndPointDefinitions ())
       {
         if (endPointDefinition.IsVirtual)
-          yield return this[endPointDefinition.PropertyName];
+          yield return this[endPointDefinition.PropertyName, transaction];
       }
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator ();
     }
 
     /// <summary>
@@ -242,7 +307,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <see cref="PropertyKind.RelatedObject"/> and <see cref="PropertyKind.RelatedObjectCollection"/> properties.</returns>
     public IEnumerable<DomainObject> GetAllRelatedObjects ()
     {
-      foreach (PropertyAccessor property in _domainObject.Properties)
+      foreach (PropertyAccessor property in _domainObject.Properties.AsEnumerable())
       {
         switch (property.PropertyData.Kind)
         {

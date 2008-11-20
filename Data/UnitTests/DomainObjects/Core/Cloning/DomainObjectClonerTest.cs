@@ -334,7 +334,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       LastCall.Constraints (
           Mocks_Is.Equal (original.Properties[original.GetPublicDomainObjectType (), propertyName]),
           Mocks_Is.Same (sourceTransaction),
-          Mocks_Is.Equal (clone.Properties[clone.GetPublicDomainObjectType (), propertyName]),
+          Mocks_Is.Equal (clone.Properties[clone.GetPublicDomainObjectType (), propertyName, cloneTransaction]),
           Mocks_Is.Same (cloneTransaction),
           Mocks_Is.Anything ());
     }

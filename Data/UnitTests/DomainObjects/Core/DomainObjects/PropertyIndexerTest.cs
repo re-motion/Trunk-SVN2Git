@@ -9,12 +9,13 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -27,23 +28,116 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
   public class PropertyIndexerTest : ClientTransactionBaseTest
   {
     [Test]
-    public void WorksForExistingProperty()
+    public void Item()
     {
       var indexer = new PropertyIndexer (IndustrialSector.NewObject());
-      Assert.IsNotNull (indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"]);
+      var accessor = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
+      Assert.IsNotNull (accessor);
       Assert.AreSame (
           MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)]
               .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"),
-          indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"].PropertyData.PropertyDefinition);
+          accessor.PropertyData.PropertyDefinition);
+    }
+
+    [Test]
+    public void Item_UsesCurrentTransaction()
+    {
+      var indexer = new PropertyIndexer (IndustrialSector.NewObject ());
+      var accessor = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
+      Assert.That (accessor.ClientTransaction, Is.SameAs (ClientTransaction.Current));
+    }
+
+    [Test]
+    public void Item_UsesBindingTransaction ()
+    {
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      IndustrialSector sector;
+      using (bindingTransaction.EnterNonDiscardingScope ())
+      {
+        sector = IndustrialSector.NewObject ();
+      }
+
+      var indexer = new PropertyIndexer (sector);
+      var accessor = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
+      Assert.That (accessor.ClientTransaction, Is.SameAs (bindingTransaction));
+    }
+
+    [Test]
+    public void Item_WithSpecificTransaction ()
+    {
+      var transaction = ClientTransaction.CreateRootTransaction ();
+      IndustrialSector sector;
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        sector = IndustrialSector.NewObject ();
+      }
+
+      var indexer = new PropertyIndexer (sector);
+      var accessor1 = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"];
+      Assert.That (accessor1.ClientTransaction, Is.Not.SameAs (transaction));
+
+      var accessor2 = indexer["Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name", transaction];
+      Assert.That (accessor2.ClientTransaction, Is.SameAs (transaction));
+    }
+
+    [Test]
+    public void Item_WithShortNotation ()
+    {
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      IndustrialSector sector;
+      using (bindingTransaction.EnterNonDiscardingScope ())
+      {
+        sector = IndustrialSector.NewObject ();
+      }
+
+      var indexer = new PropertyIndexer (sector);
+      var accessor = indexer[typeof (IndustrialSector), "Name"];
+      Assert.That (accessor.ClientTransaction, Is.SameAs (bindingTransaction));
+      Assert.AreSame (
+          MappingConfiguration.Current.ClassDefinitions[typeof (IndustrialSector)]
+              .GetPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Name"),
+          accessor.PropertyData.PropertyDefinition);
+    }
+
+    [Test]
+    public void Item_WithShortNotation_WithSpecificTransaction ()
+    {
+      var transaction = ClientTransaction.CreateRootTransaction ();
+      IndustrialSector sector;
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        sector = IndustrialSector.NewObject ();
+      }
+
+      var indexer = new PropertyIndexer (sector);
+      var accessor1 = indexer[typeof (IndustrialSector), "Name"];
+      Assert.That (accessor1.ClientTransaction, Is.Not.SameAs (transaction));
+
+      var accessor2 = indexer[typeof (IndustrialSector), "Name", transaction];
+      Assert.That (accessor2.ClientTransaction, Is.SameAs (transaction));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The domain object type Remotion.Data.UnitTests.DomainObjects.TestDomain."
         + "IndustrialSector does not have a mapping property named 'Bla'.\r\nParameter name: propertyName")]
-    public void ThrowsForNonExistingProperty ()
+    public void Item_ThrowsForNonExistingProperty ()
     {
       var indexer = new PropertyIndexer (IndustrialSector.NewObject ());
       Dev.Null = indexer["Bla"];
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), 
+        ExpectedMessage = "No ClientTransaction has been associated with the current thread or this object.")]
+    public void Item_ThrowsForNullCurrentTransaction ()
+    {
+      IndustrialSector sector = IndustrialSector.NewObject ();
+      var indexer = new PropertyIndexer (sector);
+
+      using (ClientTransactionScope.EnterNullScope ())
+      {
+        Dev.Null = indexer[typeof (IndustrialSector), "Name"];
+      }
     }
 
     [Test]
@@ -60,14 +154,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void GetEnumeratorGeneric ()
+    public void AsEnumerable_GetsAllProperties ()
     {
-      Order order = Order.NewObject();
-      var propertyNames = new List<string> ();
-      foreach (PropertyAccessor propertyAccessor in (IEnumerable<PropertyAccessor>)order.Properties)
-      {
-        propertyNames.Add (propertyAccessor.PropertyData.PropertyIdentifier);
-      }
+      Order order = Order.NewObject ();
+      var propertyNames = (from propertyAccessor in order.Properties.AsEnumerable()
+                           select propertyAccessor.PropertyData.PropertyIdentifier).ToArray ();
 
       Assert.That (propertyNames, Is.EquivalentTo (new[] {
         "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber",
@@ -80,23 +171,81 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void GetEnumeratorNonGeneric ()
+    public void AsEnumerable_DefaultTransaction_Current ()
     {
-      Order order = Order.NewObject ();
-      var propertyNames = new List<string> ();
-      foreach (PropertyAccessor propertyAccessor in (IEnumerable)order.Properties)
+      Order order = Order.NewObject();
+
+      var transactions = (from propertyAccessor in order.Properties.AsEnumerable ()
+                          select propertyAccessor.ClientTransaction).Distinct ().ToArray ();
+      Assert.That (transactions, Is.EqualTo (new[] { order.ClientTransaction }));
+    }
+
+    [Test]
+    public void AsEnumerable_DefaultTransaction_Binding ()
+    {
+      Order order;
+      using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
-        propertyNames.Add (propertyAccessor.PropertyData.PropertyIdentifier);
+        order = Order.NewObject();
       }
 
-      Assert.That (propertyNames, Is.EquivalentTo (new[] {
-        "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber",
-        "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate",
-        "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official",
-        "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket",
-        "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer",
-        "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"
-      }));
+      var transactions = (from propertyAccessor in order.Properties.AsEnumerable ()
+                          select propertyAccessor.ClientTransaction).Distinct ().ToArray ();
+      Assert.That (transactions, Is.EqualTo (new[] { order.ClientTransaction }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), MatchType = MessageMatch.Contains,
+        ExpectedMessage = "cannot be used in the given transaction ")]
+    public void AsEnumerable_DefaultTransaction_WrongTransaction ()
+    {
+      Order order;
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        order = Order.NewObject ();
+      }
+
+      (from propertyAccessor in order.Properties.AsEnumerable ()
+       select propertyAccessor.ClientTransaction).ToArray ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), 
+        ExpectedMessage = "No ClientTransaction has been associated with the current thread or this object.")]
+    public void AsEnumerable_DefaultTransaction_NullTransaction ()
+    {
+      Order order = Order.NewObject ();
+      using (ClientTransactionScope.EnterNullScope())
+      {
+        (from propertyAccessor in order.Properties.AsEnumerable ()
+         select propertyAccessor.ClientTransaction).ToArray ();
+      }
+    }
+
+    [Test]
+    public void AsEnumerable_SpecificTransaction ()
+    {
+      Order order;
+      ClientTransaction transaction = ClientTransaction.CreateRootTransaction ();
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        order = Order.NewObject();
+      }
+
+      var transactions = (from propertyAccessor in order.Properties.AsEnumerable (transaction)
+                          select propertyAccessor.ClientTransaction).Distinct ().ToArray ();
+      Assert.That (transactions, Is.EqualTo (new[] { transaction }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), MatchType = MessageMatch.Contains,
+        ExpectedMessage = "cannot be used in the given transaction ")]
+    public void AsEnumerable_InvalidTransaction ()
+    {
+      Order order = Order.NewObject ();
+
+      (from propertyAccessor in order.Properties.AsEnumerable (ClientTransaction.CreateRootTransaction ())
+       select propertyAccessor.ClientTransaction).ToArray ();
     }
 
     [Test]

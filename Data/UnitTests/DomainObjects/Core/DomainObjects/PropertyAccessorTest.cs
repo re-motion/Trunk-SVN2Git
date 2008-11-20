@@ -26,12 +26,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Construction()
     {
-      var sector = IndustrialSector.NewObject ();
+      var transaction = ClientTransaction.CreateRootTransaction ();
+      IndustrialSector sector;
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        sector = IndustrialSector.NewObject();
+      }
       var data = new PropertyAccessorData (sector.ID.ClassDefinition, typeof (IndustrialSector).FullName + ".Name");
 
-      var propertyAccessor = new PropertyAccessor (sector, data);
+      var propertyAccessor = new PropertyAccessor (sector, data, transaction);
       Assert.That (propertyAccessor.DomainObject, Is.SameAs (sector));
       Assert.That (propertyAccessor.PropertyData, Is.SameAs (data));
+      Assert.That (propertyAccessor.ClientTransaction, Is.SameAs (transaction));
     }
 
     [Test]
@@ -50,6 +56,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       sector.Name = "Foo";
       Assert.AreEqual ("Foo", sector.Name, "property value");
+    }
+
+    [Test]
+    public void GetValue_SetValue_WithTransaction ()
+    {
+      var transaction = ClientTransaction.CreateRootTransaction ();
+      IndustrialSector sector;
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        sector = IndustrialSector.NewObject ();
+        sector.Name = "Foo";
+      }
+      var data = new PropertyAccessorData (sector.ID.ClassDefinition, typeof (IndustrialSector).FullName + ".Name");
+      var accessor = new PropertyAccessor(sector, data, transaction);
+
+      Assert.That (accessor.GetValue<string> (), Is.EqualTo ("Foo"));
+      accessor.SetValue ("Bar");
+
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        Assert.That (sector.Name, Is.EqualTo ("Bar"));
+      }
     }
 
     [Test]
@@ -87,9 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException),
-        ExpectedMessage = "Domain object 'IndustrialSector|3bb7bee9-2af9-4a85-998e-618bebbe5a6b|System.Guid' cannot be used in the current " 
-        + "transaction as it was loaded or created in another transaction. Use a ClientTransactionScope to set the right transaction, or call EnlistInTransaction to enlist the object in the current transaction.")]
+    [ExpectedException (typeof (ClientTransactionsDifferException))]
     public void HasChangedTx_InvalidTransaction ()
     {
       IndustrialSector sector = IndustrialSector.GetObject(DomainObjectIDs.IndustrialSector1);
@@ -114,9 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException),
-        ExpectedMessage = "Domain object 'IndustrialSector|3bb7bee9-2af9-4a85-998e-618bebbe5a6b|System.Guid' cannot be used in the current "
-        + "transaction as it was loaded or created in another transaction. Use a ClientTransactionScope to set the right transaction, or call EnlistInTransaction to enlist the object in the current transaction.")]
+    [ExpectedException (typeof (ClientTransactionsDifferException))]
     public void HasBeenTouchedTx_InvalidTransaction ()
     {
       IndustrialSector sector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
@@ -937,6 +961,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
+    [Ignore ("TODO: Remove test")]
     public void GetSetValueTx_WithNoScope ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
@@ -1028,7 +1053,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       string propertyIdentifier = domainObject.GetPublicDomainObjectType().FullName + "." + shortIdentifier;
       var data = new PropertyAccessorData (domainObject.ID.ClassDefinition, propertyIdentifier);
-      return new PropertyAccessor (domainObject, data);
+      return new PropertyAccessor (domainObject, data, ClientTransaction.Current);
     }
   }
 }

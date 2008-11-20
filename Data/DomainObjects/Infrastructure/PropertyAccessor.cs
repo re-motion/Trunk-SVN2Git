@@ -22,20 +22,24 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     private readonly DomainObject _domainObject;
     private readonly PropertyAccessorData _propertyData;
+    private readonly ClientTransaction _clientTransaction;
 
     /// <summary>
     /// Initializes the <see cref="PropertyAccessor"/> object.
     /// </summary>
     /// <param name="domainObject">The domain object whose property is to be encapsulated.</param>
     /// <param name="propertyData">a <see cref="PropertyAccessorData"/> object describing the property to be accessed.</param>
+    /// <param name="clientTransaction">The transaction to be used for accessing the property.</param>
     /// <exception cref="ArgumentNullException">One of the parameters passed to the constructor is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The domain object does not have a property with the given identifier.</exception>
-    public PropertyAccessor (DomainObject domainObject, PropertyAccessorData propertyData)
+    public PropertyAccessor (DomainObject domainObject, PropertyAccessorData propertyData, ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyData", propertyData);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       _domainObject = domainObject;
+      _clientTransaction = clientTransaction;
       _propertyData = propertyData;
     }
 
@@ -57,9 +61,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return _propertyData; }
     }
 
-    private ClientTransaction DefaultTransaction
+    /// <summary>
+    /// Gets the client transaction used to access this property.
+    /// </summary>
+    /// <value>The client transaction.</value>
+    public ClientTransaction ClientTransaction
     {
-      get { return DomainObject.GetNonNullClientTransaction(); }
+      get { return _clientTransaction; }
     }
 
     private void CheckTransactionalStatus (ClientTransaction transaction)
@@ -72,13 +80,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// Indicates whether the property's value has been changed in its current transaction.
     /// </summary>
     /// <value>True if the property's value has changed; false otherwise.</value>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public bool HasChanged
     {
       get
       {
-        return HasChangedTx (DefaultTransaction);
+        return HasChangedTx (ClientTransaction);
       }
     }
 
@@ -87,7 +95,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <param name="transaction">The transaction to be used when checking the property's status.</param>
     /// <value>True if the property's value has changed; false otherwise.</value>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public bool HasChangedTx (ClientTransaction transaction)
     {
@@ -110,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        return HasBeenTouchedTx(DefaultTransaction);
+        return HasBeenTouchedTx(ClientTransaction);
       }
     }
 
@@ -139,14 +147,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <value>True if this instance is null; otherwise, false.</value>
     /// <remarks>This can be used to efficiently check whether a related object property has a value without actually loading the related
     /// object.</remarks>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public bool IsNull
     {
       get
       {
-        CheckTransactionalStatus (DefaultTransaction);
-        return PropertyData.GetStrategy().IsNull (this, DefaultTransaction);
+        CheckTransactionalStatus (ClientTransaction);
+        return PropertyData.GetStrategy().IsNull (this, ClientTransaction);
       }
     }
 
@@ -171,11 +179,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="InvalidTypeException">
     /// The type requested via <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyAccessorData.PropertyType"/>.
     /// </exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public T GetValue<T> ()
     {
-      return GetValueTx<T> (DefaultTransaction);
+      return GetValueTx<T> (ClientTransaction);
     }
 
     /// <summary>
@@ -184,22 +192,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <returns>The ID of the related object stored in the encapsulated property.</returns>
     /// <exception cref="InvalidOperationException">The property type is not <see cref="PropertyKind.RelatedObject"/> or the property is a virtual
     /// relation end point (i.e. the other side of the relation holds the foreign key).</exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public ObjectID GetRelatedObjectID ()
     {
-      return GetRelatedObjectIDTx (DefaultTransaction);
+      return GetRelatedObjectIDTx (ClientTransaction);
     }
 
     /// <summary>
-    /// Gets the property's value for a given <see cref="ClientTransaction"/>.
+    /// Gets the property's value for a given <see cref="DomainObjects.ClientTransaction"/>.
     /// </summary>
     /// <typeparam name="T">
     /// The property value type. This must be the same as the type returned by <see cref="PropertyAccessorData.PropertyType"/>: For simple value properties,
     /// this is the simple property type. For related objects, this is the related object's type. For related object collections,
     /// this is <see cref="ObjectList{T}"/>, where "T" is the related objects' type.
     /// </typeparam>
-    /// <param name="transaction">The <see cref="ClientTransaction"/> to get the value for.</param>
+    /// <param name="transaction">The <see cref="DomainObjects.ClientTransaction"/> to get the value for.</param>
     /// <returns>The value of the encapsulated property. For simple value properties,
     /// this is the property value. For related objects, this is the related object. For related object collections,
     /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</returns>
@@ -207,7 +215,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="InvalidTypeException">
     /// The type requested via <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyAccessorData.PropertyType"/>.
     /// </exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public T GetValueTx<T> (ClientTransaction transaction)
     {
@@ -225,14 +233,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     /// <summary>
-    /// Gets the ID of the related object for related object properties for a given <see cref="ClientTransaction"/>.
+    /// Gets the ID of the related object for related object properties for a given <see cref="DomainObjects.ClientTransaction"/>.
     /// </summary>
-    /// <param name="transaction">The <see cref="ClientTransaction"/> to get the value for.</param>
+    /// <param name="transaction">The <see cref="DomainObjects.ClientTransaction"/> to get the value for.</param>
     /// <returns>The ID of the related object stored in the encapsulated property in the given transaction.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="transaction"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">The property type is not <see cref="PropertyKind.RelatedObject"/> or the property is a virtual
     /// relation end point (i.e. the other side of the relation holds the foreign key).</exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public ObjectID GetRelatedObjectIDTx (ClientTransaction transaction)
     {
@@ -265,15 +273,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// The type <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyAccessorData.PropertyType"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">The property is a related object collection; such properties cannot be set.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public void SetValue<T> (T value)
     {
-      SetValueTx (DefaultTransaction, value);
+      SetValueTx (ClientTransaction, value);
     }
 
     /// <summary>
-    /// Sets the property's value for the given <see cref="ClientTransaction"/>.
+    /// Sets the property's value for the given <see cref="DomainObjects.ClientTransaction"/>.
     /// </summary>
     /// <typeparam name="T">
     /// The property value type. This must be the same as the type returned by <see cref="PropertyAccessorData.PropertyType"/>: For simple value properties,
@@ -281,7 +289,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// this is <see cref="ObjectList{T}"/>, where "T" is the related objects' type. The type parameter can usually be inferred and needn't be
     /// specified in such cases.
     /// </typeparam>
-    /// <param name="transaction">The <see cref="ClientTransaction"/> to set the value for.</param>
+    /// <param name="transaction">The <see cref="DomainObjects.ClientTransaction"/> to set the value for.</param>
     /// <param name="value">The value to be set. For simple value properties,
     /// this is the value to be set. For related objects, this is the related object. For related object collections,
     /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</param>
@@ -289,7 +297,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// The type <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyAccessorData.PropertyType"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">The property is a related object collection; such properties cannot be set.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public void SetValueTx<T> (ClientTransaction transaction, T value)
     {
@@ -310,18 +318,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// The given <paramref name="value"/> is not assignable to the property because of its type.
     /// </exception>
     /// <exception cref="InvalidOperationException">The property is a related object collection; such properties cannot be set.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public void SetValueWithoutTypeCheck (object value)
     {
-      SetValueWithoutTypeCheckTx (DefaultTransaction, value);
+      SetValueWithoutTypeCheckTx (ClientTransaction, value);
     }
 
     /// <summary>
     /// Sets the property's value without performing an exact type check on the given value for the given transaction. The value must still be
     /// asssignable to <see cref="PropertyAccessorData.PropertyType"/>, though.
     /// </summary>
-    /// <param name="transaction">The <see cref="ClientTransaction"/> to set the value for.</param>
+    /// <param name="transaction">The <see cref="DomainObjects.ClientTransaction"/> to set the value for.</param>
     /// <param name="value">The value to be set. For simple value properties,
     /// this is the value to be set. For related objects, this is the related object. For related object collections,
     /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</param>
@@ -330,7 +338,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </exception>
     /// <exception cref="ArgumentNullException">The <paramref name="transaction"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">The property is a related object collection; such properties cannot be set.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public void SetValueWithoutTypeCheckTx (ClientTransaction transaction, object value)
     {
@@ -346,22 +354,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <returns>The value of the encapsulated property. For simple value properties,
     /// this is the property value. For related objects, this is the related object. For related object collections,
     /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</returns>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public object GetValueWithoutTypeCheck ()
     {
-      return GetValueWithoutTypeCheckTx (DefaultTransaction);
+      return GetValueWithoutTypeCheckTx (ClientTransaction);
     }
 
     /// <summary>
     /// Gets the property's value without performing a type check for the given transaction.
     /// </summary>
-    /// <param name="transaction">The <see cref="ClientTransaction"/> to get the value for.</param>
+    /// <param name="transaction">The <see cref="DomainObjects.ClientTransaction"/> to get the value for.</param>
     /// <returns>The value of the encapsulated property. For simple value properties,
     /// this is the property value. For related objects, this is the related object. For related object collections,
     /// this is an <see cref="ObjectList{T}"/>, where "T" is the related objects' type.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="transaction"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public object GetValueWithoutTypeCheckTx (ClientTransaction transaction)
     {
@@ -372,7 +380,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     /// <summary>
-    /// Gets the property's value from that moment when the property's domain object was enlisted in the current <see cref="ClientTransaction"/>.
+    /// Gets the property's value from that moment when the property's domain object was enlisted in the current <see cref="DomainObjects.ClientTransaction"/>.
     /// </summary>
     /// <typeparam name="T">
     /// The property value type. This must be the same as the type returned by <see cref="PropertyAccessorData.PropertyType"/>: For simple value properties,
@@ -384,7 +392,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="InvalidTypeException">
     /// The type requested via <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyAccessorData.PropertyType"/>.
     /// </exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public T GetOriginalValue<T> ()
     {
@@ -393,7 +401,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     /// <summary>
-    /// Gets the property's value from that moment when the property's domain object was enlisted in the given <see cref="ClientTransaction"/>.
+    /// Gets the property's value from that moment when the property's domain object was enlisted in the given <see cref="DomainObjects.ClientTransaction"/>.
     /// </summary>
     /// <typeparam name="T">
     /// The property value type. This must be the same as the type returned by <see cref="PropertyAccessorData.PropertyType"/>: For simple value properties,
@@ -401,13 +409,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// this is <see cref="ObjectList{T}"/>, where "T" is the related objects' type. The type parameter can usually be inferred and needn't be
     /// specified in such cases.
     /// </typeparam>
-    /// <param name="transaction">The <see cref="ClientTransaction"/> to get the value for.</param>
+    /// <param name="transaction">The <see cref="DomainObjects.ClientTransaction"/> to get the value for.</param>
     /// <returns>The original value of the encapsulated property in the current transaction.</returns>
     /// <exception cref="InvalidTypeException">
     /// The type requested via <typeparamref name="T"/> is not the same as the property's type indicated by <see cref="PropertyAccessorData.PropertyType"/>.
     /// </exception>
     /// <exception cref="ArgumentNullException">The <paramref name="transaction"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public T GetOriginalValueTx<T> (ClientTransaction transaction)
     {
@@ -421,19 +429,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// Gets the property's original value without performing a type check.
     /// </summary>
     /// <returns>The original value of the encapsulated property in the current transaction.</returns>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public object GetOriginalValueWithoutTypeCheck ()
     {
-      return GetOriginalValueWithoutTypeCheckTx (DefaultTransaction);
+      return GetOriginalValueWithoutTypeCheckTx (ClientTransaction);
     }
 
     /// <summary>
-    /// Gets the property's original value for the given <see cref="ClientTransaction"/> without performing a type check.
+    /// Gets the property's original value for the given <see cref="DomainObjects.ClientTransaction"/> without performing a type check.
     /// </summary>
     /// <returns>The original value of the encapsulated property in the current transaction.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="transaction"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public object GetOriginalValueWithoutTypeCheckTx (ClientTransaction transaction)
     {
@@ -449,22 +457,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <returns>The ID of the related object originally stored in the encapsulated property.</returns>
     /// <exception cref="InvalidOperationException">The property type is not <see cref="PropertyKind.RelatedObject"/> or the property is a virtual
     /// relation end point (i.e. the other side of the relation holds the foreign key).</exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the current <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public ObjectID GetOriginalRelatedObjectID ()
     {
-      return GetOriginalRelatedObjectIDTx (DefaultTransaction);
+      return GetOriginalRelatedObjectIDTx (ClientTransaction);
     }
 
     /// <summary>
-    /// Gets the ID of the original related object for related object properties for a given <see cref="ClientTransaction"/>.
+    /// Gets the ID of the original related object for related object properties for a given <see cref="DomainObjects.ClientTransaction"/>.
     /// </summary>
-    /// <param name="transaction">The <see cref="ClientTransaction"/> to get the value for.</param>
+    /// <param name="transaction">The <see cref="DomainObjects.ClientTransaction"/> to get the value for.</param>
     /// <returns>The ID of the related object originally stored in the encapsulated property in the given transaction.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="transaction"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">The property type is not <see cref="PropertyKind.RelatedObject"/> or the property is a virtual
     /// relation end point (i.e. the other side of the relation holds the foreign key).</exception>
-    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The <see cref="DomainObject"/> cannot be used in the given <see cref="DomainObjects.ClientTransaction"/>.</exception>
     /// <exception cref="ObjectDiscardedException">The domain object was discarded.</exception>
     public ObjectID GetOriginalRelatedObjectIDTx (ClientTransaction transaction)
     {

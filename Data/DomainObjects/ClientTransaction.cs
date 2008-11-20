@@ -638,7 +638,7 @@ public abstract class ClientTransaction
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     ArgumentUtility.CheckNotNull ("sourceTransaction", sourceTransaction);
 
-    foreach (PropertyAccessor property in domainObject.Properties)
+    foreach (PropertyAccessor property in domainObject.Properties.AsEnumerable (sourceTransaction))
     {
       if (property.PropertyData.Kind == PropertyKind.RelatedObjectCollection)
       {

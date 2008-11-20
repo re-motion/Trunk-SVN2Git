@@ -14,6 +14,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -29,23 +30,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Domain object '.*' cannot be used in the current transaction "
-        + "as it was loaded or created in another transaction. Use a ClientTransactionScope to set the right transaction, or call "
-        + "EnlistInTransaction to enlist the object in the current transaction.", MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Domain object '.*' cannot be used in the given transaction "
+        + "as it was loaded or created in another transaction. Enter a scope for the transaction, or call EnlistInTransaction to enlist the object in "
+        + "the transaction. \\(If no transaction was explicitly given, ClientTransaction.Current was used.\\)", MatchType = MessageMatch.Regex)]
     public void ThrowsWhenCannotBeUsedInTransaction ()
     {
       Order order = Order.NewObject ();
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
-        int i = order.OrderNumber;
+        Dev.Null = order.OrderNumber;
       }
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Domain object '.*' cannot be used in the current transaction "
-        + "as it was loaded or created in another transaction. Use a ClientTransactionScope to set the right transaction, or call "
-        + "EnlistInTransaction to enlist the object in the current transaction.", MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Domain object '.*' cannot be used in the given transaction "
+        + "as it was loaded or created in another transaction. Enter a scope for the transaction, or call EnlistInTransaction to enlist the object in "
+        + "the transaction. \\(If no transaction was explicitly given, ClientTransaction.Current was used.\\)", 
+        MatchType = MessageMatch.Regex)]
     public void ThrowsOnDeleteWhenCannotBeUsedInTransaction ()
     {
       Order order = Order.NewObject ();
@@ -440,7 +442,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
-      order.ProtectedLoaded += delegate (object sender, EventArgs e) { Assert.AreEqual (1, ((Order) sender).OrderNumber); };
+      order.ProtectedLoaded += ((sender, e) => Assert.AreEqual (1, ((Order) sender).OrderNumber));
 
       newTransaction.EnlistDomainObject (order);
     }
@@ -546,7 +548,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       OrderItem orderItem = order.OrderItems[0];
 
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
-      order.ProtectedLoaded += delegate (object sender, EventArgs e) { Assert.AreSame (sender, ((Order) sender).OrderItems[0].Order); };
+      order.ProtectedLoaded += ((sender, e) => Assert.AreSame (sender, ((Order) sender).OrderItems[0].Order));
 
       newTransaction.EnlistSameDomainObjects (ClientTransactionMock, false);
       Assert.IsTrue (order.CanBeUsedInTransaction (newTransaction));
@@ -561,7 +563,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = orderItem.Order;
 
       ClientTransaction newTransaction = ClientTransaction.CreateRootTransaction ();
-      orderItem.ProtectedLoaded += delegate (object sender, EventArgs e) { Assert.Contains (sender, ((OrderItem) sender).Order.OrderItems); };
+      orderItem.ProtectedLoaded += ((sender, e) => Assert.Contains (sender, ((OrderItem) sender).Order.OrderItems));
 
       newTransaction.EnlistSameDomainObjects (ClientTransactionMock, false);
       Assert.IsTrue (orderItem.CanBeUsedInTransaction (newTransaction));

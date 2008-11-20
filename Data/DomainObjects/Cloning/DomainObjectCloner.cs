@@ -133,7 +133,7 @@ namespace Remotion.Data.DomainObjects.Cloning
         where T : DomainObject
     {
       ClientTransaction sourceTransaction = source.GetNonNullClientTransaction ();
-      CopyProperties (source.Properties, sourceTransaction, clone.Properties, CloneTransaction, strategy, context);
+      CopyProperties (source.Properties, sourceTransaction, clone.Properties.AsEnumerable (CloneTransaction), CloneTransaction, strategy, context);
     }
 
     private void CopyProperties (PropertyIndexer sourceProperties, ClientTransaction sourceTransaction, IEnumerable<PropertyAccessor> cloneProperties, ClientTransaction cloneTransaction, ICloneStrategy strategy, CloneContext context)
