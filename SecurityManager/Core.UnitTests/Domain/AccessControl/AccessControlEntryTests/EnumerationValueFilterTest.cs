@@ -14,7 +14,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
+using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.UnitTests.Configuration;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryTests
 {
@@ -33,6 +35,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     {
       var ace = CreateAceForStateful();
       var property = GetPropertyDefinition (ace, "UserCondition");
+      Assert.That (SecurityManagerConfiguration.Current.AccessControl.DisableSpecificUser, Is.False);
 
       Assert.That (
           property.GetEnabledValues (ace).Select (value => value.Value).ToArray(),
@@ -55,7 +58,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var property = GetPropertyDefinition (ace, "GroupCondition");
 
       Assert.That (
-          property.GetEnabledValues (ace).Select (value => value.Value).ToArray(),
+          property.GetEnabledValues (ace).Select (value => value.Value).ToArray(), 
           Is.EquivalentTo (Enum.GetValues (typeof (GroupCondition))));
     }
 
@@ -77,7 +80,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var property = GetPropertyDefinition (ace, "TenantCondition");
 
       Assert.That (
-          property.GetEnabledValues (ace).Select (value => value.Value).ToArray(),
+          property.GetEnabledValues (ace).Select (value => value.Value).ToArray(), 
           Is.EquivalentTo (Enum.GetValues (typeof (TenantCondition))));
     }
 

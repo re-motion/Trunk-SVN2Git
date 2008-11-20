@@ -11,11 +11,10 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
-using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.UnitTests.Configuration;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryPropertiesEnumerationValueFilterTests
 {
@@ -34,8 +33,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
     public override void TearDown ()
     {
-      base.TearDown ();
-      SecurityConfigurationMock.SetCurrent (null);
+      base.TearDown();
+      PrivateInvoke.InvokeNonPublicStaticMethod (typeof (SecurityManagerConfiguration), "SetCurrent", null);
     }
 
     [Test]

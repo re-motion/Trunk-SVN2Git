@@ -17,7 +17,7 @@ namespace Remotion.SecurityManager.Configuration
 {
   public class SecurityManagerConfiguration : ConfigurationSection
   {
-    private static DoubleCheckedLockingContainer<SecurityManagerConfiguration> s_current;
+    private static readonly DoubleCheckedLockingContainer<SecurityManagerConfiguration> s_current;
 
     static SecurityManagerConfiguration()
     {
@@ -30,11 +30,16 @@ namespace Remotion.SecurityManager.Configuration
       get { return s_current.Value; }
     }
 
+    protected static void SetCurrent (SecurityManagerConfiguration current)
+    {
+      s_current.Value = current;
+    }
+
     private readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();
     private readonly ConfigurationProperty _xmlnsProperty;
 
     private readonly ConfigurationProperty _organizationalStructureFactoryProperty;
-    private DoubleCheckedLockingContainer<IOrganizationalStructureFactory> _organizationalStructureFactory;
+    private readonly DoubleCheckedLockingContainer<IOrganizationalStructureFactory> _organizationalStructureFactory;
    
     private readonly ConfigurationProperty _accessControlProperty;
 
