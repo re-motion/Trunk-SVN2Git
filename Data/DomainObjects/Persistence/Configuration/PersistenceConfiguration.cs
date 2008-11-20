@@ -18,9 +18,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
 {
   public class PersistenceConfiguration: ExtendedConfigurationSection
   {
-    private ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();
-    private StorageProviderDefinitionHelper _storageProviderDefinitionHelper;
-    private List<ProviderHelperBase> _providerHelpers = new List<ProviderHelperBase>();
+    [Obsolete ("Use DefaultStorageProviderDefinition instead. (Version 1.11.14.0")]
+    public StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return DefaultStorageProviderDefinition; }
+    }
+
+    private readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();
+    private readonly StorageProviderDefinitionHelper _defaultStorageProviderDefinitionHelper;
+    private readonly List<ProviderHelperBase> _providerHelpers = new List<ProviderHelperBase>();
     private readonly ConfigurationProperty _storageProviderGroupsProperty;
 
     public PersistenceConfiguration()
@@ -31,23 +37,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
           null,
           ConfigurationPropertyOptions.None);
 
-      _storageProviderDefinitionHelper = new StorageProviderDefinitionHelper (this);
-      _providerHelpers.Add (_storageProviderDefinitionHelper);
+      _defaultStorageProviderDefinitionHelper = new StorageProviderDefinitionHelper (this);
+      _providerHelpers.Add (_defaultStorageProviderDefinitionHelper);
 
       _properties.Add (_storageProviderGroupsProperty);
-      _providerHelpers.ForEach (delegate (ProviderHelperBase current) { current.InitializeProperties (_properties); });
+      _providerHelpers.ForEach (current => current.InitializeProperties (_properties));
     }
 
-    public PersistenceConfiguration (ProviderCollection<StorageProviderDefinition> providers, StorageProviderDefinition provider)
+    public PersistenceConfiguration (ProviderCollection<StorageProviderDefinition> providers, StorageProviderDefinition defaultProvider)
         : this()
     {
       ArgumentUtility.CheckNotNull ("providers", providers);
-      ArgumentUtility.CheckNotNull ("provider", provider);
+      ArgumentUtility.CheckNotNull ("defaultProvider", defaultProvider);
 
-      _storageProviderDefinitionHelper.Provider = provider;
+      _defaultStorageProviderDefinitionHelper.Provider = defaultProvider;
 
       ProviderCollection<StorageProviderDefinition> providersCopy = CopyProvidersAsReadOnly (providers);
-      _storageProviderDefinitionHelper.Providers = providersCopy;
+      _defaultStorageProviderDefinitionHelper.Providers = providersCopy;
     }
 
     public ConfigurationElementCollection<StorageGroupElement> StorageGroups
@@ -55,21 +61,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       get { return (ConfigurationElementCollection<StorageGroupElement>) this[_storageProviderGroupsProperty]; }
     }
 
-    public StorageProviderDefinition StorageProviderDefinition
+    public StorageProviderDefinition DefaultStorageProviderDefinition
     {
-      get { return _storageProviderDefinitionHelper.Provider; }
+      get { return _defaultStorageProviderDefinitionHelper.Provider; }
     }
 
     public ProviderCollection<StorageProviderDefinition> StorageProviderDefinitions
     {
-      get { return _storageProviderDefinitionHelper.Providers; }
+      get { return _defaultStorageProviderDefinitionHelper.Providers; }
     }
 
     protected override void PostDeserialize()
     {
       base.PostDeserialize();
 
-      _providerHelpers.ForEach (delegate (ProviderHelperBase current) { current.PostDeserialze(); });
+      _providerHelpers.ForEach (current => current.PostDeserialze());
     }
 
     protected override ConfigurationPropertyCollection Properties

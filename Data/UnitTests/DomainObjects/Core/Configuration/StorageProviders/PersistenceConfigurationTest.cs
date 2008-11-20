@@ -13,7 +13,6 @@ using System.Configuration;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Configuration;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Development.UnitTesting;
@@ -53,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProvid
       providers.Add (providerDefinition2);
 
       PersistenceConfiguration configuration = new PersistenceConfiguration (providers, providerDefinition3);
-      Assert.That (configuration.StorageProviderDefinition, Is.SameAs (providerDefinition3));
+      Assert.That (configuration.DefaultStorageProviderDefinition, Is.SameAs (providerDefinition3));
       Assert.That (configuration.StorageProviderDefinitions, Is.Not.SameAs (providers));
       Assert.That (configuration.StorageProviderDefinitions.Count, Is.EqualTo (2));
       Assert.That (providers["ProviderDefinition1"], Is.SameAs (providerDefinition1));
@@ -86,11 +85,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProvid
 
       ConfigurationHelper.DeserializeSection (_configuration, xmlFragment);
 
-      Assert.That (_configuration.StorageProviderDefinition, Is.InstanceOfType (typeof (RdbmsProviderDefinition)));
+      Assert.That (_configuration.DefaultStorageProviderDefinition, Is.InstanceOfType (typeof (RdbmsProviderDefinition)));
       Assert.That (_configuration.StorageProviderDefinitions.Count, Is.EqualTo (1));
-      Assert.That (_configuration.StorageProviderDefinitions["Rdbms"], Is.SameAs (_configuration.StorageProviderDefinition));
-      Assert.That (_configuration.StorageProviderDefinition.StorageProviderType, Is.SameAs (typeof (SqlProvider)));
-      Assert.That (((RdbmsProviderDefinition) _configuration.StorageProviderDefinition).ConnectionString, Is.EqualTo ("ConnectionString"));
+      Assert.That (_configuration.StorageProviderDefinitions["Rdbms"], Is.SameAs (_configuration.DefaultStorageProviderDefinition));
+      Assert.That (_configuration.DefaultStorageProviderDefinition.StorageProviderType, Is.SameAs (typeof (SqlProvider)));
+      Assert.That (((RdbmsProviderDefinition) _configuration.DefaultStorageProviderDefinition).ConnectionString, Is.EqualTo ("ConnectionString"));
     }
 
     [Test]
@@ -110,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProvid
 
       ConfigurationHelper.DeserializeSection (_configuration, xmlFragment);
 
-      Dev.Null = _configuration.StorageProviderDefinition;
+      Dev.Null = _configuration.DefaultStorageProviderDefinition;
     }
 
     [Test]

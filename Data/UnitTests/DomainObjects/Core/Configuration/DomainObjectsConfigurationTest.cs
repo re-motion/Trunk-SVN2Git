@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
 
         Assert.That (domainObjectsConfiguration.MappingLoader, Is.Not.Null);
         Assert.That (domainObjectsConfiguration.Storage, Is.Not.Null);
-        Assert.That (domainObjectsConfiguration.Storage.StorageProviderDefinition, Is.Not.Null);
+        Assert.That (domainObjectsConfiguration.Storage.DefaultStorageProviderDefinition, Is.Not.Null);
         Assert.That (domainObjectsConfiguration.Storage.StorageProviderDefinitions.Count, Is.EqualTo (1));
         Assert.That (domainObjectsConfiguration.Storage.StorageGroups, Is.Empty);
       }
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
         Assert.That (domainObjectsConfiguration.MappingLoader.MappingLoaderType, Is.SameAs (typeof (FakeMappingLoader)));
 
         Assert.That (domainObjectsConfiguration.Storage, Is.Not.Null);
-        Assert.That (domainObjectsConfiguration.Storage.StorageProviderDefinition, Is.Not.Null);
+        Assert.That (domainObjectsConfiguration.Storage.DefaultStorageProviderDefinition, Is.Not.Null);
         Assert.That (domainObjectsConfiguration.Storage.StorageProviderDefinitions.Count, Is.EqualTo (1));
         Assert.That (domainObjectsConfiguration.Storage.StorageGroups, Is.Empty);
       }
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
         Assert.That (domainObjectsConfiguration.SectionGroupName, Is.EqualTo ("domainObjects"));
         Assert.That (domainObjectsConfiguration.MappingLoader, Is.Not.Null);
         Assert.That (domainObjectsConfiguration.Storage, Is.Not.Null);
-        Assert.That (domainObjectsConfiguration.Storage.StorageProviderDefinition, Is.Not.Null);
+        Assert.That (domainObjectsConfiguration.Storage.DefaultStorageProviderDefinition, Is.Not.Null);
         Assert.That (domainObjectsConfiguration.Storage.StorageProviderDefinitions.Count, Is.EqualTo (1));
         Assert.That (domainObjectsConfiguration.Storage.StorageGroups, Is.Empty);
       }

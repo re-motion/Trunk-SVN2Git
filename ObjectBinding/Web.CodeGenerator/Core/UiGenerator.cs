@@ -99,7 +99,7 @@ namespace Remotion.ObjectBinding.Web.CodeGenerator
     protected PersistenceConfiguration GetPersistenceConfiguration ()
     {
       PersistenceConfiguration persistenceConfiguration = DomainObjectsConfiguration.Current.Storage;
-      if (persistenceConfiguration.StorageProviderDefinition == null)
+      if (persistenceConfiguration.DefaultStorageProviderDefinition == null)
       {
         ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition> ();
         RdbmsProviderDefinition providerDefinition = new RdbmsProviderDefinition ("Default", typeof (SqlProvider), "Initial Catalog=DatabaseName;");

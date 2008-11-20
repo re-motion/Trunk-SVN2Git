@@ -177,12 +177,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       StorageGroupAttribute storageGroupAttribute = AttributeUtility.GetCustomAttribute<StorageGroupAttribute> (Type, true);
       if (storageGroupAttribute == null)
-        return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinition.Name;
+        return DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name;
 
       string storageGroupName = TypeUtility.GetPartialAssemblyQualifiedName (storageGroupAttribute.GetType());
       StorageGroupElement storageGroup = DomainObjectsConfiguration.Current.Storage.StorageGroups[storageGroupName];
       if (storageGroup == null)
-        return DomainObjectsConfiguration.Current.Storage.StorageProviderDefinition.Name;
+        return DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name;
       return storageGroup.StorageProviderName;
     }
 
