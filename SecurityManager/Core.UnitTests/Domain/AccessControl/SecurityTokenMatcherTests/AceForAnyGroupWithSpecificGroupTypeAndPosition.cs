@@ -28,7 +28,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       
       _companyHelper = new CompanyStructureHelper (TestHelper.Transaction);
 
-      _ace = TestHelper.CreateAceWithPosition (_companyHelper.HeadPosition, GroupCondition.AnyGroupWithSpecificGroupType);
+      _ace = TestHelper.CreateAceWithPositionAndGroupCondition (_companyHelper.HeadPosition, GroupCondition.AnyGroupWithSpecificGroupType);
       _ace.SpecificGroupType = _companyHelper.DepartmentGroupType;
 
       Assert.That (_ace.TenantCondition, Is.EqualTo (TenantCondition.None));

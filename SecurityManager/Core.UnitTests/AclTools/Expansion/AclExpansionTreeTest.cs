@@ -92,14 +92,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         var aclExpansionTree = new AclExpansionTree (aclExpansion);
 
-        foreach (var userNode in aclExpansionTree.Tree)
-        {
-          To.ConsoleLine.sb ().e (userNode.NumberLeafNodes).e (userNode.Key).se ();
-        }
+        //foreach (var userNode in aclExpansionTree.Tree)
+        //{
+        //  To.ConsoleLine.sb ().e (userNode.NumberLeafNodes).e (userNode.Key).se ();
+        //}
 
-        To.Console.IndentationString = "  ";
-        To.Console.AllowNewline = true;
-        To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
+        //To.Console.IndentationString = "  ";
+        //To.Console.AllowNewline = true;
+        //To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
 
         var userNodes = aclExpansionTree.Tree;
         Assert.That (userNodes.Count, Is.EqualTo (1)); // # users

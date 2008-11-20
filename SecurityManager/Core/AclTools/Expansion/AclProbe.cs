@@ -36,15 +36,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       ArgumentUtility.CheckNotNull ("ace", ace);
 
       var aclProbe = new AclProbe ();
+      User owningUser = CreateOwningUserEntry (aclProbe, user, ace);
       Group owningGroup = CreateOwningGroupEntry (aclProbe, role, ace);
       Tenant owningTenant = CreateOwningTenantEntry (aclProbe, user, ace);
       IList<AbstractRoleDefinition> abstractRoles = CreateAbstractRolesEntry (aclProbe, ace);
 
-      aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroup, null, abstractRoles);
-      //aclProbe._securityToken.SpecificAce = ace;
+      //aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroup, null, abstractRoles);
+      aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroup, owningUser, abstractRoles);
       return aclProbe;
     }
-
+     
     private static IList<AbstractRoleDefinition> CreateAbstractRolesEntry (AclProbe aclProbe, AccessControlEntry ace)
     {
       IList<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition> ();
@@ -56,6 +57,34 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
       return abstractRoles;
     }
+
+
+    private static User CreateOwningUserEntry (AclProbe aclProbe, User user, AccessControlEntry ace)
+    {
+      User owningUser;
+      switch (ace.UserCondition)
+      {
+        case UserCondition.Owner:
+          // Undecideable constraint: For ACE to match the SecurityToken.OwningUser must be equal to the user's user.
+          // Since this is undeciadeable, set the owning user so he will match, and record the constraint as an access condition.
+          owningUser = user;
+          aclProbe.AccessConditions.IsOwningUserRequired = true;
+          break;
+        case UserCondition.SpecificUser:
+          owningUser = null; // Decideable constraint => no condition. Either Principal matches or he does not.
+          break;
+        case UserCondition.SpecificPosition:
+          owningUser = null; // Decideable constraint => no condition. Either Principal's position matches or it does not.
+          break;
+        case UserCondition.None:
+          owningUser = null; // No constraint => no condition (will always match).
+          break;
+        default:
+          throw new ArgumentException (String.Format ("ace.UserSelection={0} is currently not supported by this method. Please extend method to handle the new UserSelection state.", ace.UserCondition));
+      }
+      return owningUser;
+    }
+
 
 
     private static Tenant CreateOwningTenantEntry (AclProbe aclProbe, User user, AccessControlEntry ace)
@@ -73,7 +102,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           owningTenant = null; // Decideable constraint => no condition. Either Principal.Tenant matches or he does not.
           break;
         case TenantCondition.None:
-          owningTenant = null; // No constraint => no condition. Will always match.
+          owningTenant = null; // No constraint => no condition (will always match).
           break;
         default:
           throw new ArgumentException (String.Format ("ace.TenantSelection={0} is currently not supported by this method. Please extend method to handle the new TenantSelection state.", ace.TenantCondition));
@@ -105,7 +134,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           owningGroup = null; // Decideable constraint => no condition. Either one of the Principal's groups is of the specifc group type or not.
           break;
         case GroupCondition.None:
-          owningGroup = null; // No constraint => no condition. Will always match.
+          owningGroup = null; // No constraint => no condition (will always match).
           break;
         default:
           throw new ArgumentException (String.Format ("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.", ace.GroupCondition));

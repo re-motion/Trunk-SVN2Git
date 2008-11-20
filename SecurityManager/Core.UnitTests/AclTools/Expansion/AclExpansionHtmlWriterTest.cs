@@ -216,7 +216,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var stringWriter = new StringWriter ();
       var aclExpansionTree = new AclExpansionTree (aclExpansion);
-      To.ConsoleLine.e (() => aclExpansionTree).nl();
+      // To.ConsoleLine.e (() => aclExpansionTree).nl();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionTree, stringWriter, true);
       aclExpansionHtmlWriter.Settings.ShortenNames = true;
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
@@ -899,7 +899,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionTree, stringWriter, true);
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
       string result = stringWriter.ToString ();
-      To.ConsoleLine.e (() => result);
+      // To.ConsoleLine.e (() => result);
       Clipboard.SetText (result);
 
       //Assert.That (result, NUnitText.Contains ("role group (" + group.DisplayName + ")"));

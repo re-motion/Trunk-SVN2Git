@@ -99,7 +99,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
       Role3 = TestHelper.CreateRole (User3, Group3, Position3);
       // DO NOT use TestHelper.CreateAceWithOwningGroup() here; functionality for group matching is
       // incomplete and therefore the ACE entry will always match.
-      Ace3 = TestHelper.CreateAceWithPosition (Position3, GroupCondition.None);
+      Ace3 = TestHelper.CreateAceWithPositionAndGroupCondition (Position3, GroupCondition.None);
 
       TestHelper.AttachAccessType (Ace3, ReadAccessType, true);
       TestHelper.AttachAccessType (Ace3, WriteAccessType, true);

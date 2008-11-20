@@ -89,7 +89,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       accessConditions.OwningGroup = Group2;
       accessConditions.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParentAndChildren;
       var result = To.String.e (accessConditions).CheckAndConvertToString ();
-      To.Console.s (result);
+      // To.Console.s (result);
       Assert.That (result, Is.EqualTo (@"[userMustOwn=True,owningGroup=[""Anotha Group""],groupHierarchyCondition=ThisAndParentAndChildren,tenantMustOwn=True,abstractRoleMustMatch=True,abstractRole=[""xyz""]]"));
     }
 

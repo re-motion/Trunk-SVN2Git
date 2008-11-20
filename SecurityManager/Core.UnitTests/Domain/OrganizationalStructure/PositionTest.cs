@@ -42,7 +42,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       using (testHelper.Transaction.EnterNonDiscardingScope())
       {
         Position position = testHelper.CreatePosition ("Position");
-        AccessControlEntry ace = testHelper.CreateAceWithPosition (position, GroupCondition.None);
+        AccessControlEntry ace = testHelper.CreateAceWithPositionAndGroupCondition (position, GroupCondition.None);
 
         position.Delete();
 

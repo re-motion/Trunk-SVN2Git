@@ -534,7 +534,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
-    public AccessControlEntry CreateAceWithPosition (Position position, GroupCondition groupCondition)
+    public AccessControlEntry CreateAceWithPosition (Position position)
+    {
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        AccessControlEntry entry = AccessControlEntry.NewObject ();
+        entry.UserCondition = UserCondition.SpecificPosition;
+        entry.SpecificPosition = position;
+        return entry;
+      }
+    }
+
+    public AccessControlEntry CreateAceWithPositionAndGroupCondition (Position position, GroupCondition groupCondition)
     {
       using (_transaction.EnterNonDiscardingScope())
       {

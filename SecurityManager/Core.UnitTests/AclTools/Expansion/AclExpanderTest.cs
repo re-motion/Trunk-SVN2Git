@@ -82,7 +82,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionAll ()
     {
-      var ace = TestHelper.CreateAceWithPosition (Position, GroupCondition.None);
+      var ace = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.None);
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
 
       Assert.That (ace.Validate ().IsValid);
@@ -99,7 +99,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionOwningGroup ()
     {
-      var ace = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
+      var ace = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
 
       Assert.That (ace.Validate ().IsValid);
@@ -148,7 +148,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void GetAclExpansionEntryList_UserList_AceList ()
     {
-      var ace = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
+      var ace = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
@@ -172,7 +172,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void GetAclExpansionEntryList_UserList_AceList_MultipleAces ()
     {
-      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
+      var aceGroupOwning = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
 
       var aceAbstractRole = TestHelper.CreateAceWithAbstractRole ();
@@ -287,7 +287,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceSpecificTenantWithOtherTenant = TestHelper.CreateAceWithSpecificTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (aceSpecificTenantWithOtherTenant, true, true, null);
 
-      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
+      var aceGroupOwning = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
 
       //To.ConsoleLine.e (() => otherTenantAceSpecificTenant);
@@ -324,10 +324,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceOwningTenant = TestHelper.CreateAceWithOwningTenant();
       AttachAccessTypeReadWriteDelete (aceOwningTenant, true, true, null);
       
-      var acePosition = TestHelper.CreateAceWithPosition (Position2, GroupCondition.None);
+      var acePosition = TestHelper.CreateAceWithPositionAndGroupCondition (Position2, GroupCondition.None);
       AttachAccessTypeReadWriteDelete (acePosition, true, null, true);
 
-      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
+      var aceGroupOwning = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, false, null);
 
       List<AclExpansionEntry> aclExpansionEntryList =
@@ -360,7 +360,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceSpecificTenant = TestHelper.CreateAceWithSpecificTenant (Tenant);
       AttachAccessTypeReadWriteDelete (aceSpecificTenant, true, true, null);
 
-      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
+      var aceGroupOwning = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
 
       List<AclExpansionEntry> aclExpansionEntryList =
@@ -457,7 +457,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void CurrentRoleOnly_SpecificPostitonWithOwningGroupTest ()
     {
-      var testAce = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
+      var testAce = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (testAce, true, true, true);
 
       Assert.That (testAce.Validate ().IsValid);
@@ -481,7 +481,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var aclExpansion = aclExpansionEntryList[0];
 
-      To.ConsoleLine.e (aclExpansion.AccessConditions.GroupHierarchyCondition);
+      // To.ConsoleLine.e (aclExpansion.AccessConditions.GroupHierarchyCondition);
 
       AssertAclExpansionEntry (aclExpansion, new[] { ReadAccessType, WriteAccessType, DeleteAccessType },
         //new AclExpansionAccessConditions { HasOwningGroupCondition = true });
@@ -583,7 +583,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceSpecificTenantWithOtherTenant = TestHelper.CreateAceWithSpecificTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (aceSpecificTenantWithOtherTenant, true, true, null);
 
-      var aceGroupOwning = TestHelper.CreateAceWithPosition (Position, GroupCondition.OwningGroup);
+      var aceGroupOwning = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
       AttachAccessTypeReadWriteDelete (aceGroupOwning, true, null, true);
 
       To.ConsoleLine.e ("aceSpecificTenantWithOtherTenant",aceSpecificTenantWithOtherTenant.ToString ());
@@ -608,6 +608,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     // 2008-11-17 New SecurityManager ACE Features Tests
     //--------------------------------------------------------------------------------------------------------------------------------
 
+    //--------------------------------------------------------------------------------------------------------------------------------
+    // Group Tests
+    //--------------------------------------------------------------------------------------------------------------------------------
+ 
     [Test]
     public void SpecificGroupTest ()
     {
@@ -685,7 +689,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
 
-      To.ConsoleLine.e (() => aclExpansionEntryList);
+      // To.ConsoleLine.e (() => aclExpansionEntryList);
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
 
@@ -717,8 +721,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntryList[0].AccessConditions.GroupHierarchyCondition, Is.EqualTo (groupHierarchyCondition));
       Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
     }
-
-
 
 
     [Test]
@@ -762,7 +764,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
 
-      To.ConsoleLine.e (() => aclExpansionEntryList);
+      // To.ConsoleLine.e (() => aclExpansionEntryList);
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
       AssertAclExpansionEntry (aclExpansionEntryList[0], 
@@ -775,6 +777,76 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    //--------------------------------------------------------------------------------------------------------------------------------
+    // User Tests
+    //--------------------------------------------------------------------------------------------------------------------------------
+
+    [Test]
+    public void SpecificUserOwningUserTest ()
+    {
+      var aceSpecificUser = TestHelper.CreateAceWithSpecificUser (User);
+      AttachAccessTypeReadWriteDelete (aceSpecificUser, null, true, null);
+      Assert.That (aceSpecificUser.Validate ().IsValid);
+
+      var aceOwningUser = TestHelper.CreateAceWithOwningUser ();
+      AttachAccessTypeReadWriteDelete (aceOwningUser, null, null, true);
+      Assert.That (aceOwningUser.Validate ().IsValid);
+
+      //To.ConsoleLine.e (() => aceSpecificGroup);
+
+      var userList = List.New (User);
+      var aclList = List.New (TestHelper.CreateStatefulAcl (aceSpecificUser, aceOwningUser));
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
+
+      // To.ConsoleLine.e (() => aclExpansionEntryList);
+
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
+
+      // Test of specific-user-ACE: gives write-access
+      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+
+      //To.ConsoleLine.e (aclExpansionEntryList[1].AccessConditions.UserHierarchyCondition);
+
+      // Test of owning-user-ACE (specific-user-ACE matches also): gives write-access + delete-access with condition: user-must-own
+      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType },
+        new AclExpansionAccessConditions 
+        {
+          IsOwningUserRequired = true,
+        }
+      );
+    }
+
+    [Test]
+    public void SpecificPositionTest ()
+    {
+      var aceSpecificPosition = TestHelper.CreateAceWithPosition (Role.Position);
+      AttachAccessTypeReadWriteDelete (aceSpecificPosition, null, true, null);
+      Assert.That (aceSpecificPosition.Validate ().IsValid);
+
+      // Role for User2, ACE should not match.
+      var aceSpecificPosition2 = TestHelper.CreateAceWithPosition (Role2.Position);
+      AttachAccessTypeReadWriteDelete (aceSpecificPosition2, null, true, null);
+      Assert.That (aceSpecificPosition2.Validate ().IsValid);
+
+      var userList = List.New (User);
+      var aclList = List.New (TestHelper.CreateStatefulAcl (aceSpecificPosition, aceSpecificPosition2));
+
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (userList, aclList);
+
+      // To.ConsoleLine.e (() => aclExpansionEntryList);
+
+      Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
+
+      // Test of specific-user-ACE: gives write-access
+      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+    }
+
+
+
+    //--------------------------------------------------------------------------------------------------------------------------------
+    // Helper Methods
+    //--------------------------------------------------------------------------------------------------------------------------------
 
     public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion, bool outputRowCount)
     {
@@ -822,7 +894,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AccessControlList> aclList = new List<AccessControlList>();
 
       //var ace = TestHelper.CreateAceWithPosition (position, groupCondition);
-      var ace = TestHelper.CreateAceWithPosition (position, groupCondition);
+      var ace = TestHelper.CreateAceWithPositionAndGroupCondition (position, groupCondition);
       //ace.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent;
       ace.GroupHierarchyCondition = groupHierarchyCondition;
 

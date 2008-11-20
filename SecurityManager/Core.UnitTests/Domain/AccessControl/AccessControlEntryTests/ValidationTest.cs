@@ -317,7 +317,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void ValidateSpecificPosition_IsValid ()
     {
-      var ace = _testHelper.CreateAceWithPosition (_testHelper.CreatePosition ("Position"), GroupCondition.None);
+      var ace = _testHelper.CreateAceWithPositionAndGroupCondition (_testHelper.CreatePosition ("Position"), GroupCondition.None);
 
       AccessControlEntryValidationResult result = ace.Validate ();
 
@@ -327,7 +327,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void ValidateSpecificPosition_IsNotValidWithNull ()
     {
-      var ace = _testHelper.CreateAceWithPosition (_testHelper.CreatePosition ("Position"), GroupCondition.None);
+      var ace = _testHelper.CreateAceWithPositionAndGroupCondition (_testHelper.CreatePosition ("Position"), GroupCondition.None);
       ace.SpecificPosition = null;
 
       AccessControlEntryValidationResult result = ace.Validate ();

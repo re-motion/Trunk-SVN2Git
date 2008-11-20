@@ -210,7 +210,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     [Test]
     public void ClearSpecificPosition ()
     {
-      var ace = _testHelper.CreateAceWithPosition (_testHelper.CreatePosition ("Position"), GroupCondition.None);
+      var ace = _testHelper.CreateAceWithPositionAndGroupCondition (_testHelper.CreatePosition ("Position"), GroupCondition.None);
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         ace.UserCondition = UserCondition.Owner;

@@ -79,8 +79,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
 
       var outResult = stringWriterOut.ToString ();
       var errorResult = stringWriterError.ToString ();
-      To.ConsoleLine.e (() => outResult);
-      To.ConsoleLine.e (() => errorResult);
+      // To.ConsoleLine.e (() => outResult);
+      // To.ConsoleLine.e (() => errorResult);
 
       Assert.That (errorResult, Is.EqualTo (""));
     }
