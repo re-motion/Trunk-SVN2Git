@@ -900,7 +900,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
       string result = stringWriter.ToString ();
       // To.ConsoleLine.e (() => result);
-      Clipboard.SetText (result);
+      //Clipboard.SetText (result);
 
       //Assert.That (result, NUnitText.Contains ("role group (" + group.DisplayName + ")"));
       Assert.That (result, NUnitText.Contains (inResultingHtmlString));
