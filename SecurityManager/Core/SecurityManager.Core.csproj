@@ -94,6 +94,7 @@
     <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterFactoryBase.cs" />
     <Compile Include="AclTools\Expansion\UserRoleAclAceCombination.cs" />
     <Compile Include="AclTools\Expansion\UserRoleAclAceCombinations.cs" />
+    <Compile Include="Configuration\AccessControlElement.cs" />
     <Compile Include="Configuration\SecurityManagerConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -23,7 +23,7 @@ namespace Remotion.SecurityManager.UnitTests.Configuration
     [SetUp]
     public void SetUp ()
     {
-      _configuration = new TestSecurityManagerConfiguration ();
+      _configuration = new TestSecurityManagerConfiguration();
     }
 
     [Test]
@@ -49,7 +49,8 @@ namespace Remotion.SecurityManager.UnitTests.Configuration
     [Test]
     public void DeserializeSection_CustomFactory ()
     {
-      string xmlFragment = @"
+      string xmlFragment =
+          @"
           <remotion.securityManager xmlns=""http://www.re-motion.org/SecurityManager/Configuration"">
             <organizationalStructureFactory type=""Remotion.SecurityManager.UnitTests::Configuration.TestOrganizationalStructureFactory"" />
           </remotion.securityManager>";
@@ -63,12 +64,50 @@ namespace Remotion.SecurityManager.UnitTests.Configuration
     [ExpectedException (typeof (ConfigurationErrorsException))]
     public void DeserializeSection_InvalidFactoryType ()
     {
-      string xmlFragment = @"
+      string xmlFragment =
+          @"
           <remotion.securityManager>
             <organizationalStructureFactory type=""Invalid"" />
           </remotion.securityManager>";
       _configuration.DeserializeSection (xmlFragment);
       IOrganizationalStructureFactory factory = _configuration.OrganizationalStructureFactory;
+    }
+
+    [Test]
+    public void DeserializeSection_DefaultAccessControl ()
+    {
+      string xmlFragment = @"
+          <remotion.securityManager xmlns=""http://www.re-motion.org/SecurityManager/Configuration""/>";
+      _configuration.DeserializeSection (xmlFragment);
+
+      Assert.IsNotNull (_configuration.AccessControl);
+      Assert.IsFalse (_configuration.AccessControl.DisableSpecificUser);
+    }
+
+    [Test]
+    public void DeserializeSection_DisableSpecificUser_True ()
+    {
+      string xmlFragment =
+          @"
+          <remotion.securityManager xmlns=""http://www.re-motion.org/SecurityManager/Configuration"">
+            <accessControl disableSpecificUser=""true"" />
+          </remotion.securityManager>";
+      _configuration.DeserializeSection (xmlFragment);
+
+      Assert.IsTrue (_configuration.AccessControl.DisableSpecificUser);
+    }
+
+    [Test]
+    public void DeserializeSection_DisableSpecificUser_DefaultToFalse ()
+    {
+      string xmlFragment =
+          @"
+          <remotion.securityManager xmlns=""http://www.re-motion.org/SecurityManager/Configuration"">
+            <accessControl />
+          </remotion.securityManager>";
+      _configuration.DeserializeSection (xmlFragment);
+
+      Assert.IsFalse (_configuration.AccessControl.DisableSpecificUser);
     }
   }
 }

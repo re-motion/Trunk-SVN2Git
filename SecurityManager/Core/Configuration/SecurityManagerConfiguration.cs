@@ -30,11 +30,13 @@ namespace Remotion.SecurityManager.Configuration
       get { return s_current.Value; }
     }
 
-    private ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();
+    private readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();
     private readonly ConfigurationProperty _xmlnsProperty;
 
     private readonly ConfigurationProperty _organizationalStructureFactoryProperty;
     private DoubleCheckedLockingContainer<IOrganizationalStructureFactory> _organizationalStructureFactory;
+   
+    private readonly ConfigurationProperty _accessControlProperty;
 
     public SecurityManagerConfiguration()
     {
@@ -47,9 +49,15 @@ namespace Remotion.SecurityManager.Configuration
           typeof (TypeElement<IOrganizationalStructureFactory, OrganizationalStructureFactory>),
           null,
           ConfigurationPropertyOptions.None);
+      _accessControlProperty = new ConfigurationProperty (
+          "accessControl",
+          typeof (AccessControlElement),
+          null,
+          ConfigurationPropertyOptions.None);
 
       _properties.Add (_xmlnsProperty);
       _properties.Add (_organizationalStructureFactoryProperty);
+      _properties.Add (_accessControlProperty);
     }
 
     protected override ConfigurationPropertyCollection Properties
@@ -66,6 +74,11 @@ namespace Remotion.SecurityManager.Configuration
     protected TypeElement<IOrganizationalStructureFactory> OrganizationalStructureFactoryElement
     {
       get { return (TypeElement<IOrganizationalStructureFactory>) this[_organizationalStructureFactoryProperty]; }
+    }
+
+    public AccessControlElement AccessControl
+    {
+      get { return (AccessControlElement) this[_accessControlProperty]; }
     }
   }
 }

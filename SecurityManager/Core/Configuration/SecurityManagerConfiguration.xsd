@@ -14,6 +14,11 @@
             <xs:attribute name="type" type="c:DotNetType" default="None" />
           </xs:complexType>
         </xs:element>
+        <xs:element name="accessControl" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attribute name="disableSpecificUser" type="xs:boolean" default="false" />
+          </xs:complexType>
+        </xs:element>
       </xs:all>
     </xs:complexType>
   </xs:element>
