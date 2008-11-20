@@ -12,6 +12,7 @@
 1.11.6
 ======
 - COMMONS-760 Move Linq entry point from DataContext to new Query factory class
+  from o in QueryFactory.CreateLinqQuery<Order>() ...
 
 1.11.5
 ======
@@ -34,6 +35,12 @@
 1.11.2
 ======
 - COMMONS-713 Allow "set" accessors for CollectionEndPoint-based properties
+  This is to make auto-generated properties possible for ObjectList<T> properties:
+  public virtual ObjectList<OrderItem> OrderItems { get; set; }
+  
+  The setter replaces the managed list with another list, which then becomes a managed list.
+  If this behavior is not wanted, the setter should be made protected (or the property must be manually implemented via Properties or CurrentProperty).
+  
 - COMMONS-695 dbschema does not support StorageClass.Transaction
 - COMMONS-688 Throw exception in DomainObject constructor if object is instantiated without the responsible creator
 
@@ -53,9 +60,17 @@
 =====
 - COMMONS-683 dbschema.exe cannot handle domains without any types
 - COMMONS-684 Automatically implement virtual C#-3.0-automatic properties
+  public virtual int OrderNumber { get; set; }
+  
+  This is similar to how the auto-implemented abstract properties worked, but without the abstract class requirement and the InstantiableAttribute.
+  If a DomainObject has a non-virtual auto-property without StorageClassNoneAttribute, an exception is thrown.
+  
 - COMMONS-675 PropertyIndexer.Find does not support properties declared on generic types
 - COMMONS-674 StorageClassTransaction
-- COMMONS-672 Derived persisten mixins should support diamond-style inheritance
+  Behaves exactly like the persistent storage class, but will not be persisted in the database. Instead, the respective property only lives in the
+  ClientTransaction.
+
+- COMMONS-672 Derived persistent mixins should support diamond-style inheritance
 - COMMONS-671 ClassDefinition.ValidateCurrentMixinConfiguration doesn't check base class definition, so mixin changes to the base class aren't recognized
 - COMMONS-668 Reflection-based should check that persistence-relevant mixins introduced by a base type are not suppressed on the derived type
 - COMMONS-666 Open generic mixins are incorrectly reported to be relevant for persistence
@@ -85,7 +100,6 @@
 - COMMONS-573 Ensure transport transaction cannot be rolled back or committed
 - COMMONS-572 Make binary DomainObject transport independent of framework version
 - COMMONS-499 Decide upon and implement error handling when two mixins add persistent relation properties referencing the same opposite property
-
 
 1.7.86
 ======
