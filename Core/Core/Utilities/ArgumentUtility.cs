@@ -96,7 +96,15 @@ namespace Remotion.Utilities
       return enumerable;
     }
 
-    private static void CheckNotEmpty<T> (string argumentName, T enumerable)
+    public static string CheckNotEmpty (string argumentName, string actualValue)
+    {
+      if (actualValue != null && actualValue.Length == 0)
+        throw new ArgumentEmptyException (argumentName);
+
+      return actualValue;
+    }
+
+    public static T CheckNotEmpty<T> (string argumentName, T enumerable)
         where T: IEnumerable
     {
 // ReSharper disable CompareNonConstrainedGenericWithNull
@@ -109,7 +117,7 @@ namespace Remotion.Utilities
           if (collection.Count == 0)
             throw new ArgumentEmptyException (argumentName);
           else
-            return;
+            return enumerable;
         }
 
         IEnumerator enumerator = enumerable.GetEnumerator();
@@ -121,7 +129,7 @@ namespace Remotion.Utilities
         }
       }
 
-      return;
+      return enumerable;
     }
 
     public static void ThrowEnumArgumentOutOfRangeException (string argumentName, Enum actualValue)
