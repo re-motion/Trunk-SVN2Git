@@ -21,7 +21,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     // member fields
 
-    private DomainObject _domainObject;
+    private readonly DomainObject _domainObject;
+
     private bool _cancel;
     private bool _hasChangingEventBeenCalled = false;
     private bool _hasChangedEventBeenCalled = false;
@@ -56,14 +57,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       _domainObject = domainObject;
       _cancel = cancel;
 
-      _domainObject.PropertyChanging += new PropertyChangeEventHandler (DomainObject_PropertyChanging);
-      _domainObject.PropertyChanged += new PropertyChangeEventHandler (DomainObject_PropertyChanged);
-      _domainObject.RelationChanging += new RelationChangingEventHandler (DomainObject_RelationChanging);
-      _domainObject.RelationChanged += new RelationChangedEventHandler (DomainObject_RelationChanged);
-      _domainObject.Deleting += new EventHandler (domainObject_Deleting);
-      _domainObject.Deleted += new EventHandler (domainObject_Deleted);
-      _domainObject.Committing += new EventHandler (DomainObject_Committing);
-      _domainObject.Committed += new EventHandler (DomainObject_Committed);
+      _domainObject.PropertyChanging += DomainObject_PropertyChanging;
+      _domainObject.PropertyChanged += DomainObject_PropertyChanged;
+      _domainObject.RelationChanging += DomainObject_RelationChanging;
+      _domainObject.RelationChanged += DomainObject_RelationChanged;
+      _domainObject.Deleting += domainObject_Deleting;
+      _domainObject.Deleted += domainObject_Deleted;
+      _domainObject.Committing += DomainObject_Committing;
+      _domainObject.Committed += DomainObject_Committed;
     }
 
     // methods and properties
