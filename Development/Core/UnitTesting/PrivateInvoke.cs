@@ -236,6 +236,14 @@ namespace Remotion.Development.UnitTesting
       return GetPropertyInternal (target, target.GetType(), BindingFlags.Instance | BindingFlags.NonPublic, propertyName);
     }
 
+    public static object GetNonPublicProperty (object target, Type declaringType, string propertyName)
+    {
+      ArgumentUtility.CheckNotNull ("target", target);
+      ArgumentUtility.CheckNotNull ("declaringType", declaringType);
+
+      return GetPropertyInternal (target, declaringType, BindingFlags.Instance | BindingFlags.NonPublic, propertyName);
+    }
+
     public static object GetPublicStaticProperty (Type type, string propertyName)
     {
       if (type == null) throw new ArgumentNullException ("type");
@@ -251,6 +259,12 @@ namespace Remotion.Development.UnitTesting
     private static object GetPropertyInternal (object instance, Type type, BindingFlags bindingFlags, string propertyName)
     {
       PropertyInfo property = GetPropertyRecursive (type, bindingFlags, propertyName);
+      if (property == null)
+      {
+        throw new ArgumentException ("No property '" + propertyName + "' found on type '" + type.FullName + "' with binding flags '" + bindingFlags + "'.",
+                                     "propertyName");
+      }
+
       try
       {
         return property.GetValue (instance, new object[] {});
@@ -322,8 +336,9 @@ namespace Remotion.Development.UnitTesting
 
     public static object GetNonPublicField(object target, Type declaringType, string fieldName)
     {
-      if (target == null)
-        throw new ArgumentNullException ("target");
+      ArgumentUtility.CheckNotNull ("target", target);
+      ArgumentUtility.CheckNotNull ("declaringType", declaringType);
+
       return GetFieldInternal (target, declaringType, BindingFlags.Instance | BindingFlags.NonPublic, fieldName);
     }
 
@@ -342,6 +357,12 @@ namespace Remotion.Development.UnitTesting
     private static object GetFieldInternal (object instance, Type type, BindingFlags bindingFlags, string fieldName)
     {
       FieldInfo field = GetFieldRecursive (type, bindingFlags, fieldName);
+      if (field == null)
+      {
+        throw new ArgumentException ("No field '" + fieldName + "' found on type '" + type.FullName + "' with binding flags '" + bindingFlags + "'.",
+                                     "fieldName");
+      }
+
       try
       {
         return field.GetValue (instance);
