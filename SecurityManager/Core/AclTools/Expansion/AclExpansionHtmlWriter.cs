@@ -93,7 +93,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteHeaderCell ("States");
       WriteHeaderCell ("User Must Own");
       WriteHeaderCell ("Owning Group Equals");
-      WriteHeaderCell ("Tenant Must Own");
+      //WriteHeaderCell ("Tenant Must Own");
+      WriteHeaderCell ("Owning Tenant Equals");
       WriteHeaderCell ("User Must Have Abstract Role");
       WriteHeaderCell ("Access Rights");
       if (Settings.OutputDeniedRights)
@@ -205,17 +206,23 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlTagWriter.Tags.tdEnd ();
     }
 
-    private void WriteTableDataForBodyConditions (AclExpansionAccessConditions conditions)
+    private void WriteTableDataForBodyConditions (AclExpansionAccessConditions accessConditions)
     {
-      WriteTableDataForBooleanCondition (conditions.IsOwningUserRequired);
+      WriteTableDataForBooleanCondition (accessConditions.IsOwningUserRequired);
       
       //WriteTableDataForBooleanCondition (conditions.HasOwningGroupCondition);
-      WriteTableDataForOwningGroupCondition (conditions);
+      WriteTableDataForOwningGroupCondition (accessConditions);
       
-      WriteTableDataForBooleanCondition (conditions.HasOwningTenantCondition);
+      //WriteTableDataForBooleanCondition (conditions.HasOwningTenantCondition);
+      WriteTableDataForOwningTenantCondition (accessConditions);
 
+      WriteTableDataForAbstractRoleCondition(accessConditions);
+    }
+
+    private void WriteTableDataForAbstractRoleCondition (AclExpansionAccessConditions accessConditions)
+    {
       htmlTagWriter.Tags.td ();
-      htmlTagWriter.Value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");
+      htmlTagWriter.Value (accessConditions.IsAbstractRoleRequired ? accessConditions.AbstractRole.DisplayName : "");
       htmlTagWriter.Tags.tdEnd ();
     }
 
@@ -247,6 +254,30 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       htmlTagWriter.Tags.tdEnd ();
     }
+
+
+    private void WriteTableDataForOwningTenantCondition (AclExpansionAccessConditions conditions)
+    {
+      Assertion.IsFalse (conditions.TenantHierarchyCondition == TenantHierarchyCondition.Undefined && conditions.OwningTenant != null);
+      htmlTagWriter.Tags.td ();
+      htmlTagWriter.Value (""); // To force <td></td> instead of <td />
+      var owningTenant = conditions.OwningTenant;
+      if (owningTenant != null)
+      {
+        htmlTagWriter.Value (owningTenant.DisplayName);
+      }
+
+      var tenantHierarchyCondition = conditions.TenantHierarchyCondition;
+      if ((tenantHierarchyCondition & TenantHierarchyCondition.Parent) != 0)
+      {
+        //htmlTagWriter.Value (",");
+        htmlTagWriter.Tags.br ();
+        htmlTagWriter.Value ("or its parents");
+      }
+
+      htmlTagWriter.Tags.tdEnd ();
+    }
+
 
     private void WriteTableDataForBooleanCondition (bool required)
     {

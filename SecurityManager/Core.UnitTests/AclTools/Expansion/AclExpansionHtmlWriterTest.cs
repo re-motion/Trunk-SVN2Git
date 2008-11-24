@@ -274,7 +274,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <th class=""header"">States</th>
         <th class=""header"">User Must Own</th>
         <th class=""header"">Owning Group Equals</th>
-        <th class=""header"">Tenant Must Own</th>
+        <th class=""header"">Owning Tenant Equals</th>
         <th class=""header"">User Must Have Abstract Role</th>
         <th class=""header"">Access Rights</th>
       </tr>
@@ -293,7 +293,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
-        <td>X</td>
+        <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
@@ -319,7 +319,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
-        <td>X</td>
+        <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
@@ -353,7 +353,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
-        <td>X</td>
+        <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
@@ -387,7 +387,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
-        <td>X</td>
+        <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
@@ -421,7 +421,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
-        <td>X</td>
+        <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
@@ -447,7 +447,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
-        <td>X</td>
+        <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
@@ -474,7 +474,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
-        <td>X</td>
+        <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
@@ -500,7 +500,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
-        <td>X</td>
+        <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
@@ -526,7 +526,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
-        <td>X</td>
+        <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
@@ -552,7 +552,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
-        <td>X</td>
+        <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
@@ -579,7 +579,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
-        <td>X</td>
+        <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
@@ -639,56 +639,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-
-    //[Test]
-    //[Explicit]
-    //public void SeperateGroupingClassTest ()
-    //{
-    //  using (CultureScope_de_DE ())
-    //  {
-    //    var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User2,User3,User);
-
-    //    // Create stateless-only ACL
-    //    SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
-    //    var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
-    //    TestHelper.AttachAces (statlessAcl, Ace);
-
-    //    var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl, statlessAcl);
-
-    //    List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
-    //  }
-    //}
-
-
-    //[Test]
-    //public void StatelessAclOutputFirstTest ()
-    //{
-    //  using (CultureScope_de_DE ())
-    //  {
-    //    var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-
-    //    // Create stateless-only ACL
-    //    SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
-    //    var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
-    //    TestHelper.AttachAces (statlessAcl, Ace);
-
-    //    var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,statlessAcl);
-
-    //    List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
-
-    //    using (var textWriter = new StringWriter ())
-    //    {
-    //      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
-    //      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
-    //      string result = textWriter.ToString ();
-    //      To.ConsoleLine.e (() => result);
-
-    //      //Assert.That (result, NUnitText.Contains ("<td>" + stateLessAclStateHtmlText + @"</td>"));
-    //    }
-    //  }
-    //}
-
-
     [Test]
     public void AclExpansionTreeCtorEquivalenceTest ()
     {
@@ -737,7 +687,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <th class=""header"">States</th>
         <th class=""header"">User Must Own</th>
         <th class=""header"">Owning Group Equals</th>
-        <th class=""header"">Tenant Must Own</th>
+        <th class=""header"">Owning Tenant Equals</th>
         <th class=""header"">User Must Have Abstract Role</th>
         <th class=""header"">Access Rights</th>
       </tr>
@@ -793,7 +743,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <th class=""header"">States</th>
         <th class=""header"">User Must Own</th>
         <th class=""header"">Owning Group Equals</th>
-        <th class=""header"">Tenant Must Own</th>
+        <th class=""header"">Owning Tenant Equals</th>
         <th class=""header"">User Must Have Abstract Role</th>
         <th class=""header"">Access Rights</th>
         <th class=""header"">Denied Rights</th>
@@ -821,26 +771,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    //[Test]
-    //public void OwningGroupTest ()
-    //{
-    //  var group = Group;
-    //  var accessConditions = new AclExpansionAccessConditions { OwningGroup = group, GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParentAndChildren };
-    //  var aclExpansionEntry = new AclExpansionEntry (
-    //      User, Role, Acl, accessConditions, new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
-    //  List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
-
-    //  var stringWriter = new StringWriter ();
-    //  var aclExpansionTree = new AclExpansionTree (aclExpansion);
-    //  //To.ConsoleLine.e (() => aclExpansionTree).nl ();
-    //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionTree, stringWriter, true);
-    //  aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
-    //  string result = stringWriter.ToString ();
-    //  To.ConsoleLine.e (() => result); Clipboard.SetText (result);
-
-    //  //Assert.That (result, NUnitText.Contains ("role group (" + group.DisplayName + ")"));
-    //  Assert.That (result, NUnitText.Contains (group.DisplayName + "<br />or its parents<br />or its children"));
-    //}
 
     [Test]
     public void GroupHierarchyConditionTest ()
@@ -853,6 +783,65 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AssertGroupHierarchyCondition (group, GroupHierarchyCondition.ThisAndChildren, group.DisplayName + "<br />" + orItsChildrenText, new[] { orItsParentsText });
       AssertGroupHierarchyCondition (group, GroupHierarchyCondition.ThisAndParentAndChildren, group.DisplayName + "<br />" + orItsParentsText + "<br />" + orItsChildrenText, new string[0]);
     }
+
+    public void AssertGroupHierarchyCondition (Group owningGroup, GroupHierarchyCondition groupHierarchyCondition, string inResultingHtmlString,
+      string[] notInResultingHtmlStrings)
+    {
+      var accessConditions = new AclExpansionAccessConditions { OwningGroup = owningGroup, GroupHierarchyCondition = groupHierarchyCondition };
+      var aclExpansionEntry = new AclExpansionEntry (
+          User, Role, Acl, accessConditions, new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
+      List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
+
+      var stringWriter = new StringWriter ();
+      var aclExpansionTree = new AclExpansionTree (aclExpansion);
+      //To.ConsoleLine.e (() => aclExpansionTree).nl ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionTree, stringWriter, true);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+      string result = stringWriter.ToString ();
+      // To.ConsoleLine.e (() => result);
+      //Clipboard.SetText (result);
+
+      Assert.That (result, NUnitText.Contains (inResultingHtmlString));
+      foreach (string notInResultingHtml in notInResultingHtmlStrings)
+      {
+        Assert.That (result, NUnitText.DoesNotContain (notInResultingHtml));
+      }
+    }
+
+
+
+    [Test]
+    public void TenantHierarchyConditionTest ()
+    {
+      var tenant = Tenant;
+      const string orItsParentsText = "or its parents";
+      AssertTenantHierarchyCondition (tenant, TenantHierarchyCondition.This, tenant.DisplayName, new[] { orItsParentsText });
+      AssertTenantHierarchyCondition (tenant, TenantHierarchyCondition.ThisAndParent, tenant.DisplayName + "<br />" + orItsParentsText, new string[0]);
+    }
+
+    public void AssertTenantHierarchyCondition (Tenant owningTenant, TenantHierarchyCondition tenantHierarchyCondition, string inResultingHtmlString,
+      string[] notInResultingHtmlStrings)
+    {
+      var accessConditions = new AclExpansionAccessConditions { OwningTenant = owningTenant, TenantHierarchyCondition = tenantHierarchyCondition };
+      var aclExpansionEntry = new AclExpansionEntry ( User, Role, Acl, accessConditions, new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
+      List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
+
+      var stringWriter = new StringWriter ();
+      var aclExpansionTree = new AclExpansionTree (aclExpansion);
+      //To.ConsoleLine.e (() => aclExpansionTree).nl ();
+      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionTree, stringWriter, true);
+      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+      string result = stringWriter.ToString ();
+      // To.ConsoleLine.e (() => result);
+      //Clipboard.SetText (result);
+
+      Assert.That (result, NUnitText.Contains (inResultingHtmlString));
+      foreach (string notInResultingHtml in notInResultingHtmlStrings)
+      {
+        Assert.That (result, NUnitText.DoesNotContain (notInResultingHtml));
+      }
+    }
+
 
 
 
@@ -884,31 +873,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
-    public void AssertGroupHierarchyCondition (Group owningGroup, GroupHierarchyCondition groupHierarchyCondition, string inResultingHtmlString,
-      string[] notInResultingHtmlStrings)
-    {
-      //var group = Group;
-      var accessConditions = new AclExpansionAccessConditions { OwningGroup = owningGroup, GroupHierarchyCondition = groupHierarchyCondition };
-      var aclExpansionEntry = new AclExpansionEntry (
-          User, Role, Acl, accessConditions, new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
-      List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
 
-      var stringWriter = new StringWriter ();
-      var aclExpansionTree = new AclExpansionTree (aclExpansion);
-      //To.ConsoleLine.e (() => aclExpansionTree).nl ();
-      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionTree, stringWriter, true);
-      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
-      string result = stringWriter.ToString ();
-      // To.ConsoleLine.e (() => result);
-      //Clipboard.SetText (result);
-
-      //Assert.That (result, NUnitText.Contains ("role group (" + group.DisplayName + ")"));
-      Assert.That (result, NUnitText.Contains (inResultingHtmlString));
-      foreach (string notInResultingHtml in notInResultingHtmlStrings)
-      {
-        Assert.That (result, NUnitText.DoesNotContain (notInResultingHtml));
-      }
-    }
 
 
     private CultureScope CultureScope_de_DE ()
