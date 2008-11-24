@@ -1,3 +1,19 @@
+1.11.14
+=======
+- COMMONS-664 Get rid of ...Tx methods in PropertyAccessor by associating its instances with a specific transaction; add Properties[..., tx]
+- COMMONS-808 Remove IEnumerable implementation from PropertyIndexer, add AsEnumerable methods instead      
+- COMMONS-801 Rename PersistenceConfiguration.StorageProviderDefinition to DefaultStorageProviderDefinition      
+
+1.11.13
+=======
+- COMMONS-792 Extract PropertyAccessorData from PropertyAccessor, cache PropertyAccessorData in PropertyIndexer      
+
+1.11.12
+=======
+- COMMONS-788 Allow ObjectList members as source in from clauses
+  from o in QueryFactory.CreateLinqQuery<Order>()
+  from oi in o.OrderItems
+
 1.11.11
 =======
 - COMMONS-786 OppositeClassDefinitionRetriever should also support -1 in addition to IndexOutOfRangeExceptions for detecting missing columns.
