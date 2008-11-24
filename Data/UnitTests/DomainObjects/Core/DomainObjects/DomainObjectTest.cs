@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Company company = Company.GetObject (DomainObjectIDs.Partner2);
       Assert.IsNotNull (company);
 
-      Partner partner = company as Partner;
+      var partner = company as Partner;
       Assert.IsNotNull (partner);
 
       Assert.AreEqual (DomainObjectIDs.Partner2, partner.ID, "ID");
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Company company = Company.GetObject (DomainObjectIDs.Supplier1);
       Assert.IsNotNull (company);
 
-      Supplier supplier = company as Supplier;
+      var supplier = company as Supplier;
       Assert.IsNotNull (supplier);
 
       Assert.AreEqual (DomainObjectIDs.Supplier1, supplier.ID);
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void OnLoaded ()
     {
-      ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
 
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void NoOnLoadedInReactionToEnlist ()
     {
-      ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
       classWithAllDataTypes.OnLoadedHasBeenCalled = false;
@@ -176,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void OnLoadedInReactionToEnlistOnFirstAccess ()
     {
-      ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
       classWithAllDataTypes.OnLoadedHasBeenCalled = false;
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void OnLoadedInSubTransaction ()
     {
-      ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void OnLoadedInParentAndSubTransaction ()
     {
-      ObjectID id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
+      var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
       Assert.IsTrue (classWithAllDataTypes.OnLoadedHasBeenCalled);
@@ -275,7 +275,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Company company = ceo.Company;
       Assert.IsNotNull (company);
 
-      Distributor distributor = company as Distributor;
+      var distributor = company as Distributor;
       Assert.IsNotNull (distributor);
     }
 
@@ -311,7 +311,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      DomainObjectEventReceiver eventReceiver = new DomainObjectEventReceiver (customer, false);
+      var eventReceiver = new DomainObjectEventReceiver (customer, false);
       customer.Name = "New name";
 
       Assert.AreEqual (true, eventReceiver.HasChangingEventBeenCalled);
@@ -328,7 +328,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      DomainObjectEventReceiver eventReceiver = new DomainObjectEventReceiver (customer, true);
+      var eventReceiver = new DomainObjectEventReceiver (customer, true);
 
       try
       {
@@ -456,25 +456,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void PrivateConstructor ()
     {
-      OrderTicket orderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
+      Dev.Null = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
     }
 
     [Test]
     public void ProtectedConstructor ()
     {
-      Company company = Company.GetObject (DomainObjectIDs.Company1);
+      Dev.Null = Company.GetObject (DomainObjectIDs.Company1);
     }
 
     [Test]
     public void PublicConstructor ()
     {
-      Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      Dev.Null = Customer.GetObject (DomainObjectIDs.Customer1);
     }
 
     [Test]
     public void InternalConstructor ()
     {
-      Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
+      Dev.Null = Ceo.GetObject (DomainObjectIDs.Ceo1);
     }
 
     [Test]
@@ -483,7 +483,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      string tooLongName = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901";
+      const string tooLongName = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901";
       customer.Name = tooLongName;
     }
 
@@ -493,7 +493,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      int invalidName = 123;
+      const int invalidName = 123;
       customer.NamePropertyOfInvalidType = invalidName;
     }
 
@@ -507,16 +507,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Customer customer4 = Customer.GetObject (DomainObjectIDs.Customer4);
 
       Order order3 = customer4.Orders[DomainObjectIDs.Order3];
-      Order order4 = customer4.Orders[DomainObjectIDs.Order4];
+      Dev.Null = customer4.Orders[DomainObjectIDs.Order4];
 
       OrderTicket orderTicket1 = order1.OrderTicket;
       OrderTicket orderTicket3 = order2.OrderTicket;
 
       Official official1 = order1.Official;
 
-      OrderItem orderItem1 = (OrderItem) order1.OrderItems[DomainObjectIDs.OrderItem1];
-      OrderItem orderItem2 = (OrderItem) order1.OrderItems[DomainObjectIDs.OrderItem2];
-      OrderItem orderItem4 = (OrderItem) order3.OrderItems[DomainObjectIDs.OrderItem4];
+      var orderItem1 = order1.OrderItems[DomainObjectIDs.OrderItem1];
+      var orderItem2 = order1.OrderItems[DomainObjectIDs.OrderItem2];
+      Dev.Null = order3.OrderItems[DomainObjectIDs.OrderItem4];
 
       order1.Delete ();
       orderItem1.Delete ();
@@ -598,7 +598,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreSame (newCustomer, newCeo.Company);
       Assert.AreSame (newCeo, newCustomer.Ceo);
       Assert.IsTrue (newCustomer.Orders.Contains (DomainObjectIDs.Order2));
-      Assert.AreSame (newCustomer, ((Order) newCustomer.Orders[DomainObjectIDs.Order2]).Customer);
+      Assert.AreSame (newCustomer, newCustomer.Orders[DomainObjectIDs.Order2].Customer);
 
       orderTicket3 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket3);
       Assert.AreEqual (@"C:\NewFile.gif", orderTicket3.FileName);
@@ -624,7 +624,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       subordinate3.Name = "New name of subordinate";
 
       Employee supervisor6 = Employee.GetObject (DomainObjectIDs.Employee6);
-      Employee subordinate7 = Employee.GetObject (DomainObjectIDs.Employee7);
+      Dev.Null = Employee.GetObject (DomainObjectIDs.Employee7);
 
       Employee newSubordinate2 = Employee.NewObject ();
       ObjectID newSubordinate2ID = newSubordinate2.ID;
@@ -713,7 +713,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetObjectWithTransaction ()
     {
       Order order;
-      ClientTransactionMock clientTransactionMock = new ClientTransactionMock ();
+      var clientTransactionMock = new ClientTransactionMock ();
       using (clientTransactionMock.EnterDiscardingScope())
       {
         order = Order.GetObject (DomainObjectIDs.Order1);
@@ -726,7 +726,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetDeletedObjectWithTransaction ()
     {
       Order order;
-      ClientTransactionMock clientTransactionMock = new ClientTransactionMock ();
+      var clientTransactionMock = new ClientTransactionMock ();
       using (clientTransactionMock.EnterDiscardingScope())
       {
         order = Order.GetObject (DomainObjectIDs.Order1);
@@ -744,7 +744,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CreateNewObjectWithTransaction ()
     {
-      ClientTransactionMock clientTransactionMock = new ClientTransactionMock ();
+      var clientTransactionMock = new ClientTransactionMock ();
       Order order;
       using (clientTransactionMock.EnterDiscardingScope())
       {
@@ -768,7 +768,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      Order orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
+      Dev.Null = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
 
       Assert.AreEqual (DomainObjectIDs.Order1, customer.Orders[0].ID);
       Assert.AreEqual (DomainObjectIDs.OrderWithoutOrderItem, customer.Orders[1].ID);
@@ -784,8 +784,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void MultiplePropertiesWithSameShortName ()
     {
-      DerivedClassWithMixedProperties derivedClass =
-          (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (typeof (DerivedClassWithMixedProperties)).With();
+      var derivedClass = (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (typeof (DerivedClassWithMixedProperties)).With();
       ClassWithMixedProperties baseClass = derivedClass;
 
       derivedClass.String = "Derived";
