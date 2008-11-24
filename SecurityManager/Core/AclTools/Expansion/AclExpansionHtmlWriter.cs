@@ -212,7 +212,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       //WriteTableDataForBooleanCondition (conditions.HasOwningGroupCondition);
       WriteTableDataForOwningGroupCondition (conditions);
       
-      WriteTableDataForBooleanCondition (conditions.IsOwningTenantRequired);
+      WriteTableDataForBooleanCondition (conditions.HasOwningTenantCondition);
 
       htmlTagWriter.Tags.td ();
       htmlTagWriter.Value (conditions.IsAbstractRoleRequired ? conditions.AbstractRole.DisplayName : "");

@@ -21,7 +21,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclExpansionAccessConditions  : IToText  
   {
     public bool IsOwningUserRequired { get; set; }
-    public bool IsOwningTenantRequired { get; set; }
 
     public bool IsAbstractRoleRequired
     {
@@ -31,13 +30,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public AbstractRoleDefinition AbstractRole { get; set; }
 
 
+    // Owning Group
+    public Group OwningGroup { get; set; }
+    public GroupHierarchyCondition GroupHierarchyCondition { get; set; }
+
     public bool HasOwningGroupCondition
     {
       get { return OwningGroup != null; }
     }
 
-    public Group OwningGroup { get; set; }
-    public GroupHierarchyCondition GroupHierarchyCondition { get; set; }
+
+    // Owning Tenant
+    public Tenant OwningTenant { get; set; }
+    public TenantHierarchyCondition TenantHierarchyCondition { get; set; }
+    
+    public bool HasOwningTenantCondition 
+    {
+      get { return OwningTenant != null; }
+    }
 
 
     public override bool Equals (object obj)
@@ -51,13 +61,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return (ac.AbstractRole == AbstractRole) &&
         (ac.OwningGroup == OwningGroup) &&
         (ac.GroupHierarchyCondition == GroupHierarchyCondition) &&
-        (ac.IsOwningTenantRequired == IsOwningTenantRequired) &&
+        (ac.OwningTenant == OwningTenant) &&
+        (ac.TenantHierarchyCondition == TenantHierarchyCondition) &&
+        //(ac.HasOwningTenantCondition == HasOwningTenantCondition) &&
         (ac.IsOwningUserRequired == IsOwningUserRequired);
     }
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (AbstractRole, OwningGroup, GroupHierarchyCondition, IsOwningTenantRequired, IsOwningUserRequired);
+      //return EqualityUtility.GetRotatedHashCode (AbstractRole, OwningGroup, GroupHierarchyCondition, HasOwningTenantCondition, IsOwningUserRequired);
+      return EqualityUtility.GetRotatedHashCode (AbstractRole, OwningGroup, GroupHierarchyCondition, 
+        OwningTenant, TenantHierarchyCondition, IsOwningUserRequired);
     }
 
 
@@ -71,7 +85,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       toTextBuilder.eIfNotNull ("owningGroup", OwningGroup);
       toTextBuilder.eIfNotEqualTo ("groupHierarchyCondition", GroupHierarchyCondition, GroupHierarchyCondition.Undefined);
 
-      toTextBuilder.eIfNotEqualTo ("tenantMustOwn", IsOwningTenantRequired, false);
+      toTextBuilder.eIfNotEqualTo ("tenantMustOwn", HasOwningTenantCondition, false);
       toTextBuilder.eIfNotEqualTo ("abstractRoleMustMatch", IsAbstractRoleRequired, false).eIfNotNull ("abstractRole", AbstractRole);
       toTextBuilder.ie ();
     }

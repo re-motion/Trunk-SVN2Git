@@ -94,9 +94,23 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         case TenantCondition.OwningTenant:
           // Undecideable constraint: For ACE to match the SecurityToken.OwningTenant must be equal to the user's tenant.
-          // Since this is undeciadeable, set the owning tenant so he will match, and record the constraint as an access condition.
-          owningTenant = user.Tenant; 
-          aclProbe.AccessConditions.IsOwningTenantRequired = true; 
+          // Since this is undecideable, set the owning tenant so he will match, and record the constraint as an access condition,
+          // keeping in mind the TenantHierarchyCondition.
+
+          //owningTenant = user.Tenant; 
+          ////aclProbe.AccessConditions.HasOwningTenantCondition = true;
+          ////ace.TenantHierarchyCondition;
+          //aclProbe.AccessConditions.OwningTenant = owningTenant;
+          //aclProbe.AccessConditions.TenantHierarchyCondition = ace.TenantHierarchyCondition;
+
+          // Owning tenant will be set to the user's tenant, which should never be empty.
+          Assertion.IsNotNull (user.Tenant);
+          // TenantHierarchyCondition should always contain the flag for "this tenant";
+          // if this condition is violated, using owningTenant = user.Tenant will no longer work, since it will not match.
+          Assertion.IsTrue ((ace.TenantHierarchyCondition & TenantHierarchyCondition.This) != 0);
+          owningTenant = user.Tenant;
+          aclProbe.AccessConditions.OwningTenant = owningTenant;
+          aclProbe.AccessConditions.TenantHierarchyCondition = ace.TenantHierarchyCondition;
           break;
         case TenantCondition.SpecificTenant:
           owningTenant = null; // Decideable constraint => no condition. Either Principal.Tenant matches or he does not.
@@ -116,7 +130,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       switch (ace.GroupCondition)
       {
         case GroupCondition.OwningGroup:
+          // Owning group will be set to the role group, which should never be empty.
           Assertion.IsNotNull (role.Group);
+          // GroupHierarchyCondition should always contain the flag for "this group";
+          // if this condition is violated, using owningGroup = role.Group will no longer work, since it will not match.
+          Assertion.IsTrue ((ace.GroupHierarchyCondition & GroupHierarchyCondition.This) != 0); 
           owningGroup = role.Group;
           aclProbe.AccessConditions.OwningGroup = owningGroup;
           aclProbe.AccessConditions.GroupHierarchyCondition = ace.GroupHierarchyCondition;

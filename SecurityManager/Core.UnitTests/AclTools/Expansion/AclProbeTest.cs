@@ -102,8 +102,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (User.Tenant));
 
-      var accessConditionsExpected = new AclExpansionAccessConditions();
-      accessConditionsExpected.IsOwningTenantRequired = true;
+      //var accessConditionsExpected = new AclExpansionAccessConditions();
+      //accessConditionsExpected.HasOwningTenantCondition = true;
+      var accessConditionsExpected = new AclExpansionAccessConditions
+      {
+        OwningTenant = Tenant,
+        TenantHierarchyCondition = TenantHierarchyCondition.This
+      };
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
 
