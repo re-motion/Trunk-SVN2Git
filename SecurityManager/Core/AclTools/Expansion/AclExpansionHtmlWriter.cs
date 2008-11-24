@@ -31,6 +31,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private readonly AclExpansionTree _aclExpansionTree;
     private AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
     private string _statelessAclStateHtmlText = "(stateless)";
+    private string _aclWithNoAssociatedStatesHtmlText = "(no associated states)";
 
     public AclExpansionHtmlWriter (List<AclExpansionEntry> aclExpansion, TextWriter textWriter, bool indentXml)
     {
@@ -43,6 +44,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _aclExpansionTree = aclExpansionTree;
       htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
+    
+
+    public AclExpansionHtmlWriterSettings Settings
+    {
+      get { return _settings; }
+      set { _settings = value; }
+    }
 
 
     public string StatelessAclStateHtmlText
@@ -50,11 +58,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       get { return _statelessAclStateHtmlText; }
       set { _statelessAclStateHtmlText = value; }
     }
-
-    public AclExpansionHtmlWriterSettings Settings
+    
+    public string AclWithNoAssociatedStatesHtmlText
     {
-      get { return _settings; }
-      set { _settings = value; }
+      get { return _aclWithNoAssociatedStatesHtmlText; }
+      set { _aclWithNoAssociatedStatesHtmlText = value; }
     }
 
 
@@ -169,18 +177,29 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         // Get the states by flattening the StateCombinations of the AccessControlEntry ACL 
         var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).OrderBy (x => x.DisplayName).ToArray();
-        bool firstElement = true;
-        foreach (StateDefinition stateDefiniton in stateDefinitions)
+
+        //htmlTagWriter.Value (stateDefinitions.Any() + " --- ");
+
+        if (!stateDefinitions.Any ())
         {
-          if (!firstElement)
+          htmlTagWriter.Value (AclWithNoAssociatedStatesHtmlText);
+        }
+        else
+        {
+          bool firstElement = true;
+          foreach (StateDefinition stateDefiniton in stateDefinitions)
           {
-            htmlTagWriter.Value (", ");
+            if (!firstElement)
+            {
+              htmlTagWriter.Value (", ");
+            }
+
+            string stateName = Settings.ShortenNames ? stateDefiniton.ShortName() : stateDefiniton.DisplayName;
+            //string stateName = stateDefiniton.DisplayName + "(" + stateDefiniton.Name + "," + stateDefiniton.Value + ")";
+
+            htmlTagWriter.Value (stateName);
+            firstElement = false;
           }
-
-          string stateName = Settings.ShortenNames ? stateDefiniton.ShortName() : stateDefiniton.DisplayName;
-
-          htmlTagWriter.Value (stateName);
-          firstElement = false;
         }
       }
       htmlTagWriter.Tags.tdEnd ();
@@ -332,7 +351,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    //private void WriteTableBody_ProcessStates (AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry> classNode)
     private void WriteTableBody_ProcessStates (IList<AclExpansionEntry> states)
     {
       // States Output

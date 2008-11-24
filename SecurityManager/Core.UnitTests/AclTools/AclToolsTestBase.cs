@@ -151,52 +151,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       TestHelper.CreateRole (User3, Group, Position3);
       TestHelper.CreateRole (User3, Group2, Position);
 
-      //TestHelper.CreateClassDefinition ("Class1");
-      //TestHelper.CreateDeliveryStateProperty .CreateStateProperty ("State1");
-
-      //var orderReceivedState = orderClass.StateProperties;
-      //To.ConsoleLine.s (">>>>>>>>>>>> StateProperties <<<<<<<<<<<<<<");
-
-      //To.ConsoleLine.e ("orderClass.Name",orderClass.Name);
-      //To.ConsoleLine.e ("orderClass.ShortName", orderClass.ShortName ());
-
-      ////var stateProperty = GetStateProperty (orderClass, "Delivery");
-      //To.ConsoleLine.s ("$$$$$$$$$$$$$$$$ ").e (orderClass.GetStateProperty ("Payment").Name);
-      //To.ConsoleLine.s ("$$$$$$$$$$$$$$$$ ").e (orderClass.GetStateProperty ("State").Name);
-      //To.ConsoleLine.s ("$$$$$$$$$$$$$$$$ ").e (orderClass.GetStateProperty ("Delivery").Name);
-
-
-      //foreach (var statePropertyDefinition in orderClass.StateProperties)
-      //{
-      //  if (statePropertyDefinition.Name == "Delivery")
-      //  {
-      //    To.ConsoleLine.s ("!!!!!!!!!!!!!!!!!!!!!!!! ").e (statePropertyDefinition.GetState (new EnumWrapper (Delivery.Post).Name));
-      //    To.ConsoleLine.s ("!!!!!!!!!!!!!!!!!!!!!!!! ").e (statePropertyDefinition.GetState ((int) Delivery.Post));
-      //  }
-      //  To.ConsoleLine.sb().e(statePropertyDefinition.Name ).e (statePropertyDefinition.DisplayName).e (statePropertyDefinition.DefinedStates).se();
-      //  foreach (var stateDefinition in statePropertyDefinition.DefinedStates)
-      //  {
-      //    To.ConsoleLine.sb().e(stateDefinition.DisplayName).e (stateDefinition.Value).e ((int) Delivery.Dhl).se();
-      //  }
-
-      //  //new EnumWrapper (Delivery.Post).Name
-        
-      //}
-
     }
-
-    //private StatePropertyDefinition GetStateProperty (SecurableClassDefinition classDefinition, string propertyName)
-    //{
-    //  foreach (var property in classDefinition.StateProperties)
-    //  {
-    //    if (property.Name == propertyName)
-    //    {
-    //      return property;
-    //    }
-    //  }
-    //  return null;
-    //}
-
 
 
     public void AttachAccessTypeReadWriteDelete (AccessControlEntry ace, bool? allowRead, bool? allowWrite, bool? allowDelete)

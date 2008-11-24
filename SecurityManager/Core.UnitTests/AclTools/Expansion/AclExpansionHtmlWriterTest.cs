@@ -640,6 +640,43 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
+    public void AclWithNoAssociatedStatesHtmlTest ()
+    {
+      using (CultureScope_de_DE ())
+      {
+        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+
+        
+        // Create an ACL with no states
+        var orderClassDefinition = TestHelper.CreateOrderClassDefinition ();
+        var acl = TestHelper.CreateStatefulAcl (orderClassDefinition, new StateDefinition[0]);
+
+        TestHelper.AttachAces (acl, Ace);
+
+        // Assert that the ACL ctually contains no states (note: this is not the same as an ACL being a stateless ACL).
+        var stateDefinitions = acl.StateCombinations.SelectMany (x => x.GetStates ());
+        Assert.IsFalse (stateDefinitions.Any()); 
+
+        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (acl);
+
+        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
+
+        using (var textWriter = new StringWriter ())
+        {
+          const string aclWithNoAssociatedStatesHtmlText = "No sports... - I mean states";
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
+          aclExpansionHtmlWriter.AclWithNoAssociatedStatesHtmlText = aclWithNoAssociatedStatesHtmlText;
+          aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+          string result = textWriter.ToString ();
+          //To.ConsoleLine.e (() => result);
+
+          Assert.That (result, NUnitText.Contains ("<td>" + aclWithNoAssociatedStatesHtmlText + @"</td>"));
+        }
+      }
+    }
+
+
+    [Test]
     public void AclExpansionTreeCtorEquivalenceTest ()
     {
       var aclExpansionEntry = new AclExpansionEntry (

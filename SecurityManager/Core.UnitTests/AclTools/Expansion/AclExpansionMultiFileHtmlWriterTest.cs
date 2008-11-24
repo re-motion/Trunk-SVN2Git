@@ -41,8 +41,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (stringWriterFactory, false);
         aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
         //To.ConsoleLine.e (stringWriterFactory);
-        //WriteStringWriterFactory (stringWriterFactory, To.Console);
-        Clipboard.SetText(WriteStringWriterFactory (stringWriterFactory));
+        //Clipboard.SetText(WriteStringWriterFactory (stringWriterFactory));
 
         Assert.That (stringWriterFactory.Count, Is.EqualTo (6));
 
