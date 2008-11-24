@@ -39,6 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public static event EventHandler StaticLoadHandler;
 
     public readonly bool CtorCalled = false;
+    public LoadMode LastLoadMode;
 
     protected Order ()
     {
@@ -111,6 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     protected override void OnLoaded (LoadMode loadMode)
     {
       base.OnLoaded (loadMode);
+      LastLoadMode = loadMode;
       if (ProtectedLoaded != null)
         ProtectedLoaded (this, EventArgs.Empty);
       if (StaticLoadHandler != null)

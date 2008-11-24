@@ -87,6 +87,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       get { return base.Properties; }
     }
 
+    [StorageClassNone]
+    public DomainObjectEventManager EventManager
+    {
+      get { return (DomainObjectEventManager) PrivateInvoke.GetNonPublicProperty (this, typeof (DomainObject), "EventManager"); }
+    }
+
     public new DomainObjectGraphTraverser GetGraphTraverser(IGraphTraversalStrategy stragety)
     {
       return base.GetGraphTraverser (stragety);

@@ -19,9 +19,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain
   [Serializable]
   public abstract class DOImplementingISerializable : DomainObject, ISerializable
   {
+    public static DOImplementingISerializable NewObject (string memberHeldAsField)
+    {
+      return NewObject<DOImplementingISerializable> ().With (memberHeldAsField);
+    }
+
     private string _memberHeldAsField;
 
-    public DOImplementingISerializable (string memberHeldAsField)
+    protected DOImplementingISerializable (string memberHeldAsField)
     {
       _memberHeldAsField = memberHeldAsField;
     }

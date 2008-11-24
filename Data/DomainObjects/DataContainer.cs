@@ -14,6 +14,7 @@ using System.Runtime.Serialization;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
@@ -512,7 +513,7 @@ namespace Remotion.Data.DomainObjects
       {
         // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
         // Therefore notification of DomainObject when changing property values is not organized through events.
-        DomainObject.PropertyValueChanging (this, args);
+        DomainObject.EventManager.BeginPropertyValueChange (args.PropertyValue, args.OldValue, args.NewValue);
 
         OnPropertyChanging (args);
       }
@@ -526,7 +527,7 @@ namespace Remotion.Data.DomainObjects
 
         // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
         // Therefore notification of DomainObject when changing property values is not organized through events.
-        DomainObject.PropertyValueChanged (this, args);
+        DomainObject.EventManager.EndPropertyValueChange (args.PropertyValue, args.OldValue, args.NewValue);
       }
 
       if (_clientTransaction != null)

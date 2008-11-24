@@ -45,6 +45,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     private bool _hasCommittingEventBeenCalled = false;
     private bool _hasCommittedEventBeenCalled = false;
 
+    private bool _hasRollingBackEventBeenCalled = false;
+    private bool _hasRolledBackEventBeenCalled = false;
+
     // construction and disposing
 
     public DomainObjectEventReceiver (DomainObject domainObject)
@@ -65,6 +68,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       _domainObject.Deleted += domainObject_Deleted;
       _domainObject.Committing += DomainObject_Committing;
       _domainObject.Committed += DomainObject_Committed;
+      _domainObject.RollingBack += DomainObject_RollingBack;
+      _domainObject.RolledBack += DomainObject_RolledBack;
     }
 
     // methods and properties
@@ -165,6 +170,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       get { return _hasCommittedEventBeenCalled; }
     }
 
+    public bool HasRollingBackEventBeenCalled
+    {
+      get { return _hasRollingBackEventBeenCalled; }
+    }
+
+    public bool HasRolledBackEventBeenCalled
+    {
+      get { return _hasRolledBackEventBeenCalled; }
+    }
+
     private void DomainObject_PropertyChanging (object sender, PropertyChangeEventArgs args)
     {
       _hasChangingEventBeenCalled = true;
@@ -231,6 +246,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
         throw CreateApplicationException ("Committed event on DomainObject '{0}' has already been called.", _domainObject.ID);
 
       _hasCommittedEventBeenCalled = true;
+    }
+
+    private void DomainObject_RollingBack (object sender, EventArgs e)
+    {
+      if (_hasRollingBackEventBeenCalled)
+        throw CreateApplicationException ("RollingBack event on DomainObject '{0}' has already been called.", _domainObject.ID);
+
+      if (_cancel)
+        CancelOperation ();
+
+      _hasRollingBackEventBeenCalled = true;
+    }
+
+    private void DomainObject_RolledBack (object sender, EventArgs e)
+    {
+      if (_hasRolledBackEventBeenCalled)
+        throw CreateApplicationException ("RolledBack event on DomainObject '{0}' has already been called.", _domainObject.ID);
+
+      _hasRolledBackEventBeenCalled = true;
     }
 
     private ApplicationException CreateApplicationException (string message, params object[] args)

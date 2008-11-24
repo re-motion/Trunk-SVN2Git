@@ -1261,7 +1261,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       foreach (DomainObject loadedDomainObject in args.DomainObjects)
-        loadedDomainObject.EndObjectLoading();
+        loadedDomainObject.EventManager.EndObjectLoading();
 
       if (args.DomainObjects.Count != 0)
       {
@@ -1389,7 +1389,7 @@ public abstract class ClientTransaction
         {
           if (!domainObject.IsDiscarded)
           {
-            domainObject.BeginCommit ();
+            domainObject.EventManager.BeginCommit ();
 
             if (!domainObject.IsDiscarded)
               domainObjectComittingEventRaised.Add (domainObject);
@@ -1417,7 +1417,7 @@ public abstract class ClientTransaction
   private void EndCommit (DomainObjectCollection changedDomainObjects)
   {
     foreach (DomainObject changedDomainObject in changedDomainObjects)
-      changedDomainObject.EndCommit ();
+      changedDomainObject.EventManager.EndCommit ();
     
     OnCommitted (new ClientTransactionEventArgs (changedDomainObjects.Clone (true)));
   }
@@ -1451,7 +1451,7 @@ public abstract class ClientTransaction
         {
           if (!domainObject.IsDiscarded)
           {
-            domainObject.BeginRollback ();
+            domainObject.EventManager.BeginRollback ();
 
             if (!domainObject.IsDiscarded)
               domainObjectRollingBackEventRaised.Add (domainObject);
@@ -1479,7 +1479,7 @@ public abstract class ClientTransaction
   private void EndRollback (DomainObjectCollection changedDomainObjects)
   {
     foreach (DomainObject changedDomainObject in changedDomainObjects)
-      changedDomainObject.EndRollback ();
+      changedDomainObject.EventManager.EndRollback ();
 
     OnRolledBack (new ClientTransactionEventArgs (changedDomainObjects.Clone (true)));
   }

@@ -9,7 +9,6 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Utilities;
@@ -19,7 +18,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
   /// Provides an indexer to access a specific property of a domain object. Instances of this value type are returned by
-  /// <see cref="DomainObject.Properties"/>.
+  /// <see cref="DomainObjects.DomainObject.Properties"/>.
   /// </summary>
   public class PropertyIndexer
   {
@@ -28,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     /// <summary>
     /// Initializes a new <see cref="PropertyIndexer"/> instance. This is usually not called from the outside; instead, <see cref="PropertyIndexer"/>
-    /// instances are returned by <see cref="DomainObject.Properties"/>.
+    /// instances are returned by <see cref="DomainObjects.DomainObject.Properties"/>.
     /// </summary>
     /// <param name="domainObject">The domain object whose properties should be accessed with this <see cref="PropertyIndexer"/>.</param>
     /// <exception cref="ArgumentNullException">The <paramref name="domainObject"/> parameter is <see langword="null"/>.</exception>
@@ -36,6 +35,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       _domainObject = domainObject;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="DomainObject"/> associated with this <see cref="PropertyIndexer"/>.
+    /// </summary>
+    /// <value>The domain object associated with this <see cref="PropertyIndexer"/>.</value>
+    public DomainObject DomainObject
+    {
+      get { return _domainObject; }
     }
 
     /// <summary>

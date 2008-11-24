@@ -9,11 +9,9 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -185,11 +183,12 @@ namespace Remotion.Data.DomainObjects
     public event EventHandler RolledBack;
 
     private ObjectID _id;
-    private bool _initialConstructionEventSignalled = false;
     private ClientTransaction _bindingTransaction; // null unless this object is bound to a fixed transaction
     
     [NonSerialized] // lazily initialized
     private PropertyIndexer _properties;
+
+    private DomainObjectEventManager _eventManager;
 
     // construction and disposing
 
@@ -212,7 +211,7 @@ namespace Remotion.Data.DomainObjects
       firstDataContainer.SetDomainObject (this);
 
       InitializeFromDataContainer (firstDataContainer);
-      _initialConstructionEventSignalled = true;
+      _eventManager = new DomainObjectEventManager (this, true);
     }
 
     /// <summary>
@@ -230,11 +229,13 @@ namespace Remotion.Data.DomainObjects
       {
         _id = (ObjectID) info.GetValue ("DomainObject.ID", typeof (ObjectID));
         _bindingTransaction = (ClientTransaction) info.GetValue ("DomainObject._bindingTransaction", typeof (ClientTransaction));
-        _initialConstructionEventSignalled = true;
+        _eventManager = (DomainObjectEventManager) info.GetValue ("DomainObject._eventManager", typeof (DomainObjectEventManager));
       }
       catch (SerializationException ex)
       {
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
         Type publicDomainObjectType = GetPublicDomainObjectType();
+// ReSharper restore DoNotCallOverridableMethodsInConstructor
         string message = string.Format (
             "The GetObjectData method on type {0} did not call DomainObject's BaseGetObjectData method.", publicDomainObjectType.FullName);
         throw new SerializationException (message, ex);
@@ -271,6 +272,7 @@ namespace Remotion.Data.DomainObjects
 
       info.AddValue ("DomainObject.ID", ID);
       info.AddValue ("DomainObject._bindingTransaction", _bindingTransaction);
+      info.AddValue ("DomainObject._eventManager", _eventManager);
     }
 
     /// <summary>
@@ -386,6 +388,21 @@ namespace Remotion.Data.DomainObjects
     public bool IsBoundToSpecificTransaction
     {
       get { return _bindingTransaction != null; }
+    }
+
+    /// <summary>
+    /// Gets the event manager responsible for raising this object's events.
+    /// </summary>
+    /// <value>The event manager for this <see cref="DomainObject"/>.</value>
+    internal DomainObjectEventManager EventManager
+    {
+      get
+      {
+        if (_eventManager == null)
+          _eventManager = new DomainObjectEventManager (this, false);
+
+        return _eventManager;
+      }
     }
 
     /// <summary>
@@ -642,14 +659,14 @@ namespace Remotion.Data.DomainObjects
     #endregion
 
     /// <summary>
-    /// Method is invoked after the loading process of the object is completed.
+    /// This method is invoked after the loading process of the object is completed.
     /// </summary>
     /// <param name="loadMode">Specifies whether the whole domain object or only the <see cref="Remotion.Data.DomainObjects.DataContainer"/> has been
     /// newly loaded.</param>
     /// <remarks>
     /// Override this method to initialize <see cref="DomainObject"/>s that are loaded from the datasource.
     /// </remarks>
-    protected virtual void OnLoaded (LoadMode loadMode)
+    protected internal virtual void OnLoaded (LoadMode loadMode)
     {
     }
 
@@ -657,7 +674,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="Committing"/> event.
     /// </summary>
     /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>
-    protected virtual void OnCommitting (EventArgs args)
+    protected internal virtual void OnCommitting (EventArgs args)
     {
       if (Committing != null)
         Committing (this, args);
@@ -667,7 +684,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="Committed"/> event.
     /// </summary>
     /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>
-    protected virtual void OnCommitted (EventArgs args)
+    protected internal virtual void OnCommitted (EventArgs args)
     {
       if (Committed != null)
         Committed (this, args);
@@ -677,7 +694,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="RollingBack"/> event.
     /// </summary>
     /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>
-    protected virtual void OnRollingBack (EventArgs args)
+    protected internal virtual void OnRollingBack (EventArgs args)
     {
       if (RollingBack != null)
         RollingBack (this, args);
@@ -687,7 +704,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="RolledBack"/> event.
     /// </summary>
     /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>
-    protected virtual void OnRolledBack (EventArgs args)
+    protected internal virtual void OnRolledBack (EventArgs args)
     {
       if (RolledBack != null)
         RolledBack (this, args);
@@ -697,7 +714,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="RelationChanging"/> event.
     /// </summary>
     /// <param name="args">A <see cref="RelationChangingEventArgs"/> object that contains the event data.</param>
-    protected virtual void OnRelationChanging (RelationChangingEventArgs args)
+    protected internal virtual void OnRelationChanging (RelationChangingEventArgs args)
     {
       if (RelationChanging != null)
         RelationChanging (this, args);
@@ -707,7 +724,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="RelationChanged"/> event.
     /// </summary>
     /// <param name="args">A <see cref="RelationChangedEventArgs"/> object that contains the event data.</param>
-    protected virtual void OnRelationChanged (RelationChangedEventArgs args)
+    protected internal virtual void OnRelationChanged (RelationChangedEventArgs args)
     {
       if (RelationChanged != null)
         RelationChanged (this, args);
@@ -717,7 +734,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="PropertyChanging"/> event.
     /// </summary>
     /// <param name="args">A <see cref="PropertyChangeEventArgs"/> object that contains the event data.</param>
-    protected virtual void OnPropertyChanging (PropertyChangeEventArgs args)
+    protected internal virtual void OnPropertyChanging (PropertyChangeEventArgs args)
     {
       if (PropertyChanging != null)
         PropertyChanging (this, args);
@@ -727,7 +744,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="PropertyChanged"/> event.
     /// </summary>
     /// <param name="args">A <see cref="PropertyChangeEventArgs"/> object that contains the event data.</param>
-    protected virtual void OnPropertyChanged (PropertyChangeEventArgs args)
+    protected internal virtual void OnPropertyChanged (PropertyChangeEventArgs args)
     {
       if (PropertyChanged != null)
         PropertyChanged (this, args);
@@ -737,7 +754,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="Deleting"/> event.
     /// </summary>
     /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>
-    protected virtual void OnDeleting (EventArgs args)
+    protected internal virtual void OnDeleting (EventArgs args)
     {
       if (Deleting != null)
         Deleting (this, args);
@@ -747,83 +764,10 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="Deleted"/> event.
     /// </summary>
     /// <param name="args">A <see cref="EventArgs"/> object that contains the event data.</param>
-    protected virtual void OnDeleted (EventArgs args)
+    protected internal virtual void OnDeleted (EventArgs args)
     {
       if (Deleted != null)
         Deleted (this, args);
-    }
-
-    internal void BeginRelationChange (
-        string propertyName,
-        DomainObject oldRelatedObject,
-        DomainObject newRelatedObject)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-
-      RelationChangingEventArgs args = new RelationChangingEventArgs (propertyName, oldRelatedObject, newRelatedObject);
-      OnRelationChanging (args);
-    }
-
-    internal void EndObjectLoading ()
-    {
-      LoadMode loadMode;
-
-      if (!_initialConstructionEventSignalled)
-        loadMode = LoadMode.WholeDomainObjectInitialized;
-      else
-        loadMode = LoadMode.DataContainerLoadedOnly;
-
-      _initialConstructionEventSignalled = true;
-
-      DomainObjectMixinCodeGenerationBridge.OnDomainObjectLoaded (this, loadMode);
-      OnLoaded (loadMode);
-    }
-
-    internal void EndRelationChange (string propertyName)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-
-      OnRelationChanged (new RelationChangedEventArgs (propertyName));
-    }
-
-    internal void BeginDelete ()
-    {
-      OnDeleting (EventArgs.Empty);
-    }
-
-    internal void EndDelete ()
-    {
-      OnDeleted (EventArgs.Empty);
-    }
-
-    internal void BeginCommit ()
-    {
-      OnCommitting (EventArgs.Empty);
-    }
-
-    internal void EndCommit ()
-    {
-      OnCommitted (EventArgs.Empty);
-    }
-
-    internal void BeginRollback ()
-    {
-      OnRollingBack (EventArgs.Empty);
-    }
-
-    internal void EndRollback ()
-    {
-      OnRolledBack (EventArgs.Empty);
-    }
-
-    internal void PropertyValueChanging (object sender, PropertyChangeEventArgs args)
-    {
-      OnPropertyChanging (args);
-    }
-
-    internal void PropertyValueChanged (object sender, PropertyChangeEventArgs args)
-    {
-      OnPropertyChanged (args);
     }
   }
 }

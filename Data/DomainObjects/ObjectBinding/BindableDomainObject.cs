@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     {
     }
 
-    protected override void OnLoaded (LoadMode loadMode)
+    protected internal override void OnLoaded (LoadMode loadMode)
     {
       if (loadMode == LoadMode.WholeDomainObjectInitialized)
         InitializeImplementation ();

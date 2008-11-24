@@ -9,6 +9,7 @@
  */
 
 using System;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -49,14 +50,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public virtual void Begin ()
     {
-      _affectedEndPoint.GetDomainObject().BeginRelationChange (
-          _affectedEndPoint.PropertyName, _oldEndPoint.GetDomainObject(), _newEndPoint.GetDomainObject());
+      DomainObject domainObject = _affectedEndPoint.GetDomainObject();
+      domainObject.EventManager.BeginRelationChange (_affectedEndPoint.PropertyName, _oldEndPoint.GetDomainObject(), _newEndPoint.GetDomainObject());
     }
 
     public virtual void End ()
     {
       DomainObject domainObject = _affectedEndPoint.GetDomainObject ();
-      domainObject.EndRelationChange (_affectedEndPoint.PropertyName);
+      domainObject.EventManager.EndRelationChange (_affectedEndPoint.PropertyName);
     }
 
     public virtual void NotifyClientTransactionOfBegin ()

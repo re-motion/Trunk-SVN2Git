@@ -113,13 +113,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public static void OnDomainObjectCreated (DomainObject instance)
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
-      NotifyDomainObjectMixins (instance, delegate (IDomainObjectMixin mixin) { mixin.OnDomainObjectCreated (); });
+      NotifyDomainObjectMixins (instance, mixin => mixin.OnDomainObjectCreated());
     }
 
     public static void OnDomainObjectLoaded (DomainObject instance, LoadMode loadMode)
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
-      NotifyDomainObjectMixins (instance, delegate (IDomainObjectMixin mixin) { mixin.OnDomainObjectLoaded (loadMode); });
+      NotifyDomainObjectMixins (instance, mixin => mixin.OnDomainObjectLoaded (loadMode));
     }
 
     private static void NotifyDomainObjectMixins (DomainObject instance, Action<IDomainObjectMixin> notifier)

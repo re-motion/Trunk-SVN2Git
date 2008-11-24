@@ -14,6 +14,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
+using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
@@ -801,13 +802,108 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (baseClass.String, Is.EqualTo ("NewBase"));
     }
 
-    //[Test]
-    //public void EventManager()
-    //{
-    //  var order = Order.NewObject ();
-    //  var eventManager = (DomainObjectEventManager) PrivateInvoke.GetNonPublicField (order, "EventManager");
-    //  Assert.That (eventManager, Is.Not.Null);
+    [Test]
+    public void EventManager ()
+    {
+      var order = Order.NewObject ();
+      var eventManager = order.EventManager;
+      Assert.That (eventManager, Is.Not.Null);
+      Assert.That (eventManager.DomainObject, Is.SameAs (order));
 
-    //}
+      var eventManager2 = order.EventManager;
+      Assert.That (eventManager, Is.SameAs (eventManager2));
+    }
+
+    [Test]
+    public void EventManager_ConstructedTrue ()
+    {
+      var order = Order.NewObject ();
+      var eventManager = order.EventManager;
+      Assert.That (eventManager.IsConstructedDomainObject, Is.True);
+    }
+
+    [Test]
+    public void EventManager_ConstructedFalse ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var eventManager = order.EventManager;
+      Assert.That (eventManager.IsConstructedDomainObject, Is.False);
+    }
+
+    [Test]
+    public void EventManager_Serialization ()
+    {
+      var order = Order.NewObject ();
+      var eventManager = order.EventManager;
+      Assert.That (eventManager, Is.Not.Null);
+
+      var deserializedOrder = Serializer.SerializeAndDeserialize (order);
+      var newEventManager = deserializedOrder.EventManager;
+      Assert.That (newEventManager, Is.Not.Null);
+      Assert.That (newEventManager.DomainObject, Is.SameAs (deserializedOrder));
+    }
+
+    [Test]
+    public void EventManager_Serialization_ConstructedTrue ()
+    {
+      var order = Order.NewObject ();
+      var deserializedOrder = Serializer.SerializeAndDeserialize (order);
+      var newEventManager = deserializedOrder.EventManager;
+      Assert.That (newEventManager.IsConstructedDomainObject, Is.True);
+    }
+
+    [Test]
+    public void EventManager_Serialization_ConstructedFalse ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var deserializedOrder = Serializer.SerializeAndDeserialize (order);
+      var newEventManager = deserializedOrder.EventManager;
+      Assert.That (newEventManager.IsConstructedDomainObject, Is.False);
+    }
+
+    [Test]
+    public void EventManager_Serialization_ISerializable_ConstructedTrue ()
+    {
+      var classWithAllDataTypes = ClassWithAllDataTypes.NewObject ();
+      var deserializedClassWithAllDataTypes = Serializer.SerializeAndDeserialize (classWithAllDataTypes);
+      var newEventManager = deserializedClassWithAllDataTypes.EventManager;
+      Assert.That (newEventManager.IsConstructedDomainObject, Is.True);
+    }
+
+    [Test]
+    public void EventManager_Serialization_ISerializable_ConstructedFalse ()
+    {
+      var classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var deserializedClassWithAllDataTypes = Serializer.SerializeAndDeserialize (classWithAllDataTypes);
+      var newEventManager = deserializedClassWithAllDataTypes.EventManager;
+      Assert.That (newEventManager.IsConstructedDomainObject, Is.False);
+    }
+
+    [Test]
+    public void Properties ()
+    {
+      var order = Order.NewObject ();
+      var propertyIndexer = order.Properties;
+      Assert.That (propertyIndexer, Is.Not.Null);
+      Assert.That (propertyIndexer.DomainObject, Is.SameAs (order));
+
+      var propertyIndexer2 = order.Properties;
+      Assert.That (propertyIndexer, Is.SameAs (propertyIndexer2));
+    }
+
+    [Test]
+    public void Properties_Serialization ()
+    {
+      var order = Order.NewObject ();
+      var propertyIndexer = order.Properties;
+      Assert.That (propertyIndexer, Is.Not.Null);
+      Assert.That (propertyIndexer.DomainObject, Is.SameAs (order));
+
+      var deserializedOrder = Serializer.SerializeAndDeserialize (order);
+      var newPropertyIndexer = deserializedOrder.Properties;
+      Assert.That (newPropertyIndexer, Is.Not.Null);
+      Assert.That (newPropertyIndexer.DomainObject, Is.SameAs (deserializedOrder));
+    }
+
   }
 }
