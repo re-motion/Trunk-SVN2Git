@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
@@ -129,7 +130,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (_textWriterFactory, true);
       aclExpansionMultiFileHtmlWriter.DetailHtmlWriterSettings = CreateAclExpansionHtmlWriterSettings();
       aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+      
+      
       File.Copy (Path.Combine (".", CssFileName), Path.Combine (DirectoryUsed, CssFileName), true);
+
+      // TODO: Write embedded string resource CSS file to target dir; also for WriteAclExpansionAsSingleFileHtml above.
+      // TODO: Check if we can write the stream directly to target dir.
+      // TODO: Dsiable CSS file copying above.
+      // = GetEmbeddedStringResource ("Data.AclExpansion.css");
+    }
+
+
+    private string GetEmbeddedStringResource (string name)
+    {
+      Assembly assembly = GetType ().Assembly;
+      using (StreamReader reader = new StreamReader (assembly.GetManifestResourceStream (typeof (AclExpanderApplication), name)))
+      {
+        return reader.ReadToEnd ();
+      }
     }
 
 
