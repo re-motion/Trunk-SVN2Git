@@ -18,6 +18,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -50,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public new void ToString ()
     {
       Order order = Order.NewObject();
-      Assert.AreEqual (order.ID.ToString(), order.ToString());
+      Assert.That (order.ToString (), Is.EqualTo (order.ID.ToString ()));
     }
 
     [Test]
@@ -58,53 +59,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
 
-      Assert.AreEqual (DomainObjectIDs.ClassWithAllDataTypes1.Value, classWithAllDataTypes.ID.Value, "ID.Value");
-      Assert.AreEqual (DomainObjectIDs.ClassWithAllDataTypes1.ClassID, classWithAllDataTypes.ID.ClassID, "ID.ClassID");
-      Assert.AreEqual (DomainObjectIDs.ClassWithAllDataTypes1.StorageProviderID, classWithAllDataTypes.ID.StorageProviderID, "ID.StorageProviderID");
+      Assert.That (classWithAllDataTypes.ID.Value, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.Value), "ID.Value");
+      Assert.That (classWithAllDataTypes.ID.ClassID, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.ClassID), "ID.ClassID");
+      Assert.That (classWithAllDataTypes.ID.StorageProviderID, Is.EqualTo (DomainObjectIDs.ClassWithAllDataTypes1.StorageProviderID), "ID.StorageProviderID");
 
-      Assert.AreEqual (false, classWithAllDataTypes.BooleanProperty, "BooleanProperty");
-      Assert.AreEqual (85, classWithAllDataTypes.ByteProperty, "ByteProperty");
-      Assert.AreEqual (new DateTime (2005, 1, 1), classWithAllDataTypes.DateProperty, "DateProperty");
-      Assert.AreEqual (new DateTime (2005, 1, 1, 17, 0, 0), classWithAllDataTypes.DateTimeProperty, "DateTimeProperty");
-      Assert.AreEqual (123456.789m, classWithAllDataTypes.DecimalProperty, "DecimalProperty");
-      Assert.AreEqual (987654.321d, classWithAllDataTypes.DoubleProperty, "DoubleProperty");
-      Assert.AreEqual (ClassWithAllDataTypes.EnumType.Value1, classWithAllDataTypes.EnumProperty, "EnumProperty");
-      Assert.AreEqual (new Guid ("{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}"), classWithAllDataTypes.GuidProperty, "GuidProperty");
-      Assert.AreEqual (32767, classWithAllDataTypes.Int16Property, "Int16Property");
-      Assert.AreEqual (2147483647, classWithAllDataTypes.Int32Property, "Int32Property");
-      Assert.AreEqual (9223372036854775807L, classWithAllDataTypes.Int64Property, "Int64Property");
-      Assert.AreEqual (6789.321, classWithAllDataTypes.SingleProperty, "SingleProperty");
-      Assert.AreEqual ("abcdeföäü", classWithAllDataTypes.StringProperty, "StringProperty");
-      Assert.AreEqual ("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", classWithAllDataTypes.StringPropertyWithoutMaxLength, "StringPropertyWithoutMaxLength");
+      Assert.That (classWithAllDataTypes.BooleanProperty, Is.EqualTo (false), "BooleanProperty");
+      Assert.That (classWithAllDataTypes.ByteProperty, Is.EqualTo (85), "ByteProperty");
+      Assert.That (classWithAllDataTypes.DateProperty, Is.EqualTo (new DateTime (2005, 1, 1)), "DateProperty");
+      Assert.That (classWithAllDataTypes.DateTimeProperty, Is.EqualTo (new DateTime (2005, 1, 1, 17, 0, 0)), "DateTimeProperty");
+      Assert.That (classWithAllDataTypes.DecimalProperty, Is.EqualTo (123456.789m), "DecimalProperty");
+      Assert.That (classWithAllDataTypes.DoubleProperty, Is.EqualTo (987654.321d), "DoubleProperty");
+      Assert.That (classWithAllDataTypes.EnumProperty, Is.EqualTo (ClassWithAllDataTypes.EnumType.Value1), "EnumProperty");
+      Assert.That (classWithAllDataTypes.GuidProperty, Is.EqualTo (new Guid ("{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}")), "GuidProperty");
+      Assert.That (classWithAllDataTypes.Int16Property, Is.EqualTo (32767), "Int16Property");
+      Assert.That (classWithAllDataTypes.Int32Property, Is.EqualTo (2147483647), "Int32Property");
+      Assert.That (classWithAllDataTypes.Int64Property, Is.EqualTo (9223372036854775807L), "Int64Property");
+      Assert.That (classWithAllDataTypes.SingleProperty, Is.EqualTo (6789.321), "SingleProperty");
+      Assert.That (classWithAllDataTypes.StringProperty, Is.EqualTo ("abcdeföäü"), "StringProperty");
+      Assert.That (classWithAllDataTypes.StringPropertyWithoutMaxLength, Is.EqualTo ("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"), "StringPropertyWithoutMaxLength");
       ResourceManager.IsEqualToImage1 (classWithAllDataTypes.BinaryProperty, "BinaryProperty");
 
-      Assert.AreEqual (true, classWithAllDataTypes.NaBooleanProperty, "NaBooleanProperty");
-      Assert.AreEqual ((byte) 78, classWithAllDataTypes.NaByteProperty, "NaByteProperty");
-      Assert.AreEqual (new DateTime (2005, 2, 1), classWithAllDataTypes.NaDateProperty, "NaDateProperty");
-      Assert.AreEqual (new DateTime (2005, 2, 1, 5, 0, 0), classWithAllDataTypes.NaDateTimeProperty, "NaDateTimeProperty");
-      Assert.AreEqual (765.098m, classWithAllDataTypes.NaDecimalProperty, "NaDecimalProperty");
-      Assert.AreEqual (654321.789d, classWithAllDataTypes.NaDoubleProperty, "NaDoubleProperty");
-      Assert.AreEqual (ClassWithAllDataTypes.EnumType.Value2, classWithAllDataTypes.NaEnumProperty, "NaEnumProperty");
-      Assert.AreEqual (new Guid ("{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}"), classWithAllDataTypes.NaGuidProperty, "NaGuidProperty");
-      Assert.AreEqual ((short) 12000, classWithAllDataTypes.NaInt16Property, "NaInt16Property");
-      Assert.AreEqual (-2147483647, classWithAllDataTypes.NaInt32Property, "NaInt32Property");
-      Assert.AreEqual (3147483647L, classWithAllDataTypes.NaInt64Property, "NaInt64Property");
-      Assert.AreEqual (12.456F, classWithAllDataTypes.NaSingleProperty, "NaSingleProperty");
+      Assert.That (classWithAllDataTypes.NaBooleanProperty, Is.EqualTo (true), "NaBooleanProperty");
+      Assert.That (classWithAllDataTypes.NaByteProperty, Is.EqualTo ((byte) 78), "NaByteProperty");
+      Assert.That (classWithAllDataTypes.NaDateProperty, Is.EqualTo (new DateTime (2005, 2, 1)), "NaDateProperty");
+      Assert.That (classWithAllDataTypes.NaDateTimeProperty, Is.EqualTo (new DateTime (2005, 2, 1, 5, 0, 0)), "NaDateTimeProperty");
+      Assert.That (classWithAllDataTypes.NaDecimalProperty, Is.EqualTo (765.098m), "NaDecimalProperty");
+      Assert.That (classWithAllDataTypes.NaDoubleProperty, Is.EqualTo (654321.789d), "NaDoubleProperty");
+      Assert.That (classWithAllDataTypes.NaEnumProperty, Is.EqualTo (ClassWithAllDataTypes.EnumType.Value2), "NaEnumProperty");
+      Assert.That (classWithAllDataTypes.NaGuidProperty, Is.EqualTo (new Guid ("{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}")), "NaGuidProperty");
+      Assert.That (classWithAllDataTypes.NaInt16Property, Is.EqualTo ((short) 12000), "NaInt16Property");
+      Assert.That (classWithAllDataTypes.NaInt32Property, Is.EqualTo (-2147483647), "NaInt32Property");
+      Assert.That (classWithAllDataTypes.NaInt64Property, Is.EqualTo (3147483647L), "NaInt64Property");
+      Assert.That (classWithAllDataTypes.NaSingleProperty, Is.EqualTo (12.456F), "NaSingleProperty");
 
-      Assert.IsNull (classWithAllDataTypes.NaBooleanWithNullValueProperty, "NaBooleanWithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NaByteWithNullValueProperty, "NaByteWithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NaDecimalWithNullValueProperty, "NaDecimalWithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NaDateWithNullValueProperty, "NaDateWithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NaDateTimeWithNullValueProperty, "NaDateTimeWithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NaDoubleWithNullValueProperty, "NaDoubleWithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NaEnumWithNullValueProperty, "NaEnumWithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NaGuidWithNullValueProperty, "NaGuidWithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NaInt16WithNullValueProperty, "NaInt16WithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NaInt32WithNullValueProperty, "NaInt32WithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NaInt64WithNullValueProperty, "NaInt64WithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NaSingleWithNullValueProperty, "NaSingleWithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.StringWithNullValueProperty, "StringWithNullValueProperty");
-      Assert.IsNull (classWithAllDataTypes.NullableBinaryProperty, "NullableBinaryProperty");
+      Assert.That (classWithAllDataTypes.NaBooleanWithNullValueProperty, Is.Null, "NaBooleanWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaByteWithNullValueProperty, Is.Null, "NaByteWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaDecimalWithNullValueProperty, Is.Null, "NaDecimalWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaDateWithNullValueProperty, Is.Null, "NaDateWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaDateTimeWithNullValueProperty, Is.Null, "NaDateTimeWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaDoubleWithNullValueProperty, Is.Null, "NaDoubleWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaEnumWithNullValueProperty, Is.Null, "NaEnumWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaGuidWithNullValueProperty, Is.Null, "NaGuidWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaInt16WithNullValueProperty, Is.Null, "NaInt16WithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaInt32WithNullValueProperty, Is.Null, "NaInt32WithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaInt64WithNullValueProperty, Is.Null, "NaInt64WithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaSingleWithNullValueProperty, Is.Null, "NaSingleWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.StringWithNullValueProperty, Is.Null, "StringWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NullableBinaryProperty, Is.Null, "NullableBinaryProperty");
     }
 
     [Test]
@@ -120,30 +121,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void LoadingOfDerivedObject ()
     {
       Company company = Company.GetObject (DomainObjectIDs.Partner2);
-      Assert.IsNotNull (company);
+      Assert.That (company, Is.Not.Null);
 
       var partner = company as Partner;
-      Assert.IsNotNull (partner);
+      Assert.That (partner, Is.Not.Null);
 
-      Assert.AreEqual (DomainObjectIDs.Partner2, partner.ID, "ID");
-      Assert.AreEqual ("Partner 2", partner.Name, "Name");
+      Assert.That (partner.ID, Is.EqualTo (DomainObjectIDs.Partner2), "ID");
+      Assert.That (partner.Name, Is.EqualTo ("Partner 2"), "Name");
 
-      Assert.AreEqual (DomainObjectIDs.Person2, partner.ContactPerson.ID, "ContactPerson");
+      Assert.That (partner.ContactPerson.ID, Is.EqualTo (DomainObjectIDs.Person2), "ContactPerson");
     }
 
     [Test]
     public void LoadingOfTwiceDerivedObject ()
     {
       Company company = Company.GetObject (DomainObjectIDs.Supplier1);
-      Assert.IsNotNull (company);
+      Assert.That (company, Is.Not.Null);
 
       var supplier = company as Supplier;
-      Assert.IsNotNull (supplier);
+      Assert.That (supplier, Is.Not.Null);
 
-      Assert.AreEqual (DomainObjectIDs.Supplier1, supplier.ID);
-      Assert.AreEqual ("Lieferant 1", supplier.Name, "Name");
-      Assert.AreEqual (DomainObjectIDs.Person3, supplier.ContactPerson.ID, "ContactPerson");
-      Assert.AreEqual (1, supplier.SupplierQuality, "SupplierQuality");
+      Assert.That (supplier.ID, Is.EqualTo (DomainObjectIDs.Supplier1));
+      Assert.That (supplier.Name, Is.EqualTo ("Lieferant 1"), "Name");
+      Assert.That (supplier.ContactPerson.ID, Is.EqualTo (DomainObjectIDs.Person3), "ContactPerson");
+      Assert.That (supplier.SupplierQuality, Is.EqualTo (1), "SupplierQuality");
     }
 
     [Test]
@@ -153,9 +154,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
 
-      Assert.IsTrue (classWithAllDataTypes.OnLoadedHasBeenCalled);
-      Assert.AreEqual (1, classWithAllDataTypes.OnLoadedCallCount);
-      Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, classWithAllDataTypes.OnLoadedLoadMode);
+      Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.True);
+      Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
+      Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
     }
 
     [Test]
@@ -170,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       newTransaction.EnlistDomainObject (classWithAllDataTypes);
 
-      Assert.IsFalse (classWithAllDataTypes.OnLoadedHasBeenCalled);
+      Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.False);
     }
 
     [Test]
@@ -190,9 +191,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         classWithAllDataTypes.Int32Property = 5;
       }
 
-      Assert.IsTrue (classWithAllDataTypes.OnLoadedHasBeenCalled);
-      Assert.AreEqual (1, classWithAllDataTypes.OnLoadedCallCount);
-      Assert.AreEqual (LoadMode.DataContainerLoadedOnly, classWithAllDataTypes.OnLoadedLoadMode);
+      Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.True);
+      Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
+      Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
     }
 
     [Test]
@@ -204,9 +205,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       {
         ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
 
-        Assert.IsTrue (classWithAllDataTypes.OnLoadedHasBeenCalled);
-        Assert.AreEqual (2, classWithAllDataTypes.OnLoadedCallCount);
-        Assert.AreEqual (LoadMode.DataContainerLoadedOnly, classWithAllDataTypes.OnLoadedLoadMode);
+        Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.True);
+        Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (2));
+        Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
       }
     }
 
@@ -216,16 +217,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
-      Assert.IsTrue (classWithAllDataTypes.OnLoadedHasBeenCalled);
-      Assert.AreEqual (1, classWithAllDataTypes.OnLoadedCallCount);
-      Assert.AreEqual (LoadMode.WholeDomainObjectInitialized, classWithAllDataTypes.OnLoadedLoadMode);
+      Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.True);
+      Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
+      Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
 
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
         ClassWithAllDataTypes.GetObject (id);
 
-        Assert.AreEqual (2, classWithAllDataTypes.OnLoadedCallCount);
-        Assert.AreEqual (LoadMode.DataContainerLoadedOnly, classWithAllDataTypes.OnLoadedLoadMode);
+        Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (2));
+        Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
       }
     }
 
@@ -233,16 +234,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void OnLoadedWithNewInParentAndGetInSubTransaction ()
     {
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.NewObject ();
-      Assert.IsFalse (classWithAllDataTypes.OnLoadedHasBeenCalled);
-      Assert.AreEqual (0, classWithAllDataTypes.OnLoadedCallCount);
+      Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.False);
+      Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (0));
 
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Dev.Null = classWithAllDataTypes.Int32Property;
 
-        Assert.IsTrue (classWithAllDataTypes.OnLoadedHasBeenCalled);
-        Assert.AreEqual (1, classWithAllDataTypes.OnLoadedCallCount);
-        Assert.AreEqual (LoadMode.DataContainerLoadedOnly, classWithAllDataTypes.OnLoadedLoadMode);
+        Assert.That (classWithAllDataTypes.OnLoadedHasBeenCalled, Is.True);
+        Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
+        Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
       }
     }
 
@@ -251,8 +252,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
 
-      Assert.IsNotNull (order.OrderTicket);
-      Assert.AreEqual (DomainObjectIDs.OrderTicket1, order.OrderTicket.ID);
+      Assert.That (order.OrderTicket, Is.Not.Null);
+      Assert.That (order.OrderTicket.ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
     }
 
     [Test]
@@ -264,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Ceo ceoReference2 = customer.Ceo;
 
-      Assert.AreSame (ceoReference1, ceoReference2);
+      Assert.That (ceoReference2, Is.SameAs (ceoReference1));
     }
 
     [Test]
@@ -273,10 +274,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo10);
 
       Company company = ceo.Company;
-      Assert.IsNotNull (company);
+      Assert.That (company, Is.Not.Null);
 
       var distributor = company as Distributor;
-      Assert.IsNotNull (distributor);
+      Assert.That (distributor, Is.Not.Null);
     }
 
     [Test]
@@ -284,10 +285,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      Assert.IsNotNull (customer.Orders);
-      Assert.AreEqual (2, customer.Orders.Count);
-      Assert.AreEqual (DomainObjectIDs.Order1, customer.Orders[DomainObjectIDs.Order1].ID);
-      Assert.AreEqual (DomainObjectIDs.OrderWithoutOrderItem, customer.Orders[DomainObjectIDs.OrderWithoutOrderItem].ID);
+      Assert.That (customer.Orders, Is.Not.Null);
+      Assert.That (customer.Orders.Count, Is.EqualTo (2));
+      Assert.That (customer.Orders[DomainObjectIDs.Order1].ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (customer.Orders[DomainObjectIDs.OrderWithoutOrderItem].ID, Is.EqualTo (DomainObjectIDs.OrderWithoutOrderItem));
     }
 
     [Test]
@@ -296,14 +297,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2);
       DomainObjectCollection collection = industrialSector.Companies;
 
-      Assert.AreEqual (7, collection.Count);
-      Assert.AreEqual (typeof (Company), collection[DomainObjectIDs.Company1].GetPublicDomainObjectType ());
-      Assert.AreEqual (typeof (Company), collection[DomainObjectIDs.Company2].GetPublicDomainObjectType ());
-      Assert.AreEqual (typeof (Customer), collection[DomainObjectIDs.Customer2].GetPublicDomainObjectType ());
-      Assert.AreEqual (typeof (Customer), collection[DomainObjectIDs.Customer3].GetPublicDomainObjectType ());
-      Assert.AreEqual (typeof (Partner), collection[DomainObjectIDs.Partner2].GetPublicDomainObjectType ());
-      Assert.AreEqual (typeof (Supplier), collection[DomainObjectIDs.Supplier2].GetPublicDomainObjectType ());
-      Assert.AreEqual (typeof (Distributor), collection[DomainObjectIDs.Distributor1].GetPublicDomainObjectType ());
+      Assert.That (collection.Count, Is.EqualTo (7));
+      Assert.That (collection[DomainObjectIDs.Company1].GetPublicDomainObjectType (), Is.EqualTo (typeof (Company)));
+      Assert.That (collection[DomainObjectIDs.Company2].GetPublicDomainObjectType (), Is.EqualTo (typeof (Company)));
+      Assert.That (collection[DomainObjectIDs.Customer2].GetPublicDomainObjectType (), Is.EqualTo (typeof (Customer)));
+      Assert.That (collection[DomainObjectIDs.Customer3].GetPublicDomainObjectType (), Is.EqualTo (typeof (Customer)));
+      Assert.That (collection[DomainObjectIDs.Partner2].GetPublicDomainObjectType (), Is.EqualTo (typeof (Partner)));
+      Assert.That (collection[DomainObjectIDs.Supplier2].GetPublicDomainObjectType (), Is.EqualTo (typeof (Supplier)));
+      Assert.That (collection[DomainObjectIDs.Distributor1].GetPublicDomainObjectType (), Is.EqualTo (typeof (Distributor)));
     }
 
     [Test]
@@ -314,13 +315,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var eventReceiver = new DomainObjectEventReceiver (customer, false);
       customer.Name = "New name";
 
-      Assert.AreEqual (true, eventReceiver.HasChangingEventBeenCalled);
-      Assert.AreEqual (true, eventReceiver.HasChangedEventBeenCalled);
-      Assert.AreEqual ("New name", customer.Name);
-      Assert.AreEqual ("Kunde 1", eventReceiver.ChangingOldValue);
-      Assert.AreEqual ("New name", eventReceiver.ChangingNewValue);
-      Assert.AreEqual ("Kunde 1", eventReceiver.ChangedOldValue);
-      Assert.AreEqual ("New name", eventReceiver.ChangedNewValue);
+      Assert.That (eventReceiver.HasChangingEventBeenCalled, Is.EqualTo (true));
+      Assert.That (eventReceiver.HasChangedEventBeenCalled, Is.EqualTo (true));
+      Assert.That (customer.Name, Is.EqualTo ("New name"));
+      Assert.That (eventReceiver.ChangingOldValue, Is.EqualTo ("Kunde 1"));
+      Assert.That (eventReceiver.ChangingNewValue, Is.EqualTo ("New name"));
+      Assert.That (eventReceiver.ChangedOldValue, Is.EqualTo ("Kunde 1"));
+      Assert.That (eventReceiver.ChangedNewValue, Is.EqualTo ("New name"));
     }
 
     [Test]
@@ -337,11 +338,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       }
       catch (EventReceiverCancelException)
       {
-        Assert.AreEqual (true, eventReceiver.HasChangingEventBeenCalled);
-        Assert.AreEqual (false, eventReceiver.HasChangedEventBeenCalled);
-        Assert.AreEqual ("Kunde 1", customer.Name);
-        Assert.AreEqual ("Kunde 1", eventReceiver.ChangingOldValue);
-        Assert.AreEqual ("New name", eventReceiver.ChangingNewValue);
+        Assert.That (eventReceiver.HasChangingEventBeenCalled, Is.EqualTo (true));
+        Assert.That (eventReceiver.HasChangedEventBeenCalled, Is.EqualTo (false));
+        Assert.That (customer.Name, Is.EqualTo ("Kunde 1"));
+        Assert.That (eventReceiver.ChangingOldValue, Is.EqualTo ("Kunde 1"));
+        Assert.That (eventReceiver.ChangingNewValue, Is.EqualTo ("New name"));
       }
     }
 
@@ -350,9 +351,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      Assert.AreEqual (StateType.Unchanged, customer.State);
+      Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
       customer.Name = "New name";
-      Assert.AreEqual (StateType.Changed, customer.State);
+      Assert.That (customer.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -364,12 +365,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (customer);
-        Assert.AreEqual (StateType.Unchanged, customer.GetStateForTransaction (ClientTransaction.Current));
-        Assert.AreEqual (StateType.Changed, customer.GetStateForTransaction (ClientTransactionMock));
+        Assert.That (customer.GetStateForTransaction (ClientTransaction.Current), Is.EqualTo (StateType.Unchanged));
+        Assert.That (customer.GetStateForTransaction (ClientTransactionMock), Is.EqualTo (StateType.Changed));
 
         using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
         {
-          Assert.AreEqual (StateType.Changed, customer.GetStateForTransaction (ClientTransactionMock)); // must not throw a ClientTransactionDiffersException
+          Assert.That (customer.GetStateForTransaction (ClientTransactionMock), Is.EqualTo (StateType.Changed)); // must not throw a ClientTransactionDiffersException
         }
       }
     }
@@ -384,18 +385,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       newObject.Delete ();
 
-      Assert.IsTrue (newObject.IsDiscarded);
-      Assert.AreEqual (StateType.Discarded, newObject.State);
-      Assert.IsTrue (newObjectDataContainer.IsDiscarded);
-      Assert.AreEqual (StateType.Discarded, newObjectDataContainer.State);
+      Assert.That (newObject.IsDiscarded, Is.True);
+      Assert.That (newObject.State, Is.EqualTo (StateType.Discarded));
+      Assert.That (newObjectDataContainer.IsDiscarded, Is.True);
+      Assert.That (newObjectDataContainer.State, Is.EqualTo (StateType.Discarded));
 
       loadedObject.Delete ();
       ClientTransactionMock.Commit ();
 
-      Assert.IsTrue (loadedObject.IsDiscarded);
-      Assert.AreEqual (StateType.Discarded, loadedObject.State);
-      Assert.IsTrue (loadedObjectDataContainer.IsDiscarded);
-      Assert.AreEqual (StateType.Discarded, loadedObjectDataContainer.State);
+      Assert.That (loadedObject.IsDiscarded, Is.True);
+      Assert.That (loadedObject.State, Is.EqualTo (StateType.Discarded));
+      Assert.That (loadedObjectDataContainer.IsDiscarded, Is.True);
+      Assert.That (loadedObjectDataContainer.State, Is.EqualTo (StateType.Discarded));
     }
 
     [Test]
@@ -408,32 +409,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         otherTransaction.EnlistDomainObject (loadedObject);
         loadedObject.Delete ();
         otherTransaction.Commit ();
-        Assert.IsTrue (loadedObject.IsDiscarded);
+        Assert.That (loadedObject.IsDiscarded, Is.True);
       }
-      Assert.IsFalse (loadedObject.IsDiscarded);
+      Assert.That (loadedObject.IsDiscarded, Is.False);
 
-      Assert.IsTrue (loadedObject.IsDiscardedInTransaction (otherTransaction));
-      Assert.IsFalse (loadedObject.IsDiscardedInTransaction (ClientTransaction.Current));
+      Assert.That (loadedObject.IsDiscardedInTransaction (otherTransaction), Is.True);
+      Assert.That (loadedObject.IsDiscardedInTransaction (ClientTransaction.Current), Is.False);
     }
 
     [Test]
     public void MarkAsChanged ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      Assert.AreEqual (StateType.Unchanged, order.State);
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
       order.MarkAsChanged ();
-      Assert.AreEqual (StateType.Changed, order.State);
+      Assert.That (order.State, Is.EqualTo (StateType.Changed));
 
       ClientTransactionMock.Rollback ();
-      Assert.AreEqual (StateType.Unchanged, order.State);
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
 
       SetDatabaseModifyable ();
 
       order.MarkAsChanged ();
-      Assert.AreEqual (StateType.Changed, order.State);
+      Assert.That (order.State, Is.EqualTo (StateType.Changed));
 
       ClientTransactionMock.Commit ();
-      Assert.AreEqual (StateType.Unchanged, order.State);
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
@@ -565,43 +566,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       CheckIfObjectIsDeleted (DomainObjectIDs.OrderItem2);
 
       order3 = Order.GetObject (DomainObjectIDs.Order3);
-      Assert.AreEqual (7, order3.OrderNumber);
+      Assert.That (order3.OrderNumber, Is.EqualTo (7));
 
       newOrder = Order.GetObject (newOrderID);
-      Assert.IsNotNull (newOrder);
+      Assert.That (newOrder, Is.Not.Null);
 
       official1 = Official.GetObject (DomainObjectIDs.Official1);
-      Assert.IsNotNull (official1.Orders[newOrderID]);
-      Assert.AreSame (official1, newOrder.Official);
-      Assert.IsNull (official1.Orders[DomainObjectIDs.Order1]);
+      Assert.That (official1.Orders[newOrderID], Is.Not.Null);
+      Assert.That (newOrder.Official, Is.SameAs (official1));
+      Assert.That (official1.Orders[DomainObjectIDs.Order1], Is.Null);
 
       orderTicket1 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      Assert.AreEqual (@"C:\NewFile.tif", orderTicket1.FileName);
-      Assert.AreSame (newOrder, orderTicket1.Order);
-      Assert.AreSame (orderTicket1, newOrder.OrderTicket);
+      Assert.That (orderTicket1.FileName, Is.EqualTo (@"C:\NewFile.tif"));
+      Assert.That (orderTicket1.Order, Is.SameAs (newOrder));
+      Assert.That (newOrder.OrderTicket, Is.SameAs (orderTicket1));
 
       newOrderItem1 = OrderItem.GetObject (newOrderItem1ID);
-      Assert.IsNotNull (newOrderItem1);
-      Assert.AreEqual (1, newOrderItem1.Position);
-      Assert.AreSame (newOrder, newOrderItem1.Order);
-      Assert.IsNotNull (newOrder.OrderItems[newOrderItem1ID]);
+      Assert.That (newOrderItem1, Is.Not.Null);
+      Assert.That (newOrderItem1.Position, Is.EqualTo (1));
+      Assert.That (newOrderItem1.Order, Is.SameAs (newOrder));
+      Assert.That (newOrder.OrderItems[newOrderItem1ID], Is.Not.Null);
 
       newOrderItem2 = OrderItem.GetObject (newOrderItem2ID);
-      Assert.IsNotNull (newOrderItem2);
-      Assert.AreEqual (2, newOrderItem2.Position);
-      Assert.AreSame (order3, newOrderItem2.Order);
-      Assert.IsNotNull (order3.OrderItems[newOrderItem2ID]);
+      Assert.That (newOrderItem2, Is.Not.Null);
+      Assert.That (newOrderItem2.Position, Is.EqualTo (2));
+      Assert.That (newOrderItem2.Order, Is.SameAs (order3));
+      Assert.That (order3.OrderItems[newOrderItem2ID], Is.Not.Null);
 
       newCustomer = Customer.GetObject (newCustomerID);
       newCeo = Ceo.GetObject (newCeoID);
 
-      Assert.AreSame (newCustomer, newCeo.Company);
-      Assert.AreSame (newCeo, newCustomer.Ceo);
-      Assert.IsTrue (newCustomer.Orders.Contains (DomainObjectIDs.Order2));
-      Assert.AreSame (newCustomer, newCustomer.Orders[DomainObjectIDs.Order2].Customer);
+      Assert.That (newCeo.Company, Is.SameAs (newCustomer));
+      Assert.That (newCustomer.Ceo, Is.SameAs (newCeo));
+      Assert.That (newCustomer.Orders.Contains (DomainObjectIDs.Order2), Is.True);
+      Assert.That (newCustomer.Orders[DomainObjectIDs.Order2].Customer, Is.SameAs (newCustomer));
 
       orderTicket3 = OrderTicket.GetObject (DomainObjectIDs.OrderTicket3);
-      Assert.AreEqual (@"C:\NewFile.gif", orderTicket3.FileName);
+      Assert.That (orderTicket3.FileName, Is.EqualTo (@"C:\NewFile.gif"));
     }
 
     [Test]
@@ -644,32 +645,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       newSupervisor1 = Employee.GetObject (newSupervisor1ID);
       newSubordinate1 = Employee.GetObject (newSubordinate1ID);
 
-      Assert.AreSame (newSupervisor1, newSubordinate1.Supervisor);
-      Assert.IsTrue (newSupervisor1.Subordinates.Contains (newSubordinate1ID));
+      Assert.That (newSubordinate1.Supervisor, Is.SameAs (newSupervisor1));
+      Assert.That (newSupervisor1.Subordinates.Contains (newSubordinate1ID), Is.True);
 
       supervisor2 = Employee.GetObject (DomainObjectIDs.Employee2);
 
-      Assert.IsNull (supervisor2.Supervisor);
-      Assert.AreEqual ("New name of supervisor", supervisor2.Name);
+      Assert.That (supervisor2.Supervisor, Is.Null);
+      Assert.That (supervisor2.Name, Is.EqualTo ("New name of supervisor"));
 
       subordinate3 = Employee.GetObject (DomainObjectIDs.Employee3);
 
-      Assert.AreSame (supervisor2, subordinate3.Supervisor);
-      Assert.IsTrue (supervisor2.Subordinates.Contains (DomainObjectIDs.Employee3));
-      Assert.AreEqual ("New name of subordinate", subordinate3.Name);
+      Assert.That (subordinate3.Supervisor, Is.SameAs (supervisor2));
+      Assert.That (supervisor2.Subordinates.Contains (DomainObjectIDs.Employee3), Is.True);
+      Assert.That (subordinate3.Name, Is.EqualTo ("New name of subordinate"));
 
-      Assert.AreSame (supervisor2, newSupervisor1.Supervisor);
-      Assert.IsTrue (supervisor2.Subordinates.Contains (newSupervisor1ID));
+      Assert.That (newSupervisor1.Supervisor, Is.SameAs (supervisor2));
+      Assert.That (supervisor2.Subordinates.Contains (newSupervisor1ID), Is.True);
 
       newSubordinate2 = Employee.GetObject (newSubordinate2ID);
 
-      Assert.IsNull (newSubordinate2.Supervisor);
+      Assert.That (newSubordinate2.Supervisor, Is.Null);
 
       supervisor6 = Employee.GetObject (DomainObjectIDs.Employee6);
       newSubordinate3 = Employee.GetObject (newSubordinate3ID);
 
-      Assert.AreSame (supervisor6, newSubordinate3.Supervisor);
-      Assert.IsTrue (supervisor6.Subordinates.Contains (newSubordinate3ID));
+      Assert.That (newSubordinate3.Supervisor, Is.SameAs (supervisor6));
+      Assert.That (supervisor6.Subordinates.Contains (newSubordinate3ID), Is.True);
 
       CheckIfObjectIsDeleted (DomainObjectIDs.Employee1);
       CheckIfObjectIsDeleted (DomainObjectIDs.Employee4);
@@ -689,7 +690,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ReInitializeTransaction ();
 
       computer4 = Computer.GetObject (DomainObjectIDs.Computer4);
-      Assert.IsNull (computer4.Employee);
+      Assert.That (computer4.Employee, Is.Null);
     }
 
     [Test]
@@ -705,8 +706,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ReInitializeTransaction ();
 
       partner = Partner.GetObject (DomainObjectIDs.Partner2);
-      Assert.AreEqual (newPerson.ID, partner.ContactPerson.ID);
-      Assert.IsNull (partner.IndustrialSector);
+      Assert.That (partner.ContactPerson.ID, Is.EqualTo (newPerson.ID));
+      Assert.That (partner.IndustrialSector, Is.Null);
     }
 
     [Test]
@@ -718,8 +719,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       {
         order = Order.GetObject (DomainObjectIDs.Order1);
       }
-      Assert.IsTrue (order.CanBeUsedInTransaction (clientTransactionMock));
-      Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+      Assert.That (order.CanBeUsedInTransaction (clientTransactionMock), Is.True);
+      Assert.That (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction), Is.False);
     }
 
     [Test]
@@ -735,10 +736,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         order = Order.GetObject (DomainObjectIDs.Order1, true);
 
-        Assert.AreEqual (StateType.Deleted, order.State);
+        Assert.That (order.State, Is.EqualTo (StateType.Deleted));
       }
-      Assert.IsTrue (order.CanBeUsedInTransaction (clientTransactionMock));
-      Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+      Assert.That (order.CanBeUsedInTransaction (clientTransactionMock), Is.True);
+      Assert.That (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction), Is.False);
     }
 
     [Test]
@@ -750,8 +751,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       {
         order = Order.NewObject ();
       }
-      Assert.IsTrue (order.CanBeUsedInTransaction (clientTransactionMock));
-      Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+      Assert.That (order.CanBeUsedInTransaction (clientTransactionMock), Is.True);
+      Assert.That (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction), Is.False);
     }
 
     [Test]
@@ -759,8 +760,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      Assert.AreEqual (DomainObjectIDs.Order1, customer.Orders[0].ID);
-      Assert.AreEqual (DomainObjectIDs.OrderWithoutOrderItem, customer.Orders[1].ID);
+      Assert.That (customer.Orders[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.OrderWithoutOrderItem));
     }
 
     [Test]
@@ -770,15 +771,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Dev.Null = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
 
-      Assert.AreEqual (DomainObjectIDs.Order1, customer.Orders[0].ID);
-      Assert.AreEqual (DomainObjectIDs.OrderWithoutOrderItem, customer.Orders[1].ID);
+      Assert.That (customer.Orders[0].ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (customer.Orders[1].ID, Is.EqualTo (DomainObjectIDs.OrderWithoutOrderItem));
     }
 
     [Test]
     public void GetDomainObjectType ()
     {
       Customer customer = Customer.NewObject ();
-      Assert.AreEqual (typeof (Customer), customer.InternalDataContainer.DomainObjectType);
+      Assert.That (customer.InternalDataContainer.DomainObjectType, Is.EqualTo (typeof (Customer)));
     }
 
     [Test]
@@ -789,15 +790,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       derivedClass.String = "Derived";
       baseClass.String = "Base";
-      
-      Assert.AreEqual ("Derived", derivedClass.String);
-      Assert.AreEqual ("Base", baseClass.String);
+
+      Assert.That (derivedClass.String, Is.EqualTo ("Derived"));
+      Assert.That (baseClass.String, Is.EqualTo ("Base"));
 
       baseClass.String = "NewBase";
       derivedClass.String = "NewDerived";
-      
-      Assert.AreEqual ("NewDerived", derivedClass.String);
-      Assert.AreEqual ("NewBase", baseClass.String);
+
+      Assert.That (derivedClass.String, Is.EqualTo ("NewDerived"));
+      Assert.That (baseClass.String, Is.EqualTo ("NewBase"));
     }
+
+    //[Test]
+    //public void EventManager()
+    //{
+    //  var order = Order.NewObject ();
+    //  var eventManager = (DomainObjectEventManager) PrivateInvoke.GetNonPublicField (order, "EventManager");
+    //  Assert.That (eventManager, Is.Not.Null);
+
+    //}
   }
 }
