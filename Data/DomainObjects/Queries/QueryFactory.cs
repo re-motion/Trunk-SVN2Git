@@ -15,7 +15,6 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Utilities;
@@ -40,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </remarks>
     /// <example>
     /// The following example creates a new instance of <see cref="SqlServerGenerator"/> and supplies it to 
-    /// <see cref="CreateLinqQuery{T}"/>. The object returned by <see cref="CreateLinqQuery{T}"/> method is then used as 
+    /// <see cref="CreateLinqQuery{T}()"/>. The object returned by <see cref="CreateLinqQuery{T}()"/> method is then used as 
     /// an entry point for a query that selects a number of <c>Order</c> objects, filters them by <c>OrderNumber</c>, and orders them by name of
     /// customer (which includes an implicit join between <c>Order</c> and <c>Customer</c> objects).
     /// <code>
