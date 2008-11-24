@@ -85,9 +85,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
           <securityMetadata xmlns=""http://www.re-motion.org/Security/Metadata/1.0"">
             <stateProperties>
               <stateProperty id=""4bbb1bab-8d37-40c0-918d-7a07cc7de44f"" name=""Confidentiality"">
-                <state name=""Normal"" value=""0"" />
-                <state name=""Confidential"" value=""1"" />
-                <state name=""Private"" value=""2"" />
+                <state name=""Normal|Domain.Confidentiality, Domain"" value=""0"" />
+                <state name=""Confidential|Domain.Confidentiality, Domain"" value=""1"" />
+                <state name=""Private|Domain.Confidentiality, Domain"" value=""2"" />
               </stateProperty>
             </stateProperties>
           </securityMetadata>";
@@ -231,15 +231,15 @@ namespace Remotion.Security.UnitTests.Core.Metadata
           <securityMetadata xmlns=""http://www.re-motion.org/Security/Metadata/1.0"">
             <stateProperties>
               <stateProperty id=""4bbb1bab-8d37-40c0-918d-7a07cc7de44f"" name=""Confidentiality"">
-                <state name=""Normal"" value=""0"" />
-                <state name=""Confidential"" value=""1"" />
-                <state name=""Private"" value=""2"" />
+                <state name=""Normal|Domain.Confidentiality, Domain"" value=""0"" />
+                <state name=""Confidential|Domain.Confidentiality, Domain"" value=""1"" />
+                <state name=""Private|Domain.Confidentiality, Domain"" value=""2"" />
               </stateProperty>
 
               <stateProperty id=""40749391-5c45-4fdd-a698-53a6cf167ae7"" name=""SomeEnum"">
-                <state name=""First"" value=""0"" />
-                <state name=""Second"" value=""1"" />
-                <state name=""Third"" value=""2"" />
+                <state name=""First|Namespace.TypeName, Assembly"" value=""0"" />
+                <state name=""Second|Namespace.TypeName, Assembly"" value=""1"" />
+                <state name=""Third|Namespace.TypeName, Assembly"" value=""2"" />
               </stateProperty>
             </stateProperties>
           </securityMetadata>";
@@ -330,9 +330,9 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
             <stateProperties>
               <stateProperty id=""4bbb1bab-8d37-40c0-918d-7a07cc7de44f"" name=""Confidentiality"">
-                <state name=""Normal"" value=""0"" />
-                <state name=""Confidential"" value=""1"" />
-                <state name=""Private"" value=""2"" />
+                <state name=""Normal|Domain.Confidentiality, Domain"" value=""0"" />
+                <state name=""Confidential|Domain.Confidentiality, Domain"" value=""1"" />
+                <state name=""Private|Domain.Confidentiality, Domain"" value=""2"" />
               </stateProperty>
             </stateProperties>
           </securityMetadata>";
@@ -471,15 +471,15 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
             <stateProperties>
               <stateProperty id=""d81b1521-ea06-4338-af6f-ff8510394efd"" name=""Confidentiality"">
-                <state name=""Normal"" value=""0"" />
-                <state name=""Confidential"" value=""1"" />
-                <state name=""Private"" value=""2"" />
+                <state name=""Normal|Domain.Confidentiality, Domain"" value=""0"" />
+                <state name=""Confidential|Domain.Confidentiality, Domain"" value=""1"" />
+                <state name=""Private|Domain.Confidentiality, Domain"" value=""2"" />
               </stateProperty>
 
               <stateProperty id=""40749391-5c45-4fdd-a698-53a6cf167ae7"" name=""SomeEnum"">
-                <state name=""First"" value=""0"" />
-                <state name=""Second"" value=""1"" />
-                <state name=""Third"" value=""2"" />
+                <state name=""First|Namespace.TypeName, Assembly"" value=""0"" />
+                <state name=""Second|Namespace.TypeName, Assembly"" value=""1"" />
+                <state name=""Third|Namespace.TypeName, Assembly"" value=""2"" />
               </stateProperty>
             </stateProperties>
 

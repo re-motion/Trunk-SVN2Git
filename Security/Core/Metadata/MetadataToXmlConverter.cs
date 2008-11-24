@@ -93,7 +93,7 @@ namespace Remotion.Security.Metadata
 
       EnumWrapper enumWrapper = new EnumWrapper (enumValueInfo.Name, enumValueInfo.TypeName);
       XmlAttribute enumValueNameAttribute = document.CreateAttribute ("name");
-      enumValueNameAttribute.Value = enumWrapper.ToString ();
+      enumValueNameAttribute.Value = enumWrapper.Name;
 
       XmlAttribute enumValueValueAttribute = document.CreateAttribute ("value");
       enumValueValueAttribute.Value = enumValueInfo.Value.ToString ();
@@ -127,7 +127,7 @@ namespace Remotion.Security.Metadata
       XmlElement propertyValueElement = document.CreateElement ("state", _metadataSchema.SchemaUri);
 
       XmlAttribute propertyValueNameAttribute = document.CreateAttribute ("name");
-      propertyValueNameAttribute.Value = enumValueInfo.Name;
+      propertyValueNameAttribute.Value = new EnumWrapper(enumValueInfo.Name, enumValueInfo.TypeName).Name;
       
       XmlAttribute propertyValueValueAttribute = document.CreateAttribute ("value");
       propertyValueValueAttribute.Value = enumValueInfo.Value.ToString ();

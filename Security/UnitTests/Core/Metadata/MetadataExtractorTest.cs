@@ -101,15 +101,15 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
             <stateProperties>
               <stateProperty id=""00000000-0000-0000-0002-000000000001"" name=""State"">
-                <state name=""New"" value=""0"" />
-                <state name=""Normal"" value=""1"" />
-                <state name=""Archived"" value=""2"" />
+                <state name=""New|Remotion.Security.UnitTests.TestDomain.FileState, Remotion.Security.UnitTests.TestDomain"" value=""0"" />
+                <state name=""Normal|Remotion.Security.UnitTests.TestDomain.FileState, Remotion.Security.UnitTests.TestDomain"" value=""1"" />
+                <state name=""Archived|Remotion.Security.UnitTests.TestDomain.FileState, Remotion.Security.UnitTests.TestDomain"" value=""2"" />
               </stateProperty>
 
               <stateProperty id=""00000000-0000-0000-0001-000000000001"" name=""Confidentiality"">
-                <state name=""Normal"" value=""0"" />
-                <state name=""Confidential"" value=""1"" />
-                <state name=""Private"" value=""2"" />
+                <state name=""Normal|Remotion.Security.UnitTests.TestDomain.Confidentiality, Remotion.Security.UnitTests.TestDomain"" value=""0"" />
+                <state name=""Confidential|Remotion.Security.UnitTests.TestDomain.Confidentiality, Remotion.Security.UnitTests.TestDomain"" value=""1"" />
+                <state name=""Private|Remotion.Security.UnitTests.TestDomain.Confidentiality, Remotion.Security.UnitTests.TestDomain"" value=""2"" />
               </stateProperty>
             </stateProperties>
 
@@ -183,15 +183,15 @@ namespace Remotion.Security.UnitTests.Core.Metadata
 
             <stateProperties>
               <stateProperty id=""00000000-0000-0000-0002-000000000001"" name=""State"">
-                <state name=""New"" value=""0"" />
-                <state name=""Normal"" value=""1"" />
-                <state name=""Archived"" value=""2"" />
+                <state name=""New|Remotion.Security.UnitTests.TestDomain.FileState, Remotion.Security.UnitTests.TestDomain"" value=""0"" />
+                <state name=""Normal|Remotion.Security.UnitTests.TestDomain.FileState, Remotion.Security.UnitTests.TestDomain"" value=""1"" />
+                <state name=""Archived|Remotion.Security.UnitTests.TestDomain.FileState, Remotion.Security.UnitTests.TestDomain"" value=""2"" />
               </stateProperty>
 
               <stateProperty id=""00000000-0000-0000-0001-000000000001"" name=""Confidentiality"">
-                <state name=""Normal"" value=""0"" />
-                <state name=""Confidential"" value=""1"" />
-                <state name=""Private"" value=""2"" />
+                <state name=""Normal|Remotion.Security.UnitTests.TestDomain.Confidentiality, Remotion.Security.UnitTests.TestDomain"" value=""0"" />
+                <state name=""Confidential|Remotion.Security.UnitTests.TestDomain.Confidentiality, Remotion.Security.UnitTests.TestDomain"" value=""1"" />
+                <state name=""Private|Remotion.Security.UnitTests.TestDomain.Confidentiality, Remotion.Security.UnitTests.TestDomain"" value=""2"" />
               </stateProperty>
             </stateProperties>
 
