@@ -16,7 +16,7 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle ("Remotion Development Support Library for Remotion.Web")]
+[assembly: AssemblyTitle("Remotion Development Support Library for Remotion.Web")]
 [assembly: AssemblyDescription("Library for unit testing, building and other development-time activities.")]
 [assembly: AssemblyConfiguration(".NET Framework: net-3.5, build type: debug")]
 [assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
@@ -37,4 +37,4 @@ using System.Reflection;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.11.4.2")]
+[assembly: AssemblyVersion("1.11.14.2")]
