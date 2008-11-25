@@ -351,6 +351,16 @@ namespace Remotion.Data.DomainObjects
       get { return _bindingTransaction ?? ClientTransaction.Current; }
     }
 
+    /// <summary>
+    /// Gets the <see cref="ClientTransaction"/> this <see cref="DomainObject"/> instance was bound to, or <see langword="null"/>
+    /// if the object has not been bound.
+    /// </summary>
+    /// <value>The <see cref="ClientTransaction"/> this object was bound to, or <see langword="null"/>.</value>
+    public ClientTransaction BindingTransaction
+    {
+      get { return _bindingTransaction; }
+    }
+
     public DomainObjectTransactionContextIndexer TransactionContext
     {
       get { return new DomainObjectTransactionContextIndexer (this); }
