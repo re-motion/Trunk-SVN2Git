@@ -40,7 +40,6 @@
         <include name="UI/**/*.cs" />
         <include name="Utilities/**/*.cs" />
         <exclude name="Properties/AssemblyInfoTemplate.cs" />
-        <exclude name="ExecutionEngine/Infrastructure/TxStrategyDoc.cs" />
       </sources>
       <references failonempty="true">
         <include name="${build.outputdir}/Remotion.dll" />

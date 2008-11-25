@@ -109,7 +109,6 @@
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Context\WebSafeContextMixin.cs" />
-    <None Include="ExecutionEngine\Infrastructure\TxStrategyDoc.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategy.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionExecutionListener.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionMode.cs" />
