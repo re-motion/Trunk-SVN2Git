@@ -895,7 +895,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
     public void WriteAclExpansionAsHtmlToStreamWriter (List<AclExpansionEntry> aclExpansion, bool outputRowCount)
     {
-      string aclExpansionFileName = "c:\\temp\\AclExpansionTest_" + FileNameTimestamp (DateTime.Now) + ".html";
+      string aclExpansionFileName = "c:\\temp\\AclExpansionTest_" + FileNameTimestamp (DateTime.Now) + "_.html";
       using (var streamWriter = new StreamWriter (aclExpansionFileName))
       {
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, streamWriter, true);

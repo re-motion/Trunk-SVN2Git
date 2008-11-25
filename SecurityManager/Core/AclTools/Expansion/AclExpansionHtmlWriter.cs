@@ -9,10 +9,12 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -165,10 +167,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    private void WriteTableDataForBodyStates (AclExpansionEntry aclExpansionEntry)
+    private void WriteTableDataForStates (AclExpansionEntry aclExpansionEntry)
     {
       htmlTagWriter.Tags.td ();
+      WriteTableDataBodyForSingleState(aclExpansionEntry);
+      htmlTagWriter.Tags.tdEnd ();
+    }
 
+    private void WriteTableDataBodyForSingleState (AclExpansionEntry aclExpansionEntry)
+    {
       if (aclExpansionEntry.AccessControlList is StatelessAccessControlList)
       {
         htmlTagWriter.Value (StatelessAclStateHtmlText);
@@ -179,7 +186,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         //var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).OrderBy (x => x.DisplayName).ToArray();
         var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).OrderBy (x => x.DisplayName);
 
-        //htmlTagWriter.Value (stateDefinitions.Any() + " --- ");
+        //htmlTagWriter.Value (aclExpansionEntry.StateCombinations + ", "); // !!!!!!!! SPIKE ONLY !!!!!!!!!
 
         if (!stateDefinitions.Any ())
         {
@@ -203,7 +210,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           }
         }
       }
-      htmlTagWriter.Tags.tdEnd ();
     }
 
     private void WriteTableDataForAccessTypes (AccessTypeDefinition[] accessTypeDefinitions)
@@ -351,7 +357,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteTableBody_ProcessStates(classNode.Children);
     }
 
-
+#if(true)
     private void WriteTableBody_ProcessStates (IList<AclExpansionEntry> states)
     {
       // States Output
@@ -359,7 +365,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         WriteTableRowBeginIfNotInTableRow ();
 
-        WriteTableDataForBodyStates (aclExpansionEntry);
+        WriteTableDataForStates (aclExpansionEntry);
         WriteTableDataForBodyConditions (aclExpansionEntry.AccessConditions);
         WriteTableDataForAccessTypes (aclExpansionEntry.AllowedAccessTypes);
         if (Settings.OutputDeniedRights)
@@ -370,6 +376,235 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableRowEnd ();
       }
     }
+#else
+    private void WriteTableBody_ProcessStates (IList<AclExpansionEntry> states)
+    {
+      var statesGroupedByOnlyDiffersInStates = states.GroupBy(aee => aee,aee => aee,new AclExpansionEntryIgnoreStateEqualityComparer());
+
+      // States Output
+      foreach (var aclExpansionEntryGrouping in statesGroupedByOnlyDiffersInStates)
+      {
+        WriteTableRowBeginIfNotInTableRow ();
+
+        // Write all states combined into one cell
+        WriteTableDataForStates (aclExpansionEntryGrouping);
+
+        AclExpansionEntry aclExpansionEntry = aclExpansionEntryGrouping.Key; 
+        WriteTableDataForBodyConditions (aclExpansionEntry.AccessConditions);
+        WriteTableDataForAccessTypes (aclExpansionEntry.AllowedAccessTypes);
+        if (Settings.OutputDeniedRights)
+        {
+          WriteTableDataForAccessTypes (aclExpansionEntry.DeniedAccessTypes);
+        }
+
+        WriteTableRowEnd ();
+      }
+    }
+
+
+
+    private void WriteTableDataForStates (IGrouping<AclExpansionEntry,AclExpansionEntry> aclExpansionEntryGrouping)
+    {
+      htmlTagWriter.Tags.td ();
+
+      bool firstElement = true;
+      foreach (AclExpansionEntry aclExpansionEntry in aclExpansionEntryGrouping)
+      {
+        if (!firstElement)
+        {
+          htmlTagWriter.Value ("; ");
+        }
+
+        WriteTableDataBodyForSingleState (aclExpansionEntry);
+        firstElement = false;
+      }
+      htmlTagWriter.Tags.tdEnd ();
+    }
+
+ 
+
+    public class AclExpansionEntryIgnoreStateEqualityComparer : IEqualityComparer<AclExpansionEntry>
+    {
+      private static readonly EqualsAndGetHashCodeSupplier<AclExpansionEntry> _equalsAndGetHashCode = 
+        new EqualsAndGetHashCodeSupplier<AclExpansionEntry>(
+          a => a.AccessControlList, a => a.Class, a => a.Role, a => a.User,
+          
+          a => a.AccessConditions.AbstractRole,
+          a => a.AccessConditions.GroupHierarchyCondition,
+          a => a.AccessConditions.IsOwningUserRequired,
+          a => a.AccessConditions.OwningGroup,
+          a => a.AccessConditions.OwningTenant,
+          a => a.AccessConditions.TenantHierarchyCondition,
+
+          a => new EnumerableEqualsWrapper<AccessTypeDefinition>(a.AllowedAccessTypes),
+          a => new EnumerableEqualsWrapper<AccessTypeDefinition>(a.DeniedAccessTypes)
+
+      );
+
+
+      public bool Equals (AclExpansionEntry x, AclExpansionEntry y)
+      {
+        return _equalsAndGetHashCode.Equals (x, y);
+
+        ////bool referencesEqual = x.AccessControlList == y.AccessControlList
+        //bool referencesEqual = Compare.It (x, y, a => a.AccessControlList, a => a.Class, a => a.Role, a => a.User);
+        //if (!referencesEqual)
+        //{
+        //  return false;
+        //}
+
+        //bool accessConditionsEqual = Compare.It (
+        //    x.AccessConditions,
+        //    y.AccessConditions,
+        //    a => a.AbstractRole,
+        //    a => a.GroupHierarchyCondition,
+        //    a => a.IsOwningUserRequired,
+        //    a => a.OwningGroup,
+        //    a => a.OwningTenant,
+        //    a => a.TenantHierarchyCondition);
+
+        //throw new System.NotImplementedException();
+      }
+
+      public int GetHashCode (AclExpansionEntry x)
+      {
+        return _equalsAndGetHashCode.GetHashCode (x);
+        //return EqualityUtility.GetRotatedHashCode (x.AccessConditions);
+      }
+    }
+
+
+    public class EqualsAndGetHashCodeSupplier<T>
+    {
+      private readonly Func<T, object>[] _classMembersUsedForComparison;
+
+      public EqualsAndGetHashCodeSupplier(params Func<T, object>[] membersUsedForComparison)
+      {
+        _classMembersUsedForComparison = membersUsedForComparison;
+      }
+
+      public bool Equals (T x, T y)
+      {
+        foreach (var member in _classMembersUsedForComparison)
+        {
+          if (!member (x).Equals (member (y)))
+          {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      public int GetHashCode (T x)
+      {
+        return EqualityUtility.GetRotatedHashCode (_classMembersUsedForComparison.Select(m => m(x)));
+      }
+    }
+
+
+    public class EnumerableEqualsWrapper<TElement> : IEnumerable<TElement>
+
+    {
+      private readonly IEnumerable<TElement> _enumerable;
+
+      public EnumerableEqualsWrapper(IEnumerable<TElement> enumerable)
+      {
+        _enumerable = enumerable;
+      }
+
+
+
+      public override bool Equals(object obj)
+      {
+        if (ReferenceEquals (null, obj))
+          return false;
+        if (ReferenceEquals (this, obj))
+          return true;
+
+        if(obj is EnumerableEqualsWrapper<TElement>)
+        {
+          return obj.Equals (_enumerable);
+        }
+
+        if(!(obj is IEnumerable<TElement>))
+        {
+          return false;
+        }
+
+        IEnumerable<TElement> enumerable = (IEnumerable<TElement>) obj;
+        IEnumerator<TElement> enumerator0 = _enumerable.GetEnumerator();
+        IEnumerator<TElement> enumerator1 = enumerable.GetEnumerator();
+        while (true)
+        {
+          bool hasNext0 = enumerator0.MoveNext();
+          bool hasNext1 = enumerator1.MoveNext();
+
+          if (hasNext0 && hasNext1)
+          {
+            // Both enumerators have next element => continue comparing
+            if (!enumerator0.Current.Equals (enumerator1.Current))
+            {
+              return false;
+            }
+          }
+          else
+          {
+            // Only if both enumerators are false are the sequences equal
+            return hasNext0 == hasNext1;
+          }
+
+          //if(hasNext0 != hasNext1)
+          //{
+          //  // Number of elements not equal => sequence not equal
+          //  return false;
+          //}
+          //if(!hasNext0)
+          //{
+          //  // Both enumerators don't have more elements => sequence equal
+          //  return true;
+          //}
+          //if(!enumerator0.Current.Equals(enumerator1.Current))
+          //{
+          //  return false;
+          //}
+        }
+      }
+
+      public IEnumerator<TElement> GetEnumerator ()
+      {
+        return _enumerable.GetEnumerator();
+      }
+      
+      IEnumerator IEnumerable.GetEnumerator ()
+      {
+        return GetEnumerator();
+      }
+
+      
+      public override int GetHashCode ()
+      {
+        return EqualityUtility.GetRotatedHashCode(_enumerable);
+      }
+    }
+
+
+
+    //private static class Compare
+    //{
+    //  public static bool It<T> (T x, T y, params Func<T, object>[] members)
+    //  {
+    //    foreach (var member in members)
+    //    {
+    //      if (!member (x).Equals (member (y)))
+    //      {
+    //        return false;
+    //      }
+    //    }
+    //    return true;
+    //  }
+    //}
+#endif
+
   }
 }
 
