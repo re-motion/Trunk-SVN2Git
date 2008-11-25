@@ -81,7 +81,6 @@
     <Content Include="UI\SecurityManagerMasterPage.Master" />
     <Content Include="UI\ErrorMessageControl.ascx" />
     <Content Include="SecurityManagerUrlMapping.xml" />
-    <Content Include="res\Html\ContentViewStyle.css" />
     <Content Include="res\Html\Style.css" />
     <Content Include="UI\OrganizationalStructure\EditGroupTypePositionControl.ascx" />
     <Content Include="UI\OrganizationalStructure\EditGroupTypePositionForm.aspx" />

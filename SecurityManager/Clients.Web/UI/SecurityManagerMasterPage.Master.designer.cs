@@ -32,6 +32,15 @@ namespace Remotion.SecurityManager.Clients.Web.UI {
         protected global::System.Web.UI.HtmlControls.HtmlForm ThisForm;
         
         /// <summary>
+        /// SingleView control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.SingleView SingleView;
+        
+        /// <summary>
         /// HeaderControlsPlaceHolder control.
         /// </summary>
         /// <remarks>
