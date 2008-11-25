@@ -905,5 +905,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (newPropertyIndexer.DomainObject, Is.SameAs (deserializedOrder));
     }
 
+    [Test]
+    public void TransactionContext()
+    {
+      var order = Order.NewObject ();
+      var transactionContextIndexer = order.TransactionContext;
+
+      Assert.That (transactionContextIndexer, Is.InstanceOfType (typeof (DomainObjectTransactionContextIndexer)));
+      Assert.That (((DomainObjectTransactionContext) transactionContextIndexer[ClientTransaction.Current]).DomainObject, Is.SameAs (order));
+    }
+
   }
 }

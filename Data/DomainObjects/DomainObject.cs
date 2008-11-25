@@ -390,7 +390,12 @@ namespace Remotion.Data.DomainObjects
       get { return _bindingTransaction != null; }
     }
 
-    /// <summary>
+    public DomainObjectTransactionContextIndexer TransactionContext
+    {
+      get { return new DomainObjectTransactionContextIndexer (this); }
+    }
+
+      /// <summary>
     /// Gets the event manager responsible for raising this object's events.
     /// </summary>
     /// <value>The event manager for this <see cref="DomainObject"/>.</value>

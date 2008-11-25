@@ -158,6 +158,7 @@
     <Compile Include="Infrastructure\BindingClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ClientTransactionWrapper.cs" />
     <Compile Include="Infrastructure\DomainObjectEventManager.cs" />
+    <Compile Include="Infrastructure\DomainObjectTransactionContextIndexer.cs" />
     <Compile Include="Infrastructure\Interception\DomainObjectConstructorLookupInfo.cs" />
     <Compile Include="Infrastructure\PropertyAccessorData.cs" />
     <Compile Include="Infrastructure\PropertyKind.cs" />
