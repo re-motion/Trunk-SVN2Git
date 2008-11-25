@@ -363,7 +363,7 @@ CREATE TABLE [dbo].[Group]
 
   -- Group columns
   [Name] nvarchar (100) NOT NULL,
-  [ShortName] nvarchar (10) NULL,
+  [ShortName] nvarchar (20) NULL,
   [UniqueIdentifier] nvarchar (100) NOT NULL,
   [TenantID] uniqueidentifier NULL,
   [ParentID] uniqueidentifier NULL,

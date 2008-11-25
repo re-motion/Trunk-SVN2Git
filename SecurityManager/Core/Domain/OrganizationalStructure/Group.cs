@@ -129,7 +129,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [StringProperty (IsNullable = false, MaximumLength = 100)]
     public abstract string Name { get; set; }
 
-    [StringProperty (MaximumLength = 10)]
+    [StringProperty (MaximumLength = 20)]
     public abstract string ShortName { get; set; }
 
     [StringProperty (IsNullable = false, MaximumLength = 100)]
