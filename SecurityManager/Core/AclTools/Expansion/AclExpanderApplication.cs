@@ -113,10 +113,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _textWriterFactory.Extension = "html";
       DirectoryUsed = Settings.Directory;
       _textWriterFactory.Directory = DirectoryUsed;
-      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, _textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow ()), true);
-      aclExpansionHtmlWriter.Settings = CreateAclExpansionHtmlWriterSettings();
-      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
-
+      using (var textWriter = _textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow ()))
+      {
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
+        aclExpansionHtmlWriter.Settings = CreateAclExpansionHtmlWriterSettings();
+        aclExpansionHtmlWriter.WriteAclExpansionAsHtml();
+      }
       WriteCssFile ();
     }
 
