@@ -470,7 +470,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
-      WriteAclExpansionAsHtmlSpikeToStreamWriter (aclExpansionEntryList, true);
+      WriteAclExpansionAsHtmlToStreamWriter (aclExpansionEntryList, true);
     }
 
 
@@ -893,7 +893,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     // Helper Methods
     //--------------------------------------------------------------------------------------------------------------------------------
 
-    public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion, bool outputRowCount)
+    public void WriteAclExpansionAsHtmlToStreamWriter (List<AclExpansionEntry> aclExpansion, bool outputRowCount)
     {
       string aclExpansionFileName = "c:\\temp\\AclExpansionTest_" + FileNameTimestamp (DateTime.Now) + ".html";
       using (var streamWriter = new StreamWriter (aclExpansionFileName))

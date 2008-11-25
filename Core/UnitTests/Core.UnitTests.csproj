@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C216DEC9-8820-4298-B10F-FB4131466B69}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -469,6 +469,7 @@
     <Content Include="Mixins\MixerTool\SampleAssembly\SampleTypes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Utilities\TestData\WriteEmbeddedStringResourceToFileTestData.txt" />
     <Compile Include="Mixins\MixinBaseClassTest.cs" />
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationBuildTest.cs" />
     <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationCompleteInterfaceTest.cs" />

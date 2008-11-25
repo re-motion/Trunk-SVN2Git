@@ -10,6 +10,7 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 
 namespace Remotion.Utilities
@@ -50,6 +51,13 @@ namespace Remotion.Utilities
 
     public const int CopyBufferSize = 1024 * 64;
     
+
+
+    /// <summary>
+    /// Copies the complete content of one stream into another.
+    /// </summary>
+    /// <param name="input">The input stream.</param>
+    /// <param name="output">The output stream.</param>
     public static void CopyStream (Stream input, Stream output)
     {
       ArgumentUtility.CheckNotNull ("input", input);
@@ -63,5 +71,27 @@ namespace Remotion.Utilities
         output.Write (buffer, 0, bytesRead);
       } while (bytesRead != 0);
     }
+
+
+    /// <summary>
+    /// Writes a string resource embedded in an assemby into a file with the passed filename.
+    /// </summary>
+    /// <param name="typeWhoseNamespaceTheStringResourceResidesIn"><see cref="Type"/> in whose assembly and namespace the string resource is located.</param>
+    /// <param name="stringResourceName">Name of the string resource, relative to namespace of the passed <see cref="Type"/>.</param>
+    /// <param name="filePath">The path of the file the string resource will be written into.</param>
+    public static void WriteEmbeddedStringResourceToFile (Type typeWhoseNamespaceTheStringResourceResidesIn, string stringResourceName, string filePath)
+    {
+      ArgumentUtility.CheckNotNull ("typeWhoseNamespaceTheStringResourceResidesIn", typeWhoseNamespaceTheStringResourceResidesIn);
+      ArgumentUtility.CheckNotNull ("stringResourceName", stringResourceName);
+      ArgumentUtility.CheckNotNull ("filePath", filePath);
+      Assembly assembly = typeWhoseNamespaceTheStringResourceResidesIn.Assembly;
+      using (
+        Stream from = assembly.GetManifestResourceStream (typeWhoseNamespaceTheStringResourceResidesIn, stringResourceName),
+        to = new FileStream (filePath, FileMode.Create))
+      {
+        FileUtility.CopyStream (from, to);
+      }
+    }
+
   }
 }

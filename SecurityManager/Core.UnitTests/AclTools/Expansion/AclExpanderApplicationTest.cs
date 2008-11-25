@@ -10,6 +10,7 @@
 
 using System;
 using System.IO;
+using System.Windows;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -26,6 +27,41 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   [TestFixture]
   public class AclExpanderApplicationTest : AclToolsTestBase
   {
+    private const string c_cssFileContent = 
+    #region 
+        @"table 
+{
+  background-color: white;
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+  table-layout: auto;
+  border-collapse: collapse;
+  border-spacing: 10px;
+  empty-cells: show;
+  caption-side: top;
+  font-family: Arial, Helvetica, sans-serif;
+  vertical-align: text-top;
+  text-align: left;
+}
+
+th, td
+{
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  table-layout: auto;
+  border-collapse: collapse;
+  border-spacing: 1px;
+  padding: 5px;
+} 
+
+th
+{
+   background-color: #CCCCCC;
+}    ";
+    #endregion
+
     private readonly List<AccessControlList> _aclList = new List<AccessControlList>();
     private readonly List<SecurityManager.Domain.OrganizationalStructure.User> _userList = new List<User> ();
 
@@ -161,9 +197,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var textWriterFactoryMock = MockRepository.GenerateMock<ITextWriterFactory> ();
 
-      textWriterFactoryMock.Expect (mock => mock.Directory = directory); //.Do (invocation => Assert.That (invocation.Arguments[0], Is.SameAs (directory)));
-      textWriterFactoryMock.Expect (mock => mock.Extension = extension); //.Do (invocation => Assert.That (invocation.Arguments[0], Is.SameAs (directory)));
-      textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (TextWriter.Null);
+      textWriterFactoryMock.Expect (mock => mock.Directory = directory); 
+      textWriterFactoryMock.Expect (mock => mock.Extension = extension); 
+      //textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (TextWriter.Null));
+      textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (new StringWriter());
+      textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (new StringWriter ());
       
       textWriterFactoryMock.Replay();
 
@@ -172,37 +210,85 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       settings.Directory = directory;
       var application = new AclExpanderApplication (textWriterFactoryMock);
 
-      //application.Init (settings, TextWriter.Null, TextWriter.Null);
       application.Run (settings, TextWriter.Null, TextWriter.Null);
-      //Assert.That (application.Settings.Directory, Is.EqualTo (directory));
 
       textWriterFactoryMock.VerifyAllExpectations ();
     }
 
+    //[Test]
+    //public void CssFileCopyTest ()
+    //{
+    //  string directory = Path.GetTempPath();
+
+    //  using (File.Create (AclExpanderApplication.CssFileName))
+    //  {
+    //  }
+
+    //  try
+    //  {
+    //    var settings = new AclExpanderApplicationSettings ();
+    //    settings.UseMultipleFileOutput = true;
+    //    settings.Directory = directory;
+    //    var application = new AclExpanderApplication ();
+    //    //application.Init (settings, TextWriter.Null, TextWriter.Null);
+    //    application.Run (settings, TextWriter.Null, TextWriter.Null);
+
+    //    Assert.That (File.Exists (Path.Combine (application.DirectoryUsed, AclExpanderApplication.CssFileName)), Is.True);
+    //  }
+    //  finally
+    //  {
+    //    File.Delete (AclExpanderApplication.CssFileName);
+    //  }
+    //}
+
+
+
     [Test]
-    public void CssFileCopyTest ()
+    public void MultipleFileOutputCssFileWritingTest ()
     {
-      string directory = Path.GetTempPath();
+      var stringWriterFactory = new StringWriterFactory ();
 
-      using (File.Create (AclExpanderApplication.CssFileName))
-      {
-      }
+      var settings = new AclExpanderApplicationSettings ();
+      settings.UseMultipleFileOutput = true;
+      settings.Directory = "";
+      var application = new AclExpanderApplication (stringWriterFactory);
+      application.Run (settings, TextWriter.Null, TextWriter.Null);
 
-      try
-      {
-        var settings = new AclExpanderApplicationSettings ();
-        settings.UseMultipleFileOutput = true;
-        settings.Directory = directory;
-        var application = new AclExpanderApplication ();
-        //application.Init (settings, TextWriter.Null, TextWriter.Null);
-        application.Run (settings, TextWriter.Null, TextWriter.Null);
+      // Multifile HTML output => expect at least 3 files (CSS, main HTML, detail HTML files)
+      Assert.That (stringWriterFactory.Count, Is.GreaterThanOrEqualTo (3));
 
-        Assert.That (File.Exists (Path.Combine (application.DirectoryUsed, AclExpanderApplication.CssFileName)), Is.True);
-      }
-      finally
-      {
-        File.Delete (AclExpanderApplication.CssFileName);
-      }
+      const string cssFileName = AclExpanderApplication.CssFileName;
+      TextWriterData cssTextWriterData;
+      bool cssFileExists = stringWriterFactory.NameToTextWriterData.TryGetValue(cssFileName,out cssTextWriterData);
+      Assert.That (cssFileExists, Is.True);
+
+      string result = cssTextWriterData.TextWriter.ToString();
+      //Clipboard.SetText (AclExpansionHtmlWriterTest.CreateLiteralResultExpectedString (result));
+      Assert.That (result, Is.EqualTo (c_cssFileContent));
+    }
+
+    [Test]
+    public void SingleFileOutputCssFileWritingTest ()
+    {
+      var stringWriterFactory = new StringWriterFactory ();
+
+      var settings = new AclExpanderApplicationSettings ();
+      settings.UseMultipleFileOutput = false;
+      settings.Directory = "";
+      var application = new AclExpanderApplication (stringWriterFactory);
+      application.Run (settings, TextWriter.Null, TextWriter.Null);
+
+      // Single file HTML output => expect 2 files (CSS, HTML file)
+      Assert.That (stringWriterFactory.Count, Is.EqualTo (2));
+
+      const string cssFileName = AclExpanderApplication.CssFileName;
+      TextWriterData cssTextWriterData;
+      bool cssFileExists = stringWriterFactory.NameToTextWriterData.TryGetValue (cssFileName, out cssTextWriterData);
+      Assert.That (cssFileExists, Is.True);
+
+      string result = cssTextWriterData.TextWriter.ToString ();
+      //Clipboard.SetText (AclExpansionHtmlWriterTest.CreateLiteralResultExpectedString (result));
+      Assert.That (result, Is.EqualTo (c_cssFileContent));
     }
 
 

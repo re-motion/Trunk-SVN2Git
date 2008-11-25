@@ -32,6 +32,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   [TestFixture]
   public class AclExpansionHtmlWriterTest : AclToolsTestBase
   {
+    // Note: Code is kept for comparison of readability and XML validity safety with HtmlTagWriter
     [Test]
     [Explicit]
     public void XmlWriterSpikeTest ()
@@ -88,7 +89,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
     [Test]
     [Explicit]
-    public void WriteAclExpansionAsHtmlSpikeTest ()
+    public void WriteAclExpansionAsHtmlTest ()
     {
       using (new CultureScope ("de-AT","de-AT"))
       {
@@ -601,7 +602,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       }
     }
 
-    private string CreateLiteralResultExpectedString (string result)
+    public static string CreateLiteralResultExpectedString (string result)
     {
       var resultDoubleQuoted = result.Replace ("\"", "\"\"");
       return "\nconst string resultExpected =\n#region\n@\"" + resultDoubleQuoted + "\";\n#endregion\n";

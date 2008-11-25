@@ -24,7 +24,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private readonly List<AccessControlEntry> _accessTypesSupplyingAces = new List<AccessControlEntry>();
     private readonly List<AccessControlEntry> _matchingAces = new List<AccessControlEntry> ();
 
-    // TODO: Remove again after spike
     public List<AccessControlEntry> AccessTypesSupplyingAces
     {
       get { return _accessTypesSupplyingAces; }

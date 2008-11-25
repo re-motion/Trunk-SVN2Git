@@ -10,8 +10,10 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
@@ -161,5 +163,17 @@ namespace Remotion.UnitTests.Utilities
 
       mockRepository.VerifyAll ();
     }
+
+
+
+    [Test]
+    public void WriteEmbeddedStringResourceToFileTest ()
+    {
+      FileUtility.WriteEmbeddedStringResourceToFile (GetType (), "TestData.WriteEmbeddedStringResourceToFileTestData.txt", c_testFileName);
+      Assert.That (File.Exists (c_testFileName));
+      string result = File.ReadAllText (c_testFileName);
+      Assert.That (result, Is.EqualTo ("Hat der alte Hexenmeister sich doch einmal fortbegeben und nun sollen seine Geister..."));
+    }
+
   }
 }

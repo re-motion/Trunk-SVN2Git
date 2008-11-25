@@ -81,7 +81,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
             LogAclExpansion (aclExpansion);
           }
 
-          WriteAclExpansionAsHtmlSpikeToStreamWriter (aclExpansion);
+          WriteAclExpansionAsHtmlToStreamWriter (aclExpansion);
         }
       }
     }
@@ -95,7 +95,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public void WriteAclExpansionAsHtmlSpikeToStreamWriter (List<AclExpansionEntry> aclExpansion)
+    public void WriteAclExpansionAsHtmlToStreamWriter (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       if (Settings.UseMultipleFileOutput)
@@ -116,6 +116,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, _textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow ()), true);
       aclExpansionHtmlWriter.Settings = CreateAclExpansionHtmlWriterSettings();
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+
+      WriteCssFile ();
     }
 
     private void WriteAclExpansionAsMultiFileHtml (List<AclExpansionEntry> aclExpansion)
@@ -124,32 +126,37 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       DirectoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ());
       _textWriterFactory.Directory = DirectoryUsed;
 
-      //var aclExpansionHtmlWriterSettings = new AclExpansionHtmlWriterSettings ();
-      //aclExpansionHtmlWriterSettings.
-
       var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (_textWriterFactory, true);
       aclExpansionMultiFileHtmlWriter.DetailHtmlWriterSettings = CreateAclExpansionHtmlWriterSettings();
       aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
       
-      
-      File.Copy (Path.Combine (".", CssFileName), Path.Combine (DirectoryUsed, CssFileName), true);
+      //File.Copy (Path.Combine (".", CssFileName), Path.Combine (DirectoryUsed, CssFileName), true);
+      WriteCssFile ();
+    }
 
-      // TODO: Write embedded string resource CSS file to target dir; also for WriteAclExpansionAsSingleFileHtml above.
-      // TODO: Check if we can write the stream directly to target dir.
-      // TODO: Dsiable CSS file copying above.
-      // = GetEmbeddedStringResource ("Data.AclExpansion.css");
+    //private void WriteCssFile (string directory)
+    //{
+    //  FileUtility.WriteEmbeddedStringResourceToFile (GetType (), "Data.AclExpansion.css", Path.Combine (directory, CssFileName));
+    //}
+
+    private void WriteCssFile ()
+    {
+      using (var cssTextWriter = _textWriterFactory.NewTextWriter (CssFileName))
+      {
+        cssTextWriter.Write (GetEmbeddedStringResource ("Data.AclExpansion.css"));
+      }
     }
 
 
     private string GetEmbeddedStringResource (string name)
     {
-      Assembly assembly = GetType ().Assembly;
-      using (StreamReader reader = new StreamReader (assembly.GetManifestResourceStream (typeof (AclExpanderApplication), name)))
+      Type type = GetType();
+      Assembly assembly = type.Assembly;
+      using (StreamReader reader = new StreamReader (assembly.GetManifestResourceStream (type, name)))
       {
         return reader.ReadToEnd ();
       }
     }
-
 
 
     // Returns an AclExpansionHtmlWriterSettings initialized from the AclExpanderApplication Settings.
