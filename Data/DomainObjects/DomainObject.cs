@@ -429,6 +429,15 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
+    /// Gets the timestamp used for optimistic locking when the object is committed to the database.
+    /// </summary>
+    /// <value>The timestamp of the object.</value>
+    public object Timestamp
+    {
+      get { return TransactionContext[DomainObjectUtility.GetNonNullClientTransaction (this)].Timestamp; }
+    }
+
+    /// <summary>
     /// Determines whether this instance can be used in the <see cref="ClientTransaction"/>.
     /// </summary>
     /// <value></value>

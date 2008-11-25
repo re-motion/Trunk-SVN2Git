@@ -188,6 +188,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _newOrderContext.MarkAsChanged ();
     }
 
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException))]
+    public void MarkAsChanged_InvalidTransaction ()
+    {
+      _invalidContext.MarkAsChanged ();
+    }
+
+    [Test]
+    public void Timestamp_LoadedObject()
+    {
+      var timestamp = _order1Context.Timestamp;
+      Assert.That (timestamp, Is.Not.Null);
+      Assert.That (timestamp, Is.SameAs (_order1.GetInternalDataContainerForTransaction (_otherTransaction).Timestamp));
+    }
+
+    [Test]
+    public void Timestamp_NewObject ()
+    {
+      var timestamp = _newOrderContext.Timestamp;
+      Assert.That (timestamp, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDiscardedException))]
+    public void Timestamp_Discarded ()
+    {
+      DeleteNewOrder ();
+      Dev.Null = _newOrderContext.Timestamp;
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException))]
+    public void Timestamp_InvalidTransaction ()
+    {
+      Dev.Null = _invalidContext.Timestamp;
+    }
+
     private void DeleteNewOrder ()
     {
       using (_newOrderContext.AssociatedTransaction.EnterNonDiscardingScope ())

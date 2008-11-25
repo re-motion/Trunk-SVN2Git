@@ -91,6 +91,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
+    public object Timestamp
+    {
+      get { return AssociatedTransaction.GetDataContainer (DomainObject).Timestamp; }
+    }
+
     public void MarkAsChanged()
     {
       DomainObjectUtility.CheckIfObjectIsDiscarded (DomainObject, AssociatedTransaction);

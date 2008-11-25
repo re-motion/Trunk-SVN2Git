@@ -39,6 +39,12 @@ namespace Remotion.Data.DomainObjects
     bool IsDiscarded { get; }
 
     /// <summary>
+    /// Gets the timestamp used for optimistic locking when the object is committed to the database.
+    /// </summary>
+    /// <value>The timestamp of the object.</value>
+    object Timestamp { get; }
+
+    /// <summary>
     /// Marks the <see cref="DomainObject"/> as changed. If the object's previous <see cref="DomainObject.State"/> was <see cref="StateType.Unchanged"/>, it
     /// will be <see cref="StateType.Changed"/> after this method has been called.
     /// </summary>
