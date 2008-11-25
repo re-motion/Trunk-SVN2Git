@@ -48,32 +48,14 @@ table.accessControlList
 td.stateCombinationsContainer
 {
   border-right: solid 1px #005588;
-}
-
-div.stateCombinationsContainer
-{
-}
-
-div.stateCombinationContainer
-{
+  width: 12em;
 }
 
 td.accessControlEntriesContainer
 {
   height: auto;
   border-left: solid 1px #005588;
-}
-
-div.accessControlEntriesContainer
-{
-  overflow: auto;
-  height: auto;
-  width: 100%;
-}
-
-div.accessControlEntryContainer
-{
-  margin-top: 1em;
+  padding-top: 1em;
 }
 
 ul.permissionsList

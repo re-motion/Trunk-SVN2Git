@@ -25,26 +25,13 @@
   </td>
   </tr>
   <tr>
-    <td class="stateCombinationsContainer" style="width:12em">
-      <div id="StateCombinationControls" runat="server" class="stateCombinationsContainer"><%-- 
-        <securityManager:ObjectBoundRepeater ID="StateCombinationsRepeater" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="StateCombinations">
-          <HeaderTemplate><table><tr><td></HeaderTemplate>
-          <SeparatorTemplate></td></tr><tr><td></SeparatorTemplate>
-          <FooterTemplate></td></tr></table></FooterTemplate>
-          <ItemTemplate><securityManager:EditStateCombinationControl id="EditStateCombinationControl" runat="server"/></ItemTemplate>
-        </securityManager:ObjectBoundRepeater>
-        --%></div>
+    <td class="stateCombinationsContainer">
+      <asp:PlaceHolder id="StateCombinationControls" runat="server" />
       <asp:CustomValidator ID="MissingStateCombinationsValidator" runat="server" ErrorMessage="###" OnServerValidate="MissingStateCombinationsValidator_ServerValidate" />
     </td>
     <td class="accessControlEntriesContainer">
-      <div id="AccessControlEntryControls" runat="server" class="accessControlEntriesContainer"><%-- 
-        <securityManager:ObjectBoundRepeater ID="AccessControlEntriesRepeater" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="AccessControlEntries">
-          <HeaderTemplate><table><tr><td></HeaderTemplate>
-          <SeparatorTemplate></td></tr><tr><td></SeparatorTemplate>
-          <FooterTemplate></td></tr></table></FooterTemplate>
-          <ItemTemplate><securityManager:EditAccessControlEntryControl id="EditAccessControlEntryControl" runat="server"/></ItemTemplate>
-        </securityManager:ObjectBoundRepeater>
-        --%></div>
+      <asp:PlaceHolder id="AccessControlEntryControls" runat="server" />
+   </td>
    </td>
   </tr>
 </table>

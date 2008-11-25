@@ -15,6 +15,10 @@
 <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.AccessControl.AccessControlEntry, Remotion.SecurityManager" />
 <remotion:FormGridManager ID="FormGridManager" runat="server" ShowHelpProviders="False" />
 <asp:ScriptManagerProxy runat="server" />
+<asp:PlaceHolder ID="CollapsedView" runat="server">
+Collapsed
+</asp:PlaceHolder>
+<asp:PlaceHolder ID="ExpandedView" runat="server">
 <table id="FormGrid" runat="server" class="accessControlEntry">
   <tr>
     <td class="accessControlEntryTitleCell" colspan="2">
@@ -91,5 +95,6 @@
     </td>
   </tr>
 </table>
+</asp:PlaceHolder>
 </ContentTemplate>
 </asp:UpdatePanel>

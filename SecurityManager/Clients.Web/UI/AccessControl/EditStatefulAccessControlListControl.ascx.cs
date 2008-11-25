@@ -96,10 +96,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         editStateCombinationControl.BusinessObject = stateCombination;
         editStateCombinationControl.Delete += EditStateCombinationControl_Delete;
 
-        HtmlGenericControl div = new HtmlGenericControl ("div");
-        div.Attributes.Add ("class", "stateCombinationContainer");
-        StateCombinationControls.Controls.Add (div);
-        div.Controls.Add (editStateCombinationControl);
+        StateCombinationControls.Controls.Add (editStateCombinationControl);
 
         _editStateCombinationControls.Add (editStateCombinationControl);
       }
@@ -167,8 +164,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       CurrentAccessControlList.CreateStateCombination ();
 
       LoadStateCombinations (false);
-      //StateCombinationsRepeater.LoadValue (false);
-      //StateCombinationsRepeater.IsDirty = true;
       _isCreatingNewStateCombination = false;
     }
 

@@ -23,17 +23,10 @@
   </td>
   </tr>
   <tr>
-    <td class="stateCombinationsContainer" style="width:12em">
+    <td class="stateCombinationsContainer">
     </td>
     <td class="accessControlEntriesContainer">
-      <div id="AccessControlEntryControls" runat="server" class="accessControlEntriesContainer"><%-- 
-        <securityManager:ObjectBoundRepeater ID="AccessControlEntriesRepeater" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="AccessControlEntries">
-          <HeaderTemplate><table><tr><td></HeaderTemplate>
-          <SeparatorTemplate></td></tr><tr><td></SeparatorTemplate>
-          <FooterTemplate></td></tr></table></FooterTemplate>
-          <ItemTemplate><securityManager:EditAccessControlEntryControl id="EditAccessControlEntryControl" runat="server"/></ItemTemplate>
-        </securityManager:ObjectBoundRepeater>
-        --%></div>
+      <asp:PlaceHolder id="AccessControlEntryControls" runat="server" />
    </td>
   </tr>
 </table>

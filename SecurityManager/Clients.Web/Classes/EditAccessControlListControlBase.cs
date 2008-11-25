@@ -77,10 +77,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
         editAccessControlEntryControl.BusinessObject = accessControlEntry;
         editAccessControlEntryControl.Delete += EditAccessControlEntryControl_Delete;
 
-        HtmlGenericControl div = new HtmlGenericControl ("div");
-        div.Attributes.Add ("class", "accessControlEntryContainer");
-        accessControlEntryControls.Add (div);
-        div.Controls.Add (editAccessControlEntryControl);
+        accessControlEntryControls.Add (editAccessControlEntryControl);
 
         _editAccessControlEntryControls.Add (editAccessControlEntryControl);
       }
@@ -136,8 +133,6 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       CurrentAccessControlList.CreateAccessControlEntry ();
 
       LoadAccessControlEntries (false);
-      //AccessControlEntriesRepeater.LoadValue (false);
-      //AccessControlEntriesRepeater.IsDirty = true;
     }
 
     private void EditAccessControlEntryControl_Delete (object sender, EventArgs e)

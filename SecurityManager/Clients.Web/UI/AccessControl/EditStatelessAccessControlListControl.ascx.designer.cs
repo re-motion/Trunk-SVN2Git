@@ -56,6 +56,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl AccessControlEntryControls;
+        protected global::System.Web.UI.WebControls.PlaceHolder AccessControlEntryControls;
     }
 }
