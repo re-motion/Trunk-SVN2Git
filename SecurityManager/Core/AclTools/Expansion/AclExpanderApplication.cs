@@ -124,8 +124,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteAclExpansionAsMultiFileHtml (List<AclExpansionEntry> aclExpansion)
     {
-      _textWriterFactory.Extension = "html";
-      DirectoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ());
+      //_textWriterFactory.Extension = "html";
+      DirectoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow () + ".html");
       _textWriterFactory.Directory = DirectoryUsed;
 
       var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (_textWriterFactory, true);

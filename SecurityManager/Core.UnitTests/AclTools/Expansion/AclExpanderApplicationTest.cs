@@ -198,7 +198,7 @@ th
       var textWriterFactoryMock = MockRepository.GenerateMock<ITextWriterFactory> ();
 
       textWriterFactoryMock.Expect (mock => mock.Directory = directory); 
-      textWriterFactoryMock.Expect (mock => mock.Extension = extension); 
+      //textWriterFactoryMock.Expect (mock => mock.Extension = extension); 
       //textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (TextWriter.Null));
       textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (new StringWriter());
       textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (new StringWriter ());
@@ -242,7 +242,7 @@ th
     //}
 
 
-
+    // TODO: Adapt test to use StreamWriterFactory and turn into integration test
     [Test]
     public void MultipleFileOutputCssFileWritingTest ()
     {
@@ -267,6 +267,7 @@ th
       Assert.That (result, Is.EqualTo (c_cssFileContent));
     }
 
+    // TODO: Adapt test to use StreamWriterFactory and turn into integration test
     [Test]
     public void SingleFileOutputCssFileWritingTest ()
     {

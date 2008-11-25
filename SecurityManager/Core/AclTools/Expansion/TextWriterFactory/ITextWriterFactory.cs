@@ -16,7 +16,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
   /// <summary>
   /// Creates <see cref="TextWriter"/>|s through <see cref="NewTextWriter"/> in the currently set 
-  /// <see cref="Directory"/> and with the currently set <see cref="Extension"/>. 
+  /// <see cref="Directory"/>.
   /// Stores references to the created <see cref="TextWriter"/>|s.
   /// </summary>
   public interface ITextWriterFactory

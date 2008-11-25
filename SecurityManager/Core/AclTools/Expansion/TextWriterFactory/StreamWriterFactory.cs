@@ -32,7 +32,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       {
         throw new ArgumentException (To.String.s ("TextWriter with name ").e (name).s (" already exists.").CheckAndConvertToString ());
       }
-      var textWriterData = new TextWriterData (new StreamWriter (Path.Combine (Directory, AppendExtension(name))), Directory, Extension);
+      // Append extension if name does not already contain extension
+      string nameWithExtension = name.Contains(".") ? name : AppendExtension (name);
+      var textWriterData = new TextWriterData (new StreamWriter (Path.Combine (Directory, nameWithExtension)), Directory, Extension);
       NameToTextWriterData[name] = textWriterData;
       return textWriterData.TextWriter;
     }
